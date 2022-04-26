@@ -1,0 +1,1665 @@
+﻿.datepicker-holder {
+    border-radius: 10px;
+    padding-right: 10px;
+    z-index: 999;
+}
+.datepicker-holder input {
+    width: inherit;
+    font-size: 15px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 15px;
+    background: #e5e2e2;
+    direction: ltr;
+    margin-top: 1.5px;
+    margin-top: 20px;
+}
+
+input:focus, input:active, input:visited, button:focus, button:active, button:visited {
+    outline: none;
+}
+
+.datepicker-holder button {
+    margin: 10px 5px;
+}
+
+.datepicker-holder div[class|=col] {
+    margin-top: 10px;
+}
+
+.ms-drop ul li label input[type=checkbox]{
+    margin-top:-3px;
+}
+/*************************************************************/
+.timePicker {
+    width: 70px !important;
+    margin-right: 5px;
+    margin-top: 20px;
+}
+
+.custom_date {
+    margin-right: 5px;
+    /*position: absolute;*/
+    /*right: 775px;*/
+}
+
+/*************************************************************/
+#SellProductGrid {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    display: block;
+    color: #ccc;
+    width: 100%;
+    border-radius: 20px 20px 20px 20px;
+    overflow: hidden;
+}
+
+#SellProductGrid tr {
+    border-radius: 200px !important;
+}
+
+#SellProductGrid tbody tr:nth-child(2n) {
+    background: #616161;
+}
+
+#SellProductGrid tbody tr:nth-child(2n+1) {
+    background: #585858;
+}
+
+#SellProductGrid tr td, #SellProductGrid tr th {
+    text-align: center;
+    padding: 14px !important;
+    font-size: 13px !important;
+}
+
+.data-grid thead, .data-grid tbody {
+    display: table;
+    width: 100%;
+}
+.data-grid {
+    table-layout: fixed;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    display: block;
+    color: #ccc;
+    width: 100%;
+    -ms-border-radius: 20px;
+    border-radius: 20px 20px 20px 20px;
+    overflow: hidden;
+}
+
+.data-grid tr {
+    border-radius: 200px !important;
+}
+
+.data-grid tbody tr:nth-child(2n) {
+    background: #616161;
+}
+
+.data-grid tbody tr:nth-child(2n+1) {
+    background: #585858;
+}
+.data-grid tr td, .data-grid tr th {
+    text-align: center;
+    padding: 14px !important;
+    font-size: 13px !important;
+}
+
+.SearchBtn {
+    width: auto;
+    padding: 5px 10px;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+}
+
+/*.filter-group {
+    width: auto;
+    height: auto;
+}*/
+
+    .filter-group .button-groups {
+        height: 1px !important;
+        margin-right: 10px;
+    }
+
+        .filter-group .button-groups button {
+            width: auto !important;
+            padding: 0 10px !important;
+            margin: 20px 5px !important;
+            background: #0b4d4d;
+        }
+
+    .filter-group > div.merchant-groups .ms-choice {
+        margin-top: 20px;
+        margin-right: 10px;
+        line-height: 6;
+    }
+
+        .filter-group > div.merchant-groups .ms-choice > div {
+            margin-right: 10px;
+            margin-top: 20px;
+        }
+        .filter-group > div.merchant-groups .ms-choice > span {
+            margin-right: 10px;
+        }
+
+
+#product-cat-select .ms-parent {
+    margin-right: 10px !important; 
+}
+
+.ms-parent {
+    margin-right: 8px !important;
+}
+
+
+.ms-drop {
+    margin-right: 10px;
+}
+.button-groups .from-groups {
+    width: auto;
+    margin-left: 10px;
+}
+
+.filterBtn {
+    padding: 10px 25px 40px 25px;
+}
+
+    .filterBtn button {
+        margin-left: 7px;
+    }
+
+.radio-inline {
+    margin-right: 20px !important;
+}
+
+.single-card {
+    padding: 0px !important;
+    border-left: 3px solid #262626;
+}
+
+    .single-card .field-chart {
+        padding: 30px 0px;
+        margin-top: 10px !important;
+    }
+
+    .single-card p {
+        color: white;
+        font-size: 30px;
+    }
+
+.reset-filter {
+    width: 48px;
+    height: 48px;
+    line-height: 38px;
+    display: inline-block;
+    background-image: url(/areas/Satrap.FoodWeb/Content/Cash/TopIcons_Grey.png) !important;
+    background-position: -724px -382px;
+    cursor: pointer;
+}
+
+
+/*************************************************************/
+.dropdown dd,
+.dropdown dt {
+    margin: 0px;
+    padding: 0px;
+}
+
+.dropdown ul {
+    margin: -1px 0 0 0;
+}
+
+.dropdown dd {
+    position: relative;
+}
+
+.dropdown a,
+.dropdown a:visited {
+    color: #fff;
+    text-decoration: none;
+    outline: none;
+    font-size: 12px;
+}
+
+.dropdown dt a {
+    background-color: #fff;
+    color: #424242;
+    display: block;
+    padding: 6px;
+    padding-top: 2px;
+    min-height: 25px;
+    line-height: 24px;
+    overflow: hidden;
+    border: 0;
+    height: 31px;
+    width: 272px;
+    border-radius: 15px;
+}
+
+    .dropdown dt a span,
+    .multiSel span {
+        cursor: pointer;
+        display: inline-block;
+        color: #ccc;
+        margin-bottom: 3px
+    }
+
+.dropdown dd ul {
+    background-color: rgb(28, 28, 28);
+    border: 0;
+    color: #000;
+    display: none;
+    position: absolute;
+    width: 270px;
+    border-radius: 15px;
+    list-style: none;
+    height: auto;
+    overflow: auto;
+    z-index: 990;
+}
+
+#product-cat-drp dd ul {
+    right: 1012px;
+    top: 2px;
+}
+
+#merchants-drp {
+}
+
+
+.dropdown span.value {
+    display: none;
+}
+
+.dropdown dd ul li a {
+    display: block;
+}
+
+.dropdown dd ul li {
+    padding: 5px 15px;
+}
+
+    .dropdown dd ul li a:hover {
+        background-color: #ccc;
+    }
+
+.dropdown {
+    /*width: 0 !important;*/
+    height: 0 !important;
+    width: auto;
+    position: relative !important;
+}
+
+.mutliSelect ul {
+    overflow: auto !important;
+}
+
+/*************************************************************/
+
+.field-chart {
+    background: #3f3f3f;
+    margin-top: 20px;
+}
+
+    .field-chart legend {
+        display: block;
+        width: 100%;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-size: 13px;
+        color: #fff;
+        border: none;
+    }
+
+.filter-Description {
+    color: #fff;
+    padding: 10px 20px;
+}
+
+    .filter-Description li {
+        line-height: 25px;
+        display: inline-block;
+        margin-left: 5px;
+    }
+
+.filter-title {
+    font-size: 1.2em !important;
+}
+
+.filter-value {
+    color: #aaa;
+}
+
+
+.nodata {
+    color: white;
+    text-align: center;
+    margin: 20% auto;
+}
+
+.agg-radio label, .filter-Description, .field-chart legend {
+    font-size: 1.2em;
+}
+
+.chart, .chart * {
+    direction: ltr !important;
+}
+
+/*************************************************************/
+
+.ms-choice {
+    border-radius: 15px !important;
+    outline: none !important;
+}
+
+.filter-group .button-groups button.ms-choice {
+    background: white !important;
+}
+
+.ms-search, .ms-search input {
+    border-radius: 10px !important;
+    outline: none !important;
+}
+
+.ms-drop ul li {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+.ms-drop ul > li label {
+    color: black !important;
+}
+
+.ms-drop input[type="checkbox"] {
+    margin-left: 5px;
+}
+/*************************************************************/
+
+.filter-group {
+    padding: 10px;
+}
+.btnGroup button {
+    min-width: 70px;
+    width: auto;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+.filter-item input, .filter-item select {
+    margin-top: 0;
+}
+
+.filter-item select {
+    background-color: #e5e2e2;
+    border-radius: 15px;
+    height: 30px;
+    margin-right: 5px;
+    padding-right: 10px;
+}
+
+#sidebar {
+    margin-right: 5px;
+    text-align: right;
+    min-width: 167px;
+    float: right;
+    margin-left: 2px;
+    margin-bottom: 5px;
+}
+
+.absent {
+    margin: 0px 0px;
+    padding: 0px 3px 0px 0px;
+}
+
+#sidebar-bg-top {
+    background: url(/_content/EnginWeb/Content/Images/menu.png);
+    width: 168px;
+    height: 10px;
+    display: block;
+}
+
+#sidebar-bg-bottom {
+    background: url(/_content/EnginWeb/Content/Images/menu.png);
+    background-position: 0px -11px;
+    width: 168px;
+    height: 10px;
+}
+
+#sidebar-bg-center {
+    background-color: #caddf2;
+    width: 160px;
+    min-height: 180px;
+    height: 100%;
+    padding: 0px 6px;
+    padding-bottom: 0px;
+    border: 1px solid #688CAF;
+    border-radius:10px;
+}
+
+#sidebar-dg-bottom {
+    background: url(/_content/EnginWeb/Content/Images/pannel-bottom.png) left top no-repeat;
+    width: 168px;
+    height: 10px;
+    margin-top: -3px;
+}
+
+#mainbar {
+    float: right;
+    min-width: 600px;
+    margin: 0px 4px 0px 0px;
+    text-align: center;
+}
+
+li {
+    list-style: none;
+}
+
+.reportSelect {
+    background: url(/_content/EnginWeb/Content/Images/menu.png);
+    height: 33px;
+    background-position: 0px -90px;
+    margin-bottom: 3px;
+    padding-right: 5px;
+}
+
+li.content {
+    background: url(/_content/EnginWeb/Content/Images/menu.png);
+    background-position: 0px -22px;
+    width: 145px;
+    height: 33px;
+    margin-bottom: 3px;
+    padding-right: 5px;
+}
+
+a {
+    color: #000;
+    cursor: pointer;
+}
+
+    a:hover {
+        color: #000;
+    }
+
+li.content:hover {
+    background-position: 0px -56px;
+}
+
+#reportContextMenu {
+    position: absolute;
+    display: none;
+    padding-top: 4px;
+    left: 500px;
+    width: 182px;
+    height: 238px;
+    background-image: url(/_content/EnginWeb/Content/Images/BGShowPrint.png);
+    border: 1px solid #acacac;
+    box-shadow: #aaa 0px 0px 2px 2px;
+    border-radius: 4px 4px 4px 4px;
+    cursor: context-menu;
+}
+
+    #reportContextMenu div {
+        margin: 0px 3px 0px 3px;
+    }
+
+    #reportContextMenu .icon {
+        width: 16px;
+        margin: 5px 2px 3px 0px;
+        display: block;
+        float: right;
+        height: 20px;
+        background-image: url(/_content/EnginWeb/Content/Images/SHowReportIcons.png);
+        background-repeat: no-repeat;
+    }
+
+    #reportContextMenu .separator {
+        border-top: 1px solid #c2c2c2;
+        border-bottom: 1px solid #fff;
+        width: 142px;
+        height: 0px;
+        margin: 3px 33px 3px 0px;
+        display: block;
+    }
+
+#showReportButton .search {
+    background-image: url(/_content/EnginWeb/Content/Images/ReportButton.png);
+    background-repeat: no-repeat;
+    width: 21px;
+    height: 30px;
+    background-position: -23px 0px;
+    display: inline-block;
+}
+
+    #showReportButton .search.hover {
+        background-position: -70px -3px;
+        height: 32px;
+        margin: 0px;
+    }
+
+    #showReportButton .search.click {
+        background-position: -127px -3px;
+        height: 32px;
+        margin: 0px;
+    }
+
+#showReportButton .middel {
+    background-image: url(/_content/EnginWeb/Content/Images/MidReportButton.png);
+    background-repeat: repeat-x;
+    width: 60px;
+    height: 30px;
+    cursor: default;
+    margin-right: -5px;
+    padding-right: 3px;
+}
+
+    #showReportButton .middel.hover {
+        background-image: url(/_content/EnginWeb/Content/Images/MidReportButtonHover.png);
+        margin-top: 0px;
+        background-repeat: repeat-x;
+        height: 32px;
+        padding-top: 1px;
+    }
+
+    #showReportButton .middel.click {
+        background-image: url(/_content/EnginWeb/Content/Images/MidReportButtonClick.png);
+    }
+
+#showReportButton .dropdown {
+    background-image: url(/_content/EnginWeb/Content/Images/ReportButton.png);
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 30px;
+    display: inline-block;
+    margin: 1px 0px 3px 3px;
+}
+span:empty {
+    content: "\200b";
+}
+
+
+    #showReportButton .dropdown.hover {
+        background-position: -46px -3px;
+        height: 32px;
+        margin: 0px;
+    }
+
+    #showReportButton .dropdown.click {
+        background-position: -104px -3px;
+    }
+
+.PanelContent {
+    background-color: lightgoldenrodyellow;
+    height: 242px;
+}
+
+.operation {
+    border: 1px solid #acacac;
+    background-color: #ebebeb;
+    width: 100px;
+    height: 26px;
+    display: block;
+    cursor: default;
+}
+
+.t-FromToSes {
+    border: 1px solid blue;
+    padding: 0px;
+    position: absolute;
+    border-radius:10px;
+    text-align:right;
+}
+
+    .t-FromToSes legend {
+        color: blue;
+        font-size: 15px;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    .t-FromToSes table {
+        margin-top: -2px;
+    }
+
+        .t-FromToSes table td {
+            padding: 2px;
+        }
+
+            .t-FromToSes table td label {
+                margin-right: 3px;
+            }
+
+            .t-FromToSes table td input {
+                width: 116px;
+                border: 1px solid #5d8cc9;
+                height: 30px;
+                border-radius: 4px;
+            }
+
+.t-Enumes {
+    background-color: white;
+    border: 1px solid blue;
+    border-radius: 7px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+}
+
+    .t-Enumes legend {
+        color: blue;
+        margin-right: 10px;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .t-Enumes .t-inner div {
+        border: 1px solid black;
+        border-radius: 5px;
+        box-shadow: rgb(94, 23, 23)2px 2px;
+        float: right;
+        margin: 5px 5px 3px 3px;
+        width: 122px;
+        overflow: hidden;
+    }
+
+        .t-Enumes .t-inner div label {
+            white-space: nowrap;
+            margin-right: 5px;
+        }
+
+        .t-Enumes .t-inner div span {
+            white-space: nowrap;
+            padding-right: 5px;
+        }
+
+
+
+
+#toolsBox {
+    width: 28px;
+    background-image: url(/_content/EnginWeb/Content/Images/left1.png);
+    vertical-align: top;
+}
+
+.toolsbar {
+    float: right;
+    background-image: url(/_content/EnginWeb/Content/Images/toolsbar.png);
+    height: 26px;
+}
+
+table {
+    empty-cells: show;
+}
+
+.column {
+    height: 100%;
+    box-sizing: border-box;
+    float: right;
+}
+
+    .column.right {
+        border-left: 1px dotted red;
+    }
+
+    .column.middel {
+        border-right: 1px dotted red;
+        border-left: 1px dotted red;
+    }
+
+    .column.left {
+        border-right: 1px dotted red;
+    }
+
+.toolsbar-dropdowndiv {
+    border: 1px solid #c6c7d2;
+    padding: 3px 1px 2px 0px;
+    box-shadow: 2px 2px 2px #333;
+    border-radius: 2px 3px 2px 2px;
+    position: absolute;
+    background-color: white;
+    z-index: 1000;
+}
+
+.toolsbar-dropdownspan {
+    display: block;
+    border: 1px solid #FFF;
+    border-radius: 1px 1px 1px 1px;
+    height: 16px;
+    padding-left: 3px;
+    line-height: 16px;
+    cursor: pointer;
+}
+
+    .toolsbar-dropdownspan:hover {
+        background-image: url(/_content/EnginWeb/Content/Images/ddlpan.png);
+        border: 1px solid #c2AA79;
+    }
+
+.toolsbar-list {
+    background-image: url(/_content/EnginWeb/Content/Images/input.png);
+    background-repeat: repeat-x;
+    height: 26px;
+    float: right;
+}
+
+.toolsbar-list-input {
+    float: right;
+    margin: 3px 0px 3px 0px;
+    height: 20px;
+    padding: 0px 0px 0px 0px;
+    /*border:1px solid #b7b7b7;*/
+    border: 1px solid #898989;
+}
+
+.borderstylediv {
+    height: 102px;
+    position: absolute;
+    width: 102px;
+    left: 400px;
+    z-index: 2000;
+}
+
+.border {
+    background-image: url(/_content/EnginWeb/Content/Images/report1.png);
+    display: block;
+    width: 100%;
+    height: 23px;
+}
+
+.borderstyle1 {
+    height: 26px;
+    background-position: 0px -197px;
+}
+
+    .borderstyle1:hover {
+        background-position: -225px -197px;
+    }
+
+.borderstyleselected1 {
+    background-position: -113px -197px;
+}
+
+.borderstyle2 {
+    background-position: 0px -223px;
+}
+
+    .borderstyle2:hover {
+        background-position: -225px -223px;
+    }
+
+.borderstyleselected2 {
+    background-position: -113px -223px;
+}
+
+.borderstyle3 {
+    background-position: 0px -246px;
+}
+
+    .borderstyle3:hover {
+        background-position: -225px -246px;
+    }
+
+.borderstyleselected3 {
+    background-position: -113px -246px;
+}
+
+.borderstyle4 {
+    height: 29px;
+    background-position: 0px -269px;
+}
+
+    .borderstyle4:hover {
+        background-position: -225px -269px;
+    }
+
+.borderstyleselected4 {
+    height: 29px;
+    background-position: -113px -269px;
+}
+
+.borderwidthdiv {
+    height: 193px;
+    position: absolute;
+    width: 109px;
+    left: 200px;
+    z-index: 2000;
+}
+
+.borderwidth1 {
+    height: 26px;
+}
+
+    .borderwidth1:hover {
+        background-position: -223px 0px;
+    }
+
+.borderwidthselected1 {
+    background-position: -111px 0px;
+}
+
+.borderwidth2 {
+    background-position: 0px -26px;
+}
+
+    .borderwidth2:hover {
+        background-position: -223px -26px;
+    }
+
+.borderwidthselected2 {
+    background-position: -111px -26px;
+}
+
+.borderwidth3 {
+    background-position: 0px -49px;
+}
+
+    .borderwidth3:hover {
+        background-position: -223px -49px;
+    }
+
+.borderwidthselected3 {
+    background-position: -111px -49px;
+}
+
+.borderwidth4 {
+    background-position: 0px -72px;
+}
+
+    .borderwidth4:hover {
+        background-position: -223px -72px;
+    }
+
+.borderwidthselected4 {
+    background-position: -111px -72px;
+}
+
+.borderwidth5 {
+    background-position: 0px -95px;
+}
+
+    .borderwidth5:hover {
+        background-position: -223px -95px;
+    }
+
+.borderwidthselected5 {
+    background-position: -111px -95px;
+}
+
+.borderwidth6 {
+    background-position: 0px -118px;
+}
+
+    .borderwidth6:hover {
+        background-position: -223px -118px;
+    }
+
+.borderwidthselected6 {
+    background-position: -111px -118px;
+}
+
+.borderwidth7 {
+    background-position: 0px -141px;
+}
+
+    .borderwidth7:hover {
+        background-position: -223px -141px;
+    }
+
+.borderwidthselected7 {
+    background-position: -111px -141px;
+}
+
+.borderwidth8 {
+    height: 29px;
+    background-position: 0px -164px;
+}
+
+    .borderwidth8:hover {
+        height: 29px;
+        background-position: -223px -164px;
+    }
+
+.borderwidthselected8 {
+    height: 29px;
+    background-position: -111px -164px;
+}
+
+.toolsbox {
+    width: 25px;
+    height: 27px;
+    display: inherit;
+    background-image: url(/_content/EnginWeb/Content/Report.png);
+    margin: 0px 0px 0px;
+}
+
+.text td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 0px;
+    padding: 0 2px;
+}
+
+.last {
+    width: 15px;
+    background-position: -335px 0px;
+}
+
+.rotate {
+    background-position: -310px 0px;
+}
+
+    .rotate:hover {
+        background-position: -313px -27px;
+    }
+
+.rotateclick {
+    background-position: -323px -56px;
+}
+
+
+.fontColor {
+    width: 35px;
+    background-position: -275px 0px;
+}
+
+    .fontColor:hover {
+        width: 35px;
+        background-position: -274px -27px;
+    }
+
+.fontColorclick {
+    width: 35px;
+    background-position: -286px -56px;
+}
+
+.vbottom {
+    width: 26px;
+    background-position: -245px 0px;
+}
+
+    .vbottom:hover {
+        background-position: -248px -27px;
+    }
+
+.vbottomclick {
+    width: 26px;
+    background-position: -259px -56px;
+}
+
+.vbottomselected {
+    width: 26px;
+}
+
+.vcenter {
+    background-position: 170px 0px;
+}
+
+    .vcenter:hover {
+        background-position: -222px -27px;
+    }
+
+.vcenterclick {
+    background-position: -232px -56px;
+}
+
+.vcenterselected {
+}
+
+.vtop {
+    width: 30px;
+    background-position: -195px 0px;
+}
+
+    .vtop:hover {
+        background-position: -192px -27px;
+    }
+
+.vtopclick {
+    width: 30px;
+    background-position: -202px -56px;
+}
+
+.vtopselected {
+    width: 30px;
+}
+
+.textjustify {
+    background-position: -169px 0px;
+}
+
+    .textjustify:hover {
+        background-position: -169px -27px;
+    }
+
+.textjustifyclick {
+    background-position: -179px -56px;
+}
+
+.textjustifyselected {
+}
+
+.textright {
+    background-position: -142px 0px;
+}
+
+    .textright:hover {
+        background-position: -141px -27px;
+    }
+
+.textrightclick {
+    background-position: -149px -56px;
+}
+
+.textrightselected {
+}
+
+.textcenter {
+    background-position: -121px 0px;
+}
+
+    .textcenter:hover {
+        background-position: -119px -27px;
+    }
+
+.textcenterclick {
+    background-position: -126px -56px;
+}
+
+.textcenterselected {
+}
+
+.textleft {
+    width: 30px;
+    background-position: -93px 0px;
+}
+
+    .textleft:hover {
+        background-position: -90px -27px;
+    }
+
+.textleftclick {
+    width: 30px;
+    background-position: -95px -56px;
+}
+
+.textleftselected {
+    width: 30px;
+}
+
+.undrline {
+    background-position: -69px 0px;
+}
+
+    .undrline:hover {
+        background-position: -66px -27px;
+    }
+
+.undrlineclick {
+    background-position: -71px -56px;
+}
+
+.undrlineselected {
+    background-position: -67px -84px;
+}
+
+    .undrlineselected:hover {
+        background-position: -66px -27px;
+    }
+
+.italic {
+    background-position: -45px 0px;
+}
+
+    .italic:hover {
+        background-position: -41px -27px;
+    }
+
+.italicclick {
+    background-position: -45px -56px;
+}
+
+.italicselected {
+    background-position: -42px -84px;
+}
+
+    .italicselected:hover {
+        background-position: -41px -27px;
+    }
+
+.bold {
+    width: 30px;
+    background-position: -15px 0px;
+}
+
+    .bold:hover {
+        background-position: -13px -27px;
+    }
+
+.boldclick {
+    width: 30px;
+    background-position: -15px -56px;
+}
+
+.boldselected {
+    width: 30px;
+    background-position: -14px -84px;
+}
+
+    .boldselected:hover {
+        width: 30px;
+        background-position: -13px -27px;
+    }
+
+.toolsbox1 {
+    width: 25px;
+    height: 23px;
+    display: inherit;
+    background-image: url(/_content/EnginWeb/Content/Report.png);
+}
+
+.last2 {
+    width: 15px;
+    background-position: -357px -115px;
+}
+
+.bordertype {
+    width: 38px;
+    background-position: -317px -115px;
+}
+
+    .bordertype:hover {
+        background-position: -317px -140px;
+    }
+
+.bordertypeclick {
+    width: 38px;
+    background-position: -317px -171px;
+}
+
+.bordertypeselected {
+    width: 38px;
+}
+
+.borderwidth {
+    width: 36px;
+    background-position: -281px -115px;
+}
+
+    .borderwidth:hover {
+        background-position: -281px -140px;
+    }
+
+.borderwidthclick {
+    width: 36px;
+    background-position: -281px -171px;
+}
+
+.borderwidthseelcted {
+    width: 36px;
+}
+
+.bordercolor {
+    width: 38px;
+    background-position: -244px -115px;
+}
+
+    .bordercolor:hover {
+        background-position: -244px -140px;
+    }
+
+.bordercolorclick {
+    width: 38px;
+    background-position: -244px -171px;
+}
+
+.bordercolorselected {
+    width: 38px;
+}
+
+.contentcolor {
+    width: 40px;
+    background-position: -180px -115px;
+}
+
+    .contentcolor:hover {
+        background-position: -180px -140px;
+    }
+
+.contentcolorclick {
+    width: 40px;
+    background-position: -180px -171px;
+}
+
+.contentcolorselected {
+    width: 40px;
+}
+
+.bordersetting {
+    width: 23px;
+    background-position: -156px -115px;
+}
+
+    .bordersetting:hover {
+        background-position: -156px -140px;
+    }
+
+.bordersettingclick {
+    width: 23px;
+    background-position: -156px -171px;
+}
+
+.bordersettingselected {
+    width: 23px;
+}
+
+.noborder {
+    width: 23px;
+    background-position: -131px -115px;
+}
+
+    .noborder:hover {
+        background-position: -131px -140px;
+    }
+
+.noborderclick {
+    width: 23px;
+    background-position: -131px -171px;
+}
+
+.noborderselected {
+    width: 23px;
+}
+
+.allborder {
+    width: 26px;
+    background-position: -106px -115px;
+}
+
+    .allborder:hover {
+        background-position: -106px -140px;
+    }
+
+.allborderclick {
+    width: 26px;
+    background-position: -106px -171px;
+}
+
+.allborderselected {
+    width: 26px;
+}
+
+.rightborder {
+    width: 23px;
+    background-position: -81px -115px;
+}
+
+    .rightborder:hover {
+        background-position: -81px -140px;
+    }
+
+.rightborderclick {
+    width: 23px;
+    background-position: -81px -171px;
+}
+
+.rightborderselected {
+    width: 23px;
+    background-position: -81px -196px;
+}
+
+    .rightborderselected:hover {
+        background-position: -81px -140px;
+    }
+
+.leftborder {
+    width: 24px;
+    background-position: -57px -115px;
+}
+
+    .leftborder:hover {
+        background-position: -57px -140px;
+    }
+
+.leftborderclick {
+    width: 24px;
+    background-position: -57px -171px;
+}
+
+.leftborderselected {
+    width: 24px;
+    background-position: -57px -196px;
+}
+
+    .leftborderselected:hover {
+        background-position: -57px -140px;
+    }
+
+.bottomborder {
+    width: 24px;
+    background-position: -33px -115px;
+}
+
+    .bottomborder:hover {
+        background-position: -33px -140px;
+    }
+
+.bottomborderclick {
+    width: 24px;
+    background-position: -33px -171px;
+}
+
+.bottomborderselected {
+    width: 24px;
+    background-position: -33px -196px;
+}
+
+    .bottomborderselected:hover {
+        background-position: -33px -140px;
+    }
+
+.topborder {
+    width: 24px;
+    background-position: -9px -115px;
+}
+
+    .topborder:hover {
+        background-position: -9px -140px;
+    }
+
+.topborderclick {
+    width: 24px;
+    background-position: -9px -171px;
+}
+
+.topborderselected {
+    background-position: -9px -196px;
+    width: 24px;
+}
+
+    .topborderselected:hover {
+        background-position: -9px -140px;
+    }
+
+.first2 {
+    width: 10px;
+    background-position: -1px -115px;
+}
+
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+td {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.cellselected {
+    background-color: #c6d9f2 !important;
+}
+
+.tableHandler {
+    position: absolute;
+    left: 150px;
+    top: 150px;
+    display: none;
+    width: 15px;
+    height: 15px;
+    border: 1px solid green;
+    background-image: url(/_content/EnginWeb/Content/Images/Report.png);
+    z-index: 100;
+}
+
+.reportheader {
+    background-image: url(/_content/EnginWeb/Content/Images/HeaderBond.png);
+    width: 154px;
+    border-bottom: 1px solid #A0A0A0;
+    overflow: hidden;
+}
+
+.pageheader {
+    background-image: url(/_content/EnginWeb/Content/Images/HeaderBond.png);
+    width: 154px;
+    border-bottom: 1px solid #A0A0A0;
+}
+
+.dataBond {
+    background-image: url(/_content/EnginWeb/Content/Images/HeaderDataBond.png);
+    width: 154px;
+}
+
+.pagefooter {
+    background-image: url(/_content/EnginWeb/Content/Images/HeaderBond.png);
+    height: 100px;
+    width: 154px;
+    border-bottom: 1px solid #A0A0A0;
+}
+
+.spliter {
+    background-image: url(/_content/EnginWeb/Content/Images/spliter.png);
+    height: 3px;
+}
+
+.bond {
+    vertical-align: top;
+    text-align: right;
+    box-sizing: border-box;
+}
+
+.bottomarrow {
+    background-image: url(/_content/EnginWeb/Content/Images/BottomArrow.png);
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    z-index: 20;
+}
+
+.leftArrow {
+    background-image: url(/_content/EnginWeb/Content/Images/leftArrow.png);
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    z-index: 20;
+}
+
+.tools {
+    background-image: url(/_content/EnginWeb/Content/Images/ToolsBox.png);
+    width: 16px;
+    height: 16px;
+    display: block;
+    margin-top: 8px;
+    margin-right: 6px;
+}
+
+    .tools.textbox {
+        background-position: -17px 0px;
+    }
+
+    .tools.picture {
+        background-position: -51px 0px;
+    }
+
+    .tools.subreport {
+        background-position: 0px 0px;
+    }
+
+    .tools.table {
+        background-position: -34px 0px;
+    }
+
+    .tools.checkbox {
+        background-position: -68px 0px;
+    }
+
+    .tools.chart {
+        background-position: -85px 0px;
+    }
+
+.topcell {
+    border-top: 1px solid black;
+    width: 4px;
+}
+
+.bottomcell {
+    border-bottom: 1px solid black;
+    display: inline-block;
+    width: 4px;
+}
+
+.leftcell {
+    border-left: 1px solid black;
+    height: 4px;
+    float: left;
+    position: relative;
+    z-index: 100;
+}
+
+.rightcell {
+    border-right: 1px solid black;
+    height: 4px;
+    float: right;
+    position: relative;
+    z-index: 100;
+}
+
+.squarebond {
+    border: 1px solid black;
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    background-color: blueviolet;
+    display: none;
+}
+
+.square {
+    border: 1px solid black;
+    width: 5px;
+    height: 5px;
+    display: inline-block;
+    position: absolute;
+    z-index: 100;
+}
+
+.ruler {
+    border: 1px solid blue;
+    position: absolute;
+    z-index: 100000;
+}
+
+.subreporticon {
+    background-image: url(/_content/EnginWeb/Content/Images/ToolsBox.png);
+    background-position: 0px 0px;
+    width: 16px;
+    height: 16px;
+    display: block;
+    position: relative;
+    float: right;
+    top: 3px;
+    left: 5px;
+}
+
+.imageboxicon {
+    background-image: url(/_content/EnginWeb/Content/Images/ToolsBox.png);
+    background-position: 98px -1px;
+    width: 14px;
+    height: 14px;
+    display: block;
+    position: relative;
+    float: right;
+    top: 2px;
+    left: 3px;
+}
+
+.text {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 0;
+}
+
+.imageBoxDiv {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: -1;
+    background-repeat: no-repeat;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+.reportcontrol {
+    z-index: 2;
+    position: absolute;
+}
+
+    .reportcontrol.tablecontrol {
+        direction: rtl;
+    }
+
+    .reportcontrol legend .show-form {
+        background-image: url("/Content/2011.1.315/Outlook/sprite1.png");
+        background-position: -65px -192px;
+        clip: rect(0px, 0px, 14px, 14px);
+        cursor: pointer;
+        display: inline-block;
+        height: 14px;
+        margin-top: 8px;
+        overflow: hidden;
+        padding: 0 5px 0 0;
+        width: 14px;
+    }
+
+    .reportcontrol.tablecontrol td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 30px;
+        direction: rtl;
+    }
+
+    .reportcontrol.tablecontrol th {
+        border: 1px solid silver;
+        height: 20px;
+        background-color: darkblue
+    }
+
+.rowHeader {
+    width: 20px;
+    border: 1px solid silver;
+    background-color: darkblue;
+}
+
+.c-loginerrortx {
+    display: inline-block;
+    color: #e64b50;
+    text-align: center;
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.c-loginerrortx {
+    display: inline-block;
+    color: #e64b50;
+    text-align: center;
+}
+
+.fa-exclamation-circle:before {
+    content: "\f06a";
+}

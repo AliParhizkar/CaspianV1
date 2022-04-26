@@ -1,0 +1,28 @@
+﻿@namespace Caspian.Engine.ReportPrint
+@inject IJSRuntime jSRuntime
+
+<Window @bind-Status="Status" Style="width:802px;height:538px" Title="زیرگزارش">
+    <Content>
+        <iframe @ref="Iframe" src="/Engin/ReportPrintPage/@(GuId)" height="500" id="iframe__1" frameborder="0" style="margin:0;" width="800">
+        </iframe>
+    </Content>
+</Window>
+@code
+{
+    ElementReference Iframe;
+
+    [Parameter]
+    public string GuId { get; set; }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await jSRuntime.InvokeVoidAsync("$.report.hideMenu", Iframe);
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

@@ -1,0 +1,31 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@{
+    Grid.AddCommandColumn(HeaderTitle, HeaderWidth);
+}
+<td @attributes="attrs">
+    @if (GridEditableList)
+    {
+        <span class="c-check">
+            <span class="t-icon fa fa-check" @onclick="async () => { await ValidateAndUpsert(); }"></span>
+        </span>
+        <span class="c-cancel-icon" @onclick="@(async () => { await Delete(); })">
+            <span class="t-icon fa fa-ban"></span>
+        </span>
+    }
+    else
+    {
+        if (!HideEdit)
+        {
+            <span @onclick="@(async () => { await OpenForm(); })" class="@editButtonClassName">
+                <span class="t-icon t-edit fa fa-pencil"></span>
+            </span>
+        }
+        if (!HideDelete)
+        {
+            <span @onclick="@(async () => { await Delete(); })" class="@deleteButtonClassName">
+                <span class="t-icon t-delete fa fa-trash"></span>
+            </span>
+        }
+    }
+</td>

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
+    <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
+    <ProjectReference Include="..\..\Engine\Engine.Service\Engine.Service.csproj" />
+    <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
+    <ProjectReference Include="..\Employment.Model\Employment.Model.csproj" />
+    <ProjectReference Include="..\Employment.Service\Employment.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+</Project>

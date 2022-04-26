@@ -1,0 +1,36 @@
+﻿@page "/Demo/Fileupload"
+@namespace Demo.Web.Pages
+<div style="padding:20px 40px 0 0">
+    <h3>FileUpload & Picture Box</h3>
+</div>
+<div style="display:table;width:90%;margin:0 auto">
+    <div style="display:table-cell;width:50%;padding-left:40px">
+        <hr />
+        <h4 style="padding-right:80px;">With Content</h4>
+        <Fileupload OnChange="SaveFileData1" Title="Click for upload">
+            <PictureBox NoContentTitle="لطفا برای آپلود عکس کلیک نمایید" Data="imageData1" style="width:300px;height:350px;background-size:cover" />
+        </Fileupload>
+    </div>
+    <div style="display:table-cell;width:50%;padding-right:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Without Content</h4>
+        <PictureBox Data="imageData" style="width:300px;height:350px;background-position: center center" />
+        <div style="display:table-cell;height:50px;vertical-align:middle">
+            <Fileupload OnChange="SaveFileData" />
+        </div>
+    </div>
+</div>
+@code
+{
+    byte[] imageData;
+    byte[] imageData1;
+    async Task SaveFileData(InputFileChangeEventArgs file)
+    {
+        imageData = await file.File.GetByteArrayAsync();
+    }
+
+    async Task SaveFileData1(InputFileChangeEventArgs file)
+    {
+        imageData1 = await file.File.GetByteArrayAsync();
+    }
+}

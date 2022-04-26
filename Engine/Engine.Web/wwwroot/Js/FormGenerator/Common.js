@@ -1,0 +1,622 @@
+﻿(function ($) {
+    var factor = 1000;
+    var $f = $.form = {
+        mouseDown: false,
+        print: function (a1, a2, a3, a4, a5) {
+            var str = a1;
+            if (arguments.length > 1)
+                str += ',' + a2;
+            if (arguments.length > 2)
+                str += ',' + a3;
+            if (arguments.length > 3)
+                str += ',' + a4;
+            if (arguments.length > 4)
+                str += ',' + a5;
+            $('#fortest1').text(str);
+        },
+        convertPtToPx: function (pt) {
+            return pt * 1.33;
+        },
+        convertPxToPt: function (px) {
+            return Math.round(px / 1.33);
+        },
+        formBind: function (dotNetObjectReference, data) {
+            $.form.dotNetObject = dotNetObjectReference;
+            let page = $('body').fPage(data);
+            let toolBar = $(document).fToolsBar();
+            let setting1 = {
+                submenuLeftOffset: -1,
+                onShow: function (e) {
+                    let ctr = page.getCurentControl();
+                    if (ctr && ctr.getContextMenu && ctr.getContextMenu() == 1) {
+                        $('#page').css('cursor', 'default');
+                        $('.bottomarrow').css('display', 'none');
+                    }
+                    else
+                        return false;
+                },
+                autoHide: true,
+                onSelect: function (e, context) {
+                    let flag = $(this).attr('id');
+                    let ctr = page.getCurentControl();
+                    switch (flag) {
+                        case '_1':
+                            ctr.addColumnOnLeft();
+                            break;
+                        case '_2':
+                            ctr.addColumnOnRight();
+                            break;
+                        case '_3':
+                            ctr.removeColumn();
+                            break;
+                    }
+                }
+            };
+            var setting2 = {
+                submenuLeftOffset: -1,
+                onShow: function (e) {
+                    let ctr = page.getCurentControl();
+                    if (ctr && ctr.getContextMenu && ctr.getContextMenu() == 2) {
+                        $('#page').css('cursor', 'default');
+                        $('.leftArrow').css('display', 'none');
+                    }
+                    else
+                        return false;
+                },
+                autoHide: true,
+                onSelect: function (e, context) {
+                    let flag = $(this).attr('id');
+                    let ctr = page.getCurentControl();
+                    switch (flag) {
+                        case '_1':
+                            ctr.addRowOnTop();
+                            break;
+                        case '_2':
+                            ctr.addRowOnBottom();
+                            break;
+                        case '_3':
+                            ctr.removeRow();
+                            break;
+                    }
+                }
+            };
+            $('#page').jeegoocontext("columnOperation", setting1);
+            $('#page').jeegoocontext("rowOperation", setting2);
+            var colorSetting = {
+                strings: 'رنگهای زمینه,رنگهای استاندارد,رنگهای وب,رنگهای زمینه',
+                showOn: 'none',
+                hideButton: true,
+                color: '#000000',
+                history: false
+            };
+            $('#fontColorpicker').colorpicker(colorSetting).on('change.color', function (evt, color) {
+                toolBar.updateCurentControlCSS('color', color);
+            });
+            $('#borderColorpicker').colorpicker(colorSetting).on('change.color', function (evt, color) {
+                let ctr = $('body').data('fPage').getCurentControl();
+                if (ctr) {
+                    let border = ctr.border();
+                    if (border) {
+                        border.color.colorString = color;
+                        ctr.border(border);
+                    }
+                }
+            });
+            colorSetting.color = '#FFFFFF';
+            colorSetting.transparentColor = true;
+            $('#contentColorpicker').colorpicker(colorSetting).on('change.color', function (evt, color) {
+                let ctr = $('body').data('fPage').getCurentControl();
+                if (ctr)
+                    ctr.backGroundColor(color);
+            });
+            $('.borderwidthdiv').fDropDownList();
+            $('.borderstylediv').fDropDownList();
+            $('body').click(function (e) {
+                var id = $(e.target).attr('id');
+                if (id != '_14')
+                    $('.toolsbar-dropdowndiv').first().fadeOut(500);
+                if (id != '_15')
+                    $('.toolsbar-dropdowndiv').last().fadeOut(500);
+                if (id != '_16' && $('.borderstylediv').data('rDropDownList'))
+                    $('.borderstylediv').data('rDropDownList').hide();
+                if (id != '_17' && $('.borderwidthdiv').data('rDropDownList'))
+                    $('.borderwidthdiv').data('rDropDownList').hide();
+            });
+            let data1 = [7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 28, 36, 42, 72];
+            let data2 = ['sans-serif', 'B Nazanin', 'Tahoma', 'Times New Roman'];
+            toolBar.createDropDownList($('.toolsbar-list-input')[0], data1);
+            toolBar.createDropDownList($('.toolsbar-list-input')[1], data2);
+
+        },
+        updateList: function (data) {
+            let curentControl = $('body').data('fPage').getCurentControl();
+            let ctrData = curentControl.getData();
+            ctrData.text = data.text;
+            ctrData.multiSelect = data.multiSelect;
+            ctrData.isRequired = data.isRequired;
+            ctrData.items = data.items;
+            curentControl.init(ctrData);
+        },
+        updateTextbox: function (data) {
+            let curentControl = $('body').data('fPage').getCurentControl();
+            curentControl.text(data.text);
+            let ctrData = curentControl.getData();
+            ctrData.inputControlType = data.inputControlType;
+            ctrData.multiLine = data.multiLine;
+            ctrData.isRequired = data.isRequired;
+            curentControl.init(ctrData);
+        },
+        updateLable: function (data) {
+            let curentControl = $('body').data('fPage').getCurentControl();
+            curentControl.text(data.text);
+            curentControl.specialField = data.specialField;
+        },
+        showLeftRuler: function (item1, item2) {
+            let $body = $('body');
+            let $item1 = $(item1), $item2 = $(item2);
+            let left1 = Math.floor($item1.offset().left), left2 = Math.floor($item2.offset().left);
+            if (left1 == left2) {
+                if (!$body.find('#leftRuler').hasClass('ruler'))
+                    $body.append('<span id="leftRuler" class="ruler"></span>');
+                $('#leftRuler').width(0).css('display', '').height($('#bond').height() + 40).css('left', left1)
+                    .css('top', $('#bond').offset().top - 10);
+            }
+            else
+                $('#leftRuler').css('display', 'none');
+        },
+        showRightRuler: function (item1, item2) {
+            let $body = $('body');
+            let $item1 = $(item1), $item2 = $(item2);
+            let right1 = Math.floor($item1.offset().left) + Math.floor($item1.width());
+            let right2 = Math.floor($item2.offset().left) + Math.floor($item2.width());
+            if (right1 == right2) {
+                if (!$body.find('#rightRuler').hasClass('ruler'))
+                    $body.append('<span id="rightRuler" class="ruler"></span>');
+                $('#rightRuler').css('display', '').width(0).height($('#bond').height() + 40).css('left', right1)
+                    .css('top', $('#bond').offset().top - 10);
+            }
+            else
+                $('#rightRuler').css('display', 'none');
+        },
+        showTopRuler: function (item1, item2) {
+            let $body = $('body');
+            let $item1 = $(item1), $item2 = $(item2);
+            let top1 = Math.floor($item1.offset().top), top2 = Math.floor($item2.offset().top);
+            if (top1 == top2) {
+                if (!$body.find('#topRuler').hasClass('ruler'))
+                    $body.append('<span id="topRuler" class="ruler"></span>');
+                var $Ruler = $('#topRuler'), $bond = $('.bond').first();
+                $Ruler.width($bond.width() - 20);
+                $Ruler.height(0);
+                $Ruler.css('display', '');
+                $Ruler.css('left', $bond.offset().left + 10);
+                $Ruler.css('top', top1);
+            }
+            else
+                $('#topRuler').css('display', 'none');
+        },
+        getLength: function(len){
+            len = len.substr(0, len.length - 2);
+            return parseInt(len);
+        },
+        showBottomRuler: function (item1, item2) {
+            let $body = $('body');
+            let $item1 = $(item1), $item2 = $(item2);
+            let bottom1 = Math.floor($item1.offset().top) + Math.floor($item1.height());
+            let bottom2 = Math.floor($item2.offset().top) + Math.floor($item2.height());
+            if (bottom1 == bottom2) {
+                if (!$body.find('#bottomRuler').hasClass('ruler'))
+                    $body.append('<span id="bottomRuler" class="ruler"></span>');
+                var $Ruler = $('#bottomRuler'), $bond = $('.bond').first();
+                $Ruler.width($bond.width() - 20);
+                $Ruler.height(0);
+                $Ruler.css('left', $bond.offset().left + 10);
+                $Ruler.css('top', bottom1 - 1);
+                $Ruler.css('display', '');
+            }
+            else
+                $('#bottomRuler').css('display', 'none');
+        },
+        hideRuler: function (item) {
+            if (item)
+                $(item).css('display', 'none');
+            else
+                $('.ruler').css('display', 'none');
+        },
+        getWidth: function (width) {
+            width = width * factor / 37.8;
+            return Math.round(width) / factor;
+        },
+        getHeight: function (height) {
+            height = height * factor / 37.8;
+            return Math.round(height) / factor;
+        },
+        getPixelWidth: function (width) {
+            return Math.round(width * 37.8);
+        },
+        getPixelHeight: function (height) {
+            return Math.round(height * 37.8);
+        },
+        getLabel: function(id, width, height) {
+            return '<table class="reportcontrol" cellspacing="0" cellpadding="0" style="width:' + width + 'px;height:' + height + 'px;" id="' + id + '">' +
+                '<tr><td style="vertical-align:top"><span class="topcell leftcell"></span><span class="topcell rightcell"></span></td></tr>' +
+                '<tr><td style="vertical-align:bottom"><span class="bottomcell leftcell"></span><span class="bottomcell rightcell"></span>' +
+                '</td></tr></table>';
+        },
+        getDropdownList: function (id, width, height) {
+            return '<table class="reportcontrol" cellspacing="0" cellpadding="0" style="width:' + width + 'px; height:' + height + 'px;" id="' + id + '">' +
+                '<tr><td style="vertical-align: top;"><span class="topcell leftcell"></span><span class="topcell rightcell"></span></td></tr>' +
+                '<tr><td style="vertical-align: bottom;"><span class="bottomcell leftcell"></span><span class="bottomcell rightcell"></span></td></tr></table';
+        },
+        getTextBox: function (id, width, height) {
+            return '<table class="reportcontrol" cellspacing="0" cellpadding="0" style="width:' + width + 'px; height:'+ height + 'px;" id="' + id + '">' +
+                '<tr><td style="vertical-align: top;"><span class="topcell leftcell"></span><span class="topcell rightcell"></span></td></tr>' +
+                '<tr><td style="vertical-align: bottom;"><span class="bottomcell leftcell"></span><span class="bottomcell rightcell"></span></td></tr></table';
+        },
+        getCheckListBox: function (id, width, height) {
+            return '<table class="reportcontrol" cellspacing="0" cellpadding="0" style="width:' + width + 'px;height:' + height + 'px;" id="' + id + '">' +
+            '<tr><td style="vertical-align:top"><span class="topcell leftcell"></span><span class="topcell rightcell"></span></td></tr>' +
+            '<tr><td style="vertical-align:bottom"><span class="bottomcell leftcell"></span><span class="bottomcell rightcell"></span>' +
+            '</td></tr></table>';
+        },
+        getPanel: function (id, width, height) {
+            return '<table class="reportcontrol" cellspacing="0" cellpadding="0" style="width:' + width + 'px; height:' + height + 'px;" id="' + id + '">' +
+                '<tr><td style="vertical-align: top;"><span class="topcell leftcell"></span><span class="topcell rightcell"></span></td></tr>' +
+                '<tr><td style="vertical-align: bottom;"><span class="bottomcell leftcell"></span><span class="bottomcell rightcell"></span></td></tr></table';
+        },
+        getCheckBox: function (id) {
+
+        }
+    }
+})(jQuery);
+//var controlKind = {
+//    none: 0,
+//    label: 1,
+//    textBox: 2,
+//    checkListBox: 3,
+//    dropdownList: 4,
+//    checkBox: 5,
+//    panel: 6,
+//    bond: 7
+//}
+//var borderStyleKind = {
+//    none: 0,
+//    solid: 1,
+//    dashed: 2,
+//    dotted: 3,
+//    double: 4
+//}
+
+var fPosition = function () {
+
+}
+fPosition.prototype = {
+    left: null,
+    top: null,
+    width: null,
+    height: null,
+    getPosition: function (element) {
+        var pos = new fPosition();
+        var $element = $(element), $bond = $element.closest('.bond');
+        pos.left = $.form.getWidth($element.offset().left - $bond.offset().left);
+        pos.top = $.form.getHeight($element.offset().top - $bond.offset().top);
+        pos.width = $.form.getWidth($element.width());
+        pos.height = $.form.getHeight($element.height());
+        return pos;
+    },
+    initElement: function (element) {
+        var $element = $(element), $bond = $element.closest('.bond');
+        $element.css('left', $.form.getPixelWidth(data.position.left) + $bond.offset().left);
+        $element.css('top', $.form.getPixelHeight(data.position.top) + $bond.offset().top);
+        $element.width($.form.getPixelWidth(data.position.width));
+        $element.height($.form.getPixelHeight(data.position.height));
+    }
+}
+
+//مشخصات Border
+var fBorder = function(element) {
+    
+};
+fBorder.prototype = {
+    /// <field name="borderKind" type="Number">عددی بین صفر تا 15 که مشخص می کند که آیا المان دارای هر کدام ار بردرهای بالا، چپ و ... است یا خیر</field>
+    borderKind: 0,
+    /// <field name="width" type="Number">پهنای بردر</field>
+    width: 1,
+    /// <field name="style" type="borderStyleKind">نوع بردر</field>
+    style: borderStyleKind.solid,
+    /// <field name="color" type="rColor">رنگ بردر</field>
+    color: null,
+    getBorder: function (element) {
+        var borderStyle = 'solid';
+        var borderWidth = '1px', color = '#000000', borderKind = 0;
+        if ($(element).css('border-top-style') != undefined && $(element).css('border-top-style') != 'none') {
+            borderStyle = $(element).css('border-top-style');
+            if ($(element).css('border-top-width') != '0px')
+                borderWidth = $(element).css('border-top-width');
+            color = $(element).css('border-top-color');
+            borderKind |= 1;
+        }
+        if ($(element).css('border-bottom-style') && $(element).css('border-bottom-style') != 'none') {
+            borderStyle = $(element).css('border-bottom-style');
+            if ($(element).css('border-bottom-width') != '0px')
+                borderWidth = $(element).css('border-bottom-width');
+            borderWidth = $(element).css('border-bottom-width');
+            color = $(element).css('border-bottom-color');
+            borderKind |= 2;
+        }
+        if ($(element).css('border-left-style') && $(element).css('border-left-style') != 'none') {
+            borderStyle = $(element).css('border-left-style');
+            if ($(element).css('border-left-width') != '0px')
+                borderWidth = $(element).css('border-left-width');
+            color = $(element).css('border-left-color');
+            borderKind |= 4;
+        }
+        if ($(element).css('border-right-style') && $(element).css('border-right-style') != 'none') {
+            borderStyle = $(element).css('border-right-style');
+            if ($(element).css('border-right-width') != '0px')
+                borderWidth = $(element).css('border-right-width');
+            color = $(element).css('border-right-color');
+            borderKind |= 8;
+        }
+        if (borderKind == 0)
+            return null;
+        var border = new rBorder();
+        switch (borderStyle) {
+            case 'solid':
+                border.style = borderStyleKind.solid; break;
+            case 'dashed':
+                border.style = borderStyleKind.dashed; break;
+            case 'dotted':
+                border.style = borderStyleKind.dotted; break;
+            case 'double':
+                border.style = borderStyleKind.double; break;
+        }
+        border.color = new rColor();
+        border.color.colorString = color;
+        borderWidth = borderWidth.substr(0, borderWidth.length - 2);
+        border.width = parseFloat(borderWidth);
+        border.borderKind = borderKind;
+        return border;
+    },
+    initElement: function (element) {
+        ///   <summary>المان ورودی را با مشخصات کلاس مقدرادهی می کند</summary>
+        ///   <param name="element" type="Element">المان ورودی</param>
+        if (this.borderKind != 0) {
+            var border = this.width + 'px' + ' ';
+            switch (this.style) {
+                case borderStyleKind.solid: border += 'solid'; break;
+                case borderStyleKind.dashed: border += 'dashed'; break;
+                case borderStyleKind.dotted: border += 'dotted'; break;
+                case borderStyleKind.double: border += 'double'; break;
+            }
+            border += ' ' + this.color.colorString;
+            (this.borderKind & 1) == 1 ? $(element).css('border-top', border) : $(element).css('border-top', 'none');
+            (this.borderKind & 2) == 2 ? $(element).css('border-bottom', border) : $(element).css('border-bottom', 'none');
+            (this.borderKind & 4) == 4 ? $(element).css('border-left', border) : $(element).css('border-left', 'none');
+            (this.borderKind & 8) == 8 ? $(element).css('border-right', border) : $(element).css('border-right', 'none');
+        } else {
+            if ($(element).css('border-top-style') != 'none')
+                $(element).css('border-top-style', 'none');
+            if ($(element).css('border-right-style') != 'none')
+                $(element).css('border-right-style', 'none');
+            if ($(element).css('border-bottom-style') != 'none')
+                $(element).css('border-bottom-style', 'none');
+            if ($(element).css('border-left-style') != 'none')
+                $(element).css('border-left-style', 'none');
+        }
+    },
+    showAllBorder: function(){
+
+    },
+    anyBorder: function(flag){
+        if (arguments.length == 0)
+            return this.borderKind == 0;
+        this.borderKind = 0;
+    },
+    allBorder: function(flag){
+        if (arguments.length == 0)
+            return this.borderKind == 15;
+        this.borderKind = 15;
+    },
+    topBorder: function (flag) {
+        if (arguments.length == 0)
+            return (this.borderKind & 1) == 1;
+        this.borderKind |= 1;
+    },
+    bottomBorder: function () {
+        if (arguments.length == 0)
+            return (this.borderKind & 2) == 2;
+        this.borderKind |= 2;
+    },
+    leftBorder: function () {
+        if (arguments.length == 0)
+            return (this.borderKind & 4) == 4;
+        this.borderKind |= 4;
+    },
+    rightBorder: function(){
+        if (arguments.length == 0)
+            return (this.borderKind & 8) == 8;
+        this.borderKind |= 8;
+    },
+    toggelBorder: function () {
+        if (this.borderKind == 0)
+            this.borderKind = 15;
+        else
+            this.borderKind = 0;
+    },
+    toggelTopBorder: function () {
+        if ((this.borderKind & 1) == 1)
+            this.borderKind |= 14;
+        else
+            this.borderKind |= 1;
+    },
+    toggelBottomBorder: function () {
+        if ((this.borderKind & 2) == 2)
+            this.borderKind |= 13;
+        else
+            this.borderKind |= 13;
+    },
+    toggelLeftBorder: function () {
+        if ((this.borderKind & 4) == 4)
+            this.borderKind |= 11;
+        else
+            this.borderKind |= 11;
+    },
+    toggelRightBorder: function () {
+        if ((this.borderKind & 8) == 8)
+            this.borderKind |= 7;
+        else
+            this.borderKind |= 7;
+    }
+}
+
+fFont = function () {
+    
+};
+fFont.prototype = {
+    bold: false,
+    italic: false,
+    underLine: false,
+    family: '',
+    size: 12,
+    getFont: function (element) {
+        ///   <summary>مشخصات فونت المان ورودی را یرمی گرداند</summary>
+        ///   <param name="element" type="Element">المان ورودی</param>
+        ///   <returns type="rFont" />
+        var font = new rFont();
+        font.bold = $(element).css('font-weight') == 700 || $(element).css('font-weight') == 'bold';
+        font.family = $(element).css('font-family');
+        if (font.family && (font.family.charAt(0) == "'" || font.family.charAt(0) == "\""))
+            font.family = font.family.substr(1, font.family.length - 2);
+        font.italic = $(element).css('font-style') == 'italic';
+        var size = $(element).css('font-size');
+        if (size)
+            font.size = $.form.convertPxToPt(parseFloat(size.substr(0, size.length - 2)));
+        font.underLine = $(element).css('text-decoration') == 'underline';
+        return font;
+    },
+    initElement: function (element) {
+        ///   <summary>المان ورودی را با مشخصات کلاس مقدرادهی می کند</summary>
+        ///   <param name="element" type="Element">المان ورودی</param>
+        this.bold ? $(element).css('font-weight', 700) : $(element).css('font-weight', 400);
+        $(element).css('font-family', this.family);
+        this.italic ? $(element).css('font-style', 'italic') : $(element).css('font-style', 'normal');
+        $(element).css('font-size', this.size + 'pt');
+        this.underLine ? $(element).css('text-decoration', 'underline') : $(element).css('text-decoration', 'none');
+    }
+}
+//----------------------------rColor---------------------------
+var rColor = function () {
+
+}
+rColor.prototype = {
+    colorString: '#000000'
+}
+//--------------------------
+var fAlign = function () {
+    
+}
+fAlign.prototype = {
+    /// <field name="horizontalAlign" type="horizontalAlignKind"></field>
+    horizontalAlign: null,
+    /// <field name="verticalAlign" type="verticalAlignKind"></field>
+    verticalAlign: null,
+
+    getAlign: function (element, controlType) {
+        ///   <param name="element" type="Element">المان ورودی</param>
+        ///   <param name="controlType" type="controlKind">نوع کنترل</param>
+        ///   <returns type="fAlign" />
+        var align = new fAlign();
+        switch (controlType) {
+            case controlKind.textBox:
+                break;
+            case controlKind.label:
+                var str = $(element).css('text-align');
+                
+                if (!str || str == 'start')
+                    str = 'right';
+                switch (str) {
+                    case 'justify': align.horizontalAlign = horizontalAlignKind.justify; break;
+                    case 'right': align.horizontalAlign = horizontalAlignKind.right; break;
+                    case 'center': align.horizontalAlign = horizontalAlignKind.center; break;
+                    case 'left': align.horizontalAlign = horizontalAlignKind.left; break;
+                }
+                str = $(element).css('vertical-align');
+                if (!str)
+                    str = 'middel';
+                switch (str) {
+                    case 'bottom': align.verticalAlign = verticalAlignKind.bottom; break;
+                    case 'middle': align.verticalAlign = verticalAlignKind.middel; break;
+                    case 'top': align.verticalAlign = verticalAlignKind.top; break;
+                }
+                break;
+        }
+        return align;
+    },
+    initElement: function (element, controlType) {
+        ///   <param name="element" type="Element">المان ورودی</param>
+        ///   <param name="controlType" type="controlKind">نوع کنترل</param>
+        
+        switch (controlType) {
+            case controlKind.label:
+            case controlKind.table:
+                switch (this.horizontalAlign) {
+                    case horizontalAlignKind.justify: $(element).css('text-align', 'justify'); break;
+                    case horizontalAlignKind.right: $(element).css('text-align', 'right'); break;
+                    case horizontalAlignKind.center: $(element).css('text-align', 'center'); break;
+                    case horizontalAlignKind.left: $(element).css('text-align', 'left'); break;
+                }
+                switch (this.verticalAlign) {
+                    case verticalAlignKind.top: $(element).css('vertical-align', 'top'); break;
+                    case verticalAlignKind.middel: $(element).css('vertical-align', 'middle'); break;
+                    case verticalAlignKind.bottom: $(element).css('vertical-align', 'bottom'); break;
+                }
+                break;
+            case controlKind.textBox:
+
+                break;
+        }
+    }
+}
+var controlKind = {
+    none: 0,
+    label: 1,
+    textBox: 2,
+    checkListBox: 3,
+    dropdownList: 4,
+    checkBox: 5,
+    panel: 6,
+    bond: 7
+}
+horizontalAlignKind = {
+    justify: 1,
+    right: 2,
+    center: 3,
+    left: 4
+}
+verticalAlignKind = {
+    bottom: 1,
+    middel: 2,
+    top: 3
+}
+cellKind = {
+    columnHeader:1,
+    rowHeader: 2,
+    normal: 3
+}
+
+$.myExtend = function (target, other) {
+    if (target == null || target == undefined)
+        target = new Object();
+    for (var key in other) {
+        if (other[key] != null && (typeof other[key]) == 'object') {
+            var temp = new Object();
+            $.myExtend(temp, other[key]);
+            target[key] = temp;
+        }
+        else
+            if ((typeof other[key]) != 'function') {
+                target[key] = other[key];
+            }
+    }
+}

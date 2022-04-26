@@ -1,0 +1,140 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+@inherits CBaseInput<TValue>
+
+<span class="t-checkbox" @attributes="attrs" @onclick="ChangeValue">
+    <span class="t-icon">
+        <i @attributes="@iconAtttrs" aria-hidden="true"></i>
+    </span>
+    @if (Title.HasValue())
+    {
+        <span class="t-title">@Title</span>
+    }
+</span>
+@code
+{
+    ElementReference checkBox;
+    TValue oldValue;
+    IDictionary<string, object> iconAtttrs = new Dictionary<string, object>();
+    Dictionary<string, object> attrs;
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public ICheckboxList<TValue> CheckboxList { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        attrs = new Dictionary<string, object>();
+        if (Id.HasValue())
+        {
+            attrs.Add("id", Id.Replace('.', '_'));
+            attrs.Add("name", Id.Replace('.', '_'));
+        }
+        var className = "t-widget t-checkbox";
+        if (Disabled)
+            className += " t-disabled";
+        if (Value == null)
+        {
+            className += " t-bufferd";
+            iconAtttrs["class"] = "fa fa-square";
+        }
+        else
+        {
+            if (typeof(TValue) == typeof(bool) || typeof(TValue) == typeof(bool?))
+            {
+                var value = Convert.ToBoolean(Value);
+                if (value)
+                {
+                    iconAtttrs["class"] = "fa fa-check";
+                    className += " t-selected";
+                }
+                else
+                {
+                    iconAtttrs.Remove("class");
+                    className += " t-unselected";
+                }
+            }
+            else
+            {
+                if (Value != null && Value.Equals(CheckboxList.Value))
+                {
+                    iconAtttrs["class"] = "fa fa-check";
+                    className += " t-selected";
+                }
+                else
+                {
+                    iconAtttrs.Remove("class");
+                    className += " t-unselected";
+                }
+                if (CheckboxList?.Values != null)
+                {
+                    if (CheckboxList.Values.Contains(Value))
+                    {
+                        iconAtttrs["class"] = "fa fa-check";
+                        className += " t-selected";
+                    }
+                    else
+                    {
+                        iconAtttrs.Remove("class");
+                        className += " t-unselected";
+                    }
+                }
+            }
+        }
+        attrs.Add("class", className);
+        if (CheckboxList == null)
+            await base.OnParametersSetAsync();
+    }
+
+    async void  ChangeValue()
+    {
+        if (Disabled)
+            return;
+        bool? tempValue = true;
+        var type = typeof(TValue);
+        if (type == typeof(bool) || type == typeof(bool?))
+        {
+            if (Value == null)
+                tempValue = true;
+            else
+            {
+                if (Convert.ToBoolean(Value))
+                    tempValue = false;
+                else
+                {
+                    if (type == typeof(bool))
+                        tempValue = true;
+                    else
+                        tempValue = null;
+                }
+            }
+            if (type.IsNullableType())
+                type = type.GetUnderlyingType();
+            if (tempValue == null)
+                Value = default(TValue);
+            else
+                Value = (TValue)Convert.ChangeType(tempValue, type);
+            await ValueChanged.InvokeAsync(Value);
+            if (InputAttributes != null && InputAttributes.ContainsKey("onchange"))
+            {
+                var change = (EventCallback<ChangeEventArgs>)InputAttributes["onchange"];
+                await change.InvokeAsync(new ChangeEventArgs() { Value = Value });
+            }
+
+        }
+        else
+        {
+            if (CheckboxList.ValueChanged.HasDelegate)
+            {
+                if (Value != null && Value.Equals(CheckboxList.Value))
+                    await CheckboxList.ValueChanged.InvokeAsync(default(TValue));
+                else
+                    await CheckboxList.ValueChanged.InvokeAsync(Value);
+            }
+            if (CheckboxList.ValuesChanged.HasDelegate)
+                await CheckboxList.UpdateValue(Value);
+        }
+    }
+}

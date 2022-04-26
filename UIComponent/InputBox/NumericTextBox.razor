@@ -1,0 +1,38 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+@inherits CBaseInput<TValue>
+@{ 
+    var className = "t-widget t-numerictextbox";
+    if (Disabled)
+        className += " t-state-disabled";
+    else
+    if (ErrorMessage != null)
+        className += " t-state-error";
+    if (Disabled)
+        InputAttributes["disabled"] = "disabled";
+    else
+        InputAttributes.Remove("disabled");
+}
+<div class="@className" style="@Style">
+    @{
+        var text = Convert.ToString(Value);
+        if (DigitGrouping)
+        {
+            var array = text.Split('.');
+            text = "";
+            if (array[0].HasValue())
+                text += string.Format("{0:#,0}", Convert.ToInt64(array[0]));
+            if (array.Length == 2 && array[1].HasValue())
+                text += '.' + string.Format("{0:#,0}", Convert.ToInt64(array[1]));
+        }
+
+    }
+    @if (BindingType == BindingType.OnChange)
+    {
+        <input @ref="htmlElement" value="@text" @attributes="InputAttributes" @onchange="onChangeValue" class="t-input" />
+    }
+    else
+    {
+        <input @ref="htmlElement" value="@text" @attributes="InputAttributes" @oninput="onChangeValue" class="t-input" />
+    }
+</div>

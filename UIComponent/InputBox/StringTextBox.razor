@@ -1,0 +1,127 @@
+﻿@namespace Caspian.UI
+@inherits CBaseInput<string>
+    @if (!MultiLine)
+    {
+        if (Disabled)
+            className += " t-state-disabled";
+        else if (ErrorMessage != null)
+            className += " t-state-error";
+    }
+
+<div class="@className" style="@Style">
+    @if (MultiLine)
+    {
+        <textarea @ref="htmlElement" @attributes="InputAttributes" @onchange="ChangeValue">@Value</textarea>
+    }
+    else
+    {
+        @if (base.BindingType == BindingType.OnChange)
+        {
+            <input value="@Value" @onchange="ChangeValue" @ref="htmlElement" @attributes="InputAttributes" autocomplete="off" />
+        }
+        else
+        {
+            <input value="@Value" @oninput="ChangeValue" @ref="htmlElement" @attributes="InputAttributes" autocomplete="off" />
+        }
+    }
+</div>
+@code
+{
+    string className;
+
+    async Task ChangeValue(ChangeEventArgs arg)
+    {
+        Value = arg.Value.ToString();
+        if (InputAttributes.ContainsKey("onchange"))
+        {
+            var change = (EventCallback<ChangeEventArgs>)InputAttributes["onchange"];
+            await change.InvokeAsync(new ChangeEventArgs() { Value = Value });
+        }
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    protected override void OnInitialized()
+    {
+        if (Id == null)
+            Id = "";
+        if (ValueExpression != null)
+        {
+            var expr = ValueExpression.Body;
+            while (expr.NodeType == ExpressionType.MemberAccess)
+            {
+                var property = (expr as MemberExpression).Member;
+                if (property.Name == "SearchData" || property.Name == "MemberSearch")
+                {
+                    var type = property.DeclaringType;
+                    if (type.IsGenericType)
+                    {
+                        var genericType = type.GetGenericTypeDefinition();
+                        Search = true;
+                        BindingType = BindingType.OnInput;
+                    }
+                }
+                expr = (expr as MemberExpression).Expression;
+            }
+        }
+        base.OnInitialized();
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        className = "t-widget";
+        if (MultiLine)
+            className += " t-multitextbox";
+        else
+            className += " t-stringtextbox";
+
+        if (MaxLength.HasValue)
+            InputAttributes["maxlength"] = MaxLength;
+        if (MultiLine)
+        {
+            if (Cols.HasValue)
+                InputAttributes["cols"] = Cols;
+            if (Rows.HasValue)
+                InputAttributes["rows"] = Rows;
+        }
+
+        if (Disabled)
+            InputAttributes["disabled"] = "disabled";
+        else
+            InputAttributes.Remove("disabled");
+        InputAttributes["class"] = "t-input";
+        if (Id.HasValue())
+        {
+            var id = Id.Replace('.', '_');
+            InputAttributes["id"] = id;
+            InputAttributes["name"] = id;
+        }
+        if (InputAttributes != null)
+        {
+            foreach(var item in InputAttributes)
+                InputAttributes[item.Key] = item.Value;
+        }
+        return base.OnParametersSetAsync();
+    }
+
+    [Parameter, JsonIgnore]
+    public int? MaxLength { get; set; }
+
+    [Parameter, JsonProperty("multiLine")]
+    public bool MultiLine { get; set; }
+
+    [Parameter, JsonIgnore]
+    public int? Cols { get; set; }
+
+    [Parameter, JsonIgnore]
+    public int? Rows { get; set; }
+
+    [JsonProperty("type")]
+    public string Type { get; set; } = "string";
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        var json = this.ConvertToJson();
+        await jsRuntime.InvokeVoidAsync("$.telerik.bindControl", htmlElement, json, UiControlType.TextBox);
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

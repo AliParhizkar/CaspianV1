@@ -1,0 +1,40 @@
+﻿@page "/Demo/MultiSelect"
+@namespace Demo.Web.Pages
+<div style="width:95%;margin:10px auto">
+    <h3>Multi Select </h3>
+    <p>
+        این کنترل برای نوعهای شمارشی که بصورت ضریبی از دو تعریف شده اند بصورت چند انتخابی می تواند مورد استفاده قرار بگیرد
+    </p>
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>Control disable</label>
+            </td>
+            <td>
+                <CheckBox @bind-Value="disabled" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Disable items</label>
+            </td>
+            <td>
+                <MultiSelectBox @bind-Value="forDisable" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Result</label>
+            </td>
+            <td>
+                <MultiSelectBox @bind-Value="day" Disabled="disabled" DisabledValue="forDisable" />          
+            </td>
+        </tr>
+    </table>
+</div>
+@code
+{
+    bool disabled;
+    DayOfPersianWeek1 day;
+    DayOfPersianWeek1 forDisable = (DayOfPersianWeek1)42;
+}

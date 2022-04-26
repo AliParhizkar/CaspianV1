@@ -1,0 +1,22 @@
+﻿@namespace Caspian.UI
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+@code
+{
+    IControl Control;
+
+    internal void SetControl(IControl control)
+    {
+        if (Control == null)
+            Control = control;
+    }
+
+    public async Task FocusAsync()
+    {
+        await Control?.FocusAsync();
+    }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

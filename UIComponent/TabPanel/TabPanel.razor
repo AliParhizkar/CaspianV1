@@ -1,0 +1,110 @@
+﻿@namespace Caspian.UI
+<CascadingValue Value="this" Name="ParentTabPanel">
+    @if (Vertical)
+    {
+        <div style="@Style" class="t-widget t-tabstrip t-vertical">
+
+        </div>
+    }
+    else
+    {
+        <div style="@Style" class="t-widget t-tabstrip t-header">
+            <ul class="t-reset t-tabstrip-items">
+                @{ var index = 1;}
+                @foreach (var item in tabPanels)
+                {
+                    var className = "t-item ";
+                    if (index == TabIndex)
+                        className += "t-state-active";
+                    else
+                        className += "t-state-default";
+                    <li class="@className">
+                        @if (index == TabIndex)
+                        {
+                            <span class="t-link">@item.Title</span>
+                        }
+                        else
+                        {
+                            int tabIndex = index;
+                            <span class="t-link"
+                                  @onclick="async () =>
+                                              {
+                                                  TabIndex = tabIndex;
+                                                  CurentTabpanel = item;
+                                                  await this.TabIndexChanged.InvokeAsync(tabIndex);
+                                              }">@item.Title</span>
+                                        }
+                        @if (item.Closeable)
+                        {
+                            <span class="t-close"></span>
+                        }
+                    </li>
+                    index++;
+                }
+            </ul>
+            <div class="t-padd"></div>
+            @Tabs
+        </div>
+    }
+</CascadingValue>
+@code 
+{
+    IList<TabPanelItem> tabPanels;
+    internal TabPanelItem CurentTabpanel;
+
+    internal void AddTabData(TabPanelItem tab)
+    {
+        if (!tabPanels.Contains(tab))
+        {
+            tabPanels.Add(tab);
+            if (tabPanels.Count >= TabIndex)
+                CurentTabpanel = tabPanels[TabIndex - 1];
+            else
+            {
+                //TabIndex = tabPanels.Count;
+                //CurentTabpanel = tabPanels[TabIndex - 1];
+                //await TabIndexChanged.InvokeAsync(TabIndex);
+            }
+            StateHasChanged();
+        }
+    }
+
+    public bool Vertical { get; set; }
+
+    [Parameter]
+    public int TabIndex { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public bool LoadOnDemand { get; set; }
+
+    [Parameter]
+    public EventCallback<int> TabIndexChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment Tabs { get; set; }
+
+    [Parameter]
+    public bool AddButton { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        if (TabIndex == 0)
+            TabIndex = 1;
+        base.OnInitialized();
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        tabPanels = new List<TabPanelItem>();
+        return base.OnParametersSetAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

@@ -1,0 +1,107 @@
+﻿@namespace Caspian.Engine.ReportGenerator
+@inherits BasePage
+<Window Status="Status" Title="پارامترهای گزارش"
+        StatusChanged="async value =>
+                       {
+                           await StatusChanged.InvokeAsync(value);
+                       }">
+    <Content>
+        <CTreeView @ref="Tree" OnExpanded="@(async (item) =>
+                        {
+                            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<ReportNode>(item.Value);
+                            var tempItems = (await new ReportTree().CreateTreeForSelect(Type, data, ReportParams));
+                            item.Items = tempItems.Select(t => new TreeViewItem()
+                            {
+                                Value = Newtonsoft.Json.JsonConvert.SerializeObject(t),
+                                Selected = t.Selected,
+                                Selectable = !t.Grouping,
+                                Expanded = false,
+                                Collabsable = t.Grouping,
+                                Text = t.TitleFa,
+                                Disabled = t.Selected
+                            }).ToList();
+                        })" style="width:500px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="TreeViewItem" Source="Nodes" />
+        <div style="border:1px solid rgba(0, 0, 0, 0.2);margin-top:8px;border-radius:8px;height:50px">
+            <button class="c-button c-cancel"
+                    @onclick="async () =>
+                                  {
+                                      await StatusChanged.InvokeAsync( WindowStatus.Close);
+                                  }">
+                انصراف
+            </button>
+            <button class="c-button c-ok" @onclick="PostParams">ثبت</button>
+        </div>
+    </Content>
+</Window>
+
+@code
+{
+    Type Type;
+    IList<TreeViewItem> Nodes;
+    IList<string> ReportParams;
+    CTreeView<TreeViewItem> Tree;
+
+    async Task PostParams()
+    {
+        var reportParams = Tree.GetSeletcedItems().Select(t => Newtonsoft.Json.JsonConvert.DeserializeObject<ReportNode>(t.Value))
+            .Select(t => new ReportParam()
+            {
+                DataLevel = 1,
+                ReportId = ReportId,
+                TitleEn = t.TitleEn,
+                RuleId = t.RuleId,
+                DynamicParameterId = t.DynamicParameterId
+            }).ToList();
+        using var scope = CreateScope();
+        await new ReportParamService(scope).AddAll(reportParams);
+        await new ReportParamService(scope).SaveChangesAsync();
+        await OnParameterSave.InvokeAsync();
+        ReportParams = new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId).Select(t => t.TitleEn).ToList();
+        Nodes = (await new ReportTree().CreateTreeForSelect(Type, null, ReportParams)).Select(t => new TreeViewItem()
+        {
+            Value = Newtonsoft.Json.JsonConvert.SerializeObject(t),
+            Selected = t.Selected,
+            Selectable = !t.Grouping,
+            Expanded = false,
+            Collabsable = t.Grouping,
+            Disabled = ReportParams.Contains(t.TitleEn),
+            Text = t.TitleFa
+        }).ToList();
+        await StatusChanged.InvokeAsync(WindowStatus.Close);
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var model = new ReportSelectUi();
+        model.ReportId = ReportId;
+        using var scope = CreateScope();
+        var report = await new ReportService(scope).SingleAsync(ReportId);
+        var reportGroup = await new ReportGroupService(scope).SingleAsync(report.ReportGroupId);
+        Type = new AssemblyInfo().GetReturnType(reportGroup);
+        ReportParams = await new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId)
+            .Select(t => t.TitleEn).ToListAsync();
+        Nodes = (await new ReportTree().CreateTreeForSelect(Type, null, ReportParams)).Select(t => new TreeViewItem()
+        {
+            Value = Newtonsoft.Json.JsonConvert.SerializeObject(t),
+            Selected = t.Selected,
+            Selectable = !t.Grouping,
+            Expanded = false,
+            Collabsable = t.Grouping,
+            Disabled = ReportParams.Contains(t.TitleEn),
+            Text = t.TitleFa
+        }).ToList();
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter]
+    public int ReportId { get; set; }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnParameterSave { get; set; }
+}

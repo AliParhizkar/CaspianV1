@@ -1,0 +1,19 @@
+﻿@inherits LookupPage<Product>
+@namespace Demo.Web.Pages
+<div class="c-lookup-page" style="width:380px;">
+    <DataGrid @ref="Grid" TEntity="Product" TableHeight="200" HidePageSize>
+        <Columns>
+            <GridColumn TEntity="Product" Field="t => t.ProductCategory.Title" Title="گروه غذا" />
+            <GridColumn TEntity="Product" Field="t => t.Title" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.Title.Contains(LookupStringSearchValue) || t.Code.StartsWith(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

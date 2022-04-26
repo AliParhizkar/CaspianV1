@@ -1,0 +1,67 @@
+﻿@page "/Demo/TabPanel"
+@namespace Demo.Web.Pages
+<div style="height:50px">
+    <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => { UpateList(t, 1, "مشخصات شناسنامه ای"); })" Title="مشخصات شناسنامه ای" />
+    <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => { UpateList(t, 2, "مشخصات عمومی"); })" Title="مشخصات عمومی" />
+    <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => { UpateList(t, 3, "مشخصات شغلی"); })" Title="مشخصات شغلی" />
+    <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => { UpateList(t, 4, "مشخصات ازدواج"); })" Title="مشخصات ازدواج" />
+    <CheckBox Value="dic.ContainsKey(5)" TValue="bool" ValueChanged="@(t => { UpateList(t, 5, "محل سکونت"); })" Title="محل سکونت" />
+    <CheckBox Value="dic.ContainsKey(6)" TValue="bool" ValueChanged="@(t => { UpateList(t, 6, "مشخصات فرزندان"); })" Title="مشخصات فزندان" />
+</div>
+
+@if (dic.Any())
+{
+    if (tabIndex > dic.Count)
+        tabIndex = dic.Count;
+    <div style="height:50px;">
+        <RadioList TValue="int" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => { tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1; }">
+            <RadioItems>
+                @foreach (var item in dic)
+                {
+                    <RadioItem Title="@(item.Value)" Value="@(item.Key)" />
+                }
+            </RadioItems>
+        </RadioList>
+    </div>
+
+    <TabPanel @bind-TabIndex="tabIndex">
+        <Tabs>
+            @foreach (var item in dic)
+            {
+                <TabPanelItem Title="@(item.Value)">
+                    <span>@(item.Value)</span>
+                </TabPanelItem>
+            }
+        </Tabs>
+    </TabPanel>
+}
+else
+{
+    <span>لطفا حداقل یک آیتم را برای نمایش Tab panel انتخاب نمائید</span>
+}
+
+@code
+{
+    int selectedId = 1;
+    int tabIndex = 1;
+    IDictionary<int, string> dic = new Dictionary<int, string>();
+
+    protected override void OnInitialized()
+    {
+        dic.Add(1, "مشخصات شناسنامه ای");
+        dic.Add(2, "مشخصات عمومی");
+        dic.Add(3, "مشخصات شغلی");
+        dic.Add(4, "مشخصات ازدواج");
+        dic.Add(5, "محل سکونت");
+        dic.Add(6, "مشخصات فرزندان");
+        base.OnInitialized();
+    }
+
+    void UpateList(bool flag, int value, string title)
+    {
+        if (flag)
+            dic.Add(value, title);
+        else
+            dic.Remove(value);
+    }
+}

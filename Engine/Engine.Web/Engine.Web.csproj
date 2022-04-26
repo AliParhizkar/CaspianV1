@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\bootstrap\bootstrap.min.css.map" />
+    <None Include="wwwroot\css\open-iconic\FONT-LICENSE" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+    <None Include="wwwroot\css\open-iconic\ICON-LICENSE" />
+    <None Include="wwwroot\css\open-iconic\README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
+    <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
+    <ProjectReference Include="..\Engine.Model\Engine.Model.csproj" />
+    <ProjectReference Include="..\Engine.Service\Engine.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FluentValidation">
+      <HintPath>..\..\..\..\..\.nuget\packages\fluentvalidation\9.4.0\lib\net5.0\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore">
+      <HintPath>..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\5.0.10\lib\netstandard2.1\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\..\..\.nuget\packages\newtonsoft.json\13.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

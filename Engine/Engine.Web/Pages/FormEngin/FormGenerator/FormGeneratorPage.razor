@@ -1,0 +1,137 @@
+﻿@page "/Engine/FormGenerator/{FormId:int}"
+@namespace Caspian.Engine.FormGenerator
+@inject IJSRuntime jsRuntime
+@inherits BasePage
+
+<span style="display:none;line-height:unset;" class="bottomarrow"></span>
+<span style="display:none" class="leftArrow"></span>
+<span style="display:none" class="ruler"></span>
+<div class="borderwidthdiv" style="display:none">
+    <span class="border borderwidth1"></span>
+    <span class="border borderwidth2"></span>
+    <span class="border borderwidth3"></span>
+    <span class="border borderwidth4"></span>
+    <span class="border borderwidth5"></span>
+    <span class="border borderwidth6"></span>
+    <span class="border borderwidth7"></span>
+    <span class="border borderwidth8"></span>
+</div>
+<div class="borderstylediv" style="display:none">
+    <span class="border borderstyle1"></span>
+    <span class="border borderstyle2"></span>
+    <span class="border borderstyle3"></span>
+    <span class="border borderstyle4"></span>
+</div>
+<div dir="rtl" style="">
+    <table id="page" style="width:100%;background-color:#cccfd4;" cellpadding="0" cellspacing="0">
+        <tr>
+            <td colspan="3" style="height:25px;">
+                <div id="toolsBar1" style="margin:5px 5px 0 0;float:right">
+                    <span class="toolsbar" style="width:13px;background-position:-344px 0px"></span>
+                    <span id="_1" title="چرخش متن" class="toolsbar" style="display:none;width:25px;background-position:-319px 0px"></span>
+                    <span id="_2" title="انتخاب رنگ" class="toolsbar" style="width:13px;background-position:-306px 0px"></span>
+                    <span id="_3" title="رنگ متن" class="toolsbar" style="width:25px;background-position:-281px 0px"></span>
+                    <span class="toolsbar" style="width:2px;background-position:-279px 0px"></span>
+                    <span id="_4" title="" class="toolsbar" style="width:25px;background-position:-254px 0px"></span>
+                    <span id="_5" class="toolsbar" style="width:25px;background-position:-229px 0px"></span>
+                    <span id="_6" class="toolsbar" style="width:25px;background-position:-204px 0px"></span>
+                    <span class="toolsbar" style="width:2px;background-position:-202px 0px"></span>
+                    <span id="_7" class="toolsbar" style="width:25px;background-position:-177px 0px"></span>
+                    <span id="_8" class="toolsbar" style="width:25px;background-position:-152px 0px"></span>
+                    <span id="_9" class="toolsbar" style="width:25px;background-position:-127px 0px"></span>
+                    <span id="_10" class="toolsbar" style="width:25px;background-position:-102px 0px"></span>
+                    <span class="toolsbar toolsbar" style="width:2px;background-position:-100px 0px"></span>
+                    <span id="_11" class="toolsbar" style="width:25px;background-position:-75px 0px"></span>
+                    <span id="_12" class="toolsbar" style="width:25px;background-position:-50px 0px"></span>
+                    <span id="_13" class="toolsbar" style="width:25px;background-position:-25px 0px"></span>
+                    <div class="toolsbar-list" style="width:62px;">
+                        <input disabled="disabled" dir="ltr" class="toolsbar-list-input" value="12" style="width:40px" />
+                        <span id="_14" class="toolsbar" style="width:17px;background-position:-7px 0px;"></span>
+                    </div>
+                    <div class="toolsbar-list" style="width:142px;">
+                        <input disabled="disabled" dir="ltr" class="toolsbar-list-input" value="B1Nazanin" style="width:120px" />
+                        <span id="_15" class="toolsbar" style="width:17px;background-position:-7px 0px;"></span>
+                    </div>
+                    <span class="toolsbar" style="width:7px;"></span>
+                </div>
+                <div style="margin:5px 5px 0 0;float:right">
+                    <table cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td><span class="toolsbar " style="width:13px;background-position:-696px 0px"></span></td>
+                            <td><span id="_16" class="toolsbar" style="width:38px;background-position:-658px 0px"></span></td>
+                            <td><span id="_17" class="toolsbar" style="width:38px;background-position:-620px 0px"></span></td>
+                            <td><span id="_18" class="toolsbar" style="width:13px;background-position:-607px 0px"></span></td>
+                            <td><span id="_19" class="toolsbar" style="width:25px;background-position:-582px 0px"></span></td>
+                            <td><span id="_20" class="toolsbar" style="width:13px;background-position:-569px 0px"></span></td>
+                            <td><span id="_21" class="toolsbar" style="width:25px;background-position:-544px 0px"></span></td>
+                            <td><span class="toolsbar" style="width:2px;background-position:-542px 0px"></span></td>
+                            <td><span id="_22" class="toolsbar" style="width:25px;background-position:-517px 0px;display:none"></span></td>
+                            <td><span id="_23" class="toolsbar" style="width:25px;background-position:-492px 0px"></span></td>
+                            <td><span id="_24" class="toolsbar" style="width:25px;background-position:-467px 0px"></span></td>
+                            <td><span class="toolsbar" style="width:2px;background-position:-465px 0px"></span></td>
+                            <td><span id="_25" class="toolsbar" style="width:25px;background-position:-440px 0px"></span></td>
+                            <td><span id="_26" class="toolsbar" style="width:25px;background-position:-415px 0px"></span></td>
+                            <td><span id="_27" class="toolsbar" style="width:25px;background-position:-390px 0px"></span></td>
+                            <td><span id="_28" class="toolsbar" style="width:25px;background-position:-365px 0px"></span></td>
+                            <td><span class="toolsbar" style="width:7px;background-position:-358px 0px"></span></td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="margin:5px 5px 0 0;float:right">
+                    <table cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td><span class="toolsbar" style="width:13px;background-position:-972px 0px"></span></td>
+                            <td><span id="_29" class="toolsbar" style="display:none;width:25px;background-position:-947px 0px"></span></td>
+                            <td><span id="_30" class="toolsbar" style="display:none;width:25px;background-position:-922px 0px"></span></td>
+                            <td><span id="_31" class="toolsbar" style="width:25px;background-position:-897px 0px"></span></td>
+                            <td><span class="toolsbar" style="width:2px;background-position:-895px 0px"></span></td>
+                            <td><span id="_32" class="toolsbar" style="width:25px;background-position:-871px 0px"></span></td>
+                            <td><span id="_33" class="toolsbar" style="width:25px;background-position:-846px 0px"></span></td>
+                            <td><span class="toolsbar" style="display:none;width:2px;background-position:-844px 0px"></span></td>
+                            <td><span id="_34" class="toolsbar" style="display:none;width:25px;background-position:-819px 0px"></span></td>
+                            <td><span id="_35" class="toolsbar" style="display:none;width:25px;background-position:-794px 0px"></span></td>
+                            <td><span class="toolsbar" style="width:2px;background-position:-792px 0px"></span></td>
+                            <td><span id="_36" class="toolsbar" style="width:25px;background-position:-767px 0px"></span></td>
+                            <td><span id="_37" class="toolsbar" style="width:25px;background-position:-742px 0px"></span></td>
+                            <td><span id="_38" class="toolsbar" style="width:25px;background-position:-717px 0px"></span></td>
+                            <td><span class="toolsbar" style="width:7px;background-position:-710px 0px"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div style="padding-right:40px;float:right"><input style="display:none" id="fontColorpicker" /></div>
+                <div style="padding-right:435px;float:right"><input style="display:none" id="borderColorpicker" /></div>
+                <div style="padding-right:475px;float:right"><input style="display:none" id="contentColorpicker" /></div>
+            </td>
+        </tr>
+        <tr>
+            <td id="toolsBox" rowspan="2" style="width:28px;vertical-align:top">
+                <span class="tools label" title="برچسب"></span>
+                <span class="tools textbox" title="جعبه متن"></span>
+                <span class="tools checklistbox" title="جعبه لیست"></span>
+                <span class="tools dropdownlist" title="لیست کرکره ای"></span>
+                <span class="tools checkbox" title="check box"></span>
+                <span class="tools panel" title="پنل"></span>
+            </td>
+            <td colspan="2" style="vertical-align:top;padding:4px">
+                <table style="background-image: url(/_Content/EnginWeb/Content/Images/bondbackgrond.png);" id="bond" cellpadding="0" cellspacing="0"></table>
+            </td>
+        </tr>
+    </table>
+</div>
+@switch (windowType)
+{
+    case FormWindowType.Lable:
+        <LableComponent @bind-Status="status" Control="formControl" />
+        break;
+    case FormWindowType.Textbox:
+        <TextboxComponent @bind-Status="status" Control="formControl" />
+        break;
+    case FormWindowType.List:
+        <ListComponent @bind-Status="status" Control="formControl" />
+        break;
+}
+

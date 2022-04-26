@@ -1,0 +1,95 @@
+﻿@inherits SimplePage<Product>
+@namespace Demo.Web.Pages
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div style="width:97%;margin:5px auto">
+    <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="SetCategory" OnValidSubmit="showConfirmForPrice">
+        <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
+        <table style="width:95%;margin:0 auto">
+            <tr>
+                <td style="width:100px">
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </td>
+                <td>
+                    <label>وعده غذایی</label>
+                </td>
+                <td>
+                    <MultiSelectBox @bind-Value="UpsertData.Meal" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>قیمت</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="UpsertData.Price"
+                                    @onchange="@(() =>
+                                                                 {
+                                                                     if (UpsertData.PriceOuterBound == 0)
+                                                                         UpsertData.PriceOuterBound = UpsertData.Price;
+                                                                 })" />
+                </td>
+                <td>
+                    <label>کد</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="UpsertData.Code" Style="direction:ltr" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>قیمت بیرون بر</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="UpsertData.PriceOuterBound" />
+                </td>
+                <td>
+                    <label>وضعیت</label>
+                </td>
+                <td>
+                    <DropdownList @bind-Value="UpsertData.ActiveType" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td colspan="2">
+                    <FormCommandButton />
+                </td>
+            </tr>
+        </table>
+    </CaspianForm>
+    <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == CategoryId)"
+              Search="SearchData" TableHeight="250">
+        <Columns>
+            <GridColumn TEntity="Product" Field="t => t.Title" />
+            <GridColumn TEntity="Product" Field="t => t.Price.Seprate3Digit()" />
+            <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.Seprate3Digit()" />
+            <GridCommandColumns TEntity="Product" />
+        </Columns>
+    </DataGrid>
+</div>
+
+
+@code
+{
+    [Parameter]
+    public int CategoryId { get; set; }
+
+    void SetCategory()
+    {
+        UpsertData.ProductCategoryId = CategoryId;
+    }
+
+    async Task<bool> showConfirmForPrice(EditContext context)
+    {
+
+        if (UpsertData.Price > 0 || (await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟")))
+            return true;
+        return false;
+    }
+}

@@ -1,0 +1,119 @@
+﻿@inject IJSRuntime JSRuntime
+@namespace Caspian.UI
+<li @ref="Node" class="@(Item.Expanded ? "c-expand" : "c-collaps")">
+    @if (Item.Collabsable)
+    {
+        <span class="c-icon">
+            <i @onclick="async () =>
+                         {
+                             if (Item.Expanded)
+                             {
+                                 Item.Expanded = false;
+                                 if (OnCollapsed.HasDelegate)
+                                     await OnCollapsed.InvokeAsync(Item);
+                             }
+                             else
+                             {
+                                 Item.Expanded = true;
+                                 if (OnExpanded.HasDelegate)
+                                     await OnExpanded.InvokeAsync(Item);
+                             }
+                             Collapsed = !Item.Expanded;
+                         }" class="@(Item.Expanded ? "fa fa-chevron-down" : "fa fa-chevron-left")"></i>
+        </span>
+    }
+    @if (Item.Selectable)
+    {
+        <CheckBox Value="Item.Selected" Disabled="Item.Disabled" 
+                  ValueChanged="async (bool value) =>
+                           {
+                               Item.Selected = value;
+                               if (value)
+                                   await OnSelected.InvokeAsync(Item);
+                               await OnChanged.InvokeAsync(Item);
+                           }" />
+    }
+    <span class="c-title" @onclick="async () =>
+                                    {
+                                        if (Item.Selectable && !Item.Disabled)
+                                        {
+                                            Item.Selected = !Item.Selected;
+                                            if (Item.Selected)
+                                                await OnSelected.InvokeAsync(Item);
+                                            await OnChanged.InvokeAsync(Item);
+                                        }
+                                    }">
+        @Item.Text
+    </span>
+    @if (Item.ShowTemplate && CascadeData != null)
+    {
+        @CascadeData.Template(Item)
+    }
+    @if (Item.Items != null && Item.Expanded)
+    {
+        <ul class="c-subtree">
+            @foreach (var item in Item.Items)
+            {
+                <TreeNode OnCollapsed="async (node) =>
+                                   {
+                                       if (OnCollapsed.HasDelegate)
+                                           await OnCollapsed.InvokeAsync(node);
+                                   }"
+                          OnExpanded="async (node) =>
+                                   {
+                                       if (OnExpanded.HasDelegate)
+                                           await OnExpanded.InvokeAsync(node);
+                                   }"
+                          OnSelected="async (node) =>
+                                           {
+                                               await OnSelected.InvokeAsync(node);
+                                           }"
+                          OnChanged="async (node) =>
+                                     {
+                                         await OnChanged.InvokeAsync(node);
+                                     }"
+                          Item="item"/>
+            }
+        </ul>
+    }
+</li>
+
+@code
+{
+    bool? Collapsed;
+    ElementReference Node;
+
+    [Parameter]
+    public bool Selected { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> SelectedChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<TreeViewItem> OnExpanded { get; set; }
+
+    [Parameter]
+    public EventCallback<TreeViewItem> OnCollapsed { get; set; }
+
+    [CascadingParameter(Name = "TreeViewCascadeData")]
+    public TreeViewCascadeData CascadeData { get; set; }
+
+    [Parameter]
+    public EventCallback<TreeViewItem> OnSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<TreeViewItem> OnChanged { get; set; }
+
+    [Parameter]
+    public TreeViewItem Item { get; set; }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Collapsed.HasValue)
+        {
+            await JSRuntime.InvokeVoidAsync("$.telerik.bindTreeView", Node, Collapsed.Value);
+            Collapsed = null;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

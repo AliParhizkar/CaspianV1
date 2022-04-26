@@ -1,0 +1,97 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+<CascadingValue Value="this" Name="RadioLis">
+    <span class="t-radios" style="@Style">
+        @if (dic != null)
+        {
+            foreach (var item in dic)
+            {
+                <RadioItem ValueChanged="(TValue value) =>
+                                     {
+                                         UpdateValue(value);
+                                     }" Value="item.Key" Disabled="Disabled" Title="@item.Value" />
+            }
+        }
+        else if (Source != null)
+        {
+            var type = typeof(TValue).GetUnderlyingType();
+            foreach (var item in Source)
+            {
+                <RadioItem ValueChanged="(TValue value) =>
+                                     {
+                                         UpdateValue(value);
+                                     }" Disabled="Disabled" Value="(TValue)Convert.ChangeType(item.Value, type)" Title="@item.Text" />
+            }
+        }
+        else
+        {
+            @RadioItems
+        }
+    </span>
+</CascadingValue>
+
+@code
+{
+    Dictionary<TValue, string> dic;
+    private bool IsLoad;
+    async void UpdateValue(TValue value)
+    {
+        Value = value;
+        await ValueChanged.InvokeAsync(value);
+    }
+
+    protected override void OnInitialized()
+    {
+        if (RadioItems == null)
+        {
+            var type = typeof(TValue).GetUnderlyingType();
+            if (type.IsEnum)
+            {
+                dic = new Dictionary<TValue, string>();
+                foreach (FieldInfo fi in type.GetFields().Where(t => !t.IsSpecialName))
+                {
+                    EnumFieldAttribute da = (EnumFieldAttribute)Attribute.GetCustomAttribute(fi, typeof(EnumFieldAttribute));
+                    if (da != null)
+                        dic.Add((TValue)fi.GetValue(null), da.DisplayName);
+                    else
+                        dic.Add((TValue)fi.GetValue(null), fi.Name);
+                }
+            }
+        }
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public EventCallback OnChangeValue { get; set; }
+
+    [Parameter]
+    public bool Disabled{ get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!IsLoad)
+        {
+            IsLoad = true;
+            //StateHasChanged();
+        }
+        base.OnAfterRender(firstRender);
+    }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public TValue Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TValue> ValueChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<TValue>> ValueExpression { get; set; }
+
+    [Parameter]
+    public IList<SelectListItem> Source { get; set; }
+
+    [Parameter]
+    public RenderFragment RadioItems { get; set; }
+}

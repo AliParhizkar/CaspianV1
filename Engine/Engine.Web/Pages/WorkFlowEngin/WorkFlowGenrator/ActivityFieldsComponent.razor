@@ -1,0 +1,149 @@
+﻿@namespace Caspian.Engine.WorkFlowGenrator
+@inject WorkflowService service
+@inject Context Context
+@inject IJSRuntime jsRuntime
+<Window Status="Status" Title="فرمهای پویا">
+    <Content>
+        <fieldset id="fieldsContent" class="t-widget" style="border-radius:7px;margin:0 10px 5px 10px;overflow:auto">
+            <legend>مشخصات فیلدهای فرم</legend>
+            <CTreeView style="width:500px;margin:10px auto" TEntity="TreeViewItem" Source="Nodes" OnExpanded="Onexpanded">
+                <Template Context="node">
+                    <CheckboxList TValue="ShowType?" TEntity="SelectListItem" Value="Activity.Fields.SingleOrDefault(t => t.FieldName == node.Value)?.ShowType"
+                                  ValueChanged="value =>
+                                             {
+                                                 OnItemSelected(value, node.Value);
+                                             }">
+                        <CheckboxItems Context="cbl">
+                            <CheckBox CheckboxList="cbl" Value="ShowType.Enable" />
+                            <CheckBox CheckboxList="cbl" Value="ShowType.Disable" />
+                        </CheckboxItems>
+                    </CheckboxList>
+                </Template>
+            </CTreeView>
+        </fieldset>
+        <div style="margin:10px auto;width:170px;">
+            <button @onclick="RegisterFields" style="width:60px;margin-left:10px" class="t-button">ثبت</button>
+            <button @onclick="() => { Status = WindowStatus.Close; }" style="width:60px" value="انصراف" class="t-button">انصراف</button>
+        </div>
+        <input type="radio" />
+    </Content>
+</Window>
+@code
+{
+    Type type;
+    bool isUpdate;
+    IList<TreeViewItem> Nodes;
+
+    void OnItemSelected(ShowType? showType, string fieldName)
+    {
+        var old = Activity.Fields.SingleOrDefault(t => t.FieldName == fieldName);
+        if (old == null && showType.HasValue)
+        {
+            Activity.Fields.Add(new ActivityField()
+            {
+                FieldName = fieldName,
+                ShowType = showType.Value
+            });
+        }
+        else if (old != null)
+        {
+            if (showType.HasValue)
+                old.ShowType = showType.Value;
+            else
+                Activity.Fields.Remove(old);
+        }
+    }
+
+    void Onexpanded(TreeViewItem node)
+    {
+        var list = new List<TreeViewItem>();
+        GetTree(type.GetMyProperty(node.Value).PropertyType, list, Activity.Fields, node.Value);
+        node.Items = list;
+    }
+
+    void RegisterFields()
+    {
+        isUpdate = true;
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public Activity Activity { get; set; }
+
+    [Parameter]
+    public int WorkflowId { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        FormGroup formGroup = (await service.SingleAsync(WorkflowId)).FormGroup;
+        type = new AssemblyInfo().GetModelType(formGroup.Subsystem, formGroup.ClassName);
+        Nodes = new List<TreeViewItem>();
+        if (Activity.Fields == null)
+            Activity.Fields = new List<ActivityField>();
+        GetTree(type, Nodes, Activity.Fields, null);
+        await base.OnParametersSetAsync();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (isUpdate)
+        {
+            isUpdate = false;
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+            await jsRuntime.InvokeVoidAsync("$.workflow.updateFields", Activity.Fields);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    void GetTree(Type type, IList<TreeViewItem> items, IList<ActivityField> fields, string fieldName)
+    {
+        if (fieldName.HasValue())
+            fieldName += '.';
+        foreach (var info in type.GetProperties())
+        {
+            var tempType = info.PropertyType;
+            if (tempType.IsNullableType())
+                tempType = Nullable.GetUnderlyingType(tempType);
+            var isFkey = type.GetProperties().Any(u => u.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name);
+            if ((tempType.IsValueType || tempType == typeof(string)) && info.GetCustomAttribute<KeyAttribute>() == null && !isFkey)
+            {
+                var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>();
+                if (displayAttr != null)
+                {
+                    var item = new TreeViewItem()
+                    {
+                        Selectable = false,
+                        Text = displayAttr.DisplayName,
+                        Collabsable = false,
+                        Value = fieldName + info.Name,
+                        ShowTemplate = true
+                    };
+                    items.Add(item);
+                }
+            }
+            else
+            {
+                var fKey = info.GetCustomAttribute<ForeignKeyAttribute>();
+                if (fKey != null)
+                {
+                    var attr = info.GetCustomAttribute<DisplayNameAttribute>();
+                    if (attr == null)
+                        attr = type.GetProperty(fKey.Name).GetCustomAttribute<DisplayNameAttribute>();
+                    if (attr != null)
+                    {
+                        items.Add(new TreeViewItem()
+                        {
+                            Text = attr.DisplayName,
+                            Value = fieldName + info.Name
+                        });
+                    }
+                }
+            }
+        }
+    }
+}

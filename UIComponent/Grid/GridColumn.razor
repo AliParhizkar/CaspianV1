@@ -1,0 +1,31 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@{
+    if (RowData == null)
+        Grid.AddColumnData(this);
+}
+@if (RowData != null)
+{
+    <td @attributes="Attributs">
+        @if (GridEditableList && EditTemplate != null)
+        {
+            @EditTemplate
+        } else if (Template == null)
+        {
+            if (IsCheckBox)
+            {
+                var temp = value == null ? (bool?)(null) : Convert.ToBoolean(value);
+                <CheckBox Value="temp" Disabled />
+            }
+            else
+            {
+                @value
+            }
+        }
+        else 
+        {
+            @Template
+        }
+    </td>
+}
+

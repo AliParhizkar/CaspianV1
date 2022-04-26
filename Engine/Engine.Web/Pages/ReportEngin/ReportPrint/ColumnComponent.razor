@@ -1,0 +1,90 @@
+﻿@namespace Caspian.Engine.ReportPrint
+@inject IJSRuntime jsRundTime
+
+<Window Status="Status" Style="width:400px" Title="مضخصات ستونها">
+    <Content>
+        <table style="width:95%;margin: 5px auto">
+            <tr>
+                <td><label>صفحه جدید قبل از باند</label></td>
+                <td>
+                    <CheckBox @bind-Value="Bond.NewPageAfter" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>صفحه جدید بعد از باند</label></td>
+                <td>
+                    <CheckBox @bind-Value="Bond.NewPageBefore" />
+                </td>
+            </tr>
+        @if (MinDataLevel.HasValue && Bond.BondType == BondType.DataBond)
+        {
+            if (MinDataLevel == Bond.DataLevel)
+            {
+            <tr>
+                <td><label>تعداد ستون</label></td>
+                <td>
+                    <DropdownList @bind-Value="Bond.ColumnsCount" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>فاصله بین ستون ها</label></td>
+                <td>
+                    <NumericTextBox @bind-Value="Bond.ColumnsMargin" />
+                </td>
+            </tr>
+            }
+            else
+            {
+            <tr>
+                <td colspan="2">
+                    <div style="padding:7px 7px 0 0">
+                        <span style="font-weight:bold;color:red">در هر صفحه از گزارش تنها آخرین سطح داده می تواند چند ستون داشته باشد.</span>
+                        <span style="display:block;font-weight:bold">در صورتی که می حواهید بیش از یک سطح از داده چند ستون داشته باشد از گزارش فرعی استفاده نمائید</span>
+                    </div>
+                </td>
+            </tr>
+            }
+        }
+            <tr>
+                <td></td>
+                <td style="padding-top:5px;height:5px;text-align:center;">
+                    <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-button c-cancel">انصراف</button>
+                    <button @onclick="UpdateData" class="c-button c-ok">ثبت</button>
+                </td>
+            </tr>
+        </table>
+    </Content>
+</Window>
+@code
+{
+    bool isUpdate;
+    async Task UpdateData()
+    {
+        isUpdate = true;
+        await StatusChanged.InvokeAsync(WindowStatus.Close);
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public Bond Bond { get; set; }
+
+    [Parameter]
+    public int? MinDataLevel { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (isUpdate)
+        {
+            var count = Bond.ColumnsCount.ConvertToInt().GetValueOrDefault(1);
+            var margin = Bond.ColumnsMargin.GetValueOrDefault(0);
+            await jsRundTime.InvokeVoidAsync("$.report.updateColumnsData", count, margin, Bond.NewPageAfter, Bond.NewPageBefore);
+            isUpdate = false;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

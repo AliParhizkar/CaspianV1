@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+@namespace Caspian.Engine.Shared
+@inject NavigationManager navigationManager
+<CascadingValue Value="this">
+    @if (showMeny)
+    {
+        <div class="sidebar">
+            <DataMenu />
+        </div>
+    }
+    <div class="main">
+        <div class="content">
+            @Body
+        </div>
+    </div>
+</CascadingValue>
+@code{
+    bool showMeny;
+    protected override void OnInitialized()
+    {
+        var url = new Uri(navigationManager.Uri).LocalPath;
+        showMeny = !url.StartsWith("/Engine/", StringComparison.OrdinalIgnoreCase);
+        base.OnInitialized();
+    }
+}

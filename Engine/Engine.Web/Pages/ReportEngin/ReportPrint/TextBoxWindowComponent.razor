@@ -1,0 +1,189 @@
+﻿@namespace Caspian.Engine.ReportPrint
+@inject IJSRuntime jsRundTime
+@inherits BasePage
+<Window @bind-Status="Status" Style="width:400px;" Id="newEditForm" Title="متن کنترل">
+    <Content>
+        <div style="width:100%">
+            <table style="width:95%;margin:5px auto">
+                <tr>
+                    <td style="width:105px">
+                        <label>متن کنترل</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="PrintParam.TitleFa"
+                                       Disabled="PrintParam.TotalFuncType.HasValue || PrintParam.TitleEn.HasValue() || PrintParam.SystemVariable.HasValue || PrintParam.SystemFiledType.HasValue" />
+                    </td>
+                </tr>
+                @if (PrintParam.BondType == BondType.DataFooter)
+                {
+                    <tr>
+                        <td>
+                            <label>عنوان متد</label>
+                        </td>
+                        <td>
+                            <DropdownList TValue="Nullable<TotalFuncType>" Value="PrintParam.TotalFuncType"
+                                           Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TotalFuncType == null || PrintParam.SystemFiledType.HasValue"
+                                          ValueChanged="@(value =>
+                                                          {
+                                                              PrintParam.TotalFuncType = value;
+                                                              PrintParam.TitleFa = '{' + PrintParam.TotalFuncType.FaText() + '}';
+                                                          })" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>اسم مستعار</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="PrintParam.EqualName" Disabled="PrintParam.TotalFuncType == null" />
+                        </td>
+                    </tr>
+                    @if (Params != null)
+                    {
+                        <tr>
+                            <td>
+                                <label>فیلد داده</label>
+                            </td>
+                            <td>
+                                <ComboBox TEntity="SelectListItem" Source="Params" TValue="string" @bind-Value="PrintParam.TitleEn"
+                                          Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TotalFuncType == null || PrintParam.SystemFiledType.HasValue || PrintParam.TotalFuncType == null" />
+                            </td>
+                        </tr>
+                    }
+                }
+                else if (Params != null)
+                {
+                    <tr>
+                        <td>
+                            <label>فیلد داده</label>
+                        </td>
+                        <td>
+                            <ComboBox TEntity="SelectListItem" Source="Params" TValue="string" Value="PrintParam.TitleEn" 
+                                      Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TitleEn == null || PrintParam.SystemFiledType.HasValue || PrintParam.TotalFuncType.HasValue"
+                                      ValueChanged="value => 
+                                                    {
+                                                        PrintParam.TitleEn = value;
+                                                        if (PrintParam.TitleEn.HasValue())
+                                                             PrintParam.TitleFa = '{' + Params.Single(t => t.Value == PrintParam.TitleEn).Text + '}';
+                                                         else
+                                                            PrintParam.TitleFa = null;
+                                                    }" />
+                        </td>
+                    </tr>
+                }
+                @if (PrintParam.BondType == BondType.ReportTitle)
+                {
+                    <tr>
+                        <td>
+                            <label>متغیرهای سیستمی</label>
+                        </td>
+                        <td>
+                            <DropdownList TValue="Nullable<SystemVariable>" Value="PrintParam.SystemVariable"
+                                          Disabled="PrintParam.TitleFa.HasValue() && PrintParam.SystemVariable == null"
+                                          ValueChanged="value => 
+                                                        {
+                                                            PrintParam.SystemVariable = value;
+                                                            PrintParam.TitleFa =  PrintParam.SystemVariable.HasValue ? ('{' + PrintParam.SystemVariable.FaText() + '}') : null; 
+                                                        }" />
+                        </td>
+                    </tr>
+                }
+                else if (PrintParam.BondType != BondType.DataHeader)
+                {
+                    <tr>
+                        <td>
+                            <label>فیلد سیستمی</label>
+                        </td>
+                        <td>
+                            <DropdownList TValue="Nullable<SystemFiledType>" Value="PrintParam.SystemFiledType"
+                                          Disabled="PrintParam.TitleFa.HasValue() && PrintParam.SystemFiledType == null || PrintParam.TotalFuncType.HasValue"
+                                          ValueChanged="value => 
+                                                        {
+                                                            PrintParam.SystemFiledType = value;
+                                                            PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.FaText() + '}';
+                                                             StateHasChanged();
+                                                        }" />
+                        </td>
+                    </tr>
+                }
+            </table>
+            <div style="padding: 10px 150px 10px 0">
+                <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-button c-cancel">انصراف</button>
+                <button @onclick="() => { updateData = true; }" class="c-button c-ok">ثبت</button>
+            </div>
+        </div>
+
+    </Content>
+</Window>
+
+@code
+{
+    string member;
+    bool updateData;
+    IEnumerable<SelectListItem> Params;
+
+    [Parameter]
+    public PrintParam PrintParam { get; set; }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (PrintParam.DataLevel.HasValue || PrintParam.BondType == BondType.DataFooter)
+        {
+            if (PrintParam.BondType == BondType.DataFooter)
+                PrintParam.DataLevel = 1;
+            using var scope = CreateScope();
+            Params = (await new PrintReport(scope).GetFiledsProperty(PrintParam.ReportId.Value, PrintParam.DataLevel.Value))
+                .Select(t => new SelectListItem('{' + t.Key + '}', t.Value));
+            if (PrintParam.TitleEn.HasValue() && !Params.Any(t => t.Value == PrintParam.TitleEn))
+                PrintParam.TitleEn = null;
+        }
+        else
+            Params = null;
+
+        if (!PrintParam.TitleFa.HasValue())
+        {
+            if (PrintParam.SystemFiledType.HasValue)
+                PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.FaText() + '}';
+            if (PrintParam.SystemVariable.HasValue)
+                PrintParam.TitleFa = '{' + PrintParam.SystemVariable.FaText() + '}';
+        }
+        if (PrintParam.TitleFa == "{}")
+            PrintParam.TitleFa = "";
+        await base.OnParametersSetAsync();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (updateData)
+        {
+            if (PrintParam.SystemVariable.HasValue)
+            {
+                PrintParam.Member = '{' + PrintParam.SystemVariable.Value.ToString() + '}';
+                PrintParam.TitleFa = '{' + PrintParam.SystemVariable.FaText() + '}';
+            }
+            if (PrintParam.SystemFiledType.HasValue)
+            {
+                PrintParam.Member = '{' + PrintParam.SystemFiledType.Value.ToString() + '}';
+                PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.FaText() + '}';
+            }
+            if (PrintParam.TitleEn.HasValue())
+            {
+                PrintParam.TitleFa = '{' + Params.Single(t => t.Value == PrintParam.TitleEn).Text + '}';
+                PrintParam.Member = PrintParam.TitleEn;
+            }
+            updateData = false;
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(PrintParam);
+            await jsRundTime.InvokeVoidAsync("$.report.updateTextWindowData", PrintParam);
+            Status = WindowStatus.Close;
+            await StatusChanged.InvokeAsync(Status);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

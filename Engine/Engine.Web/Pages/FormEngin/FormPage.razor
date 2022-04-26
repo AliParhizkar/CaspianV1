@@ -1,0 +1,83 @@
+﻿@page "/{Subsystem}/Engine/Form"
+@namespace Caspian.Engine.FormGenerator
+@inherits SimplePage<Form>
+@{ 
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:0 auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+            <td>
+                <label>گروه </label>
+            </td>
+            <td>
+                <ComboBox @bind-Value="SearchData.FormGroupId" TValue="int" TEntity="FormGroup" TextExpression="t => t.Title" ConditionExpression="t => t. Subsystem == SystemKind" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="Form" Search="SearchData" TableHeight="400" ConditionExpr="t => t.FormGroup.Subsystem == SystemKind" >
+        <Columns>
+            <GridColumn TEntity="Form" Field="t => t.FormGroup.Title" Title="گروه گردش" />
+            <GridColumn TEntity="Form" Field="t => t.Title" />
+            <GridColumn TEntity="Form" Title="ایجاد گردش" style="width:80px;">
+                <Template>
+                    <a href="/Engin/FormGenerator/@(context.Data.Id)" target="_blank">...</a>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="Form" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:500px">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(FormService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>گروه گردش</label>
+                        </td>
+                        <td>
+                            <ComboBox @bind-Value="UpsertData.FormGroupId" TValue="int" TEntity="FormGroup" TextExpression="t => t.Title"
+                                      ConditionExpression="t => t.Subsystem == SystemKind" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+    SubSystemKind SystemKind;
+
+    [Parameter]
+    public string Subsystem { get; set; }
+
+    protected override void OnInitialized()
+    {
+        SystemKind = (SubSystemKind)typeof(SubSystemKind).GetField(Subsystem).GetValue(null);
+        base.OnInitialized();
+    }
+}

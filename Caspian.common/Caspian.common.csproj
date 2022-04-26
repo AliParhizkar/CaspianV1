@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="5.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FluentValidation">
+      <HintPath>..\..\..\..\.nuget\packages\fluentvalidation\9.4.0\lib\net5.0\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\5.0.10\lib\netstandard2.1\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Proxies">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore.proxies\5.0.10\lib\netstandard2.1\Microsoft.EntityFrameworkCore.Proxies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Relational">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore.relational\5.0.10\lib\netstandard2.1\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.SqlServer">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore.sqlserver\5.0.1\lib\netstandard2.1\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.extensions.configuration\6.0.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.extensions.configuration.abstractions\6.0.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\5.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Dynamic.Core">
+      <HintPath>..\..\..\..\.nuget\packages\system.linq.dynamic.core\1.2.18\lib\net6.0\System.Linq.Dynamic.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

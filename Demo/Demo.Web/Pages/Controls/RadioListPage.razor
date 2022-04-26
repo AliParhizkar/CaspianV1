@@ -1,0 +1,199 @@
+﻿@page "/Demo/RadioList"
+@namespace Demo.Web.Pages
+<div style="padding:20px 40px 0 0">
+    <h3>Radio List Button</h3>
+</div>
+<div style="display:table;width:90%;margin:0 auto">
+    <div style="display:table-row">
+        <div style="width:50%;display:table-cell;padding-left:40px;">
+             <hr />
+             <ul>
+                 <li>
+                    <h4>Bind to enum</h4>
+                    <table style="margin-right:40px;height:210px">
+                        <tr>
+                            <td style="width:150px;">
+                                <label>Disable</label>
+                            </td>
+                            <td>
+                                <CheckBox @bind-Value="disabled" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Selected Value</label>
+                            </td>
+                            <td>
+                                <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "----")</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Selected Title</label>
+                            </td>
+                            <td>
+                                <label style="color:red;">@(orderType.HasValue ? orderType.FaText() : "----")</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Selected Enum Title</label>
+                            </td>
+                            <td>
+                                <label style="color:red;">@(orderType.HasValue ? orderType.ToString() : "----")</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <RadioList Disabled="disabled" @bind-Value="orderType" />
+                            </td>
+                        </tr>
+                    </table>
+                 </li>
+             </ul>
+        </div>
+        <div style="width:50%;display:table-cell;padding-right:40px;">
+            <hr />
+            <ul>
+                 <li>
+                    <h4>Some Of Items And Custom Align</h4>
+                    <table style="margin-right:40px;height:210px">
+                        <tr>
+                            <td>
+                                <label>Selected Value</label>
+                            </td>
+                            <td>
+                                <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "----")</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Selected Title</label>
+                            </td>
+                            <td>
+                                <label style="color:red;">@(orderType.HasValue ? orderType.FaText() : "----")</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Selected Enum Title</label>
+                            </td>
+                            <td>
+                                <label style="color:red;">@(orderType.HasValue ? orderType.ToString() : "----")</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <RadioList @bind-Value="orderType" >
+                                    <RadioItems>
+                                        <div style="height:30px;text-align:center;display:table-row">
+                                            <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Salon" />
+                                        </div>
+                                        <div>
+                                            <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Tel" />
+                                            <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Internet" />
+                                        </div>
+                                    </RadioItems>
+                                </RadioList>
+                            </td>
+                        </tr>
+                    </table>
+                 </li>
+             </ul>
+        </div>
+    </div>
+    <div style="display:table-row">
+        <div style="width:50%;display:table-cell;padding-left:40px;">
+            <hr />
+            <h4>Bind to Data Source</h4>
+            <table style="margin-right:40px;height:120px">
+                <tr>
+                    <td>
+                        <label>Selected Value</label>
+                    </td>
+                    <td>
+                        <label style="color:red;">@(selectedNumber.HasValue ? selectedNumber.Value : "----")</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Selected Title</label>
+                    </td>
+                    <td>
+                        <label style="color:red;">@(selectedNumber.HasValue ? items[selectedNumber.Value - 1].Text : "----")</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <RadioList @bind-Value="selectedNumber" Source="items" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="width:50%;display:table-cell;padding-right:40px;">
+            <hr />
+            <h4>Disable Items</h4>
+            <table style="margin-right:40px;height:120px">
+                <tr>
+                    <td>
+                        <label>سالن</label>
+                    </td>
+                    <td>
+                        <CheckBox @bind-Value="salon" />
+                    </td>
+                    <td>
+                        <label>بیرون بر</label>
+                    </td>
+                    <td>
+                        <CheckBox @bind-Value="packaging" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>تلفنی</label>
+                    </td>
+                    <td>
+                        <CheckBox @bind-Value="tel" />
+                    </td>
+                    <td>
+                        <label>اینترنتی</label>
+                    </td>
+                    <td>
+                        <CheckBox @bind-Value="internet" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <RadioList @bind-Value="orderType" >
+                            <RadioItems>
+                                <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Salon" Disabled="salon" />
+                                <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Package" Disabled="packaging" />
+                                <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Tel" Disabled="tel" />
+                                <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Internet" Disabled="internet" />
+                            </RadioItems>
+                        </RadioList>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    Demo.Model.OrderType? orderType = Demo.Model.OrderType.Salon;
+    int? selectedNumber;
+    IList<SelectListItem> items;
+    bool disabled;
+    bool salon;
+    bool packaging;
+    bool tel;
+    bool internet;
+
+    protected override void OnInitialized()
+    {
+        var numbers = new string[] { "One", "Two", "Three", "Four" };
+        items = numbers.Select((t, index) => new SelectListItem((index + 1).ToString(), t)).ToList();
+        base.OnInitialized();
+    }
+}

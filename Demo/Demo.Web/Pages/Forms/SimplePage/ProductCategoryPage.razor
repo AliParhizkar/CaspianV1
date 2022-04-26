@@ -1,0 +1,114 @@
+﻿@page "/Demo/SimplePopupPage"
+@namespace Demo.Web.Pages
+@inherits SimplePage<ProductCategory>
+@{
+    base.BuildRenderTree(__builder);
+   
+}
+<div style="width:90%;margin:5px auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="ProductCategory" Search="SearchData" TableHeight="200">
+        <Columns Context="con">
+            <GridColumn TEntity="ProductCategory" Field="t => t.Title" />
+            <GridColumn TEntity="ProductCategory" Field="t => t.Code" />
+            <GridColumn TEntity="ProductCategory" Field="t => t.ActiveType.FaText()" />
+            <GridColumn TEntity="ProductCategory" Field="t => t.Priority.ToString()" style="padding:3px;width:100px;" OrderType="Caspian.Common.OrderType.Asc">
+                <Template>
+                    <IconButton class="c-arrow"
+                                @onclick="async () =>
+                                      {
+                                          await IncPriority(con.Data);
+                                      }" IconType="IconType.AngleUp"></IconButton>
+                    <IconButton class="c-arrow"
+                                @onclick="async () =>
+                                      {
+                                          await DecPriority(con.Data);
+                                      }" IconType="IconType.AngleDown"></IconButton>
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="ProductCategory" Title="غذا" style="width:50px">
+                <Template>
+                    <IconButton Href='@($"/Demo/Product/{con.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="ProductCategory" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="گروه غذا" Style="width:450px"
+            OnOpen="() =>
+                    {
+                        if (UpsertData.Id == 0)
+                            UpsertData.ActiveType = ActiveType.Enable;
+                    }">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(ProductCategoryService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>کد</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Code" Style="direction:ltr" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>وضعیت</label>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="UpsertData.ActiveType" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+
+    async Task IncPriority(ProductCategory category)
+    {
+        using var scope = CreateScope();
+        var service = new ProductCategoryService(scope);
+        await service.IncPriorityAsync(category);
+        await service.SaveChangesAsync();
+        await CrudGrid.Reload();
+        await CrudGrid.SelectRowById(category.Id);
+    }
+
+    async Task DecPriority(ProductCategory category)
+    {
+        using var scope = CreateScope();
+        var service = new ProductCategoryService(scope);
+        await service.DecPriorityAsync(category);
+        await service.SaveChangesAsync();
+        await CrudGrid.Reload();
+        await CrudGrid.SelectRowById(category.Id);
+    }
+}

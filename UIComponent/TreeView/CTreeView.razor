@@ -1,0 +1,70 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@inject IJSRuntime JSRuntime
+@inject IServiceScopeFactory ServiceScopeFactory
+
+    @if (Source == null)
+    {
+        <div @ref="tree" @attributes="Attrs" class="c-treeview">
+            <CascadingValue Value="CascadeData" Name="TreeViewCascadeData">
+                <ul>
+                    @if (Items != null)
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (ChildContent == null)
+                            {
+                                <TreeNode @bind-Selected="item.Selected" Item="item" />
+                            }
+                            else if (item.Expanded)
+                            {
+                                <li>
+                                    @ChildContent(item)
+                                </li>
+                            }
+                        }
+                    }
+                </ul>
+            </CascadingValue>
+        </div>
+    }
+    else
+    {
+        <div @ref="tree" @attributes="Attrs" class="c-treeview">
+            <CascadingValue Value="CascadeData" Name="TreeViewCascadeData">
+                <ul class="c-subtree">
+                    @foreach (var item in Source)
+                    {
+                        <TreeNode OnCollapsed="async (localItem) =>
+                                       {
+                                           if (OnCollapsed.HasDelegate)
+                                               await OnCollapsed.InvokeAsync(localItem);
+                                       }"
+                                  OnExpanded="async (localItem) =>
+                                      {
+                                          if (OnExpanded.HasDelegate)
+                                              await OnExpanded.InvokeAsync(localItem);
+
+                                      }"
+                                  OnSelected="async (node) =>
+                                           {
+                                               if (SingleSelectOnTree)
+                                               {
+                                                   UnselectTree(Source);
+                                                   node.Selected = true;
+                                               }
+                                               await OnSelected.InvokeAsync(node);
+                                           }"
+                                  OnChanged="async (node) =>
+                                     {
+                                         await OnChange.InvokeAsync(node);
+                                     }"
+                                  Item="item" />
+                    }
+                </ul>
+            </CascadingValue>
+        </div>
+    }
+    @code
+    {
+    }

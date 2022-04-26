@@ -1,0 +1,205 @@
+﻿@page "/{Subsystem}/Engine/ReportParam/{ReportId:int}"
+@namespace Caspian.Engine.ReportGenerator
+@inherits SimplePage<ReportParam>
+@inject IJSRuntime runTime
+@inject NavigationManager NavigationManager
+
+<div style="width:95%;margin:5px auto">
+    <div class="r-level-head">
+        <div class="c-title">
+            <label>عنوان: </label>
+            <span> @report?.Title</span>
+        </div>
+        <div class="c-operator">
+            <button class="r-button" @onclick='() =>
+                                  {
+                                      NavigationManager.NavigateTo($"{Subsystem}/Engin/ReportGenerator");
+                                  }'>
+                    <span class="fa fa-pie-chart"></span><span>گزارش ها</span>
+            </button>
+            <button class="r-button" title="پارامترهای گزارش" @onclick="() =>
+                                  {
+                                      Status = WindowStatus.Open;
+                                      reportParamShowType = ReportParamShowType.Simple;
+                                    }"><span class="fa fa-pie-chart"></span><span>پارامترها</span></button>
+            <button class="r-button" title="گزارش های مدیریتی" @onclick="() =>
+                                  {
+                                      ManagerStatus = WindowStatus.Open;
+                                      reportParamShowType = ReportParamShowType.Manager;
+                                  }"><span class="fa fa-pie-chart"></span><span>مدیریتی</span></button>
+        </div>
+    </div>
+    <hr style="margin-top:0; margin-bottom:2rem;"/>
+    <div class="r-level row">
+        <div style="width:calc(33% - 40px);float:right">
+            <div class="r-title">
+                <span>فیلدهای سطح اول</span>
+            </div>
+            <DataGrid @ref="grid1" TEntity="ReportParam" HidePageSize Search="SearchData" HideInsertIcon OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 1); }">
+                <Columns>
+                    <GridColumn TEntity="ReportParam" Field="t => t.TitleEn">
+                        <span>@ReportFieldName(context.Data.TitleEn)</span>
+                    </GridColumn>
+                </Columns>
+            </DataGrid>
+        </div>
+        <div style="width:60px;float:right;height:400px;padding:150px 10px 0 0 ">
+            <IconButton IconType="IconType.AngleDoubleLeft"
+                        @onclick="async () =>
+                               {
+                                   await ChangeParameterLevel(grid1.SelectedRowId, 1);
+                               }" />
+            <div style="padding-top:10px">
+                <IconButton IconType="IconType.AngleDoubleRight" @onclick="async () =>
+                               {
+                                   await ChangeParameterLevel(grid2.SelectedRowId, 1, true);
+                               }" />
+            </div>
+        </div>
+        <div style="width: calc(33% - 40px);float:right;">
+            <div class="r-title">
+                <span>فیلدهای سطح دوم</span>
+            </div>
+            <DataGrid @ref="grid2" TEntity="ReportParam" Search="SearchData" HideInsertIcon HidePageSize
+                  OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 2); }">
+                <Columns>
+                    <GridColumn TEntity="ReportParam" Field="t => t.TitleEn">
+                        <span>@ReportFieldName(context.Data.TitleEn)</span>
+                    </GridColumn>
+                </Columns>
+            </DataGrid>
+        </div>
+        <div style="width:60px;float:right;height:400px;padding:150px 10px 0 ">
+            <IconButton IconType="IconType.AngleDoubleRight"
+                        @onclick="async () =>
+                        {
+                            await ChangeParameterLevel(grid2.SelectedRowId, 2);
+                        }" />
+            <div style="padding-top:10px">
+                <IconButton IconType="IconType.AngleDoubleRight"
+                            @onclick="async () =>
+                        {
+                            await ChangeParameterLevel(grid3.SelectedRowId, 2, true);
+                        }" />
+            </div>
+        </div>
+        <div style="width: calc(33% - 40px);float:right">
+            <div class="r-title">
+                <span>فیلدهای سطح سوم</span>
+            </div>
+            <DataGrid  @ref="grid3" TEntity="ReportParam" Search="SearchData" HideInsertIcon HidePageSize
+                  OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 3); }">
+                <Columns>
+                    <GridColumn TEntity="ReportParam" Field="t => t.TitleEn">
+                        <span>@ReportFieldName(context.Data.TitleEn)</span>
+                    </GridColumn>
+                </Columns>
+            </DataGrid>
+        </div>
+    </div>
+</div>
+@switch (reportParamShowType)
+{
+    case ReportParamShowType.Simple:
+        <SimpleReportParam @bind-Status="Status" ReportId="ReportId.Value"
+                           OnParameterSave="() =>
+                                    {
+                                        grid1.EnableLoading();
+                                    }" />
+        break;
+    case ReportParamShowType.Manager:
+        <ManagementReportComponent ReportId="ReportId.Value" @bind-Status="ManagerStatus" />
+        break;
+}
+
+@code
+{
+    Report report;
+    DataGrid<ReportParam> grid1;
+    DataGrid<ReportParam> grid2;
+    DataGrid<ReportParam> grid3;
+    //IList<ReportNode> Nodes;
+    WindowStatus Status;
+    WindowStatus ManagerStatus;
+    ReportParamShowType? reportParamShowType;
+    Type Type;
+    string message;
+
+    async Task ChangeParameterLevel(int? parameterId, int buttonLevel, bool isDecreas = false)
+    {
+        if (parameterId == null)
+            message = "لطفا یک ردیف را انتخاب نمایید";
+        else
+        {
+            try
+            {
+                using var scope = ServiceScopeFactory.CreateScope();
+                var parameterService = new ReportParamService(scope);
+                if (isDecreas)
+                    await parameterService.DecDataLevel(parameterId.Value);
+                else
+                    await parameterService.IncDataLevel(parameterId.Value);
+                await parameterService.SaveChangesAsync();
+                grid2.EnableLoading();
+                if (buttonLevel == 1)
+                    grid1.EnableLoading();
+                else
+                    grid3.EnableLoading();
+                StateHasChanged();
+            }
+            catch (CaspianException ex)
+            {
+                message = ex.Message;
+            }
+        }
+    }
+
+    string ReportFieldName(string enTitle)
+    {
+        var info = Type.GetMyProperty(enTitle);
+        var attr = info.GetCustomAttribute<ReportFieldAttribute>();
+        if (attr.Title.HasValue())
+            return attr.Title;
+        var attr1 = info.GetCustomAttribute<DisplayNameAttribute>();
+        if (attr1 != null && attr1.DisplayName.HasValue())
+            return attr1.DisplayName;
+        return enTitle;
+    }
+
+    [Parameter]
+    public int? ReportId { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var model = new ReportSelectUi();
+        model.ReportId = ReportId.Value;
+        using var scope = CreateScope();
+        report = await new ReportService(scope).SingleAsync(ReportId.Value);
+        var reportGriup = await new ReportGroupService(scope).SingleAsync(report.ReportGroupId);
+        Type = new AssemblyInfo().GetReturnType(reportGriup);
+        //var list = report.ReportParams.Select(t => t.TitleEn).ToList();
+        //var Nodes = new ReportTree().CreateTreeForSelect(Type, null, list);
+        await base.OnInitializedAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message.HasValue())
+        {
+            runTime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    [Parameter]
+    public string Subsystem { get; set; }
+
+
+    enum ReportParamShowType
+    {
+        Simple,
+
+        Manager
+    }
+}

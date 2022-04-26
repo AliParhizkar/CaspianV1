@@ -1,0 +1,92 @@
+﻿@namespace Caspian.Engine.ReportPrint
+
+@inject IJSRuntime jsRundTime
+
+@{
+    if (!Param.DigitGroup)
+        Param.GroupNumberChar = null;
+    if (Param.DecimalChar == null)
+        Param.NumberDigits = null;
+}
+
+<Window Status="Status" Style="width:400px" Title="فرمت بندی اعداد">
+    <Content>
+        <table style="width:95%;margin:0 auto">
+            <tr>
+                <td style="width:100px;"><label>گروهبندی ارقام</label></td>
+                <td>
+                    <CheckBox @bind-Value="Param.DigitGroup" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>کاراکتر گروهبندی</label></td>
+                <td>
+                    <DropdownList @bind-Value="Param.GroupNumberChar" Disabled="!Param.DigitGroup" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>کاراکتر ممیز شناور</label></td>
+                <td>
+                    <DropdownList @bind-Value="Param.DecimalChar" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>تعداد ارقام اعشار</label></td>
+                <td>
+                    <NumericTextBox @bind-Value="Param.NumberDigits" Disabled="Param.DecimalChar == null" />
+                </td>
+            </tr>
+            <tr style="height:50px;padding-top:5px;text-align:center">
+                <td></td>
+                <td>
+                    <button class="c-button c-cancel" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }">انصراف</button>
+                    <button class="c-button c-ok" @onclick="SetFormat">ثبت</button>
+                </td>
+            </tr>
+        </table>
+    </Content>
+</Window>
+
+
+@code
+{
+    bool isUpdated;
+    string message;
+
+    async void SetFormat()
+    {
+        if (Param.DigitGroup && Param.GroupNumberChar == null)
+            message = "لطفا کاراکتر جداساز را مشخص نماییید";
+        if (Param.DecimalChar.HasValue && Param.NumberDigits == null)
+            message = "لطفا تعداد ارقام اعشاری را مشخص نمایید";
+        if (!message.HasValue())
+        {
+            isUpdated = true;
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
+    }
+
+    [Parameter]
+    public PrintParam Param { get; set; }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (isUpdated)
+        {
+            await jsRundTime.InvokeVoidAsync("$.report.setFormat", Param);
+            isUpdated = false;
+        }
+        if (message.HasValue())
+        {
+            await jsRundTime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

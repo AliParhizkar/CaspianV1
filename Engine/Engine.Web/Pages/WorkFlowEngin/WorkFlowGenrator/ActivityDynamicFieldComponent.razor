@@ -1,0 +1,52 @@
+﻿@namespace Caspian.Engine.WorkFlowGenrator
+@inject IJSRuntime JSRuntime
+<Window Status="Status" Title="فرمهای پویا">
+    <Content>
+        <fieldset id="fieldsContent" class="t-widget" style="border-radius:7px;margin:0 10px 5px 10px;overflow:auto">
+            <legend>مشخصات فیلدهای فرم</legend>
+            <CTreeView style="width:500px;margin:10px auto" TEntity="TreeViewItem" Source="Nodes">
+                <Template>
+                    
+                </Template>
+            </CTreeView>
+
+        </fieldset>
+        <div style="margin:10px auto;width:170px;">
+            <button @onclick="RegisterFields" style="height:30px;width:60px;margin-left:10px" type="button" class="t-button">ثبت</button>
+            <button @onclick="() => { Status = WindowStatus.Close; }" style="height:30px;width:60px" value="انصراف" class="t-button">انصراف</button>
+        </div>
+    </Content>
+</Window>
+@code
+{
+    string message;
+    bool DataUpdated;
+
+    void RegisterFields()
+    {
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public IList<TreeViewItem> Nodes { get; set; }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (DataUpdated)
+        {
+            DataUpdated = false;
+            //await JSRuntime.InvokeVoidAsync("$.workflow.", );
+        }
+        if (message.HasValue())
+        {
+            await JSRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

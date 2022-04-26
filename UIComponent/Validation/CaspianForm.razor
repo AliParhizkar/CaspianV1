@@ -1,0 +1,186 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@implements ICaspianForm
+<EditForm EditContext="EditContext" 
+        OnSubmit="@(async(EditContext context) =>
+                    {
+                        if (OnSubmit.HasDelegate)
+                            await OnSubmit.InvokeAsync(EditContext);
+                        if (OnInternalSubmit.HasDelegate)
+                            await OnInternalSubmit.InvokeAsync(EditContext);
+                        EditContext.Validate();
+                    })"
+
+        @onreset="@(async (e) =>
+                      {
+                          await ResetFormAsync();
+                          if (OnInternalReset.HasDelegate)
+                              await OnInternalReset.InvokeAsync();
+                      })" >
+    <CascadingValue Value="this" Name="ParentForm">
+        @ChildContent
+    </CascadingValue>
+</EditForm>
+
+@code 
+{
+    string ErrorMessage;
+    bool checkValidation;
+    IList<IControl> controls;
+
+    async Task ResetFormAsync()
+    {
+        foreach (var control in controls)
+        {
+            await control.ResetAsync();
+        }
+        if (OnReset.HasDelegate)
+            await OnReset.InvokeAsync();
+    }
+
+    string ICaspianForm.MasterIdName { get; set; }
+
+    bool ICaspianForm.IgnoreOnValidSubmit { get; set; }
+
+    [Inject]
+    public FormAppState FormAppState { get; set; }
+
+    [Inject]
+    protected IJSRuntime jsRuntime { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public TEntity Model { get; set; }
+
+    [Parameter]
+    public EditContext EditContext { get; set; }
+
+    [Parameter]
+    public EventCallback<EditContext> OnInvalidSubmit { get; set; }
+
+    [Parameter]
+    public EventCallback<EditContext> OnSubmit { get; set; }
+
+    [Parameter]
+    public EventCallback OnReset { get; set; }
+
+    [Parameter]
+    public Func<EditContext, Task<bool>> OnValidSubmit { get; set; }
+
+    internal EventCallback<EditContext> OnInternalSubmit { get; set; }
+
+    internal EventCallback<EditContext> OnInternalValidSubmit { get; set; }
+
+    public EventCallback<EditContext> OnInternalInvalidSubmit { get; set; }
+
+    internal EventCallback OnInternalReset { get; set; }
+
+    public void AddControl(IControl control)
+    {
+        if (!controls.Contains(control))
+            controls.Add(control);
+    }
+
+    public CaspianValidationValidator ValidationValidator { get; set; }
+
+    public void FocusToFirstControl()
+    {
+        if (controls.Count > 0)
+            controls[0].Focus();
+    }
+
+    protected override void OnInitialized()
+    {
+        if (Model == null && EditContext == null)
+            throw new CaspianException("خطا: one Parameter of Model and EditContext must initialized", 1);
+        if (Model != null && EditContext != null)
+            throw new CaspianException("خطا: Only one Parameter of Model and EditContext must initialized", 1);
+        if (Model == null)
+            Model = (TEntity)EditContext.Model;
+        controls = new List<IControl>();
+        if (EditContext == null)
+        {
+            EditContext = new EditContext(Model);
+        }
+        if (FormAppState == null)
+            FormAppState = new FormAppState();
+        EditContext.OnValidationStateChanged += async(sender, e) => { await ValidationStateChanged(sender, e); };
+        EditContext.OnValidationRequested += ValidationRequested;
+        FormAppState.AllControlsIsValid = true;
+        base.OnInitialized();
+    }
+
+    void ValidationRequested(object sender, ValidationRequestedEventArgs e)
+    {
+        FormAppState.AllControlsIsValid = true;
+        FormAppState.Element = null;
+        ErrorMessage = null;
+        var result = EditContext.GetValidationMessages().FirstOrDefault();
+    }
+
+    async Task ValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
+    {
+        var result = EditContext.GetValidationMessages();
+        checkValidation = true;
+        if (!result.Any() && FormAppState.AllControlsIsValid)
+        {
+            ErrorMessage = null;
+            bool isValidSubmit = true;
+            var form = this as ICaspianForm;
+            if (!form.IgnoreOnValidSubmit)
+            {
+                if (OnValidSubmit != null)
+                    isValidSubmit = await OnValidSubmit.Invoke(EditContext);
+                if (isValidSubmit && OnInternalValidSubmit.HasDelegate)
+                    await OnInternalValidSubmit.InvokeAsync(EditContext);
+            }
+            form.IgnoreOnValidSubmit = false;
+        }
+        else
+        {
+            if (FormAppState.AllControlsIsValid)
+            {
+                var result1 = EditContext.GetValidationMessages();
+                ErrorMessage = result1.FirstOrDefault();
+            }
+            if (OnInvalidSubmit.HasDelegate)
+                await OnInvalidSubmit.InvokeAsync(EditContext);
+            if (OnInternalInvalidSubmit.HasDelegate)
+                await OnInternalInvalidSubmit.InvokeAsync(EditContext);
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ErrorMessage.HasValue() && FormAppState.AllControlsIsValid)
+        {
+            var message = ErrorMessage;
+            ErrorMessage = null;
+            await jsRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+        }
+        else if (FormAppState.Element.HasValue)
+            await jsRuntime.InvokeVoidAsync("$.telerik.focusAndShowErrorMessage", FormAppState.Element, FormAppState.ErrorMessage);
+        FormAppState.Element = null;
+        FormAppState.ErrorMessage = null;
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public void Submit()
+    {
+
+    }
+
+    public async Task ResetAsync()
+    {
+        await ResetFormAsync();
+    }
+
+    async void OnFormSubmit()
+    {
+        ErrorMessage = null;
+        await OnSubmit.InvokeAsync(EditContext);
+        EditContext.Validate();
+    }
+}

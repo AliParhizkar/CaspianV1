@@ -1,0 +1,122 @@
+﻿using System;
+using System.Linq;
+using FluentValidation;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System.Linq.Dynamic.Core;
+using Caspian.Common.Extension;
+using FluentValidation.Results;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Caspian.Common.Service
+{
+    public class SimpleService<TEntity> : CaspianValidator<TEntity>, IDisposable, ISimpleService<TEntity> where TEntity : class
+    {
+        public SimpleService(IServiceScope serviceScope)
+            :base(serviceScope)
+        {
+            
+        }
+
+        public virtual IQueryable<TEntity> GetAll(TEntity search = null)
+        {
+            return Context.Set<TEntity>().Search(search);
+        }
+
+        async public virtual Task UpdateAsync(TEntity entity)
+        {
+            var result = await ValidateAsync(entity);
+            if (result.Errors.Count > 0)
+                throw new CaspianException(result.Errors[0].ErrorMessage);
+            if (Context.Entry(entity).State != EntityState.Modified)
+            {
+                var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+                var old = await SingleOrDefaultAsync(id);
+                if (old != null)
+                    old.CopySimpleProperty(entity);
+            }
+        }
+
+        public ISimpleService<T> GetEntityService<T>() where T: class
+        {
+            return new SimpleService<T>(ServiceScope);
+        }
+
+        public TService GetService<TService>() where TService : class
+        {
+            return (TService)Activator.CreateInstance(typeof(TService), ServiceScope);
+        }
+
+        public override Task<ValidationResult> ValidateAsync(ValidationContext<TEntity> context, CancellationToken cancellation = default)
+        {
+            context.RootContextData["__ServiceScope"] = ServiceScope;
+            return base.ValidateAsync(context, cancellation);
+        }
+
+        public virtual async Task<TEntity> AddAsync(TEntity entity)
+        {
+            var result = await Context.Set<TEntity>().AddAsync(entity);
+            return result.Entity;
+        }
+
+        public virtual void UpdateRange(IEnumerable<TEntity> entities)
+        {
+            Context.Set<TEntity>().UpdateRange(entities);
+        }
+
+        public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await Context.Set<TEntity>().AddRangeAsync(entities);
+        }
+
+        public virtual void Remove(TEntity entity)
+        {
+            Context.Set<TEntity>().Remove(entity);
+        }
+        
+        async public Task<TEntity> SingleOrDefaultAsync(int id)
+        {
+            var type = typeof(TEntity);
+            var t = Expression.Parameter(type, "t");
+            Expression expr = Expression.Property(t, type.GetPrimaryKey());
+            expr = Expression.Equal(expr, Expression.Constant(id));
+            expr = Expression.Lambda(expr, t);
+            var entity = await GetAll().Where(expr).OfType<TEntity>().SingleOrDefaultAsync();
+            return entity;
+        }
+
+        async public Task<TEntity> SingleAsync(int id)
+        {
+            var old = await SingleOrDefaultAsync(id);
+            if (old == null)
+                throw new CaspianException("آیتم از سیستم حذف شده است");
+            return old;
+        }
+
+        async public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expr = null)
+        {
+            if (expr == null)
+                return await GetAll().AnyAsync();
+            return await GetAll().AnyAsync(expr);
+        }
+
+        public void RemoveRange(IQueryable<TEntity> entities)
+        {
+            Context.RemoveRange(entities);
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await Context.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            if (Context != null)
+                Context.Dispose();
+        }
+    }
+}

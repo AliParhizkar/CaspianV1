@@ -1,0 +1,83 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@typeparam TValue
+@implements IAutoCompleteValueInitializer
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject IServiceProvider provider
+@{
+    var attrs = new Dictionary<string, object>();
+    if (Id.HasValue())
+    {
+        attrs.Add("id", Id.Replace('.', '_'));
+        attrs.Add("name", Id.Replace('.', '_'));
+    }
+    if (TextExpression != null)
+    {
+        if (Value != null)
+        {
+            var numValue = Convert.ToInt32(Value);
+            if (numValue > 0)
+            {
+                if (!Value.Equals(Oldvalue))
+                {
+                    using var scope = ServiceScopeFactory.CreateScope();
+                    var service = new SimpleService<TEntity>(scope);
+                    var type = typeof(TEntity);
+                    var param = Expression.Parameter(type, "t");
+                    var pKey = type.GetPrimaryKey();
+                    Expression expr = Expression.Property(param, pKey);
+                    expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(Value, pKey.PropertyType)));
+                    expr = Expression.Lambda(expr, param);
+                    Text = Convert.ToString(service.GetAll().Where(expr).Select(TextExpression).FirstOrDefault());
+                    Oldvalue = Value;
+                    WindowStatus = WindowStatus.Close;
+                }
+            }
+        }
+        else if (SearchStr != Text)
+        {
+            WindowStatus = WindowStatus.Open;
+        }
+        SearchStr = Text;
+    }
+    var className = "t-widget t-numerictextbox c-lookup";
+    if (Disabled)
+        className += " t-state-disabled";
+    if (ErrorMessage.HasValue())
+        className += " t-state-error";
+}
+
+<div class="@className">
+    <input @ref="Input" @bind-value="Text" @bind-value:event="oninput" @onkeyup="@(async e => { await OnKeyUpHandler(e); })"
+           @attributes="inputAttrs" />
+    @if (!HideIcon)
+    {
+        <span class="fa fa-search"
+              @onclick="() =>
+                        {
+                            if (!Disabled)
+                                WindowStatus = WindowStatus.Open;
+                        }"></span>
+    }
+</div>
+<div @ref="SearchForm" class="t-HelpWindow">
+    @if (!HideHeader)
+    {
+        <div class="t-header">
+            <span class="t-window-title">@(Title)</span>
+            <span class="t-window-action t-link" @onclick="() => { WindowStatus = WindowStatus.Close; }">
+                <i class="fa fa-close"></i>
+            </span>
+        </div>
+    }
+    <div class="t-content">
+        <CascadingValue Name="LookupStringSearchValue" Value="SearchStr">
+            <CascadingValue Name="AutoComplateState" Value="SearchState">
+                <CascadingValue Value="false" Name="GridEditableList">
+                    @ChildContent
+                </CascadingValue>
+            </CascadingValue>
+        </CascadingValue>
+    </div>
+</div>
+

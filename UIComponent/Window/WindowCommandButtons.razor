@@ -1,0 +1,28 @@
+﻿@namespace Caspian.UI
+<div class="c-window-action">
+    <button class="c-button c-ok" type="submit">@SumitButtonTitle</button>
+    <button class="c-button c-cancel" type="button" @onclick="CloseWindow">انصراف</button>
+</div>
+
+@code 
+{ 
+    protected override void OnInitialized()
+    {
+        SumitButtonTitle = "ثبت";
+        base.OnInitialized();
+    }
+
+    protected void CloseWindow()
+    {
+        Container.Close();
+    }
+
+    [CascadingParameter(Name = "Container")]
+    public IContainer Container { get; set; }
+
+    [Inject]
+    public WindowAppState AppState { get; set; }
+
+    [Parameter]
+    public string SumitButtonTitle { get; set; }
+}

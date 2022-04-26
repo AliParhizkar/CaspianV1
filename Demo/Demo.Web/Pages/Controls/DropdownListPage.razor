@@ -1,0 +1,111 @@
+﻿@page "/Demo/DropdownList" 
+@namespace Demo.Web.Pages
+<div style="padding:20px 40px 0 0">
+    <h3>Dropdown List</h3>
+</div>
+<div style="display:table;width:90%;margin:0 auto">
+    <div style="display:table-cell;width:50%;padding-left:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Bind To Enum</h4>
+        <table style="height:210px;margin-right:80px">
+            <tr>
+                <td style="width:155px;">
+                    <label>Disable</label>
+                </td>
+                <td>
+                    <CheckBox @bind-Value="disable" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Action</label>
+                </td>
+                <td style="text-align:center">
+                    <button class="t-button" @onclick="() => { dropdownList.Focus(); }">Focus</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Selected Value</label>
+                </td>
+                <td style="text-align:center;direction:ltr">
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "-----")</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Selected Title</label>
+                </td>
+                <td style="text-align:center">
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.FaText() : "-----")</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Selected Enum Title</label>
+                </td>
+                <td style="text-align:center">
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ToString() : "-----")</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <DropdownList @ref="dropdownList" @bind-Value="orderType" Disabled="disable" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="display:table-cell;width:50%;padding-right:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Some of Items</h4>
+        <table style="height:210px;margin-right:80px;width:200px;">
+            <tr>
+                <td style="width:155px;">
+                    <label>Disable</label>
+                </td>
+                <td>
+                   
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Open on focus</label>
+                </td>
+                <td>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Action</label>
+                </td>
+                <td style="text-align:center">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Selected time</label>
+                </td>
+                <td style="text-align:center">
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <DropdownList @bind-Value="orderType">
+                        <DropdownItem Value="Demo.Model.OrderType.Tel" />
+                        <DropdownItem Value="Demo.Model.OrderType.Internet" />
+                    </DropdownList>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+@code {
+    Demo.Model.OrderType?[] orderTypes = new Demo.Model.OrderType?[] { Demo.Model.OrderType.Salon, Demo.Model.OrderType.Package };
+    bool disable;
+    Demo.Model.OrderType? orderType;
+    DropdownList<Demo.Model.OrderType?> dropdownList;
+}

@@ -1,0 +1,27 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+<div class="c-grid-inline">
+    <CaspianForm Model="Entities">
+        <CaspianValidationValidator ValidatorType="ValidatorType" />
+        <table>
+            @foreach(var entity in Entities)
+            {
+                <tr>
+                    @ChildContent(entity);
+                </tr>
+            }
+        </table>
+    </CaspianForm>
+</div>
+
+@code 
+{
+    [Parameter]
+    public IList<TEntity> Entities { get; set; }
+
+    [Parameter]
+    public Type ValidatorType { get; set; }
+
+    [Parameter]
+    public RenderFragment<TEntity> ChildContent { get; set; }
+}

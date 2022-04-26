@@ -1,0 +1,67 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+@{
+    var className = "t-radio";
+    var selected = RadioLis != null && RadioLis.Value != null && RadioLis.Value.Equals(Value);
+    if (Disabled)
+        className += " t-disabled";
+    if (selected)
+        className += " t-selected";
+    else
+        className += " t-default";
+    <span class="@className">
+        <span @onclick="OnMouseClick" class="t-icon">
+            <input type="radio" class="c-radio-button" />
+            @if (selected)
+            {
+                <span class="c-radio"></span>
+            }
+        </span>
+        @if (!HideTitle)
+        {
+            <span class="t-title" @onclick="OnMouseClick">@Title</span>
+        }
+    </span>
+}
+@code
+{
+    async void OnMouseClick()
+    {
+        if (!Disabled)
+        {
+            await ValueChanged.InvokeAsync(Value);
+            await RadioLis?.ValueChanged.InvokeAsync(Value);
+        }
+    }
+
+    [CascadingParameter(Name = "RadioLis")]
+    public RadioList<TValue> RadioLis { get; set; }
+
+    [CascadingParameter(Name = "ForTest")]
+    public int ForTest { get; set; }
+
+    [Parameter]
+    public TValue Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TValue> ValueChanged { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public bool HideTitle { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!Title.HasValue())
+        {
+            if (typeof(TValue).GetUnderlyingType().IsEnum && Value != null)
+                Title = (Value as Enum).FaText();
+        }
+        base.OnParametersSet();
+    }
+}

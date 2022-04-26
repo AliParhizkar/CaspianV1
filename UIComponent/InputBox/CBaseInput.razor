@@ -1,0 +1,321 @@
+﻿@namespace Caspian.UI
+@using System.Reflection 
+@typeparam TValue
+@implements IInputValueInitializer
+@implements IValidate
+@implements IControl
+@code
+{
+    string _FieldName;
+    ValidationMessageStore _messageStore;
+    bool valueIsChanged;
+    bool focused;
+    bool reseting;
+
+    protected ElementReference htmlElement;
+
+    //protected IDictionary<string, object> Attributes;
+
+    [Inject, JsonIgnore]
+    public FormAppState FormAppState { get; set; }
+
+    [JsonProperty("errorMessage")]
+    public string ErrorMessage { get; set; }
+
+    [Parameter, JsonProperty("bindingType")]
+    public BindingType BindingType { get; set; }
+
+    [CascadingParameter, JsonIgnore]
+    public CaspianContainer Container { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Type DynamicType { get; set; }
+
+    [Parameter, JsonIgnore]
+    public bool Required { get; set; }
+
+    [CascadingParameter, JsonIgnore]
+    public EditContext CurrentEditContext { get; set; }
+
+    [Parameter, JsonIgnore]
+    public bool Focused { get; set; }
+
+    [Inject, JsonIgnore]
+    protected IJSRuntime jsRuntime { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true), JsonIgnore]
+    public Dictionary<string, object> InputAttributes { get; set; }
+
+    [Parameter, JsonIgnore]
+    public string Id { get; set; }
+
+    [Parameter, JsonIgnore]
+    public string Style { get; set; }
+
+    [Parameter, JsonProperty("disabled")]
+    public bool Disabled { get; set; }
+
+    [Parameter, JsonIgnore]
+    public bool Search { get; set; }
+
+    [Parameter, JsonIgnore]
+    public TValue Value { get; set; }
+
+    [Parameter, JsonIgnore]
+    public EventCallback<TValue> ValueChanged { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Expression<Func<TValue>> ValueExpression { get; set; }
+
+    [Parameter, JsonIgnore]
+    public int? TabIndex { get; set; }
+
+    [CascadingParameter(Name = "ParentForm"), JsonIgnore]
+    internal ICaspianForm CaspianForm { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Search)
+            BindingType = BindingType.OnInput;
+        else
+            BindingType = BindingType.OnChange;
+
+        if (CurrentEditContext != null && ValueExpression != null)
+        {
+            _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
+            _messageStore = new ValidationMessageStore(CurrentEditContext);
+            CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
+            //CurrentEditContext.OnFieldChanged -= CurrentEditContext_OnFieldChanged;
+            CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
+        }
+        base.OnInitialized();
+    }
+
+    protected string ConvertToJson()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
+
+    public bool Validate()
+    {
+        if (Required && (Value == null || Value.ToString() == ""))
+        {
+            ErrorMessage = "مقدار این فیلد اجباری است.";
+            return false;
+        }
+        return true;
+    }
+
+    public virtual async Task SetValue(object obj)
+    {
+        var type = DynamicType ?? typeof(TValue);
+        if (type.IsNullableType() && obj != null)
+            type = Nullable.GetUnderlyingType(type);
+        Value = default(TValue);
+        valueIsChanged = true;
+        if (obj != null)
+        {
+            if (type.IsEnum)
+            {
+                object value = default(TValue);
+                Enum.TryParse(type, obj.ToString(), out value);
+                Value = (TValue)value;
+            }
+            else
+                Value = (TValue)Convert.ChangeType(obj, type);
+        }
+        if (CurrentEditContext != null && !reseting)
+        {
+
+            var model = CurrentEditContext.Model;
+            //FormAppState.AllControlsIsValid = true;
+            if (_FieldName.HasValue())
+            {
+                var info = model.GetType().GetProperty(_FieldName);
+                if (info == null && !Validate())
+                    FormAppState.AllControlsIsValid = false;
+                else if (info != null)
+                {
+                    var field = new FieldIdentifier(CurrentEditContext.Model, _FieldName);
+                    info.SetValue(model, Value);
+                    CurrentEditContext.NotifyFieldChanged(field);
+                }
+            }
+        }
+        reseting = false;
+        if (InputAttributes.ContainsKey("onchange"))
+        {
+            var change = (EventCallback<ChangeEventArgs>)InputAttributes["onchange"];
+            await change.InvokeAsync(new ChangeEventArgs() { Value = Value });
+        }
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    protected override void OnParametersSet()
+    {
+        CaspianForm?.AddControl(this);
+        Container?.SetControl(this);
+        if (InputAttributes == null)
+            InputAttributes = new Dictionary<string, object>();
+        if (TabIndex.HasValue)
+            InputAttributes["tabindex"] = TabIndex;
+        if (Focused)
+            focused = true;
+        base.OnParametersSet();
+    }
+
+    public async Task FocusAsync()
+    {
+        await htmlElement.FocusAsync();
+    }
+
+    public void Focus()
+    {
+        focused = true;
+    }
+
+    public virtual async Task ResetAsync()
+    {
+        reseting = true;
+        await SetValue(default(TValue));
+        ErrorMessage = null;
+    }
+
+    private void CurrentEditContext_OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
+    {
+        _messageStore = new ValidationMessageStore(CurrentEditContext);
+        var field = CurrentEditContext.GetType().GetField("_fieldStates", BindingFlags.NonPublic | BindingFlags.Instance);
+        var states = (field.GetValue(CurrentEditContext) as System.Collections.IDictionary);
+        foreach (dynamic state in states)
+        {
+            var fieldName = state.Key.FieldName as string;
+            if (fieldName == _FieldName)
+            {
+                var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, fieldName);
+                var list = CurrentEditContext.GetValidationMessages();
+                var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+                ErrorMessage = result.FirstOrDefault();
+            }
+            else if (fieldName.EndsWith("]." + _FieldName))
+            {
+                var mainField = fieldName.Substring(0, fieldName.Length - _FieldName.Length);
+                mainField = mainField.Split('[')[0];
+                var model = CurrentEditContext.Model;
+                var details = model.GetType().GetProperty(mainField).GetValue(model) as System.Collections.IEnumerable;
+                var expr = ValueExpression.Body;
+                FieldInfo info = null;
+                while(expr.NodeType != ExpressionType.Constant)
+                {
+                    if (expr.NodeType == ExpressionType.MemberAccess)
+                    {
+                        var member = (expr as MemberExpression).Member;
+                        if (member.MemberType == MemberTypes.Field)
+                            info = member as FieldInfo;
+                        expr = (expr as MemberExpression).Expression;
+                    }
+                }
+                var value = info.GetValue((expr as ConstantExpression).Value);
+                if (info.FieldType == typeof(RowData<>).MakeGenericType(details.ToDynamicList()[0].GetType()))
+                    value = value.GetType().GetProperty("Data").GetValue(value);
+                var index = 0;
+                foreach (var detail in details)
+                {
+                    if (detail == value)
+                    {
+                        var str = index == 0 ? fieldName : fieldName.Replace("[0]", '[' + index.ToString() + ']');
+                        var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
+                        var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+                        ErrorMessage = result.FirstOrDefault();
+                    }
+                    index++;
+                }
+                break;
+            }
+        }
+
+        if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
+        {
+            FormAppState.AllControlsIsValid = false;
+            FormAppState.Element = htmlElement;
+            FormAppState.ErrorMessage = ErrorMessage;
+        }
+    }
+
+    private void CurrentEditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+
+    }
+
+    private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
+    {
+        _messageStore = new ValidationMessageStore(CurrentEditContext);
+        var field = CurrentEditContext.GetType().GetField("_fieldStates", BindingFlags.NonPublic | BindingFlags.Instance);
+        var states = (field.GetValue(CurrentEditContext) as System.Collections.IDictionary);
+        foreach (dynamic state in states)
+        {
+            var fieldName = state.Key.FieldName as string;
+            if (fieldName == _FieldName)
+            {
+                var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, fieldName);
+                var list = CurrentEditContext.GetValidationMessages();
+                var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+                ErrorMessage = result.FirstOrDefault();
+                if (ErrorMessage == null)
+                    break;
+            }
+            else if (fieldName.EndsWith("]." + _FieldName))
+            {
+                var mainField = fieldName.Substring(0, fieldName.Length - _FieldName.Length);
+                mainField = mainField.Split('[')[0];
+                var model = CurrentEditContext.Model;
+                var details = model.GetType().GetProperty(mainField).GetValue(model) as System.Collections.IEnumerable;
+                var expr = ValueExpression.Body;
+                FieldInfo info = null;
+                while (expr.NodeType != ExpressionType.Constant)
+                {
+                    if (expr.NodeType == ExpressionType.MemberAccess)
+                    {
+                        var member = (expr as MemberExpression).Member;
+                        if (member.MemberType == MemberTypes.Field)
+                            info = member as FieldInfo;
+                        expr = (expr as MemberExpression).Expression;
+                    }
+                }
+                var value = info.GetValue((expr as ConstantExpression).Value);
+                var index = 0;
+                foreach (var detail in details)
+                {
+                    if (detail == value)
+                    {
+                        var str = index == 0 ? fieldName : fieldName.Replace("[0]", '[' + index.ToString() + ']');
+                        var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
+                        var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+                        ErrorMessage = result.FirstOrDefault();
+                    }
+                    index++;
+                }
+                break;
+            }
+        }
+        if (ErrorMessage == null && !Validate())
+        {
+            FormAppState.AllControlsIsValid = false;
+            FormAppState.Element = htmlElement;
+        }
+        if (ErrorMessage != null && FormAppState.AllControlsIsValid)
+        {
+            FormAppState.AllControlsIsValid = false;
+            FormAppState.Element = htmlElement;
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (focused)
+        {
+            await htmlElement.FocusAsync();
+            focused = false;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

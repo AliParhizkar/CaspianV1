@@ -1,0 +1,83 @@
+﻿@namespace Caspian.UI
+<div class="t-grid-header">
+    <div class="t-grid-header-wrap">
+        <table @attributes="tableAttrs">
+            <thead>
+                <tr>
+                    @foreach (var col in ColumnsData)
+                    {
+                        <th style="@(col.Width)" data-resizeable="@(col.Resizeable)" class="t-header">
+                            <span @onclick="(MouseEventArgs e) =>
+                                      {
+                                          OrderByChanged(!e.CtrlKey, col);
+                                      }">@(col.Title)</span>
+                            @if (col.OrderType.HasValue && col.Orderable)
+                            {
+                                var className = col.OrderType == OrderType.Asc ? "fa fa-sort-amount-asc" : "fa fa-sort-amount-desc";
+                                <span @onclick="(MouseEventArgs e) =>
+                                      {
+                                          OrderByChanged(!e.CtrlKey, col);
+                                      }" class="@className"></span>
+                            }
+                        </th>
+                    }
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@code
+{
+    Dictionary<string, object> attrs = new Dictionary<string, object>();
+    Dictionary<string, object> tableAttrs = new Dictionary<string, object>();
+
+    async void OrderByChanged(bool clearAllOrdering, ColumnData data)
+    {
+        if (data.Orderable)
+        {
+            var ordering = data.OrderType;
+            if (clearAllOrdering)
+                foreach (var col in ColumnsData)
+                    col.OrderType = null;
+            switch (ordering)
+            {
+                case OrderType.Asc:
+                    data.OrderType = OrderType.Decs;
+                    //attrs["class"] = "fa fa-sort-amount-asc";
+                    break;
+                case OrderType.Decs:
+                    data.OrderType = null;
+                    break;
+                case null:
+                    data.OrderType = OrderType.Asc;
+                    //attrs["class"] = "fa fa-sort-amount-desc";
+                    break;
+            }
+            if (OnOrderingChanged.HasDelegate)
+                await OnOrderingChanged.InvokeAsync(null);
+        }
+    }
+
+    [Parameter]
+    public IList<ColumnData> ColumnsData { get; set; }
+
+    [Parameter]
+    public int? TableWidth { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        tableAttrs["cellpadding"] = "0";
+        tableAttrs["cellspacing"] = "0";
+        if (TableWidth.HasValue)
+            tableAttrs["style"] = "width:" + TableWidth + "px";
+        foreach(var colData in ColumnsData)
+        {
+            
+        }
+        base.OnParametersSet();
+    }
+
+    [Parameter]
+    public EventCallback OnOrderingChanged { get; set; }
+}

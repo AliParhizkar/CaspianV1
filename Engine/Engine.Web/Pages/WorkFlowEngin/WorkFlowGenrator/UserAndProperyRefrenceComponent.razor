@@ -1,0 +1,340 @@
+﻿@namespace Caspian.Engine.WorkFlowGenrator
+@inject WorkflowService workflowService
+
+@inject Context Context
+@inject IJSRuntime JsRuntime
+<Window Style="width:500px;" @bind-Status="Status" Title="@(connectorType == Main.Models.ConnectorType.UserDefined ? "ارجاع کاربر" : "ارجاع سیستمی")">
+    <Content>
+        <table style="width:95%;margin:5px auto">
+            <tr style="height:50px;">
+                <td>
+                    <label>نوع ارجاع</label>
+                </td>
+                <td>
+                    <RadioList Style="width:100%" @bind-Value="connectorType" />
+                </td>
+            </tr>
+            @if (connectorType == Main.Models.ConnectorType.UserDefined)
+            {
+                <tr>
+                    <td>
+                        <label>عنوان</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="Connector.Title" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>اعتبارسنجی</label>
+                    </td>
+                    <td>
+                        <CheckBox @bind-Value="Connector.CheckValidation" TValue="bool" />
+                    </td>
+                </tr>
+
+            }
+            else
+            {
+                <tr>
+                    <td colspan="2">
+                        <CTreeView TEntity="TreeViewItem" Source="Nodes" SingleSelectOnTree
+                                   OnExpanded="async (node) =>
+                                      {
+                                          node.Items = (await GetTreeItems(node.Value));
+                                      }"
+                                   OnChange="UpdateControl" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>نوع مقایسه</label>
+                    </td>
+                    <td>
+                        <DropdownList @bind-Value="Connector.CompareType" Disabled="controlType == null" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>مقدار</label></td>
+                    <td>
+                        @switch (controlType)
+                        {
+                            case Caspian.Engine.ControlType.CheckBox:
+                                <CheckBox @bind-Value="boolValue" />
+                                break;
+                            case Caspian.Engine.ControlType.TreeStateCheckBox:
+                                <CheckBox @bind-Value="nullableBoolValue" />
+                                break;
+                            case Caspian.Engine.ControlType.DropdownList:
+                                <DropdownList @bind-Value="EnumValue" DynamicType="enumType" />
+                                break;
+                            case Caspian.Engine.ControlType.Integer:
+                                <NumericTextBox @bind-Value="intValue" />
+                                break;
+                            case Caspian.Engine.ControlType.Numeric:
+                                <NumericTextBox @bind-Value="numericValue" />
+                                break;
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+        <div style="direction:ltr;margin-left:40px;">
+            <button style="width:65px;margin-right:10px" class="t-button" @onclick="RegidterData">ثبت</button>
+            <button style="width:65px" class="t-button" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }">انصراف</button>
+        </div>
+    </Content>
+</Window>
+
+@code
+{
+    int? intValue;
+    bool isUpdate;
+    Type enumType;
+    string message;
+    bool boolValue;
+    Enum EnumValue;
+    string fieldTitle;
+    decimal? numericValue;
+    bool? nullableBoolValue;
+    IList<TreeViewItem> Nodes;
+    Main.Models.ConnectorType connectorType;
+    Caspian.Engine.ControlType? controlType;
+
+    async Task UpdateControl(string fieldName, decimal? value = null)
+    {
+        Connector.FieldName = fieldName;
+        var formGroup = (await workflowService.SingleAsync(WorkflowId)).FormGroup;
+        var type = new AssemblyInfo().GetModelType(formGroup.Subsystem, formGroup.ClassName);
+        var info = type.GetMyProperty(fieldName);
+        var attr = info.GetCustomAttribute<DisplayNameAttribute>();
+        if (attr != null)
+            fieldTitle = attr.DisplayName;
+        else
+            fieldTitle = info.Name;
+        type = info.PropertyType;
+        if (type.IsEnumType())
+        {
+            enumType = type;
+            controlType = Caspian.Engine.ControlType.DropdownList;
+            if (value.HasValue)
+            {
+                if (type.IsNullableType())
+                    type = type.GetUnderlyingType();
+                var field = type.GetFields().SingleOrDefault(t => !t.IsSpecialName && Convert.ToInt64(t.GetValue(null)).Equals(Convert.ToInt64(value.Value)));
+                EnumValue = (Enum)field.GetValue(null);
+            }
+        }
+        else if (type == typeof(int) || type == typeof(int?))
+        {
+            controlType = Caspian.Engine.ControlType.Integer;
+            if (value.HasValue)
+                intValue = Convert.ToInt32(value);
+        }
+        else if (type == typeof(bool))
+        {
+            controlType = Caspian.Engine.ControlType.CheckBox;
+            if (value.HasValue)
+                boolValue = Convert.ToBoolean(value);
+        }
+        else if (type == typeof(bool?))
+        {
+            controlType = Caspian.Engine.ControlType.TreeStateCheckBox;
+            if (value.HasValue)
+                nullableBoolValue = Convert.ToBoolean(value);
+        }
+        else if (type == typeof(DateTime) || type == typeof(DateTime?))
+        {
+            controlType = Caspian.Engine.ControlType.Date;
+            throw new NotImplementedException("خطای عدم پیاده سازی");
+        }
+        else
+        {
+            controlType = Caspian.Engine.ControlType.Numeric;
+            numericValue = value;
+        }
+    }
+
+    async Task UpdateControl(TreeViewItem node)
+    {
+        if (node.Selected)
+            await UpdateControl(node.Value);
+        else
+        {
+            controlType = null;
+            Connector.FieldName = null;
+            Connector.Title = null;
+        }
+    }
+
+    async void RegidterData()
+    {
+        if (connectorType == Main.Models.ConnectorType.UserDefined)
+        {
+            if (!Connector.Title.HasValue())
+                message = "لطفا عنوان ارجاع را مشخص نمایید";
+            else
+            {
+                Connector.FieldName = null;
+                Connector.CompareType = null;
+                Connector.Value = null;
+                isUpdate = true;
+            }
+        }
+        else
+        {
+            string strValue = null;
+            switch (controlType)
+            {
+                case Caspian.Engine.ControlType.CheckBox:
+                    Connector.Value = Convert.ToDecimal(boolValue);
+                    strValue = boolValue ? "درست" : "نادرست";
+                    break;
+                case Caspian.Engine.ControlType.TreeStateCheckBox:
+                    Connector.Value = nullableBoolValue == null ? (decimal?)null : Convert.ToDecimal(nullableBoolValue);
+                    break;
+                case Caspian.Engine.ControlType.DropdownList:
+                    Connector.Value = Convert.ToDecimal(EnumValue);
+                    strValue = EnumValue.FaText();
+                    break;
+                case Caspian.Engine.ControlType.Integer:
+                    Connector.Value = intValue == null ? (decimal?)null : Convert.ToDecimal(intValue);
+                    break;
+                case Caspian.Engine.ControlType.Numeric:
+                    Connector.Value = numericValue == null ? (decimal?)null : Convert.ToDecimal(numericValue);
+                    break;
+            }
+            if (strValue == null)
+                strValue = Connector.Value.Seprate3Digit();
+            if (!Connector.FieldName.HasValue())
+                message = "لطفا فیلد مقایسه ای را مشخص نمایید";
+            else if (Connector.CompareType == null)
+                message = "لطفا نوع مقایسه را مشخص نمایید";
+            else if (Connector.Value == null)
+                message = "لطفا ارزش فیلد را مشخص نمایید";
+            else
+            {
+                Connector.CheckValidation = false;
+                Connector.Title = fieldTitle + Connector.CompareType.Value.GetMathSign() + strValue;
+                isUpdate = true;
+            }
+        }
+        if (isUpdate)
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+    }
+
+    async Task<IList<TreeViewItem>> GetTreeItems(string fieldName)
+    {
+        var formGroup = (await workflowService.SingleAsync(WorkflowId)).FormGroup;
+        var type = new AssemblyInfo().GetModelType(formGroup.Subsystem, formGroup.ClassName);
+        if (fieldName.HasValue())
+            type = type.GetMyProperty(fieldName).PropertyType;
+        var nodes = new List<TreeViewItem>();
+        GetTree(type, nodes, fieldName, Connector.FieldName);
+        return nodes;
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public Connector Connector { get; set; }
+
+    [Parameter]
+    public int WorkflowId { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        Nodes = await GetTreeItems(null);
+        if (Connector.FieldName.HasValue())
+        {
+            connectorType = Main.Models.ConnectorType.Systemic;
+            await UpdateControl(Connector.FieldName, Connector.Value);
+            if (!isUpdate)
+                Connector.Title = null;
+        }
+        else
+            connectorType = Main.Models.ConnectorType.UserDefined;
+
+        await base.OnParametersSetAsync();
+    }
+
+    void GetTree(Type type, IList<TreeViewItem> list, string fieldName, string selectedFieldName)
+    {
+        if (fieldName.HasValue())
+            fieldName += '.';
+        foreach (var info in type.GetProperties())
+        {
+            var primaryKey = info.PropertyType.GetPrimaryKey(true);
+            var flag = primaryKey != null && primaryKey.CustomAttributes
+                .Any(t => t.AttributeType == typeof(ForeignKeyAttribute));
+            var isForeignKey = false;
+            foreach (var tempInfo in info.DeclaringType.GetProperties())
+            {
+                var attr = tempInfo.GetCustomAttribute<ForeignKeyAttribute>();
+                if (attr != null && attr.Name == info.Name)
+                {
+                    var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>();
+                    isForeignKey = true;
+                    if (displayAttr != null)
+                    {
+                        if (fieldName.HasValue())
+                            fieldName += '.';
+                        list.Add(new TreeViewItem()
+                        {
+                            Collabsable = true,
+                            Expanded = false,
+                            Selectable = false,
+                            Text = displayAttr.DisplayName,
+                            Value = fieldName + tempInfo.Name
+                        });
+                    }
+
+                    break;
+                }
+            }
+            if (!isForeignKey && (info.PropertyType.IsValueType || flag))
+            {
+                var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>();
+                if (displayAttr != null)
+                {
+                    var item = new TreeViewItem()
+                    {
+                        Text = displayAttr.DisplayName,
+                        Value = fieldName + info.Name,
+                        Selectable = !flag,
+                        Selected = fieldName + info.Name == selectedFieldName,
+                        Collabsable = false
+                    };
+                    if (flag)
+                    {
+                        var tempList = new List<TreeViewItem>();
+                        GetTree(info.PropertyType, tempList, fieldName + info.Name, selectedFieldName);
+                        foreach (var tempItem in tempList)
+                            item.Items.Add(tempItem);
+                    }
+                    if (!flag || item.Items.Count > 0)
+                        list.Add(item);
+                }
+            }
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message.HasValue())
+        {
+            await JsRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        if (isUpdate)
+        {
+            isUpdate = false;
+            await JsRuntime.InvokeVoidAsync("$.workflow.updateLinkData", Connector);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

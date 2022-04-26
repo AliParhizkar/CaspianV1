@@ -1,0 +1,104 @@
+﻿@page "/Demo/CustomeUpdateMVVM"
+@namespace Demo.Web.Pages
+@inherits SimplePage<Product>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:0 auto">
+    <div style="padding:8px 0">
+        <table style="width:100%">
+            <tr>
+                <td>
+                    <label>گروه محصول</label>
+                </td>
+                <td>
+                    <ComboBox @bind-Value="SearchData.ProductCategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Title" />
+                </td>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="SearchData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>وضعیت</span>
+                </td>
+                <td colspan="3">
+                    <DropdownList @bind-Value="SearchData.ActiveType" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400" HideInsertIcon>
+        <Columns>
+            <GridColumn TEntity="Product" Field="t => t.ProductCategory.Title" Title="گروه محصول" />
+            <GridColumn TEntity="Product" Field="t => t.Title" />
+            <GridColumn TEntity="Product" Field="t => t.Price.ToString()" style="width:150px;">
+                <Template>
+                    <NumericTextBox Focused="selectedId == context.Data.Id && row == 1" TValue="int" @bind-Value="context.Data.Price"
+                                    @onkeyup="async e =>
+                                {
+                                    await UpdatePrice(e, context.Data.Id, context.Data.Price);
+                                }" />
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.ToString()" style="width:150px;">
+                <Template>
+                    <NumericTextBox Focused="selectedId == context.Data.Id && row == 2" TValue="int" @bind-Value="context.Data.PriceOuterBound"
+                                    @onkeyup="async e =>
+                                          {
+                                              await UpdatePriceOuterBound(e, context.Data.Id, context.Data.PriceOuterBound);
+                                          }" />
+                </Template>
+            </GridColumn>
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    int? selectedId;
+    int? row;
+
+    async Task UpdatePrice(KeyboardEventArgs e, int productId, int price)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            using var scope = ServiceScopeFactory.CreateScope();
+            var productService = new ProductService(scope);
+            await productService.UpdatePrice(productId, price);
+            await productService.SaveChangesAsync();
+            await CrudGrid.Reload();
+            selectedId = productId;
+            row = 2;
+        }
+    }
+
+    async Task UpdatePriceOuterBound(KeyboardEventArgs e, int productId, int priceOuterBound)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            using var scope = ServiceScopeFactory.CreateScope();
+            var productService = new ProductService(scope);
+            await productService.UpdatePriceOuterBound(productId, priceOuterBound);
+            await productService.SaveChangesAsync();
+            await CrudGrid.Reload();
+            await CrudGrid.SelectNextRow();
+            if (CrudGrid.SelectedRowId.HasValue)
+            {
+                selectedId = CrudGrid.SelectedRowId.Value;
+                row = 1;
+            }
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        selectedId = null;
+        row = null;
+        base.OnAfterRender(firstRender);
+    }
+}
+

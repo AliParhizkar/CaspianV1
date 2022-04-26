@@ -1,0 +1,34 @@
+﻿@page "/Demo/Window"
+@namespace Demo.Web.Pages
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<button @onclick="() => { Status = WindowStatus.Open; }">Window 1</button>
+<Window @bind-Status="Status" Title="Window 1" Style="width:900px;height:600px">
+    <Content>
+        <h3>Window 1</h3>
+        <button @onclick="() => { Status1 = WindowStatus.Open; }">Window 2</button>
+        <Window @bind-Status="Status1" Title="Window 2" Style="width:700px;height:500px">
+            <Content>
+                <h3>Window 2</h3>
+                <button @onclick="() => { Status2 = WindowStatus.Open; }">Window 3</button>
+                <Window @bind-Status="Status2" Title="Window 3" Style="width:500px;height:400px">
+                    <Content>
+                        <h3>Window سوم</h3>
+                    </Content>
+                </Window>
+            </Content>
+        </Window>
+    </Content>
+</Window>
+
+
+
+
+
+@code {
+    WindowStatus Status;
+    WindowStatus Status1;
+    WindowStatus Status2;
+}

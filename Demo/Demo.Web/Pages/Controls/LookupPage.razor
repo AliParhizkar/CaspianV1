@@ -1,0 +1,87 @@
+﻿@page "/Demo/Lookup"
+@namespace Demo.Web.Pages
+<h3>Lookup Default</h3>
+@{
+    if (hideHeader)
+        autoHide = true;
+}
+<table style="width:95%;margin:0 auto">
+    <tr>
+        <td style="width:40%;">
+            <table width="100%">
+                <tr>
+                    <td style="width:30px">
+                        <CheckBox @bind-Value="disabled" />
+                    </td>
+                    <td>
+                        <label>Disabled</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <CheckBox @bind-Value="hideHeader" />
+                    </td>
+                    <td>
+                        <label>Hide header</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <CheckBox @bind-Value="hideIcon" />
+                    </td>
+                    <td>
+                        <label>Hide icon</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <CheckBox @bind-Value="autoHide" Disabled="hideHeader" />
+                    </td>
+                    <td>
+                        <label>Auto hide</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <CheckBox @bind-Value="openOnFocus" />
+                    </td>
+                    <td>
+                        <label>Open on focus</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <CheckBox @bind-Value="closeOnBlur" />
+                    </td>
+                    <td>
+                        <label>Close on blur</label>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td style="width:60px;">
+            <label>محصول</label>
+        </td>
+        <td style="width:250px">
+            <AutoComplete TEntity="Product" TValue="int?" @bind-Value="Id" HideHeader="hideHeader" AutoHide="autoHide" Title="جستجوی غذا"
+                          TextExpression="t => t.Title" OpenOnFocus="openOnFocus" CloseOnBlur="closeOnBlur" Disabled="disabled" 
+                          HideIcon="hideIcon">
+                <ProductLookupPage />
+            </AutoComplete>
+        </td>
+        <td>
+
+        </td>
+    </tr>
+</table>
+
+@code
+{
+    int? Id;
+    bool disabled;
+    bool autoHide;
+    bool hideIcon;
+    bool hideHeader;
+    bool closeOnBlur;
+    bool openOnFocus;
+}

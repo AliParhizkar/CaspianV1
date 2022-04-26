@@ -1,0 +1,44 @@
+﻿@namespace Caspian.UI
+
+<a @ref="@tag" @attributes="attrs" @onclick="Download">
+    @ChildContent
+</a>
+@code
+{
+    ElementReference tag;
+    bool load;
+    Dictionary<string, object> attrs = new Dictionary<string, object>();
+
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+    [Parameter]
+    public byte[] Value { get; set; }
+
+    [Parameter]
+    public string FileName { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        attrs["download"] = FileName;
+        base.OnParametersSet();
+    }
+
+    public void Download()
+    {
+        load = true;
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (load)
+        {
+            await JSRuntime.InvokeVoidAsync("$.telerik.bindFileDownload", tag, Value);
+            load = false;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

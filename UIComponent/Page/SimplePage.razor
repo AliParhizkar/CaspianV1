@@ -1,0 +1,8 @@
+﻿@using Microsoft.Extensions.DependencyInjection
+@namespace Caspian.UI
+@typeparam TEntity 
+@inherits BasePage
+@inject IJSRuntime jsRuntime
+@{
+    base.BuildRenderTree(__builder);
+}

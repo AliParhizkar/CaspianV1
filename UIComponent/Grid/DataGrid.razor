@@ -1,0 +1,162 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@inject IServiceScopeFactory ServiceScopeFactory
+<CascadingValue Value="this" Name="Grid">
+    @if (columnsData == null)
+    {
+        columnsData = new List<ColumnData>();
+        @Columns(null)
+    }
+    else
+    {
+    <div @ref="mainDiv" class="t-widget t-grid">
+        @if (SearchState == null)
+        {
+            @if (ToolsBar == null)
+            {
+                <GridToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" />
+            }
+        }
+        else
+            @ToolsBar
+        <GridHeader TableWidth="TableWidth" ColumnsData="columnsData" OnOrderingChanged="async () =>
+                                                {
+                                                    await ChangePageNumber(PageNumber);
+                                                }" />
+        @if (MasterForm != null && EditList != null && EditList.Count > 0)
+        {
+            var index = 0;
+            <CascadingValue Value="MasterForm.EditContext">
+                <div class="c-grid-inline">
+                    <table cellpadding="0" cellspacing="0">
+                        <tbody>
+                            @foreach (var item in EditList)
+                            {
+                                var rowData = new RowData<TEntity>() { Data = item, RowIndex = index };
+                                if (singleInserIndex == index)
+                                {
+                                    if (oldSingleInsertIndex != singleInserIndex)
+                                    {
+                                        singleInsertEditContext = new EditContext(item);
+                                        oldSingleInsertIndex = singleInserIndex;
+                                        sholdSingleInsertEditContextValidated = true;
+                                    }
+                                    <tr>
+                                        <CascadingValue Value="singleInsertEditContext">
+                                            <CaspianValidationValidator @ref="InsertValidator" ValidatorType="ServiceType"  />
+                                            <CascadingValue Value="true" Name="GridEditableList">
+                                                <CascadingValue Name="GridRowData" Value="rowData">
+                                                    @Columns(rowData)
+                                                </CascadingValue>
+                                            </CascadingValue>
+                                        </CascadingValue>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <CascadingValue Value="true" Name="GridEditableList">
+                                            <CascadingValue Name="GridRowData" Value="rowData">
+                                                @if (MultiInsert)
+                                                {
+                                                    @Columns(rowData)
+                                                }
+                                                else
+                                                {
+                                                    <CaspianContainer @ref="singleInsertContainer">
+                                                        @Columns(rowData)
+                                                    </CaspianContainer>
+                                                }
+                                            </CascadingValue>
+                                        </CascadingValue>
+                                    </tr>
+                                }
+                                index++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </CascadingValue>
+        }
+
+        <div class="t-grid-content" style="height:@(TableHeight)px">
+            @if (Items != null)
+            {
+                <table @attributes="tableAttrs">
+                    <tbody>
+                        @{
+                            int index = 0;
+                            var pkey = typeof(TEntity).GetPrimaryKey();
+                            foreach (var item in Items)
+                            {
+                                var id = Convert.ToInt32(pkey.GetValue(item));
+                                var attrs = new Dictionary<string, object>();
+                                var rowIndex = index;
+                                if (SelectType == SelectType.Single)
+                                {
+                                    if (rowIndex == SelectedRowIndex)
+                                        attrs.Add("class", "t-state-selected");
+                                }
+                                if (SelectType != SelectType.None)
+                                {
+                                    attrs.Add("onmousedown", EventCallback.Factory.Create<MouseEventArgs>(this, async (e) =>
+                                    {
+                                        SelectRow(rowIndex);
+                                        if (OnRowSelect != null)
+                                            await OnRowSelect.Invoke(item);
+                                        if (OnInternalRowSelect.HasDelegate)
+                                            await OnInternalRowSelect.InvokeAsync(id);
+
+                                    }));
+                                }
+                                index++;
+                                <tr @attributes="attrs">
+                                @{
+                                    var rowData = new RowData<TEntity>()
+                                    {
+                                        Data = item,
+                                        RowIndex = rowIndex,
+                                        DynamicData = DynamicData == null ? null : DynamicData[rowIndex]
+                                    };
+                                    if (id == EditngEntityId && id > 0)
+                                    {
+                                        if (EditngEntityId != OldEditngEntityId)
+                                        {
+                                            EditingContext = new EditContext(item);
+                                            OldEditngEntityId = EditngEntityId;
+                                            sholdFocucedOnUpdating = true;
+                                        }
+                                        <CascadingValue Value="EditingContext">
+                                            <CaspianValidationValidator ValidatorType="ServiceType" />
+                                            <CascadingValue Value="true" Name="GridEditableList" IsFixed>
+                                                <CascadingValue Name="GridRowData" Value="rowData">
+                                                    <CaspianContainer @ref="updateContainer">
+                                                        @Columns(rowData)
+                                                    </CaspianContainer>
+                                                </CascadingValue>
+                                            </CascadingValue>
+                                        </CascadingValue>
+                                    }
+                                    else
+                                    {
+                                        <CascadingValue Name="GridRowData" Value="rowData">
+                                            @Columns(rowData)
+                                        </CascadingValue>
+                                    }
+                                }
+                            </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <span class="t-loading"></span>
+            }
+        </div>
+        <GridPager HidePageSize="HidePageSize" PageSize="PageSize" PageNumber="PageNumber" TotalRecord="Total" OnPageSizeChanged="ChangePageSize"
+                   OnPageNumberChanged="ChangePageNumber" />
+    </div>
+    }
+</CascadingValue>

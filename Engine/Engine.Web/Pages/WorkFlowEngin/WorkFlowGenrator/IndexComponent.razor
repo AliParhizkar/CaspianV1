@@ -1,0 +1,45 @@
+﻿@page "/Engine/WorkflowGenrator/{WorkflowId:int}"
+@namespace Caspian.Engine.WorkFlowGenrator
+@inject IJSRuntime JsRuntime
+@inherits BasePage
+
+<div id="toolsBox" style="top:4px;position:absolute;height:200px;background-color:white;z-index:3">
+    <span title="ثبت">ثبت</span>
+    <span class="workflowzoom" title="بزرگنمایی" onclick="zoom()"></span>
+    <span class="zoomfit" title="اندازه ی پیش فرض" onclick="zoomFit()"></span>
+    <span class="zoomback" title="کوچک نمایی" onclick="zoomBack()"></span>
+    <span class="dynamicform" title="فرم های پویا" onclick="dynamicForm()"></span>
+</div>
+<div id="main">
+    <div id="myPaletteDiv" style="border: solid 1px gray; height: 600px;width:120px;float:right"></div>
+    <div id="myDiagramDiv" style="border: solid 1px gray; height: 600px;float:right;margin-right:5px;width:calc(100% - 128px)"></div>
+</div>
+<button onclick="$.workflow.save()">ثبت</button>
+@switch (WorkflowWindowType)
+{
+    case Main.Models.WorkflowWindowType.ActivityProperty:
+        <ActivityPropertyForm @bind-Status="Status" Activity="Activity" />
+        break;
+    case Main.Models.WorkflowWindowType.DynamicFields:
+        <ActivityDynamicFieldComponent @bind-Status="Status" Nodes="DynamicFieldNodes" />
+        break;
+    case Main.Models.WorkflowWindowType.ActivityField:
+        <ActivityFieldsComponent @bind-Status="Status" Activity="Activity" WorkflowId="WorkflowId" />
+        break;
+    case Main.Models.WorkflowWindowType.CheckMethod:
+        <ProcessMethodsComponent @bind-Status="Status" Actions="CheckMethodsList" />
+        break;
+    case Main.Models.WorkflowWindowType.UserAndProperyRefrence:
+        <UserAndProperyRefrenceComponent @bind-Status="Status" Connector="Connector" WorkflowId="WorkflowId" />
+        break;
+    case Main.Models.WorkflowWindowType.MethodReturnRefrence:
+        <MethodReturnRefrenceComponent @bind-Status="Status" Connector="Connector" WorkflowId="WorkflowId" />
+        break;
+    case Main.Models.WorkflowWindowType.ProcessMethod:
+        <ProcessActionComponent @bind-Status="Status" Actions="CheckMethodsList" />
+        break;
+}
+@code 
+{
+    ShowType ShowType;
+}

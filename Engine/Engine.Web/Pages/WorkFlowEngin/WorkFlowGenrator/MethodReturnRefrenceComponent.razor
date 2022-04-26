@@ -1,0 +1,139 @@
+﻿@namespace Caspian.Engine.WorkFlowGenrator
+@inject IJSRuntime JsRuntime
+@inject Context Context
+@inject ActionService actionService
+@inject WorkflowService workflowService
+<Window Style="width:400px;" @bind-Status="Status" Title="ارجاع عملکردی">
+    <Content>
+        <table style="width:90%;margin:5px auto">
+            <tr>
+                <td style="width:100px;">
+                    <label>نوع مقایسه</label>
+                </td>
+                <td>
+                    <DropdownList @bind-Value="Connector.CompareType" Disabled="controlType == null" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>مقدار</label></td>
+                <td>
+                    @switch (controlType)
+                    {
+                        case Caspian.Engine.ControlType.CheckBox:
+                            <CheckBox @bind-Value="boolValue" />
+                            break;
+                        case Caspian.Engine.ControlType.DropdownList:
+                            <DropdownList @bind-Value="EnumValue" DynamicType="enumType" />
+                            break;
+                    }
+                </td>
+            </tr>
+        </table>
+        <div style="direction:ltr;margin-left:40px;">
+            <button style="width:65px;margin-right:10px" class="t-button" @onclick="RegidterData">ثبت</button>
+            <button style="width:65px" class="t-button" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }">انصراف</button>
+        </div>
+    </Content>
+</Window>
+
+@code
+{
+    bool isUpdate;
+    string message;
+    Type enumType;
+    bool boolValue;
+    Enum EnumValue;
+    Caspian.Engine.ControlType? controlType;
+
+    async void RegidterData()
+    {
+        string strValue = null;
+        if (controlType == Caspian.Engine.ControlType.CheckBox)
+        {
+            Connector.Value = Convert.ToDecimal(boolValue);
+            strValue = boolValue ? "درست" : "نادرست";
+        }
+        else
+        {
+            Connector.Value = EnumValue == null ? null : Convert.ToDecimal(EnumValue);
+            strValue = EnumValue.FaText();
+        }
+        if (Connector.CompareType == null)
+            message = "لطفا نوع مقایسه را مشخص نمایید";
+        else if (Connector.Value == null)
+            message = "لطفا مقدار مقایسه را مشخص نمایید";
+        else
+        {
+            Connector.Title = "..." + Connector.CompareType.Value.GetMathSign() + strValue;
+            isUpdate = true;
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
+    }
+
+    async Task UpdateControl(decimal? value = null)
+    {
+        var action = Connector.Activity.Action;
+        var type = await actionService.GetCheckingActionReturnType(WorkflowId, action.Namespace, action.ClassName, action.MethodName);
+        if (type.IsEnumType())
+        {
+            enumType = type;
+            controlType = Caspian.Engine.ControlType.DropdownList;
+            if (value.HasValue)
+            {
+                if (type.IsNullableType())
+                    type = type.GetUnderlyingType();
+                var field = type.GetFields().SingleOrDefault(t => !t.IsSpecialName && Convert.ToInt64(t.GetValue(null)).Equals(Convert.ToInt64(value.Value)));
+                if (field != null)
+                    EnumValue = (Enum)field.GetValue(null);
+            }
+        }
+        else if (type == typeof(bool) || type == typeof(bool?))
+        {
+            controlType = Caspian.Engine.ControlType.CheckBox;
+            if (value.HasValue)
+                boolValue = Convert.ToBoolean(value);
+        }
+    }
+
+    async Task<Type> MethodReturnType(Main.Models.ConnectorModel connector)
+    {
+        var formGroup = (await workflowService.SingleAsync(WorkflowId)).FormGroup;
+        var action = connector.FromActivity.Action;
+        return new AssemblyInfo().GetServiseTypes(formGroup.Subsystem).Single(t => t.Namespace == action.Namespace && t.Name == action.ClassName)
+            .GetMethod(action.MethodName).ReturnType;
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public Connector Connector { get; set; }
+
+    [Parameter]
+    public int WorkflowId { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (!isUpdate)
+            await UpdateControl(Connector.Value);
+        await base.OnParametersSetAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message.HasValue())
+        {
+            JsRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        if (isUpdate)
+        {
+            JsRuntime.InvokeVoidAsync("$.workflow.updateLinkData", Connector);
+            isUpdate = true;
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

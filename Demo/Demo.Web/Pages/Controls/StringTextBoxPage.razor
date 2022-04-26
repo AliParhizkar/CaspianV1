@@ -1,0 +1,95 @@
+﻿@page "/Demo/StringTextBox"
+@namespace Demo.Web.Pages
+<h3>String Text Box</h3>
+<p>
+    این کنترل برای نوع داده ای رشته ای و به دو صورت تک خطی و چند خطی مورد استفاده قرار می گیرد
+</p>
+@if (multiLine)
+{
+    <p>
+        در حالت چند خطی امکان فعال/غیرفعال و دادن فوکوس به کنترل وجود دارد.
+    </p>
+    <p>
+        Binding تنها بصورت Onchange (با خارج شدن فوکوس) امکانپدیر است
+    </p>
+}
+else
+{
+    <p>
+        در حالت تک خطی امکان فعال غیرفعال کردن، دادن فوکوس و بیشترین مقدار طول رشته وجود دارد
+    </p>
+    <p>
+        Binding به دو صورت Onchange(با خارج شدن فوکوس) و Oninput(تغییر متن کنترل) امکانپدیر است
+    </p>
+}
+
+<table style="width:90%;margin:0 auto">
+    <tr>
+        <td style="width:120px">
+            <label>چند خطی</label>
+        </td>
+        <td style="width:300px">
+            <CheckBox @bind-Value="multiLine" />
+        </td>
+    </tr>
+    <tr>
+        <td style="width:120px">
+            <label>غیرفعال</label>
+        </td>
+        <td style="width:300px">
+            <CheckBox @bind-Value="disable" />
+        </td>
+    </tr>
+    @if (!multiLine)
+    {
+        <tr>
+            <td>
+                <label>Binding type</label>
+            </td>
+            <td>
+                <RadioList @bind-Value="bindingType" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Max length</label>
+            </td>
+            <td>
+                <NumericTextBox @bind-Value="maxlength" />
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="2">
+            <button style="width:120px" class="t-button" @onclick="async () => { await SetFocuse(); }">Focus</button>
+        </td>
+    </tr>
+</table>
+
+@if (multiLine)
+{
+    <StringTextBox @ref="textBox" @bind-Value="title" MultiLine Disabled="disable" Rows="5" />
+}
+else
+{
+    <StringTextBox @ref="textBox" @bind-Value="title" Disabled="disable" MaxLength="maxlength" BindingType="bindingType" />
+}
+<div>
+    <span>متن ورودی:</span>
+</div>
+<div>
+    <span style="padding-right:100px;">@title</span>
+</div>
+@code {
+    bool disable;
+    string title;
+    bool multiLine;
+    int maxlength = 12;
+    StringTextBox textBox;
+    BindingType bindingType = BindingType.OnChange;
+
+    async Task SetFocuse()
+    {
+        await textBox.FocusAsync();
+    }
+}

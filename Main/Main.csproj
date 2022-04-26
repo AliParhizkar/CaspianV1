@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
+    <ProjectReference Include="..\Demo\Demo.Model\Demo.Model.csproj" />
+    <ProjectReference Include="..\Demo\Demo.Service\Demo.Service.csproj" />
+    <ProjectReference Include="..\Demo\Demo.Web\Demo.Web.csproj" />
+    <ProjectReference Include="..\Employment\Employment.Model\Employment.Model.csproj" />
+    <ProjectReference Include="..\Employment\Employment.Service\Employment.Service.csproj" />
+    <ProjectReference Include="..\Employment\Employment.Web\Employment.Web.csproj" />
+    <ProjectReference Include="..\Engine\Engine.Model\Engine.Model.csproj" />
+    <ProjectReference Include="..\Engine\Engine.Service\Engine.Service.csproj" />
+    <ProjectReference Include="..\Engine\Engine.Web\Engine.Web.csproj" />
+    <ProjectReference Include="..\UIComponent\UIComponent.csproj" />
+  </ItemGroup>
+
+</Project>

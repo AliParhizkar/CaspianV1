@@ -1,0 +1,15 @@
+﻿@page "/{Subsystem}/Engine/MenuPriority"
+@namespace Caspian.Engine.SystemManagement
+@inherits SimplePage<MenuCategory>
+<DataGrid @ref="CrudGrid" TEntity="MenuCategory" TableHeight="350" HideInsertIcon>
+    <Columns>
+        <GridColumn TEntity="MenuCategory" Field="t => t.Title" Title="عنوان" />
+        <GridColumn TEntity="MenuCategory" Field="t => t.Ordering">
+
+        </GridColumn>
+    </Columns>
+</DataGrid>
+
+@code {
+
+}

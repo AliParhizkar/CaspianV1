@@ -1,0 +1,39 @@
+﻿@namespace Caspian.UI
+@inject IJSRuntime jSRuntime
+@inject NavigationManager navigationManager
+@inject IServiceScopeFactory ServiceScopeFactory
+
+<div id="mainmenu">
+    @if (Categories != null)
+    {
+        <ul class="accordion" id="accordion">
+            @foreach (var category in Categories)
+            {
+                <li class="default">
+                    <div class="link">
+                        <i class="fa @(category.IconFont)"></i>
+                        <span>@category.Title</span>
+                        <i class="c-icon1 fa fa-chevron-down"></i>
+                    </div>
+                    <ul class="submenu">
+                        @foreach (var menu in Menus.Where(t => t.MenuCategoryId == category.Id))
+                        {
+                            <li>
+                                <a href="@(menu.Source)">@(menu.Title)</a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    }
+</div>
+@code 
+{
+    void NavigateTo(string source)
+    {
+        //var curentUrl = navigationManager.Uri.Substring(navigationManager.BaseUri.Length - 1);
+        //var flag = curentUrl.StartsWith(source);
+        navigationManager.NavigateTo(source.Substring(1));
+    }
+}

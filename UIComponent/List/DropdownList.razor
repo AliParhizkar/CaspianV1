@@ -1,0 +1,125 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+@inherits CBaseInput<TValue>
+@{
+    var className = "t-dropdown-wrap";
+    if (Disabled)
+        className += " t-state-disabled";
+    else if (ErrorMessage == null)
+        className += " t-state-default";
+    else
+        className += " t-state-error";
+}
+<div @attributes="attrs" class="t-widget t-dropdown">
+    <div class="@className">
+        <span class="t-input">@(text)</span>
+        <span class="t-t-select">
+            <i class="t-icon t-arrow-down fa fa-caret-down"></i>
+        </span>
+        <input @ref="htmlElement" @attributes="inputAttrs" @onchange="UpdateValue" autocomplete="off" style="display:none" />
+    </div>
+</div>
+@code
+{
+    string text;
+    Dictionary<string, object> attrs;
+    Dictionary<string, object> inputAttrs;
+
+    async Task UpdateValue(ChangeEventArgs arg)
+    {
+        TValue value = default;
+        var str = Convert.ToString(arg.Value);
+        if (this.DynamicType != null)
+            value = (TValue)Enum.Parse(DynamicType.GetUnderlyingType(), str);
+        else if (str.HasValue())
+            value = (TValue)Enum.Parse(typeof(TValue).GetUnderlyingType(), str);
+        Value = value;
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    protected override void OnInitialized()
+    {
+        if (ValueExpression != null)
+        {
+            var expr = ValueExpression.Body;
+            while (expr.NodeType == ExpressionType.MemberAccess)
+            {
+                var property = (expr as MemberExpression).Member;
+                if (property.Name == "SearchData")
+                {
+                    var type = property.DeclaringType;
+                    if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SimplePage<>))
+                        Search = true;
+                }
+                expr = (expr as MemberExpression).Expression;
+            }
+        }
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        text = "لطفا انتخاب نمائید";
+        if (Value != null)
+        {
+            var field = GetFields().SingleOrDefault(t => t.GetValue(null).Equals(Value));
+            if (field != null)
+            {
+                var attr = field.GetCustomAttribute<EnumFieldAttribute>();
+                text = (attr != null) ? attr.DisplayName : field.Name;
+            }
+        }
+        attrs = new Dictionary<string, object>();
+        if (Style.HasValue())
+            attrs["style"] = Style;
+        inputAttrs = new Dictionary<string, object>();
+
+        if (Id.HasValue())
+        {
+            inputAttrs["id"] = Id.Replace('.', '_');
+            inputAttrs["name"] = Id;
+        }
+        if (Value != null)
+            inputAttrs["value"] = Convert.ToInt32(Value).ToString();
+        base.OnParametersSet();
+    }
+
+    private IEnumerable<FieldInfo> GetFields()
+    {
+        var type = DynamicType ?? typeof(TValue);
+        if (type.IsNullableType())
+            type = Nullable.GetUnderlyingType(type);
+        if (!type.IsEnum)
+            throw new Exception("خطا: Type " + type.Name + " is not enum : " + ValueExpression.Body.ToString());
+        var fields = type.GetFields().Where(t => !t.IsSpecialName);
+        if (EnumItems != null)
+            return fields.Where(t => EnumItems.Contains((TValue)t.GetValue(null)));
+        return fields;
+    }
+
+    [Parameter, JsonIgnore]
+    public ICollection<TValue> EnumItems { get; set; }
+
+    [JsonProperty("data")]
+    public List<SelectListItem> Items { get; set; }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        Items = new List<SelectListItem>();
+        if (typeof(TValue).IsNullableType())
+            Items.Add(new SelectListItem(null, "لطفا انتخاب نمائید"));
+        else if (Search)
+            Items.Add(new SelectListItem("0", "لطفا انتخاب نمائید"));
+        var fields = GetFields();
+        foreach (var field in fields.Where(t => !t.IsSpecialName))
+        {
+            var attr = field.GetCustomAttribute<EnumFieldAttribute>();
+            var value = Convert.ToInt32(field.GetValue(null));
+            Items.Add(new SelectListItem(value.ToString(),
+                attr == null ? field.Name : attr.DisplayName));
+        }
+        var json = this.ConvertToJson();
+        jsRuntime.InvokeVoidAsync("$.telerik.bindControl", htmlElement, json, UiControlType.DropdownList);
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

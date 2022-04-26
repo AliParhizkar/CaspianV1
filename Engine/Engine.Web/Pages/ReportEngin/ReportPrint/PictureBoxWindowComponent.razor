@@ -1,0 +1,149 @@
+﻿@namespace Caspian.Engine.ReportPrint
+@inject IJSRuntime jSRuntime
+@inject IServiceScopeFactory ServiceScopeFactory
+@{
+    var style = "width: 300px; height: 360px;background-size:";
+    if (PrintParam.Stretch)
+        style += "100% 100%";
+    else
+        style += "auto";
+}
+<Window @bind-Status="Status" Title="درج/حذف تصویر">
+    <Content>
+        @if (Params == null)
+        {
+            <table style="width:95%;margin:0 auto">
+                <tr>
+                    <td colspan="2">
+                        <Fileupload Style="width:300px;height:360px;" OnChange="ViewFile">
+                            <PictureBox style="@style" class="c-image-frame" NoContentTitle="برای بارگذاری عکس کلیک کنید" Data="fileContent" />
+                        </Fileupload>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:35px;">
+                        <CheckBox @bind-Value="PrintParam.Stretch" />
+                    </td>
+                    <td>
+                        <label>همسانی عکس و فریم</label>
+                    </td>
+                </tr>
+            </table>
+        }
+        else
+        {
+            <table style="width:95%;margin:0 auto">
+                <tr>
+                    <td>
+                        <label>فیلد داده</label>
+                    </td>
+                    <td>
+                        <ComboBox @bind-Value="PrintParam.TitleEn" TEntity="SelectListItem" Source="Params" TValue="string" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>همسانی عکس و فریم</label>
+                    </td>
+                    <td>
+                        <CheckBox @bind-Value="PrintParam.Stretch" />
+                    </td>
+                </tr>
+            </table>
+        }
+        <div style="padding:5px;text-align:center;padding-right:30%">
+            <button @onclick="() => { Status = WindowStatus.Close; }" class="c-button c-cancel">انصراف</button>
+            <button @onclick="SaveFile" class="c-button c-ok">ثبت</button>
+        </div>
+    </Content>
+</Window>
+@code
+{
+    string message;
+    bool updateData;
+    byte[] fileContent;
+    IEnumerable<SelectListItem> Params;
+
+    async Task ViewFile(InputFileChangeEventArgs args)
+    {
+        fileContent = await args.File.GetByteArrayAsync();
+        PrintParam.ImageFileName = Path.GetRandomFileName().Replace(".", "") + Path.GetExtension(args.File.Name);
+
+        StateHasChanged();
+    }
+
+    async Task SaveFile()
+    {
+        if (Params == null)
+        {
+            if (!PrintParam.ImageFileName.HasValue())
+                message = "لطفا فایل تصوبر را مشخص نمایید.";
+            else
+            {
+                var path = Assembly.GetExecutingAssembly().GetMapPath() + "\\Data\\Report\\Images\\" + PrintParam.ImageFileName;
+                await File.WriteAllBytesAsync(path, fileContent);
+                updateData = true;
+                Status = WindowStatus.Close;
+            }
+        }
+        else
+        {
+            if (PrintParam.TitleEn.HasValue())
+            {
+                updateData = true;
+
+                Status = WindowStatus.Close;
+            }
+            else
+                message = "لطفا فیلد داده را مشخص نمایید.";
+        }
+    }
+
+    [Parameter]
+    public PrintParam PrintParam { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (PrintParam.DataLevel.HasValue)
+        {
+            using var scope = ServiceScopeFactory.CreateScope();
+            Params = (await new PrintReport(scope).GetFiledsProperty(PrintParam.ReportId.Value, PrintParam.DataLevel.Value))
+            .Select(t => new SelectListItem(t.Key, t.Value));
+        }
+        else
+            Params = null;
+        if (PrintParam.ImageFileName.HasValue())
+        {
+            var path = Assembly.GetExecutingAssembly().GetMapPath() + "\\Data\\Report\\Images\\" + PrintParam.ImageFileName;
+            fileContent = await File.ReadAllBytesAsync(path);
+        }
+        await base.OnParametersSetAsync();
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message.HasValue())
+        {
+            await jSRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        if (updateData)
+        {
+            string image = null;
+            if (fileContent != null)
+                image = Convert.ToBase64String(fileContent);
+            if (Params != null && PrintParam.TitleEn.HasValue())
+                PrintParam.TitleFa = Params.Single(testc => testc.Value == PrintParam.TitleEn).Text;
+            await jSRuntime.InvokeVoidAsync("$.report.setImage", image, PrintParam);
+            updateData = false;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

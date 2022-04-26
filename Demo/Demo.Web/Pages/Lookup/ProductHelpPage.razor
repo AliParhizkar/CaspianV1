@@ -1,0 +1,34 @@
+﻿@inherits LookupPage<Product>
+@namespace Demo.Web.Pages
+<div class="c-lookup-page" style="width:380px;">
+    <div style="display:none">
+        <table style="width:100%">
+            <tr>
+                <td>
+                    <label>گروه غذا</label>
+                    <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="SearchData.ProductCategoryId" 
+                              TextExpression="t => t.Title"  />
+                </td>
+                <td>
+                    <label>عنوان</label>
+                    <StringTextBox @bind-Value="SearchData.Title" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <DataGrid @ref="Grid" TEntity="Product" TableHeight="250">
+        <Columns>
+            <GridColumn TEntity="Product" Field="t => t.ProductCategory.Title" Title="گروه غذا" />
+            <GridColumn TEntity="Product" Field="t => t.Title" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code 
+{ 
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => t.Title.Contains(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

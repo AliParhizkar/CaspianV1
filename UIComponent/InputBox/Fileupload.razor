@@ -1,0 +1,34 @@
+﻿@namespace Caspian.UI
+<div style="@Style" class="t-widget t-upload">
+    <Microsoft.AspNetCore.Components.Forms.InputFile class="t-input" OnChange="ViewFile" />
+    <div class="t-content">
+        @if (ChildContent == null)
+        {
+            <button>@Title</button>
+        }
+        else
+        {
+            @ChildContent
+        }
+    </div>
+</div>
+@code {
+
+    [Parameter]
+    public string Title { get; set; } = "...";
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<InputFileChangeEventArgs> OnChange { get; set; }
+
+    async void ViewFile(InputFileChangeEventArgs arg)
+    {
+        if (OnChange.HasDelegate)
+            await OnChange.InvokeAsync(arg);
+    }
+}

@@ -1,0 +1,93 @@
+﻿@page "/Demo/MaterialReceipt"
+@namespace Demo.Web.Pages
+@inherits MasterDetailPage<StoreHouseReceipt, MaterialReceipt>
+<div style="margin:10px auto; width:90%">
+    <CaspianForm @ref="MasterForm" Model="UpsertData" OnValidSubmit="@(async con =>
+                                                            {
+                                                                var result = await Task.FromResult(true);
+                                                                return result;
+                                                            })">
+        <CaspianValidationValidator ValidatorType="typeof(StoreHouseReceiptService)" />
+        <table style="width:500px;margin:0 auto">
+            <tr>
+                <td>تاریخ حواله</td>
+                <td>
+                    <DatePicker @bind-Value="UpsertData.Date" />
+                </td>
+            </tr>
+            <tr>
+                <td>انبار</td>
+                <td>
+                    <ComboBox TValue="int" TEntity="StoreHouse" @bind-Value="UpsertData.StoreHouseId"
+                              TextExpression="t => t.Title" ConditionExpression="t => t.ActiveType == ActiveType.Enable" />
+                </td>
+            </tr>
+            <tr>
+                <td>توضیحات</td>
+                <td>
+                    <StringTextBox @bind-Value="UpsertData.Comment" MultiLine Rows="3" />
+                </td>
+            </tr>
+        </table>
+        <button>ثبت</button>
+    </CaspianForm>
+    <DataGrid @ref="Grid" TEntity="MaterialReceipt" TableHeight="250" MultiInsert HidePageSize ServiceType="typeof(MaterialReceiptService)">
+        <Columns Context="con">
+            <GridColumn TEntity="MaterialReceipt" Field="t => t.Material.Title" Title="محصول">
+                <EditTemplate>
+                    <AutoComplete TValue="int" TEntity="Material" @bind-Value="con.Data.MaterialId" HideHeader AutoHide
+                                  TextExpression="t => t.Title" Title="محصول"
+                                  OnChange="async () =>
+                                            {
+                                                await UpdateMaterialReceipt(con.Data.MaterialId, con.Data);
+                                            }">
+                        <MaterialLookupPage />
+                    </AutoComplete>
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn TEntity="MaterialReceipt" Field="t => t.QuantityMain">
+                <EditTemplate>
+                    <NumericTextBox @bind-Value="con.Data.QuantityMain" />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn TEntity="MaterialReceipt" Field="t => t.Material.MainUnit.Title" Title="واحد اصلی">
+                <Template>
+                    <span>@(con.Data?.Material?.MainUnit?.Title)</span>
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="MaterialReceipt" Field="t => t.QuantitySub">
+                <EditTemplate>
+                    @if (con.Data?.Material?.SubunitId != null)
+                    {
+                        <NumericTextBox @bind-Value="con.Data.QuantitySub" />
+                    }
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn TEntity="MaterialReceipt" Field="t => t.Material.Subunit.Title" Title="واحد فرعی">
+                <Template>
+                    <span>@(con.Data?.Material?.Subunit?.Title)</span>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="MaterialReceipt" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    IServiceScope scope;
+
+    protected override Task OnInitializedAsync()
+    {
+        scope = CreateScope();
+        return base.OnInitializedAsync();
+    }
+
+    async Task UpdateMaterialReceipt(int materialId, MaterialReceipt materialReceipt)
+    {
+        if (materialId > 0)
+        {
+            materialReceipt.Material = await new MaterialService(scope).SingleAsync(materialId);
+        }
+    }
+}

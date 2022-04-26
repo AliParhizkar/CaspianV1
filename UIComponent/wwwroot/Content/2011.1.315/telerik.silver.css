@@ -1,0 +1,838 @@
+@font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: bold;
+    src: url('/_Content/UiComponent/Content/assets/fonts/woff2/iranyekanwebbold(fanum).woff2');
+}
+
+@font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: 300;
+    src: url('/_Content/UiComponent/Content/assets/fonts/woff2/iranyekanwebregular(fanum).woff2');
+}
+
+body {
+    font-family: 'iranyekan';
+    font-size:12px;
+}
+.c-picturebox {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #b5b5b5;
+    border-radius: 4px;
+    text-align: center;
+    color: #b5b5b5;
+    background-size:cover;
+    background-position:center;
+}
+    .c-picturebox .c-content {
+        width: 100%;
+        height: 100%;
+        display: inline-block;
+        background-repeat: no-repeat;
+        background-size: inherit;
+        background-size:inherit;
+    }
+
+.t-window-action .fa {
+    color: #ff6358;
+    font-size:17px;
+}
+.t-state-error input {
+    border-style: solid !important;
+    border-color: rgba(255, 0, 0, 0.17) !important;
+    background-color: #ffe9ec !important;
+}
+
+/* Outlook theme*/
+fieldset.t-widget legend {
+    color: #8d8b9a;
+    font-size: 10px;
+}
+.t-small .t-numeric  {
+    font-size: 10px !important;
+}
+.t-widget {
+}
+    .t-widget.t-state-disabled .t-star {
+        color: #ececec;
+    }
+    .t-widget.t-state-disabled .t-select {
+        background-image: none;
+        cursor: not-allowed;
+        background-color: #eaeaea;
+    }
+
+.t-state-disabled .fa {
+    color: #c6c6c7;
+    cursor: not-allowed;
+}
+/* webkit solution */
+::-webkit-input-placeholder {
+    text-align: right;
+    direction: rtl;
+}
+/* mozilla solution */
+input:-moz-placeholder {
+    text-align: right;
+    direction: rtl;
+}
+
+t-window-titlebar{
+    
+}
+/* .small .t-widget { font-size: .687em; } /* 11px base, if there are no inherited font-sizes (MVC Outlook) */
+html input[disabled], textarea[disabled] {
+    background-color: #ececec;
+    cursor: not-allowed;
+}
+.t-header,
+.t-grid-header {
+    background-image: none;
+    line-height: 30px;
+    text-align: center;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, .12);
+}
+.t-grid-header {
+    color: #656565;
+    background-color: #f6f6f6;
+}
+
+.t-widget.t-grid 
+{
+    font-size:14px;
+}
+
+.t-datepicker .t-state-selected  {
+    box-shadow: 0 0 3px 0 grey;
+    border-color: rgba(0, 0, 0, 0.24);
+}
+
+
+.t-picker-wrap .t-select {
+    border-color: rgba(0, 0, 0, 0.12);
+    cursor:pointer;
+    text-align:center;
+    padding-top:2px;
+}
+
+.t-panelbar .t-state-hover { background-image: none; }
+
+.t-editor .t-tool-icon { background-image: url('/Content/2011.1.315/Outlook/editor.png'); }
+
+.t-expand { background-position: 0 -160px; }
+.t-collapse { background-position: 0 -176px; }
+.t-rtl .t-expand { background-position: -64px -160px; }
+
+.t-plus, .t-plus-disabled { background-position: 0 -256px; }
+.t-minus, .t-minus-disabled { background-position: -16px -256px; }
+
+.t-rtl .t-plus, .t-rtl .t-plus-disabled { background-position: 0 -272px; }
+.t-rtl .t-minus, .t-rtl .t-minus-disabled { background-position: -16px -272px; }
+
+.t-arrow-up { background-position: -15px -159px; }
+
+.t-state-disabled .t-arrow-up { background-position: -32px -160px; }
+.t-state-disabled .t-arrow-down {
+    background-position: -15px -174px;
+    cursor:not-allowed;
+}
+.t-DBLable {
+    margin: 3px 2px 3px 2px;
+    padding-left:10px;
+}
+    .t-DBLable span {
+        display: block;
+        padding:1px 6px;
+        background-color: #4f7777;
+        height: 28px;
+        width: 100%;
+        color: lightgrey;
+        border-radius: 15px;
+        line-height:28px;
+        box-sizing:border-box;
+    }
+.t-state-hover .t-arrow-up {
+    background-position: -48px -160px;
+}
+/*.t-state-hover .t-arrow-down { background-position: -47px -176px; }*/
+
+.t-numerictextbox .t-arrow-up { background-position: -16px -162px; }
+.t-numerictextbox .t-arrow-down { background-position: -16px -178px; }
+
+.t-arrow-up-small { background-position: 0 -304px; }
+.t-arrow-down-small { background-position: -16px -304px; }
+
+.t-combobox .t-state-default .t-input{
+    border-color: rgba(0,0,0,0.12);
+}
+.t-combobox .t-state-default .t-select {
+    border-color: rgba(0,0,0,0.08);
+}
+.t-dropdown-wrap.t-state-hover .t-select {
+    border-color: rgba(0,0,0,0.15);
+}
+.t-datepicker .t-state-hover .t-input {
+    border-color: rgba(0,0,0,0.24);
+}
+
+.t-datepicker .t-state-hover .t-select {
+    background-image: linear-gradient(#e6e6e6,#e1e1e1);
+    border-color: rgba(0,0,0,0.15);
+}
+
+.t-dropdown-wrap.t-state-hover .t-input {
+    border-color: rgba(0,0,0,0.24);
+}
+.t-dropdown-wrap.t-state-hover .t-select {
+    background-image: linear-gradient(#e6e6e6,#e1e1e1);
+}
+.t-numerictextbox .t-input {
+    border-color: rgba(0,0,0,0.12);
+    padding: 0 4px 0 4px;
+    width: calc(100% - 4px);
+    box-sizing: border-box;
+    direction: ltr;
+    font-size:15px;
+}
+.t-state-disabled .t-input{
+    color:gray!important;
+}
+.t-state-disabled{
+    background-image:none!important;
+}
+.t-state-disabled .fa-caret-down {
+    color: gray !important;
+}
+.t-numerictextbox.t-state-hover .t-input {
+    border-color: rgba(0,0,0,0.24);
+}
+.t-numerictextbox .t-input:focus {
+    border-color: rgba(0,0,0,0.24);
+    box-shadow: 0 0 3px 0 grey;
+}
+.t-dropdown .t-dropdown-wrap {
+    background-image: linear-gradient(#f6f6f6,#ebebeb);
+    border-color: rgba(0,0,0,0.12);
+}
+    .t-dropdown .t-dropdown-wrap:not(.t-state-disabled):hover {
+        background-image: linear-gradient(#e6e6e6,#e1e1e1);
+        border-color: rgba(0,0,0,0.24);
+    }
+    .t-dropdown .t-dropdown-wrap:focus {
+        box-shadow: 0 0 3px 0 grey;
+    }
+    .t-animation-container .t-popup {
+        background-color: #f9f9f9;
+        border: 1px solid #c5c5c5;
+        max-height:300px;
+        min-height:30px;
+        overflow:auto;
+        border-radius:8px;
+    }
+.t-picker-wrap{
+    margin:2px;
+    border-radius:8px;
+}
+    .t-picker-wrap.t-state-focused .t-select {
+        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.4);
+        border-color: rgba(0,0,0,0.15);
+    }
+    .t-picker-wrap.t-state-focused {
+        box-shadow: 0 0 3px 0 grey;
+    }
+    .t-picker-wrap.t-state-focused .t-input {
+        border-color: rgba(0,0,0,0.24);
+    }
+    .t-dropdown-wrap.t-state-focused {
+        box-shadow: 0 0 3px 0 grey;
+    }
+
+.t-combobox .t-state-focused .t-input {
+    border-color: rgba(0,0,0,0.24);
+}
+.t-combobox .t-state-focused .t-select {
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.4);
+    border-color: rgba(0,0,0,0.15);
+}
+.t-dropdown .t-state-focused {
+    background-color: #bdb4af;
+    transition: box-shadow 0.15s ease-out 0s;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3) !important;
+    background-image: inherit;
+}
+
+.t-reset .t-state-selected
+{
+    background-color:#ff6358;
+}
+.t-reset .t-item :hover{
+    /*background-color:red!important;*/
+}
+.t-tabstrip .t-state-default:hover {
+    background-color: #f6f6f6 !important;
+}
+
+
+.t-window-titlebar .fa-times {
+    line-height: 26px;
+    width: 28px;
+    background-image: url(/areas/Satrap.FoodWeb/Content/Cash/TopIcons_Grey.png);
+    background-position: -979px -487px;
+    margin: 5px 2px 0 0;
+} 
+.t-refresh {
+    background-position: -32px -240px;
+}
+.t-icon-calendar { background-position: -50px -237px; }
+.t-icon-clock { background-position: -64px -336px; }
+
+.t-edit { background-position: 0 -332px; }
+.t-delete {
+    background-position: -24px -333px;
+    background-image: url('/Content/2011.1.315/Outlook/sprite.png');
+
+}
+.t-insert, .t-update {
+    padding: 2px 5px;
+    font-weight: bold;
+    height: 31px;
+    width: 55px;
+    display: inline-block;
+    text-align: center;
+}
+.t-cancel {
+    padding-top: 2px;
+    font-weight: bold;
+    height: 31px;
+    width: 55px;
+    display: inline-block;
+    text-align: center
+}
+
+.t-grid .t-loading {
+    display: block;
+    width: 50px;
+    height: 50px;
+    color: #62c6c6;
+    border-radius: 25px;
+    box-sizing: border-box;
+    position: relative;
+    left: calc(-50% + 25px);
+    top: calc(50% - 25px);
+    border: 6px solid currentColor;
+    border-color: #62c6c6 #62c6c670 #62c6c640 #62c6c610;
+    animation: loding 1.2s linear infinite;
+}
+@keyframes loding {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+.t-grid .t-loading div
+{
+    background-color:#fff;
+    opacity:0.3;
+    width:100%;
+    height:100%;
+}
+.t-grid a
+{
+    outline:none;
+}
+.t-widget.t-grid,
+.t-link:link,
+.t-link:active,
+.t-link:visited,
+.t-popup {
+    
+}
+
+.t-group,
+.t-content,
+.t-editable-area
+{
+}
+
+.t-alt{
+    background-color:#585858;
+}
+
+.t-colorpicker .t-arrow-down
+{
+    border-color: #5d8cc9;
+}
+
+.t-separator
+{
+    border-color: #cfdef4;
+    background-color: #7e98bc;
+}
+
+.t-state-default
+{
+    
+}
+
+.t-active-filter
+{
+    background-color: #b6cef2;
+}
+
+.t-state-active {
+/*    background-color: rgba(255,99,88,0.2) !important;
+    border-color: #ff6358!important;*/
+}
+.t-widget.t-message {
+    width: 250PX;
+    top: 5PX;
+    position: fixed;
+    z-index: 999999999;
+    overflow: hidden;
+    direction: rtl;
+    left: 20px;
+    color: #757575;
+    border-radius: 5px;
+    border: 1px solid;
+    border-color: rgba(0, 0, 0, .12);
+    background-color: #eff1f5;
+    box-shadow: 3px 3px 5px 0 slategrey;
+    font-size: 14px;
+}
+#outMessage .t-title {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+}
+
+.t-widget.t-message .t-close {
+    display: block;
+    position: absolute;
+    top: 7px;
+    left: 9px;
+    cursor: pointer;
+}
+    .t-widget.t-message .t-close .fa{
+        font-size:15px;
+    }
+    .t-widget.t-message .t-close.-state-hover {
+        background-color: #f7c3a6;
+        border-color: #f85a00;
+    }
+.t-grid .t-state-selected {
+    background-color: #5e8f8f50 !important;
+}
+.t-pager .t-numeric .t-state-active {
+    background-color: #cecece;
+    border: 1px solid rgba(0,0,0,0.2);
+    color: #ff6358;
+}
+.t-grid .t-selectable tr{
+    cursor:pointer;
+}
+
+.t-pager > .t-link {
+    text-align:center;
+}
+.t-pager .t-link .t-icon{
+    width:16px;
+    height:16px;
+}
+.fa-caret-right, .fa-caret-left{
+    font-size:20px!important;
+    height:22px!important;
+}
+
+.t-button {
+    background-color: #008f8f;
+    color: white;
+    height:32px;
+    border-radius: 8px;
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+    cursor: pointer;
+    padding: 3px 4px;
+    border: none;
+}
+    .t-button:not([disabled]):hover {
+        box-shadow: 0px 0px 5px 1px #c5c5c5;
+    }
+
+.t-button.t-state-selected
+{
+    box-shadow:0 0 3px 0;
+    background-color:#ff5e03;
+    border-color:#8d8079;
+    color:#fff;
+    background-image:linear-gradient(rgba(255, 255, 255, 0.4) 0px, rgba(255, 255, 255, 0))
+}
+
+button:disabled {
+    background-color: #ececec !important;
+    box-shadow: none;
+    color: #c3c3c3 !important;
+    border-color: #c3c3c3 !important;
+    cursor: not-allowed;
+}
+
+
+.t-state-disabled,
+.t-state-disabled:hover,
+.t-state-disabled .t-link,
+.t-state-disabled .t-button {
+    color: #999;
+    background-image: none;
+}
+
+.t-header .t-state-disabled,
+.t-header .t-state-disabled .t-link {
+    color: #577aac;
+    border-color: #7da5e0;
+}
+.t-grid tr td {
+    font-family: iranyekan;
+    text-align: center;
+    font-size: 13px;
+    line-height: 38px;
+}
+
+.t-grouping-row td
+{
+    background: #fff url('/Content/2011.1.315/Outlook/sprite.png') repeat-x 0 -48px;
+}
+
+.t-footer-template td
+{
+    background-color: #d6e5f3;
+    border-color: #567db0 #d6e5f3 #fff;
+}
+
+.t-group-footer td
+{
+    background-color: #d6e5f3;
+    border-color: #567db0;
+}
+
+.t-grid-footer,
+.t-grid-footer-wrap table
+{
+    background-color: #d6e5f3;
+    border-color: #567db0;
+}
+
+.t-grouping-header .t-group-indicator
+{
+    color: #333;
+    border-color: #aaa;
+}
+
+.t-grouping-dropclue
+{
+    background: url('/Content/2011.1.315/Outlook/sprite.png') no-repeat -48px -288px;
+}
+
+.t-grouping-row .t-group-cell,
+.t-grouping-row p
+{
+    background: #fff;
+}
+
+.t-treeview .t-drop-clue
+{
+    background-image: url('/Content/2011.1.315/Outlook/sprite.png');
+    background-position: 0 -358px;
+}
+
+.t-treeview .t-state-selected
+{
+    border-color: #002d96;
+}
+
+.t-panelbar .t-link,
+.t-panelbar .t-group,
+.t-panelbar .t-content
+{
+    border-color: #c5c5c5;
+}
+
+
+.t-calendar th {
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    line-height:21px;
+}
+
+.t-calendar .t-other-month .t-link {
+    color: #777;
+}
+
+.t-treeview-lines .t-top,
+.t-treeview-lines .t-mid,
+.t-treeview-lines .t-bot
+{
+    background-image: url('/Content/2011.1.315/Outlook/treeview-nodes.png');
+}
+
+.t-rtl .t-treeview-lines .t-top,
+.t-rtl .t-treeview-lines .t-mid,
+.t-rtl .t-treeview-lines .t-bot
+{
+    background-image: url('/Content/2011.1.315/Outlook/treeview-nodes-rtl.png');
+}
+
+.t-treeview-lines .t-item { background-image: url('/Content/2011.1.315/Outlook/treeview-line.png'); }
+.t-treeview-lines .t-last { background-image: none; }
+
+.t-editor-button .t-state-hover
+{
+    border-color: #dae8fa #668dcf #668dcf #dae8fa;
+    background-color: #93b5e7;
+}
+
+.t-editor-button .t-state-active
+{
+    border-color: #5781c9 #a3c1ea #a3c1ea #5781c9;
+    background-color: #7da5e0;
+}
+
+/*Slider*/
+
+.t-slider .t-draghandle
+{
+	background-image:url('/Content/2011.1.315/Outlook/sprite.png');
+	color:#5d8cc9;
+}
+
+.t-slider-track
+{
+	border-color:#7b9ecc;
+}
+
+.t-slider-horizontal .t-slider-track,
+.t-slider-horizontal .t-slider-selection
+{
+	background-image:url('/Content/2011.1.315/Outlook/sprite.png');
+}
+
+.t-slider-vertical .t-slider-track,
+.t-slider-vertical .t-slider-selection
+{
+	background-image:url('/Content/2011.1.315/Outlook/sprite-vertical.png');
+}
+
+.t-slider-horizontal .t-tick { background-image:url('/Content/2011.1.315/Outlook/slider-hs-both.gif'); }
+.t-slider-horizontal .t-slider-topleft .t-tick { background-image:url('/Content/2011.1.315/Outlook/slider-hs-top.gif'); }
+.t-slider-horizontal .t-slider-bottomright .t-tick { background-image:url('/Content/2011.1.315/Outlook/slider-hs-bottom.gif'); }
+
+.t-slider-horizontal .t-tick-large { background-image:url('/Content/2011.1.315/Outlook/slider-h-both.gif'); }
+.t-slider-horizontal .t-slider-topleft .t-tick-large { background-image:url('/Content/2011.1.315/Outlook/slider-h-top.gif'); }
+.t-slider-horizontal .t-slider-bottomright .t-tick-large { background-image:url('/Content/2011.1.315/Outlook/slider-h-bottom.gif'); }
+
+.t-slider-vertical .t-tick { background-image:url('/Content/2011.1.315/Outlook/slider-vs-both.gif'); }
+.t-slider-vertical .t-slider-topleft .t-tick { background-image:url('/Content/2011.1.315/Outlook/slider-vs-left.gif'); }
+.t-slider-vertical .t-slider-bottomright .t-tick { background-image:url('/Content/2011.1.315/Outlook/slider-vs-right.gif'); }
+
+.t-slider-vertical .t-tick-large { background-image:url('/Content/2011.1.315/Outlook/slider-v-both.gif'); }
+.t-slider-vertical .t-slider-topleft .t-tick-large { background-image:url('/Content/2011.1.315/Outlook/slider-v-left.gif'); }
+.t-slider-vertical .t-slider-bottomright .t-tick-large { background-image:url('/Content/2011.1.315/Outlook/slider-v-right.gif'); }
+
+/*Tooltip*/
+
+.t-tooltip
+{
+    border-color:#000;
+	background:#ffffe1;
+}
+
+.t-callout
+{
+	background-image:url('/Content/2011.1.315/Outlook/sprite.png');
+}
+
+.t-splitbar-vertical,
+.t-splitbar-horizontal
+{
+    background-color: #e9e9e9;
+    border-color: #1c1c1c;
+}
+.t-splitbar-horizontal:hover
+{
+    background-color: #bcb4b0;
+    border-color: #b6b6b6;
+}
+
+.t-splitbar-vertical,
+.t-ghost-splitbar-vertical
+{
+    background-image: url('/Content/2011.1.315/Outlook/sprite.png');
+}
+
+.t-ghost-splitbar-horizontal
+{
+    background-color:#ff5e03;
+    background-image: linear-gradient(to right, 
+        rgba(255, 255, 255, 0.4),     
+        rgba(255, 255, 255, 0)   
+    );
+}
+
+/* Upload */
+
+.t-dropzone-active,
+.t-upload-files
+{
+    border-color: #7f9eba;
+}
+
+.t-dropzone-hovered,
+.t-upload-files
+{
+    background-color: #d6e5f3;    
+}
+
+.t-dropzone em
+{
+    color: #6c7a8c;
+}
+
+.t-progress,
+.t-progress-status
+{
+    background-image: url('/Content/2011.1.315/Outlook/sprite.png');
+}
+
+.t-progress
+{
+    background-position: 0 -466px;
+    border-color: #7699c5 #83a4ce #81a5d6;
+}
+
+.t-progress-status
+{
+    background-position: 0 -472px;
+    border-color: #99bbea transparent #40689e;
+}
+
+/* ImageBrowser */
+
+.t-imagebrowser .t-content
+{
+    background: #c3dafa;
+}
+
+.t-breadcrumbs .t-link:hover
+{
+    color: #003db2;
+}
+
+.t-breadcrumbs .t-first,
+.t-breadcrumbs .t-first:hover,
+.t-search-wrap label
+{
+    color: #6c7a8c;
+}
+
+.t-tiles-toolbar
+{
+    border-color: #828282;
+    background: #7da5e0 url('/Content/2011.1.315/Outlook/sprite.png') repeat-x 0 -752px;
+}
+.t-HelpWindow > .t-header {
+    height: 30px;
+    background-image: linear-gradient(#f6f6f6,#dadada);
+}
+.t-HelpWindow .t-grid-header .t-header {
+    height: 30px;
+    padding: 2px 0 !important;
+}
+.t-HelpWindow .t-grid-bottom{
+    padding:3px 10px;
+}
+.t-HelpWindow > .t-header a {
+    position: absolute;
+    left: 4px;
+    right: auto;
+    top: 3px
+}
+    .t-HelpWindow > .t-header .t-close {
+        width: 27px;
+        height: 27px;
+        display: inline-block;
+        background-image: url(/areas/Satrap.FoodWeb/Content/Cash/TopIcons_Grey.png);
+        background-position: -977px -485px
+    }
+
+
+.t-tiles {
+    border-color: #7f9eba;
+    background: #fff;
+}
+
+.t-tile
+{
+    border-color: #fff;
+    background:0 100px repeat-x url('/Content/2011.1.315/Outlook/imagebrowser.png');
+}
+
+.t-tiles li.t-state-hover
+{
+    border-color: #e0b224;
+    background-position: 0 0;
+}
+
+.t-tiles li.t-state-selected
+{
+    border-color: #df8b13;
+    background-position: 0 -100px;
+}
+
+.t-tile .t-folder
+{
+    background-image:url('/Content/2011.1.315/Outlook/imagebrowser.png');
+}
+
+.t-tile em,
+.t-tile .t-filesize
+{
+    color: #6c7a8c;
+}
+
+.t-tile-empty strong
+{
+    color: #8bb2e2;
+}
+
+.t-HelpWindow {
+    display: none;
+    position: absolute;
+    z-index: 10000000;
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.5);
+}
+
+.t-grid-addTab
+{
+    width:34px;
+    text-align:center;
+    line-height:1.4em;
+}
+
+.m-loading {
+    position: absolute;
+    background: transparent url('/Content/2011.1.315/Outlook/loading-image.svg') no-repeat 0 0;
+    left:0;
+    z-index:15000;
+    background-position:center center;
+}

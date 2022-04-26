@@ -1,0 +1,97 @@
+﻿@page "/Engin/"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Engin</title>
+    <base href="~/" />
+    <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/site.css" rel="stylesheet" />
+    <link href="/_content/UIComponent/Content/2011.1.315/telerik.common1.css" rel="stylesheet" type="text/css" />
+    <link href="/_content/UIComponent/Content/2011.1.315/telerik.silver.css" rel="stylesheet" type="text/css" />
+    <link href="/_content/UIComponent/Content/2011.1.315/telerik.rtl.css" rel="stylesheet" type="text/css" />
+    <link href="/_content/UIComponent/Content/css/bootstrap-rtl." rel="stylesheet" type="text/css" />
+    <link href="/_content/UIComponent/Content/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/_content/UIComponent/Content/css/jeegoocontext.css" rel="stylesheet" />
+    <link href="/_content/UIComponent/Content/css/evol.colorpicker.min.css" rel="stylesheet" />
+    <link href="/_content/Engine.Web/css/Report.css" rel="stylesheet" />
+    <script src="/_content/UIComponent/Scripts/jquery-1.8.2.js"></script>
+    <script src="/_content/UIComponent/Scripts/jquery-ui-1.8.24.js"></script>
+    <script src="/_content/UIComponent/Scripts/jquery.mask.js"></script>
+    <script src="/_content/UIComponent/Scripts/jquery.maskedinput-1.3.js"></script>
+    <script src="/_content/UIComponent/Scripts/jquery.blockUI.js"></script>
+    <script src="/_content/UIComponent/Scripts/jquery.jeegoocontext.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.common.js"></script>
+    <script src="/_content/UIComponent/Scripts/JScript1.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.draganddrop.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.textbox.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.CheckBox.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.TextArea.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.list.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.combobox.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.calendar.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.datepicker.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.timepicker.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.window.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.grid.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/telerik.HelpWindow.js"></script>
+    <script src="/_content/UIComponent/Scripts/Main/evol.colorpicker.min.js"></script>
+
+    <script src="/_content/Engine.Web/Js/go.js"></script>
+    <script src="/_content/Engine.Web/Js/Shape.js"></script>
+    @*<script src="/_content/EnginWeb/Js/JavaScript.js"></script>*@
+    <script src="/_content/Engine.Web/js/ReportPrint/Common.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/Bond.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/CheckBox.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/DropDownList.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/Page.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/Control.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/PictureBox.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/SubReport.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/chart.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/Table.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/TextBox.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/ToolsBox.js"></script>
+    <script src="/_content/Engine.Web/js/ReportPrint/toolsBar.js"></script>
+
+    <script src="/_content/Engine.Web/Js/FormGenerator/Common.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/Bond.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/CheckBox.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/DropDownList_.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/Page.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/Control.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/TextBox.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/CheckListBox.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/Panel.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/Label.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/dropdownList.js"></script>
+    <script src="/_content/Engine.Web/Js/FormGenerator/ToolsBox.js"></script>
+    <script src="/_content/Engine.Web/js/FormGenerator/toolsBar.js"></script>
+
+    <script src="/_content/Engine.Web/Js/go.js"></script>
+    <script src="/_content/Engine.Web/Js/Shape.js"></script>
+    <script src="/_content/Engine.Web/Js/Workflow.js"></script>
+</head>
+<body class="t-rtl">
+    <div>
+        <component type="typeof(Caspian.Engine.Shared.App)" render-mode="ServerPrerendered" />
+    </div>
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            بعلت یک خطای ناشناخته امکان ادامه عملیات میسر نیست
+        </environment>
+        <a href="" class="reload">بارگداری</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

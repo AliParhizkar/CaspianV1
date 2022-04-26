@@ -1,0 +1,557 @@
+﻿@page "/Engine/RuleEngine/{RuleId:int}"
+@namespace Caspian.Engine.RuleGenerator
+@inherits BasePage
+@inject IJSRuntime jSRuntime
+
+@{
+    MathButtonAttrs.Remove("disabled");
+    LogicButtonAttrs.Remove("disabled");
+    CompareButtonAttrs.Remove("disabled");
+    IfButtonAttrs.Remove("disabled");
+    QuestionMarkButtonAttrs.Remove("disabled");
+    ColonButtonAttrs.Remove("disabled");
+    OpenBracketButtonAttrs.Remove("disabled");
+    CloseBracketButtonAttrs.Remove("disabled");
+    OperandButtonAttrs.Remove("disabled");
+    if (ValidTokensKind != null)
+    {
+        MathButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Math);
+        LogicButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Logical);
+        CompareButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Compareable);
+        IfButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.If);
+        QuestionMarkButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.QuestionMark);
+        ColonButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Colon);
+        OpenBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.OpenBracket);
+        CloseBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.CloseBracket);
+        OperandButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Parameter);
+    }
+}
+<div style="width:95%;margin:5px auto;">
+    <table style="width:100%">
+        <tr>
+            <td style="width:135px;">
+                <div class="f-operator">
+                    <table>
+                        <tr>
+                            <td>
+                                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(() => { AddOperator("+"); })">+</button>
+                            </td>
+                            <td>
+                                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(() => { AddOperator("-"); })">-</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(() => { AddOperator("*"); })">×</button>
+                            </td>
+                            <td>
+                                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(() => { AddOperator("/"); })">÷</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="operand-input" @attributes="LogicButtonAttrs" @onclick="@(() => { AddOperator("|"); })">|</button>
+                            </td>
+                            <td>
+                                <button class="operand-input" @attributes="LogicButtonAttrs" @onclick="@(() => { AddOperator("&"); })">&</button>
+                            </td>
+                        </tr>
+                    </table>
+                    <hr />
+                    <table>
+                        <tr>
+                            <td>
+                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator("=="); })">=</button>
+                            </td>
+                            <td>
+                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator("!="); })">≠</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator(">"); })">></button>
+                            </td>
+                            <td>
+                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator("<"); })">&lt;</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator(">="); })">≥</button>
+                            </td>
+                            <td>
+                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator("<="); })">≤</button>
+                            </td>
+                        </tr>
+                    </table>
+                    <hr />
+                    <table>
+                        <tr>
+                            <td>
+                                <button class="operand-input" @attributes="IfButtonAttrs" @onclick="@(() => { AddOperator("if"); })">اگر</button>
+                            </td>
+                            <td>
+                                <button class="operand-input" @attributes="QuestionMarkButtonAttrs" @onclick="@(() => { AddOperator("?"); })">?</button>
+                            </td>
+                            <td>
+                                <button class="operand-input" @attributes="ColonButtonAttrs" @onclick="@(() => { AddOperator(":"); })">:</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="operand-input" @attributes="OpenBracketButtonAttrs" @onclick="@(() => { AddOperator("("); })">(</button>
+                            </td>
+                            <td>
+                                <button title="حذف" class="operand-input" @onclick="@(async () => { await ClearAsync(); })">
+                                    <span class="fa fa-long-arrow-right"></span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="operand-input" @attributes="CloseBracketButtonAttrs" @onclick="@(() => { AddOperator(")"); })">)</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <div class="f-operand">
+                                    <button @attributes="OperandButtonAttrs" @onclick="OpenOperandForm">
+                                        <span class="fa fa-cog"></span>
+                                        <span>پارامتر</span>
+                                    </button>
+                                    <div style="padding-top:15px;">
+                                        <button @attributes="this.OperandButtonAttrs" @onclick="OpenConstantForm" >
+                                            <span class="fa fa-cog"></span>
+                                            <span>ثابت</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+            <td>
+                <div class="formola-content">
+                    @if (Tokens != null)
+                    {
+                        @foreach (var item in Tokens)
+                        {
+                            var className = item.TokenType == TokenType.Oprator ? "f-operator" : "f-operand";
+                            if (item.OperatorKind == OperatorType.Colon)
+                            {
+                                <div class="f-clear"></div>
+                                @if (item.IfCount > 1)
+                                {
+                                    <span class="@className" style="margin-right:@(3 * (item.IfCount - 1))em"></span>
+                                }
+                            }
+                            <span class="@className">@item.FaTitle</span>
+                            if (item.OperatorKind == OperatorType.QuestionMark || item.OperatorKind == OperatorType.Colon)
+                            {
+                                <div class="f-clear"></div>
+                                @if (item.IfCount > 0)
+                                {
+                                    <span class="c-padd" style="width:@(3 * item.IfCount)em"></span>
+                                }
+                            }
+                        }
+                    }
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<Window @bind-Status="newStatus" Title="افزودن عملوند" Style="width:400px">
+    <Content>
+        <table style="width:95%;margin:0 auto">
+            @if (TokenType == TokenType.ConstValue)
+            {
+                <tr>
+                    <td>
+                        <label>مقدار ثابت</label>
+                    </td>
+                    <td>
+                        @switch (this.ValueTypeKind)
+                        {
+                            case Caspian.Engine.ValueTypeKind.Bool:
+                                <CheckBox @bind-Value="boolConstValue" />
+                                break;
+                            case Caspian.Engine.ValueTypeKind.Date:
+                                <DatePicker @bind-Value="dateConstValue" />
+                                break;
+                            case Caspian.Engine.ValueTypeKind.Double:
+                            case Caspian.Engine.ValueTypeKind.Int:
+                                <NumericTextBox @bind-Value="decimalConstValue" />
+                                break;
+                            case Caspian.Engine.ValueTypeKind.Enum:
+                                <DropdownList @bind-Value="enumConstValue" DynamicType="enumType" />
+                                break;
+                            case Caspian.Engine.ValueTypeKind.Time:
+                                <TimePicker @bind-Value="timeConstValue" />
+                                break;
+                        }
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td>
+                        <label>پارامتر</label>
+                    </td>
+                    <td>
+                        <ComboBox @bind-Value="tokenId" TEntity="SelectListItem" TValue="int?"
+                                  Source="Params.Select(t => new SelectListItem(t.Id.ToString(), t.FaTitle))" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>قانون</label>
+                    </td>
+                    <td>
+                        <ComboBox @bind-Value="ruleIdValue" TEntity="Rule" TValue="int?"
+                                  TextExpression="t => t.Title" />
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td></td>
+                <td style="text-align:center;height:50px;">
+                    <button @onclick="async () => { await AddOperand(); }" class="c-button c-ok">ثبت</button>
+                    <button @onclick="() => { newStatus = WindowStatus.Close; }" class="c-button c-cancel">انصراف</button>
+                </td>
+            </tr>
+        </table>
+    </Content>
+</Window>
+
+@code
+{
+    int? ruleIdValue;
+    Enum? enumConstValue;
+    bool? boolConstValue;
+    DateTime? dateConstValue;
+    TimeSpan? timeConstValue;
+    decimal? decimalConstValue;
+
+    Type Type;
+    Token token;
+    int? tokenId;
+    int IfCount;
+    bool isUpdate;
+    string message;
+    IList<Token> Tokens;
+    TokenType TokenType;
+    string ConstantValue;
+    WindowStatus newStatus;
+    IList<TokenKind> TokensKind;
+    IEnumerable<Token> Params;
+    IEnumerable<TokenKind> ValidTokensKind;
+    IDictionary<string, object> IfButtonAttrs;
+    IDictionary<string, object> MathButtonAttrs;
+    IDictionary<string, object> ColonButtonAttrs;
+    IDictionary<string, object> LogicButtonAttrs;
+    IDictionary<string, object> CompareButtonAttrs;
+    IDictionary<string, object> OperandButtonAttrs;
+    IDictionary<string, object> OpenBracketButtonAttrs;
+    IDictionary<string, object> CloseBracketButtonAttrs;
+    IDictionary<string, object> QuestionMarkButtonAttrs;
+    Caspian.Engine.Service.RuleEngine ruleEngine;
+    ValueTypeKind? ValueTypeKind;
+    Type enumType;
+    ValueTypeKind? RuleTypeKind;
+
+    void ClearWindow()
+    {
+        tokenId = null;
+        ruleIdValue = null;
+        timeConstValue = null;
+        enumConstValue = null;
+        boolConstValue = null;
+        dateConstValue = null;
+        decimalConstValue = null;
+    }
+
+    async Task AddOperand()
+    {
+        Token tempToken = null;
+        using var scope = ServiceScopeFactory.CreateScope();
+        var ruleService = new RuleService(scope);
+        var tokenService = new TokenService(scope);
+        if (TokenType == TokenType.Oprand)
+        {
+            if (tokenId.HasValue)
+            {
+                tempToken = Params.ElementAt(tokenId.Value - 1);
+                tempToken.RuleId = RuleId;
+                if (tempToken.RuleIdValue.HasValue)
+                    tempToken.FaTitle = (await ruleService.SingleAsync(tempToken.RuleIdValue.Value)).Title;
+                else
+                {
+                    var temp = ruleEngine.GetObjectTokens(Type).Single(t => t.Id == tempToken.Id);
+                    tempToken.Id = 0;
+                    if (tempToken.DynamicId.HasValue)
+                        tempToken.FaTitle = temp.FaTitle + "•" + (await ruleService.SingleAsync(tempToken.DynamicId.Value)).Title;
+                    else
+                        tempToken.FaTitle = temp.FaTitle;
+                    tempToken.EnTitle = temp.EnTitle;
+                    await UnFinalState();
+                    tempToken.TokenType = TokenType.Oprand;
+                    await tokenService.AddAsync(tempToken);
+                    await tokenService.SaveChangesAsync();
+                    Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+                    Tokens = new RuleEngine().UpdateTokens(Tokens);
+                    ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+                    newStatus = WindowStatus.Close;
+                }
+                StateHasChanged();
+            }
+            else if (ruleIdValue.HasValue)
+            {
+                var ruleTitle = (await ruleService.SingleAsync(ruleIdValue.Value)).Title;
+                await tokenService.AddAsync(new Token()
+                {
+                    FaTitle = ruleTitle,
+                    RuleId= RuleId,
+                    RuleIdValue = ruleIdValue.Value,
+                    TokenType = TokenType.Oprand,
+                });
+                await tokenService.SaveChangesAsync();
+                Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+                Tokens = new RuleEngine().UpdateTokens(Tokens);
+                ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+                newStatus = WindowStatus.Close;
+                StateHasChanged();
+            }
+            else
+                message = "لطفا عملوند را مشخص نمایید";
+        }
+        else
+        {
+            object constValue = null;
+            string faTitle = null;
+            switch (this.ValueTypeKind)
+            {
+                case Caspian.Engine.ValueTypeKind.Bool:
+                    if (boolConstValue == null)
+                        message = "مقدار ثابت باید مشخص باشد";
+                    else
+                    {
+                        constValue = boolConstValue;
+                        faTitle = boolConstValue.Value ? "درست" : "نادرست";
+                    }
+                    break;
+                case Caspian.Engine.ValueTypeKind.Date:
+                    if (dateConstValue == null)
+                        message = "تاریخ باید مشخص باشد";
+                    else
+                    {
+                        constValue = dateConstValue;
+                        faTitle = dateConstValue.ToPersianDateString();
+                    }
+                    break;
+                case Caspian.Engine.ValueTypeKind.Double:
+                case Caspian.Engine.ValueTypeKind.Int:
+                    if (decimalConstValue == null)
+                        message = "مقدار ثابت باید مشخص باشد";
+                    else
+                    {
+                        constValue = decimalConstValue;
+                        faTitle = decimalConstValue.Seprate3Digit();
+                    }
+                    break;
+                case Caspian.Engine.ValueTypeKind.Enum:
+                    if (enumConstValue == null)
+                        message = "مقدار ثابت باید مشخص باشد";
+                    else
+                    {
+                        constValue = enumConstValue;
+                        faTitle = enumConstValue.FaText();
+                    }
+                    break;
+                case Caspian.Engine.ValueTypeKind.Time:
+                    if (timeConstValue == null)
+                        message = "زمان باید مشخص باشد";
+                    else
+                    {
+                        constValue = timeConstValue;
+                        faTitle = timeConstValue.Value.ShortString();
+                    }
+                    break;
+            }
+            if (constValue != null)
+            {
+                tempToken = new Token()
+                {
+                    constValue = constValue.ToString(),
+                    ConstValueType = ValueTypeKind,
+                    RuleId = RuleId,
+                    TokenType = TokenType.ConstValue,
+                    FaTitle = faTitle
+                };
+                await tokenService.AddAsync(tempToken);
+                await tokenService.SaveChangesAsync();
+                Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+                Tokens = new RuleEngine().UpdateTokens(Tokens);
+                ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+                newStatus = WindowStatus.Close;
+            }
+        }
+    }
+
+    async Task UnFinalState()
+    {
+        using var scope = ServiceScopeFactory.CreateScope();
+        var ruleService = new RuleService(scope);
+        var rule = await ruleService.SingleAsync(RuleId);
+        rule.Priority = null;
+        await ruleService.SaveChangesAsync();
+    }
+
+    void OpenOperandForm()
+    {
+        ClearWindow();
+        newStatus = WindowStatus.Open;
+        TokenType = TokenType.Oprand;
+        Params = ruleEngine.GetObjectTokens(Type);
+    }
+
+    void UpdateValueTypeKind()
+    {
+        var tokens = Tokens.Reverse().ToList();
+        if (tokens.Count > 0)
+        {
+            var tokenKind = tokens[0].TokenKind;
+            if (tokenKind == TokenKind.Compareable)
+            {
+                if (tokens[0].OperatorKind.Value != OperatorType.Equ && tokens[1].RuleId.HasValue)
+                    ValueTypeKind = tokens[1].Rule.ResultType;
+                else
+                {
+                    var type = Type.GetMyProperty(tokens[1].EnTitle).PropertyType;
+                    if (type.IsNullableType())
+                        type = Nullable.GetUnderlyingType(type);
+                    if (type.IsEnum)
+                    {
+                        ValueTypeKind = Caspian.Engine.ValueTypeKind.Enum;
+                        enumType = type;
+                    }
+                    else if (type == typeof(DateTime))
+                        ValueTypeKind = Caspian.Engine.ValueTypeKind.Date;
+                    else if (type == typeof(TimeSpan))
+                        ValueTypeKind = Caspian.Engine.ValueTypeKind.Time;
+                    else if (type == typeof(bool))
+                        ValueTypeKind = Caspian.Engine.ValueTypeKind.Bool;
+                    else if (type == typeof(int))
+                        ValueTypeKind = Caspian.Engine.ValueTypeKind.Int;
+                    else
+                        ValueTypeKind = Caspian.Engine.ValueTypeKind.Double;
+                }
+            }
+            else if (ValueTypeKind == null)
+                ValueTypeKind = RuleTypeKind;
+        }
+        else
+            ValueTypeKind = RuleTypeKind;
+    }
+
+    void OpenConstantForm()
+    {
+        ClearWindow();
+        newStatus = WindowStatus.Open;
+        TokenType = TokenType.ConstValue;
+    }
+
+    async void AddOperator(string enTitle)
+    {
+        var token = new Token()
+        {
+            TokenType = TokenType.Oprator,
+            EnTitle = enTitle,
+            RuleId = RuleId
+        };
+        if (token.EnTitle == "*")
+            token.FaTitle = "×";
+        else if (token.EnTitle == "/")
+            token.FaTitle = "÷";
+        else if (token.EnTitle == "==")
+            token.FaTitle = "=";
+        else if (token.EnTitle == "?")
+            token.FaTitle = "دراینصورت";
+        else if (token.EnTitle == ":")
+            token.FaTitle = "درغیراینصورت";
+        else if (token.EnTitle == "if")
+            token.FaTitle = "اگر";
+        else
+            token.FaTitle = enTitle;
+        using var scope = CreateScope();
+        var tokenService = new TokenService(scope);
+        await tokenService.AddAsync(token);
+        await tokenService.SaveChangesAsync();
+        Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+        Tokens = new RuleEngine().UpdateTokens(Tokens);
+        ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+        UpdateValueTypeKind();
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        token = new Token();
+        ruleEngine = new RuleEngine();
+        MathButtonAttrs = new Dictionary<string, object>();
+        LogicButtonAttrs = new Dictionary<string, object>();
+        CompareButtonAttrs = new Dictionary<string, object>();
+        IfButtonAttrs = new Dictionary<string, object>();
+        QuestionMarkButtonAttrs = new Dictionary<string, object>();
+        ColonButtonAttrs = new Dictionary<string, object>();
+        OpenBracketButtonAttrs = new Dictionary<string, object>();
+        CloseBracketButtonAttrs = new Dictionary<string, object>();
+        OperandButtonAttrs = new Dictionary<string, object>();
+        base.OnInitialized();
+    }
+
+    async protected override Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        var rule = await new RuleService(scope).SingleAsync(RuleId);
+        RuleTypeKind = rule.ResultType;
+        Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+        new RuleEngine().UpdateTokens(Tokens);
+        ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+        
+        await base.OnInitializedAsync();
+    }
+
+    async Task ClearAsync()
+    {
+        using var scope = CreateScope();
+        await new TokenService(scope).RemoveAsync(RuleId);
+        Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+        new RuleEngine().UpdateTokens(Tokens);
+        ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+        UpdateValueTypeKind();
+    }
+
+    [Parameter]
+    public int RuleId { get; set; }
+
+    async protected override Task OnParametersSetAsync()
+    {
+        using var scope = ServiceScopeFactory.CreateScope();
+        var rule = await new RuleService(scope).SingleAsync(RuleId);
+        Type = new AssemblyInfo().GetModelType(rule.SystemKind, rule.TypeName);
+        UpdateValueTypeKind();
+        await base.OnParametersSetAsync();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message.HasValue())
+        {
+            await jSRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

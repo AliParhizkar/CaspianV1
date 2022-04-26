@@ -1,0 +1,95 @@
+﻿@page "/{Subsystem}/Engine/Rule"
+@namespace Caspian.Engine.RuleGenerator
+@inherits SimplePage<Rule>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:0 auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="Rule" ConditionExpr="t => t.SystemKind == subSystemKind" Search="SearchData" TableHeight="400">
+        <Columns>
+            <GridColumn TEntity="Rule" Field="t => t.Title" />
+            <GridColumn TEntity="Rule" Field="t => t.ResultType.FaText()" Title="نوع خروجی" />
+            <GridColumn TEntity="Rule" Field="t => t.IsValid" Title="نهایی" />
+            <GridColumn TEntity="Rule" Title="ایجاد" style="width:80px">
+                <Template>
+                    <a href="/Engine/RuleEngine/@(context.Data.Id)" target="_blank">...</a>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="Rule" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" OnOpen="() => { UpsertData.SystemKind = subSystemKind; }" Title="فرمول" Style="width:400px">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(RuleService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>نوع فرمول</label>
+                        </td>
+                        <td>
+                            <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="UpsertData.TypeName" Source="RuleTypes" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>نوع خروجی</label>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="UpsertData.ResultType" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>شرح</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Descript" MultiLine Rows="3" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+    List<SelectListItem> RuleTypes;
+    SubSystemKind subSystemKind;
+
+    [Parameter]
+    public string Subsystem { get; set; }
+
+    protected override void OnInitialized()
+    {
+        subSystemKind = (SubSystemKind)typeof(SubSystemKind).GetField(Subsystem).GetValue(null);
+        RuleTypes = new AssemblyInfo().GetRuleTypes(subSystemKind).Select(t => new SelectListItem(t.Key, t.Value)).ToList();
+        base.OnInitialized();
+    }
+}

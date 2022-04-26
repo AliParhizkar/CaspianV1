@@ -1,0 +1,24 @@
+﻿@namespace Caspian.UI
+<div  class="c-form-action">
+    <button class="c-button c-ok" @attributes="Attributes" type="submit">@SumitButtonTitle</button>
+    <button class="c-button c-cancel" type="reset">@ResetButtonTitle</button>
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        SumitButtonTitle = "ثـبـت";
+        ResetButtonTitle = "بازنشانی";
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public string SumitButtonTitle { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Attributes { get; set; }
+
+    [Parameter]
+    public string ResetButtonTitle { get; set; }
+}

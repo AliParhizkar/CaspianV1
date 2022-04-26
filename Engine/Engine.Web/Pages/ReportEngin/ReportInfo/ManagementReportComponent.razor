@@ -1,0 +1,73 @@
+﻿@namespace Caspian.Engine.ReportGenerator
+@inherits BasePage
+
+<Window Status="Status" Title="گزارش های مدیریتی"
+        StatusChanged="async t => 
+                       { 
+                           await StatusChanged.InvokeAsync(t); 
+                       }">
+    <Content>
+        <CTreeView @ref="Tree" OnExpanded="@(async (item) =>
+                                            {
+                                                using var scope = ServiceScopeFactory.CreateScope();
+                                                var service = new ReportService(scope);
+                                                var report = await (service.Context as Context).Reports.SingleAsync(t => t.Id == ReportId);
+                                                item.Items = new ReportTree().CreateTreeForGroupBy(report, item.Value).Select(t => new TreeViewItem()
+                                                {
+                                                    Value = t.TitleEn,
+                                                    Selected = t.Selected,
+                                                    Selectable = !t.Grouping,
+                                                    Expanded = false,
+                                                    Collabsable = t.Grouping,
+                                                    Text = t.TitleFa,
+                                                }).ToList();
+                                            })" style="width: 500px; margin: 10px auto; height: calc(100vh - 170px); padding: 6px 12px 0 0" TEntity="TreeViewItem" Source="Nodes" />
+        <div style="border:1px solid #9da09d;margin:8px 5px 15px 5px;padding:8px;border-radius:5px;height:50px">
+            <div style="padding:0px 10px 0px 10px;float:left">
+                <button class="c-button c-cancel" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }">انصراف</button>
+            </div>
+            <div style="padding:0px 10px 0px 10px;float:left">
+                <button class="c-button c-ok" @onclick="PostParams">ثبت</button>
+            </div>
+        </div>
+    </Content>
+</Window>
+
+@code
+{
+    IList<TreeViewItem> Nodes;
+    CTreeView<TreeViewItem> Tree;
+
+    void PostParams()
+    {
+
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var tree = new ReportTree();
+        using var scope = ServiceScopeFactory.CreateScope();
+        var service = new ReportService(scope);
+        var report = await (service.Context as Context).Reports.SingleAsync(t => t.Id == ReportId);
+        Nodes = tree.CreateTreeForGroupBy(report, null).Select(t => new TreeViewItem()
+        {
+            Value = t.TitleEn,
+            Selected = t.Selected,
+            Selectable = !t.Grouping,
+            Expanded = false,
+            Collabsable = t.Grouping,
+            Text = t.TitleFa,
+        }).ToList();
+        await base.OnInitializedAsync();
+    }
+
+
+    [Parameter]
+    public int ReportId { get; set; }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+}

@@ -1,0 +1,66 @@
+﻿@page "/Demo/Message"
+@namespace Demo.Web.Pages
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+@if (errorMessage.HasValue())
+{
+    <span style="color:red">@errorMessage</span>
+}
+<table style="width:90%;margin:0 auto">
+    <tr>
+        <td style="width:100px;">
+            <label>متن پیام</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="message" />
+        </td>
+    </tr>
+</table>
+
+<button  @onclick="simpleMessage">Simple message</button>
+<button @onclick="alertMessage">Alert</button>
+<button @onclick="confirmMessage">Confirm</button>
+@code
+{
+    string message = "بیا تا گل برافشانیم و می در ساغر اندازیم فلک را سقف بشکافیم و طرحی نو در اندازیم";
+    string errorMessage;
+
+    void simpleMessage()
+    {
+        if (message.HasValue())
+        {
+            errorMessage = null;
+            ShowMessage(message);
+        }
+        else
+            errorMessage = "لطفا متن پیام را مشخص نمایید.";
+    }
+
+    void alertMessage()
+    {
+        if (message.HasValue())
+        {
+            errorMessage = null;
+            Alert(message);
+        }
+        else
+            errorMessage = "لطفا متن پیام را مشخص نمایید.";
+    }
+
+    async Task confirmMessage()
+    {
+        if (message.HasValue())
+        {
+            var result = await Confirm(message);
+            if (result)
+                ShowMessage("Ok button clicked");
+            else
+                ShowMessage("cancel button clicked");
+            errorMessage = null;
+        }
+        else
+            errorMessage = "لطفا متن پیام را مشخص نمایید.";
+    }
+}

@@ -1,0 +1,97 @@
+﻿@page "/Demo/City"
+@page "/Demo/City/{ProvinceId:int}"
+@namespace Demo.Web.Pages
+@inherits SimplePage<City>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:5px auto">
+    <table style="width:100%">
+        <tr>
+            @if (ProvinceId == 0)
+            {
+                <td>
+                    <label>استان</label>
+                </td>
+                <td>
+                    <ComboBox TValue="int" TEntity="Province" @bind-Value="SearchData.ProvinceId"
+                              TextExpression="t => t.Title" />
+                </td>
+            }
+        </tr>
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" ConditionExpr="t => ProvinceId == 0 || t.ProvinceId == ProvinceId">
+        <Columns>
+            @if (ProvinceId == 0)
+            {
+                <GridColumn TEntity="City" Field="t => t.Province.Title" Title="استان"/>
+            }
+            <GridColumn TEntity="City" Field="t => t.Title" />
+            <GridColumn TEntity="City" Field="t => t.ActiveType.FaText()" />
+            <GridColumn TEntity="City" Title="مناطق" style="width:50px">
+                <a href="/Demo/Area/@(context.Data.Id)">...</a>
+            </GridColumn>
+            <GridCommandColumns TEntity="City" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="شهر" Style="width:450px"
+            OnOpen="() =>
+                    {
+                        if (UpsertData.Id == 0)
+                            UpsertData.ActiveType = ActiveType.Enable;
+                        UpsertData.ProvinceId = ProvinceId;
+                    }">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(CityService)" />
+                <table style="width:90%;margin:0 auto">
+                    @if (ProvinceId == 0)
+                    {
+                        <tr>
+                            <td>استان</td>
+                            <td>
+                                <ComboBox TValue="int" TEntity="Province" @bind-Value="UpsertData.ProvinceId"
+                                          TextExpression="t => t.Title" />
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>وضعیت</label>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="UpsertData.ActiveType" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+    [Parameter]
+    public int ProvinceId { get; set; }
+}

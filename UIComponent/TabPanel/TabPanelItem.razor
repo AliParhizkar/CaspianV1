@@ -1,0 +1,25 @@
+﻿@namespace Caspian.UI
+    @{ParentTabPanel.AddTabData(this); }
+    @if (this == ParentTabPanel.CurentTabpanel)
+    {
+        <div class="t-content t-state-active">
+            @ChildContent
+        </div>
+    }
+@code
+{
+    [CascadingParameter(Name = "ParentTabPanel")]
+    public TabPanel ParentTabPanel { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public bool Disable { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public bool Closeable { get; set; }
+}

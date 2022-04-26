@@ -1,0 +1,17 @@
+﻿@namespace Caspian.UI
+@typeparam TValue 
+@inherits CBaseInput<TValue>
+@{ 
+    var className = "t-picker-wrap";
+    if (ErrorMessage.HasValue())
+        className += " t-state-error";
+}
+<div class="t-widget t-datepicker">
+    <div class="@(className)">
+        <input value="@text" @ref="htmlElement" class="t-input" autocomplete="off" @onchange="ChangeValue" />
+        <span class="t-select" style="left:inherit">
+            <i class="t-icon t-icon-calendar fa fa-calendar" title="تقویم شمسی"></i>
+        </span>
+    </div>
+</div>
+

@@ -1,0 +1,304 @@
+﻿@page "/Demo/Engine/Fourmola"
+@namespace Caspian.Engine.ReportPrint
+@inject IJSRuntime JSRuntime
+@inject IServiceScopeFactory ScopeFactory
+@{
+    MathButtonAttrs.Remove("disabled");
+    OpenBracketButtonAttrs.Remove("disabled");
+    CloseBracketButtonAttrs.Remove("disabled");
+    OperandButtonAttrs.Remove("disabled");
+    MathButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Math);
+    OpenBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.OpenBracket);
+    CloseBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.CloseBracket);
+    OperandButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Parameter);
+}
+<Window @bind-Status="Status" Title="فرمولساز" style="width:700px">
+    <Content>
+        <table style="width:100%">
+            @if (PrintParam.BondType == BondType.DataFooter)
+            {
+                <tr>
+                    <td>
+                        <label>نوع متد</label>
+                    </td>
+                    <td>
+                        <DropdownList @bind-Value="PrintParam.TotalFuncType" />
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td style="width:100px;vertical-align:top">
+                    <div class="f-operator">
+                        <table>
+                            <tr>
+                                <td>
+                                    <button type="button" class="operand-input @(className[0])" @attributes="MathButtonAttrs"
+                                            @onclick='() => AddOperator("+", 0)' @onmousedown="() => MouseDown(0)">
+                                        +
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" class="operand-input @(className[1])" @attributes="MathButtonAttrs"
+                                            @onclick='() => AddOperator("-", 1)' @onmousedown="() => MouseDown(1)">
+                                        -
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button type="button" class="operand-input @(className[2])" @attributes="MathButtonAttrs"
+                                            @onclick='() => AddOperator("*", 2)' @onmousedown="() => MouseDown(2)">
+                                        ×
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" class="operand-input @(className[3])" @attributes="MathButtonAttrs"
+                                            @onclick='() => AddOperator("/", 3)' @onmousedown="() => MouseDown(3)">
+                                        ÷
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button type="button" class="operand-input @(className[4])" @attributes="OpenBracketButtonAttrs"
+                                            @onclick='() => AddOperator("(", 4)' @onmousedown="() => MouseDown(4)">
+                                        (
+                                    </button>
+                                </td>
+                                <td colspan="2">
+                                    <button type="button" class="operand-input @(className[5])" @attributes="CloseBracketButtonAttrs"
+                                            @onclick='() => AddOperator(")", 5)' @onmousedown="() => MouseDown(5)">
+                                        )
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="f-operand">
+                                        <button @attributes="OperandButtonAttrs" @onclick="() => OpenOperandForm(TokenType.ConstValue)">
+                                            <span class="fa fa-cog"></span>
+                                            <span>عملوند</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </td>
+                <td style="vertical-align:top">
+                    <div style="height:215px" class="formola-content">
+                        @foreach (var item in Tokens)
+                        {
+                            var className = item.TokenType == TokenType.Oprator ? "f-operator" : "f-operand";
+                            <span class="@className">@item.FaTitle</span>
+                        }
+                    </div>
+                    <div class="c-formula-action">
+                        <button @onclick="AddFormula" class="c-button c-ok">ثبت</button>
+                        <button @onclick="() => { Status = WindowStatus.Close; }" class="c-button c-cancel">انصراف</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <Window @bind-Status="newStatus" Title="افزودن عملوند" Style="width:350px">
+            <Content>
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td style="width:80px;">
+                            <label>مقدار ثابت</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="ConstantValue" Disabled="TitleEn.HasValue()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>پارامتر</label>
+                        </td>
+                        <td>
+                            <ComboBox TValue="string" @bind-Value="TitleEn" TEntity="SelectListItem" Source="Params"
+                                      Disabled="ConstantValue.HasValue()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="text-align:center;padding-top:10px;">
+                            <button @onclick="AddOperand" class="c-button c-ok">ثبت</button>
+                            <button @onclick="() => { newStatus = WindowStatus.Close; }" class="c-button c-cancel">انصراف</button>
+                        </td>
+                    </tr>
+                </table>
+            </Content>
+        </Window>
+    </Content>
+</Window>
+@code
+{
+    string TitleEn;
+    string message;
+    bool updateData;
+    TokenType TokenType;
+    IList<Token> Tokens;
+    string ConstantValue;
+    WindowStatus newStatus;
+    IEnumerable<SelectListItem> Params;
+    IEnumerable<TokenKind> ValidTokensKind;
+    IDictionary<string, object> MathButtonAttrs;
+    IDictionary<string, object> OperandButtonAttrs;
+    IDictionary<string, object> OpenBracketButtonAttrs;
+    IDictionary<string, object> CloseBracketButtonAttrs;
+    string[] className = new string[6];
+
+    void MouseDown(int index)
+    {
+        className[index] = "down";
+    }
+
+    void OpenOperandForm(TokenType tokenType)
+    {
+        newStatus = WindowStatus.Open;
+        TokenType = tokenType;
+        TitleEn = ConstantValue = null;
+    }
+
+    void AddOperator(string enTitle, int index)
+    {
+        className[index] = "";
+        var token = new Token()
+        {
+            TokenType = TokenType.Oprator,
+            EnTitle = enTitle
+        };
+        if (token.EnTitle == "*")
+            token.FaTitle = "×";
+        else if (token.EnTitle == "/")
+            token.FaTitle = "÷";
+        else
+            token.FaTitle = enTitle;
+        Tokens.Add(token);
+        Tokens = new RuleEngine().UpdateTokens(Tokens);
+        newStatus = WindowStatus.Close;
+        ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+    }
+
+    void AddOperand()
+    {
+        var token = new Token();
+        if (TitleEn.HasValue() && ConstantValue.HasValue())
+            message = "تنها یکی از مقادیر مقدار ثابت و یا پارامتر باید مشخص باشد.";
+        else if (ConstantValue == null && TitleEn == null)
+            message = "لطفا مقدار ثابت و یا پارامتر را مشخص نمائید";
+        else if (ConstantValue.HasValue())
+        {
+            TokenType = TokenType.ConstValue;
+            token.constValue = ConstantValue;
+            token.FaTitle = "\"" + ConstantValue + "\"";
+            token.EnTitle = token.FaTitle;
+            token.TokenType = TokenType.ConstValue;
+        }
+        else
+        {
+            TokenType = TokenType.Oprand;
+            token.EnTitle = TitleEn;
+            token.FaTitle = Params.Single(t => t.Value == TitleEn).Text;
+            token.TokenType = TokenType.Oprand;
+        }
+        if (!message.HasValue())
+        {
+            Tokens.Add(token);
+            Tokens = new RuleEngine().UpdateTokens(Tokens);
+            newStatus = WindowStatus.Close;
+            ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+        }
+    }
+
+    void AddFormula()
+    {
+        var parser = new Parser(Tokens);
+        try
+        {
+            parser.Parse(true);
+            var enTitle = "";
+            var faTitle = "";
+            foreach (var token in Tokens)
+            {
+                enTitle += token.EnTitle;
+                faTitle += token.FaTitle;
+            }
+            switch (PrintParam.TotalFuncType)
+            {
+                case TotalFuncType.Sum:
+                    enTitle = "Sum(" + enTitle + ")";
+                    break;
+                case TotalFuncType.Avg:
+                    enTitle = "Avg(" + enTitle + ")";
+                    break;
+                case TotalFuncType.Count:
+                    enTitle = "Count()";
+                    break;
+                case TotalFuncType.Min:
+                    enTitle = "Min(" + enTitle + ")";
+                    break;
+                case TotalFuncType.Max:
+                    enTitle = "Max(" + enTitle + ")";
+                    break;
+            }
+            if (PrintParam.TotalFuncType.HasValue)
+                faTitle = PrintParam.TotalFuncType.FaText() + '(' + faTitle + ')';
+            PrintParam.TitleFa = '{' + faTitle + '}';
+            PrintParam.TitleEn = '{' + enTitle + '}';
+            updateData = true;
+            Status = WindowStatus.Close;
+        }
+        catch (CaspianException ex)
+        {
+            message = ex.Message;
+        }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        Tokens = new List<Token>();
+        ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+        MathButtonAttrs = new Dictionary<string, object>();
+        OpenBracketButtonAttrs = new Dictionary<string, object>();
+        CloseBracketButtonAttrs = new Dictionary<string, object>();
+        OperandButtonAttrs = new Dictionary<string, object>();
+        return base.OnInitializedAsync();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (PrintParam.BondType == BondType.DataFooter)
+            PrintParam.DataLevel = 1;
+        using var scope = ScopeFactory.CreateScope();
+        Params = (await new PrintReport(scope).GetFiledsProperty(PrintParam.ReportId.Value, PrintParam.DataLevel.Value))
+            .Select(t => new SelectListItem(t.Key, t.Value));
+        await base.OnParametersSetAsync();
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public PrintParam PrintParam { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message.HasValue())
+        {
+            await JSRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        if (updateData)
+        {
+            await JSRuntime.InvokeVoidAsync("$.report.updateTextWindowData", PrintParam);
+            updateData = false;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

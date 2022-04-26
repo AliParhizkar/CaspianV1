@@ -1,0 +1,72 @@
+﻿@namespace Caspian.Engine.WorkFlowGenrator
+@inject IJSRuntime JsRuntime
+<Window @bind-Status="Status" Style="width:500px;">
+    <Content>
+        <fieldset class="t-widget">
+            <legend>متدهای چک</legend>
+            <div style="height:220px">
+                <RadioList @bind-Value="value"
+                           Source="@(Actions.Select(t => new SelectListItem(t.Id.ToString(), t.FaTitle)).ToList())" />
+            </div>
+        </fieldset>
+
+        <div style="width:155px;margin:5px auto">
+            <button style="width:65px;height:30px;margin-right:10px" class="t-button" @onclick="SaveMethod">ثبت</button>
+            <button style="width:65px;height:30px;margin-right:10px" class="t-button" 
+                    @onclick="() => 
+                            { 
+                                StatusChanged.InvokeAsync(WindowStatus.Close);
+                            }">انصراف</button>
+        </div>
+    </Content>
+</Window>
+@code
+{
+    int value;
+    string message;
+    Caspian.Engine.Action action;
+    void SaveMethod()
+    {
+        if (value == 0)
+            message = "لطفا یک متد را انتخاب نمایید";
+        else
+        {
+            action = Actions[value - 1];
+            StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
+    }
+
+    [Parameter]
+    public IList<Caspian.Engine.Action> Actions { get; set; }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        foreach(var action in Actions)
+        {
+            if (action.Selected)
+                value = action.Id;
+        }
+        base.OnParametersSet();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message.HasValue())
+        {
+            await JsRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        else if (action != null)
+        {
+            await JsRuntime.InvokeVoidAsync("$.workflow.updateProcessMethod", action);
+            action = null;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

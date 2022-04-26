@@ -1,0 +1,45 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@typeparam TValue
+@inject IServiceScopeFactory ServiceScopeFactory
+<div class="t-widget t-combobox">
+    <div class="@className">
+        <input @ref="input" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await OnNochangeKeyDown(arg)"
+               
+               @oninput="async arg => await OnChangeValue(arg)" type="text" class="t-input" />
+        <span @onclick="ToggelDropdownList" class="t-select t-header">
+            <i class="t-icon t-arrow-down fa fa-caret-down"></i>
+        </span>
+    </div>
+    @if (Items != null)
+    {
+        <div class="t-animation-container">
+            <div class="t-popup t-group">
+                <ul class="t-reset">
+                    @{
+                        int index = 0;
+                        foreach (var item in Items)
+                        {
+                            string className = "t-item";
+                            if (SelectedIndex == index || index == 0 && SelectedIndex == -1)
+                                className += " t-state-selected";
+                            <li @onclick="async () => { await SelectSelectItem(item); }" class="@className">
+                                @if (ChildContent == null)
+                                {
+                                    <span>@item.Text</span>
+                                }
+                                else
+                                {
+
+                                }
+                            </li>
+                            index++;
+                        }
+                    }
+                </ul>
+            </div>
+
+        </div>
+    }
+</div>
+

@@ -1,0 +1,168 @@
+﻿@namespace Caspian.UI
+@implements Caspian.UI.IContainer
+@implements IInputValueInitializer
+@if (!LoadOnContent || Status == WindowStatus.Open)
+{
+    <CascadingValue Value="this" Name="Container">
+        <CascadingValue Value="(id + 2)" Name="WindowId">
+            <div @attributes="attrs" @ref="window" class="t-widget t-window">
+                @if (!HideTitle)
+                {
+                    <div class="t-window-titlebar t-header">
+                        <span class="t-window-title">@Title</span>
+                        <div class="t-window-actions" @onclick="() => { Status = WindowStatus.Close; }">
+                            <span @onclick="() =>
+                                        {
+                                            if (StatusChanged.HasDelegate)
+                                                StatusChanged.InvokeAsync(WindowStatus.Close);
+                                            Status = WindowStatus.Close;
+                                        }" class="t-window-action t-link">
+                                <i class="fa fa-close"></i>
+                            </span>
+                        </div>
+                    </div>
+                }
+                <div class="t-window-content t-content">
+                    @if (Content != null && Status == WindowStatus.Open)
+                    {
+                        @Content
+                    }
+                </div>
+            </div>
+        </CascadingValue>
+    </CascadingValue>
+}
+
+@code
+{
+    bool isOpend;
+    protected int id;
+    Dictionary<string, object> attrs = new Dictionary<string, object>();
+
+    [JsonIgnore]
+    protected ElementReference window;
+
+    [Inject, JsonIgnore]
+    protected IJSRuntime jsRuntime { get; set; }
+
+    [Inject, JsonIgnore]
+    public WindowAppState AppState { get; set; }
+
+    [CascadingParameter(Name = "WindowId"), JsonProperty("windowId")]
+    public int WindowId { get; set; }
+
+    [Parameter, JsonIgnore]
+    public string Id { get; set; }
+
+    [Parameter, JsonIgnore]
+    public string Style { get; set; }
+
+    [Parameter, JsonProperty("title")]
+    public string Title { get; set; }
+
+    [Parameter, JsonIgnore]
+    public RenderFragment Content { get; set; }
+
+    [Parameter, JsonProperty("status")]
+    public WindowStatus Status { get; set; } = WindowStatus.Close;
+
+    [Parameter, JsonIgnore]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Expression<Func<WindowStatus>> StatusExpression { get; set; }
+
+    [Parameter, JsonIgnore]
+    public EventCallback OnOpen { get; set; }
+
+    internal EventCallback OnInternalOpen { get; set; }
+
+    internal EventCallback OnInternalClose { get; set; }
+
+    [Parameter, JsonProperty("modal")]
+    public bool Modal { get; set; } = true;
+
+    [Parameter, JsonProperty("resizable")]
+    public bool Resizable { get; set; }
+
+    [Parameter, JsonIgnore]
+    public bool HideTitle { get; set; }
+
+    [Parameter, JsonProperty("draggable")]
+    public bool Draggable { get; set; }
+
+    [Parameter]
+    public bool LoadOnContent { get; set; }
+
+    [Parameter, JsonProperty("parentChaild")]
+    public bool ParentChaild { get; set; }
+
+    public async Task Open()
+    {
+        isOpend = true;
+        Status = WindowStatus.Open;
+        await StatusChanged.InvokeAsync(WindowStatus.Open);
+    }
+
+    public async Task SetValue(object value)
+    {
+        await Close();
+    }
+
+    public async Task Close()
+    {
+        if (Status == WindowStatus.Open && OnInternalClose.HasDelegate)
+        {
+            Status = WindowStatus.Close;
+            await OnInternalClose.InvokeAsync();
+        }
+        if (StatusChanged.HasDelegate)
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+    }
+
+    protected string ConvertToJson()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
+
+    protected override void OnInitialized()
+    {
+        AppState.Window = this;
+        id = WindowId;
+        Modal = true;
+        Draggable = true;
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Style.HasValue())
+            attrs["style"] = Style;
+        if (Id.HasValue())
+            attrs["id"] = Id;
+        base.OnParametersSet();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (isOpend)
+        {
+            isOpend = false;
+            if (OnInternalOpen.HasDelegate)
+                await OnInternalOpen.InvokeAsync();
+            if (OnOpen.HasDelegate)
+                await OnOpen.InvokeAsync();
+        }
+        if (!LoadOnContent || Status == WindowStatus.Open)
+        {
+            var json = this.ConvertToJson();
+            await jsRuntime.InvokeVoidAsync("$.telerik.bindControl", window, json, UiControlType.Window);
+        }
+        if (firstRender)
+        {
+            var data = new JsValueSetter(this);
+            await jsRuntime.InvokeVoidAsync("$.telerik.bindValue", DotNetObjectReference.Create(data), window, UiControlType.Window);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

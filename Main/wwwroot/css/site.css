@@ -1,0 +1,204 @@
+.formola-content {
+    width: 450px;
+    border: 1px solid #d5d5d5;
+    padding: 5px;
+    height:215px;
+    border-radius:8px;
+}
+.f-operator >table{
+    width:90%;
+    margin:5px auto 5px auto;
+    text-align:center;
+}
+.c-search-container fieldset{
+    padding-right:8px!important;
+}
+.c-search-container legend {
+    font-size: 9px;
+}
+
+.f-operator hr {
+    margin: 15px 8px;
+    box-shadow: 1px 1px 3px 0 #b3b3b3;
+}
+.formola-content {
+    padding: 5px;
+    width: 100%;
+    height: 554px;
+}
+    .formola-content span {
+        font-size: 15px;
+        font-weight: bold;
+        padding: 0 5px;
+        margin: 0 5px;
+        border: 1px solid #d5d5d5;
+        display: inline-block;
+        border-radius: 15px;
+        line-height: 30px;
+        text-align: center;
+    }
+    .formola-content .f-operand {
+        background-color: #e4f2ff;
+        min-width: 80px;
+    }
+    .formola-content .f-operator {
+        background-color: #ffe4e8;
+        min-width: 30px;
+    }
+    .formola-content .f-clear {
+        height: 12px;
+    }
+.formola-content .c-padd{
+    display:inline-block;
+    border:none;
+}
+.c-formula-action {
+    text-align: center;
+    padding-top: 8px;
+}
+.f-operator {
+    border: 1px solid #d5d5d5;
+    border-radius: 8px;
+    margin-left: 2px;
+    padding: 5px 2px 0 0;
+}
+.f-operator .operand-input {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #336699;
+    background-color: #aec0d3;
+    width: 40px;
+    height: 40px;
+    color: #6c6c6c;
+    outline: none;
+    box-shadow: none;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    font-family: arial,helvetica,sans-serif;
+    margin: 2px;
+}
+    .f-operator .operand-input.down {
+        border-color: #114433;
+        background-color: #336699;
+        color:white;
+    }
+.f-operand {
+    padding: 20px 0 6px 0;
+}
+    .f-operand button {
+        border-radius: 16px;
+        height: 32px;
+        border: none;
+        background-color: #34b8f9;
+        width:88px;
+    }
+        .f-operand button span {
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            vertical-align:text-top;
+        }
+        .f-operand button .fa {
+            font-size: 25px;
+            color: white;
+        }
+
+        .r-title {
+            text-align: center;
+            padding-bottom: 5px;
+            color: #359994;
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+.c-operator button {
+    color: white;
+    background-color: rgb(0 95 244 / 60%);
+    font-weight:bold;
+    line-height:40px;
+    border:none;
+    border-radius:20px;
+}
+    .c-operator button .fa-pie-chart{
+        color:white;
+        font-size:35px;
+        line-height:23px;
+        position:relative;
+        left:4px;
+        top:10px;
+    }
+    .r-level-head {
+        display: table;
+        line-height: 50px;
+        width: 100%;
+    }
+    .r-level-head .c-title {
+        display: table-cell;
+        padding-right: 20px;
+        font-size:15px!important;
+    }
+        .r-level-head .c-title label {
+            font-size: 15px !important;
+            color: #999999;
+        }
+        .r-level-head .c-title span {
+            color: #32bae3;
+            font-weight:bold;
+        }        
+        .r-level-head .c-operator {
+                display: table-cell;
+                width: 300px;
+            }
+
+    @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+    html, body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+a, .btn-link {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.page .content {
+    width: calc(100% - 165px);
+    float:right;
+}

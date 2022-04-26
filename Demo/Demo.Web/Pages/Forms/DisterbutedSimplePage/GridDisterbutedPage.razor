@@ -1,0 +1,20 @@
+﻿@page "/Demo/GridDisterbutedPage"
+@namespace Demo.Web.Pages
+@inherits SimplePage<Product>
+
+@code
+{
+    int? selectedId;
+
+    void SetCategory()
+    {
+        UpsertData.ProductCategoryId = selectedId.Value;
+    }
+
+    async Task<bool> showConfirmForPrice()
+    {
+        if (UpsertData.Price > 0 || (await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟")))
+            return true;
+        return false;
+    }
+}

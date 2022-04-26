@@ -1,0 +1,144 @@
+﻿@namespace Caspian.UI
+@inject IJSRuntime JSRuntime
+@if (show)
+{
+    <div @ref="overlay" class="t-overlay">
+
+    </div>
+    <div @ref="box" class="c-messagebox">
+        <div class="c-content">
+            @{
+                string className = "c-icon ";
+                switch (messageType)
+                {
+                    case MessageType.Quession:
+                        className += "c-question";
+                        break;
+                    case MessageType.Info:
+                        className += "c-info";
+                        break;
+                }
+            }
+            <div class="c-container">
+                <span class="@className">
+                    @{
+                        className = "fa ";
+                        switch (messageType)
+                        {
+                            case MessageType.Quession:
+                                className += "fa-question";
+                                break;
+                            case MessageType.Info:
+                                className += "fa-info";
+                                break;
+                        }
+                    }
+                    <i class="@className" aria-hidden="true"></i>
+                </span>
+            </div>
+            <div class="c-container">
+                <span class="c-title">@Message</span>
+            </div>
+        </div>
+        <div class="c-action">
+            @switch (messageType)
+            {
+                case MessageType.Quession:
+                    <button class="c-button c-ok" @onclick="() => { UpdateConfirmResult(true); }">@YesButtonTitle</button>
+                    <button class="c-button c-cancel" @onclick="() => {UpdateConfirmResult(false); }">@NoButtonTitle</button>
+                    break;
+                case MessageType.Info:
+                    <button class="c-button c-ok" @onclick="() => {UpdateConfirmResult(true); }">@OkButtonTitle</button>
+                    break;
+            }
+        </div>
+    </div>
+}
+@code
+{
+    ElementReference overlay;
+    ElementReference box;
+    bool show;
+    bool? ConfirmResult = null;
+    MessageType messageType;
+
+    void UpdateConfirmResult(bool result)
+    {
+        ConfirmResult = result;
+    }
+
+    protected override void OnInitialized()
+    {
+        OkButtonTitle = YesButtonTitle = "تائید";
+        NoButtonTitle = "انصراف";
+        base.OnInitialized();
+    }
+
+    [Inject]
+    IJSRuntime jsRuntime { get; set; }
+
+    [Parameter]
+    public string Message { get; set; }
+
+    [Parameter]
+    public string YesButtonTitle { get; set; }
+
+    [Parameter]
+    public string NoButtonTitle { get; set; }
+
+    [Parameter]
+    public string OkButtonTitle { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!Style.HasValue())
+            Style = "width:500px;";
+        base.OnParametersSet();
+    }
+
+    async Task<bool> Show(string message)
+    {
+        ConfirmResult = null;
+        if (message.HasValue())
+            Message = message;
+        show = true;
+        StateHasChanged();
+        var task = Task.Run<bool>(async () =>
+        {
+            while (ConfirmResult == null)
+                await Task.Delay(100);
+            show = false;
+            await InvokeAsync(StateHasChanged);
+            return ConfirmResult.Value;
+        });
+        return await task;
+    }
+
+    public void Alert(string message)
+    {
+        if (message.HasValue())
+            Message = message;
+        show = true;
+        StateHasChanged();
+        messageType = MessageType.Info;
+    }
+
+    public async Task<bool> Confirm(string message)
+    {
+        messageType = MessageType.Quession;
+        return await Show(message);
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (show)
+        {
+            show = false;
+            await jsRuntime.InvokeVoidAsync("$.telerik.showMessageBox", overlay, box, show);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}
