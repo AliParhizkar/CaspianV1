@@ -35,13 +35,7 @@ namespace Caspian.Engine
         /// کاربری با پست خاص
         /// </summary>
         [EnumField("کاربری با پست خاص")]
-        UserBySpecialPost,
-
-        /// <summary>
-        /// براساس داده های کاربر
-        /// </summary>
-        [EnumField("براساس داده های کاربر")]
-        OnUserDate
+        UserBySpecialPost
     }
 
     /// <summary>
@@ -98,8 +92,6 @@ namespace Caspian.Engine
         CheckListBox,
         Label
     }
-
-
 
     public enum ConnectorPortType: byte
     {

@@ -67,16 +67,16 @@ namespace Caspian.Common
 
         public static string Seprate3Digit(this decimal value)
         {
-            return string.Format("{0:#,0}", value);
+            var str = String.Format("{0:#,#.###}", value);
+            if (str.StartsWith("."))
+                return '0' + str;
+            return str;
         }
 
         public static string Seprate3Digit(this decimal? value)
         {
             if (value.HasValue)
-            {
-                var str = string.Format("{0:#,0}", value);
-                return str;
-            }
+                return value.Value.Seprate3Digit();
             return "";
         }
 

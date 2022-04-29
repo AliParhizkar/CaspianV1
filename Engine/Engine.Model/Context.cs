@@ -37,8 +37,6 @@ namespace Caspian.Engine
 
         public DbSet<ActivityField> ActivityFields { get; set; }
 
-        public DbSet<Actor> Actors { get; set; }
-
         public DbSet<Connector> Connectors { get; set; }
 
         public DbSet<TaskOperation> TaskOperations { get; set; }

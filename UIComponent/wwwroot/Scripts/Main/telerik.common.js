@@ -23,6 +23,9 @@
             else
                 $(element).focus();
         },
+        fitMainToParent: function () {
+            $('.main').width('100%');
+        },
         bindMultiSelect: function (element, json) {
             json = JSON.parse(json);
             $(element).data('message', json.errorMessage);
@@ -50,6 +53,17 @@
                 $(element).focus();
 
             }
+        },
+        bindMultiselectLookup: function (element) {
+            console.log(element)
+            $(element).find('.c-state-default').mouseenter(function () {
+                $(this).css('background-color', '#daedff');
+                $(this).find('.c-close').css('display', 'inline-block');
+            });
+            $(element).find('.c-state-default').mouseleave(function () {
+                $(this).css('background-color', '');
+                $(this).find('.c-close').css('display', 'none');
+            });
         },
         bindMenu: function (data) {
             $('#accordion .submenu').css('display', 'none');

@@ -200,7 +200,7 @@ namespace Caspian.Engine.Service
                                 {
                                     list.Add(new Action()
                                     {
-                                        SystemActionType = SystemActionType.Checking,
+                                        SystemActionType = SystemActionType.Operation,
                                         Activity = new Activity()
                                         {
                                             Workflow = new Workflow()

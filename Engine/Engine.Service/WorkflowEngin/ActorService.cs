@@ -4,10 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine
 {
-    public class ActorService : SimpleService<Actor>
+    public class ActorService 
     {
         public ActorService(IServiceScope scope)
-            :base(scope)
         {
 
         }

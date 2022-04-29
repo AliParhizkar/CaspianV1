@@ -2,51 +2,53 @@
 @typeparam TEntity
 @typeparam TValue
 @implements ICheckboxList<TValue>
-@inject MyContext Context
 @inject IServiceProvider Provider
 
-<span class="t-radios" style="@Style">
-
-    @if (dic != null)
-    {
+<fieldset class="t-checkbox-list">
+    <legend>@(Title)</legend>
+    <span class="t-content" style="@Style">
+        @if (dic != null)
+        {
         
-        foreach (var item in dic)
-        {
-            <CheckBox ValueChanged="async (TValue value) =>
-                                     {
-                                         await UpdateValue(value);
-                                     }" CheckboxList="this" Value="item.Key" Title="@item.Value" />
-        }
-    }
-    else if (Source != null)
-    {
-        foreach (var item in Source)
-        {
-            <CheckBox ValueChanged="async (TValue value) =>
-                                     {
-                                         await UpdateValue(value);
-                                     }" CheckboxList="this" Value="(TValue)Convert.ChangeType(item.Value, typeof(TValue))" Title="@item.Text" Disabled="item.Disabled" />
-        }
-    }
-    else if (typeof(TEntity) != typeof(SelectListItem))
-    {
-        if (Items != null)
-        {
-            foreach (var item in Items)
+            foreach (var item in dic)
             {
-                
                 <CheckBox ValueChanged="async (TValue value) =>
-                                     {
-                                         await UpdateValue(value);
-                                     }" CheckboxList="this" Value="(TValue)Convert.ChangeType(item.Value, typeof(TValue).GetUnderlyingType())" Title="@item.Text" Disabled="item.Disabled" />
+                                         {
+                                             await UpdateValue(value);
+                                         }" CheckboxList="this" Value="item.Key" Title="@item.Value" />
             }
         }
-    }
-    else
-    {
-        @CheckboxItems.Invoke(this)
-    }
-</span>
+        else if (Source != null)
+        {
+            foreach (var item in Source)
+            {
+                <CheckBox ValueChanged="async (TValue value) =>
+                                         {
+                                             await UpdateValue(value);
+                                         }" CheckboxList="this" Value="(TValue)Convert.ChangeType(item.Value, typeof(TValue))" Title="@item.Text" Disabled="item.Disabled" />
+            }
+        }
+        else if (typeof(TEntity) != typeof(SelectListItem))
+        {
+            if (Items != null)
+            {
+                foreach (var item in Items)
+                {
+                
+                    <CheckBox ValueChanged="async (TValue value) =>
+                                         {
+                                             await UpdateValue(value);
+                                         }" CheckboxList="this" Value="(TValue)Convert.ChangeType(item.Value, typeof(TValue).GetUnderlyingType())" Title="@item.Text" Disabled="item.Disabled" />
+                }
+            }
+        }
+        else
+        {
+            @CheckboxItems.Invoke(this)
+        }
+    </span>
+</fieldset>
+
 
 @code
 {
@@ -138,7 +140,7 @@
 
     protected override void OnInitialized()
     {
-        LoadData = true;
+        //LoadData = true;
         if (CheckboxItems == null)
         {
             var type = typeof(TValue).GetUnderlyingType();
@@ -158,6 +160,9 @@
         }
         base.OnInitialized();
     }
+
+    [Parameter, JsonIgnore]
+    public string Title{ get; set; }
 
     [Parameter, JsonIgnore]
     public Expression<Func<TEntity, string>> DisplayTextExpression { get; set; }

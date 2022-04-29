@@ -97,8 +97,8 @@ html input[disabled], textarea[disabled] {
     border-color: rgba(0, 0, 0, .12);
 }
 .t-grid-header {
-    color: #656565;
-    background-color: #f6f6f6;
+    color: white;
+    background-color: #e0e0e0;
 }
 
 .t-widget.t-grid 
@@ -268,12 +268,6 @@ html input[disabled], textarea[disabled] {
 .t-reset .t-state-selected
 {
     background-color:#ff6358;
-}
-.t-reset .t-item :hover{
-    /*background-color:red!important;*/
-}
-.t-tabstrip .t-state-default:hover {
-    background-color: #f6f6f6 !important;
 }
 
 

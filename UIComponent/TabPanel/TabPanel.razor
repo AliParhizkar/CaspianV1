@@ -22,6 +22,11 @@
                         @if (index == TabIndex)
                         {
                             <span class="t-link">@item.Title</span>
+                            @if (item.Closeable)
+                            {
+                                <span class="t-close"></span>
+                            }
+                            <span class="c-selected-panel"></span>
                         }
                         else
                         {
@@ -33,16 +38,16 @@
                                                   CurentTabpanel = item;
                                                   await this.TabIndexChanged.InvokeAsync(tabIndex);
                                               }">@item.Title</span>
-                                        }
-                        @if (item.Closeable)
-                        {
-                            <span class="t-close"></span>
+                            @if (item.Closeable)
+                            {
+                                <span class="t-close"></span>
+                            }
                         }
+
                     </li>
                     index++;
                 }
             </ul>
-            <div class="t-padd"></div>
             @Tabs
         </div>
     }

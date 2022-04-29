@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
@@ -19,11 +18,19 @@ namespace Caspian.UI
             SearchExpression = expr;
         }
 
+        protected void InitialTextExpression(Expression<Func<TEntity, string>> expr)
+        {
+            TextExpression = expr;
+        }
+
+
         protected override void OnInitialized()
         {
             SearchData = Activator.CreateInstance<TEntity>();
             base.OnInitialized();
         }
+
+        internal Expression<Func<TEntity, string>> TextExpression { get; private set; }   
 
         [CascadingParameter(Name = "LookupStringSearchValue")]
         public string LookupStringSearchValue { get; set; }
@@ -31,12 +38,17 @@ namespace Caspian.UI
         [CascadingParameter(Name = "AutoComplateState")]
         public SearchState SearchState { get; set; }
 
+        [CascadingParameter(Name = "MultiselectAutocomplete")]
+        public MultiselectAutocomplete MultiselectAutocomplete { get; set; }
+
         protected override async Task OnParametersSetAsync()
         {
-            if (Grid != null)
+            if (Grid != null && SearchState != null)
             {
+                
                 if (Grid.InternalConditionExpr == null)
                     Grid.InternalConditionExpr = SearchExpression.Body;
+
                 SearchState.Grid = Grid;
                 if (oldSerachStringValue != LookupStringSearchValue)
                 {
@@ -51,6 +63,28 @@ namespace Caspian.UI
         protected void SetSearchExpression(Expression<Func<TEntity, bool>> expr)
         {
             SearchExpression = expr;
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (Grid != null)
+            {
+                Grid.HideInsertIcon = true;
+                if (!Grid.OnInternalRowSelect.HasDelegate)
+                {
+                    Grid.OnInternalRowSelect = EventCallback.Factory.Create<int>(this, async (int id) =>
+                    {
+                        if (TextExpression == null)
+                            throw new InvalidOperationException("خطا: TextExpression is null you must set TextExpression in page");
+                        using var scope = CreateScope();
+                        var service = new SimpleService<TEntity>(scope);
+                        var entity = await service.SingleAsync(id);
+                        var text = TextExpression.Compile().Invoke(entity);
+                        MultiselectAutocomplete.AddToList(new SelectListItem(id.ToString(), text));
+                    });
+                }
+            }
+            base.OnAfterRender(firstRender);
         }
     }
 }

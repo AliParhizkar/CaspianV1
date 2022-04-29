@@ -25,6 +25,7 @@
     padding: 5px;
     width: 100%;
     height: 554px;
+    overflow:auto;
 }
     .formola-content span {
         font-size: 15px;
