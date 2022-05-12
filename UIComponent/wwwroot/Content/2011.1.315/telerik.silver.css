@@ -66,7 +66,6 @@ fieldset.t-widget legend {
 
 .t-state-disabled .fa {
     color: #c6c6c7;
-    cursor: not-allowed;
 }
 /* webkit solution */
 ::-webkit-input-placeholder {
@@ -116,7 +115,7 @@ html input[disabled], textarea[disabled] {
     border-color: rgba(0, 0, 0, 0.12);
     cursor:pointer;
     text-align:center;
-    padding-top:2px;
+    padding-top:6px;
 }
 
 .t-panelbar .t-state-hover { background-image: none; }
@@ -138,7 +137,6 @@ html input[disabled], textarea[disabled] {
 .t-state-disabled .t-arrow-up { background-position: -32px -160px; }
 .t-state-disabled .t-arrow-down {
     background-position: -15px -174px;
-    cursor:not-allowed;
 }
 .t-DBLable {
     margin: 3px 2px 3px 2px;

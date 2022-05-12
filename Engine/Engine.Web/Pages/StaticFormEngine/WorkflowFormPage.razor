@@ -1,0 +1,80 @@
+﻿@page "/{Subsystem}/Engine/WorkflowForm"
+@inherits SimplePage<WorkflowForm>
+@{ 
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:0 auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="WorkflowForm" Search="SearchData" TableHeight="400" >
+        <Columns>
+            <GridColumn TEntity="WorkflowForm" Field="t => t.Title" Title="عنوان" />
+            <GridColumn TEntity="WorkflowForm" Field="t => t.ColumnCount" Title="تعداد ستونها" />
+            <GridColumn TEntity="WorkflowForm" Title="ایجاد فرم" style="width:80px;">
+                <Template>
+                    <a href="/Engine/WorkflowForm/@(context.Data.Id)" target="_blank">...</a>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="WorkflowForm" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:500px" OnOpen="FormOpen">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(WorkflowFormService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>تعداد ستونها</label>
+                        </td>
+                        <td>
+                            <NumericTextBox @bind-Value="UpsertData.ColumnCount" /> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+    SubSystemKind SystemKind;
+
+    [Parameter]
+    public string Subsystem { get; set; }
+
+    void FormOpen()
+    {
+        UpsertData.SubSystemKind = SystemKind;
+    }
+
+    protected override void OnInitialized()
+    {
+        SystemKind = (SubSystemKind)typeof(SubSystemKind).GetField(Subsystem).GetValue(null);
+        base.OnInitialized();
+    }
+}

@@ -16,6 +16,28 @@ namespace Caspian.Common.Extension
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
+        /// <summary>
+        /// If type is enum and all that fields is power of 2 true else false
+        /// </summary>
+        public static bool IsMultiSelectEnum(this Type type)
+        {
+            if (type.IsEnumType())
+            {
+                var flag = true;
+                foreach(var field in type.GetFields().Where(t => !t.IsSpecialName))
+                {
+                    var value = (int)field.GetValue(null);
+                    if ((value & (value - 1)) != 0)
+                    {
+                        flag = false;
+                        break;
+                    }
+                }
+                return flag;
+            }
+            return false;
+        }
+
         public static string GetMapPath(this Assembly assembly)
         {
             var path = Assembly.GetExecutingAssembly().Location;

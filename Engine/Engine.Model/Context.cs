@@ -49,6 +49,6 @@ namespace Caspian.Engine
 
         public DbSet<DynamicParameterValue> DynamicParametersValues { get; set; }
 
-
+        public DbSet<WorkflowForm> StaticForms { get; set; }
     }
 }

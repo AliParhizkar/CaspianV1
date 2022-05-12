@@ -43,5 +43,23 @@ namespace Employment.Model
         [EnumField("دکتری")]
         PHD
     }
+
+    /// <summary>
+    /// زن
+    /// </summary>
+    public enum Gender
+    {
+        /// <summary>
+        /// مرد
+        /// </summary>
+        [EnumField("مرد")]
+        Male,
+
+        /// <summary>
+        /// زن
+        /// </summary>
+        [EnumField("زن")]
+        Female
+    }
 }
 

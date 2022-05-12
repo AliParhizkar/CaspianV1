@@ -1,9 +1,10 @@
 ﻿using Caspian.Engine;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Employment.Model
 {
-    [RuleType("اعضاء غیرهیئت علمی")]
+    [RuleType("اعضاء غیرهیئت علمی"), WorkflowEntity("حکم غیرهیئت علمی")]
     public class EmploymentOrder
     {
         /// <summary>
@@ -35,5 +36,16 @@ namespace Employment.Model
         /// </summary>
         [DisplayName("ضریب حقوقی"), Rule("ضریب حقوقی")]
         public int SalaryFactor { get; set; }
+
+        /// <summary>
+        /// کد نوع حکم
+        /// </summary>
+        public int EmploymentOrderTypeId { get; set; }
+
+        /// <summary>
+        /// مشخصات نوع جکم
+        /// </summary>
+        [ForeignKey(nameof(EmploymentOrderTypeId))]
+        public virtual EmploymentOrderType EmploymentOrderType { get; set; }
     }
 }

@@ -90,7 +90,8 @@ namespace Caspian.Engine
         CheckBox,
         TreeStateCheckBox,
         CheckListBox,
-        Label
+        Label,
+        Time
     }
 
     public enum ConnectorPortType: byte

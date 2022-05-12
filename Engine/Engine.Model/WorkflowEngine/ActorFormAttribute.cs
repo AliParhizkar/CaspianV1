@@ -10,4 +10,14 @@ namespace Caspian.Engine
             Url = url;
         }
     }
+
+    public class WorkflowEntityAttribute: Attribute
+    {
+        public string Title { get; private set; }
+
+        public WorkflowEntityAttribute(string title)
+        {
+            Title = title;
+        }
+    }
 }

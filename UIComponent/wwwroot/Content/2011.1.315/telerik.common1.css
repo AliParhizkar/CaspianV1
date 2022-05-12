@@ -107,9 +107,17 @@ form tr {
     background-color:transparent;
 }
 
-.c-lookup input {
-    padding-left: 25px !important;
+.t-multitextbox {
+    height:100%;
 }
+
+    .t-multitextbox textarea{
+        height:calc(100% - 4px);
+    }
+
+    .c-lookup input {
+        padding-left: 25px !important;
+    }
 .c-lookup.t-state-error .fa-search {
     color: #ff89d2!important;
 }
@@ -2249,14 +2257,6 @@ div.t-datepicker {
 
 .t-datetimepicker .t-icon-calendar {
     margin-right: 3px;
-}
-
-.t-picker-wrap .t-icon {
-    cursor: pointer;
-}
-
-.t-state-disabled .t-picker-wrap .t-icon {
-    cursor: not-allowed;
 }
 
 
