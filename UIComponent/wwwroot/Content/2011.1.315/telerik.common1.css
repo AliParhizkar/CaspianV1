@@ -189,7 +189,6 @@ form tr {
 
     .t-checkbox {
         white-space: nowrap;
-        display: table-cell;
     }
 .c-multi-select {
     border-width: 1px;

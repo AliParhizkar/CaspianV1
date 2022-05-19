@@ -11,18 +11,18 @@ namespace Caspian.Engine
 
         public string Caption { get; set; }
         
-        public string Description { get; set; }
+        public string? Description { get; set; }
         
         public ControlType ControlType { get; set; }
 
-        public int? EntityFieldId { get; set; }
+        public int? WfFormEntityFieldId { get; set; }
 
         /// <summary>
         /// Field that declare in form
         /// control can bind to properties of this field 
         /// </summary>
-        [ForeignKey(nameof(EntityFieldId))]
-        public virtual EntityField EntityField { get; set; }
+        [ForeignKey(nameof(WfFormEntityFieldId))]
+        public virtual WfFormEntityField WfFormEntityField { get; set; }
 
         /// <summary>
         /// The property name of entity that control bind to it

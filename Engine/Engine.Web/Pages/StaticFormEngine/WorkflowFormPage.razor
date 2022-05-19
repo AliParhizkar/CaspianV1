@@ -1,4 +1,5 @@
 ﻿@page "/{Subsystem}/Engine/WorkflowForm"
+@namespace Caspian.Engine.WorkflowGenerator
 @inherits SimplePage<WorkflowForm>
 @{ 
     base.BuildRenderTree(__builder);
@@ -18,6 +19,11 @@
         <Columns>
             <GridColumn TEntity="WorkflowForm" Field="t => t.Title" Title="عنوان" />
             <GridColumn TEntity="WorkflowForm" Field="t => t.ColumnCount" Title="تعداد ستونها" />
+            <GridColumn TEntity="WorkflowForm" Title="موجودیت" style="width:80px;">
+                <Template>
+                    <a href="/Engine/WorkflowEntity/@(context.Data.Id)">...</a>
+                </Template>
+            </GridColumn>
             <GridColumn TEntity="WorkflowForm" Title="ایجاد فرم" style="width:80px;">
                 <Template>
                     <a href="/Engine/WorkflowForm/@(context.Data.Id)" target="_blank">...</a>
@@ -26,7 +32,7 @@
             <GridCommandColumns TEntity="WorkflowForm" />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:500px" OnOpen="FormOpen">
+    <Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:400px" OnOpen="FormOpen">
         <Content>
             <CaspianForm @ref="UpsertForm" Model="UpsertData">
                 <CaspianValidationValidator ValidatorType="typeof(WorkflowFormService)" />

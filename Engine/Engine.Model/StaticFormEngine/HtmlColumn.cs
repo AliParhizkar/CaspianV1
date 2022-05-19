@@ -9,30 +9,23 @@ namespace Caspian.Engine
         [Key]
         public int Id { get; set; }
 
-        public byte Span { get; set; } = 12;
+        public byte? Span { get; set; } = 12;
 
         public bool Hidden { get; set; }  
 
         public int? RowId { get; set; }
 
         [ForeignKey(nameof(RowId))]
-        public virtual HtmlRow Row { get; set; }
+        public virtual HtmlRow? Row { get; set; }
 
+        public int? InnerRowId { get; set; }   
+
+        [ForeignKey(nameof(InnerRowId))]
+        public virtual InnerRow? InnerRow { get; set; }
+
+        [InverseProperty("HtmlColumn")]
         public virtual IList<InnerRow> InnerRows { get; set; }
-    }
 
-    [Table("InnerRows", Schema = "cmn")]
-    public class InnerRow
-    {
-        public int Id { get; set; }
-
-        public byte Span { get; set; }
-
-        public int? ComponentId { get; set; }
-
-        [ForeignKey(nameof(ComponentId))]
         public virtual Component Component { get; set; }
-
-        public byte ColumnsCount { get; set; }
     }
 }

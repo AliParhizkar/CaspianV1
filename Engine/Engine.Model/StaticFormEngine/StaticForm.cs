@@ -21,6 +21,6 @@ namespace Caspian.Engine
         /// <summary>
         /// Entity fields that declare in form
         /// </summary>
-        public virtual IList<EntityField> EntityFields { get; set; }
+        public virtual IList<WfFormEntityField> EntityFields { get; set; }
     }
 }

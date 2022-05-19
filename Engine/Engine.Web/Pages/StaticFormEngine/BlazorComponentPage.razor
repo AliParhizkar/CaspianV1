@@ -1,0 +1,45 @@
+﻿@using Caspian.Engine
+@namespace Caspian.Engine.WorkflowEngine
+@{
+    var className = "c-form-controls";
+    if (Selected)
+        className += " c-selected";
+}
+<fieldset class="@className" @onclick="async () => { await SelectControl(); }" @onclick:stopPropagation="true">
+    <legend>@Caption</legend>
+    @switch(ControlType)
+    {
+        case ControlType.String:
+        <StringTextBox Disabled />
+            break;
+        case ControlType.CheckBox:
+            <CheckBox TValue="bool?" Disabled />
+            break;
+        case ControlType.Date:
+            <DatePicker TValue="DateTime?" Disabled />
+            break;
+        case ControlType.DropdownList:
+            <DropdownList TValue="GeneratedKind" Disabled />
+            break;
+    }
+</fieldset>
+@code 
+{
+    async Task SelectControl()
+    {
+        if (OnSelect.HasDelegate)
+            await OnSelect.InvokeAsync();
+    }
+
+    [Parameter]
+    public string Caption{ get; set; }
+
+    [Parameter]
+    public ControlType ControlType{ get; set; }
+
+    [Parameter]
+    public bool Selected{ get; set; }
+
+    [Parameter]
+    public EventCallback OnSelect{ get; set; }
+}
