@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class LookupPage<TEntity> where TEntity:class
+    public partial class LookupPage<TEntity, TValue> where TEntity:class
     {
         string oldSerachStringValue;
         Expression<Func<TEntity, bool>> SearchExpression;
@@ -29,6 +29,9 @@ namespace Caspian.UI
             SearchData = Activator.CreateInstance<TEntity>();
             base.OnInitialized();
         }
+
+        [CascadingParameter]
+        public AutoComplete<TEntity, TValue> TextBox { get; set; }
 
         internal Expression<Func<TEntity, string>> TextExpression { get; private set; }   
 
@@ -80,7 +83,10 @@ namespace Caspian.UI
                         var service = new SimpleService<TEntity>(scope);
                         var entity = await service.SingleAsync(id);
                         var text = TextExpression.Compile().Invoke(entity);
-                        MultiselectAutocomplete.AddToList(new SelectListItem(id.ToString(), text));
+                        TextBox.SetText(text);
+                        await TextBox.SetValue(id);
+                        TextBox.CloseHelpForm();
+                        MultiselectAutocomplete?.AddToList(new SelectListItem(id.ToString(), text));
                     });
                 }
             }

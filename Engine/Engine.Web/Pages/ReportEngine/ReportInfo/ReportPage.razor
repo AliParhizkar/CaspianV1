@@ -29,12 +29,12 @@
             <GridColumn TEntity="Report" Field="t => t.Title" />
             <GridColumn TEntity="Report" Title="پارامترها" style="width:80px">
                 <Template>
-                    <IconButton Href='@($"{Subsystem}/Engin/ReportParam/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                    <IconButton Href='@($"{Subsystem}/Engine/ReportParam/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
             <GridColumn TEntity="Report" Title="گزارش" style="width:80px">
                 <Template>
-                    <a target="_blank" href="/Engin/ReportPrintPage/@(context.Data.Id)">
+                    <a target="_blank" href="/Engine/ReportPrintPage/@(context.Data.Id)">
                         ...
                     </a>
                 </Template>

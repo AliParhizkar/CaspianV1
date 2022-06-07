@@ -1,9 +1,11 @@
-﻿@page "/Engin/ReportPrintPage/{ReportId:int}"
-@page "/Engin/ReportPrintPage/{GuId}"
+﻿@page "/Engine/ReportPrintPage/{ReportId:int}"
+@page "/Engine/ReportPrintPage/{GuId}"
 @namespace Caspian.Engine.ReportPrint
 @inject IJSRuntime jsRunTime
 @inherits BasePage
-
+@{
+    base.BuildRenderTree(__builder);
+}
 <input type="hidden" @bind-value="ReportId" />
 <span style="display:none;" class="bottomarrow"></span>
 <span style="display:none" class="leftArrow"></span>
@@ -182,7 +184,7 @@
             </td>
         </tr>
         <tr>
-            <td id="toolsBox" rowspan="2" style="width: 28px;background-image: url(/_Content/EnginWeb/Content/Images/left1.png);vertical-align: top">
+            <td id="toolsBox" rowspan="2" style="width: 28px;background-image: url(/_Content/Engine.Web/Content/Images/left1.png);vertical-align: top">
                 <span class="tools textbox" title="متن"></span>
                 <span class="tools picture" title="تصویر"></span>
                 <span class="tools subreport" title="گزارش فرعی"></span>
@@ -199,7 +201,7 @@
         </tr>
         <tr>
             <td colspan="2" style="vertical-align:top;">
-                <table style="background-image: url(/_Content/EnginWeb/Content/Images/bondbackgrond.png);" id="bond" cellpadding="0" cellspacing="0"></table>
+                <table style="background-image: url(/_Content/Engine.Web/Content/Images/bondbackgrond.png);" id="bond" cellpadding="0" cellspacing="0"></table>
             </td>
         </tr>
     </table>

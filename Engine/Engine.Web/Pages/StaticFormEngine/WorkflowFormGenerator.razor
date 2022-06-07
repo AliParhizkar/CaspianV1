@@ -3,58 +3,35 @@
 @inherits BasePage
 
 @page "/Engine/WorkflowForm/{WorkflowFormId:int}"
-<div class="c-tools-bar">
-    <div style="height:54px;">
-        <button @onclick="() => showEntityType = !showEntityType" class="w-button w-controls-entity" title="فیلدهای پایگاه داده ها"></button>
-        <div class="c-add-control">
-        @if (showEntityType)
-        {
-            <ul>
-            @foreach(var item in entityFields)
-            {
-                var className = item.EntityFullName == EntityTypeFullName ? "c-selected" : null;
-                <li @onclick="() => EntityType(item.EntityFullName)" @onclick:stopPropagation="true" class="@className">
-                    @item.Title
-                @if (showEntityProperties && item.EntityFullName == EntityTypeFullName)
-                {
-                    <ul class="c-property">
-                        @foreach(var info in workflowEntityProperties)
-                        {
-                            className = info == selectedPropertyInfo ? "c-selected" : null;
-                            <li @onclick:stopPropagation="true" class="@className" @onclick="() => EntityProperty(info)">@info.Name</li>            
-                        }
-                    </ul>
-                }
-                </li>
-            }
-            </ul>
-        }
-        </div>
 
-    </div>
-    <div class="w-seprator"></div>
-    <div>
-        <button @onclick="AddRowToDown" class="w-button w-row-down" title="افزودن یک ردیف در پایین"></button>
-        <button @onclick="AddRowToTop" class="w-button w-row-up" title="افزودن یک ردیف در بالا"></button>
-        <button @onclick="DeleteSelectedRow" class="w-button w-row-delete" title="حذف ردیف"></button>
+<div class="row">
+    <PropertyWindow />
+    <div class="c-form-designer">
+        <div class="c-tools-bar">
+            <PropertySeledtor WorkflowFormId="WorkflowFormId" OnSelect="(info) => { AddControl(info); }" />
         <div class="w-seprator"></div>
-        <button @onclick="AddInnerRowToTop" class="w-button w-innerrow-up" title="افزودن یک ردیف داخلی در بالا"></button>
-        <button @onclick="AddInnerRowToDown" class="w-button w-innerrow-down" title="افزودن یک ردیف داخلی در پایین"></button>
-        <button @onclick="RemoveInnerRow" class="w-button w-innerrow-delete" title="حذف ردیف داخلی"></button>
-        <div class="w-seprator"></div>
-        <button @onclick="MergeSelectedColumns" class="w-button w-merge" title="ادغام سطرها"></button>
-        <button @onclick="UnmergeSelectedColumns" class="w-button w-split" title="ادغام ستونها"></button>
-        <div class="w-seprator"></div>
-        <button @onclick="AddColumn"  class="w-button w-col-right" title="افزودن یک ستون در راست"></button>
-        <button @onclick="AddColumn" class="w-button w-col-left" title="افزودن یک ستون در چپ"></button>
-        <button class="w-button w-col-delete" title="حذف ستون"></button>
-    </div>
-</div>
-@if (rows != null)
-{
-    <div class="container static-form">
-        @foreach(var row in rows)
+        <div>
+            <button @onclick="AddRowToDown" class="w-button w-row-down" title="افزودن یک ردیف در پایین"></button>
+            <button @onclick="AddRowToTop" class="w-button w-row-up" title="افزودن یک ردیف در بالا"></button>
+            <button @onclick="DeleteSelectedRow" class="w-button w-row-delete" title="حذف ردیف"></button>
+            <div class="w-seprator"></div>
+            <button @onclick="AddInnerRowToTop" class="w-button w-innerrow-up" title="افزودن یک ردیف داخلی در بالا"></button>
+            <button @onclick="AddInnerRowToDown" class="w-button w-innerrow-down" title="افزودن یک ردیف داخلی در پایین"></button>
+            <button @onclick="RemoveInnerRow" class="w-button w-innerrow-delete" title="حذف ردیف داخلی"></button>
+            <div class="w-seprator"></div>
+            <button @onclick="MergeSelectedColumns" class="w-button w-merge" title="ادغام سطرها"></button>
+            <button @onclick="UnmergeSelectedColumns" class="w-button w-split" title="ادغام ستونها"></button>
+            <div class="w-seprator"></div>
+            <button @onclick="AddColumn"  class="w-button w-col-right" title="افزودن یک ستون در راست"></button>
+            <button @onclick="AddColumn" class="w-button w-col-left" title="افزودن یک ستون در چپ"></button>
+            <button class="w-button w-col-delete" title="حذف ستون"></button>
+        </div>
+        </div>
+        @if (rows != null)
         {
+        <div class="container static-form">
+            @foreach(var row in rows)
+            {
             var rowIndex = rows.IndexOf(row);
             <div class="row">
                 @foreach(var col in row.Columns)
@@ -92,7 +69,7 @@
                         else
                         {
                             var ctr = col.Component;
-                            <BlazorComponentPage OnSelect="() => SelectControl(rowIndex, colIndex)" Selected="@(colIndex == selectedColIndex && controlSelected)" ControlType="@(ctr!.ControlType)" Caption="@(ctr.Caption)" />
+                            <BlazorComponentPage OnSelect="() => SelectControl(rowIndex, colIndex)" Selected="@(rowIndex == selectedRowIndex && colIndex == selectedColIndex && controlSelected)" ControlType="@(ctr!.ControlType)" Caption="@(ctr.Caption)" />
                         }
                     </div>
                 }
@@ -100,11 +77,10 @@
         }
     </div>
 }
-
+    </div>
+</div>
 @code 
 {
-    IList<WfFormEntityField> entityFields;
-    IList<PropertyInfo> workflowEntityProperties;
     byte columnsCount;
     IList<HtmlRow> rows;
     int selectedRowIndex = -1;
@@ -112,11 +88,6 @@
     int selectedInnerRowIndex = -1;
     int selectedInnerColIndex = -1;
     IList<int> selectedColsIndex;
-    bool showEntityType;
-    string EntityTypeFullName;
-    bool showEntityProperties;
-    SubSystemKind subSystemKind;
-    PropertyInfo selectedPropertyInfo;
     bool controlSelected;
 
     void SelectControl(int rowIndex, int colIndex, int? innerRowIndex = null, int? innerColIndex = null)
@@ -124,15 +95,6 @@
         selectedRowIndex = rowIndex;
         selectedColIndex = colIndex;
         controlSelected = true;
-    }
-
-    void EntityType(string key)
-    {
-        EntityTypeFullName = key;
-        showEntityProperties = true;
-        workflowEntityProperties = new AssemblyInfo().GetModelType(subSystemKind, key).GetProperties()
-            .Where(t => !t.CustomAttributes.Any(t => t.AttributeType == typeof(KeyAttribute) || 
-            t.AttributeType == typeof(ForeignKeyAttribute)) || t.PropertyType.IsCollectionType()).ToList();
     }
 
     void DeleteSelectedRow()
@@ -144,24 +106,13 @@
         }
     }
 
-    void EntityProperty(PropertyInfo info)
-    {
-        selectedPropertyInfo = info;
-        showEntityProperties = false;
-        showEntityType = false;
-        AddControl(info);
-    }
-
     protected override async Task OnInitializedAsync()
     {
         var scope = CreateScope();
-        var form = await new Caspian.Engine.Service.WorkflowFormService(scope).SingleAsync(WorkflowFormId);
+        var form = await new WorkflowFormService(scope).SingleAsync(WorkflowFormId);
         columnsCount = form.ColumnCount;
         rows = form.Rows.ToList();
         selectedColsIndex = new List<int>();
-        subSystemKind = form.SubSystemKind;
-        entityFields = new WfFormEntityFieldService(scope).GetAll().Where(t => t.WorkflowFormId == WorkflowFormId).ToList();
-
         await base.OnInitializedAsync();
     }
 
@@ -275,13 +226,12 @@
         var att = info.GetCustomAttribute<DisplayNameAttribute>();
         var component = new Caspian.Engine.Component()
         {
-            ControlType = info.PropertyType.GetControlType(),
+            ControlType = info.GetControlType(),
             Caption = att == null ? info.Name : att.DisplayName,
             PropertyName = info.Name
         };
         if (selectedInnerRowIndex >= 0)
         {
-
             if (selectedInnerColIndex < 0)
             {
 
@@ -413,4 +363,17 @@
 
     [Parameter]
     public int WorkflowFormId { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.jsRuntime.InvokeVoidAsync("$.workflow.WorkflowForm", DotNetObjectReference.Create(this));
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable]
+    public async Task<string> GetCodebehindString()
+    {
+        using var scop = CreateScope();
+        return await new WorkflowFormService(scop).GetCodebehindAsync(WorkflowFormId);
+    }
 }

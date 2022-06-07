@@ -9,7 +9,7 @@
         <span class="c-check">
             <span class="t-icon fa fa-check" @onclick="async () => { await ValidateAndUpsert(); }"></span>
         </span>
-        <span class="c-cancel-icon" @onclick="@(async () => { await Delete(); })">
+        <span class="c-btn c-danger" @onclick="@(async () => { await Delete(); })">
             <span class="t-icon fa fa-ban"></span>
         </span>
     }

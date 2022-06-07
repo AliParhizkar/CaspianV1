@@ -22,8 +22,8 @@
             <tr>
                 <td></td>
                 <td style="height:60px;text-align:center">
-                    <button style="width: 75px;" class="c-button c-ok" @onclick="SetData">ثبت</button>
-                    <button style="width: 75px; margin-left: 15px;" class="c-button c-cancel"
+                    <button style="width: 75px;" class="c-btn c-primary" @onclick="SetData">ثبت</button>
+                    <button style="width: 75px; margin-left: 15px;" class="c-btn c-danger"
                             @onclick="async () => 
                             { 
                                 await StatusChanged.InvokeAsync(WindowStatus.Close); 
@@ -36,7 +36,7 @@
 
 @code
 {
-    string message;
+    string? message;
     bool DataUpdated;
 
     async void SetData()
@@ -71,7 +71,7 @@
         if (DataUpdated)
         {
             DataUpdated = false;
-            await JSRuntime.InvokeVoidAsync("$.workflow.updateSelectedNodeData", Activity.Title, Activity.ActorType.ConvertToInt());
+            await JSRuntime.InvokeVoidAsync("$.workflow.updateSelectedNodeData", Activity.Title, Activity!.ActorType!.ConvertToInt());
         }
         if (message.HasValue())
         {

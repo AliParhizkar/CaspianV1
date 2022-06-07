@@ -4,31 +4,114 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<button @onclick="() => { Status = WindowStatus.Open; }">Window 1</button>
-<Window @bind-Status="Status" Title="Window 1" Style="width:900px;height:600px">
+<div style="padding:20px 40px 0 0">
+    <h3>Window</h3>
+</div>
+<div style="display:table;width:90%;margin:0 auto">
+    <div style="display:table-cell;width:50%;padding-left:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Window Setting</h4>
+        <table style="height:210px;margin-right:80px">
+            <tr>
+                <td>
+                    <label>Dragable</label>
+                </td>
+                <td>
+                    <CheckBox @bind-Value="dragable" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Resizeable</label>
+                </td>
+                <td>
+                    <CheckBox @bind-Value="resizeable" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Modal</label>
+                </td>
+                <td>
+                     <CheckBox @bind-Value="modal" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Hide title</label>
+                </td>
+                <td>
+                    <CheckBox @bind-Value="hideTitle" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Title</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Open</label>
+                </td>
+                <td>
+                    <button class="c-btn c-primary" @onclick="() => { Status = WindowStatus.Open; }">...</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="display:table-cell;width:50%;padding-right:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Cascade window</h4>
+        <div style="padding-right:50px">
+            <button class="c-btn c-info" @onclick="() => {Status1 = WindowStatus.Open;}">Open</button>
+        </div>
+    </div>
+</div>
+<Window @bind-Status="Status" Modal=modal Resizable=resizeable Draggable="dragable" Title="@title" HideTitle="hideTitle" Style="width:600px;height:350px">
+    <Content>
+        @if (hideTitle)
+        {
+        <div style="display:flex">
+            <h5 style = "width:calc(100% - 33px); padding:10px 25px 0 0;">Window</h5>
+            <button @onclick="() => Status = WindowStatus.Close" style="border:none;color:gray;background-color:transparent">X</button>
+        </div>
+        <hr/>
+        }
+    </Content>
+</Window>
+
+
+<Window @bind-Status="Status1"  Title="Window 1" Style="width:700px;height:500px">
     <Content>
         <h3>Window 1</h3>
-        <button @onclick="() => { Status1 = WindowStatus.Open; }">Window 2</button>
-        <Window @bind-Status="Status1" Title="Window 2" Style="width:700px;height:500px">
+        <hr />
+        <button class="c-btn c-success" @onclick="() => { Status2 = WindowStatus.Open; }">Window 2</button>
+        <Window @bind-Status="Status2" Title="Window 2" Style="width:600px;height:400px">
             <Content>
                 <h3>Window 2</h3>
-                <button @onclick="() => { Status2 = WindowStatus.Open; }">Window 3</button>
-                <Window @bind-Status="Status2" Title="Window 3" Style="width:500px;height:400px">
+                <hr />
+                <button class="c-btn c-secondary" @onclick="() => { Status3 = WindowStatus.Open; }">Window 3</button>
+                <Window @bind-Status="Status3" Title="Window 3" Style="width:500px;height:300px">
                     <Content>
-                        <h3>Window سوم</h3>
+                        <h4>Window 3</h4>
+                        <hr />
                     </Content>
                 </Window>
             </Content>
         </Window>
     </Content>
 </Window>
-
-
-
-
-
 @code {
     WindowStatus Status;
     WindowStatus Status1;
     WindowStatus Status2;
+    WindowStatus Status3;
+    bool dragable = true;
+    bool hideTitle;
+    bool modal = true;
+    bool resizeable;
+    string title = "Window";
 }

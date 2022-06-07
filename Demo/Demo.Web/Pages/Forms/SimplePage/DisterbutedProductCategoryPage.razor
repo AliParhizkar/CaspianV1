@@ -17,6 +17,7 @@
     <DataGrid @ref="CrudGrid" TEntity="ProductCategory" Search="SearchData" TableHeight="400">
         <Columns>
             <GridColumn TEntity="ProductCategory" Field="t => t.Title" Title="عنوان" />
+            <GridColumn TEntity="ProductCategory" Field="t => t.Code" Title="کد" />
             <GridColumn TEntity="ProductCategory" Field="t => t.ActiveType.FaText()" />
             <GridColumn TEntity="ProductCategory" Title="Popup" style="width:50px">
                 <Template>
@@ -42,6 +43,14 @@
                         </td>
                         <td>
                             <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>کد</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Code" />
                         </td>
                     </tr>
                     <tr>

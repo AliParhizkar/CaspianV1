@@ -37,7 +37,9 @@
             <GridColumn TEntity="City" Field="t => t.Title" />
             <GridColumn TEntity="City" Field="t => t.ActiveType.FaText()" />
             <GridColumn TEntity="City" Title="مناطق" style="width:50px">
-                <a href="/Demo/Area/@(context.Data.Id)">...</a>
+                <Template>
+                    <IconButton Href='@($"/Demo/Area/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
             </GridColumn>
             <GridCommandColumns TEntity="City" />
         </Columns>

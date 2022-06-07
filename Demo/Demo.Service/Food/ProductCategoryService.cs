@@ -15,11 +15,18 @@ namespace Demo.Service
             : base(scope)
         {
             RuleFor(t => t.Title).Required().UniqAsync("گروه محصولی با این عنوان تعریف شده است");
-            RuleFor(t => t.Code).UniqAsync("گروه محصولی با این کد تعریف شده است").Custom(pc => 
+            RuleFor(t => t.Code).UniqAsync("گروه محصولی با این کد تعریف شده است")
+            .CustomValue(code => 
+            {
+                if (!code.HasValue())
+                    return false;
+                return code.Length > 2;
+            }, "کد گروه کالا حداکثر می تواند یک یا دو رقم داشته باشد")
+            .Custom(pc => 
             {
                 if (!pc.Code.HasValue())
                     return false;
-                return !new ProductService(ServiceScope).GetAll().Any(p => p.Code == pc.Code);
+                return new ProductService(ServiceScope).GetAll().Any(p => p.Code == pc.Code);
             }, "محصولی با این کد تعریف شده است");
         }
 

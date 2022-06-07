@@ -396,6 +396,11 @@ namespace Caspian.UI
                 await OnChange.InvokeAsync(Value);
         }
 
+        public void SetText(string text)
+        {
+            Text = text;
+        }
+
         public void SetSearchStringValue(string searchStr)
         {
             SearchStr = searchStr;

@@ -5,53 +5,33 @@
     <title></title>
     <script src="jquery-1.8.2.js"></script>
     <style type="text/css">
-        .selector {
-            display:inline-block;
-            background-color:chocolate;
-            height:3px;
-            width:100%;
+        .c-propertyWindow{
+            border:1px solid red;
+            width:180px;
+            margin:0;
+            height:100vh;
+            box-sizing:border-box;
+            list-style:none;
+            padding:5px;
+        }
+        .c-category{
+
         }
     </style>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('table tr td').click(function () {
-                var left = $(this).position().left;
-                var width = $(this).width();
-                var startWidth = $('.selector').width();
-                $('.selector').css({
-                    position: 'absolute',
-                    width: startWidth,
-                    'margin-top': 2
-                });
-                var self_ = this;
-                $('.selector').animate({
-                    left: left,
-                    width: width
-                }, 400, function () {
-                    $(self_).append($('.selector'));
-                    $('.selector').css('position', 'static')
-                });
-                //$('.selector').css(
-                //    {
-                //        left: left,
-                //        width: width
-                //    });
-
-            });
-        });
+       
     </script>
 </head>
-<body>
-    
-    <table style="width:95%;height:100px;margin:0 auto;" cellpadding="0" cellspacing="0" border="1">
-        <tr>
-            <td style="width:10%">
-                <span class="selector"></span>
-            </td>
-            <td style="width:20%"></td>
-            <td style="width:30%"></td>
-            <td style="width:40%"></td>
-        </tr>
-    </table>
+<body style="direction:rtl;margin:0;padding:0">
+    <ul class="c-propertyWindow">
+        <li class="c-category">
+            <span>فونت</span>
+            <ul class="c-property">
+                <li>
+
+                </li>
+            </ul>
+        </li>
+    </ul>
 </body>
 </html>

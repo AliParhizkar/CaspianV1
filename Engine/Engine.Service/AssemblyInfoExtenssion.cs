@@ -1,5 +1,7 @@
 ﻿using Caspian.Common;
 using Caspian.Common.Extension;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 
 namespace Caspian.Engine.Service
 {
@@ -22,24 +24,27 @@ namespace Caspian.Engine.Service
 
     public static class TypeExtensions
     {
-        public static ControlType GetControlType(this Type type)
+        public static ControlType GetControlType(this PropertyInfo info)
         {
-            var type1 = type.GetUnderlyingType();
-            if (type1.IsMultiSelectEnum())
+            var entityType = info.DeclaringType;
+            if (entityType.GetProperties().Any(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name))
+                return ControlType.ComboBox;
+            var type =  info.PropertyType.GetUnderlyingType();
+            if (type.IsMultiSelectEnum())
                 return ControlType.CheckListBox;
-            if (type1.IsEnumType())
+            if (type.IsEnumType())
                 return ControlType.DropdownList;
-            if (type1 == typeof(string))
+            if (type == typeof(string))
                 return ControlType.String;
-            if (type1 == typeof(DateTime))
+            if (type == typeof(DateTime))
                 return ControlType.Date;
-            if (type1 == typeof(TimeSpan))
+            if (type == typeof(TimeSpan))
                 return ControlType.Time;
-            if (type1 == typeof(long) || type1 == typeof(int) || type1 == typeof(short) || type1 == typeof(byte))
+            if (type == typeof(long) || type == typeof(int) || type == typeof(short) || type == typeof(byte))
                 return ControlType.Integer;
-            if (type1 == typeof(bool))
+            if (type == typeof(bool))
                 return ControlType.CheckBox;
-            if (type1 == typeof(double) || type1 == typeof(decimal) || type1 == typeof(float) || type1 == typeof(Single))
+            if (type == typeof(double) || type == typeof(decimal) || type == typeof(float) || type == typeof(Single))
                 return ControlType.Numeric;
             throw new NotImplementedException("خطای عدم پیاده سازی");
         }

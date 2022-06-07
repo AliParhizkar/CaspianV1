@@ -102,34 +102,13 @@
            
 
             (function (wnd) {
-
+                let startx, starty
                 function start(e) {
                     var $element = $(wnd.element);
 
                     wnd.initialCursorPosition = $element.offset();
 
-                    wnd.resizeDirection = e.$draggable.attr('className').replace('t-resize-handle t-resize-', '').split('');
 
-                    wnd.resizeElement = $element.find('> .t-window-content');
-
-                    wnd.initialSize = {
-                        width: wnd.resizeElement.width(),
-                        height: wnd.resizeElement.height()
-                    };
-
-                    wnd.outlineSize = {
-                        left: wnd.resizeElement.outerWidth() - wnd.resizeElement.width()
-                            + $element.outerWidth() - $element.width(),
-                        top: wnd.resizeElement.outerHeight() - wnd.resizeElement.height()
-                            + $element.outerHeight() - $element.height()
-                            + $element.find('> .t-window-titlebar').outerHeight()
-                    }
-
-                    //$('<div class="t-overlay" />').appendTo(wnd.element);
-
-                    $element.find('.t-resize-handle').not(e.$draggable).hide();
-
-                    $(document.body).css('cursor', e.$draggable.css('cursor'));
                 }
 
                 function drag(e) {

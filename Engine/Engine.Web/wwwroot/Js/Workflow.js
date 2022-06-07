@@ -366,6 +366,22 @@
             }
         },
 
+        WorkflowForm: function (dotnet) {
+            $.workflowForm = {
+                dotnet: dotnet
+            };
+        },
+
+        getCodebehindString() {
+            $.workflowForm.dotnet.invokeMethodAsync("GetCodebehindString").then(t => {
+                var data = {
+                    action: 'setCodebehind',
+                    content: t
+                };
+                window.chrome.webview.postMessage(data);
+            });
+        },
+
         updateSelectedNodeData: function (text, value) {
             var tempNode = null, node = $w.curentNode;
             myDiagram.model.nodeDataArray.forEach(function (item) {
@@ -572,6 +588,7 @@
             }
         }
     }
-})(jQuery); 
+})(jQuery);
+
     
     

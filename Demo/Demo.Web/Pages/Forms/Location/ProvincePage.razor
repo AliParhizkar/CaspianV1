@@ -20,7 +20,9 @@
             <GridColumn TEntity="Province" Field="t => t.Title" />
             <GridColumn TEntity="Province" Field="t => t.ActiveType.FaText()" />
             <GridColumn TEntity="Province" Title="شهرها" style="width:50px">
-                <a href="/Demo/City/@(context.Data.Id)">...</a>
+                <Template>
+                    <IconButton Href='@($"/Demo/City/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
             </GridColumn>
             <GridCommandColumns TEntity="Province" />
         </Columns>

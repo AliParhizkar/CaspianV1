@@ -15,7 +15,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == CategoryId)" Search="SearchData" TableHeight="400">
+    <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == CategoryId)" Search="SearchData" TableHeight="300">
         <Columns>
             <GridColumn TEntity="Product" Field="t => t.Title" />
             <GridColumn TEntity="Product" Field="t => t.ActiveType.FaText()" />

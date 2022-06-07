@@ -7,7 +7,7 @@
     <div style="display:table-cell;width:50%;padding-left:40px">
         <hr />
         <h4 style="padding-right:80px;">With Content</h4>
-        <Fileupload OnChange="SaveFileData1" Title="Click for upload">
+        <Fileupload OnChange="async e => await SaveFileData1(e)" Title="Click for upload">
             <PictureBox NoContentTitle="لطفا برای آپلود عکس کلیک نمایید" Data="imageData1" style="width:300px;height:350px;background-size:cover" />
         </Fileupload>
     </div>
@@ -16,7 +16,7 @@
         <h4 style="padding-right:40px;">Without Content</h4>
         <PictureBox Data="imageData" style="width:300px;height:350px;background-position: center center" />
         <div style="display:table-cell;height:50px;vertical-align:middle">
-            <Fileupload OnChange="SaveFileData" />
+            <Fileupload OnChange="async e => await SaveFileData(e)" />
         </div>
     </div>
 </div>

@@ -66,6 +66,7 @@ fieldset.t-widget legend {
 
 .t-state-disabled .fa {
     color: #c6c6c7;
+    cursor:not-allowed;
 }
 /* webkit solution */
 ::-webkit-input-placeholder {
@@ -97,7 +98,7 @@ html input[disabled], textarea[disabled] {
 }
 .t-grid-header {
     color: white;
-    background-color: #e0e0e0;
+    background-color: #e9ebee;
 }
 
 .t-widget.t-grid 
@@ -188,7 +189,7 @@ html input[disabled], textarea[disabled] {
 .t-dropdown-wrap.t-state-hover .t-select {
     background-image: linear-gradient(#e6e6e6,#e1e1e1);
 }
-.t-numerictextbox .t-input {
+.t-numerictextbox >.t-input {
     border-color: rgba(0,0,0,0.12);
     padding: 0 4px 0 4px;
     width: calc(100% - 4px);

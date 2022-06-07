@@ -22,14 +22,14 @@
                             }).ToList();
                         })" style="width:500px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="TreeViewItem" Source="Nodes" />
         <div style="border:1px solid rgba(0, 0, 0, 0.2);margin-top:8px;border-radius:8px;height:50px">
-            <button class="c-button c-cancel"
+            <button class="c-btn c-danger"
                     @onclick="async () =>
                                   {
                                       await StatusChanged.InvokeAsync( WindowStatus.Close);
                                   }">
                 انصراف
             </button>
-            <button class="c-button c-ok" @onclick="PostParams">ثبت</button>
+            <button class="c-btn c-primary" @onclick="PostParams">ثبت</button>
         </div>
     </Content>
 </Window>

@@ -1,4 +1,5 @@
-﻿@inherits LookupPage<Material>
+﻿@typeparam TValue
+@inherits LookupPage<Material, TValue>
 @namespace Demo.Web.Pages
 <div class="c-lookup-page" style="width:380px;">
     <DataGrid @ref="Grid" TEntity="Material" TableHeight="200" HidePageSize>

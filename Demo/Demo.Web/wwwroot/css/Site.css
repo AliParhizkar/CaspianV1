@@ -1,0 +1,31 @@
+﻿.c-categories {
+    width: 150px;
+    height: 100vh;
+    border-left: 1px solid gray;
+    box-sizing:border-box;
+}
+    .c-categories ul{
+        padding:0 ;
+        font-size:14px;
+        margin:0
+    }
+    .c-products {
+        margin: 0 auto;
+        width: calc(95% - 150px);
+    }
+.fa-male, .fa-female {
+    color: #494949!important;
+    font-size: 24px!important;
+
+}
+.c-categories .c-category {
+    padding:5px;
+    cursor:pointer;
+}
+    .c-categories .c-category:nth-child(2n+1) {
+        background-color: #e2e6ee;
+    }
+
+.c-categories .c-selected {
+    background-color: #5e8f8f50 !important;
+}

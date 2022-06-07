@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
-using Caspian.Engine;
+﻿using Caspian.Engine;
 using System.Reflection;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Caspian.Common
 {
@@ -16,7 +13,7 @@ namespace Caspian.Common
 
         public AssemblyInfo()
         {
-            RelatedPath = this.GetType().Assembly.Location.Replace("\\Common.dll", "");
+            RelatedPath = Path.GetDirectoryName(this.GetType().Assembly.Location);
         }
 
         public Dictionary<string, string> GetRuleTypes(SubSystemKind subSystemKind)

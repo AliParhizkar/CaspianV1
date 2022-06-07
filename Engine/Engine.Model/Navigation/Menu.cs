@@ -14,7 +14,7 @@ namespace Caspian.Common.Navigation
         /// عنوان فارسی منو
         /// </summary>
         [DisplayName("عنوان")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// آدرس صفحه
@@ -32,7 +32,7 @@ namespace Caspian.Common.Navigation
         /// مشخصات منوی اصلی
         /// </summary>
         [ForeignKey(nameof(MenuCategoryId))]
-        public virtual  MenuCategory MenuCategory { get; set; }
+        public virtual  MenuCategory? MenuCategory { get; set; }
 
         public int Ordering { get; set; }
 

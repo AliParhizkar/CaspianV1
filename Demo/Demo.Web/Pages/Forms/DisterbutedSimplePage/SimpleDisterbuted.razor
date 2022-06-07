@@ -4,123 +4,129 @@
 @{
     base.BuildRenderTree(__builder);
 }
-
 @if (categories != null)
 {
-    <ul class="c-categories">
-        @foreach (var category in categories)
-        {
-            var className = "c-category";
-            if (selectedId == category.Id)
-                className += " c-selected";
-            <li class="@className"
-                @onclick="() =>
-                          {
-                              selectedId = category.Id;
-                              CrudGrid?.EnableLoading();
-                          }">@category.Title</li>
-                    }
-    </ul>
-    @if (selectedId.HasValue)
-    {
-        <div class="c-products">
-            <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == selectedId.Value)" Search="SearchData"
-                      TableHeight="400">
-                <Columns>
-                    <GridColumn TEntity="Product" Field="t => t.Title" />
-                    <GridColumn TEntity="Product" Field="t => t.ActiveType.FaText()" />
-                    <GridColumn TEntity="Product" Field="t => t.Price.ToString()" />
-                    <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.ToString()" />
-                    <GridCommandColumns TEntity="Product" />
-                </Columns>
-            </DataGrid>
-            <Window @ref="UpsertWindow" Title="محصول" Style="width:680px;">
-                <Content>
-                    <CaspianForm @ref="UpsertForm" Model="UpsertData"
-                                 OnSubmit="() =>
-                                            {
-                                                UpsertData.ProductCategoryId = selectedId.Value;
-                                            }"
-                                 OnValidSubmit='async (context) =>
-                                                {
-                                                    return UpsertData.Price > 0 || await Confirm("ایا با ثبت محصول با مبلغ صفر موافقید؟");
-                                                }'>
-                        <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
-                        <table style="width:95%;margin:0 auto">
-                            <tr>
-                                <td style="width:100px;">
-                                    <label>عنوان</label>
-                                </td>
-                                <td style="width:240px">
-                                    <StringTextBox @bind-Value="UpsertData.Title" />
-                                </td>
-                                <td rowspan="6" style="padding-right:30px;">
-                                    <Fileupload OnChange="async (e) =>
-                                                          {
-                                                              UpsertData.Image = await e.File.GetByteArrayAsync();
-                                                          }">
-                                        <PictureBox Data="UpsertData.Image" style="width: 250px; height: 250px;" />
-                                    </Fileupload>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>قیمت</label>
-                                </td>
-                                <td>
-                                    <NumericTextBox @bind-Value="UpsertData.Price"
-                                                    @onchange="() =>
-                                                               {
-                                                                   if (UpsertData.PriceOuterBound == 0)
-                                                                       UpsertData.PriceOuterBound = UpsertData.Price;
-                                                               }" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>قیمت بیرون بر</label>
-                                </td>
-                                <td>
-                                    <NumericTextBox @bind-Value="UpsertData.PriceOuterBound" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>وعده غذایی</label>
-                                </td>
-                                <td>
-                                    <MultiSelectBox @bind-Value="UpsertData.Meal" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>تخفیف پذیر</label>
-                                </td>
-                                <td>
-                                    <CheckBox @bind-Value="UpsertData.Discountable" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>وضعیت</label>
-                                </td>
-                                <td>
-                                    <DropdownList @bind-Value="UpsertData.ActiveType" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"></td>
-                                <td style="text-align:center">
-                                    <FormCommandButton />
-                                </td>
-                            </tr>
-                        </table>
-
-                    </CaspianForm>
-                </Content>
-            </Window>
+    <div style="display:flex">
+        <div class="c-categories">
+            <ul>
+                @foreach (var category in categories)
+                {
+                    var className = "c-category";
+                    if (selectedId == category.Id)
+                        className += " c-selected";
+                    <li class="@className"
+                        @onclick="() =>
+                        {
+                            selectedId = category.Id;
+                            CrudGrid?.EnableLoading();
+                        }">@category.Title
+                    </li>
+                }
+            </ul>
         </div>
-    }
+
+        @if (selectedId.HasValue)
+        {
+            <div class="c-products">
+                <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == selectedId.Value)" Search="SearchData"
+                          TableHeight="400">
+                    <Columns>
+                        <GridColumn TEntity="Product" Field="t => t.Title" />
+                        <GridColumn TEntity="Product" Field="t => t.ActiveType.FaText()" />
+                        <GridColumn TEntity="Product" Field="t => t.Price.ToString()" />
+                        <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.ToString()" />
+                        <GridCommandColumns TEntity="Product" />
+                    </Columns>
+                </DataGrid>
+                <Window @ref="UpsertWindow" Title="محصول" Style="width:680px;">
+                    <Content>
+                        <CaspianForm @ref="UpsertForm" Model="UpsertData"
+                                     OnSubmit="() =>
+                                                {
+                                                    UpsertData.ProductCategoryId = selectedId.Value;
+                                                }"
+                                     OnValidSubmit='async (context) =>
+                                                    {
+                                                        return UpsertData.Price > 0 || await Confirm("ایا با ثبت محصول با مبلغ صفر موافقید؟");
+                                                    }'>
+                            <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
+                            <table style="width:95%;margin:0 auto">
+                                <tr>
+                                    <td style="width:100px;">
+                                        <label>عنوان</label>
+                                    </td>
+                                    <td style="width:240px">
+                                        <StringTextBox @bind-Value="UpsertData.Title" />
+                                    </td>
+                                    <td rowspan="6" style="padding-right:30px;">
+                                        <Fileupload OnChange="async (e) =>
+                                                              {
+                                                                  UpsertData.Image = await e.File.GetByteArrayAsync();
+                                                              }">
+                                            <PictureBox Data="UpsertData.Image" style="width: 250px; height: 250px;" />
+                                        </Fileupload>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>قیمت</label>
+                                    </td>
+                                    <td>
+                                        <NumericTextBox @bind-Value="UpsertData.Price"
+                                                        @onchange="() =>
+                                                                   {
+                                                                       if (UpsertData.PriceOuterBound == 0)
+                                                                           UpsertData.PriceOuterBound = UpsertData.Price;
+                                                                   }" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>قیمت بیرون بر</label>
+                                    </td>
+                                    <td>
+                                        <NumericTextBox @bind-Value="UpsertData.PriceOuterBound" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>وعده غذایی</label>
+                                    </td>
+                                    <td>
+                                        <MultiSelectBox @bind-Value="UpsertData.Meal" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>تخفیف پذیر</label>
+                                    </td>
+                                    <td>
+                                        <CheckBox @bind-Value="UpsertData.Discountable" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>وضعیت</label>
+                                    </td>
+                                    <td>
+                                        <DropdownList @bind-Value="UpsertData.ActiveType" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td style="text-align:center">
+                                        <FormCommandButton />
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </CaspianForm>
+                    </Content>
+                </Window>
+            </div>
+        }    
+    </div>
+
 }
 
 @code

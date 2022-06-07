@@ -1,7 +1,102 @@
 ﻿/* base stylesheet */
-.t-combobox .t-state-focused .t-select {
-    background-image: linear-gradient(#e6e6e6,#e1e1e1)
+.c-btn {
+    border-width: 1px;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: .3rem .5rem;
+    border-radius: 0.25rem;
+    margin-right:8px;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
+.c-outline-primary {
+    color: #007bff;
+    background-color: transparent;
+    background-image: none;
+    border-color: #007bff;
+}
+
+    .c-outline-primary:hover {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+.c-outline-info {
+    color: #17a2b8;
+    background-color: transparent;
+    background-image: none;
+    border-color: #17a2b8;
+}
+    .c-outline-info:hover {
+        color: #fff;
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
+.c-outline-secondary {
+    color: #6c757d;
+    background-color: transparent;
+    background-image: none;
+    border-color: #6c757d;
+}
+    .c-outline-secondary:hover {
+        color: #fff;
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+.c-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+    .c-secondary:hover {
+        color: #fff;
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+.c-info {
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+    .c-info:hover {
+        color: #fff;
+        background-color: #138496;
+        border-color: #117a8b;
+    }
+.c-success {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+.c-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.c-success:hover {
+    color: #fff;
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+    .c-primary:hover {
+        color: #fff;
+        background-color: #0069d9;
+        border-color: #0062cc;
+    }
+.c-danger {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+    .c-danger:hover {
+        color: #fff;
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+
+    .t-combobox .t-state-focused .t-select {
+        background-image: linear-gradient(#e6e6e6,#e1e1e1)
+    }
 .c-multi-select.t-state-disabled {
     background-color: #eaeaea;
     cursor:not-allowed;
@@ -115,7 +210,7 @@ form tr {
         height:calc(100% - 4px);
     }
 
-    .c-lookup input {
+    .c-lookup >input {
         padding-left: 25px !important;
     }
 .c-lookup.t-state-error .fa-search {
@@ -2046,7 +2141,7 @@ html body .t-grid tbody .t-button-icon {
 .t-picker-wrap .t-icon,
 .t-dropdown-wrap .t-icon {
     vertical-align: middle;
-    line-height: 17px;
+    line-height: 18px;
     font-size: 17px;
     color: #656565;
 }

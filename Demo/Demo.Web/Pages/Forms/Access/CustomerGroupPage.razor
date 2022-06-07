@@ -1,5 +1,6 @@
-﻿@page "/Demo/CustomerGroupPage"
+﻿@page "/Demo/CustomerGroup"
 @namespace Demo.Web.Pages
+@using Caspian.Common.RowNumber
 @inherits SimplePage<CustomerGroup>
 @{
     base.BuildRenderTree(__builder);
@@ -27,7 +28,7 @@
             <GridCommandColumns TEntity="CustomerGroup" />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="گروه محصول" Style="width:500px">
+    <Window @ref="UpsertWindow" Title="گروه مشتری" Style="width:400px">
         <Content>
             <CaspianForm @ref="UpsertForm" Model="UpsertData">
                 <CaspianValidationValidator ValidatorType="typeof(CustomerGroupService)" />

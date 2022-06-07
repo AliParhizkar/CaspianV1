@@ -330,9 +330,10 @@
             }
             $(overlay).show().css('opacity', .5);
         },
-        bindImage: function (pic, img) {
+        bindImage: function (pic, img, contentType) {
+            contentType = contentType ?? 'image/png';
             if (img)
-                $(pic).css('background-image', 'url(data:image/png;base64,' + img + ')');
+                $(pic).css('background-image', 'url(data:' + contentType + ';base64,' + img + ')');
             else
                 $(pic).css('background-image', 'none');
         },

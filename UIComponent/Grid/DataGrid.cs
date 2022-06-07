@@ -496,6 +496,7 @@ namespace Caspian.UI
             using var scope = ServiceScopeFactory.CreateScope();
             var query = GetQuery(scope);
             query = GetOrderByQuery(query);
+            var str = query.ToQueryString();
             var rowId = await query.GetRowNumber(id);
             if (rowId.HasValue)
             {

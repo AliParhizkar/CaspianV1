@@ -4,28 +4,45 @@
 @{
     base.BuildRenderTree(__builder);
 }
-@if (errorMessage.HasValue())
-{
-    <span style="color:red">@errorMessage</span>
-}
-<table style="width:90%;margin:0 auto">
-    <tr>
-        <td style="width:100px;">
-            <label>متن پیام</label>
-        </td>
-        <td>
-            <StringTextBox @bind-Value="message" />
-        </td>
-    </tr>
-</table>
-
-<button  @onclick="simpleMessage">Simple message</button>
-<button @onclick="alertMessage">Alert</button>
-<button @onclick="confirmMessage">Confirm</button>
+<div style="padding:20px 40px 0 0">
+    <h3>Message</h3>
+</div>
+<div style="display:table;width:90%;margin:0 auto">
+    <div style="display:table-cell;width:50%;padding-left:40px">
+         <hr />
+         <h4 style="padding-right:40px;">Action</h4>
+        <div style="height:210px;margin-right:80px">
+            <div style="height:60px">
+                 <button class="c-btn c-outline-primary"  @onclick="simpleMessage">Simple message</button>
+            </div>
+            <div style="height:60px">
+                 <button class="c-btn c-outline-info" @onclick="alertMessageAction">Alert</button>
+            </div>
+            <div style="height:60px">
+                 <button class="c-btn c-outline-secondary" @onclick="confirmMessageAction">Confirm</button>
+            </div>
+         </div>
+    </div>
+    <div style="display:table-cell;width:50%;padding-right:40px">
+         <hr />
+         <h4 style="padding-right:40px;">Content</h4>
+            <div style="height:60px">
+                 <StringTextBox @bind-Value="message" />
+            </div>
+            <div style="height:60px">
+                 <StringTextBox @bind-Value="alertMessage" />
+            </div>
+            <div style="height:60px">
+                 <StringTextBox @bind-Value="confirmMessage" />
+            </div>
+    </div>
+    <div style="display:table-footer-group">
+        <span style="color:red;">@errorMessage</span>
+    </div>
+</div>
 @code
 {
-    string message = "بیا تا گل برافشانیم و می در ساغر اندازیم فلک را سقف بشکافیم و طرحی نو در اندازیم";
-    string errorMessage;
+    string message = "ثبت با موفقیت انجام شد", alertMessage = "سفارش ثبت شد، امکان ثبت شند حسابداری وجود ندارد", confirmMessage = "آیا با حذف موافقید؟", errorMessage = "";
 
     void simpleMessage()
     {
@@ -38,7 +55,7 @@
             errorMessage = "لطفا متن پیام را مشخص نمایید.";
     }
 
-    void alertMessage()
+    void alertMessageAction()
     {
         if (message.HasValue())
         {
@@ -49,7 +66,7 @@
             errorMessage = "لطفا متن پیام را مشخص نمایید.";
     }
 
-    async Task confirmMessage()
+    async Task confirmMessageAction()
     {
         if (message.HasValue())
         {

@@ -48,8 +48,8 @@
             <tr>
                 <td></td>
                 <td style="padding-top:5px;height:5px;text-align:center;">
-                    <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-button c-cancel">انصراف</button>
-                    <button @onclick="UpdateData" class="c-button c-ok">ثبت</button>
+                    <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-btn c-danger">انصراف</button>
+                    <button @onclick="UpdateData" class="c-btn c-primary">ثبت</button>
                 </td>
             </tr>
         </table>

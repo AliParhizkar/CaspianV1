@@ -10,6 +10,8 @@
     @switch(ControlType)
     {
         case ControlType.String:
+        case ControlType.Numeric:
+        case ControlType.Integer:
         <StringTextBox Disabled />
             break;
         case ControlType.CheckBox:
@@ -20,6 +22,9 @@
             break;
         case ControlType.DropdownList:
             <DropdownList TValue="GeneratedKind" Disabled />
+            break;
+        case ControlType.ComboBox:
+            <ComboBox TValue="int" TEntity="Form" Disabled />
             break;
     }
 </fieldset>

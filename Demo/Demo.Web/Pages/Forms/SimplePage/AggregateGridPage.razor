@@ -1,19 +1,20 @@
 ﻿@page "/Demo/AggregateGridPage"
 @namespace Demo.Web.Pages
 @inherits BasePage
-
-<DataGrid TEntity="Order" ConditionExpr="t => t.CustomerId != null">
-    <Columns>
-        <GridColumn TEntity="Order" AggregateField="t => t.Key.CustomerId"   />
-        @*<GridColumn TEntity="Order" AggregateField='t =>  t.Key.Customer.CustomerType == CustomerType.Real ? t.Key.Customer.FName + " " + t.Key.Customer.LName : t.Key.Customer.CompanyName ' />*@
-        <GridColumn TEntity="Order" AggregateField="t => t.Key.Customer.FName + ' ' + t.Key.Customer.LName" Title="نام نام خانوادگی" />
-        <GridColumn TEntity="Order" AggregateField="t => t.Key.Customer.CompanyName" Title="عنوان شرکت" />
-        <GridColumn TEntity="Order" AggregateField="t => t.Count()" Title="تعداد" />
-        <GridColumn TEntity="Order" AggregateField="t => t.Sum(u => u.TotalAmount)" Title="مجموع" />
-        <GridColumn TEntity="Order" AggregateField="t => t.Max(u => u.TotalAmount)" Title="بیشترین" />
-        <GridColumn TEntity="Order" AggregateField="t => t.Min(u => u.TotalAmount)" Title="کمترین" />
-    </Columns>
-</DataGrid>
+<div style="width:95%;margin:0 auto">
+    <DataGrid TEntity="Order" ConditionExpr="t => t.CustomerId != null">
+        <Columns>
+            <GridColumn TEntity="Order" AggregateField="t => t.Key.CustomerId"   />
+            @*<GridColumn TEntity="Order" AggregateField='t =>  t.Key.Customer.CustomerType == CustomerType.Real ? t.Key.Customer.FName + " " + t.Key.Customer.LName : t.Key.Customer.CompanyName ' />*@
+            <GridColumn TEntity="Order" AggregateField="t => t.Key.Customer.FName + ' ' + t.Key.Customer.LName" Title="نام نام خانوادگی" />
+            <GridColumn TEntity="Order" AggregateField="t => t.Key.Customer.CompanyName" Title="عنوان شرکت" />
+            <GridColumn TEntity="Order" AggregateField="t => t.Count()" Title="تعداد" />
+            <GridColumn TEntity="Order" AggregateField="t => t.Sum(u => u.TotalAmount)" Title="مجموع" />
+            <GridColumn TEntity="Order" AggregateField="t => t.Max(u => u.TotalAmount)" Title="بیشترین" />
+            <GridColumn TEntity="Order" AggregateField="t => t.Min(u => u.TotalAmount)" Title="کمترین" />
+        </Columns>
+    </DataGrid>
+</div>
 
 @code
 {

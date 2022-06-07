@@ -1,12 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace Caspian.Common.RowNumber
 {
@@ -87,7 +83,8 @@ namespace Caspian.Common.RowNumber
             Expression whereExpr = Expression.Property(param, "Id");
             whereExpr = Expression.Equal(whereExpr, Expression.Constant(id));
             whereExpr = Expression.Lambda(whereExpr, param);
-            var rowNumber = await selectManyQuery.Where_(whereExpr).OfType<dynamic>().FirstOrDefaultAsync();
+            var list = await selectManyQuery.Where_(whereExpr).OfType<dynamic>().ToListAsync();
+            var rowNumber = list.FirstOrDefault();
             if (rowNumber == null || rowNumber.Length == 0)
                 return null;
             return Convert.ToInt32(rowNumber.RowNumber);

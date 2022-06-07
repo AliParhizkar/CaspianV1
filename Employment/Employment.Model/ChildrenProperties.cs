@@ -1,6 +1,7 @@
 ﻿using Caspian.Engine;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Employment.Model
 {
@@ -25,6 +26,12 @@ namespace Employment.Model
         [DisplayName("تاریخ ازدواج")]
         public DateTime? MarriageDate { get; set; }
 
-        public byte? BirthOrder { get; set; } 
+        public byte? BirthOrder { get; set; }
+
+        [DisplayName("شهر محل تولد")]
+        public int BirthCityId { get; set; }
+
+        [ForeignKey(nameof(BirthCityId))]
+        public virtual City BirthCity { get; set; }
     }
 }

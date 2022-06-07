@@ -18,6 +18,7 @@ namespace Demo.Service
             RuleFor(t => t.ProductId).UniqAsync(t => t.OrderId, "این محصول در حواله وجود دارد");
         }
 
+        [ReportMethod("گزارش فروش")]
         public IQueryable<OrderDeatil> GetReportOrderDeatils(OrderDeatil deatil)
         {
             return GetAll(deatil);

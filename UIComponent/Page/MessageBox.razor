@@ -44,11 +44,11 @@
             @switch (messageType)
             {
                 case MessageType.Quession:
-                    <button class="c-button c-ok" @onclick="() => { UpdateConfirmResult(true); }">@YesButtonTitle</button>
-                    <button class="c-button c-cancel" @onclick="() => {UpdateConfirmResult(false); }">@NoButtonTitle</button>
+                    <button class="c-btn c-primary" @onclick="() => { UpdateConfirmResult(true); }">@YesButtonTitle</button>
+                    <button class="c-btn c-danger" @onclick="() => {UpdateConfirmResult(false); }">@NoButtonTitle</button>
                     break;
                 case MessageType.Info:
-                    <button class="c-button c-ok" @onclick="() => {UpdateConfirmResult(true); }">@OkButtonTitle</button>
+                    <button class="c-btn c-primary" @onclick="() => {UpdateConfirmResult(true); }">@OkButtonTitle</button>
                     break;
             }
         </div>

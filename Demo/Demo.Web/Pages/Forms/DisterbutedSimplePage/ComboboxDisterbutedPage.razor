@@ -1,57 +1,56 @@
-﻿@page "/Demo/ComboxboxDisterbutedPage"
+﻿@page "/Demo/Product"
 @namespace Demo.Web.Pages
 @inherits SimplePage<Product>
 @{
     base.BuildRenderTree(__builder);
 }
+
 <div style="width:90%;margin:0 auto">
-    <div class="c-master">
-        <table style="width:90%;margin:0 auto">
-            <tr>
-                <td style="width:100px">
-                    <label>گروه غذا</label>
-                </td>
-                <td>
-                    <ComboBox TValue="int?" TEntity="ProductCategory" @bind-Value="selectedCategoryId" TextExpression="t => t.Title" OrderByExpression="t => t.Title"
-                              OnValueChanged="@(() =>
-                         {
-                             CrudGrid?.EnableLoading();
-                         })" />
-                </td>
-            </tr>
-        </table>
-    </div>
-    @if (selectedCategoryId.HasValue)
-    {
-        <div class="c-details">
-            <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == selectedCategoryId.Value)" Search="SearchData" TableHeight="400">
-                <Columns>
-                    <GridColumn TEntity="Product" Field="t => t.Title" />
-                    <GridColumn TEntity="Product" Field="t => t.ActiveType.FaText()" />
-                    <GridColumn TEntity="Product" Field="t => t.Price.Seprate3Digit()" />
-                    <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.Seprate3Digit()" />
-                    <GridColumn TEntity="Product" Field="t => t.OutofStock.ToString()">
-                        <Template>
-                            <CheckBox TValue="bool" Value="context.Data.OutofStock" ValueChanged="async value =>
-                                                                        {
-                                                                            await ToggleOutofstock(context.Data.Id);
-                                                                        }" />
-                        </Template>
-                    </GridColumn>
-                    <GridCommandColumns TEntity="Product" />
-                </Columns>
-            </DataGrid>
-            <Window @ref="UpsertWindow" Title="محصول" Style="width:500px">
-                <Content>
-                    <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="SetCategory" OnValidSubmit="showConfirmForPrice">
-                        <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
+    <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400">
+        <Columns>
+            <GridColumn TEntity="Product" Field="t => t.ProductCategory.Title" Title="گروه غذا" />
+            <GridColumn TEntity="Product" Field="t => t.Title" />
+            <GridColumn TEntity="Product" Field="t => t.ActiveType.FaText()" />
+            <GridColumn TEntity="Product" Field="t => t.Price.Seprate3Digit()" />
+            <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.Seprate3Digit()" />
+            <GridColumn TEntity="Product" Field="t => t.OutofStock.ToString()">
+                <Template>
+                    <CheckBox TValue="bool" Value="context.Data.OutofStock" ValueChanged="async value =>
+                        {
+                            await ToggleOutofstock(context.Data.Id);
+                        }" />
+                    </Template>
+                </GridColumn>
+                <GridCommandColumns TEntity="Product" />
+            </Columns>
+        </DataGrid>
+        <Window @ref="UpsertWindow" Title="محصول" Style="width:500px">
+            <Content>
+                <CaspianForm @ref="UpsertForm" Model="UpsertData" OnValidSubmit="showConfirmForPrice">
+                    <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
                         <table style="width:90%;margin:0 auto">
+                            <tr>
+                                <td>
+                                    <label>گروه غذا</label>
+                                </td>
+                                <td>
+                                    <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=UpsertData.ProductCategoryId TextExpression= "t => t.Title" />
+                                </td>
+                            </tr>
                             <tr>
                                 <td style="width:100px;">
                                     <label>عنوان</label>
                                 </td>
                                 <td>
                                     <StringTextBox @bind-Value="UpsertData.Title" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>کد</label>
+                                </td>
+                                <td>
+                                    <StringTextBox @bind-Value=UpsertData.Code Style="direction:ltr" />
                                 </td>
                             </tr>
                             <tr>
@@ -83,22 +82,19 @@
                                     <DropdownList @bind-Value="UpsertData.ActiveType" />
                                 </td>
                             </tr>
+
                             <tr>
                                 <td colspan="2">
                                     <FormCommandButton />
                                 </td>
                             </tr>
                         </table>
-                    </CaspianForm>
-                </Content>
-            </Window>
-        </div>
-    }
+                </CaspianForm>
+            </Content>
+        </Window>
 </div>
 @code
 {
-    int? selectedCategoryId;
-
     async Task ToggleOutofstock(int id)
     {
         using var scope = ServiceScopeFactory.CreateScope();
@@ -106,11 +102,6 @@
         await service.ToggleOutofstock(id);
         await service.SaveChangesAsync();
         await CrudGrid.Reload();
-    }
-
-    void SetCategory()
-    {
-        UpsertData.ProductCategoryId = selectedCategoryId.Value;
     }
 
     async Task<bool> showConfirmForPrice(EditContext context)

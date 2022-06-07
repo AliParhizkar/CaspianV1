@@ -55,14 +55,14 @@ namespace Caspian.Engine
         public int? RuleId { get; set; }
 
         [ForeignKey(nameof(RuleId))]
-        public virtual Rule Rule { get; set; }
+        public virtual Rule? Rule { get; set; }
 
         public bool IsKey { get; set; }
 
         public int? DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
-        public virtual DynamicParameter DynamicParameter { get; set; }
+        public virtual DynamicParameter? DynamicParameter { get; set; }
 
         /// <summary>
         /// مشخصات گزارش

@@ -19,6 +19,12 @@ namespace Demo.Service
             RuleFor(t => t.PriceOuterBound).CustomValue(t => t < 0, "مبلغ بیرون بر نمی تواند منفی باشد.");
             RuleFor(t => t.Meal).CustomValue(t => t == 0, "حداقل یکی از وعده های غذایی باید انتخاب شوند");
             RuleFor(t => t.Code).UniqAsync("محصولی با این کد در سیستم وجود دارد")
+                .CustomValue(code => 
+                {
+                    if (!code.HasValue())
+                        return false;
+                    return code.Length < 3;
+                }, "کد کالا حداقل باید سه رقمی باشد")
                 .Custom(p => 
                 {
                     if (!p.Code.HasValue())

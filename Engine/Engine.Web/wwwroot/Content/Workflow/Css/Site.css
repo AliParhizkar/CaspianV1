@@ -1,10 +1,10 @@
-﻿#toolsBox span {
+﻿/*#toolsBox span {
     width: 35px;
     height: 34px;
     display: block;
     margin: 3px 0 3px 0;
-    background-image: url('/Content/WorkFlowEngin/Images/WorkflowIcons.png');
-}
+    background-image: url('/_Content/Engine.Web/Content/Images/Toolsbox.png');
+}*/
 
 .workflowzoom
 {
@@ -30,9 +30,10 @@
 }
 
 .c-tools-bar {
-    padding:3px 8px;
+    padding:2px 8px;
     display:flex;
     flex-wrap:wrap;
+    height:55px;
 }
 
 .static-form .row {
@@ -193,7 +194,7 @@
 
 .static-form .c-item {
     border: 1px dashed #e0e0e0;
-    min-height: 85px;
+    min-height: 80px;
     padding: 0;
 }
 
@@ -212,6 +213,14 @@ legend {
     padding: unset;
     margin: 0;
     font-size: 12px;
+}
+
+.c-dynamic-form-controls {
+    border: 1px solid #d1d1d1;
+    border-radius: 16px;
+    padding: 2px 8px 8px 8px;
+    margin: 10px;
+    margin-top: 5px;
 }
 
 .c-form-controls {
@@ -238,20 +247,15 @@ legend {
     }
 
     .c-form-controls .t-state-disabled .t-input {
-        color: ActiveBorder !important;
+        color: transparent !important;
     }
-
-    .c-form-controls .t-dropdown {
-        zoom: 1.3;
-    }
-
         .c-form-controls .t-dropdown .t-input {
-            background-color: white;
+            background-color: transparent;
             cursor: default;
         }
 
         .c-form-controls .t-dropdown .t-t-select {
-            background-color: white;
+            background-color: transparent;
             cursor: default !important;
         }
 
@@ -259,12 +263,8 @@ legend {
             color: #d4d4d4 !important;
         }
 
-    .c-form-controls .t-combobox {
-        zoom: 1.2;
-    }
-
         .c-form-controls .t-combobox .t-select {
-            background-color: white;
+            background-color: transparent;
             cursor: default !important;
         }
 
@@ -275,7 +275,6 @@ legend {
     .c-form-controls .t-datepicker {
         background-color: white;
         cursor: default !important;
-        zoom: 1.15
     }
 
         .c-form-controls .t-datepicker .t-select {
@@ -295,3 +294,72 @@ legend {
         .c-form-controls .t-timepicker .t-input {
             border-color: rgba(0, 0, 0, 0.1);
         }
+
+.c-property-window {
+    width: 180px;
+    margin: 0;
+    height: 100vh;
+    border-left: 1px dashed gray;
+    overflow:hidden;
+}
+    .c-property-window.c-minimize{
+        width:60px;
+    }
+    .c-form-designer {
+        width: calc(100% - 180px);
+        height: 10vh;
+        margin: 0;
+        height: 100vh;
+        overflow:hidden;
+    }
+    .c-property-window .c-icons {
+        display: flex;
+        flex-wrap: nowrap;
+        height: 50px;
+        width:180px;
+    }
+
+    .c-property-window li{
+        padding:0;
+    }
+    .c-property-window .c-category {
+        padding:1px;
+    }
+   
+
+    .c-property-window table {
+        margin-right:10px;
+    }
+.c-property-window label{
+    font-size:12px;
+    font-weight:bold;
+}
+
+.c-property-window .fa-chevron-down {
+    font-size: 15px;
+    color: red;
+}
+
+    .c-property-window .c-icons div {
+        display: table-cell;
+        width: 33.33333333%;
+        text-align: center;
+        padding-top: 7px;
+    }
+
+        .c-property-window .c-icons span {
+            border: 1px solid #a3a3a3;
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            zoom: 0.8;
+        }
+
+.c-properties {
+    border-top:1px solid gray;
+    display:flex;
+    height:calc(100vh - 51px);
+    width:178px;
+}
+

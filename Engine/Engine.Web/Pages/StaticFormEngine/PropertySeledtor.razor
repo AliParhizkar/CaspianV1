@@ -1,0 +1,73 @@
+﻿@namespace Caspian.Engine.WorkflowEngine
+@inherits BasePage
+<div style="height:54px;">
+    <button @onclick="() => showEntityType = !showEntityType" class="w-button w-controls-entity" title="فیلدهای پایگاه داده ها"></button>
+    <div class="c-add-control">
+        @if (showEntityType)
+        {
+            <ul>
+                @foreach(var item in entityFields)
+                {
+                    var className = item.EntityFullName == EntityTypeFullName ? "c-selected" : null;
+                    <li @onclick="() => EntityType(item.EntityFullName)" @onclick:stopPropagation="true" class="@className">
+                        @item.Title
+                        @if (showEntityProperties && item.EntityFullName == EntityTypeFullName)
+                        {
+                            <ul class="c-property">
+                                @foreach(var info in workflowEntityProperties)
+                                {
+                                    className = info == selectedPropertyInfo ? "c-selected" : null;
+                                    <li @onclick:stopPropagation="true" class="@className" @onclick="async () => await EntityProperty(info)">@info.Name</li>            
+                                }
+                            </ul>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+@code 
+{
+    bool showEntityType;
+    bool showEntityProperties;
+    string EntityTypeFullName;
+    PropertyInfo selectedPropertyInfo;
+    IList<WfFormEntityField> entityFields;
+    IList<PropertyInfo> workflowEntityProperties;
+    SubSystemKind subSystemKind;
+
+    void EntityType(string key)
+    {
+        EntityTypeFullName = key;
+        showEntityProperties = true;
+        workflowEntityProperties = new AssemblyInfo().GetModelType(subSystemKind, key).GetProperties()
+            .Where(t => !t.CustomAttributes.Any(t => t.AttributeType == typeof(KeyAttribute) || 
+            t.AttributeType == typeof(ForeignKeyAttribute)) || t.PropertyType.IsCollectionType()).ToList();
+    }
+
+    async Task EntityProperty(PropertyInfo info)
+    {
+        selectedPropertyInfo = info;
+        showEntityProperties = false;
+        showEntityType = false;
+        if (OnSelect.HasDelegate)
+            await OnSelect.InvokeAsync(info);
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var scope = CreateScope();
+        var form = await new Caspian.Engine.Service.WorkflowFormService(scope).SingleAsync(WorkflowFormId);
+        subSystemKind = form.SubSystemKind;
+        entityFields = new WfFormEntityFieldService(scope).GetAll().Where(t => t.WorkflowFormId == WorkflowFormId).ToList();
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter]
+    public int WorkflowFormId{ get; set; }
+
+    [Parameter]
+    public EventCallback<PropertyInfo> OnSelect{ get; set; }
+}

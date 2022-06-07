@@ -23,12 +23,15 @@
     [Parameter]
     public byte[] Data { get; set; }
 
+    [Parameter]
+    public string ContentType{ get; set; }
+
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (Data != null)
         {
             var data = Convert.ToBase64String(Data);
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindImage", span, data);
+            await jsRuntime.InvokeVoidAsync("$.telerik.bindImage", span, data, ContentType);
         }
         else
             await jsRuntime.InvokeVoidAsync("$.telerik.bindImage", span, null);

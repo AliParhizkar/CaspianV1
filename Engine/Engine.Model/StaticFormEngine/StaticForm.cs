@@ -16,6 +16,8 @@ namespace Caspian.Engine
 
         public byte ColumnCount { get; set; }
 
+        public string? Name { get; set; }
+
         public virtual IList<HtmlRow> Rows { get; set; }
 
         /// <summary>

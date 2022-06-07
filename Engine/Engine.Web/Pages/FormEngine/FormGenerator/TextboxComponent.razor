@@ -32,8 +32,8 @@
             <tr>
                 <td></td>
                 <td style="text-align:center;height:60px;">
-                    <button class="c-button c-ok" style="width:75px;margin-left:15px" @onclick="InitTextBox">ثبت</button>
-                    <button class="c-button c-cancel" style="width:75px;"
+                    <button class="c-btn c-primary" style="width:75px;margin-left:15px" @onclick="InitTextBox">ثبت</button>
+                    <button class="c-btn c-danger" style="width:75px;"
                             @onclick="async () =>
                                       {
                                           await StatusChanged.InvokeAsync(WindowStatus.Close);

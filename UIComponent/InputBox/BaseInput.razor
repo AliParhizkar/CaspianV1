@@ -59,6 +59,9 @@
     public EventCallback<TValue> ValueChanged { get; set; }
 
     [Parameter, JsonIgnore]
+    public EventCallback OnChanged{ get; set; }
+
+    [Parameter, JsonIgnore]
     public Expression<Func<TValue>> ValueExpression { get; set; }
 
     [Parameter, JsonIgnore]

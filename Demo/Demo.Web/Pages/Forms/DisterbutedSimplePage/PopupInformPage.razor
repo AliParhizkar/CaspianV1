@@ -64,7 +64,7 @@
         </table>
     </CaspianForm>
     <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == CategoryId)"
-              Search="SearchData" TableHeight="250">
+              Search="SearchData" TableHeight="220">
         <Columns>
             <GridColumn TEntity="Product" Field="t => t.Title" />
             <GridColumn TEntity="Product" Field="t => t.Price.Seprate3Digit()" />

@@ -8,22 +8,23 @@
     <table style="width:100%">
         <tr>
             <td>
-                <label>نام خانوادگی</label>
+                <label>نام</label>
             </td>
             <td>
-                <StringTextBox @bind-Value="SearchData.LName" />
+                <StringTextBox @bind-Value="name" placeholder="نام نام خانوادگی/شرکت" BindingType="BindingType.OnInput" @onchange="@LoadEnable" />
             </td>
-            <td>
-                <label>شرکت</label>
+            <td style="padding-right:30px;width:120px;">
+                <label>شماره تماس</label>
             </td>
-            <td>
-                <StringTextBox @bind-Value="SearchData.CompanyName" />
+            <td style="width:220px">
+                <StringTextBox Style="direction:ltr;" @bind-Value="callNumber" placeholder="همراه/تلفن" BindingType="BindingType.OnInput" @onchange="@LoadEnable"/>
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="Customer" Search="SearchData">
+    <DataGrid @ref="CrudGrid" TEntity="Customer" Search="SearchData" ConditionExpr="t => (name == null || t.FName.Contains(name) || t.LName.Contains(name) || t.CompanyName.Contains(name)) && (callNumber == null || t.MobileNumber.StartsWith(callNumber) || t.Tel.StartsWith(callNumber))">
         <Columns Context="customer">
-            <GridColumn TEntity="Customer" Field="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+            <GridColumn TEntity="Customer" Field="@(t => t.CustomerType.FaText())" Title="نوع مشتری" />
+            <GridColumn TEntity="Customer" Field="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" Title="نام مشتری" />
             <GridColumn TEntity="Customer" Field="t => t.Gender.FaText()" style="width:100px">
                 <Template>
                     @if (customer.Data.Gender == Gender.Male)
@@ -36,8 +37,9 @@
                     }
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="Customer" DisableDeleteFunc="t => t.Gender == Gender.Male" 
-                DisableEditFunc="t => t.Gender == Gender.Female" />
+            <GridColumn TEntity="Customer" Field="t => t.MobileNumber" />
+            <GridColumn TEntity="Customer" Field="t => t.Tel" />
+            <GridCommandColumns TEntity="Customer" DisableDeleteFunc="t => t.Gender == Gender.Male" DisableEditFunc="t => t.Gender == Gender.Female" />
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مشتری" Style="width:450px">
@@ -57,7 +59,7 @@
                     {
                         <tr>
                             <td>
-                                <label>وضعیت</label>
+                                <label>نام</label>
                             </td>
                             <td>
                                 <StringTextBox @bind-Value="UpsertData.FName" />
@@ -65,7 +67,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <label>وضعیت</label>
+                                <label>نام خانوادگی</label>
                             </td>
                             <td>
                                 <StringTextBox @bind-Value="UpsertData.LName" />
@@ -73,14 +75,14 @@
                         </tr>
                         <tr>
                             <td>
-                                <label>وضعیت</label>
+                                <label>جنسیت</label>
                             </td>
                             <td>
                                 <DropdownList @bind-Value="UpsertData.Gender" />
                             </td>
                         </tr>
                     }
-                    else
+                    else if (UpsertData.CustomerType == CustomerType.Legal)
                     {
                         <tr>
                             <td>
@@ -104,7 +106,7 @@
                             <label>شماره همراه</label>
                         </td>
                         <td>
-                            <StringTextBox @bind-Value="UpsertData.MobileNumber" Style="direction:ltr" />
+                            <StringTextBox @bind-Value="UpsertData.MobileNumber" Style="direction:ltr" MaxLength="11" />
                         </td>
                     </tr>
                     <tr>
@@ -112,7 +114,7 @@
                             <label>شماره تلفن</label>
                         </td>
                         <td>
-                            <StringTextBox @bind-Value="UpsertData.Tel" Style="direction:ltr" />
+                            <StringTextBox @bind-Value="UpsertData.Tel" Style="direction:ltr" MaxLength="11" />
                         </td>
                     </tr>
                     <tr>
@@ -128,5 +130,9 @@
 
 @code
 {
-
+    string name, callNumber;
+    void LoadEnable()
+    {
+        CrudGrid.EnableLoading();
+    }
 }

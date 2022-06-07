@@ -108,8 +108,8 @@
                 }
             </table>
             <div style="padding: 10px 150px 10px 0">
-                <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-button c-cancel">انصراف</button>
-                <button @onclick="() => { updateData = true; }" class="c-button c-ok">ثبت</button>
+                <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-btn c-danger">انصراف</button>
+                <button @onclick="() => { updateData = true; }" class="c-btn c-primary">ثبت</button>
             </div>
         </div>
 

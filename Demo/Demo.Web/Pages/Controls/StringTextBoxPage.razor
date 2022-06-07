@@ -1,95 +1,124 @@
 ﻿@page "/Demo/StringTextBox"
 @namespace Demo.Web.Pages
-<h3>String Text Box</h3>
-<p>
-    این کنترل برای نوع داده ای رشته ای و به دو صورت تک خطی و چند خطی مورد استفاده قرار می گیرد
-</p>
-@if (multiLine)
-{
-    <p>
-        در حالت چند خطی امکان فعال/غیرفعال و دادن فوکوس به کنترل وجود دارد.
-    </p>
-    <p>
-        Binding تنها بصورت Onchange (با خارج شدن فوکوس) امکانپدیر است
-    </p>
-}
-else
-{
-    <p>
-        در حالت تک خطی امکان فعال غیرفعال کردن، دادن فوکوس و بیشترین مقدار طول رشته وجود دارد
-    </p>
-    <p>
-        Binding به دو صورت Onchange(با خارج شدن فوکوس) و Oninput(تغییر متن کنترل) امکانپدیر است
-    </p>
-}
-
-<table style="width:90%;margin:0 auto">
-    <tr>
-        <td style="width:120px">
-            <label>چند خطی</label>
-        </td>
-        <td style="width:300px">
-            <CheckBox @bind-Value="multiLine" />
-        </td>
-    </tr>
-    <tr>
-        <td style="width:120px">
-            <label>غیرفعال</label>
-        </td>
-        <td style="width:300px">
-            <CheckBox @bind-Value="disable" />
-        </td>
-    </tr>
-    @if (!multiLine)
-    {
-        <tr>
-            <td>
-                <label>Binding type</label>
-            </td>
-            <td>
-                <RadioList @bind-Value="bindingType" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Max length</label>
-            </td>
-            <td>
-                <NumericTextBox @bind-Value="maxlength" />
-            </td>
-        </tr>
-    }
-    <tr>
-        <td colspan="2">
-            <button style="width:120px" class="t-button" @onclick="async () => { await SetFocuse(); }">Focus</button>
-        </td>
-    </tr>
-</table>
-
-@if (multiLine)
-{
-    <StringTextBox @ref="textBox" @bind-Value="title" MultiLine Disabled="disable" Rows="5" />
-}
-else
-{
-    <StringTextBox @ref="textBox" @bind-Value="title" Disabled="disable" MaxLength="maxlength" BindingType="bindingType" />
-}
-<div>
-    <span>متن ورودی:</span>
+<div style="padding:20px 40px 0 0">
+    <h3>String Textbox</h3>
 </div>
-<div>
-    <span style="padding-right:100px;">@title</span>
+<div style="display:table;width:90%;margin:0 auto">
+    <div style="display:table-cell;width:50%;padding-left:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Single line</h4>
+        <table style="margin-right:70px;height:180px">
+            <tr>
+                <td style="width:100px;">
+                    <label>غیرفغال</label>
+                </td>
+                <td>
+                    <CheckBox @bind-Value="disable" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Binding type</label>
+                </td>
+                <td>
+                    <RadioList @bind-Value="bindingType" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                     <label>Max length</label>
+                </td>
+                <td>
+                     <NumericTextBox @bind-Value="maxlength" Style="width:100px" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Text</label>
+                </td>
+                <td>
+                    <span style="color:red;">@(title.HasValue() ? title : "--------")</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Action</label>
+                </td>
+                <td>
+                     <button style="width:50px" class="t-button" @onclick="async () => { await SetFocus(); }">Focus</button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <StringTextBox @ref="textBox" @bind-Value="title" Disabled="disable" MaxLength="maxlength" BindingType="bindingType" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="display:table-cell;width:50%;padding-right:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Multi line</h4>
+        <table style="margin-right:70px;height:180px;width:calc(100% - 80px)">
+            <tr>
+                <td style="width:100px;">
+                    <label>غیرفغال</label>
+                </td>
+                <td>
+                    <CheckBox @bind-Value="disable1" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                     <label>Max length</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="maxlength1" Style="width:100px" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Text</label>
+                </td>
+                <td>
+                    <span style="color:red;">@(title1.HasValue() ? title1 : "--------")</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Action</label>
+                </td>
+                <td>
+                    <button style="width:50px" class="t-button" @onclick="async () => { await SetFocus1(); }">Focus</button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <StringTextBox @ref="textBox1" @bind-Value="title1" MultiLine Disabled="disable1" Rows="4" />
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
+
 @code {
     bool disable;
     string title;
-    bool multiLine;
     int maxlength = 12;
     StringTextBox textBox;
     BindingType bindingType = BindingType.OnChange;
+    //--------------------------------------------
+    bool disable1;
+    string title1;
+    int maxlength1 = 25;
+    StringTextBox textBox1;
 
-    async Task SetFocuse()
+    async Task SetFocus()
     {
         await textBox.FocusAsync();
+    }
+
+    async Task SetFocus1()
+    {
+        await textBox1.FocusAsync();
     }
 }

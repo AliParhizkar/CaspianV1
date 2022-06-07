@@ -35,7 +35,7 @@ namespace Caspian.UI
                 attrs.Add("id", Id.Replace('.', '_'));
                 attrs.Add("name", Id.Replace('.', '_'));
             }
-            if (Value == null)
+            if (Value == null || Convert.ToDateTime(Value) == default(DateTime))
                 text = "";
             else
                 text = Convert.ToDateTime(Value).Date.ToPersianDateString();

@@ -1,4 +1,3 @@
-using Main.Data;
 using Caspian.Common;
 using Caspian.UI;
 
@@ -12,6 +11,7 @@ builder.Services.AddSingleton<WindowAppState>();
 builder.Services.AddSingleton<FormAppState>();
 builder.Services.AddScoped<Demo.Model.Context>();
 builder.Services.AddScoped<Caspian.Engine.Context>();
+builder.Services.AddScoped<Employment.Model.Context>();
 var app = builder.Build();
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.json");

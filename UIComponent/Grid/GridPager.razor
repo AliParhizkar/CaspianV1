@@ -50,7 +50,7 @@
     <div class="t-status-text">
         @(startRowIndex + "-" + endRowIndex + " از " + TotalRecord + " ردیف")
     </div>
-    @if (!HidePageSize)
+@*    @if (!HidePageSize)
     {
         var array = new int[] { 5, 10, 25, 50, 100};
         <div class="c-page-size">
@@ -70,7 +70,7 @@
                 }
             </ul>
         </div>
-    }
+    }*@
 </div>
 @code 
 {

@@ -37,7 +37,7 @@
             </tr>
             <tr>
                 <td>
-                    <label>وعده غذایی</label>
+                    <label>عنوان</label>
                 </td>
                 <td>
                     <StringTextBox @bind-Value="UpsertData.Title" />
@@ -57,10 +57,10 @@
                     <NumericTextBox @bind-Value="UpsertData.Price" />
                 </td>
                 <td>
-                    <label>تخفیف پذیر</label>
+                    <label>وضعیت</label>
                 </td>
                 <td>
-                    <CheckBox @bind-Value="UpsertData.Discountable" />
+                    <DropdownList @bind-Value="UpsertData.ActiveType" />
                 </td>
             </tr>
             <tr>

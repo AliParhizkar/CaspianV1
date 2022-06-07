@@ -1,0 +1,74 @@
+﻿@namespace Caspian.Engine.WorkflowEngine   
+@{
+    var windowClassName = "c-property-window";
+    if (minimized)
+        windowClassName += " c-minimize";
+}
+<div class="@(windowClassName)">
+    <div class="c-icons">
+        <div>
+            <span @onclick="() => minimized = !minimized">1</span>
+        </div>
+        <div>
+            <span>2</span>
+        </div>
+        <div>
+            <span>3</span>
+        </div>
+    </div>
+    <div class="c-properties">
+        <EditForm Model="this">
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <label>Id</label>
+                    </td>
+                    <td>
+                        <StringTextBox Style="direction:ltr" @bind-Value="Id" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>عنوان</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="Title" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>مقدار</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="Value" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>شرح</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="Descript" MultiLine />
+                    </td>
+                </tr>
+            </table>
+        </EditForm>
+    </div>
+</div>
+
+@code 
+{
+    bool minimized;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string Descript{ get; set; }
+
+    [Parameter]
+    public string Value{ get; set; }
+}

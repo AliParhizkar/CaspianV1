@@ -95,8 +95,8 @@
                         }
                     </div>
                     <div class="c-formula-action">
-                        <button @onclick="AddFormula" class="c-button c-ok">ثبت</button>
-                        <button @onclick="() => { Status = WindowStatus.Close; }" class="c-button c-cancel">انصراف</button>
+                        <button @onclick="AddFormula" class="c-btn c-primary">ثبت</button>
+                        <button @onclick="() => { Status = WindowStatus.Close; }" class="c-btn c-danger">انصراف</button>
                     </div>
                 </td>
             </tr>
@@ -124,8 +124,8 @@
                     <tr>
                         <td></td>
                         <td style="text-align:center;padding-top:10px;">
-                            <button @onclick="AddOperand" class="c-button c-ok">ثبت</button>
-                            <button @onclick="() => { newStatus = WindowStatus.Close; }" class="c-button c-cancel">انصراف</button>
+                            <button @onclick="AddOperand" class="c-btn c-primary">ثبت</button>
+                            <button @onclick="() => { newStatus = WindowStatus.Close; }" class="c-btn c-danger">انصراف</button>
                         </td>
                     </tr>
                 </table>

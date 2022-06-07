@@ -1,5 +1,7 @@
-﻿@page "/Engine/Workflow/DynamicForm"
+﻿@page "/Engine/Workflow/DynamicForm/{WorkflowFormId:int}"
+@inject IWebHostEnvironment env
 @namespace Caspian.Engine.WorkflowEngine
+@inherits BasePage
 @if (isloading)
 {
     <span>در حال بارگذاری ...</span>
@@ -7,65 +9,4 @@
 else
 {
     <DynamicComponent Type="DynamicType" />
-}
-@code 
-{
-    Type? DynamicType;
-    bool isloading = false;
-
-    protected override void OnInitialized()
-    {
-        if (DynamicType == null)
-        {
-            if (!isloading)
-            {
-                isloading = true;
-                CreateAssembly();
-            }
-        }
-        base.OnInitialized();
-    }
-
-    void CreateAssembly()
-    {
-        var path = "C:\\Users\\Ali\\source\\repos\\Caspian\\Engine\\Engine.Web\\Pages\\StaticFormEngine\\ChildrenForm.cs";
-        var codeToCompile = File.ReadAllText(path);
-        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(codeToCompile);
-        string assemblyName = Path.GetRandomFileName();
-        var path1 = typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location;
-        var refPaths = new[] {
-                    typeof(System.Object).GetTypeInfo().Assembly.Location,
-                    typeof(ComponentBase).GetTypeInfo().Assembly.Location,
-                    typeof(StringTextBox).GetTypeInfo().Assembly.Location,
-                    typeof(Caspian.Common.AssemblyInfo).GetTypeInfo().Assembly.Location,
-                    typeof(Convert).GetTypeInfo().Assembly.Location,
-                    Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll")
-                };
-        MetadataReference[] references = refPaths.Select(r => MetadataReference.CreateFromFile(r)).ToArray();
-        CSharpCompilation compilation = CSharpCompilation.Create(assemblyName, 
-            syntaxTrees: new[] { syntaxTree },
-            references: references,
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-        using var ms = new MemoryStream();
-        EmitResult result = compilation.Emit(ms);
-
-        if (!result.Success)
-        {
-            IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
-                diagnostic.IsWarningAsError ||
-                diagnostic.Severity == DiagnosticSeverity.Error);
-
-            foreach (Diagnostic diagnostic in failures)
-            {
-                Console.Error.WriteLine("\t{0}: {1}", diagnostic.Id, diagnostic.GetMessage());
-            }
-        }
-        else
-        {
-            ms.Seek(0, SeekOrigin.Begin);
-            Assembly assembly = AssemblyLoadContext.Default.LoadFromStream(ms);
-            DynamicType = assembly.GetType("Caspian.Engine.CodeGenerator.ChildrenForm");
-        }
-        isloading = false;
-    }
 }

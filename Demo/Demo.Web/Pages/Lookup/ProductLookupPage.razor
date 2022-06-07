@@ -1,6 +1,13 @@
-﻿@inherits LookupPage<Product>
+﻿@typeparam TValue
+@inherits LookupPage<Product, TValue>
 @namespace Demo.Web.Pages
 <div class="c-lookup-page" style="width:380px;">
+    @if (Searchable)
+    {
+        <div style="padding:0 50px 5px 50px;">
+            <StringTextBox @bind-Value="SearchData.Title" placeholder="عنوان" />
+        </div>
+    }
     <DataGrid @ref="Grid" TEntity="Product" TableHeight="200" HidePageSize>
         <Columns>
             <GridColumn TEntity="Product" Field="t => t.ProductCategory.Title" Title="گروه غذا" />
@@ -17,4 +24,7 @@
         base.InitialTextExpression(t => t.Title);
         base.OnInitialized();
     }
+
+    [Parameter]
+    public bool Searchable{ get; set; }
 }

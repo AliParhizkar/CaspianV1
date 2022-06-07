@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common.Extension
 {
@@ -59,6 +60,11 @@ namespace Caspian.Common.Extension
             if (IsNullableType(type))
                 return Nullable.GetUnderlyingType(type);
             return type;
+        }
+
+        public static PropertyInfo GetForeignKey(this PropertyInfo info)
+        {
+            return info.DeclaringType.GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name);
         }
 
         public static PropertyInfo GetPrimaryKey(this Type type, bool checkAnyType = false)

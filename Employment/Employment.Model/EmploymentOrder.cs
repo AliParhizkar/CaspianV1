@@ -1,5 +1,6 @@
 ﻿using Caspian.Engine;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Employment.Model
@@ -7,6 +8,9 @@ namespace Employment.Model
     [RuleType("اعضاء غیرهیئت علمی"), WorkflowEntity("حکم غیرهیئت علمی")]
     public class EmploymentOrder
     {
+        [Key]
+        public int Id { get; set; }
+
         /// <summary>
         /// رتبه
         /// </summary>

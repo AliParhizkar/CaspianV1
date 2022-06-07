@@ -84,8 +84,8 @@
                     <td></td>
                     <td></td>
                     <td style="text-align:center;">
-                        <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-button c-cancel">انصراف</button>
-                        <button @onclick="SetPageSetting" class="c-button c-ok">ثبت</button>
+                        <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-btn c-danger">انصراف</button>
+                        <button @onclick="SetPageSetting" class="c-btn c-primary">ثبت</button>
                     </td>
                 </tr>
             </table>

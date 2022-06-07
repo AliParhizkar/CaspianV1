@@ -8,12 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Pages\Counter.razor" />
-    <None Include="Pages\Error.cshtml" />
-    <None Include="Pages\FetchData.razor" />
     <None Include="Pages\Index.razor" />
-    <None Include="Pages\_Host.cshtml" />
-    <None Include="Pages\_Layout.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,10 +24,6 @@
     <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
     <ProjectReference Include="..\Demo.Model\Demo.Model.csproj" />
     <ProjectReference Include="..\Demo.Service\Demo.Service.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
   <ItemGroup>

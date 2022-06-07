@@ -29,6 +29,10 @@ namespace Caspian.Engine
         /// </summary>
         public string PropertyName { get; set; }
 
+        public string? TextExpression { get; set; }
+
+        public string? FilterExpression { get; set; }
+
         public int? HtmlColumnId { get; set; }
 
         [ForeignKey(nameof(HtmlColumnId))]

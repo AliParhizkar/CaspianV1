@@ -32,9 +32,9 @@ namespace Caspian.Engine
         /// <summary>
         /// عنوان فایلی که برای طراحی گزارش تعیین شده است.
         /// </summary>
-        public string PrintFileName { get; set; }
+        public string? PrintFileName { get; set; }
 
-        public string FilteringFileName { get; set; }
+        public string? FilteringFileName { get; set; }
 
         /// <summary>
         /// اولین سطح داده ای زیرگزارش را مشخص می کند
@@ -46,7 +46,7 @@ namespace Caspian.Engine
         /// شرح گزارش
         /// </summary>
         [DisplayName("شرح")]
-        public string Descript { get; set; }
+        public string? Descript { get; set; }
 
         /// <summary>
         /// پارامترهای گزارش

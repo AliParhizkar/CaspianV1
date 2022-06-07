@@ -34,8 +34,8 @@
             <tr>
                 <td></td>
                 <td style="height:60px;text-align:center"> 
-                    <button style="width:60px;margin-left:10px;" class="c-button c-ok" value="ثبت" @onclick="Update">ثبت</button>
-                    <button style="width:60px" class="c-button c-cancel" value="انصراف" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }">انصراف</button>
+                    <button style="width:60px;margin-left:10px;" class="c-btn c-primary" value="ثبت" @onclick="Update">ثبت</button>
+                    <button style="width:60px" class="c-btn c-danger" value="انصراف" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }">انصراف</button>
                 </td>
             </tr>
         </table>

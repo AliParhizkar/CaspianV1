@@ -1,14 +1,17 @@
 ﻿@page "/Demo/Lookup"
 @namespace Demo.Web.Pages
-<h3>Lookup Default</h3>
 @{
     if (hideHeader)
         autoHide = true;
 }
-<table style="width:95%;margin:0 auto">
-    <tr>
-        <td style="width:40%;">
-            <table width="100%">
+<div style="padding:20px 40px 0 0">
+    <h3>Lookup</h3>
+</div>
+<div style="display:table;width:90%;margin:0 auto">
+    <div style="display:table-cell;width:50%;padding-left:40px">
+         <hr />
+         <h4 style="padding-right:40px;">Lookup seting</h4>
+            <table style="margin-right:70px;height:200px;">
                 <tr>
                     <td style="width:30px">
                         <CheckBox @bind-Value="disabled" />
@@ -57,23 +60,28 @@
                         <label>Close on blur</label>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <CheckBox @bind-Value="searchable" />
+                    </td>
+                    <td>
+                        <label>Searchable</label>
+                    </td>
+                </tr>
             </table>
-        </td>
-        <td style="width:60px;">
-            <label>محصول</label>
-        </td>
-        <td style="width:250px">
+    </div>
+    <div style="display:table-cell;width:50%;padding-right:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Product lookup</h4>
+        <div style="width:80%;margin:10px auto">
             <AutoComplete TEntity="Product" TValue="int?" @bind-Value="Id" HideHeader="hideHeader" AutoHide="autoHide" Title="جستجوی غذا"
-                          TextExpression="t => t.Title" OpenOnFocus="openOnFocus" CloseOnBlur="closeOnBlur" Disabled="disabled" 
-                          HideIcon="hideIcon">
-                <ProductLookupPage />
+                TextExpression="t => t.Title" OpenOnFocus="openOnFocus" CloseOnBlur="closeOnBlur" Disabled="disabled" 
+                HideIcon="hideIcon">
+                <ProductLookupPage TValue="int?" Searchable="searchable"  />
             </AutoComplete>
-        </td>
-        <td>
-
-        </td>
-    </tr>
-</table>
+        </div>
+    </div>
+</div>
 
 @code
 {
@@ -82,6 +90,7 @@
     bool autoHide;
     bool hideIcon;
     bool hideHeader;
+    bool searchable;
     bool closeOnBlur;
     bool openOnFocus;
 }
