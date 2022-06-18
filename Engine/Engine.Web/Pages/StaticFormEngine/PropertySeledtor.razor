@@ -17,7 +17,7 @@
                                 @foreach(var info in workflowEntityProperties)
                                 {
                                     className = info == selectedPropertyInfo ? "c-selected" : null;
-                                    <li @onclick:stopPropagation="true" class="@className" @onclick="async () => await EntityProperty(info)">@info.Name</li>            
+                                    <li @onclick:stopPropagation="true" class="@className" @onclick="async () => await EntityProperty(info, item.Id)">@info.Name</li>            
                                 }
                             </ul>
                         }
@@ -37,6 +37,7 @@
     IList<WfFormEntityField> entityFields;
     IList<PropertyInfo> workflowEntityProperties;
     SubSystemKind subSystemKind;
+    int? wfEntityFieldId;
 
     void EntityType(string key)
     {
@@ -47,13 +48,19 @@
             t.AttributeType == typeof(ForeignKeyAttribute)) || t.PropertyType.IsCollectionType()).ToList();
     }
 
-    async Task EntityProperty(PropertyInfo info)
+    async Task EntityProperty(PropertyInfo info, int wfEntityFieldId)
     {
         selectedPropertyInfo = info;
         showEntityProperties = false;
         showEntityType = false;
+        this.wfEntityFieldId = wfEntityFieldId;
         if (OnSelect.HasDelegate)
             await OnSelect.InvokeAsync(info);
+    }
+
+    public int? GetSelectedWfEntityFieldId()
+    {
+        return wfEntityFieldId;
     }
 
     protected async override Task OnInitializedAsync()

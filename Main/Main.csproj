@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Code\**" />
+    <Content Remove="Data\Code\**" />
+    <EmbeddedResource Remove="Data\Code\**" />
+    <None Remove="Data\Code\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 

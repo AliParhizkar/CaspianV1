@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Caspian.Common;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine
 {
     [Table("BlazorControls", Schema = "cmn")]
-    public class Component
+    public class BlazorControl
     {
         [Key]
         public int Id { get; set; }
@@ -32,6 +34,8 @@ namespace Caspian.Engine
         public string? TextExpression { get; set; }
 
         public string? FilterExpression { get; set; }
+
+        public string? OnChange { get; set; }
 
         public int? HtmlColumnId { get; set; }
 

@@ -14,8 +14,8 @@ namespace Caspian.Engine
         public int WorkflowFormId { get; set; }
 
         [ForeignKey(nameof(WorkflowFormId))]
-        public virtual WorkflowForm WorkflowForm { get; set; }
+        public WorkflowForm WorkflowForm { get; set; }
 
-        public virtual IList<HtmlColumn> Columns { get; set; }
+        public IList<HtmlColumn> Columns { get; set; }
     }
 }

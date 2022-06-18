@@ -26,6 +26,6 @@ namespace Caspian.Engine
         [InverseProperty("HtmlColumn")]
         public virtual IList<InnerRow> InnerRows { get; set; }
 
-        public virtual Component Component { get; set; }
+        public virtual BlazorControl Component { get; set; }
     }
 }

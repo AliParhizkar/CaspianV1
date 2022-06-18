@@ -44,6 +44,7 @@ namespace Employment.Model
         /// <summary>
         /// کد نوع حکم
         /// </summary>
+        [DisplayName("نوع جکم")]
         public int EmploymentOrderTypeId { get; set; }
 
         /// <summary>
@@ -51,5 +52,8 @@ namespace Employment.Model
         /// </summary>
         [ForeignKey(nameof(EmploymentOrderTypeId))]
         public virtual EmploymentOrderType EmploymentOrderType { get; set; }
+
+        [DisplayName("شرح حکم")]
+        public string Descript { get; set; }
     }
 }

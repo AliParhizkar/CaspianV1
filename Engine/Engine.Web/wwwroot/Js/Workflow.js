@@ -372,6 +372,41 @@
             };
         },
 
+        findCode: function (formName, ctrName, propertyName, code) {
+            var data = {
+                action: 'findCode',
+                content: JSON.stringify({
+                    Id: ctrName,
+                    Property: propertyName,
+                    Code: code,
+                    ClassName: formName
+                })
+            };
+            window.chrome.webview.postMessage(data);
+        },
+
+        findEventHandler: function (formName, ctrName, eventName) {
+            var data = {
+                action: 'findEventHandler',
+                content: JSON.stringify({
+                    Id: ctrName,
+                    EventHandler: eventName,
+                    ClassName: formName
+                })
+            };
+            window.chrome.webview.postMessage(data);
+        },
+
+        getSourceCodeString() {
+            $.workflowForm.dotnet.invokeMethodAsync("GetSourceCodeString").then(t => {
+                var data = {
+                    action: 'setSourceCode',
+                    content: t
+                };
+                window.chrome.webview.postMessage(data);
+            });
+        },
+
         getCodebehindString() {
             $.workflowForm.dotnet.invokeMethodAsync("GetCodebehindString").then(t => {
                 var data = {
@@ -380,6 +415,16 @@
                 };
                 window.chrome.webview.postMessage(data);
             });
+        },
+        sendSaveRequest: function () {
+            var data = {
+                action: 'sendSourceCode',
+                content: ''
+            };
+            window.chrome.webview.postMessage(data);;
+        },
+        saveCodeFile: function (code) {
+            $.workflowForm.dotnet.invokeMethodAsync('SaveFile', code);
         },
 
         updateSelectedNodeData: function (text, value) {

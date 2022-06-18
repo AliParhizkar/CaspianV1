@@ -8,7 +8,7 @@
             className += " t-state-error";
     }
 
-<div class="@className" style="@Style">
+<div class="@className">
     @if (MultiLine)
     {
         <textarea @ref="htmlElement" @attributes="InputAttributes" @onchange="ChangeValue">@Value</textarea>
@@ -17,11 +17,11 @@
     {
         @if (base.BindingType == BindingType.OnChange)
         {
-            <input value="@Value" @onchange="ChangeValue" @ref="htmlElement" @attributes="InputAttributes" autocomplete="off" />
+            <input value="@Value" @onchange="ChangeValue" @ref="htmlElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
         }
         else
         {
-            <input value="@Value" @oninput="ChangeValue" @ref="htmlElement" @attributes="InputAttributes" autocomplete="off" />
+            <input value="@Value" @oninput="ChangeValue" @ref="htmlElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
         }
     }
 </div>

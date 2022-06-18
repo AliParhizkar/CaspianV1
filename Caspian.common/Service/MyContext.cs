@@ -21,7 +21,7 @@ namespace Caspian.Common
                 t.AddRowNumberSupport();
                 
             }).EnableSensitiveDataLogging();
-            optionsBuilder.UseLazyLoadingProxies();
+            optionsBuilder.UseLazyLoadingProxies(false);
             base.OnConfiguring(optionsBuilder);
         }
 

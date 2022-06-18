@@ -203,9 +203,6 @@ html input[disabled], textarea[disabled] {
 .t-state-disabled{
     background-image:none!important;
 }
-.t-state-disabled .fa-caret-down {
-    color: gray !important;
-}
 .t-numerictextbox.t-state-hover .t-input {
     border-color: rgba(0,0,0,0.24);
 }

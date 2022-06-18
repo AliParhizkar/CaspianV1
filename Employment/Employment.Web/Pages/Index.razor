@@ -1,58 +1,5 @@
 ﻿@page "/Employment"
-@{
-    var underAssociateDegree = order.BaseStudy < BaseStudy.AssociateDegree;
-    if (underAssociateDegree)
-    {
-        if (order.YearOfEmployment <= 12)
-            order.BaseType = BaseType.Preliminary;
-        else
-            order.BaseType = BaseType.Skills;
-    }
-}
-<div style="width:90%;margin:0 auto">
-    <table style="width:100%">
-        <tr>
-            <td>
-                <label>رتبه</label>
-            </td>
-            <td>
-                <NumericTextBox @bind-Value="order.Rank" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>پایه</label>
-            </td>
-            <td>
-                <DropdownList @bind-Value="order.BaseType" Disabled="underAssociateDegree" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>پایه تحصیلی</label>
-            </td>
-            <td>
-                <DropdownList @bind-Value="order.BaseStudy" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>تعداد سال خدمت</label>
-            </td>
-            <td>
-                <NumericTextBox @bind-Value="order.YearOfEmployment" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>ضریب حقوقی</label>
-            </td>
-            <td>
-                <NumericTextBox @bind-Value="order.SalaryFactor" />
-            </td>
-        </tr>
-    </table>
-</div>
+@using Employment.Web.Pages
 
 
 @code{

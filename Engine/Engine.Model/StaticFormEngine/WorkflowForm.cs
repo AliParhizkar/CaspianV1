@@ -18,6 +18,11 @@ namespace Caspian.Engine
 
         public string? Name { get; set; }
 
+        public string? SourceFileName { get; set; }
+
+        /// <summary>
+        /// Rows of form
+        /// </summary>
         public virtual IList<HtmlRow> Rows { get; set; }
 
         /// <summary>

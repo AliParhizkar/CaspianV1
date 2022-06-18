@@ -23,6 +23,11 @@ namespace Caspian.UI
         [Inject]
         protected IJSRuntime jsRuntime { get; set; }
 
+        /// <summary>
+        /// Create in OnInitialized and dispose in OnAfterRenderAsync
+        /// </summary>
+        public IServiceScope GlobalScope { get; private set; }
+
         protected IServiceScope CreateScope()
         {
             return ServiceScopeFactory.CreateScope();
@@ -69,6 +74,13 @@ namespace Caspian.UI
             return sholdRender;
         }
 
+        protected override void OnInitialized()
+        {
+            if (GlobalScope == null)
+                GlobalScope = CreateScope();
+            base.OnInitialized();
+        }
+
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (message.HasValue())
@@ -85,6 +97,11 @@ namespace Caspian.UI
                 block = false;
             else if (block == false)
                 block = null;
+            if (GlobalScope != null)
+            {
+                GlobalScope.Dispose();
+                GlobalScope = CreateScope();
+            }
             await base.OnAfterRenderAsync(firstRender);
         }
     }

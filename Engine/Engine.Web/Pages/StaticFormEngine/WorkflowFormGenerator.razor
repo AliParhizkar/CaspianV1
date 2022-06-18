@@ -1,14 +1,15 @@
-﻿@using Microsoft.EntityFrameworkCore
+﻿@page "/Engine/WorkflowForm/{WorkflowFormId:int}"
+
+@using Microsoft.EntityFrameworkCore
 @namespace Caspian.Engine.WorkflowEngine
 @inherits BasePage
-
-@page "/Engine/WorkflowForm/{WorkflowFormId:int}"
-
+@inject IHostEnvironment Environment 
 <div class="row">
-    <PropertyWindow />
+    <PropertyWindow @ref="propertyWindow" Id="@Id" Title="@title" Descript="@description" TextExpression="@textExpression" OnChangeEventHandler="@OnChangeEventHandler"
+        ControlType="@controlType" FilterExpression="@filterExpression" FormName="@formName" OnChange="UpdateControlData" />
     <div class="c-form-designer">
         <div class="c-tools-bar">
-            <PropertySeledtor WorkflowFormId="WorkflowFormId" OnSelect="(info) => { AddControl(info); }" />
+            <PropertySeledtor @ref="propertySeledtor" WorkflowFormId="WorkflowFormId" OnSelect="(info) => { AddControl(info); }" />
         <div class="w-seprator"></div>
         <div>
             <button @onclick="AddRowToDown" class="w-button w-row-down" title="افزودن یک ردیف در پایین"></button>
@@ -25,355 +26,71 @@
             <button @onclick="AddColumn"  class="w-button w-col-right" title="افزودن یک ستون در راست"></button>
             <button @onclick="AddColumn" class="w-button w-col-left" title="افزودن یک ستون در چپ"></button>
             <button class="w-button w-col-delete" title="حذف ستون"></button>
+            <div class="w-seprator"></div>
+            <button @onclick="SaveAll" class="w-button" title="ثبت همه">ثبت</button>
+            <div class="w-seprator"></div>
+            <button class="w-button" @onclick="ToggleWindowStatus">Run</button>
         </div>
         </div>
         @if (rows != null)
         {
-        <div class="container static-form">
-            @foreach(var row in rows)
-            {
-            var rowIndex = rows.IndexOf(row);
-            <div class="row">
-                @foreach(var col in row.Columns)
+            <div class="container static-form">
+                @foreach(var row in rows)
                 {
-                    var colIndex = row.Columns.IndexOf(col);
-                    var className = "c-item col-md-" + col.Span;
-                    if (col.Hidden)
-                        className += " c-hidden";
-                    if (rowIndex == selectedRowIndex)
-                    {
-                        if (selectedInnerRowIndex == -1 && !controlSelected && (colIndex == selectedColIndex || selectedColsIndex.Contains(colIndex)))
-                            className += " c-selected";
-                    }
-
-                    <div @onclick="e => {SelectRow(e, rowIndex, colIndex); }" class="@(className)">
-                       @if (col.Component == null)
-                       {
-                            foreach(var innerRow in col.InnerRows)
+                    row.WorkflowForm = null;
+                    var rowIndex = rows.IndexOf(row);
+                    <div class="row">
+                        @foreach(var col in row.Columns)
+                        {
+                            var colIndex = row.Columns.IndexOf(col);
+                            var className = "c-item col-md-" + col.Span;
+                            if (col.Hidden)
+                                className += " c-hidden";
+                            if (rowIndex == selectedRowIndex)
                             {
-                                var innerRowIndex = col.InnerRows.IndexOf(innerRow);
-                                <div class="row">
-                                    @foreach(var col1 in innerRow.HtmlColumns)
+                                if (selectedInnerRowIndex == -1 && !controlSelected && (colIndex == selectedColIndex || selectedColsIndex.Contains(colIndex)))
+                                    className += " c-selected";
+                            }
+                            <div @onclick="e => {SelectRow(e, rowIndex, colIndex); }" class="@(className)">
+                                @if (col.InnerRows != null && col.Component == null)
+                                {
+                                    foreach(var innerRow in col.InnerRows)
                                     {
-                                        className = $"c-item c-row-{innerRow.Span} col-{12 / innerRow.HtmlColumns.Count}";
-                                        var innerColIndex = innerRow.HtmlColumns.IndexOf(col1);
-                                        if (rowIndex == selectedRowIndex && colIndex == selectedColIndex && innerRowIndex == selectedInnerRowIndex && innerColIndex == selectedInnerColIndex)
-                                            className += " c-selected";
-                                        <div @onclick:stopPropagation="true" @onclick="() => {SelectInnerRow(rowIndex, colIndex, innerRowIndex, innerColIndex); }" class="@(className)">
+                                        var innerRowIndex = col.InnerRows.IndexOf(innerRow);
+                                        <div class="row">
+                                            @foreach(var col1 in innerRow.HtmlColumns)
+                                            {
+                                                className = $"c-item c-row-{innerRow.Span} col-{12 / innerRow.HtmlColumns.Count}";
+                                                var innerColIndex = innerRow.HtmlColumns.IndexOf(col1);
+                                                if (rowIndex == selectedRowIndex && colIndex == selectedColIndex && innerRowIndex == selectedInnerRowIndex && innerColIndex == selectedInnerColIndex)
+                                                    className += " c-selected";
+                                                <div @onclick:stopPropagation="true" @onclick="() => {SelectInnerRow(rowIndex, colIndex, innerRowIndex, innerColIndex); }" class="@(className)">
                                             
+                                                </div>
+                                            }
                                         </div>
                                     }
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            var ctr = col.Component;
-                            <BlazorComponentPage OnSelect="() => SelectControl(rowIndex, colIndex)" Selected="@(rowIndex == selectedRowIndex && colIndex == selectedColIndex && controlSelected)" ControlType="@(ctr!.ControlType)" Caption="@(ctr.Caption)" />
+                                }
+                                else if(col.Component != null)
+                                {
+                                    var ctr = col.Component;
+                                    ctr.WfFormEntityField = null;
+                                    <BlazorComponentPage OnSelect="async () => await SelectControl(ctr, rowIndex, colIndex)" Selected="@(rowIndex == selectedRowIndex && colIndex == selectedColIndex && controlSelected)" ControlType="@(ctr!.ControlType)" Caption="@(ctr.Caption)" />
+                                }
+                            </div>
                         }
                     </div>
                 }
             </div>
         }
     </div>
-}
-    </div>
 </div>
-@code 
-{
-    byte columnsCount;
-    IList<HtmlRow> rows;
-    int selectedRowIndex = -1;
-    int selectedColIndex = -1;
-    int selectedInnerRowIndex = -1;
-    int selectedInnerColIndex = -1;
-    IList<int> selectedColsIndex;
-    bool controlSelected;
 
-    void SelectControl(int rowIndex, int colIndex, int? innerRowIndex = null, int? innerColIndex = null)
-    {
-        selectedRowIndex = rowIndex;
-        selectedColIndex = colIndex;
-        controlSelected = true;
-    }
-
-    void DeleteSelectedRow()
-    {
-        if (selectedRowIndex >= 0)
+<Window @bind-Status="windowStatus" Style="width:850px;height:550px;">
+    <Content>
+        @if (windowStatus == WindowStatus.Open)
         {
-            var row = rows[selectedRowIndex];
-            rows.RemoveAt(selectedRowIndex);
+            <AssemblyGenerator WorkflowFormId="WorkflowFormId" />
         }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var scope = CreateScope();
-        var form = await new WorkflowFormService(scope).SingleAsync(WorkflowFormId);
-        columnsCount = form.ColumnCount;
-        rows = form.Rows.ToList();
-        selectedColsIndex = new List<int>();
-        await base.OnInitializedAsync();
-    }
-
-    void SelectInnerRow(int rowIndex, int colIndex, int innerRowIndex, int innerColIndex)
-    {
-        selectedRowIndex = rowIndex;
-        selectedColIndex = colIndex;
-        selectedInnerRowIndex = innerRowIndex;
-        selectedInnerColIndex = innerColIndex;
-    }
-
-    void AddColumn()
-    {
-        if (selectedInnerRowIndex >= 0)
-        {
-            var factor = 12 / columnsCount;
-            var cell = rows[selectedRowIndex].Columns[selectedColIndex];
-            var colCount = cell.Span / factor;
-            if (colCount > 1)
-            {
-                var row = cell.InnerRows[selectedInnerRowIndex];
-                row.HtmlColumns[0].Span = Convert.ToByte(12 / colCount);
-                while(row.HtmlColumns.Count < colCount)
-                {
-                    row.HtmlColumns.Add(new HtmlColumn()
-                    {
-                        Span = Convert.ToByte(12 / colCount)
-                    });
-                }
-            }
-        }
-    }
-
-    void AddRowToTop()
-    {
-        var index = selectedRowIndex >= 0 ? selectedRowIndex : rows.Count > 0 ? 0 : (int?)null ;
-        AddRow(index);
-    }
-
-    void AddRowToDown()
-    {
-        var index = selectedRowIndex >= 0 && rows.Count > 0 ? selectedRowIndex + 1 : (int?)null;
-        AddRow(index);
-    }
-
-    void AddRow(int? index = null)
-    {
-        var row = new HtmlRow()
-            {
-                WorkflowFormId = WorkflowFormId,
-                Columns = new List<HtmlColumn>()
-            };
-        for (var index1 = 0; index1 < columnsCount; index1++)
-            row.Columns.Add(new HtmlColumn()
-            {
-                Span = Convert.ToByte(12 / columnsCount),
-                InnerRows = new List<InnerRow>()
-            });
-        if (index == null)
-            rows.Add(row);
-        else
-            rows.Insert(index.Value, row);
-    }
-
-    void AddInnerRowToTop()
-    {
-        if (selectedRowIndex >= 0 && selectedColIndex >= 0)
-        {
-            var index = selectedInnerRowIndex >= 0 ? selectedInnerRowIndex : (int?)null ;
-            AddInnerRow(index);
-        }
-    }
-
-    void AddInnerRowToDown()
-    {
-        var index = selectedInnerRowIndex >= 0 ? selectedInnerRowIndex + 1 : (int?)null;
-        AddInnerRow(index);
-    }
-
-    void AddInnerRow(int? index = null)
-    {
-        var innerRow = new InnerRow();
-        innerRow.HtmlColumns = new List<HtmlColumn>();
-        innerRow.Span = 1;
-        //var parentSpan = rows[selectedRowIndex].Columns[selectedColIndex].Span;
-        //var factor = 12 / columnsCount;
-        //var count = parentSpan / factor;
-        //for (var index = 0; index < count; index++)
-        //{
-        //    var innerCell = new HtmlColumn();
-        //    innerCell.Span = Convert.ToByte(12 / factor);
-        //    innerRow.HtmlColumns.Add(innerCell);
-        //}
-        var innerCell = new HtmlColumn();
-        innerCell.Span = 12;
-        innerRow.HtmlColumns.Add(innerCell);
-        if (index == null)
-            rows[selectedRowIndex].Columns[selectedColIndex].InnerRows.Add(innerRow);
-        else
-            rows[selectedRowIndex].Columns[selectedColIndex].InnerRows.Insert(index.Value, innerRow);
-    }
-
-    void RemoveInnerRow()
-    {
-        if (selectedRowIndex >= 0 && selectedColIndex >= 0 && selectedInnerRowIndex >= 0)
-            rows[selectedRowIndex].Columns[selectedColIndex].InnerRows.RemoveAt(selectedInnerRowIndex);
-    }
-
-    void AddControl(PropertyInfo info)
-    {
-        var att = info.GetCustomAttribute<DisplayNameAttribute>();
-        var component = new Caspian.Engine.Component()
-        {
-            ControlType = info.GetControlType(),
-            Caption = att == null ? info.Name : att.DisplayName,
-            PropertyName = info.Name
-        };
-        if (selectedInnerRowIndex >= 0)
-        {
-            if (selectedInnerColIndex < 0)
-            {
-
-            }
-            //rows[selectedRowIndex].Columns[selectedColIndex].InnerRows[selectedInnerRowIndex].HtmlColumn = control;
-        }
-        else if (selectedRowIndex >= 0 && selectedColIndex >= 0)
-            rows[selectedRowIndex].Columns[selectedColIndex].Component = component;
-    }
-
-    void SelectRow(MouseEventArgs e, int rowIndex, int colIndex)
-    {
-        selectedInnerRowIndex = -1;
-        controlSelected = false;
-        if (e.CtrlKey)
-        {
-            ///include first time
-            if (selectedColIndex > -1)
-            {
-                if (selectedRowIndex == rowIndex)
-                {
-                    ///
-                    if (colIndex != selectedColIndex)
-                    {
-                        selectedColsIndex.Add(colIndex);
-                        selectedColsIndex.Add(selectedColIndex);
-                    }
-                }
-                else
-                    selectedColsIndex.Add(colIndex);
-            }
-            else 
-            {
-                if (rowIndex != selectedRowIndex)
-                {
-                    selectedColsIndex.Clear();
-                    selectedColsIndex.Add(colIndex);
-                }
-                else
-                {
-                    if (selectedColsIndex.Contains(colIndex))
-                        selectedColsIndex.Remove(colIndex);
-                    else
-                        selectedColsIndex.Add(colIndex);
-                }
-            }
-            selectedColIndex = -1;
-        }
-        else
-        {
-            selectedColsIndex.Clear();
-            selectedColIndex = colIndex;
-        }
-        selectedRowIndex = rowIndex;
-    }
-
-    public void UnmergeSelectedColumns()
-    {
-        var columnIndex = selectedColIndex;
-        if (columnIndex < 0 && selectedColsIndex.Count > 0)
-            columnIndex = selectedColsIndex[0];
-        if (selectedRowIndex >= 0 && columnIndex >= 0)
-        {
-            var factor = 12 / columnsCount;
-            if (selectedInnerRowIndex < 0)
-            {
-                var cell = rows[selectedRowIndex].Columns[columnIndex];
-                var count = cell.Span / factor;
-                cell.Span = Convert.ToByte(factor);
-                for (var i = 1; i < count; i++)
-                {
-                    var cell1 = rows[selectedRowIndex].Columns[columnIndex + i];
-                    cell1.Hidden = false;
-                    cell1.Span = Convert.ToByte(factor);
-                }
-            }
-            else
-            {
-                var cell = rows[selectedRowIndex].Columns[selectedColIndex];
-                //cell.InnerRows[selectedInnerRowIndex].ColumnsCount = Convert.ToByte(cell.Span / factor);
-            }
-        }
-    }
-
-    public void MergeSelectedColumns()
-    {
-        if (selectedColsIndex.Count > 1)
-        {
-            var hasMerge = false;
-            foreach(var index in selectedColsIndex)
-            {
-                if (rows[selectedRowIndex].Columns[index].Span != 12 / columnsCount)
-                {
-                    hasMerge = true;
-                    break;
-                }
-            }
-            if (hasMerge)
-            {
-                ShowMessage("لطفا ستونهای ادغام شده را به حالت پیش فرض برگردانده و سپس اقدام به ادغام نمائید");
-                return;
-            }
-            var orderedColsIndex = selectedColsIndex.OrderBy(t => t).ToArray();
-            bool hasGap = false;
-            for(var index = 1; index < selectedColsIndex.Count; index++)
-            {
-                if (orderedColsIndex[index - 1] + 1 != orderedColsIndex[index])
-                {
-                    hasGap = true;
-                    break;
-                }
-            }
-            if (hasGap)
-                ShowMessage("خانه های جدول برای ادغام درست انتخاب نشده اند");
-            else
-            {
-                var firstColumnIndex = orderedColsIndex[0];
-                var length = 12 / columnsCount * orderedColsIndex.Length;
-                rows[selectedRowIndex].Columns[firstColumnIndex].Span = Convert.ToByte(length);
-                for (var index = 1; index < orderedColsIndex.Count(); index++)
-                {
-                    var selectedColumnIndex = orderedColsIndex[index];
-                    selectedColsIndex.Remove(selectedColumnIndex);
-                    rows[selectedRowIndex].Columns[selectedColumnIndex].Hidden = true;
-                }
-            }
-        }
-    }
-
-    [Parameter]
-    public int WorkflowFormId { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.jsRuntime.InvokeVoidAsync("$.workflow.WorkflowForm", DotNetObjectReference.Create(this));
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    [JSInvokable]
-    public async Task<string> GetCodebehindString()
-    {
-        using var scop = CreateScope();
-        return await new WorkflowFormService(scop).GetCodebehindAsync(WorkflowFormId);
-    }
-}
+    </Content>
+</Window>

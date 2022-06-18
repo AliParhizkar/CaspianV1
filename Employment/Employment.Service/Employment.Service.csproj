@@ -16,6 +16,13 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
     <ProjectReference Include="..\..\Engine\Engine.Service\Engine.Service.csproj" />
+    <ProjectReference Include="..\Employment.Model\Employment.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FluentValidation">
+      <HintPath>..\..\..\..\..\.nuget\packages\fluentvalidation\9.4.0\lib\net5.0\FluentValidation.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
 ﻿@page "/Engine/Workflow/DynamicForm/{WorkflowFormId:int}"
-@inject IWebHostEnvironment env
+@inject IHostEnvironment Environment 
 @namespace Caspian.Engine.WorkflowEngine
 @inherits BasePage
-@if (isloading)
+@if (isloading || DynamicType == null)
 {
     <span>در حال بارگذاری ...</span>
 }

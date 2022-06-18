@@ -133,6 +133,16 @@ namespace Caspian.UI
             }
         }
 
+        public void Enable()
+        {
+            Disabled = false;
+        }
+
+        public void Disable()
+        {
+            Disabled = true;
+        }
+
         async Task SelectSelectItem(SelectListItem item)
         {
             if (!item.Disabled)
@@ -631,6 +641,7 @@ namespace Caspian.UI
         public void EnableLoading()
         {
             LoadData = true;
+            Items = null;
         }
     }
 }

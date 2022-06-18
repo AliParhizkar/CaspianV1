@@ -71,6 +71,13 @@ namespace Caspian.Common.Service
         {
             Context.Set<TEntity>().Remove(entity);
         }
+
+        public async virtual Task Remove(int id)
+        {
+            var old = await SingleOrDefaultAsync(id);
+            if (old != null)
+                Remove(old);
+        }
         
         async public Task<TEntity> SingleOrDefaultAsync(int id)
         {

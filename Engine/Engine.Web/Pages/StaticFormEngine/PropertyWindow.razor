@@ -1,4 +1,5 @@
-﻿@namespace Caspian.Engine.WorkflowEngine   
+﻿@namespace Caspian.Engine.WorkflowEngine  
+@inherits BasePage
 @{
     var windowClassName = "c-property-window";
     if (minimized)
@@ -10,7 +11,7 @@
             <span @onclick="() => minimized = !minimized">1</span>
         </div>
         <div>
-            <span>2</span>
+            <span >2</span>
         </div>
         <div>
             <span>3</span>
@@ -24,7 +25,7 @@
                         <label>Id</label>
                     </td>
                     <td>
-                        <StringTextBox Style="direction:ltr" @bind-Value="Id" />
+                        <StringTextBox readonly Style="direction:ltr;font-weight:bold;font-style:oblique" Value="@Id" />
                     </td>
                 </tr>
                 <tr>
@@ -32,7 +33,7 @@
                         <label>عنوان</label>
                     </td>
                     <td>
-                        <StringTextBox @bind-Value="Title" />
+                        <StringTextBox @bind-Value="Title" @onchange="async () => await StateChanged()" />
                     </td>
                 </tr>
                 <tr>
@@ -40,7 +41,7 @@
                         <label>مقدار</label>
                     </td>
                     <td>
-                        <StringTextBox @bind-Value="Value" />
+                        <StringTextBox @bind-Value="Value" @onchange="async () => await StateChanged()" />
                     </td>
                 </tr>
                 <tr>
@@ -48,7 +49,34 @@
                         <label>شرح</label>
                     </td>
                     <td>
-                        <StringTextBox @bind-Value="Descript" MultiLine />
+                        <StringTextBox @bind-Value="Descript" MultiLine @onchange="async () => await StateChanged()" />
+                    </td>
+                </tr>
+            @if (ControlType == ControlType.ComboBox)
+            {
+                <tr>
+                    <td>
+                        <label style="font-size:10px;white-space:nowrap">Text Expr</label>
+                    </td>
+                    <td>
+                        <StringTextBox Style="direction:ltr" @onclick="TextExpressionSelected" readonly @bind-Value="TextExpression" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="font-size:10px;">Filter Expr</label>
+                    </td>
+                    <td>
+                        <StringTextBox Style="direction:ltr" @onclick="FilterExpressionSelected" readonly @bind-Value="FilterExpression" />
+                    </td>
+                </tr>
+            }
+                <tr>
+                    <td>
+                        <label>OnChange</label>
+                    </td>
+                    <td>
+                        <StringTextBox Style="direction:ltr" @bind-Value="OnChangeEventHandler" @onclick="AddEventHandler" @onchange="async () => await StateChanged()" />
                     </td>
                 </tr>
             </table>
@@ -59,6 +87,8 @@
 @code 
 {
     bool minimized;
+    string? propertyName;
+    string? eventName;
 
     [Parameter]
     public string Id { get; set; }
@@ -71,4 +101,65 @@
 
     [Parameter]
     public string Value{ get; set; }
+
+    [Parameter]
+    public string TextExpression{ get; set; }
+
+    [Parameter]
+    public string FilterExpression{ get; set; }
+
+    [Parameter]
+    public ControlType ControlType{ get; set; }
+
+    [Parameter]
+    public string OnChangeEventHandler { get; set; }
+
+    [Parameter]
+    public string FormName{ get; set; }
+
+    void FilterExpressionSelected()
+    {
+        propertyName = "FilterExpression";
+    }
+
+    async Task StateChanged()
+    {
+        if (OnChange.HasDelegate)
+            await OnChange.InvokeAsync();
+    }
+
+    async void AddEventHandler()
+    {
+        if (!OnChangeEventHandler.HasValue())
+        {
+            OnChangeEventHandler = Id + "OnChange";
+            await StateChanged();
+        }
+        eventName = OnChangeEventHandler;
+    }
+
+    [Parameter]
+    public EventCallback OnChange{ get; set; }
+
+    void TextExpressionSelected()
+    {
+        propertyName = "TextExpression";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (propertyName.HasValue())
+        {
+            var name = propertyName;
+            propertyName = null;
+            await jsRuntime.InvokeVoidAsync("$.workflow.findCode", FormName, Id, name);
+        }
+        if (eventName.HasValue())
+        {
+            var name = eventName;
+            eventName = null;
+            await jsRuntime.InvokeVoidAsync("$.workflow.findEventHandler", FormName, Id, name);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }

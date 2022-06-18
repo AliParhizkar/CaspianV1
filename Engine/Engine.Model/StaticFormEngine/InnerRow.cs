@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine
 {
     [Table("InnerRows", Schema = "cmn")]
     public class InnerRow
     {
+        [Key]
         public int Id { get; set; }
 
         public byte Span { get; set; }
