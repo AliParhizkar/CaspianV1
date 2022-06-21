@@ -23,7 +23,7 @@ namespace Employment.Model
         Rank1
     }
 
-    public enum BaseStudy
+    public enum BaseStudy: byte
     {
         [EnumField("زیردیپلم")]
         Highschool = 1,

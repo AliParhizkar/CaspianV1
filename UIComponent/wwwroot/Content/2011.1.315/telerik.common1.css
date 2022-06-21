@@ -20,7 +20,11 @@
         background-color: #007bff;
         border-color: #007bff;
     }
-
+.c-bar .fa-ban {
+    font-size: 23px;
+    color: #dc3545;
+    padding-right:6px;
+}
 .c-outline-info {
     color: #17a2b8;
     background-color: transparent;
@@ -169,7 +173,7 @@
             padding-right:3px;
         }
         .c-check {
-            margin-right: 4px;
+            padding-left:8px;
         }
 .c-check .fa {
     color: #34b8f9;

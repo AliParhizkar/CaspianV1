@@ -13,6 +13,7 @@ using Caspian.Common.Extension;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Caspian.Engine.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.ReportPrint
 {
@@ -214,7 +215,8 @@ namespace Caspian.Engine.ReportPrint
             {
                 using var scope = ServiceScopeFactory.CreateScope();
                 var reportService = new ReportService(scope);
-                var report = await reportService.SingleAsync(ReportId);
+                reportService.Context.ChangeTracker.LazyLoadingEnabled = true;
+                var report = await reportService.GetAll().Where(t => t.Id == ReportId).Include(t => t.ReportGroup).SingleAsync();
                 page.GuId = "3f7f0c9730b145ee9132cfdedc3c8ccd";
                 var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
                 var reportParams = new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId).ToList();

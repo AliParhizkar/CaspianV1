@@ -29,3 +29,16 @@
 .c-categories .c-selected {
     background-color: #5e8f8f50 !important;
 }
+
+.c-header {
+    border:1px solid gray;
+    margin:5px;
+    border-radius:8px;
+    padding: 10px 15px;
+}
+.c-body {
+    border: 1px solid gray;
+    margin:0 5px 5px 5px;
+    height:calc(100vh - 75px);
+    border-radius:8px;
+}

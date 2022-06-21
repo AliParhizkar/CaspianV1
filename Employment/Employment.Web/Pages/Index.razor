@@ -1,17 +1,20 @@
 ﻿@page "/Employment"
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
 @using Employment.Web.Pages
-
+<ComboBox TValue="int" TEntity="EmploymentOrderType" TextExpression="t => t.Title" OnValueChanged="async () => await ChangeValue()" />
 
 @code{
     EmploymentOrder order;
 
-    protected override void OnInitialized()
+    async Task ChangeValue()
     {
-        order = new EmploymentOrder();
-        order.Rank = 5;
-        order.BaseType = BaseType.Rank2;
-        order.BaseStudy = BaseStudy.Bachelor;
-        base.OnInitialized();
+        if (await Confirm("آیا با ثبت موافقید؟"))
+        {
+            
+        }
     }
 }
 

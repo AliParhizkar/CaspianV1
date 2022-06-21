@@ -60,5 +60,35 @@ namespace Caspian.Engine.Service
             }
             throw new NotImplementedException("خطای عدم پیاده ساری");
         }
+
+        public bool MethodIsAsync(string className, string methodName, string sourceCode)
+        {
+            CSharpSyntaxNode type = FindMethod(className, methodName, sourceCode).ReturnType;
+            if (type.Kind() == SyntaxKind.IdentifierName)
+            {
+                return (type as IdentifierNameSyntax).Identifier.Text == "Task";
+            }
+            if (type.Kind() == SyntaxKind.GenericName)
+            {
+                return (type as GenericNameSyntax).Identifier.Text == "Task";
+            }
+            return false;
+        }
+
+        public MethodDeclarationSyntax FindMethod(string className, string methodName, string sourceCode)
+        {
+            var classOfForm = GetClassOfForm(className, sourceCode);
+            foreach (var member3 in classOfForm.Members)
+            {
+                if (member3.Kind() == SyntaxKind.MethodDeclaration)
+                {
+                    var method = member3 as MethodDeclarationSyntax;
+                    //method.ReturnType.
+                    if (method!.Identifier.Text == methodName)
+                        return method;
+                }
+            }
+            return null;
+        }
     }
 }

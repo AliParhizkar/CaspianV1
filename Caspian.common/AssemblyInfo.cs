@@ -1,6 +1,7 @@
 ﻿using Caspian.Engine;
 using System.Reflection;
 using System.Collections;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Common
 {
@@ -82,11 +83,11 @@ namespace Caspian.Common
             return type;
         }
 
-        public IEnumerable InvokeReportMethod(SubSystemKind subSystemKind, string className, string methodName)
+        public IEnumerable InvokeReportMethod(SubSystemKind subSystemKind, string className, string methodName, IServiceScope scope)
         {
             var type = GetAllServiceTypes(subSystemKind).SingleOrDefault(t => t.Name == className);
             var method = type.GetMethod(methodName);
-            var obj = Activator.CreateInstance(type);
+            var obj = Activator.CreateInstance(type, scope);
             var contextType = GetDbContextType(subSystemKind);
             //(obj as IEntity).Context = Activator.CreateInstance(contextType) as MyContext;
             return (IEnumerable)method.Invoke(obj, new object[]{ null});

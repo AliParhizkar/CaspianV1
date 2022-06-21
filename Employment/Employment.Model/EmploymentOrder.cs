@@ -30,12 +30,6 @@ namespace Employment.Model
         public int YearOfEmployment { get; set; } = 0;
 
         /// <summary>
-        /// پایه تحصیلی
-        /// </summary>
-        [DisplayName("پایه تحصیلی"), Rule("پایه تحصیلی")]
-        public BaseStudy BaseStudy { get; set; }
-
-        /// <summary>
         /// ضریب حقوقی
         /// </summary>
         [DisplayName("ضریب حقوقی"), Rule("ضریب حقوقی")]
@@ -55,5 +49,14 @@ namespace Employment.Model
 
         [DisplayName("شرح حکم")]
         public string Descript { get; set; }
+
+        [DisplayName("مدرک تحصیلی")]
+        public int EducationDegreeId { get; set; }
+
+        [DisplayName("ضریب مدرک تحصیلی")]
+        public int? EducationDegreeFactor { get; set; }
+
+        [ForeignKey(nameof(EducationDegreeId))]
+        public virtual EducationDegree EducationDegree { get; set; }
     }
 }

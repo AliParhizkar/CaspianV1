@@ -75,19 +75,13 @@
 
 @code
 {
-    IServiceScope scope;
-
-    protected override Task OnInitializedAsync()
-    {
-        scope = CreateScope();
-        return base.OnInitializedAsync();
-    }
-
     async Task UpdateMaterialReceipt(int materialId, MaterialReceipt materialReceipt)
     {
         if (materialId > 0)
         {
-            materialReceipt.Material = await new MaterialService(scope).SingleAsync(materialId);
+            var scope = CreateScope();
+            materialReceipt.Material = await new MaterialService(scope).GetAll().Where(t => t.Id == materialId)
+                .Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync();
         }
     }
 }

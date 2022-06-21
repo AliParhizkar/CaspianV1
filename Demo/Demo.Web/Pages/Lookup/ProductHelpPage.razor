@@ -26,10 +26,11 @@
 </div>
 
 @code 
-{ 
+{
     protected override void OnInitialized()
     {
         InitialSearchExpression(t => t.Title.Contains(LookupStringSearchValue));
+        base.InitialTextExpression(t => t.Title);
         base.OnInitialized();
     }
 }

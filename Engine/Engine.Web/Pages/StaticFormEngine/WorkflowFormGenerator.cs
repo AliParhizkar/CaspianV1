@@ -27,6 +27,7 @@ namespace Caspian.Engine.WorkflowEngine
         bool saveFile;
         BlazorControl selectedControl;
         PropertyWindow propertyWindow;
+        string formTitle;
         // ------ Property Window
         string Id;
         string title;
@@ -85,6 +86,7 @@ namespace Caspian.Engine.WorkflowEngine
             columnsCount = form.ColumnCount;
             subSystemKind = form.SubSystemKind;
             formName = form.Name;
+            formTitle = form.Title;
             rows = await new HtmlRowService(scope).GetRows(WorkflowFormId);
             selectedColsIndex = new List<int>();
             await base.OnInitializedAsync();

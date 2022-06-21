@@ -54,6 +54,12 @@ namespace Caspian.Engine.Service
                         str += ">";
                     }
                     return str + " dpk" + ctr.PropertyName + ";\n";
+                case ControlType.Integer:
+                case ControlType.Numeric:
+                    str = "\t\tNumericTextBox<" + info.PropertyType.GetUnderlyingType();
+                    if (info.PropertyType.IsNullableType())
+                        str += "?";
+                    return str + "> txt" + ctr.PropertyName + ";\n";
                 default:
                     throw new NotImplementedException("خطای عدم پیاده سازی");
             }

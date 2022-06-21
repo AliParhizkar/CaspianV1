@@ -22,6 +22,7 @@ namespace Caspian.UI
         bool LoadData;
         int pageNumber = 1;
         bool setToDefault;
+        bool valueChanged;
         string className;
         string text;
         Expression cascadExpression;
@@ -596,6 +597,12 @@ namespace Caspian.UI
                 await jsRuntime.InvokeVoidAsync("$.telerik.toggleComboboxStatus", input, Status);
             }
             await jsRuntime.InvokeVoidAsync("$.telerik.serversideCombobox", input, ErrorMessage, Disabled, Status);
+            if (valueChanged)
+            {
+                valueChanged = false;
+                if (OnValueChanged.HasDelegate)
+                    await OnValueChanged.InvokeAsync();
+            }
             await base.OnAfterRenderAsync(firstRender);
         }
 
@@ -611,16 +618,14 @@ namespace Caspian.UI
                 Cascade?.Cascade?.CascadTo(typeof(TEntity), convertedValue);
                 Value = convertedValue;
                 await ValueChanged.InvokeAsync(convertedValue);
-                if (OnValueChanged.HasDelegate)
-                    await OnValueChanged.InvokeAsync();
+                valueChanged = true;
             }
             else
             {
                 Cascade?.Cascade?.CascadTo(typeof(TEntity), null);
                 Value = default(TValue);
                 await ValueChanged.InvokeAsync(default(TValue));
-                if (OnValueChanged.HasDelegate)
-                    await OnValueChanged.InvokeAsync();
+                valueChanged = true;
             }
             if (CurrentEditContext != null)
             {

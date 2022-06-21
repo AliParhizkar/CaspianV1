@@ -16,6 +16,7 @@
     protected override void OnInitialized()
     {
         InitialSearchExpression(t => LookupStringSearchValue == null || t.Title.Contains(LookupStringSearchValue));
+        InitialTextExpression(t => t.Title);
         base.OnInitialized();
     }
 }

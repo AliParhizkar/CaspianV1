@@ -162,10 +162,9 @@ namespace Caspian.Engine.WorkflowEngine
                     var typeName = info.GetForeignKey().PropertyType.Name;
                     str.Append("\t\t\tbuilder.OpenComponent<ComboBox<" + typeName + ", " + strType + ">>(2);\n");
                     str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this,async value => \n\t\t\t{\n\t\t\t\t" + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value;\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value; }));\n");
                     if (component.OnChange.HasValue())
-                        str.Append("\t\t\t\tawait " + component.OnChange + "();\n");
-                    str.Append("\t\t\t}));\n");
+                        str.Append("\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, async () => await " + component.OnChange + "()));\n");
                     str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, cmb =>\n");
                     str.Append("\t\t\t{\n");
                     str.Append("\t\t\t\t" + id + " = cmb as ComboBox<" + typeName + ", " + strType + ">;\n");
@@ -176,6 +175,24 @@ namespace Caspian.Engine.WorkflowEngine
                     str.Append("\t\t\t});\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
+                case ControlType.Integer:
+                case ControlType.Numeric:
+                    strType = info.PropertyType.GetUnderlyingType().Name;
+                    if (info.PropertyType.IsNullableType())
+                        strType += "?";
+                    str.Append("\t\t\tbuilder.OpenComponent<NumericTextBox<" + strType + ">>(2);\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value; }));\n");
+
+                    str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, txt =>\n");
+                    str.Append("\t\t\t{\n");
+                    str.Append("\t\t\t\t" + id + " = txt as NumericTextBox<" + strType + ">;\n");
+                    str.Append("\t\t\t});\n");
+
+                    str.Append("\t\t\tbuilder.CloseComponent();\n");
+                    break;
+                default:
+                    throw new NotImplementedException("خطای عدم پیاده سازی");
             }
             str.Append("\t\t\tbuilder.CloseElement();\n");
         }

@@ -1,5 +1,16 @@
-﻿@page "/"
-<a href="/Demo">Demo</a>
+﻿@using Caspian.UI
+@page "/"
+<div>
+    <a href="/Demo">Demo</a>
+</div>
+<div>
+    <a href="/Employment">Employment</a>
+</div>
+<NumericTextBox @ref="txt" TValue="int">
 
+</NumericTextBox>
 
+@code {
+    NumericTextBox<int> txt;
+}
 

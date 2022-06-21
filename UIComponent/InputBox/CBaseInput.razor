@@ -106,6 +106,16 @@
         return true;
     }
 
+    public void Enable()
+    {
+        Disabled = false;
+    }
+
+    public void Disable()
+    {
+        Disabled = true;
+    }
+
     public virtual async Task SetValue(object obj)
     {
         var type = DynamicType ?? typeof(TValue);
