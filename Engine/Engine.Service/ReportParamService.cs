@@ -6,6 +6,7 @@ using Caspian.Common.Service;
 using Caspian.Common.Extension;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Service
 {
@@ -82,7 +83,7 @@ namespace Caspian.Engine.Service
             var temp = await SingleAsync(id);
             if (temp.DataLevel.GetValueOrDefault(1) > 2)
                 throw new CaspianException("امکان افزایش سطح وجود ندارد.");
-            var report = await new ReportService(ServiceScope).SingleAsync(temp.ReportId);
+            var report = await new ReportService(ServiceScope).GetAll().Where(t => t.Id == temp.ReportId).Include(t => t.ReportGroup).SingleAsync();
             if (report.PrintFileName.HasValue())
                 throw new CaspianException("بعد از ساختن گزارش امکان افزایش سطح فیلد وجود ندارد");
             var type = new AssemblyInfo().GetReturnType(report.ReportGroup);

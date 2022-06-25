@@ -25,94 +25,95 @@ namespace ReportUiModels
         /// <returns>ریشه درخت ساخته شده توسط تابع</returns>
         public async Task<IList<ReportNode>> CreateTreeForSelect(Type type, ReportNode reportNode, IList<string> selectedNodes)
         {
-            var list = new List<ReportNode>();
-            var enTitle = reportNode?.TitleEn;
-            var str = enTitle;
-            if (str.HasValue())
-            {
-                if (str.EndsWith("___DynamicField"))
-                    str = str.Substring(0, str.Length - 15);
-                if (str.Length > 0 && str[str.Length - 1] == '.')
-                    str = str.Substring(0, str.Length - 1);
-                var array = str.Split('.');
-                if (int.TryParse(array[0], out _))
-                {
-                    var strTemp = str.Substring(str.IndexOf('.') + 1);
-                    type = type.GetMyProperty(strTemp).PropertyType;
-                }
-                else if (str.HasValue())
-                    type = type.GetMyProperty(str).PropertyType;
-            }
-            var dynamicField = type.GetCustomAttribute<DynamicFieldAttribute>();
-            if (dynamicField != null)
-            {
-                var array = str.Split('.');
-                if (!int.TryParse(array[0], out _) && (enTitle == null || !enTitle.EndsWith("___DynamicField")))
-                {
-                    str = "___DynamicField";
-                    if (enTitle.HasValue())
-                        str = enTitle + ".___DynamicField";
-                    list.Add(new ReportNode()
-                    {
-                        TitleEn = str,
-                        TitleFa = "فرمهای پویا",
-                        Grouping = true
-                    });
-                }
-                else
-                {
-                    if (str == "")
-                        str = null;
-                    int? formId = null;
-                    if (int.TryParse(str.Split('.')[0], out _))
-                        formId = Convert.ToInt32(str.Split('.')[0]);
-                     return (await new DynamicFieldEngin().GetDynamicItems(type, formId)).Select(t => new ReportNode() 
-                    {
-                        RuleId = t.Id,
-                        TitleFa = t.Title,
-                        TitleEn =  (t.FormId == 0 ? str : t.FormId.ToString() + '.' + str),
-                        Grouping = formId == null,
-                        Selected = selectedNodes.Contains(t.Id.ToString())
-                     }).ToList();
-                }
-            }
-            foreach(var info in type.GetProperties())
-            {
-                var reportFieldAttribute = info.GetCustomAttribute<ReportFieldAttribute>();
-                if (reportFieldAttribute != null)
-                {
-                    var node = new ReportNode();
-                    str = enTitle;
-                    if (str == null)
-                        str = "";
-                    if (str != "")
-                        str += '.';
-                    str += info.Name;
-                    node.TitleEn = str;
-                    if (reportFieldAttribute.Title.HasValue())
-                        node.TitleFa = reportFieldAttribute.Title;
-                    else
-                    {
-                        var displayName = info.GetCustomAttribute<DisplayNameAttribute>();
-                        if (displayName != null)
-                            node.TitleFa = displayName.DisplayName;
-                    }
-                    var complextypeAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
-                    if (complextypeAttr != null)
-                        node.TitleFa = info.PropertyType.GetProperties().Single(t => t.CanWrite).GetCustomAttribute<ReportFieldAttribute>().Title + " " + node.TitleFa + "(*)";
-                    node.UseOrderBy = reportFieldAttribute.OrderBy;
-                    var complexAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
-                    bool singleRelation = false;
-                    var keyInfo = info.PropertyType.GetPrimaryKey(true);
-                    if (keyInfo != null)
-                        singleRelation = keyInfo.GetCustomAttribute<ForeignKeyAttribute>() != null;
-                    node.Grouping = info.GetCustomAttribute<ForeignKeyAttribute>() != null || complexAttr != null || singleRelation;
-                    if (!node.Grouping)
-                        node.Selected = selectedNodes.Any(t => t == str);
-                    list.Add(node);
-                }
-            }
-            return list;
+            //var list = new List<ReportNode>();
+            //var enTitle = reportNode?.TitleEn;
+            //var str = enTitle;
+            //if (str.HasValue())
+            //{
+            //    if (str.EndsWith("___DynamicField"))
+            //        str = str.Substring(0, str.Length - 15);
+            //    if (str.Length > 0 && str[str.Length - 1] == '.')
+            //        str = str.Substring(0, str.Length - 1);
+            //    var array = str.Split('.');
+            //    if (int.TryParse(array[0], out _))
+            //    {
+            //        var strTemp = str.Substring(str.IndexOf('.') + 1);
+            //        type = type.GetMyProperty(strTemp).PropertyType;
+            //    }
+            //    else if (str.HasValue())
+            //        type = type.GetMyProperty(str).PropertyType;
+            //}
+            //var dynamicField = type.GetCustomAttribute<DynamicFieldAttribute>();
+            //if (dynamicField != null)
+            //{
+            //    var array = str.Split('.');
+            //    if (!int.TryParse(array[0], out _) && (enTitle == null || !enTitle.EndsWith("___DynamicField")))
+            //    {
+            //        str = "___DynamicField";
+            //        if (enTitle.HasValue())
+            //            str = enTitle + ".___DynamicField";
+            //        list.Add(new ReportNode()
+            //        {
+            //            TitleEn = str,
+            //            TitleFa = "فرمهای پویا",
+            //            Grouping = true
+            //        });
+            //    }
+            //    else
+            //    {
+            //        if (str == "")
+            //            str = null;
+            //        int? formId = null;
+            //        if (int.TryParse(str.Split('.')[0], out _))
+            //            formId = Convert.ToInt32(str.Split('.')[0]);
+            //         return (await new DynamicFieldEngin().GetDynamicItems(type, formId)).Select(t => new ReportNode() 
+            //        {
+            //            RuleId = t.Id,
+            //            TitleFa = t.Title,
+            //            TitleEn =  (t.FormId == 0 ? str : t.FormId.ToString() + '.' + str),
+            //            Grouping = formId == null,
+            //            Selected = selectedNodes.Contains(t.Id.ToString())
+            //         }).ToList();
+            //    }
+            //}
+            //foreach(var info in type.GetProperties())
+            //{
+            //    var reportFieldAttribute = info.GetCustomAttribute<ReportFieldAttribute>();
+            //    if (reportFieldAttribute != null)
+            //    {
+            //        var node = new ReportNode();
+            //        str = enTitle;
+            //        if (str == null)
+            //            str = "";
+            //        if (str != "")
+            //            str += '.';
+            //        str += info.Name;
+            //        node.TitleEn = str;
+            //        if (reportFieldAttribute.Title.HasValue())
+            //            node.TitleFa = reportFieldAttribute.Title;
+            //        else
+            //        {
+            //            var displayName = info.GetCustomAttribute<DisplayNameAttribute>();
+            //            if (displayName != null)
+            //                node.TitleFa = displayName.DisplayName;
+            //        }
+            //        var complextypeAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
+            //        if (complextypeAttr != null)
+            //            node.TitleFa = info.PropertyType.GetProperties().Single(t => t.CanWrite).GetCustomAttribute<ReportFieldAttribute>().Title + " " + node.TitleFa + "(*)";
+            //        node.UseOrderBy = reportFieldAttribute.OrderBy;
+            //        var complexAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
+            //        bool singleRelation = false;
+            //        var keyInfo = info.PropertyType.GetPrimaryKey(true);
+            //        if (keyInfo != null)
+            //            singleRelation = keyInfo.GetCustomAttribute<ForeignKeyAttribute>() != null;
+            //        node.Grouping = info.GetCustomAttribute<ForeignKeyAttribute>() != null || complexAttr != null || singleRelation;
+            //        if (!node.Grouping)
+            //            node.Selected = selectedNodes.Any(t => t == str);
+            //        list.Add(node);
+            //    }
+            //}
+            //return list;
+            throw new NotImplementedException("خطای عدم پیاده سازی");
         }
 
         public IList<ReportNode> CreateTreeForGroupBy(Report report, string path)

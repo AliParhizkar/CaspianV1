@@ -2,8 +2,4 @@
 
 namespace Demo.Model
 {
-    public class OrderDynamicValue : BaseDynamicParameterData
-    {
-
-    }
 }

@@ -17,12 +17,6 @@ namespace Caspian.Engine
         [DisplayName("عنوان"), Unique("گردشی با این عنوان در سیستم وجود دارد."), Required]
         public string Title { get; set; }
 
-        [DisplayName("فرم"), Required]
-        public int FormGroupId { get; set; }
-
-        [ForeignKey(nameof(FormGroupId))]
-        public virtual FormGroup FormGroup { get; set; }
-
         /// <summary>
         /// توضیحات
         /// </summary>

@@ -52,36 +52,37 @@ namespace Caspian.Engine
 
         public async Task<IList<DynamicParameterType>> GetDynamicItems(Type mainType, int? formId)
         {
-            IList<DynamicParameterType> tempList = null;
-            var dynamicFieldAttr = mainType.GetCustomAttribute<DynamicFieldAttribute>();
-            if (dynamicFieldAttr != null)
-            {
-                using (var context = new Context())
-                {
-                    var query = context.DynamicParameters.AsQueryable();
-                    if (formId.HasValue)
-                        query = query.Where(t => t.FormId == formId);
-                    else
-                        query = query.Where(t => t.Form.FormGroup.Namespace == mainType.Namespace && t.Form.FormGroup.ClassName == mainType.Name);
-                    if (formId.HasValue)
-                    {
-                        tempList = await query.Select(t => new DynamicParameterType()
-                        {
-                            Id = t.Id,
-                            Title = t.Title
-                        }).ToListAsync();
-                    }
-                    else
-                    {
-                        tempList = await query.Select(t => new DynamicParameterType
-                        {
-                            FormId = t.FormId,
-                            Title = t.Form.Title,
-                        }).Distinct().ToListAsync();
-                    }
-                }
-            }
-            return tempList;
+            throw new NotImplementedException("خطای عدم پیاده سازی");
+            //IList<DynamicParameterType> tempList = null;
+            //var dynamicFieldAttr = mainType.GetCustomAttribute<DynamicFieldAttribute>();
+            //if (dynamicFieldAttr != null)
+            //{
+            //    using (var context = new Context())
+            //    {
+            //        var query = context.DynamicParameters.AsQueryable();
+            //        if (formId.HasValue)
+            //            query = query.Where(t => t.FormId == formId);
+            //        else
+            //            query = query.Where(t => t.Form.FormGroup.Namespace == mainType.Namespace && t.Form.FormGroup.ClassName == mainType.Name);
+            //        if (formId.HasValue)
+            //        {
+            //            tempList = await query.Select(t => new DynamicParameterType()
+            //            {
+            //                Id = t.Id,
+            //                Title = t.Title
+            //            }).ToListAsync();
+            //        }
+            //        else
+            //        {
+            //            tempList = await query.Select(t => new DynamicParameterType
+            //            {
+            //                FormId = t.FormId,
+            //                Title = t.Form.Title,
+            //            }).Distinct().ToListAsync();
+            //        }
+            //    }
+            //}
+            //return tempList;
         }
 
         //public Type DynamicType(IList<ReportParam> dynamicFields, Type type = null)
@@ -110,10 +111,5 @@ namespace Caspian.Engine
         public string Display { get; set; }
 
         public  ControlType ControlType { get; set; }
-
-        public int FormId { get; set; }
-
-        [ForeignKey(nameof(FormId))]
-        public virtual Form Form { get; set; }
     }
 }

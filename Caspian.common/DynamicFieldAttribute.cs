@@ -37,4 +37,17 @@ namespace Caspian.Engine
             ParameterValueType = parameterValueType;
         }
     }
+
+    public class DynamicTypeAttribute : Attribute
+    {
+        public DynamicTypeAttribute(string title, Type type)
+        {
+            Title = title;
+            Type = type;
+        }
+
+        public string Title { get; private set; }
+
+        public Type Type { get; private set; }  
+    }
 }

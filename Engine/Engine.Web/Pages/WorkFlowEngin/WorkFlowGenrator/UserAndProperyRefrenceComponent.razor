@@ -103,56 +103,56 @@
 
     async Task UpdateControl(string fieldName, decimal? value = null)
     {
-        Connector.FieldName = fieldName;
-        var formGroup = (await workflowService.SingleAsync(WorkflowId)).FormGroup;
-        var type = new AssemblyInfo().GetModelType(formGroup.Subsystem, formGroup.ClassName);
-        var info = type.GetMyProperty(fieldName);
-        var attr = info.GetCustomAttribute<DisplayNameAttribute>();
-        if (attr != null)
-            fieldTitle = attr.DisplayName;
-        else
-            fieldTitle = info.Name;
-        type = info.PropertyType;
-        if (type.IsEnumType())
-        {
-            enumType = type;
-            controlType = Caspian.Engine.ControlType.DropdownList;
-            if (value.HasValue)
-            {
-                if (type.IsNullableType())
-                    type = type.GetUnderlyingType();
-                var field = type.GetFields().SingleOrDefault(t => !t.IsSpecialName && Convert.ToInt64(t.GetValue(null)).Equals(Convert.ToInt64(value.Value)));
-                EnumValue = (Enum)field.GetValue(null);
-            }
-        }
-        else if (type == typeof(int) || type == typeof(int?))
-        {
-            controlType = Caspian.Engine.ControlType.Integer;
-            if (value.HasValue)
-                intValue = Convert.ToInt32(value);
-        }
-        else if (type == typeof(bool))
-        {
-            controlType = Caspian.Engine.ControlType.CheckBox;
-            if (value.HasValue)
-                boolValue = Convert.ToBoolean(value);
-        }
-        else if (type == typeof(bool?))
-        {
-            controlType = Caspian.Engine.ControlType.TreeStateCheckBox;
-            if (value.HasValue)
-                nullableBoolValue = Convert.ToBoolean(value);
-        }
-        else if (type == typeof(DateTime) || type == typeof(DateTime?))
-        {
-            controlType = Caspian.Engine.ControlType.Date;
-            throw new NotImplementedException("خطای عدم پیاده سازی");
-        }
-        else
-        {
-            controlType = Caspian.Engine.ControlType.Numeric;
-            numericValue = value;
-        }
+        //Connector.FieldName = fieldName;
+        //var formGroup = (await workflowService.SingleAsync(WorkflowId)).FormGroup;
+        //var type = new AssemblyInfo().GetModelType(formGroup.Subsystem, formGroup.ClassName);
+        //var info = type.GetMyProperty(fieldName);
+        //var attr = info.GetCustomAttribute<DisplayNameAttribute>();
+        //if (attr != null)
+        //    fieldTitle = attr.DisplayName;
+        //else
+        //    fieldTitle = info.Name;
+        //type = info.PropertyType;
+        //if (type.IsEnumType())
+        //{
+        //    enumType = type;
+        //    controlType = Caspian.Engine.ControlType.DropdownList;
+        //    if (value.HasValue)
+        //    {
+        //        if (type.IsNullableType())
+        //            type = type.GetUnderlyingType();
+        //        var field = type.GetFields().SingleOrDefault(t => !t.IsSpecialName && Convert.ToInt64(t.GetValue(null)).Equals(Convert.ToInt64(value.Value)));
+        //        EnumValue = (Enum)field.GetValue(null);
+        //    }
+        //}
+        //else if (type == typeof(int) || type == typeof(int?))
+        //{
+        //    controlType = Caspian.Engine.ControlType.Integer;
+        //    if (value.HasValue)
+        //        intValue = Convert.ToInt32(value);
+        //}
+        //else if (type == typeof(bool))
+        //{
+        //    controlType = Caspian.Engine.ControlType.CheckBox;
+        //    if (value.HasValue)
+        //        boolValue = Convert.ToBoolean(value);
+        //}
+        //else if (type == typeof(bool?))
+        //{
+        //    controlType = Caspian.Engine.ControlType.TreeStateCheckBox;
+        //    if (value.HasValue)
+        //        nullableBoolValue = Convert.ToBoolean(value);
+        //}
+        //else if (type == typeof(DateTime) || type == typeof(DateTime?))
+        //{
+        //    controlType = Caspian.Engine.ControlType.Date;
+        //    throw new NotImplementedException("خطای عدم پیاده سازی");
+        //}
+        //else
+        //{
+        //    controlType = Caspian.Engine.ControlType.Numeric;
+        //    numericValue = value;
+        //}
     }
 
     async Task UpdateControl(TreeViewItem node)
@@ -225,13 +225,14 @@
 
     async Task<IList<TreeViewItem>> GetTreeItems(string fieldName)
     {
-        var formGroup = (await workflowService.SingleAsync(WorkflowId)).FormGroup;
-        var type = new AssemblyInfo().GetModelType(formGroup.Subsystem, formGroup.ClassName);
-        if (fieldName.HasValue())
-            type = type.GetMyProperty(fieldName).PropertyType;
-        var nodes = new List<TreeViewItem>();
-        GetTree(type, nodes, fieldName, Connector.FieldName);
-        return nodes;
+        throw new NotImplementedException("خطای عرم پیاده سازی");
+        //var formGroup = (await workflowService.SingleAsync(WorkflowId)).FormGroup;
+        //var type = new AssemblyInfo().GetModelType(formGroup.Subsystem, formGroup.ClassName);
+        //if (fieldName.HasValue())
+        //    type = type.GetMyProperty(fieldName).PropertyType;
+        //var nodes = new List<TreeViewItem>();
+        //GetTree(type, nodes, fieldName, Connector.FieldName);
+        //return nodes;
     }
 
     [Parameter]

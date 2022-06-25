@@ -242,7 +242,7 @@ namespace Caspian.Engine.Service
         public IList GetData(int reportId, IQueryable data)
         {
             var a = new ReportParamService(Scope);
-            var reportParams = a.GetAll().ToList();
+            var reportParams = a.GetAll().Where(t => t.ReportId == reportId).ToList();
             var report = new SelectReport(data.ElementType);
             if (reportParams.Any(t => t.DataLevel.GetValueOrDefault(1) > 1))
             {

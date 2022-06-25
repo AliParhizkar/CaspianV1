@@ -80,13 +80,14 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        FormGroup formGroup = (await service.SingleAsync(WorkflowId)).FormGroup;
-        type = new AssemblyInfo().GetModelType(formGroup.Subsystem, formGroup.ClassName);
-        Nodes = new List<TreeViewItem>();
-        if (Activity.Fields == null)
-            Activity.Fields = new List<ActivityField>();
-        GetTree(type, Nodes, Activity.Fields, null);
-        await base.OnParametersSetAsync();
+        throw new NotImplementedException("خطای عدم پیاده سازی");
+        //FormGroup formGroup = (await service.SingleAsync(WorkflowId)).FormGroup;
+        //type = new AssemblyInfo().GetModelType(formGroup.Subsystem, formGroup.ClassName);
+        //Nodes = new List<TreeViewItem>();
+        //if (Activity.Fields == null)
+        //    Activity.Fields = new List<ActivityField>();
+        //GetTree(type, Nodes, Activity.Fields, null);
+        //await base.OnParametersSetAsync();
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)

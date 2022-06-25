@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <StiSerializer version="1.02" type="Flex" application="StiReport">
-  <Dictionary Ref="405" type="Dictionary" isKey="true">
+  <Dictionary Ref="1617" type="Dictionary" isKey="true">
     <BusinessObjects isList="true" count="1">
-      <list Ref="406" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+      <list Ref="1618" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
         <Alias>list</Alias>
         <BusinessObjects isList="true" count="0" />
         <Category />
@@ -19,8 +19,8 @@
           <value>Count,System.Int32</value>
           <value>Item,System.Object</value>
         </Columns>
-        <Dictionary isRef="405" />
-        <Guid>a85392f717b940babc21fb08c9439431</Guid>
+        <Dictionary isRef="1617" />
+        <Guid>8ffda03e4a424245a76d3303f8ec13d2</Guid>
         <Name>list</Name>
       </list>
     </BusinessObjects>
@@ -41,19 +41,17 @@
   <GlobalizationStrings isList="true" count="0" />
   <MetaTags isList="true" count="0" />
   <Pages isList="true" count="1">
-    <Page5 Ref="369" type="Page" isKey="true">
+    <Page21 Ref="1581" type="Page" isKey="true">
       <Border>None;[0:0:0];0;Solid;False;4;[0:0:0]</Border>
       <Brush>Transparent</Brush>
       <Components isList="true" count="3">
-        <ReportTitleBand1 Ref="370" type="ReportTitleBand" isKey="true">
-          <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
+        <ReportTitleBand1 Ref="1582" type="ReportTitleBand" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>0,0,21.005,2.489</ClientRectangle>
+          <ClientRectangle>0,0,21.005,2.939</ClientRectangle>
           <Components isList="true" count="6">
-            <Text371 Ref="371" type="Text" isKey="true">
+            <Text1583 Ref="1583" type="Text" isKey="true">
               <Font>iranyekan,8,Bold</Font>
               <Brush>Transparent</Brush>
-              <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
               <Conditions isList="true" count="0" />
               <SystemFiledType />
               <SystemVariable />
@@ -61,18 +59,17 @@
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
               <ClientRectangle>7.46,0.132,4.762,0.476</ClientRectangle>
-              <Page isRef="369" />
-              <Parent isRef="370" />
+              <Page isRef="1581" />
+              <Parent isRef="1582" />
               <FaText>جمهوری اسلامی ایران</FaText>
-              <Name>Text371</Name>
+              <Name>Text1583</Name>
               <Text>جمهوری اسلامی ایران</Text>
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text371>
-            <Text372 Ref="372" type="Text" isKey="true">
+            </Text1583>
+            <Text1584 Ref="1584" type="Text" isKey="true">
               <Font>iranyekan,8,Bold</Font>
               <Brush>Transparent</Brush>
-              <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
               <Conditions isList="true" count="0" />
               <SystemFiledType />
               <SystemVariable />
@@ -80,18 +77,17 @@
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
               <ClientRectangle>7.46,0.582,4.762,0.476</ClientRectangle>
-              <Page isRef="369" />
-              <Parent isRef="370" />
+              <Page isRef="1581" />
+              <Parent isRef="1582" />
               <FaText>وزارت بهداشت درمان آموزش پزشکی</FaText>
-              <Name>Text372</Name>
+              <Name>Text1584</Name>
               <Text>وزارت بهداشت درمان آموزش پزشکی</Text>
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text372>
-            <Text373 Ref="373" type="Text" isKey="true">
+            </Text1584>
+            <Text1585 Ref="1585" type="Text" isKey="true">
               <Font>iranyekan,8,Bold</Font>
               <Brush>Transparent</Brush>
-              <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
               <Conditions isList="true" count="0" />
               <SystemFiledType />
               <SystemVariable />
@@ -99,15 +95,15 @@
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
               <ClientRectangle>7.46,1.058,4.762,0.476</ClientRectangle>
-              <Page isRef="369" />
-              <Parent isRef="370" />
+              <Page isRef="1581" />
+              <Parent isRef="1582" />
               <FaText>سازمان مدیریت منابع انسانی</FaText>
-              <Name>Text373</Name>
+              <Name>Text1585</Name>
               <Text>سازمان مدیریت منابع انسانی</Text>
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text373>
-            <Image374 Ref="374" type="Image" isKey="true">
+            </Text1585>
+            <Image1586 Ref="1586" type="Image" isKey="true">
               <Brush>Transparent</Brush>
               <Stretch>true</Stretch>
               <Conditions isList="true" count="0" />
@@ -117,17 +113,16 @@
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
               <ClientRectangle>17.989,0.265,1.772,2.116</ClientRectangle>
-              <Page isRef="369" />
-              <Parent isRef="370" />
-              <Name>Image374</Name>
+              <Page isRef="1581" />
+              <Parent isRef="1582" />
+              <Name>Image1586</Name>
               <File>C:\Users\Ali\source\repos\Caspian\Main\Data\Report\Images/fsnj1j3w5os.jpg</File>
               <DataColumn />
               <Type>Expression</Type>
-            </Image374>
-            <Text375 Ref="375" type="Text" isKey="true">
+            </Image1586>
+            <Text1587 Ref="1587" type="Text" isKey="true">
               <Font>iranyekan,8,Bold</Font>
               <Brush>Transparent</Brush>
-              <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
               <Conditions isList="true" count="0" />
               <SystemFiledType />
               <SystemVariable />
@@ -135,18 +130,17 @@
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
               <ClientRectangle>0.344,0.317,4.153,0.608</ClientRectangle>
-              <Page isRef="369" />
-              <Parent isRef="370" />
+              <Page isRef="1581" />
+              <Parent isRef="1582" />
               <FaText>{نام و نام خانوادگی کاربر}</FaText>
-              <Name>Text375</Name>
+              <Name>Text1587</Name>
               <Text>{FLName}</Text>
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text375>
-            <Text376 Ref="376" type="Text" isKey="true">
+            </Text1587>
+            <Text1588 Ref="1588" type="Text" isKey="true">
               <Font>iranyekan,8,Bold</Font>
               <Brush>Transparent</Brush>
-              <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
               <Conditions isList="true" count="0" />
               <SystemFiledType />
               <SystemVariable />
@@ -154,405 +148,404 @@
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
               <ClientRectangle>0.344,0.926,4.153,0.608</ClientRectangle>
-              <Page isRef="369" />
-              <Parent isRef="370" />
+              <Page isRef="1581" />
+              <Parent isRef="1582" />
               <FaText>{تاریخ جاری}</FaText>
-              <Name>Text376</Name>
+              <Name>Text1588</Name>
               <Text>{Date}</Text>
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text376>
+            </Text1588>
           </Components>
           <Conditions isList="true" count="0" />
           <Name>ReportTitleBand1</Name>
-          <Page isRef="369" />
-          <Parent isRef="369" />
+          <Page isRef="1581" />
+          <Parent isRef="1581" />
         </ReportTitleBand1>
-        <HeaderBand1 Ref="377" type="HeaderBand" isKey="true">
-          <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
+        <HeaderBand1 Ref="1589" type="HeaderBand" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>0,0,21.005,1.299</ClientRectangle>
+          <ClientRectangle>0,0,21.005,1.563</ClientRectangle>
           <Components isList="true" count="1">
-            <Table378 Ref="378" type="Stimulsoft.Report.Components.Table.StiTable" isKey="true" DataLevel="0">
+            <Table1590 Ref="1590" type="Stimulsoft.Report.Components.Table.StiTable" isKey="true" DataLevel="0">
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0,21.005,0.771</ClientRectangle>
               <ColumnCount>6</ColumnCount>
               <Components isList="true" count="12">
-                <Table378_Cell379 Ref="379" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                <Table1590_Cell1591 Ref="1591" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <ClientRectangle>20.675,0.013,0.529,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>379</ID>
+                  <ID>1591</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table378_Cell379>
-                <Table378_Cell380 Ref="380" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>16.601,0.013,4.074,0.529</ClientRectangle>
+                </Table1590_Cell1591>
+                <Table1590_Cell1592 Ref="1592" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>15.913,0.013,4.762,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>380</ID>
+                  <ID>1592</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table378_Cell380>
-                <Table378_Cell381 Ref="381" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>13.135,0.013,3.466,0.529</ClientRectangle>
+                </Table1590_Cell1592>
+                <Table1590_Cell1593 Ref="1593" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>10.728,0.013,5.185,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>381</ID>
+                  <ID>1593</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table378_Cell381>
-                <Table378_Cell382 Ref="382" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>7.659,0.013,5.476,0.529</ClientRectangle>
+                </Table1590_Cell1593>
+                <Table1590_Cell1594 Ref="1594" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>5.701,0.013,5.026,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>382</ID>
+                  <ID>1594</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table378_Cell382>
-                <Table378_Cell383 Ref="383" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>3.426,0.013,4.233,0.529</ClientRectangle>
+                </Table1590_Cell1594>
+                <Table1590_Cell1595 Ref="1595" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>2.262,0.013,3.439,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>383</ID>
+                  <ID>1595</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table378_Cell383>
-                <Table378_Cell384 Ref="384" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>0.304,0.013,3.122,0.529</ClientRectangle>
+                </Table1590_Cell1595>
+                <Table1590_Cell1596 Ref="1596" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>0.304,0.013,1.958,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>384</ID>
+                  <ID>1596</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table378_Cell384>
-                <Table378_Cell385 Ref="385" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>20.675,0.542,0.529,0.767</ClientRectangle>
+                </Table1590_Cell1596>
+                <Table1590_Cell1597 Ref="1597" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>20.675,0.542,0.529,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>385</ID>
+                  <ID>1597</ID>
                   <CellType>RowHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table378_Cell385>
-                <Table378_Cell386 Ref="386" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                </Table1590_Cell1597>
+                <Table1590_Cell1598 Ref="1598" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-                  <Brush>Transparent</Brush>
-                  <ClientRectangle>16.601,0.542,4.074,0.767</ClientRectangle>
+                  <Brush>[31:73:125]</Brush>
+                  <ClientRectangle>15.913,0.542,4.762,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>386</ID>
+                  <ID>1598</ID>
                   <Font>iranyekan,11,Bold</Font>
                   <HorAlignment>Center</HorAlignment>
                   <VertAlignment>Center</VertAlignment>
                   <JoinCells isList="true" count="0" />
                   <Margins>0,0,0,0</Margins>
-                  <Name>Table378_Cell386</Name>
-                  <Page isRef="369" />
-                  <Parent isRef="378" />
+                  <Name>Table1590_Cell1598</Name>
+                  <Page isRef="1581" />
+                  <Parent isRef="1590" />
                   <Restrictions>AllowMove, AllowSelect, AllowChange</Restrictions>
                   <Text>نام نام خانوادگی</Text>
-                  <TextBrush>[33:37:41]</TextBrush>
+                  <TextBrush>[255:255:255]</TextBrush>
                   <CellType>Cell</CellType>
                   <FaText>نام نام خانوادگی</FaText>
                   <Type>Expression</Type>
-                </Table378_Cell386>
-                <Table378_Cell387 Ref="387" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                </Table1590_Cell1598>
+                <Table1590_Cell1599 Ref="1599" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-                  <Brush>Transparent</Brush>
-                  <ClientRectangle>13.135,0.542,3.466,0.767</ClientRectangle>
+                  <Brush>[31:73:125]</Brush>
+                  <ClientRectangle>10.728,0.542,5.185,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>387</ID>
+                  <ID>1599</ID>
                   <Font>iranyekan,11,Bold</Font>
                   <HorAlignment>Center</HorAlignment>
                   <VertAlignment>Center</VertAlignment>
                   <JoinCells isList="true" count="0" />
                   <Margins>0,0,0,0</Margins>
-                  <Name>Table378_Cell387</Name>
-                  <Page isRef="369" />
-                  <Parent isRef="378" />
+                  <Name>Table1590_Cell1599</Name>
+                  <Page isRef="1581" />
+                  <Parent isRef="1590" />
                   <Restrictions>AllowMove, AllowSelect, AllowChange</Restrictions>
                   <Text>عنوان شرکت</Text>
-                  <TextBrush>[33:37:41]</TextBrush>
+                  <TextBrush>[255:255:255]</TextBrush>
                   <CellType>Cell</CellType>
                   <FaText>عنوان شرکت</FaText>
                   <Type>Expression</Type>
-                </Table378_Cell387>
-                <Table378_Cell388 Ref="388" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                </Table1590_Cell1599>
+                <Table1590_Cell1600 Ref="1600" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-                  <Brush>Transparent</Brush>
-                  <ClientRectangle>7.659,0.542,5.476,0.767</ClientRectangle>
+                  <Brush>[31:73:125]</Brush>
+                  <ClientRectangle>5.701,0.542,5.026,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>388</ID>
+                  <ID>1600</ID>
                   <Font>iranyekan,11,Bold</Font>
                   <HorAlignment>Center</HorAlignment>
                   <VertAlignment>Center</VertAlignment>
                   <JoinCells isList="true" count="0" />
                   <Margins>0,0,0,0</Margins>
-                  <Name>Table378_Cell388</Name>
-                  <Page isRef="369" />
-                  <Parent isRef="378" />
+                  <Name>Table1590_Cell1600</Name>
+                  <Page isRef="1581" />
+                  <Parent isRef="1590" />
                   <Restrictions>AllowMove, AllowSelect, AllowChange</Restrictions>
                   <Text>نام محصول</Text>
-                  <TextBrush>[33:37:41]</TextBrush>
+                  <TextBrush>[255:255:255]</TextBrush>
                   <CellType>Cell</CellType>
                   <FaText>نام محصول</FaText>
                   <Type>Expression</Type>
-                </Table378_Cell388>
-                <Table378_Cell389 Ref="389" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                </Table1590_Cell1600>
+                <Table1590_Cell1601 Ref="1601" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-                  <Brush>Transparent</Brush>
-                  <ClientRectangle>3.426,0.542,4.233,0.767</ClientRectangle>
+                  <Brush>[31:73:125]</Brush>
+                  <ClientRectangle>2.262,0.542,3.439,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>389</ID>
+                  <ID>1601</ID>
                   <Font>iranyekan,11,Bold</Font>
                   <HorAlignment>Center</HorAlignment>
                   <VertAlignment>Center</VertAlignment>
                   <JoinCells isList="true" count="0" />
                   <Margins>0,0,0,0</Margins>
-                  <Name>Table378_Cell389</Name>
-                  <Page isRef="369" />
-                  <Parent isRef="378" />
+                  <Name>Table1590_Cell1601</Name>
+                  <Page isRef="1581" />
+                  <Parent isRef="1590" />
                   <Restrictions>AllowMove, AllowSelect, AllowChange</Restrictions>
                   <Text>قیمت</Text>
-                  <TextBrush>[33:37:41]</TextBrush>
+                  <TextBrush>[255:255:255]</TextBrush>
                   <CellType>Cell</CellType>
                   <FaText>قیمت</FaText>
                   <Type>Expression</Type>
-                </Table378_Cell389>
-                <Table378_Cell390 Ref="390" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                </Table1590_Cell1601>
+                <Table1590_Cell1602 Ref="1602" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-                  <Brush>Transparent</Brush>
-                  <ClientRectangle>0.304,0.542,3.122,0.767</ClientRectangle>
+                  <Brush>[31:73:125]</Brush>
+                  <ClientRectangle>0.304,0.542,1.958,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>390</ID>
+                  <ID>1602</ID>
                   <Font>iranyekan,11,Bold</Font>
                   <HorAlignment>Center</HorAlignment>
                   <VertAlignment>Center</VertAlignment>
                   <JoinCells isList="true" count="0" />
                   <Margins>0,0,0,0</Margins>
-                  <Name>Table378_Cell390</Name>
-                  <Page isRef="369" />
-                  <Parent isRef="378" />
+                  <Name>Table1590_Cell1602</Name>
+                  <Page isRef="1581" />
+                  <Parent isRef="1590" />
                   <Restrictions>AllowMove, AllowSelect, AllowChange</Restrictions>
                   <Text>تعداد</Text>
-                  <TextBrush>[33:37:41]</TextBrush>
+                  <TextBrush>[255:255:255]</TextBrush>
                   <CellType>Cell</CellType>
                   <FaText>تعداد</FaText>
                   <Type>Expression</Type>
-                </Table378_Cell390>
+                </Table1590_Cell1602>
               </Components>
               <Conditions isList="true" count="0" />
               <Filters isList="true" count="0" />
               <MinHeight>0.2</MinHeight>
-              <Name>Table378</Name>
+              <Name>Table1590</Name>
               <NumberID>25</NumberID>
-              <Page isRef="369" />
-              <Parent isRef="377" />
+              <Page isRef="1581" />
+              <Parent isRef="1589" />
               <RowCount>1</RowCount>
               <Sort isList="true" count="0" />
-            </Table378>
+            </Table1590>
           </Components>
           <Conditions isList="true" count="0" />
           <Name>HeaderBand1</Name>
-          <Page isRef="369" />
-          <Parent isRef="369" />
+          <Page isRef="1581" />
+          <Parent isRef="1581" />
         </HeaderBand1>
-        <DataBand1 Ref="391" type="DataBand" isKey="true">
+        <DataBand1 Ref="1603" type="DataBand" isKey="true">
           <DataLevel>1</DataLevel>
           <NewPageBefore>false</NewPageBefore>
           <NewPageAfter>false</NewPageAfter>
-          <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
-          <BusinessObjectGuid>a85392f717b940babc21fb08c9439431</BusinessObjectGuid>
-          <ClientRectangle>0,0,21.005,1.299</ClientRectangle>
+          <BusinessObjectGuid>8ffda03e4a424245a76d3303f8ec13d2</BusinessObjectGuid>
+          <ClientRectangle>0,0,21.005,1.563</ClientRectangle>
           <Components isList="true" count="1">
-            <Table392 Ref="392" type="Stimulsoft.Report.Components.Table.StiTable" isKey="true" DataLevel="1">
+            <Table1604 Ref="1604" type="Stimulsoft.Report.Components.Table.StiTable" isKey="true" DataLevel="1">
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0,21.005,0.771</ClientRectangle>
               <ColumnCount>6</ColumnCount>
               <Components isList="true" count="12">
-                <Table392_Cell393 Ref="393" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                <Table1604_Cell1605 Ref="1605" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <ClientRectangle>20.675,0.013,0.529,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>393</ID>
+                  <ID>1605</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table392_Cell393>
-                <Table392_Cell394 Ref="394" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>16.601,0.013,4.074,0.529</ClientRectangle>
+                </Table1604_Cell1605>
+                <Table1604_Cell1606 Ref="1606" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>15.913,0.013,4.762,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>394</ID>
+                  <ID>1606</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table392_Cell394>
-                <Table392_Cell395 Ref="395" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>13.135,0.013,3.466,0.529</ClientRectangle>
+                </Table1604_Cell1606>
+                <Table1604_Cell1607 Ref="1607" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>10.728,0.013,5.185,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>395</ID>
+                  <ID>1607</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table392_Cell395>
-                <Table392_Cell396 Ref="396" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>7.659,0.013,5.476,0.529</ClientRectangle>
+                </Table1604_Cell1607>
+                <Table1604_Cell1608 Ref="1608" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>5.701,0.013,5.026,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>396</ID>
+                  <ID>1608</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table392_Cell396>
-                <Table392_Cell397 Ref="397" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>3.426,0.013,4.233,0.529</ClientRectangle>
+                </Table1604_Cell1608>
+                <Table1604_Cell1609 Ref="1609" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>2.262,0.013,3.439,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>397</ID>
+                  <ID>1609</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table392_Cell397>
-                <Table392_Cell398 Ref="398" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>0.304,0.013,3.122,0.529</ClientRectangle>
+                </Table1604_Cell1609>
+                <Table1604_Cell1610 Ref="1610" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>0.304,0.013,1.958,0.529</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>398</ID>
+                  <ID>1610</ID>
                   <CellType>ColumnHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table392_Cell398>
-                <Table392_Cell399 Ref="399" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
-                  <ClientRectangle>20.675,0.542,0.529,0.767</ClientRectangle>
+                </Table1604_Cell1610>
+                <Table1604_Cell1611 Ref="1611" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                  <ClientRectangle>20.675,0.542,0.529,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>399</ID>
+                  <ID>1611</ID>
                   <CellType>RowHeader</CellType>
                   <FaText></FaText>
                   <Type>Expression</Type>
-                </Table392_Cell399>
-                <Table392_Cell400 Ref="400" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                </Table1604_Cell1611>
+                <Table1604_Cell1612 Ref="1612" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
                   <Brush>Transparent</Brush>
-                  <ClientRectangle>16.601,0.542,4.074,0.767</ClientRectangle>
+                  <ClientRectangle>15.913,0.542,4.762,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>400</ID>
+                  <ID>1612</ID>
                   <Font>iranyekan,12</Font>
                   <HorAlignment>Center</HorAlignment>
                   <VertAlignment>Center</VertAlignment>
                   <JoinCells isList="true" count="0" />
                   <Margins>0,0,0,0</Margins>
-                  <Name>Table392_Cell400</Name>
-                  <Page isRef="369" />
-                  <Parent isRef="392" />
+                  <Name>Table1604_Cell1612</Name>
+                  <Page isRef="1581" />
+                  <Parent isRef="1604" />
                   <Restrictions>AllowMove, AllowSelect, AllowChange</Restrictions>
                   <Text>{نام+" "+نام خانوادگی}</Text>
                   <TextBrush>[33:37:41]</TextBrush>
                   <CellType>Cell</CellType>
                   <FaText>{نام+" "+نام خانوادگی}</FaText>
                   <Type>Expression</Type>
-                </Table392_Cell400>
-                <Table392_Cell401 Ref="401" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                </Table1604_Cell1612>
+                <Table1604_Cell1613 Ref="1613" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
                   <Brush>Transparent</Brush>
-                  <ClientRectangle>13.135,0.542,3.466,0.767</ClientRectangle>
+                  <ClientRectangle>10.728,0.542,5.185,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>401</ID>
+                  <ID>1613</ID>
                   <Font>iranyekan,12</Font>
-                  <HorAlignment>Right</HorAlignment>
+                  <HorAlignment>Center</HorAlignment>
                   <VertAlignment>Center</VertAlignment>
                   <JoinCells isList="true" count="0" />
                   <Margins>0,0,0,0</Margins>
-                  <Name>Table392_Cell401</Name>
-                  <Page isRef="369" />
-                  <Parent isRef="392" />
+                  <Name>Table1604_Cell1613</Name>
+                  <Page isRef="1581" />
+                  <Parent isRef="1604" />
                   <Restrictions>AllowMove, AllowSelect, AllowChange</Restrictions>
                   <Text>{list.Order_Customer_CompanyName}</Text>
                   <TextBrush>[33:37:41]</TextBrush>
                   <CellType>Cell</CellType>
                   <FaText>{عنوان شرکت}</FaText>
                   <Type>Expression</Type>
-                </Table392_Cell401>
-                <Table392_Cell402 Ref="402" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                </Table1604_Cell1613>
+                <Table1604_Cell1614 Ref="1614" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
                   <Brush>Transparent</Brush>
-                  <ClientRectangle>7.659,0.542,5.476,0.767</ClientRectangle>
+                  <ClientRectangle>5.701,0.542,5.026,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>402</ID>
+                  <ID>1614</ID>
                   <Font>iranyekan,12</Font>
                   <HorAlignment>Center</HorAlignment>
                   <VertAlignment>Center</VertAlignment>
                   <JoinCells isList="true" count="0" />
                   <Margins>0,0,0,0</Margins>
-                  <Name>Table392_Cell402</Name>
-                  <Page isRef="369" />
-                  <Parent isRef="392" />
+                  <Name>Table1604_Cell1614</Name>
+                  <Page isRef="1581" />
+                  <Parent isRef="1604" />
                   <Restrictions>AllowMove, AllowSelect, AllowChange</Restrictions>
                   <Text>{list.Product_Title}</Text>
                   <TextBrush>[33:37:41]</TextBrush>
                   <CellType>Cell</CellType>
                   <FaText>{عنوان محصول}</FaText>
                   <Type>Expression</Type>
-                </Table392_Cell402>
-                <Table392_Cell403 Ref="403" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                </Table1604_Cell1614>
+                <Table1604_Cell1615 Ref="1615" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
                   <Brush>Transparent</Brush>
-                  <ClientRectangle>3.426,0.542,4.233,0.767</ClientRectangle>
+                  <ClientRectangle>2.262,0.542,3.439,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>403</ID>
+                  <ID>1615</ID>
                   <Font>iranyekan,12</Font>
                   <HorAlignment>Center</HorAlignment>
                   <VertAlignment>Center</VertAlignment>
                   <JoinCells isList="true" count="0" />
                   <Margins>0,0,0,0</Margins>
-                  <Name>Table392_Cell403</Name>
-                  <Page isRef="369" />
-                  <Parent isRef="392" />
+                  <Name>Table1604_Cell1615</Name>
+                  <Page isRef="1581" />
+                  <Parent isRef="1604" />
                   <Restrictions>AllowMove, AllowSelect, AllowChange</Restrictions>
                   <Text>{list.Price}</Text>
                   <TextBrush>[33:37:41]</TextBrush>
                   <CellType>Cell</CellType>
                   <FaText>{قیمت}</FaText>
+                  <StringFormat DigitGroup="true" NumberDigits="5" GroupNumberChar="Camma" DecimalChar="Dot" />
                   <Type>Expression</Type>
-                </Table392_Cell403>
-                <Table392_Cell404 Ref="404" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
+                </Table1604_Cell1615>
+                <Table1604_Cell1616 Ref="1616" type="Stimulsoft.Report.Components.Table.StiTableCell" isKey="true">
                   <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
                   <Brush>Transparent</Brush>
-                  <ClientRectangle>0.304,0.542,3.122,0.767</ClientRectangle>
+                  <ClientRectangle>0.304,0.542,1.958,1.032</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <ID>404</ID>
+                  <ID>1616</ID>
                   <Font>iranyekan,12</Font>
                   <HorAlignment>Center</HorAlignment>
                   <VertAlignment>Center</VertAlignment>
                   <JoinCells isList="true" count="0" />
                   <Margins>0,0,0,0</Margins>
-                  <Name>Table392_Cell404</Name>
-                  <Page isRef="369" />
-                  <Parent isRef="392" />
+                  <Name>Table1604_Cell1616</Name>
+                  <Page isRef="1581" />
+                  <Parent isRef="1604" />
                   <Restrictions>AllowMove, AllowSelect, AllowChange</Restrictions>
                   <Text>{list.Count}</Text>
                   <TextBrush>[33:37:41]</TextBrush>
                   <CellType>Cell</CellType>
                   <FaText>{تعداد}</FaText>
                   <Type>Expression</Type>
-                </Table392_Cell404>
+                </Table1604_Cell1616>
               </Components>
               <Conditions isList="true" count="0" />
               <Filters isList="true" count="0" />
               <MinHeight>0.2</MinHeight>
-              <Name>Table392</Name>
+              <Name>Table1604</Name>
               <NumberID>25</NumberID>
-              <Page isRef="369" />
-              <Parent isRef="391" />
+              <Page isRef="1581" />
+              <Parent isRef="1603" />
               <RowCount>1</RowCount>
               <Sort isList="true" count="0" />
-            </Table392>
+            </Table1604>
           </Components>
           <Conditions isList="true" count="0" />
           <Name>DataBand1</Name>
-          <Page isRef="369" />
-          <Parent isRef="369" />
+          <Page isRef="1581" />
+          <Parent isRef="1581" />
         </DataBand1>
       </Components>
       <Conditions isList="true" count="0" />
       <Guid>3f7f0c9730b145ee9132cfdedc3c8ccd</Guid>
       <Margins>0,0,0,0</Margins>
-      <Name>Page5</Name>
+      <Name>Page21</Name>
       <PageType>0</PageType>
       <PageWidth>21.005</PageWidth>
       <PageHeight>29.7</PageHeight>
@@ -561,7 +554,7 @@
         <Font>Arial,100</Font>
         <TextBrush>[50:0:0:0]</TextBrush>
       </Watermark>
-    </Page5>
+    </Page21>
   </Pages>
   <PrinterSettings Ref="9999" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
   <ReportAlias>Report</ReportAlias>

@@ -31,7 +31,5 @@ namespace Demo.Model
         public DbSet<StoreHouseReceipt> Receipts { get; set; }
 
         public DbSet<MaterialReceipt> ProductReceipts { get; set; }
-
-        public DbSet<OrderDynamicValue> OrderDynamicValues { get; set; }
     }
 }

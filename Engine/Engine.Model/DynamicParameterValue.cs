@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Caspian.Engine
 {
     /// <summary>
-    /// مقادیر فیلدهای پویا که توسط کاربر و هنگام ساخت فرم تولید می شوند
+    /// یک کلاس 
     /// </summary>
-    [Table("DynamicParametersValues", Schema = "cmn")]
     public class DynamicParameterValue
     {
         [Key]
@@ -17,6 +16,11 @@ namespace Caspian.Engine
         [ForeignKey(nameof(DynamicParameterId))]
         public virtual DynamicParameter DynamicParameter { get; set; }
 
-        public string Value { get; set; }
+        public int? DynamicParameterOptionId { get; set; }
+
+        [ForeignKey(nameof(DynamicParameterOptionId))]
+        public virtual DynamicParameterOption DynamicParameterOption { get; set; }
+
+        public decimal? Value { get; set; }
     }
 }

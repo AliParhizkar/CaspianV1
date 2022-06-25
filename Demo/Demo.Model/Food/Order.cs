@@ -9,7 +9,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Demo.Model
 {
     [Table("*Orders")]
-    [DynamicField(typeof(OrderDynamicValue))]
     public class Order
     {
         [Key]

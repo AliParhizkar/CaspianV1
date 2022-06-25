@@ -46,8 +46,4 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\WorkFlowEngin\DynamicForm\" />
-  </ItemGroup>
-
 </Project>

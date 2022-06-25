@@ -12,7 +12,7 @@ namespace Main.Models
 
         public ActivityDynamicFieldModel(ActivityDynamicField activityField)
         {
-            FormId = activityField.FormId;
+            //FormId = activityField.FormId;
             ControlId = activityField.ControlId;
             ShowTime = activityField.ShowTime;
             ShowType = activityField.ShowType;
@@ -39,7 +39,7 @@ namespace Main.Models
             return new ActivityDynamicField()
             {
                 ControlId = ControlId,
-                FormId = FormId,
+                //FormId = FormId,
                 ShowTime = ShowTime,
                 ShowType = ShowType,
                 Title = Title

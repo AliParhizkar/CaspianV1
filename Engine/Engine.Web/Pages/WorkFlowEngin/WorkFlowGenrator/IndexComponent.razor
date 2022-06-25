@@ -1,4 +1,4 @@
-﻿@page "/Engine/WorkflowGenrator/{WorkflowId:int}"
+﻿@*@page "/Engine/WorkflowGenrator/{WorkflowId:int}"
 @namespace Caspian.Engine.WorkFlowGenrator
 @inject IJSRuntime JsRuntime
 @inherits BasePage
@@ -38,7 +38,7 @@
     case Main.Models.WorkflowWindowType.ProcessMethod:
         <ProcessActionComponent @bind-Status="Status" Actions="CheckMethodsList" />
         break;
-}
+}*@
 @code 
 {
     ShowType ShowType;

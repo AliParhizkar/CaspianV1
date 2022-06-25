@@ -17,11 +17,6 @@ namespace Caspian.Engine
         [ForeignKey(nameof(ActivityId))]
         public virtual Activity Activity { get; set; }
 
-        public int FormId { get; set; }
-
-        [ForeignKey(nameof(FormId))]
-        public virtual Form Form { get; set; }
-
         /// <summary>
         /// کد کنترل در فایل فرم کنترل
         /// </summary>

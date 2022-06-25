@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Caspian.Engine
 {
     /// <summary>
-    /// مشخصات فیلدهایی که بصورت پویا و در فرمهای پویا توسط کاربر ایجاد می شوند
+    /// dynamic parameters that is created by user
     /// </summary>
     [Table("DynamicParameters", Schema = "cmn")]
     public class DynamicParameter
@@ -15,18 +15,22 @@ namespace Caspian.Engine
         public int Id { get; set; }
 
         [DisplayName("عنوان")]
-        public string Title { get; set; }
+        public string FaTitle { get; set; }
 
-        public FormControlType FormControlType { get; set; }
+        public string EnTitle { get; set; }
 
-        public InputControlType? InputControlType { get; set; }
+        public ControlType ControlType { get; set; }
 
-        public int FormId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [CheckOnDelete("پارامتر دارای چندین انتخاب می باشد")]
+        public virtual IList<DynamicParameterOption> Options { get; set; }
 
-        [ForeignKey(nameof(FormId))]
-        public virtual Form Form { get; set; }
-
-        [CheckOnDelete("پارامتر دارای مقدار می باشد و امکان حذف آن وجود ندارد")]
+        /// <summary>
+        /// مقادیر پارامتر
+        /// </summary>
+        [DisplayName("مقادیری که پارامتر می تواند داشته باشد.")]
         public virtual IList<DynamicParameterValue> Values { get; set; }
     }
 }
