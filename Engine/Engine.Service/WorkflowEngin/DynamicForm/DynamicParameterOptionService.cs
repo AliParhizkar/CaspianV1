@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class DynamicParameterService : SimpleService<DynamicParameter>
+    public class DynamicParameterOptionService : SimpleService<DynamicParameterOption>
     {
-        public DynamicParameterService(IServiceScope scope)
+        public DynamicParameterOptionService(IServiceScope scope)
             :base(scope)
         {
 

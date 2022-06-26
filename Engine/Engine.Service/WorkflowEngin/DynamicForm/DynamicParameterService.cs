@@ -1,10 +1,18 @@
 ﻿using Caspian.Common;
 using System.Reflection;
+using Caspian.Common.Service;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class DynamicTypeManager
+    public class DynamicParameterService : SimpleService<DynamicParameter>
     {
+        public DynamicParameterService(IServiceScope scope)
+            :base(scope)
+        {
+
+        }
+
         public Dictionary<string, string> GetDynamicType(SubSystemKind subSystem)
         {
             var dic = new Dictionary<string, string>();

@@ -14,6 +14,9 @@ namespace Caspian.Engine
         [Key]
         public int Id { get; set; }
 
+        [DisplayName("موجودیت")]
+        public string EntityName { get; set; }
+
         [DisplayName("عنوان")]
         public string FaTitle { get; set; }
 
@@ -24,13 +27,13 @@ namespace Caspian.Engine
         /// <summary>
         /// 
         /// </summary>
-        [CheckOnDelete("پارامتر دارای چندین انتخاب می باشد")]
+        [CheckOnDelete("پارامتر دارای چندین انتخاب می باشد و امکان حذف آن وجود ندارد")]
         public virtual IList<DynamicParameterOption> Options { get; set; }
 
         /// <summary>
         /// مقادیر پارامتر
         /// </summary>
-        [DisplayName("مقادیری که پارامتر می تواند داشته باشد.")]
+        [DisplayName("پارامتر دارای مقدار می باشد و امکان حذف آن وجود ندارد")]
         public virtual IList<DynamicParameterValue> Values { get; set; }
     }
 }

@@ -1,1 +1,11 @@
-﻿
+﻿@page "/Engine/Workflow/DynamicParameter/{WorkflowFormId:int}"
+@namespace Caspian.Engine.WorkflowEngine
+
+
+
+
+@code
+{
+    [Parameter]
+    public SubSystemKind SubSystem { get; set; } = SubSystemKind.Employment;
+}

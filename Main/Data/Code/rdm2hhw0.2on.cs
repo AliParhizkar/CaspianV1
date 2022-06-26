@@ -21,7 +21,9 @@ namespace Caspian.Dynamic.WorkflowForm
                         if (old.BaseStudy > BaseStudy.Diploma)
                         {
                                 txtEducationDegreeFactor.Enable();
-                                EmploymentOrder.EducationDegreeFactor = 20 + old.BaseStudy.ConvertToInt() * 10;
+                                var index = old.BaseStudy.ConvertToInt()!.Value - 3;
+                                var factors = new int[]{50, 60, 70, 80};
+                                EmploymentOrder.EducationDegreeFactor = factors[index];
                         }
                         else
                         {
