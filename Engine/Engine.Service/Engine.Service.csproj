@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
     <ProjectReference Include="..\Engine.Model\Engine.Model.csproj" />
   </ItemGroup>
 

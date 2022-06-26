@@ -83,15 +83,28 @@ namespace Caspian.Engine
     public enum ControlType: byte
     {
         String = 1,
+
+        [EnumField("عدد صحیح")]
         Integer,
+        
+        [EnumField("عدد اعشاری")]
         Numeric,
+
         Date,
+
+        [EnumField("چند انتخابی")]
         DropdownList,
+
         CheckBox,
+
         TreeStateCheckBox,
+
         CheckListBox,
+
         Label,
+
         Time,
+
         ComboBox
     }
 

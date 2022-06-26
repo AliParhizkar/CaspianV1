@@ -20,9 +20,14 @@ namespace Caspian.Engine
         [DisplayName("عنوان")]
         public string FaTitle { get; set; }
 
+        [DisplayName("عنوان لاتین")]
         public string EnTitle { get; set; }
 
+        [DisplayName("نوع کنترل")]
         public ControlType ControlType { get; set; }
+
+        [DisplayName("تعداد ارقام اعشار")]
+        public byte? DecimalNumber { get; set; }
 
         /// <summary>
         /// 

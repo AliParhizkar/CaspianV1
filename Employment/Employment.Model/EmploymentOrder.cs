@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Employment.Model
 {
-    [RuleType("اعضاء غیرهیئت علمی"), WorkflowEntity("حکم غیرهیئت علمی")]
+    [RuleType("اعضاء غیرهیئت علمی"), WorkflowEntity("حکم غیرهیات علمی"), DynamicTypeAttribute("حکم غیرهیات علمی", typeof(EmploymentOrderDynamicParameterValue))]
     public class EmploymentOrder
     {
         [Key]

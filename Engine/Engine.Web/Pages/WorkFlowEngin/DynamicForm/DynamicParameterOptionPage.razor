@@ -82,19 +82,5 @@
 
 @code
 {
-    string entityName;
-    List<SelectListItem> entities;
-    ICollection<ControlType> ControlsType;
-    protected override void OnInitialized()
-    {
-        using var scope = CreateScope();
-        var service = new DynamicParameterService(scope);
-        entities = service.GetDynamicType(SubSystem);
-        ControlsType = new List<ControlType>();
-        ControlsType.AddRange(ControlType.Integer, ControlType.Numeric, ControlType.DropdownList);
-        base.OnInitialized();
-    }
 
-    [Parameter]
-    public SubSystemKind SubSystem { get; set; } = SubSystemKind.Employment;
 }
