@@ -2,7 +2,7 @@
 @namespace Caspian.Engine.Shared
 @inject NavigationManager navigationManager
 <CascadingValue Value="this">
-    @if (showMeny)
+    @if (showMenu)
     {
         <div class="sidebar">
             <DataMenu />
@@ -15,11 +15,11 @@
     </div>
 </CascadingValue>
 @code{
-    bool showMeny;
+    bool showMenu;
     protected override void OnInitialized()
     {
         var url = new Uri(navigationManager.Uri).LocalPath;
-        showMeny = !url.StartsWith("/Engine/", StringComparison.OrdinalIgnoreCase);
+        showMenu = !url.StartsWith("/Engine/", StringComparison.OrdinalIgnoreCase);
         base.OnInitialized();
     }
 }

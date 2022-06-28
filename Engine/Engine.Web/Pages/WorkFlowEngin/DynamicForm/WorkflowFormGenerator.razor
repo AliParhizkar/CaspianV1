@@ -75,7 +75,7 @@
                                 {
                                     var ctr = col.Component;
                                     ctr.WfFormEntityField = null;
-                                    <BlazorComponentPage OnSelect="async () => await SelectControl(ctr, rowIndex, colIndex)" Selected="@(rowIndex == selectedRowIndex && colIndex == selectedColIndex && controlSelected)" ControlType="@(ctr!.ControlType)" Caption="@(ctr.Caption)" />
+                                    <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr, rowIndex, colIndex)" Selected="@(rowIndex == selectedRowIndex && colIndex == selectedColIndex && controlSelected)" ControlType="@(ctr!.ControlType)" Caption="@(ctr.Caption)" />
                                 }
                             </div>
                         }

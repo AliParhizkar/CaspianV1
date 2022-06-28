@@ -90,6 +90,12 @@ namespace Caspian.Common.Service
             return entity;
         }
 
+        async public Task<TResult> MaxAsync<TResult>(Expression<Func<TEntity, TResult>> expr)
+        {
+            var result = await GetAll().MaxAsync(expr);
+            return result;
+        }
+
         async public Task<TEntity> SingleAsync(int id)
         {
             var old = await SingleOrDefaultAsync(id);

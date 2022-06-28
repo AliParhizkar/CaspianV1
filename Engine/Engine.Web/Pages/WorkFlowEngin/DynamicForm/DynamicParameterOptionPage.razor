@@ -1,53 +1,30 @@
-﻿@page "/Engine/Workflow/DynamicParameter"
+﻿@page "/Engine/Workflow/DynamicParameterOption/{ParameterId:int}"
 @namespace Caspian.Engine.WorkflowEngine
 @using Caspian.common
-@inherits SimplePage<DynamicParameter>
+@inherits SimplePage<DynamicParameterOption>
+
 @{
+    
     base.BuildRenderTree(__builder);
 }
 <div style="width:90%;margin:5px auto">
-    <DataGrid @ref="CrudGrid" TEntity="DynamicParameter" Search="SearchData">
+    <DataGrid @ref="CrudGrid" TEntity="DynamicParameterOption" Search="SearchData" ConditionExpr="t => t.DynamicParameterId == ParameterId">
         <Columns Context="con" >
-            <GridColumn TEntity="DynamicParameter" Field="t => t.EntityName">
-                <Template>
-                    <span>@(entities.Single(t => t.Value == con.Data.EntityName).Text)</span>
-                </Template>
-            </GridColumn>
-            <GridColumn TEntity="DynamicParameter" Field="t => t.FaTitle" />
-            <GridColumn TEntity="DynamicParameter" Field="t => t.ControlType.FaText()" />
-            <GridColumn TEntity="DynamicParameter" Field="t => t.DecimalNumber" />
-            <GridColumn TEntity="DynamicParameter" Field="t => t.EnTitle" />
-            <GridColumn TEntity="DynamicParameter" Title="مقادیر" style="width:50px">
-                <Template>
-                    @if (con.Data.ControlType == ControlType.DropdownList)
-                    {
-                        <IconButton disabled="disabled" Href='@($"/Demo/City/{con.Data.Id}")' IconType="IconType.Wpforms" />
-                    }
-                </Template>
-            </GridColumn>
-            <GridCommandColumns TEntity="DynamicParameter" />
+            <GridColumn TEntity="DynamicParameterOption" Field="t => t.FaTitle" />
+            <GridColumn TEntity="DynamicParameterOption" Field="t => t.EnTitle" />
+            <GridColumn TEntity="DynamicParameterOption" Field="t => t.Value" />
+            <GridCommandColumns TEntity="DynamicParameterOption" />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="تعریف پارامتر" Style="width:450px"
-            OnOpen="() =>
-                    {
-
-                    }">
+    <Window @ref="UpsertWindow" Title="مقادیر پارامتر" Style="width:450px"
+            OnOpen="async () => {await OpenForm(); }">
         <Content>
             <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                <CaspianValidationValidator ValidatorType="typeof(DynamicParameterService)" />
+                <CaspianValidationValidator ValidatorType="typeof(DynamicParameterOptionService)" />
                 <table style="width:90%;margin:0 auto">
                     <tr>
                         <td>
-                            <label>موجودیت</label>
-                        </td>
-                        <td>
-                            <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="UpsertData.EntityName" Source="entities" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>عنوان فارسی پارامتر</label>
+                            <label>عنوان فارسی </label>
                         </td>
                         <td>
                             <StringTextBox @bind-Value="UpsertData.FaTitle" />
@@ -55,7 +32,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <label>عنوان لاتین پارامتر</label>
+                            <label>عنوان لاتین </label>
                         </td>
                         <td>
                             <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.EnTitle" />
@@ -63,10 +40,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <label>نوع کنترل</label>
+                            <label>مقدار</label>
                         </td>
                         <td>
-                            <DropdownList @bind-Value="UpsertData.ControlType" EnumItems="ControlsType" />
+                            <NumericTextBox Disabled Value="UpsertData.Value" />
                         </td>
                     </tr>
                     <tr>
@@ -82,5 +59,17 @@
 
 @code
 {
+    async Task OpenForm()
+    {
+        UpsertData.DynamicParameterId = ParameterId;
+        if (UpsertData.Id == 0)
+        {
+            using var scope = CreateScope();
+            var service = new DynamicParameterOptionService(scope);
+            UpsertData.Value = (await service.MaxAsync(t => (long?)t.Value)).GetValueOrDefault() + 1;
+        }
+    }
 
+    [Parameter]
+    public int ParameterId { get; set; }
 }

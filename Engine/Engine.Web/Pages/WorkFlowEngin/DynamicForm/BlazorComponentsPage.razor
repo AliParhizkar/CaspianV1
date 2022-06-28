@@ -1,0 +1,40 @@
+﻿@namespace Caspian.Engine.WorkflowEngine
+@{
+    var className = "c-dynamic-form-controls";
+    if (Selected)
+        className += " c-selected";
+}
+<fieldset  class="@(className)" @onclick="async () => { await OnSelect.InvokeAsync();}" @onclick:stopPropagation @onclick:preventDefault>
+    <legend>@Caption</legend>
+    @switch(ControlType)
+    {
+        case ControlType.String:
+            <StringTextBox Disabled />
+            break;
+        case ControlType.DropdownList:
+            <DropdownList TValue="GeneratedKind" Disabled />
+            break;
+        case ControlType.Date:
+            <DatePicker TValue="DateTime" Disabled />
+            break;
+        case ControlType.Integer:
+        case ControlType.Numeric:
+            <NumericTextBox TValue="int" Disabled />
+            break;
+    }
+</fieldset>
+
+@code 
+{
+    [Parameter]
+    public string Caption { get; set; }
+
+    [Parameter]
+    public ControlType ControlType{ get; set; }
+
+    [Parameter]
+    public bool Selected{ get; set; }
+
+    [Parameter]
+    public EventCallback OnSelect{ get; set; }
+}

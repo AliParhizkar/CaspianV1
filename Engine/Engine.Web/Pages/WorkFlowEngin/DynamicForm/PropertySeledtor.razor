@@ -9,11 +9,17 @@
                 @foreach(var item in entityFields)
                 {
                     var className = item.EntityFullName == EntityTypeFullName ? "c-selected" : null;
-                    <li @onclick="() => EntityType(item.EntityFullName)" @onclick:stopPropagation="true" class="@className">
+                    <li @onclick="async () => await EntityType(item.EntityFullName)" @onclick:stopPropagation="true" class="@className">
                         @item.Title
                         @if (showEntityProperties && item.EntityFullName == EntityTypeFullName)
                         {
                             <ul class="c-property">
+                                @if (dynamicParameters != null && dynamicParameters.Count > 0)
+                                {
+                                    <li style="direction:rtl">
+                                        پارامترهای پویا
+                                    </li>
+                                }
                                 @foreach(var info in workflowEntityProperties)
                                 {
                                     className = info == selectedPropertyInfo ? "c-selected" : null;
@@ -38,14 +44,17 @@
     IList<PropertyInfo> workflowEntityProperties;
     SubSystemKind subSystemKind;
     int? wfEntityFieldId;
+    IList<DynamicParameter> dynamicParameters;
 
-    void EntityType(string key)
+    async Task EntityType(string key)
     {
         EntityTypeFullName = key;
         showEntityProperties = true;
         workflowEntityProperties = new AssemblyInfo().GetModelType(subSystemKind, key).GetProperties()
             .Where(t => !t.CustomAttributes.Any(t => t.AttributeType == typeof(KeyAttribute) || 
             t.AttributeType == typeof(ForeignKeyAttribute)) || t.PropertyType.IsCollectionType()).ToList();
+        var scope = CreateScope();
+        dynamicParameters = await new DynamicParameterService(scope).GetAll().Where(t => t.EntityName == key).ToListAsync();
     }
 
     async Task EntityProperty(PropertyInfo info, int wfEntityFieldId)
