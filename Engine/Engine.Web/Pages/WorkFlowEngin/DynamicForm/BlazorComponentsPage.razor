@@ -4,18 +4,26 @@
     if (Selected)
         className += " c-selected";
 }
-<fieldset  class="@(className)" @onclick="async () => { await OnSelect.InvokeAsync();}" @onclick:stopPropagation @onclick:preventDefault>
-    <legend>@Caption</legend>
-    @switch(ControlType)
+<fieldset  class="@(className)" @onclick="async () => 
+    { 
+        await OnSelect.InvokeAsync();
+    }" @onclick:stopPropagation @onclick:preventDefault>
+    <legend>@Control.Caption</legend>
+    @switch(Control.ControlType)
     {
         case ControlType.String:
-            <StringTextBox Disabled />
+            var height = (Control.Height - 1) * 80 + 32;
+            var style = "height:" + height + "px";
+            <StringTextBox Disabled MultiLine="Control.MultiLine" Style="@(style)" />
             break;
         case ControlType.DropdownList:
             <DropdownList TValue="GeneratedKind" Disabled />
             break;
         case ControlType.Date:
             <DatePicker TValue="DateTime" Disabled />
+            break;
+        case ControlType.ComboBox:
+            <ComboBox TValue="int" TEntity="WorkflowForm" Disabled />
             break;
         case ControlType.Integer:
         case ControlType.Numeric:
@@ -27,10 +35,7 @@
 @code 
 {
     [Parameter]
-    public string Caption { get; set; }
-
-    [Parameter]
-    public ControlType ControlType{ get; set; }
+    public BlazorControl Control{ get; set; } 
 
     [Parameter]
     public bool Selected{ get; set; }

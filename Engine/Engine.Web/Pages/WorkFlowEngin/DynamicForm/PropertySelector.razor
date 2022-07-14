@@ -2,22 +2,31 @@
 @inherits BasePage
 <div style="height:54px;">
     <button @onclick="() => showEntityType = !showEntityType" class="w-button w-controls-entity" title="فیلدهای پایگاه داده ها"></button>
-    <div class="c-add-control">
+    <div class="c-add-control auto-hide">
         @if (showEntityType)
         {
             <ul>
                 @foreach(var item in entityFields)
                 {
                     var className = item.EntityFullName == EntityTypeFullName ? "c-selected" : null;
-                    <li @onclick="async () => await EntityType(item.EntityFullName)" @onclick:stopPropagation="true" class="@className">
+                    <li @onclick="async () => await EntityType(item.EntityFullName)" @onclick:stopPropagation @onclick:preventDefault class="@className">
                         @item.Title
                         @if (showEntityProperties && item.EntityFullName == EntityTypeFullName)
                         {
                             <ul class="c-property">
                                 @if (dynamicParameters != null && dynamicParameters.Count > 0)
                                 {
-                                    <li style="direction:rtl">
+                                    <li @onclick="() => showParameter = true">
                                         پارامترهای پویا
+                                        @if (showParameter)
+                                        {
+                                            <ul class="dynamic-parameter">
+                                                @foreach(var param in dynamicParameters)
+                                                {
+                                                    <li>@param.FaTitle</li>
+                                                }
+                                            </ul>
+                                        }
                                     </li>
                                 }
                                 @foreach(var info in workflowEntityProperties)
@@ -45,6 +54,7 @@
     SubSystemKind subSystemKind;
     int? wfEntityFieldId;
     IList<DynamicParameter> dynamicParameters;
+    bool showParameter;
 
     async Task EntityType(string key)
     {
@@ -60,11 +70,17 @@
     async Task EntityProperty(PropertyInfo info, int wfEntityFieldId)
     {
         selectedPropertyInfo = info;
-        showEntityProperties = false;
-        showEntityType = false;
+        HideSelector();
         this.wfEntityFieldId = wfEntityFieldId;
         if (OnSelect.HasDelegate)
             await OnSelect.InvokeAsync(info);
+    }
+
+    public void HideSelector()
+    {
+        showEntityProperties = false;
+        showEntityType = false;
+        showParameter = false;
     }
 
     public int? GetSelectedWfEntityFieldId()

@@ -25,6 +25,38 @@ namespace Caspian.Common.Extension
             }
         }
 
+        static void CopySimpleProperty1(object obj, object newObj)
+        {
+            foreach(var info in obj.GetType().GetProperties())
+            {
+                var type = info.PropertyType;
+                if (type.IsValueType || type == typeof(string))
+                    info.SetValue(newObj, info.GetValue(obj));
+                else if (type.IsEnumerableType())
+                {
+                    var items = info.GetValue(obj) as IEnumerable<object>;
+                    if (items != null)
+                    {
+                        var genericType = typeof(List<>).MakeGenericType(type.GetGenericArguments()[0]);
+                        var list = Activator.CreateInstance(genericType) as System.Collections.IList;
+                        foreach (var item in items)
+                        {
+                            var newItem = Activator.CreateInstance(item.GetType());
+                            CopySimpleProperty1(item, newItem);
+                            list.Add(newItem);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static TModel CopySimpleProperty<TModel>(this TModel model)where TModel : class
+        {
+            var newObj = Activator.CreateInstance<TModel>();
+            CopySimpleProperty1(model, newObj);
+            return newObj;
+        }
+
         public static void CopySimpleProperty<TModel>(this TModel model, TModel newModel)
         {
             try

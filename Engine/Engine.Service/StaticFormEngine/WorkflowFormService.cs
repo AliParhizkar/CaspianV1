@@ -20,8 +20,26 @@ namespace Caspian.Engine.Service
             RuleFor(t => t.Name).UniqAsync("فرمی با این نام در سیستم ثبت شده است").CustomValue(t => t.IsValidIdentifire(), "برای تعریف کلاس فقط از کاراکترهای لاتین و اعداد استفاده نمایید.");
         }
 
+        string GetControl(BlazorControl control)
+        {
+            var param = control.DynamicParameter;
+            switch (control.ControlType)
+            {
+                case ControlType.DropdownList:
+                    return "\t\tDropdownList<" + param.EnTitle + "> ddl" + param.EnTitle + ";\n";
+                case ControlType.Integer:
+                    return "\t\tNumericTextBox<int?> txt" + param.EnTitle + ";\n";
+                case ControlType.Numeric:
+                    return "\t\tNumericTextBox<decimal?> txt" + param.EnTitle + ";\n";
+                    break;
+            }
+            throw new NotImplementedException("خطای عدم پیاده سازی");
+        }
+
         public string GetControlType(SubSystemKind subSystem, BlazorControl ctr, bool isServerSide)
         {
+            if (ctr.DynamicParameterId != null)
+                return GetControl(ctr);
             var entityType = new AssemblyInfo().GetModelType(subSystem, ctr.WfFormEntityField.EntityFullName);
             var info = entityType.GetProperty(ctr.PropertyName);
             switch (ctr.ControlType)
@@ -78,17 +96,88 @@ namespace Caspian.Engine.Service
             var fields = await new WfFormEntityFieldService(ServiceScope).GetAll().Where(t => t.WorkflowFormId == workflowFormId).ToListAsync();
             foreach(var field in fields)
                 str.Append("\t\t" + field.EntityFullName + " " + field.FieldName + ";\n");
-            str.Append("\t\t/// Controls of form\n");
+            
             var rows = await new HtmlRowService(ServiceScope).GetAll().Where(t => t.WorkflowFormId == workflowFormId)
-                .Include("Columns").Include("Columns.Component").Include("Columns.Component.WfFormEntityField").ToListAsync();
+                .Include("Columns").Include("Columns.Component").Include("Columns.Component.DynamicParameter")
+                .Include("Columns.Component.DynamicParameter.Options").Include("Columns.Component.WfFormEntityField")
+                .Include("Columns.InnerRows").Include("Columns.InnerRows.HtmlColumns")
+                .Include("Columns.InnerRows.HtmlColumns.Component")
+                .Include("Columns.InnerRows.HtmlColumns.Component.DynamicParameter")
+                .Include("Columns.InnerRows.HtmlColumns.Component.DynamicParameter.Options").ToListAsync();
+            var controls = new List<BlazorControl>();
+            foreach (var row in rows)
+                foreach(var col in row.Columns)
+                {
+                    var ctr = col.Component;
+                    if (ctr != null && ctr.DynamicParameter != null)
+                        controls.Add(ctr);
+                    foreach(var row1 in col.InnerRows)
+                    {
+                        foreach(var col1 in row1.HtmlColumns)
+                        {
+                            var ctr1 = col1.Component;
+                            if (ctr1 != null && ctr1.DynamicParameter != null)
+                                controls.Add(ctr1);
+                        }
+                    }
+                }
+            foreach (var control in controls)
+            {
+                str.Append("\t\t ");
+                var param = control!.DynamicParameter;
+                var enTitle = param!.EnTitle;
+                switch (control.ControlType)
+                {
+                    case ControlType.Integer:
+                        str.Append("int? " + enTitle + ";\n");
+                        break;
+                    case ControlType.DropdownList:
+                        str.Append(enTitle + "? " + enTitle + ";\n");
+                        break;
+                    default:
+                        throw new NotImplementedException("خطای عدم پیاده سازی");
+                }
+            }
+            str.Append("\n\t\t/// Controls of form\n");
             foreach(var row in rows)
                 foreach(var col in row.Columns)
                 {
                     var ctr = col.Component;
                     if (ctr != null)
-                        str.Append(GetControlType(form.SubSystemKind, ctr, false));       
+                        str.Append(GetControlType(form.SubSystemKind, ctr, false));
+                    foreach(var row1 in col.InnerRows)
+                    {
+                        foreach (var col1 in row1.HtmlColumns)
+                        {
+                            var ctr1 = col1.Component;
+                            if (ctr1 != null)
+                                str.Append(GetControlType(form.SubSystemKind, ctr1, false));
+                        }
+                    }
                 }
-            str.Append("\t}\n}");
+            str.Append("\t}\n");
+            foreach(var control in controls)
+            {
+                var param = control.DynamicParameter;
+                if (param.ControlType == ControlType.DropdownList)
+                {
+                    str.Append("\n\tinternal enum " + param.EnTitle + "\n\t{\n");
+                    var index = 1;
+                    foreach(var option in param.Options)
+                    {
+                        str.Append("\t\t/// <summary>\n");
+                        str.Append("\t\t/// " + option.FaTitle + "\n");
+                        str.Append("\t\t/// </summary>\n");
+                        str.Append("\t\t" + option.EnTitle + " = " + index);
+                        if (index < param.Options.Count)
+                            str.Append(",\n");
+                        str.Append("\n");
+                        index++;
+                    }
+                    str.Append("\t}\n");
+                }
+            }
+            str.Append("}");
             return str.ToString();
         }
 

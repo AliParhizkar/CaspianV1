@@ -7,9 +7,14 @@
     var dateFormatTokenRegExp = /d{1,4}|M{1,4}|yy(?:yy)?|([Hhmstf])\1*|"[^"]*"|'[^']*'/g;
     var $t = $.telerik = {
         updateTonullCheckbox: function (checkBox) {
-            console.log(checkBox);
             $(checkBox).prop('indeterminate', true);
-            console.log($(checkBox).prop('indeterminate'));
+        },
+        bindWindowClick: function (dotnet) {
+            $(window).unbind('mousedown.globalwindow');
+            $(window).bind('mousedown.globalwindow', async function (e) {
+                if (!$(e.target).closest('.auto-hide').hasClass('auto-hide'))
+                    await dotnet.invokeMethodAsync('WindowClick');
+            });
         },
         reset: function (form) {
             form.reset();

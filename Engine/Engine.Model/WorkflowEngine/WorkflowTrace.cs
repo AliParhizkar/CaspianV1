@@ -21,42 +21,19 @@ namespace Caspian.Engine
         [DisplayName("شماره ی ردیابی")]
         public int TraceId { get; set; }
 
-        /// <summary>
-        /// کد فرستنده
-        /// </summary>
-        [CheckOnInsert("فرستنده ای با کد {0} در سیستم وجود ندارد")]
-        public int? SenderId { get; set; }
+        public int ActivityId { get; set; }
 
-        /// <summary>
-        /// مشخصات فرستنده
-        /// </summary>
-        [ForeignKey(nameof(SenderId))]
-        public virtual CustomUser Sender { get; set; }
+        [ForeignKey(nameof(ActivityId))]
+        public virtual Activity Activity { get; set; }
 
-        /// <summary>
-        /// کد گیرنده
-        /// </summary>
-        [CheckOnInsert("گیرنده ای با کد {0} در سیستم تعریف نشده است")]
-        public int? ReciverId { get; set; }
+        public int? StartActivityId { get; set; }
 
-        /// <summary>
-        /// مشخصات گیرنده
-        /// </summary>
-        [ForeignKey(nameof(ReciverId))]
-        public virtual CustomUser Reciver { get; set; }
+        [ForeignKey(nameof(StartActivityId))]
+        public virtual Activity StartActivity { get; set; }
 
-        [CheckOnInsert("کانکشنی با کد {0} در سیستم تعریف نشده است")]
-        public int ConnectorId { get; set; }
+        public int? CustomUserId { get; set; }
 
-        [ForeignKey(nameof(ConnectorId))]
-        public virtual Connector Connector { get; set; }
-
-        public string FileName { get; set; }
-
-        /// <summary>
-        /// تاریخ ارجاع
-        /// </summary>
-        [DisplayName("تاریخ ارجاع")]
-        public DateTime RegisterDate { get; set; }
+        [ForeignKey(nameof(CustomUserId))]
+        public virtual CustomUser CustomUser { get; set; }  
     }
 }

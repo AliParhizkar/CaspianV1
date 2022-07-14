@@ -29,10 +29,16 @@
     {
         TValue value = default;
         var str = Convert.ToString(arg.Value);
-        if (this.DynamicType != null)
-            value = (TValue)Enum.Parse(DynamicType.GetUnderlyingType(), str);
-        else if (str.HasValue())
-            value = (TValue)Enum.Parse(typeof(TValue).GetUnderlyingType(), str);
+        if (Source == null)
+        {
+            if (this.DynamicType != null)
+                value = (TValue)Enum.Parse(DynamicType.GetUnderlyingType(), str);
+            else if (str.HasValue())
+                value = (TValue)Enum.Parse(typeof(TValue).GetUnderlyingType(), str);
+        }
+        else
+            if (str.HasValue())
+                value = (TValue)Convert.ChangeType(str, typeof(TValue).GetUnderlyingType());
         Value = value;
         await ValueChanged.InvokeAsync(Value);
     }
@@ -57,17 +63,25 @@
         base.OnInitialized();
     }
 
+    [Parameter]
+    public IList<SelectListItem> Source { get; set; }
+
     protected override void OnParametersSet()
     {
         text = "لطفا انتخاب نمائید";
         if (Value != null)
         {
-            var field = GetFields().SingleOrDefault(t => t.GetValue(null).Equals(Value));
-            if (field != null)
+            if (Source == null)
             {
-                var attr = field.GetCustomAttribute<EnumFieldAttribute>();
-                text = (attr != null) ? attr.DisplayName : field.Name;
+                var field = GetFields().SingleOrDefault(t => t.GetValue(null).Equals(Value));
+                if (field != null)
+                {
+                    var attr = field.GetCustomAttribute<EnumFieldAttribute>();
+                    text = (attr != null) ? attr.DisplayName : field.Name;
+                }
             }
+            else
+                text = Source.SingleOrDefault(t => t.Value == Convert.ToString(Value))?.Text;
         }
         attrs = new Dictionary<string, object>();
         if (Style.HasValue())
@@ -105,19 +119,24 @@
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        Items = new List<SelectListItem>();
-        if (typeof(TValue).IsNullableType())
-            Items.Add(new SelectListItem(null, "لطفا انتخاب نمائید"));
-        else if (Search)
-            Items.Add(new SelectListItem("0", "لطفا انتخاب نمائید"));
-        var fields = GetFields();
-        foreach (var field in fields.Where(t => !t.IsSpecialName))
+        if (Source == null)
         {
-            var attr = field.GetCustomAttribute<EnumFieldAttribute>();
-            var value = Convert.ToInt32(field.GetValue(null));
-            Items.Add(new SelectListItem(value.ToString(),
-                attr == null ? field.Name : attr.DisplayName));
+            Items = new List<SelectListItem>();
+            if (typeof(TValue).IsNullableType())
+                Items.Add(new SelectListItem(null, "لطفا انتخاب نمائید"));
+            else if (Search)
+                Items.Add(new SelectListItem("0", "لطفا انتخاب نمائید"));
+            var fields = GetFields();
+            foreach (var field in fields.Where(t => !t.IsSpecialName))
+            {
+                var attr = field.GetCustomAttribute<EnumFieldAttribute>();
+                var value = Convert.ToInt32(field.GetValue(null));
+                Items.Add(new SelectListItem(value.ToString(),
+                    attr == null ? field.Name : attr.DisplayName));
+            }
         }
+        else
+            Items = Source.ToList();
         var json = this.ConvertToJson();
         jsRuntime.InvokeVoidAsync("$.telerik.bindControl", htmlElement, json, UiControlType.DropdownList);
         return base.OnAfterRenderAsync(firstRender);

@@ -33,7 +33,7 @@
                         <label>عنوان</label>
                     </td>
                     <td>
-                        <StringTextBox @bind-Value="Title" @onchange="async () => await StateChanged()" />
+                        <StringTextBox @bind-Value="@(Control.Caption)" @onblur="async () => await StateChanged()" />
                     </td>
                 </tr>
                 <tr>
@@ -49,34 +49,69 @@
                         <label>شرح</label>
                     </td>
                     <td>
-                        <StringTextBox @bind-Value="Descript" MultiLine @onchange="async () => await StateChanged()" />
+                        <StringTextBox @bind-Value="Control.Description" MultiLine @onchange="async () => await StateChanged()" />
                     </td>
                 </tr>
-            @if (ControlType == ControlType.ComboBox)
-            {
-                <tr>
-                    <td>
-                        <label style="font-size:10px;white-space:nowrap">Text Expr</label>
-                    </td>
-                    <td>
-                        <StringTextBox Style="direction:ltr" @onclick="TextExpressionSelected" readonly @bind-Value="TextExpression" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label style="font-size:10px;">Filter Expr</label>
-                    </td>
-                    <td>
-                        <StringTextBox Style="direction:ltr" @onclick="FilterExpressionSelected" readonly @bind-Value="FilterExpression" />
-                    </td>
-                </tr>
-            }
+
+            @if (Control.ControlType == ControlType.ComboBox)
+                {
+                    <tr>
+                        <td>
+                            <label style="font-size:10px;white-space:nowrap">Text Expr</label>
+                        </td>
+                        <td>
+                            <StringTextBox Style="direction:ltr" @onclick="TextExpressionSelected" readonly @bind-Value="Control.TextExpression" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label style="font-size:10px;">Filter Expr</label>
+                        </td>
+                        <td>
+                            <StringTextBox Style="direction:ltr" @onclick="FilterExpressionSelected" readonly @bind-Value="Control.FilterExpression" />
+                        </td>
+                    </tr>
+                }
+                else if (Control.ControlType == ControlType.String)
+                {
+                    <tr>
+                        <td>
+                            <label>Multi line</label>
+                        </td>
+                        <td>
+                            <CheckBox Value="Control.MultiLine" ValueChanged="EventCallback.Factory.Create<bool>(this, async value => 
+                                {
+                                    Control.MultiLine = value;
+                                    if (!value)
+                                        Control.Height = 1;
+                                    await StateChanged();
+                                })" />
+                        </td>
+                    </tr>    
+                }
+                @if (Control.MultiLine)
+                {
+                    if (Control.Height == null)
+                        Control.Height = 1;
+                    <tr>
+                        <td>
+                            <label>Height</label>
+                        </td>
+                        <td>
+                            <DropdownList Value="Control.Height.Value" ValueChanged="EventCallback.Factory.Create<byte?>(this, async value => 
+                                {  
+                                    Control.Height = value;
+                                    await StateChanged();
+                                })" Source="source" />
+                        </td>
+                    </tr>
+                }
                 <tr>
                     <td>
                         <label>OnChange</label>
                     </td>
                     <td>
-                        <StringTextBox Style="direction:ltr" @bind-Value="OnChangeEventHandler" @onclick="AddEventHandler" @onchange="async () => await StateChanged()" />
+                        <StringTextBox Style="direction:ltr" @bind-Value="Control.OnChange" @onclick="AddEventHandler" @onchange="async () => await StateChanged()" />
                     </td>
                 </tr>
             </table>
@@ -89,33 +124,32 @@
     bool minimized;
     string? propertyName;
     string? eventName;
+    IList<SelectListItem> source;
+
+    [Parameter]
+    public BlazorControl Control{ get; set; }
 
     [Parameter]
     public string Id { get; set; }
 
     [Parameter]
-    public string Title { get; set; }
-
-    [Parameter]
-    public string Descript{ get; set; }
-
-    [Parameter]
     public string Value{ get; set; }
 
     [Parameter]
-    public string TextExpression{ get; set; }
-
-    [Parameter]
-    public string FilterExpression{ get; set; }
-
-    [Parameter]
-    public ControlType ControlType{ get; set; }
-
-    [Parameter]
-    public string OnChangeEventHandler { get; set; }
-
-    [Parameter]
     public string FormName{ get; set; }
+
+    protected override void OnInitialized()
+    {
+        source = base.GetSelectList("یک", "دو", "سه", "چهار", "پنج", "شش");
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Control == null)
+            Control = new BlazorControl();
+        base.OnParametersSet();
+    }
 
     void FilterExpressionSelected()
     {
@@ -130,12 +164,12 @@
 
     async void AddEventHandler()
     {
-        if (!OnChangeEventHandler.HasValue())
+        if (!Control.OnChange.HasValue())
         {
-            OnChangeEventHandler = Id + "OnChange";
+            Control.OnChange = Id + "OnChange";
             await StateChanged();
         }
-        eventName = OnChangeEventHandler;
+        eventName = Control.OnChange;
     }
 
     [Parameter]

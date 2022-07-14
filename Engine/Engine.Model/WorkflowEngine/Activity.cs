@@ -28,11 +28,6 @@ namespace Caspian.Engine
         [DisplayName("نوع عامل")]
         public ActorType? ActorType { get; set; }
 
-        public int? ActionId { get; set; }
-
-        [ForeignKey(nameof(ActionId))]
-        public virtual Action Action { get; set; }
-
         [DisplayName("گردش کار")]
         public int WorkflowId { get; set; }
 
@@ -54,5 +49,12 @@ namespace Caspian.Engine
         /// مشخصات فیلدهای پویا و زمان نوع نمایش آنها و کد کنترل مربوط به آنها
         /// </summary>
         public virtual IList<ActivityDynamicField> DynamicFields { get; set; }
+
+        /// <summary>
+        /// فرمهایی که به این فعالیت تخصیص داده شده اند
+        /// </summary>
+        public virtual IList<ActivityFormAssign> FormAssigns { get; set; }
+
+        //public virtual IList<WorkflowTrace> WorkflowTraces { get; set; }    
     }
 }

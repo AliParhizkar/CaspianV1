@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Rendering;
+using System.Collections.Generic;
 
 namespace Caspian.UI
 {
@@ -14,6 +15,8 @@ namespace Caspian.UI
         bool? block;
         protected MessageBox MessageBox;
         protected bool sholdRender = true;
+        bool enableWindowClick;
+        BasePage child;
         
         public static bool IsStarted { get; set; }
 
@@ -69,6 +72,18 @@ namespace Caspian.UI
             base.BuildRenderTree(builder);
         }
 
+        protected IList<SelectListItem> GetSelectList(params string[] array)
+        {
+            var list = new List<SelectListItem>();
+            var index = 1;
+            foreach (var item in array)
+            {
+                list.Add(new SelectListItem(index.ToString(), item));
+                index++;
+            }
+            return list;
+        }
+
         protected override bool ShouldRender()
         {
             return sholdRender;
@@ -81,8 +96,33 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
+        [JSInvokable]
+        public void WindowClick()
+        {
+            child.OnWindowClick();
+        }
+
+        /// <summary>
+        /// if add auto-hide class to DOM element, then DOM element and all children click not send to server
+        /// </summary>
+        protected void EnableWindowClick(BasePage child)
+        {
+            this.child = child;
+            enableWindowClick = true;
+        }
+
+        protected virtual void OnWindowClick()
+        {
+
+        }
+
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
+            if (firstRender && enableWindowClick)
+            {
+                enableWindowClick = false;
+                await jsRuntime.InvokeVoidAsync("$.telerik.bindWindowClick", DotNetObjectReference.Create(this));
+            }
             if (message.HasValue())
             {
                 await jsRuntime.InvokeVoidAsync("$.telerik.showMessage", message);

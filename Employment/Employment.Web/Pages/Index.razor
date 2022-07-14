@@ -3,18 +3,50 @@
 @{
     base.BuildRenderTree(__builder);
 }
-@using Employment.Web.Pages
-<ComboBox TValue="int" TEntity="EmploymentOrderType" TextExpression="t => t.Title" OnValueChanged="async () => await ChangeValue()" />
-
-@code{
-    EmploymentOrder order;
-
-    async Task ChangeValue()
-    {
-        if (await Confirm("آیا با ثبت موافقید؟"))
-        {
-            
-        }
+<div style="width:350px;margin:0 auto">
+    @if (formSholdValidate)
+    {        <CaspianForm @ref="form" Model=orderType>
+            <CaspianValidationValidator ValidatorType=typeof(EmploymentOrderTypeService) />
+            <StringTextBox @bind-Value=orderType.Title />
+            <button type="submit">ثبت</button>
+        </CaspianForm>
     }
+    else
+    {
+        <StringTextBox @bind-Value=orderType.Title />
+        <button @onclick="ChangeState" type="button">ثبت</button>
+    }
+</div>
+
+
+@code
+{
+    bool formSholdValidate = false;
+    bool formValidated;
+    CaspianForm<EmploymentOrderType> form;
+    EmploymentOrderType orderType;
+
+    void ChangeState()
+    {
+        formSholdValidate = true;
+    }
+
+    protected override void OnInitialized()
+    {
+        orderType = new EmploymentOrderType();
+        base.OnInitialized();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (form != null && !formValidated)
+        {
+            form.EditContext.Validate();
+            formValidated = true;
+            StateHasChanged();
+        }
+        base.OnAfterRender(firstRender);
+    }
+
 }
 

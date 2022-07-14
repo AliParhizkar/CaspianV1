@@ -29,26 +29,22 @@ namespace Caspian.Engine.WorkflowEngine
                     using var scope = CreateScope();
                     var service = new WorkflowFormService(scope);
                     form = await service.GetAll().Include("EntityFields").Include("Rows").Include("Rows.Columns")
-                        .Include("Rows.Columns.Component").SingleAsync(t => t.Id == WorkflowFormId);
+                        .Include("Rows.Columns.Component").Include("Rows.Columns.Component.DynamicParameter")
+                        .Include("Rows.Columns.Component.DynamicParameter.Options")
+                        .Include("Rows.Columns.InnerRows").Include("Rows.Columns.InnerRows.HtmlColumns")
+                        .Include("Rows.Columns.InnerRows.HtmlColumns.Component")
+                        .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DynamicParameter")
+                        .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DynamicParameter.Options")
+                        .SingleAsync(t => t.Id == WorkflowFormId);
                     isloading = true;
                     var userSource = GetSourceFile();
+                    userSource += CreateDynamicOptionCode();
+
                     var strSource = await CreateCodebehindFormFile(userSource);
                     CreateAssembly(strSource);
                 }
             }
             await base.OnInitializedAsync();
-        }
-
-        void ForTest(StringBuilder str)
-        {
-            str.Append("\t\t\tbuilder.OpenElement(1, \"fieldset\");\n");
-            str.Append("\t\t\tbuilder.OpenElement(1, \"legend\");\n");
-            str.Append("\t\t\tbuilder.AddContent(1, \"مشخصات فیلدها\");\n");
-            str.Append("\t\t\tbuilder.CloseElement();\n");
-            str.Append("\t\t\tbuilder.OpenElement(1, \"span\");\n");
-            str.Append("\t\t\tbuilder.AddContent(1, " + "childrenProperty.Gender" + ");\n");
-            str.Append("\t\t\tbuilder.CloseElement();\n");
-            str.Append("\t\t\tbuilder.CloseElement();\n");
         }
 
         string? GetSourceFile()
@@ -62,6 +58,42 @@ namespace Caspian.Engine.WorkflowEngine
             return null;
         }
 
+        string CreateDynamicOptionCode()
+        {
+            StringBuilder str = new StringBuilder();
+            var list = new List<DynamicParameter>();
+            foreach (var row in form.Rows)
+                foreach (var col in row.Columns)
+                {
+                    var param = col.Component?.DynamicParameter;
+                    if (param != null && param.ControlType == ControlType.DropdownList)
+                        list.Add(param);
+                    foreach(var row1 in col.InnerRows)
+                        foreach(var col1 in row1.HtmlColumns)
+                        {
+                            var param1 = col1.Component?.DynamicParameter;
+                            if (param1 != null && param1.ControlType == ControlType.DropdownList)
+                                list.Add(param1);
+                        }
+                }
+            foreach(var param in list)
+            {
+                str.Append("\tpublic enum " + param.EnTitle + "\n\t{\n");
+                var index = 1;
+                foreach (var option in param.Options)
+                {
+                    str.Append("\t\t[EnumField(\"" + option.FaTitle + "\")]\n");
+                    str.Append("\t\t" + option.EnTitle + " = " + index);
+                    if (index != param.Options.Count)
+                        str.Append(",\n");
+                    str.Append("\n");
+                    index++;
+                }
+                str.Append("\t}");
+            }
+            return str.ToString();
+        }
+
         async Task<string> CreateCodebehindFormFile(string userCode)
         {
             using var scope = CreateScope();
@@ -69,6 +101,7 @@ namespace Caspian.Engine.WorkflowEngine
             var str = new StringBuilder();
             str.Append("using Caspian.UI;\n");
             str.Append("using System;\n");
+            str.Append("using Caspian.Common.Attributes;\n");
             str.Append("using " + form.SubSystemKind.ToString() + ".Model;\n");
             str.Append("using " + form.SubSystemKind.ToString() + ".Service;\n");
             str.Append("using Microsoft.AspNetCore.Components;\n");
@@ -80,12 +113,52 @@ namespace Caspian.Engine.WorkflowEngine
             str.Append("\t{\n");
             foreach (var field in form.EntityFields)
                 str.Append("\t\t" + field.EntityFullName + ' ' + field.FieldName + ";\n");
+            var list = new List<DynamicParameter>();
+            foreach (var row in form.Rows)
+                foreach (var col in row.Columns)
+                {
+                    var param = col.Component?.DynamicParameter;
+                    if (param != null)
+                        list.Add(param);
+                    foreach(var row1 in col.InnerRows)
+                        foreach(var col1 in row1.HtmlColumns)
+                        {
+                            param = col1.Component?.DynamicParameter;
+                            if (param != null)
+                                list.Add(param);
+                        }
+                }
+            foreach(var param in list)
+            {
+                str.Append("\t\t");
+                switch (param.ControlType)
+                {
+                    case ControlType.Integer:
+                        str.Append("int? ");
+                        break;
+                    case ControlType.Numeric:
+                        str.Append("decimal? ");
+                        break;
+                    case ControlType.DropdownList:
+                        str.Append(param.EnTitle + "? ");
+                        break;
+                }
+                str.Append(param.EnTitle + ";\n");
+            }
+
             foreach (var row in form.Rows)
                 foreach(var col in row.Columns)
                 {
                     var ctr = col.Component;
                     if (ctr != null)
                         str.Append(service.GetControlType(form.SubSystemKind, ctr, true));
+                    foreach (var row1 in col.InnerRows)
+                        foreach(var col1 in row1.HtmlColumns)
+                        {
+                            ctr = col1.Component;
+                            if (ctr != null)
+                                str.Append(service.GetControlType(form.SubSystemKind, ctr, true));
+                        }
                 }
             str.Append("\t\tprotected override void OnInitialized()\n\t\t{\n");
             foreach(var field in form.EntityFields)
@@ -94,20 +167,36 @@ namespace Caspian.Engine.WorkflowEngine
             str.Append("\t\t}\n\n");
             str.Append("\t\tprotected override void BuildRenderTree(RenderTreeBuilder builder)\n\t\t{\n");
             //Create MessageBox Component
-            str.Append("\t\t\tbuilder.OpenComponent<MessageBox>(2);");
-            str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, msg => { MessageBox = msg as MessageBox; });");
+            str.Append("\t\t\tbuilder.OpenComponent<MessageBox>(2);\n");
+            str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, msg => { MessageBox = msg as MessageBox; });\n");
             str.Append("\t\t\tbuilder.CloseComponent();");
             foreach (var row in form.Rows)
             {
-                var factor = 12 / form.ColumnCount;
                 str.Append("\t\t\tbuilder.OpenElement(1, \"div\");\n");
                 str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"row\");\n");
                 foreach (var col in row.Columns)
                 {
                     str.Append("\t\t\tbuilder.OpenElement(1, \"div\");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"col-md-" + factor + "\");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"col-md-" + col.Span + "\");\n");
                     if (col.Component != null)
-                        await CreateControl(col.Component, str);
+                        await CreateControl(col.Component, str, userCode);
+                    else if (col.InnerRows != null)
+                    {
+                        foreach(var row1 in col.InnerRows)
+                        {
+                            str.Append("\t\t\tbuilder.OpenElement(1, \"div\");\n");
+                            str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"row\");\n");
+                            foreach(var col1 in row1.HtmlColumns)
+                            {
+                                str.Append("\t\t\tbuilder.OpenElement(1, \"div\");\n");
+                                str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"col-md-" + col1.Span + "\");\n");
+                                if (col1.Component != null)
+                                    await CreateControl(col1.Component, str, userCode);
+                                str.Append("\t\t\tbuilder.CloseElement();\n");
+                            }
+                            str.Append("\t\t\tbuilder.CloseElement();\n");
+                        }
+                    }
                     str.Append("\t\t\tbuilder.CloseElement();\n");
                 }
                 str.Append("\t\t\tbuilder.CloseElement();\n");
@@ -119,10 +208,84 @@ namespace Caspian.Engine.WorkflowEngine
             return str.ToString();
         }
 
-        async Task CreateControl(Caspian.Engine.BlazorControl component, StringBuilder str)
+        void CreateParameterControl(BlazorControl control, StringBuilder str, string userCode)
         {
             str.Append("\t\t\tbuilder.OpenElement(1, \"fieldset\");\n");
             str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"c-dynamic-form-controls\");\n");
+            str.Append("\t\t\tbuilder.OpenElement(1, \"legend\");\n");
+            str.Append("\t\t\tbuilder.AddContent(1, \"" + control.Caption + "\");\n");
+            str.Append("\t\t\tbuilder.CloseElement();\n");
+            bool? isAsync = null;
+            if (control.OnChange.HasValue())
+                isAsync = new CodeManager().MethodIsAsync(form.Name, control!.OnChange, userCode);
+            var param = control!.DynamicParameter;
+            switch (control.ControlType)
+            {
+                case ControlType.Integer:
+                case ControlType.Numeric:
+                    var strType = control.ControlType == ControlType.Integer ? "int?" : "decimal?";
+                    str.Append("\t\t\tbuilder.OpenComponent<NumericTextBox<" + strType + ">>(2);\n");
+                    ///Value Binding
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + param.EnTitle + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => {\n" + param.EnTitle + " = value;\n");
+                    if (control.OnChange.HasValue())
+                    {
+                        if (isAsync == true)
+                            str.Append("\t\t\t\tawait " + control.OnChange + "();\n");
+                        else
+                            str.Append("\t\t\t\t" + control.OnChange + "();\n");
+                    }
+                    str.Append("}));\n");
+                    ///Add Refrence to control
+                    str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, txt =>\n");
+                    str.Append("\t\t\t{\n");
+                    str.Append("\t\t\t\ttxt" + param.EnTitle + " = txt as NumericTextBox<" + strType + ">;\n");
+                    str.Append("\t\t\t});\n");
+                    //-----------------------------------------
+                    str.Append("\t\t\tbuilder.CloseComponent();\n");
+                    break;
+                case ControlType.DropdownList:
+                    strType = param.EnTitle;
+                    str.Append("\t\t\tbuilder.OpenComponent<DropdownList<" + strType + ">>(2);\n");
+                    ///Value Binding
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + param.EnTitle + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => {\n" + param.EnTitle + " = value;\n");
+                    if (control.OnChange.HasValue())
+                    {
+                        if (isAsync == true)
+                            str.Append("\t\t\t\tawait " + control.OnChange + "();\n");
+                        else
+                            str.Append("\t\t\t\t" + control.OnChange + "();\n");
+                    }
+                    str.Append("}));\n");
+                    ///Add Refrence to control
+                    str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, ddl =>\n");
+                    str.Append("\t\t\t{\n");
+                    str.Append("\t\t\t\tddl" + param.EnTitle + " = ddl as DropdownList<" + strType + ">;\n");
+                    str.Append("\t\t\t});\n");
+                    str.Append("\t\t\tbuilder.CloseComponent();\n");
+                    break;
+            }
+            str.Append("\t\t\tbuilder.CloseElement();\n");
+        }
+
+        async Task CreateControl(Caspian.Engine.BlazorControl component, StringBuilder str, string userCode)
+        {
+            if (component.WfFormEntityFieldId == null)
+            {
+                CreateParameterControl(component, str, userCode);
+                return;
+            }
+            bool? isAsync = null;
+            if (component.OnChange.HasValue())
+                isAsync = new CodeManager().MethodIsAsync(form.Name, component!.OnChange, userCode);
+            str.Append("\t\t\tbuilder.OpenElement(1, \"fieldset\");\n");
+            str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"c-dynamic-form-controls\");\n");
+            if (component.MultiLine && component.Height > 1)
+            {
+                var style = "height:" + ((component.Height - 1) * 80 + 61).ToString() + "px";
+                str.Append("\t\t\tbuilder.AddAttribute(3, \"style\", \"" + style + "\");");
+            }
             str.Append("\t\t\tbuilder.OpenElement(1, \"legend\");\n");
             str.Append("\t\t\tbuilder.AddContent(1, \"" + component.Caption + "\");\n");
             str.Append("\t\t\tbuilder.CloseElement();\n");
@@ -139,6 +302,12 @@ namespace Caspian.Engine.WorkflowEngine
             {
                 case ControlType.String:
                     str.Append("\t\t\tbuilder.OpenComponent<StringTextBox>(2);\n");
+                    if (component.MultiLine && component.Height > 1)
+                    {
+                        var style = "height:" + ((component.Height - 1) * 80 + 30).ToString() + "px";
+                        str.Append("\t\t\tbuilder.AddAttribute(3, \"style\", \"" + style + "\");");
+                        str.Append("\t\t\tbuilder.AddAttribute(3, \"MultiLine\", true);");
+                    }
                     str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + ");\n");
                     str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<string>(this, value => { " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value; }));\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
@@ -146,9 +315,15 @@ namespace Caspian.Engine.WorkflowEngine
                 case ControlType.DropdownList:
                     str.Append("\t\t\tbuilder.OpenComponent<DropdownList<" + strType + ">>(2);\n");
                     str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => \n\t\t\t{\n\t\t\t\t" + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value;\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => \n\t\t\t{\n\t\t\t\t" + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value;\n");
                     if (component.OnChange.HasValue())
-                        str.Append("\t\t\t\tawait " + component.OnChange + "();\n");
+                    {
+                        if (isAsync == true)
+                            str.Append("\t\t\t\tawait " + component.OnChange + "();\n");
+                        else
+                            str.Append("\t\t\t\t" + component.OnChange + "();\n");
+                    }
+                        
                     str.Append("\t\t\t}));\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
@@ -164,7 +339,12 @@ namespace Caspian.Engine.WorkflowEngine
                     str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + ");\n");
                     str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value; }));\n");
                     if (component.OnChange.HasValue())
-                        str.Append("\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, async () => await " + component.OnChange + "()));\n");
+                    {
+                        if (isAsync == true)
+                            str.Append("\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, async () => await " + component.OnChange + "()));\n");
+                        else
+                            str.Append("\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, () => " + component.OnChange + "()));\n");
+                    }
                     str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, cmb =>\n");
                     str.Append("\t\t\t{\n");
                     str.Append("\t\t\t\t" + id + " = cmb as ComboBox<" + typeName + ", " + strType + ">;\n");

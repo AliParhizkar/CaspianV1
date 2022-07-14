@@ -1653,3 +1653,33 @@ td {
 .fa-exclamation-circle:before {
     content: "\f06a";
 }
+
+
+
+.c-form-designer textarea{
+    background-color:transparent;
+    cursor:default;
+}
+.c-form-designer .t-select {
+    background-color: transparent !important;
+    cursor: default !important;
+}
+    .c-form-designer .t-select .t-icon {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+.c-form-designer .t-input {
+    background-color: transparent !important;
+    cursor: default !important;
+    color:transparent!important;
+}
+.c-form-designer legend{
+    margin-right:15px;
+}
+legend {
+    margin-right: 15px;
+}
+.c-form-designer .t-t-select {
+    background-color: transparent !important;
+    cursor: default !important;
+}

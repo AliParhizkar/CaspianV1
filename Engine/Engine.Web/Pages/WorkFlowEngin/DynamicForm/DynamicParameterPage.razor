@@ -1,4 +1,4 @@
-﻿@page "/Engine/Workflow/DynamicParameter"
+﻿@page "/{Subsystem}/Engine/DynamicParameter"
 @namespace Caspian.Engine.WorkflowEngine
 @using Caspian.common
 @inherits SimplePage<DynamicParameter>
@@ -86,16 +86,19 @@
 {
     IList<SelectListItem> entities;
     IList<ControlType> ControlsType;
+    
 
     protected override void OnInitialized()
     {
+        var systemKind = (SubSystemKind)typeof(SubSystemKind).GetField(SubSystem).GetValue(null);
         using var scope = CreateScope();
         var service = new DynamicParameterService(scope);
-        entities = service.GetDynamicType(SubSystem);
+        entities = service.GetDynamicType(systemKind);
         ControlsType = new List<ControlType>();
         ControlsType.AddRange(ControlType.Integer, ControlType.Numeric, ControlType.DropdownList);
         base.OnInitialized();
     }
 
-    public SubSystemKind SubSystem { get; set; } = SubSystemKind.Employment;
+    [Parameter]
+    public string SubSystem { get; set; }
 }

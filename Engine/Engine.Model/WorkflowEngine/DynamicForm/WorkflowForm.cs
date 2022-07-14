@@ -29,5 +29,10 @@ namespace Caspian.Engine
         /// Entity fields that declare in form
         /// </summary>
         public virtual IList<WfFormEntityField> EntityFields { get; set; }
+
+        /// <summary>
+        /// All activities that form assigned them
+        /// </summary>
+        public virtual IList<ActivityFormAssign> Activities { get; set; }
     }
 }

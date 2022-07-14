@@ -17,7 +17,7 @@ namespace Caspian.Engine
         public int WorkflowFormId { get; set; }
 
         [ForeignKey(nameof(WorkflowFormId))]
-        public virtual WorkflowForm StaticForm { get; set; }
+        public virtual WorkflowForm WorkflowForm { get; set; }
 
         /// <summary>
         /// Entity type fulle name that bind in forms control 

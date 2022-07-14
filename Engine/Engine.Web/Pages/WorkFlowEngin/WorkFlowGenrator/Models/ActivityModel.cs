@@ -29,8 +29,8 @@ namespace Main.Models
             Location = activity.Left + " " + activity.Top;
             Text = activity.Title;
             var actions = activity.OutConnectors.Select(t => t.Title);
-            if (activity.Action.ClassName != null)
-                Action = new ActionModel(activity.Action);
+            //if (activity.Action.ClassName != null)
+            //    Action = new ActionModel(activity.Action);
             if (activity.Fields.Count > 0)
                 Fields = activity.Fields.Select(t => new ActivityFieldModel(t)).ToList();
             ActorType = activity.ActorType;
@@ -98,8 +98,8 @@ namespace Main.Models
             activity.Top = Convert.ToInt32(Math.Floor(Convert.ToDouble(array[1])));
             activity.Title = Text;
             activity.ActorType = ActorType;
-            if (Action != null)
-                activity.Action = Action.GetAction();
+            //if (Action != null)
+            //    activity.Action = Action.GetAction();
             if (Fields != null)
                 activity.Fields = Fields.Select(t => t.GetActivityField()).ToList();
             if (DynamicFields != null)

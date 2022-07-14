@@ -261,6 +261,10 @@
         },
         updateState: function (options) {
             $.extend(this, options);
+            if (options.disabled) 
+                this.disable()
+            else
+                this.enable();
             if (options.focused) 
                 this.focus();
         },

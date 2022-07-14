@@ -423,6 +423,13 @@
             };
             window.chrome.webview.postMessage(data);;
         },
+        loadForm: function (formId) {
+            var data = {
+                action: 'sendSourceCode',
+                content: formId
+            };
+            window.chrome.webview.postMessage(data);;
+        },
         saveCodeFile: function (code) {
             $.workflowForm.dotnet.invokeMethodAsync('SaveFile', code);
         },

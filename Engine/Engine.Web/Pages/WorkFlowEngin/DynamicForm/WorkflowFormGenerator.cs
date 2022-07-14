@@ -4,6 +4,7 @@ using System.Reflection;
 using Microsoft.JSInterop;
 using System.ComponentModel;
 using Caspian.Engine.Service;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -20,9 +21,8 @@ namespace Caspian.Engine.WorkflowEngine
         int selectedInnerRowIndex = -1;
         int selectedInnerColIndex = -1;
         IList<int> selectedColsIndex;
-        bool controlSelected;
         SubSystemKind subSystemKind;
-        PropertySeledtor propertySeledtor;
+        PropertySelector propertySelector;
         WindowStatus windowStatus;
         bool saveFile;
         BlazorControl selectedControl;
@@ -30,39 +30,19 @@ namespace Caspian.Engine.WorkflowEngine
         string formTitle;
         // ------ Property Window
         string Id;
-        string title;
-        string? description;
-        string? textExpression;
-        string? filterExpression;
-        ControlType controlType;
         string formName;
-        string? OnChangeEventHandler;
+        IList<WorkflowForm> forms;
 
         void UpdateControlData()
         {
-            if (controlSelected)
-            {
-                selectedControl.Description = propertyWindow.Descript;
-                selectedControl.Caption = propertyWindow.Title;
-                selectedControl.OnChange = propertyWindow.OnChangeEventHandler;
-                OnChangeEventHandler = propertyWindow.OnChangeEventHandler;
-            }
+
         }
         
-        async Task SelectControl(BlazorControl ctr, int rowIndex, int colIndex, int? innerRowIndex = null, int? innerColIndex = null)
+        async Task SelectControl(BlazorControl ctr)
         {
-            selectedRowIndex = rowIndex;
-            selectedColIndex = colIndex;
-            controlSelected = true;
+            selectedControl = ctr;
             using var scope = CreateScope();
             Id = await new BlazorControlService(scope).GetId(subSystemKind, ctr);
-            title = ctr.Caption;
-            description = ctr.Description;
-            textExpression = ctr.TextExpression;
-            filterExpression = ctr.FilterExpression;
-            controlType = ctr.ControlType;
-            OnChangeEventHandler = ctr.OnChange;
-            selectedControl = ctr;
         }
 
         void ToggleWindowStatus()
@@ -79,10 +59,25 @@ namespace Caspian.Engine.WorkflowEngine
                 rows.RemoveAt(selectedRowIndex);
         }
 
+        protected override void OnInitialized()
+        {
+            base.EnableWindowClick(this);
+            base.OnInitialized();
+        }
+
+        protected override void OnWindowClick()
+        {
+            propertySelector.HideSelector();
+            StateHasChanged();
+            base.OnWindowClick();
+        }
+
         protected override async Task OnInitializedAsync()
         {
             using var scope = CreateScope();
-            var form = await new WorkflowFormService(scope).SingleAsync(WorkflowFormId);
+            var formService = new WorkflowFormService(scope);
+            var form = await formService.SingleAsync(WorkflowFormId);
+            forms = await formService.GetAll().Where(t => t.SubSystemKind == form.SubSystemKind).ToListAsync();
             columnsCount = form.ColumnCount;
             subSystemKind = form.SubSystemKind;
             formName = form.Name;
@@ -98,6 +93,7 @@ namespace Caspian.Engine.WorkflowEngine
             selectedColIndex = colIndex;
             selectedInnerRowIndex = innerRowIndex;
             selectedInnerColIndex = innerColIndex;
+            selectedControl = null;
         }
 
         async Task Save()
@@ -110,8 +106,25 @@ namespace Caspian.Engine.WorkflowEngine
                 row.WorkflowForm = null;
                 foreach(var col in row.Columns)
                 {
+                    col.Row = null;
                     if (col.Component != null)
+                    {
                         col.Component.WfFormEntityField = null;
+                        col.Component.DynamicParameter = null;
+                    }
+                    foreach(var innerRow in col.InnerRows)
+                    {
+                        innerRow.HtmlColumn = null;
+                        foreach(var col1 in innerRow.HtmlColumns)
+                        {
+                            col1.Row = null;
+                            if (col1.Component != null)
+                            {
+                                col1.Component.WfFormEntityField = null;
+                                col1.Component.DynamicParameter = null;
+                            }
+                        }
+                    }
                 }
             }
             await new HtmlRowService(scope).AddRangeAsync(rows);
@@ -149,6 +162,11 @@ namespace Caspian.Engine.WorkflowEngine
         {
             var index = selectedRowIndex >= 0 ? selectedRowIndex : rows.Count > 0 ? 0 : (int?)null;
             AddRow(index);
+        }
+
+        void RemoveSelectedControl()
+        {
+
         }
 
         void AddRowToDown()
@@ -208,6 +226,9 @@ namespace Caspian.Engine.WorkflowEngine
             var innerCell = new HtmlColumn();
             innerCell.Span = 12;
             innerRow.HtmlColumns.Add(innerCell);
+            if (rows[selectedRowIndex].Columns[selectedColIndex].Component != null)
+                innerCell.Component = rows[selectedRowIndex].Columns[selectedColIndex].Component;
+            rows[selectedRowIndex].Columns[selectedColIndex].Component = null;
             if (index == null)
                 rows[selectedRowIndex].Columns[selectedColIndex].InnerRows.Add(innerRow);
             else
@@ -228,7 +249,7 @@ namespace Caspian.Engine.WorkflowEngine
                 ControlType = info.GetControlType(),
                 Caption = att == null ? info.Name : att.DisplayName,
                 PropertyName = info.Name,
-                WfFormEntityFieldId = propertySeledtor.GetSelectedWfEntityFieldId()
+                WfFormEntityFieldId = propertySelector.GetSelectedWfEntityFieldId()
             };
             if (selectedInnerRowIndex >= 0)
             {
@@ -245,7 +266,7 @@ namespace Caspian.Engine.WorkflowEngine
         void SelectRow(MouseEventArgs e, int rowIndex, int colIndex)
         {
             selectedInnerRowIndex = -1;
-            controlSelected = false;
+            selectedControl = null;
             if (e.CtrlKey)
             {
                 ///include first time
@@ -418,7 +439,7 @@ namespace Caspian.Engine.WorkflowEngine
                                     control = await GetControl(id);
                                     property = letf.Name.Identifier.Text;
                                 }
-                                if (expr1.Right.Kind() == SyntaxKind.SimpleLambdaExpression)
+                                if (control != null && expr1.Right.Kind() == SyntaxKind.SimpleLambdaExpression)
                                 {
                                     var span = expr1.Right.FullSpan;
                                     var expression = code.Substring(span.Start, span.Length);

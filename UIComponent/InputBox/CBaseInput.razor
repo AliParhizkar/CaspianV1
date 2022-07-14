@@ -106,16 +106,6 @@
         return true;
     }
 
-    public void Enable()
-    {
-        Disabled = false;
-    }
-
-    public void Disable()
-    {
-        Disabled = true;
-    }
-
     public virtual async Task SetValue(object obj)
     {
         var type = DynamicType ?? typeof(TValue);
@@ -317,6 +307,18 @@
             FormAppState.AllControlsIsValid = false;
             FormAppState.Element = htmlElement;
         }
+    }
+
+    public void Enable()
+    {
+        Disabled = false;
+        StateHasChanged();
+    }
+
+    public void Disable()
+    {
+        Disabled = true;
+        StateHasChanged();
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)

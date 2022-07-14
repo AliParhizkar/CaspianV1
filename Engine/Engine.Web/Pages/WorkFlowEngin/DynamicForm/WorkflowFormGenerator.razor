@@ -5,12 +5,13 @@
 @inherits BasePage
 @inject IHostEnvironment Environment 
 <div class="row">
-    <PropertyWindow @ref="propertyWindow" Id="@Id" Title="@title" Descript="@description" TextExpression="@textExpression" OnChangeEventHandler="@OnChangeEventHandler"
-        ControlType="@controlType" FilterExpression="@filterExpression" FormName="@formName" OnChange="UpdateControlData" />
+    <PropertyWindow @ref="propertyWindow" Id="@Id" FormName="@formName" OnChange="UpdateControlData" Control="selectedControl" />
     <div class="c-form-designer">
         <div class="c-tools-bar">
-            <PropertySeledtor @ref="propertySeledtor" WorkflowFormId="WorkflowFormId" OnSelect="(info) => { AddControl(info); }" />
-        <div class="w-seprator"></div>
+            <button class="w-button w-form-load" title="حذف کنترل"></button>
+            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnSelect="(info) => { AddControl(info); }" />
+            <button @onclick="RemoveSelectedControl" class="w-button w-ctr-delete" title="حذف کنترل"></button>
+            <div class="w-seprator"></div>
         <div>
             <button @onclick="AddRowToDown" class="w-button w-row-down" title="افزودن یک ردیف در پایین"></button>
             <button @onclick="AddRowToTop" class="w-button w-row-up" title="افزودن یک ردیف در بالا"></button>
@@ -46,9 +47,9 @@
                             var className = "c-item col-md-" + col.Span;
                             if (col.Hidden)
                                 className += " c-hidden";
-                            if (rowIndex == selectedRowIndex)
+                            if (rowIndex == selectedRowIndex && selectedControl == null)
                             {
-                                if (selectedInnerRowIndex == -1 && !controlSelected && (colIndex == selectedColIndex || selectedColsIndex.Contains(colIndex)))
+                                if (selectedInnerRowIndex == -1 && (colIndex == selectedColIndex || selectedColsIndex.Contains(colIndex)))
                                     className += " c-selected";
                             }
                             <div @onclick="e => {SelectRow(e, rowIndex, colIndex); }" class="@(className)">
@@ -62,10 +63,17 @@
                                             {
                                                 className = $"c-item c-row-{innerRow.Span} col-{12 / innerRow.HtmlColumns.Count}";
                                                 var innerColIndex = innerRow.HtmlColumns.IndexOf(col1);
-                                                if (rowIndex == selectedRowIndex && colIndex == selectedColIndex && innerRowIndex == selectedInnerRowIndex && innerColIndex == selectedInnerColIndex)
+                                                if (selectedControl == null && rowIndex == selectedRowIndex && colIndex == selectedColIndex && innerRowIndex == selectedInnerRowIndex && innerColIndex == selectedInnerColIndex)
                                                     className += " c-selected";
                                                 <div @onclick:stopPropagation="true" @onclick="() => {SelectInnerRow(rowIndex, colIndex, innerRowIndex, innerColIndex); }" class="@(className)">
-                                            
+                                                    @{
+                                                        var ctr = col1.Component;
+                                                        if (ctr != null)
+                                                        {
+                                                            ctr.WfFormEntityField = null;
+                                                            <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr"  />
+                                                        }
+                                                    }
                                                 </div>
                                             }
                                         </div>
@@ -75,7 +83,7 @@
                                 {
                                     var ctr = col.Component;
                                     ctr.WfFormEntityField = null;
-                                    <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr, rowIndex, colIndex)" Selected="@(rowIndex == selectedRowIndex && colIndex == selectedColIndex && controlSelected)" ControlType="@(ctr!.ControlType)" Caption="@(ctr.Caption)" />
+                                    <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
                                 }
                             </div>
                         }

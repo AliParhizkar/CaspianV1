@@ -91,11 +91,19 @@
     font-weight: bold;
     vertical-align: middle;
 }
-
+.w-ctr-delete {
+    background-position-x: -201px;
+    background-position-y: -63px;
+}
+.w-form-load {
+    background-position-x: -201px;
+    background-position-y: -63px;
+}
 .c-add-control {
-    width: 167px;
+    width: 209px;
     height: 0;
-    padding-right:8px;
+    padding-right: 8px;
+    position: absolute;
 }
 
 .w-seprator {
@@ -120,7 +128,6 @@
 .c-add-control ul li {
     padding: 7px 2px;
     font-size: 13px;
-    text-align: left;
 }
 
     .c-add-control ul li:not(.c-selected):hover {
@@ -134,7 +141,7 @@
     .c-add-control .c-selected ul {
         position: absolute;
         width: 200px;
-        margin: -30px 160px;
+        margin: -30px 200px;
         min-height: 100px;
     }
 
@@ -188,8 +195,8 @@
     margin-top:6px;
 }
 .w-controls-entity {
+    background-position-x: -201px;
     background-position-y: -63px;
-    width: 200px !important;
 }
 
 .static-form .c-item {
@@ -199,7 +206,7 @@
 }
 
     .static-form .c-item .c-item {
-        min-height: 83px;
+        min-height: 80px;
     }
 
 .static-form .c-selected {
@@ -212,6 +219,7 @@ legend {
     width: auto;
     padding: unset;
     margin: 0;
+    margin-right:15px;
     font-size: 12px;
 }
 

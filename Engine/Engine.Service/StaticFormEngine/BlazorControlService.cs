@@ -14,8 +14,24 @@ namespace Caspian.Engine.Service
 
         }
 
+        string GetId(BlazorControl control)
+        {
+            switch(control.ControlType)
+            {
+                case ControlType.Integer:
+                case ControlType.Numeric:
+                    return "txt" + control.DynamicParameter.EnTitle;
+                case ControlType.DropdownList:
+                    return "ddl" + control.DynamicParameter.EnTitle;
+                default:
+                    throw new NotImplementedException("خطای عدم پیاده سازی");
+            }
+        }
+
         public async Task<string> GetId(SubSystemKind subSystemKind, BlazorControl ctr)
         {
+            if (ctr.DynamicParameterId.HasValue)
+                return GetId(ctr);
             switch (ctr.ControlType)
             {
                 case ControlType.CheckBox:

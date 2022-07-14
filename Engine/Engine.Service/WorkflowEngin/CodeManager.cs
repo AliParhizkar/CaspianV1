@@ -29,6 +29,12 @@ namespace Caspian.Engine.Service
                             }
                         }
                     }
+                    else if (member.Kind() == SyntaxKind.ClassDeclaration)
+                    {
+                        var class_ = member as ClassDeclarationSyntax;
+                        if (class_.Identifier.Text.Equals(className))
+                            return class_;
+                    }
                 }
             }
             return null;
