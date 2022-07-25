@@ -2,7 +2,13 @@
 @inject IHostEnvironment Environment 
 @namespace Caspian.Engine.WorkflowEngine
 @inherits BasePage
-@if (isloading || DynamicType == null)
+@if (errorMessage.HasValue())
+{
+    <div class="c-error-message">
+       <span>@errorMessage</span>
+    </div>
+}
+else if (isloading || DynamicType == null)
 {
     <span>در حال بارگذاری ...</span>
 }

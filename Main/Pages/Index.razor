@@ -1,4 +1,5 @@
 ﻿@using Caspian.UI
+@using Demo.Model
 @page "/"
 <div>
     <a href="/Demo">Demo</a>
@@ -6,11 +7,23 @@
 <div>
     <a href="/Employment">Employment</a>
 </div>
+<CaspianForm Model=city
+    OnInvalidSubmit="@(context => 
+    {
+        var q = context.GetValidationMessages(new FieldIdentifier(city, "Title")).FirstOrDefault();
+    })"
+    OnValidSubmit="@(async c => 
+    {
+        return false;
+    })">
+    <CaspianValidationValidator ValidatorType="typeof(Demo.Service.CityService)" />
+    <StringTextBox @bind-Value="city.Title" />
+    <button type="submit">ثبت</button>
+</CaspianForm>
 
-<div class="fortest123">
 
-</div>
-@code {
-    NumericTextBox<int> txt;
+ @code 
+{
+    City city = new City();
+    int? provinceId;
 }
-

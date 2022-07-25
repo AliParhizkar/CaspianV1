@@ -198,7 +198,12 @@ namespace Caspian.UI
                     shouldRender = true;
                 }
             }
-            if (e.Key != "Enter" && e.Key != "Tab")
+            if (e.Key == "Escape")
+            {
+                Status = WindowStatus.Close;
+                shouldRender = true;
+            }
+            else if (e.Key != "Enter" && e.Key != "Tab")
             {
                 if (Status == WindowStatus.Close)
                     Status = WindowStatus.Open;

@@ -13,8 +13,8 @@ builder.Services.AddScoped<Demo.Model.Context>();
 builder.Services.AddScoped<Caspian.Engine.Context>();
 builder.Services.AddScoped<Employment.Model.Context>();
 var app = builder.Build();
-builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
-    .AddJsonFile("appsettings.json");
+//builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
+//    .AddJsonFile("appsettings.json");
 CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

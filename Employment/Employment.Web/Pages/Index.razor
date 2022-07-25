@@ -1,51 +1,18 @@
 ﻿@page "/Employment"
 @inherits BasePage
+@using Caspian.Engine.CodeGenerator
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:350px;margin:0 auto">
-    @if (formSholdValidate)
-    {        <CaspianForm @ref="form" Model=orderType>
-            <CaspianValidationValidator ValidatorType=typeof(EmploymentOrderTypeService) />
-            <StringTextBox @bind-Value=orderType.Title />
-            <button type="submit">ثبت</button>
-        </CaspianForm>
-    }
-    else
-    {
-        <StringTextBox @bind-Value=orderType.Title />
-        <button @onclick="ChangeState" type="button">ثبت</button>
-    }
-</div>
-
-
+<textarea id="id1" name="name1">@value</textarea>
+<button @onclick="chamge">Click</button>
+<span>@value</span>
 @code
 {
-    bool formSholdValidate = false;
-    bool formValidated;
-    CaspianForm<EmploymentOrderType> form;
-    EmploymentOrderType orderType;
-
-    void ChangeState()
+    string value = "";
+    void chamge()
     {
-        formSholdValidate = true;
-    }
-
-    protected override void OnInitialized()
-    {
-        orderType = new EmploymentOrderType();
-        base.OnInitialized();
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (form != null && !formValidated)
-        {
-            form.EditContext.Validate();
-            formValidated = true;
-            StateHasChanged();
-        }
-        base.OnAfterRender(firstRender);
+        value += "dasda";
     }
 
 }

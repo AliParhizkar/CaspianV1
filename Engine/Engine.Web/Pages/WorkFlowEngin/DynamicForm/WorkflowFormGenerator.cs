@@ -241,6 +241,23 @@ namespace Caspian.Engine.WorkflowEngine
                 rows[selectedRowIndex].Columns[selectedColIndex].InnerRows.RemoveAt(selectedInnerRowIndex);
         }
 
+        void AddControl(DynamicParameter parameter)
+        {
+            var component = new Caspian.Engine.BlazorControl()
+            {
+                Caption = parameter.FaTitle,
+                ControlType = parameter.ControlType,
+                DynamicParameterId = parameter.Id,
+                DynamicParameter = parameter
+            };
+            if (selectedInnerRowIndex >= 0)
+            {
+
+            }
+            else if (selectedRowIndex >= 0 && selectedColIndex >= 0)
+                rows[selectedRowIndex].Columns[selectedColIndex].Component = component;
+        }
+
         void AddControl(PropertyInfo info)
         {
             var att = info.GetCustomAttribute<DisplayNameAttribute>();

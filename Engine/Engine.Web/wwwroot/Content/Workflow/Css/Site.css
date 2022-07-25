@@ -119,8 +119,15 @@
     z-index: 50;
     position: relative;
     background-color: white;
+    box-shadow: 2px 2px 8px 2px #6a6a6a;
 }
-
+.c-error-message{
+    color:deeppink;
+    width:80%;
+    margin:10px auto;
+    text-align:right;
+    direction:rtl;
+}
 .c-selected .t-datepicker.t-state-disabled, .c-selected .t-datepicker.t-state-disabled .t-select {
     background-color: rgb(220, 239, 255) !important;
 }
@@ -143,6 +150,7 @@
         width: 200px;
         margin: -30px 200px;
         min-height: 100px;
+        box-shadow: 2px 2px 8px 2px #6a6a6a;
     }
 
 .datepicker-holder input {
@@ -375,4 +383,9 @@ legend {
     font-size:10px;
     white-space:nowrap;
     font-weight:bold;
+}
+
+.c-workflow{
+    border:1px solid red;
+    height:100vh;
 }

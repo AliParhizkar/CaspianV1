@@ -19,6 +19,7 @@ namespace Caspian.Engine.WorkflowEngine
         WorkflowForm form;
         Type? DynamicType;
         bool isloading = false;
+        string errorMessage;
 
         protected override async Task OnInitializedAsync()
         {
@@ -37,11 +38,19 @@ namespace Caspian.Engine.WorkflowEngine
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DynamicParameter.Options")
                         .SingleAsync(t => t.Id == WorkflowFormId);
                     isloading = true;
-                    var userSource = GetSourceFile();
-                    userSource += CreateDynamicOptionCode();
+                    try
+                    {
+                        var userSource = GetSourceFile();
+                        userSource += CreateDynamicOptionCode();
 
-                    var strSource = await CreateCodebehindFormFile(userSource);
-                    CreateAssembly(strSource);
+                        var strSource = await CreateCodebehindFormFile(userSource);
+                        CreateAssembly(strSource);
+                        errorMessage = null;
+                    }
+                    catch(CaspianException ex)
+                    {
+                        errorMessage = ex.Message;
+                    }
                 }
             }
             await base.OnInitializedAsync();
@@ -53,6 +62,8 @@ namespace Caspian.Engine.WorkflowEngine
             {
                 var path = Environment.ContentRootPath + "Data\\Code\\" + form.SourceFileName + ".cs";
                 var content =  File.ReadAllText(path);
+                if (!content.HasValue())
+                    return null;
                 return new CodeManager().FindSourceCode(content);
             }
             return null;

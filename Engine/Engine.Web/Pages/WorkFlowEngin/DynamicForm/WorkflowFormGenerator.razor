@@ -9,7 +9,7 @@
     <div class="c-form-designer">
         <div class="c-tools-bar">
             <button class="w-button w-form-load" title="حذف کنترل"></button>
-            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnSelect="(info) => { AddControl(info); }" />
+            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="info => AddControl(info)" OnDynamicParameterSelect="parameter => AddControl(parameter)" />
             <button @onclick="RemoveSelectedControl" class="w-button w-ctr-delete" title="حذف کنترل"></button>
             <div class="w-seprator"></div>
         <div>

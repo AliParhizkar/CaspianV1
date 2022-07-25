@@ -16,14 +16,16 @@
                             <ul class="c-property">
                                 @if (dynamicParameters != null && dynamicParameters.Count > 0)
                                 {
-                                    <li @onclick="() => showParameter = true">
+                                    className = showParameter ? "c-selected" : null;
+                                    <li class="@className" @onclick="ShowDynamicParameter">
                                         پارامترهای پویا
                                         @if (showParameter)
                                         {
                                             <ul class="dynamic-parameter">
                                                 @foreach(var param in dynamicParameters)
                                                 {
-                                                    <li>@param.FaTitle</li>
+                                                    className = selectedDynamicParameterId == param.Id ? "c-selected" : null;
+                                                    <li class="@className" @onclick="() => SelecteDynamicParameter(param.Id)" @onclick:preventDefault @onclick:stopPropagation>@param.FaTitle</li>
                                                 }
                                             </ul>
                                         }
@@ -32,7 +34,9 @@
                                 @foreach(var info in workflowEntityProperties)
                                 {
                                     className = info == selectedPropertyInfo ? "c-selected" : null;
-                                    <li @onclick:stopPropagation="true" class="@className" @onclick="async () => await EntityProperty(info, item.Id)">@info.Name</li>            
+                                    var attr = info.GetCustomAttribute<DisplayNameAttribute>();
+                                    var faName = attr == null ? info.Name : attr.DisplayName;
+                                    <li @onclick:stopPropagation="true" class="@className" @onclick="async () => await EntityProperty(info, item.Id)">@faName</li>            
                                 }
                             </ul>
                         }
@@ -48,13 +52,29 @@
     bool showEntityType;
     bool showEntityProperties;
     string EntityTypeFullName;
-    PropertyInfo selectedPropertyInfo;
+    PropertyInfo? selectedPropertyInfo;
     IList<WfFormEntityField> entityFields;
     IList<PropertyInfo> workflowEntityProperties;
     SubSystemKind subSystemKind;
     int? wfEntityFieldId;
     IList<DynamicParameter> dynamicParameters;
+    int? selectedDynamicParameterId;
     bool showParameter;
+
+    void ShowDynamicParameter()
+    {
+        selectedPropertyInfo = null;
+        showParameter = true;
+    }
+
+    async Task SelecteDynamicParameter(int parameterId)
+    {
+        selectedDynamicParameterId = parameterId;
+        var param = dynamicParameters.Single(t => t.Id == parameterId);
+        if (OnDynamicParameterSelect.HasDelegate)
+            await OnDynamicParameterSelect.InvokeAsync(param);
+        HideSelector();
+    }
 
     async Task EntityType(string key)
     {
@@ -72,8 +92,9 @@
         selectedPropertyInfo = info;
         HideSelector();
         this.wfEntityFieldId = wfEntityFieldId;
-        if (OnSelect.HasDelegate)
-            await OnSelect.InvokeAsync(info);
+        if (OnPropertySelect.HasDelegate)
+            await OnPropertySelect.InvokeAsync(info);
+        selectedDynamicParameterId = null;
     }
 
     public void HideSelector()
@@ -101,5 +122,8 @@
     public int WorkflowFormId{ get; set; }
 
     [Parameter]
-    public EventCallback<PropertyInfo> OnSelect{ get; set; }
+    public EventCallback<PropertyInfo> OnPropertySelect{ get; set; }
+
+    [Parameter]
+    public EventCallback<DynamicParameter> OnDynamicParameterSelect{ get; set; }
 }

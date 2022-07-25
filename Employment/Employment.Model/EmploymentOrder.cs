@@ -53,9 +53,6 @@ namespace Employment.Model
         [DisplayName("مدرک تحصیلی")]
         public int EducationDegreeId { get; set; }
 
-        [DisplayName("ضریب مدرک تحصیلی")]
-        public int? EducationDegreeFactor { get; set; }
-
         [ForeignKey(nameof(EducationDegreeId))]
         public virtual EducationDegree EducationDegree { get; set; }
     }

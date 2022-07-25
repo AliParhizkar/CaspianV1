@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+﻿using Caspian.Common;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Caspian.Engine.Service
@@ -69,7 +70,10 @@ namespace Caspian.Engine.Service
 
         public bool MethodIsAsync(string className, string methodName, string sourceCode)
         {
-            CSharpSyntaxNode type = FindMethod(className, methodName, sourceCode).ReturnType;
+            var method = FindMethod(className, methodName, sourceCode);
+            if (method == null)
+                throw new CaspianException($"خطا: Method with name {methodName} in type {className} not exist");
+            CSharpSyntaxNode type = method.ReturnType;
             if (type.Kind() == SyntaxKind.IdentifierName)
             {
                 return (type as IdentifierNameSyntax).Identifier.Text == "Task";
@@ -79,6 +83,11 @@ namespace Caspian.Engine.Service
                 return (type as GenericNameSyntax).Identifier.Text == "Task";
             }
             return false;
+        }
+
+        public bool MethodIsExist(string className, string methodName, string sourceCode)
+        {
+            return FindMethod(className, methodName, sourceCode) != null;
         }
 
         public MethodDeclarationSyntax FindMethod(string className, string methodName, string sourceCode)
