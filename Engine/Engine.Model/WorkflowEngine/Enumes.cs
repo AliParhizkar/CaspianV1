@@ -38,47 +38,6 @@ namespace Caspian.Engine
         UserBySpecialPost
     }
 
-    /// <summary>
-    /// نحوه ی نمایش فیلدها
-    /// </summary>
-    public enum ShowType: byte
-    {
-        /// <summary>
-        /// فعال
-        /// </summary>
-        [EnumField("فعال")]
-        Enable = 1,
-
-        /// <summary>
-        /// غیرفعال
-        /// </summary>
-        [EnumField("غیرفعال")]
-        Disable,
-
-        /// <summary>
-        /// مخفی
-        /// </summary>
-        [EnumField("مخفی")]
-        Hidden
-    }
-
-    /// <summary>
-    /// زمان نمایش فیلدهای خاص
-    /// </summary>
-    public enum ShowTime: byte
-    {
-        /// <summary>
-        /// قبل از ارجاع
-        /// </summary>
-        [EnumField("قبل از ارجاع")]
-        BeforRef = 1,
-
-        /// <summary>
-        /// بعد از ارجاع
-        /// </summary>
-        [EnumField("بعد از ارجاع")]
-        OfterRef
-    }
 
     public enum ControlType: byte
     {
@@ -184,5 +143,26 @@ namespace Caspian.Engine
         /// </summary>
         [EnumField("جنسیت")]
         Gender
+    }
+
+    public enum DataModelFieldType: byte
+    {
+        [EnumField("زشته ای")]
+        String = 1,
+
+        [EnumField("تاریخ")]
+        Date,
+
+        [EnumField("زمان")]
+        Time,
+
+        [EnumField("تاریخ و زمان")]
+        DateAndTime,
+
+        [EnumField("عدد صحیح")]
+        Integer,
+
+        [EnumField("عدد اعشاری")]
+        Decimal,
     }
 }

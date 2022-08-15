@@ -12,7 +12,15 @@ namespace Caspian.Engine
 
         public string Title { get; set; }
 
-        public SubSystemKind SubSystemKind { get; set; }
+        public int WorkflowGroupId { get; set; }
+
+        [ForeignKey(nameof(WorkflowGroupId))]
+        public virtual WorkflowGroup WorkflowGroup { get; set; }
+
+        public int DataModelId { get; set; }
+
+        [ForeignKey(nameof(DataModelId))]
+        public virtual DataModel DataModel { get; set; }
 
         public byte ColumnCount { get; set; }
 
@@ -23,16 +31,7 @@ namespace Caspian.Engine
         /// <summary>
         /// Rows of form
         /// </summary>
+        [CheckOnDelete("فرم دااری ردیف می باشد و امکان حذف آن وجود ندادر")]
         public virtual IList<HtmlRow> Rows { get; set; }
-
-        /// <summary>
-        /// Entity fields that declare in form
-        /// </summary>
-        public virtual IList<WfFormEntityField> EntityFields { get; set; }
-
-        /// <summary>
-        /// All activities that form assigned them
-        /// </summary>
-        public virtual IList<ActivityFormAssign> Activities { get; set; }
     }
 }

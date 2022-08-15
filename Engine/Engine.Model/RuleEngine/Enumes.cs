@@ -204,6 +204,15 @@ namespace Caspian.Engine
         Middle
     }
 
+    public enum ImplementType: byte
+    {
+        [EnumField("فرمول")]
+        Rule = 1,
+
+        [EnumField("فرم")]
+        Form
+    }
+
     public enum ValueTypeKind: byte
     { 
         /// <summary>

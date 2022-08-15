@@ -384,8 +384,12 @@ legend {
     white-space:nowrap;
     font-weight:bold;
 }
-
 .c-workflow{
-    border:1px solid red;
-    height:100vh;
+    display:flex;
+}
+.c-workflow-designer {
+    border: 1px solid red;
+    height: 100vh;
+    width: calc(100% - 250px);
+    box-sizing: border-box;
 }

@@ -1,4 +1,4 @@
-﻿@*@page "/{Subsystem}/Engine/Workflow"
+﻿@page "/Engine/Workflow/{GroupId:int}"
 @namespace Caspian.Engine.WorkFlowGenrator
 @inherits SimplePage<Workflow>
 @{
@@ -14,19 +14,13 @@
             <td>
                 <StringTextBox @bind-Value="SearchData.Title" />
             </td>
-            <td>
-                <label>گروه </label>
-            </td>
-            <td>
-                <ComboBox @bind-Value="SearchData.FormGroupId" TValue="int" TEntity="FormGroup" TextExpression="t => t.Title"
-                          ConditionExpression="t => t.Subsystem == subSystemKind" />
-            </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="Workflow" Search="SearchData" TableHeight="400" ConditionExpr="t => t.FormGroup.Subsystem == subSystemKind">
+    <DataGrid @ref="CrudGrid" TEntity="Workflow" TableHeight="400" ConditionExpr="t => t.WorkflowGroupId == GroupId">
         <Columns>
-            <GridColumn TEntity="Workflow" Field="t => t.FormGroup.Title" Title="گروه گردش" />
             <GridColumn TEntity="Workflow" Field="t => t.Title" />
+            <GridColumn TEntity="Workflow" Field="t => t.DataModel.Title" Title="عنوان مدل داده ای" />
+            <GridColumn TEntity="Workflow" Field="t => t.DataModel.Name" Title="نام مدل داده ای" />
             <GridColumn TEntity="Workflow" Title="ایجاد گردش" style="width:80px">
                 <Template>
                     <a href="/Engine/WorkflowGenrator/@(context.Data.Id)" target="_blank">...</a>
@@ -35,20 +29,15 @@
             <GridCommandColumns TEntity="Workflow" />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="گردش کار" Style="width:500px">
+    <Window @ref="UpsertWindow" Title="گردش کار" Style="width:500px" 
+        OnOpen="() => 
+        {
+            UpsertData.WorkflowGroupId = GroupId;
+        }" >
         <Content>
             <CaspianForm @ref="UpsertForm" Model="UpsertData">
                 <CaspianValidationValidator ValidatorType="typeof(WorkflowService)" />
                 <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>گروه گردش</label>
-                        </td>
-                        <td>
-                            <ComboBox @bind-Value="UpsertData.FormGroupId" TValue="int" TEntity="FormGroup" TextExpression="t => t.Title"
-                                      ConditionExpression="t => t.Subsystem == subSystemKind" />
-                        </td>
-                    </tr>
                     <tr>
                         <td>
                             <label>عنوان</label>
@@ -72,7 +61,6 @@
                         </td>
                     </tr>
                 </table>
-
             </CaspianForm>
         </Content>
     </Window>
@@ -80,15 +68,7 @@
 
 @code
 {
-    SubSystemKind subSystemKind;
 
     [Parameter]
-    public string Subsystem { get; set; }
-
-    protected override void OnInitialized()
-    {
-        subSystemKind = (SubSystemKind)typeof(SubSystemKind).GetField(Subsystem).GetValue(null);
-        base.OnInitialized();
-    }
+    public int GroupId { get; set; }
 }
-*@

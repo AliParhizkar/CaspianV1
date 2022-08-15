@@ -6,12 +6,12 @@
         @if (showEntityType)
         {
             <ul>
-                @foreach(var item in entityFields)
+                @foreach(var item in dataModelFields)
                 {
-                    var className = item.EntityFullName == EntityTypeFullName ? "c-selected" : null;
-                    <li @onclick="async () => await EntityType(item.EntityFullName)" @onclick:stopPropagation @onclick:preventDefault class="@className">
+                    var className = item.FieldName == SelectedFieldName ? "c-selected" : null;
+                    <li @onclick="async () => await EntityType(item.FieldName)" @onclick:stopPropagation @onclick:preventDefault class="@className">
                         @item.Title
-                        @if (showEntityProperties && item.EntityFullName == EntityTypeFullName)
+                        @if (showEntityProperties && item.FieldName == SelectedFieldName)
                         {
                             <ul class="c-property">
                                 @if (dynamicParameters != null && dynamicParameters.Count > 0)
@@ -25,7 +25,7 @@
                                                 @foreach(var param in dynamicParameters)
                                                 {
                                                     className = selectedDynamicParameterId == param.Id ? "c-selected" : null;
-                                                    <li class="@className" @onclick="() => SelecteDynamicParameter(param.Id)" @onclick:preventDefault @onclick:stopPropagation>@param.FaTitle</li>
+                                                    <li class="@className" @onclick="() => SelecteDynamicParameter(param.Id, item.Id)" @onclick:preventDefault @onclick:stopPropagation>@param.FaTitle</li>
                                                 }
                                             </ul>
                                         }
@@ -51,12 +51,12 @@
 {
     bool showEntityType;
     bool showEntityProperties;
-    string EntityTypeFullName;
+    string SelectedFieldName;
     PropertyInfo? selectedPropertyInfo;
-    IList<WfFormEntityField> entityFields;
+    IList<DataModelField> dataModelFields;
     IList<PropertyInfo> workflowEntityProperties;
     SubSystemKind subSystemKind;
-    int? wfEntityFieldId;
+    int? DataModelFieldId;
     IList<DynamicParameter> dynamicParameters;
     int? selectedDynamicParameterId;
     bool showParameter;
@@ -67,33 +67,44 @@
         showParameter = true;
     }
 
-    async Task SelecteDynamicParameter(int parameterId)
+    async Task SelecteDynamicParameter(int parameterId, int dataModelFieldId)
     {
         selectedDynamicParameterId = parameterId;
+        this.DataModelFieldId = dataModelFieldId;
         var param = dynamicParameters.Single(t => t.Id == parameterId);
-        if (OnDynamicParameterSelect.HasDelegate)
-            await OnDynamicParameterSelect.InvokeAsync(param);
+        await OnDynamicParameterSelect.InvokeAsync(param);
         HideSelector();
     }
 
     async Task EntityType(string key)
     {
-        EntityTypeFullName = key;
-        showEntityProperties = true;
-        workflowEntityProperties = new AssemblyInfo().GetModelType(subSystemKind, key).GetProperties()
-            .Where(t => !t.CustomAttributes.Any(t => t.AttributeType == typeof(KeyAttribute) || 
-            t.AttributeType == typeof(ForeignKeyAttribute)) || t.PropertyType.IsCollectionType()).ToList();
-        var scope = CreateScope();
-        dynamicParameters = await new DynamicParameterService(scope).GetAll().Where(t => t.EntityName == key).ToListAsync();
+        SelectedFieldName = key;
+        var field = dataModelFields.Single(t => t.FieldName == key);
+        var entityName = field.EntityFullName;
+        if (entityName.HasValue())
+        {
+            showEntityProperties = true;
+            workflowEntityProperties = new AssemblyInfo().GetModelType(subSystemKind, entityName).GetProperties()
+                .Where(t => !t.CustomAttributes.Any(t => t.AttributeType == typeof(KeyAttribute) ||
+                t.AttributeType == typeof(ForeignKeyAttribute)) || t.PropertyType.IsCollectionType()).ToList();
+            var scope = CreateScope();
+            dynamicParameters = await new DynamicParameterService(scope).GetAll().Where(t => t.EntityName == entityName).ToListAsync();
+        }
+        else
+        {
+            showEntityProperties = false;
+            dynamicParameters = null;
+            HideSelector();
+            await OnFieldSelect.InvokeAsync(field);
+        }
     }
 
-    async Task EntityProperty(PropertyInfo info, int wfEntityFieldId)
+    async Task EntityProperty(PropertyInfo info, int dataModelFieldId)
     {
         selectedPropertyInfo = info;
         HideSelector();
-        this.wfEntityFieldId = wfEntityFieldId;
-        if (OnPropertySelect.HasDelegate)
-            await OnPropertySelect.InvokeAsync(info);
+        this.DataModelFieldId = dataModelFieldId;
+        await OnPropertySelect.InvokeAsync(info);
         selectedDynamicParameterId = null;
     }
 
@@ -104,17 +115,18 @@
         showParameter = false;
     }
 
-    public int? GetSelectedWfEntityFieldId()
+    public int? GetSelectedDataModelFieldId()
     {
-        return wfEntityFieldId;
+        return DataModelFieldId;
     }
 
     protected async override Task OnInitializedAsync()
     {
         var scope = CreateScope();
-        var form = await new Caspian.Engine.Service.WorkflowFormService(scope).SingleAsync(WorkflowFormId);
-        subSystemKind = form.SubSystemKind;
-        entityFields = new WfFormEntityFieldService(scope).GetAll().Where(t => t.WorkflowFormId == WorkflowFormId).ToList();
+        var form = await new WorkflowFormService(scope).GetAll().Include(t => t.WorkflowGroup).SingleAsync(t => t.Id == WorkflowFormId);
+
+        subSystemKind = form.WorkflowGroup.SubSystemKind;
+        dataModelFields = new DataModelFieldService(scope).GetAll().Where(t => t.DataModelId == form.DataModelId).ToList();
         await base.OnInitializedAsync();
     }
 
@@ -122,7 +134,10 @@
     public int WorkflowFormId{ get; set; }
 
     [Parameter]
-    public EventCallback<PropertyInfo> OnPropertySelect{ get; set; }
+    public EventCallback<PropertyInfo> OnPropertySelect { get; set; }
+
+    [Parameter]
+    public EventCallback<DataModelField> OnFieldSelect { get; set; }
 
     [Parameter]
     public EventCallback<DynamicParameter> OnDynamicParameterSelect{ get; set; }

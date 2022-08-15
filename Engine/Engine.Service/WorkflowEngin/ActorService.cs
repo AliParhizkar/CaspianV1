@@ -12,7 +12,7 @@ namespace Caspian.Engine
         }
         public int? GetActorId(int userId, SubSystemKind systemKind, Type genericType, Activity activity)
         {
-            if (activity.CategoryType != CategoryType.Default)
+            if (activity.ActivityType != ActivityType.User)
                 return null;
             var types = systemKind.GetServiceAssembly().GetTypes();
             Type mainType = null;

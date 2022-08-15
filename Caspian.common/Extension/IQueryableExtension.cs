@@ -4,11 +4,8 @@ using System.Reflection;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Threading.Tasks;
-using System.Dynamic;
 
 namespace Caspian.Common.Extension
 {
@@ -19,6 +16,23 @@ namespace Caspian.Common.Extension
             var parameter = Expression.Parameter(source.ElementType, "t");
             var lambda = parameter.CreateLambdaExpresion(exprList);
             return source.Select(lambda);
+        }
+
+        public async static Task<TEntity> SingleAsync<TEntity>(this IQueryable<TEntity> query, int id) where TEntity : class
+        {
+            var entity = await query.SingleOrDefaultAsync(id);
+            if (entity == null)
+                throw new CaspianException("آیتم از سیستم حذف شده است");
+            return entity;
+        }
+
+        public async static Task<TEntity> SingleOrDefaultAsync<TEntity>(this IQueryable<TEntity> query, int id) where TEntity : class
+        {
+            var param = Expression.Parameter(typeof(TEntity), "t");
+            Expression expr = Expression.Property(param, typeof(TEntity).GetPrimaryKey());
+            expr = Expression.Equal(expr, Expression.Constant(id));
+            var lambda = Expression.Lambda(expr, param);
+            return await query.Where(lambda).OfType<TEntity>().SingleOrDefaultAsync();
         }
 
         public async static Task<IList<TEntity>> GetValuesAsync<TEntity>(this IQueryable<TEntity> source, IList<MemberExpression> exprList)

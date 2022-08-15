@@ -1,4 +1,4 @@
-﻿@page "/Engine/WorkflowForm/{WorkflowFormId:int}"
+﻿@page "/Engine/FormGenerator/{WorkflowFormId:int}"
 
 @using Microsoft.EntityFrameworkCore
 @namespace Caspian.Engine.WorkflowEngine
@@ -9,7 +9,7 @@
     <div class="c-form-designer">
         <div class="c-tools-bar">
             <button class="w-button w-form-load" title="حذف کنترل"></button>
-            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="info => AddControl(info)" OnDynamicParameterSelect="parameter => AddControl(parameter)" />
+            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="info => AddControl(info)" OnDynamicParameterSelect="parameter => AddControl(parameter)" OnFieldSelect="field => AddControl(field)" />
             <button @onclick="RemoveSelectedControl" class="w-button w-ctr-delete" title="حذف کنترل"></button>
             <div class="w-seprator"></div>
         <div>
@@ -70,7 +70,7 @@
                                                         var ctr = col1.Component;
                                                         if (ctr != null)
                                                         {
-                                                            ctr.WfFormEntityField = null;
+                                                            //ctr.DataModelField = null;
                                                             <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr"  />
                                                         }
                                                     }
@@ -82,7 +82,7 @@
                                 else if(col.Component != null)
                                 {
                                     var ctr = col.Component;
-                                    ctr.WfFormEntityField = null;
+                                    ctr.DataModelField = null;
                                     <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
                                 }
                             </div>

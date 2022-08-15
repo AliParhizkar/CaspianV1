@@ -186,13 +186,13 @@
         {
             var name = propertyName;
             propertyName = null;
-            await jsRuntime.InvokeVoidAsync("$.workflow.findCode", FormName, Id, name);
+            await jsRuntime.InvokeVoidAsync("$.workflowForm.findCode", FormName, Id, name);
         }
         if (eventName.HasValue())
         {
             var name = eventName;
             eventName = null;
-            await jsRuntime.InvokeVoidAsync("$.workflow.findEventHandler", FormName, Id, name);
+            await jsRuntime.InvokeVoidAsync("$.workflowForm.findEventHandler", FormName, Id, name);
         }
         await base.OnAfterRenderAsync(firstRender);
     }

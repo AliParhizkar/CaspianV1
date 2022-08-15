@@ -1,7 +1,7 @@
-﻿@page "/Engine/WorkflowForm/{GroupId:int}"
-@namespace Caspian.Engine.WorkflowGenerator
-@inherits SimplePage<WorkflowForm>
-@{ 
+﻿@page "/Engine/DataModel/{GroupId:int}"
+@namespace Caspian.Engine.WorkFlow
+@inherits SimplePage<DataModel>
+@{
     base.BuildRenderTree(__builder);
 }
 <div style="width:90%;margin:0 auto">
@@ -13,25 +13,39 @@
             <td>
                 <StringTextBox @bind-Value="SearchData.Title" />
             </td>
+            <td>
+                <label>نام</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Name" />
+            </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="WorkflowForm" Search="SearchData" TableHeight="400" >
+    <DataGrid @ref="CrudGrid" TEntity="DataModel" TableHeight="400" ConditionExpr="t => t.WorkflowGroupId == GroupId">
         <Columns>
-            <GridColumn TEntity="WorkflowForm" Field="t => t.Title" Title="عنوان" />
-            <GridColumn TEntity="WorkflowForm" Field="t => t.ColumnCount" Title="تعداد ستونها" />
-            <GridColumn TEntity="WorkflowForm" Title="ایجاد فرم" style="width:80px;">
+            <GridColumn TEntity="DataModel" Field="t => t.Title" />
+            <GridColumn TEntity="DataModel" Field="t => t.Name" />
+            <GridColumn TEntity="DataModel" Title="جزئیات" style="width:80px">
                 <Template>
-                    <a href="/Engine/FormGenerator/@(context.Data.Id)" target="_blank">...</a>
+                    <IconButton Href='@($"/Engine/DataModelField/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="WorkflowForm" />
+            <GridCommandColumns TEntity="DataModel" />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:400px" OnOpen="FormOpen">
+    <Window @ref="UpsertWindow" Title="مدل داده ای" Style="width:500px" OnOpen="() => {UpsertData.WorkflowGroupId = GroupId;}">
         <Content>
             <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                <CaspianValidationValidator ValidatorType="typeof(WorkflowFormService)" />
+                <CaspianValidationValidator ValidatorType="typeof(DataModelService)" />
                 <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>نام</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Name" Style="direction:ltr" />
+                        </td>
+                    </tr>
                     <tr>
                         <td>
                             <label>عنوان</label>
@@ -42,18 +56,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <label>تعداد ستونها</label>
+                            <label>شرح</label>
                         </td>
                         <td>
-                            <NumericTextBox @bind-Value="UpsertData.ColumnCount" /> 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                             <label>نام فرم</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Name" />
+                            <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="3" />
                         </td>
                     </tr>
                     <tr>
@@ -71,11 +77,8 @@
 
 @code
 {
+
     [Parameter]
     public int GroupId { get; set; }
-
-    void FormOpen()
-    {
-        UpsertData.WorkflowGroupId = GroupId;
-    }
 }
+

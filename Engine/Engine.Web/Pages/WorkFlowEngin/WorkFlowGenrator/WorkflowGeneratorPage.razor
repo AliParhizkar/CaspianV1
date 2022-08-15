@@ -1,8 +1,13 @@
 ﻿@page "/Engine/WorkflowGenerator/{WorkflowId:int}"
+@using Newtonsoft.Json
+@inherits BasePage
+@inject IHostEnvironment Environment 
 <div class="c-workflow">
-    
-    <div>
+    <div style="width:250px;border:1px solid red;height:100vh;box-sizing:border-box;">
 
+    </div>
+    <div id="workflowDesigner" class="c-workflow-designer">
+         
     </div>
 </div>
 
@@ -11,4 +16,40 @@
 {
     [Parameter]
     public int WorkflowId{ get; set; }
+    IList<Activity> Activities;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var scope = CreateScope();
+        Activities = await new ActivityService(scope).GetAll().Where(t => t.WorkflowId == WorkflowId).ToListAsync();
+        await base.OnInitializedAsync();
+    }
+
+    [JSInvokable]
+    public async Task<string> GetActivityCodebehindString(int activityId)
+    {
+        var scope = CreateScope();
+        var code = await new ActivityService(scope).GetCodebehindAsync(activityId);
+        return code;
+    }
+
+    [JSInvokable]
+    public async Task<string> getActivitySourceCodeString(int activityId)
+    {
+        var scope = CreateScope();
+        var basePath = Environment.ContentRootPath + "Data\\Code\\";
+        var code = await new ActivityService(scope).GetSourceCodeAsync(activityId, basePath);
+        return code;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var json = JsonConvert.SerializeObject(Activities);
+            await jsRuntime.InvokeVoidAsync("$.workflow.init", DotNetObjectReference.Create(this), json);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+
+    }
 }

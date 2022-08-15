@@ -52,9 +52,6 @@ namespace Caspian.Engine
         [DisplayName("اولویت محاسبه")]
         public int? Priority { get; set; }
 
-        [NotMapped]
-        public object Result { get; set; }
-
         /// <summary>
         /// لیست توکن های این قانون
         /// </summary>

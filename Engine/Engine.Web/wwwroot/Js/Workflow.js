@@ -1,358 +1,147 @@
 ﻿(function ($) {
+    var myDiagram;
     var $w = $.workflow = {
         init: function (dotNetObjectReference, myData) {
-            var tempdata = JSON.parse(myData);
-            $w.dotNetObjectReference = dotNetObjectReference;
-            if (window.goSamples)
-                goSamples();
-            var $ = go.GraphObject.make;
-            myDiagram =
-                $(go.Diagram, "myDiagramDiv",
-                    {
-                        initialContentAlignment: go.Spot.Center,
-                        allowDrop: true,
-                        "LinkDrawn": showLinkLabel,
-                        "LinkRelinked": showLinkLabel,
-                        "animationManager.duration": 800,
-                        "undoManager.isEnabled": true
-                    });
-            myDiagram.addDiagramListener("Modified", function (e) {
-                //if (myDiagram.isModified)
-                //    if (idx < 0)
-                //        document.title += "*";
-                //    else
-                //        if (idx >= 0)
-                //            document.title = document.title.substr(0, idx);
+            let activities = JSON.parse(myData);
+            $w.dotnet = dotNetObjectReference;
+            let $ = go.GraphObject.make;
+            myDiagram = $(go.Diagram, "workflowDesigner", {
+                //grid: $(go.Panel, "Grid",  // a simple 10x10 grid
+                //    $(go.Shape, "LineH", { stroke: "lightgray", strokeWidth: 0.5 }),
+                //    $(go.Shape, "LineV", { stroke: "lightgray", strokeWidth: 0.5 })
+                //)
             });
-            function nodeStyle() {
-                return [
-                    new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
-                    {
-                        locationSpot: go.Spot.Center,
-                        mouseEnter: function (e, obj) { $w.showPorts(obj.part, true); },
-                        mouseLeave: function (e, obj) { $w.showPorts(obj.part, false); }
-                    }
-                ];
-            }
-            function makePort(name, spot, output, input) {
-                return $(go.Shape, "Circle", {
-                    fill: "transparent",
-                    stroke: null,
-                    desiredSize: new go.Size(8, 8),
-                    alignment: spot,
-                    alignmentFocus: spot,
-                    portId: name,
-                    fromSpot: spot,
-                    toSpot: spot,
-                    fromLinkable: output,
-                    toLinkable: input,
-                    cursor: "pointer"
-                });
-            }
-            var lightText = 'whitesmoke';
-            myDiagram.nodeTemplateMap.add("",
-                $(go.Node, "Spot", nodeStyle(),
-                    $(go.Panel, "Auto",
-                        $(go.Shape, "RoundedRectangle",
-                            {
-                                fill: "#00A9C9",
-                                stroke: null,
-                                doubleClick: function (e, textBlock) {
-                                    if (e.shift)
-                                        $w.showFormForFieldsInit1(e);
-                                    else
-                                        if (e.control)
-                                            $w.showFormForFieldsInit(e);
-                                        else
-                                            $w.setActivityProperty(textBlock);
-                                }
-                            },
-                            new go.Binding("figure", "figure")),
-                        $(go.TextBlock,
-                            {
-                                font: "bold 11pt Helvetica, Arial, sans-serif",
-                                textAlign: "right",
-                                stroke: lightText,
-                                margin: 8,
-                                maxSize: new go.Size(160, NaN),
-                                wrap: go.TextBlock.WrapFit,
-                                editable: false,
-                                doubleClick: function (e, textBlock) {
-                                    if (e.shift)
-                                        $w.showFormForFieldsInit1(e);
-                                    else
-                                        if (e.control)
-                                            $w.showFormForFieldsInit(e);
-                                        else
-                                            $w.setActivityProperty(textBlock);
-                                }
-                            },
-                            new go.Binding("text").makeTwoWay())
-                    ),
-                    makePort("T", go.Spot.Top, false, true),
-                    makePort("L", go.Spot.Left, true, true),
-                    makePort("R", go.Spot.Right, true, true),
-                    makePort("B", go.Spot.Bottom, true, false)
-                ));
+            myDiagram.nodeTemplateMap.add("UserActivity",
+                $(go.Node, "Auto", new go.Binding("location", "loc", go.Point.parse),
+                    $(go.Shape, "RoundedRectangle", {
+                    fill: $(go.Brush, "Linear", { 1: "lightblue", 0: "#eef" }),
+                    stroke: "lightblue", strokeWidth: 2,
+                    click: $w.ActivitySelect,
+                    angle: 90
+                }), $(go.Panel, "Table", { defaultAlignment: go.Spot.TopRight, margin: 0, click: $w.ActivitySelect }, $(go.RowColumnDefinition, { column: 1, width: 0 }), $(go.Picture, {
+                    source: "_content/Engine.Web/Content/Workflow/Images/UserActivity.png", row: 0, column: 0,
+                    width: 120, height: 40, margin: 0,
+                    
+                }), $(go.TextBlock, 
+                    new go.Binding("text", "title"), {
+                    row: 1, column: 0,
+                    textAlign: "center",
+                    alignment: go.Spot.TopCenter,
+                    height: 30,
+                    width: 100,
+                    font: "14px bold Arial",
+                    margin: 5
+                }))));
+
+            myDiagram.nodeTemplateMap.add("ValidatorActivity",
+                $(go.Node, "Auto", new go.Binding("location", "loc", go.Point.parse),
+                    $(go.Shape, "RoundedRectangle", {
+                        fill: $(go.Brush, "Linear", { 1: "#FFB322", 0: "#FFFDCF" }),
+                        stroke: "lightblue", strokeWidth: 2,
+                        click: $w.ActivitySelect,
+                        angle: 90
+                    }), $(go.Panel, "Table", { defaultAlignment: go.Spot.TopRight, margin: 0, click: $w.ActivitySelect }, $(go.RowColumnDefinition, { column: 1, width: 0 }), $(go.Picture, {
+                        source: "_content/Engine.Web/Content/Workflow/Images/ValidatorActivity.png", row: 0, column: 0,
+                        width: 120, height: 40, margin: 0,
+
+                    }), $(go.TextBlock,
+                        new go.Binding("text", "title"), {
+                        row: 1, column: 0,
+                        textAlign: "center",
+                        alignment: go.Spot.TopCenter,
+                        height: 30,
+                        width: 100,
+                        font: "14px bold Arial",
+                        margin: 5
+                    }))));
 
             myDiagram.nodeTemplateMap.add("Start",
-                $(go.Node, "Spot", nodeStyle(),
-                    $(go.Panel, "Auto",
+                $(go.Node, "Table", new go.Binding("location", "loc", go.Point.parse),
+                    $(go.Panel, "Spot",
                         $(go.Shape, "Circle",
-                            { minSize: new go.Size(40, 40), fill: "#79C900", stroke: null }),
-                        $(go.TextBlock, "Start", {
-                            font: "bold 11pt Helvetica, Arial, sans-serif",
-                            stroke: lightText
-                        },
-                            new go.Binding("text"))
-                    ),
-                    makePort("T", go.Spot.Top, true, false),
-                    makePort("L", go.Spot.Left, true, false),
-                    makePort("R", go.Spot.Right, true, false),
-                    makePort("B", go.Spot.Bottom, true, false)
-                ));
+                            { desiredSize: new go.Size(70, 70), fill: "transparent", stroke: "#09d3ac", strokeWidth: 3.5 }),
+                        $(go.TextBlock, "Start", {text: "Start"})
+                    )));
 
-            myDiagram.nodeTemplateMap.add("Diamond",
-                $(go.Node, "Spot", nodeStyle(),
-                    $(go.Panel, "Auto",
-                        $(go.Shape, "Diamond",
-                            {
-                                minSize: new go.Size(80, 50),
-                                fill: "#00A9C9",
-                                stroke: null,
-                                doubleClick: function (e, obj) {
-                                    $w.showFormForCheckMethods(e, obj);
-                                }
-                            }),
-                        $(go.TextBlock, "End",
-                            {
-                                font: "bold 11pt Helvetica, Arial, sans-serif",
-                                stroke: lightText,
-                                doubleClick: function (e, obj) {
-                                    $w.showFormForCheckMethods(e, obj);
-                                }
-                            },
-                            new go.Binding("text"))
-                    ),
-                    makePort("T", go.Spot.Top, true, true),
-                    makePort("L", go.Spot.Left, true, true),
-                    makePort("R", go.Spot.Right, true, true),
-                    makePort("B", go.Spot.Bottom, true, true)
-                ));
 
-            myDiagram.nodeTemplateMap.add("End",
-                $(go.Node, "Spot", nodeStyle(),
-                    $(go.Panel, "Auto",
-                        $(go.Shape, "Circle",
-                            { minSize: new go.Size(40, 40), fill: "#DC3C00", stroke: null }),
-                        $(go.TextBlock, "End",
-                            { font: "bold 11pt Helvetica, Arial, sans-serif", stroke: lightText },
-                            new go.Binding("text"))
-                    ),
-                    makePort("T", go.Spot.Top, false, true),
-                    makePort("L", go.Spot.Left, false, true),
-                    makePort("R", go.Spot.Right, false, true),
-                    makePort("B", go.Spot.Bottom, false, true)
-                ));
-            myDiagram.nodeTemplateMap.add("Parallelogram1",
-                $(go.Node, "Spot", nodeStyle(),
-                    $(go.Panel, "Auto",
-                        $(go.Shape, "Parallelogram1",
-                            {
-                                minSize: new go.Size(40, 40),
-                                fill: "#00A9C9",
-                                stroke: null,
-                                doubleClick: function (e) {
-                                    showFormForProcessMethod(e);
-                                }
-                            }),
-                        $(go.TextBlock, "End",
-                            {
-                                font: "bold 11pt Helvetica, Arial, sans-serif",
-                                stroke: lightText,
-                                doubleClick: function (e) {
-                                    $w.showFormForProcessMethod(e);
-                                }
-                            },
-                            new go.Binding("text"))
-                    ),
-                    makePort("T", go.Spot.Top, true, true),
-                    makePort("L", go.Spot.Left, true, true),
-                    makePort("R", go.Spot.Right, true, true),
-                    makePort("B", go.Spot.Bottom, true, true)
-                ));
-            myDiagram.nodeTemplateMap.add("Waiter",
-                $(go.Node, "Spot", nodeStyle(),
-                    $(go.Panel, "Auto",
-                        $(go.Shape, "AndGate",
-                            {
-                                minSize: new go.Size(40, 50),
-                                fill: "#00A9C9",
 
-                                stroke: null,
-                                doubleClick: function (e) {
-                                    $w.showFormForProcessMethod(e);
-                                }
-                            }),
-                        $(go.TextBlock,
-                            {
-                                font: "bold 11pt Helvetica, Arial, sans-serif",
-                                stroke: lightText,
-                                //minSize: new go.Size(50, 80),
-                                textAlign: "center",
-                                doubleClick: function (e) {
-                                    $w.showFormForProcessMethod(e);
-                                }
-                            },
-                            new go.Binding("text"))
-                    ),
-                    makePort("T", go.Spot.Top, false, false),
-                    makePort("L", go.Spot.Left, false, true),
-                    makePort("R", go.Spot.Right, true, false),
-                    makePort("B", go.Spot.Bottom, false, false)
-                ));
-            go.Shape.defineFigureGenerator("File", function (shape, w, h) {
-                var geo = new go.Geometry();
-                var fig = new go.PathFigure(0, 0, true); // starting point
-                geo.add(fig);
-                fig.add(new go.PathSegment(go.PathSegment.Line, .75 * w, 0));
-                fig.add(new go.PathSegment(go.PathSegment.Line, w, .25 * h));
-                fig.add(new go.PathSegment(go.PathSegment.Line, w, h));
-                fig.add(new go.PathSegment(go.PathSegment.Line, 0, h).close());
-                var fig2 = new go.PathFigure(.75 * w, 0, false);
-                geo.add(fig2);
-                // The Fold
-                fig2.add(new go.PathSegment(go.PathSegment.Line, .75 * w, .25 * h));
-                fig2.add(new go.PathSegment(go.PathSegment.Line, w, .25 * h));
-                geo.spot1 = new go.Spot(0, .25);
-                geo.spot2 = go.Spot.BottomRight;
-                return geo;
+            let data = []
+            activities.forEach(function (activity) {
+                let loc = activity.Left + ' ' + activity.Top;
+                let category = '';
+                switch (activity.ActivityType) {
+                    case 1:
+                        category = 'Start';
+                        break;
+                    case 2:
+                        category = 'UserActivity';
+                        break;
+                    case 3:
+                        category = 'ValidatorActivity';
+                        break;
+                    
+                }
+                data.push({
+                    category: category,
+                    key: activity.Id,
+                    title: activity.Title,
+                    loc: loc
+                });
             });
-            myDiagram.nodeTemplateMap.add("Comment",
-                $(go.Node, "Auto", nodeStyle(),
-                    $(go.Shape, "File",//Parallelogram1
-                        { fill: "#EFFAB4", stroke: null }),
-                    $(go.TextBlock,
-                        {
-                            margin: 5,
-                            maxSize: new go.Size(200, NaN),
-                            wrap: go.TextBlock.WrapFit,
-                            textAlign: "center",
-                            editable: true,
-                            font: "bold 12pt Helvetica, Arial, sans-serif",
-                            stroke: '#454545'
-                        },
-                        new go.Binding("text").makeTwoWay())
-                ));
-            myDiagram.linkTemplate =
-                $(go.Link,
-                    {
-                        routing: go.Link.Normal,
-                        corner: 5, toShortLength: 4,
-                        relinkableFrom: true,
-                        relinkableTo: true,
-                        reshapable: true,
-                        resegmentable: true,
-                        mouseEnter: function (e, link) {
-                            //link.findObject("HIGHLIGHT").stroke = "rgba(30,144,255,0.2)";
-                        },
-
-                        mouseLeave: function (e, link) {
-                            //link.findObject("HIGHLIGHT").stroke = "transparent";
-                        },
-                        doubleClick: function (e, link) {
-                            var label = link.findObject("LABEL");
-                            if (label !== null) {
-                                var text = label.part.data.text;
-                                label.visible = text != null;
-                            }
-                            $w.connectorText(link);
-                        }
-                    },
-                    new go.Binding("points").makeTwoWay(),
-                    $(go.Shape,
-                        {
-                            isPanelMain: true,
-                            stroke: "gray",
-                            strokeWidth: 2
-
-                        }),
-                    $(go.Shape,
-                        {
-                            toArrow: "Standard",
-                            stroke: null,
-                            fill: "gray"
-                        }),
-                    $(go.Panel, "Auto",
-                        {
-                            //visible: go.Binding("text") != undefined,
-                            name: "LABEL",
-                            segmentIndex: 1,
-                            segmentFraction: 0.5,
-                            segmentOffset: new go.Point(0, 0),
-                            segmentOrientation: go.Link.OrientUpright
-                        },
-                        new go.Binding("visible", "visible").makeTwoWay(),
-                        $(go.Shape, "RoundedRectangle",
-                            {
-                                fill: "#F8F8F8",
-                                stroke: null
-                            }),
-                        $(go.TextBlock, "",
-                            {
-                                textAlign: "center",
-                                font: "10pt b nazanin, arial, sans-serif",
-                                stroke: "#333333",
-                                margin: 2,
-                                editable: false
-                            },
-                            new go.Binding("text").makeTwoWay())
-                    )
-                );
-            function showLinkLabel(e) {
-                var label = e.subject.findObject("LABEL");
-                if (label !== null)
-                    label.visible = true;
-            }
-            $w.load(myData);
-            myPalette =
-                $(go.Palette, "myPaletteDiv",
-                    {
-                        "animationManager.duration": 800,
-                        nodeTemplateMap: myDiagram.nodeTemplateMap,
-                        model: new go.GraphLinksModel(
-                            [
-                                {
-                                    category: "Start",
-                                    text: "شروع"
-                                },
-                                {
-                                    text: "پردازش کاربر"
-                                },
-                                {
-                                    text: "پردازش\nسیستمی",
-                                    figure: "Diamond",
-                                    category: "Diamond"
-                                },
-                                {
-                                    category: "End",
-                                    text: "پایان"
-                                },
-                                {
-                                    category: "Comment",
-                                    text: "توضیحات"
-                                },
-                                {
-                                    category: "Parallelogram1",
-                                    text: "پردازش سیستم"
-                                },
-                                {
-                                    category: "Waiter",
-                                    text: "تائید جمعی"
-                                }
-                            ])
-                    });
+            myDiagram.model = new go.GraphLinksModel(data, [
+                { from: "1", to: "2" },
+                { from: "2", to: "3" },
+                { from: "2", to: "4" },
+            ]);
         },
+
+        ActivitySelect: function (node, e) {
+            let data = e.part.data;
+            if (myDiagram.selection.count == 1) {
+                myDiagram.selection.each(t => {
+                    let data = t.part.data;
+                });
+            }
+
+        },
+
+        getActivityCodebehindString: function () {
+            if (myDiagram.selection.count == 1) {
+                myDiagram.selection.each(t => {
+                    var id = t.part.data.key;
+                    $w.dotnet.invokeMethodAsync("GetActivityCodebehindString", id).then(t => {
+                        var data = {
+                            action: 'setActivityCodebehind',
+                            content: t
+                        };
+                        window.chrome.webview.postMessage(data);
+                    });
+                });
+            }
+        },
+
+
+        getActivitySourceCodeString: function () {
+            if (myDiagram.selection.count == 1) {
+                myDiagram.selection.each(t => {
+                    var id = t.part.data.key;
+                    $w.dotnet.invokeMethodAsync("getActivitySourceCodeString", id).then(t => {
+                        var data = {
+                            action: 'setActivitySourceCode',
+                            content: t
+                        };
+                        window.chrome.webview.postMessage(data);
+                    });
+                });
+            }
+        },
+
+
+
+
+
+
+
 
         connectorText: function (link) {
             switch (link.fromNode.data.category) {
@@ -364,74 +153,6 @@
                     $w.systemAction(link);
                     break;
             }
-        },
-
-        WorkflowForm: function (dotnet) {
-            $.workflowForm = {
-                dotnet: dotnet
-            };
-        },
-
-        findCode: function (formName, ctrName, propertyName, code) {
-            var data = {
-                action: 'findCode',
-                content: JSON.stringify({
-                    Id: ctrName,
-                    Property: propertyName,
-                    Code: code,
-                    ClassName: formName
-                })
-            };
-            window.chrome.webview.postMessage(data);
-        },
-
-        findEventHandler: function (formName, ctrName, eventName) {
-            var data = {
-                action: 'findEventHandler',
-                content: JSON.stringify({
-                    Id: ctrName,
-                    EventHandler: eventName,
-                    ClassName: formName
-                })
-            };
-            window.chrome.webview.postMessage(data);
-        },
-
-        getSourceCodeString() {
-            $.workflowForm.dotnet.invokeMethodAsync("GetSourceCodeString").then(t => {
-                var data = {
-                    action: 'setSourceCode',
-                    content: t
-                };
-                window.chrome.webview.postMessage(data);
-            });
-        },
-
-        getCodebehindString() {
-            $.workflowForm.dotnet.invokeMethodAsync("GetCodebehindString").then(t => {
-                var data = {
-                    action: 'setCodebehind',
-                    content: t
-                };
-                window.chrome.webview.postMessage(data);
-            });
-        },
-        sendSaveRequest: function () {
-            var data = {
-                action: 'sendSourceCode',
-                content: ''
-            };
-            window.chrome.webview.postMessage(data);;
-        },
-        loadForm: function (formId) {
-            var data = {
-                action: 'sendSourceCode',
-                content: formId
-            };
-            window.chrome.webview.postMessage(data);;
-        },
-        saveCodeFile: function (code) {
-            $.workflowForm.dotnet.invokeMethodAsync('SaveFile', code);
         },
 
         updateSelectedNodeData: function (text, value) {
@@ -641,6 +362,5 @@
         }
     }
 })(jQuery);
-
-    
-    
+function save() {
+}

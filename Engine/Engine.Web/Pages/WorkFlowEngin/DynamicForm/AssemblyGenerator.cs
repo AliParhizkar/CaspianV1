@@ -29,11 +29,13 @@ namespace Caspian.Engine.WorkflowEngine
                 {
                     using var scope = CreateScope();
                     var service = new WorkflowFormService(scope);
-                    form = await service.GetAll().Include("EntityFields").Include("Rows").Include("Rows.Columns")
-                        .Include("Rows.Columns.Component").Include("Rows.Columns.Component.DynamicParameter")
+                    form = await service.GetAll().Include("Rows").Include("WorkflowGroup").Include("Rows.Columns")
+                        .Include("Rows.Columns.Component").Include("Rows.Columns.Component.DataModelField")
+                        .Include("Rows.Columns.Component.DynamicParameter")
                         .Include("Rows.Columns.Component.DynamicParameter.Options")
                         .Include("Rows.Columns.InnerRows").Include("Rows.Columns.InnerRows.HtmlColumns")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component")
+                        .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DynamicParameter")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DynamicParameter.Options")
                         .SingleAsync(t => t.Id == WorkflowFormId);
@@ -42,7 +44,7 @@ namespace Caspian.Engine.WorkflowEngine
                     {
                         var userSource = GetSourceFile();
                         userSource += CreateDynamicOptionCode();
-
+                        
                         var strSource = await CreateCodebehindFormFile(userSource);
                         CreateAssembly(strSource);
                         errorMessage = null;
@@ -109,12 +111,13 @@ namespace Caspian.Engine.WorkflowEngine
         {
             using var scope = CreateScope();
             var service = new WorkflowFormService(scope);
+            var fields = new DataModelFieldService(scope).GetAll().Where(t => t.DataModelId == form.DataModelId).ToList();
             var str = new StringBuilder();
             str.Append("using Caspian.UI;\n");
             str.Append("using System;\n");
             str.Append("using Caspian.Common.Attributes;\n");
-            str.Append("using " + form.SubSystemKind.ToString() + ".Model;\n");
-            str.Append("using " + form.SubSystemKind.ToString() + ".Service;\n");
+            str.Append("using " + form.WorkflowGroup.SubSystemKind.ToString() + ".Model;\n");
+            str.Append("using " + form.WorkflowGroup.SubSystemKind.ToString() + ".Service;\n");
             str.Append("using Microsoft.AspNetCore.Components;\n");
             str.Append("using Caspian.Common;\n");
             str.Append("using System.Threading.Tasks;\n");
@@ -122,8 +125,16 @@ namespace Caspian.Engine.WorkflowEngine
             str.Append("namespace Caspian.Engine.CodeGenerator\n{\n\t");
             str.Append("public partial class " + form.Name + ": BasePage\n");
             str.Append("\t{\n");
-            foreach (var field in form.EntityFields)
-                str.Append("\t\t" + field.EntityFullName + ' ' + field.FieldName + ";\n");
+            foreach (var field in fields)
+            {
+                var typeName = "";
+                if (field.EntityFullName.HasValue())
+                    typeName = field.EntityFullName;
+                else
+                    typeName = DataModelFieldService.GetControlTypeName(field.FieldType.Value);
+                str.Append("\t\t" + typeName + ' ' + field.FieldName + ";\n");
+            }
+            str.Append("\n\t\t//Dynamic parameters\n");
             var list = new List<DynamicParameter>();
             foreach (var row in form.Rows)
                 foreach (var col in row.Columns)
@@ -162,18 +173,22 @@ namespace Caspian.Engine.WorkflowEngine
                 {
                     var ctr = col.Component;
                     if (ctr != null)
-                        str.Append(service.GetControlType(form.SubSystemKind, ctr, true));
+                        str.Append(service.GetControlType(form.WorkflowGroup.SubSystemKind, ctr, true));
                     foreach (var row1 in col.InnerRows)
                         foreach(var col1 in row1.HtmlColumns)
                         {
                             ctr = col1.Component;
                             if (ctr != null)
-                                str.Append(service.GetControlType(form.SubSystemKind, ctr, true));
+                                str.Append(service.GetControlType(form.WorkflowGroup.SubSystemKind, ctr, true));
                         }
                 }
+            str.Append("\n");
             str.Append("\t\tprotected override void OnInitialized()\n\t\t{\n");
-            foreach(var field in form.EntityFields)
-                str.Append("\t\t\t" + field.FieldName + " = new " + field.EntityFullName + "();\n"); ;
+            foreach(var field in fields)
+            {
+                if (field.EntityFullName.HasValue())
+                    str.Append("\t\t\t" + field.FieldName + " = new " + field.EntityFullName + "();\n");
+            }
             str.Append("\t\t\tbase.OnInitialized();\n");
             str.Append("\t\t}\n\n");
             str.Append("\t\tprotected override void BuildRenderTree(RenderTreeBuilder builder)\n\t\t{\n");
@@ -229,16 +244,26 @@ namespace Caspian.Engine.WorkflowEngine
             bool? isAsync = null;
             if (control.OnChange.HasValue())
                 isAsync = new CodeManager().MethodIsAsync(form.Name, control!.OnChange, userCode);
-            var param = control!.DynamicParameter;
+            var parameterName = control.CustomeFieldName ?? control?.DynamicParameter?.EnTitle ?? control.DataModelField.FieldName;
             switch (control.ControlType)
             {
                 case ControlType.Integer:
                 case ControlType.Numeric:
-                    var strType = control.ControlType == ControlType.Integer ? "int?" : "decimal?";
-                    str.Append("\t\t\tbuilder.OpenComponent<NumericTextBox<" + strType + ">>(2);\n");
+                case ControlType.String:
+                    var strType = "";
+                    if (control.ControlType == ControlType.String)
+                    {
+                        strType = "string";
+                        str.Append("\t\t\tbuilder.OpenComponent<StringTextBox>(2);\n");
+                    }
+                    else
+                    {
+                        strType = control.ControlType == ControlType.Integer ? "int?" : "decimal?";
+                        str.Append("\t\t\tbuilder.OpenComponent<NumericTextBox<" + strType + ">>(2);\n");
+                    }
                     ///Value Binding
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + param.EnTitle + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => {\n" + param.EnTitle + " = value;\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + parameterName + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => {\n" + parameterName + " = value;\n");
                     if (control.OnChange.HasValue())
                     {
                         if (isAsync == true)
@@ -250,17 +275,20 @@ namespace Caspian.Engine.WorkflowEngine
                     ///Add Refrence to control
                     str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, txt =>\n");
                     str.Append("\t\t\t{\n");
-                    str.Append("\t\t\t\ttxt" + param.EnTitle + " = txt as NumericTextBox<" + strType + ">;\n");
+                    if (control.ControlType == ControlType.String)
+                        str.Append("\t\t\t\ttxt" + parameterName + " = txt as StringTextBox;\n");
+                    else
+                        str.Append("\t\t\t\ttxt" + parameterName + " = txt as NumericTextBox<" + strType + ">;\n");
                     str.Append("\t\t\t});\n");
                     //-----------------------------------------
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
                 case ControlType.DropdownList:
-                    strType = param.EnTitle;
+                    strType = parameterName;
                     str.Append("\t\t\tbuilder.OpenComponent<DropdownList<" + strType + ">>(2);\n");
                     ///Value Binding
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + param.EnTitle + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => {\n" + param.EnTitle + " = value;\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + parameterName + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => {\n" + parameterName + " = value;\n");
                     if (control.OnChange.HasValue())
                     {
                         if (isAsync == true)
@@ -272,21 +300,23 @@ namespace Caspian.Engine.WorkflowEngine
                     ///Add Refrence to control
                     str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, ddl =>\n");
                     str.Append("\t\t\t{\n");
-                    str.Append("\t\t\t\tddl" + param.EnTitle + " = ddl as DropdownList<" + strType + ">;\n");
+                    str.Append("\t\t\t\tddl" + parameterName + " = ddl as DropdownList<" + strType + ">;\n");
                     str.Append("\t\t\t});\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
+                default:
+                    throw new NotImplementedException("خطای عدم پیاده سازی");
             }
             str.Append("\t\t\tbuilder.CloseElement();\n");
         }
 
         async Task CreateControl(Caspian.Engine.BlazorControl component, StringBuilder str, string userCode)
         {
-            if (component.WfFormEntityFieldId == null)
+            if (component.DynamicParameterId.HasValue || component.CustomeFieldName.HasValue())
             {
                 CreateParameterControl(component, str, userCode);
                 return;
-            }
+            } 
             bool? isAsync = null;
             if (component.OnChange.HasValue())
                 isAsync = new CodeManager().MethodIsAsync(form.Name, component!.OnChange, userCode);
@@ -300,7 +330,7 @@ namespace Caspian.Engine.WorkflowEngine
             str.Append("\t\t\tbuilder.OpenElement(1, \"legend\");\n");
             str.Append("\t\t\tbuilder.AddContent(1, \"" + component.Caption + "\");\n");
             str.Append("\t\t\tbuilder.CloseElement();\n");
-            var type = new AssemblyInfo().GetModelType(form.SubSystemKind, component.WfFormEntityField.EntityFullName);
+            var type = new AssemblyInfo().GetModelType(form.WorkflowGroup.SubSystemKind, component.DataModelField.EntityFullName);
             var info = type.GetProperty(component.PropertyName);
             type = info!.PropertyType;
             var strType = type.GetUnderlyingType().Name;
@@ -308,7 +338,7 @@ namespace Caspian.Engine.WorkflowEngine
                 strType += "?";
             var scope = CreateScope();
             var service = new BlazorControlService(scope);
-            var id = await service.GetId(form.SubSystemKind, component);
+            var id = await service.GetId(form.WorkflowGroup.SubSystemKind, component);
             switch (component.ControlType)
             {
                 case ControlType.String:
@@ -319,14 +349,14 @@ namespace Caspian.Engine.WorkflowEngine
                         str.Append("\t\t\tbuilder.AddAttribute(3, \"style\", \"" + style + "\");");
                         str.Append("\t\t\tbuilder.AddAttribute(3, \"MultiLine\", true);");
                     }
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<string>(this, value => { " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value; }));\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.DataModelField.FieldName + '.' + component.PropertyName + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<string>(this, value => { " + component.DataModelField.FieldName + '.' + component.PropertyName + " = value; }));\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
                 case ControlType.DropdownList:
                     str.Append("\t\t\tbuilder.OpenComponent<DropdownList<" + strType + ">>(2);\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => \n\t\t\t{\n\t\t\t\t" + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value;\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.DataModelField.FieldName + '.' + component.PropertyName + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => \n\t\t\t{\n\t\t\t\t" + component.DataModelField.FieldName + '.' + component.PropertyName + " = value;\n");
                     if (component.OnChange.HasValue())
                     {
                         if (isAsync == true)
@@ -340,15 +370,15 @@ namespace Caspian.Engine.WorkflowEngine
                     break;
                 case ControlType.Date:
                     str.Append("\t\t\tbuilder.OpenComponent<DatePicker<" + strType + ">>(2);\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value; }));\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.DataModelField.FieldName + '.' + component.PropertyName + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.DataModelField.FieldName + '.' + component.PropertyName + " = value; }));\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
                 case ControlType.ComboBox:
                     var typeName = info.GetForeignKey().PropertyType.Name;
                     str.Append("\t\t\tbuilder.OpenComponent<ComboBox<" + typeName + ", " + strType + ">>(2);\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value; }));\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.DataModelField.FieldName + '.' + component.PropertyName + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.DataModelField.FieldName + '.' + component.PropertyName + " = value; }));\n");
                     if (component.OnChange.HasValue())
                     {
                         if (isAsync == true)
@@ -372,8 +402,8 @@ namespace Caspian.Engine.WorkflowEngine
                     if (info.PropertyType.IsNullableType())
                         strType += "?";
                     str.Append("\t\t\tbuilder.OpenComponent<NumericTextBox<" + strType + ">>(2);\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.WfFormEntityField.FieldName + '.' + component.PropertyName + " = value; }));\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.DataModelField.FieldName + '.' + component.PropertyName + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.DataModelField.FieldName + '.' + component.PropertyName + " = value; }));\n");
 
                     str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, txt =>\n");
                     str.Append("\t\t\t{\n");
@@ -392,8 +422,8 @@ namespace Caspian.Engine.WorkflowEngine
         {
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(codeToCompile);
             string assemblyName = Path.GetRandomFileName();
-            var modelPath = new AssemblyInfo().RelatedPath + "\\" + form.SubSystemKind.ToString() + ".model.dll";
-            var servicePath = new AssemblyInfo().RelatedPath + "\\" + form.SubSystemKind.ToString() + ".service.dll";
+            var modelPath = new AssemblyInfo().RelatedPath + "\\" + form.WorkflowGroup.SubSystemKind.ToString() + ".model.dll";
+            var servicePath = new AssemblyInfo().RelatedPath + "\\" + form.WorkflowGroup.SubSystemKind.ToString() + ".service.dll";
             var refPaths = new[] {
                     typeof(System.Object).GetTypeInfo().Assembly.Location,
                     typeof(PersianDate).GetTypeInfo().Assembly.Location,

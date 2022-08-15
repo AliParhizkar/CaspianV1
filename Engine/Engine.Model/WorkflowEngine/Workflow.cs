@@ -11,11 +11,21 @@ namespace Caspian.Engine
         [Key]
         public int Id { get; set; }
 
+        public int WorkflowGroupId { get; set; }
+
+        [ForeignKey(nameof(WorkflowGroupId))]
+        public virtual WorkflowGroup WorkflowGroup { get; set; }
+
         /// <summary>
         /// عنوان گردش کار
         /// </summary>
         [DisplayName("عنوان"), Unique("گردشی با این عنوان در سیستم وجود دارد."), Required]
         public string Title { get; set; }
+
+        public int DataModelId { get; set; }
+
+        [ForeignKey(nameof(DataModelId))]
+        public virtual DataModel DataModel { get; set; }
 
         /// <summary>
         /// توضیحات

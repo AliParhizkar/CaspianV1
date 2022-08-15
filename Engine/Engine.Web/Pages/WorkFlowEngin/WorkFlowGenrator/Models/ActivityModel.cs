@@ -16,26 +16,20 @@ namespace Main.Models
         public ActivityModel(Activity activity)
         {
             Id = activity.Id.ToString();
-            switch(activity.CategoryType)
+            switch(activity.ActivityType)
             {
-                case CategoryType.Start: Category = "Start";break;
-                case CategoryType.Default: Category = "";break;
-                case CategoryType.Diamond: Category = "Diamond"; break;
-                case CategoryType.End: Category = "End"; break;
-                case CategoryType.Comment: Category = "Comment"; break;
-                case CategoryType.Parallelogram1: Category = "Parallelogram1";break;
+                case ActivityType.Start: Category = "Start";break;
+                case ActivityType.User: Category = "";break;
+                case ActivityType.Validator: Category = "Validator"; break;
+                case ActivityType.End: Category = "End"; break;
+                case ActivityType.Comment: Category = "Comment"; break;
+                case ActivityType.Parallelogram1: Category = "Parallelogram1";break;
                 default: throw new NotImplementedException("خطای عدم پیاده سازی");
             }
             Location = activity.Left + " " + activity.Top;
             Text = activity.Title;
             var actions = activity.OutConnectors.Select(t => t.Title);
-            //if (activity.Action.ClassName != null)
-            //    Action = new ActionModel(activity.Action);
-            if (activity.Fields.Count > 0)
-                Fields = activity.Fields.Select(t => new ActivityFieldModel(t)).ToList();
             ActorType = activity.ActorType;
-            if (activity.DynamicFields.Count > 0)
-                DynamicFields = activity.DynamicFields.Select(t => new ActivityDynamicFieldModel(t)).ToList();
         }
 
         [JsonProperty("workflowId")]
@@ -56,38 +50,29 @@ namespace Main.Models
         [JsonProperty("actorType")]
         public ActorType? ActorType { get; set; }
 
-        [JsonProperty("action")]
-        public ActionModel Action { get; set; }
-
-        [JsonProperty("fields")]
-        public IList<ActivityFieldModel> Fields { get; set; }
-
-        [JsonProperty("dynamicFields")]
-        public IList<ActivityDynamicFieldModel> DynamicFields { get; set; }
-
         public Activity GetActivity()
         {
             var activity = new Activity();
             switch(Category)
             {
                 case "Start":
-                    activity.CategoryType = CategoryType.Start;
+                    activity.ActivityType = ActivityType.Start;
                     break;
                 case "":
                 case null:
-                    activity.CategoryType = CategoryType.Default;
+                    activity.ActivityType = ActivityType.User;
                     break;
-                case "Diamond":
-                    activity.CategoryType = CategoryType.Diamond;
+                case "Validator":
+                    activity.ActivityType = ActivityType.Validator;
                     break;
                 case "End":
-                    activity.CategoryType = CategoryType.End;
+                    activity.ActivityType = ActivityType.End;
                     break;
                 case "Comment":
-                    activity.CategoryType = CategoryType.Comment;
+                    activity.ActivityType = ActivityType.Comment;
                     break;
                 case "Parallelogram1":
-                    activity.CategoryType = CategoryType.Parallelogram1;
+                    activity.ActivityType = ActivityType.Parallelogram1;
                     break;
                 default:
                     throw new NotImplementedException("عدم پیاده سازی");
@@ -98,12 +83,6 @@ namespace Main.Models
             activity.Top = Convert.ToInt32(Math.Floor(Convert.ToDouble(array[1])));
             activity.Title = Text;
             activity.ActorType = ActorType;
-            //if (Action != null)
-            //    activity.Action = Action.GetAction();
-            if (Fields != null)
-                activity.Fields = Fields.Select(t => t.GetActivityField()).ToList();
-            if (DynamicFields != null)
-                activity.DynamicFields = DynamicFields.Select(t => t.GetActivityField()).ToList();
             return activity;
         }
     }

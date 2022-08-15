@@ -27,15 +27,7 @@ namespace Caspian.Engine
 
         public DbSet<CustomUser> CustomUsers { get; set; }
 
-        public DbSet<Action> Actions { get; set; }
-
         public DbSet<Activity> Activities { get; set; }
-
-        public DbSet<ActivityAccess> ActivityAccesses { get; set; }
-
-        public DbSet<ActivityDynamicField> ActivityDynamicFields { get; set; }
-
-        public DbSet<ActivityField> ActivityFields { get; set; }
 
         public DbSet<Connector> Connectors { get; set; }
 
@@ -43,12 +35,12 @@ namespace Caspian.Engine
 
         public DbSet<Workflow> Workflows { get; set; }
 
-        public DbSet<WorkflowTrace> WorkflowTraces { get; set; }
-
         public DbSet<DynamicParameter> DynamicParameters { get; set; }
 
         public DbSet<DynamicParameterValue> DynamicParametersValues { get; set; }
 
-        public DbSet<WorkflowForm> StaticForms { get; set; }
+        public DbSet<WorkflowForm> WorkflowForms { get; set; }
+
+        public DbSet<DataModel> DataModels { get; set; }
     }
 }

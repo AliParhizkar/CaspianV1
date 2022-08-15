@@ -1,6 +1,4 @@
-﻿using Caspian.Common;
-using System.Reflection;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine
@@ -14,17 +12,19 @@ namespace Caspian.Engine
         public string Caption { get; set; }
         
         public string? Description { get; set; }
+
+        public string? CustomeFieldName { get; set; }
         
         public ControlType ControlType { get; set; }
 
-        public int? WfFormEntityFieldId { get; set; }
+        public int DataModelFieldId { get; set; }
 
         /// <summary>
         /// Field that declare in form
         /// control can bind to properties of this field 
         /// </summary>
-        [ForeignKey(nameof(WfFormEntityFieldId))]
-        public virtual WfFormEntityField? WfFormEntityField { get; set; }
+        [ForeignKey(nameof(DataModelFieldId))]
+        public virtual DataModelField DataModelField { get; set; }
 
         /// <summary>
         /// The property name of entity that control bind to it

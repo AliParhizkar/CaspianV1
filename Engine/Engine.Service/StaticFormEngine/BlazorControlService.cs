@@ -11,7 +11,7 @@ namespace Caspian.Engine.Service
         public BlazorControlService(IServiceScope scope)
             :base(scope)
         {
-
+            RuleFor(t => t.Caption).Required().UniqAsync("کنترلی با این عنوان در سیستم ثبت شده است");
         }
 
         string GetId(BlazorControl control)
@@ -38,9 +38,9 @@ namespace Caspian.Engine.Service
                 case ControlType.TreeStateCheckBox:
                     return "chb" + ctr.PropertyName;
                 case ControlType.ComboBox:
-                    if (ctr.WfFormEntityField == null)
-                        ctr.WfFormEntityField = await new WfFormEntityFieldService(ServiceScope).SingleAsync(ctr.WfFormEntityFieldId!.Value);
-                    var entityType = new AssemblyInfo().GetModelType(subSystemKind, ctr.WfFormEntityField.EntityFullName);
+                    if (ctr.DataModelFieldId == 0)
+                        ctr.DataModelField = await new DataModelFieldService(ServiceScope).SingleAsync(ctr.DataModelFieldId);
+                    var entityType = new AssemblyInfo().GetModelType(subSystemKind, ctr.DataModelField.EntityFullName);
                     var info = entityType.GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == ctr.PropertyName);
                     return "cmb" + info.Name;
                 case ControlType.Date:

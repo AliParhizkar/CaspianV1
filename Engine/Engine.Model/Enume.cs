@@ -126,7 +126,7 @@ namespace Caspian.Engine
         Panel
     }
 
-    public enum CategoryType : byte
+    public enum ActivityType : byte
     {
         /// <summary>
         /// حالت شروع
@@ -136,12 +136,12 @@ namespace Caspian.Engine
         /// <summary>
         /// پردازش کاربر
         /// </summary>
-        Default,
+        User,
 
         /// <summary>
         /// انجام عملیات توسط سیستم
         /// </summary>
-        Diamond,
+        Validator,
 
         /// <summary>
         /// پایان

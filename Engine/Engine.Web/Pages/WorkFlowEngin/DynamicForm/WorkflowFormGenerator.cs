@@ -28,6 +28,7 @@ namespace Caspian.Engine.WorkflowEngine
         BlazorControl selectedControl;
         PropertyWindow propertyWindow;
         string formTitle;
+        int dataModelId;
         // ------ Property Window
         string Id;
         string formName;
@@ -76,12 +77,13 @@ namespace Caspian.Engine.WorkflowEngine
         {
             using var scope = CreateScope();
             var formService = new WorkflowFormService(scope);
-            var form = await formService.SingleAsync(WorkflowFormId);
-            forms = await formService.GetAll().Where(t => t.SubSystemKind == form.SubSystemKind).ToListAsync();
+            var form = await formService.GetAll().Include(t => t.WorkflowGroup).SingleAsync(t => t.Id == WorkflowFormId);
+            forms = await formService.GetAll().Where(t => t.WorkflowGroupId == form.WorkflowGroupId).ToListAsync();
             columnsCount = form.ColumnCount;
-            subSystemKind = form.SubSystemKind;
+            subSystemKind = form.WorkflowGroup.SubSystemKind;
             formName = form.Name;
             formTitle = form.Title;
+            dataModelId = form.DataModelId;
             rows = await new HtmlRowService(scope).GetRows(WorkflowFormId);
             selectedColsIndex = new List<int>();
             await base.OnInitializedAsync();
@@ -109,7 +111,7 @@ namespace Caspian.Engine.WorkflowEngine
                     col.Row = null;
                     if (col.Component != null)
                     {
-                        col.Component.WfFormEntityField = null;
+                        col.Component.DataModelField = null;
                         col.Component.DynamicParameter = null;
                     }
                     foreach(var innerRow in col.InnerRows)
@@ -120,7 +122,7 @@ namespace Caspian.Engine.WorkflowEngine
                             col1.Row = null;
                             if (col1.Component != null)
                             {
-                                col1.Component.WfFormEntityField = null;
+                                col1.Component.DataModelField = null;
                                 col1.Component.DynamicParameter = null;
                             }
                         }
@@ -241,18 +243,60 @@ namespace Caspian.Engine.WorkflowEngine
                 rows[selectedRowIndex].Columns[selectedColIndex].InnerRows.RemoveAt(selectedInnerRowIndex);
         }
 
+        void AddControl(DataModelField field)
+        {
+            ControlType? controlType = null; 
+            switch(field.FieldType)
+            {
+                case DataModelFieldType.String:
+                    controlType = ControlType.String;
+                    break;
+                case DataModelFieldType.Date:
+                    controlType = ControlType.Date;
+                    break;
+                case DataModelFieldType.Time:
+                    controlType = ControlType.Time;
+                    break;
+                case DataModelFieldType.Decimal:
+                    controlType = ControlType.Numeric;
+                    break;
+                case DataModelFieldType.Integer:
+                    controlType = ControlType.Integer;
+                    break;
+                default:
+                    throw new NotImplementedException("خطای عدم پیاده سازی");
+            }
+            var component = new Caspian.Engine.BlazorControl()
+            {
+                Caption = field.Title,
+                ControlType = controlType.Value,
+                DataModelFieldId = field.Id,
+                CustomeFieldName = field.FieldName
+            };
+            if (selectedInnerRowIndex >= 0)
+            {
+                if (selectedColIndex >= 0 && selectedInnerColIndex >= 0)
+                    rows[selectedRowIndex].Columns[selectedColIndex].InnerRows[selectedInnerRowIndex].HtmlColumns[selectedInnerColIndex].Component = component;
+            }
+            else if (selectedRowIndex >= 0 && selectedColIndex >= 0)
+                rows[selectedRowIndex].Columns[selectedColIndex].Component = component;
+        }
+
         void AddControl(DynamicParameter parameter)
         {
+
             var component = new Caspian.Engine.BlazorControl()
             {
                 Caption = parameter.FaTitle,
                 ControlType = parameter.ControlType,
                 DynamicParameterId = parameter.Id,
+                DataModelFieldId = propertySelector.GetSelectedDataModelFieldId()!.Value,
                 DynamicParameter = parameter
             };
             if (selectedInnerRowIndex >= 0)
             {
-
+                if (selectedColIndex >= 0 && selectedInnerColIndex >= 0)
+                    rows[selectedRowIndex].Columns[selectedColIndex].InnerRows[selectedInnerRowIndex].HtmlColumns[selectedInnerColIndex].Component = component;
             }
             else if (selectedRowIndex >= 0 && selectedColIndex >= 0)
                 rows[selectedRowIndex].Columns[selectedColIndex].Component = component;
@@ -266,15 +310,12 @@ namespace Caspian.Engine.WorkflowEngine
                 ControlType = info.GetControlType(),
                 Caption = att == null ? info.Name : att.DisplayName,
                 PropertyName = info.Name,
-                WfFormEntityFieldId = propertySelector.GetSelectedWfEntityFieldId()
+                DataModelFieldId = propertySelector.GetSelectedDataModelFieldId().Value
             };
             if (selectedInnerRowIndex >= 0)
             {
-                if (selectedInnerColIndex < 0)
-                {
-
-                }
-                //rows[selectedRowIndex].Columns[selectedColIndex].InnerRows[selectedInnerRowIndex].HtmlColumn = control;
+                if (selectedColIndex >= 0 && selectedInnerColIndex >= 0)
+                    rows[selectedRowIndex].Columns[selectedColIndex].InnerRows[selectedInnerRowIndex].HtmlColumns[selectedInnerColIndex].Component = component;
             }
             else if (selectedRowIndex >= 0 && selectedColIndex >= 0)
                 rows[selectedRowIndex].Columns[selectedColIndex].Component = component;
@@ -404,11 +445,11 @@ namespace Caspian.Engine.WorkflowEngine
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await jsRuntime.InvokeVoidAsync("$.workflow.WorkflowForm", DotNetObjectReference.Create(this));
+            await jsRuntime.InvokeVoidAsync("$.workflowForm.init", DotNetObjectReference.Create(this));
             if (saveFile)
             {
                 saveFile = false;
-                await jsRuntime.InvokeVoidAsync("$.workflow.sendSaveRequest");
+                await jsRuntime.InvokeVoidAsync("$.workflowForm.sendSaveRequest");
             }
             await base.OnAfterRenderAsync(firstRender);
         }
@@ -417,7 +458,7 @@ namespace Caspian.Engine.WorkflowEngine
         public async Task<string> GetCodebehindString()
         {
             using var scop = CreateScope();
-            return await new WorkflowFormService(scop).GetCodebehindAsync(WorkflowFormId);
+            return await new WorkflowFormService(scop).GetCodebehindAsync(WorkflowFormId, dataModelId);
         }
 
         [JSInvokable]
@@ -492,7 +533,22 @@ namespace Caspian.Engine.WorkflowEngine
                 foreach(var col in row.Columns)
                 {
                     var ctr = col.Component;
-                    if (ctr != null)
+                    if (ctr == null && col.InnerRows != null)
+                    {
+                        foreach(var innerRow in col.InnerRows)
+                        {
+                            foreach(var col1 in innerRow.HtmlColumns)
+                            {
+                                if (col1.Component != null)
+                                {
+                                    var name = await service.GetId(subSystemKind, col1.Component);
+                                    if (name == id)
+                                        return col1.Component;
+                                }
+                            }
+                        }
+                    } 
+                    else 
                     {
                         var name = await service.GetId(subSystemKind, ctr);
                         if (name == id)

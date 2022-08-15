@@ -557,7 +557,7 @@ declare namespace go {
         groupTemplate: Group;
 
         /**Gets or sets a Map mapping template names to Groups.*/
-        groupTemplateMap: Map<string,Group>;
+        groupTemplateMap: Map<string, Group>;
 
         /**Gets or sets whether the Diagram has a horizontal Scrollbar.*/
         hasHorizontalScrollbar: boolean;
@@ -623,7 +623,7 @@ declare namespace go {
         linkTemplate: Link;
 
         /**Gets or sets a Map mapping template names to Links.*/
-        linkTemplateMap: Map<string,Link>;
+        linkTemplateMap: Map<string, Link>;
 
         /**Gets or sets the largest value that .scale may take.*/
         maxScale: number;
@@ -662,7 +662,7 @@ declare namespace go {
         nodeTemplate: Part;
 
         /**Gets or sets a Map mapping template names to Parts.*/
-        nodeTemplateMap: Map<string,Part>;
+        nodeTemplateMap: Map<string, Part>;
 
         /**Gets or sets the Margin (or number for a uniform Margin) that describes the Diagram's padding, which controls how much extra space there is around the area occupied by the document.*/
         padding: MarginLike;
@@ -716,20 +716,20 @@ declare namespace go {
         * Register an event handler that is called when there is a ChangedEvent.
         * @param {function(ChangedEvent)} listener a function that takes a ChangedEvent as its argument.
         */
-        addChangedListener(listener: (e: ChangedEvent) => void ): void;
+        addChangedListener(listener: (e: ChangedEvent) => void): void;
 
         /**
         * Register an event handler that is called when there is a DiagramEvent of a given name.
         * @param {string} name the name is normally capitalized, but this method uses case-insensitive comparison.
         * @param {function(DiagramEvent)} listener a function that takes a DiagramEvent as its argument.
         */
-        addDiagramListener(name: string, listener: (e: DiagramEvent) => void ): void;
+        addDiagramListener(name: string, listener: (e: DiagramEvent) => void): void;
 
         /**
         * Register an event handler that is called when there is a ChangedEvent for the Diagram's Model.
         * @param {function(ChangedEvent)} listener a function that takes a ChangedEvent as its argument.
         */
-        addModelChangedListener(listener: (e: ChangedEvent) => void ): void;
+        addModelChangedListener(listener: (e: ChangedEvent) => void): void;
 
         /**
         * Adds a Layer to the list of layers.
@@ -791,7 +791,7 @@ declare namespace go {
         * @param {(string|null)=} tname a descriptive name for the transaction, or null to temporarily set {@link #skipsUndoManager} to true;
         *        if no string transaction name is given, an empty string is used as the transaction name
         */
-        commit(func: (d: Diagram) => void, tname?: string|null): void;
+        commit(func: (d: Diagram) => void, tname?: string | null): void;
 
         /**
         * Commit the changes of the current transaction.
@@ -824,7 +824,7 @@ declare namespace go {
         * Updates the diagram immediately, then resets initialization flags so that actions taken in the argument function will be considered part of Diagram initialization, and will participate in initial layouts, .initialAutoScale, .initialContentAlignment, etc.
         * @param {function()|null=} func an optional function of actions to perform as part of another diagram initialization.
         */
-        delayInitialization(func?: () => void ): void;
+        delayInitialization(func?: () => void): void;
 
         /**
         * Finds a layer with a given name.
@@ -1006,7 +1006,7 @@ declare namespace go {
             document?: Document,
             type?: string,
             details?: any
-          }): HTMLImageElement;
+        }): HTMLImageElement;
 
         /**
         * Create a bitmap of the current Diagram encoded as an ImageData, or a base64-encoded string describing the image.
@@ -1027,7 +1027,7 @@ declare namespace go {
             callback?: void,
             type?: string,
             details?: any
-          }): ImageData | string;
+        }): ImageData | string;
 
         /**
         * Create an SVGElement that contains a SVG rendering of the current Diagram.
@@ -1046,7 +1046,7 @@ declare namespace go {
             showGrid?: boolean,
             document?: Document,
             elementFinished?: (obj: GraphObject, elt: SVGElement) => void
-          }): SVGElement;
+        }): SVGElement;
 
         /**
         * Move a collection of Parts in this Diagram by a given offset.
@@ -1071,20 +1071,20 @@ declare namespace go {
         * Unregister an event handler listener.
         * @param {function(ChangedEvent)} listener a function that takes a ChangedEvent as its argument.
         */
-        removeChangedListener(listener: (e: ChangedEvent) => void ): void;
+        removeChangedListener(listener: (e: ChangedEvent) => void): void;
 
         /**
         * Unregister a DiagramEvent handler.
         * @param {string} name the name is normally capitalized, but this method uses case-insensitive comparison.
         * @param {function(DiagramEvent)} listener a function that takes a DiagramEvent as its argument.
         */
-        removeDiagramListener(name: string, listener: (e: DiagramEvent) => void ): void;
+        removeDiagramListener(name: string, listener: (e: DiagramEvent) => void): void;
 
         /**
         * Unregister an event handler listener for the Diagram's Model.
         * @param {function(ChangedEvent)} listener a function that takes a ChangedEvent as its argument.
         */
-        removeModelChangedListener(listener: (e: ChangedEvent) => void ): void;
+        removeModelChangedListener(listener: (e: ChangedEvent) => void): void;
 
         /**
         * Removes the given layer from the list of layers.
@@ -2659,7 +2659,7 @@ declare namespace go {
         itemTemplate: Panel;
 
         /**Gets or sets a Map mapping template names to Panels.*/
-        itemTemplateMap: Map<string,Panel>;
+        itemTemplateMap: Map<string, Panel>;
 
         /**Gets or sets the first column that this Panel of .type Panel.Table displays.*/
         leftIndex: number;
@@ -3413,7 +3413,7 @@ declare namespace go {
         /**
         * This static function returns a read-only Map of named geometry generators.
         */
-        static getFigureGenerators(): Map<string,(shape: Shape, width: number, height: number) => Geometry>;
+        static getFigureGenerators(): Map<string, (shape: Shape, width: number, height: number) => Geometry>;
 
         /**
         * This static function defines a named figure geometry generator for Shapes.
@@ -3431,7 +3431,7 @@ declare namespace go {
         /**
         * This static function returns a read-only Map of named arrowhead geometries.
         */
-        static getArrowheadGeometries(): Map<string,Geometry>;
+        static getArrowheadGeometries(): Map<string, Geometry>;
 
         /**
         * This static function defines a named arrowhead geometry.
@@ -3574,7 +3574,7 @@ declare namespace go {
         color: string;
 
         /**Gets or sets a Map holding all of the color stops used in this gradient, where the key is a number, the fractional distance between zero and one (inclusive), and where the corresponding value is a color string.*/
-        colorStops: Map<number,string>;
+        colorStops: Map<number, string>;
 
         /**Gets or sets the ending location for a linear or radial gradient.*/
         end: Spot;
@@ -3793,17 +3793,17 @@ declare namespace go {
         */
         scale(x: number, y: number): Geometry;
 
-       /**
-        * Set spot1 and spot2 without allocating new Spots.
-        * @param {number} f1x spot1.x
-        * @param {number} f1y spot1.y
-        * @param {number} f2x spot2.x
-        * @param {number} f2y spot2.y
-        * @param {number=} o1x offset1.x, default is zero
-        * @param {number=} o1y offset1.y, default is zero
-        * @param {number=} o2x offset2.x, default is zero
-        * @param {number=} o2y offset2.y, default is zero
-        */
+        /**
+         * Set spot1 and spot2 without allocating new Spots.
+         * @param {number} f1x spot1.x
+         * @param {number} f1y spot1.y
+         * @param {number} f2x spot2.x
+         * @param {number} f2y spot2.y
+         * @param {number=} o1x offset1.x, default is zero
+         * @param {number=} o1y offset1.y, default is zero
+         * @param {number=} o2x offset2.x, default is zero
+         * @param {number=} o2y offset2.y, default is zero
+         */
         setSpots(f1x: number, f1y: number, f2x: number, f2y: number, o1x?: number, o1y?: number, o2x?: number, o2y?: number): Geometry;
 
         /**
@@ -5577,7 +5577,7 @@ declare namespace go {
         * This registration does not raise a ChangedEvent.
         * @param {function(ChangedEvent)} listener a function that takes a ChangedEvent as its argument.
         */
-        addChangedListener(listener: (e: ChangedEvent) => void ): void;
+        addChangedListener(listener: (e: ChangedEvent) => void): void;
 
         /**
         * When you want to add a node or group to the diagram,
@@ -5635,7 +5635,7 @@ declare namespace go {
         * @param {(string|null)=} tname a descriptive name for the transaction, or null to temporarily set {@link #skipsUndoManager} to true;
         *        if no string transaction name is given, an empty string is used as the transaction name
         */
-        commit(func: (m: Model) => void, tname?: string|null): void;
+        commit(func: (m: Model) => void, tname?: string | null): void;
 
         /**
         * Commit the changes of the current transaction.
@@ -5774,7 +5774,7 @@ declare namespace go {
         * This deregistration does not raise a ChangedEvent.
         * @param {function(ChangedEvent)} listener a function that takes a ChangedEvent as its argument.
         */
-        removeChangedListener(listener: (e: ChangedEvent) => void ): void;
+        removeChangedListener(listener: (e: ChangedEvent) => void): void;
 
         /**
         * When you want to remove a node or group from the diagram,
@@ -7284,7 +7284,7 @@ declare namespace go {
         rootDefaults: TreeVertex;
 
         /**Gets or sets the collection of root vertexes.*/
-        roots: Set<TreeVertex|Node>;
+        roots: Set<TreeVertex | Node>;
 
         /**Gets or sets the default indentation of the first child of each row, if the .alignment is not a "Center" alignment.*/
         rowIndent: number;
@@ -7743,21 +7743,21 @@ declare namespace go {
     * HTMLInfo is used to show and hide a custom object, such as a context menu or tooltip made of HTML.
     */
     export class HTMLInfo {
-      /**
-      * Newly constructed HTMLInfo can be assigned as a value of TextEditingTool.defaultTextEditor, TextBlock.textEditor, GraphObject.contextMenu, Diagram.contextMenu, GraphObject.toolTip, or Diagram.toolTip.
-      */
-      constructor();
+        /**
+        * Newly constructed HTMLInfo can be assigned as a value of TextEditingTool.defaultTextEditor, TextBlock.textEditor, GraphObject.contextMenu, Diagram.contextMenu, GraphObject.toolTip, or Diagram.toolTip.
+        */
+        constructor();
 
-      /**Gets or sets the function to call when an HTMLInfo is shown.*/
-      show: (obj: GraphObject, diagram: Diagram, arg: Tool) => void;
-      /**Gets or sets the function to call when an HTMLInfo is to be hidden.*/
-      hide: (diagram: Diagram, arg: Tool) => void;
-      /**Gets or sets the primary HTML Element that represents this HTMLInfo.*/
-      mainElement: Element;
-      /**Gets or sets whether this HTMLInfo is modal. If true, clicking on the diagram after activation will automatically stop the tool associated with this HTMLInfo.*/
-      isModal: boolean;
-      /**Gets or sets a function that returns the primary value associated with this HTMLInfo, such as the value of a text editor, which would be solicited by the TextEditingTool.*/
-      valueFunction: () => any;
+        /**Gets or sets the function to call when an HTMLInfo is shown.*/
+        show: (obj: GraphObject, diagram: Diagram, arg: Tool) => void;
+        /**Gets or sets the function to call when an HTMLInfo is to be hidden.*/
+        hide: (diagram: Diagram, arg: Tool) => void;
+        /**Gets or sets the primary HTML Element that represents this HTMLInfo.*/
+        mainElement: Element;
+        /**Gets or sets whether this HTMLInfo is modal. If true, clicking on the diagram after activation will automatically stop the tool associated with this HTMLInfo.*/
+        isModal: boolean;
+        /**Gets or sets a function that returns the primary value associated with this HTMLInfo, such as the value of a text editor, which would be solicited by the TextEditingTool.*/
+        valueFunction: () => any;
     }
 
     /**
@@ -7780,7 +7780,7 @@ declare namespace go {
         constructor();
 
         /**This read-only property returns the collection of Parts that this tool has copied.*/
-        copiedParts: Map<Part,DraggingInfo>;
+        copiedParts: Map<Part, DraggingInfo>;
 
         /**Gets or sets whether for a copying operation the extended selection is copied or only the selected parts.*/
         copiesEffectiveCollection: boolean;
@@ -7792,7 +7792,7 @@ declare namespace go {
         delay: number;
 
         /**This read-only property returns the collection of Parts being dragged.*/
-        draggedParts: Map<Part,DraggingInfo>;
+        draggedParts: Map<Part, DraggingInfo>;
 
         /**Gets or sets whether the user can drag a single Link, disconnecting it from its connected nodes and possibly connecting it to valid ports when the link is dropped.*/
         dragsLink: boolean;
@@ -7830,7 +7830,7 @@ declare namespace go {
         * Find the actual collection of nodes and links to be moved or copied, given an initial collection.
         * @param {Iterable<Part>} parts A Set or List of Parts.
         */
-        computeEffectiveCollection(parts: Iterable<Part>): Map<Part,DraggingInfo>;
+        computeEffectiveCollection(parts: Iterable<Part>): Map<Part, DraggingInfo>;
 
         /**
         * This method computes the new location for a Node or simple Part, given a new desired location and an optional Map of dragged parts, taking any grid-snapping into consideration, any Part.dragComputation function, and any Part.minLocation and Part.maxLocation.
@@ -7839,7 +7839,7 @@ declare namespace go {
         * @param {Map=} draggedparts  an optional Map mapping Parts to JavaScript Objects that have a "point" property remembering the original location of that Part.
         * @param {Point=} result  an optional Point that is modified and returned
         */
-        computeMove(n: Part, newloc: Point, draggedparts?: Map<Part,DraggingInfo>, result?: Point): Point;
+        computeMove(n: Part, newloc: Point, draggedparts?: Map<Part, DraggingInfo>, result?: Point): Point;
 
         /**
         * Start the dragging operation.
@@ -7919,7 +7919,7 @@ declare namespace go {
         * @param {Point} offset
         * @param {boolean} check  Whether to check Part.canMove on each part.
         */
-        moveParts(parts: Map<Part,DraggingInfo>, offset: Point, check: boolean): void;
+        moveParts(parts: Map<Part, DraggingInfo>, offset: Point, check: boolean): void;
 
         /**
         * This override prevents the Control modifier unselecting an already selected part.
@@ -9271,7 +9271,7 @@ declare namespace go {
         * Call the given function on each item in the collection.
         * @param {(x: T) => void} func
         */
-        each(func: (x: T) => void ): void;
+        each(func: (x: T) => void): void;
 
         /**
         * Returns the element at the given index.
@@ -9396,7 +9396,7 @@ declare namespace go {
     /**
     * This is a structure used by Map to hold key-value pairs.
     */
-    export interface KeyValuePair<K,V> {  // undocumented
+    export interface KeyValuePair<K, V> {  // undocumented
         key: K;
         value: V;
     }
@@ -9406,7 +9406,7 @@ declare namespace go {
     * same key.
     * It optionally enforces the type of the key and the type of the associated value.
     */
-    export class Map<K,V> implements Iterable<KeyValuePair<K,V>> {
+    export class Map<K, V> implements Iterable<KeyValuePair<K, V>> {
         /**
         * This creates a Map that may check the types of the keys and/or values.
         * @param {function(...)} keytype if supplied, this must be a class function/constructor.
@@ -9436,7 +9436,7 @@ declare namespace go {
         count: number;
 
         /**Gets an object that you can use for iterating over the key-value pairs of the Map.*/
-        iterator: Iterator<KeyValuePair<K,V>>;
+        iterator: Iterator<KeyValuePair<K, V>>;
 
         /**Gets an object that you can use for iterating over the keys in the Map.*/
         iteratorKeys: Iterator<K>;
@@ -9458,7 +9458,7 @@ declare namespace go {
         * Adds all of the key-value pairs of another Map to this Map.
         * @param {Iterable.<KeyValuePair.<K,V>>|Array} coll
         */
-        addAll(coll: Iterable<KeyValuePair<K, V>> | Array<KeyValuePair<K, V>>): Map<K,V>;
+        addAll(coll: Iterable<KeyValuePair<K, V>> | Array<KeyValuePair<K, V>>): Map<K, V>;
 
         /**
         * This is true if all invocations of the given predicate on key-value pairs in the collection are true.
@@ -9493,7 +9493,7 @@ declare namespace go {
         /**
         * Makes a shallow copy of this Map.
         */
-        copy(): Map<K,V>;
+        copy(): Map<K, V>;
 
         /**
         * Removes a key (if found) from the Map. ES6-like synonym for remove.
@@ -9505,7 +9505,7 @@ declare namespace go {
         * Call the given function on each key-value pair in the collection.
         * @param {(x: Object) => void} func
         */
-        each(func: (x: KeyValuePair<K,V>) => void ): void;
+        each(func: (x: KeyValuePair<K, V>) => void): void;
 
         /**
         * Call the given predicate on each key-value pair in the collection and for each pair that it returns true, add the key-value association in a new Map.
@@ -9517,7 +9517,7 @@ declare namespace go {
         /**
         * Returns the first key-value pair in the collection, or null if there is none.
         */
-        first(): KeyValuePair<K,V>;
+        first(): KeyValuePair<K, V>;
 
         /**
         * Returns the value associated with a key. ES6-like synonym for getValue.
@@ -9560,7 +9560,7 @@ declare namespace go {
         /**
         * Produces a JavaScript Array of key/value pair objects from the contents of this Map.
         */
-        toArray(): Array<KeyValuePair<K,V>>;
+        toArray(): Array<KeyValuePair<K, V>>;
 
         /**
         * Produces a Set that provides a read-only view onto the keys of this Map.

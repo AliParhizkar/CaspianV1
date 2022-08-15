@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,22 +9,25 @@ namespace Caspian.Engine
     /// for each entity type can declare a field of that type
     /// if IsCollection is true must declare a colection of entity
     /// </summary>
-    [Table("WfFormsEntityFields", Schema = "cmn")]
-    public class WfFormEntityField
+    [Table("DataModelFields", Schema = "cmn")]
+    public class DataModelField
     {
         [Key]
         public int Id { get; set; }
 
-        public int WorkflowFormId { get; set; }
+        public int DataModelId { get; set; }
 
-        [ForeignKey(nameof(WorkflowFormId))]
-        public virtual WorkflowForm WorkflowForm { get; set; }
+        [ForeignKey(nameof(DataModelId))]
+        public virtual DataModel DataModel { get; set; }
 
         /// <summary>
         /// Entity type fulle name that bind in forms control 
         /// </summary>
-        [DisplayName("نوع موجودیت")]
-        public string EntityFullName { get; set; }
+        [DisplayName("نام موجودیت")]
+        public string? EntityFullName { get; set; }
+
+        [DisplayName("نام فیلد")]
+        public DataModelFieldType? FieldType { get; set; }
 
         /// <summary>
         /// Name of entity that show on form generator 
@@ -35,12 +39,15 @@ namespace Caspian.Engine
         /// The name of the field declare in the form
         /// This name must as variable name in C#
         /// </summary>
-        [DisplayName("عنوان فیلد")]
+        [DisplayName("نام فیلد")]
         public string FieldName { get; set; }
 
         /// <summary>
         /// declare entity must bind to array 
         /// </summary>
         public bool IsCollection { get; set; }
+
+        [CheckOnDelete("فیلد به کنترل تخصیص داده شده و امکان حذف آن وجود ندارد")]
+        public virtual IList<BlazorControl> BlazorControls { get; set; }
     }
 }

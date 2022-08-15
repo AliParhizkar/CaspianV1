@@ -11,6 +11,7 @@ namespace Employment.Service
             : base(scope)
         {
             RuleFor(t => t.Title).Required().UniqAsync("منطقه ای با این عنوان در این شهر تعریف شده است.");
+            RuleFor(t => t.Description).Required();
         }
     }
 }
