@@ -37,6 +37,7 @@ namespace Caspian.Common.Extension
 
         public async static Task<IList<TEntity>> GetValuesAsync<TEntity>(this IQueryable<TEntity> source, IList<MemberExpression> exprList)
         {
+            var str = source.Select(exprList).ToQueryString();
             var values = await source.Select(exprList).OfType<object>().ToListAsync();
             var list = new List<TEntity>();
             foreach(var value in values)

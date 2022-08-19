@@ -1,18 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Caspian.Common;
 
-namespace Caspian.Common.Navigation
+namespace Caspian.Engine.Service
 {
     public class MenuCategoryService : SimpleService<MenuCategory>, ISimpleService<MenuCategory>
     {
         public MenuCategoryService(IServiceScope scope)
             :base(scope)
         {
-             RuleFor(t => t.Title).Required();
+             RuleFor(t => t.Title).Required().UniqAsync("گروه منویی با این عنوان در سیستم ثبت شده است");
         }
 
         public async override Task<MenuCategory> AddAsync(MenuCategory entity)

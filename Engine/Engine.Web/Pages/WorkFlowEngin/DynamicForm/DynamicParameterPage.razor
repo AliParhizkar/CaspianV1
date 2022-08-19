@@ -2,7 +2,6 @@
 @namespace Caspian.Engine.WorkflowEngine
 @using Caspian.common
 @inherits SimplePage<DynamicParameter>
-
 @{
     
     base.BuildRenderTree(__builder);
@@ -17,6 +16,7 @@
             </GridColumn>
             <GridColumn TEntity="DynamicParameter" Field="t => t.FaTitle" />
             <GridColumn TEntity="DynamicParameter" Field="t => t.ControlType.FaText()" />
+            <GridColumn TEntity="DynamicParameter" Field="t => t.CalculationType.FaText()" />
             <GridColumn TEntity="DynamicParameter" Field="t => t.DecimalNumber" />
             <GridColumn TEntity="DynamicParameter" Field="t => t.EnTitle" />
             <GridColumn TEntity="DynamicParameter" Title="مقادیر" style="width:50px">
@@ -24,6 +24,18 @@
                     @if (con.Data.ControlType == ControlType.DropdownList)
                     {
                         <IconButton disabled="disabled" Href='@($"/Engine/Workflow/DynamicParameterOption/{con.Data.Id}")' IconType="IconType.Wpforms" />
+                    }
+                    @if (con.Data.CalculationType == CalculationType.FormData)
+                    {
+                        <IconButton disabled="disabled" Href='@($"/Engine/DataParameterValue/{con.Data.Id}")' IconType="IconType.Wpforms" />
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn  TEntity="DynamicParameter" Field="t => t.CalculationType" Title="ایجاد" style="width:50px">
+                <Template>
+                    @if (con.Data.CalculationType == CalculationType.FormData)
+                    {
+                        <IconButton disabled="disabled" Href='@($"/Engine/DataParameter/{con.Data.Id}")' IconType="IconType.Wpforms" />
                     }
                 </Template>
             </GridColumn>
@@ -33,7 +45,11 @@
     <Window @ref="UpsertWindow" Title="تعریف پارامتر" Style="width:450px"
             OnOpen="() =>
                     {
-
+                        if (UpsertData.Id == 0)
+                        {
+                            UpsertData.CalculationType = CalculationType.UserData;
+                            UpsertData.SubSystem = systemKind;
+                        }
                     }">
         <Content>
             <CaspianForm @ref="UpsertForm" Model="UpsertData">
@@ -65,14 +81,60 @@
                     </tr>
                     <tr>
                         <td>
-                            <label>نوع کنترل</label>
+                            <label>روش محاسبه</label>
                         </td>
                         <td>
-                            <DropdownList @bind-Value="UpsertData.ControlType" EnumItems="ControlsType" />
+                            <RadioList Style="width:100%" @bind-Value="UpsertData.CalculationType" />
                         </td>
                     </tr>
+                    
+                    @if (UpsertData.CalculationType == CalculationType.UserData)
+                    {
+                        <tr>
+                            <td>
+                                <label>نوع کنترل</label>
+                            </td>
+                            <td>
+                                <DropdownList @bind-Value="UpsertData.ControlType" EnumItems="ControlsType" />
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        if (UpsertData.CalculationType == CalculationType.Rule)
+                        {
+                            <tr>
+                                <td>
+                                    <label>فرمول</label>
+                                </td>
+                                <td>
+                                    <ComboBox TEntity="Rule" TValue="int?" @bind-Value="UpsertData.RuleId" TextExpression="t => t.Title" ConditionExpression="t => t.IsValid" />
+                                </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td>
+                                <label>نوع خروجی</label>
+                            </td>
+                            <td>
+                                <DropdownList @bind-Value="UpsertData.ResultType" />
+                            </td>
+                        </tr>
+                    }
+                    @if (UpsertData.CalculationType == CalculationType.UserData && UpsertData.ControlType == ControlType.Numeric || UpsertData.CalculationType != CalculationType.UserData && UpsertData.ResultType == ResultType.Numeric)
+                    {
+                        <tr>
+                            <td>
+                                <label>تعداد ارقام اعشار</label>
+                            </td>
+                            <td>
+                                <NumericTextBox @bind-Value="UpsertData.DecimalNumber" />
+                            </td>
+                        </tr>
+                    }
                     <tr>
-                        <td colspan="2">
+                        <td></td>
+                        <td style="text-align:center">
                             <FormCommandButton />
                         </td>
                     </tr>
@@ -84,17 +146,17 @@
 
 @code
 {
+    SubSystemKind systemKind;
     IList<SelectListItem> entities;
-    IList<ControlType> ControlsType;
-    
+    IList<ControlType?> ControlsType;
 
     protected override void OnInitialized()
     {
-        var systemKind = (SubSystemKind)typeof(SubSystemKind).GetField(SubSystem).GetValue(null);
+        systemKind = (SubSystemKind)typeof(SubSystemKind).GetField(SubSystem).GetValue(null);
         using var scope = CreateScope();
         var service = new DynamicParameterService(scope);
         entities = service.GetDynamicType(systemKind);
-        ControlsType = new List<ControlType>();
+        ControlsType = new List<ControlType?>();
         ControlsType.AddRange(ControlType.Integer, ControlType.Numeric, ControlType.DropdownList);
         base.OnInitialized();
     }

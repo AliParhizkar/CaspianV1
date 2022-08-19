@@ -44,6 +44,29 @@ namespace Caspian.Engine
     //    HiatOmanay = 8
     //}
 
+    
+    public enum CalculationType: byte
+    {
+        [EnumField("کاربر")]
+        UserData = 1,
+
+        [EnumField("فرم")]
+        FormData,
+
+        [EnumField("فرمول")]
+        Rule
+    }
+
+    public enum DataParameterType: byte
+    {
+        [EnumField("پارامترهای پویا")]
+        DynamicParameters = 1,
+
+        [EnumField("خصوصیت های موجودیت")]
+        EntityProperties,
+
+    }
+
     public enum CompareType : byte
     {
         /// <summary>

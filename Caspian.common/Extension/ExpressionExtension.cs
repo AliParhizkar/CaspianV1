@@ -2,6 +2,8 @@
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common.Extension
 {
@@ -123,6 +125,29 @@ namespace Caspian.Common.Extension
             index = str2.IndexOf('.');
             str2 = str2.Substring(index + 1);
             return str1 == str2;
+        }
+
+        public static void CreateExpresion(this MemberExpression expr, Type type)
+        {
+            if (!(expr.Member as PropertyInfo).IsNullableType())
+            {
+                var path = expr.ToString();
+                path = path.Substring(path.IndexOf('.') + 1);
+                foreach(var str in path.Split('.'))
+                {
+                    var info = type.GetProperty(str);
+                    var foreignKeyAttr = info.GetCustomAttribute<ForeignKeyAttribute>();
+                    if (foreignKeyAttr != null)
+                    {
+                        if (type.GetProperty(foreignKeyAttr.Name).PropertyType.IsNullableType())
+                        {
+
+                        }
+
+                    }
+                    type = info.PropertyType;
+                }
+            }
         }
     }
 }

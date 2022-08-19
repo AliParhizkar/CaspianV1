@@ -82,7 +82,9 @@ namespace Caspian.UI
                 if (result.IsValid)
                 {
                     errorMessage = null;
-                    service.Remove(data);
+                    var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
+                    var old = await service.SingleAsync(id);
+                    service.Remove(old);
                     try
                     {
                         await service.SaveChangesAsync();

@@ -17,6 +17,13 @@ namespace Caspian.Common.Extension
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
+        public static bool IsNullableType(this PropertyInfo info)
+        {
+            if (info.PropertyType.IsValueType)
+                return IsNullableType(info.PropertyType);
+            return new NullabilityInfoContext().Create(info).WriteState == NullabilityState.Nullable;
+        }
+
         /// <summary>
         /// If type is enum and all that fields is power of 2 true else false
         /// </summary>

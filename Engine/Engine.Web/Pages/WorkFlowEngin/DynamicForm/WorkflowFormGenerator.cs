@@ -288,7 +288,7 @@ namespace Caspian.Engine.WorkflowEngine
             var component = new Caspian.Engine.BlazorControl()
             {
                 Caption = parameter.FaTitle,
-                ControlType = parameter.ControlType,
+                ControlType = parameter.ControlType.Value,
                 DynamicParameterId = parameter.Id,
                 DataModelFieldId = propertySelector.GetSelectedDataModelFieldId()!.Value,
                 DynamicParameter = parameter

@@ -199,7 +199,7 @@ namespace Caspian.Engine.RuleGenerator
             Params = ruleEngine.GetObjectTokens(Type);
         }
 
-        void UpdateValueTypeKind()
+        async Task UpdateValueTypeKind()
         {
             var tokens = Tokens.Reverse().ToList();
             if (tokens.Count > 0)
@@ -208,7 +208,11 @@ namespace Caspian.Engine.RuleGenerator
                 if (tokenKind == TokenKind.Compareable)
                 {
                     if (tokens[0].OperatorKind.Value != OperatorType.Equ && tokens[1].RuleId.HasValue)
-                        ValueTypeKind = tokens[1].Rule.ResultType;
+                    {
+                        var scop = CreateScope();
+                        var rule = await new RuleService(scop).SingleAsync(tokens[1].RuleId.Value);
+                        ValueTypeKind = rule.ResultType;
+                    }
                     else
                     {
                         var type = Type.GetMyProperty(tokens[1].EnTitle).PropertyType;
@@ -290,7 +294,7 @@ namespace Caspian.Engine.RuleGenerator
             Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
             Tokens = new RuleEngine().UpdateTokens(Tokens);
             ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
-            UpdateValueTypeKind();
+            await UpdateValueTypeKind();
             StateHasChanged();
         }
 
@@ -329,7 +333,7 @@ namespace Caspian.Engine.RuleGenerator
             Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
             new RuleEngine().UpdateTokens(Tokens);
             ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
-            UpdateValueTypeKind();
+            await UpdateValueTypeKind();
         }
 
         [Parameter]
@@ -340,7 +344,7 @@ namespace Caspian.Engine.RuleGenerator
             using var scope = ServiceScopeFactory.CreateScope();
             var rule = await new RuleService(scope).SingleAsync(RuleId);
             Type = new AssemblyInfo().GetModelType(rule.SystemKind, rule.TypeName);
-            UpdateValueTypeKind();
+            await UpdateValueTypeKind();
             await base.OnParametersSetAsync();
         }
 

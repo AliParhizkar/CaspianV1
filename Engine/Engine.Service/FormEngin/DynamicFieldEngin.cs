@@ -11,26 +11,7 @@ namespace Caspian.Engine
     /// </summary>
     public class DynamicFieldEngin
     {
-        //public PropertyInfo GetOtherType(Type mainType)
-        //{
-        //    var dynamicFieldAttr = mainType.GetCustomAttribute<DynamicFieldAttribute>();
-        //    if (dynamicFieldAttr == null)
-        //        return null;
-        //    if (dynamicFieldAttr.OtherType == null)
-        //        throw new Exception("خطا:Attribute DynamicFieldAttribute on type " + mainType.Name + "has null for field OtherType");
-        //    foreach (var info in dynamicFieldAttr.OtherType.GetProperties())
-        //    {
-        //        if (info.PropertyType != mainType)
-        //        {
-        //            var foreignKey = info.GetCustomAttribute<ForeignKeyAttribute>();
-        //            if (foreignKey != null)
-        //                return info;
-        //        }
-        //    }
-        //    return null;
-        //}
-
-        public string GetDynamicFieldForeignKey(Type mainType, string enTitle)
+        public string? GetDynamicFieldForeignKey(Type mainType, string enTitle)
         {
             if (enTitle.HasValue())
                 mainType = mainType.GetMyProperty(enTitle).PropertyType;

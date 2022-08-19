@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Caspian.Common.Navigation
+namespace Caspian.Engine.Model
 {
     [Table("Menus", Schema = "cmn")]
     public class Menu

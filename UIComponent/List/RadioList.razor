@@ -48,7 +48,7 @@
             if (type.IsEnum)
             {
                 dic = new Dictionary<TValue, string>();
-                foreach (FieldInfo fi in type.GetFields().Where(t => !t.IsSpecialName))
+                foreach (FieldInfo fi in type.GetFields().Where(t => !t.IsSpecialName).OrderBy(t => t.GetValue(null)))
                 {
                     EnumFieldAttribute da = (EnumFieldAttribute)Attribute.GetCustomAttribute(fi, typeof(EnumFieldAttribute));
                     if (da != null)

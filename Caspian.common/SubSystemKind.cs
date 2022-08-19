@@ -25,8 +25,13 @@ namespace Caspian.Common
             var path = Assembly.GetExecutingAssembly().Location;
             var index = path.LastIndexOf("\\");
             path = path.Substring(0, index) + "\\";
-            path += subSystemKind.ToString() + (isModel ? "Model" : "Service") + ".dll";
+            path += subSystemKind.ToString() + (isModel ? ".Model" : ".Service") + ".dll";
             return Assembly.LoadFile(path);
+        }
+
+        public static Assembly GetEntityAssembly(this SubSystemKind systemKind)
+        {
+            return SubSystemExt.GetAssembly(systemKind, true);
         }
 
         public static Assembly GetServiceAssembly(this SubSystemKind systemKind)

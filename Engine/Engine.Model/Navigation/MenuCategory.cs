@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Caspian.Common;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Caspian.Common.Navigation
+namespace Caspian.Engine.Model
 {
     [Table("MenuCategories", Schema = "cmn")]
     public class MenuCategory

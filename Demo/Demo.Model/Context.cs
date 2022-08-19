@@ -1,5 +1,5 @@
 ﻿using Caspian.Common;
-using Caspian.Common.Navigation;
+using Caspian.Engine.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Model

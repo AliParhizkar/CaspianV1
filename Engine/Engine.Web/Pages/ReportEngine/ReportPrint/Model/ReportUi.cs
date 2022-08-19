@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Caspian.Engine;
+using Caspian.Engine.Model;
 using System.ComponentModel;
-using System.Collections.Generic;
-//using Microsoft.AspNetCore.Mvc.Rendering;
-using Caspian.Engine;
 
 namespace ReportUiModels
 {

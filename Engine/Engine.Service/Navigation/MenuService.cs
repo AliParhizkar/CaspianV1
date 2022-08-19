@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Caspian.Common;
+using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Caspian.Common.Navigation
+namespace Caspian.Engine.Service
 {
-    public class MenuService : SimpleService<Menu>
+    public class MenuService : SimpleService<Menu>, ISimpleService<Menu>
     {
         public MenuService(IServiceScope scope)
             :base(scope)

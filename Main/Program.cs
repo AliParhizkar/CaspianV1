@@ -1,8 +1,15 @@
 using Caspian.Common;
+using Caspian.Engine;
 using Caspian.UI;
+using Demo.Model;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
+//typeof(Demo.Model.City).GetProperty("Title").PropertyType.GetCustomAttribute<NullableAttribute>
 // Add services to the container.
 builder.Services.AddRazorPages();
 
@@ -10,7 +17,7 @@ builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.De
 builder.Services.AddSingleton<WindowAppState>();
 builder.Services.AddSingleton<FormAppState>();
 builder.Services.AddScoped<Demo.Model.Context>();
-builder.Services.AddScoped<Caspian.Engine.Context>();
+builder.Services.AddScoped<Caspian.Engine.Model.Context>();
 builder.Services.AddScoped<Employment.Model.Context>();
 var app = builder.Build();
 //builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
@@ -25,7 +32,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 
 app.UseRouting();

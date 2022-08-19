@@ -1,9 +1,8 @@
 using Caspian.Common;
 using Caspian.Common.Security;
-using Caspian.Common.Navigation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Caspian.Engine
+namespace Caspian.Engine.Model
 {
     public class Context: MyContext
     {
@@ -12,6 +11,8 @@ namespace Caspian.Engine
         public DbSet<MenuCategory> MenuCategories { get; set; }
 
         public DbSet<Report> Reports { get; set; }
+
+        public DbSet<ReportParam> ReportParams { get; set; }
 
         public DbSet<ReportGroup> ReportGroups { get; set; }
 
@@ -42,5 +43,9 @@ namespace Caspian.Engine
         public DbSet<WorkflowForm> WorkflowForms { get; set; }
 
         public DbSet<DataModel> DataModels { get; set; }
+
+        public DbSet<DataParameter> DataParameters { get; set; }
+
+        public DbSet<DataParameterValue> DataParameterValues { get; set; }
     }
 }

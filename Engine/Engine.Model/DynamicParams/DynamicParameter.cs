@@ -14,20 +14,38 @@ namespace Caspian.Engine
         [Key]
         public int Id { get; set; }
 
+        [DisplayName("زیرسیستم")]
+        public SubSystemKind SubSystem { get; set; }
+
         [DisplayName("موجودیت")]
         public string EntityName { get; set; }
 
         [DisplayName("عنوان")]
-        public string FaTitle { get; set; }
+        public string? FaTitle { get; set; }
 
         [DisplayName("عنوان لاتین")]
         public string EnTitle { get; set; }
 
+        [DisplayName("روش محاسبه")]
+        public CalculationType CalculationType { get; set; }
+
         [DisplayName("نوع کنترل")]
-        public ControlType ControlType { get; set; }
+        public ControlType? ControlType { get; set; }
+
+        /// <summary>
+        /// نوع خروجی در حالت فرم و فرمول
+        /// </summary>
+        [DisplayName("نوع خروجی")]
+        public ResultType? ResultType { get; set; }
 
         [DisplayName("تعداد ارقام اعشار")]
         public byte? DecimalNumber { get; set; }
+
+        [DisplayName("فرمول")]
+        public int? RuleId { get; set; }
+
+        [ForeignKey(nameof(RuleId))]
+        public virtual Rule Rule { get; set; }
 
         /// <summary>
         /// 
@@ -40,5 +58,13 @@ namespace Caspian.Engine
         /// </summary>
         [DisplayName("پارامتر دارای مقدار می باشد و امکان حذف آن وجود ندارد")]
         public virtual IList<DynamicParameterValue> Values { get; set; }
+
+        [InverseProperty("DynamicParameter")]
+        [CheckOnDelete("پارامتر دارای پارامتر داده ای می باشد و امکان حذف آن وجود ندارد")]
+        public virtual IList<DataParameter> DataParameters { get; set; }
+
+        [InverseProperty("ResultParameter")]
+        [CheckOnDelete("پارامتر بعنوان پارامتر داده ای می باشد وامکان حذف آن وجود ندارد")]
+        public virtual IList<DataParameter> ResultParameters { get; set; }
     }
 }

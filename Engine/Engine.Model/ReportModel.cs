@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Caspian.Engine
+namespace Caspian.Engine.Model
 {
     public class ReportModel
     {

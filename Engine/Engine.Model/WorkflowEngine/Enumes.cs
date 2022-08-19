@@ -38,6 +38,14 @@ namespace Caspian.Engine
         UserBySpecialPost
     }
 
+    public enum ResultType : byte
+    {
+        [EnumField("صحیح")]
+        Integer,
+
+        [EnumField("اعشاری")]
+        Numeric
+    }
 
     public enum ControlType: byte
     {

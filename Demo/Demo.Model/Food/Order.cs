@@ -32,6 +32,11 @@ namespace Demo.Model
         [ForeignKey(nameof(CustomerId)),ReportField("مشخصات مشتری")]
         public virtual Customer Customer { get; set; }
 
+        public int? DynamicParameterId { get; set; }
+
+        [ForeignKey(nameof(DynamicParameterId))]
+        public virtual DynamicParameter Parameter { get; set; }
+
         /// <summary>
         /// نوع سفارش
         /// </summary>

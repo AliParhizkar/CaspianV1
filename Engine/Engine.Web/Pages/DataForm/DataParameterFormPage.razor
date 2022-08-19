@@ -1,0 +1,250 @@
+﻿@page "/Engine/DataParameterValue/{ParameterId:int}"
+@using Caspian.Common.Attributes
+@inherits SimplePage<DataParameterValue>
+@{
+    base.BuildRenderTree(__builder);
+}
+@if (titleArray[0].HasValue())
+{
+    <table style="margin:10px auto">
+        <tr>
+            @if (controlsType[0] == ControlType.DropdownList)
+            {
+                <td style="width:150px;">
+                    <label>@titleArray[0]</label>
+                </td>
+                <td style="width:300px">
+                    <DropdownList @bind-Value="SearchData.Value1" Source="sourceArray[0]" />
+                </td>
+            }
+            <td style="width:80px;"></td>
+            @if (titleArray[1].HasValue())
+            {
+                <td style="width:150px;">
+                    <label>@titleArray[1]</label>
+                </td>
+                <td style="width:300px">
+                    <DropdownList @bind-Value="SearchData.Value2" Source="sourceArray[1]" />
+                </td>
+            }
+        </tr>
+    </table>
+
+    <div style="width:90%;margin:5px auto">
+        <DataGrid @ref="CrudGrid" TEntity="DataParameterValue" Search="SearchData" ConditionExpr="t => t.Parameter1.ResultParameterId == ParameterId" TableHeight="300">
+            <Columns>
+                <GridColumn TEntity="DataParameterValue" Field="t => t.Value1" Title="@titleArray[0]">
+                    <Template>
+                        @if (controlsType[0] == ControlType.DropdownList)
+                        {
+                            @sourceArray[0].Single(t => t.Value == context.Data.Value1.ToString()).Text
+                        }
+                        else
+                        {
+                            @context.Data.Value1
+                        }
+                    </Template>
+                </GridColumn>
+                @if (titleArray[1].HasValue())
+                {
+                    <GridColumn TEntity="DataParameterValue" Field="t => t.Value2" Title="@titleArray[1]">
+                        <Template>
+                            @(sourceArray[1].Single(t => t.Value == context.Data.Value2.ToString()).Text)
+                        </Template>
+                    </GridColumn>
+                }
+                @if (titleArray[2].HasValue())
+                {
+                    <GridColumn TEntity="DataParameterValue" Field="t => t.Value3" Title="@titleArray[2]">
+                        <Template>
+                            @(sourceArray[2].Single(t => t.Value == context.Data.Value3.ToString()).Text)
+                        </Template>
+                    </GridColumn>
+                }
+                @if (titleArray[3].HasValue())
+                {
+                    <GridColumn TEntity="DataParameterValue" Field="t => t.Value4" Title="@titleArray[3]">
+                        <Template>
+                             @(sourceArray[3].Single(t => t.Value == context.Data.Value4.ToString()).Text)
+                        </Template>
+                    </GridColumn>
+                }
+                @if (titleArray[4].HasValue())
+                {
+                    <GridColumn TEntity="DataParameterValue" Field="t => t.Value5" Title="@titleArray[4]">
+                        <Template>
+                             @(sourceArray[4].Single(t => t.Value == context.Data.Value5.ToString()).Text)
+                        </Template>
+                    </GridColumn>
+                }
+                @if (titleArray[5].HasValue())
+                {
+                    <GridColumn TEntity="DataParameterValue" Field="t => t.Value6" Title="@titleArray[5]">
+                        <Template>
+                             @(sourceArray[5].Single(t => t.Value == context.Data.Value6.ToString()).Text)
+                        </Template>
+                    </GridColumn>
+                }
+                <GridColumn TEntity="DataParameterValue" Field="t => t.ResultValue.Seprate3Digit()" Title="@resultParameterName" />
+                <GridCommandColumns TEntity="DataParameterValue" />
+            </Columns>
+        </DataGrid>
+        <Window @ref="UpsertWindow" Title="@resultParameterName" Style="width:450px" OnOpen="() => OnOpenForm()">
+            <Content>
+                <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                    <CaspianValidationValidator ValidatorType="typeof(DataParameterValueService)" />
+                    <table style="width:90%;margin:0 auto">
+                        @{var index = 0;}
+                        @foreach(var title in titleArray.Where(t => t != null))
+                        {
+                            <tr>
+                                <td>
+                                    <label>@title</label>
+                                </td>
+                                <td style="width:250px">
+                                    @{
+                                        var tempindex = index;
+                                    }
+                                    @switch(index)
+                                    {
+                                        case 0:
+                                        if (controlsType[0] == ControlType.DropdownList)
+                                        {
+                                            <DropdownList @bind-Value="UpsertData.Value1" Source="sourceArray[index]" />
+                                        }
+                                        else
+                                        {
+                                            <NumericTextBox @bind-Value="UpsertData.Value1" />
+                                        }
+                                        break;
+                                        case 1:
+                                            <DropdownList @bind-Value="UpsertData.Value2" Source="sourceArray[index]" />
+                                            break;
+                                        case 2:
+                                            <DropdownList @bind-Value="UpsertData.Value3" Source="sourceArray[index]" />
+                                            break;
+                                        case 3:
+                                            <DropdownList @bind-Value="UpsertData.Value4" Source="sourceArray[index]" />
+                                            break;
+                                        case 4:
+                                            <DropdownList @bind-Value="UpsertData.Value5" Source="sourceArray[index]" />
+                                            break;
+                                        case 5:
+                                            <DropdownList @bind-Value="UpsertData.Value6" Source="sourceArray[index]" />
+                                            break;
+                                    }
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                        <tr>
+                            <td>
+                                <label>@resultParameterName</label>
+                            </td>
+                            <td>
+                                <NumericTextBox @bind-Value="UpsertData.ResultValue" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style="text-align:center">
+                                <WindowCommandButtons />
+                            </td>
+                        </tr>
+                    </table>
+                </CaspianForm>
+            </Content>
+        </Window>
+    </div>
+}
+
+
+@code 
+{
+    [Parameter]
+    public int ParameterId{ get; set; }
+
+    IList<int> parametersId;
+    IList<SelectListItem>[] sourceArray = new List<SelectListItem>[6];
+    string[] titleArray = new string[6];
+    string[] Values = new string[6];
+    ControlType?[] controlsType = new ControlType?[6];
+    string resultParameterName;
+    string[] ParametersName;
+
+    void ParameterChanged(int index, string value)
+    {
+        Values[index] = value;
+    }
+
+    void OnOpenForm()
+    {
+        for (var i = 0; i < parametersId.Count; i++)
+        {
+            switch(i)
+            {
+                case 0:
+                    UpsertData.Parameter1Id = parametersId.ElementAt(i);
+                    break;
+                case 1:
+                    UpsertData.Parameter2Id = parametersId.ElementAt(i);
+                    break;
+                case 2:
+                    UpsertData.Parameter3Id = parametersId.ElementAt(i);
+                    break;
+                case 3:
+                    UpsertData.Parameter4Id = parametersId.ElementAt(i);
+                    break;
+                case 4:
+                    UpsertData.Parameter5Id = parametersId.ElementAt(i);
+                    break;
+                case 5:
+                    UpsertData.Parameter6Id = parametersId.ElementAt(i);
+                    break;
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var scope = CreateScope();
+        var param1 = await new DynamicParameterService(scope).GetAll().SingleAsync(ParameterId);
+        resultParameterName = param1.FaTitle;
+        var parameters = await new DataParameterService(scope).GetAll().Where(t => t.ResultParameterId == ParameterId)
+            .Include(t => t.DynamicParameter.Options).ToListAsync();
+        parametersId = parameters.Select(t => t.Id).ToList();
+        var index = 0;
+        var entityType = param1.SubSystem.GetEntityAssembly().GetTypes().Single(t => t.Name == param1.EntityName);
+        foreach(var param in parameters)
+        {
+            sourceArray[index] = new List<SelectListItem>();
+            if (param.ParameterType == DataParameterType.EntityProperties)
+            {
+                var info = entityType.GetProperty(param.PropertyName);
+                titleArray[index] = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? info.Name;
+                if (info.PropertyType.IsEnumType())
+                {
+                    controlsType[index] = ControlType.DropdownList;
+                    var fields = info.PropertyType.GetUnderlyingType().GetFields().Where(t => !t.IsSpecialName);
+                    foreach(var field in fields)
+                    {
+                        var text = field.GetCustomAttribute<EnumFieldAttribute>()?.DisplayName ?? field.Name;
+                        sourceArray[index].Add(new SelectListItem(Convert.ToInt32(field.GetValue(null)).ToString(), text));
+                    }
+                }
+                else
+                {
+                    controlsType[index] = ControlType.Integer;
+                }
+
+            }
+            else
+            {
+                titleArray[index] = param.DynamicParameter.FaTitle;
+                sourceArray[index] = param.DynamicParameter.Options.Select(t => new SelectListItem(t.Id.ToString(), t.FaTitle)).ToList();
+            }
+            index++;
+        }
+        await base.OnInitializedAsync();
+    }
+}

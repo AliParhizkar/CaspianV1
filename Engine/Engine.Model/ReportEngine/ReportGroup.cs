@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Caspian.Common;
 
-namespace Caspian.Engine
+namespace Caspian.Engine.Model
 {
     /// <summary>
     /// مشخصات گروه گزارش ها

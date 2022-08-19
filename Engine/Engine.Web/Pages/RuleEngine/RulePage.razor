@@ -19,6 +19,7 @@
         <Columns>
             <GridColumn TEntity="Rule" Field="t => t.Title" />
             <GridColumn TEntity="Rule" Field="t => t.ResultType.FaText()" Title="نوع خروجی" />
+            <GridColumn TEntity="Rule" Field="t => t.Priority" />
             <GridColumn TEntity="Rule" Field="t => t.IsValid" Title="نهایی" />
             <GridColumn TEntity="Rule" Title="ایجاد" style="width:80px">
                 <Template>

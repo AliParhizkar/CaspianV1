@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Caspian.Engine
+namespace Caspian.Engine.Model
 {
     /// <summary>
     /// پارامترهای گزارش
@@ -62,7 +62,7 @@ namespace Caspian.Engine
         public int? DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
-        public virtual DynamicParameter? DynamicParameter { get; set; }
+        public virtual DynamicParameter DynamicParameter { get; set; }
 
         /// <summary>
         /// مشخصات گزارش

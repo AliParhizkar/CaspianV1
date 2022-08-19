@@ -20,26 +20,32 @@ namespace Employment.Model
         /// <summary>
         /// پایه
         /// </summary>
-        [DisplayName("پایه"), Rule("پایه")]
+        [DisplayName("پایه")]
         public BaseType BaseType { get; set; }
 
         /// <summary>
         /// تعداد سال خدمت
         /// </summary>
-        [DisplayName("تعداد سال خدمت"), Rule("تعداد سال خدمت")]
+        [DisplayName("تعداد سال خدمت")]
         public int YearOfEmployment { get; set; } = 0;
 
         /// <summary>
         /// ضریب حقوقی
         /// </summary>
-        [DisplayName("ضریب حقوقی"), Rule("ضریب حقوقی")]
+        [DisplayName("ضریب حقوقی")]
         public int SalaryFactor { get; set; }
+
+        [DisplayName("پایه تحصیلی"), Rule("پایه تحصیلی")]
+        public BaseStudy BaseStudy { get; set; }
 
         /// <summary>
         /// کد نوع حکم
         /// </summary>
         [DisplayName("نوع جکم")]
         public int EmploymentOrderTypeId { get; set; }
+
+        [Rule("سال اجرای حکم"), DisplayName("سال اجرای حکم")]
+        public int Year { get; set; }
 
         /// <summary>
         /// مشخصات نوع جکم
