@@ -21,7 +21,7 @@ namespace Caspian.Engine
 
         public ActivityType ActivityType { get; set; }
 
-        public string? SourceCodeFileName { get; set; }
+        public string SourceCodeFileName { get; set; }
 
         public int Left { get; set; }
 

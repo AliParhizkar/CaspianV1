@@ -494,6 +494,7 @@ button:disabled {
     text-align: center;
     font-size: 13px;
     line-height: 38px;
+    height:38px;
 }
 
 .t-grouping-row td

@@ -14,6 +14,8 @@ namespace Caspian.Common.Extension
             return CreateLambdaExpresion(param, array.ToList());
         }
 
+
+
         public static LambdaExpression CreateLambdaExpresion(this ParameterExpression param, IList<MemberExpression> list)
         {
             var type = param.Type.CreateDynamicType(list);
@@ -23,11 +25,41 @@ namespace Caspian.Common.Extension
                 var str = expr.ToString();
                 str = str.Substring(str.IndexOf('.') + 1);
                 var info = type.GetProperty(str);
-                var memberExpr = param.CreateMemberExpresion(str);
-                memberExprList.Add(Expression.Bind(info, memberExpr));
+                Expression memberExpr = param.CreateMemberExpresion(str);
+                if (expr.CheckConfilictByNullValue())
+                {
+                    Expression expr1 = param.CreateMemberExpresion("CustomerId");
+                    var test = Expression.Equal(expr1, Expression.Constant(null));
+                    var nullableType = typeof(Nullable<>).MakeGenericType(memberExpr.Type);
+                    var ifTrue = Expression.Convert(Expression.Constant(null), nullableType);
+                    var ifFalse = Expression.Convert(memberExpr, nullableType);
+                    memberExpr = Expression.Condition(test, ifTrue, ifFalse);
+                }
+                var bindingExpr = Expression.Bind(info, memberExpr);
+                memberExprList.Add(bindingExpr);
             }
             var memberInit = Expression.MemberInit(Expression.New(type), memberExprList);
             return Expression.Lambda(memberInit, param);
+        }
+
+        public static bool CheckConfilictByNullValue(this MemberExpression expr)
+        {
+            var type = expr.Type;
+            if (type.IsValueType && !type.IsNullableType())
+            {
+                while(expr != null)
+                {
+                    var attr = expr.Member.GetCustomAttribute<ForeignKeyAttribute>();
+                    if (attr != null)
+                    {
+                        var tempType = expr.Member.DeclaringType.GetProperty(attr.Name).PropertyType;
+                        if (tempType.IsNullableType())
+                            return true;
+                    }
+                    expr = expr.Expression as MemberExpression;
+                }
+            }
+            return false;
         }
 
         /// <summary>

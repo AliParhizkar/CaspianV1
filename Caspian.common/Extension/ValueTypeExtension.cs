@@ -147,6 +147,16 @@ namespace Caspian.Common
             return number;
         }
 
+        public static string FaText(this Enum field, string nullText)
+        {
+            if (nullText != null)
+            {
+                if (field == null || field.ToString() == "0")
+                    return nullText;
+            }
+            return field.FaText();
+        }
+
         public static string FaText(this Enum field)
         {
             EnumFieldAttribute da;

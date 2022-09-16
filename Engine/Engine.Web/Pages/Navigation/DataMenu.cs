@@ -1,13 +1,9 @@
-﻿using System.Linq;
-using Caspian.Common;
+﻿using Caspian.Common;
 using Microsoft.JSInterop;
 using Caspian.Engine.Model;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 
-namespace Caspian.UI
+namespace Caspian.Engine.Navigation
 {
     public partial class DataMenu: ComponentBase
     {
@@ -15,7 +11,7 @@ namespace Caspian.UI
         IList<Menu> Menus;
         SubSystemKind? OldSubSystem;
 
-        protected async override Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             var url = navigationManager.Uri.Substring(navigationManager.BaseUri.Length);
             var segments = url.Split('/');
@@ -24,18 +20,17 @@ namespace Caspian.UI
                 var subSystemKind = (SubSystemKind)typeof(SubSystemKind).GetField(segments[0]).GetValue(null);
                 if (OldSubSystem != subSystemKind)
                 {
-                    using var scope = ServiceScopeFactory.CreateScope();
-                    var context = scope.ServiceProvider.GetService(typeof(Context)) as Context;
-
-                    Categories = await context.MenuCategories.Where(t => t.SubSystemKind == subSystemKind)
-                        .OrderBy(t => t.Ordering).ToListAsync();
-                    Menus = await context.Menus.Where(t => t.MenuCategory.SubSystemKind == subSystemKind && t.ShowonMenu)
-                        .OrderBy(t => t.Ordering).ToListAsync();
+                    Menus = SingletonMenuService.Menus.Where(t => t.ShowonMenu && t.MenuCategory.SubSystemKind == subSystemKind && MenusId.Contains(t.Id)).OrderBy(t => t.Ordering).ToList();
+                    Categories = SingletonMenuService.Categories.Where(t => t.SubSystemKind == subSystemKind)
+                        .OrderBy(t => t.Ordering).ToList();
                     OldSubSystem = subSystemKind;
                 }
             }
-            await base.OnInitializedAsync();
+            base.OnInitialized();
         }
+
+        [Parameter]
+        public IList<int> MenusId { get; set; }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {

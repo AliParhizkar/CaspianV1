@@ -311,6 +311,8 @@ namespace ReportUiModels
 
         DigitsFormat,
 
-        ColumnWindow
+        ColumnWindow,
+
+        WorkflowPrint
     }
 }

@@ -1,5 +1,4 @@
 using Caspian.Common;
-using Caspian.Common.Security;
 using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Model
@@ -24,9 +23,9 @@ namespace Caspian.Engine.Model
 
         public DbSet<Token> Tokens { get; set; }
 
-        public DbSet<CustomRole> CustomRoles { get; set; }
+        public DbSet<User> Users { get; set; }
 
-        public DbSet<CustomUser> CustomUsers { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         public DbSet<Activity> Activities { get; set; }
 

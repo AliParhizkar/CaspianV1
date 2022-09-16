@@ -1,0 +1,9 @@
+﻿@page "/Demo/Order/Test"
+<DataGrid TEntity="Order">
+    <Columns >
+        <GridColumn TEntity="Order" Field="@(t => t.Customer.CustomerType.FaText("*****"))" Title="نوع مشتری" />
+    </Columns>
+</DataGrid>
+@code {
+
+}

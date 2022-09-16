@@ -1,15 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using Caspian.common;
 using FluentValidation;
 using System.Reflection;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
-using FluentValidation.Results;
 using FluentValidation.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -23,6 +19,8 @@ namespace Caspian.Common
             ServiceScope = scope;
             var contextType = new AssemblyInfo().GetDbContextType(typeof(TModel));
             Context = scope.ServiceProvider.GetService(contextType) as MyContext;
+            var data = scope.ServiceProvider.GetService(typeof(CaspianDataService)) as CaspianDataService;
+            UserId = data.UserId;
             foreach (var info in typeof(TModel).GetProperties())
             {
                 var type = info.PropertyType;
@@ -50,7 +48,7 @@ namespace Caspian.Common
                 CheckOnDelete(expr as Expression<Func<TModel, object>>);
             });
         }
-
+        public int UserId { get;private set; }
         /// <summary>
         /// In Master-Details insert MasterInfo should not Validate for Foreign Key
         /// </summary>

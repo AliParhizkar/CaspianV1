@@ -1,12 +1,11 @@
-using Caspian.Common;
-using Caspian.Engine;
 using Caspian.UI;
-using Demo.Model;
+using Caspian.Common;
+using Caspian.common;
+using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
-
+ 
 
 
 //typeof(Demo.Model.City).GetProperty("Title").PropertyType.GetCustomAttribute<NullableAttribute>
@@ -15,14 +14,29 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });//builder.Services.AddSingleton<FormAppState>();
 builder.Services.AddSingleton<WindowAppState>();
+builder.Services.AddSingleton<SingletonMenuService>(t => 
+{
+    using var context = new Caspian.Engine.Model.Context();
+    return new SingletonMenuService()
+    {
+        Categories = context.MenuCategories.ToList(),
+        Menus = context.Menus.ToList()
+    };
+});
 builder.Services.AddSingleton<FormAppState>();
+builder.Services.AddScoped<CaspianDataService>();
 builder.Services.AddScoped<Demo.Model.Context>();
 builder.Services.AddScoped<Caspian.Engine.Model.Context>();
 builder.Services.AddScoped<Employment.Model.Context>();
+builder.Services.AddAuthentication("Cookies").AddCookie();
 var app = builder.Build();
-//builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
-//    .AddJsonFile("appsettings.json");
+
 CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
+
+//new Demo.Model.Context().Orders.ForTest(t => new
+//{
+//    CustomerType = t.CustomerId == null ? (CustomerType?)null : t.Customer.CustomerType
+//});
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -33,7 +47,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseRouting();
 app.MapDefaultControllerRoute();
 app.MapBlazorHub();

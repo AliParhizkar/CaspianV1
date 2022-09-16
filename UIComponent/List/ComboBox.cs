@@ -77,6 +77,9 @@ namespace Caspian.UI
         public EventCallback OnValueChanged { get; set; }
 
         [Parameter, JsonIgnore]
+        public EventCallback<ChangeEventArgs> onchange { get; set; }
+
+        [Parameter, JsonIgnore]
         public Func<TEntity, string> CheckValidation { get; set; }
 
         [Parameter, JsonIgnore]

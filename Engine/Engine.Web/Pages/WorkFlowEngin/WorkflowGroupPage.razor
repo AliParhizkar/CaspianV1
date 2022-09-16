@@ -18,11 +18,6 @@
     <DataGrid @ref="CrudGrid" TEntity="WorkflowGroup" TableHeight="400" ConditionExpr="t => t.SubSystemKind == subSystemKind">
         <Columns>
             <GridColumn TEntity="WorkflowGroup" Field="t => t.Title" />
-            <GridColumn TEntity="WorkflowGroup" Title="گردش کار" style="width:80px">
-                <Template>
-                    <IconButton Href='@($"/Engine/Workflow/{context.Data.Id}")' IconType="IconType.Wpforms" />
-                </Template>
-            </GridColumn>
             <GridColumn TEntity="WorkflowGroup" Title="مدل داده ای" style="width:80px">
                 <Template>
                     <IconButton Href='@($"/Engine/DataModel/{context.Data.Id}")' IconType="IconType.Wpforms" />
@@ -33,6 +28,17 @@
                     <IconButton Href='@($"/Engine/WorkflowForm/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
+            <GridColumn TEntity="WorkflowGroup" Title="نسخه چاپی" style="width:80px">
+                <Template>
+                    <IconButton Href='@($"/Engine/WorkflowReport/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="WorkflowGroup" Title="گردش کار" style="width:80px">
+                <Template>
+                    <IconButton Href='@($"/Engine/Workflow/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+
             <GridCommandColumns TEntity="WorkflowGroup" />
         </Columns>
     </DataGrid>

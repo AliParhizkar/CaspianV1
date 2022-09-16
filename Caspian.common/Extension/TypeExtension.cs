@@ -101,8 +101,11 @@ namespace Caspian.Common.Extension
             foreach (var expr in exprList)
             {
                 var str = expr.ToString();
+                var type = expr.Type;
+                if (expr.CheckConfilictByNullValue())
+                    type = typeof(Nullable<>).MakeGenericType(expr.Type);
                 str = str.Substring(str.IndexOf('.') + 1);
-                properties.Add(new DynamicProperty(str, expr.Type));
+                properties.Add(new DynamicProperty(str, type));
             }
             return DynamicClassFactory.CreateType(properties);
         }

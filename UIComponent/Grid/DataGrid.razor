@@ -97,11 +97,20 @@
                                     if (rowIndex == SelectedRowIndex)
                                         attrs.Add("class", "t-state-selected");
                                 }
+                                if (SelectType == SelectType.Multi && selectedIds.Contains(id))
+                                    attrs.Add("class", "t-state-selected");
                                 if (SelectType != SelectType.None)
                                 {
                                     attrs.Add("onmousedown", EventCallback.Factory.Create<MouseEventArgs>(this, async (e) =>
                                     {
                                         SelectRow(rowIndex);
+                                        if (SelectType == SelectType.Multi)
+                                        {
+                                            if (selectedIds.Contains(id))
+                                                selectedIds.Remove(id);
+                                            else
+                                                selectedIds.Add(id);
+                                        }
                                         if (OnRowSelect != null)
                                             await OnRowSelect.Invoke(item);
                                         if (OnInternalRowSelect.HasDelegate)
@@ -132,6 +141,7 @@
                                                 <CascadingValue Name="GridRowData" Value="rowData">
                                                     <CaspianContainer @ref="updateContainer">
                                                         @Columns(rowData)
+
                                                     </CaspianContainer>
                                                 </CascadingValue>
                                             </CascadingValue>

@@ -5,6 +5,12 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Rendering;
+using System.IO;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Linq;
+using System;
+using Caspian.common;
 
 namespace Caspian.UI
 {
@@ -25,6 +31,21 @@ namespace Caspian.UI
         [Inject]
         protected IJSRuntime jsRuntime { get; set; }
 
+        [CascadingParameter]
+        private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+        public int UserId { get; private set; }
+
+        protected async override Task OnInitializedAsync()
+        {
+            if (authenticationStateTask != null)
+            {
+                var result = await authenticationStateTask;
+                UserId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+            }
+            await base.OnInitializedAsync();
+        }
+
         /// <summary>
         /// Create in OnInitialized and dispose in OnAfterRenderAsync
         /// </summary>
@@ -32,7 +53,9 @@ namespace Caspian.UI
 
         protected IServiceScope CreateScope()
         {
-            return ServiceScopeFactory.CreateScope();
+            var scope = ServiceScopeFactory.CreateScope();
+            scope.ServiceProvider.GetService<CaspianDataService>().UserId = UserId;
+            return scope;
         }
 
         public void ShowMessage(string msg)
@@ -86,6 +109,18 @@ namespace Caspian.UI
         protected override bool ShouldRender()
         {
             return sholdRender;
+        }
+
+        protected async Task DownloadFile(string fileName, byte[] fileContent)
+        {
+            using var memoryStream = new MemoryStream(fileContent);
+            await DownloadFile(fileName, memoryStream);
+        }
+
+        protected async Task DownloadFile(string fileName, MemoryStream fileContent)
+        {
+            using var streamRef = new DotNetStreamReference(fileContent);
+            await jsRuntime.InvokeVoidAsync("$.telerik.bindFileDownload", fileName, streamRef);
         }
 
         protected override void OnInitialized()

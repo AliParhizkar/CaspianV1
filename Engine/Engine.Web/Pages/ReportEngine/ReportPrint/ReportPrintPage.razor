@@ -1,5 +1,6 @@
 ﻿@page "/Engine/ReportPrintPage/{ReportId:int}"
 @page "/Engine/ReportPrintPage/{GuId}"
+@page "/Engine/WorkflowReport/{DataModelId:int}"
 @namespace Caspian.Engine.ReportPrint
 @inject IJSRuntime jsRunTime
 @inherits BasePage
@@ -222,7 +223,7 @@
 @switch (windowType)
 {
     case ReportWindowType.Setting:
-        <SettingWindowComponent @bind-Status="status" Setting="reportSetting" />
+        <SettingWindowComponent @bind-Status="status" Setting="reportSetting" IsWorkflowReport="DataModelId > 0" />
         break;
     case ReportWindowType.Text:
         <TextBoxWindowComponent @bind-Status="status" PrintParam="PrintParam" />
@@ -242,9 +243,15 @@
     case ReportWindowType.ColumnWindow:
         <ColumnComponent @bind-Status="status" MinDataLevel="MinDataLevel" Bond="Bond" />
         break;
+    case ReportWindowType.WorkflowPrint:
+        <DataFieldComponent @bind-Status="status" DataModelId="DataModelId" />
+        break;
 }
 @code {
 
     [Parameter]
     public string GuId { get; set; }
+
+    [Parameter]
+    public int DataModelId{ get; set; }
 }

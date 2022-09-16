@@ -2,8 +2,6 @@
 using System.Reflection;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Caspian.Common
 {

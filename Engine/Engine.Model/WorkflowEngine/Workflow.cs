@@ -31,7 +31,7 @@ namespace Caspian.Engine
         /// توضیحات
         /// </summary>
         [DisplayName("توضیحات")]
-        public string? Descript { get; set; }
+        public string Descript { get; set; }
 
         [InverseProperty(nameof(Workflow)), CheckOnDelete("گردش دارای وضعیت می باشد و امکان حذف آن وجود ندارد.")]
         public virtual IList<Activity> Activities { get; set; }

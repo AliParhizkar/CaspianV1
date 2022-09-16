@@ -24,7 +24,7 @@ namespace Caspian.Engine
         /// Entity type fulle name that bind in forms control 
         /// </summary>
         [DisplayName("نام موجودیت")]
-        public string? EntityFullName { get; set; }
+        public string EntityFullName { get; set; }
 
         [DisplayName("نام فیلد")]
         public DataModelFieldType? FieldType { get; set; }

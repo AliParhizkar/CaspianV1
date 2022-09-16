@@ -1,0 +1,57 @@
+﻿@namespace Caspian.Engine.ReportPrint
+@inherits BasePage
+<Window Status="Status" Style="width:400px" Title="فیلد داده ای">
+    <Content>
+        <table style="width:90%;margin:0 auto">
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="title" Disabled=fieldId.HasValue() />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>فیلد داده ای</label>
+                </td>
+                <td>
+                    <ComboBox TValue="string" TEntity="SelectListItem"
+                              @bind-Value="fieldId" Source="fields" Disabled="title.HasValue()" />
+                </td>
+            </tr>
+        </table>
+        <div style="padding: 10px 150px 10px 0">
+            <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-btn c-danger">انصراف</button>
+            <button @onclick="() => {  }" class="c-btn c-primary">ثبت</button>
+        </div>
+    </Content>
+</Window>
+
+@code 
+{
+    string title;
+    string fieldId;
+    IList<SelectListItem> fields;
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public int DataModelId{ get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        fields = await new DataModelFieldService(scope).GetAll()
+        .Where(t => t.DataModelId == DataModelId).Select(t => new SelectListItem() 
+        {
+            Value = t.ToString(),
+            Text = t.Title
+        }).ToListAsync();
+        await base.OnInitializedAsync();
+    }
+}

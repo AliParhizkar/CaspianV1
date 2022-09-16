@@ -1,19 +1,14 @@
-﻿using System;
-using System.IO;
-using Caspian.UI;
-using System.Linq;
+﻿using Caspian.UI;
 using Caspian.Common;
 using ReportUiModels;
 using Newtonsoft.Json;
 using System.Xml.Linq;
 using System.Reflection;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
-using Caspian.Common.Extension;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Components;
 using Caspian.Engine.Service;
+using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Components;
 
 namespace Caspian.Engine.ReportPrint
 {
@@ -32,11 +27,6 @@ namespace Caspian.Engine.ReportPrint
         [Parameter]
         public int ReportId { get; set; } = 1;
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-        }
-
         protected async override Task OnInitializedAsync()
         {
             if (GuId.HasValue())
@@ -47,44 +37,60 @@ namespace Caspian.Engine.ReportPrint
                 UnescapeDataString(Page);
             }
             using var scope = ServiceScopeFactory.CreateScope();
-            var report = await new ReportService(scope).SingleAsync(ReportId);
-            var reportParams = new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId);
-            if (!reportParams.Any())
+            if (ReportId > 0)
             {
-                message = "لطفا ابتدا پارامترهای گزارش را ثبت نموده و سپس فایل گزارش را ایجاد نمائید";
-                await base.OnInitializedAsync();
+                var report = await new ReportService(scope).SingleAsync(ReportId);
+                var reportParams = new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId);
+                if (!reportParams.Any())
+                {
+                    message = "لطفا ابتدا پارامترهای گزارش را ثبت نموده و سپس فایل گزارش را ایجاد نمائید";
+                    await base.OnInitializedAsync();
+                }
+                if (report.PrintFileName.HasValue())
+                {
+                    var path = Assembly.GetExecutingAssembly().GetMapPath() + "\\Data\\Report\\View\\" + report.PrintFileName + ".mrt";
+                    var doc = XDocument.Load(path);
+                    var pagesElement = doc.Element("StiSerializer").Element("Pages").Elements();
+                    Page = new ReportUiModels.ReportPrintPage(pagesElement.First());
+                    Page.Report = new ReportUiModels.ReportPrint();
+                    Page.Report.Pages = pagesElement.Select(t => new ReportUiModels.ReportPrintPage(t)).ToList();
+                }
+                else
+                {
+                    int count = reportParams.Max(t => t.DataLevel).GetValueOrDefault();
+                    Page = new ReportUiModels.ReportPrintPage();
+                    Page.Bonds = new List<Bond>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        Page.Bonds.Add(new Bond()
+                        {
+                            Height = 1,
+                            DataLevel = count - i,
+                            BondType = BondType.DataBond
+                        });
+                    }
+                    Page.Width = 21;
+                    Page.Height = 29.7M;
+                }
+                if (report.SubReportLevel.HasValue)
+                {
+                    if (Page.Report == null)
+                        Page.Report = new ReportUiModels.ReportPrint();
+                    Page.Report.SubReportLevel = report.SubReportLevel;
+                }
             }
-            if (report.PrintFileName.HasValue())
+            if (DataModelId > 0)
             {
-                var path = Assembly.GetExecutingAssembly().GetMapPath() + "\\Data\\Report\\View\\" + report.PrintFileName + ".mrt";
-                var doc = XDocument.Load(path);
-                var pagesElement = doc.Element("StiSerializer").Element("Pages").Elements();
-                Page = new ReportUiModels.ReportPrintPage(pagesElement.First());
-                Page.Report = new ReportUiModels.ReportPrint();
-                Page.Report.Pages = pagesElement.Select(t => new ReportUiModels.ReportPrintPage(t)).ToList();
-            }
-            else
-            {
-                int count = reportParams.Max(t => t.DataLevel).GetValueOrDefault();
                 Page = new ReportUiModels.ReportPrintPage();
                 Page.Bonds = new List<Bond>();
-                for (int i = 0; i < count; i++)
+                Page.Bonds.Add(new Bond()
                 {
-                    Page.Bonds.Add(new Bond()
-                    {
-                        Height = 1,
-                        DataLevel = count - i,
-                        BondType = BondType.DataBond
-                    });
-                }
+                    Height = 10,
+                    DataLevel = 1,
+                    BondType= BondType.DataBond
+                });
                 Page.Width = 21;
                 Page.Height = 29.7M;
-            }
-            if (report.SubReportLevel.HasValue)
-            {
-                if (Page.Report == null)
-                    Page.Report = new ReportUiModels.ReportPrint();
-                Page.Report.SubReportLevel = report.SubReportLevel;
             }
             await base.OnInitializedAsync();
         }
@@ -116,18 +122,24 @@ namespace Caspian.Engine.ReportPrint
             }
             param.ReportId = ReportId;
             PrintParam = param;
-            windowType = ReportWindowType.Text;
+            if (DataModelId > 0)
+                windowType = ReportWindowType.WorkflowPrint;
+            else
+                windowType = ReportWindowType.Text;
             StateHasChanged();
         }
 
         [JSInvokable]
         public void ShowColumnWindow(Bond bond, int? minDataLevel)
         {
-            Bond = bond;
-            status = WindowStatus.Open;
-            MinDataLevel = minDataLevel;
-            windowType = ReportWindowType.ColumnWindow;
-            StateHasChanged();
+            if (DataModelId == 0)
+            {
+                Bond = bond;
+                status = WindowStatus.Open;
+                MinDataLevel = minDataLevel;
+                windowType = ReportWindowType.ColumnWindow;
+                StateHasChanged();
+            }
         }
 
         [JSInvokable]

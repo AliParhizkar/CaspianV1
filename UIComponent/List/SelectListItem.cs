@@ -4,6 +4,11 @@ namespace Caspian.UI
 {
     public class SelectListItem
     {
+        public SelectListItem()
+        {
+
+        }
+
         public SelectListItem(string value, string text, bool disabled = false)
         {
             Text = text;

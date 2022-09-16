@@ -1,11 +1,66 @@
-﻿@inherits LayoutComponentBase
+﻿@using Caspian.Engine.Service
+@using Caspian.Engine.Navigation
+@namespace Demo.Web
+@inherits LayoutComponentBase
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject SingletonMenuService MenuService
+@inject NavigationManager navigationManager
+@{
+    var uri = new Uri(navigationManager.Uri);
+    var url = "";
+    foreach(var segment in uri.Segments)
+    {
+        if (!Int64.TryParse(segment, out _))
+            url += segment;
+    }
+    if (url.EndsWith('/'))
+        url = url.Substring(0, url.Length - 1);
+    var menuId = MenuService.GetMenuId(url);
+}
+<AuthorizeView >
+    <Authorized>
+        <div class="page">
+            @if (menusId != null)
+            {
+                <div class="sidebar">
+                    <DataMenu MenusId="menusId" />
+                </div>
+                <div class="content">
+                    @if (menusId.Contains(menuId))
+                    {
+                        @Body
+                    }
+                    else
+                    {
+                        <h1 style="color:red">شما مجاز به ورود به این صفحه نیستید</h1>
+                    }
+                </div>
+            }
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <h1 style="color:red">شما مجاز به ورود به این صفحه نیستید</h1>
+    </NotAuthorized>
+</AuthorizeView>
+@code
+{
+    
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    IList<int> menusId;
 
-<div class="page">
-    <div class="sidebar">
-        <DataMenu />
-    </div>
-
-    <div class="content">
-        @Body
-    </div>
-</div>
+    protected override async Task OnInitializedAsync()
+    {
+        if (authenticationStateTask != null)
+        {
+            if (menusId == null)
+            {
+                var result = await authenticationStateTask;
+                var userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+                using var scope = ServiceScopeFactory.CreateScope();
+                menusId = await new UserAccessibilityService(scope).GetUserMenus(userId);
+            }
+        }
+        await base.OnInitializedAsync();
+    }
+}

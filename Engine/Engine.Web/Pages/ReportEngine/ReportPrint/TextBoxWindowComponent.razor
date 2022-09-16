@@ -139,6 +139,7 @@
             if (PrintParam.BondType == BondType.DataFooter)
                 PrintParam.DataLevel = 1;
             using var scope = CreateScope();
+            
             Params = (await new PrintReport(scope).GetFiledsProperty(PrintParam.ReportId.Value, PrintParam.DataLevel.Value))
                 .Select(t => new SelectListItem('{' + t.Key + '}', t.Value));
             if (PrintParam.TitleEn.HasValue() && !Params.Any(t => t.Value == PrintParam.TitleEn))

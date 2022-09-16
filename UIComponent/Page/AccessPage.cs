@@ -44,6 +44,8 @@ namespace Caspian.UI
                     if (foreignKeyAttr == null)
                         throw new CaspianException("Property " + masterInfo.Name + "in type " + typeof(TAccess).Name + "has not ForeignKey Attribute");
                     Expression expr = Expression.Property(Expression.Parameter(typeof(TAccess)), foreignKeyAttr.Name);
+                    if (expr.Type.IsNullableType())
+                        expr = Expression.Property(expr, "Value");
                     expr = Expression.Equal(expr, Expression.Constant(MasterId));
                     CrudGrid.InternalConditionExpr = expr;
                 }
@@ -52,6 +54,8 @@ namespace Caspian.UI
                     var masterIdName = typeof(TAccess).GetProperties().Single(t => t.PropertyType == typeof(TMaster)).GetCustomAttribute<ForeignKeyAttribute>().Name;
                     var u = Expression.Parameter(typeof(TAccess));
                     Expression innerExpr = Expression.Property(u, masterIdName);
+                    if (innerExpr.Type.IsNullableType())
+                        innerExpr = Expression.Property(innerExpr, "Value");
                     innerExpr = Expression.Equal(innerExpr, Expression.Constant(MasterId));
                     innerExpr = Expression.Lambda(innerExpr, u);
                     var accessListInf = typeof(TMember).GetProperties().Where(t => typeof(IEnumerable<TAccess>).IsAssignableFrom(t.PropertyType));

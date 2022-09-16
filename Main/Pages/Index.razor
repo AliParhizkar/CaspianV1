@@ -2,21 +2,24 @@
 @using Demo.Model
 @using Caspian.common
 @page "/"
-<div>
+@inherits BasePage
+<div class="test">
     <a href="/Demo">Demo</a>
 </div>
 <div>
     <a href="/Employment">Employment</a>
 </div>
-    <DataGrid TEntity="Order">
-        <Columns >
-            <GridColumn TEntity="Order" Field="@(t => t.Customer.CustomerType)" Title="نوع مشتری" />
-        </Columns>
-    </DataGrid>
 
+<button @onclick="async () => await LoadFileAsync()" >Click Me</button>
 
  @code 
 {
     City city = new City();
     int? provinceId;
+
+    async Task LoadFileAsync()
+    {
+        var fileContent = await File.ReadAllBytesAsync("C:\\Users\\Ali\\Desktop\\Book1.xlsx");
+        await DownloadFile("a.xlsx", fileContent);
+    }
 }

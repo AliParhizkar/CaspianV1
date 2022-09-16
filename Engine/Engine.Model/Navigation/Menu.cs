@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,7 +15,7 @@ namespace Caspian.Engine.Model
         /// عنوان فارسی منو
         /// </summary>
         [DisplayName("عنوان")]
-        public string? Title { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
         /// آدرس صفحه
@@ -32,7 +33,7 @@ namespace Caspian.Engine.Model
         /// مشخصات منوی اصلی
         /// </summary>
         [ForeignKey(nameof(MenuCategoryId))]
-        public virtual  MenuCategory? MenuCategory { get; set; }
+        public virtual  MenuCategory MenuCategory { get; set; }
 
         public int Ordering { get; set; }
 
@@ -47,5 +48,8 @@ namespace Caspian.Engine.Model
         /// </summary>
         [DisplayName("آدرس نامعتبر")]
         public bool InvalidAddress { get; set; }
+
+        [CheckOnDelete("منو دارای دستیابی می باشد و امکان حذف آن وجود ندارد")]
+        public IList<UserAccessibility> Accessibilities { get; set; }
     }
 }

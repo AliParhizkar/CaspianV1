@@ -1,9 +1,16 @@
 ﻿@page "/Demo"
+@inherits BasePage
 @namespace Demo.Web.Pages
-
+<button @onclick="ServiceTest">For Test</button>
 
 
 @code
 {
-
+    async Task ServiceTest()
+    {
+        using var scope = CreateScope();
+        var service = new CityService(scope);
+        await service.AddAsync(new City() { });
+        await service.SaveChangesAsync();
+    }
 }

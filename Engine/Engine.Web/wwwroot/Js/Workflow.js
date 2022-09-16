@@ -68,6 +68,7 @@
             let data = []
             activities.forEach(function (activity) {
                 let loc = activity.Left + ' ' + activity.Top;
+                console.log(activity.Id)
                 let category = '';
                 switch (activity.ActivityType) {
                     case 1:
@@ -91,7 +92,8 @@
             myDiagram.model = new go.GraphLinksModel(data, [
                 { from: "1", to: "2" },
                 { from: "2", to: "3" },
-                { from: "2", to: "4" },
+                { from: "3", to: "4" },
+                { from: "3", to: "5" }
             ]);
         },
 

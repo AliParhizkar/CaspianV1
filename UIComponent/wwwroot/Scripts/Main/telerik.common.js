@@ -342,9 +342,16 @@
             else
                 $(pic).css('background-image', 'none');
         },
-        bindFileDownload: function (link, fileContent) {
-            link.href = "data:text/octet-stream;base64," + encodeURIComponent(fileContent);
-            link.click();
+        bindFileDownload: async function (fileName, contentStreamReference) {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            const url = URL.createObjectURL(blob);
+            const anchorElement = document.createElement('a');
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? '';
+            anchorElement.click();
+            anchorElement.remove();
+            URL.revokeObjectURL(url);
         },
         setFocuc: function (input) {
             $(input).focus();

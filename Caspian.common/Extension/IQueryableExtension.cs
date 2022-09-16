@@ -13,9 +13,18 @@ namespace Caspian.Common.Extension
     {
         public static IQueryable Select(this IQueryable source, IList<MemberExpression> exprList)
         {
-            var parameter = Expression.Parameter(source.ElementType, "t");
+            var parameter = Expression.Parameter(source.ElementType, "x");
             var lambda = parameter.CreateLambdaExpresion(exprList);
             return source.Select(lambda);
+        }
+
+        public static void ForTest<TEntity, TResult>(this IQueryable<TEntity> query, Expression<Func<TEntity, TResult>> expr)
+        {
+            var param  = expr.Parameters.Single();
+            var body = expr.Body as NewExpression;
+            var q = Expression.MemberInit(Expression.New(body.Type));
+            //Expression.MemberInit(q, param)
+            //var lambda = Expression.Lambda(body, param);
         }
 
         public async static Task<TEntity> SingleAsync<TEntity>(this IQueryable<TEntity> query, int id) where TEntity : class
@@ -37,7 +46,6 @@ namespace Caspian.Common.Extension
 
         public async static Task<IList<TEntity>> GetValuesAsync<TEntity>(this IQueryable<TEntity> source, IList<MemberExpression> exprList)
         {
-            var str = source.Select(exprList).ToQueryString();
             var values = await source.Select(exprList).OfType<object>().ToListAsync();
             var list = new List<TEntity>();
             foreach(var value in values)

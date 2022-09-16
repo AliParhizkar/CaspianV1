@@ -3,6 +3,8 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = null;
+        var useId = HttpContext.User.Claims.FirstOrDefault()?.Value;
+    var url = HttpContext.Request.Path;
 }
 
 
@@ -49,7 +51,21 @@
 </head>
 <body class="t-rtl">
     <div>
-        <component type="typeof(App)" render-mode="ServerPrerendered" />
+        @if (useId != null && url != "/Logout")
+        {
+            <component type="typeof(App)" render-mode="ServerPrerendered" />
+        }
+        else
+        {
+            if (url == "/")
+            {
+                await Html.RenderPartialAsync("Index");
+            }
+            else
+            {
+                await Html.RenderPartialAsync("Login");
+            }
+        }
     </div>
     <div id="blazor-error-ui">
         <environment include="Staging,Production">

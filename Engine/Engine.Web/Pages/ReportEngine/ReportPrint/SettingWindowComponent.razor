@@ -31,55 +31,58 @@
                 </tr>
             </table>
             <table style="width:100%">
-                <tr>
-                    <td style="width:30px">
-                        <CheckBox Id="ReportTitle" @bind-Value="Setting.ReportTitle" />
-                    </td>
-                    <td colspan="2">
-                        <label>سرگزارش</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <CheckBox Id="PageHeader" @bind-Value="Setting.PageHeader" />
-                    </td>
-                    <td colspan="2">
-                        <label>سرصفحه</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td style="width:78px;">
-                        <label>نوع چاپ</label>
-                    </td>
-                    <td style="padding:0">
-                        <DropdownList Id="PrintOn" @bind-Value="Setting.PrintOn" Disabled="!Setting.PageHeader" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <CheckBox Id="DataHeader" @bind-Value="Setting.DataHeader" />
-                    </td>
-                    <td colspan="2">
-                        <label>سرداده</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <CheckBox Id="DataFooter" @bind-Value="Setting.DataFooter" />
-                    </td>
-                    <td colspan="2">
-                        <label>ته داده</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <CheckBox Id="PageFooter" @bind-Value="Setting.PageFooter" />
-                    </td>
-                    <td colspan="2">
-                        <label>ته صفحه</label>
-                    </td>
-                </tr>
+                @if (!IsWorkflowReport)
+                {
+                    <tr>
+                        <td style="width:30px">
+                            <CheckBox Id="ReportTitle" @bind-Value="Setting.ReportTitle" />
+                        </td>
+                        <td colspan="2">
+                            <label>سرگزارش</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <CheckBox Id="PageHeader" @bind-Value="Setting.PageHeader" />
+                        </td>
+                        <td colspan="2">
+                            <label>سرصفحه</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="width:78px;">
+                            <label>نوع چاپ</label>
+                        </td>
+                        <td style="padding:0">
+                            <DropdownList Id="PrintOn" @bind-Value="Setting.PrintOn" Disabled="!Setting.PageHeader" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <CheckBox Id="DataHeader" @bind-Value="Setting.DataHeader" />
+                        </td>
+                        <td colspan="2">
+                            <label>سرداده</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <CheckBox Id="DataFooter" @bind-Value="Setting.DataFooter" />
+                        </td>
+                        <td colspan="2">
+                            <label>ته داده</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <CheckBox Id="PageFooter" @bind-Value="Setting.PageFooter" />
+                        </td>
+                        <td colspan="2">
+                            <label>ته صفحه</label>
+                        </td>
+                    </tr>
+                }
                 <tr>
                     <td></td>
                     <td></td>
@@ -96,8 +99,12 @@
 {
     bool updateSetting;
     string message;
+
     [Parameter]
     public ReportSetting Setting { get; set; }
+
+    [Parameter]
+    public bool IsWorkflowReport{ get; set; }
 
     [Parameter]
     public WindowStatus Status { get; set; }

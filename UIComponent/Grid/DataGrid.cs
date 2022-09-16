@@ -14,8 +14,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations.Schema;
+using Caspian.common;
 
 namespace Caspian.UI
 {
@@ -27,6 +27,7 @@ namespace Caspian.UI
         ElementReference mainDiv;
         int aggregateColumnIndex;
         bool SholdRendered = true;
+        IList<int> selectedIds;
         IList<object> DynamicData;
         IList<ColumnData> columnsData;
         IDictionary<string, object> tableAttrs;
@@ -259,8 +260,6 @@ namespace Caspian.UI
 
             }
         }
-
-        
 
         IList<Expression> ConvertExpressionForGroupBy(IList<Expression> list, ParameterExpression parameter)
         {
@@ -524,6 +523,8 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             DeleteMessage = "آیا با حذف موافقید؟";
+            if (SelectType == SelectType.Multi)
+                selectedIds = new List<int>();
             tableAttrs = new Dictionary<string, object>();
             commandColumnAdded = false;
             base.OnInitialized();
