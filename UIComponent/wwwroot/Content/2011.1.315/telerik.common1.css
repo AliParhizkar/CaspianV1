@@ -8,6 +8,9 @@
     margin-right:8px;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
+.c-subtree{
+    padding:5px;
+}
 .c-outline-primary {
     color: #007bff;
     background-color: transparent;
@@ -193,6 +196,16 @@
     color: #423d96;
     font-size: 30px;
 }
+.c-icon-button .fa-angle-down{
+    padding-top:5px;
+}
+.c-icon-button .fa-angle-up {
+    padding-top: 3px;
+}
+.c-icon-button .fa-external-link{
+    padding-top:7px;
+    font-size:20px;
+}
 form tr {
     height: 40px;
 }
@@ -341,15 +354,16 @@ span, label, td, th {
         color: white;
         font-size: 15px;
     }
-        .c-icon-button.c-simple {
-            border-radius: 50%;
-            min-width: 0;
-            width: 40px;
-            height: 40px;
-        }
+    .c-icon-button.c-simple {
+        border-radius: 50%;
+        min-width: 0;
+        width: 38px;
+        height: 38px;
+        background-color: transparent;
+        border: 1px solid #423d96;
+    }
         .c-icon-button.c-simple .fa {
-            color: white;
-            font-size: 27px;
+            font-size: 24px;
         }
 .c-messagebox .c-content{
     display:table-row;
@@ -488,7 +502,10 @@ span, label, td, th {
 .t-radios{
     display:table;
 }
-
+.submenu li{
+    height:35px;
+    padding-top:3px;
+}
 .sidebar {
     float: right;
     width: 165px;
@@ -497,6 +514,7 @@ span, label, td, th {
     background-color: #e5e5e5;
     padding-left: 3px;
     border-left: 1px solid #bfbfbf;
+    overflow: hidden;
 }
 
 .main {
@@ -529,25 +547,32 @@ span, label, td, th {
     .t-radios .t-radio {
         display: table-cell;
     }
-.t-radios .c-radio {
-    background-color: #ff6358;
-    width: 12px;
-    height: 12px;
-    position: relative;
-    top: -22px;
-    display: block;
-    left: -3px;
-    border-radius: 8px;
-}
+        .t-radios .c-radio {
+            background-color: #ff6358;
+            width: 12px;
+            height: 12px;
+            position: relative;
+            top: -22px;
+            display: block;
+            left: -3px;
+            border-radius: 8px;
+        }
 .t-radios .t-disabled .c-radio {
     background-color: lightgray;
 }
 .t-radios .t-disabled .t-icon {
     border-color:lightgray;
 }
-.t-radios .t-disabled .t-title {
-    color: #aaaaaa;
+.t-radios .t-disabled{
+    cursor: not-allowed
 }
+    .t-radios .t-disabled input{
+        cursor:not-allowed;
+    }
+    .t-radios .t-disabled .t-title {
+        color: #aaaaaa;
+        cursor:not-allowed;
+    }
 .c-treeview .fa {
     color: dimgray;
     font-size: 14px;

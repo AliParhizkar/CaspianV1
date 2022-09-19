@@ -50,6 +50,6 @@ namespace Caspian.Engine.Model
         public bool InvalidAddress { get; set; }
 
         [CheckOnDelete("منو دارای دستیابی می باشد و امکان حذف آن وجود ندارد")]
-        public IList<UserAccessibility> Accessibilities { get; set; }
+        public IList<MenuAccessibility> Accessibilities { get; set; }
     }
 }

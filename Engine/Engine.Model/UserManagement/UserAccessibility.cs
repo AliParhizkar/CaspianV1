@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine.Model
 {
-    [Table("UsersAccessibility", Schema = "cmn")]
-    public class UserAccessibility
+    [Table("MenusAccessibility", Schema = "cmn")]
+    public class MenuAccessibility
     {
         [Key]
         public int Id { get; set; }

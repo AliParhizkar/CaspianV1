@@ -33,6 +33,6 @@ namespace Caspian.Engine.Model
         public virtual ICollection<UserMembership> Memberships { get; set; }
 
         [CheckOnDelete("کاربر دارای دستیابی می باشد و امکان حذف وی وجود ندارد")]
-        public virtual ICollection<UserAccessibility> Accessibilities { get; set; }
+        public virtual ICollection<MenuAccessibility> Accessibilities { get; set; }
     }
 }

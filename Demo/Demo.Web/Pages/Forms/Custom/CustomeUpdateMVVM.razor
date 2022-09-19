@@ -70,7 +70,6 @@
             var productService = new ProductService(scope);
             await productService.UpdatePrice(productId, price);
             await productService.SaveChangesAsync();
-            await CrudGrid.Reload();
             selectedId = productId;
             row = 2;
         }
@@ -84,7 +83,6 @@
             var productService = new ProductService(scope);
             await productService.UpdatePriceOuterBound(productId, priceOuterBound);
             await productService.SaveChangesAsync();
-            await CrudGrid.Reload();
             await CrudGrid.SelectNextRow();
             if (CrudGrid.SelectedRowId.HasValue)
             {

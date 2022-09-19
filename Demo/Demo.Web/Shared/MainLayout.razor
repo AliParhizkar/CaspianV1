@@ -58,7 +58,7 @@
                 var result = await authenticationStateTask;
                 var userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
                 using var scope = ServiceScopeFactory.CreateScope();
-                menusId = await new UserAccessibilityService(scope).GetUserMenus(userId);
+                menusId = await new MenuAccessibilityService(scope).GetUserMenus(userId);
             }
         }
         await base.OnInitializedAsync();

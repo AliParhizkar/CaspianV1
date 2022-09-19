@@ -296,6 +296,8 @@
         }
         if (updateData)
         {
+            if (!PrintParam.Member.HasValue())
+                PrintParam.Member = PrintParam.TitleEn;
             await JSRuntime.InvokeVoidAsync("$.report.updateTextWindowData", PrintParam);
             updateData = false;
         }

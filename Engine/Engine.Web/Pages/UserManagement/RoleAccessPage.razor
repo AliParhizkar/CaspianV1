@@ -1,6 +1,6 @@
 ﻿@page "/Engine/RoleAccess/{MasterId:int}"
 @namespace Caspian.Engine.UserManagement
-@inherits AccessPage<Role, UserAccessibility, Menu>
+@inherits AccessPage<Role, MenuAccessibility, Menu>
 @{
     base.BuildRenderTree(__builder);
 }
@@ -48,7 +48,7 @@
             </td>
             <td style="width:85px;text-align:center">
                 <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                    <CaspianValidationValidator ValidatorType="typeof(UserAccessibilityService)" />
+                    <CaspianValidationValidator ValidatorType="typeof(MenuAccessibilityService)" />
                     <div style="padding-top:100px;">
                         <div style="padding-bottom:15px">
                             <IconButton IconType="IconType.AngleDoubleLeft" />
@@ -95,11 +95,11 @@
                         </tr>
                     </table>
                 </fieldset>
-                <DataGrid @ref="CrudGrid" TEntity="UserAccessibility" HideInsertIcon Search="SearchData" TableHeight="350">
+                <DataGrid @ref="CrudGrid" TEntity="MenuAccessibility" HideInsertIcon Search="SearchData" TableHeight="350">
                     <Columns>
-                        <GridColumn TEntity="UserAccessibility" Field="t => t.Menu.MenuCategory.Title" Title="منوی فرعی" />
-                        <GridColumn TEntity="UserAccessibility" Field="t => t.Menu.Title" />
-                        <GridCommandColumns TEntity="UserAccessibility" HideEdit />
+                        <GridColumn TEntity="MenuAccessibility" Field="t => t.Menu.MenuCategory.Title" Title="منوی فرعی" />
+                        <GridColumn TEntity="MenuAccessibility" Field="t => t.Menu.Title" />
+                        <GridCommandColumns TEntity="MenuAccessibility" HideEdit />
                     </Columns>
                 </DataGrid>
             </td>

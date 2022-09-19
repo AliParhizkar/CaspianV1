@@ -87,8 +87,9 @@
         var font = new rFont();
         $.myExtend(font, cell.font);
         font.initElement($td);
-        if (cell.CellType = cellKind.rowHeader)
-            $td.height($r.getPixelHeight(cell.position.height));
+        //if (cell.CellType = cellKind.rowHeader) {
+        //    $td.height($r.getPixelHeight(cell.position.height));
+        //}
         $td.css('background-color', cell.backGroundColor.colorString);
         if (cell.text)
             $td.text(decodeURIComponent(cell.text));

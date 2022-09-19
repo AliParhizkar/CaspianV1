@@ -203,3 +203,55 @@ a, .btn-link {
     width: calc(100% - 165px);
     float:right;
 }
+.c-login {
+    width: 468px;
+    height: 697px;
+    margin:0 auto;
+    position:relative;
+}
+    .c-login .c-icon {
+        background-image: url(/Images/login.png);
+        display: inline-block;
+        width: 468px;
+        height: 697px;
+    }
+    .c-login .c-form {
+        position: absolute;
+        top: 330px;
+        left:90px;
+    }
+
+    .c-login input {
+        border: none;
+        background-color: transparent;
+        width: 200px;
+        height: 25px;
+        border-bottom: solid 1px #ccc;
+        font-family: iranyekan;
+        font-weight:bold;
+        line-height:1.2;
+        color:gray;
+        direction:ltr;
+        font-size:13px;
+    }
+        .c-login input::placeholder {
+            color: lightgray;
+        }
+        .c-login .c-container {
+            padding-bottom: 15px;
+        }
+
+    .c-login .c-action{
+        text-align:left;
+        padding-top:30px;
+    }
+
+        .c-login .c-action button {
+            border: 1px solid red;
+            width: 80px;
+            height: 40px;
+            background-color: transparent;
+            color: black;
+            font-size: 17px;
+            border: solid 1px #ccc;
+        }

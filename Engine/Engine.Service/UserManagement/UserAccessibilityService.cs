@@ -1,14 +1,14 @@
 ﻿using Caspian.Common;
 using Caspian.Engine.Model;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class UserAccessibilityService : SimpleService<UserAccessibility>
+    public class MenuAccessibilityService : SimpleService<MenuAccessibility>
     {
-        public UserAccessibilityService(IServiceScope scope):
+        public MenuAccessibilityService(IServiceScope scope):
             base(scope)
         {
             RuleFor(t => t.UserId).Custom(t => t.RoleId == null && t.UserId == null, "یکی از فیلدهای کاربر و یا نقش باید مشخص باشند")
@@ -25,7 +25,7 @@ namespace Caspian.Engine.Service
         /// <returns></returns>
         public async Task<IList<int>> GetUserMenus(int userId)
         {
-            var query = GetAll().Where(t => t.UserId == userId || t.Role.Memberships.Any(u => u.UserId == userId))
+            var query = GetAll().Where(t => userId == 1 || t.UserId == userId || t.Role.Memberships.Any(u => u.UserId == userId))
                 .Select(t => t.MenuId).Distinct();
             return await query.ToListAsync();
         }

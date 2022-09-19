@@ -17,7 +17,7 @@ namespace Caspian.Engine.Model
         [CheckOnDelete("نقش دارای عضو می باشد و امکان حذف آن وجود ندارد.")]
         public virtual ICollection<UserMembership> Memberships { get; set; }
 
-        [CheckOnDelete("نقش دارای دستابی می باشد و امکان حذف آن وجود ندارد")]
-        public virtual ICollection<UserAccessibility> Accessibilities { get; set; }
+        [CheckOnDelete("برای نقش دستابی به منو تعریف شده است و امکان حذف آن وجود ندارد")]
+        public virtual ICollection<MenuAccessibility> MenuAccessibilities { get; set; }
     }
 }
