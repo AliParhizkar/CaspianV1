@@ -41,7 +41,7 @@
                         <label>مقدار</label>
                     </td>
                     <td>
-                        <StringTextBox @bind-Value="Value" @onchange="async () => await StateChanged()" />
+                        <StringTextBox @bind-Value="Value" OnChange="async () => await StateChanged()" />
                     </td>
                 </tr>
                 <tr>
@@ -49,7 +49,7 @@
                         <label>شرح</label>
                     </td>
                     <td>
-                        <StringTextBox @bind-Value="Control.Description" MultiLine @onchange="async () => await StateChanged()" />
+                        <StringTextBox @bind-Value="Control.Description" MultiLine OnChange="async () => await StateChanged()" />
                     </td>
                 </tr>
 
@@ -111,7 +111,7 @@
                         <label>OnChange</label>
                     </td>
                     <td>
-                        <StringTextBox Style="direction:ltr" @bind-Value="Control.OnChange" @onclick="AddEventHandler" @onchange="async () => await StateChanged()" />
+                        <StringTextBox Style="direction:ltr" @bind-Value="Control.OnChange" @onclick="AddEventHandler" OnChange="async () => await StateChanged()" />
                     </td>
                 </tr>
             </table>

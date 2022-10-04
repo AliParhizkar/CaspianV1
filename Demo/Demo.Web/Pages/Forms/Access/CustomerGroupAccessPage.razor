@@ -19,7 +19,7 @@
                         </td>
                         <td>
                             <StringTextBox @bind-Value="name1" placeholder="نام/نام خانوادگی/شرکت" Search
-                                           @onchange="() => { MemberGrid.EnableLoading(); }" />
+                                           OnChange="() => { MemberGrid.EnableLoading(); }" />
                         </td>
                     </tr>
                     <tr>
@@ -61,7 +61,7 @@
                                     @onclick="async () =>
                                               {
                                                   BlockUI();
-                                                  await base.Delete();
+                                                  await base.DeleteAsync();
                                                   UnblockUI();
                                               }" IconType="IconType.AngleDoubleRight" />
                     </div>
@@ -77,7 +77,7 @@
                             </td>
                             <td>
                                 <StringTextBox @bind-Value="name2" placeholder="نام/نام خانوادگی/شرکت" Search
-                                               @onchange="() => { CrudGrid.EnableLoading(); }" />
+                                               OnChange="() => { CrudGrid.EnableLoading(); }" />
                             </td>
                         </tr>
                         <tr>

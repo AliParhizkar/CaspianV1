@@ -10,7 +10,8 @@ namespace Employment.Service
         public EmploymentOrderTypeService(IServiceScope scope)
             : base(scope)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("منطقه ای با این عنوان در این شهر تعریف شده است.");
+            RuleFor(t => t.Title).Required().UniqAsync("نوع حکمی با این عنوان تعریف شده است");
+            RuleFor(t => t.Code).UniqAsync("نوع حکمی با این کد در سیستم تعریف شده است");
             RuleFor(t => t.Description).Required();
         }
     }

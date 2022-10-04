@@ -28,6 +28,8 @@
     color: #dc3545;
     padding-right:6px;
 }
+
+
 .c-outline-info {
     color: #17a2b8;
     background-color: transparent;
@@ -4209,9 +4211,8 @@ textarea[class="t-input"] {
     padding: 3px 4px 0 0;
     position: relative;
 }
-fieldset.t-widget{
-    background-color:#1f1f1f;
-    border-width:0!important;
+fieldset.t-widget {
+    border-radius:5px;
 }
 
 .t-window fieldset.t-widget {

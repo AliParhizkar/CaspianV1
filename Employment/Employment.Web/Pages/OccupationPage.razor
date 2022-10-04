@@ -1,0 +1,53 @@
+﻿@page "/Employment/Occupation"
+@namespace Demo.Web.Pages
+@inherits SimplePage<Occupation>
+@{
+    base.BuildRenderTree(__builder);
+
+}
+<div style="width:90%;margin:15px auto">
+    <table style="width:90%;margin:0 auto">
+        <tr>
+            <td style="width:50px">
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="Occupation" Search="SearchData" TableHeight="200">
+        <Columns>
+            <GridColumn TEntity="Occupation" Field="t => t.Title"  />
+            <GridColumn TEntity="Occupation" Title="رشته های شغلی" style="width:110px"  >
+                <Template>
+                    <IconButton Href='@($"/Employment/CareerField/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="Occupation" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="رسته شغلی" Style="width:450px">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(OccupationService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>

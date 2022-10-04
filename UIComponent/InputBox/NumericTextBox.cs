@@ -32,11 +32,8 @@ namespace Caspian.UI
                 Value = default;
             if (ValueChanged.HasDelegate)
                 await ValueChanged.InvokeAsync(Value);
-            if (InputAttributes != null && InputAttributes.ContainsKey("onchange"))
-            {
-                var oncChange = (EventCallback<ChangeEventArgs>)InputAttributes["onchange"];
-                await oncChange.InvokeAsync(arg);
-            }
+            if (OnChange.HasDelegate)
+                await OnChange.InvokeAsync(Value);
         }
 
         protected override void OnInitialized()

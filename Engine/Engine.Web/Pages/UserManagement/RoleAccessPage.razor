@@ -17,7 +17,7 @@
                             <label>منوی اصلی</label>
                         </td>
                         <td>
-                            <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="MemberSearch.MenuCategoryId" TextExpression="t => t.Title" @onchange="() => MemberGrid.EnableLoading()" />
+                            <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="MemberSearch.MenuCategoryId" TextExpression="t => t.Title" OnChange="() => MemberGrid.EnableLoading()" />
                         </td>
                     </tr>
                     <tr>
@@ -25,7 +25,7 @@
                             <label>منوی فرعی</label>
                         </td>
                         <td>
-                            <StringTextBox @bind-Value="MemberSearch.Title" Style="direction:ltr" @onchange="() => MemberGrid.EnableLoading()" />
+                            <StringTextBox @bind-Value="MemberSearch.Title" Style="direction:ltr" OnChange="() => MemberGrid.EnableLoading()" />
                         </td>
                     </tr>
                     <tr>
@@ -57,7 +57,7 @@
                                     @onclick="async () =>
                                               {
                                                   BlockUI();
-                                                  await base.Delete();
+                                                  await base.DeleteAsync();
                                                   UnblockUI();
                                               }" IconType="IconType.AngleDoubleRight" />
                     </div>
@@ -72,7 +72,7 @@
                                 <label>منوی اصلی</label>
                             </td>
                             <td>
-                                <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="SearchData.Menu.MenuCategoryId" TextExpression="t => t.Title" @onchange="() => { MemberGrid.EnableLoading(); }" />
+                                <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="SearchData.Menu.MenuCategoryId" TextExpression="t => t.Title" OnChange="() => { MemberGrid.EnableLoading(); }" />
                             </td>
                         </tr>
                         <tr>

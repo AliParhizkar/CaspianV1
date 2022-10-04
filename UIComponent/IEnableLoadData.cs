@@ -14,7 +14,7 @@ namespace Caspian.UI
         Task SetValue(object value);
     }
 
-    public interface IContainer
+    public interface IWindow
     {
         Task Close();
         

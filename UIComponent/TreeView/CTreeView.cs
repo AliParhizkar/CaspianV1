@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Linq;
 using Caspian.Common;
-using System.Reflection;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
     public partial class CTreeView<TEntity>: ComponentBase where TEntity: class
     {
         ElementReference tree;
-        IList<TreeViewItem> Items;
+        IList<TEntity> Items;
 
         [CascadingParameter(Name = "TreeViewCascadeData")]
         public TreeViewCascadeData CascadeData { get; set; }
@@ -31,7 +31,10 @@ namespace Caspian.UI
         public IDictionary<string, object> Attrs { get; set; }
 
         [Parameter]
-        public Expression<Func<TEntity, string>> TextExpression { get; set; }
+        public Func<TEntity, string> TextFunc { get; set; }
+
+        [Parameter]
+        public Func<TEntity, bool> FilterFunc { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, bool>> ConditionExpression { get; set; }
@@ -43,7 +46,7 @@ namespace Caspian.UI
         public bool Selectable { get; set; }
 
         [Parameter]
-        public IEnumerable<TreeViewItem> Source { get; set; }
+        public IList<TreeViewItem> Source { get; set; }
 
         [Parameter]
         public EventCallback<TreeViewItem> OnExpanded { get; set; }
@@ -59,6 +62,9 @@ namespace Caspian.UI
 
         [Parameter]
         public bool SingleSelectOnTree { get; set; }
+
+        [Parameter]
+        public Func<TEntity, bool> ParentNodeFilterFunc { get; set; }
 
         void UnselectTree(IEnumerable<TreeViewItem> nodes)
         {
@@ -80,71 +86,21 @@ namespace Caspian.UI
                 var service = new SimpleService<TEntity>(scope);
                 var contextType = new AssemblyInfo().GetDbContextType(typeof(TEntity));
                 var query = service.GetAll(default(TEntity));
-                Expression lambdExpr = null;
-                if (CascadeData != null)
-                {
-                    foreach (var info in typeof(TEntity).GetProperties())
-                    {
-                        if (info.PropertyType == CascadeData.Type)
-                        {
-                            var idName = info.GetCustomAttribute<ForeignKeyAttribute>().Name;
-                            ParameterExpression param = null;
-                            if (ConditionExpression == null)
-                                param = Expression.Parameter(typeof(TEntity), "t");
-                            else
-                                param = ConditionExpression.Parameters[0];
-                            Expression expr = Expression.Property(param, idName);
-                            if (expr.Type.IsNullableType())
-                                expr = Expression.Property(expr, "Value");
-                            var value = Convert.ChangeType(CascadeData.Value, expr.Type);
-                            expr = Expression.Equal(expr, Expression.Constant(value));
-
-                            if (ConditionExpression != null)
-                                expr = Expression.And(expr, ConditionExpression.Body);
-                            lambdExpr = Expression.Lambda(expr, param);
-                            break;
-                        }
-                    }
-                }
-                if (lambdExpr != null)
-                    query = query.Where(lambdExpr).OfType<TEntity>();
-                if (OrderByExpression != null)
-                    query = query.OrderBy(OrderByExpression);
-                var list = new ExpressionSurvey().Survey(TextExpression);
-                var type = typeof(TEntity);
-                var parameter = Expression.Parameter(type, "t");
-                list = list.Select(t => parameter.ReplaceParameter(t)).ToList();
-                var pkey = type.GetPrimaryKey();
-                var pKeyExpr = Expression.Property(parameter, pkey);
-                var pkeyAdded = false;
-                foreach (var expr in list)
-                {
-                    if (expr.Member == pkey)
-                        pkeyAdded = true;
-                }
-                if (!pkeyAdded)
-                    list.Add(pKeyExpr);
-                var lambda = parameter.CreateLambdaExpresion(list);
-                var dataList = await query.GetValuesAsync(list);
-                var displayFunc = TextExpression.Compile();
-                var valueFunc = Expression.Lambda(pKeyExpr, parameter).Compile();
-                Items = new List<TreeViewItem>();
-                foreach (var item in dataList)
-                {
-                    var text = Convert.ToString(displayFunc.DynamicInvoke(item));
-                    var value = Convert.ToString(valueFunc.DynamicInvoke(item));
-                    Items.Add(new TreeViewItem()
-                    {
-                        Text = text,
-                        Value = value
-                    });
-                }
+                if (ConditionExpression != null)
+                    query = query.Where(ConditionExpression);
+                var dataList = await query.ToListAsync();
+                Items = dataList.Where(ParentNodeFilterFunc).ToList();
             }
+        }
+
+        public async Task Reload()
+        {
+            await DataBinding();
         }
 
         void GetSeletcedItems(TreeViewItem item, IList<TreeViewItem> list)
         {
-            if (item.Selected)
+            if (item.Selected == true)
                 list.Add(item);
             if (item.Items != null)
             {

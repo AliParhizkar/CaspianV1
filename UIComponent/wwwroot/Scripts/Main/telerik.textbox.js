@@ -263,7 +263,7 @@
             $.extend(this, options);
             if (options.disabled) 
                 this.disable()
-            else
+            else if (options.disabled == false)
                 this.enable();
             if (options.focused) 
                 this.focus();

@@ -52,7 +52,7 @@
                         </td>
                         <td>
                             <NumericTextBox @bind-Value="UpsertData.Price"
-                                @onchange="() =>
+                                OnChange="() =>
                                     {
                                         if (UpsertData.PriceOuterBound == 0)
                                                 UpsertData.PriceOuterBound = UpsertData.Price;

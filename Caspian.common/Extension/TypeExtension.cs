@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -74,6 +71,13 @@ namespace Caspian.Common.Extension
             return info.DeclaringType.GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name);
         }
 
+        public static PropertyInfo GetForeignKey(this Type type, Type foreignKeyType)
+        {
+            var info = type.GetProperties().Single(t => t.PropertyType == foreignKeyType);
+            var foreignKeyName = info.GetCustomAttribute<ForeignKeyAttribute>().Name;
+            return type.GetProperty(foreignKeyName);
+        }
+
         public static PropertyInfo GetPrimaryKey(this Type type, bool checkAnyType = false)
         {
             var keys = type.GetProperties().Where(t => t.CustomAttributes.Any(u => u.AttributeType == typeof(KeyAttribute))).ToList();
@@ -102,7 +106,7 @@ namespace Caspian.Common.Extension
             {
                 var str = expr.ToString();
                 var type = expr.Type;
-                if (expr.CheckConfilictByNullValue())
+                if (expr.CheckConfilictByNullValue(out _))
                     type = typeof(Nullable<>).MakeGenericType(expr.Type);
                 str = str.Substring(str.IndexOf('.') + 1);
                 properties.Add(new DynamicProperty(str, type));
@@ -117,7 +121,7 @@ namespace Caspian.Common.Extension
 
         public static bool IsCollectionType(this Type type)
         {
-            return (type.GetInterface(nameof(ICollection)) != null);
+            return (type.GetInterface(nameof(IEnumerable)) != null);
         }
     }
 }

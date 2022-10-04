@@ -1,14 +1,11 @@
-﻿using System;
-using FluentValidation;
+﻿using FluentValidation;
 using System.Reflection;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading;
 
 namespace Caspian.Common
 {
@@ -206,7 +203,7 @@ namespace Caspian.Common
             }).WithMessage(errorMessage);
         }
 
-        public static IRuleBuilder<TModel, TProperty> CheckForeignKeyAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, PropertyInfo info, PropertyInfo infoId, PropertyInfo masterInfo)
+        public static IRuleBuilder<TModel, TProperty> CheckForeignKeyAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, PropertyInfo info, PropertyInfo infoId, PropertyInfo masterInfo) where TModel : class
         {
             return ruleBuilder.CustomAsync(async (value, context, token) => 
             {
@@ -229,6 +226,7 @@ namespace Caspian.Common
                             var service = Activator.CreateInstance(serviceType, scope);
                             task = (Task)serviceType.GetMethod("SingleOrDefaultAsync").Invoke(service, new Object[] { value });
                             await task.ConfigureAwait(false);
+                            
                         }
                         else
                         {

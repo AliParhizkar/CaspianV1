@@ -239,4 +239,28 @@ namespace Caspian.Engine
         [EnumField("رشته ای")]
         String = 128
     }
+
+    /// <summary>
+    /// نوع پارامتر توکن
+    /// </summary>
+    public enum ParameterType: byte
+    {
+        /// <summary>
+        /// پارامتر اصلی
+        /// </summary>
+        [EnumField("پارامتر اصلی")]
+        MainParameter = 1,
+
+        /// <summary>
+        /// پارامتر پویا
+        /// </summary>
+        [EnumField("پارامتر پویا")]
+        DaynamicParameter,
+
+        /// <summary>
+        /// قانون
+        /// </summary>
+        [EnumField("قانون")]
+        RuleParameter
+    }
 }

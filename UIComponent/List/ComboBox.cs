@@ -77,12 +77,6 @@ namespace Caspian.UI
         public EventCallback OnValueChanged { get; set; }
 
         [Parameter, JsonIgnore]
-        public EventCallback<ChangeEventArgs> onchange { get; set; }
-
-        [Parameter, JsonIgnore]
-        public Func<TEntity, string> CheckValidation { get; set; }
-
-        [Parameter, JsonIgnore]
         public EnableLoadContiner EnableLoadContiner { get; set; }
 
         [Parameter, JsonIgnore]
@@ -115,22 +109,24 @@ namespace Caspian.UI
         [Parameter, JsonProperty("disabled")]
         public bool Disabled { get; set; }
 
+        [Parameter, JsonIgnore]
+        public EventCallback OnChange { get; set; }
+
         async Task ToggelDropdownList()
         {
             if (!Disabled)
             {
                 if (Status == WindowStatus.Close)
                 {
-                    //if (Value != null && !Value.Equals(default(TValue)))
-                    //    text = null;
-                    var q = text;
+                    shouldRender = false;
                     if (Items == null)
                     {
                         LoadData = true;
                         await DataBinding();
                     }
                     Status = WindowStatus.Open;
-                    await FocusAsync();
+                    focused = true;
+                    shouldRender = true;
                 }
                 else
                     Status = WindowStatus.Close;
@@ -635,6 +631,8 @@ namespace Caspian.UI
                 await ValueChanged.InvokeAsync(default(TValue));
                 valueChanged = true;
             }
+            if (valueChanged && OnChange.HasDelegate)
+                await OnChange.InvokeAsync();
             if (CurrentEditContext != null)
             {
                 var model = CurrentEditContext.Model;

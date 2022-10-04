@@ -8,23 +8,33 @@
         <div @ref="tree" @attributes="Attrs" class="c-treeview">
             <CascadingValue Value="CascadeData" Name="TreeViewCascadeData">
                 <ul>
-                    @if (Items != null)
+                @if (Items != null)
+                {
+                    var tree = new HierarchyTree<TEntity>();
+                    tree.TextFunc = TextFunc;
+                    IList<TreeViewItem> nodes = null;
+                    if (FilterFunc == null)
+                        nodes = tree.CreateTree(Items);
+                    else
                     {
-                        foreach (var item in Items)
+                        tree.FilterFunc = FilterFunc;
+                        nodes = tree.FilterTree(Items);
+                    }
+                    foreach (var item in nodes)
+                    {
+                        if (ChildContent == null)
                         {
-                            if (ChildContent == null)
-                            {
-                                <TreeNode @bind-Selected="item.Selected" Item="item" />
-                            }
-                            else if (item.Expanded)
-                            {
-                                <li>
-                                    @ChildContent(item)
-                                </li>
-                            }
+                            <TreeNode @bind-Selected="item.Selected" Item="item" />
+                        }
+                        else if (item.Expanded)
+                        {
+                            <li>
+                                @ChildContent(item)
+                            </li>
                         }
                     }
-                </ul>
+                }
+            </ul>
             </CascadingValue>
         </div>
     }
@@ -44,7 +54,7 @@
                                       {
                                           if (OnExpanded.HasDelegate)
                                               await OnExpanded.InvokeAsync(localItem);
-
+                                            StateHasChanged();
                                       }"
                                   OnSelected="async (node) =>
                                            {

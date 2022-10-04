@@ -1,5 +1,6 @@
 ﻿using Caspian.Common;
 using Caspian.Common.Service;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
@@ -11,6 +12,14 @@ namespace Caspian.Engine.Service
         {
             RuleFor(t => t.Title).Required().UniqAsync("قانونی با این عنوان در سیستم ثبت شده است.");
             RuleFor(t => t.TypeName).Required();
+            RuleFor(t => t.EnumTypeName).Required(t => t.ResultType == ValueTypeKind.Enum);
+            RuleFor(t => t.Id).CustomAsync(async t => 
+            {
+                if (t.Id == 0 || !t.FormRule)
+                    return false;
+                var result = await new TokenService(scope).GetAll().AnyAsync(u => u.RuleId == t.Id && !u.RuleValue.FormRule);
+                return result;
+            }, "قانون فرمی نباید شامل قانون غیرفرمی باشد");
         }
 
         public IQueryable<Rule> GetAll(SubSystemKind subSystemKind)

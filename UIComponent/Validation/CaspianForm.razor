@@ -1,15 +1,9 @@
 ﻿@namespace Caspian.UI
+@using FluentValidation.Results
 @typeparam TEntity
 @implements ICaspianForm
-<EditForm EditContext="EditContext" 
-        OnSubmit="@(async(EditContext context) =>
-                    {
-                        if (OnSubmit.HasDelegate)
-                            await OnSubmit.InvokeAsync(EditContext);
-                        if (OnInternalSubmit.HasDelegate)
-                            await OnInternalSubmit.InvokeAsync(EditContext);
-                        EditContext.Validate();
-                    })"
+<EditForm EditContext="EditContext"
+          OnSubmit="@(async context => await OnFormSubmitHandler(context))"
 
         @onreset="@(async (e) =>
                       {
@@ -27,19 +21,7 @@
     string ErrorMessage;
     bool checkValidation;
     IList<IControl> controls;
-
-    async Task ResetFormAsync()
-    {
-        foreach (var control in controls)
-        {
-            await control.ResetAsync();
-        }
-        if (OnReset.HasDelegate)
-            await OnReset.InvokeAsync();
-    }
-
     string ICaspianForm.MasterIdName { get; set; }
-
     bool ICaspianForm.IgnoreOnValidSubmit { get; set; }
 
     [Inject]
@@ -106,45 +88,36 @@
         }
         if (FormAppState == null)
             FormAppState = new FormAppState();
-        EditContext.OnValidationStateChanged += async(sender, e) => { await ValidationStateChanged(sender, e); };
-        EditContext.OnValidationRequested += ValidationRequested;
+        //EditContext.OnValidationStateChanged += async(sender, e) => { await ValidationStateChanged(sender, e); };
+        //EditContext.OnValidationRequested += ValidationRequested;
         FormAppState.AllControlsIsValid = true;
         base.OnInitialized();
     }
 
-    void ValidationRequested(object sender, ValidationRequestedEventArgs e)
+    async Task OnFormSubmitHandler(EditContext context)
     {
+        if (OnSubmit.HasDelegate)
+            await OnSubmit.InvokeAsync(EditContext);
+        if (OnInternalSubmit.HasDelegate)
+            await OnInternalSubmit.InvokeAsync(EditContext);
         FormAppState.AllControlsIsValid = true;
-        FormAppState.Element = null;
         ErrorMessage = null;
-        var result = EditContext.GetValidationMessages().FirstOrDefault();
-    }
-
-    async Task ValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
-    {
-        var result = EditContext.GetValidationMessages();
-        checkValidation = true;
-        if (!result.Any() && FormAppState.AllControlsIsValid)
+        EditContext.Validate();
+        EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
+        var result = await (Task<ValidationResult>)asyncValidationTask;
+        if (result.IsValid)
         {
-            ErrorMessage = null;
             bool isValidSubmit = true;
-            var form = this as ICaspianForm;
-            if (!form.IgnoreOnValidSubmit)
-            {
-                if (OnValidSubmit != null)
-                    isValidSubmit = await OnValidSubmit.Invoke(EditContext);
-                if (isValidSubmit && OnInternalValidSubmit.HasDelegate)
-                    await OnInternalValidSubmit.InvokeAsync(EditContext);
-            }
-            form.IgnoreOnValidSubmit = false;
+            if (OnValidSubmit != null)
+                isValidSubmit = await OnValidSubmit.Invoke(context);
+            if (isValidSubmit && OnInternalValidSubmit.HasDelegate)
+                await OnInternalValidSubmit.InvokeAsync(context);
+
         }
         else
         {
             if (FormAppState.AllControlsIsValid)
-            {
-                var result1 = EditContext.GetValidationMessages();
-                ErrorMessage = result1.FirstOrDefault();
-            }
+                ErrorMessage = EditContext.GetValidationMessages().First();
             if (OnInvalidSubmit.HasDelegate)
                 await OnInvalidSubmit.InvokeAsync(EditContext);
             if (OnInternalInvalidSubmit.HasDelegate)
@@ -152,9 +125,60 @@
         }
     }
 
+    async Task ResetFormAsync()
+    {
+        foreach (var control in controls)
+        {
+            await control.ResetAsync();
+        }
+        if (OnReset.HasDelegate)
+            await OnReset.InvokeAsync();
+    }
+
+
+    void ValidationRequested(object sender, ValidationRequestedEventArgs e)
+    {
+        //FormAppState.AllControlsIsValid = true;
+        //FormAppState.Element = null;
+        //ErrorMessage = null;
+        //var result = EditContext.GetValidationMessages().FirstOrDefault();
+    }
+
+    void ValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
+    {
+        //var result = EditContext.GetValidationMessages();
+        //checkValidation = true;
+        //if (!result.Any() && FormAppState.AllControlsIsValid)
+        //{
+        //    ErrorMessage = null;
+        //    bool isValidSubmit = true;
+        //    var form = this as ICaspianForm;
+        //    if (!form.IgnoreOnValidSubmit)
+        //    {
+        //        if (OnValidSubmit != null)
+        //            isValidSubmit = await OnValidSubmit.Invoke(EditContext);
+        //        if (isValidSubmit && OnInternalValidSubmit.HasDelegate)
+        //            await OnInternalValidSubmit.InvokeAsync(EditContext);
+        //    }
+        //    form.IgnoreOnValidSubmit = false;
+        //}
+        //else
+        //{
+        //    if (FormAppState.AllControlsIsValid)
+        //    {
+        //        var result1 = EditContext.GetValidationMessages();
+        //        ErrorMessage = result1.FirstOrDefault();
+        //    }
+        //    if (OnInvalidSubmit.HasDelegate)
+        //        await OnInvalidSubmit.InvokeAsync(EditContext);
+        //    if (OnInternalInvalidSubmit.HasDelegate)
+        //        await OnInternalInvalidSubmit.InvokeAsync(EditContext);
+        //}
+    }
+
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (ErrorMessage.HasValue() && FormAppState.AllControlsIsValid)
+        if (ErrorMessage.HasValue())
         {
             var message = ErrorMessage;
             ErrorMessage = null;

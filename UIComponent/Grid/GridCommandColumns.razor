@@ -9,7 +9,7 @@
         <span class="c-check">
             <span class="t-icon fa fa-check" @onclick="async () => { await ValidateAndUpsert(); }"></span>
         </span>
-        <span class="c-bar" @onclick="@(async () => { await Delete(); })">
+        <span class="c-bar" @onclick="@(async () => { await DeleteAsync(); })">
             <span class="t-icon fa fa-ban"></span>
         </span>
     }
@@ -23,7 +23,7 @@
         }
         if (!HideDelete)
         {
-            <span @onclick="@(async () => { await Delete(); })" class="@deleteButtonClassName">
+            <span @onclick="@(async () => { await DeleteAsync(); })" class="@deleteButtonClassName">
                 <span class="t-icon t-delete fa fa-trash"></span>
             </span>
         }

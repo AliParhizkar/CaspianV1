@@ -31,13 +31,17 @@
             </tr>
         </table>
     </div>
+    <div style="display:flex">
+        <label>اعمال قیمت بصورت تومان</label>
+        <CheckBox @bind-Value="toman" />
+    </div>
     <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400" HideInsertIcon>
         <Columns>
             <GridColumn TEntity="Product" Field="t => t.ProductCategory.Title" Title="گروه محصول" />
             <GridColumn TEntity="Product" Field="t => t.Title" />
             <GridColumn TEntity="Product" Field="t => t.Price.ToString()" style="width:150px;">
                 <Template>
-                    <NumericTextBox Focused="selectedId == context.Data.Id && row == 1" TValue="int" @bind-Value="context.Data.Price"
+                    <NumericTextBox Focused="selectedId == context.Data.Id && row == 1" TValue="int" Value="toman ? context.Data.Price / 10 : context.Data.Price" ValueChanged="value => PriceChanged(context.Data, value)"
                                     @onkeyup="async e =>
                                 {
                                     await UpdatePrice(e, context.Data.Id, context.Data.Price);
@@ -46,7 +50,7 @@
             </GridColumn>
             <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.ToString()" style="width:150px;">
                 <Template>
-                    <NumericTextBox Focused="selectedId == context.Data.Id && row == 2" TValue="int" @bind-Value="context.Data.PriceOuterBound"
+                    <NumericTextBox Focused="selectedId == context.Data.Id && row == 2" TValue="int" Value="toman ? context.Data.PriceOuterBound / 10 : context.Data.PriceOuterBound" ValueChanged="value => PriceOuterbindChanged(context.Data, value)"
                                     @onkeyup="async e =>
                                           {
                                               await UpdatePriceOuterBound(e, context.Data.Id, context.Data.PriceOuterBound);
@@ -59,8 +63,19 @@
 
 @code
 {
+    bool toman;
     int? selectedId;
     int? row;
+
+    void PriceChanged(Product product, int price)
+    {
+        product.Price = toman ? price * 10 : price;
+    }
+
+    void PriceOuterbindChanged(Product product, int priceOuterbind)
+    {
+        product.PriceOuterBound = toman ? priceOuterbind * 10 : priceOuterbind;
+    }
 
     async Task UpdatePrice(KeyboardEventArgs e, int productId, int price)
     {

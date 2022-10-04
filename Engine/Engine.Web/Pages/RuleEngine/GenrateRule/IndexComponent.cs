@@ -5,29 +5,27 @@ using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Caspian.Engine.RuleGenerator
 {
     public partial class IndexComponent
     {
         int? ruleIdValue;
-        Enum? enumConstValue;
+        int? dynamicParameterId;
+        Enum enumConstValue;
         bool? boolConstValue;
         DateTime? dateConstValue;
         TimeSpan? timeConstValue;
         decimal? decimalConstValue;
-
+        ParameterType parameterType = ParameterType.MainParameter;
         Type Type;
         Token token;
         int? tokenId;
-        int IfCount;
-        bool isUpdate;
         string message;
         IList<Token> Tokens;
         TokenType TokenType;
-        string ConstantValue;
         WindowStatus newStatus;
-        IList<TokenKind> TokensKind;
         IEnumerable<Token> Params;
         IEnumerable<TokenKind> ValidTokensKind;
         IDictionary<string, object> IfButtonAttrs;
@@ -43,6 +41,7 @@ namespace Caspian.Engine.RuleGenerator
         ValueTypeKind? ValueTypeKind;
         Type enumType;
         ValueTypeKind? RuleTypeKind;
+        Rule rule;
 
         void ClearWindow()
         {
@@ -53,6 +52,7 @@ namespace Caspian.Engine.RuleGenerator
             boolConstValue = null;
             dateConstValue = null;
             decimalConstValue = null;
+            dynamicParameterId = null;
         }
 
         async Task AddOperand()
@@ -73,10 +73,7 @@ namespace Caspian.Engine.RuleGenerator
                     {
                         var temp = ruleEngine.GetObjectTokens(Type).Single(t => t.Id == tempToken.Id);
                         tempToken.Id = 0;
-                        if (tempToken.DynamicId.HasValue)
-                            tempToken.FaTitle = temp.FaTitle + "•" + (await ruleService.SingleAsync(tempToken.DynamicId.Value)).Title;
-                        else
-                            tempToken.FaTitle = temp.FaTitle;
+                        tempToken.FaTitle = temp.FaTitle;
                         tempToken.EnTitle = temp.EnTitle;
                         await UnFinalState();
                         tempToken.TokenType = TokenType.Oprand;
@@ -97,6 +94,24 @@ namespace Caspian.Engine.RuleGenerator
                         FaTitle = ruleTitle,
                         RuleId = RuleId,
                         RuleIdValue = ruleIdValue.Value,
+                        TokenType = TokenType.Oprand,
+                    });
+                    await tokenService.SaveChangesAsync();
+                    Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+                    Tokens = new RuleEngine().UpdateTokens(Tokens);
+                    ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+                    newStatus = WindowStatus.Close;
+                    StateHasChanged();
+                }
+                else if (dynamicParameterId.HasValue)
+                {
+                    var dynamicParameter = await new DynamicParameterService(scope).SingleAsync(dynamicParameterId.Value);
+                    await tokenService.AddAsync(new Token()
+                    {
+                        FaTitle = dynamicParameter.FaTitle,
+                        RuleId = RuleId,
+                        DynamicParameterId = dynamicParameterId.Value,
+                        parameterType = ParameterType.DaynamicParameter,
                         TokenType = TokenType.Oprand,
                     });
                     await tokenService.SaveChangesAsync();
@@ -202,41 +217,66 @@ namespace Caspian.Engine.RuleGenerator
         async Task UpdateValueTypeKind()
         {
             var tokens = Tokens.Reverse().ToList();
+            var scope = CreateScope();
             if (tokens.Count > 0)
             {
                 var tokenKind = tokens[0].TokenKind;
                 if (tokenKind == TokenKind.Compareable)
                 {
-                    if (tokens[0].OperatorKind.Value != OperatorType.Equ && tokens[1].RuleId.HasValue)
+                    if (tokens[0].OperatorKind.Value != OperatorType.Equ && tokens[1].RuleId.HasValue && tokens[1].DynamicParameterId == null)
                     {
-                        var scop = CreateScope();
-                        var rule = await new RuleService(scop).SingleAsync(tokens[1].RuleId.Value);
+                        
+                        var rule = await new RuleService(scope).SingleAsync(tokens[1].RuleId.Value);
                         ValueTypeKind = rule.ResultType;
                     }
                     else
                     {
-                        var type = Type.GetMyProperty(tokens[1].EnTitle).PropertyType;
-                        if (type.IsNullableType())
-                            type = Nullable.GetUnderlyingType(type);
-                        if (type.IsEnum)
+                        if (tokens[1].DynamicParameterId.HasValue)
                         {
-                            ValueTypeKind = Caspian.Engine.ValueTypeKind.Enum;
-                            enumType = type;
+                            var dynamicParameter = await new DynamicParameterService(scope).SingleAsync(tokens[1].DynamicParameterId.Value);
+                            switch(dynamicParameter.ControlType.Value)
+                            {
+                                case ControlType.Numeric:
+                                    ValueTypeKind = Caspian.Engine.ValueTypeKind.Int;
+                                    break;
+                                case ControlType.CheckBox:
+                                    ValueTypeKind = Caspian.Engine.ValueTypeKind.Bool;
+                                    break;
+
+                            }
+                            
                         }
-                        else if (type == typeof(DateTime))
-                            ValueTypeKind = Caspian.Engine.ValueTypeKind.Date;
-                        else if (type == typeof(TimeSpan))
-                            ValueTypeKind = Caspian.Engine.ValueTypeKind.Time;
-                        else if (type == typeof(bool))
-                            ValueTypeKind = Caspian.Engine.ValueTypeKind.Bool;
-                        else if (type == typeof(int))
-                            ValueTypeKind = Caspian.Engine.ValueTypeKind.Int;
                         else
-                            ValueTypeKind = Caspian.Engine.ValueTypeKind.Double;
+                        {
+                            var type = Type.GetMyProperty(tokens[1].EnTitle).PropertyType;
+                            if (type.IsNullableType())
+                                type = Nullable.GetUnderlyingType(type);
+                            if (type.IsEnum)
+                            {
+                                ValueTypeKind = Caspian.Engine.ValueTypeKind.Enum;
+                                enumType = type;
+                            }
+                            else if (type == typeof(DateTime))
+                                ValueTypeKind = Caspian.Engine.ValueTypeKind.Date;
+                            else if (type == typeof(TimeSpan))
+                                ValueTypeKind = Caspian.Engine.ValueTypeKind.Time;
+                            else if (type == typeof(bool))
+                                ValueTypeKind = Caspian.Engine.ValueTypeKind.Bool;
+                            else if (type == typeof(int))
+                                ValueTypeKind = Caspian.Engine.ValueTypeKind.Int;
+                            else
+                                ValueTypeKind = Caspian.Engine.ValueTypeKind.Double;
+                        }
                     }
                 }
-                else if (ValueTypeKind == null)
+                else if (tokenKind == TokenKind.Math)
+                    ValueTypeKind = Caspian.Engine.ValueTypeKind.Int;
+                else if (tokenKind == TokenKind.QuestionMark || tokenKind == TokenKind.Colon)
+                {
                     ValueTypeKind = RuleTypeKind;
+                    if (ValueTypeKind == Engine.ValueTypeKind.Enum)
+                        enumType = rule.SystemKind.GetEntityAssembly().GetTypes().Single(t => t.Name == rule.EnumTypeName);
+                }
             }
             else
                 ValueTypeKind = RuleTypeKind;
@@ -317,7 +357,7 @@ namespace Caspian.Engine.RuleGenerator
         async protected override Task OnInitializedAsync()
         {
             using var scope = CreateScope();
-            var rule = await new RuleService(scope).SingleAsync(RuleId);
+            rule = await new RuleService(scope).SingleAsync(RuleId);
             RuleTypeKind = rule.ResultType;
             Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
             new RuleEngine().UpdateTokens(Tokens);

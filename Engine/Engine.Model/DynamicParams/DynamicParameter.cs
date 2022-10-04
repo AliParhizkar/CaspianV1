@@ -21,7 +21,7 @@ namespace Caspian.Engine
         public string EntityName { get; set; }
 
         [DisplayName("عنوان")]
-        public string? FaTitle { get; set; }
+        public string FaTitle { get; set; }
 
         [DisplayName("عنوان لاتین")]
         public string EnTitle { get; set; }

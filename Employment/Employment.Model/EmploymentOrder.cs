@@ -38,6 +38,9 @@ namespace Employment.Model
         [DisplayName("پایه تحصیلی"), Rule("پایه تحصیلی")]
         public BaseStudy BaseStudy { get; set; }
 
+        [DisplayName("سابقه خدمت"), Rule("سابقه خدمت")]
+        public byte? ServiceHistory { get; set; }
+
         /// <summary>
         /// کد نوع حکم
         /// </summary>

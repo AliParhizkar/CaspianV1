@@ -152,7 +152,10 @@ namespace Caspian.Common.Extension
                 var path = expr.ToString();
                 var index = path.IndexOf('.');
                 path = path.Substring(index + 5);
-                properties.Add(new DynamicProperty(path, expr.Type));
+                var type = expr.Type;
+                if (expr.CheckConfilictByNullValue(out _))
+                    type = typeof(Nullable<>).MakeGenericType(expr.Type);
+                properties.Add(new DynamicProperty(path, type));
                 list.Add(param.CreateMemberExpresion(path));
             }
             var lambda = param.CreateLambdaExpresion(list);
@@ -184,7 +187,7 @@ namespace Caspian.Common.Extension
             }
             var memberInit = Expression.MemberInit(Expression.New(selectType), memberExprList);
             var lambdaSelect = Expression.Lambda(memberInit, param);
-            var str = groupByQuery.Select(lambdaSelect).ToQueryString();
+            //var str = groupByQuery.Select(lambdaSelect).ToQueryString();
             return groupByQuery.Select(lambdaSelect);
         }
 
@@ -286,6 +289,12 @@ namespace Caspian.Common.Extension
             return source.Provider.CreateQuery<TEntity>(
                 Expression.Call(typeof(Queryable), "Where", new Type[] { source.ElementType },
                     source.Expression, Expression.Quote(lambda)));
+        }
+
+        public static IQueryable<TModel> Where<TModel>(this IQueryable<TModel> source, Expression lambda)
+        {
+            return source.Provider.CreateQuery<TModel>(Expression.Call(typeof(Queryable), "Where",
+                new Type[] { source.ElementType }, source.Expression, Expression.Quote(lambda)));
         }
 
         public static IQueryable Where(this IQueryable source, Expression lambda)

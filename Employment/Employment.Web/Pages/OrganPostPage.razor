@@ -1,0 +1,96 @@
+﻿@page "/Employment/OrganPost"
+@namespace Demo.Web.Pages
+@inherits SimplePage<OrganPost>
+@{
+    base.BuildRenderTree(__builder);
+
+}
+<div style="width:90%;margin:15px auto">
+    <table style="width:90%;margin:0 auto">
+        <tr>
+            <td style="width:50px">
+                <label>عنوان</label>
+            </td>
+            <td style="width:50%">
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+            <td style="width:80px"></td>
+            <td style="width:50px">
+                <label>کد</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Code" Style="direction:ltr" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="OrganPost" Search="SearchData" TableHeight="200">
+        <Columns>
+            <GridColumn TEntity="OrganPost" Field="t => t.CareerField.Occupation.Title" Title="رسته شغلی" />
+            <GridColumn TEntity="OrganPost" Field="t => t.CareerField.Title" Title="رشته شغلی" />
+            <GridColumn TEntity="OrganPost" Field="t => t.OrganUnit.Title" Title="واحد سازمانی" />
+            <GridColumn TEntity="OrganPost" Field="t => t.Title"  />
+            <GridColumn TEntity="OrganPost" Field="t => t.Code" style="direction:ltr" />
+            <GridCommandColumns TEntity="OrganPost" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="پست سازمانی" Style="width:450px">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(OrganPostService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>رسته شغلی</label>
+                        </td>
+                        <td>
+                            <ComboBox TEntity="Occupation" TValue="int?" @bind-Value="occupationId" TextExpression="t => t.Title" Cascade="continer" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>رشته شغلی</label>
+                        </td>
+                        <td>
+                            <ComboBox @ref="continer.Cascade" TEntity="CareerField" TValue="int" @bind-Value="UpsertData.CareerFieldId" TextExpression="t => t.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>واحد سازمانی</label>
+                        </td>
+                        <td>
+                            <ComboBox TEntity="OrganUnit" TValue="int" @bind-Value="UpsertData.OrganUnitId" TextExpression="t => t.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>کد</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Code" Style="direction:ltr" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+@code
+{
+    CascadContiner continer = new CascadContiner();
+    int? occupationId;
+}

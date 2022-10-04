@@ -6,16 +6,20 @@
 @inject SingletonMenuService MenuService
 @inject NavigationManager navigationManager
 @{
-    var uri = new Uri(navigationManager.Uri);
-    var url = "";
-    foreach(var segment in uri.Segments)
+    int menuId = 0;
+    if (userId != 1)
     {
-        if (!Int64.TryParse(segment, out _))
-            url += segment;
+        var uri = new Uri(navigationManager.Uri);
+        var url = "";
+        foreach (var segment in uri.Segments)
+        {
+            if (!Int64.TryParse(segment, out _))
+                url += segment;
+        }
+        if (url.EndsWith('/'))
+            url = url.Substring(0, url.Length - 1);
+        menuId = MenuService.GetMenuId(url);
     }
-    if (url.EndsWith('/'))
-        url = url.Substring(0, url.Length - 1);
-    var menuId = MenuService.GetMenuId(url);
 }
 <AuthorizeView >
     <Authorized>
@@ -26,7 +30,7 @@
                     <DataMenu MenusId="menusId" />
                 </div>
                 <div class="content">
-                    @if (menusId.Contains(menuId))
+                    @if (userId == 1 || menusId.Contains(menuId))
                     {
                         @Body
                     }
@@ -44,10 +48,12 @@
 </AuthorizeView>
 @code
 {
-    
+    IList<int> menusId;
+    int userId;
+
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
-    IList<int> menusId;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,7 +62,7 @@
             if (menusId == null)
             {
                 var result = await authenticationStateTask;
-                var userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+                userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
                 using var scope = ServiceScopeFactory.CreateScope();
                 menusId = await new MenuAccessibilityService(scope).GetUserMenus(userId);
             }

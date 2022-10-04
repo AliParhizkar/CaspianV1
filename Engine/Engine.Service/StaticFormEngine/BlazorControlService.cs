@@ -38,7 +38,7 @@ namespace Caspian.Engine.Service
                 case ControlType.TreeStateCheckBox:
                     return "chb" + ctr.PropertyName;
                 case ControlType.ComboBox:
-                    if (ctr.DataModelFieldId == 0)
+                    if (ctr.DataModelField == null)
                         ctr.DataModelField = await new DataModelFieldService(ServiceScope).SingleAsync(ctr.DataModelFieldId);
                     var entityType = new AssemblyInfo().GetModelType(subSystemKind, ctr.DataModelField.EntityFullName);
                     var info = entityType.GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == ctr.PropertyName);
@@ -48,7 +48,7 @@ namespace Caspian.Engine.Service
                 case ControlType.String:
                 case ControlType.Integer:
                 case ControlType.Numeric:
-                    return "txt" + ctr.PropertyName;
+                    return "txt" + (ctr.PropertyName ?? ctr.CustomeFieldName);
                 case ControlType.DropdownList:
                     return "ddl" + ctr.PropertyName;
                 default:

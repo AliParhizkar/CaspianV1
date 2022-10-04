@@ -3,9 +3,10 @@
 namespace Employment.Model
 {
     /// <summary>
-    /// پایه
+    /// رتبه
     /// </summary>
-    public enum BaseType
+    [EnumType("رتبه")]
+    public enum BaseType : byte
     {
         [EnumField("مقدماتی")]
         Preliminary = 1,
@@ -23,6 +24,7 @@ namespace Employment.Model
         Rank1
     }
 
+    [EnumType("پایه تحصیلی")]
     public enum BaseStudy: byte
     {
         [EnumField("زیردیپلم")]
@@ -47,7 +49,8 @@ namespace Employment.Model
     /// <summary>
     /// زن
     /// </summary>
-    public enum Gender
+    [EnumType("جنسیت")]
+    public enum Gender:byte
     {
         /// <summary>
         /// مرد
@@ -61,5 +64,22 @@ namespace Employment.Model
         [EnumField("زن")]
         Female
     }
+
+    [EnumType("وضعیت فعال")]
+    public enum ActiveType: byte
+    {
+        /// <summary>
+        /// فعال
+        /// </summary>
+        [EnumField("فعال")]
+        Enable = 1,
+
+        /// <summary>
+        /// غیرفعال
+        /// </summary>
+        [EnumField("غیرفعال")]
+        Disable
+    }
+
 }
 

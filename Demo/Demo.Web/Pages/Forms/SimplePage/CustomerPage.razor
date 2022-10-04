@@ -11,13 +11,13 @@
                 <label>نام</label>
             </td>
             <td>
-                <StringTextBox @bind-Value="name" placeholder="نام نام خانوادگی/شرکت" BindingType="BindingType.OnInput" @onchange="@LoadEnable" />
+                <StringTextBox @bind-Value="name" placeholder="نام نام خانوادگی/شرکت" BindingType="BindingType.OnInput" OnChange="@LoadEnable" />
             </td>
             <td style="padding-right:30px;width:120px;">
                 <label>شماره تماس</label>
             </td>
             <td style="width:220px">
-                <StringTextBox Style="direction:ltr;" @bind-Value="callNumber" placeholder="همراه/تلفن" BindingType="BindingType.OnInput" @onchange="@LoadEnable"/>
+                <StringTextBox Style="direction:ltr;" @bind-Value="callNumber" placeholder="همراه/تلفن" BindingType="BindingType.OnInput" OnChange="@LoadEnable"/>
             </td>
         </tr>
     </table>

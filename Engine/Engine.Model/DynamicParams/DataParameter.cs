@@ -1,5 +1,4 @@
-﻿using Caspian.Engine.Model;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,7 +19,7 @@ namespace Caspian.Engine
         public DataParameterType ParameterType { get; set; }
 
         [DisplayName("نام خصوصیت")]
-        public string? PropertyName { get; set; }
+        public string PropertyName { get; set; }
 
         [DisplayName("پارامتر")]
         public int? DynamicParameterId { get; set; }

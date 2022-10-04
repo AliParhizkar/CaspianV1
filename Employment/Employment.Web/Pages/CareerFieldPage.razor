@@ -1,0 +1,82 @@
+﻿@page "/Employment/CareerField"
+@page "/Employment/CareerField/{OccupationId:int}"
+@namespace Demo.Web.Pages
+@inherits SimplePage<CareerField>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:15px auto">
+    <table style="width:90%;margin:0 auto">
+        <tr>
+            <td style="width:50px">
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+            @if (OccupationId == null)
+            {
+                <td style="width:80px"></td>
+                <td style="width:80px">
+                    <label>رسته شغلی</label>
+                </td>
+                <td>
+                    <ComboBox TEntity="Occupation" TValue="int" @bind-Value="SearchData.OccupationId" TextExpression="t => t.Title" />
+                </td>
+            }
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="CareerField" Search="SearchData" TableHeight="200" ConditionExpr="t => OccupationId == null || t.OccupationId == OccupationId">
+        <Columns>
+            <GridColumn TEntity="CareerField" Field="t => t.Occupation.Title" Title="رسته" />
+            <GridColumn TEntity="CareerField" Field="t => t.Title" />
+            <GridCommandColumns TEntity="CareerField" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="مشخصات رشته های شغلی" OnOpen="OnWindowOpen" Style="width:450px">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(CareerFieldService)" />
+                <table style="width:90%;margin:0 auto">
+                    @if (OccupationId == null)
+                    {
+                        <tr>
+                            <td>
+                                <label>رسته شغلی</label>
+                            </td>
+                            <td>
+                                <ComboBox TEntity="Occupation" TValue="int" @bind-Value="UpsertData.OccupationId" TextExpression="t => t.Title" />
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code{
+
+    [Parameter]
+    public int? OccupationId{ get; set; }
+
+    void OnWindowOpen()
+    {
+        if (OccupationId.HasValue)
+            UpsertData.OccupationId = OccupationId.Value;
+    }
+}

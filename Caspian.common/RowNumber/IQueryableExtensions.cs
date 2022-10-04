@@ -83,9 +83,8 @@ namespace Caspian.Common.RowNumber
             Expression whereExpr = Expression.Property(param, "Id");
             whereExpr = Expression.Equal(whereExpr, Expression.Constant(id));
             whereExpr = Expression.Lambda(whereExpr, param);
-            var list = await selectManyQuery.Where_(whereExpr).OfType<dynamic>().ToListAsync();
-            var rowNumber = list.FirstOrDefault();
-            if (rowNumber == null || rowNumber.Length == 0)
+            dynamic rowNumber = await selectManyQuery.Where_(whereExpr).OfType<object>().FirstOrDefaultAsync();
+            if (rowNumber == null)
                 return null;
             return Convert.ToInt32(rowNumber.RowNumber);
         }
@@ -135,5 +134,12 @@ namespace Caspian.Common.RowNumber
                     throw new NotImplementedException("خطای عدم پیاده سازی");
             }
         }
+    }
+
+    public class CaspianRowNumber
+    {
+        public int Id { get; set; }
+
+        public long RowNumber { get; set; }
     }
 }

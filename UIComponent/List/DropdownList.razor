@@ -38,9 +38,11 @@
         }
         else
             if (str.HasValue())
-                value = (TValue)Convert.ChangeType(str, typeof(TValue).GetUnderlyingType());
+            value = (TValue)Convert.ChangeType(str, typeof(TValue).GetUnderlyingType());
         Value = value;
         await ValueChanged.InvokeAsync(Value);
+        if (OnChange.HasDelegate)
+            await OnChange.InvokeAsync();
     }
 
     protected override void OnInitialized()
@@ -69,7 +71,7 @@
     protected override void OnParametersSet()
     {
         text = "لطفا انتخاب نمائید";
-        if (Value != null)
+        if (Value != null && !Value.Equals(default(TValue)))
         {
             if (Source == null)
             {
@@ -94,7 +96,12 @@
             inputAttrs["name"] = Id;
         }
         if (Value != null)
-            inputAttrs["value"] = Convert.ToInt32(Value).ToString();
+        {
+            if (typeof(TValue) == typeof(string))
+                inputAttrs["value"] = Value;
+            else
+                inputAttrs["value"] = Convert.ToInt32(Value).ToString();
+        }
         base.OnParametersSet();
     }
 

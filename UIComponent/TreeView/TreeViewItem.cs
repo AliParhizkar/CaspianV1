@@ -8,7 +8,7 @@ namespace Caspian.UI
 
         public string Value { get; set; }
 
-        public bool Selected { get; set; }
+        public bool? Selected { get; set; } = false;
 
         public bool Expanded { get; set; }
 
@@ -21,6 +21,10 @@ namespace Caspian.UI
         public bool SingleSelect { get; set; }
 
         public bool ShowTemplate { get; set; }
+
+        public byte? Depth { get; set; }
+
+        public TreeViewItem Parent { get; set; }
 
         public IList<TreeViewItem> Items { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿@using Caspian.UI
 @using Demo.Model
 @using Caspian.common
+@using Demo.Service
 @page "/"
 @inherits BasePage
 <div class="test">
@@ -9,17 +10,36 @@
 <div>
     <a href="/Employment">Employment</a>
 </div>
+<CaspianForm Model="city" OnValidSubmit="async t => await Valid(t)">
+    <CaspianValidationValidator ValidatorType="typeof(CityService)" />
+    <StringTextBox @ref="stringText" Required />
+    <button>Click Me</button>
+</CaspianForm>
 
-<button @onclick="async () => await LoadFileAsync()" >Click Me</button>
 
  @code 
 {
+    StringTextBox stringText;
+
     City city = new City();
     int? provinceId;
 
-    async Task LoadFileAsync()
+    Task<bool> Valid(EditContext context)
     {
-        var fileContent = await File.ReadAllBytesAsync("C:\\Users\\Ali\\Desktop\\Book1.xlsx");
-        await DownloadFile("a.xlsx", fileContent);
+        return Task.FromResult(false);
+    }
+
+    protected override void OnInitialized()
+    {
+        city.ProvinceId = 2;
+        city.Title = "sadasda";
+        city.ActiveType = ActiveType.Enable;
+        base.OnInitialized();
+    }
+
+    void LoadFileAsync()
+    {
+        stringText.Validate();
+        StateHasChanged();
     }
 }

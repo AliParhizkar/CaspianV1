@@ -51,6 +51,7 @@ namespace Caspian.Engine
 
         public int? Value6 { get; set; }
 
-        public int ResultValue { get; set; }
+        [Column("ResultValue", TypeName = "numeric(18, 3)")]
+        public decimal ResultValue { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿@namespace Caspian.UI
 @implements Caspian.UI.IContainer
 @implements IInputValueInitializer
+@implements Caspian.UI.IContainer
+
 @if (!LoadOnContent || Status == WindowStatus.Open)
 {
     <CascadingValue Value="this" Name="Container">

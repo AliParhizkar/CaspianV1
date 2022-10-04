@@ -17,7 +17,7 @@
                             <label>نام خانوادگی</label>
                         </td>
                         <td>
-                            <StringTextBox @bind-Value="MemberSearch.FName" Search @onchange="() => { MemberGrid.EnableLoading(); }" />
+                            <StringTextBox @bind-Value="MemberSearch.FName" Search OnChange="() => { MemberGrid.EnableLoading(); }" />
                         </td>
                     </tr>
                     <tr>
@@ -58,7 +58,7 @@
                                     @onclick="async () =>
                                               {
                                                   BlockUI();
-                                                  await base.Delete();
+                                                  await base.DeleteAsync();
                                                   UnblockUI();
                                               }" IconType="IconType.AngleDoubleRight" />
                     </div>
@@ -73,7 +73,7 @@
                                 <label>نام خانوادگی</label>
                             </td>
                             <td>
-                                <StringTextBox @bind-Value="SearchData.User.LName" Search @onchange="() => { CrudGrid.EnableLoading(); }" />
+                                <StringTextBox @bind-Value="SearchData.User.LName" Search OnChange="() => { CrudGrid.EnableLoading(); }" />
                             </td>
                         </tr>
                         <tr>

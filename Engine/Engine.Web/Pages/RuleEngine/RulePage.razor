@@ -1,5 +1,6 @@
 ﻿@page "/{Subsystem}/Engine/Rule"
 @namespace Caspian.Engine.RuleGenerator
+@using Caspian.Common.Attributes
 @inherits SimplePage<Rule>
 @{
     base.BuildRenderTree(__builder);
@@ -43,11 +44,31 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td style="width:90px">
                             <label>نوع خروجی</label>
                         </td>
                         <td>
                             <DropdownList @bind-Value="UpsertData.ResultType" />
+                        </td>
+                    </tr>
+                    @if (UpsertData.ResultType == ValueTypeKind.Enum)
+                    {
+
+                        <tr>
+                            <td>
+                                <label>نوع شمارشی</label>
+                            </td>
+                            <td>
+                                <DropdownList @bind-Value="UpsertData.EnumTypeName" Source="modelEnums" />
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            <label>قانون فرم</label>
+                        </td>
+                        <td>
+                            <CheckBox @bind-Value="UpsertData.FormRule" />
                         </td>
                     </tr>
                     <tr>
@@ -83,6 +104,7 @@
 {
     List<SelectListItem> RuleTypes;
     SubSystemKind subSystemKind;
+    IList<SelectListItem> modelEnums;
 
     [Parameter]
     public string Subsystem { get; set; }
@@ -91,6 +113,11 @@
     {
         subSystemKind = (SubSystemKind)typeof(SubSystemKind).GetField(Subsystem).GetValue(null);
         RuleTypes = new AssemblyInfo().GetRuleTypes(subSystemKind).Select(t => new SelectListItem(t.Key, t.Value)).ToList();
+        modelEnums = subSystemKind.GetEntityAssembly().GetTypes().Where(t => t.IsEnum).Select(t => new SelectListItem
+            {
+                Value = t.Name,
+                Text = t.GetCustomAttribute<EnumTypeAttribute>()?.Title ?? t.Name
+            }).ToList();
         base.OnInitialized();
     }
 }

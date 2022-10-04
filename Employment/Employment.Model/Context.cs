@@ -18,5 +18,13 @@ namespace Employment.Model
         public DbSet<Province> Provinces { get; set; }
 
         public DbSet<WorkHistory> WorkHistory { get; set; }
+
+        public DbSet<OrganUnit> OrganUnits { get; set; }
+
+        public DbSet<Occupation> Occupations { get; set; }
+
+        public DbSet<CareerField> CareerFields { get; set; }
+
+        public DbSet<OrganPost> OrganPosts { get; set; }
     }
 }

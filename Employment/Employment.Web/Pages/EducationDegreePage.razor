@@ -1,0 +1,72 @@
+﻿@page "/Employment/EducationDegree"
+@namespace Employment.Web.Pages
+@inherits SimplePage<EducationDegree>
+@{
+    base.BuildRenderTree(__builder);
+
+}
+<div style="width:90%;margin:15px auto">
+    <table style="width:90%;margin:0 auto">
+        <tr>
+            <td style="width:50px">
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+            <td>
+                <label>پایه تحصیلی</label>
+            </td>
+            <td>
+                <DropdownList @bind-Value="SearchData.BaseStudy" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="EducationDegree" Search="SearchData" TableHeight="200">
+        <Columns>
+            <GridColumn TEntity="EducationDegree" Field="t => t.BaseStudy.FaText()" Title="پایه تحصیلی" />
+            <GridColumn TEntity="EducationDegree" Field="t => t.Title" />
+            <GridColumn TEntity="EducationDegree" Title="رشته های تحصیلی" style="width:120px;">
+                <Template>
+                    <IconButton Href='@($"/Employment/Major/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="EducationDegree" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="مدارک تحصیلی" Style="width:450px" >
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(EducationDegreeService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>پایه تحصیلی</label>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="UpsertData.BaseStudy" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+@code
+{
+
+}

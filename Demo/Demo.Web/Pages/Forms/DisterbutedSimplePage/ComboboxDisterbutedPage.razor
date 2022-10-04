@@ -59,7 +59,7 @@
                                 </td>
                                 <td>
                                     <NumericTextBox @bind-Value="UpsertData.Price"
-                                                    @onchange="@(() =>
+                                                    OnChange="@(() =>
                                                                  {
                                                                      if (UpsertData.PriceOuterBound == 0)
                                                                          UpsertData.PriceOuterBound = UpsertData.Price;
@@ -76,13 +76,20 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <label>اتمام فروش</label>
+                                </td>
+                                <td>
+                                    <CheckBox @bind-Value="UpsertData.OutofStock" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <label>وضعیت</label>
                                 </td>
                                 <td>
                                     <DropdownList @bind-Value="UpsertData.ActiveType" />
                                 </td>
                             </tr>
-
                             <tr>
                                 <td colspan="2">
                                     <FormCommandButton />

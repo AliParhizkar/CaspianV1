@@ -37,8 +37,14 @@
     async void UpdateValue(TValue value)
     {
         Value = value;
-        await ValueChanged.InvokeAsync(value);
+        if (ValueChanged.HasDelegate)
+            await ValueChanged.InvokeAsync(value);
+        if (OnChange.HasDelegate)
+            await OnChange.InvokeAsync();
     }
+
+    [Parameter]
+    public EventCallback OnChange { get; set; }
 
     protected override void OnInitialized()
     {

@@ -63,9 +63,10 @@
             window.chrome.webview.postMessage(data);;
         },
         saveCodeFile: async function (code) {
-            await $.workflowForm.dotnet.invokeMethodAsync('SaveFile', code);
+            if (code == '' || code.length < 20) 
+                $.telerik.showMessage('هیچ کدی برای ارسال وجود ندارد یا کد فاقد اعتبار می باشد.')
+            else
+                await $.workflowForm.dotnet.invokeMethodAsync('SaveFile', code);
         },
     }
 })(jQuery);
-function save() {
-}

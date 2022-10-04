@@ -5,20 +5,28 @@
     base.BuildRenderTree(__builder);
    
 }
-<div style="width:90%;margin:5px auto">
-    <table style="width:100%">
+<div style="width:90%;margin:15px auto">
+    <table style="width:90%;margin:0 auto">
         <tr>
-            <td>
+            <td style="width:50px">
                 <label>عنوان</label>
             </td>
-            <td>
+            <td style="width:50%">
                 <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+            <td style="width:80px"></td>
+            <td style="width:50px">
+                <label>کد</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Code" />
             </td>
         </tr>
     </table>
     <DataGrid @ref="CrudGrid" TEntity="EmploymentOrderType" Search="SearchData" TableHeight="200">
         <Columns Context="con">
             <GridColumn TEntity="EmploymentOrderType" Field="t => t.Title" />
+            <GridColumn TEntity="EmploymentOrderType" Field="t => t.Code" style="width:100px" />
             <GridCommandColumns TEntity="EmploymentOrderType" />
         </Columns>
     </DataGrid>
@@ -33,6 +41,14 @@
                         </td>
                         <td>
                             <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>کد حکم</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Code" Style="direction:ltr" />
                         </td>
                     </tr>
                     <tr>

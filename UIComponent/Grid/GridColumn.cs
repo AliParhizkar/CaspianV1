@@ -150,7 +150,8 @@ namespace Caspian.UI
                     var index = AggregateIndex.Value % properties.Count();
                     var info = properties.Single(t => t.Name == "Info__" + index);
                     if (info != null)
-                        value = info.GetValue(RowData.DynamicData);
+                        value = ((int)info.GetValue(RowData.DynamicData)).Seprate3Digit();
+                    
                 }
             }
             base.OnParametersSet();

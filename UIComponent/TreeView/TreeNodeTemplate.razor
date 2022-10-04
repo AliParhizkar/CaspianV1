@@ -1,0 +1,20 @@
+﻿@namespace Caspian.UI
+@if (CurentLevel.HasValue && CurentLevel == Level || Levels != null && Levels.Contains(CurentLevel.Value))
+{
+    @ChildContent
+}
+
+@code 
+{
+    [Parameter]
+    public byte? Level{ get; set; }
+
+    [Parameter]
+    public byte[] Levels { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [CascadingParameter(Name = "NodeDepthOnTree")]
+    public byte? CurentLevel { get; set; }
+}

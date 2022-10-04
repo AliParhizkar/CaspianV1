@@ -1,4 +1,5 @@
-﻿using Caspian.Common.Service;
+﻿using Caspian.Common;
+using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +10,8 @@ namespace Caspian.Engine.Service
         public TokenService(IServiceScope scope)
             :base(scope)
         {
+            RuleFor(t => t.constValue).Required(t => t.TokenType == TokenType.ConstValue);
+            RuleFor(t => t.ConstValueType).Required(t => t.TokenType == TokenType.ConstValue);
 
         }
 

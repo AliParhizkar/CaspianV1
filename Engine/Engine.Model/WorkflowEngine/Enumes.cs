@@ -62,6 +62,7 @@ namespace Caspian.Engine
         [EnumField("چند انتخابی")]
         DropdownList,
 
+        [EnumField("درست/نادرست")]
         CheckBox,
 
         TreeStateCheckBox,

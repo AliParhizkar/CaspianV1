@@ -26,9 +26,10 @@ namespace Caspian.Common.Extension
                 str = str.Substring(str.IndexOf('.') + 1);
                 var info = type.GetProperty(str);
                 Expression memberExpr = param.CreateMemberExpresion(str);
-                if (expr.CheckConfilictByNullValue())
+                string foreignkeyId = null;
+                if (expr.CheckConfilictByNullValue(out foreignkeyId))
                 {
-                    Expression expr1 = param.CreateMemberExpresion("CustomerId");
+                    Expression expr1 = param.CreateMemberExpresion(foreignkeyId);
                     var test = Expression.Equal(expr1, Expression.Constant(null));
                     var nullableType = typeof(Nullable<>).MakeGenericType(memberExpr.Type);
                     var ifTrue = Expression.Convert(Expression.Constant(null), nullableType);
@@ -42,7 +43,7 @@ namespace Caspian.Common.Extension
             return Expression.Lambda(memberInit, param);
         }
 
-        public static bool CheckConfilictByNullValue(this MemberExpression expr)
+        public static bool CheckConfilictByNullValue(this MemberExpression expr, out string foreignkeyId)
         {
             var type = expr.Type;
             if (type.IsValueType && !type.IsNullableType())
@@ -54,11 +55,15 @@ namespace Caspian.Common.Extension
                     {
                         var tempType = expr.Member.DeclaringType.GetProperty(attr.Name).PropertyType;
                         if (tempType.IsNullableType())
+                        {
+                            foreignkeyId = attr.Name;
                             return true;
+                        }
                     }
                     expr = expr.Expression as MemberExpression;
                 }
             }
+            foreignkeyId = null;
             return false;
         }
 

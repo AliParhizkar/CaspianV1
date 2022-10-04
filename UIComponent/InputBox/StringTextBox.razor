@@ -32,11 +32,6 @@
     async Task ChangeValue(ChangeEventArgs arg)
     {
         Value = arg.Value.ToString();
-        if (InputAttributes.ContainsKey("onchange"))
-        {
-            var change = (EventCallback<ChangeEventArgs>)InputAttributes["onchange"];
-            await change.InvokeAsync(new ChangeEventArgs() { Value = Value });
-        }
         await ValueChanged.InvokeAsync(Value);
     }
 

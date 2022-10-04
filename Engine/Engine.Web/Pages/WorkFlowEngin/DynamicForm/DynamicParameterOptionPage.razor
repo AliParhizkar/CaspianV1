@@ -4,7 +4,6 @@
 @inherits SimplePage<DynamicParameterOption>
 
 @{
-    
     base.BuildRenderTree(__builder);
 }
 <div style="width:90%;margin:5px auto">
@@ -66,7 +65,7 @@
         {
             using var scope = CreateScope();
             var service = new DynamicParameterOptionService(scope);
-            UpsertData.Value = (await service.MaxAsync(t => (long?)t.Value)).GetValueOrDefault() + 1;
+            UpsertData.Value = (await service.GetAll().Where(t => t.DynamicParameterId == ParameterId).MaxAsync(t => (long?)t.Value)).GetValueOrDefault() + 1;
         }
     }
 

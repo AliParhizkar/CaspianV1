@@ -14,12 +14,12 @@ namespace Caspian.Engine
         public TokenType TokenType { get; set; }
 
         [StringLength(100)]
-        public string? EnTitle { get; set; }
+        public string EnTitle { get; set; }
 
         [StringLength(50)]
-        public string? FaTitle { get; set; }
+        public string FaTitle { get; set; }
 
-        public string? constValue { get; set; }
+        public string constValue { get; set; }
 
         public ValueTypeKind? ConstValueType { get; set; }
 
@@ -27,7 +27,12 @@ namespace Caspian.Engine
 
         public int? RuleIdValue { get; set; }
 
-        public int? DynamicId { get; set; }
+        public ParameterType parameterType { get; set; }
+
+        public int? DynamicParameterId { get; set; }
+
+        [ForeignKey(nameof(DynamicParameterId))]
+        public virtual DynamicParameter DynamicParameter { get; set; }
 
         [ForeignKey(nameof(RuleId))]
         public virtual Rule Rule { get; set; }

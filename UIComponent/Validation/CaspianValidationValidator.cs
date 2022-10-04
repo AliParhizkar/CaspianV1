@@ -58,7 +58,10 @@ namespace Caspian.UI
             Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope);
             (Validator as ICaspianValidator).IgnoreDetailsProperty = IgnoreDetailsProperty;
             context.RootContextData["__ServiceScopeFactory"] = ServiceScopeFactory;
-            var result = Validator.Validate(context);
+            var asyncValidationTask = Validator.ValidateAsync(context);
+            EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
+            var result = await asyncValidationTask;
+
             AddValidationResult(EditContext.Model, result);
         }
 

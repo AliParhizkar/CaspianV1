@@ -1540,7 +1540,8 @@ td {
 }
 
 .ruler {
-    border: 1px solid blue;
+    border-bottom: 1px dashed blue;
+    border-left: 1px dashed blue;
     position: absolute;
     z-index: 100000;
 }

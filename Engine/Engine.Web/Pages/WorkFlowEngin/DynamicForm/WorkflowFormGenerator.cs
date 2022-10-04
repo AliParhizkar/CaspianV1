@@ -284,7 +284,6 @@ namespace Caspian.Engine.WorkflowEngine
 
         void AddControl(DynamicParameter parameter)
         {
-
             var component = new Caspian.Engine.BlazorControl()
             {
                 Caption = parameter.FaTitle,

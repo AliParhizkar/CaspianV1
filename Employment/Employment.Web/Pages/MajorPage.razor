@@ -1,0 +1,82 @@
+﻿@page "/Employment/Major"
+@page "/Employment/Major/{EducationDegreeId:int}"
+@namespace Employment.Web.Pages
+@inherits SimplePage<Major>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:15px auto">
+    <table style="width:90%;margin:0 auto">
+        <tr>
+            <td style="width:50px">
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+            @if (EducationDegreeId == null)
+            {
+                <td style="width:80px"></td>
+                <td style="width:90px">
+                    <label>مدرک تحصیلی</label>
+                </td>
+                <td>
+                    <ComboBox TEntity="EducationDegree" TValue="int" @bind-Value="SearchData.EducationDegreeId" TextExpression="t => t.Title" />
+                </td>
+            }
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="Major" Search="SearchData" TableHeight="200" ConditionExpr="t => EducationDegreeId == null || t.EducationDegreeId == EducationDegreeId">
+        <Columns>
+            <GridColumn TEntity="Major" Field="t => t.EducationDegree.BaseStudy.FaText()" Title="پایه تحصیلی" />
+            <GridColumn TEntity="Major" Field="t => t.EducationDegree.Title" Title="مدرک تحصیلی" />
+            <GridColumn TEntity="Major" Field="t => t.Title"  />
+            <GridCommandColumns TEntity="Major" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="رشته تحصیلی" Style="width:450px" OnOpen="@OnWindowOpen">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(MajorService)" />
+                <table style="width:90%;margin:0 auto">
+                    @if (EducationDegreeId == null)
+                    {
+                        <tr>
+                            <td>
+                                <label>مدرک تحصیلی</label>
+                            </td>
+                            <td>
+                                <ComboBox TEntity="EducationDegree" TValue="int" @bind-Value="UpsertData.EducationDegreeId" TextExpression="t => t.Title" />
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+@code
+{
+    [Parameter]
+    public int? EducationDegreeId { get; set; }
+
+    void OnWindowOpen()
+    {
+        if (EducationDegreeId.HasValue)
+            UpsertData.EducationDegreeId = EducationDegreeId.Value;
+    }
+}

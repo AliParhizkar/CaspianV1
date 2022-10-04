@@ -157,7 +157,7 @@
         var service = new DynamicParameterService(scope);
         entities = service.GetDynamicType(systemKind);
         ControlsType = new List<ControlType?>();
-        ControlsType.AddRange(ControlType.Integer, ControlType.Numeric, ControlType.DropdownList);
+        ControlsType.AddRange(ControlType.Integer, ControlType.Numeric, ControlType.CheckBox, ControlType.DropdownList);
         base.OnInitialized();
     }
 

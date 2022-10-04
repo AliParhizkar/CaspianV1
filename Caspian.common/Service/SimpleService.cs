@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using FluentValidation.Results;
+using FluentValidation.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -43,6 +44,11 @@ namespace Caspian.Common.Service
         public TService GetService<TService>() where TService : class
         {
             return (TService)Activator.CreateInstance(typeof(TService), ServiceScope);
+        }
+
+        public async virtual Task<ValidationResult> ValidateRemoveAsync(TEntity entity)
+        {
+            return await ValidateAsync(new ValidationContext<TEntity>(entity, new PropertyChain(), new RulesetValidatorSelector("remove")));
         }
 
         public override Task<ValidationResult> ValidateAsync(ValidationContext<TEntity> context, CancellationToken cancellation = default)
@@ -86,7 +92,7 @@ namespace Caspian.Common.Service
             Expression expr = Expression.Property(t, type.GetPrimaryKey());
             expr = Expression.Equal(expr, Expression.Constant(id));
             expr = Expression.Lambda(expr, t);
-            var entity = await GetAll().Where(expr).OfType<TEntity>().SingleOrDefaultAsync();
+            var entity = await GetAll().Where(expr).SingleOrDefaultAsync();
             return entity;
         }
 
@@ -102,6 +108,17 @@ namespace Caspian.Common.Service
             if (old == null)
                 throw new CaspianException("آیتم از سیستم حذف شده است");
             return old;
+        }
+
+        public TEntity Single(int id)
+        {
+            var type = typeof(TEntity);
+            var t = Expression.Parameter(type, "t");
+            Expression expr = Expression.Property(t, type.GetPrimaryKey());
+            expr = Expression.Equal(expr, Expression.Constant(id));
+            expr = Expression.Lambda(expr, t);
+            var entity = GetAll().Where(expr).SingleOrDefault();
+            return entity;
         }
 
         async public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expr = null)

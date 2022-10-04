@@ -1,0 +1,152 @@
+﻿@page "/Demo/SimpleTree"
+@inherits BasePage
+@using Caspian.Engine.Model
+@using Caspian.Engine.Service
+<div style="padding:20px 40px 0 0">
+    <h3>Tree View</h3>
+</div>
+<div style="display:flex;width:90%;margin:0 auto">
+    <div style="display:table-cell;width:50%;padding-left:40px">
+        <hr />
+        <div style="padding:0 40px;">
+            <h4>Load on first</h4>
+            <RadioList @bind-Value="expanded" OnChange="ExpandedChanged">
+                <RadioItems>
+                    <RadioItem style="width:112px" TValue="bool" Value="false" Title="Collapsed" />
+                    <RadioItem TValue="bool" Value="true" Title="Expanded" />
+                </RadioItems>
+            </RadioList>
+            <div style="text-align:center;padding:10px 0 3px 0">
+                <span style="color:seagreen;font-weight:bold;font-size:14px;">تعداد @(count) منو انتخاب شده است</span>
+            </div>
+            <CTreeView @ref="tree" TEntity="TreeViewItem" OnChange="Change" style="height:calc(100vh - 192px);margin-right:5px;" Source="source" />
+        </div>
+    </div>
+    <div style="display:table-cell;width:50%;padding-right:40px">
+        <hr />
+        <div style="padding:0 40px;">
+            <h4 style="padding-right:40px;">Load on expand</h4>
+            <div style="text-align:center;padding:10px 0 3px 0">
+                <span style="color:seagreen;font-weight:bold;font-size:14px;">تعداد @(count1) منو انتخاب شده است</span>
+            </div>
+            <CTreeView @ref="tree1" OnChange="Change1" OnCollapsed="OnCollapsed" TEntity="TreeViewItem" style="height:calc(100vh - 170px);margin-right:5px;" Source="source1" OnExpanded="async node => await OnExpanded(node)" />
+        </div>
+    </div>
+</div>
+   
+@code 
+{
+    bool expanded;
+    int count;
+    int count1;
+    IList<TreeViewItem> source;
+    IList<TreeViewItem> source1;
+    CTreeView<TreeViewItem> tree;
+    CTreeView<TreeViewItem> tree1;
+
+    void OnCollapsed(TreeViewItem node)
+    {
+        node.Items = null;
+        node.Selected = false;
+
+    }
+
+    void Change1(TreeViewItem node)
+    {
+        if (node.Depth == 1)
+        {
+            if (node.Items == null)
+                node.Selected = false;
+            else
+            {
+                foreach (var item in node.Items)
+                    item.Selected = node.Selected;
+            }
+        }
+        if (node.Depth == 2)
+        {
+            var parent = node.Parent;
+            var items = parent.Items;
+            if (items.All(t => t.Selected == true))
+                parent.Selected = true;
+            else if (items.All(t => t.Selected == false))
+                parent.Selected = false;
+            else
+                parent.Selected = null;
+        }
+        count1 = tree1.GetSeletcedItems().Count(t => t.Depth == 2);
+    }
+
+    async Task OnExpanded(TreeViewItem node)
+    {
+        using var scope = CreateScope();
+        var categoryId = Convert.ToInt32(node.Value);
+        node.Items = await new MenuService(scope).GetAll()
+            .Where(t => t.MenuCategoryId == categoryId).Select(t => new TreeViewItem()
+                { 
+                    Collabsable = false,
+                    Expanded = false,
+                    Selectable = true,
+                    Text = t.Title,
+                    Value = t.Id.ToString()
+                }).ToListAsync();
+    }
+
+    void ExpandedChanged()
+    {
+        foreach (var item in source)
+            item.Expanded = expanded;
+    }
+
+    void Change(TreeViewItem item)
+    {
+        if (item.Items != null)
+        {
+            foreach (var child in item.Items)
+                child.Selected = item.Selected;
+        }
+        else
+        {
+            var parent = item.Parent;
+            var items = parent.Items;
+            if (items.All(t => t.Selected == true))
+                parent.Selected = true;
+            else if (items.All(t => t.Selected == false))
+                parent.Selected = false;
+            else
+                parent.Selected = null;
+        }
+        count = tree.GetSeletcedItems().Count(t => t.Depth == 2);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        var menus = new MenuService(scope).GetAll()
+            .Where(t => t.MenuCategory.SubSystemKind == SubSystemKind.Demo);
+        source = await new MenuCategoryService(scope).GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo)
+            .Select(t => new TreeViewItem()
+                {
+                    Text = t.Title,
+                    Expanded = false,
+                    Selectable = true,
+                    Value = t.Id.ToString(),
+                    Items = menus.Where(u => u.MenuCategoryId == t.Id).Select(u => new TreeViewItem()
+                    {
+                        Collabsable = false,
+                        Text = u.Title,
+                        Value = u.Id.ToString(),
+                        Selectable = true
+                    }).ToList()
+                }).ToListAsync();
+        source1 = source.Select(t => new TreeViewItem()
+        {
+            Expanded = false,
+            Collabsable = true,
+            Selectable = true,
+            Text = t.Text,
+            Value = t.Value
+        }).ToList();
+        await base.OnInitializedAsync();
+    }
+}

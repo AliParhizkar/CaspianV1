@@ -25,9 +25,6 @@
     [Parameter, JsonProperty("bindingType")]
     public BindingType BindingType { get; set; }
 
-    [CascadingParameter, JsonIgnore]
-    public CaspianContainer Container { get; set; }
-
     [Parameter, JsonIgnore]
     public Type DynamicType { get; set; }
 
@@ -143,18 +140,23 @@
             }
         }
         reseting = false;
-        if (InputAttributes.ContainsKey("onchange"))
-        {
-            var change = (EventCallback<ChangeEventArgs>)InputAttributes["onchange"];
-            await change.InvokeAsync(new ChangeEventArgs() { Value = Value });
-        }
         await ValueChanged.InvokeAsync(Value);
+        if (OnChange.HasDelegate)
+            await OnChange.InvokeAsync();
     }
+
+    [Parameter]
+    public EventCallback OnChange{ get; set; }
+
+    [CascadingParameter(Name = "Container")]
+    internal IContainer Container { get; set; }
 
     protected override void OnParametersSet()
     {
-        CaspianForm?.AddControl(this);
-        Container?.SetControl(this);
+        if (CaspianForm == null)
+            Container?.SetFirstControlForFocus(this);
+        else
+            CaspianForm.AddControl(this);
         if (InputAttributes == null)
             InputAttributes = new Dictionary<string, object>();
         if (TabIndex.HasValue)

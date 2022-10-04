@@ -247,11 +247,14 @@ a, .btn-link {
     }
 
         .c-login .c-action button {
-            border: 1px solid red;
             width: 80px;
             height: 40px;
             background-color: transparent;
-            color: black;
+            color: gray;
             font-size: 17px;
             border: solid 1px #ccc;
+            transition: background-color .5s;
         }
+            .c-login .c-action button:hover {
+                background-color: #00D8DC;
+            }

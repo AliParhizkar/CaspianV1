@@ -71,7 +71,8 @@ namespace Caspian.UI
             }
         }
 
-        protected virtual async Task Delete(TEntity data)
+
+        protected virtual async Task DeleteAsync(TEntity data)
         {
             if (!CrudGrid.DeleteMessage.HasValue() || await Confirm(CrudGrid.DeleteMessage))
             {
@@ -108,7 +109,7 @@ namespace Caspian.UI
                 CrudGrid.Search = SearchData;
                 CrudGrid.OnInternalDelete = EventCallback.Factory.Create<TEntity>(this, async (data) =>
                 {
-                    await Delete(data);
+                    await DeleteAsync(data);
                 });
                 CrudGrid.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async (data) =>
                 {

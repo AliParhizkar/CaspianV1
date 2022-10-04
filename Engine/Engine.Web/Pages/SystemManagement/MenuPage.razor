@@ -29,7 +29,7 @@
             <td></td>
             <td>
                 <CheckBox @bind-Value="onlyUninitalizedMenu" 
-                          @onchange="() => 
+                          OnChange="() => 
                                      { 
                                          CrudGrid.EnableLoading(); 
                                      }" />
@@ -43,13 +43,13 @@
         </tr>
         <tr>
             <td>
-                <CheckBox @bind-Value="ShowOnMenu" @onchange="() => { CrudGrid.EnableLoading(); }" />
+                <CheckBox @bind-Value="ShowOnMenu" OnChange="() => { CrudGrid.EnableLoading(); }" />
             </td>
             <td>
                 <label>نمایش در منو</label>
             </td>
             <td>
-                 <CheckBox @bind-Value="InvalidAddress" @onchange="() => { CrudGrid.EnableLoading(); }" />
+                <CheckBox @bind-Value="InvalidAddress" OnChange="() => { CrudGrid.EnableLoading(); }" />
             </td>
             <td colspan="2">
                 <label>آدرس نامعتبر</label>

@@ -12,41 +12,44 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common
 {
-    public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator, IEntity
+    public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator, IEntity where TModel : class
     {
         public CaspianValidator(IServiceScope scope)
         {
-            ServiceScope = scope;
-            var contextType = new AssemblyInfo().GetDbContextType(typeof(TModel));
-            Context = scope.ServiceProvider.GetService(contextType) as MyContext;
-            var data = scope.ServiceProvider.GetService(typeof(CaspianDataService)) as CaspianDataService;
-            UserId = data.UserId;
-            foreach (var info in typeof(TModel).GetProperties())
+            if (scope != null)
             {
-                var type = info.PropertyType;
-                if (type.IsEnum)
-                    RuleForEnum(info);
-                var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
-                if (attr != null)
+                ServiceScope = scope;
+                var contextType = new AssemblyInfo().GetDbContextType(typeof(TModel));
+                Context = scope.ServiceProvider.GetService(contextType) as MyContext;
+                var data = scope.ServiceProvider.GetService(typeof(CaspianDataService)) as CaspianDataService;
+                UserId = data.UserId;
+                foreach (var info in typeof(TModel).GetProperties())
                 {
-                    //if (info.GetValue())
-                    var infoId = typeof(TModel).GetProperty(attr.Name);
+                    var type = info.PropertyType;
+                    if (type.IsEnum)
+                        RuleForEnum(info);
+                    var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
+                    if (attr != null)
+                    {
+                        //if (info.GetValue())
+                        var infoId = typeof(TModel).GetProperty(attr.Name);
+                        var param = Expression.Parameter(typeof(TModel), "t");
+                        Expression expr = Expression.Property(param, infoId);
+                        expr = Expression.Convert(expr, typeof(object));
+                        expr = Expression.Lambda(expr, param);
+                        RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyAsync(info, infoId, MasterInfo);
+                    }
+                }
+                RuleSet("remove", () =>
+                {
+                    var pkey = typeof(TModel).GetPrimaryKey();
                     var param = Expression.Parameter(typeof(TModel), "t");
-                    Expression expr = Expression.Property(param, infoId);
+                    Expression expr = Expression.Property(param, pkey);
                     expr = Expression.Convert(expr, typeof(object));
                     expr = Expression.Lambda(expr, param);
-                    RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyAsync(info, infoId, MasterInfo);
-                }
+                    CheckOnDelete(expr as Expression<Func<TModel, object>>);
+                });
             }
-            RuleSet("remove", () =>
-            {
-                var pkey = typeof(TModel).GetPrimaryKey();
-                var param = Expression.Parameter(typeof(TModel), "t");
-                Expression expr = Expression.Property(param, pkey);
-                expr = Expression.Convert(expr, typeof(object));
-                expr = Expression.Lambda(expr, param);
-                CheckOnDelete(expr as Expression<Func<TModel, object>>);
-            });
         }
         public int UserId { get;private set; }
         /// <summary>

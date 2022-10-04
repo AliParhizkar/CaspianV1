@@ -24,11 +24,11 @@
     }
     @if (Item.Selectable)
     {
-        <CheckBox Value="Item.Selected" Disabled="Item.Disabled" 
-                  ValueChanged="async (bool value) =>
+        <CheckBox Value="Item.Selected" Disabled="Item.Disabled" TwoState
+                  ValueChanged="async (bool? value) =>
                            {
                                Item.Selected = value;
-                               if (value)
+                               if (value == true)
                                    await OnSelected.InvokeAsync(Item);
                                await OnChanged.InvokeAsync(Item);
                            }" />
@@ -38,22 +38,33 @@
                                         if (Item.Selectable && !Item.Disabled)
                                         {
                                             Item.Selected = !Item.Selected;
-                                            if (Item.Selected)
+                                            if (Item.Selected == true)
                                                 await OnSelected.InvokeAsync(Item);
                                             await OnChanged.InvokeAsync(Item);
                                         }
                                     }">
         @Item.Text
     </span>
-    @if (Item.ShowTemplate && CascadeData != null)
+    @if (Item.Depth == null)
     {
-        @CascadeData.Template(Item)
+        if (Item.Parent == null)
+            Item.Depth = 1;
+        else
+            Item.Depth = Convert.ToByte(Item.Parent.Depth.Value + 1);
+    }
+    @if (Item.ShowTemplate && CascadeData?.Template != null)
+    {
+        <CascadingValue Value="Item.Depth" Name="NodeDepthOnTree">
+            @CascadeData.Template(Item)
+        </CascadingValue>
     }
     @if (Item.Items != null && Item.Expanded)
     {
         <ul class="c-subtree">
             @foreach (var item in Item.Items)
             {
+                if (item.Parent == null)
+                    item.Parent = Item;
                 <TreeNode OnCollapsed="async (node) =>
                                    {
                                        if (OnCollapsed.HasDelegate)
@@ -84,10 +95,10 @@
     ElementReference Node;
 
     [Parameter]
-    public bool Selected { get; set; }
+    public bool? Selected { get; set; } = false;
 
     [Parameter]
-    public EventCallback<bool> SelectedChanged { get; set; }
+    public EventCallback<bool?> SelectedChanged { get; set; }
 
     [Parameter]
     public EventCallback<TreeViewItem> OnExpanded { get; set; }
@@ -111,7 +122,7 @@
     {
         if (Collapsed.HasValue)
         {
-            await JSRuntime.InvokeVoidAsync("$.telerik.bindTreeView", Node, Collapsed.Value);
+            //await JSRuntime.InvokeVoidAsync("$.telerik.bindTreeView", Node, Collapsed.Value);
             Collapsed = null;
         }
         await base.OnAfterRenderAsync(firstRender);

@@ -106,7 +106,7 @@ namespace Caspian.UI
             }
         }
 
-        async Task Delete()
+        async Task DeleteAsync()
         {
             if (!disabledDelete)
             {

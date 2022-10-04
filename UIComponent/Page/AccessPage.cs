@@ -128,7 +128,7 @@ namespace Caspian.UI
             await MemberGrid.Reload();
         }
 
-        protected async override Task Delete(TAccess data = null)
+        protected async override Task DeleteAsync(TAccess data = null)
         {
             if (data == null)
             {
@@ -159,7 +159,7 @@ namespace Caspian.UI
             if (foreignKeyAttrMember == null)
                 throw new CaspianException("Property " + memberInfo.Name + "in type " + typeof(TAccess).Name + "has not ForeignKey Attribute");
             var memberId = Convert.ToInt32(typeof(TAccess).GetProperty(foreignKeyAttrMember.Name).GetValue(old));
-            await base.Delete(old);
+            await base.DeleteAsync(old);
             await MemberGrid.SelectRowById(memberId);
         }
 

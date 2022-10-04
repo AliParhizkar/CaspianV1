@@ -21,7 +21,7 @@ namespace Caspian.Engine
         /// شرح قانون و یا پارامتر
         /// </summary>
         [DisplayName("شرح")]
-        public string? Descript { get; set; }
+        public string Descript { get; set; }
 
         /// <summary>
         /// آیا قانون کاملا معتبر می باشد*
@@ -29,11 +29,17 @@ namespace Caspian.Engine
         [DisplayName("معتبر")]
         public bool IsValid { get; set; }
 
+        [DisplayName("فرمول واسط فرمی")]
+        public bool FormRule { get; set; }
+
         /// <summary>
         /// مشخص می کند که خروجی این <see cref="Rule"/> از چه نوعی می باشد
         /// </summary>
         [DisplayName("نوع")]
         public ValueTypeKind ResultType { get; set; }
+
+        [DisplayName("نوع شمارشی خروجی")]
+        public string EnumTypeName { get; set; }
 
         /// <summary>
         /// زیر سیستمی که قانون برای آن تعریف شده است.

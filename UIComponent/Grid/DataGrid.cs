@@ -64,12 +64,12 @@ namespace Caspian.UI
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             await AfterRenderInitialAsync();
-            if (FormAppState.Element.HasValue)
-            {
-                await jsRuntime.InvokeVoidAsync("$.telerik.focusAndShowErrorMessage", FormAppState.Element, FormAppState.ErrorMessage);
-                FormAppState.Element = null;
-                FormAppState.ErrorMessage = null;
-            }
+            //if (FormAppState.Element.HasValue)
+            //{
+            //    await jsRuntime.InvokeVoidAsync("$.telerik.focusAndShowErrorMessage", FormAppState.Element, FormAppState.ErrorMessage);
+            //    FormAppState.Element = null;
+            //    FormAppState.ErrorMessage = null;
+            //}
             if (firstRender)
             {
                 await DataBind();

@@ -161,7 +161,7 @@
     </table>
 </div>
 
-<Window @bind-Status="newStatus" Title="افزودن عملوند" Style="width:400px">
+<Window @bind-Status="newStatus" Title="افزودن عملوند" Style="width:500px">
     <Content>
         <table style="width:95%;margin:0 auto">
             @if (TokenType == TokenType.ConstValue)
@@ -197,22 +197,47 @@
             {
                 <tr>
                     <td>
-                        <label>پارامتر</label>
+                        <label>نوع پارامتر</label>
                     </td>
                     <td>
-                        <ComboBox @bind-Value="tokenId" TEntity="SelectListItem" TValue="int?"
-                                  Source="Params.Select(t => new SelectListItem(t.Id.ToString(), t.FaTitle))" />
+                        <RadioList @bind-Value="parameterType" Style="width:100%;" />
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <label>قانون</label>
-                    </td>
-                    <td>
-                        <ComboBox @bind-Value="ruleIdValue" TEntity="Rule" TValue="int?"
-                                  TextExpression="t => t.Title" />
-                    </td>
-                </tr>
+                @switch(parameterType)
+                {
+                    case ParameterType.MainParameter:
+                        <tr>
+                            <td style="width:85px">
+                                <label>پارامتر اصلی</label>
+                            </td>
+                            <td>
+                                <ComboBox @bind-Value="tokenId" TEntity="SelectListItem" TValue="int?" Disabled="parameterType != ParameterType.MainParameter"
+                                      Source="Params.Select(t => new SelectListItem(t.Id.ToString(), t.FaTitle))" />
+                            </td>
+                        </tr>
+                        break;
+                    case ParameterType.DaynamicParameter:
+                        <tr>
+                            <td style="width:85px">
+                                <label>پارامتر پویا</label>
+                            </td>
+                            <td>
+                                <ComboBox @bind-Value="dynamicParameterId" TEntity="DynamicParameter" TValue="int?" TextExpression="t => t.FaTitle" /> 
+                            </td>
+                        </tr>
+                        break;
+                    case ParameterType.RuleParameter:
+                        <tr>
+                            <td style="width:85px">
+                                <label>قانون</label>
+                            </td>
+                            <td>
+                                <ComboBox @bind-Value="ruleIdValue" TEntity="Rule" TValue="int?"
+                                    TextExpression="t => t.Title" />
+                            </td>
+                        </tr>
+                        break;
+                }
             }
             <tr>
                 <td></td>
