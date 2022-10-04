@@ -14,11 +14,11 @@
 
     protected void CloseWindow()
     {
-        Container.Close();
+        Window.Close();
     }
 
-    [CascadingParameter(Name = "Container")]
-    public IContainer Container { get; set; }
+    [CascadingParameter(Name = "ParentWindow")]
+    public IWindow Window { get; set; }
 
     [Inject]
     public WindowAppState AppState { get; set; }

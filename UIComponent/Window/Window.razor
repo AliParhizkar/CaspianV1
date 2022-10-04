@@ -1,11 +1,9 @@
 ﻿@namespace Caspian.UI
-@implements Caspian.UI.IContainer
 @implements IInputValueInitializer
-@implements Caspian.UI.IContainer
-
+@implements IWindow
 @if (!LoadOnContent || Status == WindowStatus.Open)
 {
-    <CascadingValue Value="this" Name="Container">
+    <CascadingValue TValue="IWindow" Value="this" Name="ParentWindow">
         <CascadingValue Value="(id + 2)" Name="WindowId">
             <div @attributes="attrs" @ref="window" class="t-widget t-window">
                 @if (!HideTitle)

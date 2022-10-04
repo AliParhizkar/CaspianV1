@@ -153,10 +153,7 @@
 
     protected override void OnParametersSet()
     {
-        if (CaspianForm == null)
-            Container?.SetFirstControlForFocus(this);
-        else
-            CaspianForm.AddControl(this);
+        CaspianForm?.AddControl(this);
         if (InputAttributes == null)
             InputAttributes = new Dictionary<string, object>();
         if (TabIndex.HasValue)

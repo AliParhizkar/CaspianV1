@@ -17,9 +17,4 @@ namespace Caspian.UI
         
         bool IgnoreOnValidSubmit { get; set; }
     }
-
-    internal interface IContainer
-    {
-        void SetFirstControlForFocus(IControl control);
-    }
 }
