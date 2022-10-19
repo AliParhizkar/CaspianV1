@@ -16,7 +16,6 @@ namespace Caspian.Engine.Service
             RuleFor(t => t.Value4).Custom(t => t.Parameter4Id.HasValue && t.Value4 == null, message1);
             RuleFor(t => t.Value5).Custom(t => t.Parameter5Id.HasValue && t.Value5 == null, message1);
             RuleFor(t => t.Value6).Custom(t => t.Parameter6Id.HasValue && t.Value6 == null, message1);
-            RuleFor(t => t.ResultValue).Custom(t => t.ResultValue <= 0, "مقدار این فیلد باید بزرگتر از صفر باشد");
             var message2 = "این حالت تکراری است";
             RuleFor(t => t.Parameter1Id).Custom(t => 
             { 

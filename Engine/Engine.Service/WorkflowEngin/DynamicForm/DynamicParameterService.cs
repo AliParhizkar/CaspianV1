@@ -20,7 +20,6 @@ namespace Caspian.Engine.Service
             RuleFor(t => t.DecimalNumber).Required(t => 
                 t.CalculationType == CalculationType.UserData && t.ControlType == ControlType.Numeric || 
                 t.CalculationType != CalculationType.UserData && t.ResultType == ResultType.Numeric);
-            RuleFor(t => t.RuleId).Required(t => t.CalculationType == CalculationType.Rule);
         }
 
         public IList<SelectListItem> GetDynamicType(SubSystemKind subSystem)
@@ -34,6 +33,48 @@ namespace Caspian.Engine.Service
                     list.Add(new SelectListItem(type.Name, attr.Title));
             }
             return list;
+        }
+
+        public int? CalculatePriority(DynamicParameter parameter)
+        {
+            if (parameter.CalculationType == CalculationType.UserData)
+                return 1;
+            int? maxPriprity = null;
+            foreach(var data in parameter.ResultParameters)
+            {
+                if (data.DynamicParameter != null)
+                {
+                    if (data.DynamicParameter.CalculationType != CalculationType.UserData)
+                        return null;
+                }
+                else if (data.Rule != null)
+                {
+                    if (data.Rule.Priority == null)
+                        return null;
+                    if (data.Rule.Priority.Value > maxPriprity.GetValueOrDefault())
+                        maxPriprity = data.Rule.Priority.Value;
+                }
+                else if (!data.PropertyName.HasValue())
+
+                    throw new NotImplementedException("خطای عدم پیاده سازی");
+            }
+            if (maxPriprity == null)
+                return 1;
+            return maxPriprity + 1;
+        }
+
+        public void SetUserParametersDefault(IList<DynamicParameter> parameters, IDictionary<int, object> values)
+        {
+            foreach (var parameter in parameters)
+            {
+                if (parameter.CalculationType == CalculationType.UserData)
+                {
+                    if (parameter.ControlType == ControlType.DropdownList)
+                        values.Add(parameter.Id, 1);
+                    if (parameter.ControlType == ControlType.CheckBox)
+                        values.Add(parameter.Id, false);
+                }
+            }
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Caspian.Engine
 
         Date,
 
-        [EnumField("چند انتخابی")]
+        [EnumField("چند گزینه ای")]
         DropdownList,
 
         [EnumField("درست/نادرست")]

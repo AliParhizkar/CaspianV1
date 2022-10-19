@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Engine.Model;
 
 namespace Demo.Model
 {
@@ -19,6 +20,9 @@ namespace Demo.Model
         /// </summary>
         [DisplayName("تاریخ سفارش"), ReportField("تاریخ سفارش")]
         public DateTime? Date { get; set; }
+
+        [ForeignKey(nameof(Date))]
+        public PersianDateTable PersianDate { get; set; }
 
         /// <summary>
         /// کد مشتری

@@ -105,9 +105,9 @@
             foreach (var child in item.Items)
                 child.Selected = item.Selected;
         }
-        else
+        var parent = item.Parent;
+        while (parent != null)
         {
-            var parent = item.Parent;
             var items = parent.Items;
             if (items.All(t => t.Selected == true))
                 parent.Selected = true;
@@ -115,6 +115,7 @@
                 parent.Selected = false;
             else
                 parent.Selected = null;
+            parent = parent.Parent;
         }
         count = tree.GetSeletcedItems().Count(t => t.Depth == 2);
     }
@@ -122,8 +123,6 @@
     protected override async Task OnInitializedAsync()
     {
         using var scope = CreateScope();
-        var menus = new MenuService(scope).GetAll()
-            .Where(t => t.MenuCategory.SubSystemKind == SubSystemKind.Demo);
         source = await new MenuCategoryService(scope).GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo)
             .Select(t => new TreeViewItem()
                 {
@@ -131,7 +130,7 @@
                     Expanded = false,
                     Selectable = true,
                     Value = t.Id.ToString(),
-                    Items = menus.Where(u => u.MenuCategoryId == t.Id).Select(u => new TreeViewItem()
+                    Items = t.Menus.Select(u => new TreeViewItem()
                     {
                         Collabsable = false,
                         Text = u.Title,

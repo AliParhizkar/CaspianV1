@@ -22,7 +22,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="EducationDegree" Search="SearchData" TableHeight="200">
+    <DataGrid @ref="CrudGrid" TEntity="EducationDegree" Search="SearchData" TableHeight="400">
         <Columns>
             <GridColumn TEntity="EducationDegree" Field="t => t.BaseStudy.FaText()" Title="پایه تحصیلی" />
             <GridColumn TEntity="EducationDegree" Field="t => t.Title" />

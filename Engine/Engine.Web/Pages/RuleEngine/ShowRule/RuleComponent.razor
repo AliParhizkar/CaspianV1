@@ -1,0 +1,138 @@
+﻿@inherits BasePage
+@namespace Caspian.Engine.ShowRule
+@using Caspian.Common.Attributes
+    <div class="c-rule-title">
+        <div style="width:5%">
+            <label>عنوان</label>
+        </div>
+        <div style="width:40%">
+            <span>@Rule.Title</span>
+        </div>
+        <div style="width:5%">
+            <label>مقدار</label>
+        </div>
+        <div style="width:40%">
+            <span>@ruleValue</span>
+        </div>
+    <div style="width:10%">
+            <span class="c-rule-back" @onclick="async () => await OnBack.InvokeAsync()" title="برگشت">
+                <i class="fa fa-arrow-left"></i>
+            </span>
+        </div>
+    </div>
+<div style="height:calc(100vh - 140px)" class="formola-content">
+    @foreach (var token in Rule.Tokens)
+    {
+        var className = token.TokenType == TokenType.Oprator ? "f-operator" : "f-operand";
+        bool iscomplex = false;
+        string title = GetTextOfValue(token, out iscomplex);
+        if (iscomplex)
+            className += " c-link";
+        if (token.OperatorKind == OperatorType.Colon)
+        {
+            <div class="f-clear"></div>
+            @if (token.IfCount > 1)
+            {
+                <span class="c-padd" style="width:@(3 * (token.IfCount - 1))em"></span>
+            }
+        }
+        @if (iscomplex)
+        {
+            <span @onclick="async () => await OnTokenSelected.InvokeAsync(token)" title="@(title)" class="@className">@token.FaTitle</span>
+        }
+        else
+        {
+            <span title="@(title)" class="@className">@token.FaTitle</span>
+        }
+        if (token.OperatorKind == OperatorType.QuestionMark || token.OperatorKind == OperatorType.Colon)
+        {
+            <div class="f-clear"></div>
+            @if (token.IfCount > 0)
+            {
+                <span class="c-padd" style="width:@(3 * token.IfCount)em"></span>
+            }
+        }
+    }
+    </div>
+
+@code 
+{
+    RuleEngine ruleEngine;
+    string ruleValue;
+
+    [Parameter]
+    public Rule Rule { get; set; }
+
+    [Parameter]
+    public Object Model{ get; set; }
+
+    [Parameter]
+    public IList<DataParameter> FormParameters { get; set; }
+
+    [Parameter]
+    public IList<DataParameterValue> DataParameterValues { get; set; }
+
+    [Parameter]
+    public IDictionary<int, object> UserParametersValue { get; set; }
+
+    [Parameter]
+    public IDictionary<int, object> RulesValue { get; set; }
+
+    [Parameter]
+    public EventCallback<Token> OnTokenSelected { get; set; }
+
+    [Parameter]
+    public EventCallback OnBack{ get; set; }
+
+    string GetTextOfValue(Token token, out bool isComplex)
+    {
+        isComplex = false;
+        if (token.parameterType == null)
+            return null;
+        switch(token.parameterType)
+        {
+            case ParameterType.MainParameter:
+                var info = Model.GetType().GetProperty(token.EnTitle);
+                return (info.GetValue(Model) as Enum).FaText();
+            case ParameterType.RuleParameter:
+                isComplex = true;
+                return RulesValue.Single(t => t.Key == token.RuleIdValue.Value).Value.ToString();
+            case ParameterType.DaynamicParameter:
+                isComplex = token.DynamicParameter.CalculationType == CalculationType.FormData;
+                var str = GetValue(token.DynamicParameter).ToString();
+                return str;
+        }
+        return null;
+    }
+
+    protected override void OnParametersSet()
+    {
+        ruleEngine = new RuleEngine(FormParameters, DataParameterValues, Model, UserParametersValue);
+        ruleEngine.Rulesvalue = RulesValue;
+        ruleEngine.UpdateTokens(Rule.Tokens);
+        var value = RulesValue[Rule.Id];
+        if (Rule.ResultType == ValueTypeKind.Enum)
+        {
+            if (Rule.EnumTypeName.HasValue())
+            {
+                var fields = Model.GetType().GetProperty(Rule.EnumTypeName).PropertyType.GetFields()
+                    .Where(t => !t.IsSpecialName);
+                foreach (var field in fields)
+                {
+                    var value1 = Convert.ToInt64(field.GetValue(null));
+                    if (value1 == Convert.ToInt64(value))
+                        ruleValue = field.GetCustomAttribute<EnumFieldAttribute>().DisplayName;
+                }
+            }
+            
+        }
+        base.OnParametersSet();
+    }
+
+    object GetValue(DynamicParameter param)
+    {
+        if (param.CalculationType == CalculationType.UserData)
+            return ruleEngine.GetUserdata(param);
+        return ruleEngine.GetFormData(param.Id);
+    }
+}

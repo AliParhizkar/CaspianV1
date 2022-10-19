@@ -37,6 +37,7 @@
 {
     bool isOpend;
     protected int id;
+    WindowStatus oldStatus;
     Dictionary<string, object> attrs = new Dictionary<string, object>();
 
     [JsonIgnore]
@@ -141,6 +142,14 @@
         if (Id.HasValue())
             attrs["id"] = Id;
         base.OnParametersSet();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (Status == WindowStatus.Open && oldStatus != WindowStatus.Open)
+            isOpend = true;
+        oldStatus = Status;
+        await base.OnParametersSetAsync();
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)

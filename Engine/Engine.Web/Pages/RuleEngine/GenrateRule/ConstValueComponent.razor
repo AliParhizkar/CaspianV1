@@ -1,0 +1,228 @@
+﻿@namespace Caspian.Engine.RuleGenerator
+@inherits BasePage
+<table style="width:95%;margin:5px auto">
+    <tr>
+        <td style="width:85px;">
+            <label>مقدار ثابت</label>
+        </td>
+        <td>
+            @switch (valueTypeKind)
+            {
+                case ValueTypeKind.Enum:
+                    if (enumType == null)
+                    {
+                        <DropdownList @bind-Value="decimalConstValue" Source="dynamicOptions" />
+                    }
+                    else
+                    {
+                        <DropdownList @bind-Value="enumConstValue" DynamicType="enumType" />
+                    }
+                    break;
+                case ValueTypeKind.Bool:
+                    <CheckBox @bind-Value="boolConstValue"  />
+                    break;
+                case ValueTypeKind.Int:
+                case ValueTypeKind.Double:
+                    <NumericTextBox @bind-Value="decimalConstValue" />
+                    break;
+            }
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td style="text-align:center;height:50px;padding-top:5px;">
+            <button @onclick="async () => await AddConstValue()" class="c-btn c-primary">ثبت</button>
+            <button @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">انصراف</button>
+        </td>
+    </tr>
+</table>
+
+@code 
+{
+    string message;
+    ///Const Value Fields
+    ValueTypeKind? valueTypeKind;
+    bool? boolConstValue;
+    DateTime? dateConstValue;
+    TimeSpan? timeConstValue;
+    decimal? decimalConstValue;
+
+
+    Enum enumConstValue;
+    Type enumType;
+    IList<SelectListItem> dynamicOptions;
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public IList<Token> Tokens { get; set; }
+
+    [Parameter]
+    public Type Type{ get; set; }
+
+    [Parameter]
+    public int RuleId { get; set; }
+
+    async Task AddConstValue()
+    {
+        object constValue = null;
+        string faTitle = null;
+        switch (valueTypeKind.Value)
+        {
+            case ValueTypeKind.Bool:
+                if (boolConstValue == null)
+                    message = "مقدار ثابت باید مشخص باشد";
+                else
+                {
+                    constValue = boolConstValue;
+                    faTitle = boolConstValue.Value ? "درست" : "نادرست";
+                }
+                break;
+            case ValueTypeKind.Date:
+                if (dateConstValue == null)
+                    message = "تاریخ باید مشخص باشد";
+                else
+                {
+                    constValue = dateConstValue;
+                    faTitle = dateConstValue.ToPersianDateString();
+                }
+                break;
+            case ValueTypeKind.Double:
+            case ValueTypeKind.Int:
+                if (decimalConstValue == null)
+                    message = "مقدار ثابت باید مشخص باشد";
+                else
+                {
+                    constValue = decimalConstValue;
+                    faTitle = decimalConstValue.Seprate3Digit();
+                }
+                break;
+            case ValueTypeKind.Enum:
+                if (enumType == null)
+                {
+                    if (decimalConstValue == null)
+                        message = "مقدار پارامتر باید مشخص باشد";
+                    else
+                    {
+                        constValue = decimalConstValue;
+                        faTitle = dynamicOptions.Single(t => t.Value == decimalConstValue.ToString()).Text;
+                    }
+                }
+                else
+                {
+                    if (enumConstValue == null)
+                        message = "مقدار ثابت باید مشخص باشد";
+                    else
+                    {
+                        constValue = enumConstValue;
+                        faTitle = enumConstValue.FaText();
+                    }
+                }
+                break;
+            case ValueTypeKind.Time:
+                if (timeConstValue == null)
+                    message = "زمان باید مشخص باشد";
+                else
+                {
+                    constValue = timeConstValue;
+                    faTitle = timeConstValue.Value.ShortString();
+                }
+                break;
+        }
+        if (constValue != null)
+        {
+            var tempToken = new Token()
+            {
+                constValue = constValue.ToString(),
+                ConstValueType = valueTypeKind,
+                RuleId = RuleId,
+                TokenType = TokenType.ConstValue,
+                FaTitle = faTitle
+            };
+            var scope = CreateScope();
+            var tokenService = new TokenService(scope);
+            await tokenService.AddAsync(tempToken);
+            await tokenService.SaveChangesAsync();
+            Tokens = await tokenService.GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+            Tokens = new RuleEngine().UpdateTokens(Tokens);
+            var result = new Parser(Tokens).ValidTokenKinds();
+            await OnAfterAdd.InvokeAsync(result);
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<IList<TokenKind>> OnAfterAdd{ get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Tokens.Count > 1)
+        {
+            var scope = CreateScope();
+            var lastToken = Tokens.Last();
+            if (lastToken.TokenKind == TokenKind.OpenBracket)
+                valueTypeKind = ValueTypeKind.Double;
+            var beforeLastToken = Tokens.ElementAt(Tokens.Count - 2);
+            if (lastToken.TokenKind == TokenKind.Compareable)
+            {
+                ///دو طرف باید از یک نوع باشند
+                switch(beforeLastToken.parameterType.Value)
+                {
+                    case ParameterType.MainParameter:
+                        var info = Type.GetProperty(beforeLastToken.EnTitle);
+                        if (info.PropertyType.GetUnderlyingType().IsEnum)
+                        {
+                            enumType = info.PropertyType;
+                            valueTypeKind = ValueTypeKind.Enum;
+                        }
+                        else
+                            valueTypeKind = ValueTypeKind.Double;
+                        break;
+                    case ParameterType.DaynamicParameter:
+                        var id = beforeLastToken.DynamicParameterId.Value;
+                        var param = await new DynamicParameterService(scope).SingleAsync(id);
+                        switch(param.ControlType.Value)
+                        {
+                            case ControlType.CheckBox:
+                                valueTypeKind = ValueTypeKind.Bool;
+                                break;
+                            case ControlType.DropdownList:
+                                valueTypeKind = ValueTypeKind.Enum;
+                                enumType = null;
+                                dynamicOptions = await new DynamicParameterOptionService(scope).GetAll().Where(t => t.DynamicParameterId == id)
+                                .Select(t => new SelectListItem() 
+                                {
+                                    Value = t.Value.ToString(),
+                                    Text = t.FaTitle
+                                }).ToListAsync();
+                                break;
+                        }
+                        break;
+                }
+            }
+            else if (lastToken.TokenKind == TokenKind.Math)
+            {
+                switch (beforeLastToken.parameterType.Value)
+                {
+                    case ParameterType.MainParameter:
+                        var info = Type.GetProperty(beforeLastToken.EnTitle);
+                        if (info.PropertyType.GetUnderlyingType().IsEnum)
+                            valueTypeKind = ValueTypeKind.Int;
+                        break;
+                    case ParameterType.DaynamicParameter:
+                        valueTypeKind = ValueTypeKind.Int;
+                        break;
+                    case ParameterType.RuleParameter:
+                        var rule = await new RuleService(scope).SingleAsync(beforeLastToken.RuleId.Value);
+                        valueTypeKind = rule.ResultType;
+                        break;
+                }
+            }
+        }
+        await base.OnParametersSetAsync();
+    }
+}

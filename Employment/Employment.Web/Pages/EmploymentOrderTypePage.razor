@@ -23,7 +23,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="EmploymentOrderType" Search="SearchData" TableHeight="200">
+    <DataGrid @ref="CrudGrid" TEntity="EmploymentOrderType" Search="SearchData" TableHeight="400">
         <Columns Context="con">
             <GridColumn TEntity="EmploymentOrderType" Field="t => t.Title" />
             <GridColumn TEntity="EmploymentOrderType" Field="t => t.Code" style="width:100px" />

@@ -1,0 +1,22 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+@inject IJSRuntime jSRuntime
+@implements IAutoCompleteTree
+<div class="auto-hide c-lookup-tree">
+    <div class="c-content">
+        <input @ref="input" value="@searchText" @oninput="async e => await setValue(e)" />
+        <span @onclick="async () => await ShowTree()" class="fa fa-search"></span>
+    </div>
+    @if (show)
+    {
+        <div class="auto-hide c-tree-content">
+            <CascadingValue Value="this">
+                @ChildContent
+            </CascadingValue>
+        </div>
+    }
+</div>
+
+@code 
+{
+}

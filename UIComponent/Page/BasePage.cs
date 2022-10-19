@@ -1,15 +1,14 @@
-﻿using Caspian.Common;
+﻿using System;
+using System.IO;
+using System.Linq;
+using Caspian.Common;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Rendering;
-using System.IO;
-using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Linq;
-using System;
 using Caspian.common;
 
 namespace Caspian.UI
@@ -20,7 +19,6 @@ namespace Caspian.UI
         bool? block;
         protected MessageBox MessageBox;
         protected bool sholdRender = true;
-        bool enableWindowClick;
         BasePage child;
         
         public static bool IsStarted { get; set; }
@@ -139,10 +137,9 @@ namespace Caspian.UI
         /// <summary>
         /// if add auto-hide class to DOM element, then DOM element and all children click not send to server
         /// </summary>
-        protected void EnableWindowClick(BasePage child)
+        protected async Task EnableWindowClick(BasePage child)
         {
-            this.child = child;
-            enableWindowClick = true;
+            await jsRuntime.InvokeVoidAsync("$.telerik.bindWindowClick", DotNetObjectReference.Create(child));
         }
 
         protected virtual void OnWindowClick()
@@ -152,11 +149,6 @@ namespace Caspian.UI
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender && enableWindowClick)
-            {
-                enableWindowClick = false;
-                await jsRuntime.InvokeVoidAsync("$.telerik.bindWindowClick", DotNetObjectReference.Create(this));
-            }
             if (message.HasValue())
             {
                 await jsRuntime.InvokeVoidAsync("$.telerik.showMessage", message);

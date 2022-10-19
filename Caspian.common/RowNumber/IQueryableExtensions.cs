@@ -83,7 +83,7 @@ namespace Caspian.Common.RowNumber
             Expression whereExpr = Expression.Property(param, "Id");
             whereExpr = Expression.Equal(whereExpr, Expression.Constant(id));
             whereExpr = Expression.Lambda(whereExpr, param);
-            dynamic rowNumber = await selectManyQuery.Where_(whereExpr).OfType<object>().FirstOrDefaultAsync();
+            dynamic rowNumber = (await selectManyQuery.Where_(whereExpr).Take(1).ToDynamicListAsync()).FirstOrDefault();
             if (rowNumber == null)
                 return null;
             return Convert.ToInt32(rowNumber.RowNumber);

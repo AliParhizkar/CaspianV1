@@ -1,0 +1,165 @@
+﻿@namespace Caspian.Engine.RuleGenerator
+@inherits BasePage
+<table style="width:95%;margin:5px auto">
+    <tr style="height:45px;">
+        <td style="width:85px;">
+            <label>نوع پارامتر</label>
+        </td>
+        <td>
+            <RadioList @bind-Value="parameterType" Style="width:100%;" />
+        </td>
+    </tr>
+    @switch (parameterType)
+    {
+        case ParameterType.MainParameter:
+            <tr>
+                <td style="width:85px">
+                    <label>پارامتر اصلی</label>
+                </td>
+                <td>
+                    <ComboBox @bind-Value="tokenId" TEntity="SelectListItem" TValue="int?" Disabled="parameterType != ParameterType.MainParameter"
+                      Source="Params.Select(t => new SelectListItem(t.Id.ToString(), t.FaTitle))" />
+                </td>
+            </tr>
+            break;
+        case ParameterType.DaynamicParameter:
+            <tr>
+                <td style="width:85px">
+                    <label>پارامتر پویا</label>
+                </td>
+                <td>
+                    <ComboBox @bind-Value="dynamicParameterId" TEntity="DynamicParameter" TValue="int?" TextExpression="t => t.FaTitle" />
+                </td>
+            </tr>
+            break;
+        case ParameterType.RuleParameter:
+            <tr>
+                <td style="width:85px">
+                    <label>قانون</label>
+                </td>
+                <td>
+                    <ComboBox @bind-Value="ruleIdValue" TEntity="Rule" TValue="int?" TextExpression="t => t.Title" />
+                </td>
+            </tr>
+            break;
+    }
+    <tr style="height:45px;">
+        <td></td>
+        <td style="text-align:center;height:50px;">
+            <button @onclick="async () => await AddParameter()" class="c-btn c-primary">ثبت</button>
+            <button @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">انصراف</button>
+        </td>
+    </tr>
+</table>
+
+@code 
+{
+    int? tokenId;
+    string message;
+    int? ruleIdValue;
+
+    int? dynamicParameterId;
+    IEnumerable<Token> Params;
+    ParameterType parameterType = ParameterType.MainParameter;
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public Type Type { get; set; }
+
+    [Parameter]
+    public int RuleId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Params = new RuleEngine().GetObjectTokens(Type);
+        base.OnInitialized();
+    }
+
+    async Task AddParameter()
+    {
+        Token tempToken = null;
+        using var scope = ServiceScopeFactory.CreateScope();
+        var ruleService = new RuleService(scope);
+        var tokenService = new TokenService(scope);
+        if (tokenId.HasValue)
+        {
+            tempToken = Params.ElementAt(tokenId.Value - 1);
+            tempToken.RuleId = RuleId;
+            if (tempToken.RuleIdValue.HasValue)
+                tempToken.FaTitle = (await ruleService.SingleAsync(tempToken.RuleIdValue.Value)).Title;
+            else
+            {
+                var temp = new RuleEngine().GetObjectTokens(Type).Single(t => t.Id == tempToken.Id);
+                tempToken.Id = 0;
+                tempToken.FaTitle = temp.FaTitle;
+                tempToken.EnTitle = temp.EnTitle;
+                tempToken.parameterType = parameterType;
+                await UnFinalState();
+                tempToken.TokenType = TokenType.Oprand;
+                await tokenService.AddAsync(tempToken);
+                await tokenService.SaveChangesAsync();
+                Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+                Tokens = new RuleEngine().UpdateTokens(Tokens);
+                var result = new Parser(Tokens).ValidTokenKinds();
+                await OnAfterAdd.InvokeAsync(result);
+            }
+        }
+        else if (ruleIdValue.HasValue)
+        {
+            var ruleTitle = (await ruleService.SingleAsync(ruleIdValue.Value)).Title;
+            await tokenService.AddAsync(new Token()
+                {
+                    FaTitle = ruleTitle,
+                    RuleId = RuleId,
+                    RuleIdValue = ruleIdValue.Value,
+                    TokenType = TokenType.Oprand,
+                    parameterType = ParameterType.RuleParameter,
+                });
+            await tokenService.SaveChangesAsync();
+            Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+            Tokens = new RuleEngine().UpdateTokens(Tokens);
+            var result = new Parser(Tokens).ValidTokenKinds();
+            await OnAfterAdd.InvokeAsync(result);
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
+        else if (dynamicParameterId.HasValue)
+        {
+            var dynamicParameter = await new DynamicParameterService(scope).SingleAsync(dynamicParameterId.Value);
+            await tokenService.AddAsync(new Token()
+                {
+                    FaTitle = dynamicParameter.FaTitle,
+                    RuleId = RuleId,
+                    DynamicParameterId = dynamicParameterId.Value,
+                    parameterType = ParameterType.DaynamicParameter,
+                    TokenType = TokenType.Oprand,
+                });
+            await tokenService.SaveChangesAsync();
+            Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+            Tokens = new RuleEngine().UpdateTokens(Tokens);
+            var result = new Parser(Tokens).ValidTokenKinds();
+            await OnAfterAdd.InvokeAsync(result);
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
+        else
+            ShowMessage("لطفا عملوند را مشخص نمایید");
+    }
+
+    async Task UnFinalState()
+    {
+        using var scope = ServiceScopeFactory.CreateScope();
+        var ruleService = new RuleService(scope);
+        var rule = await ruleService.SingleAsync(RuleId);
+        rule.Priority = null;
+        await ruleService.SaveChangesAsync();
+    }
+
+    public IList<Token> Tokens{ get; private set; }
+
+    [Parameter]
+    public EventCallback<IList<TokenKind>> OnAfterAdd { get; set; }
+}

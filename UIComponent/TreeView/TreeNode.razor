@@ -35,13 +35,19 @@
     }
     <span class="c-title" @onclick="async () =>
                                     {
-                                        if (Item.Selectable && !Item.Disabled)
+                                        if (!Item.Disabled)
                                         {
-                                            Item.Selected = !Item.Selected;
-                                            if (Item.Selected == true)
-                                                await OnSelected.InvokeAsync(Item);
-                                            await OnChanged.InvokeAsync(Item);
+                                            if (Item.Selectable && !Item.Disabled)
+                                            {
+                                                Item.Selected = !Item.Selected;
+                                                if (Item.Selected == true)
+                                                    await OnSelected.InvokeAsync(Item);
+                                                await OnChanged.InvokeAsync(Item);
+                                            }
+                                            if (OnClick.HasDelegate)
+                                                await OnClick.InvokeAsync(Item);
                                         }
+
                                     }">
         @Item.Text
     </span>
@@ -65,21 +71,26 @@
             {
                 if (item.Parent == null)
                     item.Parent = Item;
-                <TreeNode OnCollapsed="async (node) =>
+                <TreeNode OnCollapsed="async node =>
                                    {
                                        if (OnCollapsed.HasDelegate)
                                            await OnCollapsed.InvokeAsync(node);
                                    }"
-                          OnExpanded="async (node) =>
+                          OnExpanded="async node =>
                                    {
                                        if (OnExpanded.HasDelegate)
                                            await OnExpanded.InvokeAsync(node);
                                    }"
-                          OnSelected="async (node) =>
+                          OnSelected="async node =>
                                            {
                                                await OnSelected.InvokeAsync(node);
                                            }"
-                          OnChanged="async (node) =>
+                          OnClick="async node => 
+                                        {
+                                            if (OnSelected.HasDelegate)
+                                                await OnSelected.InvokeAsync(node);
+                                        }"
+                          OnChanged="async node =>
                                      {
                                          await OnChanged.InvokeAsync(node);
                                      }"
@@ -93,6 +104,13 @@
 {
     bool? Collapsed;
     ElementReference Node;
+    public string GUId;
+
+    protected override void OnInitialized()
+    {
+        GUId = Guid.NewGuid().ToString();
+        base.OnInitialized();
+    }
 
     [Parameter]
     public bool? Selected { get; set; } = false;
@@ -102,6 +120,9 @@
 
     [Parameter]
     public EventCallback<TreeViewItem> OnExpanded { get; set; }
+
+    [Parameter]
+    public EventCallback<TreeViewItem> OnClick{ get; set; }
 
     [Parameter]
     public EventCallback<TreeViewItem> OnCollapsed { get; set; }

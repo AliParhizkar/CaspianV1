@@ -27,7 +27,7 @@
             }
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" TableHeight="200" ConditionExpr="t => ProvinceId == null || t.ProvinceId == ProvinceId">
+    <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" TableHeight="400" ConditionExpr="t => ProvinceId == null || t.ProvinceId == ProvinceId">
         <Columns Context="con">
             <GridColumn TEntity="City" Field="t => t.Province.Title" Title="استان" />
             <GridColumn TEntity="City" Field="t => t.Title"  />

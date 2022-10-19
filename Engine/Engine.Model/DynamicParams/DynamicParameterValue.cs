@@ -6,6 +6,7 @@ namespace Caspian.Engine
     /// <summary>
     /// یک کلاس 
     /// </summary>
+    [Table("DynamicParametersValues", Schema = "cmn")]
     public class DynamicParameterValue
     {
         [Key]

@@ -3,7 +3,6 @@
 @inherits SimplePage<Occupation>
 @{
     base.BuildRenderTree(__builder);
-
 }
 <div style="width:90%;margin:15px auto">
     <table style="width:90%;margin:0 auto">
@@ -16,7 +15,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="Occupation" Search="SearchData" TableHeight="200">
+    <DataGrid @ref="CrudGrid" TEntity="Occupation" Search="SearchData" TableHeight="400">
         <Columns>
             <GridColumn TEntity="Occupation" Field="t => t.Title"  />
             <GridColumn TEntity="Occupation" Title="رشته های شغلی" style="width:110px"  >

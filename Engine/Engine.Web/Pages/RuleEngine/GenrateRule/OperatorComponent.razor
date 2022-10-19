@@ -1,0 +1,204 @@
+﻿@namespace Caspian.Engine.RuleGenerator
+@inherits BasePage
+@{
+    MathButtonAttrs.Remove("disabled");
+    LogicButtonAttrs.Remove("disabled");
+    CompareButtonAttrs.Remove("disabled");
+    IfButtonAttrs.Remove("disabled");
+    QuestionMarkButtonAttrs.Remove("disabled");
+    ColonButtonAttrs.Remove("disabled");
+    OpenBracketButtonAttrs.Remove("disabled");
+    CloseBracketButtonAttrs.Remove("disabled");
+    if (ValidTokensKind != null)
+    {
+        MathButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Math);
+        LogicButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Logical);
+        CompareButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Compareable);
+        IfButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.If);
+        QuestionMarkButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.QuestionMark);
+        ColonButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Colon);
+        OpenBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.OpenBracket);
+        CloseBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.CloseBracket);
+    }
+}
+<div class="f-operator">
+    <table>
+        <tr>
+            <td>
+                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(async () => await AddOperator("+"))">+</button>
+            </td>
+            <td>
+                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(async () => await AddOperator("-"))">-</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(async () => await AddOperator("*"))">×</button>
+            </td>
+            <td>
+                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(async () => await AddOperator("/"))">÷</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="operand-input" @attributes="LogicButtonAttrs" @onclick="@(async () => await AddOperator("|"))">|</button>
+            </td>
+            <td>
+                <button class="operand-input" @attributes="LogicButtonAttrs" @onclick="@(async () => await AddOperator("&"))">&</button>
+            </td>
+        </tr>
+    </table>
+    <hr />
+    <table>
+        <tr>
+            <td>
+                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(async () => await AddOperator("=="))">=</button>
+            </td>
+            <td>
+                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(async () => await AddOperator("!="))">≠</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(async () => await AddOperator(">"))">></button>
+            </td>
+            <td>
+                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(async () => await AddOperator("<"))">&lt;</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(async () => await AddOperator(">="))">≥</button>
+            </td>
+            <td>
+                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(async () => await AddOperator("<="))">≤</button>
+            </td>
+        </tr>
+    </table>
+    <hr />
+    <table>
+        <tr>
+            <td>
+                <button class="operand-input" @attributes="IfButtonAttrs" @onclick="@(async() => await AddOperator("if"))">اگر</button>
+            </td>
+            <td>
+                <button class="operand-input" @attributes="QuestionMarkButtonAttrs" @onclick="@(async () => await AddOperator("?"))">?</button>
+            </td>
+            <td>
+                <button class="operand-input" @attributes="ColonButtonAttrs" @onclick="@(async () => await AddOperator(":"))">:</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="operand-input" @attributes="OpenBracketButtonAttrs" @onclick="@(async () => await AddOperator("("))">(</button>
+            </td>
+            <td>
+                <button title="حذف" class="operand-input" @onclick="@(async () => await ClearAsync())">
+                    <span class="fa fa-long-arrow-left"></span>
+                </button>
+            </td>
+            <td>
+                <button class="operand-input" @attributes="CloseBracketButtonAttrs" @onclick="@(async () => await AddOperator(")"))">)</button>
+            </td>
+        </tr>
+    </table>
+</div>
+@code
+{
+
+    string[] className;
+    IDictionary<string, object> MathButtonAttrs;
+    IDictionary<string, object> LogicButtonAttrs;
+    IDictionary<string, object> CompareButtonAttrs;
+    IDictionary<string, object> IfButtonAttrs;
+    IDictionary<string, object> QuestionMarkButtonAttrs;
+    IDictionary<string, object> ColonButtonAttrs;
+    IDictionary<string, object> OpenBracketButtonAttrs;
+    IDictionary<string, object> CloseBracketButtonAttrs;
+
+    protected override void OnInitialized()
+    {
+        className = new string[6];
+        MathButtonAttrs = new Dictionary<string, object>();
+        LogicButtonAttrs = new Dictionary<string, object>();
+        CompareButtonAttrs = new Dictionary<string, object>();
+        IfButtonAttrs = new Dictionary<string, object>();
+        QuestionMarkButtonAttrs = new Dictionary<string, object>();
+        ColonButtonAttrs = new Dictionary<string, object>();
+        OpenBracketButtonAttrs = new Dictionary<string, object>();
+        CloseBracketButtonAttrs = new Dictionary<string, object>();
+        base.OnInitialized();
+    }
+
+    async Task ClearAsync()
+    {
+        using var scope = CreateScope();
+        await new TokenService(scope).RemoveAsync(RuleId);
+        Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+        new RuleEngine().UpdateTokens(Tokens);
+        ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+        await OnChanged.InvokeAsync();
+    }
+
+    async Task AddOperator(string enTitle)
+    {
+        var token = new Token()
+            {
+                TokenType = TokenType.Oprator,
+                EnTitle = enTitle,
+                RuleId = RuleId
+            };
+        switch (token.EnTitle)
+        {
+            case "*":
+                token.FaTitle = "×";
+                break;
+            case "/":
+                token.FaTitle = "÷";
+                break;
+            case "==":
+                token.FaTitle = "=";
+                break;
+            case "?":
+                token.FaTitle = "دراینصورت";
+                break;
+            case ":":
+                token.FaTitle = "در غیراینصورت";
+                break;
+            case "if":
+                token.FaTitle = "اگر";
+                break;
+            case ">=":
+                token.FaTitle = "≥";
+                break;
+            case "<=":
+                token.FaTitle = "≤";
+                break;
+            case "!=":
+                token.FaTitle = "≠";
+                break;
+            default:
+                token.FaTitle = enTitle;
+                break;
+        };
+        using var scope = CreateScope();
+        var tokenService = new TokenService(scope);
+        await tokenService.AddAsync(token);
+        await tokenService.SaveChangesAsync();
+        Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+        Tokens = new RuleEngine().UpdateTokens(Tokens);
+        ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+        await OnChanged.InvokeAsync();
+    }
+
+    public IList<Token> Tokens { get; private set; }
+
+    [Parameter]
+    public IEnumerable<TokenKind> ValidTokensKind { get; set; }
+
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
+
+    [Parameter]
+    public int RuleId { get; set; }
+}

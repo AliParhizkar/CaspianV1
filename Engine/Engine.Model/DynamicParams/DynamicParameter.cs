@@ -20,6 +20,9 @@ namespace Caspian.Engine
         [DisplayName("موجودیت")]
         public string EntityName { get; set; }
 
+        [DisplayName("اولویت")]
+        public int? Priority { get; set; }
+
         [DisplayName("عنوان")]
         public string FaTitle { get; set; }
 
@@ -41,12 +44,6 @@ namespace Caspian.Engine
         [DisplayName("تعداد ارقام اعشار")]
         public byte? DecimalNumber { get; set; }
 
-        [DisplayName("فرمول")]
-        public int? RuleId { get; set; }
-
-        [ForeignKey(nameof(RuleId))]
-        public virtual Rule Rule { get; set; }
-
         /// <summary>
         /// 
         /// </summary>
@@ -56,7 +53,7 @@ namespace Caspian.Engine
         /// <summary>
         /// مقادیر پارامتر
         /// </summary>
-        [DisplayName("پارامتر دارای مقدار می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("پارامتر دارای مقدار می باشد و امکان حذف آن وجود ندارد")]
         public virtual IList<DynamicParameterValue> Values { get; set; }
 
         [InverseProperty("DynamicParameter")]

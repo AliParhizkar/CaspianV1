@@ -105,16 +105,24 @@
         if (message.HasValue())
             Message = message;
         show = true;
+        await jsRuntime.InvokeVoidAsync("$.telerik.enableDefaultShortKey", true, DotNetObjectReference.Create(this));
         StateHasChanged();
         var task = Task.Run<bool>(async () =>
         {
             while (ConfirmResult == null)
                 await Task.Delay(100);
             show = false;
+            await jsRuntime.InvokeVoidAsync("$.telerik.enableDefaultShortKey", false);
             await InvokeAsync(StateHasChanged);
             return ConfirmResult.Value;
         });
         return await task;
+    }
+
+    [JSInvokable]
+    public void HideConfirm(bool result)
+    {
+        ConfirmResult = result;
     }
 
     public void Alert(string message)

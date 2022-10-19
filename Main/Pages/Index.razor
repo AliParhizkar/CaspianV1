@@ -4,42 +4,43 @@
 @using Demo.Service
 @page "/"
 @inherits BasePage
+@inject IJSRuntime jSRuntime
+@{
+    base.BuildRenderTree(__builder);
+}
 <div class="test">
     <a href="/Demo">Demo</a>
 </div>
 <div>
     <a href="/Employment">Employment</a>
 </div>
-<CaspianForm Model="city" OnValidSubmit="async t => await Valid(t)">
-    <CaspianValidationValidator ValidatorType="typeof(CityService)" />
-    <StringTextBox @ref="stringText" Required />
-    <button>Click Me</button>
-</CaspianForm>
+<span type="button" @onclick="async() => await ShowForm()">Auto Hide</span>
+@if (show)
+{
+    <div class="auto-hide" style="border:1px solid red;width:250px;height:120px">
 
+    </div>
+}
 
  @code 
 {
-    StringTextBox stringText;
-
-    City city = new City();
-    int? provinceId;
-
-    Task<bool> Valid(EditContext context)
+    bool show;
+    async Task ShowForm()
     {
-        return Task.FromResult(false);
+        if (await Confirm("آیا با ثبت موافقید؟"))
+        {
+
+        }
+        else
+        {
+
+        }
     }
 
-    protected override void OnInitialized()
+    [JSInvokable]
+    public void HideForm()
     {
-        city.ProvinceId = 2;
-        city.Title = "sadasda";
-        city.ActiveType = ActiveType.Enable;
-        base.OnInitialized();
-    }
-
-    void LoadFileAsync()
-    {
-        stringText.Validate();
+        show = false;
         StateHasChanged();
     }
 }

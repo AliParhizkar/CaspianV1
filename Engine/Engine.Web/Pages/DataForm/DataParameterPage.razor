@@ -14,6 +14,7 @@
                 </Template>
             </GridColumn>
             <GridColumn TEntity="DataParameter" Field="@(t => t.DynamicParameter.FaTitle)" Title="پارامتر" />
+            <GridColumn TEntity="DataParameter" Field="@(t => t.Rule.Title)" Title="قانون" />
             <GridCommandColumns TEntity="DataParameter" />
         </Columns>
     </DataGrid>
@@ -50,7 +51,7 @@
                         </td>
                     </tr>
                     }
-                    else
+                    else if (UpsertData.ParameterType == DataParameterType.EntityProperties)
                     {
                     <tr>
                         <td>
@@ -58,6 +59,17 @@
                         </td>
                         <td>
                             <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="UpsertData.PropertyName" Source="properties"/>
+                        </td>
+                    </tr>
+                    }
+                    else
+                    {
+                    <tr>
+                        <td>
+                            <label>قانون</label>
+                        </td>
+                        <td>
+                            <ComboBox TEntity="Rule" TValue="int?" @bind-Value="UpsertData.RuleId" TextExpression="t => t.Title" ConditionExpression="t => t.FormRule" />
                         </td>
                     </tr>
                     }

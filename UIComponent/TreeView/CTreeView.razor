@@ -7,24 +7,30 @@
     {
         <div @ref="tree" @attributes="Attrs" class="c-treeview">
             <CascadingValue Value="CascadeData" Name="TreeViewCascadeData">
-                <ul>
-                @if (Items != null)
+                <ul class="c-subtree">
+                @if (treeNodes != null)
                 {
-                    var tree = new HierarchyTree<TEntity>();
-                    tree.TextFunc = TextFunc;
-                    IList<TreeViewItem> nodes = null;
-                    if (FilterFunc == null)
-                        nodes = tree.CreateTree(Items);
-                    else
-                    {
-                        tree.FilterFunc = FilterFunc;
-                        nodes = tree.FilterTree(Items);
-                    }
-                    foreach (var item in nodes)
+                    foreach (var item in treeNodes)
                     {
                         if (ChildContent == null)
                         {
-                            <TreeNode @bind-Selected="item.Selected" Item="item" />
+                            <TreeNode @bind-Selected="item.Selected" Item="item" OnExpanded="node => 
+                                {
+                                    
+                                }" OnCollapsed="node => 
+                                {
+                                    
+                                }"
+                                OnSelected="async (node) =>
+                                           {
+                                               if (SingleSelectOnTree)
+                                               {
+                                                   UnselectTree(Source);
+                                                   node.Selected = true;
+                                               }
+                                               await OnSelected.InvokeAsync(node);
+                                               await OnInternalSelect.InvokeAsync(node);
+                                           }" />
                         }
                         else if (item.Expanded)
                         {
@@ -64,6 +70,7 @@
                                                    node.Selected = true;
                                                }
                                                await OnSelected.InvokeAsync(node);
+                                               await OnInternalSelect.InvokeAsync(node);
                                            }"
                                   OnChanged="async (node) =>
                                      {

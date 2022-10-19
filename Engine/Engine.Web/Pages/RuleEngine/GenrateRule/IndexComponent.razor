@@ -3,130 +3,23 @@
 @inherits BasePage
 @inject IJSRuntime jSRuntime
 
-@{
-    MathButtonAttrs.Remove("disabled");
-    LogicButtonAttrs.Remove("disabled");
-    CompareButtonAttrs.Remove("disabled");
-    IfButtonAttrs.Remove("disabled");
-    QuestionMarkButtonAttrs.Remove("disabled");
-    ColonButtonAttrs.Remove("disabled");
-    OpenBracketButtonAttrs.Remove("disabled");
-    CloseBracketButtonAttrs.Remove("disabled");
-    OperandButtonAttrs.Remove("disabled");
-    if (ValidTokensKind != null)
-    {
-        MathButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Math);
-        LogicButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Logical);
-        CompareButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Compareable);
-        IfButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.If);
-        QuestionMarkButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.QuestionMark);
-        ColonButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Colon);
-        OpenBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.OpenBracket);
-        CloseBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.CloseBracket);
-        OperandButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Parameter);
-    }
-}
+
 <div style="width:95%;margin:5px auto;">
     <table style="width:100%">
         <tr>
             <td style="width:135px;">
-                <div class="f-operator">
-                    <table>
-                        <tr>
-                            <td>
-                                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(() => { AddOperator("+"); })">+</button>
-                            </td>
-                            <td>
-                                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(() => { AddOperator("-"); })">-</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(() => { AddOperator("*"); })">×</button>
-                            </td>
-                            <td>
-                                <button class="operand-input" @attributes="MathButtonAttrs" @onclick="@(() => { AddOperator("/"); })">÷</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <button class="operand-input" @attributes="LogicButtonAttrs" @onclick="@(() => { AddOperator("|"); })">|</button>
-                            </td>
-                            <td>
-                                <button class="operand-input" @attributes="LogicButtonAttrs" @onclick="@(() => { AddOperator("&"); })">&</button>
-                            </td>
-                        </tr>
-                    </table>
-                    <hr />
-                    <table>
-                        <tr>
-                            <td>
-                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator("=="); })">=</button>
-                            </td>
-                            <td>
-                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator("!="); })">≠</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator(">"); })">></button>
-                            </td>
-                            <td>
-                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator("<"); })">&lt;</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator(">="); })">≥</button>
-                            </td>
-                            <td>
-                                <button class="operand-input" @attributes="CompareButtonAttrs" @onclick="@(() => { AddOperator("<="); })">≤</button>
-                            </td>
-                        </tr>
-                    </table>
-                    <hr />
-                    <table>
-                        <tr>
-                            <td>
-                                <button class="operand-input" @attributes="IfButtonAttrs" @onclick="@(() => { AddOperator("if"); })">اگر</button>
-                            </td>
-                            <td>
-                                <button class="operand-input" @attributes="QuestionMarkButtonAttrs" @onclick="@(() => { AddOperator("?"); })">?</button>
-                            </td>
-                            <td>
-                                <button class="operand-input" @attributes="ColonButtonAttrs" @onclick="@(() => { AddOperator(":"); })">:</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <button class="operand-input" @attributes="OpenBracketButtonAttrs" @onclick="@(() => { AddOperator("("); })">(</button>
-                            </td>
-                            <td>
-                                <button title="حذف" class="operand-input" @onclick="@(async () => { await ClearAsync(); })">
-                                    <span class="fa fa-long-arrow-right"></span>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="operand-input" @attributes="CloseBracketButtonAttrs" @onclick="@(() => { AddOperator(")"); })">)</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <div class="f-operand">
-                                    <button @attributes="OperandButtonAttrs" @onclick="OpenOperandForm">
-                                        <span class="fa fa-cog"></span>
-                                        <span>پارامتر</span>
-                                    </button>
-                                    <div style="padding-top:15px;">
-                                        <button @attributes="this.OperandButtonAttrs" @onclick="OpenConstantForm" >
-                                            <span class="fa fa-cog"></span>
-                                            <span>ثابت</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
+                <OperatorComponent @ref="operatorComponent" ValidTokensKind="ValidTokensKind" RuleId="RuleId" OnChanged="OpratorAdded" />
+                <div class="f-operand">
+                    <button @attributes="OperandButtonAttrs" @onclick="OpenOperandForm">
+                        <span class="fa fa-cog"></span>
+                        <span>پارامتر</span>
+                    </button>
+                    <div style="padding-top:15px;">
+                        <button @attributes="this.OperandButtonAttrs" @onclick="OpenConstantForm">
+                            <span class="fa fa-cog"></span>
+                            <span>ثابت</span>
+                        </button>
+                    </div>
                 </div>
             </td>
             <td>
@@ -161,92 +54,16 @@
     </table>
 </div>
 
-<Window @bind-Status="newStatus" Title="افزودن عملوند" Style="width:500px">
+<Window @bind-Status="newStatus" Title="افزودن عملوند" Style="width:450px">
     <Content>
-        <table style="width:95%;margin:0 auto">
-            @if (TokenType == TokenType.ConstValue)
-            {
-                <tr>
-                    <td>
-                        <label>مقدار ثابت</label>
-                    </td>
-                    <td>
-                        @switch (this.ValueTypeKind)
-                        {
-                            case Caspian.Engine.ValueTypeKind.Bool:
-                                <CheckBox @bind-Value="boolConstValue" />
-                                break;
-                            case Caspian.Engine.ValueTypeKind.Date:
-                                <DatePicker @bind-Value="dateConstValue" />
-                                break;
-                            case Caspian.Engine.ValueTypeKind.Double:
-                            case Caspian.Engine.ValueTypeKind.Int:
-                                <NumericTextBox NumberDigit="3" @bind-Value="decimalConstValue" />
-                                break;
-                            case Caspian.Engine.ValueTypeKind.Enum:
-                                <DropdownList @bind-Value="enumConstValue" DynamicType="enumType" />
-                                break;
-                            case Caspian.Engine.ValueTypeKind.Time:
-                                <TimePicker @bind-Value="timeConstValue" />
-                                break;
-                        }
-                    </td>
-                </tr>
-            }
-            else
-            {
-                <tr>
-                    <td>
-                        <label>نوع پارامتر</label>
-                    </td>
-                    <td>
-                        <RadioList @bind-Value="parameterType" Style="width:100%;" />
-                    </td>
-                </tr>
-                @switch(parameterType)
-                {
-                    case ParameterType.MainParameter:
-                        <tr>
-                            <td style="width:85px">
-                                <label>پارامتر اصلی</label>
-                            </td>
-                            <td>
-                                <ComboBox @bind-Value="tokenId" TEntity="SelectListItem" TValue="int?" Disabled="parameterType != ParameterType.MainParameter"
-                                      Source="Params.Select(t => new SelectListItem(t.Id.ToString(), t.FaTitle))" />
-                            </td>
-                        </tr>
-                        break;
-                    case ParameterType.DaynamicParameter:
-                        <tr>
-                            <td style="width:85px">
-                                <label>پارامتر پویا</label>
-                            </td>
-                            <td>
-                                <ComboBox @bind-Value="dynamicParameterId" TEntity="DynamicParameter" TValue="int?" TextExpression="t => t.FaTitle" /> 
-                            </td>
-                        </tr>
-                        break;
-                    case ParameterType.RuleParameter:
-                        <tr>
-                            <td style="width:85px">
-                                <label>قانون</label>
-                            </td>
-                            <td>
-                                <ComboBox @bind-Value="ruleIdValue" TEntity="Rule" TValue="int?"
-                                    TextExpression="t => t.Title" />
-                            </td>
-                        </tr>
-                        break;
-                }
-            }
-            <tr>
-                <td></td>
-                <td style="text-align:center;height:50px;">
-                    <button @onclick="async () => { await AddOperand(); }" class="c-btn c-primary">ثبت</button>
-                    <button @onclick="() => { newStatus = WindowStatus.Close; }" class="c-btn c-danger">انصراف</button>
-                </td>
-            </tr>
-        </table>
+        @if (TokenType == TokenType.ConstValue)
+        {
+            <ConstValueComponent @ref="constValueComponent" @bind-Status="newStatus" RuleId="RuleId" OnAfterAdd="t => AfterParameterAdded(t, TokenType)" Type="Type" Tokens="Tokens" />
+        }
+        else
+        {
+            <ParameterComponent @ref="parameterComponent" @bind-Status="newStatus" RuleId="RuleId" OnAfterAdd="t => AfterParameterAdded(t, TokenType)" Type="Type" />
+        }
     </Content>
 </Window>
 

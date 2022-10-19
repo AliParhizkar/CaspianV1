@@ -27,7 +27,7 @@ namespace Caspian.Engine
 
         public int? RuleIdValue { get; set; }
 
-        public ParameterType parameterType { get; set; }
+        public ParameterType? parameterType { get; set; }
 
         public int? DynamicParameterId { get; set; }
 

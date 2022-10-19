@@ -51,10 +51,7 @@ namespace Caspian.Engine
         UserData = 1,
 
         [EnumField("فرم")]
-        FormData,
-
-        [EnumField("فرمول")]
-        Rule
+        FormData
     }
 
     public enum DataParameterType: byte
@@ -65,6 +62,8 @@ namespace Caspian.Engine
         [EnumField("خصوصیت های موجودیت")]
         EntityProperties,
 
+        [EnumField("قوانین")]
+        FormRule
     }
 
     public enum CompareType : byte

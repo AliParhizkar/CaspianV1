@@ -8,15 +8,56 @@
     margin-right:8px;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
-.c-subtree{
-    padding:5px;
+.c-subtree {
+    padding: 8px 15px;
 }
-.c-outline-primary {
-    color: #007bff;
-    background-color: transparent;
-    background-image: none;
-    border-color: #007bff;
+.c-tree-content .c-title{
+    cursor:pointer;
 }
+.c-lookup-tree {
+    height: 34px;
+    padding: 2px;
+}
+    .c-lookup-tree input {
+        width:calc(100% - 27px);
+        height:30px;
+        line-height:30px;
+        border:none;
+    }
+.c-tree-content {
+    position:absolute;
+    overflow:hidden;
+}
+.c-lookup-tree .c-content {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0,0,0,0.12);
+    height: 32px;
+    border-radius: 8px;
+    padding-right: 3px;
+}
+    .c-lookup-tree .fa-search {
+        color: #423d96;
+        font-size:18px;
+        vertical-align:middle;
+        cursor:pointer;
+    }
+    .c-lookup-tree .c-content:hover {
+        border-color: rgba(0,0,0,0.24);
+    }
+
+        .c-lookup-tree .c-content.c-state-focus {
+            border-color: rgba(0,0,0,0.24);
+            box-shadow: 0 0 3px 0 grey;
+        }
+
+
+    .c-outline-primary {
+        color: #007bff;
+        background-color: transparent;
+        background-image: none;
+        border-color: #007bff;
+    }
 
     .c-outline-primary:hover {
         color: #fff;

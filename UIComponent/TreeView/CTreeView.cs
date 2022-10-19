@@ -16,13 +16,18 @@ namespace Caspian.UI
     public partial class CTreeView<TEntity>: ComponentBase where TEntity: class
     {
         ElementReference tree;
-        IList<TEntity> Items;
+        IList<TreeViewItem> treeNodes;
+
+        internal EventCallback<TreeViewItem> OnInternalSelect { get; set; }
 
         [CascadingParameter(Name = "TreeViewCascadeData")]
         public TreeViewCascadeData CascadeData { get; set; }
 
         [Parameter]
         public RenderFragment<TreeViewItem> Template { get; set; }
+
+        [Parameter]
+        public IList<object> SelectedNodesValue { get; set; }
 
         [Parameter]
         public RenderFragment<TreeViewItem> ChildContent { get; set; }
@@ -76,7 +81,7 @@ namespace Caspian.UI
             }
         }
 
-        async Task DataBinding()
+        async Task DataBindingAsync()
         {
             if (Source == null && typeof(TEntity) == typeof(TreeViewItem))
                 Source = new List<TreeViewItem>();
@@ -89,13 +94,72 @@ namespace Caspian.UI
                 if (ConditionExpression != null)
                     query = query.Where(ConditionExpression);
                 var dataList = await query.ToListAsync();
-                Items = dataList.Where(ParentNodeFilterFunc).ToList();
+                var items = dataList.Where(ParentNodeFilterFunc).ToList();
+                var tree = new HierarchyTree<TEntity>();
+                tree.TextFunc = TextFunc;
+                if (FilterFunc == null)
+                    treeNodes = tree.CreateTree(items, Selectable);
+                else
+                {
+                    tree.FilterFunc = FilterFunc;
+                    treeNodes = tree.FilterTree(items, Selectable);
+                }
+                if (SelectedNodesValue != null)
+                    tree.UpdateSelectedState(treeNodes, SelectedNodesValue);
             }
         }
 
-        public async Task Reload()
+        public void RemoveFromTree(TEntity entity)
         {
-            await DataBinding();
+            var value = typeof(TEntity).GetPrimaryKey().GetValue(entity).ToString();
+            var tree = new HierarchyTree<TEntity>();
+            var node = tree.FindNodeByValue(value, treeNodes);
+            if (node != null)
+            {
+                if (node.Parent == null)
+                    treeNodes.Remove(node);
+                else
+                    node.Parent.Items.Remove(node);
+            }
+        }
+
+        public void UpsertInTree(TEntity entity)
+        {
+            var value = typeof(TEntity).GetPrimaryKey().GetValue(entity).ToString();
+            var tree = new HierarchyTree<TEntity>();
+            var node = tree.FindNodeByValue(value, treeNodes);
+            if (node == null)
+            {
+                var info = typeof(TEntity).GetForeignKey(typeof(TEntity));
+                var parentValue = Convert.ToString(info.GetValue(entity));
+                var parentNode = tree.FindNodeByValue(parentValue, treeNodes);
+                node = new TreeViewItem()
+                {
+                    Collabsable = true,
+                    Depth = parentNode?.Depth == null ? (byte)1 : (byte)(parentNode.Depth + 1),
+                    Expanded = true,
+                    Parent = parentNode,
+                    ShowTemplate = true,
+                    Text = TextFunc.Invoke(entity),
+                    Value = value
+                };
+                if (parentNode == null)
+                    treeNodes.Add(node);
+                else
+                {
+                    parentNode.Expanded = true;
+                    if (parentNode.Items == null)
+                        parentNode.Items = new List<TreeViewItem>();
+                    parentNode.Items.Add(node);
+                }
+            }
+            else
+                node.Text = TextFunc.Invoke(entity);//Ä
+        }
+
+        public async Task ReloadAsync()
+        {
+            await DataBindingAsync();
         }
 
         void GetSeletcedItems(TreeViewItem item, IList<TreeViewItem> list)
@@ -113,14 +177,22 @@ namespace Caspian.UI
         public IList<TreeViewItem> GetSeletcedItems()
         {
             var list = new List<TreeViewItem>();
-            foreach (var item in Source)
-                GetSeletcedItems(item, list);
+            if (Source != null)
+            {
+                foreach (var item in Source)
+                    GetSeletcedItems(item, list);
+            }
+            else if (treeNodes != null)
+            {
+                foreach (var item in treeNodes)
+                    GetSeletcedItems(item, list);
+            }
             return list;
         }
 
         protected override async Task OnInitializedAsync()
         {
-            await DataBinding();
+            await DataBindingAsync();
             await base.OnInitializedAsync();
         }
 

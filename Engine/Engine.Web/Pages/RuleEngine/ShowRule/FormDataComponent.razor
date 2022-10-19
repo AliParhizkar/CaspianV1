@@ -1,0 +1,148 @@
+﻿@namespace Caspian.Engine.ShowRule
+@using Caspian.Common.Attributes
+<div class="c-rule-title">
+    <div style="width:calc(50% - 225px)">
+        <span></span>
+    </div>
+    <div style="width:450px;text-align:center">
+        <label>@DynamicParameter.FaTitle</label>
+    </div>
+    <div style="width:calc(50% - 225px);text-align:left;padding-left:73px">
+        <span class="c-rule-back" @onclick="async () => await OnBack.InvokeAsync()" title="برگشت">
+            <i class="fa fa-arrow-left"></i>
+        </span>
+    </div>
+</div>
+<div class="r-parameter">
+    @foreach(var param in DynamicParameter.ResultParameters)
+    {
+        <div style="width:30px">
+            <span>
+                <i @onclick="@(async () => await OnSelected.InvokeAsync(param))" class="@GetClassName(param)"></i>
+            </span>
+        </div>
+        <div style="width:250px">
+            <span>@GetTitle(param)</span>
+        </div>
+        <div class="r-value">
+            <span>@GetValue(param)</span>
+        </div>
+    }
+    <div style="width:30px">
+        <span>
+            <i class="fa fa-sign-out"></i>
+        </span>
+    </div>
+    <div style="width:250px">
+        <span>مقدار خروجی</span>
+    </div>
+    <div style="width:120px;color:#ff6358">
+        <span>@ruleEngine.GetFormData(DynamicParameter.Id)</span>
+    </div>
+</div>
+@code 
+{
+    RuleEngine ruleEngine;
+
+    [Parameter]
+    public EventCallback OnBack { get; set; }
+
+    [Parameter]
+    public EventCallback<DataParameter> OnSelected{ get; set; }
+
+    [Parameter]
+    public DynamicParameter DynamicParameter { get; set; }
+
+    [Parameter]
+    public IDictionary<int, object> UserParametersValue { get; set; }
+
+    [Parameter]
+    public IList<DataParameter> FormParameters { get; set; }
+
+    [Parameter]
+    public object Model{ get; set; }
+
+    [Parameter]
+    public IDictionary<int, object> RulesValue { get; set; }
+
+    [Parameter]
+    public IList<DataParameterValue> DataParameterValues { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ruleEngine = new RuleEngine(FormParameters, DataParameterValues, Model, UserParametersValue);
+        ruleEngine.Rulesvalue = RulesValue;
+        base.OnInitialized();
+    }
+
+    string GetClassName(DataParameter parameter)
+    {
+        switch (parameter.ParameterType)
+        {
+            case DataParameterType.DynamicParameters:
+                if (parameter.DynamicParameter.CalculationType == CalculationType.FormData)
+                    return "fa fa-table";
+                return "fa fa-user";
+            case DataParameterType.EntityProperties:
+                return "fa fa-user";
+            case DataParameterType.FormRule:
+                return "fa fa-calculator";
+            default:
+                throw new NotImplementedException("خطای عدم پیاده سازی");
+        }
+    }
+
+    string GetTitle(DataParameter parameter)
+    {
+        switch(parameter.ParameterType)
+        {
+            case DataParameterType.DynamicParameters:
+                return parameter.DynamicParameter.FaTitle;
+            case DataParameterType.EntityProperties:
+                var info = Model.GetType().GetProperty(parameter.PropertyName);
+                var attr = info.GetCustomAttribute<DisplayNameAttribute>();
+                if (attr != null)
+                    return attr.DisplayName;
+                return info.Name;
+            case DataParameterType.FormRule:
+                return parameter.Rule.Title;
+            default:
+                throw new NotImplementedException("خطای عدم پیاده سازی");
+        }
+    }
+
+    object GetValue(DataParameter param)
+    {
+        switch(param.ParameterType)
+        {
+            case DataParameterType.DynamicParameters:
+                if (param.DynamicParameter.CalculationType == CalculationType.UserData)
+                    return ruleEngine.GetUserdata(param.DynamicParameter);
+                return ruleEngine.GetFormData(param.Id);
+            case DataParameterType.EntityProperties:
+                var info = Model.GetType().GetProperty(param.PropertyName);
+                return info.GetValue(Model);
+            case DataParameterType.FormRule:
+                var rule = param.Rule;
+                var value = RulesValue[param.RuleId.Value];
+                if (rule.ResultType == ValueTypeKind.Enum)
+                {
+                    if (rule.EnumTypeName.HasValue())
+                    {
+                        var fields = Model.GetType().GetProperty(rule.EnumTypeName).PropertyType.GetFields()
+                            .Where(t => !t.IsSpecialName);
+                        foreach(var field in fields)
+                        {
+                            var value1 = Convert.ToInt64(field.GetValue(null));
+                            if (value1 == Convert.ToInt64(value))
+                                return field.GetCustomAttribute<EnumFieldAttribute>().DisplayName;
+                        }
+                    }
+                    throw new NotImplementedException("خطای عدم پیاده سازی");
+                }
+                return value;
+            default:
+                throw new NotImplementedException("خطای عدم پیاده سازی");
+        }
+    }
+}

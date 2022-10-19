@@ -32,7 +32,10 @@
     async Task ChangeValue(ChangeEventArgs arg)
     {
         Value = arg.Value.ToString();
-        await ValueChanged.InvokeAsync(Value);
+        if (ValueChanged.HasDelegate)
+            await ValueChanged.InvokeAsync(Value);
+        if (OnChange.HasDelegate)
+            await OnChange.InvokeAsync();
     }
 
     protected override void OnInitialized()

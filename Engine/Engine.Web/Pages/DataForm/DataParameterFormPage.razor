@@ -242,10 +242,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var scope = CreateScope();
+        using var scope = CreateScope();
         resultParameter = await new DynamicParameterService(scope).GetAll().SingleAsync(ParameterId);
         var parameters = await new DataParameterService(scope).GetAll().Where(t => t.ResultParameterId == ParameterId)
-            .Include(t => t.DynamicParameter.Options).ToListAsync();
+            .Include(t => t.DynamicParameter.Options).Include(t => t.Rule).ToListAsync();
         parametersId = parameters.Select(t => t.Id).ToList();
         var index = 0;
         var entityType = resultParameter.SubSystem.GetEntityAssembly().GetTypes().Single(t => t.Name == resultParameter.EntityName);
@@ -272,14 +272,37 @@
                 }
 
             }
-            else
+            else if (param.DynamicParameterId != null)
             {
                 controlsType[index] = param.DynamicParameter.ControlType;
                 titleArray[index] = param.DynamicParameter.FaTitle;
                 sourceArray[index] = param.DynamicParameter.Options.Select(t => new SelectListItem(t.Value.ToString(), t.FaTitle)).ToList();
             }
+            else 
+                SetDataForRule(param.Rule, index);
             index++;
         }
         await base.OnInitializedAsync();
+    }
+
+    void SetDataForRule(Rule rule, int index)
+    {
+        if (rule.EnumTypeName.HasValue())
+        {
+            switch(rule.ResultType)
+            {
+                case ValueTypeKind.Enum:
+                    titleArray[index] = rule.Title;
+                    controlsType[index] = ControlType.DropdownList;
+                    var enumType = rule.SystemKind.GetEntityAssembly().GetTypes().Single(t => t.Name == rule.EnumTypeName);
+                    var fields = enumType.GetUnderlyingType().GetFields().Where(t => !t.IsSpecialName);
+                    foreach (var field in fields)
+                    {
+                        var text = field.GetCustomAttribute<EnumFieldAttribute>()?.DisplayName ?? field.Name;
+                        sourceArray[index].Add(new SelectListItem(Convert.ToInt32(field.GetValue(null)).ToString(), text));
+                    }
+                    break;
+            }
+        }
     }
 }

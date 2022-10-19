@@ -12,7 +12,7 @@ namespace Caspian.Engine.Service
         {
             RuleFor(t => t.constValue).Required(t => t.TokenType == TokenType.ConstValue);
             RuleFor(t => t.ConstValueType).Required(t => t.TokenType == TokenType.ConstValue);
-
+            RuleFor(t => t.parameterType).Required(t => t.TokenType == TokenType.Oprand);
         }
 
         public async override Task<Token> AddAsync(Token item)

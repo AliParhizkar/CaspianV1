@@ -7,6 +7,18 @@
     base.BuildRenderTree(__builder);
 }
 <div style="width:90%;margin:5px auto">
+    <div>
+        <table style="width:90%;margin:10px auto;">
+            <tr>
+                <td style="width:120px;">
+                    <label>روش محاسبه</label>
+                </td>
+                <td>
+                    <DropdownList @bind-Value="SearchData.CalculationType" />
+                </td>
+            </tr>
+        </table>
+    </div>
     <DataGrid @ref="CrudGrid" TEntity="DynamicParameter" Search="SearchData">
         <Columns Context="con" >
             <GridColumn TEntity="DynamicParameter" Field="t => t.EntityName">
@@ -15,10 +27,17 @@
                 </Template>
             </GridColumn>
             <GridColumn TEntity="DynamicParameter" Field="t => t.FaTitle" />
-            <GridColumn TEntity="DynamicParameter" Field="t => t.ControlType.FaText()" />
+            <GridColumn TEntity="DynamicParameter" Field="t => t.ControlType.FaText()" style="width:120px;" />
             <GridColumn TEntity="DynamicParameter" Field="t => t.CalculationType.FaText()" />
             <GridColumn TEntity="DynamicParameter" Field="t => t.DecimalNumber" />
-            <GridColumn TEntity="DynamicParameter" Field="t => t.EnTitle" />
+            <GridColumn TEntity="DynamicParameter" Field="t => t.Priority" style="width:50px" />
+            <GridColumn TEntity="DynamicParameter" Title="بررسی" style="width:50px">
+                <Template>
+                    <button style="border-radius:50%;margin-right:0" class="c-btn c-primary" @onclick="async () => await SetPriority(con.Data.Id)" @onclick:stopPropagation @onclick:preventDefault>
+                        <i class="fa fa-check"></i>
+                    </button>
+                </Template>
+            </GridColumn>
             <GridColumn TEntity="DynamicParameter" Title="مقادیر" style="width:50px">
                 <Template>
                     @if (con.Data.ControlType == ControlType.DropdownList)
@@ -101,17 +120,6 @@
                     }
                     else
                     {
-                        if (UpsertData.CalculationType == CalculationType.Rule)
-                        {
-                            <tr>
-                                <td>
-                                    <label>فرمول</label>
-                                </td>
-                                <td>
-                                    <ComboBox TEntity="Rule" TValue="int?" @bind-Value="UpsertData.RuleId" TextExpression="t => t.Title" ConditionExpression="t => t.IsValid" />
-                                </td>
-                            </tr>
-                        }
                         <tr>
                             <td>
                                 <label>نوع خروجی</label>
@@ -159,6 +167,17 @@
         ControlsType = new List<ControlType?>();
         ControlsType.AddRange(ControlType.Integer, ControlType.Numeric, ControlType.CheckBox, ControlType.DropdownList);
         base.OnInitialized();
+    }
+
+    async Task SetPriority(int id)
+    {
+        var scope = CreateScope();
+        var service = new DynamicParameterService(scope);
+        var param = await service.GetAll().Include(t => t.ResultParameters).Include("ResultParameters.DynamicParameter")
+            .Include("ResultParameters.Rule").SingleAsync(id);
+        param.Priority = service.CalculatePriority(param);
+        await service.SaveChangesAsync();
+        await CrudGrid.Reload();
     }
 
     [Parameter]

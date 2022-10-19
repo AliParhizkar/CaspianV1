@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace Caspian.Engine
 {
@@ -26,5 +27,10 @@ namespace Caspian.Engine
 
         [ForeignKey(nameof(DynamicParameterId))]
         public virtual DynamicParameter DynamicParameter { get; set; }
+
+        public int? RuleId { get; set; }
+
+        [ForeignKey(nameof(RuleId))]
+        public virtual Rule Rule { get; set; }
     }
 }

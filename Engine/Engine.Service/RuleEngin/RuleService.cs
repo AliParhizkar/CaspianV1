@@ -59,5 +59,43 @@ namespace Caspian.Engine.Service
 
             }
         }
+
+        public int? CalculateRulePriority(Rule rule)
+        {
+            int? maxPriority = null;
+            foreach (var token in rule.Tokens)
+            {
+                switch (token.parameterType)
+                {
+                    case null:
+                    case ParameterType.MainParameter:
+                        break;
+                    case ParameterType.DaynamicParameter:
+                        var param = token.DynamicParameter;
+                        switch(param.CalculationType)
+                        {
+                            case CalculationType.UserData:
+                                break;
+                            case CalculationType.FormData:
+                                if (token.DynamicParameter.Priority == null)
+                                    return null;
+                                if (token.DynamicParameter.Priority.Value > maxPriority.GetValueOrDefault(0))
+                                    maxPriority = token.DynamicParameter.Priority.Value; 
+                                break;
+                        }
+                        break;
+                    case ParameterType.RuleParameter:
+                        if (token.RuleValue.Priority == null)
+                            return null;
+                        if (token.RuleValue.Priority.Value > maxPriority.GetValueOrDefault(0))
+                            maxPriority = (int)token.RuleValue.Priority.Value;
+                        break;
+
+                }
+            }
+            if (maxPriority == null)
+                return 1;
+            return maxPriority.Value + 1;
+        }
     }
 }

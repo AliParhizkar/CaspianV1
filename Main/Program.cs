@@ -31,10 +31,6 @@ var app = builder.Build();
 
 CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
 
-//new Demo.Model.Context().Orders.ForTest(t => new
-//{
-//    CustomerType = t.CustomerId == null ? (CustomerType?)null : t.Customer.CustomerType
-//});
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

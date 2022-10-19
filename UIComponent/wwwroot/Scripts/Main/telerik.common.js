@@ -59,6 +59,31 @@
 
             }
         },
+        bindLookupTree: function (input) {
+            const mutationObserver = new MutationObserver(() => {
+                var location = $(input).offset();
+                var $ctr = $(input).closest('.c-lookup-tree').find('.c-tree-content');
+                var maxHeight = $(window).height() - location.top - 35;
+                var marginRight = ($(input).closest('.c-lookup-tree').width() - $ctr.width()) / 2;
+                $ctr.css('max-height', maxHeight);
+                console.log(marginRight);
+                $ctr.css('margin-right', marginRight);
+            });
+            mutationObserver.observe($(input).closest('.c-lookup-tree')[0], {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+
+            $(input).unbind('focus');
+            $(input).bind('focus', function () {
+                $(input).closest('.c-content').addClass('c-state-focus')
+            });
+            $(input).unbind('blur');
+            $(input).bind('blur', function () {
+                $(input).closest('.c-content').removeClass('c-state-focus')
+            });
+        },
         bindMultiselectLookup: function (element) {
             console.log(element)
             $(element).find('.c-state-default').mouseenter(function () {
@@ -201,6 +226,31 @@
                     $input[0].dispatchEvent(event);
                 }
             });
+        },
+        enableAutoHide: function (dotnet) {
+            $.telerik.autoHidedotnetObject = dotnet;
+            $('body').unbind('click.autoHidedotnetObject');
+            $('body').bind('click.autoHidedotnetObject', async function (e) {
+                if (!$(e.target).closest('.auto-hide').hasClass('auto-hide')) {
+                    $('body').unbind('click.autoHidedotnetObject');
+                    await $.telerik.autoHidedotnetObject.invokeMethodAsync('HideForm');
+                    $.telerik.autoHidedotnetObject = null;
+                }
+            });
+        },
+        enableDefaultShortKey: function (status, dotnet) {
+            $('body').unbind('keyup.confirmMessage');
+            if (status) {
+                $('.c-messagebox .c-primary').focus();
+                $('body').bind('keyup.confirmMessage', async function (e) {
+                    var key = e.keyCode;
+                    if (!$(e.target).hasClass('c-primary')) {
+                        if (key == 13 || key == 27) {
+                            await dotnet.invokeMethodAsync('HideConfirm', key == 13);
+                        }
+                    }
+                });
+            }
         },
         bindControl: function (control, options, controlType) {
             options = JSON.parse(options);

@@ -5,28 +5,114 @@
     height:215px;
     border-radius:8px;
 }
-.f-operator >table{
-    width:90%;
-    margin:5px auto 5px auto;
-    text-align:center;
+.fa-long-arrow-left {
+    color: #6c6c6c!important;
 }
+.c-primary .fa-check{
+    color:white;
+}
+
+.c-rule-detail {
+    border: 1px solid green;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    text-align: center;
+    padding-top: 3px;
+    cursor: pointer;
+}
+.formola-content .c-link {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: #dec12d;
+}
+.r-parameter {
+    border: 1px solid darkgray;
+    height: calc(100vh - 140px);
+    margin: 0 auto;
+    width: 450px;
+    display: flex;
+    padding: 5px 15px;
+    flex-flow: wrap;
+    align-content: flex-start;
+}
+    .r-parameter .r-value {
+        width: 120px;
+        color: #299191 !important;
+    }
+    .r-parameter div {
+        height: 45px;
+        border-bottom: 1px solid #d7d7d7;
+        padding-top: 12px;
+    }
+    .r-parameter .fa-calculator {
+        color: #0069d9 !important;
+        cursor: pointer;
+    }
+    .r-parameter .fa {
+        color: #a1a1a1;
+        font-size: 22px;
+    }
+
+    .c-rule-back {
+        border: 1px solid darkgray;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        margin-top: -10px;
+        text-align: center;
+        padding-top: 8px;
+        cursor: pointer;
+        display: inline-block;
+    }
+.c-rule-back .fa{
+    color:darkgray;
+    font-size:16px;
+}
+.c-rule-detail .fa-info {
+    color: green;
+    font-size: 14px;
+    font-weight: normal;
+}
+    .f-operator > table {
+        width: 90%;
+        margin: 5px auto 5px auto;
+        text-align: center;
+    }
 .c-search-container fieldset{
     padding-right:8px!important;
 }
 .c-search-container legend {
     font-size: 9px;
 }
-
+.c-primary.r-check {
+    width: 35px;
+    height: 35px;
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 0;
+    padding-top: 7px;
+    vertical-align: middle;
+    cursor:pointer;
+}
 .f-operator hr {
     margin: 15px 8px;
     box-shadow: 1px 1px 3px 0 #b3b3b3;
 }
-.formola-content {
-    padding: 5px;
-    width: 100%;
-    height: 554px;
-    overflow:auto;
+.c-rule-title {
+    padding:10px 50px 10px 50px;
+    display:flex;
 }
+    .c-rule-title label {
+        color: #299191 !important;
+    }
+    .formola-content {
+        padding: 5px;
+        width: 100%;
+        height: 554px;
+        overflow: auto;
+    }
     .formola-content span {
         font-size: 15px;
         font-weight: bold;

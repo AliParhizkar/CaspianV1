@@ -1,0 +1,93 @@
+﻿@inherits BasePage
+@namespace Caspian.Engine.ShowRule
+@if (RuleId.HasValue)
+{
+    <RuleComponent Model="Model" FormParameters="FormParameters" UserParametersValue="UserParametersValue" 
+               OnTokenSelected="SelectToken" 
+               DataParameterValues="DataParameterValues" RulesValue="RulesValue" Rule="rule" OnBack="ShowBackState" />
+}
+else
+{
+    <FormDataComponent Model="Model" FormParameters="FormParameters" UserParametersValue="UserParametersValue"
+                   OnBack="ShowBackState"
+                   DataParameterValues="DataParameterValues" RulesValue="RulesValue" DynamicParameter="Parameter" OnSelected="SelectParameter" />
+}
+@code 
+{
+    Rule rule;
+    DynamicParameter Parameter;
+    int? formParameterId;
+    Stack<Token> stack;
+
+    [Parameter]
+    public Object Model { get; set; }
+
+    [Parameter]
+    public IList<DataParameter> FormParameters { get; set; }
+
+    [Parameter]
+    public IDictionary<int, object> UserParametersValue { get; set; }
+
+    [Parameter]
+    public IList<DataParameterValue> DataParameterValues { get; set; }
+
+    [Parameter]
+    public IDictionary<int, object> RulesValue { get; set; }
+
+    [Parameter]
+    public IList<Rule> Rules { get; set; }
+
+    [Parameter]
+    public int? RuleId{ get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (RuleId.HasValue)
+            rule = Rules.Single(t => t.Id == RuleId);
+        stack = new Stack<Token>();
+        base.OnParametersSet();
+    }
+
+    void ShowBackState()
+    {
+        if (stack.Count > 0)
+        {
+            var token = stack.Pop();
+            RuleId = token.RuleIdValue;
+            if (RuleId.HasValue)
+                rule = Rules.Single(t => t.Id == RuleId);
+            Parameter = token.DynamicParameter;
+            formParameterId = token.DynamicParameterId;
+        }
+    }
+
+    void SelectParameter(DataParameter parameter)
+    {
+        stack.Push(new Token()
+            {
+                RuleIdValue = RuleId,
+                DynamicParameterId = formParameterId,
+                DynamicParameter = Parameter
+            });
+        RuleId = parameter.RuleId;
+        Parameter = parameter.DynamicParameter;
+        if (RuleId.HasValue)
+            rule = Rules.Single(t => t.Id == RuleId);
+        formParameterId = parameter.DynamicParameterId;
+    }
+
+    void SelectToken(Token token)
+    {
+        stack.Push(new Token()
+        {
+            RuleIdValue = RuleId,
+            DynamicParameterId = formParameterId,
+            DynamicParameter = Parameter
+        });
+        RuleId = token.RuleIdValue;
+        Parameter = token.DynamicParameter;
+        if (RuleId.HasValue)
+            rule = Rules.Single(t => t.Id == RuleId);
+        formParameterId = token.DynamicParameterId;
+    }
+}
