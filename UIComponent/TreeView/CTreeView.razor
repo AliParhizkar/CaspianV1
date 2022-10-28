@@ -21,6 +21,8 @@
                                 {
                                     
                                 }"
+                      OnClick="async node => await NodeClicked(node)"
+                                OnChanged="async node => await SelectStateChanged(node)"
                                 OnSelected="async (node) =>
                                            {
                                                if (SingleSelectOnTree)
@@ -29,7 +31,7 @@
                                                    node.Selected = true;
                                                }
                                                await OnSelected.InvokeAsync(node);
-                                               await OnInternalSelect.InvokeAsync(node);
+                                               
                                            }" />
                         }
                         else if (item.Expanded)
@@ -70,12 +72,10 @@
                                                    node.Selected = true;
                                                }
                                                await OnSelected.InvokeAsync(node);
-                                               await OnInternalSelect.InvokeAsync(node);
+                                               
                                            }"
-                                  OnChanged="async (node) =>
-                                     {
-                                         await OnChange.InvokeAsync(node);
-                                     }"
+                      OnChanged="async node => await OnNodeChanged(node)"
+                                    OnClick="async node => await OnInternalClicked.InvokeAsync(node)"
                                   Item="item" />
                     }
                 </ul>

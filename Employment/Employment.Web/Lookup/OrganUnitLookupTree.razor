@@ -1,10 +1,10 @@
 ﻿@namespace Employment.Web
-@inherits LookupTreePage<OrganUnit>
-<CTreeView @ref="Tree" SelectedNodesValue="SelectedNodesValue" TEntity="OrganUnit" TextFunc="t => t.Title" Selectable
-    ParentNodeFilterFunc="t => t.ParentOrganId == null" 
-    FilterFunc="t => (!SearchString.HasValue() || t.Title.StartsWith(SearchString))"
+<CTreeView  TEntity="OrganUnit" TextFunc="t => t.Title" Selectable
+    ParentNodeFilterFunc="t => t.ParentOrganId == null"
+           FilterFunc="t => (!SearchText.HasValue() || t.Title.StartsWith(SearchText))"
     style="margin:3px auto;width:350px;;height:calc(100vh - 50px)" />
 @code 
 {
-    
+    [Parameter]
+    public string SearchText{ get; set; }
 }

@@ -33,7 +33,7 @@
             <GridCommandColumns TEntity="OrganPost" />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="پست سازمانی" Style="width:450px">
+    <Window @ref="UpsertWindow" Title="پست سازمانی" Style="width:450px" OnOpen="SetOccupationId">
         <Content>
             <CaspianForm @ref="UpsertForm" Model="UpsertData">
                 <CaspianValidationValidator ValidatorType="typeof(OrganPostService)" />
@@ -93,4 +93,16 @@
 {
     CascadContiner continer = new CascadContiner();
     int? occupationId;
+
+    async Task SetOccupationId()
+    {
+        if (base.UpsertData.Id > 0)
+        {
+            var scope = CreateScope();
+            var careerField = await new CareerFieldService(scope).SingleAsync(UpsertData.CareerFieldId);
+            occupationId = careerField.OccupationId;
+        }
+        else
+            occupationId = null;
+    }
 }

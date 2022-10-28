@@ -29,12 +29,11 @@ namespace Caspian.UI
             return null;
         }
 
-        public void UpdateSelectedState(IList<TreeViewItem> nodes, IList<object> selectedNodesvalue)
+        public void UpdateSelectedState(IList<TreeViewItem> nodes, IList<string> selectedNodesvalue)
         {
-            var items = selectedNodesvalue.Select(t => t.ToString()).ToList();
             foreach (var node in nodes)
             {
-                UpdateSelectedState(node, items);
+                UpdateSelectedState(node, selectedNodesvalue);
             }
         }
 

@@ -77,8 +77,9 @@
             }
 
             this.focus = function () {
+                debugger;
                 var $txt = this.$wrapper.find('.t-input');
-                $txt.focus();
+                this.$wrapper.focus();
                 var value = $txt.val();
                 if (value) {
                     var end = $txt.val().length;
@@ -438,6 +439,7 @@
         });
         resizeObserver.observe($div[0]);
         $(element).closest('.t-dropdown').focusin(function () {
+            
             if (_self.enabled) {
                 var $ctr = $(this).find('.t-dropdown-wrap');
                 if ($ctr.hasClass('t-state-error'))

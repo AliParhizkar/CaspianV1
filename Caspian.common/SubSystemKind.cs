@@ -9,7 +9,7 @@ namespace Caspian.Common
         /// بخش اصلی
         /// </summary>
         [EnumField("Engin")]
-        Engin = 1,
+        Engine = 1,
 
         [EnumField("دمو")]
         Demo,

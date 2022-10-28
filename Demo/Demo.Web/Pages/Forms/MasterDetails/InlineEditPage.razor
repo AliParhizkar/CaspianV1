@@ -79,7 +79,7 @@
     {
         if (materialId > 0)
         {
-            var scope = CreateScope();
+            using var scope = CreateScope();
             materialReceipt.Material = await new MaterialService(scope).GetAll().Where(t => t.Id == materialId)
                 .Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync();
         }

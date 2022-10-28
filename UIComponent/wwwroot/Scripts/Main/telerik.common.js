@@ -19,6 +19,18 @@
         reset: function (form) {
             form.reset();
         },
+        bindTooltip() {
+            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+            $('body').unbind('click.tooltip');
+            $('body').bind('click.tooltip', function () {
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    $('.tooltip').remove();
+                });
+            });
+        },
         focusAndShowErrorMessage(element, message) {
             let item = $t.getItem(element);
             if (item) {
@@ -59,12 +71,45 @@
 
             }
         },
+        bindPopupWindow: function (dotnet, align) {
+            $('.c-popup-window').css('display', 'block');
+            let top, left;
+            let width = $('.c-popup-window').width();
+            let height = $('.c-popup-window').height();
+            var windowWidth = $('.content').width();
+            var windowHeight = $(window).height();
+            align = JSON.parse(align);
+            switch (align.VAlign) {
+                case 1:
+                    top = 5;
+                    break;
+                case 2:
+                    top = (windowHeight - height) / 2;
+                    break;
+                case 3:
+                    top = windowHeight - height - 10;
+                    break;
+            }
+            switch (align.HAlign) {
+                case 1:
+                    left = windowWidth - width;
+                    break;
+                case 2:
+                    left = (windowWidth - width) / 2;
+                    break;
+                case 3:
+                    left = 5;
+                    break;
+            }
+            $('.c-popup-window').css('left', left).css('top', top);
+            $t.enableAutoHide(dotnet);
+        },
         bindLookupTree: function (input) {
             const mutationObserver = new MutationObserver(() => {
                 var location = $(input).offset();
                 var $ctr = $(input).closest('.c-lookup-tree').find('.c-tree-content');
-                var maxHeight = $(window).height() - location.top - 35;
-                var marginRight = ($(input).closest('.c-lookup-tree').width() - $ctr.width()) / 2;
+                var maxHeight = $(window).height() - location.top - 46;
+                var marginRight = ($(input).closest('.c-lookup-tree').width() - $ctr.width()) / 2 - 8;
                 $ctr.css('max-height', maxHeight);
                 console.log(marginRight);
                 $ctr.css('margin-right', marginRight);
@@ -407,17 +452,9 @@
             $(input).focus();
         },
         bindLookupValue: function (dotnetHelper, input) {
-            var txt = $(input).data('tTextBox');
-            if (txt)
-                txt.dotnetHelper = dotnetHelper;
-            //if (txt.autoHide) {
-            //    $('body').unbind('click.helpWindow');
-            //    $('body').bind('click.helpWindow', function (e) {
-            //        if (e.target != input && !$(e.target).closest('.c-lookup-page').hasClass('c-lookup-page')) {
-            //            //dotnetHelper.invokeMethodAsync('CloseHelpWindow');
-            //        }
-            //    });
-            //}
+            $.telerik.autoComplete = {
+                dotnetHelper: dotnetHelper
+            };
         },
         bindLookup: function (input, searchForm, options) {
             options = JSON.parse(options);
@@ -427,17 +464,8 @@
             else
                 $(input).tTextBox(options);
             if (options.autoHide) {
-                var helper = $(input).data('tTextBox').dotnetHelper;
-                if (helper) {
-                    $('body').unbind('click.helpWindow');
-                    $('body').bind('click.helpWindow', function (e) {
-                        if (e.target != input && !$(e.target).closest('.c-lookup-page').hasClass('c-lookup-page')) {
-                            helper.invokeMethodAsync('CloseHelpWindow');
-                        }
-                    });
-                }
-            } else
-                $('body').unbind('click.helpWindow');
+                $t.enableAutoHide($.telerik.autoComplete.dotnetHelper)
+            }
             $(searchForm).appendTo($(input).parent()).css('top', $(input).position().top + 37);
 
             if (!$(searchForm).data('tHelpWindow'))

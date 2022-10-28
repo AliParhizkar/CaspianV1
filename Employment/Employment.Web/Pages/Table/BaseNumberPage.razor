@@ -1,0 +1,73 @@
+﻿@page "/Employment/BaseNumber"
+@namespace Demo.Web.Pages
+@inherits SimplePage<BaseNumber>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:5px auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>پایه تحصیلی</label>
+            </td>
+            <td>
+                <DropdownList @bind-Value="SearchData.BaseStudy" FilterFunc="t => t > BaseStudy.Diploma" />
+            </td>
+            <td>
+                <label>رتبه</label>
+            </td>
+            <td>
+                <DropdownList @bind-Value="SearchData.BaseType" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="BaseNumber" Search="SearchData">
+        <Columns>
+            <GridColumn TEntity="BaseNumber" Field="t => t.BaseStudy.FaText()" />
+            <GridColumn TEntity="BaseNumber" Field="t => t.BaseType.FaText()" />
+            <GridColumn TEntity="BaseNumber" Field="t => t.Factor.Seprate3Digit()" />
+            <GridCommandColumns TEntity="BaseNumber" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="عدد مبناء" Style="width:450px">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(BaseNumberService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>پایه تحصیلی</td>
+                        <td>
+                            <DropdownList @bind-Value="UpsertData.BaseStudy" FilterFunc="t => t > BaseStudy.Diploma" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>پایه</label>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="UpsertData.BaseType" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>عدد مبناء</label>
+                        </td>
+                        <td>
+                            <NumericTextBox @bind-Value="UpsertData.Factor" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+
+}

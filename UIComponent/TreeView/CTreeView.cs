@@ -13,21 +13,26 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class CTreeView<TEntity>: ComponentBase where TEntity: class
+    public partial class CTreeView<TEntity>: ComponentBase, ITreeView where TEntity: class
     {
         ElementReference tree;
         IList<TreeViewItem> treeNodes;
 
-        internal EventCallback<TreeViewItem> OnInternalSelect { get; set; }
+        public EventCallback<TreeViewItem> OnInternalCHanged { get; set; }
+
+        public EventCallback<TreeViewItem> OnInternalClicked { get; set; }
 
         [CascadingParameter(Name = "TreeViewCascadeData")]
         public TreeViewCascadeData CascadeData { get; set; }
+
+        [CascadingParameter]
+        internal IAutoCompleteTree AutoComplete { get; set; }
 
         [Parameter]
         public RenderFragment<TreeViewItem> Template { get; set; }
 
         [Parameter]
-        public IList<object> SelectedNodesValue { get; set; }
+        public IList<string> SelectedNodesValue { get; set; }
 
         [Parameter]
         public RenderFragment<TreeViewItem> ChildContent { get; set; }
@@ -109,6 +114,36 @@ namespace Caspian.UI
             }
         }
 
+        async Task OnNodeChanged(TreeViewItem node)
+        {
+            if (node.Items != null)
+            {
+                foreach(var item in node.Items)
+                {
+                    if (item.Depth == null)
+                        item.Depth = (byte)(node.Depth.Value + 1);
+                }
+            }
+            await OnChange.InvokeAsync(node);
+            await OnInternalCHanged.InvokeAsync(node);
+        }
+
+        async Task SelectStateChanged(TreeViewItem node)
+        {
+            await OnInternalCHanged.InvokeAsync(node);
+        }
+
+        async Task NodeClicked(TreeViewItem node)
+        {
+            await OnInternalClicked.InvokeAsync(node);
+        }
+
+        protected override void OnInitialized()
+        {
+            AutoComplete?.SetTreeView(this);
+            base.OnInitialized();
+        }
+
         public void RemoveFromTree(TEntity entity)
         {
             var value = typeof(TEntity).GetPrimaryKey().GetValue(entity).ToString();
@@ -121,6 +156,11 @@ namespace Caspian.UI
                 else
                     node.Parent.Items.Remove(node);
             }
+        }
+
+        public void SetSelectedNodesValue(IList<string> values)
+        {
+            SelectedNodesValue = values;
         }
 
         public void UpsertInTree(TEntity entity)
@@ -170,7 +210,6 @@ namespace Caspian.UI
             {
                 foreach (var item1 in item.Items)
                     GetSeletcedItems(item1, list);
-
             }
         }
 

@@ -17,7 +17,7 @@ namespace Caspian.Engine
         [DisplayName("زیرسیستم")]
         public SubSystemKind SubSystem { get; set; }
 
-        [DisplayName("موجودیت")]
+        [DisplayName("نظام پرداخت حقوق")]
         public string EntityName { get; set; }
 
         [DisplayName("اولویت")]

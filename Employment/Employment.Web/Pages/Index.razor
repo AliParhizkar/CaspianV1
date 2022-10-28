@@ -1,10 +1,21 @@
 ﻿@page "/Employment"
-<div style="max-width:300px;margin:50px auto">
-    <AutoCompleteTree @bind-Value="value">
-        <OrganUnitLookupTree />
-    </AutoCompleteTree>
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="max-width:300px;margin:50px auto;position:absolute">
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+        Tooltip on top
+    </button>
 </div>
 @code 
 {
     int[] value;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await BindTooltip();
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Employment.Model
+namespace Demo.Model
 {
     [Table("OrganUnits")]
     public class OrganUnit
@@ -24,11 +24,5 @@ namespace Employment.Model
         /// </summary>
         [CheckOnDelete("واحد سازمانی داراری زیرواحد سازمانی می باشد و امکان حذف آن وجود ندارد")]
         public virtual ICollection<OrganUnit> SuborganUnits { get; set; }
-
-        /// <summary>
-        /// پستهای سازمانی واحد سازمانی
-        /// </summary>
-        [CheckOnDelete("واحد سازمانی دارای پست سازمانی می باشد و امکان حذف آن وجود ندارد")]
-        public virtual ICollection<OrganPost> Posts { get; set; }
     }
 }

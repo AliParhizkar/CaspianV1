@@ -51,7 +51,8 @@ namespace Caspian.UI
                 
                 if (Grid.InternalConditionExpr == null)
                     Grid.InternalConditionExpr = SearchExpression.Body;
-
+                if (Grid.SelectedRowId == null)
+                    Grid.SelectFirstRow();
                 SearchState.Grid = Grid;
                 if (oldSerachStringValue != LookupStringSearchValue)
                 {

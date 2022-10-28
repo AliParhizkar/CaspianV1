@@ -1,0 +1,60 @@
+﻿@namespace Caspian.UI
+@inject IJSRuntime jSRuntime
+@if (Status == WindowStatus.Open)
+{
+    <div style="@Style" class="auto-hide c-popup-window">
+        @ChildContent
+    </div>
+}
+
+@code 
+{
+    protected override void OnInitialized()
+    {
+        Status = WindowStatus.Close;
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public VerticalAlign VerticalAlign { get; set; } = VerticalAlign.Top;
+
+    [Parameter]
+    public HorizontalAlign HorizontalAlign { get; set; } = HorizontalAlign.Center;
+
+    [Parameter]
+    public RenderFragment ChildContent{ get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Status == WindowStatus.Open)
+        {
+            string json = "{}";
+            if (!Style.HasValue())
+            {
+                json = JsonConvert.SerializeObject(new
+                {
+                    VAlign = VerticalAlign.ConvertToInt(),
+                    HAlign = HorizontalAlign.ConvertToInt()
+                });
+            }
+            await jSRuntime.InvokeVoidAsync("$.telerik.bindPopupWindow", DotNetObjectReference.Create(this), json);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable]
+    public async Task HideForm()
+    {
+        if (StatusChanged.HasDelegate)
+            await StatusChanged.InvokeAsync();
+    }
+}

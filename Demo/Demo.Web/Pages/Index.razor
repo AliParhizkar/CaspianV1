@@ -1,9 +1,23 @@
 ﻿@page "/Demo"
 @inherits BasePage
 @namespace Demo.Web.Pages
-
-
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="max-width:300px;margin:50px auto">
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" ddata-bs-placement="top" title="Tooltip on top">
+        Tooltip on top 1
+    </button>
+</div>
+<button type="button" class="c-btn c-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+    Tooltip on top 2
+</button>
 @code
 {
-    int value;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await BindTooltip();
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }

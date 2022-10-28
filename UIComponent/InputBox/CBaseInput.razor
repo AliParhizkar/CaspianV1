@@ -34,7 +34,7 @@
     [CascadingParameter, JsonIgnore]
     public EditContext CurrentEditContext { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public bool Focused { get; set; }
 
     [Inject, JsonIgnore]
@@ -74,9 +74,6 @@
     {
         if (Search)
             BindingType = BindingType.OnInput;
-        else
-            BindingType = BindingType.OnChange;
-
         if (CurrentEditContext != null && ValueExpression != null)
         {
             _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
@@ -145,7 +142,7 @@
             await OnChange.InvokeAsync();
     }
 
-    [Parameter]
+    [Parameter, JsonIgnore]
     public EventCallback OnChange{ get; set; }
 
     [CascadingParameter(Name = "Container")]
@@ -171,6 +168,7 @@
     public void Focus()
     {
         focused = true;
+        Focused = true;
     }
 
     public virtual async Task ResetAsync()

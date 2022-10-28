@@ -41,6 +41,8 @@
         SearchStr = Text;
     }
     var className = "t-widget t-numerictextbox c-lookup";
+    if (AutoHide)
+        className += " auto-hide";
     if (Disabled)
         className += " t-state-disabled";
     if (ErrorMessage.HasValue())
@@ -48,16 +50,16 @@
 }
 
 <div class="@className">
-    <input @ref="Input" @bind-value="Text" @bind-value:event="oninput" @onkeyup="@(async e => { await OnKeyUpHandler(e); })"
+    <input @ref="Input" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => { await OnKeyUpHandler(e); })"
            @attributes="inputAttrs" />
     @if (!HideIcon)
     {
         <span class="fa fa-search"
-              @onclick="() =>
+              @onclick="@(() =>
                         {
                             if (!Disabled)
                                 WindowStatus = WindowStatus.Open;
-                        }"></span>
+                        })"></span>
     }
 </div>
 <div @ref="SearchForm" class="t-HelpWindow">

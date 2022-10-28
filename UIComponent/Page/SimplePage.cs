@@ -9,6 +9,7 @@ using FluentValidation.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
@@ -23,7 +24,10 @@ namespace Caspian.UI
         {
             var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
             using var scope = CreateScope();
-            var service = new SimpleService<TEntity>(scope);
+            
+            var service = scope.ServiceProvider.GetService<ISimpleService<TEntity>>();
+            if (service == null)
+                throw new CaspianException("خطا: Service od type ISimpleService<" + typeof(TEntity).Name + "> not implimented", null);
             if (id == 0)
                 await service.AddAsync(data);
             else

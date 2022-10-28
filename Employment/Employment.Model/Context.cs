@@ -26,5 +26,11 @@ namespace Employment.Model
         public DbSet<CareerField> CareerFields { get; set; }
 
         public DbSet<OrganPost> OrganPosts { get; set; }
+
+        public DbSet<BaseNumber> BaseNumbers { get; set; }
+
+        public DbSet<BaseStudyFactor> BaseStudyFactors { get; set; }
+
+        public DbSet<ExtraFactor> ExtraFactors { get; set; }
     }
 }

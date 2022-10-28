@@ -10,9 +10,16 @@ namespace Employment.Model
         [Key]
         public int Id { get; set; }
 
+
+        /// <summary>
+        /// رشته شغلی
+        /// </summary>
         [DisplayName("رشته شغلی")]
         public int CareerFieldId { get; set; }
 
+        /// <summary>
+        /// مشخصات رشته شغلی
+        /// </summary>
         [ForeignKey(nameof(CareerFieldId))]
         public virtual CareerField CareerField { get; set; }
 
@@ -28,6 +35,6 @@ namespace Employment.Model
         [ForeignKey(nameof(OrganUnitId))]
         public virtual OrganUnit OrganUnit { get; set; }
 
-        public virtual ICollection<ChildrenProperties> ChildrenProperties{ get; set; }
+        public virtual ICollection<ChildrenProperties> ChildrenProperties { get; set; }
     }
 }

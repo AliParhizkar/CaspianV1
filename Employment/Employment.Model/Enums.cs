@@ -27,22 +27,40 @@ namespace Employment.Model
     [EnumType("پایه تحصیلی")]
     public enum BaseStudy: byte
     {
+        /// <summary>
+        /// زیردیپلم
+        /// </summary>
         [EnumField("زیردیپلم")]
         Highschool = 1,
 
+        /// <summary>
+        /// دیپلم
+        /// </summary>
         [EnumField("دیپلم")]
         Diploma,
 
+        /// <summary>
+        /// فوق دیپلم
+        /// </summary>
         [EnumField("فوق دیپلم")]
         AssociateDegree,
 
+        /// <summary>
+        /// لیسانس
+        /// </summary>
         [EnumField("لیسانس")]
         Bachelor,
 
+        /// <summary>
+        /// فوق لیسانس
+        /// </summary>
         [EnumField("فوق لیسانس")]
         Master,
 
-        [EnumField("دکتری")]
+        /// <summary>
+        /// دکترا
+        /// </summary>
+        [EnumField("دکترا")]
         PHD
     }
 

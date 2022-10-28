@@ -3,6 +3,9 @@ using Caspian.Common;
 using Caspian.common;
 using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
+using Caspian.Common.Service;
+using Demo.Service;
+using Demo.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,10 @@ builder.Services.AddScoped<CaspianDataService>();
 builder.Services.AddScoped<Demo.Model.Context>();
 builder.Services.AddScoped<Caspian.Engine.Model.Context>();
 builder.Services.AddScoped<Employment.Model.Context>();
+SubSystemKind.Demo.GetServiceAssembly().InjectServices(builder.Services);
+SubSystemKind.Employment.GetServiceAssembly().InjectServices(builder.Services);
+SubSystemKind.Engine.GetServiceAssembly().InjectServices(builder.Services);
+
 builder.Services.AddAuthentication("Cookies").AddCookie();
 var app = builder.Build();
 

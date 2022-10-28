@@ -1,0 +1,159 @@
+﻿@page "/Demo/HierarchyTree"
+@inherits BasePage
+<div style="padding:20px 40px 0 0">
+    <h3>Hierarchy Tree</h3>
+</div>
+<div style="display:flex;width:90%;margin:0 auto">
+    <div style="display:table-cell;width:50%;padding-left:40px">
+        <hr />
+        <div style="padding:0 40px;">
+            <h4>Data-binding</h4>
+        </div>
+        <div style="height:40px;width:70%;margin:0 auto;padding:5px 25px;display:flex;flex-wrap:wrap">
+            <div style="width:35px;">
+                <span @onclick="async () => await ShowEditForm(null, false)" style="font-size:23px;color:#0dcaf0;padding-top:12px;cursor:pointer" class="fa fa-plus"></span>
+            </div>
+            <div style="padding-top:9px;width:calc(100% - 40px);display:flex">
+                <span style="width:65px;">
+                    <label style="font-size:14px;font-weight:bold">وضعیت</label>
+                </span>
+                <RadioList @bind-Value="@activeType" OnChange="async () => await tree.ReloadAsync()" Style="width:200px;" />
+            </div>
+        </div>
+        <div style="width:70%;margin:0 auto">
+            <StringTextBox @bind-Value="@organSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو عنوان واحد سازمانی" />
+        </div>
+        <CTreeView @ref="tree" TEntity="OrganUnit" style="margin:5px auto;width:70%;;height:calc(100vh - 216px)" TextFunc="t => t.Title" ParentNodeFilterFunc="t => t.ParentOrganId == null" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
+            <Template>
+                <TreeNodeTemplate Levels="new byte[]{1, 2, 3, 4, 5, 6}">
+                    <span style="padding-right:12px;" class="t-grid-delete">
+                        <span style="color:#0dcaf0" @onclick="async () => await ShowEditForm(context, false)" class="t-icon t-delete fa fa-plus"></span>
+                    </span>
+                    <span style="padding:0" class="t-grid-edit" @onclick="async () => await ShowEditForm(context, true)">
+                        <span class="t-icon t-edit fa fa-pencil"></span>
+                    </span>
+                    <span style="padding:0" class="t-grid-delete" @onclick="async () => await DeleteOrganUnit(context)">
+                        <span class="t-icon t-delete fa fa-trash"></span>
+                    </span>
+                </TreeNodeTemplate>
+            </Template>
+        </CTreeView>
+        <Window @bind-Status="status" Style="width:450px;" OnOpen="() => firstControl.Focus()">
+            <Content>
+                <CaspianForm Model="organUnit" OnValidSubmit="async t => await UpsertOrganUnit()">
+                    <CaspianValidationValidator ValidatorType="typeof(OrganUnitService)" />
+                    <table style="width:90%;margin:0 auto">
+                        <tr>
+                            <td>
+                                <label>عنوان</label>
+                            </td>
+                            <td>
+                                <StringTextBox @ref="firstControl" @bind-Value="organUnit.Title" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>وضعیت</label>
+                            </td>
+                            <td>
+                                <DropdownList @bind-Value="organUnit.ActiveType" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style="text-align:center">
+                                <button type="submit" class="c-btn c-primary">ثبت</button>
+                                <button type="button" @onclick="() => status = WindowStatus.Close" class="c-btn c-danger">انصراف</button>
+                            </td>
+                        </tr>
+                    </table>
+                </CaspianForm>
+            </Content>
+        </Window>
+
+    </div>
+    <div style="display:table-cell;width:50%;padding-right:40px">
+        <hr />
+        <div style="padding:0 40px;">
+            <h4 style="padding-right:40px;">Autocomplete-Tree</h4>
+            <div style="padding-bottom:10px">
+                <AutoCompleteTree @bind-Value="values">
+                    <CTreeView TEntity="OrganUnit" TextFunc="t => t.Title" Selectable
+                               ParentNodeFilterFunc="t => t.ParentOrganId == null"
+                               FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))"
+                               style="margin:3px auto;width:350px;" />
+                </AutoCompleteTree>
+            </div>
+            <div>
+                <AutoCompleteTree @bind-Value="value">
+                    <CTreeView TEntity="OrganUnit" TextFunc="t => t.Title"
+                               ParentNodeFilterFunc="t => t.ParentOrganId == null"
+                               FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))"
+                               style="margin:3px auto;width:350px;" />
+                </AutoCompleteTree>
+            </div>
+        </div>
+    </div>
+</div>
+@code 
+{
+    int[] values;
+    int? value;
+    //----------------------
+    ActiveType activeType = ActiveType.Enable;
+    string organSearch;
+    WindowStatus status;
+    OrganUnit organUnit;
+    CTreeView<OrganUnit> tree;
+    IControl firstControl;
+
+    async Task DeleteOrganUnit(TreeViewItem node)
+    {
+        var organUnitId = Convert.ToInt32(node.Value);
+        using var scope = CreateScope();
+        var service = new OrganUnitService(scope);
+        var organUnit = await service.SingleAsync(organUnitId);
+        var result = await service.ValidateRemoveAsync(organUnit);
+        if (result.IsValid)
+        {
+            service.Remove(organUnit);
+            await service.SaveChangesAsync();
+            tree.RemoveFromTree(organUnit);
+        }
+        else
+            ShowMessage(result.Errors.First().ErrorMessage);
+    }
+
+    async Task ShowEditForm(TreeViewItem nodeView, bool isUpdate)
+    {
+        if (isUpdate)
+        {
+            ///در حالت ویرایش
+            var organUnitId = Convert.ToInt32(nodeView.Value);
+            using var scope = CreateScope();
+            organUnit = await new OrganUnitService(scope).SingleAsync(organUnitId);
+        }
+        else
+        {
+            organUnit = new OrganUnit();
+            organUnit.ActiveType = ActiveType.Enable;
+            organUnit.ParentOrganId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+        }
+        status = WindowStatus.Open;
+    }
+
+    async Task<bool> UpsertOrganUnit()
+    {
+        using var scope = CreateScope();
+        var service = new OrganUnitService(scope);
+        if (organUnit.Id == 0)
+            await service.AddAsync(organUnit);
+        else
+            await service.UpdateAsync(organUnit);
+        await service.SaveChangesAsync();
+        tree.UpsertInTree(organUnit);
+        status = WindowStatus.Close;
+        StateHasChanged();
+        return true;
+    }
+}

@@ -57,6 +57,9 @@
                     <label>Open</label>
                 </td>
                 <td>
+                    <button type="button" class="c-btn c-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+                        Tooltip on top
+                    </button>
                     <button class="c-btn c-primary" @onclick="() => { Status = WindowStatus.Open; }">...</button>
                 </td>
             </tr>
@@ -114,4 +117,12 @@
     bool modal = true;
     bool resizeable;
     string title = "Window";
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await base.BindTooltip();
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
 }

@@ -3,6 +3,8 @@ using System.Reflection;
 using Caspian.Engine.Model;
 using Caspian.Common.Extension;
 using System.ComponentModel.DataAnnotations.Schema;
+using Caspian.Common.Service;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
@@ -48,6 +50,30 @@ namespace Caspian.Engine.Service
             if (type == typeof(double) || type == typeof(decimal) || type == typeof(float) || type == typeof(Single))
                 return ControlType.Numeric;
             throw new NotImplementedException("خطای عدم پیاده سازی");
+        }
+    }
+
+    public static class AssemblyExtension
+    {
+        public static void InjectServices(this Assembly assembly, IServiceCollection services)
+        {
+            var types = assembly.GetTypes();
+            foreach(var type in types)
+            {
+                var baseType = type.BaseType;
+                while(baseType != typeof(object))
+                {
+                    if (baseType.IsGenericType && baseType.GenericTypeArguments.Length == 1)
+                    {
+                        var genericType = baseType.GenericTypeArguments[0];
+                        if (baseType == typeof(SimpleService<>).MakeGenericType(genericType))
+                        {
+                            services.AddScoped(typeof(ISimpleService<>).MakeGenericType(genericType), provider => Activator.CreateInstance(type, provider.CreateScope()));
+                        }
+                    }
+                    baseType = baseType.BaseType;
+                }
+            }
         }
     }
 }

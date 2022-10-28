@@ -1,0 +1,122 @@
+﻿@page "/Demo/PopupWindow"
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="padding:20px 40px 0 0">
+    <h3>Popup Window</h3>
+</div>
+<div style="display:table;width:90%;margin:0 auto">
+    <div style="display:table-cell;width:50%;padding-left:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Setting</h4>
+        <table style="height:150px;margin-right:80px;width:350px">
+            <tr>
+                <td>
+                    <RadioList Style="width:100%" @bind-Value="vAlign" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <RadioList Style="width:100%" @bind-Value="hAlign" />
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">
+                    <button class="c-btn c-primary" @onclick="() => { status = WindowStatus.Open; }">Show Popup</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="display:table-cell;width:50%;padding-right:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Custom</h4>
+        <table style="height:150px;margin-right:80px">
+            <tr>
+                <td style="width:50px;">
+                    <label>Left</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="left" maxlength="3" Style="width:100px" />
+                </td>
+                <td style="width:40px"></td>
+                <td style="width:50px">
+                    <label>Top</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="top" maxlength="3" Style="width:100px" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Width</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="width" maxlength="3" Style="width:100px" />
+                </td>
+                <td></td>
+                <td>
+                    <label>Height</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="height" maxlength="3" Style="width:100px" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" style="text-align:center">
+                    <button class="c-btn c-info" @onclick="() => { status1 = WindowStatus.Open; }">Show Popup</button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" style="text-align:center">
+                    <button class="c-btn c-success" @onclick="() => { status2 = WindowStatus.Open; }">Show Popup</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<PopupWindow @bind-Status="status" HorizontalAlign="hAlign" VerticalAlign="vAlign">
+    <div style="width:500px;height:300px;text-align:center;padding-top:30px;">
+        <h3>Popup Window</h3>
+    </div>
+</PopupWindow>
+@{
+    left = left ?? 5;
+    top = top ?? 5;
+    width = width ?? 500;
+    height = height ?? 350;
+    string style = "top:" + top.ToString() + "px;left:" + left + "px;width:" + width + "px;height:" + height + "px";
+}
+<PopupWindow @bind-Status="status1" Style="@style">
+    <div style="width:500px;height:300px;text-align:center;padding-top:30px;">
+        <h3>Popup Window</h3>
+    </div>
+</PopupWindow>
+<PopupWindow @bind-Status="status2" Style="width:450px;height:200px;border-radius:150px;top:10px;left:350px;">
+    <div style="text-align:center;padding-top:80px;direction:ltr;font-size:14px;font-weight:900">
+        style="width:500px;height:250px;border-radius:150px;top:10px;left:350px;"
+    </div>
+</PopupWindow>
+<button type="button" class="c-btn c-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+    Tooltip on top
+</button>
+@code 
+{
+    int? top;
+    int? left;
+    int? width;
+    int? height;
+
+    WindowStatus status;
+    WindowStatus status1;
+    WindowStatus status2;
+    VerticalAlign vAlign = VerticalAlign.Top;
+    HorizontalAlign hAlign = HorizontalAlign.Center;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await base.BindTooltip();
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

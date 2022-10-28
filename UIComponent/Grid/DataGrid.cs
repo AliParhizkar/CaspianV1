@@ -460,8 +460,9 @@ namespace Caspian.UI
                 {
                     if (PageNumber < PageCount)
                     {
-                        await ChangePageNumber(PageNumber + 1);
                         SelectRow(0);
+                        await ChangePageNumber(PageNumber + 1);
+                        StateHasChanged();
                     }
                 }
             }

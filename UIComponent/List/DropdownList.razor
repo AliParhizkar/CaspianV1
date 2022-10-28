@@ -65,8 +65,11 @@
         base.OnInitialized();
     }
 
-    [Parameter]
+    [Parameter, JsonIgnore]
     public IList<SelectListItem> Source { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Func<TValue, bool> FilterFunc { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -113,13 +116,10 @@
         if (!type.IsEnum)
             throw new Exception("خطا: Type " + type.Name + " is not enum : " + ValueExpression.Body.ToString());
         var fields = type.GetFields().Where(t => !t.IsSpecialName);
-        if (EnumItems != null)
-            return fields.Where(t => EnumItems.Contains((TValue)t.GetValue(null)));
+        if (FilterFunc != null)
+            return fields.Where(t => FilterFunc.Invoke((TValue)t.GetValue(null)));
         return fields;
     }
-
-    [Parameter, JsonIgnore]
-    public ICollection<TValue> EnumItems { get; set; }
 
     [JsonProperty("data")]
     public List<SelectListItem> Items { get; set; }

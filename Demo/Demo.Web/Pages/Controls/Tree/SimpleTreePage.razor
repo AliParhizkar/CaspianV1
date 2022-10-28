@@ -100,18 +100,19 @@
 
     void Change(TreeViewItem item)
     {
+        // This is for tow level tree
         if (item.Items != null)
         {
             foreach (var child in item.Items)
                 child.Selected = item.Selected;
         }
         var parent = item.Parent;
-        while (parent != null)
+        if (parent != null)
         {
-            var items = parent.Items;
-            if (items.All(t => t.Selected == true))
+            var siblings = parent.Items;
+            if (siblings.All(t => t.Selected == true))
                 parent.Selected = true;
-            else if (items.All(t => t.Selected == false))
+            else if (siblings.All(t => t.Selected == false))
                 parent.Selected = false;
             else
                 parent.Selected = null;

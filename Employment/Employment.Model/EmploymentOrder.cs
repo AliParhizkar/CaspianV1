@@ -5,22 +5,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Employment.Model
 {
-    [RuleType("اعضاء غیرهیئت علمی"), WorkflowEntity("حکم غیرهیات علمی"), DynamicTypeAttribute("حکم غیرهیات علمی", typeof(EmploymentOrderDynamicParameterValue))]
+    [RuleType("اعضاء غیرهیئت علمی"), WorkflowEntity("حکم غیرهیات علمی"), DynamicType("حکم غیرهیات علمی", typeof(EmploymentOrderDynamicParameterValue))]
     public class EmploymentOrder
     {
         [Key]
         public int Id { get; set; }
 
         /// <summary>
-        /// رتبه
+        /// پایه
         /// </summary>
-        [DisplayName("رتبه"), Rule("رتبه")]
+        [DisplayName("پایه"), Rule("پایه")]
         public int Rank { get; set; }
 
         /// <summary>
-        /// پایه
+        /// رتبه
         /// </summary>
-        [DisplayName("پایه")]
+        [DisplayName("رتبه")]
         public BaseType BaseType { get; set; }
 
         /// <summary>

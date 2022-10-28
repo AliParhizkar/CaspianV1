@@ -10,7 +10,7 @@ namespace Caspian.UI
             Lookup = lookup;
         }
 
-        [JSInvokable]
+        [JSInvokable("HideForm")]
         public void CloseHelpWindow()
         {
             Lookup.CloseHelpForm();

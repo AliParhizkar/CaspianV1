@@ -87,8 +87,8 @@
                                            }"
                           OnClick="async node => 
                                         {
-                                            if (OnSelected.HasDelegate)
-                                                await OnSelected.InvokeAsync(node);
+                                            if (OnClick.HasDelegate)
+                                                await OnClick.InvokeAsync(node);
                                         }"
                           OnChanged="async node =>
                                      {
@@ -104,13 +104,6 @@
 {
     bool? Collapsed;
     ElementReference Node;
-    public string GUId;
-
-    protected override void OnInitialized()
-    {
-        GUId = Guid.NewGuid().ToString();
-        base.OnInitialized();
-    }
 
     [Parameter]
     public bool? Selected { get; set; } = false;

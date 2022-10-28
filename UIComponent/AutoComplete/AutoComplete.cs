@@ -19,12 +19,26 @@ namespace Caspian.UI
         string Text;
         string SearchStr;
         string _FieldName;
+        bool mustClear;
         SearchState SearchState;
         ValidationMessageStore _messageStore;
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
         bool focuced;
 
-        internal EventCallback<KeyboardEventArgs> OnKeyUp { get; set; }
+        void SetSearchValue(ChangeEventArgs e)
+        {
+            if (mustClear)
+            {
+                Text = "";
+                SearchStr = "";
+                mustClear = false;
+            }
+            else
+            {
+                Text = e.Value.ToString();
+                SearchStr = Text;
+            }
+        }
 
         [Parameter, JsonIgnore]
         public bool HideHeader { get; set; }
@@ -282,23 +296,22 @@ namespace Caspian.UI
                 case "Backspace":
                     if (!Value.Equals(default(TValue)))
                     {
-                        Text = "";
                         Value = default(TValue);
                         Oldvalue = Value;
                         await ValueChanged.InvokeAsync(default(TValue));
                         if (OnChange.HasDelegate)
                             await OnChange.InvokeAsync(default(TValue));
+                        mustClear = true;
                     }
-                    SearchStr = Text;
                     WindowStatus = WindowStatus.Open;
                     SearchState?.Grid?.SelectFirstPage();
                     SearchState?.Grid?.SelectFirstRow();
                     break;
                 default:
-                    if (WindowStatus == WindowStatus.Close)
-                        WindowStatus = WindowStatus.Open;
-                    SearchState?.Grid?.SelectFirstPage();
-                    SearchState?.Grid?.SelectFirstRow();
+                    //if (WindowStatus == WindowStatus.Close)
+                    //    WindowStatus = WindowStatus.Open;
+                    //SearchState?.Grid?.SelectFirstPage();
+                    //SearchState?.Grid?.SelectFirstRow();
                     break;
             }
         }
@@ -367,12 +380,13 @@ namespace Caspian.UI
                 });
             }
             var json = this.ConvertToJson();
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindLookup", Input, SearchForm, json);
             if (firstRender)
             {
                 var data = new JsLookupValueSetter(this);
                 await jsRuntime.InvokeVoidAsync("$.telerik.bindLookupValue", DotNetObjectReference.Create(data), Input);
             }
+            await jsRuntime.InvokeVoidAsync("$.telerik.bindLookup", Input, SearchForm, json);
+
             if (focuced)
             {
                 focuced = false;

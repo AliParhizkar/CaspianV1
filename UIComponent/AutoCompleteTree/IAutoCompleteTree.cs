@@ -8,14 +8,16 @@ namespace Caspian.UI
     {
         Task SetValueAsync(TreeViewItem node);
 
-        Task SetValuesAsync(IList<TreeViewItem> nodes);
-
         bool MultiSelecable();
 
-        IList<object> SelectedNodesValue();
+        IList<string> SelectedNodesValue();
 
         EventCallback OnInternalClose { get; set; }
 
+        EventCallback OnInternalShow { get; set; }
+
         EventCallback<string> OnInternalChanged { get; set; }
+
+        void SetTreeView(ITreeView treeView);
     }
 }

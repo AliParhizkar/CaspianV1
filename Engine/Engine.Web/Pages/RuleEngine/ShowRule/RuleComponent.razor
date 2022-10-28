@@ -38,11 +38,11 @@
         }
         @if (iscomplex)
         {
-            <span @onclick="async () => await OnTokenSelected.InvokeAsync(token)" title="@(title)" class="@className">@token.FaTitle</span>
+            <span @onclick="async () => await OnTokenSelected.InvokeAsync(token)" data-bs-toggle="tooltip" data-bs-placement="top" title="@(title)" class="@className">@token.FaTitle</span>
         }
         else
         {
-            <span title="@(title)" class="@className">@token.FaTitle</span>
+            <span data-bs-toggle="tooltip" data-bs-placement="top" title="@(title)" class="@className">@token.FaTitle</span>
         }
         if (token.OperatorKind == OperatorType.QuestionMark || token.OperatorKind == OperatorType.Colon)
         {
@@ -124,7 +124,6 @@
                         ruleValue = field.GetCustomAttribute<EnumFieldAttribute>().DisplayName;
                 }
             }
-            
         }
         base.OnParametersSet();
     }
@@ -134,5 +133,12 @@
         if (param.CalculationType == CalculationType.UserData)
             return ruleEngine.GetUserdata(param);
         return ruleEngine.GetFormData(param.Id);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await BindTooltip();
+        await base.OnAfterRenderAsync(firstRender);
     }
 }

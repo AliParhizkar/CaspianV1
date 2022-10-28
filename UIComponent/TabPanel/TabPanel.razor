@@ -64,12 +64,6 @@
             tabPanels.Add(tab);
             if (tabPanels.Count >= TabIndex)
                 CurentTabpanel = tabPanels[TabIndex - 1];
-            else
-            {
-                //TabIndex = tabPanels.Count;
-                //CurentTabpanel = tabPanels[TabIndex - 1];
-                //await TabIndexChanged.InvokeAsync(TabIndex);
-            }
             StateHasChanged();
         }
     }

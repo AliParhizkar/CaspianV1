@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.UI
+@using System.Diagnostics
 @inherits CBaseInput<string>
     @if (!MultiLine)
     {
@@ -55,7 +56,7 @@
                     {
                         var genericType = type.GetGenericTypeDefinition();
                         Search = true;
-                        BindingType = BindingType.OnInput;
+                        BindingType = BindingType.OnInput; 
                     }
                 }
                 expr = (expr as MemberExpression).Expression;

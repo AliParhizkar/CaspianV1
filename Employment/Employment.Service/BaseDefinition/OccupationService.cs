@@ -1,6 +1,5 @@
 ﻿using Caspian.Common;
 using Employment.Model;
-using FluentValidation;
 using Caspian.Common.Service;
 using Microsoft.Extensions.DependencyInjection;
 

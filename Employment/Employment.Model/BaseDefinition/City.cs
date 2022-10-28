@@ -21,6 +21,6 @@ namespace Employment.Model
         public string Title { get; set; }
 
         [CheckOnDelete("این شهر محل تولد فرزندان می باشد و امکان حذف آن وجود ندارد")]
-        public virtual ICollection<ChildrenProperties> ChildrenProperties{ get; set; }
+        public virtual ICollection<ChildrenProperties> ChildrenProperties { get; set; }
     }
 }

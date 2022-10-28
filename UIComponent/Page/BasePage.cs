@@ -147,6 +147,11 @@ namespace Caspian.UI
 
         }
 
+        protected async Task BindTooltip()
+        {
+            await jsRuntime.InvokeVoidAsync("$.telerik.bindTooltip");
+        }
+
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (message.HasValue())

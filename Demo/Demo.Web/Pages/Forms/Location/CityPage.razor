@@ -28,7 +28,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" SelectType="SelectType.Multi" ConditionExpr="t => ProvinceId == 0 || t.ProvinceId == ProvinceId">
+    <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" ConditionExpr="t => ProvinceId == 0 || t.ProvinceId == ProvinceId">
         <Columns>
             @if (ProvinceId == 0)
             {
