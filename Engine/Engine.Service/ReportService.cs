@@ -13,7 +13,7 @@ namespace Caspian.Engine.Service
         public ReportService(IServiceScope scope)
             :base(scope)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("گزارشی با این عنوان در سیستم ثبت شده است");
+            RuleFor(t => t.Title).Required().UniqAsync(t => t.ReportGroup.SubSystem, "گزارشی با این عنوان در سیستم ثبت شده است");
         }
 
         public override IQueryable<Report> GetAll(Report report = null)

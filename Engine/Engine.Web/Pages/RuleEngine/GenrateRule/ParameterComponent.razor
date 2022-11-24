@@ -28,7 +28,7 @@
                     <label>پارامتر پویا</label>
                 </td>
                 <td>
-                    <ComboBox @bind-Value="dynamicParameterId" TEntity="DynamicParameter" TValue="int?" TextExpression="t => t.FaTitle" />
+                    <ComboBox @bind-Value="dynamicParameterId" TEntity="DynamicParameter" TValue="int?" TextExpression="t => t.Title" />
                 </td>
             </tr>
             break;
@@ -132,7 +132,7 @@
             var dynamicParameter = await new DynamicParameterService(scope).SingleAsync(dynamicParameterId.Value);
             await tokenService.AddAsync(new Token()
                 {
-                    FaTitle = dynamicParameter.FaTitle,
+                    FaTitle = dynamicParameter.Title,
                     RuleId = RuleId,
                     DynamicParameterId = dynamicParameterId.Value,
                     parameterType = ParameterType.DaynamicParameter,

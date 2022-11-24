@@ -12,14 +12,27 @@
     color:white;
 }
 
+.c-trace-rules label {
+    padding-right: 3px;
+    color: #6b6b6b;
+    font-weight: bold !important;
+    font-size: 13px !important;
+}
+.c-trace-rules div{
+    height:40px;
+}
+.c-trace-rules .c-value {
+    color: #8c1111;
+    font-size: 14px;
+    font-weight: bold;
+}
 .c-rule-detail {
     border: 1px solid green;
     border-radius: 50%;
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
     display: inline-block;
     text-align: center;
-    padding-top: 3px;
     cursor: pointer;
 }
 .formola-content .c-link {
@@ -55,25 +68,36 @@
         font-size: 22px;
     }
 
-    .c-rule-back {
-        border: 1px solid darkgray;
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        margin-top: -10px;
-        text-align: center;
-        padding-top: 8px;
-        cursor: pointer;
-        display: inline-block;
+.c-rule-back {
+    border-width:1px;
+    border-style:solid;
+    border-color: #423d96;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-top: -10px;
+    text-align: center;
+    padding-top: 8px;
+    cursor: pointer;
+    display: inline-block;
+}
+    .c-rule-back .fa {
+        color: #423d96;
+        font-size: 16px;
     }
-.c-rule-back .fa{
+    .c-rule-back.c-disabled {
+        border-color: darkgray;
+        cursor:not-allowed;
+    }
+.c-rule-back.c-disabled .fa{
     color:darkgray;
-    font-size:16px;
 }
 .c-rule-detail .fa-info {
     color: green;
     font-size: 14px;
     font-weight: normal;
+    vertical-align: bottom;
+    padding-top: 7px;
 }
     .f-operator > table {
         width: 90%;
@@ -286,7 +310,7 @@ a, .btn-link {
     }
 
 .page .content {
-    width: calc(100% - 165px);
+    width: calc(100% - 180px);
     float:right;
 }
 .c-login {

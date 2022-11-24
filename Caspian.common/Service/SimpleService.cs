@@ -9,12 +9,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Common.Service
 {
-    public class SimpleService<TEntity> : CaspianValidator<TEntity>, IDisposable, ISimpleService<TEntity> where TEntity : class
+    public class SimpleService<TEntity> : CaspianValidator<TEntity>, ISimpleService, IDisposable, ISimpleService<TEntity> where TEntity : class
     {
         public SimpleService(IServiceScope serviceScope)
             :base(serviceScope)
         {
             
+        }
+
+        public IQueryable GetAllRecords()
+        {
+            return GetAll();
         }
 
         public virtual IQueryable<TEntity> GetAll(TEntity search = null)

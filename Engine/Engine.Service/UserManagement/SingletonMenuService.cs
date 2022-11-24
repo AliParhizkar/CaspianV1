@@ -16,5 +16,10 @@ namespace Caspian.Engine.Service
         {
             return Menus.Single(t => t.Source == path).Id;
         }
+
+        public Menu GetMenu(string path)
+        {
+            return Menus.Single(t => t.Source == path);
+        }
     }
 }

@@ -20,7 +20,10 @@
             form.reset();
         },
         bindTooltip() {
-            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            let tooltipTriggerList = [];
+            $('[data-bs-toggle="tooltip"]').each(function () {
+                tooltipTriggerList.push(this);
+            });
             tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });

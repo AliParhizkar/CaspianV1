@@ -21,4 +21,9 @@ namespace Caspian.Common.Service
 
         Task<TEntity> SingleOrDefaultAsync(int id);
     }
+
+    internal interface ISimpleService
+    {
+        IQueryable GetAllRecords();
+    }
 }

@@ -48,9 +48,9 @@ namespace Caspian.Engine
 
         public LambdaExpression SimpleSelect(IList<ReportParam> reportParams)
         {
-            var flag = reportParams.Any(t => t.RuleId.HasValue);
-            var fields = ComplexTypeFilter(reportParams.Where(t => !t.RuleId.HasValue)).ToArray();
-            var dynamicFields = reportParams.Where(t => t.RuleId.HasValue);
+            var flag = reportParams.Any(t => t.RuleId.HasValue || t.DynamicParameterId.HasValue);
+            var fields = ComplexTypeFilter(reportParams.Where(t => t.RuleId == null && t.DynamicParameterId == null)).ToArray();
+            var dynamicFields = reportParams.Where(t => t.RuleId.HasValue || t.DynamicParameterId.HasValue);
             Type dynamicItemType = null, dynamicTypeOfDynamicItem = null;
             if (flag)
             {
@@ -379,10 +379,10 @@ namespace Caspian.Engine
             {
                 Type type = null;
                 string name = null;
-                if (param.RuleId.HasValue)
+                if (param.RuleId.HasValue || param.DynamicParameterId.HasValue)
                 {
                     type = typeof(string);
-                    name = "DynamicParam" + param.RuleId.Value;
+                    name = "DynamicParam" + (param.RuleId ?? param.DynamicParameterId.Value);
                 }
                 else
                 {
@@ -518,10 +518,10 @@ namespace Caspian.Engine
             var type = paramExpr.Type;
             if (enTitle.HasValue())
                 type = type.GetMyProperty(enTitle).PropertyType;
-            var dynamicFieldAttr = type.GetCustomAttribute<DynamicFieldAttribute>();
-            if (dynamicFieldAttr == null)
+            var dynamicTypeAttr = type.GetCustomAttribute<DynamicTypeAttribute>();
+            if (dynamicTypeAttr == null)
                 return null;
-            return dynamicFieldAttr.ParameterValueType;
+            return dynamicTypeAttr.Type;
         }
 
         /// <summary>

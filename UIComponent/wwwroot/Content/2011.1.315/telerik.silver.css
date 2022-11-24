@@ -44,7 +44,11 @@ body {
     border-color: rgba(255, 0, 0, 0.17) !important;
     background-color: #ffe9ec !important;
 }
-
+.t-state-error textarea {
+    border-style: solid !important;
+    border-color: rgba(255, 0, 0, 0.17) !important;
+    background-color: #ffe9ec !important;
+}
 /* Outlook theme*/
 fieldset.t-widget legend {
     color: #8d8b9a;

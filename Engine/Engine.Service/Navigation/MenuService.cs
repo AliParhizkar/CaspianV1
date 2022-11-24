@@ -11,7 +11,7 @@ namespace Caspian.Engine.Service
         public MenuService(IServiceScope scope)
             :base(scope)
         {
-            RuleFor(t => t.Title).Required(t => t.Id > 0).UniqAsync("منویی با این عنوان در سیستم تعریف شده است");
+            RuleFor(t => t.Title).Required(t => t.Id > 0).UniqAsync(t => t.MenuCategory.SubSystemKind, "منویی با این عنوان در سیستم تعریف شده است");
             RuleFor(t => t.Source).Required().UniqAsync("صفحه ای با این آدرس در سیستم ثبت شده است");
             RuleFor(t => t.MenuCategoryId).Required(t => t.Id > 0);
             RuleFor(t => t.Ordering).Custom(t => t.Ordering < 0 || t.Id == 0 && t.Ordering == 0, "مقدار فیلد مرتب سازی باید بزرگتر  از صفر باشد").UniqAsync(t => t.MenuCategoryId, "فیلد مرتب سازی به ازای هر گروه منو نمی تواند تکراری باشد.");

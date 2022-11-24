@@ -3,7 +3,7 @@
 @if (RuleId.HasValue)
 {
     <RuleComponent Model="Model" FormParameters="FormParameters" UserParametersValue="UserParametersValue" 
-               OnTokenSelected="SelectToken" 
+               OnTokenSelected="SelectToken" StackIsEmpty="stack.Count == 0"
                DataParameterValues="DataParameterValues" RulesValue="RulesValue" Rule="rule" OnBack="ShowBackState" />
 }
 else

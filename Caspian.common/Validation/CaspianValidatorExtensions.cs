@@ -6,6 +6,10 @@ using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations.Schema;
+using Caspian.Engine;
+using System.Runtime.CompilerServices;
+using System.Linq.Dynamic.Core;
 
 namespace Caspian.Common
 {
@@ -113,7 +117,7 @@ namespace Caspian.Common
         }
 
 
-        static Expression CreateExpression<TModel>(ParameterExpression param, TModel model, Expression expr)
+        static async Task<Expression> CreateExpression<TModel>(ParameterExpression param, TModel model, Expression expr, IServiceScope scope)
         {
             if (expr == null)
                 return null;
@@ -124,10 +128,38 @@ namespace Caspian.Common
             var info = (expr as MemberExpression).Member as PropertyInfo;
             if (info.PropertyType.IsNullableType())
                 expr = Expression.Property(expr, "Value");
-            var value = info.GetValue(model);
+            var value = await GetValue<TModel>(model, expr as MemberExpression, scope);
             if (value != null)
                 return Expression.Equal(param.ReplaceParameter(expr), Expression.Constant(value));
             return null;
+        }
+
+        static async Task<object> GetValue<TModel>(TModel model, MemberExpression expr, IServiceScope scope)
+        {
+            var str = expr.ToString();
+            str = str.Substring(str.IndexOf('.') + 1);
+            var type = typeof(TModel);
+            var array = str.Split('.');
+            if (array.Length == 1)
+                return model.GetMyValue(str);
+            var info = type.GetProperty(array[0]);
+            if (info.PropertyType.IsNullableType())
+                return model.GetMyValue(array[0]);
+            var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
+            if (attr == null)
+                throw new CaspianException("خطای عدم پیاده سازی");
+            var fkId = model.GetMyValue(attr.Name);
+            var param = Expression.Parameter(info.PropertyType, "t");
+            Expression conditionExpr = Expression.Property(param, info.PropertyType.GetPrimaryKey());
+            conditionExpr = Expression.Equal(conditionExpr, Expression.Constant(fkId));
+            conditionExpr = Expression.Lambda(conditionExpr, param);
+            Expression memberExpr = param.CreateMemberExpresion(str.Substring(str.IndexOf('.') + 1));
+            var selectExpr = Expression.Lambda(memberExpr, param);
+            var serviceType = typeof(SimpleService<>).MakeGenericType(info.PropertyType);
+            var service = Activator.CreateInstance(serviceType, scope) as ISimpleService;
+            var result = await service.GetAllRecords().Where(conditionExpr).Select(selectExpr)
+                .ToDynamicListAsync(selectExpr.ReturnType);
+            return result.FirstOrDefault();
         }
 
         public static IRuleBuilderOptions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
@@ -156,9 +188,10 @@ namespace Caspian.Common
             {
                 if (pro == null)
                     return true;
+                var scope1 = (IServiceScope)contex.ParentContext.RootContextData["__ServiceScope"];
                 var param = contex.Rule.Expression.Parameters[0];
-                Expression left = CreateExpression(param, model, contex.Rule.Expression.Body);
-                var tempexpr = CreateExpression(param, model, expr1);
+                Expression left = await CreateExpression(param, model, contex.Rule.Expression.Body, scope1);
+                var tempexpr = await CreateExpression(param, model, expr1, scope1);
                 if (tempexpr != null)
                 {
                     if (left == null)
@@ -166,7 +199,7 @@ namespace Caspian.Common
                     else
                         left = Expression.And(left, tempexpr);
                 }
-                tempexpr = CreateExpression(param, model, expr2);
+                tempexpr = await CreateExpression(param, model, expr2, scope1);
                 if (tempexpr != null)
                 {
                     if (left == null)
@@ -174,7 +207,7 @@ namespace Caspian.Common
                     else
                         left = Expression.And(left, tempexpr);
                 }
-                tempexpr = CreateExpression(param, model, expr3);
+                tempexpr = await CreateExpression(param, model, expr3, scope1);
                 if (tempexpr != null)
                 {
                     if (left == null)
@@ -197,7 +230,6 @@ namespace Caspian.Common
                     var service = new SimpleService<TModel>(scope);
                     return !await service.GetAll(default(TModel)).AnyAsync(lambda);
                 }
-                var scope1 = (IServiceScope)contex.ParentContext.RootContextData["__ServiceScope"];
                 var service1 = new SimpleService<TModel>(scope1);
                 return !await service1.GetAll(default(TModel)).AnyAsync(lambda);
             }).WithMessage(errorMessage);

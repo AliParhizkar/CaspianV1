@@ -45,7 +45,7 @@ namespace ReportUiModels
             var reportGroup = await reportGroupService.SingleAsync(report.ReportGroupId);
             var mainType = new AssemblyInfo().GetReturnType(reportGroup);
             var reportParams = paramService.GetAll().Where(t => t.ReportId == reportId && !t.IsKey).ToList();
-            var tempParams = reportParams.Where(t => t.RuleId == null).ToList();
+            var tempParams = reportParams.Where(t => t.RuleId == null && t.DynamicParameterId == null).ToList();
             var selectReport = new SelectReport(mainType);
             var type = selectReport.SimpleSelect(tempParams).Body.Type;
             type = selectReport.GetEqualType(tempParams, type);
@@ -62,10 +62,8 @@ namespace ReportUiModels
                     var enTitle = dynamicParams.First().TitleEn;
                     if (enTitle.HasValue())
                         tempType = mainType.GetMyProperty(enTitle).PropertyType;
-                    var items = await new DynamicFieldEngin().GetDynamicItems(tempType, null);
-                    foreach (var item in items)
-                        if (reportParams.Any(t => t.RuleId == item.Id))
-                            dic.Add("list.DynamicParam" + item.Id, item.Title);
+                    //var items = await new DynamicFieldEngin().GetDynamicItems(tempType, null);
+
                 }
                 foreach (var info in type.GetProperties())
                 {
@@ -80,7 +78,7 @@ namespace ReportUiModels
                         if (maxDataLevel > 1)
                             tempName += name.Substring(0, name.IndexOf('.')) + '_';
                         tempName += info.Name;
-                        var param = ReportParamOfProperty(tempName, reportParams1.Where(t => !t.RuleId.HasValue).ToList());
+                        var param = ReportParamOfProperty(tempName, reportParams1.Where(t => t.RuleId == null && t.DynamicParameterId == null).ToList());
                         if (param != null)
                         {
                             name = param.TitleEn;

@@ -24,7 +24,7 @@ namespace Caspian.Engine
         public int? Priority { get; set; }
 
         [DisplayName("عنوان")]
-        public string FaTitle { get; set; }
+        public string Title { get; set; }
 
         [DisplayName("عنوان لاتین")]
         public string EnTitle { get; set; }

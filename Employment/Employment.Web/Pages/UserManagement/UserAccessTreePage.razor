@@ -1,0 +1,9 @@
+﻿@page "/Employment/UserManagement/UserAccessTree/{UserId:int}"
+
+<UserAccessTreeComponent AccessUserId="UserId" SubSystem="SubSystemKind.Employment" />
+
+@code
+{
+    [Parameter]
+    public int UserId { get; set; }
+}

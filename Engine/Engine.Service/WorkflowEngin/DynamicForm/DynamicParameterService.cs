@@ -13,7 +13,7 @@ namespace Caspian.Engine.Service
             :base(scope)
         {
             RuleFor(t => t.EntityName).Required();
-            RuleFor(t => t.FaTitle).Required().UniqAsync("عنوان فارسی باید یکتا باشد.");
+            RuleFor(t => t.Title).Required().UniqAsync("عنوان فارسی باید یکتا باشد.");
             RuleFor(t => t.EnTitle).Required().UniqAsync("عنوان لاتین باید یکتا باشد").CustomValue(t => t.IsValidIdentifire(), "برای تعریف متغیر فقط از حروف لاتین و عدد استفاده نمایید");
             RuleFor(t => t.ControlType).Required(t => t.CalculationType == CalculationType.UserData).Custom(t => t.CalculationType == CalculationType.UserData && t.ControlType != ControlType.CheckBox && t.ControlType != ControlType.Numeric && t.ControlType != ControlType.Integer && t.ControlType != ControlType.DropdownList, "انتخاب این کنترل مجاز نیسیت");
             RuleFor(t => t.ResultType).Required(t => t.CalculationType != CalculationType.UserData);

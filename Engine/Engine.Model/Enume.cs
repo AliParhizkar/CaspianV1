@@ -2,49 +2,6 @@
 
 namespace Caspian.Engine
 {
-    /// <summary>
-    /// نوع حکم و یا قرارداد
-    /// </summary>
-    //public enum ReportType
-    //{
-    //    /// <summary>
-    //    /// کارکنان
-    //    /// </summary>
-    //    [EnumField("کارکنان")]
-    //    Karkonan = 1,
-
-    //    /// <summary>
-    //    /// هیئت علمی
-    //    /// </summary>
-    //    [EnumField("هیئت علمی")]
-    //    HiatElmi = 2,
-
-    //    /// <summary>
-    //    /// قراردادی
-    //    /// </summary>
-    //    [EnumField("قراردادی")]
-    //    Contract = 3,
-
-    //    /// <summary>
-    //    /// کارمند
-    //    /// </summary>
-    //    [EnumField("کارمند")]
-    //    Employ = 4,
-
-    //    [EnumField("مشخصات کارمند")]
-    //    Officer = 5,
-
-    //    [EnumField("پست سازمانی")]
-    //    OrganPost = 6,
-
-    //    [EnumField("مشخصات فرزندان")]
-    //    Children = 7,
-
-    //    [EnumField("هیئت امنائی")]
-    //    HiatOmanay = 8
-    //}
-
-    
     public enum CalculationType: byte
     {
         [EnumField("کاربر")]
@@ -105,49 +62,6 @@ namespace Caspian.Engine
         NotEqual
     }
 
-    public enum WhereControlType: byte
-    { 
-        FromTo = 1,
-        Enums = 2,
-        ForeignKey
-    }
-
-    public enum InputControlType : byte
-    {
-        /// <summary>
-        /// نوع عدد صحیح
-        /// </summary>
-        [EnumField("عدد صحیح")]
-        Integer = 1,
-
-        /// <summary>
-        /// نوع عدد اعشاری
-        /// </summary>
-        [EnumField("عدد اعشاری")]
-        Numeric,
-
-        /// <summary>
-        /// نوع تاریخ
-        /// </summary>
-        [EnumField("تاریخ")]
-        Date,
-
-        /// <summary>
-        /// رشته
-        /// </summary>
-        [EnumField("رشته")]
-        String
-    }
-
-    public enum FormControlType : byte
-    {
-        Lable = 1,
-        TextBox,
-        CheckListBox,
-        DropdownList,
-        Panel
-    }
-
     public enum ActivityType : byte
     {
         /// <summary>
@@ -179,5 +93,12 @@ namespace Caspian.Engine
         /// عملیات بررسی توسط سیستم
         /// </summary>
         Parallelogram1
+    }
+
+    public enum DynamicParameterType: byte
+    {
+        User,
+        Form,
+        Rule
     }
 }

@@ -57,46 +57,35 @@
     </div>
     <div style="display:table-cell;width:50%;padding-right:40px">
         <hr />
-        <h4 style="padding-right:40px;">Some of Items</h4>
-        <table style="height:210px;margin-right:80px;width:200px;">
+        <h4 style="padding-right:40px;">Items filter</h4>
+        <table style="height:160px;margin-right:80px;width:200px;">
             <tr>
-                <td style="width:155px;">
-                    <label>Disable</label>
-                </td>
                 <td>
-                   
+                    <label>Selected Value</label>
+                </td>
+                <td style="text-align:center;direction:ltr">
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "-----")</label>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label>Open on focus</label>
-                </td>
-                <td>
-                    
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Action</label>
+                    <label>Selected Title</label>
                 </td>
                 <td style="text-align:center">
-                    
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.FaText() : "-----")</label>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label>Selected time</label>
+                    <label>Selected Enum Title</label>
                 </td>
                 <td style="text-align:center">
-
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ToString() : "-----")</label>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <DropdownList @bind-Value="orderType">
-                        <DropdownItem Value="Demo.Model.OrderType.Tel" />
-                        <DropdownItem Value="Demo.Model.OrderType.Internet" />
-                    </DropdownList>
+                    <DropdownList @bind-Value="orderType" FilterFunc="t => t != Model.OrderType.Salon" />
                 </td>
             </tr>
         </table>

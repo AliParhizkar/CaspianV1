@@ -20,8 +20,6 @@ namespace Caspian.Engine
 
         public string Title { get; set; }
 
-        //public string FaTitle { get; set; }
-
         public bool OrderBy { get; set; }
 
         public WhereFieldType Where { get; set; }
@@ -29,8 +27,6 @@ namespace Caspian.Engine
         public int StartIndex { get; set; }
 
         public int Length { get; set; }
-
-        public string Url { get; set; }
 
         public string DisplayField { get; set; }
 

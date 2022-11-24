@@ -1,0 +1,91 @@
+﻿@namespace Caspian.Engine.ReportGenerator
+@inherits SimplePage<Report>
+@inject IJSRuntime runTime
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:0 auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+            <td>
+                <label>گروه </label>
+            </td>
+            <td>
+                <ComboBox TValue="int" @bind-Value="SearchData.ReportGroupId" TEntity="ReportGroup" TextExpression="t => t.Title"
+                          ConditionExpression="t => t.SubSystem == Subsystem" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="Report" ConditionExpr="t => t.ReportGroup.SubSystem == Subsystem" Search="SearchData" TableHeight="400">
+        <Columns>
+            <GridColumn TEntity="Report" Field="t => t.ReportGroup.Title" Title="گروه گزارش" />
+            <GridColumn TEntity="Report" Field="t => t.Title" />
+            <GridColumn TEntity="Report" Title="پارامترها" style="width:80px">
+                <Template>
+                    <IconButton Href='@($"{Subsystem}/ReportEngine/ReportParam/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="Report" Title="گزارش" style="width:80px">
+                <Template>
+                    <a target="_blank" href="/Engine/ReportPrintPage/@(context.Data.Id)">
+                        ...
+                    </a>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="Report" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Style="width:400px" Title="گزارش">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(ReportService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>گروه گزارش</label>
+                        </td>
+                        <td>
+                            <ComboBox TValue="int" @bind-Value="UpsertData.ReportGroupId" TEntity="ReportGroup" TextExpression="t => t.Title"
+                                      ConditionExpression="t => t.SubSystem == Subsystem" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>شرح</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Descript" MultiLine Rows="3" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+    [Parameter]
+    public SubSystemKind Subsystem { get; set; }
+}

@@ -1,0 +1,9 @@
+﻿@page "/Demo/UserManagement/RoleAccessTree/{RoleId:int}"
+
+<RoleAccessTreeComponent SubSystem="SubSystemKind.Demo" RoleId="RoleId" />
+
+@code 
+{
+    [Parameter]
+    public int RoleId { get; set; }
+}

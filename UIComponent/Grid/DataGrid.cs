@@ -257,7 +257,6 @@ namespace Caspian.UI
                     }
                     Items = await query.Take(PageSize).GetValuesAsync<TEntity>(exprList);
                 }
-
             }
         }
 

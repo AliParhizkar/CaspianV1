@@ -265,8 +265,8 @@ namespace Caspian.Engine.Service
             foreach (var param in dataParam)
             {
                 string name = null;
-                if (param.RuleId.HasValue)
-                    name = "DynamicParam" + param.RuleId.Value;
+                if (param.RuleId.HasValue || param.DynamicParameterId.HasValue)
+                    name = "DynamicParam" + (param.RuleId ?? param.DynamicParameterId.Value);
                 else
                     name = param.TitleEn.Replace('.', '_');
                 switch(param.CompositionMethodType)

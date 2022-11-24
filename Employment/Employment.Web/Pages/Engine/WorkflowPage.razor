@@ -1,0 +1,10 @@
+﻿@page "/Employment/WorkflowEngine/Workflow/{GroupId:int}"
+@namespace Employment.Web.Workflow
+
+<WorkflowComponent GroupId="GroupId" />
+
+@code
+{
+    [Parameter]
+    public int GroupId { get; set; }
+}

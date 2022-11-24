@@ -27,6 +27,8 @@ namespace Caspian.UI
 
         void SetSearchValue(ChangeEventArgs e)
         {
+            if (WindowStatus == WindowStatus.Close)
+                WindowStatus = WindowStatus.Open;
             if (mustClear)
             {
                 Text = "";
@@ -303,7 +305,6 @@ namespace Caspian.UI
                             await OnChange.InvokeAsync(default(TValue));
                         mustClear = true;
                     }
-                    WindowStatus = WindowStatus.Open;
                     SearchState?.Grid?.SelectFirstPage();
                     SearchState?.Grid?.SelectFirstRow();
                     break;
@@ -344,6 +345,7 @@ namespace Caspian.UI
                 inputAttrs.Add("onfocus", new Action(() =>
                 {
                     WindowStatus = WindowStatus.Open;
+                    SearchStr = "";
                 }));
             }
             if (CloseOnBlur)

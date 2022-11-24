@@ -34,7 +34,7 @@ namespace Caspian.Engine
         public int? DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
-        public virtual DynamicParameter? DynamicParameter { get; set; }
+        public virtual DynamicParameter DynamicParameter { get; set; }
 
         public string? TextExpression { get; set; }
 

@@ -1,0 +1,8 @@
+﻿@page "/Employment/WorkflowEngine/DataModel/{GroupId:int}"
+@namespace Employment.Web.Workflow
+<DataModelComponent GroupId="GroupId" SubSystem="SubSystemKind.Employment" />
+@code 
+{
+    [Parameter]
+    public int GroupId{ get; set; }
+}

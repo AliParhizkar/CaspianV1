@@ -1,0 +1,11 @@
+﻿@page "/Employment/WorkflowEngine/DataModelField/{DataModelId:int}"
+@namespace Employment.Web.Workflow
+
+<DataModelFieldComponent DataModelId="DataModelId" />
+
+
+@code 
+{
+    [Parameter]
+    public int DataModelId { get; set; }
+}

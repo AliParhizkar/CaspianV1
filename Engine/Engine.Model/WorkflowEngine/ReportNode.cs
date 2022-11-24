@@ -15,28 +15,12 @@
 
         public bool UseOrderBy { get; set; }
 
-        public string Url { get; set; }
-
-        public string DisplayField { get; set; }
-
-        public string ValueField { get; set; }
-
         public CompositionMethodType? Type { get; set; }
+
+        public DynamicParameterType? DynamicParameterType { get; set; }
 
         public int? RuleId { get; set; }
 
         public int? DynamicParameterId { get; set; }
-
-        public FilteringControlType? FilteringControlType { get; set; }
-
-        /// <summary>
-        /// Regular expression pattern
-        /// </summary>
-        public string Pattern { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string MaskText { get; set; }
     }
 }

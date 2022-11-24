@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,5 +22,11 @@ namespace Employment.Model
 
         [DisplayName("عنوان")]
         public string Title { get; set; }
+
+        /// <summary>
+        /// پست های سازمانی رشته شغلی
+        /// </summary>
+        [CheckOnDelete("رشته شغلی دارای پست سازمانی می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<OrganPost> OrganPosts { get; set; }
     }
 }

@@ -1,21 +1,34 @@
 ﻿@page "/Employment"
-@inherits BasePage
+@inherits SimplePage<Province>
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="max-width:300px;margin:50px auto;position:absolute">
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
-        Tooltip on top
-    </button>
-</div>
+<button @onclick="async () => await UpsertWindow.Open()">Open</button>
+<Window @ref="UpsertWindow" Title="مشخصات استانها" Style="width:450px">
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData">
+            <CaspianValidationValidator ValidatorType="typeof(ProvinceService)" />
+            <table style="width:90%;margin:0 auto">
+                <tr>
+                    <td>
+                        <label>عنوان</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="UpsertData.Title" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <FormCommandButton />
+                    </td>
+                </tr>
+            </table>
+        </CaspianForm>
+    </Content>
+</Window>
+
 @code 
 {
-    int[] value;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-            await BindTooltip();
-        await base.OnAfterRenderAsync(firstRender);
-    }
 }

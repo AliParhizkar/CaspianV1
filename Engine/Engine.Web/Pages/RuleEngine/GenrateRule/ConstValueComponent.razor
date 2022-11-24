@@ -118,7 +118,7 @@
                         message = "مقدار ثابت باید مشخص باشد";
                     else
                     {
-                        constValue = enumConstValue;
+                        constValue = Convert.ToInt32(enumConstValue);
                         faTitle = enumConstValue.FaText();
                     }
                 }
@@ -199,6 +199,18 @@
                                     Value = t.Value.ToString(),
                                     Text = t.FaTitle
                                 }).ToListAsync();
+                                break;
+                        }
+                        break;
+                    case ParameterType.RuleParameter:
+                        if (beforeLastToken.RuleValue == null && beforeLastToken.RuleIdValue.HasValue)
+                            beforeLastToken.RuleValue = await new RuleService(scope).SingleAsync(beforeLastToken.RuleIdValue.Value);
+                        var rule = beforeLastToken.RuleValue;
+                        switch(rule.ResultType)
+                        {
+                            case ValueTypeKind.Enum:
+                                enumType = Type.GetProperties().First(t => t.PropertyType.Name == rule.EnumTypeName).PropertyType;
+                                valueTypeKind = ValueTypeKind.Enum;
                                 break;
                         }
                         break;

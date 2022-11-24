@@ -37,6 +37,8 @@ namespace Caspian.Engine.Model
 
         public DbSet<DynamicParameter> DynamicParameters { get; set; }
 
+        public DbSet<MenuAccessibility> MenuAccessibilities { get; set; }
+
         public DbSet<DynamicParameterValue> DynamicParametersValues { get; set; }
 
         public DbSet<WorkflowForm> WorkflowForms { get; set; }

@@ -5,7 +5,7 @@
         <span></span>
     </div>
     <div style="width:450px;text-align:center">
-        <label>@DynamicParameter.FaTitle</label>
+        <label>@DynamicParameter.Title</label>
     </div>
     <div style="width:calc(50% - 225px);text-align:left;padding-left:73px">
         <span class="c-rule-back" @onclick="async () => await OnBack.InvokeAsync()" title="برگشت">
@@ -97,7 +97,7 @@
         switch(parameter.ParameterType)
         {
             case DataParameterType.DynamicParameters:
-                return parameter.DynamicParameter.FaTitle;
+                return parameter.DynamicParameter.Title;
             case DataParameterType.EntityProperties:
                 var info = Model.GetType().GetProperty(parameter.PropertyName);
                 var attr = info.GetCustomAttribute<DisplayNameAttribute>();

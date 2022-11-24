@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using Employment.Model.History;
 using Microsoft.EntityFrameworkCore;
 
 namespace Employment.Model
@@ -11,7 +12,7 @@ namespace Employment.Model
 
         public DbSet<EducationRecords> Educations { get; set; }
 
-        public DbSet<EmploymentOrder> EmploymentOrders { get; set; }
+        public DbSet<ParametricEmploymentOrder> EmploymentOrders { get; set; }
 
         public DbSet<MarriageProperties> MarriageProperties { get; set; }
 

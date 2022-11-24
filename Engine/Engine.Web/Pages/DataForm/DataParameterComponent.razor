@@ -1,0 +1,102 @@
+﻿@inherits SimplePage<DataParameter>
+@namespace Caspian.Engine.RuleGenerator
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div style="width:90%;margin:5px auto">
+    <DataGrid @ref="CrudGrid" TEntity="DataParameter" Search="SearchData" ConditionExpr="t => t.ResultParameterId == ParameterId">
+        <Columns>
+            <GridColumn TEntity="DataParameter" Field="t => t.ParameterType.FaText()" />
+            <GridColumn TEntity="DataParameter" Field="t => t.PropertyName">
+                <Template>
+                    <span>@properties.SingleOrDefault(t => t.Value == context.Data.PropertyName)?.Text</span>
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="DataParameter" Field="@(t => t.DynamicParameter.Title)" Title="پارامتر" />
+            <GridColumn TEntity="DataParameter" Field="@(t => t.Rule.Title)" Title="قانون" />
+            <GridCommandColumns TEntity="DataParameter" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="فرم داده ای" Style="width:450px"
+            OnOpen="() =>
+                    {
+                        if (UpsertData.Id == 0)
+                        {
+                            UpsertData.ResultParameterId = ParameterId;
+                            UpsertData.ParameterType = DataParameterType.EntityProperties;
+                        }
+
+                    }">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(DataParameterService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>نوع پارامتر</label>
+                        </td>
+                        <td>
+                            <RadioList @bind-Value="UpsertData.ParameterType" />
+                        </td>
+                    </tr>
+                    @if (UpsertData.ParameterType == DataParameterType.DynamicParameters)
+                    {
+                        <tr>
+                            <td>
+                                <label>پارامتر</label>
+                            </td>
+                            <td>
+                                <ComboBox TEntity="DynamicParameter" TValue="int?" @bind-Value="UpsertData.DynamicParameterId" TextExpression="t => t.Title" />
+                            </td>
+                        </tr>
+                    }
+                    else if (UpsertData.ParameterType == DataParameterType.EntityProperties)
+                    {
+                        <tr>
+                            <td>
+                                <label>خصیصه</label>
+                            </td>
+                            <td>
+                                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="UpsertData.PropertyName" Source="properties" />
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>
+                                <label>قانون</label>
+                            </td>
+                            <td>
+                                <ComboBox TEntity="Rule" TValue="int?" @bind-Value="UpsertData.RuleId" TextExpression="t => t.Title" ConditionExpression="t => t.FormRule" />
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="2">
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+    IList<SelectListItem> properties;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        var param = await new DynamicParameterService(scope).SingleAsync(ParameterId);
+        properties = param.SubSystem.GetEntityAssembly().GetTypes().Single(t => t.Name == param.EntityName).GetProperties()
+            .Where(t => t.GetCustomAttribute<RuleAttribute>() != null).Select(t => new SelectListItem(t.Name, t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? t.Name)).ToList();
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter]
+    public int ParameterId { get; set; }
+}

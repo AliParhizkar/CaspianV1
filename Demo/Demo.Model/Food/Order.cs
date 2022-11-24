@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Engine.Model;
 using Caspian.Engine;
 using Caspian.Common;
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Engine.Model;
 
 namespace Demo.Model
 {

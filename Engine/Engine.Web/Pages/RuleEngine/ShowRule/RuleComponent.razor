@@ -1,21 +1,27 @@
 ﻿@inherits BasePage
 @namespace Caspian.Engine.ShowRule
 @using Caspian.Common.Attributes
+
     <div class="c-rule-title">
         <div style="width:5%">
             <label>عنوان</label>
         </div>
-        <div style="width:40%">
+    <div style="width:40%;color:#8c1111;font-size:14px;">
             <span>@Rule.Title</span>
         </div>
         <div style="width:5%">
             <label>مقدار</label>
         </div>
-        <div style="width:40%">
+        <div style="width:40%;color:#8c1111;font-size:14px;">
             <span>@ruleValue</span>
         </div>
-    <div style="width:10%">
-            <span class="c-rule-back" @onclick="async () => await OnBack.InvokeAsync()" title="برگشت">
+        @{
+            var className = "c-rule-back";
+            if (StackIsEmpty)
+                className += " c-disabled";
+        }
+        <div style="width:10%">
+        <span class="@className" @onclick="async () => await OnBack.InvokeAsync()" title="برگشت">
                 <i class="fa fa-arrow-left"></i>
             </span>
         </div>
@@ -23,7 +29,7 @@
 <div style="height:calc(100vh - 140px)" class="formola-content">
     @foreach (var token in Rule.Tokens)
     {
-        var className = token.TokenType == TokenType.Oprator ? "f-operator" : "f-operand";
+        className = token.TokenType == TokenType.Oprator ? "f-operator" : "f-operand";
         bool iscomplex = false;
         string title = GetTextOfValue(token, out iscomplex);
         if (iscomplex)
@@ -38,11 +44,18 @@
         }
         @if (iscomplex)
         {
-            <span @onclick="async () => await OnTokenSelected.InvokeAsync(token)" data-bs-toggle="tooltip" data-bs-placement="top" title="@(title)" class="@className">@token.FaTitle</span>
+            <span @onclick="async () => await OnTokenSelected.InvokeAsync(token)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="@(title)" class="@className">@token.FaTitle</span>
         }
         else
         {
-            <span data-bs-toggle="tooltip" data-bs-placement="top" title="@(title)" class="@className">@token.FaTitle</span>
+            if (title.HasValue())
+            {
+                <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="@(title)" class="@className">@token.FaTitle</span>
+            }
+            else
+            {
+                <span class="@className">@token.FaTitle</span>
+            }
         }
         if (token.OperatorKind == OperatorType.QuestionMark || token.OperatorKind == OperatorType.Colon)
         {
@@ -54,11 +67,11 @@
         }
     }
     </div>
-
 @code 
 {
     RuleEngine ruleEngine;
     string ruleValue;
+    int? OldRuleId;
 
     [Parameter]
     public Rule Rule { get; set; }
@@ -68,6 +81,9 @@
 
     [Parameter]
     public IList<DataParameter> FormParameters { get; set; }
+
+    [Parameter]
+    public bool StackIsEmpty { get; set; }
 
     [Parameter]
     public IList<DataParameterValue> DataParameterValues { get; set; }
@@ -99,8 +115,14 @@
                 return RulesValue.Single(t => t.Key == token.RuleIdValue.Value).Value.ToString();
             case ParameterType.DaynamicParameter:
                 isComplex = token.DynamicParameter.CalculationType == CalculationType.FormData;
-                var str = GetValue(token.DynamicParameter).ToString();
-                return str;
+                var value = GetValue(token.DynamicParameter);
+                switch(token.DynamicParameter.ResultType)
+                {
+                    case ResultType.Integer:
+                        return Convert.ToInt32(value).Seprate3Digit();
+                    default:
+                        return value.ToString();
+                }
         }
         return null;
     }
@@ -111,19 +133,24 @@
         ruleEngine.Rulesvalue = RulesValue;
         ruleEngine.UpdateTokens(Rule.Tokens);
         var value = RulesValue[Rule.Id];
-        if (Rule.ResultType == ValueTypeKind.Enum)
+        switch(Rule.ResultType)
         {
-            if (Rule.EnumTypeName.HasValue())
-            {
-                var fields = Model.GetType().GetProperty(Rule.EnumTypeName).PropertyType.GetFields()
-                    .Where(t => !t.IsSpecialName);
-                foreach (var field in fields)
+            case ValueTypeKind.Enum:
+                if (Rule.EnumTypeName.HasValue())
                 {
-                    var value1 = Convert.ToInt64(field.GetValue(null));
-                    if (value1 == Convert.ToInt64(value))
-                        ruleValue = field.GetCustomAttribute<EnumFieldAttribute>().DisplayName;
+                    var fields = Model.GetType().GetProperty(Rule.EnumTypeName).PropertyType.GetFields()
+                        .Where(t => !t.IsSpecialName);
+                    foreach (var field in fields)
+                    {
+                        var value1 = Convert.ToInt64(field.GetValue(null));
+                        if (value1 == Convert.ToInt64(value))
+                            ruleValue = field.GetCustomAttribute<EnumFieldAttribute>().DisplayName;
+                    }
                 }
-            }
+                break;
+            case ValueTypeKind.Int:
+                ruleValue = Convert.ToInt32(value).Seprate3Digit();
+                break;
         }
         base.OnParametersSet();
     }
@@ -137,8 +164,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (OldRuleId != Rule.Id)
+        {
+            OldRuleId = Rule.Id;
             await BindTooltip();
+        }
         await base.OnAfterRenderAsync(firstRender);
     }
 }

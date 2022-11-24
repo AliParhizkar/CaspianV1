@@ -12,7 +12,7 @@ namespace Caspian.Engine
         [Key]
         public int Id { get; set; }
 
-        public int DynamicParameterId { get; set; }
+        public int? DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
         public virtual DynamicParameter DynamicParameter { get; set; }
@@ -21,6 +21,11 @@ namespace Caspian.Engine
 
         [ForeignKey(nameof(DynamicParameterOptionId))]
         public virtual DynamicParameterOption DynamicParameterOption { get; set; }
+
+        public int? RuleId { get; set; }
+
+        [ForeignKey(nameof(RuleId))]
+        public virtual Rule Rule { get; set; }
 
         public decimal? Value { get; set; }
     }

@@ -23,7 +23,7 @@
     public string ErrorMessage { get; set; }
 
     [Parameter, JsonProperty("bindingType")]
-    public BindingType BindingType { get; set; }
+    public BindingType BindingType { get; set; } = BindingType.OnChange;
 
     [Parameter, JsonIgnore]
     public Type DynamicType { get; set; }

@@ -1,5 +1,8 @@
 ﻿@page "/counter"
-
+@using Caspian.UI
+<DataGrid TEntity="Demo.Model.City">
+    <GridColumn TEntity="Demo.Model.City" Field="t => t.Title" />
+</DataGrid>
 
 @code {
     

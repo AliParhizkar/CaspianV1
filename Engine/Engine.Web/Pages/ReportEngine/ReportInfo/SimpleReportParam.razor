@@ -22,7 +22,8 @@
                                 Disabled = t.Selected
                             }).ToList();
                         })" style="width:500px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="TreeViewItem" Source="Nodes" />
-        <div style="border:1px solid rgba(0, 0, 0, 0.2);margin-top:8px;border-radius:8px;height:50px">
+        <div style="text-align:left;padding-left:75px;padding-top:10px;">
+            <button style="width:60px" class="c-btn c-primary" @onclick="PostParams">ثبت</button>
             <button class="c-btn c-danger"
                     @onclick="async () =>
                                   {
@@ -30,7 +31,6 @@
                                   }">
                 انصراف
             </button>
-            <button class="c-btn c-primary" @onclick="PostParams">ثبت</button>
         </div>
     </Content>
 </Window>
@@ -39,11 +39,12 @@
 {
     Type Type;
     IList<TreeViewItem> Nodes;
-    IList<string> ReportParams;
+    IList<ReportParam> ReportParams;
     CTreeView<TreeViewItem> Tree;
 
     async Task PostParams()
     {
+        var result = Tree.GetSeletcedItems().Select(t => Newtonsoft.Json.JsonConvert.DeserializeObject<ReportNode>(t.Value));
         var reportParams = Tree.GetSeletcedItems().Select(t => Newtonsoft.Json.JsonConvert.DeserializeObject<ReportNode>(t.Value))
             .Select(t => new ReportParam()
             {
@@ -53,42 +54,45 @@
                 RuleId = t.RuleId,
                 DynamicParameterId = t.DynamicParameterId
             }).ToList();
-        using var scope = CreateScope();
-        await new ReportParamService(scope).AddAll(reportParams);
-        await new ReportParamService(scope).SaveChangesAsync();
-        await OnParameterSave.InvokeAsync();
-        ReportParams = new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId).Select(t => t.TitleEn).ToList();
-        Nodes = (await new ReportTree().CreateTreeForSelect(Type, null, ReportParams)).Select(t => new TreeViewItem()
+        if (reportParams.Count == 0)
+            ShowMessage("لطفا یک پارامتر را انخاب نمایید");
+        else
         {
-            Value = Newtonsoft.Json.JsonConvert.SerializeObject(t),
-            Selected = t.Selected,
-            Selectable = !t.Grouping,
-            Expanded = false,
-            Collabsable = t.Grouping,
-            Disabled = ReportParams.Contains(t.TitleEn),
-            Text = t.TitleFa
-        }).ToList();
-        await StatusChanged.InvokeAsync(WindowStatus.Close);
+            using var scope = CreateScope();
+            await new ReportParamService(scope).AddAll(reportParams);
+            await new ReportParamService(scope).SaveChangesAsync();
+            await OnParameterSave.InvokeAsync();
+            ReportParams = await new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
+            Nodes = (await new ReportTree().CreateTreeForSelect(Type, null, ReportParams)).Select(t => new TreeViewItem()
+                {
+                    Value = Newtonsoft.Json.JsonConvert.SerializeObject(t),
+                    Selected = t.Selected,
+                    Selectable = !t.Grouping,
+                    Expanded = false,
+                    Collabsable = t.Grouping,
+                    Disabled = ReportParams.Any(u => u.TitleEn == t.TitleEn),
+                    Text = t.TitleFa
+                }).ToList();
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
     }
 
     protected async override Task OnInitializedAsync()
     {
-        var model = new ReportSelectUi();
-        model.ReportId = ReportId;
         using var scope = CreateScope();
         var report = await new ReportService(scope).SingleAsync(ReportId);
         var reportGroup = await new ReportGroupService(scope).SingleAsync(report.ReportGroupId);
         Type = new AssemblyInfo().GetReturnType(reportGroup);
-        ReportParams = await new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId)
-            .Select(t => t.TitleEn).ToListAsync();
-        Nodes = (await new ReportTree().CreateTreeForSelect(Type, null, ReportParams)).Select(t => new TreeViewItem()
+        ReportParams = await new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
+        var nodes = await new ReportTree().CreateTreeForSelect(Type, null, ReportParams);
+        Nodes = nodes.Select(t => new TreeViewItem()
         {
             Value = Newtonsoft.Json.JsonConvert.SerializeObject(t),
             Selected = t.Selected,
             Selectable = !t.Grouping,
             Expanded = false,
             Collabsable = t.Grouping,
-            Disabled = ReportParams.Contains(t.TitleEn),
+            Disabled = ReportParams.Any(u => u.TitleEn == t.TitleEn),
             Text = t.TitleFa
         }).ToList();
         await base.OnInitializedAsync();

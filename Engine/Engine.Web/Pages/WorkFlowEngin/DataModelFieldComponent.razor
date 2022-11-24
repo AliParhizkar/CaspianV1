@@ -1,0 +1,114 @@
+﻿@namespace Caspian.Engine.WorkFlow
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@inherits SimplePage<DataModelField>
+@{
+    base.BuildRenderTree(__builder);
+    if (UpsertData.EntityFullName.HasValue())
+        UpsertData.FieldType = null;
+    if (UpsertData.FieldType.HasValue)
+        UpsertData.EntityFullName = null;
+}
+<div style="width:95%;margin:5px auto;">
+    <DataGrid @ref="CrudGrid" TEntity="DataModelField" TableHeight="400" ConditionExpr="t => t.DataModelId == DataModelId">
+        <Columns>
+            <GridColumn TEntity="DataModelField" Field="t => t.Title" />
+            <GridColumn TEntity="DataModelField" Field="t => t.EntityFullName" />
+            <GridColumn TEntity="DataModelField" Field="t => t.FieldName" />
+            <GridColumn TEntity="DataModelField" Field="t => t.FieldType.FaText()" />
+            <GridColumn TEntity="DataModelField" Field="t => t.IsCollection" style="text-align:center" Title="بصورت لیست" />
+            <GridCommandColumns TEntity="DataModelField" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:500px" OnOpen="FormOpen">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(DataModelFieldService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>نام موجودیت</label>
+                        </td>
+                        <td>
+                            <ComboBox @bind-Value="UpsertData.EntityFullName" TValue="string" TEntity="SelectListItem" Source="workflowEntityTypes" Disabled="UpsertData.FieldType.HasValue" OnValueChanged="SetFieldData" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>نوع فیلد</span>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="UpsertData.FieldType" Disabled="UpsertData.EntityFullName.HasValue()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>نام فارسی</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>عنوان لاتین فیلد</label>
+                        </td>
+                        <td>
+                            <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.FieldName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>بصورت لیست</label>
+                        </td>
+                        <td>
+                            <CheckBox @bind-Value="UpsertData.IsCollection" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+@code
+{
+    IList<SelectListItem> workflowEntityTypes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        var workflow = await new WorkflowGroupService(scope).SingleAsync(DataModelId);
+        workflowEntityTypes = new AssemblyInfo().GetModelTypes(workflow.SubSystemKind)
+            .Where(t => t.CustomAttributes.Any(u => u.AttributeType == typeof(WorkflowEntityAttribute)))
+            .Select(t => new SelectListItem(t.Name, t.GetCustomAttribute<WorkflowEntityAttribute>()!.Title)).ToList();
+        await base.OnInitializedAsync();
+    }
+
+    void SetFieldData()
+    {
+        if (UpsertData.EntityFullName.HasValue())
+        {
+            UpsertData.Title = workflowEntityTypes.Single(t => t.Value == UpsertData.EntityFullName).Text;
+            UpsertData.FieldName = UpsertData.EntityFullName[0].ToString().ToLower() + UpsertData.EntityFullName.Substring(1);
+        }
+        else
+        {
+            UpsertData.Title = null;
+            UpsertData.FieldName = null;
+        }
+    }
+
+    [Parameter]
+    public int DataModelId { get; set; }
+
+    void FormOpen()
+    {
+        UpsertData.DataModelId = DataModelId;
+    }
+}

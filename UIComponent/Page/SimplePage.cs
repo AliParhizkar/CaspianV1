@@ -78,15 +78,15 @@ namespace Caspian.UI
 
         protected virtual async Task DeleteAsync(TEntity data)
         {
-            if (!CrudGrid.DeleteMessage.HasValue() || await Confirm(CrudGrid.DeleteMessage))
+            using var scope = CreateScope();
+            var service = new SimpleService<TEntity>(scope);
+            var result = await service.ValidateAsync(new FluentValidation.ValidationContext<TEntity>(data, new PropertyChain(),
+                new RulesetValidatorSelector("remove")));
+            if (result.IsValid)
             {
-                using var scope = CreateScope();
-                var service = new SimpleService<TEntity>(scope);
-                var result = await service.ValidateAsync(new FluentValidation.ValidationContext<TEntity>(data, new PropertyChain(), 
-                    new RulesetValidatorSelector("remove")));
-                if (result.IsValid)
+                errorMessage = null;
+                if (!CrudGrid.DeleteMessage.HasValue() || await Confirm(CrudGrid.DeleteMessage))
                 {
-                    errorMessage = null;
                     var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
                     var old = await service.SingleAsync(id);
                     service.Remove(old);
@@ -100,9 +100,9 @@ namespace Caspian.UI
                     }
                     await CrudGrid.Reload();
                 }
-                else
-                    errorMessage = result.Errors.First().ErrorMessage;
             }
+            else
+                errorMessage = result.Errors.First().ErrorMessage;
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

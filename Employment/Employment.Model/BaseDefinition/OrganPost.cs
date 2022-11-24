@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,7 +10,6 @@ namespace Employment.Model
     {
         [Key]
         public int Id { get; set; }
-
 
         /// <summary>
         /// رشته شغلی
@@ -34,7 +34,5 @@ namespace Employment.Model
 
         [ForeignKey(nameof(OrganUnitId))]
         public virtual OrganUnit OrganUnit { get; set; }
-
-        public virtual ICollection<ChildrenProperties> ChildrenProperties { get; set; }
     }
 }

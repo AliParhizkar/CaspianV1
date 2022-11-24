@@ -57,10 +57,10 @@
 
     void alertMessageAction()
     {
-        if (message.HasValue())
+        if (alertMessage.HasValue())
         {
             errorMessage = null;
-            Alert(message);
+            Alert(alertMessage);
         }
         else
             errorMessage = "لطفا متن پیام را مشخص نمایید.";
@@ -68,9 +68,9 @@
 
     async Task confirmMessageAction()
     {
-        if (message.HasValue())
+        if (confirmMessage.HasValue())
         {
-            var result = await Confirm(message);
+            var result = await Confirm(confirmMessage);
             if (result)
                 ShowMessage("Ok button clicked");
             else

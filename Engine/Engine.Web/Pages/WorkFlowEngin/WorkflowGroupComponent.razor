@@ -1,0 +1,82 @@
+﻿@namespace Caspian.Engine.WorkFlow
+@inherits SimplePage<WorkflowGroup>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:0 auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="WorkflowGroup" TableHeight="400" ConditionExpr="t => t.SubSystemKind == Subsystem">
+        <Columns>
+            <GridColumn TEntity="WorkflowGroup" Field="t => t.Title" />
+            <GridColumn TEntity="WorkflowGroup" Title="مدل داده ای" style="width:80px">
+                <Template>
+                    <IconButton Href='@($"/{Subsystem.ToString()}/WorkflowEngine/DataModel/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="WorkflowGroup" Title="ایجاد فرم" style="width:80px">
+                <Template>
+                    <IconButton Href='@($"/{Subsystem.ToString()}/WorkflowEngine/WorkflowForm/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="WorkflowGroup" Title="گردش کار" style="width:80px">
+                <Template>
+                    <IconButton Href='@($"/{Subsystem.ToString()}/WorkflowEngine/Workflow/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="WorkflowGroup" Title="نسخه چاپی" style="width:80px">
+                <Template>
+                    <a href="@($"/Engine/WorkflowReport/{context.Data.Id}")" target="_blank">...</a>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="WorkflowGroup" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="گروه گردش کار" Style="width:500px" OnOpen="() => {UpsertData.SubSystemKind = Subsystem;}">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(WorkflowGroupService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>شرح</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="3" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+    [Parameter]
+    public SubSystemKind Subsystem { get; set; }
+}
+

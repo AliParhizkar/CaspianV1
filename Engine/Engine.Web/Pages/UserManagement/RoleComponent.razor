@@ -1,0 +1,76 @@
+﻿@namespace Caspian.Engine.UserManagement
+@inherits SimplePage<Role>
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div style="width:90%;margin:0 auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="Role" TableHeight="400">
+        <Columns>
+            <GridColumn TEntity="Role" Field="t => t.Title" />
+            <GridColumn TEntity="Role" Title="اعضاء" style="width:80px">
+                <Template>
+                    <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserMembership/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="Role" Title="منوها" style="width:80px">
+                <Template>
+                    <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/RoleAccess/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridColumn TEntity="Role" Title="منوها-درخت" style="width:80px">
+                <Template>
+                    <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/RoleAccessTree/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="Role" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="مشخصات نقش" Style="width:400px">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(RoleService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+    protected override void OnParametersSet()
+    {
+        if (SubSystemKind == null)
+            throw new CaspianException("خطا: SubSystemKind must initialized");
+        base.OnParametersSet();
+    }
+
+    [Parameter]
+    public SubSystemKind? SubSystemKind { get; set; }
+}

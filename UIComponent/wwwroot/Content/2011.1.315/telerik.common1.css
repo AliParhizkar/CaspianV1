@@ -1,7 +1,48 @@
 ﻿/* base stylesheet */
-body{
-    height:100vh;
+.c-menu-icon {
+    height: 25px;
+    background-color: #e5e5e5;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-basis: content;
 }
+    .c-menu-icon .fa {
+        color: #423d96;
+        font-size: 24px;
+        cursor:pointer;
+    }
+    .c-menu-icon div {
+        width:60px;
+        text-align:center;
+        padding-top:1px;
+    }
+.c-main-head {
+    height: 28px;
+    background-color: #e5e5e5;
+    display: flex;
+    text-align: center;
+    border-bottom: 1px solid rgb(177 177 177);
+    vertical-align: middle;
+    line-height: 25px;
+}
+.c-main-head div{
+    width:25%;
+}
+        .c-main-head .fa {
+            color: #423d96;
+            font-size: 17px;
+            line-height: 25px;
+            vertical-align: middle;
+        }
+        .c-main-head span {
+            color: #8c1111;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        body {
+            height: 100vh;
+        }
 .c-popup-window {
     position: absolute;
     border: 1px solid #d7d6d6;
@@ -10,6 +51,9 @@ body{
     box-shadow: 0px 4px 8px 0px rgb(0 0 0 / 50%);
     background-color:white;
 }
+.content.c-full{
+    width:100%;
+}
 .c-btn {
     border-width: 1px;
     font-size: 14px;
@@ -17,7 +61,7 @@ body{
     padding: .3rem .5rem;
     border-radius: 0.25rem;
     margin-right: 8px;
-    background-color:white;
+    background-color: white;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 .c-subtree {
@@ -410,9 +454,11 @@ span, label, td, th {
 }
     .c-icon-button.c-title {
         border-radius: 8px;
-        font-size:15px;
-        padding:5px;
-        color:white;
+        font-size: 15px;
+        padding: 5px;
+        color: white;
+        background-color: #007bff;
+        border-color: #007bff;
     }
     .c-icon-button.c-title .fa {
         color: white;
@@ -572,7 +618,7 @@ span, label, td, th {
 }
 .sidebar {
     float: right;
-    width: 165px;
+    width: 180px;
     box-sizing: border-box;
     height: 100vh;
     background-color: #e5e5e5;

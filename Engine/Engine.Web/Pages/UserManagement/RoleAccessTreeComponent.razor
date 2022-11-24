@@ -1,0 +1,114 @@
+﻿@namespace Caspian.Engine.UserManagement
+@inherits BasePage
+@if (user != null)
+{
+    <div style="display:flex;margin:8px;border:1px solid darkgray;border-radius:8px;padding:10px;">
+        <div style="width:calc(100% - 100px);">
+            <label>عنوان</label>
+            <span style="color:dodgerblue;font-size:14px;">@user.Title</span>
+        </div>
+        <div style="width:100px;">
+            <button @onclick="async () => await SaveData()" class="c-btn c-primary">ثبت همه</button>
+        </div>
+    </div>
+    <CTreeView @ref="tree" TEntity="TreeViewItem" exp OnChange="Change" style="height:calc(100vh - 75px);margin-right:5px;" Source="source" />
+}
+@code
+{
+    CTreeView<TreeViewItem> tree;
+    IList<TreeViewItem> source;
+    Role user;
+
+    async Task SaveData()
+    {
+        using var scope = CreateScope();
+        var ids = tree.GetSeletcedItems().Select(t => Convert.ToInt32(t.Value)).ToList();
+        var service = new MenuAccessibilityService(scope);
+        ///منوهایی که در پایگاه داده به نقش تخصیص داده شده اند
+        var oldMenusId = await service.GetAll().Where(t => t.RoleId == RoleId && t.Menu.MenuCategory.SubSystemKind == SubSystem).Select(t => t.MenuId).ToListAsync();
+        ///منوهایی که در درخت انتخاب شده اند ولی در پایگاه داده وجود ندارند
+        var menusShouldAdded = ids.Where(t => !oldMenusId.Contains(t));
+        ///منوهایی که در پایگاه داده وجود دارند ولی در درخت انتخاب نشده اند
+        var menusShouldRemoved = oldMenusId.Where(t => !ids.Contains(t));
+        await service.AddRangeAsync(menusShouldAdded.Select(t => new MenuAccessibility()
+            {
+                MenuId = t,
+                RoleId = RoleId
+            }));
+        var query = service.GetAll().Where(t => menusShouldRemoved.Contains(t.MenuId) && t.RoleId == RoleId);
+        service.RemoveRange(query);
+        await service.SaveChangesAsync();
+        ShowMessage("ثبت با موفقیت انجام شد");
+    }
+
+    void Change(TreeViewItem item)
+    {
+        if (item.Items != null)
+        {
+            foreach (var child in item.Items)
+                child.Selected = item.Selected;
+        }
+        var parent = item.Parent;
+        if (parent != null)
+        {
+            var siblings = parent.Items;
+            if (siblings.All(t => t.Selected == true))
+                parent.Selected = true;
+            else if (siblings.All(t => t.Selected == false))
+                parent.Selected = false;
+            else
+                parent.Selected = null;
+            parent = parent.Parent;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        user = await new RoleService(scope).SingleAsync(RoleId);
+        await InitializData();
+        await base.OnInitializedAsync();
+    }
+
+    async Task InitializData()
+    {
+        using var scope = CreateScope();
+        source = await new MenuCategoryService(scope).GetAll().Where(t => t.SubSystemKind == SubSystem)
+            .Select(t => new TreeViewItem()
+                {
+                    Text = t.Title,
+                    Expanded = true,
+                    Selectable = true,
+                    Value = t.Id.ToString(),
+                    Items = t.Menus.Select(u => new TreeViewItem()
+                    {
+                        Collabsable = false,
+                        Text = u.Title,
+                        Selected = u.Accessibilities.Any(x => x.RoleId == RoleId),
+                        Value = u.Id.ToString(),
+                        Selectable = true,
+                        Expanded = true
+                    }).ToList()
+                }).ToListAsync();
+        foreach (var item in source)
+        {
+            var items = item.Items;
+            if (items != null)
+            {
+                if (items.All(t => t.Selected == true))
+                    item.Selected = true;
+                else if (items.All(t => t.Selected == false))
+                    item.Selected = false;
+                else
+                    item.Selected = null;
+            }
+        }
+    }
+
+    [Parameter]
+    public int RoleId { get; set; }
+
+    [Parameter]
+    public SubSystemKind? SubSystem { get; set; }
+}
+                                                    

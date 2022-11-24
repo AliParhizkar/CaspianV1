@@ -1,0 +1,94 @@
+﻿@using Caspian.Engine.Service
+@using Caspian.Engine.Navigation
+@using Microsoft.AspNetCore.Components.Authorization
+@namespace Caspian.Engine.Shared
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject SingletonMenuService MenuService
+@inject NavigationManager navigationManager
+@{
+    int menuId = 0;
+    var uri = new Uri(navigationManager.Uri);
+    var hideMenu = uri.AbsolutePath.StartsWith("/Engine/");
+    if (userId != 1)
+    {
+        var url = "";
+        foreach (var segment in uri.Segments)
+        {
+            if (!Int64.TryParse(segment, out _))
+                url += segment;
+        }
+        if (url.EndsWith('/'))
+            url = url.Substring(0, url.Length - 1);
+        menuId = MenuService.GetMenuId(url);
+    }
+}
+<AuthorizeView>
+    <Authorized>
+        <div class="page">
+            @if (menusId != null)
+            {
+                var className = "content";
+                if (hideMenu)
+                    className += " c-full";
+                else
+                {
+                    <div class="sidebar">
+                        <div class="c-menu-icon">
+                            <div>
+                                <i class="" />
+                            </div>
+                            <div>
+                                <i class="" />
+                            </div>
+                            <div>
+                                <i class="" />
+                            </div>
+                        </div>
+                        <DataMenu MenusId="menusId" />
+                    </div>
+                }
+                <div class="@className">
+                    @if (userId == 1 || menusId.Contains(menuId))
+                    {
+                        @ChildContent
+                    }
+                    else
+                    {
+                        <h1 style="color:red">شما مجاز به ورود به این صفحه نیستید</h1>
+                    }
+                </div>
+            }
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <h1 style="color:red">شما مجاز به ورود به این صفحه نیستید</h1>
+    </NotAuthorized>
+</AuthorizeView>
+@code
+{
+    IList<int> menusId;
+    int userId;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (authenticationStateTask != null)
+        {
+            if (menusId == null)
+            {
+                var result = await authenticationStateTask;
+                userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+                using var scope = ServiceScopeFactory.CreateScope();
+                menusId = await new MenuAccessibilityService(scope).GetUserMenus(userId);
+            }
+        }
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter]
+    public RenderFragment ChildContent{ get; set; }
+}

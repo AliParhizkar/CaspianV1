@@ -3,9 +3,6 @@ using Caspian.Common;
 using Caspian.common;
 using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
-using Caspian.Common.Service;
-using Demo.Service;
-using Demo.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +32,6 @@ SubSystemKind.Engine.GetServiceAssembly().InjectServices(builder.Services);
 
 builder.Services.AddAuthentication("Cookies").AddCookie();
 var app = builder.Build();
-
 CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
 
 // Configure the HTTP request pipeline.

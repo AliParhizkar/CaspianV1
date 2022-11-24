@@ -1,0 +1,29 @@
+﻿using Caspian.Engine;
+using Employment.Model;
+using Caspian.Common.Service;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Employment.Service
+{
+    [ReportClass]
+    public class ParametricEmploymentOrderService : SimpleService<ParametricEmploymentOrder>, ISimpleService<ParametricEmploymentOrder>
+    {
+        public ParametricEmploymentOrderService(IServiceScope scope)
+            : base(scope)
+        {
+
+        }
+
+        [ReportMethod("حکم غیرهیات علمی")]
+        public IQueryable<ParametricEmploymentOrder> GetEmploymentOrders(ParametricEmploymentOrder order)
+        {
+            return GetAll(order);
+        }
+
+        [ReportMethod("برای تست")]
+        public IQueryable<ForTestEmployment> GetForTestEmployments(ForTestEmployment forTest)
+        {
+            return null;
+        }
+    }
+}

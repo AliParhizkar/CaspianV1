@@ -25,7 +25,12 @@ namespace Caspian.Engine.Service
         /// <returns></returns>
         public async Task<IList<int>> GetUserMenus(int userId)
         {
-            var query = GetAll().Where(t => userId == 1 || t.UserId == userId || t.Role.Memberships.Any(u => u.UserId == userId))
+            if (userId == 1)
+            {
+                return await new MenuService(ServiceScope).GetAll().Where(t => t.ShowonMenu)
+                    .Select(t => t.Id).ToListAsync();
+            }
+            var query = GetAll().Where(t => t.UserId == userId || t.Role.Memberships.Any(u => u.UserId == userId))
                 .Select(t => t.MenuId).Distinct();
             return await query.ToListAsync();
         }

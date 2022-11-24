@@ -1,0 +1,9 @@
+﻿@page "/Demo/UserManagement/RoleAccess/{RoleId:int}"
+
+<RoleAccessComponent MasterId="RoleId" SubSystem="SubSystemKind.Demo" />
+
+@code 
+{
+    [Parameter]
+    public int RoleId { get; set; }
+}

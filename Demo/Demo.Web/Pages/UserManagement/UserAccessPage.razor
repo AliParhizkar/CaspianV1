@@ -1,0 +1,9 @@
+﻿@page "/Demo/UserManagement/UserAccess/{UserId:int}"
+
+<UserAccessComponent MasterId="UserId"SubSystem="SubSystemKind.Demo" />
+
+@code 
+{
+    [Parameter]
+    public int UserId { get; set; }
+}

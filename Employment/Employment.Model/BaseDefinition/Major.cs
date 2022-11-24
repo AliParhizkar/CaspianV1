@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Engine;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,10 +17,10 @@ namespace Employment.Model
         [DisplayName("مدرک تحصیلی")]
         public int EducationDegreeId { get; set; }
 
-        [ForeignKey(nameof(EducationDegreeId))]
-        public virtual EducationDegree EducationDegree { get; set; }
-
-        [DisplayName("عنوان")]
+        [DisplayName("عنوان"), ReportField]
         public string Title { get; set; }
+
+        [ForeignKey(nameof(EducationDegreeId)), ReportField("مدرک تحصیلی")]
+        public virtual EducationDegree EducationDegree { get; set; }
     }
 }

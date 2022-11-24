@@ -60,9 +60,9 @@ namespace Caspian.UI
             if (type == typeof(int) || type == typeof(long) || type == typeof(short))
                 NumberDigit = 0;
             var json = this.ConvertToJson();
-            
             if (!json.Equals(oldJson))
             {
+                Focused = false;
                 oldJson = json;
                 await jsRuntime.InvokeVoidAsync("$.telerik.bindControl", htmlElement, json, UiControlType.TextBox);
             }

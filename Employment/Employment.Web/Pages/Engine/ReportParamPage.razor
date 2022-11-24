@@ -1,0 +1,8 @@
+﻿@page "/Employment/ReportEngine/ReportParam/{ReportId:int}"
+@namespace Employment.Web.ReportGenerator
+<ReportParamComponent Subsystem="SubSystemKind.Employment" ReportId="ReportId" />
+@code
+{
+    [Parameter]
+    public int ReportId { get; set; }
+}

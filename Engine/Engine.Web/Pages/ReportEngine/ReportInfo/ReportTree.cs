@@ -7,6 +7,8 @@ using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.DataProtection.XmlEncryption;
+using Microsoft.EntityFrameworkCore;
 
 namespace ReportUiModels
 {
@@ -20,58 +22,103 @@ namespace ReportUiModels
         /// </summary>
         /// <param name="type">نوع اصلی</param>
         /// <returns>ریشه درخت ساخته شده توسط تابع</returns>
-        public async Task<IList<ReportNode>> CreateTreeForSelect(Type type, ReportNode reportNode, IList<string> selectedNodes)
+        public async Task<IList<ReportNode>> CreateTreeForSelect(Type type, ReportNode reportNode, IList<ReportParam> selectedNodes)
         {
             var list = new List<ReportNode>();
             var enTitle = reportNode?.TitleEn;
+            if (reportNode != null && reportNode.DynamicParameterType.HasValue)
+            {
+                var parameterType = reportNode.DynamicParameterType.Value;
+                using var context = new Context();
+                if (enTitle.HasValue())
+                    type = type.GetMyProperty(enTitle).PropertyType;
+                switch(parameterType)
+                {
+                    case DynamicParameterType.Rule:
+                        var result = await context.Rules.Where(t => t.TypeName == type.Name).Select(t => new
+                        {
+                            t.Id,
+                            t.Title
+                        }).ToListAsync() ;
+                        foreach(var item in result)
+                        {
+                            list.Add(new ReportNode()
+                            {
+                                RuleId= item.Id,
+                                DynamicParameterType = DynamicParameterType.Rule,
+                                TitleFa = item.Title,
+                                TitleEn = enTitle,
+                                Selected = selectedNodes.Any(u => u.RuleId == item.Id)
+                            });
+                        }
+                        break;
+                    case DynamicParameterType.User:
+                        result = await context.DynamicParameters
+                            .Where(t => t.CalculationType == CalculationType.UserData).Select(t => new
+                            {
+                                t.Id,
+                                Title = t.Title,
+                            }).ToListAsync();
+                        foreach (var item in result)
+                        {
+                            list.Add(new ReportNode()
+                            {
+                                DynamicParameterId = item.Id,
+                                DynamicParameterType = DynamicParameterType.User,
+                                TitleFa = item.Title,
+                                TitleEn = enTitle,
+                                Selected = selectedNodes.Any(u => u.DynamicParameterId == item.Id)
+                            });
+                        }
+                        break;
+                    case DynamicParameterType.Form:
+                        result = await context.DynamicParameters.Where(t => t.CalculationType == CalculationType.FormData).Select(t => new
+                        {
+                            t.Id,
+                            Title = t.Title,
+                        }).ToListAsync();
+                        foreach (var item in result)
+                        {
+                            list.Add(new ReportNode()
+                            {
+                                DynamicParameterId = item.Id,
+                                DynamicParameterType = DynamicParameterType.User,
+                                TitleFa = item.Title,
+                                TitleEn = enTitle,
+                                Selected = selectedNodes.Any(u => u.DynamicParameterId == item.Id)
+                            });
+                        }
+                        break;
+                }
+                return list;
+            }
             var str = enTitle;
             if (str.HasValue())
-            {
-                if (str.EndsWith("___DynamicField"))
-                    str = str.Substring(0, str.Length - 15);
-                if (str.Length > 0 && str[str.Length - 1] == '.')
-                    str = str.Substring(0, str.Length - 1);
-                var array = str.Split('.');
-                if (int.TryParse(array[0], out _))
-                {
-                    var strTemp = str.Substring(str.IndexOf('.') + 1);
-                    type = type.GetMyProperty(strTemp).PropertyType;
-                }
-                else if (str.HasValue())
-                    type = type.GetMyProperty(str).PropertyType;
-            }
-            var dynamicField = type.GetCustomAttribute<DynamicFieldAttribute>();
+                type = type.GetMyProperty(str).PropertyType;
+            var dynamicField = type.GetCustomAttribute<DynamicTypeAttribute>();
             if (dynamicField != null)
             {
-                var array = str.Split('.');
-                if (!int.TryParse(array[0], out _) && (enTitle == null || !enTitle.EndsWith("___DynamicField")))
+                list.Add(new ReportNode()
                 {
-                    str = "___DynamicField";
-                    if (enTitle.HasValue())
-                        str = enTitle + ".___DynamicField";
-                    list.Add(new ReportNode()
-                    {
-                        TitleEn = str,
-                        TitleFa = "فرمهای پویا",
-                        Grouping = true
-                    });
-                }
-                else
+                    DynamicParameterType = DynamicParameterType.User,
+                    TitleFa = "پارامترهای کاربر",
+                    TitleEn = str,
+                    Grouping = true
+                });
+                list.Add(new ReportNode()
                 {
-                    if (str == "")
-                        str = null;
-                    int? formId = null;
-                    if (int.TryParse(str.Split('.')[0], out _))
-                        formId = Convert.ToInt32(str.Split('.')[0]);
-                    return (await new DynamicFieldEngin().GetDynamicItems(type, formId)).Select(t => new ReportNode()
-                    {
-                        RuleId = t.Id,
-                        TitleFa = t.Title,
-                        TitleEn = str,
-                        Grouping = formId == null,
-                        Selected = selectedNodes.Contains(t.Id.ToString())
-                    }).ToList();
-                }
+                    DynamicParameterType = DynamicParameterType.Form,
+                    TitleFa = "پارامترهای فرم",
+                    TitleEn = str,
+                    Grouping = true
+                });
+                list.Add(new ReportNode()
+                {
+                    DynamicParameterType = DynamicParameterType.Rule,
+                    TitleFa = "پارامترهای حقوقی",
+                    Grouping = true,
+                    TitleEn = str
+                });
             }
             foreach (var info in type.GetProperties())
             {
@@ -97,7 +144,6 @@ namespace ReportUiModels
                     var complextypeAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
                     if (complextypeAttr != null)
                         node.TitleFa = info.PropertyType.GetProperties().Single(t => t.CanWrite).GetCustomAttribute<ReportFieldAttribute>().Title + " " + node.TitleFa + "(*)";
-                    node.UseOrderBy = reportFieldAttribute.OrderBy;
                     var complexAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
                     bool singleRelation = false;
                     var keyInfo = info.PropertyType.GetPrimaryKey(true);
@@ -105,7 +151,7 @@ namespace ReportUiModels
                         singleRelation = keyInfo.GetCustomAttribute<ForeignKeyAttribute>() != null;
                     node.Grouping = info.GetCustomAttribute<ForeignKeyAttribute>() != null || complexAttr != null || singleRelation;
                     if (!node.Grouping)
-                        node.Selected = selectedNodes.Any(t => t == str);
+                        node.Selected = selectedNodes.Any(t => t.TitleEn == str);
                     list.Add(node);
                 }
             }
@@ -245,239 +291,6 @@ namespace ReportUiModels
             return false;
         }
 
-        public async Task<IList<ReportNode>> CreateTreeForWhere(Type mainType, string path)
-        {
-            var list = new List<ReportNode>();
-            PropertyInfo tempInfo = null;
-            var tempType = mainType;
-            DynamicFieldAttribute dynamicField = null;
-            var str = path;
-            if (str.HasValue() && str.EndsWith(".__DynamicField"))
-                str = path.Substring(0, str.LastIndexOf('.'));
-            if (str.HasValue())
-                tempInfo = mainType.GetMyProperty(str);
-            if (tempInfo != null)
-                tempType = tempInfo.PropertyType;
-            dynamicField = tempType.GetCustomAttribute<DynamicFieldAttribute>();
-            if (dynamicField != null)
-            {
-                if (path != null && path.EndsWith("__DynamicField"))
-                {
-                    return (await new DynamicFieldEngin().GetDynamicItems(tempType, null))
-                        .Where(t => t.ControlType != Caspian.Engine.ControlType.String)
-                        .Select(t => new ReportNode()
-                    {
-                        RuleId = t.Id,
-                        TitleFa = t.Title,
-                        TitleEn = str
-                    }).ToList();
-                }
-                else
-                {
-                    str = "__DynamicField";
-                    if (tempInfo != null)
-                        str = tempInfo.Name + '.' + str;
-                    list.Add(new ReportNode()
-                    {
-                        TitleEn = str,
-                        Grouping = true,
-                        TitleFa = "پارامترهای پویا",
-                    });
-                }
-            }
-            var type = mainType;
-            if (path.HasValue())
-            {
-                if (tempInfo.GetCustomAttribute<ForeignKeyAttribute>() != null)
-                {
-                    var node = new ReportNode();
-                    node.TitleEn = path;
-                    node.TitleFa = new ReportControlModel(mainType).GetFaTitle(path, null, null);
-                    node.FilteringControlType = FilteringControlType.ForeignKey;
-                    list.Add(node);
-                }
-                type = tempInfo.PropertyType;
-                var complexTypeAttr = type.GetCustomAttribute<ComplexTypeAttribute>();
-                if (complexTypeAttr != null)
-                {
-                    foreach(var info1 in type.GetProperties())
-                    {
-                        var reportAttr = info1.GetCustomAttribute<ReportFieldAttribute>();
-                        if (reportAttr != null && reportAttr.Where == WhereFieldType.True)
-                        {
-                            var node = new ReportNode();
-                            node.TitleEn = path + '.' + info1.Name;
-                            node.TitleFa = reportAttr.Title;
-                            tempType = info1.PropertyType;
-                            if (tempType.IsEnumType())
-                                node.FilteringControlType = FilteringControlType.Enums;
-                            else
-                                if (tempType == typeof(bool))
-                                    node.FilteringControlType = FilteringControlType.Boolean;
-                                else
-                                    node.FilteringControlType = FilteringControlType.FromTo;
-                            list.Add(node);
-                        }
-                    }
-                    return list;
-                }
-            }
-            foreach(var info in type.GetProperties())
-            {
-                var reportAttr = info.GetCustomAttribute<ReportFieldAttribute>();
-                if (reportAttr != null)
-                {
-                    FilteringControlType? filteringControlType = null;
-                    if (reportAttr.Where == WhereFieldType.Buffer)
-                        reportAttr.Where = IsWhereField(info);
-                    if (reportAttr.Where == WhereFieldType.True)
-                    {
-                        ///چنانچه فیلد کلید خارجی باشد و یا رابطه یک به (صفر یا یک داشته باشد) باید به لیست اضافه شود
-                        var foreignKey = info.GetCustomAttribute<ForeignKeyAttribute>();
-                        if (foreignKey == null)
-                        {
-                            var pKey = info.PropertyType.GetPrimaryKey();
-                            if (pKey != null && pKey.GetCustomAttribute<ForeignKeyAttribute>() != null)
-                                filteringControlType = FilteringControlType.ForeignKey;
-                        }
-                        ComplexTypeAttribute complexType = null;
-                        if (foreignKey != null)
-                            filteringControlType = FilteringControlType.ForeignKey;
-                        else
-                        {
-                            ///چنانچه فیلد از نوع شمارشی باشد باید به لیست اضافه شود.
-                            if (info.PropertyType.IsEnumType())
-                                filteringControlType = FilteringControlType.Enums;
-                            else
-                                if (info.PropertyType == typeof(bool))
-                                    filteringControlType = FilteringControlType.Boolean;
-                                else
-                                {
-                                    ///چنانچه فیلد از نوع Complex Type باشد باید به لیست اضافه شود
-                                    complexType = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
-                                    if (complexType != null)
-                                        filteringControlType = FilteringControlType.FromTo;
-                                    else
-                                    {
-                                        if (info.PropertyType.IsValueType)
-                                        {
-                                            var key = info.GetCustomAttribute<KeyAttribute>();
-                                            if (key == null)
-                                                filteringControlType = FilteringControlType.FromTo;
-                                        }
-                                    }
-                                }
-                        }
-                        if (filteringControlType.HasValue)
-                        {
-                            var node = new ReportNode();
-                            if (path.HasValue())
-                                node.TitleEn = path + '.' + info.Name;
-                            else
-                                node.TitleEn = info.Name;
-                            node.Grouping = filteringControlType == FilteringControlType.ForeignKey || complexType != null;
-                            if (reportAttr.Title.HasValue())
-                                node.TitleFa = reportAttr.Title;
-                            else
-                            {
-                                var displayName = info.GetCustomAttribute<DisplayNameAttribute>();
-                                if (displayName != null)
-                                    node.TitleFa = displayName.DisplayName;
-                            }
-                            node.FilteringControlType = filteringControlType;
-                            node.MaskText = reportAttr.MaskedText;
-                            list.Add(node);
-                        }
-                    }
-                }
-            }
-            return list;
-        }
-
-        private WhereFieldType IsWhereField(PropertyInfo info)
-        {
-            if (info.PropertyType.IsEnumType())
-                return WhereFieldType.True;
-            if (info.GetCustomAttribute<ForeignKeyAttribute>() != null)
-                return WhereFieldType.True;
-            if (info.PropertyType.IsValueType)
-            {
-                foreach(var info1 in info.PropertyType.GetProperties())
-                {
-                    var foreignKey = info1.GetCustomAttribute<ForeignKeyAttribute>();
-                    if (foreignKey != null && foreignKey.Name == info.Name)
-                        return WhereFieldType.False;
-                }
-                return WhereFieldType.True;
-            }
-            if (info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>() != null)
-                return WhereFieldType.True;
-            var pKey = info.PropertyType.GetPrimaryKey();
-            if (pKey != null && pKey.GetCustomAttribute<ForeignKeyAttribute>() != null)
-                return WhereFieldType.True;
-            return WhereFieldType.False;
-        }
-
-        public ReportNode GetNodeproperty(Type mainType, string path)
-        {
-            var node = new ReportNode();
-            node.TitleEn = path;
-            var info = mainType.GetMyProperty(path);
-            if (info.GetCustomAttribute<ForeignKeyAttribute>() != null)
-                node.FilteringControlType = FilteringControlType.ForeignKey;
-            else
-            {
-                if (info.PropertyType.IsEnumType())
-                    node.FilteringControlType = FilteringControlType.Enums;
-                else
-                    if (info.PropertyType == typeof(bool))
-                        node.FilteringControlType = FilteringControlType.Boolean;
-                    else
-                        node.FilteringControlType = FilteringControlType.FromTo;
-            }
-            var reportFieldAttr = info.GetCustomAttribute<ReportFieldAttribute>();
-            if (reportFieldAttr != null)
-                node.MaskText = reportFieldAttr.MaskedText;
-            return node;
-        }
-
-        public ReportNode ReportNodeForWhere(Type type, string enTitle)
-        {
-            var reportNode = new ReportNode();
-            var tempType = type;
-            PropertyInfo pInfo = null;
-            foreach (var item in enTitle.Split('.'))
-            {
-                pInfo = tempType.GetProperty(item);
-                tempType = pInfo.PropertyType;
-            }
-            var reportAttribute = pInfo.GetCustomAttribute<ReportFieldAttribute>();
-            reportNode.MaskText = reportAttribute.MaskedText;
-            reportNode.Url = reportAttribute.Url;
-            reportNode.ValueField = type.GetPrimaryKey().Name;
-            reportNode.DisplayField = reportAttribute.DisplayField;
-            var foreignKey = pInfo.GetCustomAttribute<ForeignKeyAttribute>();
-            if (foreignKey != null)
-                reportNode.FilteringControlType = FilteringControlType.ForeignKey;
-            tempType = pInfo.PropertyType;
-            if (tempType.IsNullableType())
-                tempType = Nullable.GetUnderlyingType(tempType);
-            if (tempType == typeof(bool))
-                reportNode.FilteringControlType = FilteringControlType.Boolean;
-            if (tempType.IsEnum)
-                reportNode.FilteringControlType = FilteringControlType.Enums;
-            if (!reportNode.FilteringControlType.HasValue && tempType.IsValueType || reportNode.MaskText.HasValue())
-                reportNode.FilteringControlType = FilteringControlType.FromTo;
-            return reportNode;
-        }
-
-        public IDictionary<string, string> GetOrderByList(Type type)
-        {
-            var dic = new Dictionary<string, string>();
-            GetOrderByList(type, "", dic);
-            return dic;
-        }
-
         private void GetOrderByList(Type type, string enTitle, IDictionary<string, string> dic)
         {
             foreach(var info in type.GetProperties())
@@ -511,17 +324,6 @@ namespace ReportUiModels
                     dic.Add(fielName, faTitle);
                 }
             }
-        }
-
-        private ReportNode GetReportNode(PropertyInfo property, string preFix, string faTitle, FilteringControlType controlType)
-        {
-            var reportNode = new ReportNode();
-            if (preFix.HasValue())
-                reportNode.TitleEn = preFix + '.';
-            reportNode.TitleEn += property.Name;
-
-            reportNode.FilteringControlType = controlType;
-            return reportNode;
         }
     }
 }

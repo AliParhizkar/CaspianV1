@@ -1,0 +1,187 @@
+﻿@namespace Caspian.Engine.SystemManagement
+@inherits SimplePage<Menu>
+<div style="width:95%;margin:5px auto">
+    <table style="width:100%">
+        <tr>
+            <td style="width:80px;">
+                <label>منوی اصلی</label>
+            </td>
+            <td>
+                <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="SearchData.MenuCategoryId"
+                          TextExpression="t => t.Title" ConditionExpression="t => t.SubSystemKind == Subsystem" />
+            </td>
+            <td style="width:80px;"></td>
+            <td style="width:80px">
+                <label>منوی فرعی</label>
+            </td>
+            <td colspan="2">
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>آدرس صفحه</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Source" Style="direction:ltr" />
+            </td>
+            <td></td>
+            <td>
+                <CheckBox @bind-Value="onlyUninitalizedMenu"
+                          OnChange="() =>
+                                     {
+                                         CrudGrid.EnableLoading();
+                                     }" />
+            </td>
+            <td>
+                <label>فقط منوهای فاقد عنوان</label>
+            </td>
+            <td>
+                <IconButton @onclick="async () => { await UpdateMenus(); } " IconType="IconType.Refresh" title="بروزرسانی منوها" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <CheckBox @bind-Value="ShowOnMenu" OnChange="() => { CrudGrid.EnableLoading(); }" />
+            </td>
+            <td>
+                <label>نمایش در منو</label>
+            </td>
+            <td>
+                <CheckBox @bind-Value="InvalidAddress" OnChange="() => { CrudGrid.EnableLoading(); }" />
+            </td>
+            <td colspan="2">
+                <label>آدرس نامعتبر</label>
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="Menu" TableHeight="350" HideInsertIcon ConditionExpr='t => (InvalidAddress == null || t.InvalidAddress == InvalidAddress) && (ShowOnMenu == null || t.ShowonMenu == ShowOnMenu.Value) && (!onlyUninitalizedMenu || t.Title == null) && t.Source.ToLower().StartsWith("/" + Subsystem.ToString().ToLower())'>
+        <Columns>
+            <GridColumn TEntity="Menu" Field="t => t.MenuCategory.Title" Title="منوی اصلی" />
+            <GridColumn TEntity="Menu" Field="t => t.Title" />
+            <GridColumn TEntity="Menu" Field="t => t.Source" style="direction:ltr;text-align:left;" />
+            <GridColumn TEntity="Menu" Field="t => t.ShowonMenu.ToString()" style="width:100px;" />
+            <GridCommandColumns TEntity="Menu" HideDelete />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="منو" Style="width:500px;">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(MenuService)" />
+                @{
+                    var path = $"/{Subsystem}/Engin";
+                    var disable = UpsertData.Source?.StartsWith(path) == true;
+                }
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td style="width:80px">
+                            <label>آدرس صفحه</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Source" Style="direction:ltr" readonly Disabled="disable" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>منوی اصلی</label>
+                        </td>
+                        <td>
+                            <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="UpsertData.MenuCategoryId"
+                                      TextExpression="t => t.Title" Disabled="disable"
+                                      ConditionExpression='t => t.SubSystemKind == Subsystem && t.Title != "Engin"' />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" Disabled="disable" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>نمایش در منو</label>
+                        </td>
+                        <td>
+                            <CheckBox @bind-Value="UpsertData.ShowonMenu" Disabled="disable" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="text-align:center">
+                            <FormCommandButton disabled="@disable" />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+@code
+{
+    bool? ShowOnMenu;
+    bool? InvalidAddress;
+    bool onlyUninitalizedMenu;
+
+    [Parameter]
+    public SubSystemKind Subsystem { get; set; }
+
+    string ClearSource(string str)
+    {
+        var index = str.IndexOf('{');
+        if (index >= 0)
+            str = str.Substring(0, index - 1);
+        index = str.IndexOf('?');
+        if (index >= 0)
+            str = str.Substring(0, index);
+        return str;
+    }
+
+    async Task UpdateMenus()
+    {
+        var components = new AssemblyInfo().GetWebTypes(Subsystem);
+        var list = new List<string>();
+        foreach (var component in components)
+        {
+            var routeAttribute = component.GetCustomAttributes<RouteAttribute>().FirstOrDefault();
+            if (routeAttribute != null)
+            {
+                var source = ClearSource(routeAttribute.Template);
+
+                if (source.StartsWith("/" + Subsystem, StringComparison.OrdinalIgnoreCase))
+                    list.Add(source);
+                else
+                    throw new CaspianException("خطا: On type " + component.Name + " path shold start with /" + Subsystem + " but is " + source, null);
+            }
+        }
+        using var scope = ServiceScopeFactory.CreateScope();
+        var service = new MenuService(scope);
+        var menus = await service.GetAll().Where(t => t.Source.ToLower().StartsWith("/" + Subsystem.ToString().ToLower())).ToListAsync();
+        foreach (var item in list)
+        {
+            var menu = menus.SingleOrDefault(t => t.Source.Equals(item, StringComparison.OrdinalIgnoreCase));
+            if (menu == null)
+            {
+                ///Insert menu
+                await service.AddAsync(new Menu()
+                    {
+                        Source = item
+                    });
+                await service.SaveChangesAsync();
+            }
+            else if (menu.Source != item)
+            {
+                ///Update source
+                var old = await service.SingleAsync(menu.Id);
+                if (old.Title.HasValue() && old.MenuCategoryId.HasValue)
+                {
+                    old.Source = item;
+                    await service.UpdateAsync(old);
+                    await service.SaveChangesAsync();
+                }
+            }
+        }
+        await CrudGrid.ResetGrid();
+    }
+}
