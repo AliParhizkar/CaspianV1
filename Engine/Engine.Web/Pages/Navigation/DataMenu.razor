@@ -42,11 +42,4 @@
     {
         return sholdRender;
     }
-
-    void NavigateTo(string source)
-    {
-        //var curentUrl = navigationManager.Uri.Substring(navigationManager.BaseUri.Length - 1);
-        //var flag = curentUrl.StartsWith(source);
-        navigationManager.NavigateTo(source.Substring(1));
-    }
 }

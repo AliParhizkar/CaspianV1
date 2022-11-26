@@ -20,7 +20,7 @@ namespace Main
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-                }, "auth");
+                }, "Identity.Application12345");
                 ClaimsPrincipal claims = new ClaimsPrincipal(claimsIdentity);
                 await HttpContext.SignInAsync(claims, new AuthenticationProperties()
                 {

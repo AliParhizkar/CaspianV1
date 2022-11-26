@@ -19,7 +19,7 @@
             <div style="text-align:center;padding:10px 0 3px 0">
                 <span style="color:seagreen;font-weight:bold;font-size:14px;">تعداد @(count) منو انتخاب شده است</span>
             </div>
-            <CTreeView @ref="tree" TEntity="TreeViewItem" OnChange="Change" style="height:calc(100vh - 192px);margin-right:5px;" Source="source" />
+            <CTreeView @ref="tree" TEntity="TreeViewItem" OnChange="Change" style="height:calc(100vh - 218px);margin-right:5px;" Source="source" />
         </div>
     </div>
     <div style="display:table-cell;width:50%;padding-right:40px">
@@ -29,7 +29,7 @@
             <div style="text-align:center;padding:10px 0 3px 0">
                 <span style="color:seagreen;font-weight:bold;font-size:14px;">تعداد @(count1) منو انتخاب شده است</span>
             </div>
-            <CTreeView @ref="tree1" OnChange="Change1" OnCollapsed="OnCollapsed" TEntity="TreeViewItem" style="height:calc(100vh - 170px);margin-right:5px;" Source="source1" OnExpanded="async node => await OnExpanded(node)" />
+            <CTreeView @ref="tree1" OnChange="Change1" OnCollapsed="OnCollapsed" TEntity="TreeViewItem" style="height:calc(100vh - 196px);margin-right:5px;" Source="source1" OnExpanded="async node => await OnExpanded(node)" />
         </div>
     </div>
 </div>

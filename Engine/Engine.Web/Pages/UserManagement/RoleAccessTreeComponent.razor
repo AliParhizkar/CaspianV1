@@ -4,14 +4,14 @@
 {
     <div style="display:flex;margin:8px;border:1px solid darkgray;border-radius:8px;padding:10px;">
         <div style="width:calc(100% - 100px);">
-            <label>عنوان</label>
+            <label>عنوان نقش</label>
             <span style="color:dodgerblue;font-size:14px;">@user.Title</span>
         </div>
         <div style="width:100px;">
             <button @onclick="async () => await SaveData()" class="c-btn c-primary">ثبت همه</button>
         </div>
     </div>
-    <CTreeView @ref="tree" TEntity="TreeViewItem" exp OnChange="Change" style="height:calc(100vh - 75px);margin-right:5px;" Source="source" />
+    <CTreeView @ref="tree" TEntity="TreeViewItem" exp OnChange="Change" style="height:calc(100vh - 105px);margin-right:5px;" Source="source" />
 }
 @code
 {

@@ -3,7 +3,7 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:95%;margin:10px auto">
+<div style="width:95%;margin:10px auto 0 auto">
     <table style="width:100%">
         <tr>
             <td>
@@ -38,7 +38,7 @@
                         </td>
                     </tr>
                 </table>
-                <DataGrid @ref="MemberGrid" TEntity="Menu" HideInsertIcon Search="MemberSearch" ConditionExpr="t => t.MenuCategory.SubSystemKind == SubSystem" TableHeight="350">
+                <DataGrid @ref="MemberGrid" TEntity="Menu" HideInsertIcon Search="MemberSearch" ConditionExpr="t => t.MenuCategory.SubSystemKind == SubSystem" TableHeight="330">
                     <Columns>
                         <GridColumn TEntity="Menu" Field="@(t => t.MenuCategory.Title)" Title="منوی فرعی" />
                         <GridColumn TEntity="Menu" Field="t => t.Title" style="width:150px" />
@@ -50,7 +50,7 @@
                     <CaspianValidationValidator ValidatorType="typeof(MenuAccessibilityService)" />
                     <div style="padding-top:100px;">
                         <div style="padding-bottom:15px">
-                            <IconButton IconType="IconType.AngleDoubleLeft" />
+                            <IconButton IconType="IconType.AngleLeft" />
                         </div>
                         <IconButton type="button"
                                     @onclick="async () =>
@@ -58,7 +58,7 @@
                                                   BlockUI();
                                                   await base.DeleteAsync();
                                                   UnblockUI();
-                                              }" IconType="IconType.AngleDoubleRight" />
+                                              }" IconType="IconType.AngleLeft" />
                     </div>
                 </CaspianForm>
             </td>
@@ -94,7 +94,7 @@
                         </tr>
                     </table>
                 </fieldset>
-                <DataGrid @ref="CrudGrid" TEntity="MenuAccessibility" HideInsertIcon ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" Search="SearchData" TableHeight="350">
+                <DataGrid @ref="CrudGrid" TEntity="MenuAccessibility" HideInsertIcon ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" Search="SearchData" TableHeight="330">
                     <Columns>
                         <GridColumn TEntity="MenuAccessibility" Field="t => t.Menu.MenuCategory.Title" Title="منوی فرعی" />
                         <GridColumn TEntity="MenuAccessibility" Field="t => t.Menu.Title" />

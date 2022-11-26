@@ -23,7 +23,7 @@
         <div style="width:70%;margin:0 auto">
             <StringTextBox @bind-Value="@organSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو عنوان واحد سازمانی" />
         </div>
-        <CTreeView @ref="tree" TEntity="OrganUnit" style="margin:5px auto;width:70%;;height:calc(100vh - 216px)" TextFunc="t => t.Title" ParentNodeFilterFunc="t => t.ParentOrganId == null" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
+        <CTreeView @ref="tree" TEntity="OrganUnit" style="margin:5px auto;width:70%;;height:calc(100vh - 245px)" TextFunc="t => t.Title" ParentNodeFilterFunc="t => t.ParentOrganId == null" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
             <Template>
                 <TreeNodeTemplate Levels="new byte[]{1, 2, 3, 4, 5, 6}">
                     <span style="padding-right:12px;" class="t-grid-delete">

@@ -12,11 +12,6 @@ namespace Caspian.Engine.Service
 
         public IList<Menu> Menus { get; set; }
 
-        public int GetMenuId(string path)
-        {
-            return Menus.Single(t => t.Source == path).Id;
-        }
-
         public Menu GetMenu(string path)
         {
             return Menus.Single(t => t.Source == path);

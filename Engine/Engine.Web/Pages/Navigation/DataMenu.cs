@@ -29,6 +29,11 @@ namespace Caspian.Engine.Navigation
             base.OnInitialized();
         }
 
+        void NavigateTo(string source)
+        {
+            navigationManager.NavigateTo(source.Substring(1));
+        }
+
         [Parameter]
         public IList<int> MenusId { get; set; }
 
