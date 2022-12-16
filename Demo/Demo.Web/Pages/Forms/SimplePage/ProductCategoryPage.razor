@@ -16,7 +16,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="ProductCategory" Search="SearchData" TableHeight="200">
+    <DataGrid @ref="CrudGrid" TEntity="ProductCategory" Search="SearchData" TableHeight="300">
         <Columns Context="con">
             <GridColumn TEntity="ProductCategory" Field="t => t.Title" />
             <GridColumn TEntity="ProductCategory" Field="t => t.Code" />

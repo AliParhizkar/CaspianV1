@@ -22,6 +22,9 @@ namespace Caspian.UI
             await ValueChanged.InvokeAsync(value);
         }
 
+        [Parameter]
+        public bool OpenOnFocus { get; set; }
+
         protected override void OnInitialized()
         {
             attrs = new Dictionary<string, object>();

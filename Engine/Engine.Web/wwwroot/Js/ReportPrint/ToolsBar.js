@@ -254,7 +254,7 @@
         var obj = this;
         var data = ['_34', '_35', '_36', '_37', '_38'];
         enable(data);
-        $('.toolsbar').click(function (evt) {
+        $('.toolsbar').click(async function (evt) {
             if ($(this).css('background-position').split(' ')[1] == '0px')
                 return;
             var str = $(this).css('background-position').split(' ')[0] + ' -27px ';
@@ -468,13 +468,6 @@
                         page.resetCurentControl();
                         var data = page.getPageProperty();
                         $.report.dotNetObjectReference.invokeMethodAsync('ShowSettingWindow', data);
-                        //win = $.telerik.getWindow();
-                        //win.title('تنظیمات صفحه');
-                        //win.formContentUrl = pageSetingUrl;
-                        //win.selectedObject = page.getPageProperty();
-                        //win.size(400, 340);
-                        //win.center();
-                        //win.open();
                         break;
                     case 35:
                         var reportId = $('#ReportId').val();
@@ -491,12 +484,9 @@
                                 parent.$.telerik.getWindow().close();
                             } else {
                                 $.telerik.blockUI();
-                                $.report.dotNetObjectReference.invokeMethodAsync('SaveData', data);
+                                await $.report.dotNetObjectReference.invokeMethodAsync('SaveData', data);
                                 $.telerik.showMessage("ثبت با موفقیت انجام شد.");
                                 $.telerik.unblockUI();
-                                //$.telerik.post(saveUrl, data, function (data) {
-                                //    $.telerik.showMessage("ثبت با موفقیت انجام شد.", 2)
-                                //});
                             }
                         }
                         break;

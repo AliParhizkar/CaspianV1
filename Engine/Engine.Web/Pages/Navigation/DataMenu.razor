@@ -13,20 +13,31 @@
             @foreach (var category in Categories)
             {
                 var menus = Menus.Where(t => t.MenuCategoryId == category.Id);
+                var flag = menus.Any(t => curentUrl.Equals(t.Source));
+                var style = flag ? "" : "display:none";
                 if (menus.Any())
                 {
                     <li class="default">
-                        <div class="link">
+                        <div class="link" @onclick="@(async() => await ChangeValueAsync())">
                             <i class="fa @(category.IconFont)"></i>
                             <span>@category.Title</span>
-                            <i class="c-icon1 fa fa-chevron-down"></i>
+                            <i class="c-icon fa fa-chevron-down"></i>
                         </div>
-                        <ul class="submenu">
+                        <ul style="@(style)" class="submenu">
                             @foreach (var menu in menus)
                             {
-                                <li>
-                                    <a href="@(menu.Source)">@(menu.Title)</a>
-                                </li>
+                                @if (curentUrl.Equals(menu.Source))
+                                {
+                                    <li class="selected" @ref="elm">
+                                        <a href="@(menu.Source)">@(menu.Title)</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="@(menu.Source)">@(menu.Title)</a>
+                                    </li>
+                                }
                             }
                         </ul>
                     </li>
@@ -35,11 +46,3 @@
         </ul>
     }
 </div>
-@code 
-{
-    bool sholdRender = true;
-    protected override bool ShouldRender()
-    {
-        return sholdRender;
-    }
-}

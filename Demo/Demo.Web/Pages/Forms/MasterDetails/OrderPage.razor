@@ -1,28 +1,28 @@
 ﻿@page "/Demo/Order"
 @namespace Demo.Web.Pages
 @inherits MasterDetailPage<Order, OrderDeatil>
-<div style="margin:10px auto; width:90%">
+<div style="margin:10px auto; width:95%">
     <CaspianForm @ref="MasterForm" Model="UpsertData" OnValidSubmit="@(async con =>
                                                             {
                                                                 var result = await Task.FromResult(true);
                                                                 return result;
                                                             })">
         <CaspianValidationValidator ValidatorType="typeof(OrderService)" />
-        <table style="width:500px;margin:0 auto">
+        <table style="width:100%;margin:0 auto">
             <tr>
-                <td>تاریخ سفارش</td>
+                <td><label>تاریخ سفارش</label></td>
                 <td>
                     <DatePicker @bind-Value="UpsertData.Date" />
                 </td>
-            </tr>
-            <tr>
-                <td>نوع سفارش</td>
+                <td><label>نوع سفارش</label></td>
                 <td>
                     <DropdownList @bind-Value="UpsertData.OrderType" />
                 </td>
+                <td style="width:80px;">
+                    <button style="width:80px;" class="c-btn c-primary">ثبت</button>
+                </td>
             </tr>
         </table>
-        <button>ثبت</button>
     </CaspianForm>
     <DataGrid @ref="Grid" TEntity="OrderDeatil" TableHeight="250" AutoInsert HidePageSize ServiceType="typeof(OrderDeatilService)">
         <Columns Context="con">

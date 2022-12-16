@@ -181,7 +181,7 @@
         var result = await service.ValidateRemoveAsync(city);
         if (result.IsValid)
         {
-            service.Remove(city);
+            await service.RemoveAsync(city);
             await service.SaveChangesAsync();
             ///پس از خذف شهر باید تمامی شهرهای استان(گره پرنت) دوباره بارگذاری شوند
             node.Parent.Items = await service.GetAll()

@@ -6,6 +6,7 @@ using FluentValidation.Results;
 using FluentValidation.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Data;
 
 namespace Caspian.Common.Service
 {
@@ -59,6 +60,7 @@ namespace Caspian.Common.Service
         public override Task<ValidationResult> ValidateAsync(ValidationContext<TEntity> context, CancellationToken cancellation = default)
         {
             context.RootContextData["__ServiceScope"] = ServiceScope;
+            
             return base.ValidateAsync(context, cancellation);
         }
 
@@ -78,8 +80,9 @@ namespace Caspian.Common.Service
             await Context.Set<TEntity>().AddRangeAsync(entities);
         }
 
-        public virtual void Remove(TEntity entity)
+        public async virtual Task RemoveAsync(TEntity entity)
         {
+           
             Context.Set<TEntity>().Remove(entity);
         }
 
@@ -87,7 +90,7 @@ namespace Caspian.Common.Service
         {
             var old = await SingleOrDefaultAsync(id);
             if (old != null)
-                Remove(old);
+                await RemoveAsync(old);
         }
         
         async public Task<TEntity> SingleOrDefaultAsync(int id)

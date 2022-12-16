@@ -24,7 +24,7 @@ namespace Caspian.Engine.Service
             await base.UpdateAsync(old);
         }
 
-        public override void Remove(ReportGroup entity)
+        public async override Task RemoveAsync(ReportGroup entity)
         {
             throw new Exception("امکان حذف گروه گزارش وجود ندارد.");
         }

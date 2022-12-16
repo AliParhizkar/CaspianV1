@@ -1,6 +1,6 @@
 ﻿using Caspian.Common;
-using Employment.Model.History;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Employment.Model
 {
@@ -33,5 +33,7 @@ namespace Employment.Model
         public DbSet<BaseStudyFactor> BaseStudyFactors { get; set; }
 
         public DbSet<ExtraFactor> ExtraFactors { get; set; }
+
+        public DbSet<EmploymentOrderDynamicParameterValue> EmploymentOrderDynamicParameterValues { get; set; }
     }
 }

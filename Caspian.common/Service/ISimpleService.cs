@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using FluentValidation;
-using System.Threading.Tasks;
-using System;
+﻿using FluentValidation;
+using FluentValidation.Results;
 
 namespace Caspian.Common.Service
 {
@@ -15,7 +13,7 @@ namespace Caspian.Common.Service
 
         Task<TEntity> AddAsync(TEntity entity);
 
-        void Remove(TEntity entity);
+        Task RemoveAsync(TEntity entity);
 
         Task<TEntity> SingleAsync(int id);
 

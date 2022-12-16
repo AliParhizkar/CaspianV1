@@ -55,7 +55,7 @@
                     <CaspianValidationValidator ValidatorType="typeof(CustomerGroupMembershipService)" />
                     <div style="padding-top:100px;">
                         <div style="padding-bottom:15px">
-                            <IconButton IconType="IconType.AngleDoubleLeft" />
+                            <IconButton IconType="IconType.AngleLeft" />
                         </div>
                         <IconButton type="button"
                                     @onclick="async () =>
@@ -63,7 +63,7 @@
                                                   BlockUI();
                                                   await base.DeleteAsync();
                                                   UnblockUI();
-                                              }" IconType="IconType.AngleDoubleRight" />
+                                              }" IconType="IconType.AngleRight" />
                     </div>
                 </CaspianForm>
             </td>

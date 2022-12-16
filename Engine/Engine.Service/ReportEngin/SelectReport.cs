@@ -56,7 +56,7 @@ namespace Caspian.Engine
             {
                 var enTitle = dynamicFields.First().TitleEn;
                 dynamicItemType = GetDynamicItemType(enTitle);
-                dynamicTypeOfDynamicItem = GetDynamicTypeOfDynamicItem(dynamicItemType, enTitle);
+                dynamicTypeOfDynamicItem = GetDynamicTypeOfDynamicItem(enTitle);
             }
             var dynamicType = GetDynamicType(fields, dynamicTypeOfDynamicItem);
             int i = 0;
@@ -73,7 +73,8 @@ namespace Caspian.Engine
             if (flag)
             {
                 var info = dynamicType.GetMember("DynamicItems")[0];
-                var tempExpr = DynamicItemSelectExpr(dynamicItemType, dynamicTypeOfDynamicItem, info, dynamicFields.First().TitleEn);
+                var titleEn = dynamicFields.First().TitleEn;
+                var tempExpr = DynamicItemSelectExpr(dynamicItemType, titleEn);
                 list.Add(Expression.Bind(info, tempExpr));
             }
             var expr = Expression.MemberInit(Expression.New(dynamicType), list);
@@ -293,20 +294,21 @@ namespace Caspian.Engine
             return Expression.Call(null, method, parameter, expr);
         }
 
-        public IList GetValues(IEnumerable values, IList<ReportParam> reportParams)
+        public IList GetValues(IQueryable values, IList<ReportParam> reportParams)
         {
             //var fields = reportParams.Where(t => !t.DynamicItemId.HasValue).Select(t => t.TitleEn).ToList();
             var type = GetEqualType(reportParams, typeof(string));
             var listType = typeof(List<>);
             listType = listType.MakeGenericType(new Type[] { type });
             IList list = (IList)Activator.CreateInstance(listType);
-            var flag = reportParams.Any(t => t.RuleId.HasValue);
+            var flag = reportParams.Any(t => t.RuleId.HasValue || t.DynamicParameterId.HasValue);
             string dynamicFieldName = null;
-            if (flag)
-            {
-                var enTitle = reportParams.First(t => t.RuleId.HasValue).TitleEn;
-                dynamicFieldName = new DynamicFieldEngin().GetDynamicFieldForeignKey(paramExpr.Type, enTitle);
-            }
+            //if (flag)
+            //{
+            //    var enTitle = reportParams.First(t => t.RuleId.HasValue || t.DynamicParameterId.HasValue).TitleEn;
+            //    dynamicFieldName = new DynamicFieldEngin().GetDynamicFieldForeignKey(paramExpr.Type, enTitle);
+            //}
+            var result = values.ToDynamicList();
             foreach (var value in values.AsQueryable().ToIList())
             {
                 IEnumerable<object> dynamicItemsValue = new List<object>();
@@ -317,21 +319,54 @@ namespace Caspian.Engine
                 {
                     string name = null;
                     object tempValue = null;
-                    if (param.RuleId.HasValue)
+                    if (param.RuleId.HasValue || param.DynamicParameterId.HasValue)
                     {
                         foreach (var dynamicItem in dynamicItemsValue)
                         {
-                            if (Convert.ToInt32(dynamicItem.GetMyValue(dynamicFieldName)) == param.RuleId.Value)
+                            if (param.RuleId.HasValue)
                             {
-                                var text = Convert.ToString(dynamicItem.GetMyValue("Text"));
-                                if (text.HasValue())
-                                    tempValue = text;
-                                else
+                                if (Convert.ToInt32(dynamicItem.GetMyValue("Rule")) == param.RuleId.Value)
+                                {
+                                    //var text = Convert.ToString(dynamicItem.GetMyValue("Text"));
+                                    //if (text.HasValue())
+                                    //    tempValue = text;
+                                    //else
                                     tempValue = dynamicItem.GetMyValue("Value");
-                            }
+                                    name = "DynamicParam" + param.RuleId.Value;
+                                }
                                 
+                            }
+                            else
+                            {
+                                if (Convert.ToInt32(dynamicItem.GetMyValue("DynamicParameterId")) == param.DynamicParameterId.Value)
+                                {
+                                    //var text = Convert.ToString(dynamicItem.GetMyValue("Text"));
+                                    //if (text.HasValue())
+                                    //    tempValue = text;
+                                    //else
+                                    var optionTitle = dynamicItem.GetMyValue("OptionTitle");
+                                    if (optionTitle == null)
+                                    {
+                                        var decimalValue = dynamicItem.GetMyValue("Value");
+                                        if (decimalValue != null)
+                                        {
+                                            if (param.DynamicParameter.ControlType == ControlType.CheckBox)
+                                            {
+                                                if (Convert.ToDecimal(decimalValue) == 0)
+                                                    tempValue = "خیر";
+                                                else
+                                                    tempValue = "بله";
+                                            }
+                                            else
+                                                tempValue = Convert.ToDecimal(decimalValue).Seprate3Digit();
+                                        }
+                                    }
+                                    else
+                                        tempValue = optionTitle ?? dynamicItem.GetMyValue("Value");
+                                    name = "DynamicParam" + param.DynamicParameterId.Value;
+                                }
+                            }
                         }
-                        name = "DynamicParam" + param.RuleId.Value;
                     }
                     else
                     {
@@ -364,8 +399,11 @@ namespace Caspian.Engine
                                 tempValue = ((DateTime)tempValue).ToPersianDateString();
                         }
                     }
-                    var propertyInfo = type.GetProperty(name.Replace('.', '_'));
-                    propertyInfo.SetValue(obj, tempValue);
+                    if (name.HasValue())
+                    {
+                        var propertyInfo = type.GetProperty(name.Replace('.', '_'));
+                        propertyInfo.SetValue(obj, tempValue);
+                    }
                 }
                 list.Add(obj);
             }
@@ -440,61 +478,41 @@ namespace Caspian.Engine
             return name;
         }
 
-        private LambdaExpression DynamicItemSelect(Type dynamicItemType, Type dynamicType, string enTitle)
+        public LambdaExpression DynamicItemSelect()
         {
-            ParameterExpression param = Expression.Parameter(dynamicItemType, "u");
-            var dynamicItemIdExpr = Expression.Property(param, GetDynamicItemIdProperty(dynamicItemType, enTitle));
-            var valueExpr = Expression.Property(param, dynamicItemType.GetProperty("Value"));
-            var list = new List<MemberBinding>();
-            foreach (var info in dynamicType.GetProperties())
+            using var context = new Context();
+            var expr = context.DynamicParametersValues.Select(u => new
             {
-                if (info.Name == "Value")
-                    list.Add(Expression.Bind(info, valueExpr));
-                else if (info.Name == "Text")
-                {
-                    Expression textExpr = Expression.Property(param, "ProjectParameterValue");
-                    textExpr = Expression.Property(textExpr, "Display");
-                    list.Add(Expression.Bind(info, textExpr));
-                }
-                else
-                    list.Add(Expression.Bind(info, dynamicItemIdExpr));
-            }
-            var expr = Expression.MemberInit(Expression.New(dynamicType), list);
-            return Expression.Lambda(expr, new ParameterExpression[] { param });
+                u.DynamicParameterId,
+                u.RuleId,
+                OptionTitle = u.DynamicParameterOption.FaTitle,
+                u.Value,
+                Text = u.RuleId.HasValue ? u.Rule.Title : u.DynamicParameter.Title
+            }).Expression;
+            expr = (expr as MethodCallExpression).Arguments[1];
+            return (expr as UnaryExpression).Operand as LambdaExpression;
         }
 
-        private Expression DynamicItemSelectExpr(Type dynamicItemType, Type dynamicType, MemberInfo info, string enTitle)
+        private Expression DynamicItemSelectExpr(Type dynamicItemType, string enTitle)
         {
             var type = GetDynamicItemProperty(dynamicItemType, enTitle);
             Expression expr = paramExpr;
             if (enTitle.HasValue())
                 expr = Expression.Property(paramExpr, enTitle);
-            var expr1 = Expression.MakeMemberAccess(expr, type);
+            Expression expr1 = Expression.MakeMemberAccess(expr, type);
+            var oftypeMethod = typeof(Enumerable).GetMethod("OfType").MakeGenericMethod(typeof(DynamicParameterValue));
+            expr1 = Expression.Call(null, oftypeMethod, new Expression[] { expr1 });
             var method = typeof(Enumerable).GetMethods().Where(t => t.Name == "Select").ElementAt(0);
-            var expr2 = DynamicItemSelect(dynamicItemType, dynamicType, enTitle);
-            method = method.MakeGenericMethod(new Type[] { dynamicItemType, dynamicType });
+            var expr2 = DynamicItemSelect();
+            method = method.MakeGenericMethod(new Type[] { typeof(DynamicParameterValue), expr2.Body.Type });
             return Expression.Call(null, method, new Expression[] { expr1, expr2 });
         }
 
-        private PropertyInfo GetDynamicItemIdProperty(Type dynamicItemType, string enTitle)
+        private PropertyInfo GetDynamicItemIdProperty(Type dynamicItemType, string enTitle, string propertyName)
         {
-            var type = paramExpr.Type;
             if (enTitle.HasValue())
-                type = type.GetMyProperty(enTitle).PropertyType;
-            PropertyInfo tempInfo = null;
-            foreach(var info in dynamicItemType.GetProperties())
-            {
-                if (info.PropertyType != type)
-                {
-                    var foreignKey = info.GetCustomAttribute<ForeignKeyAttribute>();
-                    if (foreignKey != null)
-                    {
-                        tempInfo = dynamicItemType.GetProperty(foreignKey.Name);
-                        break;
-                    }
-                }
-            }
-            return tempInfo;
+                throw new NotImplementedException("خطای عدم پیاد هسازی");
+            return dynamicItemType.GetProperty(propertyName);
         }
 
         /// <summary>
@@ -511,7 +529,7 @@ namespace Caspian.Engine
         }
 
         /// <summary>
-        /// این متد Type پارامترهای پویا را برمی گرداند.
+        /// This method return the type inherite from DynamicParameterValue
         /// </summary>
         private Type GetDynamicItemType(string enTitle)
         {
@@ -527,14 +545,11 @@ namespace Caspian.Engine
         /// <summary>
         /// این متد 
         /// </summary>
-        private Type GetDynamicTypeOfDynamicItem(Type dynamicItemType, string enTitle)
+        private Type GetDynamicTypeOfDynamicItem(string enTitle)
         {
-            var dynamicProperty = GetDynamicItemIdProperty(dynamicItemType, enTitle);
-            var list = new List<DynamicProperty>();
-            list.Add(new DynamicProperty(dynamicProperty.Name, dynamicProperty.PropertyType));
-            list.Add(new DynamicProperty("Value", dynamicItemType.GetProperty("Value").PropertyType));
-            list.Add(new DynamicProperty("Text", typeof(string)));
-            return DynamicClassFactory.CreateType(list);
+            if (enTitle.HasValue())
+                throw new NotImplementedException("خطای عدم پیاده سازی");
+            return DynamicItemSelect().Body.Type;
         }
     }
 }

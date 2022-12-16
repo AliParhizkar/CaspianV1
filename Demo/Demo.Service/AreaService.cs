@@ -12,7 +12,5 @@ namespace Demo.Service
         {
             RuleFor(t => t.Title).Required().UniqAsync(t => t.CityId, "منطقه ای با این عنوان در این شهر تعریف شده است.");
         }
-
-
     }
 }

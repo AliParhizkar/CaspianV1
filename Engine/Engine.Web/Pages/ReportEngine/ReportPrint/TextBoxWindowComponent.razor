@@ -62,7 +62,7 @@
                                       Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TitleEn == null || PrintParam.SystemFiledType.HasValue || PrintParam.TotalFuncType.HasValue"
                                       ValueChanged="value => 
                                                     {
-                                                        PrintParam.TitleEn = value;
+                                                        PrintParam.TitleEn =  value;
                                                         if (PrintParam.TitleEn.HasValue())
                                                              PrintParam.TitleFa = '{' + Params.Single(t => t.Value == PrintParam.TitleEn).Text + '}';
                                                          else
@@ -108,8 +108,8 @@
                 }
             </table>
             <div style="padding: 10px 150px 10px 0">
-                <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-btn c-danger">انصراف</button>
-                <button @onclick="() => { updateData = true; }" class="c-btn c-primary">ثبت</button>
+                <button style="width:70px;" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-btn c-danger">انصراف</button>
+                <button style="width:70px;" @onclick="() => { updateData = true; }" class="c-btn c-primary">ثبت</button>
             </div>
         </div>
 
@@ -141,7 +141,7 @@
             using var scope = CreateScope();
             
             Params = (await new PrintReport(scope).GetFiledsProperty(PrintParam.ReportId.Value, PrintParam.DataLevel.Value))
-                .Select(t => new SelectListItem('{' + t.Key + '}', t.Value));
+                .Select(t => new SelectListItem(t.Key, t.Value));
             if (PrintParam.TitleEn.HasValue() && !Params.Any(t => t.Value == PrintParam.TitleEn))
                 PrintParam.TitleEn = null;
         }

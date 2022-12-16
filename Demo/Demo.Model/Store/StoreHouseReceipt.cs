@@ -10,7 +10,7 @@ namespace Demo.Model
     /// <summary>
     /// رسید انبار
     /// </summary>
-    [Table("*StoreHouseReceipt")]
+    [Table("StoreHouseReceipt")]
     public class StoreHouseReceipt
     {
         [Key]

@@ -1,29 +1,34 @@
-﻿@using Caspian.Engine.Service
-@using Caspian.Engine.Navigation
-@using Microsoft.AspNetCore.Components.Authorization
-@namespace Caspian.Engine.Shared
+﻿@namespace Caspian.Engine.Shared
+@using Caspian.Engine.Web
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject SingletonMenuService MenuService
 @inject NavigationManager navigationManager
+@inject AuthenticationStateProvider stateProvider
+@{
+    var className = "page";
+    if (hideMenu)
+        className += " hideMenu";
+    var uri = new Uri(navigationManager.Uri);
+}
 <AuthorizeView>
     <Authorized>
-        <div class="page">
+        <div class="@className">
             @if (menusId != null)
             {
                 var className = "content";
                 <div class="sidebar">
                     <div class="c-menu-icon">
                         <div>
-                            <i class="fa fa-bars" />
+                            <i @onclick="ToggeleMenu" class="fa fa-bars" />
+                        </div>
+                        <div style="width:100px">
+                            <i @onclick="async () => await Logout()" title="خروج" class="fa fa-sign-out" />
                         </div>
                         <div>
-                            <i class="fa fa-sign-out" />
-                        </div>
-                        <div>
-                            <i class="fa fa-th" />
+                            <i @onclick="MainMenu" class="fa fa-th" />
                         </div>
                     </div>
-                    <DataMenu MenusId="menusId" />
+                    <DataMenu OnChange="() => hideMenu = false" MenusId="menusId" />
                 </div>
                 <div class="@className">
                     @if (userId == 1 || menusId.Contains(menuId))
@@ -46,7 +51,9 @@
                                 <span>@title</span>
                             </div>
                         </div>
-                        @ChildContent
+                        <div class="c-content-main">
+                            @ChildContent
+                        </div>
                     }
                     else
                     {
@@ -57,39 +64,28 @@
         </div>
     </Authorized>
     <NotAuthorized>
-        <h1 style="color:red">شما مجاز به ورود به این صفحه نیستید</h1>
+        <Caspian.Engine.Shared.LoginComponent />
     </NotAuthorized>
 </AuthorizeView>
 @code
 {
+    bool hideMenu;
     string date;
     string userName;
     IList<int> menusId;
-    int userId;
+    int? userId;
     string time;
     string title;
     int menuId;
+    bool userHasAccess;
+    bool userIsAuthenticated;
 
     [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    public Task<AuthenticationState> authenticationStateTask { get; set; }
 
-
-    protected override async Task OnInitializedAsync()
+    void ToggeleMenu()
     {
-        if (authenticationStateTask != null)
-        {
-            if (menusId == null)
-            {
-                var result = await authenticationStateTask;
-          
-                userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
-                using var scope = ServiceScopeFactory.CreateScope();
-                var user = await new UserService(scope).SingleAsync(userId);
-                userName = user.FName + " " + user.LName;
-                menusId = await new MenuAccessibilityService(scope).GetUserMenus(userId);
-            }
-        }
-        await base.OnInitializedAsync();
+        hideMenu = !hideMenu;
     }
 
     protected override void OnParametersSet()
@@ -106,9 +102,48 @@
         if (url.EndsWith('/'))
             url = url.Substring(0, url.Length - 1);
         var menu = MenuService.GetMenu(url);
-        menuId = menu.Id;
-        title = menu.Title;
+        if (menu != null)
+        {
+            menuId = menu.Id;
+            title = menu.Title;
+        }
         base.OnParametersSet();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (authenticationStateTask != null)
+        {
+            var result = await authenticationStateTask;
+            userIsAuthenticated = result.User.Identity?.IsAuthenticated == true;
+            if (userIsAuthenticated)
+            {
+                var claim = result.User.Claims.FirstOrDefault()?.Value;
+                if (claim.HasValue())
+                {
+                    userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+                    if (!userName.HasValue())
+                    {
+                        using var scope = ServiceScopeFactory.CreateScope();
+                        var user = await new UserService(scope).SingleAsync(userId.Value);
+                        userName = user.FName + " " + user.LName;
+                        menusId = await new MenuAccessibilityService(scope).GetUserMenus(userId.Value);
+                    }
+                }
+            }
+        }
+        await base.OnParametersSetAsync();
+    }
+
+    async Task Logout()
+    {
+        var result = await ((CustomAuthenticationStateProvider)stateProvider).Logout();
+        navigationManager.NavigateTo("/Login", true);
+    }
+
+    void MainMenu()
+    {
+        navigationManager.NavigateTo("/Default", true);
     }
 
     [Parameter]

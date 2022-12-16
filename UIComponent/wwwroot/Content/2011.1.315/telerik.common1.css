@@ -13,12 +13,12 @@
         cursor:pointer;
     }
     .c-menu-icon div {
-        width:60px;
+        width:27px;
         text-align:center;
         padding-top:1px;
     }
 .c-main-head {
-    height: 28px;
+    height: 26px;
     background-color: #e5e5e5;
     display: flex;
     text-align: center;
@@ -26,8 +26,15 @@
     vertical-align: middle;
     line-height: 25px;
 }
-.c-main-head div{
-    width:25%;
+.page.hideMenu .content {
+    width: calc(100% - 27px);
+}
+.c-content-main {
+    height: calc(100vh - 26px);
+    overflow:auto;
+}
+.c-main-head div {
+    width: 25%;
 }
         .c-main-head .fa {
             color: #423d96;
@@ -472,6 +479,9 @@ span, label, td, th {
         background-color: transparent;
         border: 1px solid #423d96;
     }
+        .c-icon-button.c-simple:hover {
+            background-color: #fbebfb;
+        }
         .c-icon-button.c-simple .fa {
             font-size: 24px;
         }
@@ -613,16 +623,15 @@ span, label, td, th {
     display:table;
 }
 .submenu li{
-    height:35px;
-    padding-top:3px;
+/*    height:35px;
+    padding-top:3px;*/
 }
 .sidebar {
     float: right;
-    width: 180px;
+    width: 160px;
     box-sizing: border-box;
     height: 100vh;
     background-color: #e5e5e5;
-    padding-left: 3px;
     border-left: 1px solid #bfbfbf;
     overflow: hidden;
 }

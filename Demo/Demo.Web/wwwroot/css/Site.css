@@ -1,8 +1,8 @@
 ﻿.c-categories {
     width: 150px;
-    height: 100vh;
+    height: calc(100vh - 26px);
     border-left: 1px solid gray;
-    box-sizing:border-box;
+    box-sizing: border-box;
 }
     .c-categories ul{
         padding:0 ;
@@ -39,6 +39,7 @@
 .c-body {
     border: 1px solid gray;
     margin:0 5px 5px 5px;
-    height:calc(100vh - 75px);
+    height:calc(100vh - 102px);
     border-radius:8px;
+    overflow:auto;
 }

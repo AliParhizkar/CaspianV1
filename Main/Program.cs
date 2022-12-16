@@ -3,14 +3,18 @@ using Caspian.Common;
 using Caspian.common;
 using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components.Authorization;
+using Caspian.Engine.Web;
+using Caspian.Engine;
+using System.Linq.Expressions;
+using Employment.Model;
+using static Stimulsoft.Report.StiOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //typeof(Demo.Model.City).GetProperty("Title").PropertyType.GetCustomAttribute<NullableAttribute>
 // Add services to the container.
 builder.Services.AddRazorPages();
-
 builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });//builder.Services.AddSingleton<FormAppState>();
 builder.Services.AddSingleton<WindowAppState>();
 builder.Services.AddSingleton<SingletonMenuService>(t => 
@@ -22,6 +26,7 @@ builder.Services.AddSingleton<SingletonMenuService>(t =>
         Menus = context.Menus.ToList()
     };
 });
+builder.Services.AddSingleton(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
 builder.Services.AddSingleton<FormAppState>();
 builder.Services.AddScoped<CaspianDataService>();
 builder.Services.AddScoped<Demo.Model.Context>();
@@ -34,7 +39,6 @@ SubSystemKind.Engine.GetServiceAssembly().InjectServices(builder.Services);
 builder.Services.AddAuthentication("Cookies").AddCookie();
 var app = builder.Build();
 CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

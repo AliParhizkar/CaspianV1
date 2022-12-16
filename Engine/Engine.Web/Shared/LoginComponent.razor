@@ -1,0 +1,48 @@
+﻿@namespace Caspian.Engine.Shared
+@using Caspian.Engine.Web
+@inherits BasePage
+@inject AuthenticationStateProvider stateProvider
+@inject NavigationManager navigationManager
+<div class="c-login">
+    <span class="c-icon"></span>
+    <div class="c-form">
+        <div class="c-container">
+            <StringTextBox @bind-Value="@userName" placeholder="نام کاربری..." />
+        </div>
+        <div class="c-container">
+            <StringTextBox @bind-Value="@password" type="password" placeholder="کلمه عبور..." />
+        </div>
+        <div>
+            <span class="error-message">@message</span>
+        </div>
+        <div class="c-action">
+            <button @onclick="Login">ورود</button>
+        </div>
+    </div>
+</div>
+@code 
+{
+    string message;
+    string userName;
+    string password;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    async Task Login()
+    {
+        using var scope = CreateScope();
+        var user = await new UserService(scope).UserIsvalidAsync(userName, password);
+        if (user == null)
+            message = "نام کاربری یا کلمه ی عبور نامعتبر است";
+        else
+        {
+            var result = await ((CustomAuthenticationStateProvider)stateProvider).Login(user.Id.ToString());
+            var url = new Uri(navigationManager.Uri).LocalPath;
+            if (url.StartsWith("/login", StringComparison.OrdinalIgnoreCase))
+                navigationManager.NavigateTo("/Default");
+        }
+    }
+}

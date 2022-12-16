@@ -2,6 +2,7 @@
 using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Service
 {
@@ -47,6 +48,27 @@ namespace Caspian.Engine.Service
             RuleFor(t => t.Email).UniqAsync("کاربری با این پست الکترونیکی در سیستم ثبت شده است");
 
             RuleFor(t => t.MobileNumber).UniqAsync("کاربری با این شماره همراه در سیستم ثبت شده است");
+        }
+
+        public async override Task<User> AddAsync(User entity)
+        {
+            ///Md5 Code
+            return await base.AddAsync(entity);
+        }
+
+        public async override Task UpdateAsync(User entity)
+        {
+            var old = await SingleAsync(entity.Id);
+            entity.Password = old.Password;
+            await base.UpdateAsync(entity);
+        }
+
+        public async Task<User> UserIsvalidAsync(string userName, string password)
+        {
+            ///Md5 Code
+            var md5Password = password;
+            var query = new UserService(ServiceScope).GetAll();
+            return await query.SingleOrDefaultAsync(t => t.UserName == userName && t.Password == md5Password);
         }
     }
 }

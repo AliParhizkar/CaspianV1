@@ -3,6 +3,7 @@ using Caspian.Common;
 using Caspian.Engine.Model;
 using Caspian.Engine.Service;
 using Caspian.Common.Extension;
+using Microsoft.EntityFrameworkCore;
 
 namespace ReportUiModels
 {
@@ -44,8 +45,9 @@ namespace ReportUiModels
             var report = await reportService.SingleAsync(reportId);
             var reportGroup = await reportGroupService.SingleAsync(report.ReportGroupId);
             var mainType = new AssemblyInfo().GetReturnType(reportGroup);
-            var reportParams = paramService.GetAll().Where(t => t.ReportId == reportId && !t.IsKey).ToList();
-            var tempParams = reportParams.Where(t => t.RuleId == null && t.DynamicParameterId == null).ToList();
+            var reportParams = await paramService.GetAll().Include(t => t.DynamicParameter).
+                Include(t => t.Rule).Where(t => t.ReportId == reportId && !t.IsKey).ToListAsync();
+            var tempParams = reportParams.ToList();
             var selectReport = new SelectReport(mainType);
             var type = selectReport.SimpleSelect(tempParams).Body.Type;
             type = selectReport.GetEqualType(tempParams, type);
@@ -55,14 +57,20 @@ namespace ReportUiModels
             if (maxDataLevel == dataLevel)
             {
                 var reportParams1 = reportParams.Where(t => t.DataLevel == maxDataLevel).ToList();
-                var dynamicParams = reportParams1.Where(t => t.RuleId != null);
+                var dynamicParams = reportParams1.Where(t => t.RuleId != null || t.DynamicParameterId != null);
                 if (dynamicParams.Any())
                 {
                     var tempType = mainType;
                     var enTitle = dynamicParams.First().TitleEn;
                     if (enTitle.HasValue())
                         tempType = mainType.GetMyProperty(enTitle).PropertyType;
-                    //var items = await new DynamicFieldEngin().GetDynamicItems(tempType, null);
+                    foreach(var item in dynamicParams)
+                    {
+                        if (item.RuleId.HasValue)
+                            dic.Add("{list.DynamicParam" + item.RuleId + '}', item.Rule.Title);
+                        else
+                            dic.Add("{list.DynamicParam" + item.DynamicParameterId.Value + '}', item.DynamicParameter.Title);
+                    }
 
                 }
                 foreach (var info in type.GetProperties())
@@ -95,7 +103,7 @@ namespace ReportUiModels
                                 case CompositionMethodType.Min: name = "Min_" + name; break;
                             }
                             var title = new ReportControlModel(mainType).GetFaTitle(param.TitleEn, param.RuleId, param.CompositionMethodType);
-                            dic.Add("list." + name, title);
+                            dic.Add("{list." + name + '}', title);
                         }
                     }
                 }
@@ -116,7 +124,7 @@ namespace ReportUiModels
                         if (param1 != null)
                         {
                             var title = new ReportControlModel(mainType).GetFaTitle(param1.TitleEn, param1.RuleId, param1.CompositionMethodType);
-                            dic.Add("list." + info.Name + '.' + info1.Name, title);
+                            dic.Add("{list." + info.Name + '.' + info1.Name + '}', title);
                         }
                     }
                 }
@@ -134,7 +142,7 @@ namespace ReportUiModels
                     if (param2 != null)
                     {
                         var title = new ReportControlModel(mainType).GetFaTitle(param2.TitleEn, param2.RuleId, param2.CompositionMethodType);
-                        dic.Add("list." + info.Name + '.' + info1.Name + '.' + info2.Name, title);
+                        dic.Add("{list." + info.Name + '.' + info1.Name + '.' + info2.Name + '}', title);
                     }
                 }
             }

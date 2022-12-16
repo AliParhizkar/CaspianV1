@@ -33,10 +33,5 @@ namespace Demo.Model
         public DbSet<MaterialReceipt> ProductReceipts { get; set; }
 
         public DbSet<OrganUnit> OrganUnits { get; set; }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
     }
 }

@@ -7,7 +7,7 @@
 <div class="c-body">
 @if (productCategoryId.HasValue)
 {
-    <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == productCategoryId.Value)" Search="SearchData" TableHeight="400">
+    <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == productCategoryId.Value)" Search="SearchData" TableHeight="350">
         <Columns>
             <GridColumn TEntity="Product" Field="t => t.Title" />
             <GridColumn TEntity="Product" Field="t => t.ActiveType.FaText()" />

@@ -1,24 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <StiSerializer version="1.02" type="Flex" application="StiReport">
-  <Dictionary Ref="282" type="Dictionary" isKey="true">
+  <Dictionary Ref="145" type="Dictionary" isKey="true">
     <BusinessObjects isList="true" count="1">
-      <list Ref="283" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+      <list Ref="146" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
         <Alias>list</Alias>
         <BusinessObjects isList="true" count="0" />
         <Category />
-        <Columns isList="true" count="9">
-          <value>Order_Date,System.String</value>
-          <value>Order_Customer_CustomerType,System.String</value>
-          <value>Order_Customer_FName,System.String</value>
-          <value>Order_Customer_LName,System.String</value>
-          <value>Order_OrderType,System.String</value>
-          <value>Order_OrderNumber,System.Int32</value>
-          <value>Price,System.Int32</value>
-          <value>Count,System.Int32</value>
+        <Columns isList="true" count="6">
+          <value>Rank,System.Int32</value>
+          <value>DynamicParam12,System.String</value>
+          <value>DynamicParam21,System.String</value>
+          <value>DynamicParam14,System.String</value>
+          <value>DynamicParam17,System.String</value>
           <value>Item,System.Object</value>
         </Columns>
-        <Dictionary isRef="282" />
-        <Guid>74f7c28a7e444c1d876fe26f14512a8f</Guid>
+        <Dictionary isRef="145" />
+        <Guid>abef5bf2ecf7428791255644c8639bad</Guid>
         <Name>list</Name>
       </list>
     </BusinessObjects>
@@ -39,128 +36,125 @@
   <GlobalizationStrings isList="true" count="0" />
   <MetaTags isList="true" count="0" />
   <Pages isList="true" count="1">
-    <Page4 Ref="253" type="Page" isKey="true">
+    <Page1 Ref="113" type="Page" isKey="true">
       <Border>None;[0:0:0];0;Solid;False;4;[0:0:0]</Border>
       <Brush>Transparent</Brush>
       <Components isList="true" count="3">
-        <ReportTitleBand1 Ref="254" type="ReportTitleBand" isKey="true">
-          <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
+        <ReportTitleBand1 Ref="114" type="ReportTitleBand" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>0,0,21.005,4.079</ClientRectangle>
-          <Components isList="true" count="3">
-            <Text255 Ref="255" type="Text" isKey="true">
-              <Font>iranyekan,7,Bold</Font>
+          <ClientRectangle>0,0,21.005,3.180</ClientRectangle>
+          <Components isList="true" count="2">
+            <Image115 Ref="115" type="Image" isKey="true">
               <Brush>Transparent</Brush>
-              <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
+              <Stretch>true</Stretch>
               <Conditions isList="true" count="0" />
               <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
               <HorAlignment>Center</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
-              <ClientRectangle>7.884,0.185,4.762,0.556</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="254" />
-              <Name>Text255</Name>
-              <Text>جمهوری اسلامی ایران</Text>
-              <TextBrush>[33:37:41]</TextBrush>
+              <ClientRectangle>16.746,0.688,2.116,2.116</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="114" />
+              <Name>Image115</Name>
+              <File>C:\Users\Ali\source\repos\Caspian\Main\Data\Report\Images/uikc0cbhzo2.jpg</File>
+              <DataColumn />
               <Type>Expression</Type>
-            </Text255>
-            <Text256 Ref="256" type="Text" isKey="true">
-              <Font>iranyekan,7,Bold</Font>
-              <Brush>Transparent</Brush>
-              <Conditions isList="true" count="0" />
-              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
-              <HorAlignment>Center</HorAlignment>
-              <VertAlignment>Center</VertAlignment>
-              <Margins>0,0,0,0</Margins>
-              <ClientRectangle>7.884,0.714,4.762,0.556</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="254" />
-              <Name>Text256</Name>
-              <Text>وزارت بهداشت </Text>
-              <TextBrush>[33:37:41]</TextBrush>
-              <Type>Expression</Type>
-            </Text256>
-            <Text257 Ref="257" type="Text" isKey="true">
+            </Image115>
+            <Text116 Ref="116" type="Text" isKey="true">
               <Font>iranyekan,9</Font>
               <Brush>Transparent</Brush>
-              <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
               <Conditions isList="true" count="0" />
               <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
-              <HorAlignment>Left</HorAlignment>
+              <HorAlignment>Center</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
-              <ClientRectangle>1.217,0.185,4.762,0.926</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="254" />
-              <Name>Text257</Name>
-              <Text>{LName}</Text>
+              <ClientRectangle>6.931,0.185,6.349,0.714</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="114" />
+              <Name>Text116</Name>
+              <Text>وزارت بهداشت درمان آموزش پزشکی</Text>
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text257>
+            </Text116>
           </Components>
           <Conditions isList="true" count="0" />
           <Name>ReportTitleBand1</Name>
-          <Page isRef="253" />
-          <Parent isRef="253" />
+          <Page isRef="113" />
+          <Parent isRef="113" />
         </ReportTitleBand1>
-        <HeaderBand1 Ref="258" type="HeaderBand" isKey="true">
-          <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
+        <HeaderBand1 Ref="117" type="HeaderBand" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>0,0,21.005,1.913</ClientRectangle>
+          <ClientRectangle>0,0,21.005,1.014</ClientRectangle>
           <Components isList="true" count="5">
-            <Text284 Ref="284" type="Text" isKey="true">
-              <Font>iranyekan,11,Bold</Font>
-              <Brush>Transparent</Brush>
+            <Text147 Ref="147" type="Text" isKey="true">
+              <Font>iranyekan,12,Bold</Font>
+              <Brush>[31:73:125]</Brush>
               <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Conditions isList="true" count="0" />
               <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
               <HorAlignment>Center</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
-              <ClientRectangle>11.415,0.013,5.291,0.608</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="258" />
-              <Name>Text284</Name>
-              <Text>مشخصات مشتری</Text>
-              <TextBrush>[33:37:41]</TextBrush>
+              <ClientRectangle>16.905,0.000,3.73,1.032</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="117" />
+              <Name>Text147</Name>
+              <Text>مدت اسارت به سال</Text>
+              <TextBrush>[255:255:255]</TextBrush>
               <Type>Expression</Type>
-            </Text284>
-            <Text285 Ref="285" type="Text" isKey="true">
-              <Font>iranyekan,9</Font>
-              <Brush>Transparent</Brush>
-              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-              <Conditions isList="true" count="0" />
-              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
-              <HorAlignment>Left</HorAlignment>
-              <VertAlignment>Center</VertAlignment>
-              <Margins>0,0,0,0</Margins>
-              <ClientRectangle>4.272,0.013,7.143,0.608</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="258" />
-              <Name>Text285</Name>
-              <Text />
-              <TextBrush>[33:37:41]</TextBrush>
-              <Type>Expression</Type>
-            </Text285>
-            <Text286 Ref="286" type="Text" isKey="true">
-              <Font>iranyekan,9</Font>
-              <Brush>Transparent</Brush>
+            </Text147>
+            <Text148 Ref="148" type="Text" isKey="true">
+              <Font>iranyekan,12,Bold</Font>
+              <Brush>[31:73:125]</Brush>
               <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Conditions isList="true" count="0" />
               <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
               <HorAlignment>Center</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
-              <ClientRectangle>14.061,0.622,2.646,0.608</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="258" />
-              <Name>Text286</Name>
-              <Text>نام</Text>
-              <TextBrush>[33:37:41]</TextBrush>
+              <ClientRectangle>15.529,0.000,1.376,1.032</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="117" />
+              <Name>Text148</Name>
+              <Text>پایه</Text>
+              <TextBrush>[255:255:255]</TextBrush>
               <Type>Expression</Type>
-            </Text286>
-            <Text287 Ref="287" type="Text" isKey="true">
+            </Text148>
+            <Text149 Ref="149" type="Text" isKey="true">
+              <Font>iranyekan,12,Bold</Font>
+              <Brush>[31:73:125]</Brush>
+              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>13.122,0.000,2.407,1.032</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="117" />
+              <Name>Text149</Name>
+              <Text>عدد مبناء</Text>
+              <TextBrush>[255:255:255]</TextBrush>
+              <Type>Expression</Type>
+            </Text149>
+            <Text150 Ref="150" type="Text" isKey="true">
+              <Font>iranyekan,12,Bold</Font>
+              <Brush>[31:73:125]</Brush>
+              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>10.688,0.000,2.434,1.032</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="117" />
+              <Name>Text150</Name>
+              <Text>فرزند شهید</Text>
+              <TextBrush>[255:255:255]</TextBrush>
+              <Type>Expression</Type>
+            </Text150>
+            <Text151 Ref="151" type="Text" isKey="true">
               <Font>iranyekan,9</Font>
               <Brush>Transparent</Brush>
               <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
@@ -169,46 +163,96 @@
               <HorAlignment>Left</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
-              <ClientRectangle>11.415,0.622,2.646,0.608</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="258" />
-              <Name>Text287</Name>
+              <ClientRectangle>0.37,0.000,10.317,1.032</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="117" />
+              <Name>Text151</Name>
               <Text />
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text287>
-            <Text288 Ref="288" type="Text" isKey="true">
-              <Font>iranyekan,9</Font>
-              <Brush>Transparent</Brush>
-              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-              <Conditions isList="true" count="0" />
-              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
-              <HorAlignment>Left</HorAlignment>
-              <VertAlignment>Center</VertAlignment>
-              <Margins>0,0,0,0</Margins>
-              <ClientRectangle>4.272,0.622,7.143,0.608</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="258" />
-              <Name>Text288</Name>
-              <Text />
-              <TextBrush>[33:37:41]</TextBrush>
-              <Type>Expression</Type>
-            </Text288>
+            </Text151>
           </Components>
           <Conditions isList="true" count="0" />
           <Name>HeaderBand1</Name>
-          <Page isRef="253" />
-          <Parent isRef="253" />
+          <Page isRef="113" />
+          <Parent isRef="113" />
         </HeaderBand1>
-        <DataBand1 Ref="272" type="DataBand" isKey="true">
+        <DataBand1 Ref="131" type="DataBand" isKey="true">
           <NewPageBefore>false</NewPageBefore>
           <NewPageAfter>false</NewPageAfter>
-          <Border>All;[128:128:128];0;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
-          <BusinessObjectGuid>74f7c28a7e444c1d876fe26f14512a8f</BusinessObjectGuid>
+          <BusinessObjectGuid>abef5bf2ecf7428791255644c8639bad</BusinessObjectGuid>
           <ClientRectangle>0,0,21.005,0</ClientRectangle>
-          <Components isList="true" count="3">
-            <Text289 Ref="289" type="Text" isKey="true">
+          <Components isList="true" count="5">
+            <Text152 Ref="152" type="Text" isKey="true">
+              <Font>iranyekan,14</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>16.905,0.000,3.73,1.058</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="131" />
+              <Name>Text152</Name>
+              <Text>{list.DynamicParam12}</Text>
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text152>
+            <Text153 Ref="153" type="Text" isKey="true">
+              <Font>iranyekan,14</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>15.529,0.000,1.376,1.058</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="131" />
+              <Name>Text153</Name>
+              <Text>{list.Rank}</Text>
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text153>
+            <Text154 Ref="154" type="Text" isKey="true">
+              <Font>iranyekan,14</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>13.122,0.000,2.407,1.058</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="131" />
+              <Name>Text154</Name>
+              <Text>{list.DynamicParam21}</Text>
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text154>
+            <Text155 Ref="155" type="Text" isKey="true">
+              <Font>iranyekan,14</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>10.688,0.000,2.434,1.058</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="131" />
+              <Name>Text155</Name>
+              <Text>{list.DynamicParam14}</Text>
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text155>
+            <Text156 Ref="156" type="Text" isKey="true">
               <Font>iranyekan,9</Font>
               <Brush>Transparent</Brush>
               <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
@@ -217,59 +261,25 @@
               <HorAlignment>Left</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
-              <ClientRectangle>14.061,0.013,2.646,0.608</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="272" />
-              <Name>Text289</Name>
+              <ClientRectangle>0.37,0.000,10.317,1.058</ClientRectangle>
+              <Page isRef="113" />
+              <Parent isRef="131" />
+              <Name>Text156</Name>
               <Text />
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text289>
-            <Text290 Ref="290" type="Text" isKey="true">
-              <Font>iranyekan,9</Font>
-              <Brush>Transparent</Brush>
-              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-              <Conditions isList="true" count="0" />
-              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
-              <HorAlignment>Left</HorAlignment>
-              <VertAlignment>Center</VertAlignment>
-              <Margins>0,0,0,0</Margins>
-              <ClientRectangle>11.415,0.013,2.646,0.608</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="272" />
-              <Name>Text290</Name>
-              <Text />
-              <TextBrush>[33:37:41]</TextBrush>
-              <Type>Expression</Type>
-            </Text290>
-            <Text291 Ref="291" type="Text" isKey="true">
-              <Font>iranyekan,9</Font>
-              <Brush>Transparent</Brush>
-              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-              <Conditions isList="true" count="0" />
-              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
-              <HorAlignment>Left</HorAlignment>
-              <VertAlignment>Center</VertAlignment>
-              <Margins>0,0,0,0</Margins>
-              <ClientRectangle>4.272,0.013,7.143,0.608</ClientRectangle>
-              <Page isRef="253" />
-              <Parent isRef="272" />
-              <Name>Text291</Name>
-              <Text>{list.Order_Date}</Text>
-              <TextBrush>[33:37:41]</TextBrush>
-              <Type>Expression</Type>
-            </Text291>
+            </Text156>
           </Components>
           <Conditions isList="true" count="0" />
           <Name>DataBand1</Name>
-          <Page isRef="253" />
-          <Parent isRef="253" />
+          <Page isRef="113" />
+          <Parent isRef="113" />
         </DataBand1>
       </Components>
       <Conditions isList="true" count="0" />
       <Guid>3f7f0c9730b145ee9132cfdedc3c8ccd</Guid>
       <Margins>0,0,0,0</Margins>
-      <Name>Page4</Name>
+      <Name>Page1</Name>
       <PageType>0</PageType>
       <PageWidth>21.005</PageWidth>
       <PageHeight>29.7</PageHeight>
@@ -278,7 +288,7 @@
         <Font>Arial,100</Font>
         <TextBrush>[50:0:0:0]</TextBrush>
       </Watermark>
-    </Page4>
+    </Page1>
   </Pages>
   <PrinterSettings Ref="9999" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
   <ReportAlias>Report</ReportAlias>

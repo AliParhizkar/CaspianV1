@@ -29,7 +29,7 @@
         {
             <div class="c-products">
                 <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == selectedId.Value)" Search="SearchData"
-                          TableHeight="400">
+                          TableHeight="350">
                     <Columns>
                         <GridColumn TEntity="Product" Field="t => t.Title" />
                         <GridColumn TEntity="Product" Field="t => t.ActiveType.FaText()" />

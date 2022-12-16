@@ -3,8 +3,11 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Employment.Model.History
+namespace Employment.Model
 {
+    /// <summary>
+    /// وضعیت تاهل
+    /// </summary>
     [WorkflowEntity("وضعیت تاهل")]
     public class MarriageProperties
     {
@@ -32,6 +35,15 @@ namespace Employment.Model.History
         [DisplayName("تاریخ تولد")]
         public DateTime? BirthDate { get; set; } = DateTime.Now;
 
-        
+        /// <summary>
+        /// کد مشخصات کارمند
+        /// </summary>
+        public int EmployeeId { get; set; }
+
+        /// <summary>
+        /// مشخصات کارمند
+        /// </summary>
+        [ForeignKey(nameof(EmployeeId))]
+        public virtual Employee Employee { get; set; }
     }
 }

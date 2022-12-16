@@ -1,85 +1,100 @@
 ﻿@page "/Demo/ComboBox"
 @namespace Demo.Web.Pages
-<span></span>
-<div style="width:95%;margin:10px auto">
-    <ul>
-        <li>
-            <h2>Combo Box</h2>
-            <ul>
-                <li>
-                    <h3>Data Binding & Search & Paging</h3>
-                    <ul>
-                        <li>
-                            <table style="width:100%;">
-                                <tr>
-                                    <td>
-                                        <label>شهر</label>
-                                    </td>
-                                    <td>
-                                        <ComboBox TValue="int?" @bind-Value="cityId" TEntity="City" TextExpression="t => t.Title" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label>شهر</label>
-                                    </td>
-                                    <td>
-                                        <ComboBox TValue="int?" @bind-Value="cityId1" TEntity="City" TextExpression='t => t.Province.Title + " " + t.Title'/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label>مشتری</label>
-                                    </td>
-                                    <td>
-                                        <ComboBox TValue="int?" @bind-Value="customerId" TEntity="Customer"
-                                                  TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' />
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
-                    </ul>
-
-                </li>
-            </ul>
-            <ul>
-                <li>
-                    <h3>Cascade</h3>
-                    <ul>    
-                        <li>
-                            <table style="width:100%">
-                                <tr>
-                                    <td>
-                                        <label>شهر</label>
-                                    </td>    
-                                    <td>
-                                        <ComboBox TValue="int?" TEntity="City" TextExpression='t => t.Province.Title + " " + t.Title' 
-                                        Cascade="continer"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label>منطقه</label>
-                                    </td>
-                                    <td>
-                                        <ComboBox @ref="continer.Cascade" TValue="int?" @bind-Value="areaId" TEntity="Area" TextExpression="t => t.Title" />
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-    </ul>
+<div style="padding:20px 40px 0 0">
+    <h3>Combobox</h3>
 </div>
 
 
-
+<div style="display:table;width:90%;margin:0 auto">
+    <div style="display:table-row">
+        <div style="display:table-cell;width:50%;padding-left:40px">
+            <hr />
+            <h4 style="padding-right:40px;">Data Binding & Search</h4>
+            <table style="width:calc(100% - 75px);margin-right:75px;">
+                <tr>
+                    <td>
+                        <label>شهر</label>
+                    </td>
+                    <td>
+                        <ComboBox TValue="int?" @bind-Value="cityId" TEntity="City" TextExpression="t => t.Title" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>شهر</label>
+                    </td>
+                    <td>
+                        <ComboBox TValue="int?" @bind-Value="cityId1" TEntity="City" TextExpression='t => t.Province.Title + " " + t.Title' />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>مشتری</label>
+                    </td>
+                    <td>
+                        <ComboBox TValue="int?" @bind-Value="customerId" TEntity="Customer"
+                                  TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="display:table-cell;width:50%;padding-right:40px">
+            <hr />
+            <h4 style="padding-right:40px;">Cascade</h4>
+            <table style="width:calc(100% - 60px);margin-right:60px;">
+                <tr>
+                    <td>
+                        <label>شهر</label>
+                    </td>
+                    <td>
+                        <ComboBox TValue="int?" TEntity="City" TextExpression='t => t.Province.Title + " " + t.Title'
+                                  Cascade="continer" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>منطقه</label>
+                    </td>
+                    <td>
+                        <ComboBox @ref="continer.Cascade" TValue="int?" @bind-Value="areaId" TEntity="Area" TextExpression="t => t.Title" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div style="display:table-row">
+        <div style="display:table-cell;width:50%;padding-left:40px">
+            <hr />
+            <h4 style="padding-right:40px;">Custom Cascade</h4>
+            <table style="width:calc(100% - 75px);margin-right:75px;">
+                <tr>
+                    <td>
+                        <label>استان</label>
+                    </td>
+                    <td>
+                        <ComboBox TValue="int?" TEntity="Province" @bind-Value="provinceId" TextExpression="t => t.Title"
+                            OnChange="() => { cmbCity.EnableLoading(); }"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>شهر</label>
+                    </td>
+                    <td>
+                        <ComboBox @ref="cmbCity" TValue="int?" TEntity="City" TextExpression="t => t.Title" 
+                            ConditionExpression="t => t.ProvinceId == provinceId" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
 @code
 {
+    int? provinceId;
     CascadContiner continer = new CascadContiner();
     ComboBox<City, int> cmb;
+    ComboBox<City, int?> cmbCity;
 
     int? cityId;
     int? cityId1;

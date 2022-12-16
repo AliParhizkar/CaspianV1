@@ -166,7 +166,8 @@
                 ///Insert menu
                 await service.AddAsync(new Menu()
                     {
-                        Source = item
+                        Source = item,
+                        SubSystemKind = Subsystem
                     });
                 await service.SaveChangesAsync();
             }
@@ -174,9 +175,10 @@
             {
                 ///Update source
                 var old = await service.SingleAsync(menu.Id);
-                if (old.Title.HasValue() && old.MenuCategoryId.HasValue)
+                if (old.Title.HasValue())
                 {
                     old.Source = item;
+                    old.SubSystemKind = Subsystem;
                     await service.UpdateAsync(old);
                     await service.SaveChangesAsync();
                 }

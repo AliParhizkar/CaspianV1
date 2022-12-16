@@ -1,10 +1,11 @@
 ﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("OrganUnits")]
+    [Table("OrganUnits", Schema = "demo")]
     public class OrganUnit
     {
         [Key]
@@ -15,6 +16,10 @@ namespace Demo.Model
         [ForeignKey(nameof(ParentOrganId))]
         public virtual OrganUnit ParentOrgan { get; set; }
 
+        /// <summary>
+        /// عنوان
+        /// </summary>
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         public ActiveType ActiveType { get; set; }

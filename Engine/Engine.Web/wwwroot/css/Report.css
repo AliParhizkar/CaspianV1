@@ -1435,6 +1435,7 @@ td {
     vertical-align: top;
     text-align: right;
     box-sizing: border-box;
+    border:none;
 }
 
 .bottomarrow {
@@ -1595,6 +1596,7 @@ td {
 
     .reportcontrol.tablecontrol {
         direction: rtl;
+        border-collapse:separate;
     }
 
     .reportcontrol legend .show-form {

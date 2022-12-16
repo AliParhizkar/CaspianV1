@@ -726,6 +726,7 @@
         },
         init: function (data) {
             $(this.element).append("<thead><tr></tr></thead><tbody></tbody>");
+            console.log(data);
             for (var col = 0; col < data.columnsCount; col++) {
                 var cell = data.cells[col];
                 var $headerRow = $(this.element).find('thead tr').first();
@@ -741,7 +742,7 @@
                     if (col == 0) {
                         $tr.append('<td></td>');
                         var $td = $tr.find('td').first();
-                        $td.addClass('rowHeader').height($r.getPixelWidth(cell.position.height - 1));
+                        $td.addClass('rowHeader').height($r.getPixelWidth(cell.position.height) - 1);
                     } else 
                         addCell(cell, $tr[0]);
                     index++;

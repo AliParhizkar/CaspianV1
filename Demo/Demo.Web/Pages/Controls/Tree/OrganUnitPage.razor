@@ -116,7 +116,7 @@
         var result = await service.ValidateRemoveAsync(organUnit);
         if (result.IsValid)
         {
-            service.Remove(organUnit);
+            await service.RemoveAsync(organUnit);
             await service.SaveChangesAsync();
             tree.RemoveFromTree(organUnit);
         }

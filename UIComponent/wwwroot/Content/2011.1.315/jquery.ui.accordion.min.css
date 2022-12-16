@@ -154,40 +154,52 @@ h1 {
     .accordion .link {
         cursor: pointer;
         display: block;
-        padding: 10px 7px;
+        padding: 8px 22px;
         text-align: right;
         color: white;
         font-size: 13px;
-        /*font-weight: 700;*/
-        border: 2px solid #d5d5d5;
+        border: 1px solid #d5d5d5;
         border-left: 1px solid #1c1c1c;
         position: relative;
         -webkit-transition: all 0.4s ease;
         -o-transition: all 0.4s ease;
         transition: all 0.4s ease;
+        height:37px;
     }
-
+.page.hideMenu .link span {
+    display: none;
+}
+.page.hideMenu .accordion .submenu {
+    display: none!important;
+}
+.page.hideMenu .c-menu-icon div {
+    display: none;
+}
+    .page.hideMenu .c-menu-icon div:first-child{
+        display:block;
+    }
     .accordion li:last-child .link {
         border-bottom: 0;
     }
-
-    .accordion li i {
-        position: absolute;
-        top: 14px;
-        left: auto;
-        right: 12px;
-        font-size: 18px;
-        color: white;
-        -webkit-transition: all 0.4s ease;
-        -o-transition: all 0.4s ease;
-        transition: all 0.4s ease;
-        font-style: normal;
-    }
+.page.hideMenu .sidebar {
+    width:27px;
+}
+.accordion li i {
+    position: absolute;
+    color: white;
+    -webkit-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+    font-style: normal;
+    right: 5px;
+    top: 12px;
+}
 
         .accordion li i.fa-chevron-down {
             right: auto;
-            left: 8px;
+            left: 5px;
             font-size: 12px;
+            top:10px;
         }
 
     .accordion li.open .link {
@@ -207,6 +219,8 @@ h1 {
 
     .accordion li.default .submenu {
         display: block;
+        overflow:hidden;
+        background-image:linear-gradient(-90deg, #353535, #818181);
     }
 /**
  * Submenu
@@ -227,14 +241,14 @@ h1 {
     }
 }
 
-.submenu li:hover {
+.submenu li:not(.selected) :hover {
     background-color: #0d7b7b;
     animation-name: example;
     animation-duration: 1s;
 }
 
 .submenu .selected {
-    background-color: #0d7b7b;
+    background-color: #1e5353;
 }
 
 .submenu a:link {

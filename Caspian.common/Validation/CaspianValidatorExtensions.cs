@@ -149,16 +149,22 @@ namespace Caspian.Common
             if (attr == null)
                 throw new CaspianException("خطای عدم پیاده سازی");
             var fkId = model.GetMyValue(attr.Name);
+            Expression conditionExpr = null;
             var param = Expression.Parameter(info.PropertyType, "t");
-            Expression conditionExpr = Expression.Property(param, info.PropertyType.GetPrimaryKey());
-            conditionExpr = Expression.Equal(conditionExpr, Expression.Constant(fkId));
-            conditionExpr = Expression.Lambda(conditionExpr, param);
+            if (fkId != null)
+            {
+                conditionExpr = Expression.Property(param, info.PropertyType.GetPrimaryKey());
+                conditionExpr = Expression.Equal(conditionExpr, Expression.Constant(fkId));
+                conditionExpr = Expression.Lambda(conditionExpr, param);
+            }
             Expression memberExpr = param.CreateMemberExpresion(str.Substring(str.IndexOf('.') + 1));
             var selectExpr = Expression.Lambda(memberExpr, param);
             var serviceType = typeof(SimpleService<>).MakeGenericType(info.PropertyType);
             var service = Activator.CreateInstance(serviceType, scope) as ISimpleService;
-            var result = await service.GetAllRecords().Where(conditionExpr).Select(selectExpr)
-                .ToDynamicListAsync(selectExpr.ReturnType);
+            var query = service.GetAllRecords();
+            if (conditionExpr != null)
+                query = query.Where(conditionExpr);
+            var result = await query.Select(selectExpr).ToDynamicListAsync(selectExpr.ReturnType);
             return result.FirstOrDefault();
         }
 

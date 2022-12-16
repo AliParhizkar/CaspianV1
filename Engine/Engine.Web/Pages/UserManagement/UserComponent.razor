@@ -70,22 +70,25 @@
                             <StringTextBox @bind-Value="UpsertData.UserName" Style="direction:ltr" />
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <label>کلمه عبور</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Password" type="password" Style="direction:ltr" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>تکرار کلمه عبور</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="confirmPassword" type="password" Style="direction:ltr" />
-                        </td>
-                    </tr>
+                    @if (UpsertData.Id == 0)
+                    {
+                        <tr>
+                            <td>
+                                <label>کلمه عبور</label>
+                            </td>
+                            <td>
+                                <StringTextBox @bind-Value="UpsertData.Password" type="password" Style="direction:ltr" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>تکرار کلمه عبور</label>
+                            </td>
+                            <td>
+                                <StringTextBox @bind-Value="confirmPassword" type="password" Style="direction:ltr" />
+                            </td>
+                        </tr>
+                    }
                     <tr>
                         <td>
                             <label>پست الکترونیکی</label>

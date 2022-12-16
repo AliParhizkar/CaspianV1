@@ -123,10 +123,13 @@ namespace Caspian.Common.Extension
                     throw new System.NotImplementedException("خطای عدم پیاده سازی");
                 case ExpressionType.Convert:
                 case ExpressionType.Not:
+                case ExpressionType.Quote:
                     var convert = expr as UnaryExpression;
                     var operand = param.ReplaceParameter(convert.Operand);
                     if (expr.NodeType == ExpressionType.Convert) 
                         return Expression.Convert(operand, convert.Type);
+                    if (expr.NodeType == ExpressionType.Quote)
+                        return Expression.Quote(operand);
                     return Expression.Not(operand);
                 case ExpressionType.MemberAccess:
                     var member = expr as MemberExpression;
@@ -138,11 +141,24 @@ namespace Caspian.Common.Extension
                     return expr;
                 case ExpressionType.Call:
                     var call = expr as MethodCallExpression;
+                    if (call.Method.Name == "Any")
+                    {
+                        var arg1 = param.ReplaceParameter(call.Arguments[0]);
+                        return Expression.Call(null, call.Method, arg1, call.Arguments[1]);
+                    }
                     var args = call.Arguments.Select(t => param.ReplaceParameter(t));
                     Expression instatnse = call.Object == null ? null : param.ReplaceParameter(call.Object);
                     return Expression.Call(instatnse, call.Method, args);
+                case ExpressionType.Conditional:
+                    var conditional = expr as ConditionalExpression;
+                    var test = param.ReplaceParameter(conditional.Test);
+                    var ifTrue = param.ReplaceParameter(conditional.IfTrue);
+                    var iffalse = param.ReplaceParameter(conditional.IfFalse);
+                    return Expression.Condition(test, ifTrue, iffalse);
                 case ExpressionType.Lambda:
-                    return expr;
+                    var lambda = expr as LambdaExpression;
+                    var body = param.ReplaceParameter(lambda.Body);
+                    return Expression.Lambda(body, param);
             }
             throw new System.NotImplementedException("خطای عدم پیاده سازی");
         }

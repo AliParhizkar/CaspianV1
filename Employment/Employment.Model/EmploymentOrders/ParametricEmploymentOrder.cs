@@ -1,13 +1,12 @@
 ﻿using Caspian.Common;
 using Caspian.Engine;
-using Employment.Model.EmploymentOrders;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Employment.Model
 {
-    [RuleType("اعضاء غیرهیئت علمی"), WorkflowEntity("حکم غیرهیات علمی"), DynamicType("حکم غیرهیات علمی", typeof(EmploymentOrderDynamicParameterValue))]
+    [Table("ParametricEmploymentOrder", Schema = "emp"), RuleType("اعضاء غیرهیئت علمی"), WorkflowEntity("حکم غیرهیات علمی"), DynamicType("حکم غیرهیات علمی", typeof(EmploymentOrderDynamicParameterValue))]
     public class ParametricEmploymentOrder
     {
         [Key]

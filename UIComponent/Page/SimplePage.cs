@@ -5,11 +5,13 @@ using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
 using Caspian.Common.Extension;
-using FluentValidation.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
+using System.Threading;
+using FluentValidation.Internal;
 
 namespace Caspian.UI
 {
@@ -18,7 +20,6 @@ namespace Caspian.UI
         string errorMessage;
         protected DataGrid<TEntity> CrudGrid { get; set; }
         protected Window UpsertWindow { get; set; }
-
 
         protected virtual async Task UpsertAsync(TEntity data)
         {
@@ -79,9 +80,8 @@ namespace Caspian.UI
         protected virtual async Task DeleteAsync(TEntity data)
         {
             using var scope = CreateScope();
-            var service = new SimpleService<TEntity>(scope);
-            var result = await service.ValidateAsync(new FluentValidation.ValidationContext<TEntity>(data, new PropertyChain(),
-                new RulesetValidatorSelector("remove")));
+            var service = scope.ServiceProvider.GetService<ISimpleService<TEntity>>();
+            var result = await service.ValidateAsync(data, t => t.IncludeRuleSets("Remove"));
             if (result.IsValid)
             {
                 errorMessage = null;
@@ -89,7 +89,7 @@ namespace Caspian.UI
                 {
                     var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
                     var old = await service.SingleAsync(id);
-                    service.Remove(old);
+                    await service.RemoveAsync(old);
                     try
                     {
                         await service.SaveChangesAsync();

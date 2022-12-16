@@ -8,39 +8,11 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div class="test">
-    <a href="/Demo">Demo</a>
-</div>
 <div>
-    <a href="/Employment">Employment</a>
+    <a href="/Login">Login</a>
 </div>
-<span type="button" @onclick="async() => await ShowForm()">Auto Hide</span>
-@if (show)
-{
-    <div class="auto-hide" style="border:1px solid red;width:250px;height:120px">
-
-    </div>
-}
 
  @code 
 {
-    bool show;
-    async Task ShowForm()
-    {
-        if (await Confirm("آیا با ثبت موافقید؟"))
-        {
 
-        }
-        else
-        {
-
-        }
-    }
-
-    [JSInvokable]
-    public void HideForm()
-    {
-        show = false;
-        StateHasChanged();
-    }
 }

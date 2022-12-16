@@ -1,13 +1,12 @@
 ﻿using Caspian.Engine;
 using Caspian.Common;
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("*ProductCategories")]
+    [Table("ProductCategories", Schema = "demo")]
     public class ProductCategory
     {
         [Key]

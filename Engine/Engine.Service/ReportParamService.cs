@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
-using Caspian.Common;
+﻿using Caspian.Common;
 using System.Reflection;
 using Caspian.Engine.Model;
 using Caspian.Common.Service;
+using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,12 +15,22 @@ namespace Caspian.Engine.Service
         public ReportParamService(IServiceScope scope)
             :base(scope)
         {
-
+            RuleForRemove().CustomAsync(async t => 
+            {
+                var param = await new ReportParamService(scope).GetAll().Include(t => t.Report).SingleAsync(t.Id);
+                return param.Report.PrintFileName.HasValue();
+            }, "بعد از ایجاد گزارش امکان حذف پارامترهای گزارش وجود ندارد");
         }
 
         public IQueryable<ReportParam> GetAll(int reportId)
         {
             return GetAll().Where(t => t.ReportId == reportId);
+        }
+
+        public async override Task<ValidationResult> ValidateRemoveAsync(ReportParam entity)
+        {
+
+            return await base.ValidateRemoveAsync(entity);
         }
 
         public IQueryable<ReportParam> GetAll(int reportId, int dataLevel)
@@ -123,14 +132,14 @@ namespace Caspian.Engine.Service
             return temp;
         }
 
-        public void DeleteDataKey(int reportId, int dataLevel)
+        public async void DeleteDataKey(int reportId, int dataLevel)
         {
             if (dataLevel > 1 && !GetAll().Any(t => t.ReportId == reportId && t.DataLevel == dataLevel && !t.IsKey))
             {
                 var temp = GetAll().SingleOrDefault(t => t.ReportId == reportId && t.DataLevel == dataLevel && t.IsKey);
                 if (temp != null)
                 {
-                    base.Remove(new ReportParam()
+                    await base.RemoveAsync(new ReportParam()
                     {
                         Id = temp.Id
                     });

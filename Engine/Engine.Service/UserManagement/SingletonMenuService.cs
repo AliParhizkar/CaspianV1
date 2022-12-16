@@ -14,7 +14,7 @@ namespace Caspian.Engine.Service
 
         public Menu GetMenu(string path)
         {
-            return Menus.Single(t => t.Source == path);
+            return Menus.SingleOrDefault(t => t.Source == path);
         }
     }
 }

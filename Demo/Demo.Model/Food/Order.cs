@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("*Orders")]
+    [Table("Orders", Schema = "demo")]
     public class Order
     {
         [Key]

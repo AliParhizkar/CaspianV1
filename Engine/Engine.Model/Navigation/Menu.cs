@@ -35,6 +35,8 @@ namespace Caspian.Engine.Model
         [ForeignKey(nameof(MenuCategoryId))]
         public virtual  MenuCategory MenuCategory { get; set; }
 
+        public SubSystemKind? SubSystemKind { get; set; }
+
         public int Ordering { get; set; }
 
         /// <summary>

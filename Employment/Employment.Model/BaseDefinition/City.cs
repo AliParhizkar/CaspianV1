@@ -1,5 +1,4 @@
 ﻿using Caspian.Common;
-using Employment.Model.History;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

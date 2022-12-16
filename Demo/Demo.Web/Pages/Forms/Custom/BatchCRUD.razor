@@ -1,0 +1,23 @@
+﻿@page "/Demo/BatchCRUD"
+@inherits BasePage
+<DataGrid TEntity="OrderDeatil" Source="source" >
+    <Columns>
+        <GridColumn TEntity="OrderDeatil" Field="t => t.Order.Customer.FName" Title="نام" />
+        <GridColumn TEntity="OrderDeatil" Field="t => t.Order.Customer.LName" Title="نام خانوادگی" />
+        <GridColumn TEntity="OrderDeatil" Field="t => t.Order.Customer.Gender.FaText()" Title="جنسیت" />
+        <GridColumn TEntity="OrderDeatil" Field="t => t.Product.ProductCategory.Title" Title="گروه محصول" />
+        <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول" />
+    </Columns>
+</DataGrid>
+
+
+@code 
+{
+    IList<OrderDeatil> source;
+    protected override async Task OnInitializedAsync()
+    {
+        var scope = CreateScope();
+        source = await new OrderDeatilService(scope).GetAll().Where(t => t.OrderId == 1).ToListAsync();
+        await base.OnInitializedAsync();
+    }
+}

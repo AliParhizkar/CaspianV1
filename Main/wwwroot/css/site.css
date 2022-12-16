@@ -310,7 +310,7 @@ a, .btn-link {
     }
 
 .page .content {
-    width: calc(100% - 180px);
+    width: calc(100% - 160px);
     float:right;
 }
 .c-login {
@@ -327,10 +327,13 @@ a, .btn-link {
     }
     .c-login .c-form {
         position: absolute;
-        top: 330px;
+        top: 315px;
         left:90px;
     }
-
+    .c-login .error-message{
+        color:red;
+        font-weight:bold;
+    }
     .c-login input {
         border: none;
         background-color: transparent;
@@ -338,22 +341,22 @@ a, .btn-link {
         height: 25px;
         border-bottom: solid 1px #ccc;
         font-family: iranyekan;
-        font-weight:bold;
-        line-height:1.2;
-        color:gray;
-        direction:ltr;
-        font-size:13px;
+        font-weight: bold;
+        line-height: 1.2;
+        color: gray;
+        direction: ltr;
+        font-size: 13px;
     }
         .c-login input::placeholder {
             color: lightgray;
         }
         .c-login .c-container {
-            padding-bottom: 15px;
+            padding-bottom: 10px;
         }
 
     .c-login .c-action{
         text-align:left;
-        padding-top:30px;
+        padding-top:15px;
     }
 
         .c-login .c-action button {

@@ -1,35 +1,40 @@
 ﻿@page "/Demo/MaterialReceipt"
 @namespace Demo.Web.Pages
 @inherits MasterDetailPage<StoreHouseReceipt, MaterialReceipt>
-<div style="margin:10px auto; width:90%">
+<div style="margin:10px auto; width:95%">
     <CaspianForm @ref="MasterForm" Model="UpsertData" OnValidSubmit="@(async con =>
                                                             {
                                                                 var result = await Task.FromResult(true);
                                                                 return result;
                                                             })">
         <CaspianValidationValidator ValidatorType="typeof(StoreHouseReceiptService)" />
-        <table style="width:500px;margin:0 auto">
+        <table style="width:100%">
             <tr>
-                <td>تاریخ حواله</td>
+                <td>
+                    <label>تاریخ حواله</label>
+                </td>
                 <td>
                     <DatePicker @bind-Value="UpsertData.Date" />
                 </td>
-            </tr>
-            <tr>
-                <td>انبار</td>
                 <td>
+                    <label>انبار</label>
+                </td>
+                <td colspan="2">
                     <ComboBox TValue="int" TEntity="StoreHouse" @bind-Value="UpsertData.StoreHouseId"
                               TextExpression="t => t.Title" ConditionExpression="t => t.ActiveType == ActiveType.Enable" />
                 </td>
             </tr>
             <tr>
                 <td>توضیحات</td>
-                <td>
+                <td colspan="3">
                     <StringTextBox @bind-Value="UpsertData.Comment" MultiLine Rows="3" />
+                </td>
+                <td style="width:80px;">
+                    <button style="width:60px" class="c-btn c-primary">ثبت</button>
                 </td>
             </tr>
         </table>
-        <button>ثبت</button>
+       
     </CaspianForm>
     <DataGrid @ref="Grid" TEntity="MaterialReceipt" TableHeight="250" MultiInsert HidePageSize ServiceType="typeof(MaterialReceiptService)">
         <Columns Context="con">

@@ -2,20 +2,39 @@
 using Microsoft.JSInterop;
 using Caspian.Engine.Model;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace Caspian.Engine.Navigation
 {
     public partial class DataMenu: ComponentBase
     {
-        IList<MenuCategory> Categories;
+        string curentUrl;
         IList<Menu> Menus;
+        ElementReference elm;
+        bool sholdRender = true;
         SubSystemKind? OldSubSystem;
+        IList<MenuCategory> Categories;
+
+        protected override bool ShouldRender()
+        {
+            return sholdRender;
+        }
+
+        async Task ChangeValueAsync()
+        {
+            await OnChange.InvokeAsync();
+        }
+
+        [Parameter]
+        public EventCallback OnChange { get; set; }
+
 
         protected override void OnInitialized()
         {
             var url = navigationManager.Uri.Substring(navigationManager.BaseUri.Length);
+            curentUrl = '/' + url;
             var segments = url.Split('/');
-            if (segments.Length > 0)
+            if (url.HasValue() && segments.Length > 0 && !segments[0].Equals("login", StringComparison.OrdinalIgnoreCase))
             {
                 var subSystemKind = (SubSystemKind)typeof(SubSystemKind).GetField(segments[0]).GetValue(null);
                 if (OldSubSystem != subSystemKind)
@@ -29,17 +48,12 @@ namespace Caspian.Engine.Navigation
             base.OnInitialized();
         }
 
-        void NavigateTo(string source)
-        {
-            navigationManager.NavigateTo(source.Substring(1));
-        }
-
         [Parameter]
         public IList<int> MenusId { get; set; }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            await jSRuntime.InvokeVoidAsync("$.telerik.bindMenu");
+            await jSRuntime.InvokeVoidAsync("$.telerik.bindMenu", elm);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

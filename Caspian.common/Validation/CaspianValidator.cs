@@ -51,6 +51,20 @@ namespace Caspian.Common
                 });
             }
         }
+
+        protected IRuleBuilderInitial<TModel, object> RuleForRemove()
+        {
+            var pkey = typeof(TModel).GetPrimaryKey();
+            var param = Expression.Parameter(typeof(TModel), "t");
+            Expression expr = Expression.Property(param, pkey);
+            expr = Expression.Convert(expr, typeof(object));
+            var lambda = Expression.Lambda(expr, param) as Expression<Func<TModel, object>>;
+            var rule = PropertyRule.Create(lambda);
+            rule.RuleSets = new string[] { "remove" };
+            AddRule(rule);
+            return new RuleBuilder<TModel, object>(rule, this);
+        }
+
         public int UserId { get;private set; }
         /// <summary>
         /// In Master-Details insert MasterInfo should not Validate for Foreign Key
@@ -66,7 +80,14 @@ namespace Caspian.Common
 
         public MyContext Context { get; private set; }
 
-        private void CheckOnDelete(Expression<Func<TModel, object>> expression)
+        void CheckOnDelete(Expression<Func<TModel, object>> expression, Func<TModel, bool> func)
+        {
+            var rule = PropertyRule.Create(expression);
+            AddRule(rule);
+            var ruleBuilder = new RuleBuilder<TModel, object>(rule, this);
+        }
+
+        void CheckOnDelete(Expression<Func<TModel, object>> expression)
         {
             var rule = PropertyRule.Create(expression);
             AddRule(rule);
