@@ -9,6 +9,7 @@ using Caspian.Engine;
 using System.Linq.Expressions;
 using Employment.Model;
 using static Stimulsoft.Report.StiOptions;
+using Caspian.Common.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 

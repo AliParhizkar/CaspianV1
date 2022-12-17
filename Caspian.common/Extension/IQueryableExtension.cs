@@ -50,7 +50,7 @@ namespace Caspian.Common.Extension
             {
                 var entity = Activator.CreateInstance<TEntity>();
                 foreach(var info in value.GetType().GetProperties().Where(t => t.Name != "Item"))
-                    UpdateEntity<TEntity>(entity, info.Name, info.GetValue(value));
+                    UpdateEntity(entity, info.Name, info.GetValue(value));
                 list.Add(entity);
             }
             return list;
@@ -189,7 +189,7 @@ namespace Caspian.Common.Extension
             return groupByQuery.Select(lambdaSelect);
         }
 
-        private static void UpdateEntity<TEntity>(TEntity entity, string path, object value)
+        public static void UpdateEntity(object entity, string path, object value)
         {
             var index = 1;
             var array = path.Split('.');

@@ -7,11 +7,12 @@
     display: flex;
     flex-basis: content;
 }
-    .c-menu-icon .fa {
-        color: #423d96;
-        font-size: 24px;
-        cursor:pointer;
-    }
+
+.c-menu-icon .fa {
+    color: #423d96;
+    font-size: 24px;
+    cursor: pointer;
+}
     .c-menu-icon div {
         width:27px;
         text-align:center;
@@ -4554,4 +4555,12 @@ fieldset.t-widget {
 }
 .t-combobox .t-state-disabled{
     cursor:not-allowed;
+}
+.c-icon-button .fa-plus {
+    font-size: 18px!important;
+    padding-top:8px;
+}
+.c-icon-button .fa-minus {
+    font-size: 18px !important;
+    padding-top: 9px;
 }

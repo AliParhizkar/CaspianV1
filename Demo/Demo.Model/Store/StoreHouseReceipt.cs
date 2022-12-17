@@ -1,7 +1,5 @@
 ﻿using System;
 using Caspian.Common;
-using System.ComponentModel;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

@@ -1,23 +1,185 @@
 ﻿@page "/Demo/BatchCRUD"
 @inherits BasePage
-<DataGrid TEntity="OrderDeatil" Source="source" >
-    <Columns>
-        <GridColumn TEntity="OrderDeatil" Field="t => t.Order.Customer.FName" Title="نام" />
-        <GridColumn TEntity="OrderDeatil" Field="t => t.Order.Customer.LName" Title="نام خانوادگی" />
-        <GridColumn TEntity="OrderDeatil" Field="t => t.Order.Customer.Gender.FaText()" Title="جنسیت" />
-        <GridColumn TEntity="OrderDeatil" Field="t => t.Product.ProductCategory.Title" Title="گروه محصول" />
-        <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول" />
-    </Columns>
-</DataGrid>
+@{
+    base.BuildRenderTree(__builder);
+}
 
-
+<style type="text/css">
+    .product{
+        border: 1px solid lightgray;
+        padding: 5px;
+        margin: 5px;
+        display: inline-block;
+        border-radius: 15px;
+        width:100px;
+        text-align:center;
+        font-weight:bold;
+        cursor:pointer;
+        background-color: aliceblue;
+    }
+    .products {
+        border: 1px solid lightgray;
+        max-height: 200px;
+        overflow: auto;
+        margin-bottom: 10px;
+        border-radius: 17px;
+    }
+</style>
+<div style="width:95%;margin:5px auto">
+    <h4>Batch Operations</h4>
+    <div class="products">
+        @if (products != null)
+        {
+            @foreach (var product in products)
+            {
+                <span @onclick="async () => await AddUpsertProduct(product)" class="product">@product.Title</span>
+            }
+        }
+    </div>
+    <div style="display:flex">
+        <div style="width:200px;">
+            <div style="padding:20px">
+                <button @onclick="InsertedProducts" class="c-btn c-primary">Inserted products</button>
+            </div>
+            <div style="padding:20px">
+                <button @onclick="UpdatedProducts" class="c-btn c-primary">Updated products</button>
+            </div>
+            <div style="padding:20px">
+                <button @onclick="DeletedProducts" class="c-btn c-primary">Deleted products</button>
+            </div>
+            <div style="padding:20px">
+                <button @onclick="PostToDatabase" class="c-btn c-primary">Post to database</button>
+            </div>
+        </div>
+        <div style="width:calc(100% - 200px);">
+            <DataGrid @ref="grid" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == orderId" TableHeight="250" HideInsertIcon>
+                <Columns>
+                    <GridColumn TEntity="OrderDeatil" Field="t => t.Product.ProductCategory.Title" Title="گروه محصول" />
+                    <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول" />
+                    <GridColumn TEntity="OrderDeatil" Field="t => t.Price.Seprate3Digit()" Title="قیمت" style="width:90px;" />
+                    <GridColumn TEntity="OrderDeatil" Field="t => t.Count" Title="تعداد" style="width:140px;">
+                        <Template>
+                            <IconButton IconType="IconType.Plus" @onclick="async () => await IncCount(context.Data)" />
+                            <span style="display:inline-block;width:38px;height:38px;">@context.Data.Count</span>
+                            <IconButton IconType="IconType.Minus" @onclick="async () => await DecCount(context.Data)" />
+                        </Template>
+                    </GridColumn>
+                </Columns>
+            </DataGrid>
+        </div>
+    </div>
+</div>
 @code 
 {
-    IList<OrderDeatil> source;
-    protected override async Task OnInitializedAsync()
+    DataGrid<OrderDeatil> grid;
+    IList<Product> products;
+    int orderId = 1;
+
+    protected async override Task OnInitializedAsync()
     {
         var scope = CreateScope();
-        source = await new OrderDeatilService(scope).GetAll().Where(t => t.OrderId == 1).ToListAsync();
+        products = await new ProductService(scope).GetAll().ToListAsync();
+        foreach (var product in products)
+            product.Image = null;
         await base.OnInitializedAsync();
+    }
+
+    void UpdatedProducts()
+    {
+        var products = grid.GetUpdatedEntities();
+        if (products.Count == 0)
+            Alert("هیچ محصولی بروزرسانی نشده است");
+        else
+        {
+            var str = $"تعداد {products.Count} محصول با عناوین :";
+            string tempStr = null;
+            foreach (var product in products)
+            {
+                if (tempStr != null)
+                    tempStr += " - ";
+                tempStr += product.Product.Title;
+            }
+            Alert(str + tempStr + " بروزرسانی شده اند");
+        }
+    }
+
+    void DeletedProducts()
+    {
+        var products = grid.GetDeletedEntities();
+        if (products.Count == 0)
+            Alert("هیچ محصولی حذف نشده است");
+        else
+        {
+            var str = $"تعداد {products.Count} محصول با عناوین :";
+            string tempStr = null;
+            foreach (var product in products)
+            {
+                if (tempStr != null)
+                    tempStr += " - ";
+                tempStr += product.Product.Title;
+            }
+            Alert(str + tempStr + " حذف شده اند");
+        }
+    }
+
+    void InsertedProducts()
+    {
+        var products = grid.GetInsertedEntities();
+        if (products.Count == 0)
+            Alert("هیچ محصولی ثبت نشده است");
+        else
+        {
+            var str = $"تعداد {products.Count} محصول با عناوین :";
+            string tempStr = null;
+            foreach (var product in products)
+            {
+                if (tempStr != null)
+                    tempStr += " - ";
+                tempStr += product.Product.Title;
+            }
+            Alert(str + tempStr + " ثبت شده اند");
+        }
+    }
+
+    async Task PostToDatabase()
+    {
+        var message = await grid.PostToDatabaseAsync();
+        message = message ?? "بروزرسانی با موفقیت انجام شد";
+        ShowMessage(message);
+    }
+
+    async Task AddUpsertProduct(Product product)
+    {
+        var old = grid.AllRecords().SingleOrDefault(t => t.ProductId == product.Id);
+        if (old == null)
+        {
+            await grid.InsertAsync(new OrderDeatil()
+            {
+                Count = 1,
+                Price = product.Price,
+                ProductId = product.Id,
+                OrderId = orderId
+            });
+        }
+        else
+        {
+            old.Count = old.Count + 1;
+            await grid.UpdateAsync(old);
+        }
+    }
+
+    async Task IncCount(OrderDeatil detail)
+    {
+        detail.Count++;
+        await grid.UpdateAsync(detail);
+    }
+
+    async Task DecCount(OrderDeatil detail)
+    {
+        detail.Count--;
+        if (detail.Count == 0)
+            await grid.RemoveAsync(detail);
+        else
+            await grid.UpdateAsync(detail);
     }
 }

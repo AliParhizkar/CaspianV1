@@ -13,7 +13,9 @@
         Refresh,
         ExternalLink,
         Wpforms,
-        Ban
+        Ban,
+        Plus,
+        Minus,
     }
 
     public enum VerticalAlign

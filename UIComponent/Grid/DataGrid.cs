@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
 using Caspian.common;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Caspian.UI
 {
@@ -226,7 +227,7 @@ namespace Caspian.UI
                 {
                     Total = await query.CountAsync();
                     query = GetOrderByQuery(query);
-                    if (PageNumber > 1)
+                    if (PageNumber > 1 && !Batch)
                     {
                         var skip = (PageNumber - 1) * PageSize;
                         query = query.Skip(skip);
@@ -240,8 +241,23 @@ namespace Caspian.UI
                     }
                     var parameterExpr = Expression.Parameter(typeof(TEntity), "t");
                     var pKey = typeof(TEntity).GetPrimaryKey();
-                    var expr1 = Expression.Property(parameterExpr, pKey);
-                    exprList.Add(expr1);
+                    if (Batch)
+                    {
+                        foreach (var info in typeof(TEntity).GetProperties())
+                        {
+                            if (info.PropertyType.IsValueType || info.PropertyType.IsNullableType())
+                            {
+                                var str = parameterExpr.Name + "." + info.Name;
+                                if (!exprList.Any(t => t.ToString() == str))
+                                    exprList.Add(Expression.Property(parameterExpr, info));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var expr1 = Expression.Property(parameterExpr, pKey);
+                        exprList.Add(expr1);
+                    }
                     if (Inline)
                     {
                         foreach (var info in typeof(TEntity).GetProperties())
@@ -255,7 +271,20 @@ namespace Caspian.UI
                         }
                         SelectExpressions = exprList;
                     }
-                    Items = await query.Take(PageSize).GetValuesAsync<TEntity>(exprList);
+                    if (Batch)
+                    {
+                        source = await query.GetValuesAsync<TEntity>(exprList);
+                        if (PageNumber == 1)
+                            Items = source.Take(PageSize).ToList();
+                        else
+                        {
+                            var skip = (PageNumber - 1) * PageSize;
+                            Items = source.Skip(skip).Take(PageSize).ToList();
+                        }
+                        ManageExpressionForUpsert(exprList);
+                    }
+                    else
+                        Items = await query.Take(PageSize).GetValuesAsync<TEntity>(exprList);
                 }
             }
         }
@@ -282,7 +311,7 @@ namespace Caspian.UI
         {
             get
             {
-                if (SelectedRowIndex.HasValue && SelectedRowIndex >= 0 && SelectedRowIndex < Items.Count)
+                if (Items != null && SelectedRowIndex.HasValue && SelectedRowIndex >= 0 && SelectedRowIndex < Items.Count)
                 {
                     var value = typeof(TEntity).GetPrimaryKey().GetValue(Items[SelectedRowIndex.Value]);
                     return Convert.ToInt32(value);
@@ -344,7 +373,7 @@ namespace Caspian.UI
         [Parameter, JsonIgnore]
         public int PageNumber { get; set; } = 1;
 
-        [JsonIgnore]
+        [Parameter, JsonIgnore]
         public int PageSize { get; set; } = 5;
 
         [Parameter, JsonIgnore]
@@ -401,7 +430,7 @@ namespace Caspian.UI
                 await ChangePageNumber(pageCount);
                 SelectedRowIndex = Items.Count - 1;
             }
-            else if (SelectedRowIndex.Value >= Items.Count)
+            else if (SelectedRowIndex != null && SelectedRowIndex.Value >= Items.Count)
                 SelectedRowIndex = Items.Count - 1;
         }
 
@@ -426,8 +455,13 @@ namespace Caspian.UI
         async Task ChangePageNumber(int pageNumber)
         {
             PageNumber = pageNumber;
-            SholdRendered = true;
-            await DataBind();
+            if (Batch)
+                ShowItemsForBatch();
+            else
+            {
+                SholdRendered = true;
+                await DataBind();
+            }
             if (OnPageChanged.HasDelegate)
                 await OnPageChanged.InvokeAsync();
         }
@@ -438,8 +472,13 @@ namespace Caspian.UI
             {
                 PageNumber = 1;
                 PageSize = pageSize;
-                SholdRendered = true;
-                await DataBind();
+                if (Batch)
+                    ShowItemsForBatch();
+                else
+                {
+                    SholdRendered = true;
+                    await DataBind();
+                }
             }
         }
 
@@ -573,7 +612,7 @@ namespace Caspian.UI
             {
                 SholdRendered = true;
                 jsonOldSearch = jsonSearch;
-                if (columnsData != null)
+                if (columnsData != null && !Batch)
                     await DataBind();
             }
             else if (SholdRendered && columnsData != null)

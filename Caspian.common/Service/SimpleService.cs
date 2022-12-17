@@ -136,7 +136,7 @@ namespace Caspian.Common.Service
             return await GetAll().AnyAsync(expr);
         }
 
-        public void RemoveRange(IQueryable<TEntity> entities)
+        public void RemoveRange(IEnumerable<TEntity> entities)
         {
             Context.RemoveRange(entities);
         }
