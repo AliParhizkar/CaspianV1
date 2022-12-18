@@ -4,6 +4,7 @@ using Caspian.Engine;
 using FluentValidation;
 using Caspian.Common.Service;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace Demo.Service
 {
@@ -13,34 +14,13 @@ namespace Demo.Service
         public OrderService(IServiceScope scope)
             :base(scope)
         {
-            RuleFor(t => t.Date).CustomValue(t => { return t == null; }, "لطفا تاریخ سفارش را مشخص نمائید");
-            RuleForEach(t => t.OrderDeatils).SetValidator(new OrderDeatilService(scope))
-            .When(t =>
-            {
-                return !IgnoreDetailsProperty;
-            });
-        }
-
-        /// <summary>
-        /// مشتری مبلغ زیادی خرید نموده است
-        /// </summary>
-        /// <param name="order"></param>
-        /// <returns></returns>
-        [Task("مشتری VIP")]
-        public bool CheckOrder(Order order)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// مشتری سفارشهای زیادی داشته است
-        /// </summary>
-        /// <param name="order"></param>
-        /// <returns></returns>
-        [Task("مشتری پرخرید")]
-        public bool CheckOrder1(Order order)
-        {
-            return false;
+            RuleFor(t => t.Date).CustomValue(t => t == null, "لطفا تاریخ سفارش را مشخص نمائید");
+            RuleFor(t => t.OrderDeatils).CustomValue(t => t == null || t.Count == 0, "سفارش باید حداقل یک محصول داشته باشد");
+            RuleForEach(t => t.OrderDeatils)
+                ///In order and orderdetails insert OrderId for type orderdetail is not recognized and for ForeignKey must ignored
+                ///Important: First must Ignore Foreign Key then set validator
+                .IgnoreForeignKey(t => t.Property(u => u.OrderId).Condition(u => u.Id == 0))
+                .SetValidator(new OrderDeatilService(scope));
         }
     }
 }

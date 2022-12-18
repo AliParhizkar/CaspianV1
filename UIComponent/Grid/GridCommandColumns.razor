@@ -2,12 +2,13 @@
 @typeparam TEntity
 @{
     Grid.AddCommandColumn(HeaderTitle, HeaderWidth);
+    var test = false;
 }
 <td @attributes="attrs">
-    @if (GridEditableList)
+    @if (test)
     {
         <span class="c-check">
-            <span class="t-icon fa fa-check" @onclick="async () => { await ValidateAndUpsert(); }"></span>
+            <span class="t-icon fa fa-check"></span>
         </span>
         <span class="c-bar" @onclick="@(async () => { await DeleteAsync(); })">
             <span class="t-icon fa fa-ban"></span>

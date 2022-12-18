@@ -23,5 +23,7 @@ namespace Caspian.Common.Service
     public interface ISimpleService
     {
         IQueryable GetAllRecords();
+
+        Task<bool> AnyAsync(int id);
     }
 }

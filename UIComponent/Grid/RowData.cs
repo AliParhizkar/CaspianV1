@@ -7,5 +7,7 @@
         public int RowIndex { get; set; } 
 
         public object DynamicData { get; set; }
+
+        public bool IsEdite { get; set; }
     }
 }

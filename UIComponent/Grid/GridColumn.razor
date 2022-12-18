@@ -7,10 +7,11 @@
 @if (RowData != null)
 {
     <td @attributes="Attributs">
-        @if (GridEditableList && EditTemplate != null)
+        @if (RowData.IsEdite && EditTemplate != null)
         {
             @EditTemplate
-        } else if (Template == null)
+        } 
+        else if (Template == null)
         {
             if (IsCheckBox)
             {

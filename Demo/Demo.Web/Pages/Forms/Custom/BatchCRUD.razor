@@ -1,4 +1,4 @@
-﻿@page "/Demo/BatchCRUD"
+﻿@page "/Demo/BatchCRUD/{OrderId:int}"
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -23,36 +23,76 @@
         overflow: auto;
         margin-bottom: 10px;
         border-radius: 17px;
+        width:calc(100% - 300px)
     }
 </style>
-<div style="width:95%;margin:5px auto">
-    <h4>Batch Operations</h4>
-    <div class="products">
-        @if (products != null)
-        {
-            @foreach (var product in products)
-            {
-                <span @onclick="async () => await AddUpsertProduct(product)" class="product">@product.Title</span>
-            }
-        }
-    </div>
+<div style="width:98%;margin:5px auto">
     <div style="display:flex">
-        <div style="width:200px;">
+        <div style="width:300px;padding-left:20px;">
+            <CaspianForm Model="order" OnSubmit="OnFormSubmit" >
+                <CaspianValidationValidator ValidatorType="typeof(OrderService)"  />
+                <table style="width:100%">
+                    <tr>
+                        <td>
+                            <label>تاریخ سفارش</label>
+                        </td>
+                        <td>
+                            <DatePicker @bind-Value="order.Date" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>نوع سفارش</label>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="order.OrderType" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>مشتری</label>
+                        </td>
+                        <td>
+                            <ComboBox TEntity="Customer" TValue="int?" @bind-Value="order.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton  />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </div>
+        <div class="products">
+            @if (products != null)
+            {
+                @foreach (var product in products)
+                {
+                    <span @onclick="async () => await AddUpsertProduct(product)" class="product">@product.Title</span>
+                }
+            }
+        </div>
+    </div>
+
+    <div style="display:flex">
+        <div style="width:300px;text-align:center">
             <div style="padding:20px">
                 <button @onclick="InsertedProducts" class="c-btn c-primary">Inserted products</button>
             </div>
             <div style="padding:20px">
-                <button @onclick="UpdatedProducts" class="c-btn c-primary">Updated products</button>
+                <button @attributes="btnAttr" @onclick="UpdatedProducts" class="c-btn c-primary">Updated products</button>
             </div>
             <div style="padding:20px">
-                <button @onclick="DeletedProducts" class="c-btn c-primary">Deleted products</button>
+                <button @attributes="btnAttr" @onclick="DeletedProducts" class="c-btn c-primary">Deleted products</button>
             </div>
             <div style="padding:20px">
-                <button @onclick="PostToDatabase" class="c-btn c-primary">Post to database</button>
+                <button @attributes="btnAttr" @onclick="PostToDatabase" class="c-btn c-primary">Post to database</button>
             </div>
         </div>
-        <div style="width:calc(100% - 200px);">
-            <DataGrid @ref="grid" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == orderId" TableHeight="250" HideInsertIcon>
+        <div style="width:calc(100% - 300px);">
+            <DataGrid @ref="grid" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == OrderId" TableHeight="250" HideInsertIcon>
                 <Columns>
                     <GridColumn TEntity="OrderDeatil" Field="t => t.Product.ProductCategory.Title" Title="گروه محصول" />
                     <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول" />
@@ -71,17 +111,28 @@
 </div>
 @code 
 {
+    Order order;
     DataGrid<OrderDeatil> grid;
     IList<Product> products;
-    int orderId = 1;
+    IDictionary<string, object> btnAttr;
 
     protected async override Task OnInitializedAsync()
     {
+        order = new Order();
+        order.Date = DateTime.Now.Date;
         var scope = CreateScope();
         products = await new ProductService(scope).GetAll().ToListAsync();
         foreach (var product in products)
             product.Image = null;
+        btnAttr = new Dictionary<string, object>();
+        if (OrderId == 0)
+            btnAttr.Add("disabled", "disabled");
         await base.OnInitializedAsync();
+    }
+
+    void OnFormSubmit(EditContext context)
+    {
+        (context.Model as Order).OrderDeatils = grid.AllRecords();
     }
 
     void UpdatedProducts()
@@ -158,7 +209,7 @@
                 Count = 1,
                 Price = product.Price,
                 ProductId = product.Id,
-                OrderId = orderId
+                OrderId = OrderId
             });
         }
         else
@@ -182,4 +233,7 @@
         else
             await grid.UpdateAsync(detail);
     }
+
+    [Parameter]
+    public int OrderId{ get; set; }
 }

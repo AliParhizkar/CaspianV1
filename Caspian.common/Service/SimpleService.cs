@@ -60,7 +60,8 @@ namespace Caspian.Common.Service
         public override Task<ValidationResult> ValidateAsync(ValidationContext<TEntity> context, CancellationToken cancellation = default)
         {
             context.RootContextData["__ServiceScope"] = ServiceScope;
-            
+            if (!context.IsChildContext)
+                context.RootContextData["__MasterInstanse"] = context.InstanceToValidate;
             return base.ValidateAsync(context, cancellation);
         }
 
@@ -144,6 +145,14 @@ namespace Caspian.Common.Service
         public async Task<int> SaveChangesAsync()
         {
             return await Context.SaveChangesAsync();
+        }
+
+        public async Task<bool> AnyAsync(int id)
+        {
+            var param = Expression.Parameter(typeof(TEntity), "t");
+            Expression expr = Expression.Property(param, typeof(TEntity).GetPrimaryKey());
+            expr = Expression.Equal(expr, Expression.Constant(id));
+            return await GetAll().Where(Expression.Lambda(expr, param)).AnyAsync();
         }
 
         public void Dispose()

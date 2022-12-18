@@ -36,8 +36,8 @@ namespace Caspian.UI
         [Parameter]
         public RenderFragment EditTemplate { get; set; }
 
-        [CascadingParameter(Name = "GridEditableList")]
-        public bool GridEditableList { get; set; }
+        //[CascadingParameter(Name = "GridEditableList")]
+        //public bool GridEditableList { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
         public IDictionary<string, object> Attributs { get; set; }

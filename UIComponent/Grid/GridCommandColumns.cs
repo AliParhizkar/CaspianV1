@@ -24,9 +24,6 @@ namespace Caspian.UI
         [CascadingParameter(Name = "GridRowData")]
         public RowData<TEntity> RowData { get; set; }
 
-        [CascadingParameter(Name = "GridEditableList")]
-        public bool GridEditableList { get; set; }
-
         [Parameter]
         public bool HideEdit { get; set; }
 
@@ -98,11 +95,6 @@ namespace Caspian.UI
                     await Grid.OnInternalUpsert.InvokeAsync(RowData.Data);
                 if (Grid.OnUpsert.HasDelegate)
                     await Grid.OnUpsert.InvokeAsync(RowData.Data);
-                if (Grid.Inline)
-                {
-                    var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(RowData.Data));
-                    await Grid.SetEditngEntityId(id);
-                }
             }
         }
 
@@ -115,28 +107,6 @@ namespace Caspian.UI
                     sholdDeletd = await Grid.OnDelete(RowData.Data);
                 if (sholdDeletd && Grid.OnInternalDelete.HasDelegate)
                     await Grid.OnInternalDelete.InvokeAsync(RowData.Data);
-                if (GridEditableList)
-                {
-                    var id = typeof(TEntity).GetPrimaryKey().GetValue(RowData.Data);
-                    if (id.Equals(0))
-                        await Grid.RemoveFromList(RowData.RowIndex);
-                    else
-                        await Grid.RemoveFromList();
-                }
-            }
-        }
-
-        async Task ValidateAndUpsert()
-        {
-            if (!disabledEdit)
-            {
-                var id = typeof(TEntity).GetPrimaryKey().GetValue(RowData.Data);
-                if (id.Equals(0))
-                {
-                    await Grid.SetSingleInsertIndex(RowData.RowIndex);
-                }
-                else
-                    await Grid.ValidateAndUpdate();
             }
         }
     }

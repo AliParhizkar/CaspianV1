@@ -1,9 +1,26 @@
 ﻿@page "/counter"
+@inherits BasePage
 @using Caspian.UI
-<DataGrid TEntity="Demo.Model.City">
-    <GridColumn TEntity="Demo.Model.City" Field="t => t.Title" />
-</DataGrid>
+@using Demo.Model
+@using Demo.Service
+<button @onclick="async () => await ValidateAsync()">Validate</button>
 
-@code {
-    
+@code 
+{
+    async Task ValidateAsync()
+    {
+        using var scope = CreateScope();
+        var service = new OrderService(scope);
+        var order = new Order();
+        order.OrderType = OrderType.Tel;
+        order.Date = DateTime.Now.Date;
+        order.OrderDeatils = new List<OrderDeatil>();
+        order.OrderDeatils.Add(new OrderDeatil()
+        {
+            Count = 5,
+            Price = 10000,
+            ProductId = 1
+        });
+        var result = await service.ValidateAsync(order);
+    }
 }

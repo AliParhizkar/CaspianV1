@@ -19,8 +19,6 @@ namespace Caspian.UI
                 await Grid.OnInternalUpsert.InvokeAsync(entity);
             if (Grid.OnUpsert.HasDelegate)
                 await Grid.OnUpsert.InvokeAsync(entity);
-            if (Grid.Inline)
-                Grid.AddToInsertList(entity);
         }
     }
 }

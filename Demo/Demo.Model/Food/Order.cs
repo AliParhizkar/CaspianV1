@@ -19,13 +19,13 @@ namespace Demo.Model
         [DisplayName("تاریخ سفارش"), ReportField("تاریخ سفارش")]
         public DateTime? Date { get; set; }
 
-        [ForeignKey(nameof(Date))]
-        public PersianDateTable PersianDate { get; set; }
+        //[ForeignKey(nameof(Date))]
+        //public PersianDateTable PersianDate { get; set; }
 
         /// <summary>
         /// کد مشتری
         /// </summary>
-        [DisplayName("مشخصات مشتری")]
+        [DisplayName("مشتری")]
         public int? CustomerId { get; set; }
 
         /// <summary>
@@ -44,12 +44,6 @@ namespace Demo.Model
         /// </summary>
         [DisplayName("نوع سفارش"), ReportField("نوع سفارش")]
         public OrderType OrderType { get; set; }
-
-        /// <summary>
-        /// شماره سفارش
-        /// </summary>
-        [DisplayName("شماره سفارش"), ReportField]
-        public int OrderNumber { get; set; }
 
         public int? TotalAmount { get; set; }
 

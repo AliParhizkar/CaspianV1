@@ -80,13 +80,6 @@ namespace Caspian.Common
 
         public MyContext Context { get; private set; }
 
-        void CheckOnDelete(Expression<Func<TModel, object>> expression, Func<TModel, bool> func)
-        {
-            var rule = PropertyRule.Create(expression);
-            AddRule(rule);
-            var ruleBuilder = new RuleBuilder<TModel, object>(rule, this);
-        }
-
         void CheckOnDelete(Expression<Func<TModel, object>> expression)
         {
             var rule = PropertyRule.Create(expression);
@@ -174,4 +167,36 @@ namespace Caspian.Common
             return ruleBuilder;
         }
     }
+
+    public class ForeignKeyValidationConfig<TMaster, TDetail> :  IForeignKeyValidationConfig where TMaster : class
+    {
+        public Func<TMaster, bool> ConditionFunc { get; private set; }
+
+        public PropertyInfo PropertyInfo { get; private set; }
+
+        public ForeignKeyValidationConfig<TMaster, TDetail> Condition(Func<TMaster, bool> func)
+        {
+            ConditionFunc = func;
+            return this;
+        }
+
+        public bool HasCondition(object obj)
+        {
+            return ConditionFunc.Invoke(obj as TMaster);
+        }
+
+        public ForeignKeyValidationConfig<TMaster, TDetail> Property<TProperty>(Expression<Func<TDetail, TProperty>> expr)
+        {
+            PropertyInfo = (expr.Body as MemberExpression).Member as PropertyInfo;
+            return this;
+        }
+    }
+
+    public interface IForeignKeyValidationConfig
+    {
+        bool HasCondition(object obj);
+
+        PropertyInfo PropertyInfo { get; }
+    }
+
 }

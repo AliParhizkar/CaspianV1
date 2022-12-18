@@ -45,6 +45,19 @@ namespace Caspian.Common
             });
         }
 
+        public static IRuleBuilderInitial<TModel, TProperty> IgnoreForeignKey<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+            Action<ForeignKeyValidationConfig<TModel, TProperty>> config) where TModel : class
+        {
+            
+            return ruleBuilder.Custom((value, context) =>
+            {
+                var validatiorConfig = new ForeignKeyValidationConfig<TModel, TProperty>();
+                config.Invoke(validatiorConfig);
+                if (!context.ParentContext.RootContextData.ContainsKey("__IgnoreForeignKey"))
+                    context.ParentContext.RootContextData.Add("__IgnoreForeignKey", validatiorConfig);
+            });
+        }
+
 
         public static IRuleBuilderInitial<TModel, TProperty> Required<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, 
             Func<TModel, bool> func = null, string message = null)
@@ -251,31 +264,38 @@ namespace Caspian.Common
                     string message = null;
                     if (value.Equals(0))
                     {
-                        if (infoId != masterInfo)
+                        var flag = false;
+                        if (context.ParentContext.RootContextData.ContainsKey("__IgnoreForeignKey"))
+                        {
+                            var config = context.ParentContext.RootContextData["__IgnoreForeignKey"] as IForeignKeyValidationConfig;
+                            if (infoId == config.PropertyInfo)
+                            {
+                                var master = context.ParentContext.RootContextData["__MasterInstanse"];
+                                if (config.HasCondition(master))
+                                    flag = true;
+                            }
+                        }
+                        if (!flag)
                             message = "لطفا " + (displayAttr?.DisplayName ?? infoId.Name) + " را مشخص نمایید";
                     }
                     else
                     {
-                        Task task = null;
+                        bool result = false;
                         if (context.ParentContext.RootContextData.ContainsKey("__ServiceScopeFactory"))
                         {
                             using var scope = ((IServiceScopeFactory)context.ParentContext.RootContextData["__ServiceScopeFactory"]).CreateScope();
-                            var serviceType = typeof(SimpleService<>).MakeGenericType(info.PropertyType);
-                            var service = Activator.CreateInstance(serviceType, scope);
-                            task = (Task)serviceType.GetMethod("SingleOrDefaultAsync").Invoke(service, new Object[] { value });
-                            await task.ConfigureAwait(false);
-                            
+                            var serviceType = typeof(ISimpleService<>).MakeGenericType(info.PropertyType);
+                            var service = scope.ServiceProvider.GetService(serviceType) as ISimpleService;
+                            result = await service.AnyAsync(Convert.ToInt32(value));
                         }
                         else
                         {
                             var scope = (IServiceScope)context.ParentContext.RootContextData["__ServiceScope"];
-                            var serviceType = typeof(SimpleService<>).MakeGenericType(info.PropertyType);
-                            var service = Activator.CreateInstance(serviceType, scope);
-                            task = (Task)serviceType.GetMethod("SingleOrDefaultAsync").Invoke(service, new Object[] { value });
-                            await task.ConfigureAwait(false);
+                            var serviceType = typeof(ISimpleService<>).MakeGenericType(info.PropertyType);
+                            var service = scope.ServiceProvider.GetService(serviceType) as ISimpleService;
+                            result = await service.AnyAsync(Convert.ToInt32(value));
                         }
-                        var result = task.GetType().GetProperty("Result").GetValue(task);
-                        if (result == null)
+                        if (!result)
                             message = (displayAttr?.DisplayName ?? infoId.Name) + "ی با کد " + value + " وجود ندارد.";
                     }
                     if (message.HasValue())

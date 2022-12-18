@@ -23,61 +23,6 @@
                                                 {
                                                     await ChangePageNumber(PageNumber);
                                                 }" />
-        @if (MasterForm != null && EditList != null && EditList.Count > 0)
-        {
-            var index = 0;
-            <CascadingValue Value="MasterForm.EditContext">
-                <div class="c-grid-inline">
-                    <table cellpadding="0" cellspacing="0">
-                        <tbody>
-                            @foreach (var item in EditList)
-                            {
-                                var rowData = new RowData<TEntity>() { Data = item, RowIndex = index };
-                                if (singleInserIndex == index)
-                                {
-                                    if (oldSingleInsertIndex != singleInserIndex)
-                                    {
-                                        singleInsertEditContext = new EditContext(item);
-                                        oldSingleInsertIndex = singleInserIndex;
-                                        sholdSingleInsertEditContextValidated = true;
-                                    }
-                                    <tr>
-                                        <CascadingValue Value="singleInsertEditContext">
-                                            <CaspianValidationValidator @ref="InsertValidator" ValidatorType="ServiceType"  />
-                                            <CascadingValue Value="true" Name="GridEditableList">
-                                                <CascadingValue Name="GridRowData" Value="rowData">
-                                                    @Columns(rowData)
-                                                </CascadingValue>
-                                            </CascadingValue>
-                                        </CascadingValue>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <CascadingValue Value="true" Name="GridEditableList">
-                                            <CascadingValue Name="GridRowData" Value="rowData">
-                                                @if (MultiInsert)
-                                                {
-                                                    @Columns(rowData)
-                                                }
-                                                else
-                                                {
-                                                    <CaspianContainer @ref="singleInsertContainer">
-                                                        @Columns(rowData)
-                                                    </CaspianContainer>
-                                                }
-                                            </CascadingValue>
-                                        </CascadingValue>
-                                    </tr>
-                                }
-                                index++;
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </CascadingValue>
-        }
 
         <div class="t-grid-content" style="height:@(TableHeight)px">
             @if (Items != null)
@@ -125,27 +70,12 @@
                                     {
                                         Data = item,
                                         RowIndex = rowIndex,
-                                        DynamicData = DynamicData == null ? null : DynamicData[rowIndex]
+                                        DynamicData = DynamicData == null ? null : DynamicData[rowIndex],
+                                        IsEdite = id == 
                                     };
-                                    if (id == EditngEntityId && id > 0)
+                                    if (id == 0 && id > 0)
                                     {
-                                        if (EditngEntityId != OldEditngEntityId)
-                                        {
-                                            EditingContext = new EditContext(item);
-                                            OldEditngEntityId = EditngEntityId;
-                                            sholdFocucedOnUpdating = true;
-                                        }
-                                        <CascadingValue Value="EditingContext">
-                                            <CaspianValidationValidator ValidatorType="ServiceType" />
-                                            <CascadingValue Value="true" Name="GridEditableList" IsFixed>
-                                                <CascadingValue Name="GridRowData" Value="rowData">
-                                                    <CaspianContainer @ref="updateContainer">
-                                                        @Columns(rowData)
 
-                                                    </CaspianContainer>
-                                                </CascadingValue>
-                                            </CascadingValue>
-                                        </CascadingValue>
                                     }
                                     else
                                     {

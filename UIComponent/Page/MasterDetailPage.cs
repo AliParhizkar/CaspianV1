@@ -12,20 +12,5 @@ namespace Caspian.UI
         protected DataGrid<TDetail> Grid { get; set; }
 
         protected TMaster UpsertData { get; set; } = Activator.CreateInstance<TMaster>();
-
-        protected override void OnAfterRender(bool firstRender)
-        {
-            if (MasterForm != null)
-            {
-                if ((MasterForm as ICaspianForm).MasterIdName == null)
-                {
-                    var info = typeof(TDetail).GetProperties().Single(t => t.PropertyType == typeof(TMaster));
-                    (MasterForm as ICaspianForm).MasterIdName = info.GetCustomAttribute<ForeignKeyAttribute>().Name;
-                }
-                if (Grid != null)
-                    Grid.MasterForm = MasterForm;
-            }
-            base.OnAfterRender(firstRender);
-        }
     }
 }

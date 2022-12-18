@@ -36,7 +36,7 @@
         </table>
        
     </CaspianForm>
-    <DataGrid @ref="Grid" TEntity="MaterialReceipt" TableHeight="250" MultiInsert HidePageSize ServiceType="typeof(MaterialReceiptService)">
+    <DataGrid @ref="Grid" TEntity="MaterialReceipt" TableHeight="250" HidePageSize>
         <Columns Context="con">
             <GridColumn TEntity="MaterialReceipt" Field="t => t.Material.Title" Title="محصول">
                 <EditTemplate>

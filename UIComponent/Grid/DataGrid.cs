@@ -14,9 +14,6 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.common;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Caspian.UI
 {
@@ -64,13 +61,6 @@ namespace Caspian.UI
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            await AfterRenderInitialAsync();
-            //if (FormAppState.Element.HasValue)
-            //{
-            //    await jsRuntime.InvokeVoidAsync("$.telerik.focusAndShowErrorMessage", FormAppState.Element, FormAppState.ErrorMessage);
-            //    FormAppState.Element = null;
-            //    FormAppState.ErrorMessage = null;
-            //}
             if (firstRender)
             {
                 await DataBind();
@@ -151,7 +141,7 @@ namespace Caspian.UI
                 else
                     expr = Expression.And(expr, expression);
             }
-            expr = UpdateExpressionForMasterForm(parameter, expr);
+            //expr = UpdateExpressionForMasterForm(parameter, expr);
             if (expr != null)
             {
                 var lambda = Expression.Lambda(expr, parameter);
@@ -257,19 +247,6 @@ namespace Caspian.UI
                     {
                         var expr1 = Expression.Property(parameterExpr, pKey);
                         exprList.Add(expr1);
-                    }
-                    if (Inline)
-                    {
-                        foreach (var info in typeof(TEntity).GetProperties())
-                        {
-                            var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
-                            if (attr != null)
-                            {
-                                var expr2 = Expression.Property(parameterExpr, attr.Name);
-                                exprList.Add(expr2);
-                            }
-                        }
-                        SelectExpressions = exprList;
                     }
                     if (Batch)
                     {
@@ -391,8 +368,8 @@ namespace Caspian.UI
         [Parameter, JsonIgnore]
         public RenderFragment ToolsBar { get; set; }
 
-        [JsonIgnore, Parameter]
-        public bool Inline { get; set; }
+        //[JsonIgnore, Parameter]
+        //public bool Inline { get; set; }
 
         [JsonIgnore, Parameter]
         public RenderFragment SearchTemplate { get; set; }
@@ -595,9 +572,6 @@ namespace Caspian.UI
                 tableAttrs.Remove("class");
             if (TableWidth.HasValue)
                 tableAttrs["style"] = "width:" + TableWidth + "px";
-            if (MultiInsert || AutoInsert)
-                Inline = true;
-
             base.OnParametersSet();
         }
 
@@ -617,7 +591,7 @@ namespace Caspian.UI
             }
             else if (SholdRendered && columnsData != null)
                 await DataBind();
-            await ParametersSetInitialAsync();
+            //await ParametersSetInitialAsync();
             await base.OnParametersSetAsync();
         }
     }
