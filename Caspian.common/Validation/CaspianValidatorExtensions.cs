@@ -275,6 +275,14 @@ namespace Caspian.Common
                                     flag = true;
                             }
                         }
+                        else if (context.ParentContext.RootContextData.ContainsKey("__IgnorePropertyInfo"))
+                        {
+                            
+                            var info = context.ParentContext.RootContextData["__IgnorePropertyInfo"] as PropertyInfo;
+                            var MastreId = Convert.ToInt32(context.ParentContext.RootContextData["__MasterId"]);
+                            if (info == infoId && MastreId == 0)
+                                flag = true;
+                        }
                         if (!flag)
                             message = "لطفا " + (displayAttr?.DisplayName ?? infoId.Name) + " را مشخص نمایید";
                     }

@@ -189,13 +189,6 @@ namespace Caspian.UI
                     break;
                 }
             }
-
-            if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = Input;
-                FormAppState.ErrorMessage = ErrorMessage;
-            }
         }
 
         private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
@@ -249,16 +242,16 @@ namespace Caspian.UI
                     break;
                 }
             }
-            if (ErrorMessage == null && !Validate())
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = Input;
-            }
-            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = Input;
-            }
+            //if (ErrorMessage == null && !Validate())
+            //{
+            //    FormAppState.AllControlsIsValid = false;
+            //    FormAppState.Element = Input;
+            //}
+            //if (ErrorMessage != null && FormAppState.AllControlsIsValid)
+            //{
+            //    FormAppState.AllControlsIsValid = false;
+            //    FormAppState.Element = Input;
+            //}
         }
 
         public bool Validate()
@@ -374,6 +367,12 @@ namespace Caspian.UI
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
+            if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
+            {
+                FormAppState.AllControlsIsValid = false;
+                FormAppState.Element = Input;
+                FormAppState.ErrorMessage = ErrorMessage;
+            }
             if (SearchState.Grid != null && !SearchState.Grid.OnInternalRowSelect.HasDelegate)
             {
                 SearchState.Grid.OnInternalRowSelect = EventCallback.Factory.Create<int>(this, async (int id) =>

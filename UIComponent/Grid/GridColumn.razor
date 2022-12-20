@@ -7,7 +7,7 @@
 @if (RowData != null)
 {
     <td @attributes="Attributs">
-        @if (RowData.IsEdite && EditTemplate != null)
+        @if (RowData.UpsertMode.HasValue && EditTemplate != null)
         {
             @EditTemplate
         } 

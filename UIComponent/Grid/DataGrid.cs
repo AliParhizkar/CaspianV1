@@ -61,6 +61,7 @@ namespace Caspian.UI
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
+            await OnAfterRenderOperation();
             if (firstRender)
             {
                 await DataBind();
@@ -538,6 +539,7 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
+            OnInitializedOperation();
             DeleteMessage = "آیا با حذف موافقید؟";
             if (SelectType == SelectType.Multi)
                 selectedIds = new List<int>();
@@ -564,6 +566,7 @@ namespace Caspian.UI
 
         protected override void OnParametersSet()
         {
+            OnParameterSetInint();
             tableAttrs["cellpadding"] = "0";
             tableAttrs["cellspacing"] = "0";
             if (SelectType == SelectType.None)

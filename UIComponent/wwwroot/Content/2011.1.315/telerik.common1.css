@@ -7,7 +7,9 @@
     display: flex;
     flex-basis: content;
 }
-
+.c-grid-insert {
+    background-color: #e2edf7;
+}
 .c-menu-icon .fa {
     color: #423d96;
     font-size: 24px;
@@ -138,9 +140,9 @@
         border-color: #007bff;
     }
 .c-bar .fa-ban {
-    font-size: 23px;
+    font-size: 20px;
     color: #dc3545;
-    padding-right:6px;
+    cursor:pointer;
 }
 
 
@@ -291,14 +293,11 @@
         .c-multiselect-autocomplete legend .c-title{
             padding-right:3px;
         }
-        .c-check {
-            padding-left:8px;
-        }
+
 .c-check .fa {
     color: #34b8f9;
     font-size: 23px;
     cursor: pointer;
-    margin-left:5px;
 }
 .c-cancel-icon .fa {
     color: #da1b54;
@@ -1638,7 +1637,7 @@ div.t-grid-footer {
     border-color: rgba(0,0,0,0.08);
     color: #656565;
 }
-    .t-grid-content tr:not(.t-state-selected):hover {
+    .t-grid-content .c-grid-items tr:not(.t-state-selected):hover {
         background-color: #5e8f8f30 !important;
     }
     .t-grid-header table,

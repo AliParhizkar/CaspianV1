@@ -1,7 +1,6 @@
 ﻿using System;
 using Caspian.Common;
 using System.Threading.Tasks;
-using Caspian.Common.Extension;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 
@@ -95,6 +94,8 @@ namespace Caspian.UI
                     await Grid.OnInternalUpsert.InvokeAsync(RowData.Data);
                 if (Grid.OnUpsert.HasDelegate)
                     await Grid.OnUpsert.InvokeAsync(RowData.Data);
+                if (Grid.Inline)
+                    Grid.SetSelectedId(RowData.Data);
             }
         }
 

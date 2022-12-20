@@ -1,6 +1,7 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity
 @inject IServiceScopeFactory ServiceScopeFactory
+    
 <CascadingValue Value="this" Name="Grid">
     @if (columnsData == null)
     {
@@ -25,9 +26,25 @@
                                                 }" />
 
         <div class="t-grid-content" style="height:@(TableHeight)px">
+            @if (insertedEntity != null)
+            {
+                <table @attributes="tableAttrs" class="c-grid-insert">
+                    <tbody>
+                        <tr>
+                            <CascadingValue Value="InsertContext">
+                                <CaspianValidationValidator ValidatorType="serviceType" />
+                                <CascadingValue Value="insertedEntity" Name="GridRowData">
+                                @Columns(insertedEntity)
+                                </CascadingValue>
+                            </CascadingValue>
+
+                        </tr>
+                    </tbody>
+                </table>
+            }
             @if (Items != null)
             {
-                <table @attributes="tableAttrs">
+                <table @attributes="tableAttrs" class="c-grid-items">
                     <tbody>
                         @{
                             int index = 0;
@@ -71,18 +88,25 @@
                                         Data = item,
                                         RowIndex = rowIndex,
                                         DynamicData = DynamicData == null ? null : DynamicData[rowIndex],
-                                        IsEdite = id == 
+                                        UpsertMode = id == selectedId ? UpsertMode.Edit : null
                                     };
-                                    if (id == 0 && id > 0)
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        <CascadingValue Name="GridRowData" Value="rowData">
+                                    <CascadingValue Name="GridRowData" Value="rowData">
+                                        @if (selectedId == id)
+                                        {
+                                            CreateEditContext(item);
+                                            rowData.Data = EditContext.Model as TEntity;
+                                            <CascadingValue Value="EditContext">
+                                                <CaspianValidationValidator @ref="validator" ValidatorType="serviceType" />
+                                                <CaspianContainer @ref="updateContiner">
+                                                    @Columns(rowData)
+                                                </CaspianContainer>
+                                            </CascadingValue>
+                                        }
+                                        else
+                                        {
                                             @Columns(rowData)
-                                        </CascadingValue>
-                                    }
+                                        }
+                                    </CascadingValue>
                                 }
                             </tr>
                             }

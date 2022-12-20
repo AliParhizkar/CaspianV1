@@ -38,6 +38,7 @@
             let item = $t.getItem(element);
             if (item) {
                 item.errorMessage = message;
+                console.log(element);
                 item.focus();
             }
             else

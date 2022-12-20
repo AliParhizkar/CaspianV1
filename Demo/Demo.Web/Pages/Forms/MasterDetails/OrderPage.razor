@@ -1,4 +1,5 @@
 ﻿@page "/Demo/Order"
+@page "/Demo/Order/{MasterId:int}"
 @namespace Demo.Web.Pages
 @inherits MasterDetailPage<Order, OrderDeatil>
 <div style="margin:10px auto; width:95%">
@@ -24,24 +25,18 @@
             </tr>
         </table>
     </CaspianForm>
-    <DataGrid @ref="Grid" TEntity="OrderDeatil" TableHeight="250" AutoInsert HidePageSize ServiceType="typeof(OrderDeatilService)">
+    <DataGrid TEntity="OrderDeatil" TableHeight="250"  Inline  Batch ConditionExpr="t => t.OrderId == MasterId">
         <Columns Context="con">
             <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول">
                 <EditTemplate>
                     <AutoComplete TValue="int" TEntity="Product" @bind-Value="con.Data.ProductId" HideHeader AutoHide
                                   TextExpression="t => t.Title" Title="محصول"
-                                  OnChange="async () =>
-                                            {
-                                                var scop = CreateScope();
-                                                var product = await new ProductService(scop).SingleAsync(con.Data.ProductId);
-                                                con.Data.Price = product.Price;
-                                                txtPrice.Focus();
-                                            }">
+                                  OnChange="@(async () => await SetPrice(con.Data))">
                         <ProductLookupPage TValue="int" />
                     </AutoComplete>
                 </EditTemplate>
             </GridColumn>
-            <GridColumn TEntity="OrderDeatil" Field="t => t.Price">
+            <GridColumn TEntity="OrderDeatil" Field="t => t.Price.Seprate3Digit()">
                 <EditTemplate>
                     <span>@(con.Data.Price.Seprate3Digit())</span>
                 </EditTemplate>
@@ -61,6 +56,24 @@
         </Columns>
     </DataGrid>
 </div>
-@code {
+@code 
+{
+    protected override Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        
+        return base.OnInitializedAsync();
+    }
+
     NumericTextBox<int> txtPrice;
+    async Task SetPrice(OrderDeatil detail)
+    {
+        if (detail.ProductId > 0)
+        {
+            var scop = CreateScope();
+            var old = await new ProductService(scop).SingleAsync(detail.ProductId);
+            detail.Price = old.Price;
+            txtPrice.Focus();
+        }
+    }
 }

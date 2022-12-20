@@ -2,15 +2,14 @@
 @typeparam TEntity
 @{
     Grid.AddCommandColumn(HeaderTitle, HeaderWidth);
-    var test = false;
 }
 <td @attributes="attrs">
-    @if (test)
+    @if (RowData?.UpsertMode != null)
     {
         <span class="c-check">
-            <span class="t-icon fa fa-check"></span>
+            <span class="t-icon fa fa-check" @onclick="@(async () => await Grid.ValidateUpsert(RowData.UpsertMode.Value))"></span>
         </span>
-        <span class="c-bar" @onclick="@(async () => { await DeleteAsync(); })">
+        <span class="c-bar" @onclick="@(async () => Grid.CalcelEdit(RowData.UpsertMode.Value))">
             <span class="t-icon fa fa-ban"></span>
         </span>
     }

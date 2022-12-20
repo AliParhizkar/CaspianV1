@@ -8,6 +8,6 @@
 
         public object DynamicData { get; set; }
 
-        public bool IsEdite { get; set; }
+        public UpsertMode? UpsertMode { get; set; }
     }
 }

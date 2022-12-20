@@ -1,12 +1,13 @@
 ﻿using System;
+using Caspian.Common;
 using FluentValidation;
+using System.Reflection;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using FluentValidation.Internal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using Caspian.Common;
 
 namespace Caspian.UI
 {
@@ -14,6 +15,9 @@ namespace Caspian.UI
     {
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
+
+        [Inject]
+        public BatchService BatchService { get; set; }
 
         [CascadingParameter]
         private EditContext EditContext { get; set; }
@@ -48,15 +52,17 @@ namespace Caspian.UI
             AddValidationResult(EditContext.Model, result);
         }
 
-        public bool IgnoreDetailsProperty { get; set; }
-
         async Task ValidationRequested(object sender, ValidationRequestedEventArgs args)
         {
             ValidationMessageStore.Clear();
             var context = new ValidationContext<Object>(EditContext.Model);
             using var scope = ServiceScopeFactory.CreateScope();
             Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope);
-            (Validator as ICaspianValidator).IgnoreDetailsProperty = IgnoreDetailsProperty;
+            if (BatchService?.IgnorePropertyInfo != null)
+            {
+                context.RootContextData["__IgnorePropertyInfo"] = BatchService?.IgnorePropertyInfo;
+                context.RootContextData["__MasterId"] = BatchService.MasterId;
+            }
             context.RootContextData["__ServiceScopeFactory"] = ServiceScopeFactory;
             var asyncValidationTask = Validator.ValidateAsync(context);
             EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
@@ -69,12 +75,8 @@ namespace Caspian.UI
         {
             foreach (ValidationFailure error in validationResult.Errors)
             {
-                var propertyName = error.PropertyName;
-                if (propertyName != MasterIdName && !propertyName.EndsWith('.' + MasterIdName))
-                {
-                    var fieldIdentifier = new FieldIdentifier(model, propertyName);
-                    ValidationMessageStore.Add(fieldIdentifier, error.ErrorMessage);
-                }
+                var fieldIdentifier = new FieldIdentifier(model, error.PropertyName);
+                ValidationMessageStore.Add(fieldIdentifier, error.ErrorMessage);
             }
             EditContext.NotifyValidationStateChanged();
         }

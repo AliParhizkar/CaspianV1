@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class GridColumn<TEntity> where TEntity: class
+    public partial class GridColumn<TEntity>:ComponentBase where TEntity: class
     {
         object value;
 
@@ -35,9 +35,6 @@ namespace Caspian.UI
 
         [Parameter]
         public RenderFragment EditTemplate { get; set; }
-
-        //[CascadingParameter(Name = "GridEditableList")]
-        //public bool GridEditableList { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
         public IDictionary<string, object> Attributs { get; set; }
@@ -140,7 +137,7 @@ namespace Caspian.UI
 
         protected override void OnParametersSet()
         {
-            if (Template == null && !GridEditableList && RowData != null && RowData.Data != null)
+            if (Template == null && RowData != null && RowData.UpsertMode == null && RowData.Data != null)
             {
                 if (Field != null)
                     value = Field.Compile().Invoke(RowData.Data);
@@ -156,5 +153,11 @@ namespace Caspian.UI
             }
             base.OnParametersSet();
         }
+    }
+
+    public enum UpsertMode
+    {
+        Insert,
+        Edit
     }
 }

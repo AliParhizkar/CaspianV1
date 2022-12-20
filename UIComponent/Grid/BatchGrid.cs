@@ -165,21 +165,21 @@ namespace Caspian.UI
 
         public async Task UpdateAsync(TEntity entity)
         {
-            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+            var pkey = typeof(TEntity).GetPrimaryKey();
+            var id = Convert.ToInt32(pkey.GetValue(entity)); 
             if (id > 0 && !updatedEntitiesId.Contains(id))
                 updatedEntitiesId.Add(id);
             await UpdateEntityForForeignKey(entity);
-            var index = 1;
-            foreach (var item in source)
+            for (var index = 0; index < source.Count; index++)
             {
-                if (item == entity)
+                if (Convert.ToInt32(pkey.GetValue(source[index])) == id)
                 {
+                    source[index] = entity;
                     var pageNumber = (index - 1) / PageSize + 1;
                     SelectedRowIndex = (index - 1) % PageSize;
                     await ChangePageNumber(pageNumber);
                     break;
                 }
-                index++;
             }
         }
 
