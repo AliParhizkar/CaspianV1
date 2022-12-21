@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Caspian.Common;
+using FluentValidation;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
@@ -9,9 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using FluentValidation;
-using System.Threading;
-using FluentValidation.Internal;
 
 namespace Caspian.UI
 {

@@ -9,7 +9,7 @@
         <span class="c-check">
             <span class="t-icon fa fa-check" @onclick="@(async () => await Grid.ValidateUpsert(RowData.UpsertMode.Value))"></span>
         </span>
-        <span class="c-bar" @onclick="@(async () => Grid.CalcelEdit(RowData.UpsertMode.Value))">
+        <span class="c-bar" @onclick="@(async () => await Grid.CalcelEdit(RowData.UpsertMode.Value))">
             <span class="t-icon fa fa-ban"></span>
         </span>
     }

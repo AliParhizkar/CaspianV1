@@ -1,21 +1,30 @@
-﻿using FluentValidation;
+﻿using System.Data;
+using FluentValidation;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using FluentValidation.Results;
 using FluentValidation.Internal;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 using Microsoft.Extensions.DependencyInjection;
-using System.Data;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common.Service
 {
     public class SimpleService<TEntity> : CaspianValidator<TEntity>, ISimpleService, IDisposable, ISimpleService<TEntity> where TEntity : class
     {
+        protected ReadOnlyCollection<TEntity> Source;
         public SimpleService(IServiceScope serviceScope)
             :base(serviceScope)
         {
             
+        }
+
+        public void SetSource(object obj)
+        {
+            Source = (obj as List<TEntity>).AsReadOnly();
         }
 
         public IQueryable GetAllRecords()
@@ -67,6 +76,11 @@ namespace Caspian.Common.Service
 
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
+            foreach(var info in typeof(TEntity).GetProperties())
+            {
+                if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || info.PropertyType.IsCollectionType())
+                    info.SetValue(entity, default);
+            }
             var result = await Context.Set<TEntity>().AddAsync(entity);
             return result.Entity;
         }
@@ -78,6 +92,14 @@ namespace Caspian.Common.Service
 
         public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
         {
+            foreach (var info in typeof(TEntity).GetProperties())
+            {
+                if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || info.PropertyType.IsCollectionType())
+                {
+                    foreach(var entity in entities)
+                        info.SetValue(entity, default);
+                }
+            }
             await Context.Set<TEntity>().AddRangeAsync(entities);
         }
 

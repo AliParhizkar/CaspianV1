@@ -26,18 +26,19 @@
                                                 }" />
 
         <div class="t-grid-content" style="height:@(TableHeight)px">
-            @if (insertedEntity != null)
+            @if (insertedEntity?.UpsertMode != null && Inline)
             {
                 <table @attributes="tableAttrs" class="c-grid-insert">
                     <tbody>
                         <tr>
-                            <CascadingValue Value="InsertContext">
-                                <CaspianValidationValidator ValidatorType="serviceType" />
-                                <CascadingValue Value="insertedEntity" Name="GridRowData">
-                                @Columns(insertedEntity)
+                            <CaspianContainer @ref="insertContiner">
+                                <CascadingValue Value="InsertContext">
+                                    <CaspianValidationValidator Source="source" ValidatorType="serviceType" />
+                                    <CascadingValue Value="insertedEntity" Name="GridRowData">
+                                        @Columns(insertedEntity)
+                                    </CascadingValue>
                                 </CascadingValue>
-                            </CascadingValue>
-
+                            </CaspianContainer>
                         </tr>
                     </tbody>
                 </table>
@@ -88,10 +89,10 @@
                                         Data = item,
                                         RowIndex = rowIndex,
                                         DynamicData = DynamicData == null ? null : DynamicData[rowIndex],
-                                        UpsertMode = id == selectedId ? UpsertMode.Edit : null
+                                        UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
                                     };
                                     <CascadingValue Name="GridRowData" Value="rowData">
-                                        @if (selectedId == id)
+                                        @if (item == selectedEntity)
                                         {
                                             CreateEditContext(item);
                                             rowData.Data = EditContext.Model as TEntity;

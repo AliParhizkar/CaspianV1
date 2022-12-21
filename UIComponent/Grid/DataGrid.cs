@@ -539,12 +539,12 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            OnInitializedOperation();
             DeleteMessage = "آیا با حذف موافقید؟";
             if (SelectType == SelectType.Multi)
                 selectedIds = new List<int>();
             tableAttrs = new Dictionary<string, object>();
             commandColumnAdded = false;
+            OnInitializedOperation();
             base.OnInitialized();
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Caspian.Common;
+using System.Reflection;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
@@ -8,46 +9,45 @@ using Caspian.Common.Extension;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using System.Reflection;
 
 namespace Caspian.UI
 {
     public partial class DataGrid<TEntity> : ComponentBase, IEnableLoadData, IGridRowSelect where TEntity : class
     {
-        int? selectedId;
-        bool shouldSetFocuc;
-        CaspianContainer updateContiner;
         Type serviceType;
+        string errorMessage;
+        bool shouldSetFocuc;
+        TEntity selectedEntity;
         EditContext EditContext;
         EditContext InsertContext;
-        string errorMessage;
-        CaspianValidationValidator validator;
-        PropertyInfo ignoreValidateProperty;
+        CaspianContainer insertContiner;
+        CaspianContainer updateContiner;
         RowData<TEntity> insertedEntity;
+        bool insertContinerHouldhasFocus;
+        PropertyInfo ignoreValidateProperty;
+        CaspianValidationValidator validator;
 
         public void OnInitializedOperation()
         {
             var type = typeof(ISimpleService<TEntity>);
             using var scope = ServiceScopeFactory.CreateScope();
             serviceType = scope.ServiceProvider.GetService(type).GetType();
-            //insertedEntity = new RowData<TEntity>();
-            //insertedEntity.UpsertMode = UpsertMode.Insert;
-            //insertedEntity.Data = Activator.CreateInstance<TEntity>();
+            if (!AutoHide)
+                CreateInsert();
         }
 
         [Parameter]
         public bool Inline { get; set; }
 
         [Parameter]
-        public bool AutoInsert { get; set; }
+        public bool AutoHide { get; set; } 
 
         [Parameter]
         public Expression<Func<TEntity, Object>> IgnoreForeignKeyInfo { get; set; } 
 
         public void SetSelectedId(TEntity entity)
         {
-            var id = typeof(TEntity).GetPrimaryKey().GetValue(entity);
-            selectedId = Convert.ToInt32(id);
+            selectedEntity = entity;
             shouldSetFocuc = true;
             StateHasChanged();
         }
@@ -61,34 +61,31 @@ namespace Caspian.UI
                     expr = (expr as UnaryExpression).Operand;
                 ignoreValidateProperty = (expr as MemberExpression).Member as PropertyInfo;
             }
+            HideInsertIcon = !AutoHide;
         }
 
         void CreateEditContext(TEntity entity)
         {
-            var shouldCreate = false;
             if (EditContext == null)
-                shouldCreate = true;
-            else
-            {
-                var id = typeof(TEntity).GetPrimaryKey().GetValue(EditContext.Model);
-                if (Convert.ToInt32(id) != selectedId.Value)
-                    shouldCreate = true;
-            }
-            if (shouldCreate)
             {
                 var model = Activator.CreateInstance<TEntity>();
-                foreach(var info in typeof(TEntity).GetProperties())
-                {
-                    var type = info.PropertyType;
-                    if (type.IsValueType || type.IsNullableType() || type == typeof(string))
-                        info.SetValue(model, info.GetValue(entity));
-                }
                 EditContext = new EditContext(model);
+            }
+            foreach (var info in typeof(TEntity).GetProperties())
+            {
+                var type = info.PropertyType;
+                if (type.IsValueType || type.IsNullableType() || type == typeof(string))
+                    info.SetValue(EditContext.Model, info.GetValue(entity));
             }
         }
 
         async Task OnAfterRenderOperation()
         {
+            if (insertContinerHouldhasFocus)
+            {
+                insertContinerHouldhasFocus = false;
+                await insertContiner.FocusAsync();
+            }
             if (shouldSetFocuc)
             {
                 shouldSetFocuc = false;
@@ -106,19 +103,47 @@ namespace Caspian.UI
             }
         }
 
-        public void CalcelEdit(UpsertMode upsertMode)
+        public async Task CalcelEdit(UpsertMode upsertMode)
         {
             if (upsertMode == UpsertMode.Edit)
             {
-                selectedId = null;
+                selectedEntity = null;
                 EditContext = null;
             }
             else
-            {
-                insertedEntity = null;
-                InsertContext = null;
-            }
+                await ReadyToInsert();
             StateHasChanged();
+        }
+
+        async Task ReadyToInsert()
+        {
+            if (Inline)
+            {
+                if (AutoHide)
+                {
+                    insertedEntity = null;
+                    InsertContext = null;
+                }
+                else
+                {
+                    await insertContiner.ResetAsync();
+                    if (insertedEntity == null)
+                    {
+                        insertedEntity = new RowData<TEntity>();
+                        insertedEntity.UpsertMode = UpsertMode.Insert;
+                    }
+                    if (insertedEntity.Data == null)
+                        insertedEntity.Data = Activator.CreateInstance<TEntity>();
+                    if (InsertContext == null)
+                        InsertContext = new EditContext(insertedEntity.Data);
+                    else
+                    {
+                        foreach (var info in typeof(TEntity).GetProperties())
+                            info.SetValue(InsertContext.Model, default);
+                    }
+                    insertContiner.Focus();
+                }
+            }
         }
 
         public async Task ValidateUpsert(UpsertMode upsertMode)
@@ -132,8 +157,9 @@ namespace Caspian.UI
                 var result = await (Task<ValidationResult>)asyncValidationTask;
                 if (result.IsValid)
                 {
-                    selectedId = null;
+                    selectedEntity = null;
                     await UpdateAsync(EditContext.Model as TEntity);
+                    
                 }
                 else
                 {
@@ -150,9 +176,15 @@ namespace Caspian.UI
                 var result = await (Task<ValidationResult>)asyncValidationTask;
                 if (result.IsValid)
                 {
-                    await InsertAsync(InsertContext.Model as TEntity);
-                    InsertContext = null;
-                    insertedEntity = null;
+                    var newEntity = Activator.CreateInstance<TEntity>();
+                    foreach (var info in typeof(TEntity).GetProperties())
+                    {
+                        var type = info.PropertyType;
+                        if (type.IsValueType || type.IsNullableType() || type == typeof(string))
+                            info.SetValue(newEntity, info.GetValue(insertedEntity.Data));
+                    }
+                    await InsertAsync(newEntity);
+                    await ReadyToInsert();
                 }
                 else
                 {
@@ -170,7 +202,9 @@ namespace Caspian.UI
             insertedEntity.UpsertMode = UpsertMode.Insert;
             insertedEntity.Data = Activator.CreateInstance<TEntity>();
             InsertContext = new EditContext(insertedEntity.Data);
+            insertContinerHouldhasFocus = AutoHide;
             StateHasChanged();
+
         }
     }
 }

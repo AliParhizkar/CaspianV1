@@ -8,6 +8,7 @@ using FluentValidation.Internal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using Caspian.Common.Service;
 
 namespace Caspian.UI
 {
@@ -52,12 +53,17 @@ namespace Caspian.UI
             AddValidationResult(EditContext.Model, result);
         }
 
+        [Parameter]
+        public object Source { get; set; }
+
         async Task ValidationRequested(object sender, ValidationRequestedEventArgs args)
         {
             ValidationMessageStore.Clear();
             var context = new ValidationContext<Object>(EditContext.Model);
             using var scope = ServiceScopeFactory.CreateScope();
             Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope);
+            if (Source != null)
+                (Validator as ISimpleService).SetSource(Source);
             if (BatchService?.IgnorePropertyInfo != null)
             {
                 context.RootContextData["__IgnorePropertyInfo"] = BatchService?.IgnorePropertyInfo;

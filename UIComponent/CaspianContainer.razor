@@ -5,16 +5,43 @@
 @code
 {
     IControl Control;
+    IList<IControl> Controls;
+    bool hasFocuce;
 
     internal void SetControl(IControl control)
     {
         if (Control == null)
             Control = control;
+        if (Controls == null)
+            Controls = new List<IControl>();
+        if (!Controls.Contains(control))
+            Controls.Add(control);
     }
 
     public async Task FocusAsync()
     {
         await Control?.FocusAsync();
+    }
+
+    public void Focus()
+    {
+        hasFocuce = true;
+    }
+
+    public async Task ResetAsync()
+    {
+        foreach (var control in Controls)
+            await control.ResetAsync();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (hasFocuce && Control != null)
+        {
+            hasFocuce = false;
+            await Control.FocusAsync();
+        }
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     [Parameter]

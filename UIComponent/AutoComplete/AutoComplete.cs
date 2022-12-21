@@ -189,6 +189,12 @@ namespace Caspian.UI
                     break;
                 }
             }
+            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
+            {
+                FormAppState.AllControlsIsValid = false;
+                FormAppState.Element = Input;
+                FormAppState.ErrorMessage = ErrorMessage;
+            }
         }
 
         private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
@@ -242,16 +248,16 @@ namespace Caspian.UI
                     break;
                 }
             }
-            //if (ErrorMessage == null && !Validate())
-            //{
-            //    FormAppState.AllControlsIsValid = false;
-            //    FormAppState.Element = Input;
-            //}
-            //if (ErrorMessage != null && FormAppState.AllControlsIsValid)
-            //{
-            //    FormAppState.AllControlsIsValid = false;
-            //    FormAppState.Element = Input;
-            //}
+            if (ErrorMessage == null && !Validate())
+            {
+                FormAppState.AllControlsIsValid = false;
+                FormAppState.Element = Input;
+            }
+            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
+            {
+                FormAppState.AllControlsIsValid = false;
+                FormAppState.Element = Input;
+            }
         }
 
         public bool Validate()
@@ -329,6 +335,8 @@ namespace Caspian.UI
         protected override void OnParametersSet()
         {
             SearchState.Value = Value;
+            //if (Value == null || Value.Equals(0))
+            //    Text = null;
             inputAttrs = new Dictionary<string, object>();
             inputAttrs["class"] = "t-input";
             inputAttrs["style"] = "direction:rtl";

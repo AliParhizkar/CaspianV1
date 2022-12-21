@@ -10,6 +10,9 @@ using System.Linq.Expressions;
 using Employment.Model;
 using static Stimulsoft.Report.StiOptions;
 using Caspian.Common.Extension;
+using Caspian.Common.Service;
+using Demo.Model;
+using Demo.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +37,11 @@ builder.Services.AddScoped<CaspianDataService>();
 builder.Services.AddScoped<Demo.Model.Context>();
 builder.Services.AddScoped<Caspian.Engine.Model.Context>();
 builder.Services.AddScoped<Employment.Model.Context>();
-SubSystemKind.Demo.GetServiceAssembly().InjectServices(builder.Services);
+builder.Services.AddScoped<ISimpleService<Order>>(t => new OrderService(t.CreateScope()));
+builder.Services.AddScoped<ISimpleService<OrderDeatil>>(t => new OrderDeatilService(t.CreateScope()));
+builder.Services.AddScoped<ISimpleService<Product>>(t => new ProductService(t.CreateScope()));
+builder.Services.AddScoped<ISimpleService<ProductCategory>>(t => new ProductCategoryService(t.CreateScope()));
+//SubSystemKind.Demo.GetServiceAssembly().InjectServices(builder.Services);
 SubSystemKind.Employment.GetServiceAssembly().InjectServices(builder.Services);
 SubSystemKind.Engine.GetServiceAssembly().InjectServices(builder.Services);
 

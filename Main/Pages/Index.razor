@@ -2,17 +2,44 @@
 @using Demo.Model
 @using Caspian.common
 @using Demo.Service
+@using FluentValidation.Results
 @page "/"
 @inherits BasePage
 @inject IJSRuntime jSRuntime
 @{
     base.BuildRenderTree(__builder);
 }
-<div>
-    <a href="/Login">Login</a>
-</div>
+<CascadingValue Value="context">
+    <CaspianValidationValidator ValidatorType="typeof(ProvinceService)" />
+    <StringTextBox @bind-Value="province.Title" />
+</CascadingValue>
 
+<button @onclick="Init">Init</button>
+<button @onclick="async () => await Validate()">Test</button>
  @code 
 {
+    EditContext context;
+    Province province; 
+    protected override void OnInitialized()
+    {
+        province = new Province();
+        context = new EditContext(province);
+        base.OnInitialized();
+    }
 
+    void Init()
+    {
+        province = new Province();
+        province.ActiveType = ActiveType.Enable;
+        context = new EditContext(province);
+    }
+
+    async Task Validate()
+    {
+
+        context.Validate();
+        context.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
+        var result = await(Task<ValidationResult>)asyncValidationTask;
+
+    }
 }

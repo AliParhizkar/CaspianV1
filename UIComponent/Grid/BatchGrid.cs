@@ -34,6 +34,13 @@ namespace Caspian.UI
             return query.Where(lambda);
         }
 
+        internal void ClearSource()
+        {
+            source = new List<TEntity>();
+            Total = 0;
+            Items = new List<TEntity>();
+        }
+
         public IList<TEntity> AllRecords()
         {
             return source;

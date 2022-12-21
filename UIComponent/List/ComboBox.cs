@@ -633,7 +633,7 @@ namespace Caspian.UI
             }
             if (valueChanged && OnChange.HasDelegate)
                 await OnChange.InvokeAsync();
-            if (CurrentEditContext != null)
+            if (CurrentEditContext != null && _FieldName.HasValue())
             {
                 var model = CurrentEditContext.Model;
                 //FormAppState.AllControlsIsValid = true;

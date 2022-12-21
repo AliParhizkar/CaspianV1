@@ -38,7 +38,6 @@
             let item = $t.getItem(element);
             if (item) {
                 item.errorMessage = message;
-                console.log(element);
                 item.focus();
             }
             else
@@ -467,10 +466,12 @@
         bindLookup: function (input, searchForm, options) {
             options = JSON.parse(options);
             var txt = $(input).data('tTextBox');
-            if (txt)
-                txt.updateState(options);
-            else
+            if (!txt) {
                 $(input).tTextBox(options);
+                txt = $(input).data('tTextBox');
+            }
+            txt.updateState(options);
+            
             if (options.autoHide) {
                 $t.enableAutoHide($.telerik.autoComplete.dotnetHelper)
             }

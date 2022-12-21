@@ -2,67 +2,80 @@
 @page "/Demo/Order/{MasterId:int}"
 @namespace Demo.Web.Pages
 @inherits MasterDetailPage<Order, OrderDeatil>
-<div style="margin:10px auto; width:95%">
-    <CaspianForm @ref="MasterForm" Model="UpsertData" OnValidSubmit="@(async con =>
-                                                            {
-                                                                var result = await Task.FromResult(true);
-                                                                return result;
-                                                            })">
-        <CaspianValidationValidator ValidatorType="typeof(OrderService)" />
-        <table style="width:100%;margin:0 auto">
-            <tr>
-                <td><label>تاریخ سفارش</label></td>
-                <td>
-                    <DatePicker @bind-Value="UpsertData.Date" />
-                </td>
-                <td><label>نوع سفارش</label></td>
-                <td>
-                    <DropdownList @bind-Value="UpsertData.OrderType" />
-                </td>
-                <td style="width:80px;">
-                    <button style="width:80px;" class="c-btn c-primary">ثبت</button>
-                </td>
-            </tr>
-        </table>
-    </CaspianForm>
-    <DataGrid TEntity="OrderDeatil" TableHeight="250"  Inline  Batch ConditionExpr="t => t.OrderId == MasterId">
-        <Columns Context="con">
-            <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول">
-                <EditTemplate>
-                    <AutoComplete TValue="int" TEntity="Product" @bind-Value="con.Data.ProductId" HideHeader AutoHide
-                                  TextExpression="t => t.Title" Title="محصول"
-                                  OnChange="@(async () => await SetPrice(con.Data))">
-                        <ProductLookupPage TValue="int" />
-                    </AutoComplete>
-                </EditTemplate>
-            </GridColumn>
-            <GridColumn TEntity="OrderDeatil" Field="t => t.Price.Seprate3Digit()">
-                <EditTemplate>
-                    <span>@(con.Data.Price.Seprate3Digit())</span>
-                </EditTemplate>
-            </GridColumn>
-            <GridColumn TEntity="OrderDeatil" Field="t => t.Count">
-                <EditTemplate>
-                    <NumericTextBox @ref="txtPrice" @bind-Value="con.Data.Count" @onkeyup="@(e => 
-                    {
-                        if (e.Code == "Enter" || e.Code == "NumEnter")
-                        {
-                            
-                        }
-                    })" />
-                </EditTemplate>
-            </GridColumn>
-            <GridCommandColumns TEntity="OrderDeatil" />
-        </Columns>
-    </DataGrid>
+<div style="margin:10px auto; width:95%;display:flex">
+    <div style="width:400px;padding-left:50px">
+        <CaspianForm @ref="MasterForm" Model="UpsertData" >
+            <CaspianValidationValidator ValidatorType="typeof(OrderService)" />
+            <table style="width:100%;margin:0 auto;height:220px;">
+                <tr>
+                    <td><label>تاریخ سفارش</label></td>
+                    <td>
+                        <DatePicker @bind-Value="UpsertData.Date" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>نوع سفارش</label></td>
+                    <td>
+                        <DropdownList @bind-Value="UpsertData.OrderType" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>مشتری</label></td>
+                    <td>
+                        <ComboBox TEntity="Customer" TValue="int?" TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="text-align:center">
+                        <FormCommandButton />
+                    </td>
+                </tr>
+            </table>
+        </CaspianForm>
+    </div>
+    <div style="width:calc(100% - 400px)">
+        <DataGrid @ref="Grid" TEntity="OrderDeatil" TableHeight="250" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
+            <Columns Context="con">
+                <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول">
+                    <EditTemplate>
+                        <AutoComplete @ref="txtProduct" TValue="int" TEntity="Product" @bind-Value="con.Data.ProductId" HideHeader AutoHide
+                                      TextExpression="t => t.Title" Title="محصول"
+                                      OnChange="@(async () => await SetPrice(con.Data))">
+                            <ProductLookupPage TValue="int" />
+                        </AutoComplete>
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn TEntity="OrderDeatil" Field="t => t.Price.Seprate3Digit()">
+                    <EditTemplate>
+                        <span>@(con.Data.Price.Seprate3Digit())</span>
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn TEntity="OrderDeatil" Field="t => t.Count">
+                    <EditTemplate>
+                        <NumericTextBox @ref="txtPrice" @bind-Value="con.Data.Count"
+                                        @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
+                    </EditTemplate>
+                </GridColumn>
+                <GridCommandColumns TEntity="OrderDeatil" />
+            </Columns>
+        </DataGrid>
+    </div>
 </div>
 @code 
 {
-    protected override Task OnInitializedAsync()
+    AutoComplete<Product, int> txtProduct;
+
+    protected override void OnInitialized()
     {
-        using var scope = CreateScope();
-        
-        return base.OnInitializedAsync();
+        UpsertData.Date = DateTime.Now.Date;
+        base.OnInitialized();
+    }
+
+    async Task UpsertOnEnter(KeyboardEventArgs e, UpsertMode mode)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+            await Grid.ValidateUpsert(mode);
     }
 
     NumericTextBox<int> txtPrice;

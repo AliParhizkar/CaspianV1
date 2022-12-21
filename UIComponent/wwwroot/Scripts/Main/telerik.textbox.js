@@ -267,6 +267,7 @@
                 this.enable();
             if (options.focused) 
                 this.focus();
+            this.errorMessage = options.errorMessage;
         },
         _keydown: function (e) {
             this.key = e.keyCode;

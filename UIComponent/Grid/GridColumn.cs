@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
+using Caspian.Common.Extension;
 
 namespace Caspian.UI
 {
@@ -139,6 +140,11 @@ namespace Caspian.UI
         {
             if (Template == null && RowData != null && RowData.UpsertMode == null && RowData.Data != null)
             {
+                var id = typeof(TEntity).GetPrimaryKey().GetValue(RowData.Data);
+                if (Convert.ToInt32(id) == 26500)
+                {
+
+                }
                 if (Field != null)
                     value = Field.Compile().Invoke(RowData.Data);
                 else if (RowData.DynamicData != null && AggregateIndex.HasValue)
