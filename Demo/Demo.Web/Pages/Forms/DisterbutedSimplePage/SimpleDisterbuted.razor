@@ -149,7 +149,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var scope = ServiceScopeFactory.CreateScope();
-        categories = await new ProductCategoryService(scope).GetAll().ToListAsync();
+        categories = await new ProductCategoryService(scope.ServiceProvider).GetAll().ToListAsync();
         await base.OnInitializedAsync();
     }
 }

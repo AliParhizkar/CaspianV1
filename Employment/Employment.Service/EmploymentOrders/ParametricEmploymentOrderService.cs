@@ -8,8 +8,8 @@ namespace Employment.Service
     [ReportClass]
     public class ParametricEmploymentOrderService : SimpleService<ParametricEmploymentOrder>, ISimpleService<ParametricEmploymentOrder>
     {
-        public ParametricEmploymentOrderService(IServiceScope scope)
-            : base(scope)
+        public ParametricEmploymentOrderService(IServiceProvider provider)
+            : base(provider)
         {
 
         }

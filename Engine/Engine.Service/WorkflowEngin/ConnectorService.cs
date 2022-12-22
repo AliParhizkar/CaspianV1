@@ -5,8 +5,8 @@ namespace Caspian.Engine.Service
 {
     public class ConnectorService : SimpleService<Connector>
     {
-        public ConnectorService(IServiceScope scope)
-            :base(scope)
+        public ConnectorService(IServiceProvider provider)
+            :base(provider)
         {
 
         }

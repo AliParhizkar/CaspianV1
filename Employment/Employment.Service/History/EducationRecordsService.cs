@@ -6,8 +6,8 @@ namespace Employment.Service
 {
     public class EducationRecordsService : SimpleService<EducationRecords>, ISimpleService<EducationRecords>
     {
-        public EducationRecordsService(IServiceScope scope)
-            :base(scope)
+        public EducationRecordsService(ServiceProvider provider)
+            :base(provider)
         {
 
         }

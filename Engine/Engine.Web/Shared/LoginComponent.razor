@@ -34,7 +34,7 @@
     async Task Login()
     {
         using var scope = CreateScope();
-        var user = await new UserService(scope).UserIsvalidAsync(userName, password);
+        var user = await new UserService(scope.ServiceProvider).UserIsvalidAsync(userName, password);
         if (user == null)
             message = "نام کاربری یا کلمه ی عبور نامعتبر است";
         else

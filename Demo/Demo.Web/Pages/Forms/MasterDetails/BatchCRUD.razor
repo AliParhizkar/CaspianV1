@@ -122,7 +122,7 @@
         order = new Order();
         order.Date = DateTime.Now.Date;
         var scope = CreateScope();
-        products = await new ProductService(scope).GetAll().ToListAsync();
+        products = await new ProductService(scope.ServiceProvider).GetAll().ToListAsync();
         foreach (var product in products)
             product.Image = null;
         btnAttr = new Dictionary<string, object>();

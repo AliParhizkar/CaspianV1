@@ -125,9 +125,9 @@
                     if (!userName.HasValue())
                     {
                         using var scope = ServiceScopeFactory.CreateScope();
-                        var user = await new UserService(scope).SingleAsync(userId.Value);
+                        var user = await new UserService(scope.ServiceProvider).SingleAsync(userId.Value);
                         userName = user.FName + " " + user.LName;
-                        menusId = await new MenuAccessibilityService(scope).GetUserMenus(userId.Value);
+                        menusId = await new MenuAccessibilityService(scope.ServiceProvider).GetUserMenus(userId.Value);
                     }
                 }
             }

@@ -8,8 +8,8 @@ namespace Caspian.Engine.Service
 {
     public class UserService: SimpleService<User>
     {
-        public UserService(IServiceScope scope):
-            base(scope)
+        public UserService(IServiceProvider provider) :
+            base(provider)
         {
             RuleFor(t => t.UserName).Required().UniqAsync("نام کاربری با این عنوان در سیستم وجود دارد");
 
@@ -67,7 +67,7 @@ namespace Caspian.Engine.Service
         {
             ///Md5 Code
             var md5Password = password;
-            var query = new UserService(ServiceScope).GetAll();
+            var query = new UserService(ServiceProvider).GetAll();
             return await query.SingleOrDefaultAsync(t => t.UserName == userName && t.Password == md5Password);
         }
     }

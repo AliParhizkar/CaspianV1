@@ -273,7 +273,7 @@ namespace Caspian.UI
                     if (Source == null)
                     {
                         using var scope = ServiceScopeFactory.CreateScope();
-                        var query = new SimpleService<TEntity>(scope).GetAll();
+                        var query = new SimpleService<TEntity>(scope.ServiceProvider).GetAll();
                         var parameter = Expression.Parameter(typeof(TEntity));
                         Expression expr = Expression.Property(parameter, typeof(TEntity).GetPrimaryKey());
                         expr = Expression.Equal(expr, Expression.Constant(Value));
@@ -454,7 +454,7 @@ namespace Caspian.UI
                 if (Source == null)
                 {
                     using var scope = ServiceScopeFactory.CreateScope();
-                    var service = new SimpleService<TEntity>(scope);
+                    var service = new SimpleService<TEntity>(scope.ServiceProvider);
                     var query = service.GetAll(default(TEntity));
                     if (ConditionExpression != null)
                         query = query.Where(ConditionExpression);

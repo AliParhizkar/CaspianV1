@@ -53,6 +53,10 @@
                             foreach (var item in Items)
                             {
                                 var id = Convert.ToInt32(pkey.GetValue(item));
+                                    if (id > 0 && typeof(TEntity).Name == "OrderDetail")
+                                {
+
+                                }
                                 var attrs = new Dictionary<string, object>();
                                 var rowIndex = index;
                                 if (SelectType == SelectType.Single)

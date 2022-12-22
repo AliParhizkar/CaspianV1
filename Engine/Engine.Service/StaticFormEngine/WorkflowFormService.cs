@@ -11,8 +11,8 @@ namespace Caspian.Engine.Service
 {
     public class WorkflowFormService : SimpleService<Engine.WorkflowForm>, ISimpleService<Engine.WorkflowForm>
     {
-        public WorkflowFormService(IServiceScope scope)
-            :base(scope)
+        public WorkflowFormService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("فرمی با این عنوان در سیستم ثبت شده است");
             RuleFor(t => t.ColumnCount).CustomValue(t => t < 1, "حداقل یک ستون باید وجود داشته باشد")
@@ -109,13 +109,13 @@ namespace Caspian.Engine.Service
             str.Append("namespace Caspian.Dynamic.WorkflowForm\n{\n");
             str.Append("\tpublic partial class " + form.Name + ": BasePage\n\t{\n");
             str.Append("\t\t/// Fields of form\n");
-            var fields = await new DataModelFieldService(ServiceScope).GetAll().Where(t => t.DataModelId == dataModelId).ToListAsync();
+            var fields = await new DataModelFieldService(ServiceProvider).GetAll().Where(t => t.DataModelId == dataModelId).ToListAsync();
             foreach(var field in fields)
             {
                 var typeName = field.EntityFullName ?? DataModelFieldService.GetControlTypeName(field.FieldType.Value);
                 str.Append("\t\t" + typeName + " " + field.FieldName + ";\n");
             }
-            var rows = await new HtmlRowService(ServiceScope).GetAll().Where(t => t.WorkflowFormId == workflowFormId)
+            var rows = await new HtmlRowService(ServiceProvider).GetAll().Where(t => t.WorkflowFormId == workflowFormId)
                 .Include("Columns").Include("Columns.Component").Include("Columns.Component.DynamicParameter")
                 .Include("Columns.Component.DynamicParameter.Options").Include("Columns.Component.DataModelField")
                 .Include("Columns.InnerRows").Include("Columns.InnerRows.HtmlColumns")
@@ -227,14 +227,14 @@ namespace Caspian.Engine.Service
             //var fields = new WfFormEntityFieldService(ServiceScope).GetAll().Where(t => t.WorkflowFormId == id);
             //new WfFormEntityFieldService(ServiceScope).RemoveRange(fields);
             var contextId = Context.ContextId;
-            var controls = new BlazorControlService(ServiceScope).GetAll().Where(t => t.HtmlColumn.Row.WorkflowFormId == id || t.HtmlColumn.InnerRow.HtmlColumn.Row.WorkflowFormId == id);
-            new BlazorControlService(ServiceScope).RemoveRange(controls);
-            var columns = new HtmlColumnService(ServiceScope).GetAll().Where(t => t.Row.WorkflowFormId == id || t.InnerRow.HtmlColumn.Row.WorkflowFormId == id);
-            new HtmlColumnService(ServiceScope).RemoveRange(columns);
-            var rows = new HtmlRowService(ServiceScope).GetAll().Where(t => t.WorkflowFormId == id);
-            new HtmlRowService(ServiceScope).RemoveRange(rows);
-            var innerRows = new InnerRowService(ServiceScope).GetAll().Where(t => t.HtmlColumn.Row.WorkflowFormId == id);
-            new InnerRowService(ServiceScope).RemoveRange(innerRows);
+            var controls = new BlazorControlService(ServiceProvider).GetAll().Where(t => t.HtmlColumn.Row.WorkflowFormId == id || t.HtmlColumn.InnerRow.HtmlColumn.Row.WorkflowFormId == id);
+            new BlazorControlService(ServiceProvider).RemoveRange(controls);
+            var columns = new HtmlColumnService(ServiceProvider).GetAll().Where(t => t.Row.WorkflowFormId == id || t.InnerRow.HtmlColumn.Row.WorkflowFormId == id);
+            new HtmlColumnService(ServiceProvider).RemoveRange(columns);
+            var rows = new HtmlRowService(ServiceProvider).GetAll().Where(t => t.WorkflowFormId == id);
+            new HtmlRowService(ServiceProvider).RemoveRange(rows);
+            var innerRows = new InnerRowService(ServiceProvider).GetAll().Where(t => t.HtmlColumn.Row.WorkflowFormId == id);
+            new InnerRowService(ServiceProvider).RemoveRange(innerRows);
         }
     }
 }

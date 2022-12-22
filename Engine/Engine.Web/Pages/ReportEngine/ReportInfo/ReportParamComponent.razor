@@ -133,7 +133,7 @@
             try
             {
                 using var scope = ServiceScopeFactory.CreateScope();
-                var parameterService = new ReportParamService(scope);
+                var parameterService = new ReportParamService(scope.ServiceProvider);
                 if (isDecreas)
                     await parameterService.DecDataLevel(parameterId.Value);
                 else
@@ -171,8 +171,8 @@
     protected async override Task OnInitializedAsync()
     {
         using var scope = CreateScope();
-        report = await new ReportService(scope).SingleAsync(ReportId.Value);
-        var reportGriup = await new ReportGroupService(scope).SingleAsync(report.ReportGroupId);
+        report = await new ReportService(scope.ServiceProvider).SingleAsync(ReportId.Value);
+        var reportGriup = await new ReportGroupService(scope.ServiceProvider).SingleAsync(report.ReportGroupId);
         Type = new AssemblyInfo().GetReturnType(reportGriup);
         await base.OnInitializedAsync();
     }

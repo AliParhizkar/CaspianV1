@@ -6,8 +6,8 @@ namespace Caspian.Engine.Service
 {
     public class DataParameterValueService : SimpleService<DataParameterValue>, ISimpleService<DataParameterValue>
     {
-        public DataParameterValueService(IServiceScope scope)
-            :base(scope)
+        public DataParameterValueService(IServiceProvider provider)
+            :base(provider)
         {
             var message1 = "مقدار این فیلد باید مشخص باشد";
             RuleFor(t => t.Value1).CustomValue(t => t <= 0, message1);

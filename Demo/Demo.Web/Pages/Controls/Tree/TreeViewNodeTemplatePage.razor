@@ -79,7 +79,7 @@
     async Task<bool> UpsertCity()
     {
         using var scope = CreateScope();
-        var service = new CityService(scope);
+        var service = new CityService(scope.ServiceProvider);
         TreeViewItem tempNode = null;
         if (city.Id == 0)
         {
@@ -118,7 +118,7 @@
             ///در حالت ویرایش
             var cityId = Convert.ToInt32(nodeView.Value);
             using var scope = CreateScope();
-            var old = await new CityService(scope).SingleAsync(cityId);
+            var old = await new CityService(scope.ServiceProvider).SingleAsync(cityId);
             city.Id = cityId;
             city.ProvinceId = old.ProvinceId;
             city.Title = old.Title;
@@ -139,7 +139,7 @@
         //این قسمت انتخابی است و میتواند به دو صورت بارگذاری در ابتدا و یا بارگذاری در باز کردن نود اعمال شود
         //برای اطلاعات بیشتر مراجعه شود به منوی قبلی
         using var scope = CreateScope();
-        source = await new ProvinceService(scope).GetAll().Select(t => new TreeViewItem()
+        source = await new ProvinceService(scope.ServiceProvider).GetAll().Select(t => new TreeViewItem()
         { 
             Collabsable = true,
             Text = t.Title,
@@ -161,7 +161,7 @@
         ///در صورت بارگذاری در ابتدا نیازی به این بخش نیست
         using var scope = CreateScope();
         var provinceId = Convert.ToInt32(node.Value);
-        node.Items = await new CityService(scope).GetAll()
+        node.Items = await new CityService(scope.ServiceProvider).GetAll()
             .Where(t => t.ProvinceId == provinceId).Select(t => new TreeViewItem()
                 {
                     Collabsable = false,
@@ -176,7 +176,7 @@
     {
         var cityId = Convert.ToInt32(node.Value);
         using var scope = CreateScope();
-        var service = new CityService(scope);
+        var service = new CityService(scope.ServiceProvider);
         var city = await service.SingleAsync(cityId);
         var result = await service.ValidateRemoveAsync(city);
         if (result.IsValid)
@@ -204,7 +204,7 @@
         if (str == "")
             str = null;
         using var scope = CreateScope();
-        var query = new ProvinceService(scope).GetAll();
+        var query = new ProvinceService(scope.ServiceProvider).GetAll();
         if (str.HasValue())
             query = query.Where(t => t.Cities.Any(u => u.Title.Contains(str)));
         searchSource = await query.Select(t => new TreeViewItem()

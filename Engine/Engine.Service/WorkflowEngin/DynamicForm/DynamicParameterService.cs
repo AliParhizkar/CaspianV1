@@ -9,8 +9,8 @@ namespace Caspian.Engine.Service
 {
     public class DynamicParameterService : SimpleService<DynamicParameter>
     {
-        public DynamicParameterService(IServiceScope scope)
-            :base(scope)
+        public DynamicParameterService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.EntityName).Required();
             RuleFor(t => t.Title).Required().UniqAsync("عنوان فارسی باید یکتا باشد.");

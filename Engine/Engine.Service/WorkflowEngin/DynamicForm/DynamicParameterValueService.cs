@@ -5,8 +5,8 @@ namespace Caspian.Engine.Service
 {
     public class DynamicParameterValueService : SimpleService<DynamicParameterValue>
     {
-        public DynamicParameterValueService(IServiceScope scope)
-            :base(scope)
+        public DynamicParameterValueService(ServiceProvider provider)
+            :base(provider)
         {
 
         }

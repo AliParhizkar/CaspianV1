@@ -105,7 +105,7 @@
     async Task ToggleOutofstock(int id)
     {
         using var scope = ServiceScopeFactory.CreateScope();
-        var service = new ProductService(scope);
+        var service = new ProductService(scope.ServiceProvider);
         await service.ToggleOutofstock(id);
         await service.SaveChangesAsync();
         await CrudGrid.Reload();

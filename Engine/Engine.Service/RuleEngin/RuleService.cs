@@ -1,14 +1,13 @@
 ﻿using Caspian.Common;
 using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
     public class RuleService : SimpleService<Rule>, ISimpleService<Rule>
     {
-        public RuleService(IServiceScope scope)
-            :base(scope)
+        public RuleService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("قانونی با این عنوان در سیستم ثبت شده است.");
             RuleFor(t => t.TypeName).Required();
@@ -17,7 +16,7 @@ namespace Caspian.Engine.Service
             {
                 if (t.Id == 0 || !t.FormRule)
                     return false;
-                var result = await new TokenService(scope).GetAll().AnyAsync(u => u.RuleId == t.Id && !u.RuleValue.FormRule);
+                var result = await new TokenService(ServiceProvider).GetAll().AnyAsync(u => u.RuleId == t.Id && !u.RuleValue.FormRule);
                 return result;
             }, "قانون فرمی نباید شامل قانون غیرفرمی باشد");
         }

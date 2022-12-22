@@ -159,7 +159,7 @@
     protected override void OnInitialized()
     {
         using var scope = CreateScope();
-        var service = new DynamicParameterService(scope);
+        var service = new DynamicParameterService(scope.ServiceProvider);
         entities = service.GetDynamicType(SubSystem);
         ControlsType = new List<ControlType?>();
         ControlsType.AddRange(ControlType.Integer, ControlType.Numeric, ControlType.CheckBox, ControlType.DropdownList);
@@ -169,7 +169,7 @@
     async Task SetPriority(int id)
     {
         var scope = CreateScope();
-        var service = new DynamicParameterService(scope);
+        var service = new DynamicParameterService(scope.ServiceProvider);
         var param = await service.GetAll().Include(t => t.ResultParameters).Include("ResultParameters.DynamicParameter")
             .Include("ResultParameters.Rule").SingleAsync(id);
         param.Priority = service.CalculatePriority(param);

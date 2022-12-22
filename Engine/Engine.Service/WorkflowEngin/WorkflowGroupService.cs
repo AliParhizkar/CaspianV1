@@ -6,8 +6,8 @@ namespace Caspian.Engine.Service
 {
     public class WorkflowGroupService : SimpleService<WorkflowGroup>
     {
-        public WorkflowGroupService(IServiceScope scope)
-            : base(scope)
+        public WorkflowGroupService(IServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("گروهی با عنوان در سیستم ثبت شده است");
         }

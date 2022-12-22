@@ -84,8 +84,8 @@
     {
         Token tempToken = null;
         using var scope = ServiceScopeFactory.CreateScope();
-        var ruleService = new RuleService(scope);
-        var tokenService = new TokenService(scope);
+        var ruleService = new RuleService(scope.ServiceProvider);
+        var tokenService = new TokenService(scope.ServiceProvider);
         if (tokenId.HasValue)
         {
             tempToken = Params.ElementAt(tokenId.Value - 1);
@@ -103,7 +103,7 @@
                 tempToken.TokenType = TokenType.Oprand;
                 await tokenService.AddAsync(tempToken);
                 await tokenService.SaveChangesAsync();
-                Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+                Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
                 Tokens = new RuleEngine().UpdateTokens(Tokens);
                 var result = new Parser(Tokens).ValidTokenKinds();
                 await OnAfterAdd.InvokeAsync(result);
@@ -121,7 +121,7 @@
                     parameterType = ParameterType.RuleParameter,
                 });
             await tokenService.SaveChangesAsync();
-            Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+            Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
             Tokens = new RuleEngine().UpdateTokens(Tokens);
             var result = new Parser(Tokens).ValidTokenKinds();
             await OnAfterAdd.InvokeAsync(result);
@@ -129,7 +129,7 @@
         }
         else if (dynamicParameterId.HasValue)
         {
-            var dynamicParameter = await new DynamicParameterService(scope).SingleAsync(dynamicParameterId.Value);
+            var dynamicParameter = await new DynamicParameterService(scope.ServiceProvider).SingleAsync(dynamicParameterId.Value);
             await tokenService.AddAsync(new Token()
                 {
                     FaTitle = dynamicParameter.Title,
@@ -139,7 +139,7 @@
                     TokenType = TokenType.Oprand,
                 });
             await tokenService.SaveChangesAsync();
-            Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+            Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
             Tokens = new RuleEngine().UpdateTokens(Tokens);
             var result = new Parser(Tokens).ValidTokenKinds();
             await OnAfterAdd.InvokeAsync(result);
@@ -152,7 +152,7 @@
     async Task UnFinalState()
     {
         using var scope = ServiceScopeFactory.CreateScope();
-        var ruleService = new RuleService(scope);
+        var ruleService = new RuleService(scope.ServiceProvider);
         var rule = await ruleService.SingleAsync(RuleId);
         rule.Priority = null;
         await ruleService.SaveChangesAsync();

@@ -6,8 +6,8 @@ namespace Caspian.Engine.Service
 {
     public class HtmlRowService : SimpleService<HtmlRow>, ISimpleService<HtmlRow>
     {
-        public HtmlRowService(IServiceScope scope)
-            :base(scope)
+        public HtmlRowService(IServiceProvider provider)
+            :base(provider)
         {
 
         }

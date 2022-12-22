@@ -82,7 +82,7 @@
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
             using var scope = ServiceScopeFactory.CreateScope();
-            var productService = new ProductService(scope);
+            var productService = new ProductService(scope.ServiceProvider);
             await productService.UpdatePrice(productId, price);
             await productService.SaveChangesAsync();
             selectedId = productId;
@@ -95,7 +95,7 @@
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
             using var scope = ServiceScopeFactory.CreateScope();
-            var productService = new ProductService(scope);
+            var productService = new ProductService(scope.ServiceProvider);
             await productService.UpdatePriceOuterBound(productId, priceOuterBound);
             await productService.SaveChangesAsync();
             await CrudGrid.SelectNextRow();

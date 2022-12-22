@@ -67,9 +67,9 @@ namespace Caspian.Engine.RuleGenerator
         async protected override Task OnInitializedAsync()
         {
             using var scope = CreateScope();
-            rule = await new RuleService(scope).SingleAsync(RuleId);
+            rule = await new RuleService(scope.ServiceProvider).SingleAsync(RuleId);
             RuleTypeKind = rule.ResultType;
-            Tokens = await new TokenService(scope).GetAll().Include(t => t.RuleValue).Where(t => t.RuleId == RuleId).ToListAsync();
+            Tokens = await new TokenService(scope.ServiceProvider).GetAll().Include(t => t.RuleValue).Where(t => t.RuleId == RuleId).ToListAsync();
             new RuleEngine().UpdateTokens(Tokens);
             ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
 
@@ -82,7 +82,7 @@ namespace Caspian.Engine.RuleGenerator
         async protected override Task OnParametersSetAsync()
         {
             using var scope = ServiceScopeFactory.CreateScope();
-            var rule = await new RuleService(scope).SingleAsync(RuleId);
+            var rule = await new RuleService(scope.ServiceProvider).SingleAsync(RuleId);
             Type = new AssemblyInfo().GetModelType(rule.SystemKind, rule.TypeName);
             await base.OnParametersSetAsync();
         }

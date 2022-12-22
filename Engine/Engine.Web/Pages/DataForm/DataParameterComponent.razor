@@ -91,7 +91,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var scope = CreateScope();
-        var param = await new DynamicParameterService(scope).SingleAsync(ParameterId);
+        var param = await new DynamicParameterService(scope.ServiceProvider).SingleAsync(ParameterId);
         properties = param.SubSystem.GetEntityAssembly().GetTypes().Single(t => t.Name == param.EntityName).GetProperties()
             .Where(t => t.GetCustomAttribute<RuleAttribute>() != null).Select(t => new SelectListItem(t.Name, t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? t.Name)).ToList();
         await base.OnInitializedAsync();

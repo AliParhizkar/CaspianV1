@@ -21,7 +21,7 @@
     protected override async Task OnInitializedAsync()
     {
         var scope = CreateScope();
-        Activities = await new ActivityService(scope).GetAll().Where(t => t.WorkflowId == WorkflowId).ToListAsync();
+        Activities = await new ActivityService(scope.ServiceProvider).GetAll().Where(t => t.WorkflowId == WorkflowId).ToListAsync();
         await base.OnInitializedAsync();
     }
 
@@ -29,7 +29,7 @@
     public async Task<string> GetActivityCodebehindString(int activityId)
     {
         var scope = CreateScope();
-        var code = await new ActivityService(scope).GetCodebehindAsync(activityId);
+        var code = await new ActivityService(scope.ServiceProvider).GetCodebehindAsync(activityId);
         return code;
     }
 
@@ -38,7 +38,7 @@
     {
         var scope = CreateScope();
         var basePath = Environment.ContentRootPath + "Data\\Code\\";
-        var code = await new ActivityService(scope).GetSourceCodeAsync(activityId, basePath);
+        var code = await new ActivityService(scope.ServiceProvider).GetSourceCodeAsync(activityId, basePath);
         return code;
     }
 

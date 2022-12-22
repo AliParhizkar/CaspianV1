@@ -7,8 +7,8 @@ namespace Employment.Service
 {
     public class BaseStudyFactorService : SimpleService<BaseStudyFactor>, ISimpleService<BaseStudyFactor>
     {
-        public BaseStudyFactorService(IServiceScope scope)
-            : base(scope)
+        public BaseStudyFactorService(ServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.BaseStudy).CustomValue(t => t < BaseStudy.AssociateDegree, "برای مقاطع کمتر از فوق دیپلم ضریب درک تحصیلی تعریف نشده است")
                 .UniqAsync("این حالت قبلا ثبت شده است");

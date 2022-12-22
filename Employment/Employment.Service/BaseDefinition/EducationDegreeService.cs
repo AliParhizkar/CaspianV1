@@ -7,8 +7,8 @@ namespace Employment.Service
 {
     public class EducationDegreeService : SimpleService<EducationDegree>, ISimpleService<EducationDegree>
     {
-        public EducationDegreeService(IServiceScope scope)
-            : base(scope)
+        public EducationDegreeService(ServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("مدرکی با این عنوان در سیستم تعریف شده است.");
         }

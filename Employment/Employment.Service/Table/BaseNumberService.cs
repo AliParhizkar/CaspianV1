@@ -7,8 +7,8 @@ namespace Employment.Service
 {
     public class BaseNumberService : SimpleService<BaseNumber>, ISimpleService<BaseNumber>
     {
-        public BaseNumberService(IServiceScope scope)
-            : base(scope)
+        public BaseNumberService(IServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.BaseStudy).CustomValue(t => t < BaseStudy.AssociateDegree, "عدد مبناء برای کمتر از کاردانی تعریف نشده است")
                 .UniqAsync(t => t.BaseType, "این حالت قبلا ثبت شده است");

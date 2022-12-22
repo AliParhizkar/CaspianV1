@@ -11,8 +11,8 @@ namespace Demo.Service
 {
     public class ProductCategoryService : SimpleService<ProductCategory>, ISimpleService<ProductCategory>
     {
-        public ProductCategoryService(IServiceScope scope)
-            : base(scope)
+        public ProductCategoryService(IServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("گروه محصولی با این عنوان تعریف شده است");
             RuleFor(t => t.Code).UniqAsync("گروه محصولی با این کد تعریف شده است")
@@ -26,7 +26,7 @@ namespace Demo.Service
             {
                 if (!pc.Code.HasValue())
                     return false;
-                return new ProductService(ServiceScope).GetAll().Any(p => p.Code == pc.Code);
+                return new ProductService(ServiceProvider).GetAll().Any(p => p.Code == pc.Code);
             }, "محصولی با این کد تعریف شده است");
         }
 

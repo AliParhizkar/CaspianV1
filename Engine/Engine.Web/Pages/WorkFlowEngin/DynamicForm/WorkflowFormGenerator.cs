@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Caspian.Engine.WorkflowEngine
 {
@@ -43,7 +44,7 @@ namespace Caspian.Engine.WorkflowEngine
         {
             selectedControl = ctr;
             using var scope = CreateScope();
-            Id = await new BlazorControlService(scope).GetId(subSystemKind, ctr);
+            Id = await new BlazorControlService(scope.ServiceProvider).GetId(subSystemKind, ctr);
         }
 
         void ToggleWindowStatus()
@@ -76,7 +77,7 @@ namespace Caspian.Engine.WorkflowEngine
         protected override async Task OnInitializedAsync()
         {
             using var scope = CreateScope();
-            var formService = new WorkflowFormService(scope);
+            var formService = new WorkflowFormService(scope.ServiceProvider);
             var form = await formService.GetAll().Include(t => t.WorkflowGroup).SingleAsync(t => t.Id == WorkflowFormId);
             forms = await formService.GetAll().Where(t => t.WorkflowGroupId == form.WorkflowGroupId).ToListAsync();
             columnsCount = form.ColumnCount;
@@ -84,7 +85,7 @@ namespace Caspian.Engine.WorkflowEngine
             formName = form.Name;
             formTitle = form.Title;
             dataModelId = form.DataModelId;
-            rows = await new HtmlRowService(scope).GetRows(WorkflowFormId);
+            rows = await new HtmlRowService(scope.ServiceProvider).GetRows(WorkflowFormId);
             selectedColsIndex = new List<int>();
             await base.OnInitializedAsync();
         }
@@ -101,7 +102,7 @@ namespace Caspian.Engine.WorkflowEngine
         async Task Save()
         {
             using var scope = CreateScope();
-            var service = new WorkflowFormService(scope);
+            var service = new WorkflowFormService(scope.ServiceProvider);
             await service.Remove(WorkflowFormId);
             foreach (var row in rows)
             {
@@ -129,7 +130,7 @@ namespace Caspian.Engine.WorkflowEngine
                     }
                 }
             }
-            await new HtmlRowService(scope).AddRangeAsync(rows);
+            await new HtmlRowService(scope.ServiceProvider).AddRangeAsync(rows);
             await service.SaveChangesAsync();
         }
 
@@ -456,24 +457,24 @@ namespace Caspian.Engine.WorkflowEngine
         [JSInvokable]
         public async Task<string> GetCodebehindString()
         {
-            using var scop = CreateScope();
-            return await new WorkflowFormService(scop).GetCodebehindAsync(WorkflowFormId, dataModelId);
+            using var scope = CreateScope();
+            return await new WorkflowFormService(scope.ServiceProvider).GetCodebehindAsync(WorkflowFormId, dataModelId);
         }
 
         [JSInvokable]
         public async Task<string> GetSourceCodeString()
         {
-            using var scop = CreateScope();
+            using var scope = CreateScope();
             var basePath = Environment.ContentRootPath;
-            return await new WorkflowFormService(scop).GetSourceCode(basePath, WorkflowFormId);
+            return await new WorkflowFormService(scope.ServiceProvider).GetSourceCode(basePath, WorkflowFormId);
         }
 
         [JSInvokable]
         public async Task SaveFile(string code)
         {
             var path = Environment.ContentRootPath + "Data\\Code\\";
-            using var scop = CreateScope();
-            var service = new WorkflowFormService(scop);
+            using var scope = CreateScope();
+            var service = new WorkflowFormService(scope.ServiceProvider);
             var form = await service.SingleAsync(WorkflowFormId);
             if (code.HasValue())
             {
@@ -526,7 +527,7 @@ namespace Caspian.Engine.WorkflowEngine
         async Task<BlazorControl> GetControl(string id)
         {
             using var scope = CreateScope();
-            var service = new BlazorControlService(scope);
+            var service = new BlazorControlService(scope.ServiceProvider);
             foreach(var row in rows)
             {
                 foreach(var col in row.Columns)

@@ -6,8 +6,8 @@ namespace Caspian.Engine.Service
 {
     public class DataModelFieldService : SimpleService<DataModelField>
     {
-        public DataModelFieldService(IServiceScope scope)
-            :base(scope)
+        public DataModelFieldService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.EntityFullName).Custom(t => t.EntityFullName.HasValue() && t.FieldType.HasValue, "نوع موجودیت و نوع فیلد فقط یکی می تواند پر باشد")
                 .Custom(t => !t.EntityFullName.HasValue() && t.FieldType == null, "نوع موجودیت و نوع فیلد یکی باید پر باشد")

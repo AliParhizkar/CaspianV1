@@ -10,8 +10,8 @@ namespace Caspian.Engine.Service
 {
     public class ReportService : SimpleService<Report>
     {
-        public ReportService(IServiceScope scope)
-            :base(scope)
+        public ReportService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync(t => t.ReportGroup.SubSystem, "گزارشی با این عنوان در سیستم ثبت شده است");
         }

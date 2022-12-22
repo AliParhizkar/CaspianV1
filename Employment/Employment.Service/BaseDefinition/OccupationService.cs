@@ -7,8 +7,8 @@ namespace Employment.Service
 {
     public class OccupationService : SimpleService<Occupation>, ISimpleService<Occupation>
     {
-        public OccupationService(IServiceScope scope)
-            : base(scope)
+        public OccupationService(ServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("رسته شغلی با این عنوان در سیستم وجود دارد");
         }

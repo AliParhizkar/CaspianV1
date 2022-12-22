@@ -9,8 +9,8 @@ namespace Demo.Service
 {
     public class MaterialService : SimpleService<Material>, ISimpleService<Material>
     {
-        public MaterialService(IServiceScope scope)
-            : base(scope)
+        public MaterialService(IServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("محصولی با این عنوان تعریف شده است");
         }

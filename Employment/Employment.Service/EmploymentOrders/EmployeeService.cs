@@ -6,8 +6,8 @@ namespace Employment.Service
 {
     public class EmployeeService : SimpleService<Employee>, ISimpleService<Employee>
     {
-        public EmployeeService(IServiceScope scope) :
-            base(scope)
+        public EmployeeService(IServiceProvider provider) :
+            base(provider)
         {
 
         }

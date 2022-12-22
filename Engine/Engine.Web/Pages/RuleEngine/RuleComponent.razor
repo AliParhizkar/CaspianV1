@@ -131,7 +131,7 @@
     async Task SetPriority(int ruleId)
     {
         var scope = CreateScope();
-        var service = new RuleService(scope);
+        var service = new RuleService(scope.ServiceProvider);
         var rule = await service.GetAll().Include(t => t.Tokens).Include("Tokens.DynamicParameter")
             .Include("Tokens.RuleValue").SingleAsync(ruleId);
         rule.Priority = service.CalculateRulePriority(rule);

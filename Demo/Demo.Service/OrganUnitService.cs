@@ -4,13 +4,14 @@ using FluentValidation;
 using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Demo.Service
 {
     public class OrganUnitService : SimpleService<OrganUnit>, ISimpleService<OrganUnit>
     {
-        public OrganUnitService(IServiceScope scope)
-            : base(scope)
+        public OrganUnitService(IServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("سازمانی با این عنوان در سیستم وجود دارد");
             RuleFor(t => t.ActiveType).CustomAsync(async t =>

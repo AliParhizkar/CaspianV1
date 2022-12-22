@@ -22,14 +22,14 @@ namespace Main
         public async Task<IActionResult> GetReport(int reportId)
         {
             using var scope = ScopeFactory.CreateScope();
-            var report = await new ReportService(scope).GetAll().Include(t => t.ReportGroup)
+            var report = await new ReportService(scope.ServiceProvider).GetAll().Include(t => t.ReportGroup)
                 .SingleAsync(t => t.Id == reportId);
             var basePath = Environment.ContentRootPath ;
             //if (!report.PrintFileName.HasValue())
             //    throw new MyException("گزارش ثبت نشده است لطفا ابتدا گزارش را ثبت کرده سپس اقدام به چاپ پیش نمایش نمائید");
             var group = report.ReportGroup;
             var data = new AssemblyInfo().InvokeReportMethod(group.SubSystem, group.ClassTitle, group.MethodName, scope);
-            var print = new ReportPrintEngine(scope);
+            var print = new ReportPrintEngine(scope.ServiceProvider);
             var result = print.GetData(reportId, data.AsQueryable());
             var printReport = new StiReport();
             printReport.RegBusinessObject("list", result);
@@ -44,7 +44,7 @@ namespace Main
             }
             var stream = new MemoryStream();
             printReport["Date"] = DateTime.Now.ToPersianDate().ToString();
-            var service = new UserService(scope);
+            var service = new UserService(scope.ServiceProvider);
             //var user = this.GetCurentUser();
             printReport["FName"] = "علی";
             printReport["LName"] = "پرهیزکار";

@@ -111,7 +111,7 @@
     {
         var organUnitId = Convert.ToInt32(node.Value);
         using var scope = CreateScope();
-        var service = new OrganUnitService(scope);
+        var service = new OrganUnitService(scope.ServiceProvider);
         var organUnit = await service.SingleAsync(organUnitId);
         var result = await service.ValidateRemoveAsync(organUnit);
         if (result.IsValid)
@@ -131,7 +131,7 @@
             ///در حالت ویرایش
             var organUnitId = Convert.ToInt32(nodeView.Value);
             using var scope = CreateScope();
-            organUnit = await new OrganUnitService(scope).SingleAsync(organUnitId);
+            organUnit = await new OrganUnitService(scope.ServiceProvider).SingleAsync(organUnitId);
         }
         else
         {
@@ -145,7 +145,7 @@
     async Task<bool> UpsertOrganUnit()
     {
         using var scope = CreateScope();
-        var service = new OrganUnitService(scope);
+        var service = new OrganUnitService(scope.ServiceProvider);
         if (organUnit.Id == 0)
             await service.AddAsync(organUnit);
         else

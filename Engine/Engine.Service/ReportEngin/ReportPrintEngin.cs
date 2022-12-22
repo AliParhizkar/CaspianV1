@@ -5,18 +5,17 @@ using Caspian.Engine.Model;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Service
 {
     public class ReportPrintEngine
     {
-        IServiceScope Scope;
+        IServiceProvider ServiceProvider;
 
-        public ReportPrintEngine(IServiceScope scope)
+        public ReportPrintEngine(IServiceProvider provider)
         {
-            Scope = scope;
+            ServiceProvider = provider;
         }
 
         private IList GeoupByData3Level(Type type, IList<ReportParam> reportParams, IList list)
@@ -243,7 +242,7 @@ namespace Caspian.Engine.Service
 
         public IList GetData(int reportId, IQueryable data)
         {
-            var a = new ReportParamService(Scope);
+            var a = new ReportParamService(ServiceProvider);
             var reportParams = a.GetAll().Include(t => t.DynamicParameter).Include(t => t.Rule).Where(t => t.ReportId == reportId).ToList();
             var report = new SelectReport(data.ElementType);
             if (reportParams.Any(t => t.DataLevel.GetValueOrDefault(1) > 1))

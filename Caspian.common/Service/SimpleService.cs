@@ -16,8 +16,8 @@ namespace Caspian.Common.Service
     public class SimpleService<TEntity> : CaspianValidator<TEntity>, ISimpleService, IDisposable, ISimpleService<TEntity> where TEntity : class
     {
         protected ReadOnlyCollection<TEntity> Source;
-        public SimpleService(IServiceScope serviceScope)
-            :base(serviceScope)
+        public SimpleService(IServiceProvider provider)
+            :base(provider)
         {
             
         }
@@ -53,12 +53,12 @@ namespace Caspian.Common.Service
 
         public ISimpleService<T> GetEntityService<T>() where T: class
         {
-            return new SimpleService<T>(ServiceScope);
+            return new SimpleService<T>(ServiceProvider);
         }
 
         public TService GetService<TService>() where TService : class
         {
-            return (TService)Activator.CreateInstance(typeof(TService), ServiceScope);
+            return (TService)Activator.CreateInstance(typeof(TService), ServiceProvider);
         }
 
         public async virtual Task<ValidationResult> ValidateRemoveAsync(TEntity entity)
@@ -68,7 +68,7 @@ namespace Caspian.Common.Service
 
         public override Task<ValidationResult> ValidateAsync(ValidationContext<TEntity> context, CancellationToken cancellation = default)
         {
-            context.RootContextData["__ServiceScope"] = ServiceScope;
+            context.RootContextData["__ServiceScope"] = ServiceProvider;
             if (!context.IsChildContext)
                 context.RootContextData["__MasterInstanse"] = context.InstanceToValidate;
             return base.ValidateAsync(context, cancellation);

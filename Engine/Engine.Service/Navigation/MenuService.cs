@@ -8,8 +8,8 @@ namespace Caspian.Engine.Service
 {
     public class MenuService : SimpleService<Menu>, ISimpleService<Menu>
     {
-        public MenuService(IServiceScope scope)
-            :base(scope)
+        public MenuService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.Title).Required(t => t.Id > 0).UniqAsync(t => t.SubSystemKind, "منویی با این عنوان در سیستم تعریف شده است");
             RuleFor(t => t.Source).Required().UniqAsync("صفحه ای با این آدرس در سیستم ثبت شده است");

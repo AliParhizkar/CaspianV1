@@ -93,7 +93,7 @@ namespace Caspian.UI
             if (Source == null)
             {
                 using var scope = ServiceScopeFactory.CreateScope();
-                var service = new SimpleService<TEntity>(scope);
+                var service = new SimpleService<TEntity>(scope.ServiceProvider);
                 var contextType = new AssemblyInfo().GetDbContextType(typeof(TEntity));
                 var query = service.GetAll(default(TEntity));
                 if (ConditionExpression != null)

@@ -3,24 +3,18 @@
 @using Caspian.UI
 @using Demo.Model
 @using Demo.Service
-<button @onclick="async () => await ValidateAsync()">Validate</button>
+@using Main.Data.Test
+<button @onclick="() => ValidateAsync()">Validate</button>
 
 @code 
 {
-    async Task ValidateAsync()
+    void ValidateAsync()
     {
         using var scope = CreateScope();
-        var service = new OrderService(scope);
-        var order = new Order();
-        order.OrderType = OrderType.Tel;
-        order.Date = DateTime.Now.Date;
-        order.OrderDeatils = new List<OrderDeatil>();
-        order.OrderDeatils.Add(new OrderDeatil()
-        {
-            Count = 5,
-            Price = 10000,
-            ProductId = 1
-        });
-        var result = await service.ValidateAsync(order);
+        string str1 = scope.ServiceProvider.GetService<ITestService>().Id;
+        string str2 = scope.ServiceProvider.GetService<ITestService>().Id;
+        using var scope1 = CreateScope();
+        string str3 = scope1.ServiceProvider.GetService<ITestService>().Id;
+        string str4 = scope1.ServiceProvider.GetService<ITestService>().Id;
     }
 }

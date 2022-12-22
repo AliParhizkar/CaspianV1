@@ -6,8 +6,8 @@ namespace Caspian.Engine.Service
 {
     public class DynamicParameterOptionService : SimpleService<DynamicParameterOption>
     {
-        public DynamicParameterOptionService(IServiceScope scope)
-            :base(scope)
+        public DynamicParameterOptionService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.FaTitle).Required().UniqAsync(t => t.DynamicParameterId, "عنوان فارسی نمی تواند تکراری باشد");
             RuleFor(t => t.EnTitle).Required().UniqAsync(t => t.DynamicParameterId, "عنوان لاتین نمی تواند تکراری باشد")

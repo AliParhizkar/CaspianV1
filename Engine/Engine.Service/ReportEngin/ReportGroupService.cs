@@ -1,14 +1,13 @@
 ﻿using Caspian.Common;
 using Caspian.Engine.Model;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
     public class ReportGroupService : SimpleService<ReportGroup>, ISimpleService<ReportGroup>
     {
-        public ReportGroupService(IServiceScope scope)
-            :base(scope)
+        public ReportGroupService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("گزارشی با این عنوان در سیستم ثبت شده است");
             RuleFor(t => t.NameSpace).Required();

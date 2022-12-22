@@ -63,7 +63,7 @@
         if (UpsertData.Id == 0)
         {
             using var scope = CreateScope();
-            var service = new DynamicParameterOptionService(scope);
+            var service = new DynamicParameterOptionService(scope.ServiceProvider);
             UpsertData.Value = (await service.GetAll().Where(t => t.DynamicParameterId == ParameterId).MaxAsync(t => (long?)t.Value)).GetValueOrDefault() + 1;
         }
     }

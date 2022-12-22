@@ -1,4 +1,0 @@
-﻿namespace Main.Data.Test
-{
-
-}

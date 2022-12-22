@@ -8,8 +8,8 @@ namespace Caspian.Engine.Service
 {
     public class BlazorControlService : SimpleService<BlazorControl>
     {
-        public BlazorControlService(IServiceScope scope)
-            :base(scope)
+        public BlazorControlService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.Caption).Required().UniqAsync("کنترلی با این عنوان در سیستم ثبت شده است");
         }
@@ -39,7 +39,7 @@ namespace Caspian.Engine.Service
                     return "chb" + ctr.PropertyName;
                 case ControlType.ComboBox:
                     if (ctr.DataModelField == null)
-                        ctr.DataModelField = await new DataModelFieldService(ServiceScope).SingleAsync(ctr.DataModelFieldId);
+                        ctr.DataModelField = await new DataModelFieldService(ServiceProvider).SingleAsync(ctr.DataModelFieldId);
                     var entityType = new AssemblyInfo().GetModelType(subSystemKind, ctr.DataModelField.EntityFullName);
                     var info = entityType.GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == ctr.PropertyName);
                     return "cmb" + info.Name;

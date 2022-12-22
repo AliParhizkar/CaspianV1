@@ -88,7 +88,7 @@
                 .Where(t => !t.CustomAttributes.Any(t => t.AttributeType == typeof(KeyAttribute) ||
                 t.AttributeType == typeof(ForeignKeyAttribute)) || t.PropertyType.IsCollectionType()).ToList();
             var scope = CreateScope();
-            dynamicParameters = await new DynamicParameterService(scope).GetAll().Where(t => t.EntityName == entityName).ToListAsync();
+            dynamicParameters = await new DynamicParameterService(scope.ServiceProvider).GetAll().Where(t => t.EntityName == entityName).ToListAsync();
         }
         else
         {
@@ -123,10 +123,10 @@
     protected async override Task OnInitializedAsync()
     {
         var scope = CreateScope();
-        var form = await new WorkflowFormService(scope).GetAll().Include(t => t.WorkflowGroup).SingleAsync(t => t.Id == WorkflowFormId);
+        var form = await new WorkflowFormService(scope.ServiceProvider).GetAll().Include(t => t.WorkflowGroup).SingleAsync(t => t.Id == WorkflowFormId);
 
         subSystemKind = form.WorkflowGroup.SubSystemKind;
-        dataModelFields = new DataModelFieldService(scope).GetAll().Where(t => t.DataModelId == form.DataModelId).ToList();
+        dataModelFields = new DataModelFieldService(scope.ServiceProvider).GetAll().Where(t => t.DataModelId == form.DataModelId).ToList();
         await base.OnInitializedAsync();
     }
 

@@ -5,14 +5,15 @@ using Caspian.Common;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Demo.Service
 {
     [ReportClass]
     public class ProductService : SimpleService<Product>, ISimpleService<Product>
     {
-        public ProductService(IServiceScope scope)
-            : base(scope)
+        public ProductService(IServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("محصولی با این عنوان تعریف شده است");
             RuleFor(t => t.Price).CustomValue(t => t < 0, "مبلغ کالا نمی تواند منفی باشد.");
@@ -29,7 +30,7 @@ namespace Demo.Service
                 {
                     if (!p.Code.HasValue())
                         return false;
-                    return new ProductCategoryService(ServiceScope).GetAll().Any(pc => pc.Code == p.Code);
+                    return new ProductCategoryService(ServiceProvider).GetAll().Any(pc => pc.Code == p.Code);
                 }, "گروه محصولی با این کد در سیستم ثبت شده است");
         }
 

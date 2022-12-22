@@ -121,7 +121,7 @@ namespace Caspian.UI
                         UpsertWindow.OnInternalOpen = EventCallback.Factory.Create(this, async () =>
                         {
                             using var scope = CreateScope();
-                            var service = new SimpleService<TEntity>(scope);
+                            var service = new SimpleService<TEntity>(scope.ServiceProvider);
                             var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
                             TEntity tempData = null;
                             if (value == 0)
@@ -143,7 +143,7 @@ namespace Caspian.UI
                         else
                         {
                             using var scope = CreateScope();
-                            var service = new SimpleService<TEntity>(scope);
+                            var service = new SimpleService<TEntity>(scope.ServiceProvider);
                             tempData = await service.SingleAsync(value);
                         }
                         UpsertData.CopySimpleProperty(tempData);

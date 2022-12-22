@@ -28,7 +28,7 @@ namespace Caspian.Engine.WorkflowEngine
                 if (!isloading)
                 {
                     using var scope = CreateScope();
-                    var service = new WorkflowFormService(scope);
+                    var service = new WorkflowFormService(scope.ServiceProvider);
                     form = await service.GetAll().Include("Rows").Include("WorkflowGroup").Include("Rows.Columns")
                         .Include("Rows.Columns.Component").Include("Rows.Columns.Component.DataModelField")
                         .Include("Rows.Columns.Component.DynamicParameter")
@@ -110,8 +110,8 @@ namespace Caspian.Engine.WorkflowEngine
         async Task<string> CreateCodebehindFormFile(string userCode)
         {
             using var scope = CreateScope();
-            var service = new WorkflowFormService(scope);
-            var fields = new DataModelFieldService(scope).GetAll().Where(t => t.DataModelId == form.DataModelId).ToList();
+            var service = new WorkflowFormService(scope.ServiceProvider);
+            var fields = new DataModelFieldService(scope.ServiceProvider).GetAll().Where(t => t.DataModelId == form.DataModelId).ToList();
             var str = new StringBuilder();
             str.Append("using Caspian.UI;\n");
             str.Append("using System;\n");
@@ -337,7 +337,7 @@ namespace Caspian.Engine.WorkflowEngine
             if (type.IsNullableType())
                 strType += "?";
             var scope = CreateScope();
-            var service = new BlazorControlService(scope);
+            var service = new BlazorControlService(scope.ServiceProvider);
             var id = await service.GetId(form.WorkflowGroup.SubSystemKind, component);
             switch (component.ControlType)
             {

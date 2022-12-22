@@ -6,8 +6,8 @@ namespace Employment.Service
 {
     public class MarriagePropertiesService : SimpleService<MarriageProperties>, ISimpleService<MarriageProperties>
     {
-        public MarriagePropertiesService(IServiceScope scope)
-            :base(scope)
+        public MarriagePropertiesService(ServiceProvider provider)
+            :base(provider)
         {
 
         }

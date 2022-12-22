@@ -83,8 +83,8 @@
     {
         if (detail.ProductId > 0)
         {
-            var scop = CreateScope();
-            var old = await new ProductService(scop).SingleAsync(detail.ProductId);
+            var scope = CreateScope();
+            var old = await new ProductService(scope.ServiceProvider).SingleAsync(detail.ProductId);
             detail.Price = old.Price;
             txtPrice.Focus();
         }

@@ -4,14 +4,16 @@ using Caspian.Common;
 using Caspian.Engine;
 using Caspian.Common.Service;
 using Microsoft.Extensions.DependencyInjection;
+using System.Xml;
+using System;
 
 namespace Demo.Service
 {
     [ReportClass]
     public class OrderDeatilService : SimpleService<OrderDeatil>, ISimpleService<OrderDeatil>
     {
-        public OrderDeatilService(IServiceScope scope)
-            :base(scope)
+        public OrderDeatilService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.Price).CustomValue(t => t < 0, "قیمت نمی تواند منفی باشد");
             RuleFor(t => t.Count).CustomValue(t => t <= 0, "واحد باید بزرگتر از صفر باشد");

@@ -133,8 +133,8 @@
     async Task ClearAsync()
     {
         using var scope = CreateScope();
-        await new TokenService(scope).RemoveAsync(RuleId);
-        Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+        await new TokenService(scope.ServiceProvider).RemoveAsync(RuleId);
+        Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
         new RuleEngine().UpdateTokens(Tokens);
         ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
         await OnChanged.InvokeAsync();
@@ -182,10 +182,10 @@
                 break;
         };
         using var scope = CreateScope();
-        var tokenService = new TokenService(scope);
+        var tokenService = new TokenService(scope.ServiceProvider);
         await tokenService.AddAsync(token);
         await tokenService.SaveChangesAsync();
-        Tokens = await new TokenService(scope).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+        Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
         Tokens = new RuleEngine().UpdateTokens(Tokens);
         ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
         await OnChanged.InvokeAsync();

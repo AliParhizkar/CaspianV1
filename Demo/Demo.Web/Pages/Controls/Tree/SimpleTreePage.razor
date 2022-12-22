@@ -81,7 +81,7 @@
     {
         using var scope = CreateScope();
         var categoryId = Convert.ToInt32(node.Value);
-        node.Items = await new MenuService(scope).GetAll()
+        node.Items = await new MenuService(scope.ServiceProvider).GetAll()
             .Where(t => t.MenuCategoryId == categoryId).Select(t => new TreeViewItem()
                 { 
                     Collabsable = false,
@@ -124,7 +124,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var scope = CreateScope();
-        source = await new MenuCategoryService(scope).GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo)
+        source = await new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo)
             .Select(t => new TreeViewItem()
                 {
                     Text = t.Title,

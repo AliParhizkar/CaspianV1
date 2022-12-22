@@ -81,7 +81,7 @@ namespace Caspian.UI
                         if (TextExpression == null)
                             throw new InvalidOperationException("خطا: TextExpression is null you must set TextExpression in page");
                         using var scope = CreateScope();
-                        var service = new SimpleService<TEntity>(scope);
+                        var service = new SimpleService<TEntity>(scope.ServiceProvider);
                         var entity = await service.SingleAsync(id);
                         var text = TextExpression.Compile().Invoke(entity);
                         TextBox.SetText(text);

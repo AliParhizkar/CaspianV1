@@ -98,7 +98,7 @@ namespace Caspian.UI
 
         IQueryable<TEntity> GetQuery(IServiceScope scope)
         {
-            var service = new SimpleService<TEntity>(scope);
+            var service = new SimpleService<TEntity>(scope.ServiceProvider);
             var query = service.GetAll(Search);
             Expression expr = null;
             var parameter = Expression.Parameter(typeof(TEntity), "t");

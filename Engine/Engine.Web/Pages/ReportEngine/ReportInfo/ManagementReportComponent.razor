@@ -10,7 +10,7 @@
         <CTreeView @ref="Tree" OnExpanded="@(async (item) =>
                                             {
                                                 using var scope = ServiceScopeFactory.CreateScope();
-                                                var service = new ReportService(scope);
+                                                var service = new ReportService(scope.ServiceProvider);
                                                 var report = await (service.Context as Context).Reports.Include(t => t.ReportGroup).SingleAsync(t => t.Id == ReportId);
                                                 item.Items = new ReportTree().CreateTreeForGroupBy(report, item.Value).Select(t => new TreeViewItem()
                                                 {
@@ -47,7 +47,7 @@
     {
         var tree = new ReportTree();
         using var scope = ServiceScopeFactory.CreateScope();
-        var service = new ReportService(scope);
+        var service = new ReportService(scope.ServiceProvider);
         var report = await (service.Context as Context).Reports.Include(t => t.ReportGroup).Include(t => t.ReportParams).SingleAsync(t => t.Id == ReportId);
         Nodes = tree.CreateTreeForGroupBy(report, null).Select(t => new TreeViewItem()
         {

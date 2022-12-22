@@ -7,8 +7,8 @@ namespace Caspian.Engine.Service
 {
     public class TokenService : SimpleService<Token>
     {
-        public TokenService(IServiceScope scope)
-            :base(scope)
+        public TokenService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.constValue).Required(t => t.TokenType == TokenType.ConstValue);
             RuleFor(t => t.ConstValueType).Required(t => t.TokenType == TokenType.ConstValue);
@@ -26,7 +26,7 @@ namespace Caspian.Engine.Service
 
         public async Task<Token> RemoveAsync(int ruleId)
         {
-            var rule = await new RuleService(ServiceScope).SingleAsync(ruleId);
+            var rule = await new RuleService(ServiceProvider).SingleAsync(ruleId);
             rule.IsValid = false;
             var item = await GetAll().Where(t => t.RuleId == ruleId).OrderByDescending(t => t.Id).FirstOrDefaultAsync();
             if (item != null)

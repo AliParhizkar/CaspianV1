@@ -246,10 +246,10 @@ namespace Caspian.Common
                 {
                     using var scope = ((IServiceScopeFactory)contex.ParentContext.RootContextData["__ServiceScopeFactory"])
                         .CreateScope();
-                    var service = new SimpleService<TModel>(scope);
+                    var service = new SimpleService<TModel>(scope.ServiceProvider);
                     return !await service.GetAll(default(TModel)).AnyAsync(lambda);
                 }
-                var service1 = new SimpleService<TModel>(scope1);
+                var service1 = new SimpleService<TModel>(scope1.ServiceProvider);
                 return !await service1.GetAll(default(TModel)).AnyAsync(lambda);
             }).WithMessage(errorMessage);
         }

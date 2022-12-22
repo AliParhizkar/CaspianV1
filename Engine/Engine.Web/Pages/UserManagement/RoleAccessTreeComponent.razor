@@ -23,7 +23,7 @@
     {
         using var scope = CreateScope();
         var ids = tree.GetSeletcedItems().Select(t => Convert.ToInt32(t.Value)).ToList();
-        var service = new MenuAccessibilityService(scope);
+        var service = new MenuAccessibilityService(scope.ServiceProvider);
         ///منوهایی که در پایگاه داده به نقش تخصیص داده شده اند
         var oldMenusId = await service.GetAll().Where(t => t.RoleId == RoleId && t.Menu.MenuCategory.SubSystemKind == SubSystem).Select(t => t.MenuId).ToListAsync();
         ///منوهایی که در درخت انتخاب شده اند ولی در پایگاه داده وجود ندارند
@@ -65,7 +65,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var scope = CreateScope();
-        user = await new RoleService(scope).SingleAsync(RoleId);
+        user = await new RoleService(scope.ServiceProvider).SingleAsync(RoleId);
         await InitializData();
         await base.OnInitializedAsync();
     }
@@ -73,7 +73,7 @@
     async Task InitializData()
     {
         using var scope = CreateScope();
-        source = await new MenuCategoryService(scope).GetAll().Where(t => t.SubSystemKind == SubSystem)
+        source = await new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystem)
             .Select(t => new TreeViewItem()
                 {
                     Text = t.Title,

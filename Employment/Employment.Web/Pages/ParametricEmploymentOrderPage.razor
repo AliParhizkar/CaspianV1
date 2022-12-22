@@ -189,13 +189,13 @@
     protected override async Task OnInitializedAsync()
     {
         using var scope = CreateScope();
-        parameters = await new DynamicParameterService(scope).GetAll().Include(t => t.Options).ToListAsync();
-        new DynamicParameterService(scope).SetUserParametersDefault(parameters, parametersValue);
+        parameters = await new DynamicParameterService(scope.ServiceProvider).GetAll().Include(t => t.Options).ToListAsync();
+        new DynamicParameterService(scope.ServiceProvider).SetUserParametersDefault(parameters, parametersValue);
         if (!parametersValue.ContainsKey(23))
             parametersValue.Add(23, 5);
-        rules = await new RuleService(scope).GetAll().OrderBy(t => t.Priority).Include(t => t.Tokens).ToListAsync();
-        formParameters = await new DataParameterService(scope).GetAll().ToListAsync();
-        dataParameterValues = await new DataParameterValueService(scope).GetAll().ToListAsync();
+        rules = await new RuleService(scope.ServiceProvider).GetAll().OrderBy(t => t.Priority).Include(t => t.Tokens).ToListAsync();
+        formParameters = await new DataParameterService(scope.ServiceProvider).GetAll().ToListAsync();
+        dataParameterValues = await new DataParameterValueService(scope.ServiceProvider).GetAll().ToListAsync();
         UpdateFormParameter();
         await base.OnInitializedAsync();
     }

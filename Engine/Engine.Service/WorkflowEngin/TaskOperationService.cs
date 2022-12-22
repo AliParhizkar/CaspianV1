@@ -5,8 +5,8 @@ namespace Caspian.Engine.Service
 {
     public class TaskOperationService : SimpleService<TaskOperation>
     {
-        public TaskOperationService(IServiceScope scope)
-            : base(scope)
+        public TaskOperationService(IServiceProvider provider)
+            : base(provider)
         {
 
         }

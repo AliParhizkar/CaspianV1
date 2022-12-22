@@ -6,8 +6,8 @@ namespace Caspian.Engine.Service
 {
     public class UserMembershipService : SimpleService<UserMembership>
     {
-        public UserMembershipService(IServiceScope scope):
-            base(scope)
+        public UserMembershipService(IServiceProvider provider) :
+            base(provider)
         {
 
         }

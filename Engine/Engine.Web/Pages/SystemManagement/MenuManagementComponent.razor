@@ -156,7 +156,7 @@
             }
         }
         using var scope = ServiceScopeFactory.CreateScope();
-        var service = new MenuService(scope);
+        var service = new MenuService(scope.ServiceProvider);
         var menus = await service.GetAll().Where(t => t.Source.ToLower().StartsWith("/" + Subsystem.ToString().ToLower())).ToListAsync();
         foreach (var item in list)
         {

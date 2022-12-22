@@ -5,8 +5,8 @@ namespace Caspian.Engine.Service
 {
     public class InnerRowService : SimpleService<InnerRow>, ISimpleService<InnerRow>
     {
-        public InnerRowService(IServiceScope scope)
-            :base(scope)
+        public InnerRowService(IServiceProvider provider)
+            :base(provider)
         {
 
         }

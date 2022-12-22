@@ -9,8 +9,8 @@ namespace Demo.Service
     [ReportClass]
     public class CustomerService : SimpleService<Customer>, ISimpleService<Customer>
     {
-        public CustomerService(IServiceScope scope)
-            :base(scope)
+        public CustomerService(ServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.CompanyName).Required(t => t.CustomerType == CustomerType.Legal);
             RuleFor(t => t.Gender).Required(t => t.CustomerType == CustomerType.Real);

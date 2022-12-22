@@ -245,8 +245,8 @@
     protected override async Task OnInitializedAsync()
     {
         using var scope = CreateScope();
-        resultParameter = await new DynamicParameterService(scope).GetAll().SingleAsync(ParameterId);
-        var parameters = await new DataParameterService(scope).GetAll().Where(t => t.ResultParameterId == ParameterId)
+        resultParameter = await new DynamicParameterService(scope.ServiceProvider).GetAll().SingleAsync(ParameterId);
+        var parameters = await new DataParameterService(scope.ServiceProvider).GetAll().Where(t => t.ResultParameterId == ParameterId)
             .Include(t => t.DynamicParameter.Options).Include(t => t.Rule).ToListAsync();
         parametersId = parameters.Select(t => t.Id).ToList();
         var index = 0;

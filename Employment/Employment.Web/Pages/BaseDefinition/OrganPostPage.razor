@@ -99,7 +99,7 @@
         if (base.UpsertData.Id > 0)
         {
             var scope = CreateScope();
-            var careerField = await new CareerFieldService(scope).SingleAsync(UpsertData.CareerFieldId);
+            var careerField = await new CareerFieldService(scope.ServiceProvider).SingleAsync(UpsertData.CareerFieldId);
             occupationId = careerField.OccupationId;
         }
         else

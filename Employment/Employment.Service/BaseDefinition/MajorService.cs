@@ -7,8 +7,8 @@ namespace Employment.Service
 {
     public class MajorService : SimpleService<Major>, ISimpleService<Major>
     {
-        public MajorService(IServiceScope scope)
-            : base(scope)
+        public MajorService(IServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("رشته تحصیلی با این عنوان در سیستم ثبت شده است");
         }

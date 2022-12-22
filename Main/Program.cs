@@ -13,6 +13,7 @@ using Caspian.Common.Extension;
 using Caspian.Common.Service;
 using Demo.Model;
 using Demo.Service;
+using Main.Data.Test;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,11 +38,7 @@ builder.Services.AddScoped<CaspianDataService>();
 builder.Services.AddScoped<Demo.Model.Context>();
 builder.Services.AddScoped<Caspian.Engine.Model.Context>();
 builder.Services.AddScoped<Employment.Model.Context>();
-builder.Services.AddScoped<ISimpleService<Order>>(t => new OrderService(t.CreateScope()));
-builder.Services.AddScoped<ISimpleService<OrderDeatil>>(t => new OrderDeatilService(t.CreateScope()));
-builder.Services.AddScoped<ISimpleService<Product>>(t => new ProductService(t.CreateScope()));
-builder.Services.AddScoped<ISimpleService<ProductCategory>>(t => new ProductCategoryService(t.CreateScope()));
-//SubSystemKind.Demo.GetServiceAssembly().InjectServices(builder.Services);
+SubSystemKind.Demo.GetServiceAssembly().InjectServices(builder.Services);
 SubSystemKind.Employment.GetServiceAssembly().InjectServices(builder.Services);
 SubSystemKind.Engine.GetServiceAssembly().InjectServices(builder.Services);
 

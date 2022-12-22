@@ -144,7 +144,7 @@
                 FaTitle = faTitle
             };
             var scope = CreateScope();
-            var tokenService = new TokenService(scope);
+            var tokenService = new TokenService(scope.ServiceProvider);
             await tokenService.AddAsync(tempToken);
             await tokenService.SaveChangesAsync();
             Tokens = await tokenService.GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
@@ -184,7 +184,7 @@
                         break;
                     case ParameterType.DaynamicParameter:
                         var id = beforeLastToken.DynamicParameterId.Value;
-                        var param = await new DynamicParameterService(scope).SingleAsync(id);
+                        var param = await new DynamicParameterService(scope.ServiceProvider).SingleAsync(id);
                         switch(param.ControlType.Value)
                         {
                             case ControlType.CheckBox:
@@ -193,7 +193,7 @@
                             case ControlType.DropdownList:
                                 valueTypeKind = ValueTypeKind.Enum;
                                 enumType = null;
-                                dynamicOptions = await new DynamicParameterOptionService(scope).GetAll().Where(t => t.DynamicParameterId == id)
+                                dynamicOptions = await new DynamicParameterOptionService(scope.ServiceProvider).GetAll().Where(t => t.DynamicParameterId == id)
                                 .Select(t => new SelectListItem() 
                                 {
                                     Value = t.Value.ToString(),
@@ -204,7 +204,7 @@
                         break;
                     case ParameterType.RuleParameter:
                         if (beforeLastToken.RuleValue == null && beforeLastToken.RuleIdValue.HasValue)
-                            beforeLastToken.RuleValue = await new RuleService(scope).SingleAsync(beforeLastToken.RuleIdValue.Value);
+                            beforeLastToken.RuleValue = await new RuleService(scope.ServiceProvider).SingleAsync(beforeLastToken.RuleIdValue.Value);
                         var rule = beforeLastToken.RuleValue;
                         switch(rule.ResultType)
                         {
@@ -229,7 +229,7 @@
                         valueTypeKind = ValueTypeKind.Int;
                         break;
                     case ParameterType.RuleParameter:
-                        var rule = await new RuleService(scope).SingleAsync(beforeLastToken.RuleId.Value);
+                        var rule = await new RuleService(scope.ServiceProvider).SingleAsync(beforeLastToken.RuleId.Value);
                         valueTypeKind = rule.ResultType;
                         break;
                 }

@@ -9,47 +9,45 @@ using Caspian.Common.Extension;
 using FluentValidation.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Caspian.Common
 {
     public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator, IEntity where TModel : class
     {
-        public CaspianValidator(IServiceScope scope)
+        public CaspianValidator(IServiceProvider provider)
         {
-            if (scope != null)
+            ServiceProvider = provider;
+            var contextType = new AssemblyInfo().GetDbContextType(typeof(TModel));
+            Context = provider.GetService(contextType) as MyContext;
+            var data = provider.GetService(typeof(CaspianDataService)) as CaspianDataService;
+            UserId = data.UserId;
+            foreach (var info in typeof(TModel).GetProperties())
             {
-                ServiceScope = scope;
-                var contextType = new AssemblyInfo().GetDbContextType(typeof(TModel));
-                Context = scope.ServiceProvider.GetService(contextType) as MyContext;
-                var data = scope.ServiceProvider.GetService(typeof(CaspianDataService)) as CaspianDataService;
-                UserId = data.UserId;
-                foreach (var info in typeof(TModel).GetProperties())
+                var type = info.PropertyType;
+                if (type.IsEnum)
+                    RuleForEnum(info);
+                var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
+                if (attr != null)
                 {
-                    var type = info.PropertyType;
-                    if (type.IsEnum)
-                        RuleForEnum(info);
-                    var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
-                    if (attr != null)
-                    {
-                        //if (info.GetValue())
-                        var infoId = typeof(TModel).GetProperty(attr.Name);
-                        var param = Expression.Parameter(typeof(TModel), "t");
-                        Expression expr = Expression.Property(param, infoId);
-                        expr = Expression.Convert(expr, typeof(object));
-                        expr = Expression.Lambda(expr, param);
-                        RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyAsync(info, infoId, MasterInfo);
-                    }
-                }
-                RuleSet("remove", () =>
-                {
-                    var pkey = typeof(TModel).GetPrimaryKey();
+                    //if (info.GetValue())
+                    var infoId = typeof(TModel).GetProperty(attr.Name);
                     var param = Expression.Parameter(typeof(TModel), "t");
-                    Expression expr = Expression.Property(param, pkey);
+                    Expression expr = Expression.Property(param, infoId);
                     expr = Expression.Convert(expr, typeof(object));
                     expr = Expression.Lambda(expr, param);
-                    CheckOnDelete(expr as Expression<Func<TModel, object>>);
-                });
+                    RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyAsync(info, infoId, MasterInfo);
+                }
             }
+            RuleSet("remove", () =>
+            {
+                var pkey = typeof(TModel).GetPrimaryKey();
+                var param = Expression.Parameter(typeof(TModel), "t");
+                Expression expr = Expression.Property(param, pkey);
+                expr = Expression.Convert(expr, typeof(object));
+                expr = Expression.Lambda(expr, param);
+                CheckOnDelete(expr as Expression<Func<TModel, object>>);
+            });
         }
 
         protected IRuleBuilderInitial<TModel, object> RuleForRemove()
@@ -76,7 +74,7 @@ namespace Caspian.Common
         /// </summary>
         public bool IgnoreDetailsProperty { get; set; }
 
-        public IServiceScope ServiceScope { get; private set; }
+        public IServiceProvider ServiceProvider { get; private set; }
 
         public MyContext Context { get; private set; }
 
@@ -104,7 +102,7 @@ namespace Caspian.Common
                         else
                         {
                             var serviceType = typeof(SimpleService<>).MakeGenericType(type);
-                            var service = Activator.CreateInstance(serviceType, ServiceScope);
+                            var service = Activator.CreateInstance(serviceType, ServiceProvider);
                             IQueryable query = serviceType.GetMethod("GetAll").Invoke(service, new object[] { null }) as IQueryable;
                             var name = type.GetProperties().First(t => t.PropertyType == typeof(TModel)).GetCustomAttribute<ForeignKeyAttribute>().Name;
                             var fkIdInfo = type.GetProperties().Single(t => t.Name == name);

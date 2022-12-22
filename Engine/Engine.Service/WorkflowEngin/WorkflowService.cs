@@ -6,8 +6,8 @@ namespace Caspian.Engine.Service
 {
     public class WorkflowService : SimpleService<Workflow>, ISimpleService<Workflow>
     {
-        public WorkflowService(IServiceScope scope)
-            :base(scope)
+        public WorkflowService(ServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("گردش کاری با این عنوان در سیستم تعریف شده است");
         }

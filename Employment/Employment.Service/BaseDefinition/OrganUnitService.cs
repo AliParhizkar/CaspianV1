@@ -9,8 +9,8 @@ namespace Employment.Service
 {
     public class OrganUnitService : SimpleService<OrganUnit>, ISimpleService<OrganUnit>
     {
-        public OrganUnitService(IServiceScope scope)
-            : base(scope)
+        public OrganUnitService(IServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("سازمانی با این عنوان در سیستم وجود دارد");
             RuleFor(t => t.ActiveType).CustomAsync(async t =>

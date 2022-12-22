@@ -39,9 +39,9 @@ namespace ReportUiModels
 
         public async Task<IDictionary<string, string>> GetFiledsProperty(int reportId, int dataLevel)
         {
-            var reportGroupService = new ReportGroupService(Scope);
-            var reportService = new ReportService(Scope);
-            var paramService = new ReportParamService(Scope);
+            var reportGroupService = new ReportGroupService(Scope.ServiceProvider);
+            var reportService = new ReportService(Scope.ServiceProvider);
+            var paramService = new ReportParamService(Scope.ServiceProvider);
             var report = await reportService.SingleAsync(reportId);
             var reportGroup = await reportGroupService.SingleAsync(report.ReportGroupId);
             var mainType = new AssemblyInfo().GetReturnType(reportGroup);
@@ -51,7 +51,7 @@ namespace ReportUiModels
             var selectReport = new SelectReport(mainType);
             var type = selectReport.SimpleSelect(tempParams).Body.Type;
             type = selectReport.GetEqualType(tempParams, type);
-            type = new ReportPrintEngine(Scope).GetTypeOf(tempParams, type, mainType.Name);
+            type = new ReportPrintEngine(Scope.ServiceProvider).GetTypeOf(tempParams, type, mainType.Name);
             var maxDataLevel = tempParams.Max(t => t.DataLevel).GetValueOrDefault(1);
             var dic = new Dictionary<string, string>();
             if (maxDataLevel == dataLevel)

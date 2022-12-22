@@ -6,8 +6,8 @@ namespace Caspian.Engine.Service
 {
     public class DataModelService : SimpleService<DataModel>
     {
-        public DataModelService(IServiceScope scope)
-            : base(scope)
+        public DataModelService(IServiceProvider provider)
+            : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("مدل داده ای با این عنوان در سیستم وجود دارد");
             RuleFor(t => t.Name).Required().UniqAsync("مدل داده ای با این نام در سیستم وجود دارد")

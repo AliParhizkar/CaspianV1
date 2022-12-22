@@ -21,7 +21,7 @@
                 if (!Value.Equals(Oldvalue))
                 {
                     using var scope = ServiceScopeFactory.CreateScope();
-                    var service = new SimpleService<TEntity>(scope);
+                    var service = new SimpleService<TEntity>(scope.ServiceProvider);
                     var type = typeof(TEntity);
                     var param = Expression.Parameter(type, "t");
                     var pKey = type.GetPrimaryKey();

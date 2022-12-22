@@ -1,15 +1,14 @@
-﻿using Caspian.Common;
+﻿using System.Text;
+using Caspian.Common;
 using Caspian.Common.Service;
 using Caspian.Common.Extension;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 
 namespace Caspian.Engine.Service
 {
     public class ActivityService : SimpleService<Activity>
     {
-        public ActivityService(IServiceScope scope)
-            :base(scope)
+        public ActivityService(IServiceProvider provider)
+            :base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("فعالیتی با این عنوان در سیستم ثبت شده است");
             RuleFor(t => t.Name).Required().UniqAsync("فعالیتی با این نام در سیستم ثبت شده است")

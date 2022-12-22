@@ -83,7 +83,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var scope = CreateScope();
-        var workflow = await new WorkflowGroupService(scope).SingleAsync(DataModelId);
+        var workflow = await new WorkflowGroupService(scope.ServiceProvider).SingleAsync(DataModelId);
         workflowEntityTypes = new AssemblyInfo().GetModelTypes(workflow.SubSystemKind)
             .Where(t => t.CustomAttributes.Any(u => u.AttributeType == typeof(WorkflowEntityAttribute)))
             .Select(t => new SelectListItem(t.Name, t.GetCustomAttribute<WorkflowEntityAttribute>()!.Title)).ToList();

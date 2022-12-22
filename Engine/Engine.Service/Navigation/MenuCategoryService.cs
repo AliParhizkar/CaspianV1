@@ -8,8 +8,8 @@ namespace Caspian.Engine.Service
 {
     public class MenuCategoryService : SimpleService<MenuCategory>, ISimpleService<MenuCategory>
     {
-        public MenuCategoryService(IServiceScope scope)
-            :base(scope)
+        public MenuCategoryService(IServiceProvider provider)
+            :base(provider)
         {
              RuleFor(t => t.Title).Required().UniqAsync("گروه منویی با این عنوان در سیستم ثبت شده است");
         }

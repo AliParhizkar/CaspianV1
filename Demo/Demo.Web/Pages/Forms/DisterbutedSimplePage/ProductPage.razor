@@ -130,7 +130,7 @@
     async Task TogleEnable(int id)
     {
         using var scope = ServiceScopeFactory.CreateScope();
-        var service = new ProductService(scope);
+        var service = new ProductService(scope.ServiceProvider);
         await service.ToggleEnable(id);
         await service.SaveChangesAsync();
         await CrudGrid.Reload();

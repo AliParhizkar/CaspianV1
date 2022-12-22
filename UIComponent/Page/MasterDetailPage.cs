@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Reflection;
+using Caspian.Common.Service;
 using System.Threading.Tasks;
 using Caspian.Common.Extension;
-using Caspian.Common.Service;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -62,21 +60,20 @@ namespace Caspian.UI
             var list = detailsInfo.GetValue(UpsertData) as IList<TDetail>;
             using var scope = CreateScope();
             var provider = scope.ServiceProvider;
-            var masterServiceType = provider.GetService(typeof(ISimpleService<TMaster>)).GetType();
-            var masterService = Activator.CreateInstance(masterServiceType, scope) as SimpleService<TMaster>;
+            var masterService = provider.GetService(typeof(ISimpleService<TMaster>)) as SimpleService<TMaster>;
             using var transaction = masterService.Context.Database.BeginTransaction();
             await masterService.AddAsync(UpsertData);
             await masterService.SaveChangesAsync();
             var masterId = typeof(TMaster).GetPrimaryKey().GetValue(UpsertData);
-            //masterId = 12;
             var masterInfo = typeof(TDetail).GetForeignKey(typeof(TMaster));
             foreach (var item in list)
                 masterInfo.SetValue(item, masterId);
-            var detailServiceType = provider.GetService(typeof(ISimpleService<TDetail>)).GetType();
-            var detailService = Activator.CreateInstance(detailServiceType, scope) as SimpleService<TDetail>;
+            var detailService = provider.GetService(typeof(ISimpleService<TDetail>)) as SimpleService<TDetail>;
             await detailService.AddRangeAsync(list);
+            Grid.ClearSource();
             await detailService.SaveChangesAsync();
             await transaction.CommitAsync();
+            UpsertData = Activator.CreateInstance<TMaster>();
         }
     }
 }

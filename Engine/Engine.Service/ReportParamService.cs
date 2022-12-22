@@ -5,19 +5,18 @@ using Caspian.Common.Service;
 using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine.Service
 {
     public class ReportParamService : SimpleService<ReportParam>
     {
-        public ReportParamService(IServiceScope scope)
-            :base(scope)
+        public ReportParamService(IServiceProvider provider)
+            :base(provider)
         {
             RuleForRemove().CustomAsync(async t => 
             {
-                var param = await new ReportParamService(scope).GetAll().Include(t => t.Report).SingleAsync(t.Id);
+                var param = await new ReportParamService(provider).GetAll().Include(t => t.Report).SingleAsync(t.Id);
                 return param.Report.PrintFileName.HasValue();
             }, "بعد از ایجاد گزارش امکان حذف پارامترهای گزارش وجود ندارد");
         }
@@ -49,7 +48,7 @@ namespace Caspian.Engine.Service
             {
                 if (!oldParams.Any(t => t.TitleEn == param.TitleEn))
                 {
-                    var a = new ReportParamService(ServiceScope);
+                    var a = new ReportParamService(ServiceProvider);
                     await a.AddAsync(param);
                     await a.SaveChangesAsync();
                 }
@@ -61,7 +60,7 @@ namespace Caspian.Engine.Service
             var reportId = list.First().ReportId;
             var oldParams = GetAll(reportId).ToList();
             list = list.Where(p => !oldParams.Any(t => t.TitleEn != null && t.TitleEn == p.TitleEn || t.RuleId.HasValue && t.RuleId == p.RuleId));
-            var a = new ReportParamService(ServiceScope);
+            var a = new ReportParamService(ServiceProvider);
             await a.AddRangeAsync(list);
             await a.SaveChangesAsync();
         }
@@ -93,7 +92,7 @@ namespace Caspian.Engine.Service
             var temp = await SingleAsync(id);
             if (temp.DataLevel.GetValueOrDefault(1) > 2)
                 throw new CaspianException("امکان افزایش سطح وجود ندارد.");
-            var report = await new ReportService(ServiceScope).GetAll().Where(t => t.Id == temp.ReportId).Include(t => t.ReportGroup).SingleAsync();
+            var report = await new ReportService(ServiceProvider).GetAll().Where(t => t.Id == temp.ReportId).Include(t => t.ReportGroup).SingleAsync();
             if (report.PrintFileName.HasValue())
                 throw new CaspianException("بعد از ساختن گزارش امکان افزایش سطح فیلد وجود ندارد");
             var type = new AssemblyInfo().GetReturnType(report.ReportGroup);

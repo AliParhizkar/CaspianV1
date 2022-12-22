@@ -5,8 +5,8 @@ namespace Caspian.Engine.Service
 {
     public class HtmlColumnService : SimpleService<HtmlColumn>, ISimpleService<HtmlColumn>
     {
-        public HtmlColumnService(IServiceScope scope)
-            :base(scope)
+        public HtmlColumnService(IServiceProvider provider)
+            :base(provider)
         {
 
         }

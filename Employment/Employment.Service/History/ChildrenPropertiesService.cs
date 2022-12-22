@@ -6,8 +6,8 @@ namespace Employment.Service
 {
     public class ChildrenPropertiesService : SimpleService<ChildrenProperties>, ISimpleService<ChildrenProperties>
     {
-        public ChildrenPropertiesService(IServiceScope scope)
-            :base(scope)
+        public ChildrenPropertiesService(IServiceProvider provider)
+            :base(provider)
         {
 
         }

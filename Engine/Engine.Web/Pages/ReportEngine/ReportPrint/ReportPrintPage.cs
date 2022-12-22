@@ -39,8 +39,8 @@ namespace Caspian.Engine.ReportPrint
             using var scope = ServiceScopeFactory.CreateScope();
             if (ReportId > 0)
             {
-                var report = await new ReportService(scope).SingleAsync(ReportId);
-                var reportParams = new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId);
+                var report = await new ReportService(scope.ServiceProvider).SingleAsync(ReportId);
+                var reportParams = new ReportParamService(scope.ServiceProvider).GetAll().Where(t => t.ReportId == ReportId);
                 if (!reportParams.Any())
                 {
                     message = "لطفا ابتدا پارامترهای گزارش را ثبت نموده و سپس فایل گزارش را ایجاد نمائید";
@@ -166,7 +166,7 @@ namespace Caspian.Engine.ReportPrint
         {
             UnescapeDataString(page);
             using var scope = ServiceScopeFactory.CreateScope();
-            var report = await new ReportService(scope).SingleAsync(ReportId);
+            var report = await new ReportService(scope.ServiceProvider).SingleAsync(ReportId);
             var maxDataLevel = report.ReportParams.Max(t => t.DataLevel).GetValueOrDefault(1);
             page.Report = new ReportUiModels.ReportPrint();
             page.IsSubReport = true;
@@ -226,16 +226,16 @@ namespace Caspian.Engine.ReportPrint
             try
             {
                 using var scope = ServiceScopeFactory.CreateScope();
-                var reportService = new ReportService(scope);
+                var reportService = new ReportService(scope.ServiceProvider);
                 reportService.Context.ChangeTracker.LazyLoadingEnabled = true;
                 var report = await reportService.GetAll().Where(t => t.Id == ReportId).Include(t => t.ReportGroup).SingleAsync();
                 page.GuId = "3f7f0c9730b145ee9132cfdedc3c8ccd";
                 var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
-                var reportParams = new ReportParamService(scope).GetAll().Where(t => t.ReportId == ReportId).ToList();
+                var reportParams = new ReportParamService(scope.ServiceProvider).GetAll().Where(t => t.ReportId == ReportId).ToList();
                 var selectReport = new SelectReport(mainType);
                 var type = selectReport.SimpleSelect(reportParams).Body.Type;
                 type = selectReport.GetEqualType(reportParams, type);
-                type = new ReportPrintEngine(scope).GetTypeOf(reportParams, type, mainType.Name);
+                type = new ReportPrintEngine(scope.ServiceProvider).GetTypeOf(reportParams, type, mainType.Name);
                 var reportPrint = new ReportUiModels.ReportPrint(type);
                 reportPrint.Pages.Add(page);
                 var path = Assembly.GetExecutingAssembly().GetMapPath();
