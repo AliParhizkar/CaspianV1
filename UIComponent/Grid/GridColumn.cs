@@ -141,7 +141,17 @@ namespace Caspian.UI
             if (Template == null && RowData != null && RowData.UpsertMode == null && RowData.Data != null)
             {
                 if (Field != null)
-                    value = Field.Compile().Invoke(RowData.Data);
+                {
+                    try
+                    {
+                        value = Field.Compile().Invoke(RowData.Data);
+
+                    }
+                    catch
+                    {
+
+                    }
+                }
                 else if (RowData.DynamicData != null && AggregateIndex.HasValue)
                 {
                     var properties = RowData.DynamicData.GetType().GetProperties().Where(t => t.Name.StartsWith("Info__"));

@@ -4,17 +4,45 @@
 @using Demo.Model
 @using Demo.Service
 @using Main.Data.Test
-<button @onclick="() => ValidateAsync()">Validate</button>
+
+<CaspianForm Model="province" OnValidSubmit="t => ValidSubmit()" OnInvalidSubmit="inValidSubmit">
+    <CaspianValidationValidator ValidatorType="typeof(ProvinceService)" />
+    <StringTextBox @bind-Value="province.Title" />
+    <button type="submit">submit</button>
+</CaspianForm>
+
+<button @onclick="UpdateModel">Update model</button>
+<button @onclick="CreateModel">Create model</button>
 
 @code 
 {
-    void ValidateAsync()
+    Province province;
+
+    Task<bool> ValidSubmit()
     {
-        using var scope = CreateScope();
-        string str1 = scope.ServiceProvider.GetService<ITestService>().Id;
-        string str2 = scope.ServiceProvider.GetService<ITestService>().Id;
-        using var scope1 = CreateScope();
-        string str3 = scope1.ServiceProvider.GetService<ITestService>().Id;
-        string str4 = scope1.ServiceProvider.GetService<ITestService>().Id;
+        return Task.FromResult(false);
+    }
+
+    void inValidSubmit()
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        province = new Province();
+        province.Id = 5;
+        base.OnInitialized();
+    }
+
+    void UpdateModel()
+    {
+        
+    }
+
+    void CreateModel()
+    {
+        province = new Province();
+        province.Id = 8;
     }
 }

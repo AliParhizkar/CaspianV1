@@ -17,8 +17,7 @@ namespace Demo.Service
         {
             RuleFor(t => t.Price).CustomValue(t => t < 0, "قیمت نمی تواند منفی باشد");
             RuleFor(t => t.Count).CustomValue(t => t <= 0, "واحد باید بزرگتر از صفر باشد");
-            RuleFor(t => t.ProductId).UniqAsync(t => t.OrderId, "این محصول در حواله وجود دارد")
-                .Custom(t => Source != null && Source.Any(u => u.ProductId == t.ProductId), "این محصول در حال حاضر ثبت شده است");
+            RuleFor(t => t.ProductId).Custom(t => Source != null && Source.Any(u => u.ProductId == t.ProductId && (t.Id == 0 || u.Id != t.Id)), "این محصول در حال حاضر ثبت شده است");
         }
 
         [ReportMethod("گزارش فروش")]

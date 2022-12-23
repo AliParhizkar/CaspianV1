@@ -23,6 +23,7 @@ namespace Caspian.UI
         CaspianContainer insertContiner;
         CaspianContainer updateContiner;
         RowData<TEntity> insertedEntity;
+        RowData<TEntity> updatedEntity;
         bool insertContinerHouldhasFocus;
         PropertyInfo ignoreValidateProperty;
         CaspianValidationValidator validator;
@@ -32,9 +33,12 @@ namespace Caspian.UI
             var type = typeof(ISimpleService<TEntity>);
             using var scope = ServiceScopeFactory.CreateScope();
             serviceType = scope.ServiceProvider.GetService(type).GetType();
-            if (!AutoHide)
+            if (!AutoHide && Inline)
                 CreateInsert();
         }
+
+        [Inject]
+        public BatchService BatchService { get; set; }
 
         [Parameter]
         public bool Inline { get; set; }
@@ -47,6 +51,12 @@ namespace Caspian.UI
 
         public void SetSelectedId(TEntity entity)
         {
+            var model = entity.CreateNewSimpleEntity();
+            if (updatedEntity == null)
+                updatedEntity = new RowData<TEntity>();
+            updatedEntity.Data = model;
+            updatedEntity.UpsertMode = UpsertMode.Edit;
+            EditContext = new EditContext(model);
             selectedEntity = entity;
             shouldSetFocuc = true;
             StateHasChanged();
@@ -61,22 +71,7 @@ namespace Caspian.UI
                     expr = (expr as UnaryExpression).Operand;
                 ignoreValidateProperty = (expr as MemberExpression).Member as PropertyInfo;
             }
-            HideInsertIcon = !AutoHide;
-        }
-
-        void CreateEditContext(TEntity entity)
-        {
-            if (EditContext == null)
-            {
-                var model = Activator.CreateInstance<TEntity>();
-                EditContext = new EditContext(model);
-            }
-            foreach (var info in typeof(TEntity).GetProperties())
-            {
-                var type = info.PropertyType;
-                if (type.IsValueType || type.IsNullableType() || type == typeof(string))
-                    info.SetValue(EditContext.Model, info.GetValue(entity));
-            }
+            HideInsertIcon = !AutoHide && Inline;
         }
 
         async Task OnAfterRenderOperation()
@@ -132,15 +127,10 @@ namespace Caspian.UI
                         insertedEntity = new RowData<TEntity>();
                         insertedEntity.UpsertMode = UpsertMode.Insert;
                     }
-                    if (insertedEntity.Data == null)
-                        insertedEntity.Data = Activator.CreateInstance<TEntity>();
-                    if (InsertContext == null)
-                        InsertContext = new EditContext(insertedEntity.Data);
-                    else
-                    {
-                        foreach (var info in typeof(TEntity).GetProperties())
-                            info.SetValue(InsertContext.Model, default);
-                    }
+                    insertedEntity.Data = Activator.CreateInstance<TEntity>();
+                    if (BatchService.MasterId > 0)
+                        BatchService.IgnorePropertyInfo.SetValue(insertedEntity.Data, BatchService.MasterId);
+                    InsertContext = new EditContext(insertedEntity.Data);
                     insertContiner.Focus();
                 }
             }
@@ -159,7 +149,6 @@ namespace Caspian.UI
                 {
                     selectedEntity = null;
                     await UpdateAsync(EditContext.Model as TEntity);
-                    
                 }
                 else
                 {
@@ -201,6 +190,8 @@ namespace Caspian.UI
             insertedEntity = new RowData<TEntity>();
             insertedEntity.UpsertMode = UpsertMode.Insert;
             insertedEntity.Data = Activator.CreateInstance<TEntity>();
+            if (BatchService.MasterId > 0)
+                BatchService.IgnorePropertyInfo.SetValue(insertedEntity.Data, BatchService.MasterId);
             InsertContext = new EditContext(insertedEntity.Data);
             insertContinerHouldhasFocus = AutoHide;
             StateHasChanged();

@@ -11,6 +11,7 @@
     bool valueIsChanged;
     bool focused;
     bool reseting;
+    EditContext oldContext;
 
     protected ElementReference htmlElement;
 
@@ -74,14 +75,6 @@
     {
         if (Search)
             BindingType = BindingType.OnInput;
-        if (CurrentEditContext != null && ValueExpression != null)
-        {
-            _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
-            _messageStore = new ValidationMessageStore(CurrentEditContext);
-            CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
-            //CurrentEditContext.OnFieldChanged -= CurrentEditContext_OnFieldChanged;
-            CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
-        }
         base.OnInitialized();
     }
 
@@ -158,6 +151,17 @@
             InputAttributes["tabindex"] = TabIndex;
         if (Focused)
             focused = true;
+        if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
+        {
+            _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
+            _messageStore = new ValidationMessageStore(CurrentEditContext);
+            CurrentEditContext.OnValidationRequested -= CurrentEditContext_OnValidationRequested;
+            CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
+            //CurrentEditContext.OnFieldChanged -= CurrentEditContext_OnFieldChanged;
+            CurrentEditContext.OnValidationStateChanged -= CurrentEditContext_OnValidationStateChanged;
+            CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
+            oldContext = CurrentEditContext;
+        }
         base.OnParametersSet();
     }
 

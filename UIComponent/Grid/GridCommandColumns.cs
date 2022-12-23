@@ -108,6 +108,8 @@ namespace Caspian.UI
                     sholdDeletd = await Grid.OnDelete(RowData.Data);
                 if (sholdDeletd && Grid.OnInternalDelete.HasDelegate)
                     await Grid.OnInternalDelete.InvokeAsync(RowData.Data);
+                if (sholdDeletd && Grid.Batch)
+                    await Grid.RemoveAsync(RowData.Data);
             }
         }
     }

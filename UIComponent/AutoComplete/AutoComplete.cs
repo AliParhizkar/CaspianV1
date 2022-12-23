@@ -17,9 +17,10 @@ namespace Caspian.UI
     public partial class AutoComplete<TEntity, TValue> : IControl where TEntity: class 
     {
         string Text;
+        bool mustClear;
         string SearchStr;
         string _FieldName;
-        bool mustClear;
+        EditContext oldContext;
         SearchState SearchState;
         ValidationMessageStore _messageStore;
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
@@ -127,14 +128,6 @@ namespace Caspian.UI
             SearchState = new SearchState();
             SearchState.EntityType = typeof(TEntity);
             WindowStatus = WindowStatus.Close;
-            if (CurrentEditContext != null && ValueExpression != null)
-            {
-                _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
-                _messageStore = new ValidationMessageStore(CurrentEditContext);
-                CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
-                //CurrentEditContext.OnFieldChanged -= CurrentEditContext_OnFieldChanged;
-                CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
-            }
             base.OnInitialized();
         }
 
@@ -335,8 +328,16 @@ namespace Caspian.UI
         protected override void OnParametersSet()
         {
             SearchState.Value = Value;
-            //if (Value == null || Value.Equals(0))
-            //    Text = null;
+            if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
+            {
+                _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
+                _messageStore = new ValidationMessageStore(CurrentEditContext);
+                CurrentEditContext.OnValidationRequested -= CurrentEditContext_OnValidationRequested;
+                CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
+                CurrentEditContext.OnValidationStateChanged -= CurrentEditContext_OnValidationStateChanged;
+                CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
+                oldContext = CurrentEditContext;
+            }
             inputAttrs = new Dictionary<string, object>();
             inputAttrs["class"] = "t-input";
             inputAttrs["style"] = "direction:rtl";

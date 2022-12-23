@@ -23,6 +23,7 @@
     IList<IControl> controls;
     string ICaspianForm.MasterIdName { get; set; }
     bool ICaspianForm.IgnoreOnValidSubmit { get; set; }
+    TEntity oldModel;
 
     [Inject]
     public FormAppState FormAppState { get; set; }
@@ -36,8 +37,7 @@
     [Parameter]
     public TEntity Model { get; set; }
 
-    [Parameter]
-    public EditContext EditContext { get; set; }
+    public EditContext EditContext { get; private set; }
 
     [Parameter]
     public EventCallback<EditContext> OnInvalidSubmit { get; set; }
@@ -75,21 +75,9 @@
 
     protected override void OnInitialized()
     {
-        if (Model == null && EditContext == null)
-            throw new CaspianException("خطا: one Parameter of Model and EditContext must initialized", 1);
-        if (Model != null && EditContext != null)
-            throw new CaspianException("خطا: Only one Parameter of Model and EditContext must initialized", 1);
-        if (Model == null)
-            Model = (TEntity)EditContext.Model;
         controls = new List<IControl>();
-        if (EditContext == null)
-        {
-            EditContext = new EditContext(Model);
-        }
         if (FormAppState == null)
             FormAppState = new FormAppState();
-        //EditContext.OnValidationStateChanged += async(sender, e) => { await ValidationStateChanged(sender, e); };
-        //EditContext.OnValidationRequested += ValidationRequested;
         FormAppState.AllControlsIsValid = true;
         base.OnInitialized();
     }
@@ -173,7 +161,17 @@
         //        await OnInvalidSubmit.InvokeAsync(EditContext);
         //    if (OnInternalInvalidSubmit.HasDelegate)
         //        await OnInternalInvalidSubmit.InvokeAsync(EditContext);
-        //}
+    //}
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (EditContext == null || !Model.Equals(oldModel))
+        {
+            EditContext = new EditContext(Model);
+            oldModel = Model;
+        }
+        base.OnParametersSet();
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)

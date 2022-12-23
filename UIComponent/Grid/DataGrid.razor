@@ -53,10 +53,6 @@
                             foreach (var item in Items)
                             {
                                 var id = Convert.ToInt32(pkey.GetValue(item));
-                                    if (id > 0 && typeof(TEntity).Name == "OrderDetail")
-                                {
-
-                                }
                                 var attrs = new Dictionary<string, object>();
                                 var rowIndex = index;
                                 if (SelectType == SelectType.Single)
@@ -87,33 +83,32 @@
                                 }
                                 index++;
                                 <tr @attributes="attrs">
-                                @{
-                                    var rowData = new RowData<TEntity>()
+                                    @if (item == selectedEntity)
                                     {
-                                        Data = item,
-                                        RowIndex = rowIndex,
-                                        DynamicData = DynamicData == null ? null : DynamicData[rowIndex],
-                                        UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
-                                    };
-                                    <CascadingValue Name="GridRowData" Value="rowData">
-                                        @if (item == selectedEntity)
-                                        {
-                                            CreateEditContext(item);
-                                            rowData.Data = EditContext.Model as TEntity;
+                                        
+                                        <CascadingValue Name="GridRowData" Value="updatedEntity">
                                             <CascadingValue Value="EditContext">
-                                                <CaspianValidationValidator @ref="validator" ValidatorType="serviceType" />
+                                                    <CaspianValidationValidator @ref="validator" Source="source" ValidatorType="serviceType" />
                                                 <CaspianContainer @ref="updateContiner">
-                                                    @Columns(rowData)
+                                                    @Columns(updatedEntity)
                                                 </CaspianContainer>
                                             </CascadingValue>
-                                        }
-                                        else
+                                        </CascadingValue>
+                                    }
+                                    else
+                                    {
+                                        var rowData = new RowData<TEntity>()
                                         {
+                                            Data = item,
+                                            RowIndex = rowIndex,
+                                            DynamicData = DynamicData == null ? null : DynamicData[rowIndex],
+                                            UpsertMode = null
+                                        };
+                                        <CascadingValue Name="GridRowData" Value="rowData">
                                             @Columns(rowData)
-                                        }
-                                    </CascadingValue>
-                                }
-                            </tr>
+                                        </CascadingValue>
+                                    }
+                                </tr>
                             }
                         }
                     </tbody>

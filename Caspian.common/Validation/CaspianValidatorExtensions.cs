@@ -265,17 +265,7 @@ namespace Caspian.Common
                     if (value.Equals(0))
                     {
                         var flag = false;
-                        if (context.ParentContext.RootContextData.ContainsKey("__IgnoreForeignKey"))
-                        {
-                            var config = context.ParentContext.RootContextData["__IgnoreForeignKey"] as IForeignKeyValidationConfig;
-                            if (infoId == config.PropertyInfo)
-                            {
-                                var master = context.ParentContext.RootContextData["__MasterInstanse"];
-                                if (config.HasCondition(master))
-                                    flag = true;
-                            }
-                        }
-                        else if (context.ParentContext.RootContextData.ContainsKey("__IgnorePropertyInfo"))
+                        if (context.ParentContext.RootContextData.ContainsKey("__IgnorePropertyInfo"))
                         {
                             
                             var info = context.ParentContext.RootContextData["__IgnorePropertyInfo"] as PropertyInfo;

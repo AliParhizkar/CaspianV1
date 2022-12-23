@@ -78,7 +78,8 @@ namespace Caspian.Common.Service
         {
             foreach(var info in typeof(TEntity).GetProperties())
             {
-                if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || info.PropertyType.IsCollectionType())
+                var type = info.PropertyType;
+                if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || (type.IsCollectionType() && type != typeof(string)))
                     info.SetValue(entity, default);
             }
             var result = await Context.Set<TEntity>().AddAsync(entity);
@@ -162,6 +163,11 @@ namespace Caspian.Common.Service
         public void RemoveRange(IEnumerable<TEntity> entities)
         {
             Context.RemoveRange(entities);
+        }
+
+        public int SaveChanges()
+        {
+            return Context.SaveChanges();
         }
 
         public async Task<int> SaveChangesAsync()

@@ -7,7 +7,7 @@ namespace Caspian.UI
     {
         void AddControl(IControl control);
 
-        EditContext EditContext { get; set; }
+        EditContext EditContext { get; }
 
         EventCallback<EditContext> OnInternalInvalidSubmit { get; set; }
 

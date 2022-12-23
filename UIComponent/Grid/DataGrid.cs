@@ -200,6 +200,10 @@ namespace Caspian.UI
 
         public async Task DataBind()
         {
+            if (typeof(TEntity).GetType().Name == "Product")
+            {
+
+            }
             if (columnsData.Count > 0 && SholdRendered)
             {
                 SholdRendered = false;
@@ -251,7 +255,7 @@ namespace Caspian.UI
                     }
                     if (Batch)
                     {
-                        source = await query.GetValuesAsync<TEntity>(exprList);
+                        source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
                         if (PageNumber == 1)
                             Items = source.Take(PageSize).ToList();
                         else
@@ -594,7 +598,6 @@ namespace Caspian.UI
             }
             else if (SholdRendered && columnsData != null)
                 await DataBind();
-            //await ParametersSetInitialAsync();
             await base.OnParametersSetAsync();
         }
     }

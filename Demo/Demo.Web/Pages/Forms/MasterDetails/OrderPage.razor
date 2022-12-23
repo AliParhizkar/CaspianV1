@@ -22,7 +22,7 @@
                 <tr>
                     <td><label>مشتری</label></td>
                     <td>
-                        <ComboBox TEntity="Customer" TValue="int?" TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+                        <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
                     </td>
                 </tr>
                 <tr>
@@ -39,11 +39,11 @@
             <Columns Context="con">
                 <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول">
                     <EditTemplate>
-                        <AutoComplete @ref="txtProduct" TValue="int" TEntity="Product" @bind-Value="con.Data.ProductId" HideHeader AutoHide
+                        <AutoComplete TValue="int" TEntity="Product" @bind-Value="con.Data.ProductId" HideHeader AutoHide
                                       TextExpression="t => t.Title" Title="محصول"
-                                      OnChange="@(async () => await SetPrice(con.Data))">
-                            <ProductLookupPage TValue="int" />
-                        </AutoComplete>
+                                      OnChange="async () => await SetPrice(con.Data)">
+                                      <ProductLookupPage TValue="int" />
+                        </AutoComplete>                    
                     </EditTemplate>
                 </GridColumn>
                 <GridColumn TEntity="OrderDeatil" Field="t => t.Price.Seprate3Digit()">
@@ -62,14 +62,31 @@
         </DataGrid>
     </div>
 </div>
+<button @onclick="async() => await SaveData()">Save data</button>
+
 @code 
 {
+    int myTemoId;
+
     AutoComplete<Product, int> txtProduct;
 
-    protected override void OnInitialized()
+    async Task SaveData()
     {
-        UpsertData.Date = DateTime.Now.Date;
-        base.OnInitialized();
+        using var scope = CreateScope();
+        var provider = scope.ServiceProvider;
+        var list = Grid.GetInsertedEntities();
+        foreach (var item in list)
+            item.OrderId = 1;
+        var service = new OrderDeatilService(provider);
+        await service.AddRangeAsync(list);
+        await service.SaveChangesAsync();
+    }
+
+    protected override async Task OnMasterEntityCreatedAsync()
+    {
+        if (UpsertData.Id == 0)
+            UpsertData.Date = DateTime.Now.Date;
+        await base.OnMasterEntityCreatedAsync();
     }
 
     async Task UpsertOnEnter(KeyboardEventArgs e, UpsertMode mode)

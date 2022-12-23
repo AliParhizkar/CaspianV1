@@ -1,4 +1,5 @@
-﻿using Demo.Model;
+﻿using System;
+using Demo.Model;
 using Caspian.Common;
 using Caspian.Engine;
 using Caspian.Common.Service;
@@ -9,7 +10,7 @@ namespace Demo.Service
     [ReportClass]
     public class CustomerService : SimpleService<Customer>, ISimpleService<Customer>
     {
-        public CustomerService(ServiceProvider provider)
+        public CustomerService(IServiceProvider provider)
             :base(provider)
         {
             RuleFor(t => t.CompanyName).Required(t => t.CustomerType == CustomerType.Legal);

@@ -182,8 +182,8 @@ namespace Caspian.UI
                 if (Convert.ToInt32(pkey.GetValue(source[index])) == id)
                 {
                     source[index] = entity;
-                    var pageNumber = (index - 1) / PageSize + 1;
-                    SelectedRowIndex = (index - 1) % PageSize;
+                    var pageNumber = index / PageSize + 1;
+                    SelectedRowIndex = index % PageSize;
                     await ChangePageNumber(pageNumber);
                     break;
                 }
@@ -197,16 +197,23 @@ namespace Caspian.UI
             foreach (var id in updatedEntitiesId)
             {
                 var item = source.Single(t => pKey.GetValue(t).Equals(id));
-                list.Add(item);
+                list.Add(item.CreateNewSimpleEntity());
             }
             return list;
         }
 
         public IList<TEntity> GetDeletedEntities()
         {
-            return deletedEntities;
+            var list = new List<TEntity>();
+            foreach(var item in deletedEntities)
+                list.Add(item.CreateNewSimpleEntity());
+            return list;
         }
 
+        /// <summary>
+        /// This method used for insert records to database
+        /// </summary>
+        /// <returns></returns>
         public IList<TEntity> GetInsertedEntities()
         {
             var list = new List<TEntity>();
@@ -215,7 +222,7 @@ namespace Caspian.UI
             {
                 var id = pKey.GetValue(item);
                 if (id.Equals(0))
-                    list.Add(item);
+                    list.Add(item.CreateNewSimpleEntity());
             }
             return list;
         }
@@ -223,25 +230,34 @@ namespace Caspian.UI
         public async Task RemoveAsync(TEntity entity)
         {
             var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-            var index = 1;
-            foreach (var item in source)
+            using var scope = ServiceScopeFactory.CreateScope();
+            var service = scope.ServiceProvider.GetService(typeof(ISimpleService<TEntity>)) as SimpleService<TEntity>;
+            var result = await service.ValidateRemoveAsync(entity);
+            if (result.IsValid)
             {
-                if (item == entity)
-                    break;
-                index++;
+                var index = 1;
+                foreach (var item in source)
+                {
+                    if (item == entity)
+                        break;
+                    index++;
+                }
+                source.Remove(entity);
+                Total = source.Count;
+                if (index > Total)
+                    index = Total;
+                var pageNumber = (index - 1) / PageSize + 1;
+                SelectedRowIndex = (index - 1) % PageSize;
+                await ChangePageNumber(pageNumber);
+                if (id > 0)
+                {
+                    updatedEntitiesId.Remove(id);
+                    deletedEntities.Add(entity);
+                }
             }
-            source.Remove(entity);
-            Total = source.Count;
-            if (index > Total)
-                index = Total;
-            var pageNumber = (index - 1) / PageSize + 1;
-            SelectedRowIndex = (index - 1) % PageSize;
-            await ChangePageNumber(pageNumber);
-            if (id > 0)
-            {
-                updatedEntitiesId.Remove(id);
-                deletedEntities.Add(entity);
-            }
+            else
+                errorMessage = result.Errors[0].ErrorMessage;
+            StateHasChanged();
         }
 
         void ShowItemsForBatch()

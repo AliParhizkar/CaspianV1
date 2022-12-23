@@ -57,6 +57,19 @@ namespace Caspian.Common.Extension
             return newObj;
         }
 
+        public static TModel CreateNewSimpleEntity<TModel>(this TModel model)
+            where TModel : class
+        {
+            var newEntity = Activator.CreateInstance<TModel>();
+            foreach (var info in typeof(TModel).GetProperties())
+            {
+                var type = info.PropertyType;
+                if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
+                    info.SetValue(newEntity, info.GetValue(model));
+            }
+            return newEntity;
+        }
+
         public static void CopySimpleProperty<TModel>(this TModel model, TModel newModel)
         {
             try
@@ -66,7 +79,7 @@ namespace Caspian.Common.Extension
                     try
                     {
                         var type = info.PropertyType;
-                        if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
+                        if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
                         {
                             info.SetValue(model, info.GetValue(newModel));
                         }
