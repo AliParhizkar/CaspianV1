@@ -3,7 +3,7 @@ using Demo.Model;
 using Caspian.Common;
 using FluentValidation;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace Demo.Service
 {
@@ -14,11 +14,8 @@ namespace Demo.Service
         {
             RuleFor(t => t.Date).CustomValue(t => t == null, "تاریخ حواله باید مشخص باشد")
                 .CustomValue(t => t.HasValue && t.Value.Date > DateTime.Now.Date, "حواله نمی تواند به تاریخ آینده باشد.");
-            RuleForEach(t => t.MaterialReceipts).SetValidator(new MaterialReceiptService(provider))
-                .When((t) => 
-                {
-                    return !IgnoreDetailsProperty;
-                });
+            RuleFor(t => t.MaterialReceipts).CustomValue(t => t == null || !t.Any(), "حواله باید حداقل یک کالا داشته باشد");
+            RuleForEach(t => t.MaterialReceipts).SetValidator(new MaterialReceiptService(provider));
         }
     }
 }

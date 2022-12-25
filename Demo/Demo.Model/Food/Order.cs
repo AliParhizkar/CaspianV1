@@ -48,6 +48,12 @@ namespace Demo.Model
         public int? TotalAmount { get; set; }
 
         /// <summary>
+        /// توضیحات
+        /// </summary>
+        [DisplayName("توضیحات")]
+        public string Description { get; set; }
+
+        /// <summary>
         /// محصولات سفارش
         /// </summary>
         [CheckOnDelete("سفارش دارای محصول می باشد و امکان حذف آن وجود ندارد")]

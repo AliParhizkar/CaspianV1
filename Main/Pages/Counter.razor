@@ -5,44 +5,38 @@
 @using Demo.Service
 @using Main.Data.Test
 
-<CaspianForm Model="province" OnValidSubmit="t => ValidSubmit()" OnInvalidSubmit="inValidSubmit">
-    <CaspianValidationValidator ValidatorType="typeof(ProvinceService)" />
-    <StringTextBox @bind-Value="province.Title" />
-    <button type="submit">submit</button>
-</CaspianForm>
+<h3>@index</h3>
 
-<button @onclick="UpdateModel">Update model</button>
-<button @onclick="CreateModel">Create model</button>
+<CaspianContainer>
+    <StringTextBox />
+</CaspianContainer>
+
 
 @code 
 {
-    Province province;
-
-    Task<bool> ValidSubmit()
+    int index = 0;
+    protected override bool ShouldRender()
     {
-        return Task.FromResult(false);
+        if (sholdRender)
+            return true;
+        sholdRender = true;
+        return false;
     }
 
-    void inValidSubmit()
+    protected override void OnParametersSet()
     {
-
+        base.OnParametersSet();
     }
 
-    protected override void OnInitialized()
+    public override Task SetParametersAsync(ParameterView parameters)
     {
-        province = new Province();
-        province.Id = 5;
-        base.OnInitialized();
+
+        return base.SetParametersAsync(parameters);
     }
 
-    void UpdateModel()
+    protected override void OnAfterRender(bool firstRender)
     {
-        
-    }
-
-    void CreateModel()
-    {
-        province = new Province();
-        province.Id = 8;
+        sholdRender = true;
+        base.OnAfterRender(firstRender);
     }
 }

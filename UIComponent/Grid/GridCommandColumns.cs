@@ -95,7 +95,7 @@ namespace Caspian.UI
                 if (Grid.OnUpsert.HasDelegate)
                     await Grid.OnUpsert.InvokeAsync(RowData.Data);
                 if (Grid.Inline)
-                    Grid.SetSelectedId(RowData.Data);
+                    Grid.SetSelectedEntity(RowData.Data);
             }
         }
 

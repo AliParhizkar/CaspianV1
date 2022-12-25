@@ -11,42 +11,7 @@
         attrs.Add("id", Id.Replace('.', '_'));
         attrs.Add("name", Id.Replace('.', '_'));
     }
-    if (TextExpression != null)
-    {
-        if (Value != null)
-        {
-            var numValue = Convert.ToInt32(Value);
-            if (numValue > 0)
-            {
-                if (!Value.Equals(Oldvalue))
-                {
-                    using var scope = ServiceScopeFactory.CreateScope();
-                    var service = new SimpleService<TEntity>(scope.ServiceProvider);
-                    var type = typeof(TEntity);
-                    var param = Expression.Parameter(type, "t");
-                    var pKey = type.GetPrimaryKey();
-                    Expression expr = Expression.Property(param, pKey);
-                    expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(Value, pKey.PropertyType)));
-                    expr = Expression.Lambda(expr, param);
-                    Text = Convert.ToString(service.GetAll().Where(expr).Select(TextExpression).FirstOrDefault());
-                    Oldvalue = Value;
-                    WindowStatus = WindowStatus.Close;
-                }
-            }
-            else
-                Text = null;
-        }
-        else
-            Text = null;
-        //else if (SearchStr != Text)
-        //{
-        //    WindowStatus = WindowStatus.Open;
-        //}
-        //SearchStr = Text;
-    }
     var className = "t-widget t-numerictextbox c-lookup";
-    if (AutoHide)
-        className += " auto-hide";
     if (Disabled)
         className += " t-state-disabled";
     if (ErrorMessage.HasValue())
@@ -54,15 +19,18 @@
 }
 
 <div class="@className">
-    <input @ref="Input" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => { await OnKeyUpHandler(e); })"
-           @attributes="inputAttrs" />
+    <input @ref="Input" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => await OnKeyDownHandler(e))"
+           @attributes="inputAttrs" @onkeyup="@(async e => await OnKeyUp(e))" />
     @if (!HideIcon)
     {
         <span class="fa fa-search"
               @onclick="@(() =>
                         {
                             if (!Disabled)
+                            {
                                 WindowStatus = WindowStatus.Open;
+                                Focused = true;
+                            }
                         })"></span>
     }
 </div>

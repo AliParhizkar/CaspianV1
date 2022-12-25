@@ -11,20 +11,24 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
+using Caspian.Common.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.UI
 {
     public partial class AutoComplete<TEntity, TValue> : IControl where TEntity: class 
     {
         string Text;
+        string oldText;
+        TValue Oldvalue;
         bool mustClear;
         string SearchStr;
+        bool shouldRender;
         string _FieldName;
         EditContext oldContext;
         SearchState SearchState;
         ValidationMessageStore _messageStore;
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
-        bool focuced;
 
         void SetSearchValue(ChangeEventArgs e)
         {
@@ -45,6 +49,9 @@ namespace Caspian.UI
 
         [Parameter, JsonIgnore]
         public bool HideHeader { get; set; }
+
+        [JsonProperty("focused")]
+        public bool Focused { get; private set; }
 
         [Parameter, JsonIgnore]
         public RenderFragment ChildContent { get; set; }
@@ -78,8 +85,6 @@ namespace Caspian.UI
 
         [Parameter, JsonIgnore]
         public TValue Value { get; set; }
-
-        private TValue Oldvalue { get; set; }
 
         [Parameter, JsonIgnore]
         public EventCallback<TValue> ValueChanged { get; set; }
@@ -126,6 +131,7 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             SearchState = new SearchState();
+            shouldRender = true;
             SearchState.EntityType = typeof(TEntity);
             WindowStatus = WindowStatus.Close;
             base.OnInitialized();
@@ -263,13 +269,34 @@ namespace Caspian.UI
             return true;
         }
 
+        protected override bool ShouldRender()
+        {
+            if (shouldRender)
+                return true;
+            shouldRender = true;
+            return false;
+        }
+
         public void CloseHelpForm()
         {
             WindowStatus = WindowStatus.Close;
             StateHasChanged();
         }
 
-        async Task OnKeyUpHandler(KeyboardEventArgs e)
+        async Task OnKeyUp(KeyboardEventArgs e)
+        {
+            if (e.Code == "Enter" || e.Code == "NumpadEnter")
+            {
+                if (ValueChanged.HasDelegate)
+                    await ValueChanged.InvokeAsync(Value);
+                if (OnChange.HasDelegate)
+                    await OnChange.InvokeAsync(Value);
+            }
+            else
+                shouldRender = false;
+        }
+
+        async Task OnKeyDownHandler(KeyboardEventArgs e)
         {
             switch (e.Code)
             {
@@ -282,7 +309,7 @@ namespace Caspian.UI
                 case "Enter":
                 case "NumpadEnter":
                     if (SearchState?.Grid?.SelectedRowId != null)
-                        await SetValue(SearchState.Grid.SelectedRowId.Value);
+                        await SetValue(SearchState.Grid.SelectedRowId.Value, false);
                     break;
                 case "Escape":
                     WindowStatus = WindowStatus.Close;
@@ -301,18 +328,15 @@ namespace Caspian.UI
                     SearchState?.Grid?.SelectFirstRow();
                     break;
                 default:
-                    //if (WindowStatus == WindowStatus.Close)
-                    //    WindowStatus = WindowStatus.Open;
-                    //SearchState?.Grid?.SelectFirstPage();
-                    //SearchState?.Grid?.SelectFirstRow();
+                    shouldRender = false;
                     break;
             }
         }
 
         public async Task ResetAsync()
         {
-            await SetValue(0);
             ErrorMessage = null;
+            await SetValue(0);
         }
 
         public async Task FocusAsync()
@@ -322,7 +346,7 @@ namespace Caspian.UI
 
         public void Focus()
         {
-            
+            Focused = true;
         }
 
         protected override void OnParametersSet()
@@ -339,7 +363,7 @@ namespace Caspian.UI
                 oldContext = CurrentEditContext;
             }
             inputAttrs = new Dictionary<string, object>();
-            inputAttrs["class"] = "t-input";
+            inputAttrs["class"] = AutoHide ? "t-input auto-hide" : "t-input";
             inputAttrs["style"] = "direction:rtl";
             Container?.SetControl(this);
             if (OpenOnFocus)
@@ -374,6 +398,12 @@ namespace Caspian.UI
             return JsonConvert.SerializeObject(this, setting);
         }
 
+        protected override async Task OnParametersSetAsync()
+        {
+            await SetText();
+            await base.OnParametersSetAsync();
+        }
+
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
@@ -395,18 +425,36 @@ namespace Caspian.UI
                 var data = new JsLookupValueSetter(this);
                 await jsRuntime.InvokeVoidAsync("$.telerik.bindLookupValue", DotNetObjectReference.Create(data), Input);
             }
+            if (Focused)
+                Focused = false;
             await jsRuntime.InvokeVoidAsync("$.telerik.bindLookup", Input, SearchForm, json);
-
-            if (focuced)
-            {
-                focuced = false;
-                if (Input.Id != null)
-                    await jsRuntime.InvokeVoidAsync("$.telerik.setFocuc", Input);
-            }
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        public async Task SetValue(long id)
+        async Task SetText()
+        {
+            if (Value == null || Value.Equals(0))
+                Text = "";
+            else if (!Value.Equals(Oldvalue))
+            {
+                Oldvalue = Value;
+                using var scope = ServiceScopeFactory.CreateScope();
+                var service = scope.ServiceProvider.GetService(typeof(ISimpleService<TEntity>)) as SimpleService<TEntity>;
+                var type1 = typeof(TEntity);
+                var param = Expression.Parameter(type1, "t");
+                var pKey = type1.GetPrimaryKey();
+                Expression expr = Expression.Property(param, pKey);
+                expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(Value, pKey.PropertyType)));
+                expr = Expression.Lambda(expr, param);
+                Text = await service.GetAll().Where(expr).Select(TextExpression).FirstOrDefaultAsync();
+                oldText = Text;
+                WindowStatus = WindowStatus.Close;
+            }
+            else
+                Text = oldText;
+        }
+
+        public async Task SetValue(long id, bool fireEvent = true)
         {
             var type = typeof(TValue);
             if (type.IsNullableType())
@@ -414,10 +462,14 @@ namespace Caspian.UI
             var tempValue = Convert.ChangeType(id, type);
             Value = (TValue)tempValue;
             WindowStatus = WindowStatus.Close;
-            if (ValueChanged.HasDelegate)
-                await ValueChanged.InvokeAsync(Value);
-            if (OnChange.HasDelegate)
-                await OnChange.InvokeAsync(Value);
+            if (fireEvent)
+            {
+                if (ValueChanged.HasDelegate)
+                    await ValueChanged.InvokeAsync(Value);
+                if (OnChange.HasDelegate)
+                    await OnChange.InvokeAsync(Value);
+            }
+            await SetText();
         }
 
         public void SetText(string text)

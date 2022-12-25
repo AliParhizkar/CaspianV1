@@ -1,8 +1,9 @@
-﻿using Demo.Model;
+﻿using System;
+using Demo.Model;
+using System.Linq;
 using Caspian.Common;
+using FluentValidation;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Demo.Service
 {
@@ -12,7 +13,7 @@ namespace Demo.Service
             : base(provider)
         {
             RuleFor(t => t.QuantityMain).CustomValue(t => t <= 0, "واحد اصلی باید بزرگتر از صفر باشد");
-            RuleFor(t => t.MaterialId).UniqAsync(t=> t.ReceiptId, "این محصول در حواله وجود دارد");
+            RuleFor(t => t.MaterialId).Custom(t=> Source != null && Source.Any(u => t.MaterialId == u.MaterialId && u != t), "این محصول در حواله وجود دارد");
             RuleFor(t => t.QuantitySub).CustomAsync(async t =>
             {
                 if (t.MaterialId > 0)

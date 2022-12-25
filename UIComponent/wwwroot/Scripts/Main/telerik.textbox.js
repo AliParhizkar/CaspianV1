@@ -208,7 +208,7 @@
             //thisObj._blur();
         });
         $(element).focus(function () {
-            if (self.errorMessage)
+           if (self.errorMessage && $(this).parent().hasClass('t-state-error'))
                 $t.showErrorMessage($(self.element).closest('.t-widget')[0], self.errorMessage);
             thisObj._focus();
         });

@@ -48,7 +48,6 @@ namespace Caspian.UI
         {
             if (Grid != null && SearchState != null)
             {
-                
                 if (Grid.InternalConditionExpr == null)
                     Grid.InternalConditionExpr = SearchExpression.Body;
                 if (Grid.SelectedRowId == null)

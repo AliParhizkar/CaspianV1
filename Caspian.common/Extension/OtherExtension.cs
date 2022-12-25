@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
 using Caspian.Common.Service;
+using Microsoft.VisualBasic;
 
 namespace Caspian.Common.Extension
 {
@@ -50,10 +51,28 @@ namespace Caspian.Common.Extension
             }
         }
 
-        public static TModel CopySimpleProperty<TModel>(this TModel model)where TModel : class
+        public static TEntity CreateNewEntity<TEntity>(this TEntity entity)
+            where TEntity : class
         {
-            var newObj = Activator.CreateInstance<TModel>();
-            CopySimpleProperty1(model, newObj);
+            return CreateNewObjectAndCopy(typeof(TEntity), entity) as TEntity;
+        }
+
+        public static object CreateNewObjectAndCopy(Type type, object value)
+        {
+            if (value == null)
+                return null;
+            var newObj = Activator.CreateInstance(type);
+            foreach (var info in type.GetProperties())
+            {
+                var type1 = info.PropertyType;
+                if (type1.IsValueType || type1.IsNullableType() || type1 == typeof(string) || type1 == typeof(byte[]))
+                    info.SetValue(newObj, info.GetValue(value));
+                else
+                {
+                    var tempValue = CreateNewObjectAndCopy(type1, info.GetValue(value));
+                    info.SetValue(newObj, tempValue);
+                }
+            }
             return newObj;
         }
 
@@ -97,42 +116,8 @@ namespace Caspian.Common.Extension
 
         }
 
-        public static object Copy(this object model)
-        {
-            var type = model.GetType();
-            var data = Activator.CreateInstance(type);
-            foreach (var info in type.GetProperties())
-            {
-                if (info.PropertyType.IsValueType || info.PropertyType == typeof(string))
-                {
-                    info.SetValue(data, info.GetValue(model));
-                }
-            }
-            return data;
-        }
 
-        public static TModel Copy<TModel>(this TModel model)
-        {
-            var data = Activator.CreateInstance<TModel>();
-            foreach(var info in typeof(TModel).GetProperties())
-            {
-                if (info.PropertyType.IsValueType || info.PropertyType == typeof(string))
-                {
-                    info.SetValue(data, info.GetValue(model));
-                }
-            }
-            return data;
-        }
 
-        public static object GetMyValue(this object obj, MemberExpression expr, bool checkNull = true)
-        {
-            if (expr == null)
-                return null;
-            var str = expr.ToString();
-            var index = str.IndexOf('.');
-            str = str.Substring(index + 1);
-            return obj.GetMyValue(str, checkNull);
-        }
 
         public static object GetMyValue(this object obj, string strName, bool checkNull = true)
         {

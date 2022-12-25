@@ -179,7 +179,7 @@ namespace Caspian.UI
             await UpdateEntityForForeignKey(entity);
             for (var index = 0; index < source.Count; index++)
             {
-                if (Convert.ToInt32(pkey.GetValue(source[index])) == id)
+                if (source[index] == entity)
                 {
                     source[index] = entity;
                     var pageNumber = index / PageSize + 1;

@@ -43,7 +43,7 @@
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مشخصات کاربر" Style="width:500px">
         <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData" OnValidSubmit="CheckConfirmPassword">
+            <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="SetPasswordForUpdate" OnValidSubmit="CheckConfirmPassword">
                 <CaspianValidationValidator ValidatorType="typeof(UserService)" />
                 <table style="width:90%;margin:0 auto">
                     <tr>
@@ -67,7 +67,7 @@
                             <label>نام کاربری</label>
                         </td>
                         <td>
-                            <StringTextBox @bind-Value="UpsertData.UserName" Style="direction:ltr" />
+                            <StringTextBox @bind-Value="UpsertData.UserName" Style="direction:ltr" Disabled="UpsertData.Id > 0" />
                         </td>
                     </tr>
                     @if (UpsertData.Id == 0)
@@ -127,6 +127,18 @@
         if (SubSystemKind == null)
             throw new CaspianException("خطا: SubSystemKind must initialized");
         base.OnParametersSet();
+    }
+
+    async Task SetPasswordForUpdate(EditContext context)
+    {
+        if (UpsertData.Id > 0)
+        {
+            var scope = CreateScope();
+            var old = await new UserService(scope.ServiceProvider).SingleAsync(UpsertData.Id);
+            UpsertData.UserName = old.UserName;
+            ///In update password should be and in service not changed
+            UpsertData.Password = null;
+        }
     }
 
     Task<bool> CheckConfirmPassword(EditContext context)

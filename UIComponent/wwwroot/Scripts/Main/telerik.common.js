@@ -207,6 +207,10 @@
                     $(grv).data('resize', true);
                 }
             });
+            $(grv).find('.t-grid-content').scroll(function () {
+                var scrollLeft = $(this).scrollLeft();
+                $(grv).find('.t-grid-header').scrollLeft(scrollLeft);
+            });
             $(grv).find('.t-grid-header-wrap th').mousedown(function (e) {
                 if ($(grv).data('resize')) {
                     let left = $(this).offset().left, right = left + $(this).width(), x = e.clientX;
@@ -459,9 +463,7 @@
             $(input).focus();
         },
         bindLookupValue: function (dotnetHelper, input) {
-            $.telerik.autoComplete = {
-                dotnetHelper: dotnetHelper
-            };
+            $(input).data('dotnetHelper', dotnetHelper);
         },
         bindLookup: function (input, searchForm, options) {
             options = JSON.parse(options);
@@ -471,9 +473,15 @@
                 txt = $(input).data('tTextBox');
             }
             txt.updateState(options);
-            
-            if (options.autoHide) {
-                $t.enableAutoHide($.telerik.autoComplete.dotnetHelper)
+            console.log(options)
+            if (options.autoHide && options.status == 2) {
+                $('body').unbind('click.autoHidedotnetObject');
+                $('body').bind('click.autoHidedotnetObject', async function (e) {
+                    if ($(e.target)[0] != $(input)[0]) {
+                        $('body').unbind('click.autoHidedotnetObject');
+                        await $(input).data('dotnetHelper').invokeMethodAsync('HideForm');
+                    }
+                });
             }
             $(searchForm).appendTo($(input).parent()).css('top', $(input).position().top + 37);
 

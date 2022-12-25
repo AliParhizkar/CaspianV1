@@ -2,8 +2,10 @@
 @page "/Demo/Order/{MasterId:int}"
 @namespace Demo.Web.Pages
 @inherits MasterDetailPage<Order, OrderDeatil>
-<div style="margin:10px auto; width:95%;display:flex">
+<div style="margin:20px auto; width:95%;display:flex">
     <div style="width:400px;padding-left:50px">
+        <h7 style="color:gray;padding-right:10px">سفارش</h7>
+        <hr />
         <CaspianForm @ref="MasterForm" Model="UpsertData" >
             <CaspianValidationValidator ValidatorType="typeof(OrderService)" />
             <table style="width:100%;margin:0 auto;height:220px;">
@@ -26,6 +28,16 @@
                     </td>
                 </tr>
                 <tr>
+                    <td style="text-align:center" colspan="2">
+                        <label>توضیحات</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="8" />
+                    </td>
+                </tr>
+                <tr>
                     <td></td>
                     <td style="text-align:center">
                         <FormCommandButton />
@@ -35,14 +47,18 @@
         </CaspianForm>
     </div>
     <div style="width:calc(100% - 400px)">
-        <DataGrid @ref="Grid" TEntity="OrderDeatil" TableHeight="250" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
+        <h7 style="color:gray;padding-right:10px">اقلام سفارش</h7>
+        <hr />
+        <DataGrid @ref="Grid" TEntity="OrderDeatil" TableHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
             <Columns Context="con">
                 <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول">
                     <EditTemplate>
                         <AutoComplete TValue="int" TEntity="Product" @bind-Value="con.Data.ProductId" HideHeader AutoHide
                                       TextExpression="t => t.Title" Title="محصول"
                                       OnChange="async () => await SetPrice(con.Data)">
+
                                       <ProductLookupPage TValue="int" />
+
                         </AutoComplete>                    
                     </EditTemplate>
                 </GridColumn>
@@ -62,25 +78,12 @@
         </DataGrid>
     </div>
 </div>
-<button @onclick="async() => await SaveData()">Save data</button>
 
 @code 
 {
     int myTemoId;
 
     AutoComplete<Product, int> txtProduct;
-
-    async Task SaveData()
-    {
-        using var scope = CreateScope();
-        var provider = scope.ServiceProvider;
-        var list = Grid.GetInsertedEntities();
-        foreach (var item in list)
-            item.OrderId = 1;
-        var service = new OrderDeatilService(provider);
-        await service.AddRangeAsync(list);
-        await service.SaveChangesAsync();
-    }
 
     protected override async Task OnMasterEntityCreatedAsync()
     {

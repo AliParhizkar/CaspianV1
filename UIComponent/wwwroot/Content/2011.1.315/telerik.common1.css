@@ -350,12 +350,13 @@ form tr {
 }
 .c-lookup .fa-search {
     color: #423d96;
-    margin-top: 9px;
-    margin-right: -23px;
+    margin-top: -6px;
+    margin-right: -24px;
     z-index: 5;
     font-size: 18px;
-    position: absolute;
+    position: relative;
     cursor: pointer;
+    vertical-align: middle;
 }
     .t-HelpWindow .t-window-title {
         margin-top: -1px !important;

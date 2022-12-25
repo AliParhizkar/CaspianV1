@@ -8,7 +8,7 @@ namespace Demo.Model
     /// <summary>
     /// رسید انبار
     /// </summary>
-    [Table("StoreHouseReceipt")]
+    [Table("StoreHouseReceipt", Schema = "demo")]
     public class StoreHouseReceipt
     {
         [Key]

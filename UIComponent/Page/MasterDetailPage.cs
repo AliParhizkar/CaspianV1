@@ -50,7 +50,8 @@ namespace Caspian.UI
                 {
                     foreach (var info in typeof(TMaster).GetProperties())
                     {
-                        if (info.PropertyType.IsCollectionType() && info.PropertyType.GetGenericArguments()[0] == typeof(TDetail))
+                        var type = info.PropertyType;
+                        if (type.IsCollectionType() && type.IsGenericType && type.GetGenericArguments()[0] == typeof(TDetail))
                             info.SetValue(UpsertData, Grid.AllRecords().AsEnumerable());
                     }
                 });

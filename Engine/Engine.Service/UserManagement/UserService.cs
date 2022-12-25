@@ -1,13 +1,15 @@
 ﻿using Caspian.Common;
 using Caspian.Engine.Model;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace Caspian.Engine.Service
 {
     public class UserService: SimpleService<User>
     {
+        public string OldPassword { get; set; }
+
         public UserService(IServiceProvider provider) :
             base(provider)
         {
@@ -15,23 +17,28 @@ namespace Caspian.Engine.Service
 
             RuleFor(t => t.LName).Required();
 
-            RuleFor(t => t.Password).Required().CustomValue(t => t.HasValue() && t.Length < 8, "کلمه عبور باید 8 کاراکتر باشد")
-                .CustomValue(t =>
+            RuleFor(t => t.Password).Required(t => t.Id == 0)
+                .Custom(t => t.Id == 0 && t.Password.HasValue() && t.Password.Length < 8, "کلمه عبور باید 8 کاراکتر باشد")
+                .Custom(t =>
                 {
-                    if (t != null)
+                    if (t.Id > 0)
+                        return false;
+                    if (t.Password != null)
                     {
-                        foreach (var chr in t)
+                        foreach (var chr in t.Password)
                             if (!Char.IsAscii(chr))
                                 return true;
                     }
                     return false;
                 }, "تنها از حروف لاتین و اعداد و کاراکترهای خاص برای کلمه ی عبور استفاده نمائید").
-                CustomValue(t => 
+                Custom(t => 
                 {
+                    if (t.Id > 0)
+                        return false;
                     bool hasUppercase = false, haseLowercase = false, hasNumber = false;
-                    if (t != null)
+                    if (t.Password != null)
                     {
-                        foreach (var chr in t)
+                        foreach (var chr in t.Password)
                         {
                             if (char.IsDigit(chr))
                                 hasNumber = true;
@@ -52,7 +59,7 @@ namespace Caspian.Engine.Service
 
         public async override Task<User> AddAsync(User entity)
         {
-            ///Md5 Code
+            entity.Password = CreateMD5(entity.Password);
             return await base.AddAsync(entity);
         }
 
@@ -60,15 +67,23 @@ namespace Caspian.Engine.Service
         {
             var old = await SingleAsync(entity.Id);
             entity.Password = old.Password;
+            entity.UserName = old.UserName;
             await base.UpdateAsync(entity);
         }
 
         public async Task<User> UserIsvalidAsync(string userName, string password)
         {
-            ///Md5 Code
-            var md5Password = password;
+            var md5Password = CreateMD5(password);
             var query = new UserService(ServiceProvider).GetAll();
             return await query.SingleOrDefaultAsync(t => t.UserName == userName && t.Password == md5Password);
+        }
+
+        public static string CreateMD5(string input)
+        {
+            using var md5 = MD5.Create();
+            var inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+            byte[] hashBytes = md5.ComputeHash(inputBytes);
+            return Convert.ToHexString(hashBytes);
         }
     }
 }

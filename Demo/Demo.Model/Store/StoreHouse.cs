@@ -1,11 +1,10 @@
 ﻿using Caspian.Common;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("StoreHouses")]
+    [Table("StoreHouses", Schema = "demo")]
     public class StoreHouse
     {
         [Key]

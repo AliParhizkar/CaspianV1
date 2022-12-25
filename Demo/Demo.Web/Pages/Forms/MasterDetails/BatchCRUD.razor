@@ -1,6 +1,6 @@
 ﻿@page "/Demo/BatchCRUD"
-@page "/Demo/BatchCRUD/{OrderId:int}"
-@inherits BasePage
+@page "/Demo/BatchCRUD/{MasterId:int}"
+@inherits MasterDetailPage<Order, OrderDeatil>
 @{
     base.BuildRenderTree(__builder);
 }
@@ -30,7 +30,7 @@
 <div style="width:98%;margin:5px auto">
     <div style="display:flex">
         <div style="width:300px;padding-left:20px;">
-            <CaspianForm Model="order" OnSubmit="OnFormSubmit" >
+            <CaspianForm @ref="MasterForm" Model="UpsertData" >
                 <CaspianValidationValidator ValidatorType="typeof(OrderService)"  />
                 <table style="width:100%">
                     <tr>
@@ -38,7 +38,7 @@
                             <label>تاریخ سفارش</label>
                         </td>
                         <td>
-                            <DatePicker @bind-Value="order.Date" />
+                            <DatePicker @bind-Value="UpsertData.Date" />
                         </td>
                     </tr>
                     <tr>
@@ -46,7 +46,7 @@
                             <label>نوع سفارش</label>
                         </td>
                         <td>
-                            <DropdownList @bind-Value="order.OrderType" />
+                            <DropdownList @bind-Value="UpsertData.OrderType" />
                         </td>
                     </tr>
                     <tr>
@@ -54,7 +54,7 @@
                             <label>مشتری</label>
                         </td>
                         <td>
-                            <ComboBox TEntity="Customer" TValue="int?" @bind-Value="order.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
+                            <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
                         </td>
                     </tr>
                     <tr>
@@ -93,7 +93,7 @@
             </div>
         </div>
         <div style="width:calc(100% - 300px);">
-            <DataGrid @ref="grid" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == OrderId" TableHeight="250" HideInsertIcon>
+            <DataGrid @ref="Grid" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == MasterId" TableHeight="250" HideInsertIcon>
                 <Columns>
                     <GridColumn TEntity="OrderDeatil" Field="t => t.Product.ProductCategory.Title" Title="گروه محصول" />
                     <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول" />
@@ -112,33 +112,30 @@
 </div>
 @code 
 {
-    Order order;
-    DataGrid<OrderDeatil> grid;
     IList<Product> products;
     IDictionary<string, object> btnAttr;
 
+    protected override Task OnMasterEntityCreatedAsync()
+    {
+        UpsertData.Date = DateTime.Now.Date;
+        return base.OnMasterEntityCreatedAsync();
+    }
+
     protected async override Task OnInitializedAsync()
     {
-        order = new Order();
-        order.Date = DateTime.Now.Date;
         var scope = CreateScope();
         products = await new ProductService(scope.ServiceProvider).GetAll().ToListAsync();
         foreach (var product in products)
             product.Image = null;
         btnAttr = new Dictionary<string, object>();
-        if (OrderId == 0)
+        if (MasterId == 0)
             btnAttr.Add("disabled", "disabled");
         await base.OnInitializedAsync();
     }
 
-    void OnFormSubmit(EditContext context)
-    {
-        (context.Model as Order).OrderDeatils = grid.AllRecords();
-    }
-
     void UpdatedProducts()
     {
-        var products = grid.GetUpdatedEntities();
+        var products = Grid.GetUpdatedEntities();
         if (products.Count == 0)
             Alert("هیچ محصولی بروزرسانی نشده است");
         else
@@ -157,7 +154,7 @@
 
     void DeletedProducts()
     {
-        var products = grid.GetDeletedEntities();
+        var products = Grid.GetDeletedEntities();
         if (products.Count == 0)
             Alert("هیچ محصولی حذف نشده است");
         else
@@ -176,7 +173,7 @@
 
     void InsertedProducts()
     {
-        var products = grid.GetInsertedEntities();
+        var products = Grid.GetInsertedEntities();
         if (products.Count == 0)
             Alert("هیچ محصولی ثبت نشده است");
         else
@@ -195,46 +192,43 @@
 
     async Task PostToDatabase()
     {
-        var message = await grid.PostToDatabaseAsync();
+        var message = await Grid.PostToDatabaseAsync();
         message = message ?? "بروزرسانی با موفقیت انجام شد";
         ShowMessage(message);
     }
 
     async Task AddUpsertProduct(Product product)
     {
-        var old = grid.AllRecords().SingleOrDefault(t => t.ProductId == product.Id);
+        var old = Grid.AllRecords().SingleOrDefault(t => t.ProductId == product.Id);
         if (old == null)
         {
-            await grid.InsertAsync(new OrderDeatil()
+            await Grid.InsertAsync(new OrderDeatil()
             {
                 Count = 1,
                 Price = product.Price,
                 ProductId = product.Id,
-                OrderId = OrderId
+                OrderId = MasterId
             });
         }
         else
         {
             old.Count = old.Count + 1;
-            await grid.UpdateAsync(old);
+            await Grid.UpdateAsync(old);
         }
     }
 
     async Task IncCount(OrderDeatil detail)
     {
         detail.Count++;
-        await grid.UpdateAsync(detail);
+        await Grid.UpdateAsync(detail);
     }
 
     async Task DecCount(OrderDeatil detail)
     {
         detail.Count--;
         if (detail.Count == 0)
-            await grid.RemoveAsync(detail);
+            await Grid.RemoveAsync(detail);
         else
-            await grid.UpdateAsync(detail);
+            await Grid.UpdateAsync(detail);
     }
-
-    [Parameter]
-    public int OrderId{ get; set; }
 }

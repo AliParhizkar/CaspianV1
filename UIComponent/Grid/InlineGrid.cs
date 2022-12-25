@@ -18,12 +18,12 @@ namespace Caspian.UI
         string errorMessage;
         bool shouldSetFocuc;
         TEntity selectedEntity;
+        TEntity unchangedEntity;
         EditContext EditContext;
         EditContext InsertContext;
         CaspianContainer insertContiner;
         CaspianContainer updateContiner;
         RowData<TEntity> insertedEntity;
-        RowData<TEntity> updatedEntity;
         bool insertContinerHouldhasFocus;
         PropertyInfo ignoreValidateProperty;
         CaspianValidationValidator validator;
@@ -49,16 +49,33 @@ namespace Caspian.UI
         [Parameter]
         public Expression<Func<TEntity, Object>> IgnoreForeignKeyInfo { get; set; } 
 
-        public void SetSelectedId(TEntity entity)
+        void RollBackEntity()
         {
-            var model = entity.CreateNewSimpleEntity();
-            if (updatedEntity == null)
-                updatedEntity = new RowData<TEntity>();
-            updatedEntity.Data = model;
-            updatedEntity.UpsertMode = UpsertMode.Edit;
-            EditContext = new EditContext(model);
+            if (selectedEntity != null)
+            {
+                for (var i = 0; i < source.Count; i++)
+                {
+                    var sourceItem = source[i];
+                    if (sourceItem.Equals(selectedEntity))
+                    {
+                        foreach(var info in typeof(TEntity).GetProperties())
+                        {
+                            var value = info.GetValue(unchangedEntity);
+                            info.SetValue(sourceItem, value);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetSelectedEntity(TEntity entity)
+        {
+            RollBackEntity();
+            EditContext = new EditContext(entity);
             selectedEntity = entity;
             shouldSetFocuc = true;
+            unchangedEntity = entity.CreateNewEntity();
             StateHasChanged();
         }
 
@@ -71,7 +88,8 @@ namespace Caspian.UI
                     expr = (expr as UnaryExpression).Operand;
                 ignoreValidateProperty = (expr as MemberExpression).Member as PropertyInfo;
             }
-            HideInsertIcon = !AutoHide && Inline;
+            if (!HideInsertIcon)
+                HideInsertIcon = !AutoHide && Inline;
         }
 
         async Task OnAfterRenderOperation()
@@ -102,6 +120,7 @@ namespace Caspian.UI
         {
             if (upsertMode == UpsertMode.Edit)
             {
+                RollBackEntity();
                 selectedEntity = null;
                 EditContext = null;
             }
@@ -131,7 +150,7 @@ namespace Caspian.UI
                     if (BatchService.MasterId > 0)
                         BatchService.IgnorePropertyInfo.SetValue(insertedEntity.Data, BatchService.MasterId);
                     InsertContext = new EditContext(insertedEntity.Data);
-                    insertContiner.Focus();
+                    await insertContiner.FocusAsync();
                 }
             }
         }
@@ -140,9 +159,9 @@ namespace Caspian.UI
         {
             if (upsertMode == UpsertMode.Edit)
             {
-                EditContext.Validate();
                 FormAppState.AllControlsIsValid = true;
                 FormAppState.Element = null;
+                EditContext.Validate();
                 EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
                 var result = await (Task<ValidationResult>)asyncValidationTask;
                 if (result.IsValid)
@@ -158,9 +177,9 @@ namespace Caspian.UI
             }
             else
             {
-                InsertContext.Validate();
                 FormAppState.AllControlsIsValid = true;
                 FormAppState.Element = null;
+                InsertContext.Validate();
                 InsertContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
                 var result = await (Task<ValidationResult>)asyncValidationTask;
                 if (result.IsValid)

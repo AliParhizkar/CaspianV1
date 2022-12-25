@@ -20,7 +20,8 @@
 
     public async Task FocusAsync()
     {
-        await Control?.FocusAsync();
+        if (Control != null)
+            await Control.FocusAsync();
     }
 
     public void Focus()
@@ -39,7 +40,6 @@
         if (hasFocuce && Control != null)
         {
             hasFocuce = false;
-            await Control.FocusAsync();
         }
         await base.OnAfterRenderAsync(firstRender);
     }
