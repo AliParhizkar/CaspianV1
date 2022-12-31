@@ -1,0 +1,69 @@
+﻿@page "/Demo/Delivery"
+@namespace Demo.Web.Pages
+@inherits SimplePage<Delivery>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:5px auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>نام خانوادگی</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.LName" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="Delivery" Search="SearchData">
+        <Columns>
+            <GridColumn TEntity="Delivery" Field="t => t.FName" Title="نام" />
+            <GridColumn TEntity="Delivery" Field="t => t.LName" Title="نام خانوادگی" />
+            <GridColumn TEntity="Delivery" Field="t => t.Code" style="width:100px" Title="کد پرسنلی" />
+            <GridCommandColumns TEntity="Delivery" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="پیک" Style="width:450px">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(DeliveryService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>نام</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.FName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>نام خانوادگی</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.LName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>کد پرسنلی</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Code" Style="direction:ltr" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code 
+{
+    
+}

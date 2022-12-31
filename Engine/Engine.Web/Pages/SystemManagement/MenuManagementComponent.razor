@@ -57,6 +57,7 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Menu" TableHeight="350" HideInsertIcon ConditionExpr='t => (InvalidAddress == null || t.InvalidAddress == InvalidAddress) && (ShowOnMenu == null || t.ShowonMenu == ShowOnMenu.Value) && (!onlyUninitalizedMenu || t.Title == null) && t.Source.ToLower().StartsWith("/" + Subsystem.ToString().ToLower())'>
         <Columns>
+            <GridColumn TEntity="Menu" Field="t => t.Id" Title="کد" />
             <GridColumn TEntity="Menu" Field="t => t.MenuCategory.Title" Title="منوی اصلی" />
             <GridColumn TEntity="Menu" Field="t => t.Title" />
             <GridColumn TEntity="Menu" Field="t => t.Source" style="direction:ltr;text-align:left;" />

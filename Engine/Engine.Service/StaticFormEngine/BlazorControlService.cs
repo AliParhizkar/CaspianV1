@@ -41,7 +41,9 @@ namespace Caspian.Engine.Service
                     if (ctr.DataModelField == null)
                         ctr.DataModelField = await new DataModelFieldService(ServiceProvider).SingleAsync(ctr.DataModelFieldId);
                     var entityType = new AssemblyInfo().GetModelType(subSystemKind, ctr.DataModelField.EntityFullName);
-                    var info = entityType.GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == ctr.PropertyName);
+                    var info = entityType.GetProperties().SingleOrDefault(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == ctr.PropertyName);
+                    if (info == null)
+                        throw new CaspianException($"خطا: In type {entityType.Name} property with name {ctr.PropertyName} not exist");
                     return "cmb" + info.Name;
                 case ControlType.Date:
                     return "dte" + ctr.PropertyName;

@@ -7,9 +7,7 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using FluentValidation.Internal;
-using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Caspian.Common
 {
@@ -68,11 +66,6 @@ namespace Caspian.Common
         /// In Master-Details insert MasterInfo should not Validate for Foreign Key
         /// </summary>
         internal PropertyInfo MasterInfo { get; set; }
-
-        /// <summary>
-        /// In Master-Details insert MasterInfo should not Validate for Foreign Key
-        /// </summary>
-        public bool IgnoreDetailsProperty { get; set; }
 
         public IServiceProvider ServiceProvider { get; private set; }
 

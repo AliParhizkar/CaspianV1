@@ -4,8 +4,6 @@ namespace Caspian.Common
 {
     public interface ICaspianValidator
     {
-        static IServiceProvider Provider { get; set; }
-
-        bool IgnoreDetailsProperty { get; set; }
+        public int UserId { get; }
     }
 }

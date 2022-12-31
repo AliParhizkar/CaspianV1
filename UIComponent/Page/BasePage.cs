@@ -27,6 +27,9 @@ namespace Caspian.UI
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
 
         [Inject]
+        public CaspianDataService DataService { get; set; }
+
+        [Inject]
         protected IJSRuntime jsRuntime { get; set; }
 
         [CascadingParameter]
@@ -40,6 +43,7 @@ namespace Caspian.UI
             {
                 var result = await authenticationStateTask;
                 UserId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+                DataService.UserId = UserId;
             }
             await base.OnInitializedAsync();
         }
@@ -106,7 +110,10 @@ namespace Caspian.UI
 
         protected override bool ShouldRender()
         {
-            return sholdRender;
+            if (sholdRender)
+                return true;
+            sholdRender = true;
+            return false;
         }
 
         protected async Task DownloadFile(string fileName, byte[] fileContent)
@@ -131,7 +138,8 @@ namespace Caspian.UI
         [JSInvokable]
         public void WindowClick()
         {
-            child.OnWindowClick();
+            if (child != null)
+                child.OnWindowClick();
         }
 
         /// <summary>

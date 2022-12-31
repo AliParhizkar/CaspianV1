@@ -23,6 +23,9 @@ namespace Demo.Model
         [ForeignKey(nameof(OrderId)), ReportField("مشخصات سفارش")]
         public virtual Order Order { get; set; }
 
+        [DisplayName("شرح")]
+        public string Descript { get; set; }
+
         /// <summary>
         /// کد محصول
         /// </summary>

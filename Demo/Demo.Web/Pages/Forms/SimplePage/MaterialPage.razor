@@ -1,0 +1,86 @@
+﻿@page "/Demo/Material"
+@namespace Demo.Web.Pages
+@inherits SimplePage<Material>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:5px auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="Material" Search="SearchData" TableHeight="300">
+        <Columns Context="con">
+            <GridColumn TEntity="Material" Field="t => t.Title" />
+            <GridColumn TEntity="Material" Field="t => t.MainUnit.Title" Title="واحد اصلی" />
+            <GridColumn TEntity="Material" Field="t => t.Subunit.Title" Title="واحد فرعی" />
+            <GridColumn TEntity="Material" Field="t => t.ActiveType.FaText()" />
+            <GridCommandColumns TEntity="Material" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="مواد خام" Style="width:450px"
+            OnOpen="() =>
+                    {
+                        if (UpsertData.Id == 0)
+                            UpsertData.ActiveType = ActiveType.Enable;
+                    }">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(MaterialService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>واحد اصلی</label>
+                        </td>
+                        <td>
+                            <ComboBox TValue="int" TEntity="MainUnit" @bind-Value="UpsertData.MainUnitId" TextExpression="t => t.Title" OnChange="() => cmb.EnableLoading()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>واحد فرعی</label>
+                        </td>
+                        <td>
+                            <ComboBox @ref="cmb" Disabled="UpsertData.MainUnitId == 0" TValue="int?" TEntity="Subunit" @bind-Value="UpsertData.SubunitId" TextExpression="t => t.Title" ConditionExpression="t => t.MainUnitId == UpsertData.MainUnitId" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>وضعیت</label>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="UpsertData.ActiveType" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+    ComboBox<Subunit, int?> cmb;
+
+
+}

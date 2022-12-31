@@ -33,6 +33,8 @@
     {
         foreach (var control in Controls)
             await control.ResetAsync();
+        await Task.Delay(1);
+        await FocusAsync();
     }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)

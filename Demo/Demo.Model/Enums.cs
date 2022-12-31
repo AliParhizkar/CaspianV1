@@ -87,6 +87,24 @@ namespace Demo.Model
     }
 
     /// <summary>
+    /// وضعیت
+    /// </summary>
+    public enum OrderStatus: byte
+    {
+        /// <summary>
+        /// لغو
+        /// </summary>
+        [EnumField("لغو")]
+        Canceled = 1,
+
+        /// <summary>
+        /// نهایی
+        /// </summary>
+        [EnumField("نهایی")]
+        Finaled
+    }
+
+    /// <summary>
     /// نوع سفارش
     /// </summary>
     public enum OrderKind2 : byte

@@ -1,5 +1,6 @@
 ﻿@namespace Caspian.Engine.Shared
 @using Caspian.Engine.Web
+@using Microsoft.Data.SqlClient
 @inherits BasePage
 @inject AuthenticationStateProvider stateProvider
 @inject NavigationManager navigationManager
@@ -25,11 +26,6 @@
     string message;
     string userName;
     string password;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
 
     async Task Login()
     {

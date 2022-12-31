@@ -11,6 +11,7 @@ namespace Employment.Service
             : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("شهری با این عنوان در سیستم ثبت شده است");
+            var userId = UserId;
         }
     }
 }

@@ -9,6 +9,8 @@ using Caspian.Common.Extension;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Caspian.common;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
@@ -28,10 +30,15 @@ namespace Caspian.UI
         PropertyInfo ignoreValidateProperty;
         CaspianValidationValidator validator;
 
+        [Inject]
+        public CaspianDataService CaspianDataService { get; set; }
+
         public void OnInitializedOperation()
         {
             var type = typeof(ISimpleService<TEntity>);
             using var scope = ServiceScopeFactory.CreateScope();
+            var dataService = scope.ServiceProvider.GetService(typeof(CaspianDataService)) as CaspianDataService;
+            dataService.UserId = CaspianDataService.UserId;
             serviceType = scope.ServiceProvider.GetService(type).GetType();
             if (!AutoHide && Inline)
                 CreateInsert();
@@ -150,7 +157,6 @@ namespace Caspian.UI
                     if (BatchService.MasterId > 0)
                         BatchService.IgnorePropertyInfo.SetValue(insertedEntity.Data, BatchService.MasterId);
                     InsertContext = new EditContext(insertedEntity.Data);
-                    await insertContiner.FocusAsync();
                 }
             }
         }

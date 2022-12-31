@@ -1,0 +1,72 @@
+﻿@page "/Demo/MainUnit"
+@namespace Demo.Web.Pages
+@inherits SimplePage<MainUnit>
+@{
+    base.BuildRenderTree(__builder);
+
+}
+<div style="width:90%;margin:5px auto">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="SearchData.Title" />
+            </td>
+        </tr>
+    </table>
+    <DataGrid @ref="CrudGrid" TEntity="MainUnit" Search="SearchData" TableHeight="300">
+        <Columns Context="con">
+            <GridColumn TEntity="MainUnit" Field="t => t.Title" />
+            <GridColumn TEntity="MainUnit" Field="t => t.ActiveType.FaText()" />
+            <GridColumn TEntity="MainUnit" Title="واحد فرعی" style="width:50px">
+                <Template>
+                    <IconButton Href='@($"/Demo/Subunit/{con.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="MainUnit" />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="واحد اصلی" Style="width:450px"
+            OnOpen="() =>
+                    {
+                        if (UpsertData.Id == 0)
+                            UpsertData.ActiveType = ActiveType.Enable;
+                    }">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(MainUnitService)" />
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="UpsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>وضعیت</label>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="UpsertData.ActiveType" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+@code
+{
+
+}

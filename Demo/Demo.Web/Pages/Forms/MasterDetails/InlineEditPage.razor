@@ -55,7 +55,7 @@
                 </GridColumn>
                 <GridColumn TEntity="MaterialReceipt" Field="t => t.QuantityMain" style="width:80px">
                     <EditTemplate>
-                        <NumericTextBox @bind-Value="con.Data.QuantityMain" />
+                        <NumericTextBox @ref="txtMainUnit" @onkeyup="async e =>  await MainUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantityMain" />
                     </EditTemplate>
                 </GridColumn>
                 <GridColumn TEntity="MaterialReceipt" Field="t => t.Material.MainUnit.Title" Title="واحد اصلی" style="width:100px">
@@ -67,7 +67,7 @@
                     <EditTemplate>
                         @if (con.Data?.Material?.SubunitId != null)
                         {
-                            <NumericTextBox @bind-Value="con.Data.QuantitySub" />
+                            <NumericTextBox @ref="txtSubunit" @onkeyup="async e =>  await SubUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantitySub" />
                         }
                     </EditTemplate>
                 </GridColumn>
@@ -85,11 +85,30 @@
 
 @code
 {
+    NumericTextBox<int> txtMainUnit;
+    NumericTextBox<int?> txtSubunit;
     protected override Task OnMasterEntityCreatedAsync()
     {
         if (UpsertData.Id == 0)
             UpsertData.Date = DateTime.Now.Date;
         return base.OnMasterEntityCreatedAsync();
+    }
+
+    async Task MainUnitChanged(KeyboardEventArgs e, MaterialReceipt receipt, UpsertMode mode)
+    {
+        if (e.Key == "Enter" || e.Key == "NumpadEnter")
+        {
+            if (receipt?.Material.SubunitId != null)
+                await txtSubunit.FocusAsync();
+            else
+                await Grid.ValidateUpsert(mode);
+        }
+    }
+
+    async Task SubUnitChanged(KeyboardEventArgs e, MaterialReceipt receipt, UpsertMode mode)
+    {
+        if (e.Key == "Enter" || e.Key == "NumpadEnter")
+            await Grid.ValidateUpsert(mode);
     }
 
     async Task UpdateMaterialReceipt(int materialId, MaterialReceipt materialReceipt)
@@ -99,6 +118,8 @@
             using var scope = CreateScope();
             materialReceipt.Material = await new MaterialService(scope.ServiceProvider).GetAll().Where(t => t.Id == materialId)
                 .Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync();
+            await txtMainUnit.FocusAsync();
+
         }
     }
 }

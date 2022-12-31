@@ -298,6 +298,7 @@
     color: #34b8f9;
     font-size: 23px;
     cursor: pointer;
+    margin-left: 6px;
 }
 .c-cancel-icon .fa {
     color: #da1b54;

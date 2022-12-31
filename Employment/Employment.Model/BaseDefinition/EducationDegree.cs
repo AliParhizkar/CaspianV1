@@ -2,12 +2,14 @@
 using Caspian.Engine;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Employment.Model
 {
     /// <summary>
     /// مشخصات مدارک تحصیلی
     /// </summary>
+    [Table("EducationDegrees", Schema = "emp")]
     public class EducationDegree
     {
         [Key]

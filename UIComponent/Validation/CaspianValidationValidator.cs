@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Caspian.Common.Service;
+using Caspian.common;
+using Caspian.Engine.Model;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Linq;
 
 namespace Caspian.UI
 {
@@ -19,6 +23,9 @@ namespace Caspian.UI
 
         [Inject]
         public BatchService BatchService { get; set; }
+
+        [Inject]
+        public CaspianDataService CaspianDataService { get; set; }
 
         [CascadingParameter]
         private EditContext EditContext { get; set; }
@@ -31,6 +38,12 @@ namespace Caspian.UI
 
         [Parameter]
         public bool OnlyValidateOnSubmit { get; set; } = true;
+
+        [Parameter]
+        public object Source { get; set; }
+
+        [CascadingParameter]
+        private Task<AuthenticationState> authenticationStateTask { get; set; }
 
         public string MasterIdName { get; set; }
 
@@ -53,15 +66,14 @@ namespace Caspian.UI
             AddValidationResult(EditContext.Model, result);
         }
 
-        [Parameter]
-        public object Source { get; set; }
-
         async Task ValidationRequested(object sender, ValidationRequestedEventArgs args)
         {
             ValidationMessageStore.Clear();
             var context = new ValidationContext<Object>(EditContext.Model);
             using var scope = ServiceScopeFactory.CreateScope();
-            Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope);
+            if (CaspianDataService != null)
+                scope.ServiceProvider.GetService<CaspianDataService>().UserId = CaspianDataService.UserId;
+            Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             if (Source != null)
                 (Validator as ISimpleService).SetSource(Source);
             if (BatchService?.IgnorePropertyInfo != null)

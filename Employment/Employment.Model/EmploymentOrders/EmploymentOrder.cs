@@ -70,6 +70,9 @@ namespace Employment.Model
         [DisplayName("پایه")]
         public byte Rank { get; set; }
 
+        public int EmploymentOrderTypeId { get; set; }
 
+        [ForeignKey(nameof(EmploymentOrderTypeId))]
+        public virtual EmploymentOrderType EmploymentOrderType { get; set; }
     }
 }

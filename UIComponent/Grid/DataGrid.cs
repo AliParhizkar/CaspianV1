@@ -251,7 +251,8 @@ namespace Caspian.UI
                     else
                     {
                         var expr1 = Expression.Property(parameterExpr, pKey);
-                        exprList.Add(expr1);
+                        if (!exprList.Any(t => t.ToString() == expr1.ToString()))
+                            exprList.Add(expr1);
                     }
                     if (Batch)
                     {

@@ -1,42 +1,29 @@
 ﻿@page "/counter"
 @inherits BasePage
+@using Caspian.Common
 @using Caspian.UI
 @using Demo.Model
 @using Demo.Service
 @using Main.Data.Test
+@using Microsoft.Data.SqlClient
+@using Microsoft.EntityFrameworkCore
 
-<h3>@index</h3>
+<div style="width:90%;margin:0 auto">
+    <StringTextBox @bind-Value="sqlCommand" MultiLine Rows="10" />
+</div>
 
-<CaspianContainer>
-    <StringTextBox />
-</CaspianContainer>
-
+<button @onclick="Execute">Execute</button>
 
 @code 
 {
-    int index = 0;
-    protected override bool ShouldRender()
+    string sqlCommand;
+    public void Execute()
     {
-        if (sholdRender)
-            return true;
-        sholdRender = true;
-        return false;
+        using var con = new SqlConnection(CS.Con);
+        SqlCommand cmd = new SqlCommand(sqlCommand, con);
+        con.Open();
+        cmd.ExecuteNonQuery();
     }
 
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-    }
 
-    public override Task SetParametersAsync(ParameterView parameters)
-    {
-
-        return base.SetParametersAsync(parameters);
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        sholdRender = true;
-        base.OnAfterRender(firstRender);
-    }
 }

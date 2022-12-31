@@ -61,16 +61,14 @@ namespace Demo.Service
 
         public async override Task<ProductCategory> AddAsync(ProductCategory entity)
         {
-            entity.Priority = await GetAll().MaxAsync(t => t.Priority) + 1;
+            entity.Priority = (await GetAll().MaxAsync(t => (int?)t.Priority)).GetValueOrDefault() + 1;
             return  await base.AddAsync(entity);
         }
 
         public async override Task UpdateAsync(ProductCategory entity)
         {
             var old = await SingleAsync(entity.Id);
-            var q = Context.Entry(old).State;
             entity.Priority = old.Priority;
-            var q1 = Context.Entry(old).State;
             await base.UpdateAsync(entity);
         }
     }

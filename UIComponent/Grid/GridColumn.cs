@@ -141,24 +141,18 @@ namespace Caspian.UI
             if (Template == null && RowData != null && RowData.UpsertMode == null && RowData.Data != null)
             {
                 if (Field != null)
-                {
-                    try
-                    {
-                        value = Field.Compile().Invoke(RowData.Data);
-
-                    }
-                    catch
-                    {
-
-                    }
-                }
+                    value = Field.Compile().Invoke(RowData.Data);
                 else if (RowData.DynamicData != null && AggregateIndex.HasValue)
                 {
                     var properties = RowData.DynamicData.GetType().GetProperties().Where(t => t.Name.StartsWith("Info__"));
                     var index = AggregateIndex.Value % properties.Count();
                     var info = properties.Single(t => t.Name == "Info__" + index);
                     if (info != null)
-                        value = ((int)info.GetValue(RowData.DynamicData)).Seprate3Digit();
+                    {
+                        var tempValue = info.GetValue(RowData.DynamicData);
+                        if (tempValue != null)
+                            value = Convert.ToInt32(tempValue).Seprate3Digit();
+                    }
                     
                 }
             }

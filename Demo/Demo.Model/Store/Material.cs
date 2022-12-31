@@ -38,6 +38,9 @@ namespace Demo.Model
         [ForeignKey(nameof(SubunitId))]
         public virtual Subunit Subunit { get; set; }
 
+        /// <summary>
+        /// وضعیت
+        /// </summary>
         [DisplayName("وضعیت")]
         public ActiveType ActiveType { get; set; }
 

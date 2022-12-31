@@ -1,0 +1,56 @@
+﻿@page "/Demo/Orders"
+@using Caspian.Common.Extension
+@inject NavigationManager navigationManager
+@inherits BasePage
+@namespace Demo.Web.Pages
+
+<div style="width:90%;margin:5px auto">
+    <div style="padding:5px;">
+        <CheckBox @bind-Value="onlyThisDay" Title="فقط سفارشهای امروز" OnChange="() => Grid.EnableLoading()" />
+    </div>
+    <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
+        <Columns>
+            <GridColumn TEntity="Order" Field="t => t.Date.ToPersianDateString()" Title="تاریخ سفارش" />
+            <GridColumn TEntity="Order" Field="t => t.OrderType.FaText()" />
+            <GridColumn TEntity="Order" Field="t => t.OrderNo" Title="شماره سفارش" />
+            <GridColumn TEntity="Order" Field="t => t.Customer.FName + ' ' + t.Customer.LName" Title="مشتری" />
+            <GridColumn TEntity="Order" Field="t => t.Delivery.FName + ' ' + t.Delivery.LName" Title="پیک" />
+            <GridColumn TEntity="Order" Field="t => t.OrderStatus.FaText()" />
+            <GridColumn TEntity="Order" Title="لغو" style="width:60px">
+                <Template>
+                    <button class="c-btn c-primary" @onclick="async () => await CancelOrder(context.Data)">...</button>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns TEntity="Order" />
+        </Columns>
+    </DataGrid>
+</div>
+@code 
+{
+    bool onlyThisDay = true;
+    DateTime date = DateTime.Now.Date;
+    DataGrid<Order> Grid;
+    async Task CancelOrder(Order order)
+    {
+        var scope = CreateScope();
+        var service = new OrderService(scope.ServiceProvider);
+        var old = await service.GetAll().Include(t => t.OrderDeatils).SingleAsync(order.Id);
+        old.OrderStatus = OrderStatus.Canceled;
+        try
+        {
+            await service.UpdateAsync(old);
+            await service.SaveChangesAsync();
+            await Grid.Reload();
+        }
+        catch (CaspianException ex)
+        {
+            ShowMessage(ex.Message);
+        }
+    }
+
+    void UpsertOrder(Order order)
+    {
+        string url = "/Demo/Order" + (order.Id > 0 ? "/" + order.Id : "");
+        navigationManager.NavigateTo(url);
+    }
+}

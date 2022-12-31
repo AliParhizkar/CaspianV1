@@ -285,10 +285,10 @@
         },
         enableAutoHide: function (dotnet) {
             $.telerik.autoHidedotnetObject = dotnet;
-            $('body').unbind('click.autoHidedotnetObject');
-            $('body').bind('click.autoHidedotnetObject', async function (e) {
+            $('body').unbind('mousedown.autoHidedotnetObject');
+            $('body').bind('mousedown.autoHidedotnetObject', async function (e) {
                 if (!$(e.target).closest('.auto-hide').hasClass('auto-hide')) {
-                    $('body').unbind('click.autoHidedotnetObject');
+                    $('body').unbind('mousedown.autoHidedotnetObject');
                     await $.telerik.autoHidedotnetObject.invokeMethodAsync('HideForm');
                     $.telerik.autoHidedotnetObject = null;
                 }
@@ -473,11 +473,11 @@
                 txt = $(input).data('tTextBox');
             }
             txt.updateState(options);
-            console.log(options)
             if (options.autoHide && options.status == 2) {
                 $('body').unbind('click.autoHidedotnetObject');
                 $('body').bind('click.autoHidedotnetObject', async function (e) {
-                    if ($(e.target)[0] != $(input)[0]) {
+                    console.log($(e.target))
+                    if (!$(e.target).closest('.t-HelpWindow').hasClass('t-HelpWindow') && $(e.target)[0] != $(input)[0]) {
                         $('body').unbind('click.autoHidedotnetObject');
                         await $(input).data('dotnetHelper').invokeMethodAsync('HideForm');
                     }

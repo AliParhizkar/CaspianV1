@@ -1,19 +1,10 @@
 using Caspian.UI;
 using Caspian.Common;
 using Caspian.common;
+using Caspian.Engine.Web;
 using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
-using Caspian.Engine.Web;
-using Caspian.Engine;
-using System.Linq.Expressions;
-using Employment.Model;
-using static Stimulsoft.Report.StiOptions;
-using Caspian.Common.Extension;
-using Caspian.Common.Service;
-using Demo.Model;
-using Demo.Service;
-using Main.Data.Test;
 
 var builder = WebApplication.CreateBuilder(args);
 

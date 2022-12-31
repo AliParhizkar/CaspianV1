@@ -28,22 +28,31 @@ namespace Demo.Model
         [DisplayName("مشتری")]
         public int? CustomerId { get; set; }
 
+        [DisplayName("شماره سفارش")]
+        public int? OrderNo { get; set; }
+
         /// <summary>
         /// مشخصات مشتری
         /// </summary>
         [ForeignKey(nameof(CustomerId)),ReportField("مشخصات مشتری")]
         public virtual Customer Customer { get; set; }
 
-        //public int? DynamicParameterId { get; set; }
+        public int? DeliveryId { get; set; }
 
-        //[ForeignKey(nameof(DynamicParameterId))]
-        //public virtual DynamicParameter Parameter { get; set; }
+        [ForeignKey(nameof(DeliveryId))]
+        public virtual Delivery Delivery { get; set; }
 
         /// <summary>
         /// نوع سفارش
         /// </summary>
         [DisplayName("نوع سفارش"), ReportField("نوع سفارش")]
         public OrderType OrderType { get; set; }
+
+        /// <summary>
+        /// وضعیت سفارش
+        /// </summary>
+        [DisplayName("وضعیت سفارش")]
+        public OrderStatus? OrderStatus { get; set; }
 
         public int? TotalAmount { get; set; }
 

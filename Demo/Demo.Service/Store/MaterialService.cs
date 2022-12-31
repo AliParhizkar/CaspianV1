@@ -1,9 +1,7 @@
 ﻿using System;
 using Demo.Model;
-using System.Linq;
 using Caspian.Common;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {

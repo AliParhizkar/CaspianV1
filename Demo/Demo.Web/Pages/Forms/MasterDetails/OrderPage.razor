@@ -1,10 +1,12 @@
 ﻿@page "/Demo/Order"
 @page "/Demo/Order/{MasterId:int}"
 @namespace Demo.Web.Pages
+@inject NavigationManager navigationManager
 @inherits MasterDetailPage<Order, OrderDeatil>
 <div style="margin:20px auto; width:95%;display:flex">
     <div style="width:400px;padding-left:50px">
         <h7 style="color:gray;padding-right:10px">سفارش</h7>
+        <span @onclick="NavigateOrder" class="fa fa-first-order"></span>
         <hr />
         <CaspianForm @ref="MasterForm" Model="UpsertData" >
             <CaspianValidationValidator ValidatorType="typeof(OrderService)" />
@@ -24,7 +26,15 @@
                 <tr>
                     <td><label>مشتری</label></td>
                     <td>
-                        <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+                        <ComboBox TEntity="Customer" TValue="int?" OnDataBinding="FilterData" @bind-Value="UpsertData.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>پیک</label>
+                    </td>
+                    <td>
+                        <ComboBox TValue="int?" TEntity="Delivery" @bind-Value="UpsertData.DeliveryId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
                     </td>
                 </tr>
                 <tr>
@@ -85,6 +95,19 @@
 
     AutoComplete<Product, int> txtProduct;
 
+    IQueryable<Customer> FilterData(IQueryable<Customer> query, string str)
+    {
+        if (!str.HasValue())
+            return query;
+        return query.Where(t => t.MobileNumber.Contains(str) || t.LName.Contains(str) || t.FName.Contains(str) ||
+            t.CompanyName.Contains(str));
+    }
+
+    void NavigateOrder()
+    {
+        navigationManager.NavigateTo("/Demo/Orders");
+    }
+
     protected override async Task OnMasterEntityCreatedAsync()
     {
         if (UpsertData.Id == 0)
@@ -106,6 +129,8 @@
             var scope = CreateScope();
             var old = await new ProductService(scope.ServiceProvider).SingleAsync(detail.ProductId);
             detail.Price = old.Price;
+            if (detail.Count == 0)
+                detail.Count = 1;
             txtPrice.Focus();
         }
     }
