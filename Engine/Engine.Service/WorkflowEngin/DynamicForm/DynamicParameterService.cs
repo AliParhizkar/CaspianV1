@@ -69,10 +69,20 @@ namespace Caspian.Engine.Service
             {
                 if (parameter.CalculationType == CalculationType.UserData)
                 {
-                    if (parameter.ControlType == ControlType.DropdownList)
-                        values.Add(parameter.Id, 1);
-                    if (parameter.ControlType == ControlType.CheckBox)
-                        values.Add(parameter.Id, false);
+                    switch(parameter.ControlType)
+                    {
+                        case ControlType.DropdownList:
+                            values.Add(parameter.Id, 1);
+                            break;
+                        case ControlType.CheckBox:
+                            values.Add(parameter.Id, false);
+                            break;
+                        case ControlType.Integer:
+                            values.Add(parameter.Id, 0);
+                            break;
+                        default:
+                            throw new NotImplementedException("خطای عدم پیاده سازی");
+                    }
                 }
             }
         }

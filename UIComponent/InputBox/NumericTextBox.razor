@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.UI
+@using System.Threading
 @typeparam TValue
 @inherits CBaseInput<TValue>
 @{ 
@@ -16,6 +17,8 @@
 <div class="@className" style="@Style">
     @{
         var text = Convert.ToString(Value);
+        var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+        text = text.Replace(decimalDigits, '.');
         if (DigitGrouping)
         {
             var array = text.Split('.');

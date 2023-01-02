@@ -7,6 +7,8 @@ using Caspian.Common.Extension;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using System.Linq.Expressions;
+using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace Caspian.UI
 {
@@ -27,7 +29,11 @@ namespace Caspian.UI
         {
             var str = arg.Value.ToString().Replace(",", "");
             if (str.HasValue())
+            {
+                var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+                str = str.Replace('.', decimalDigits);
                 Value = (TValue)Convert.ChangeType(str, typeof(TValue).GetUnderlyingType());
+            }
             else
                 Value = default;
             if (ValueChanged.HasDelegate)

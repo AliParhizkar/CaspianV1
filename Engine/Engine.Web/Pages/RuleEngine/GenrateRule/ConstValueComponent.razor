@@ -99,6 +99,7 @@
                 {
                     constValue = decimalConstValue;
                     faTitle = decimalConstValue.Seprate3Digit();
+                    valueTypeKind = int.TryParse(faTitle, out _) ? ValueTypeKind.Int : ValueTypeKind.Double;
                 }
                 break;
             case ValueTypeKind.Enum:

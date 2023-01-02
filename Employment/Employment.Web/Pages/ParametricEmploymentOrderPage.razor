@@ -152,7 +152,7 @@
     void UpdateFormParameter()
     {
         rulesValue = new Dictionary<int, object>();
-        foreach (var rule in rules.Where(t => t.Id <= 31))
+        foreach (var rule in rules.OrderBy(t => t.Priority))
         {
             var ruleEnginService = new RuleEngine(formParameters, dataParameterValues, order, parametersValue);
             ruleEnginService.Rulesvalue = rulesValue;
@@ -191,8 +191,6 @@
         using var scope = CreateScope();
         parameters = await new DynamicParameterService(scope.ServiceProvider).GetAll().Include(t => t.Options).ToListAsync();
         new DynamicParameterService(scope.ServiceProvider).SetUserParametersDefault(parameters, parametersValue);
-        if (!parametersValue.ContainsKey(23))
-            parametersValue.Add(23, 5);
         rules = await new RuleService(scope.ServiceProvider).GetAll().OrderBy(t => t.Priority).Include(t => t.Tokens).ToListAsync();
         formParameters = await new DataParameterService(scope.ServiceProvider).GetAll().ToListAsync();
         dataParameterValues = await new DataParameterValueService(scope.ServiceProvider).GetAll().ToListAsync();
