@@ -156,6 +156,7 @@
         {
             var ruleEnginService = new RuleEngine(formParameters, dataParameterValues, order, parametersValue);
             ruleEnginService.Rulesvalue = rulesValue;
+            int q = 0;
             var value = ruleEnginService.Calculate(rule.Tokens);
             rulesValue.Add(rule.Id, value);
         }

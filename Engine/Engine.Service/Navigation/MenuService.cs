@@ -2,7 +2,6 @@
 using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {

@@ -62,6 +62,7 @@ namespace Caspian.UI
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             await OnAfterRenderOperation();
+            
             if (firstRender)
             {
                 await DataBind();
@@ -200,10 +201,6 @@ namespace Caspian.UI
 
         public async Task DataBind()
         {
-            if (typeof(TEntity).GetType().Name == "Product")
-            {
-
-            }
             if (columnsData.Count > 0 && SholdRendered)
             {
                 SholdRendered = false;
@@ -269,6 +266,7 @@ namespace Caspian.UI
                     else
                         Items = await query.Take(PageSize).GetValuesAsync<TEntity>(exprList);
                 }
+                await SetStateGridData();
             }
         }
 

@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Authorization;
-using Caspian.common;
 
 namespace Caspian.UI
 {
@@ -28,6 +27,9 @@ namespace Caspian.UI
 
         [Inject]
         public CaspianDataService DataService { get; set; }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
 
         [Inject]
         protected IJSRuntime jsRuntime { get; set; }

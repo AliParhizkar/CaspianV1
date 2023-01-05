@@ -18,7 +18,7 @@
             </tr>
         </table>
     </div>
-    <DataGrid @ref="CrudGrid" TEntity="DynamicParameter" Search="SearchData">
+    <DataGrid @ref="CrudGrid" TEntity="DynamicParameter" PersistState @bind-Search="SearchData">
         <Columns Context="con" >
             <GridColumn TEntity="DynamicParameter" Field="t => t.EntityName">
                 <Template>

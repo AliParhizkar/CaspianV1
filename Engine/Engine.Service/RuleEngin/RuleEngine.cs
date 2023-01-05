@@ -256,7 +256,15 @@ namespace Caspian.Engine.Service
 
         public object CalculateQueue(Queue<Token> queue)
         {
-            InfixToPrefix(queue);
+            try
+            {
+                InfixToPrefix(queue);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("سلام", ex);
+            }
+            
             var stack = new Stack<object>();
             while (queue.Count > 0)
             {

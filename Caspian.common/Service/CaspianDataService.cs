@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Caspian.common
+namespace Caspian.Common
 {
     public class CaspianDataService
     {
