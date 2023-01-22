@@ -25,12 +25,12 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="OrganPost" Search="SearchData" TableHeight="400">
         <Columns>
-            <GridColumn TEntity="OrganPost" Field="t => t.CareerField.Occupation.Title" Title="رسته شغلی" />
-            <GridColumn TEntity="OrganPost" Field="t => t.CareerField.Title" Title="رشته شغلی" />
-            <GridColumn TEntity="OrganPost" Field="t => t.OrganUnit.Title" Title="واحد سازمانی" />
-            <GridColumn TEntity="OrganPost" Field="t => t.Title"  />
-            <GridColumn TEntity="OrganPost" Field="t => t.Code" style="direction:ltr" />
-            <GridCommandColumns TEntity="OrganPost" />
+            <GridColumn Field="t => t.CareerField.Occupation.Title" Title="رسته شغلی" />
+            <GridColumn Field="t => t.CareerField.Title" Title="رشته شغلی" />
+            <GridColumn Field="t => t.OrganUnit.Title" Title="واحد سازمانی" />
+            <GridColumn Field="t => t.Title"  />
+            <GridColumn Field="t => t.Code" style="direction:ltr" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="پست سازمانی" Style="width:450px" OnOpen="SetOccupationId">

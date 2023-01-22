@@ -17,11 +17,11 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="ExtraFactor" Search="SearchData">
         <Columns>
-            <GridColumn TEntity="ExtraFactor" Field="t => t.BaseType.FaText()" />
-            <GridColumn TEntity="ExtraFactor" Field="t => t.Jobfactor" />
-            <GridColumn TEntity="ExtraFactor" Field="t => t.SwallowFactor" />
-            <GridColumn TEntity="ExtraFactor" Field="t => t.SpesialFactor" />
-            <GridCommandColumns TEntity="ExtraFactor" />
+            <GridColumn Field="t => t.BaseType.FaText()" />
+            <GridColumn Field="t => t.Jobfactor" />
+            <GridColumn Field="t => t.SwallowFactor" />
+            <GridColumn Field="t => t.SpesialFactor" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="ضرایب فوق العاده ها" Style="width:450px">

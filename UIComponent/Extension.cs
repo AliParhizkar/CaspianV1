@@ -8,7 +8,7 @@ namespace Caspian.UI
     {
         public async static Task<byte[]> GetByteArrayAsync(this IBrowserFile file)
         {
-            using var stream = file.OpenReadStream();
+            using var stream = file.OpenReadStream(51200);
             var buffer = new byte[stream.Length];
             var sum = 0;
             var remine = (int)stream.Length - sum;

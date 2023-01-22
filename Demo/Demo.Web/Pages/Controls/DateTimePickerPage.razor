@@ -29,7 +29,7 @@
                     <label>Action</label>
                 </td>
                 <td style="text-align:center">
-                    <button class="t-button" @onclick="async () => { await datePicker.FocusAsync(); }">فـوکـوس</button>
+                    <button class="t-button" @onclick="async () => await DatePickerFocuc() ">فـوکـوس</button>
                 </td>
             </tr>
             <tr>
@@ -51,6 +51,12 @@
             <tr>
                 <td colspan="2">
                     <DatePicker @ref="datePicker" @bind-Value="date" OpenOnFocus="dateOpenOnFocus" Disabled="dateDisable" />
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button @onclick="DatePickerSource" class="c-btn c-primary">Source</button>
                 </td>
             </tr>
         </table>
@@ -80,7 +86,7 @@
                     <label>Action</label>
                 </td>
                 <td style="text-align:center">
-                    <button class="t-button" @onclick="async () => { await timePicker.FocusAsync(); }">فـوکـوس</button>
+                    <button class="t-button" @onclick="async () => await TimePickerFocuc()">فـوکـوس</button>
                 </td>
             </tr>
             <tr>
@@ -99,11 +105,19 @@
                     <TimePicker @ref="timePicker" @bind-Value="time" Disabled="timeDisable" />
                 </td>
             </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button @onclick="TimePickerSource" class="c-btn c-primary">Source</button>
+                </td>
+            </tr>
         </table>
     </div>
 </div>
-
-@code {
+<CreatePdfComponent @bind-Status="status" Title="Default" FileName="@sourceName" />
+@code 
+{
+    string sourceName;
     bool dateDisable;
     bool dateOpenOnFocus;
     bool timeDisable;
@@ -112,4 +126,27 @@
     TimeSpan? time;
     DatePicker<DateTime?> datePicker;
     TimePicker<TimeSpan?> timePicker;
+    WindowStatus status;
+
+    void DatePickerSource()
+    {
+        sourceName = "DatePicker.pdf";
+        status = WindowStatus.Open;
+    }
+
+    void TimePickerSource()
+    {
+        sourceName = "TimePicker.pdf";
+        status = WindowStatus.Open;
+    }
+
+    async Task DatePickerFocuc()
+    {
+        await datePicker.FocusAsync();
+    }
+
+    async Task TimePickerFocuc()
+    {
+        await timePicker.FocusAsync();
+    }
 }

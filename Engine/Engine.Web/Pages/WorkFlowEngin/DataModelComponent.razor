@@ -22,14 +22,14 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="DataModel" TableHeight="400" ConditionExpr="t => t.WorkflowGroupId == GroupId">
         <Columns>
-            <GridColumn TEntity="DataModel" Field="t => t.Title" />
-            <GridColumn TEntity="DataModel" Field="t => t.Name" />
-            <GridColumn TEntity="DataModel" Title="جزئیات" style="width:80px">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Title="جزئیات" style="width:80px">
                 <Template>
                     <IconButton Href='@($"/{SubSystem.ToString()}/WorkflowEngine/DataModelField/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="DataModel" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مدل داده ای" Style="width:500px" OnOpen="() => {UpsertData.WorkflowGroupId = GroupId;}">

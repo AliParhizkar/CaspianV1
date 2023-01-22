@@ -17,23 +17,23 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Role" TableHeight="400">
         <Columns>
-            <GridColumn TEntity="Role" Field="t => t.Title" />
-            <GridColumn TEntity="Role" Title="اعضاء" style="width:80px">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Title="اعضاء" style="width:80px">
                 <Template>
                     <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserMembership/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="Role" Title="منوها" style="width:80px">
+            <GridColumn Title="منوها" style="width:80px">
                 <Template>
                     <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/RoleAccess/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="Role" Title="منوها-درخت" style="width:80px">
+            <GridColumn Title="منوها-درخت" style="width:80px">
                 <Template>
                     <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/RoleAccessTree/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="Role" />
+            <GridCommandColumns />
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مشخصات نقش" Style="width:400px">

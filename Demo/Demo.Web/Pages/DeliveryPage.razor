@@ -17,10 +17,10 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Delivery" Search="SearchData">
         <Columns>
-            <GridColumn TEntity="Delivery" Field="t => t.FName" Title="نام" />
-            <GridColumn TEntity="Delivery" Field="t => t.LName" Title="نام خانوادگی" />
-            <GridColumn TEntity="Delivery" Field="t => t.Code" style="width:100px" Title="کد پرسنلی" />
-            <GridCommandColumns TEntity="Delivery" />
+            <GridColumn Field="t => t.FName" Title="نام" />
+            <GridColumn Field="t => t.LName" Title="نام خانوادگی" />
+            <GridColumn Field="t => t.Code" style="width:100px" Title="کد پرسنلی" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="پیک" Style="width:450px">

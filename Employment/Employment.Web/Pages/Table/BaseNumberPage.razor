@@ -23,10 +23,10 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="BaseNumber" Search="SearchData">
         <Columns>
-            <GridColumn TEntity="BaseNumber" Field="t => t.BaseStudy.FaText()" />
-            <GridColumn TEntity="BaseNumber" Field="t => t.BaseType.FaText()" />
-            <GridColumn TEntity="BaseNumber" Field="t => t.Factor.Seprate3Digit()" />
-            <GridCommandColumns TEntity="BaseNumber" />
+            <GridColumn Field="t => t.BaseStudy.FaText()" />
+            <GridColumn Field="t => t.BaseType.FaText()" />
+            <GridColumn Field="t => t.Factor.Seprate3Digit()" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="عدد مبناء" Style="width:450px">

@@ -18,13 +18,13 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Province" Search="SearchData" TableHeight="400">
         <Columns>
-            <GridColumn TEntity="Province" Field="t => t.Title" />
-            <GridColumn TEntity="Province" Title="شهرها" style="width:50px">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Title="شهرها" style="width:50px">
                 <Template>
                     <IconButton Href='@($"/Employment/City/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="Province" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مشخصات استانها" Style="width:450px">

@@ -103,10 +103,10 @@
                 <DataGrid @ref="CrudGrid" TEntity="CustomerGroupMembership" HideInsertIcon Search="SearchData" TableHeight="350"
                           ConditionExpr="t => name2 == null || t.Customer.FName.Contains(name2) || t.Customer.LName.Contains(name2) || t.Customer.CompanyName.Contains(name2)">
                     <Columns>
-                        <GridColumn TEntity="CustomerGroupMembership" Field="@(t => t.Customer.CustomerType == CustomerType.Real ?  t.Customer.FName + " " + t.Customer.LName : t.Customer.CompanyName)" Title="مشتری" />
-                        <GridColumn TEntity="CustomerGroupMembership" Field="t => t.Customer.CustomerNumber.ToString()" style="width:100px" />
-                        <GridColumn TEntity="CustomerGroupMembership" Field="t => t.Customer.MobileNumber" style="width:100px" />
-                        <GridCommandColumns TEntity="CustomerGroupMembership" HideEdit />
+                        <GridColumn Field="@(t => t.Customer.CustomerType == CustomerType.Real ?  t.Customer.FName + " " + t.Customer.LName : t.Customer.CompanyName)" Title="مشتری" />
+                        <GridColumn Field="t => t.Customer.CustomerNumber.ToString()" style="width:100px" />
+                        <GridColumn Field="t => t.Customer.MobileNumber" style="width:100px" />
+                        <GridCommandColumns HideEdit />
                     </Columns>
                 </DataGrid>
             </td>

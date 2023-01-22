@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace Caspian.UI
 {
@@ -97,6 +99,11 @@ namespace Caspian.UI
             ShowMessage("بروزرسانی با موفقیت انجام شد");
         }
 
+        protected virtual async Task OnUpsertAsync(IServiceScope scope, IList<TDetail> insertedEntities2)
+        {
+
+        }
+
         async Task InsertMaster(EditContext context1)
         {
             var list = Grid.GetInsertedEntities();
@@ -104,6 +111,7 @@ namespace Caspian.UI
             var provider = scope.ServiceProvider;
             var masterService = provider.GetService(typeof(ISimpleService<TMaster>)) as SimpleService<TMaster>;
             using var transaction = masterService.Context.Database.BeginTransaction();
+            
             await masterService.AddAsync(UpsertData);
             masterService.SaveChanges();
             var masterId = typeof(TMaster).GetPrimaryKey().GetValue(UpsertData);
@@ -113,6 +121,7 @@ namespace Caspian.UI
             var detailService = provider.GetService(typeof(ISimpleService<TDetail>)) as SimpleService<TDetail>;
             await detailService.AddRangeAsync(list);
             await detailService.SaveChangesAsync();
+            await OnUpsertAsync(scope, list);
             transaction.Commit();
             Grid.ClearSource();
             UpsertData = Activator.CreateInstance<TMaster>();

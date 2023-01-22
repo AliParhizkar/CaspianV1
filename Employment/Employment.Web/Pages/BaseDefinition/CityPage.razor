@@ -28,9 +28,9 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" TableHeight="400" ConditionExpr="t => ProvinceId == null || t.ProvinceId == ProvinceId">
         <Columns Context="con">
-            <GridColumn TEntity="City" Field="t => t.Province.Title" Title="استان" />
-            <GridColumn TEntity="City" Field="t => t.Title"  />
-            <GridCommandColumns TEntity="City" />
+            <GridColumn Field="t => t.Province.Title" Title="استان" />
+            <GridColumn Field="t => t.Title"  />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مشخصات شهرها" Style="width:450px" OnOpen="@OnWindowOpen">

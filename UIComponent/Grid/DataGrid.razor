@@ -1,5 +1,6 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity
+@attribute [CascadingTypeParameter(nameof(TEntity))]
 @inject IServiceScopeFactory ServiceScopeFactory
     
 <CascadingValue Value="this" Name="Grid">

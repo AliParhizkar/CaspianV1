@@ -24,21 +24,21 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Report" ConditionExpr="t => t.ReportGroup.SubSystem == Subsystem" Search="SearchData" TableHeight="400">
         <Columns>
-            <GridColumn TEntity="Report" Field="t => t.ReportGroup.Title" Title="گروه گزارش" />
-            <GridColumn TEntity="Report" Field="t => t.Title" />
-            <GridColumn TEntity="Report" Title="پارامترها" style="width:80px">
+            <GridColumn Field="t => t.ReportGroup.Title" Title="گروه گزارش" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Title="پارامترها" style="width:80px">
                 <Template>
                     <IconButton Href='@($"{Subsystem}/ReportEngine/ReportParam/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="Report" Title="گزارش" style="width:80px">
+            <GridColumn Title="گزارش" style="width:80px">
                 <Template>
                     <a target="_blank" href="/Engine/ReportPrintPage/@(context.Data.Id)">
                         ...
                     </a>
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="Report" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Style="width:400px" Title="گزارش">

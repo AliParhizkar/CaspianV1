@@ -17,11 +17,11 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Material" Search="SearchData" TableHeight="300">
         <Columns Context="con">
-            <GridColumn TEntity="Material" Field="t => t.Title" />
-            <GridColumn TEntity="Material" Field="t => t.MainUnit.Title" Title="واحد اصلی" />
-            <GridColumn TEntity="Material" Field="t => t.Subunit.Title" Title="واحد فرعی" />
-            <GridColumn TEntity="Material" Field="t => t.ActiveType.FaText()" />
-            <GridCommandColumns TEntity="Material" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.MainUnit.Title" Title="واحد اصلی" />
+            <GridColumn Field="t => t.Subunit.Title" Title="واحد فرعی" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مواد خام" Style="width:450px"

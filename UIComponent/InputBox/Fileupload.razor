@@ -28,6 +28,7 @@
 
     async void ViewFile(InputFileChangeEventArgs arg)
     {
+        
         if (OnChange.HasDelegate)
             await OnChange.InvokeAsync(arg);
     }

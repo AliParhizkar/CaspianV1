@@ -17,14 +17,14 @@
     </table>
     <DataGrid PersistState @bind-Search="SearchData" @ref="CrudGrid" TEntity="Province">
         <Columns>
-            <GridColumn TEntity="Province" Field="t => t.Title" />
-            <GridColumn TEntity="Province" Field="t => t.ActiveType.FaText()" />
-            <GridColumn TEntity="Province" Title="شهرها" style="width:50px">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Title="شهرها" style="width:50px">
                 <Template>
                     <IconButton Href='@($"/Demo/City/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="Province" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="استان" Style="width:450px"

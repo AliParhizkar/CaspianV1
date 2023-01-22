@@ -40,9 +40,9 @@
                 </table>
                 <DataGrid @ref="MemberGrid" TEntity="User" HideInsertIcon Search="MemberSearch" TableHeight="335">
                     <Columns>
-                        <GridColumn TEntity="User" Field="@(t => t.FName + " " + t.LName )" Title="کاربر" />
-                        <GridColumn TEntity="User" Field="t => t.UserName" style="width:100px" />
-                        <GridColumn TEntity="User" Field="t => t.MobileNumber" style="width:100px" />
+                        <GridColumn Field="@(t => t.FName + " " + t.LName )" Title="کاربر" />
+                        <GridColumn Field="t => t.UserName" style="width:100px" />
+                        <GridColumn Field="t => t.MobileNumber" style="width:100px" />
                     </Columns>
                 </DataGrid>
             </td>
@@ -97,10 +97,10 @@
                 </fieldset>
                 <DataGrid @ref="CrudGrid" TEntity="UserMembership" HideInsertIcon Search="SearchData" TableHeight="335">
                     <Columns>
-                        <GridColumn TEntity="UserMembership" Field="@(t => t.User.FName + " " + t.User.LName)" Title="کاربر" />
-                        <GridColumn TEntity="UserMembership" Field="t => t.User.UserName" style="width:100px" />
-                        <GridColumn TEntity="UserMembership" Field="t => t.User.MobileNumber" style="width:100px" />
-                        <GridCommandColumns TEntity="UserMembership" HideEdit />
+                        <GridColumn Field="@(t => t.User.FName + " " + t.User.LName)" Title="کاربر" />
+                        <GridColumn Field="t => t.User.UserName" style="width:100px" />
+                        <GridColumn Field="t => t.User.MobileNumber" style="width:100px" />
+                        <GridCommandColumns HideEdit />
                     </Columns>
                 </DataGrid>
             </td>

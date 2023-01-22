@@ -21,7 +21,7 @@
                     <label>Action</label>
                 </td>
                 <td style="text-align:center">
-                    <button class="t-button" @onclick="() => { dropdownList.Focus(); }">Focus</button>
+                    <button class="t-button" @onclick="async () => await DropdownFocus()">Focus</button>
                 </td>
             </tr>
             <tr>
@@ -51,6 +51,12 @@
             <tr>
                 <td colspan="2">
                     <DropdownList @ref="dropdownList" @bind-Value="orderType" Disabled="disable" />
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button @onclick="DropdownListSource" class="c-btn c-primary">Source</button>
                 </td>
             </tr>
         </table>
@@ -85,16 +91,45 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <DropdownList @bind-Value="orderType" FilterFunc="t => t != Model.OrderType.Salon" />
+                    <DropdownList @bind-Value="orderType" FilterFunc="orderType => orderType != Model.OrderType.Salon" />
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button @onclick="DropdownListFilterSource" class="c-btn c-primary">Source</button>
                 </td>
             </tr>
         </table>
     </div>
 </div>
+<CreatePdfComponent @bind-Status="status" Title="Default" FileName="@sourceName" Title1="Enume Code" FileName1="@sourceName1" />
 
-@code {
-    Demo.Model.OrderType?[] orderTypes = new Demo.Model.OrderType?[] { Demo.Model.OrderType.Salon, Demo.Model.OrderType.Package };
+@code 
+{
+    string sourceName;
+    string sourceName1;
     bool disable;
     Demo.Model.OrderType? orderType;
     DropdownList<Demo.Model.OrderType?> dropdownList;
+    WindowStatus status;
+
+    async Task DropdownFocus()
+    {
+        await dropdownList.FocusAsync();
+    }
+
+    void  DropdownListSource()
+    {
+        sourceName = "Dropdown-1.pdf";
+        sourceName1 = "OrderType-Enum.pdf";
+        status = WindowStatus.Open;
+    }
+
+    void DropdownListFilterSource()
+    {
+        sourceName = "Dropdown-2.pdf";
+        sourceName1 = null;
+        status = WindowStatus.Open;
+    }
 }

@@ -17,11 +17,11 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == CategoryId)" Search="SearchData" TableHeight="300">
         <Columns>
-            <GridColumn TEntity="Product" Field="t => t.Title" />
-            <GridColumn TEntity="Product" Field="t => t.ActiveType.FaText()" />
-            <GridColumn TEntity="Product" Field="t => t.Price.Seprate3Digit()" />
-            <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.Seprate3Digit()" />
-            <GridCommandColumns TEntity="Product" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Field="t => t.Price.Seprate3Digit()" />
+            <GridColumn Field="t => t.PriceOuterBound.Seprate3Digit()" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="محصول" Style="width:500px">

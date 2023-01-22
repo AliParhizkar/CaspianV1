@@ -18,14 +18,14 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="CustomerGroup" Search="SearchData" TableHeight="400">
         <Columns>
-            <GridColumn TEntity="CustomerGroup" Field="t => t.Title" />
-            <GridColumn TEntity="CustomerGroup" Field="t => t.ActiveType.FaText()" />
-            <GridColumn TEntity="CustomerGroup" Title="مشتریان" style="width:80px;">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Title="مشتریان" style="width:80px;">
                 <Template>
                     <IconButton Href='@($"/Demo/CustomerGroupAccessPage/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="CustomerGroup" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="گروه مشتری" Style="width:400px">

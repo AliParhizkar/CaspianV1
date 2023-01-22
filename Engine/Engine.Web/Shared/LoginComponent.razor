@@ -29,16 +29,21 @@
 
     async Task Login()
     {
-        using var scope = CreateScope();
-        var user = await new UserService(scope.ServiceProvider).UserIsvalidAsync(userName, password);
-        if (user == null)
+        if (!userName.HasValue() || !password.HasValue())
             message = "نام کاربری یا کلمه ی عبور نامعتبر است";
         else
         {
-            var result = await ((CustomAuthenticationStateProvider)stateProvider).Login(user.Id.ToString());
-            var url = new Uri(navigationManager.Uri).LocalPath;
-            if (url.StartsWith("/login", StringComparison.OrdinalIgnoreCase))
-                navigationManager.NavigateTo("/Default");
+            using var scope = CreateScope();
+            var user = await new UserService(scope.ServiceProvider).UserIsvalidAsync(userName, password);
+            if (user == null)
+                message = "نام کاربری یا کلمه ی عبور نامعتبر است";
+            else
+            {
+                var result = await ((CustomAuthenticationStateProvider)stateProvider).Login(user.Id.ToString());
+                var url = new Uri(navigationManager.Uri).LocalPath;
+                if (url.StartsWith("/login", StringComparison.OrdinalIgnoreCase))
+                    navigationManager.NavigateTo("/Default");
+            }
         }
     }
 }

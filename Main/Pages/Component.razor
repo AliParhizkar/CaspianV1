@@ -1,0 +1,81 @@
+﻿@page "/FileUpload"
+@using System.Globalization
+
+
+<h1>File upload with progress</h1>
+
+<InputFile OnChange="async e => await LoadFiles(e)" multiple></InputFile>
+@if (uploadedFile != null)
+{
+    <div>
+        @uploadedFile.FileName
+        <progress value="@uploadedFile.UploadedBytes" max="@uploadedFile.Size"></progress>
+    </div>
+}
+
+@code {
+    FileUploadProgress uploadedFile;
+
+    private async ValueTask LoadFiles(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        uploadedFile = new FileUploadProgress(file.Name, file.Size);
+
+        // We don't want to refresh the UI too frequently,
+        // So, we use a timer to update the UI every few hundred milliseconds
+
+        await using var timer = new Timer(_ => InvokeAsync(() => StateHasChanged()));
+        timer.Change(500, 500);
+
+        // Upload files
+        byte[] buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(4096);
+        try
+        {
+            using var stream = file.OpenReadStream(10 * 1024 * 1024);
+
+            while (await stream.ReadAsync(buffer) is int read && read > 0)
+            {
+                uploadedFile.UploadedBytes += read;
+
+                // TODO Do something with the file chunk, such as save it
+                // to a database or a local file system
+                await using var readData = new MemoryStream(buffer.AsMemory().Slice(0, read).ToArray());
+                var path = "f:\\Publish.rar";
+                if (File.Exists(path))
+                {
+                    using FileStream fs = System.IO.File.Open(path, FileMode.Append);
+                    readData.WriteTo(fs);
+                    await fs.FlushAsync();
+                }
+                else
+                {
+                    using FileStream fs = System.IO.File.Create(path);
+                    readData.WriteTo(fs);
+                    await fs.FlushAsync();
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+
+            // Update the UI with the final progress
+            StateHasChanged();
+        }
+    }
+
+    // Use the Meziantou.Framework.ByteSize NuGet package.
+    // You could also use Humanizer
+    string FormatBytes(long value) => value.ToString();
+
+    record FileUploadProgress(string FileName, long Size)
+    {
+        public long UploadedBytes { get; set; }
+        public double UploadedPercentage => (double)UploadedBytes / (double)Size * 100d;
+    }
+}

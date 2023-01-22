@@ -9,8 +9,6 @@ using Caspian.Common.Extension;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Caspian.common;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {

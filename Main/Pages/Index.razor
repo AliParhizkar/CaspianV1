@@ -1,8 +1,4 @@
 ﻿@using Caspian.UI
-@using Demo.Model
-@using Caspian.common
-@using Demo.Service
-@using FluentValidation.Results
 @page "/"
 @inherits BasePage
 @inject IJSRuntime jSRuntime
@@ -10,7 +6,8 @@
     base.BuildRenderTree(__builder);
 }
 <a href="/Login">ورود</a>
- @code 
-{
 
+@code 
+{
+    WindowStatus status;
 }

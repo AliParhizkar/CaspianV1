@@ -1,5 +1,4 @@
 ﻿@namespace Caspian.Engine.WorkflowEngine
-@using Caspian.common
 @inherits SimplePage<DynamicParameter>
 @{
 
@@ -20,24 +19,24 @@
     </div>
     <DataGrid @ref="CrudGrid" TEntity="DynamicParameter" PersistState @bind-Search="SearchData">
         <Columns Context="con" >
-            <GridColumn TEntity="DynamicParameter" Field="t => t.EntityName">
+            <GridColumn Field="t => t.EntityName">
                 <Template>
                     <span>@(entities.Single(t => t.Value == con.Data.EntityName).Text)</span>
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="DynamicParameter" Field="t => t.Title" />
-            <GridColumn TEntity="DynamicParameter" Field="t => t.ControlType.FaText()" style="width:120px;" />
-            <GridColumn TEntity="DynamicParameter" Field="t => t.CalculationType.FaText()" />
-            <GridColumn TEntity="DynamicParameter" Field="t => t.DecimalNumber" />
-            <GridColumn TEntity="DynamicParameter" Field="t => t.Priority" style="width:50px" />
-            <GridColumn TEntity="DynamicParameter" Title="بررسی" style="width:50px">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ControlType.FaText()" style="width:120px;" />
+            <GridColumn Field="t => t.CalculationType.FaText()" />
+            <GridColumn Field="t => t.DecimalNumber" />
+            <GridColumn Field="t => t.Priority" style="width:50px" />
+            <GridColumn Title="بررسی" style="width:50px">
                 <Template>
                     <button style="border-radius:50%;margin-right:0" class="c-btn c-primary" @onclick="async () => await SetPriority(con.Data.Id)" @onclick:stopPropagation @onclick:preventDefault>
                         <i class="fa fa-check"></i>
                     </button>
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="DynamicParameter" Title="مقادیر" style="width:50px">
+            <GridColumn Title="مقادیر" style="width:50px">
                 <Template>
                     @if (con.Data.ControlType == ControlType.DropdownList)
                     {
@@ -49,7 +48,7 @@
                     }
                 </Template>
             </GridColumn>
-            <GridColumn  TEntity="DynamicParameter" Field="t => t.CalculationType" Title="ایجاد" style="width:50px">
+            <GridColumn Field="t => t.CalculationType" Title="ایجاد" style="width:50px">
                 <Template>
                     @if (con.Data.CalculationType == CalculationType.FormData)
                     {
@@ -57,7 +56,7 @@
                     }
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="DynamicParameter" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="تعریف پارامتر" Style="width:450px"

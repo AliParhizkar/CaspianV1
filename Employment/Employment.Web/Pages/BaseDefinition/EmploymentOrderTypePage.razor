@@ -25,9 +25,9 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="EmploymentOrderType" Search="SearchData" TableHeight="400">
         <Columns Context="con">
-            <GridColumn TEntity="EmploymentOrderType" Field="t => t.Title" />
-            <GridColumn TEntity="EmploymentOrderType" Field="t => t.Code" style="width:100px" />
-            <GridCommandColumns TEntity="EmploymentOrderType" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Code" style="width:100px" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="حکم غیرهیات علمی" Style="width:450px">

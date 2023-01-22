@@ -23,22 +23,22 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="User" TableHeight="400" >
         <Columns>
-            <GridColumn TEntity="User" Field="t => t.FName" />
-            <GridColumn TEntity="User" Field="t => t.LName" />
-            <GridColumn TEntity="User" Field="t => t.UserName" />
-            <GridColumn TEntity="User" Field="t => t.Email" />
-            <GridColumn TEntity="User" Field="t => t.MobileNumber" />
-            <GridColumn TEntity="User" Title="منوها" style="width:80px">
+            <GridColumn Field="t => t.FName" />
+            <GridColumn Field="t => t.LName" />
+            <GridColumn Field="t => t.UserName" />
+            <GridColumn Field="t => t.Email" />
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridColumn Title="منوها" style="width:80px">
                 <Template>
                     <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccess/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="User" Title="منوها-درخت" style="width:80px">
+            <GridColumn Title="منوها-درخت" style="width:80px">
                 <Template>
                     <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccessTree/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="User" />
+            <GridCommandColumns />
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مشخصات کاربر" Style="width:500px">

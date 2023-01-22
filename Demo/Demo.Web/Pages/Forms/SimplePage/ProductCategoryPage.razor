@@ -18,10 +18,10 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="ProductCategory" Search="SearchData" TableHeight="300">
         <Columns Context="con">
-            <GridColumn TEntity="ProductCategory" Field="t => t.Title" />
-            <GridColumn TEntity="ProductCategory" Field="t => t.Code" />
-            <GridColumn TEntity="ProductCategory" Field="t => t.ActiveType.FaText()" />
-            <GridColumn TEntity="ProductCategory" Field="t => t.Priority.ToString()" style="padding:3px;width:100px;" OrderType="Caspian.Common.OrderType.Asc">
+            <GridColumn TEntityField="t => t.Title" />
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Field="t => t.Priority.ToString()" style="padding:3px;width:100px;" OrderType="Caspian.Common.OrderType.Asc">
                 <Template>
                     <IconButton class="c-arrow"
                                 @onclick="async () =>
@@ -35,12 +35,12 @@
                                       }" IconType="IconType.AngleDown"></IconButton>
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="ProductCategory" Title="غذا" style="width:50px">
+            <GridColumn Title="غذا" style="width:50px">
                 <Template>
                     <IconButton Href='@($"/Demo/Product/{con.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="ProductCategory" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="گروه غذا" Style="width:450px"

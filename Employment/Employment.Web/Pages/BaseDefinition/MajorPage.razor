@@ -28,10 +28,10 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Major" Search="SearchData" TableHeight="400" ConditionExpr="t => EducationDegreeId == null || t.EducationDegreeId == EducationDegreeId">
         <Columns>
-            <GridColumn TEntity="Major" Field="t => t.EducationDegree.BaseStudy.FaText()" Title="پایه تحصیلی" />
-            <GridColumn TEntity="Major" Field="t => t.EducationDegree.Title" Title="مدرک تحصیلی" />
-            <GridColumn TEntity="Major" Field="t => t.Title"  />
-            <GridCommandColumns TEntity="Major" />
+            <GridColumn Field="t => t.EducationDegree.BaseStudy.FaText()" Title="پایه تحصیلی" />
+            <GridColumn Field="t => t.EducationDegree.Title" Title="مدرک تحصیلی" />
+            <GridColumn Field="t => t.Title"  />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="رشته تحصیلی" Style="width:450px" OnOpen="@OnWindowOpen">

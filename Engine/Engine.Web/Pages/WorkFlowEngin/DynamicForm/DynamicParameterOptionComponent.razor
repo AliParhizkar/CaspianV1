@@ -1,5 +1,4 @@
 ﻿@namespace Caspian.Engine.WorkflowEngine
-@using Caspian.common
 @inherits SimplePage<DynamicParameterOption>
 
 @{
@@ -8,10 +7,10 @@
 <div style="width:90%;margin:5px auto">
     <DataGrid @ref="CrudGrid" TEntity="DynamicParameterOption" Search="SearchData" ConditionExpr="t => t.DynamicParameterId == ParameterId">
         <Columns Context="con" >
-            <GridColumn TEntity="DynamicParameterOption" Field="t => t.FaTitle" />
-            <GridColumn TEntity="DynamicParameterOption" Field="t => t.EnTitle" />
-            <GridColumn TEntity="DynamicParameterOption" Field="t => t.Value" />
-            <GridCommandColumns TEntity="DynamicParameterOption" />
+            <GridColumn Field="t => t.FaTitle" />
+            <GridColumn Field="t => t.EnTitle" />
+            <GridColumn Field="t => t.Value" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مقادیر پارامتر" Style="width:450px"

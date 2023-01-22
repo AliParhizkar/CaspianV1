@@ -33,7 +33,7 @@
         <div style="width:90%;margin:5px auto">
             <DataGrid @ref="CrudGrid" TEntity="DataParameterValue" Search="SearchData" ConditionExpr="t => t.Parameter1.ResultParameterId == ParameterId" TableHeight="300">
                 <Columns>
-                    <GridColumn TEntity="DataParameterValue" Field="t => t.Value1" Title="@titleArray[0]">
+                    <GridColumn Field="t => t.Value1" Title="@titleArray[0]">
                         <Template>
                         @if (controlsType[0] == ControlType.DropdownList)
                         {
@@ -47,7 +47,7 @@
                     </GridColumn>
                 @if (titleArray[1].HasValue())
                 {
-                            <GridColumn TEntity="DataParameterValue" Field="t => t.Value2" Title="@titleArray[1]">
+                            <GridColumn Field="t => t.Value2" Title="@titleArray[1]">
                                 <Template>
                             @(sourceArray[1].Single(t => t.Value == context.Data.Value2.ToString()).Text)
                                 </Template>
@@ -55,7 +55,7 @@
                 }
                 @if (titleArray[2].HasValue())
                 {
-                            <GridColumn TEntity="DataParameterValue" Field="t => t.Value3" Title="@titleArray[2]">
+                            <GridColumn Field="t => t.Value3" Title="@titleArray[2]">
                                 <Template>
                             @(sourceArray[2].Single(t => t.Value == context.Data.Value3.ToString()).Text)
                                 </Template>
@@ -63,7 +63,7 @@
                 }
                 @if (titleArray[3].HasValue())
                 {
-                            <GridColumn TEntity="DataParameterValue" Field="t => t.Value4" Title="@titleArray[3]">
+                            <GridColumn Field="t => t.Value4" Title="@titleArray[3]">
                                 <Template>
                             @(sourceArray[3].Single(t => t.Value == context.Data.Value4.ToString()).Text)
                                 </Template>
@@ -71,7 +71,7 @@
                 }
                 @if (titleArray[4].HasValue())
                 {
-                            <GridColumn TEntity="DataParameterValue" Field="t => t.Value5" Title="@titleArray[4]">
+                            <GridColumn Field="t => t.Value5" Title="@titleArray[4]">
                                 <Template>
                             @(sourceArray[4].Single(t => t.Value == context.Data.Value5.ToString()).Text)
                                 </Template>
@@ -79,14 +79,14 @@
                 }
                 @if (titleArray[5].HasValue())
                 {
-                            <GridColumn TEntity="DataParameterValue" Field="t => t.Value6" Title="@titleArray[5]">
+                            <GridColumn Field="t => t.Value6" Title="@titleArray[5]">
                                 <Template>
                             @(sourceArray[5].Single(t => t.Value == context.Data.Value6.ToString()).Text)
                                 </Template>
                             </GridColumn>
                 }
-                    <GridColumn TEntity="DataParameterValue" Field="t => t.ResultValue.Seprate3Digit()" Title="@resultParameter.Title" />
-                    <GridCommandColumns TEntity="DataParameterValue" />
+                    <GridColumn Field="t => t.ResultValue.Seprate3Digit()" Title="@resultParameter.Title" />
+                    <GridCommandColumns/>
                 </Columns>
             </DataGrid>
             <Window @ref="UpsertWindow" Title="@resultParameter.Title" Style="width:450px" OnOpen="() => OnOpenForm()">

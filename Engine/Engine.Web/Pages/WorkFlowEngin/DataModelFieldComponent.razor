@@ -11,12 +11,12 @@
 <div style="width:95%;margin:5px auto;">
     <DataGrid @ref="CrudGrid" TEntity="DataModelField" TableHeight="400" ConditionExpr="t => t.DataModelId == DataModelId">
         <Columns>
-            <GridColumn TEntity="DataModelField" Field="t => t.Title" />
-            <GridColumn TEntity="DataModelField" Field="t => t.EntityFullName" />
-            <GridColumn TEntity="DataModelField" Field="t => t.FieldName" />
-            <GridColumn TEntity="DataModelField" Field="t => t.FieldType.FaText()" />
-            <GridColumn TEntity="DataModelField" Field="t => t.IsCollection" style="text-align:center" Title="بصورت لیست" />
-            <GridCommandColumns TEntity="DataModelField" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.EntityFullName" />
+            <GridColumn Field="t => t.FieldName" />
+            <GridColumn Field="t => t.FieldType.FaText()" />
+            <GridColumn Field="t => t.IsCollection" style="text-align:center" Title="بصورت لیست" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:500px" OnOpen="FormOpen">

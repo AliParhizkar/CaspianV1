@@ -17,10 +17,10 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == CategoryId)" Search="SearchData">
         <Columns>
-            <GridColumn TEntity="Product" Field="t => t.Title" />
-            <GridColumn TEntity="Product" Field="t => t.Price.Seprate3Digit()" />
-            <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.Seprate3Digit()" />
-            <GridColumn TEntity="Product" Field="t => t.ActiveType.ToString()">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Price.Seprate3Digit()" />
+            <GridColumn Field="t => t.PriceOuterBound.Seprate3Digit()" />
+            <GridColumn Field="t => t.ActiveType.ToString()">
                 <Template>
                     <CheckBox TValue="bool" Value="context.Data.ActiveType == ActiveType.Enable"
                               ValueChanged="async () =>
@@ -29,7 +29,7 @@
                                         }" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="Product" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="محصول" Style="width:800px">

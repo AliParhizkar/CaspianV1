@@ -1,13 +1,13 @@
 using Caspian.UI;
 using Caspian.Common;
-using Caspian.common;
 using Caspian.Engine.Web;
 using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
+using Caspian.common;
 
 var builder = WebApplication.CreateBuilder(args);
-
+//new RazorPageProceccor().Proccess();
 //typeof(Demo.Model.City).GetProperty("Title").PropertyType.GetCustomAttribute<NullableAttribute>
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -32,7 +32,6 @@ builder.Services.AddScoped<Employment.Model.Context>();
 SubSystemKind.Demo.GetServiceAssembly().InjectServices(builder.Services);
 SubSystemKind.Employment.GetServiceAssembly().InjectServices(builder.Services);
 SubSystemKind.Engine.GetServiceAssembly().InjectServices(builder.Services);
-
 builder.Services.AddAuthentication("Cookies").AddCookie();
 var app = builder.Build();
 CS.Con = builder.Configuration.GetConnectionString("CaspianDb");

@@ -7,15 +7,15 @@
 <div style="width:90%;margin:5px auto">
     <DataGrid @ref="CrudGrid" TEntity="DataParameter" Search="SearchData" ConditionExpr="t => t.ResultParameterId == ParameterId">
         <Columns>
-            <GridColumn TEntity="DataParameter" Field="t => t.ParameterType.FaText()" />
-            <GridColumn TEntity="DataParameter" Field="t => t.PropertyName">
+            <GridColumn Field="t => t.ParameterType.FaText()" />
+            <GridColumn Field="t => t.PropertyName">
                 <Template>
                     <span>@properties.SingleOrDefault(t => t.Value == context.Data.PropertyName)?.Text</span>
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="DataParameter" Field="@(t => t.DynamicParameter.Title)" Title="پارامتر" />
-            <GridColumn TEntity="DataParameter" Field="@(t => t.Rule.Title)" Title="قانون" />
-            <GridCommandColumns TEntity="DataParameter" />
+            <GridColumn Field="@(t => t.DynamicParameter.Title)" Title="پارامتر" />
+            <GridColumn Field="@(t => t.Rule.Title)" Title="قانون" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="فرم داده ای" Style="width:450px"

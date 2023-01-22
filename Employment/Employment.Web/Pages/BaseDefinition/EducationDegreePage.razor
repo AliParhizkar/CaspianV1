@@ -24,14 +24,14 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="EducationDegree" Search="SearchData" TableHeight="400">
         <Columns>
-            <GridColumn TEntity="EducationDegree" Field="t => t.BaseStudy.FaText()" Title="پایه تحصیلی" />
-            <GridColumn TEntity="EducationDegree" Field="t => t.Title" />
-            <GridColumn TEntity="EducationDegree" Title="رشته های تحصیلی" style="width:120px;">
+            <GridColumn Field="t => t.BaseStudy.FaText()" Title="پایه تحصیلی" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Title="رشته های تحصیلی" style="width:120px;">
                 <Template>
                     <IconButton Href='@($"/Employment/Major/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="EducationDegree" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مدارک تحصیلی" Style="width:450px" >

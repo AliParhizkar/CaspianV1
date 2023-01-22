@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
@@ -31,9 +31,16 @@
     <Reference Include="FluentValidation">
       <HintPath>..\..\..\..\..\.nuget\packages\fluentvalidation\9.4.0\lib\net5.0\FluentValidation.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\..\..\..\..\.nuget\packages\itextsharp\5.5.13.3\lib\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore">
       <HintPath>..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\5.0.10\lib\netstandard2.1\Microsoft.EntityFrameworkCore.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Pdf\" />
   </ItemGroup>
 
 </Project>

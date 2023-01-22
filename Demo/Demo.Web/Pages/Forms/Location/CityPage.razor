@@ -32,16 +32,16 @@
         <Columns>
             @if (ProvinceId == 0)
             {
-                <GridColumn TEntity="City" Field="t => t.Province.Title" Title="استان"/>
+                <GridColumn Field="t => t.Province.Title" Title="استان"/>
             }
-            <GridColumn TEntity="City" Field="t => t.Title" />
-            <GridColumn TEntity="City" Field="t => t.ActiveType.FaText()" />
-            <GridColumn TEntity="City" Title="مناطق" style="width:50px">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Title="مناطق" style="width:50px">
                 <Template>
                     <IconButton Href='@($"/Demo/Area/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="City" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="شهر" Style="width:450px"

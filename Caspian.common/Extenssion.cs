@@ -1,4 +1,4 @@
-﻿namespace Caspian.common
+﻿namespace Caspian.Common
 {
     public static class PublicExtenssion
     {

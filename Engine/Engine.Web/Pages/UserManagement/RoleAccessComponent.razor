@@ -40,8 +40,8 @@
                 </table>
                 <DataGrid @ref="MemberGrid" TEntity="Menu" HideInsertIcon Search="MemberSearch" ConditionExpr="t => t.MenuCategory.SubSystemKind == SubSystem" TableHeight="330">
                     <Columns>
-                        <GridColumn TEntity="Menu" Field="@(t => t.MenuCategory.Title)" Title="منوی فرعی" />
-                        <GridColumn TEntity="Menu" Field="t => t.Title" style="width:150px" />
+                        <GridColumn Field="@(t => t.MenuCategory.Title)" Title="منوی فرعی" />
+                        <GridColumn Field="t => t.Title" style="width:150px" />
                     </Columns>
                 </DataGrid>
             </td>
@@ -96,9 +96,9 @@
                 </fieldset>
                 <DataGrid @ref="CrudGrid" TEntity="MenuAccessibility" HideInsertIcon ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" Search="SearchData" TableHeight="330">
                     <Columns>
-                        <GridColumn TEntity="MenuAccessibility" Field="t => t.Menu.MenuCategory.Title" Title="منوی فرعی" />
-                        <GridColumn TEntity="MenuAccessibility" Field="t => t.Menu.Title" />
-                        <GridCommandColumns TEntity="MenuAccessibility" HideEdit />
+                        <GridColumn Field="t => t.Menu.MenuCategory.Title" Title="منوی فرعی" />
+                        <GridColumn Field="t => t.Menu.Title" />
+                        <GridCommandColumns HideEdit />
                     </Columns>
                 </DataGrid>
             </td>

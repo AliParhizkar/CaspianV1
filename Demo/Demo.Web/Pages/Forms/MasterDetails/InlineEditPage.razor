@@ -41,7 +41,7 @@
     <div style="width:calc(100% - 300px)">
         <DataGrid @ref="Grid" TEntity="MaterialReceipt" TableHeight="400" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
             <Columns Context="con">
-                <GridColumn TEntity="MaterialReceipt" Field="t => t.Material.Title" Title="محصول">
+                <GridColumn Field="t => t.Material.Title" Title="محصول">
                     <EditTemplate>
                         <AutoComplete TValue="int" TEntity="Material" @bind-Value="con.Data.MaterialId" HideHeader AutoHide
                                       TextExpression="t => t.Title" Title="محصول"
@@ -53,17 +53,17 @@
                         </AutoComplete>
                     </EditTemplate>
                 </GridColumn>
-                <GridColumn TEntity="MaterialReceipt" Field="t => t.QuantityMain" style="width:80px">
+                <GridColumn Field="t => t.QuantityMain" style="width:80px">
                     <EditTemplate>
                         <NumericTextBox @ref="txtMainUnit" @onkeyup="async e =>  await MainUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantityMain" />
                     </EditTemplate>
                 </GridColumn>
-                <GridColumn TEntity="MaterialReceipt" Field="t => t.Material.MainUnit.Title" Title="واحد اصلی" style="width:100px">
+                <GridColumn Field="t => t.Material.MainUnit.Title" Title="واحد اصلی" style="width:100px">
                     <Template>
                         <span>@(con.Data?.Material?.MainUnit?.Title)</span>
                     </Template>
                 </GridColumn>
-                <GridColumn TEntity="MaterialReceipt" Field="t => t.QuantitySub" style="width:80px">
+                <GridColumn Field="t => t.QuantitySub" style="width:80px">
                     <EditTemplate>
                         @if (con.Data?.Material?.SubunitId != null)
                         {
@@ -71,13 +71,13 @@
                         }
                     </EditTemplate>
                 </GridColumn>
-                <GridColumn TEntity="MaterialReceipt" Field="t => t.Material.Subunit.Title" Title="واحد فرعی" style="width:80px">
+                <GridColumn Field="t => t.Material.Subunit.Title" Title="واحد فرعی" style="width:80px">
                     <Template>
                         <span>@(con.Data?.Material?.Subunit?.Title)</span>
                     </Template>
                 </GridColumn>
-                <GridColumn TEntity="MaterialReceipt" Field="t => t.Material.SubunitId" Title="" style="display:none;width:0" />
-                <GridCommandColumns TEntity="MaterialReceipt" />
+                <GridColumn Field="t => t.Material.SubunitId" Title="" style="display:none;width:0" />
+                <GridCommandColumns/>
             </Columns>
         </DataGrid>
     </div>

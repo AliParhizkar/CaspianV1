@@ -18,14 +18,14 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="MainUnit" Search="SearchData" TableHeight="300">
         <Columns Context="con">
-            <GridColumn TEntity="MainUnit" Field="t => t.Title" />
-            <GridColumn TEntity="MainUnit" Field="t => t.ActiveType.FaText()" />
-            <GridColumn TEntity="MainUnit" Title="واحد فرعی" style="width:50px">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Title="واحد فرعی" style="width:50px">
                 <Template>
                     <IconButton Href='@($"/Demo/Subunit/{con.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="MainUnit" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="واحد اصلی" Style="width:450px"

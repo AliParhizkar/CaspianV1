@@ -30,12 +30,12 @@
         <Columns>
             @if (CityId == 0)
             {
-                <GridColumn TEntity="Area" Field="t => t.City.Province.Title" Title="استان" />
-                <GridColumn TEntity="Area" Field="t => t.City.Title" Title="شهر" />
+                <GridColumn Field="t => t.City.Province.Title" Title="استان" />
+                <GridColumn Field="t => t.City.Title" Title="شهر" />
             }
-            <GridColumn TEntity="Area" Field="t => t.Title" />
-            <GridColumn TEntity="Area" Field="t => t.ActiveType.FaText()" />
-            <GridCommandColumns TEntity="Area" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridCommandColumns />
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="منطقه" Style="width:450px"
@@ -57,6 +57,12 @@
                             </td>
                             <td>
                                 <ComboBox TValue="int" TEntity="City" @bind-Value="UpsertData.CityId"
+                                    OnChange="() => 
+                                        {
+                                            var q = 5;
+                                            if (q > 100)
+                                                q++;
+                                        }"
                                           TextExpression="t => t.Title" />
                             </td>
                         </tr>

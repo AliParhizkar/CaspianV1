@@ -23,9 +23,9 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Customer" Search="SearchData" ConditionExpr="t => (name == null || t.FName.Contains(name) || t.LName.Contains(name) || t.CompanyName.Contains(name)) && (callNumber == null || t.MobileNumber.StartsWith(callNumber) || t.Tel.StartsWith(callNumber))">
         <Columns Context="customer">
-            <GridColumn TEntity="Customer" Field="@(t => t.CustomerType.FaText())" Title="نوع مشتری" />
-            <GridColumn TEntity="Customer" Field="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" Title="نام مشتری" />
-            <GridColumn TEntity="Customer" Field="t => t.Gender.FaText()" style="width:100px">
+            <GridColumn Field="@(t => t.CustomerType.FaText())" Title="نوع مشتری" />
+            <GridColumn Field="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" Title="نام مشتری" />
+            <GridColumn Field="t => t.Gender.FaText()" style="width:100px">
                 <Template>
                     @if (customer.Data.Gender == Gender.Male)
                     {
@@ -37,9 +37,9 @@
                     }
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="Customer" Field="t => t.MobileNumber" />
-            <GridColumn TEntity="Customer" Field="t => t.Tel" />
-            <GridCommandColumns TEntity="Customer" DisableDeleteFunc="t => t.Gender == Gender.Male" DisableEditFunc="t => t.Gender == Gender.Female" />
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridColumn Field="t => t.Tel" />
+            <GridCommandColumns DisableDeleteFunc="t => t.Gender == Gender.Male" DisableEditFunc="t => t.Gender == Gender.Female" />
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مشتری" Style="width:450px">

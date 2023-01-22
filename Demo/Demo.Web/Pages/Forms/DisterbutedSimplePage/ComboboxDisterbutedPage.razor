@@ -8,12 +8,12 @@
 <div style="width:90%;margin:0 auto">
     <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400">
         <Columns>
-            <GridColumn TEntity="Product" Field="t => t.ProductCategory.Title" Title="گروه غذا" />
-            <GridColumn TEntity="Product" Field="t => t.Title" />
-            <GridColumn TEntity="Product" Field="t => t.ActiveType.FaText()" />
-            <GridColumn TEntity="Product" Field="t => t.Price.Seprate3Digit()" />
-            <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.Seprate3Digit()" />
-            <GridColumn TEntity="Product" Field="t => t.OutofStock.ToString()">
+            <GridColumn Field="t => t.ProductCategory.Title" Title="گروه غذا" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Field="t => t.Price.Seprate3Digit()" />
+            <GridColumn Field="t => t.PriceOuterBound.Seprate3Digit()" />
+            <GridColumn Field="t => t.OutofStock.ToString()">
                 <Template>
                     <CheckBox TValue="bool" Value="context.Data.OutofStock" ValueChanged="async value =>
                         {
@@ -21,7 +21,7 @@
                         }" />
                     </Template>
                 </GridColumn>
-                <GridCommandColumns TEntity="Product" />
+                <GridCommandColumns/>
             </Columns>
         </DataGrid>
         <Window @ref="UpsertWindow" Title="محصول" Style="width:500px">

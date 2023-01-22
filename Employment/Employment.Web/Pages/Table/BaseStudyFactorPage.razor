@@ -17,9 +17,9 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="BaseStudyFactor" Search="SearchData">
         <Columns>
-            <GridColumn TEntity="BaseStudyFactor" Field="t => t.BaseStudy.FaText()" />
-            <GridColumn TEntity="BaseStudyFactor" Field="t => t.Factor" />
-            <GridCommandColumns TEntity="BaseStudyFactor" />
+            <GridColumn Field="t => t.BaseStudy.FaText()" />
+            <GridColumn Field="t => t.Factor" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="ضریب مدرک تحصیلی" Style="width:450px">

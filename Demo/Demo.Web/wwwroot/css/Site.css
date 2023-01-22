@@ -16,12 +16,18 @@
 .fa-male, .fa-female {
     color: #494949!important;
     font-size: 24px!important;
+}
+.c-pdf-continner {
+    overflow: hidden;
+}
 
-}
-.c-categories .c-category {
-    padding:5px;
-    cursor:pointer;
-}
+    .c-pdf-continner iframe {
+        margin: -125px -22px -22px -80px;
+    }
+    .c-categories .c-category {
+        padding: 5px;
+        cursor: pointer;
+    }
     .c-categories .c-category:nth-child(2n+1) {
         background-color: #e2e6ee;
     }
