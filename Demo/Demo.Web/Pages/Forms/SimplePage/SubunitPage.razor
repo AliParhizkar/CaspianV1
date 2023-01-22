@@ -17,10 +17,10 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Subunit" Search="SearchData" ConditionExpr="t => t.MainUnitId == MainUnitId" TableHeight="350">
         <Columns>
-            <GridColumn TEntity="Subunit" Field="t => t.Title" />
-            <GridColumn TEntity="Subunit" Field="t => t.Factor.Seprate3Digit()" />
-            <GridColumn TEntity="Subunit" Field="t => t.ActiveType.FaText()" />
-            <GridCommandColumns TEntity="Subunit" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Factor.Seprate3Digit()" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="واحد فرعی" Style="width:450px"

@@ -37,9 +37,9 @@
     </div>
     <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400" HideInsertIcon>
         <Columns>
-            <GridColumn TEntity="Product" Field="t => t.ProductCategory.Title" Title="گروه محصول" />
-            <GridColumn TEntity="Product" Field="t => t.Title" />
-            <GridColumn TEntity="Product" Field="t => t.Price.ToString()" style="width:150px;">
+            <GridColumn Field="t => t.ProductCategory.Title" Title="گروه محصول" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
                 <Template>
                     <NumericTextBox Focused="selectedId == context.Data.Id && row == 1" TValue="int" Value="toman ? context.Data.Price / 10 : context.Data.Price" ValueChanged="value => PriceChanged(context.Data, value)"
                                     @onkeyup="async e =>
@@ -48,7 +48,7 @@
                                 }" />
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.ToString()" style="width:150px;">
+            <GridColumn Field="t => t.PriceOuterBound.ToString()" style="width:150px;">
                 <Template>
                     <NumericTextBox Focused="selectedId == context.Data.Id && row == 2" TValue="int" Value="toman ? context.Data.PriceOuterBound / 10 : context.Data.PriceOuterBound" ValueChanged="value => PriceOuterbindChanged(context.Data, value)"
                                     @onkeyup="async e =>

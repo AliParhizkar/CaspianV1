@@ -17,23 +17,23 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Rule" ConditionExpr="t => t.SystemKind == Subsystem" Search="SearchData" TableHeight="400">
         <Columns>
-            <GridColumn TEntity="Rule" Field="t => t.Title" />
-            <GridColumn TEntity="Rule" Field="t => t.ResultType.FaText()" Title="نوع خروجی" />
-            <GridColumn TEntity="Rule" Field="t => t.Priority" />
-            <GridColumn TEntity="Rule" Field="t => t.IsValid" Title="نهایی" />
-            <GridColumn TEntity="Rule" Title="ایجاد" style="width:80px">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ResultType.FaText()" Title="نوع خروجی" />
+            <GridColumn Field="t => t.Priority" />
+            <GridColumn Field="t => t.IsValid" Title="نهایی" />
+            <GridColumn Title="ایجاد" style="width:80px">
                 <Template>
                     <a href="/Engine/RuleEngine/@(context.Data.Id)" target="_blank">...</a>
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="Rule" Title="بررسی" style="width:60px">
+            <GridColumn Title="بررسی" style="width:60px">
                 <Template>
                     <span class="c-btn c-primary r-check" @onclick="async () => await SetPriority(context.Data.Id)">
                         <i class="fa fa-check"></i>
                     </span>
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="Rule" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" OnOpen="() => { UpsertData.SystemKind = Subsystem; }" Title="فرمول" Style="width:400px">

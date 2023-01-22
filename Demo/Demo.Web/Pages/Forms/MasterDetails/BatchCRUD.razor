@@ -95,10 +95,10 @@
         <div style="width:calc(100% - 300px);">
             <DataGrid @ref="Grid" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == MasterId" TableHeight="250" HideInsertIcon>
                 <Columns>
-                    <GridColumn TEntity="OrderDeatil" Field="t => t.Product.ProductCategory.Title" Title="گروه محصول" />
-                    <GridColumn TEntity="OrderDeatil" Field="t => t.Product.Title" Title="محصول" />
-                    <GridColumn TEntity="OrderDeatil" Field="t => t.Price.Seprate3Digit()" Title="قیمت" style="width:90px;" />
-                    <GridColumn TEntity="OrderDeatil" Field="t => t.Count" Title="تعداد" style="width:140px;">
+                    <GridColumn Field="t => t.Product.ProductCategory.Title" Title="گروه محصول" />
+                    <GridColumn Field="t => t.Product.Title" Title="محصول" />
+                    <GridColumn Field="t => t.Price.Seprate3Digit()" Title="قیمت" style="width:90px;" />
+                    <GridColumn Field="t => t.Count" Title="تعداد" style="width:140px;">
                         <Template>
                             <IconButton IconType="IconType.Plus" @onclick="async () => await IncCount(context.Data)" />
                             <span style="display:inline-block;width:38px;height:38px;">@context.Data.Count</span>

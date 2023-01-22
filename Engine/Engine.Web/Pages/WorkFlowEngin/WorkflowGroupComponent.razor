@@ -16,28 +16,28 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="WorkflowGroup" TableHeight="400" ConditionExpr="t => t.SubSystemKind == Subsystem">
         <Columns>
-            <GridColumn TEntity="WorkflowGroup" Field="t => t.Title" />
-            <GridColumn TEntity="WorkflowGroup" Title="مدل داده ای" style="width:80px">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Title="مدل داده ای" style="width:80px">
                 <Template>
                     <IconButton Href='@($"/{Subsystem.ToString()}/WorkflowEngine/DataModel/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="WorkflowGroup" Title="ایجاد فرم" style="width:80px">
+            <GridColumn Title="ایجاد فرم" style="width:80px">
                 <Template>
                     <IconButton Href='@($"/{Subsystem.ToString()}/WorkflowEngine/WorkflowForm/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="WorkflowGroup" Title="گردش کار" style="width:80px">
+            <GridColumn Title="گردش کار" style="width:80px">
                 <Template>
                     <IconButton Href='@($"/{Subsystem.ToString()}/WorkflowEngine/Workflow/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="WorkflowGroup" Title="نسخه چاپی" style="width:80px">
+            <GridColumn Title="نسخه چاپی" style="width:80px">
                 <Template>
                     <a href="@($"/Engine/WorkflowReport/{context.Data.Id}")" target="_blank">...</a>
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="WorkflowGroup" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="گروه گردش کار" Style="width:500px" OnOpen="() => {UpsertData.SubSystemKind = Subsystem;}">

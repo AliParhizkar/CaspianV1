@@ -18,7 +18,7 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="ProductCategory" Search="SearchData" TableHeight="300">
         <Columns Context="con">
-            <GridColumn TEntityField="t => t.Title" />
+            <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Code" />
             <GridColumn Field="t => t.ActiveType.FaText()" />
             <GridColumn Field="t => t.Priority.ToString()" style="padding:3px;width:100px;" OrderType="Caspian.Common.OrderType.Asc">

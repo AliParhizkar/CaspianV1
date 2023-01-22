@@ -4,11 +4,11 @@
 <div style="width:95%;margin:10px auto">
     <DataGrid TEntity="Order" HideInsertIcon>
         <Columns>
-            <GridColumn TEntity="Order" AggregateField='t => t.Key.CustomerId == null ? "---" : t.Key.Customer.CustomerType == CustomerType.Real ? t.Key.Customer.FName + " " + t.Key.Customer.LName : t.Key.Customer.CompanyName' Title="مشتری" />
-            <GridColumn TEntity="Order" AggregateField="t => t.Count()" Title="تعداد" />
-            <GridColumn TEntity="Order" AggregateField="t => t.Sum(u => u.TotalAmount)" Title="مجموع" />
-            <GridColumn TEntity="Order" AggregateField="t => t.Max(u => u.TotalAmount)" Title="بیشترین" />
-            <GridColumn TEntity="Order" AggregateField="t => t.Min(u => u.TotalAmount)" Title="کمترین" />
+            <GridColumn AggregateField='t => t.Key.CustomerId == null ? "---" : t.Key.Customer.CustomerType == CustomerType.Real ? t.Key.Customer.FName + " " + t.Key.Customer.LName : t.Key.Customer.CompanyName' Title="مشتری" />
+            <GridColumn AggregateField="t => t.Count()" Title="تعداد" />
+            <GridColumn AggregateField="t => t.Sum(u => u.TotalAmount)" Title="مجموع" />
+            <GridColumn AggregateField="t => t.Max(u => u.TotalAmount)" Title="بیشترین" />
+            <GridColumn AggregateField="t => t.Min(u => u.TotalAmount)" Title="کمترین" />
         </Columns>
     </DataGrid>
 </div>

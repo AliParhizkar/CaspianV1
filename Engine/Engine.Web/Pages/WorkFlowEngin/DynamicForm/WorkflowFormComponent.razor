@@ -16,14 +16,14 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="WorkflowForm" Search="SearchData" TableHeight="400" >
         <Columns>
-            <GridColumn TEntity="WorkflowForm" Field="t => t.Title" Title="عنوان" />
-            <GridColumn TEntity="WorkflowForm" Field="t => t.ColumnCount" Title="تعداد ستونها" />
-            <GridColumn TEntity="WorkflowForm" Title="ایجاد فرم" style="width:80px;">
+            <GridColumn Field="t => t.Title" Title="عنوان" />
+            <GridColumn Field="t => t.ColumnCount" Title="تعداد ستونها" />
+            <GridColumn Title="ایجاد فرم" style="width:80px;">
                 <Template>
                     <a href="/Engine/FormGenerator/@(context.Data.Id)" target="_blank">...</a>
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="WorkflowForm" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:400px" OnOpen="FormOpen">
@@ -62,7 +62,6 @@
                         </td>
                     </tr>
                 </table>
-
             </CaspianForm>
         </Content>
     </Window>

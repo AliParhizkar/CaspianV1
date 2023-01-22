@@ -38,8 +38,8 @@
             </div>
             <DataGrid @ref="CrudGrid" TEntity="ReportParam" HidePageSize Search="SearchData" HideInsertIcon OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 1); }">
                 <Columns>
-                    <GridColumn TEntity="ReportParam" Field="t => t.RuleId != null ? t.Rule.Title : t.DynamicParameterId != null ? t.DynamicParameter.Title : t.TitleEn" />
-                    <GridCommandColumns TEntity="ReportParam" HideEdit />
+                    <GridColumn Field="t => t.RuleId != null ? t.Rule.Title : t.DynamicParameterId != null ? t.DynamicParameter.Title : t.TitleEn" />
+                    <GridCommandColumns HideEdit />
                 </Columns>
             </DataGrid>
         </div>
@@ -63,7 +63,7 @@
             <DataGrid @ref="grid2" TEntity="ReportParam" Search="SearchData" HideInsertIcon HidePageSize
                   OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 2); }">
                 <Columns>
-                    <GridColumn TEntity="ReportParam" Field="t => t.TitleEn">
+                    <GridColumn Field="t => t.TitleEn">
                         <span>@ReportFieldName(context.Data.TitleEn)</span>
                     </GridColumn>
                 </Columns>
@@ -90,7 +90,7 @@
             <DataGrid  @ref="grid3" TEntity="ReportParam" Search="SearchData" HideInsertIcon HidePageSize
                   OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 3); }">
                 <Columns>
-                    <GridColumn TEntity="ReportParam" Field="t => t.TitleEn">
+                    <GridColumn Field="t => t.TitleEn">
                         <span>@ReportFieldName(context.Data.TitleEn)</span>
                     </GridColumn>
                 </Columns>

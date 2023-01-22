@@ -13,8 +13,8 @@
     }
     <DataGrid @ref="Grid" TEntity="Product" TableHeight="200" HidePageSize>
         <Columns>
-            <GridColumn TEntity="Product" Field="t => t.ProductCategory.Title" Title="گروه غذا" />
-            <GridColumn TEntity="Product" Field="t => t.Title" />
+            <GridColumn Field="t => t.ProductCategory.Title" Title="گروه غذا" />
+            <GridColumn Field="t => t.Title" />
         </Columns>
     </DataGrid>
 </div>

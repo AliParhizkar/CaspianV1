@@ -34,9 +34,9 @@
     <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400" HideInsertIcon
               OnPageChanged="MangeControlsOnLastPage">
         <Columns>
-            <GridColumn TEntity="Product" Field="t => t.ProductCategory.Title" Title="گروه محصول" />
-            <GridColumn TEntity="Product" Field="t => t.Title" />
-            <GridColumn TEntity="Product" Field="t => t.Price.ToString()" style="width:150px;">
+            <GridColumn Field="t => t.ProductCategory.Title" Title="گروه محصول" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
                 <Template>
                     <NumericTextBox @ref="PriceTextBox" TValue="int" @bind-Value="context.Data.Price"
                                     @onkeyup="async e =>
@@ -45,7 +45,7 @@
                                 }" />
                 </Template>
             </GridColumn>
-            <GridColumn TEntity="Product" Field="t => t.PriceOuterBound.ToString()" style="width:150px;">
+            <GridColumn Field="t => t.PriceOuterBound.ToString()" style="width:150px;">
                 <Template>
                     <NumericTextBox @ref="PriceOuterBoundTextBox" TValue="int" @bind-Value="context.Data.PriceOuterBound"
                                     @onkeyup="async e =>

@@ -17,15 +17,15 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Workflow" TableHeight="400" ConditionExpr="t => t.WorkflowGroupId == GroupId">
         <Columns>
-            <GridColumn TEntity="Workflow" Field="t => t.Title" />
-            <GridColumn TEntity="Workflow" Field="t => t.DataModel.Title" Title="عنوان مدل داده ای" />
-            <GridColumn TEntity="Workflow" Field="t => t.DataModel.Name" Title="نام مدل داده ای" />
-            <GridColumn TEntity="Workflow" Title="ایجاد گردش" style="width:80px">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.DataModel.Title" Title="عنوان مدل داده ای" />
+            <GridColumn Field="t => t.DataModel.Name" Title="نام مدل داده ای" />
+            <GridColumn Title="ایجاد گردش" style="width:80px">
                 <Template>
                     <a href="/Engine/WorkflowGenerator/@(context.Data.Id)" target="_blank">...</a>
                 </Template>
             </GridColumn>
-            <GridCommandColumns TEntity="Workflow" />
+            <GridCommandColumns/>
         </Columns>
     </DataGrid>
     <Window @ref="UpsertWindow" Title="گردش کار" Style="width:500px"
