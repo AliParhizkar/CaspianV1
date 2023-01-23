@@ -1,0 +1,9 @@
+﻿@page "/Kartable/UserManagement/RoleAccessTree/{RoleId:int}"
+
+<RoleAccessTreeComponent SubSystem="SubSystemKind.Kartable" RoleId="RoleId" />
+
+@code
+{
+    [Parameter]
+    public int RoleId { get; set; }
+}

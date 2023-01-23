@@ -1,4 +1,4 @@
-﻿@page "/Employment/"
+﻿@page "/Kartable/"
 @namespace Demo.Web.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
@@ -10,9 +10,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Employment</title>
+    <title>Kartable</title>
     <base href="~/" />
-    <link href="/_content/Employment.Web/css/site.css" rel="stylesheet" />
+    <link href="/_content/Kartable.Web/css/site.css" rel="stylesheet" />
     <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/site.css" rel="stylesheet" />
     <link href="/_content/UIComponent/Content/2011.1.315/telerik.common1.css" rel="stylesheet" type="text/css" />
@@ -51,13 +51,13 @@
         @{
             var url = this.Request.Path.Value;
         }
-        @if (url.StartsWith("/Employment/Engine"))
+        @if (url.StartsWith("/Kartable/Engine"))
         {
             <component type="typeof(Caspian.Engine.Shared.App)" render-mode="Server" />
         }
         else
         {
-            <component type="typeof(Employment.Web.App)" render-mode="Server" />
+            <component type="typeof(Kartable.Web.App)" render-mode="Server" />
         }
     </div>
     <div id="blazor-error-ui">

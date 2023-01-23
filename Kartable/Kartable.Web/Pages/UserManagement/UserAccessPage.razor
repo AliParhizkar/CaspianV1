@@ -1,0 +1,9 @@
+﻿@page "/Kartable/UserManagement/UserAccess/{UserId:int}"
+
+<UserAccessComponent MasterId="UserId" SubSystem="SubSystemKind.Kartable" />
+
+@code
+{
+    [Parameter]
+    public int UserId { get; set; }
+}

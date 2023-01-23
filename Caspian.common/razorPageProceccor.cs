@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Text;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Linq;
 
-namespace Caspian.common
+namespace Caspian.Common
 {
     public class RazorPageProceccor
     {

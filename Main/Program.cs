@@ -51,6 +51,7 @@ app.MapDefaultControllerRoute();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.MapFallbackToPage("/Employment/{*path:nonfile}", "/_Employment");
+app.MapFallbackToPage("/Kartable/{*path:nonfile}", "/_Kartable");
 app.MapFallbackToPage("/Demo/{*path:nonfile}", "/_Demo");
 app.MapFallbackToPage("/Engine/{*path:nonfile}", "/_Engine");
 app.Run();

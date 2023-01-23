@@ -40,12 +40,18 @@
     <ProjectReference Include="..\Engine\Engine.Model\Engine.Model.csproj" />
     <ProjectReference Include="..\Engine\Engine.Service\Engine.Service.csproj" />
     <ProjectReference Include="..\Engine\Engine.Web\Engine.Web.csproj" />
+    <ProjectReference Include="..\Kartable\Kartable.Model\Kartable.Model.csproj" />
+    <ProjectReference Include="..\Kartable\Kartable.Service\Kartable.Service.csproj" />
+    <ProjectReference Include="..\Kartable\Kartable.Web\Kartable.Web.csproj" />
     <ProjectReference Include="..\UIComponent\UIComponent.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="FluentValidation">
       <HintPath>..\..\..\..\.nuget\packages\fluentvalidation\9.4.0\lib\net5.0\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\6.0.5\lib\net6.0\Microsoft.EntityFrameworkCore.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -11,11 +11,23 @@ namespace Caspian.Common
         [EnumField("Engin")]
         Engine = 1,
 
+        /// <summary>
+        /// دمو
+        /// </summary>
         [EnumField("دمو")]
         Demo,
 
+        /// <summary>
+        /// کارگزینی
+        /// </summary>
         [EnumField("کارگزینی")]
-        Employment
+        Employment,
+
+        /// <summary>
+        /// کارتابل
+        /// </summary>
+        [EnumField("کارتابل")]
+        Kartable
     }
 
     public static class SubSystemExt
