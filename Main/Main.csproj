@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles> 
+    <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles> 
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,13 +20,11 @@
 
   <ItemGroup>
     <PackageReference Include="Extensions.EntityFrameworkCore.SqlServer.Bulk" Version="6.0.0" />
-    <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Stimulsoft.Reports.Web.NetCore" Version="2020.1.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +41,9 @@
     <ProjectReference Include="..\Kartable\Kartable.Model\Kartable.Model.csproj" />
     <ProjectReference Include="..\Kartable\Kartable.Service\Kartable.Service.csproj" />
     <ProjectReference Include="..\Kartable\Kartable.Web\Kartable.Web.csproj" />
+    <ProjectReference Include="..\Payment\Payment.Model\Payment.Model.csproj" />
+    <ProjectReference Include="..\Payment\Payment.Service\Payment.Service.csproj" />
+    <ProjectReference Include="..\Payment\Payment.Web\Payment.Web.csproj" />
     <ProjectReference Include="..\UIComponent\UIComponent.csproj" />
   </ItemGroup>
 

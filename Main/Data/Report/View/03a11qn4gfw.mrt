@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StiSerializer version="1.02" type="Flex" application="StiReport">
+  <Dictionary Ref="351" type="Dictionary" isKey="true">
+    <BusinessObjects isList="true" count="1">
+      <list Ref="352" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+        <Alias>list</Alias>
+        <BusinessObjects isList="true" count="0" />
+        <Category />
+        <Columns isList="true" count="6">
+          <value>Rank,System.Int32</value>
+          <value>DynamicParam12,System.String</value>
+          <value>DynamicParam21,System.String</value>
+          <value>DynamicParam17,System.String</value>
+          <value>DynamicParam14,System.String</value>
+          <value>Item,System.Object</value>
+        </Columns>
+        <Dictionary isRef="351" />
+        <Guid>d7b17d409a7f4e1d928eda43c95fe5be</Guid>
+        <Name>list</Name>
+      </list>
+    </BusinessObjects>
+    <Databases isList="true" count="0" />
+    <DataSources isList="true" count="0" />
+    <Relations isList="true" count="0" />
+    <Report isRef="0" />
+    <Variables isList="true" count="6">
+      <value>,Date,Date,System.String,,False,False</value>
+      <value>,FName,FName,System.String,,False,False</value>
+      <value>,LName,LName,System.String,,False,False</value>
+      <value>,FLName,FLName,System.String,,False,False</value>
+      <value>,UserId,UserId,System.String,,False,False</value>
+      <value>,NatinalCode,NatinalCode,System.String,,False,False</value>
+    </Variables>
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings isList="true" count="0" />
+  <MetaTags isList="true" count="0" />
+  <Pages isList="true" count="1">
+    <Page4 Ref="347" type="Page" isKey="true">
+      <Border>None;[0:0:0];0;Solid;False;4;[0:0:0]</Border>
+      <Brush>Transparent</Brush>
+      <Components isList="true" count="3">
+        <ReportTitleBand1 Ref="348" type="ReportTitleBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21/005,1/643</ClientRectangle>
+          <Components isList="true" count="0" />
+          <Conditions isList="true" count="0" />
+          <Name>ReportTitleBand1</Name>
+          <Page isRef="347" />
+          <Parent isRef="347" />
+        </ReportTitleBand1>
+        <HeaderBand1 Ref="349" type="HeaderBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21/005,0/981</ClientRectangle>
+          <Components isList="true" count="0" />
+          <Conditions isList="true" count="0" />
+          <Name>HeaderBand1</Name>
+          <Page isRef="347" />
+          <Parent isRef="347" />
+        </HeaderBand1>
+        <DataBand1 Ref="350" type="DataBand" isKey="true">
+          <DataLevel>1</DataLevel>
+          <NewPageBefore>false</NewPageBefore>
+          <NewPageAfter>false</NewPageAfter>
+          <Brush>Transparent</Brush>
+          <BusinessObjectGuid>d7b17d409a7f4e1d928eda43c95fe5be</BusinessObjectGuid>
+          <ClientRectangle>0,0,21/005,0/981</ClientRectangle>
+          <Components isList="true" count="0" />
+          <Conditions isList="true" count="0" />
+          <Name>DataBand1</Name>
+          <Page isRef="347" />
+          <Parent isRef="347" />
+        </DataBand1>
+      </Components>
+      <Conditions isList="true" count="0" />
+      <Guid>3f7f0c9730b145ee9132cfdedc3c8ccd</Guid>
+      <Margins>0,0,0,0</Margins>
+      <Name>Page4</Name>
+      <PageType>0</PageType>
+      <PageWidth>21.005</PageWidth>
+      <PageHeight>4.142857142857143</PageHeight>
+      <Report isRef="0" />
+      <Watermark Ref="9998" type="Stimulsoft.Report.Components.StiWatermark" isKey="true">
+        <Font>Arial,100</Font>
+        <TextBrush>[50:0:0:0]</TextBrush>
+      </Watermark>
+    </Page4>
+  </Pages>
+  <PrinterSettings Ref="9999" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
+  <ReportAlias>Report</ReportAlias>
+  <ReportChanged>5/3/2015 4:05:02 PM</ReportChanged>
+  <ReportCreated>5/1/2015 7:31:06 PM</ReportCreated>
+  <ReportFile>D:\e.mrt</ReportFile>
+  <ReportGuid>7a59e6f3323042d4848703beddfe3e7b</ReportGuid>
+  <ReportName>ReportName</ReportName>
+  <ReportUnit>Centimeters</ReportUnit>
+  <ReportVersion>2012.1.1300</ReportVersion>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles isList="true" count="0" />
+</StiSerializer>

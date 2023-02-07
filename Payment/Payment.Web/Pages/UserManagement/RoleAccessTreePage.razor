@@ -1,0 +1,9 @@
+﻿@page "/Payment/UserManagement/RoleAccessTree/{RoleId:int}"
+
+<RoleAccessTreeComponent SubSystem="SubSystemKind.Payment" RoleId="RoleId" />
+
+@code
+{
+    [Parameter]
+    public int RoleId { get; set; }
+}

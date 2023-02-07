@@ -35,11 +35,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponent", "UIComponent\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kartable", "Kartable", "{A490F2B2-9D82-4195-AF2C-06616EA99E19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartable.Model", "Kartable\Kartable.Model\Kartable.Model.csproj", "{A4CA1BC8-6256-4C98-97D0-E41DF5406E4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kartable.Model", "Kartable\Kartable.Model\Kartable.Model.csproj", "{A4CA1BC8-6256-4C98-97D0-E41DF5406E4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartable.Service", "Kartable\Kartable.Service\Kartable.Service.csproj", "{F7C46466-AD72-4A57-9B85-459A84FD2CCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kartable.Service", "Kartable\Kartable.Service\Kartable.Service.csproj", "{F7C46466-AD72-4A57-9B85-459A84FD2CCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartable.Web", "Kartable\Kartable.Web\Kartable.Web.csproj", "{5A489A49-6781-45AC-A347-4180465785B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kartable.Web", "Kartable\Kartable.Web\Kartable.Web.csproj", "{5A489A49-6781-45AC-A347-4180465785B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payment", "Payment", "{3A50D5BE-747A-4117-AA8C-58E3FAE48682}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.Model", "Payment\Payment.Model\Payment.Model.csproj", "{C662F536-8D69-4F74-8F19-BE9318768F16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.Service", "Payment\Payment.Service\Payment.Service.csproj", "{BE357D6D-3EB0-4987-865B-FD7AAC2CDB49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.Web", "Payment\Payment.Web\Payment.Web.csproj", "{972C3FA5-9CA0-427B-ACBF-38382FB92B0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,6 +115,18 @@ Global
 		{5A489A49-6781-45AC-A347-4180465785B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A489A49-6781-45AC-A347-4180465785B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A489A49-6781-45AC-A347-4180465785B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C662F536-8D69-4F74-8F19-BE9318768F16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C662F536-8D69-4F74-8F19-BE9318768F16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C662F536-8D69-4F74-8F19-BE9318768F16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C662F536-8D69-4F74-8F19-BE9318768F16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE357D6D-3EB0-4987-865B-FD7AAC2CDB49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE357D6D-3EB0-4987-865B-FD7AAC2CDB49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE357D6D-3EB0-4987-865B-FD7AAC2CDB49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE357D6D-3EB0-4987-865B-FD7AAC2CDB49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{972C3FA5-9CA0-427B-ACBF-38382FB92B0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{972C3FA5-9CA0-427B-ACBF-38382FB92B0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{972C3FA5-9CA0-427B-ACBF-38382FB92B0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{972C3FA5-9CA0-427B-ACBF-38382FB92B0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,6 +144,9 @@ Global
 		{A4CA1BC8-6256-4C98-97D0-E41DF5406E4A} = {A490F2B2-9D82-4195-AF2C-06616EA99E19}
 		{F7C46466-AD72-4A57-9B85-459A84FD2CCC} = {A490F2B2-9D82-4195-AF2C-06616EA99E19}
 		{5A489A49-6781-45AC-A347-4180465785B2} = {A490F2B2-9D82-4195-AF2C-06616EA99E19}
+		{C662F536-8D69-4F74-8F19-BE9318768F16} = {3A50D5BE-747A-4117-AA8C-58E3FAE48682}
+		{BE357D6D-3EB0-4987-865B-FD7AAC2CDB49} = {3A50D5BE-747A-4117-AA8C-58E3FAE48682}
+		{972C3FA5-9CA0-427B-ACBF-38382FB92B0A} = {3A50D5BE-747A-4117-AA8C-58E3FAE48682}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {02812EE1-F36A-451A-B0C6-DC5691FE5C75}

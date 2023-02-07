@@ -3,18 +3,18 @@ using System.Security.Claims;
 
 namespace Main
 {
-    public class CustomAuthStateProvider: AuthenticationStateProvider
-    {
-        public override Task<AuthenticationState> GetAuthenticationStateAsync()
-        {
-            var identity = new ClaimsIdentity(new[]
-            {
-            new Claim(ClaimTypes.Name, "mrfibuli"),
-        }, "Fake authentication type");
+    //public class CustomAuthStateProvider: AuthenticationStateProvider
+    //{
+    //    public override Task<AuthenticationState> GetAuthenticationStateAsync()
+    //    {
+    //        var identity = new ClaimsIdentity(new[]
+    //        {
+    //        new Claim(ClaimTypes.Name, "mrfibuli"),
+    //    }, "Fake authentication type");
 
-            var user = new ClaimsPrincipal(identity);
+    //        var user = new ClaimsPrincipal(identity);
 
-            return Task.FromResult(new AuthenticationState(user));
-        }
-    }
+    //        return Task.FromResult(new AuthenticationState(user));
+    //    }
+    //}
 }

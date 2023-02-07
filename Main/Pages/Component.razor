@@ -36,12 +36,9 @@
             while (await stream.ReadAsync(buffer) is int read && read > 0)
             {
                 uploadedFile.UploadedBytes += read;
-
-                // TODO Do something with the file chunk, such as save it
-                // to a database or a local file system
                 await using var readData = new MemoryStream(buffer.AsMemory().Slice(0, read).ToArray());
-                var path = "f:\\Publish.rar";
-                using FileStream fs = File.Exists(path) ? File.Open(path, FileMode.Append) : File.Create(path); ;
+                var path = "\\\\Desktop-pkup3d4\\mssqlserver\\CaspianDocuments\\CaspianDir\\" + file.Name;
+                using FileStream fs = File.Exists(path) ? File.Open(path, FileMode.Append) : File.Create(path);
                 readData.WriteTo(fs);
                 await fs.FlushAsync();
             }

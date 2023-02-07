@@ -21,8 +21,9 @@ namespace ReportUiModels
             GuId = element.Element("Guid").Value;
             this.BackGroundColor = new Color(element.Element("Brush").Value);
             PageType = (ReportPageType)Convert.ToInt32(element.Element("PageType").Value);
-            Width = Convert.ToDecimal(element.Element("PageWidth").Value);
-            Height = Convert.ToDecimal(element.Element("PageHeight").Value);
+            var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+            Width = Convert.ToDecimal(element.Element("PageWidth").Value.Replace('.', decimalDigits));
+            Height = Convert.ToDecimal(element.Element("PageHeight").Value.Replace('.', decimalDigits));
             var bonds = element.Element("Components").Nodes().Where(t => t.NodeType != XmlNodeType.Text);
             //var test = bonds.Select(t => t.NodeType);
             Bonds = new List<Bond>();
@@ -125,17 +126,18 @@ namespace ReportUiModels
 
         public override string GetJson()
         {
-            var str = new StringBuilder("{" + "height:" + Height + ",width:" + Width + ",pageType:" + PageType.ConvertToInt());
+            var str = new StringBuilder("{" + "height:" + Height.ToJsonDecimal() + 
+                ",width:" + Width.ToJsonDecimal() + ",pageType:" + PageType.ConvertToInt());
             if (LeftMargin > 0)
-                str.Append(",leftMargin:" + LeftMargin);
+                str.Append(",leftMargin:" + LeftMargin.ToJsonDecimal());
             if (IsSubReport)
                 str.Append(",isSubReport:" + "true");
             if (RightMargin > 0)
-                str.Append(",RightMargin:" + RightMargin);
+                str.Append(",RightMargin:" + RightMargin.ToJsonDecimal());
             if (TopMargin > 0)
-                str.Append(",topMargin:" + TopMargin);
+                str.Append(",topMargin:" + TopMargin.ToJsonDecimal());
             if (BottmMargin > 0)
-                str.Append(",bottmMargin:" + BottmMargin);
+                str.Append(",bottmMargin:" + BottmMargin.ToJsonDecimal());
             if (Border != null)
                 str.Append(",border:" + Border.GetJson());
             if (BackGroundColor != null)

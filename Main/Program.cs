@@ -4,7 +4,6 @@ using Caspian.Engine.Web;
 using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
-using Caspian.common;
 
 var builder = WebApplication.CreateBuilder(args);
 //new RazorPageProceccor().Proccess();
@@ -13,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });//builder.Services.AddSingleton<FormAppState>();
 builder.Services.AddSingleton<WindowAppState>();
+builder.Services.AddTransient<PictureBoxService>();
 builder.Services.AddScoped<BatchService>();
 builder.Services.AddSingleton<SingletonMenuService>(t => 
 {
@@ -52,6 +52,7 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.MapFallbackToPage("/Employment/{*path:nonfile}", "/_Employment");
 app.MapFallbackToPage("/Kartable/{*path:nonfile}", "/_Kartable");
+app.MapFallbackToPage("/Payment/{*path:nonfile}", "/_Payment");
 app.MapFallbackToPage("/Demo/{*path:nonfile}", "/_Demo");
 app.MapFallbackToPage("/Engine/{*path:nonfile}", "/_Engine");
 app.Run();

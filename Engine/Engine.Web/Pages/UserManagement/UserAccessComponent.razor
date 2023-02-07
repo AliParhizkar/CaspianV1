@@ -38,7 +38,7 @@
                         </td>
                     </tr>
                 </table>
-                <DataGrid @ref="MemberGrid" TEntity="Menu" HideInsertIcon ConditionExpr="t => t.MenuCategory.SubSystemKind == SubSystem" Search="MemberSearch" TableHeight="330">
+                <DataGrid @ref="MemberGrid" TEntity="Menu" HideInsertIcon ConditionExpr="t => t.SubSystemKind == SubSystem" Search="MemberSearch" TableHeight="330">
                     <Columns>
                         <GridColumn Field="@(t => t.MenuCategory.Title)" Title="منوی فرعی" />
                         <GridColumn Field="t => t.Title" style="width:150px" />

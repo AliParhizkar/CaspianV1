@@ -95,7 +95,7 @@
 @code 
 {
     int myTemoId;
-
+    NumericTextBox<int> txtPrice;
     AutoComplete<Product, int> txtProduct;
 
     protected override async Task OnMasterEntityCreatedAsync()
@@ -111,7 +111,7 @@
             await Grid.ValidateUpsert(mode);
     }
 
-    NumericTextBox<int> txtPrice;
+    
     async Task SetPrice(OrderDeatil detail)
     {
         if (detail.ProductId > 0)

@@ -53,6 +53,11 @@ namespace Caspian.Common
             return str;
         }
 
+        public static string ToJsonDecimal(this decimal value)
+        {
+            return value.ToString().Replace('/', '.');
+        }
+
         public static string ShortString(this TimeSpan time)
         {
             var str = "";

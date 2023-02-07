@@ -2745,9 +2745,7 @@ label{
 .t-state-disabled input {
     background-color: #eaeaea !important;
 }
-.t-state-disabled textarea {
-    background-color: #a9a9a9 !important;
-}
+
 .t-state-disabled .t-dropdown-wrap {
     background-color: #eaeaea !important;
     cursor: not-allowed;

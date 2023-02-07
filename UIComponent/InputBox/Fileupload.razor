@@ -12,13 +12,26 @@
         }
     </div>
 </div>
-@code {
+@code 
+{
+    protected override void OnInitialized()
+    {
+        if (Service != null)
+            Service.Fileupload = this;
+        base.OnInitialized();
+    }
 
     [Parameter]
     public string Title { get; set; } = "...";
 
     [Parameter]
     public string Style { get; set; }
+
+    [Parameter]
+    public PictureBoxService Service { get; set; }
+
+    [Parameter]
+    public int MaxAllowedSize { get; set; } = 512000;
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
@@ -28,8 +41,14 @@
 
     async void ViewFile(InputFileChangeEventArgs arg)
     {
-        
-        if (OnChange.HasDelegate)
+        if (Service != null)
+        {
+            if (OnChange.HasDelegate)
+                throw new CaspianException("خطا: File upload data is in service");
+            if (Service.PictureBox == null)
+                throw new CaspianException("خطا: Picturebox not recognized");
+        } 
+        else if (OnChange.HasDelegate)
             await OnChange.InvokeAsync(arg);
     }
 }

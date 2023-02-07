@@ -27,7 +27,13 @@ namespace Caspian.Common
         /// کارتابل
         /// </summary>
         [EnumField("کارتابل")]
-        Kartable
+        Kartable,
+
+        /// <summary>
+        /// حقوق و دستمزد
+        /// </summary>
+        [EnumField("حقوق و دستمزد")]
+        Payment
     }
 
     public static class SubSystemExt

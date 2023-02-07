@@ -267,7 +267,7 @@ namespace ReportUiModels
 
         public override string GetJson()
         {
-            var str = "{height:" + Height + ",bondType:" + this.BondType.ConvertToInt();
+            var str = "{height:" + Height.ToJsonDecimal() + ",bondType:" + this.BondType.ConvertToInt();
             if (PrintOn.HasValue && PrintOn.Value != PrintOnType.AllPages)
                 str += ",printOn:" + PrintOn.ConvertToInt();
             if (ColumnsCount.HasValue)
