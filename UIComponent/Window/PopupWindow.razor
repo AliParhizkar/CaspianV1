@@ -51,10 +51,16 @@
         await base.OnAfterRenderAsync(firstRender);
     }
 
+    [Parameter]
+    public Func<bool> OnClose { get; set; }
+
     [JSInvokable]
     public async Task HideForm()
     {
-        if (StatusChanged.HasDelegate)
+        var canClosed = true;
+        if (OnClose != null)
+            canClosed = OnClose.Invoke();
+        if (canClosed && StatusChanged.HasDelegate)
             await StatusChanged.InvokeAsync();
     }
 }

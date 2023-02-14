@@ -1,0 +1,246 @@
+﻿@namespace Caspian.UI
+@using System.IO;
+@inject IJSRuntime jSRuntime
+<div style="@Style" class="t-widget t-upload">
+    <Microsoft.AspNetCore.Components.Forms.InputFile @attributes="attrs" OnChange="ViewFile" />
+    <div class="t-content">
+        @if (ChildContent == null)
+        {
+            <button class="c-btn c-primary">@Title</button>
+        }
+        else
+        {
+            @ChildContent
+        }
+    </div>
+</div>
+@code 
+{
+    public Dictionary<string, object> attrs;
+
+    public int FileLength { get; private set; }
+
+    public bool FileUploadFaild { get; private set; }
+
+    [Parameter]
+    public string Title { get; set; } = "...";
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public FileUploadService Service { get; set; }
+
+    [Parameter]
+    public bool Multiple { get; set; }
+
+    [Parameter]
+    public int MaxAllowedSize { get; set; } = 512000;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public int MaxFilesCount { get; set; } = 10;
+
+    [Parameter]
+    public EventCallback<InputFileChangeEventArgs> OnChange { get; set; }
+
+    [Parameter]
+    public Func<InputFileChangeEventArgs, bool> OnStart { get; set; }
+
+    protected override void OnInitialized()
+    {
+        attrs = new Dictionary<string, object>();
+        if (Service != null)
+            Service.Fileupload = this;
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        attrs["class"] = "t-input";
+        if (Multiple)
+            attrs["multiple"] = true;
+        base.OnParametersSet();
+    }
+
+    async Task ViewFile(InputFileChangeEventArgs arg)
+    {
+        if (Service == null && OnChange.HasDelegate)
+            await OnChange.InvokeAsync(arg);
+        if (Service != null)
+        {
+            var result = true;
+            if (OnStart != null)
+                result = OnStart.Invoke(arg);
+            if (result)
+            {
+                if (Multiple)
+                {
+                    if (arg.FileCount == 1)
+                    {
+                        if (arg.File.Size > MaxAllowedSize)
+                            await jSRuntime.InvokeVoidAsync("$.telerik.showMessage", $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.Seprate3Digit()} می باشد.");
+                        else
+                        {
+                            if (OnChange.HasDelegate)
+                                await OnChange.InvokeAsync(arg);
+                            await SaveFiles(arg.File);
+                        }
+                    }
+                    else
+                    {
+                        if (arg.FileCount > MaxFilesCount)
+                            await jSRuntime.InvokeVoidAsync("$.telerik.showMessage", $"شما حداکثر مجاز به انتخاب {MaxFilesCount} فایل برای بارگذاری می باشید.");
+                        else
+                        {
+                            var files = arg.GetMultipleFiles(MaxFilesCount).ToArray();
+                            var flag = true;
+                            foreach(var file in files)
+                                if (file.Size > MaxAllowedSize)
+                                {
+                                    flag = false;
+                                    await jSRuntime.InvokeVoidAsync("$.telerik.showMessage", $" حجم فایل {file.Name} بیش از حجم مجاز ({MaxAllowedSize.Seprate3Digit()}) می باشد.");
+                                    break;
+                                }
+                            if (flag)
+                            {
+                                if (OnChange.HasDelegate)
+                                    await OnChange.InvokeAsync(arg);
+                                await SaveFiles(files);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    var file = arg.File;
+                    if (arg.File.Size > MaxAllowedSize)
+                        await jSRuntime.InvokeVoidAsync("$.telerik.showMessage", $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.Seprate3Digit()} می باشد.");
+                    else
+                    {
+                        if (OnChange.HasDelegate)
+                            await OnChange.InvokeAsync(arg);
+                        await SaveFile(file);
+                    }
+                }
+            }
+        }
+    }
+
+    [Parameter]
+    public string RelatedPath { get; set; }
+
+    [Parameter]
+    public EventCallback<FileUploadData> OnFileUploadCompleted { get; set; }
+
+    [Parameter]
+    public EventCallback<FileUploadData[]> OnFilesUploadCompleted { get; set; }
+
+    async Task SaveFiles(params IBrowserFile[] files)
+    {
+        var filesData = new FileUploadData[files.Length];
+        await using var timer = Service.Progress.Inintialze(files.Select(t => t.Name).ToArray(), files.Select(t => (int)t.Size).ToArray());
+        var index = 0;
+        if (!RelatedPath.EndsWith("/") && !RelatedPath.EndsWith("\\"))
+            RelatedPath += '/';
+        foreach (var file in files)
+        {
+            var uploadedBytes = 0;
+            FileLength = (int)file.Size;
+            var buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(4096);
+            var fileData = new FileUploadData();
+            filesData[index] = fileData;
+            try
+            {
+                using var stream = file.OpenReadStream(100 * 1024 * 1024);
+                var fileName = Path.GetRandomFileName() + Path.GetExtension(file.Name);
+                fileData.ContentType = file.ContentType;
+                fileData.FileId = fileName;
+                fileData.FileName = file.Name;
+                fileData.Status = FileUploadStatus.InProgress;
+                var path = RelatedPath + fileName;
+                while (await stream.ReadAsync(buffer) is int read && read > 0)
+                {
+                    uploadedBytes += read;
+                    Service.Progress.SetData(filesData, uploadedBytes);
+                    await using var readData = new MemoryStream(buffer.AsMemory().Slice(0, read).ToArray());
+                    using FileStream fs = File.Exists(path) ? File.Open(path, FileMode.Append) : File.Create(path);
+                    readData.WriteTo(fs);
+                    await fs.FlushAsync();
+                }
+                fileData.Status = FileUploadStatus.Completed;
+            }
+            catch(Exception ex)
+            {
+                fileData.Status = FileUploadStatus.Failed;
+                var exception = ex;
+                while (exception.InnerException != null)
+                    exception = exception.InnerException;
+                fileData.ErrorMessage = exception.Message;
+            }
+            finally
+            {
+                System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+                StateHasChanged();
+            }
+            index++;
+        }
+        await Service.Progress.UploadCompleted();
+        if (OnFilesUploadCompleted.HasDelegate)
+            await OnFilesUploadCompleted.InvokeAsync(filesData);
+    }
+
+    async Task SaveFile(IBrowserFile file)
+    {
+
+        byte[] buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(4096);
+        await using var timer = Service.Progress.Inintialze(file.Name, (int)file.Size);
+        var fileData = new FileUploadData();
+        FileUploadFaild = false;
+        var uploadedBytes = 0;
+        try
+        {
+            var fileName = Path.GetRandomFileName() + Path.GetExtension(file.Name);
+            fileData.ContentType = file.ContentType;
+            fileData.FileId = fileName;
+            fileData.FileName = file.Name;
+            fileData.Status = FileUploadStatus.InProgress;
+            FileLength = (int)file.Size;
+            using var stream = file.OpenReadStream(100 * 1024 * 1024);
+            if (!RelatedPath.EndsWith("/") && !RelatedPath.EndsWith("\\"))
+                RelatedPath += '/';
+            var path = RelatedPath + fileName;
+
+            while (await stream.ReadAsync(buffer) is int read && read > 0)
+            {
+                uploadedBytes += read;
+                Service.Progress.SetData(uploadedBytes, false);
+                await using var readData = new MemoryStream(buffer.AsMemory().Slice(0, read).ToArray());
+                using FileStream fs = File.Exists(path) ? File.Open(path, FileMode.Append) : File.Create(path);
+                readData.WriteTo(fs);
+                await fs.FlushAsync();
+            }
+            fileData.Status = FileUploadStatus.Completed;
+            await Service.Progress.UploadCompleted();
+        }
+        catch (Exception ex)
+        {
+            fileData.Status = FileUploadStatus.Failed;
+            var exception = ex;
+            while (exception.InnerException != null)
+                exception = exception.InnerException;
+            fileData.ErrorMessage = exception.Message;
+            FileUploadFaild = true;
+            Service.Progress.SetData(0, true);
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+            if (OnFileUploadCompleted.HasDelegate)
+                await OnFileUploadCompleted.InvokeAsync(fileData);
+            StateHasChanged();
+        }
+    }
+}

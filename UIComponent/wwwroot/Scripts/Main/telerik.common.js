@@ -84,13 +84,13 @@
             align = JSON.parse(align);
             switch (align.VAlign) {
                 case 1:
-                    top = 5;
+                    top = 30;
                     break;
                 case 2:
                     top = (windowHeight - height) / 2;
                     break;
                 case 3:
-                    top = windowHeight - height - 10;
+                    top = windowHeight - height + 10;
                     break;
             }
             switch (align.HAlign) {

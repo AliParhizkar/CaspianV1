@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Caspian.UI
 {
@@ -7,6 +8,14 @@ namespace Caspian.UI
         public SelectListItem()
         {
 
+        }
+
+        public static IList<SelectListItem> CreateList(params string[] TextArray)
+        {
+            var list = new List<SelectListItem>();
+            for (var index = 1; index <= TextArray.Length; index++)
+                list.Add(new SelectListItem(index.ToString(), TextArray[index - 1]));
+            return list;
         }
 
         public SelectListItem(string value, string text, bool disabled = false)

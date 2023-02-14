@@ -1,0 +1,106 @@
+﻿@namespace Caspian.UI
+@using System.Threading;
+<div style="@Style" class="c-progress-bar">
+    @if (filesData != null)
+    {
+        foreach(var data in filesData)
+        {
+            var className = data.IsFailed ? "fa fa-times-circle" : data.Value == data.Max ? "fa fa-check-circle" : "c-hidden";
+            <div class="c-progress-item">
+                <span>@data.FileName</span>
+                <progress value="@data.Value" max="@data.Max" />
+                <i class="@className"></i>
+            </div>
+        }
+    }
+    @if (!multiple && fileData != null)
+    {
+        var className = fileData.IsFailed ? "fa fa-times-circle" : fileData.Value == fileData.Max ? "fa fa-check-circle" : "c-hidden";
+        <div class="c-progress-item">
+            <span>@fileData.FileName</span>
+            <progress value="@fileData.Value" max="@fileData.Max" />
+            <i class="@className"></i>
+        </div>
+    }
+</div>
+@code 
+{
+    IList<ProgressData> filesData;
+    ProgressData fileData;
+    bool multiple;
+
+    protected override void OnInitialized()
+    {
+        Service.Progress = this;
+
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    public Timer Inintialze(string fileName, int fileLength)
+    {
+        fileData = new ProgressData()
+            {
+                FileName = fileName,
+                Max = fileLength
+            };
+        multiple = false;
+        var timer = new Timer(_ => InvokeAsync(StateHasChanged));
+        timer.Change(0, 500);
+        return timer;
+    }
+
+    public void SetData(int value, bool faild)
+    {
+        fileData.Value = value;
+        fileData.IsFailed = faild;
+    }
+
+    public async Task UploadCompleted()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public Timer Inintialze(string[] filesName, int[] filesLength)
+    {
+        multiple = true;
+        filesData = new List<ProgressData>();
+        for (var i = 0; i < filesName.Length; i++)
+        {
+            filesData.Add(new ProgressData()
+                {
+                    Max = filesLength[i],
+                    FileName = filesName[i]
+                });
+        }
+
+        var timer = new Timer(_ => InvokeAsync(StateHasChanged));
+        timer.Change(0, 500);
+        return timer;
+    }
+
+    public void SetData(FileUploadData[] files, int progress)
+    {
+        foreach(var file in files.Where(t => t != null))
+        {
+            var data = filesData.Single(t => t.FileName == file.FileName);
+            switch(file.Status)
+            {
+                case FileUploadStatus.Failed:
+                    data.IsFailed = file.Status == FileUploadStatus.Failed;
+                    break;
+                case FileUploadStatus.Completed:
+                    data.Value = data.Max;
+                    break;
+                case FileUploadStatus.InProgress:
+                    data.Value = progress;
+                    break;
+            }
+        }
+    }
+
+    [Parameter]
+    public FileUploadService Service { get; set; }
+}

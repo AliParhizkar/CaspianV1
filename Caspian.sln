@@ -43,11 +43,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kartable.Web", "Kartable\Ka
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payment", "Payment", "{3A50D5BE-747A-4117-AA8C-58E3FAE48682}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.Model", "Payment\Payment.Model\Payment.Model.csproj", "{C662F536-8D69-4F74-8F19-BE9318768F16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.Model", "Payment\Payment.Model\Payment.Model.csproj", "{C662F536-8D69-4F74-8F19-BE9318768F16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.Service", "Payment\Payment.Service\Payment.Service.csproj", "{BE357D6D-3EB0-4987-865B-FD7AAC2CDB49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.Service", "Payment\Payment.Service\Payment.Service.csproj", "{BE357D6D-3EB0-4987-865B-FD7AAC2CDB49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.Web", "Payment\Payment.Web\Payment.Web.csproj", "{972C3FA5-9CA0-427B-ACBF-38382FB92B0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.Web", "Payment\Payment.Web\Payment.Web.csproj", "{972C3FA5-9CA0-427B-ACBF-38382FB92B0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

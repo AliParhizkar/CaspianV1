@@ -1,4 +1,5 @@
-﻿@page "/Demo/PopupWindow"
+﻿
+@page "/Demo/PopupWindow"
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -75,6 +76,13 @@
         </table>
     </div>
 </div>
+<div style="display:table-cell;width:50%;padding-right:40px">
+    <hr />
+    <h4 style="padding-right:40px;">Auto Hide </h4>
+    <div style="padding-right:80px;">
+        <button class="c-btn c-success" @onclick="() => { autoHide = false; autoHideStatus = WindowStatus.Open; }">Show Popup</button>
+    </div>
+</div>
 <PopupWindow @bind-Status="status" HorizontalAlign="hAlign" VerticalAlign="vAlign">
     <div style="width:500px;height:300px;text-align:center;padding-top:30px;">
         <h3>Popup Window</h3>
@@ -97,16 +105,27 @@
         style="width:500px;height:250px;border-radius:150px;top:10px;left:350px;"
     </div>
 </PopupWindow>
+<PopupWindow @bind-Status="autoHideStatus" OnClose="() => autoHide" Style="width:450px;height:200px;top:40px;left:350px;">
+    <div style="padding:50px; 30px 30px 30px">
+        <hr />
+        <div style="padding:0 20px">
+            <CheckBox @bind-Value="autoHide" />
+            <label>Enable auto hide</label>
+        </div>
+    </div>
+</PopupWindow>
 @code 
 {
     int? top;
     int? left;
     int? width;
     int? height;
+    bool autoHide;
 
     WindowStatus status;
     WindowStatus status1;
     WindowStatus status2;
+    WindowStatus autoHideStatus;
     VerticalAlign vAlign = VerticalAlign.Top;
     HorizontalAlign hAlign = HorizontalAlign.Center;
 

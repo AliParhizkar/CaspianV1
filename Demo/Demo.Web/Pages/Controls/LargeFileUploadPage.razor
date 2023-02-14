@@ -1,0 +1,92 @@
+﻿@page "/Demo/LargeFileUpload"
+@inject FileUploadService service
+@namespace Demo.Web.Pages
+<div style="padding:20px 40px 0 0">
+    <h3>Large File Upload</h3>
+</div>
+<div style="display:table;width:90%;margin:0 auto;">
+    <div style="display:table-cell;width:50%;padding-left:40px">
+        <hr />
+        <h4 style="padding-right:80px;">Single File</h4>
+        <table style="width:calc(100% - 75px);margin-right:75px;">
+                <tr>
+                    <td>
+                        <label>حجم مجاز فایل</label>
+                    </td>
+                    <td>
+                        <DropdownList Style="width:200px;" @bind-Value="fileSize" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>بارگذاری فایل</label>
+                    </td>
+                    <td style="text-align:-webkit-center;height:60px">
+                        <Fileupload Service="service" OnChange="ShowProrgres" OnFileUploadCompleted="FileUploadCompleted"
+                                MaxAllowedSize="Convert.ToInt32(filesSize[fileSize - 1] * 1000_000)" RelatedPath="F://Data" />
+                    </td>
+                </tr>
+            </table>
+    </div>
+    <div style="display:table-cell;width:50%;padding-right:40px">
+        <hr />
+        <h4 style="padding-right:40px;">Multiple Files</h4>
+        <table style="width:calc(100% - 75px);margin-right:75px;">
+            <tr>
+                <td>
+                    <label>حجم مجاز فایل</label>
+                </td>
+                <td>
+                    <DropdownList Style="width:200px;" @bind-Value="fileSize1" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>تعداد فایلهای مجاز</label>
+                </td>
+                <td>
+                    <DropdownList Style="width:200px;" @bind-Value="fileCount" Source="@(SelectListItem.CreateList("Two", "Three", "Five", "Eight", "Ten"))" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>بارگذاری فایل</label>
+                </td>
+                <td style="text-align:-webkit-center;height:60px">
+                    <Fileupload Service="service" MaxFilesCount="Convert.ToInt32(fileCounts[fileCount - 1])"
+                                MaxAllowedSize="Convert.ToInt32(filesSize[fileSize1 - 1] * 1000_000)" OnChange="ShowProrgres"
+                                Multiple RelatedPath="F://Data" OnFilesUploadCompleted="FileUploadCompleted" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<PopupWindow @bind-Status="status" OnClose="CloseStatus">
+    <FileUploadProgress Service="service" Style="width:450px;" />
+</PopupWindow>
+@code 
+{
+    int fileSize = 1;
+    int fileSize1 = 1;
+    int fileCount = 1;
+    WindowStatus status;
+    bool canClose;
+    double[] filesSize = new double[] { 0.5, 1, 2, 3, 5, 8, 10, 15, 30, 50 };
+    int[] fileCounts = new int[] { 2, 3, 5, 8, 10 };
+
+    bool CloseStatus()
+    {
+        return canClose;
+    }
+
+    void ShowProrgres(InputFileChangeEventArgs e)
+    {
+        canClose = false;
+        status = WindowStatus.Open;
+    }
+
+    void FileUploadCompleted()
+    {
+        canClose = true;
+    }
+}
