@@ -19,4 +19,11 @@ namespace Caspian.UI
 
         Task ResetGrid();
     }
+
+    public interface IRadioList
+    {
+        Task ChangeValueAsync(object value);
+
+        object GetValue();
+    }
 }

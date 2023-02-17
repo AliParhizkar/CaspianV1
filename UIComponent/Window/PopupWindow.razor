@@ -52,15 +52,12 @@
     }
 
     [Parameter]
-    public Func<bool> OnClose { get; set; }
+    public bool AutoHide { get; set; } = true;
 
     [JSInvokable]
     public async Task HideForm()
     {
-        var canClosed = true;
-        if (OnClose != null)
-            canClosed = OnClose.Invoke();
-        if (canClosed && StatusChanged.HasDelegate)
+        if (AutoHide && StatusChanged.HasDelegate)
             await StatusChanged.InvokeAsync();
     }
 }

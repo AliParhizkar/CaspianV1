@@ -1,5 +1,7 @@
 ﻿@namespace Caspian.UI
 @typeparam TValue
+@attribute [CascadingTypeParameter(nameof(TValue))]
+@implements IRadioList
 <CascadingValue Value="this" Name="RadioLis">
     <span class="t-radios" style="@Style">
         @if (dic != null)
@@ -45,6 +47,20 @@
 
     [Parameter]
     public EventCallback OnChange { get; set; }
+
+    public object GetValue()
+    {
+        return Value;
+    }
+
+    public async Task ChangeValueAsync(object value)
+    {
+        Value = (TValue)Convert.ChangeType(value, typeof(TValue).GetUnderlyingType());
+        if (ValueChanged.HasDelegate)
+            await ValueChanged.InvokeAsync(Value);
+        if (OnChange.HasDelegate)
+            await OnChange.InvokeAsync(Value);
+    }
 
     protected override void OnInitialized()
     {

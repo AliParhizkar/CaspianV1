@@ -99,8 +99,13 @@
         </table>
     </div>
 </div>
+<div style="text-align:center;padding:10px 0">
+    <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Lookup Source</button>
+</div>
+<CreatePdfComponent @bind-Status="status" Title="String Textbox" FileName="StringTextbox.pdf" />
 
 @code {
+    WindowStatus status;
     bool disable;
     string title;
     int maxlength = 12;

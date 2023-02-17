@@ -1,7 +1,7 @@
 ﻿@using System.Text
 @using iTextSharp.text
 @using iTextSharp.text.pdf
-<Window Status="Status" Style="width:950px" StatusChanged="async () => await StatusChanged.InvokeAsync()" Title="Source">
+<Window Status="Status" Style="width:950px" StatusChanged="async () => await StatusChanged.InvokeAsync()" Title="@windowTitle">
     <Content>
         @if (dic.Count > 1)
         {
@@ -30,6 +30,7 @@
 
 @code 
 {
+    string windowTitle;
 
     [Parameter]
     public WindowStatus Status { get; set; }
@@ -47,6 +48,7 @@
             dic.Add(Title1, FileName1);
         if (FileName2.HasValue())
             dic.Add(Title2, FileName2);
+        windowTitle = dic.Count == 1 ? dic.First().Key : "Source";
         base.OnParametersSet();
     }
 

@@ -1,9 +1,6 @@
 ﻿@typeparam TValue
 @inherits LookupPage<Product, TValue>
 @namespace Demo.Web.Pages
-@* <div>
-
-</div>*@
 <div class="c-lookup-page" style="width:380px;">
     @if (Searchable)
     {
@@ -11,7 +8,7 @@
             <StringTextBox @bind-Value="SearchData.Title" placeholder="عنوان" />
         </div>
     }
-    <DataGrid @ref="Grid" TEntity="Product" TableHeight="200" HidePageSize>
+    <DataGrid @ref="Grid" TEntity="Product" Search="SearchData" TableHeight="200" HidePageSize>
         <Columns>
             <GridColumn Field="t => t.ProductCategory.Title" Title="گروه غذا" />
             <GridColumn Field="t => t.Title" />

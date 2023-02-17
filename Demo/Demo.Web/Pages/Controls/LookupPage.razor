@@ -80,11 +80,21 @@
                 <ProductLookupPage TValue="int?" Searchable="searchable"  />
             </AutoComplete>
         </div>
+        <div style="text-align:center;padding:10px 0">
+            <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Autocomplete Source</button>
+        </div>
+        <div style="text-align:center;padding:10px 0">
+            <button @onclick="() => statusLookup = WindowStatus.Open" class="c-btn c-primary">Lookup Source</button>
+        </div>
     </div>
 </div>
+<CreatePdfComponent @bind-Status="status" Title="Autocomplete" FileName="Autocomplete.pdf" />
+<CreatePdfComponent @bind-Status="statusLookup" Title="Lookup" FileName="Lookup.pdf" />
 
 @code
 {
+    WindowStatus status;
+    WindowStatus statusLookup;
     int? id1;
     int? Id;
     bool disabled;

@@ -40,9 +40,14 @@
         <span>لطفا حداقل یک آیتم را برای نمایش Tab panel انتخاب نمائید</span>
     }
 </div>
+<div style="text-align:center;padding-top:15px;">
+    <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Source</button>
+</div>
+<CreatePdfComponent @bind-Status="status" Title="TabPanel" FileName="TabPanel.pdf" />
 
 @code
 {
+    WindowStatus status;
     int selectedId = 1;
     int tabIndex = 1;
     IDictionary<int, string> dic = new Dictionary<int, string>();

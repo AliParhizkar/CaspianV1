@@ -1,8 +1,9 @@
 ﻿@namespace Caspian.UI
 @typeparam TValue
 @{
+    var value = RadioLis.GetValue();
     var className = "t-radio";
-    var selected = RadioLis != null && RadioLis.Value != null && RadioLis.Value.Equals(Value);
+    var selected = RadioLis != null && value != null && value.Equals(Value);
     if (Disabled)
         className += " t-disabled";
     if (selected)
@@ -30,16 +31,12 @@
         if (!Disabled)
         {
             await ValueChanged.InvokeAsync(Value);
-            await RadioLis?.ValueChanged.InvokeAsync(Value);
-            await RadioLis?.OnChange.InvokeAsync();
+            await RadioLis.ChangeValueAsync(Value);
         }
     }
 
     [CascadingParameter(Name = "RadioLis")]
-    public RadioList<TValue> RadioLis { get; set; }
-
-    [CascadingParameter(Name = "ForTest")]
-    public int ForTest { get; set; }
+    public IRadioList RadioLis { get; set; }
 
     [Parameter]
     public TValue Value { get; set; }

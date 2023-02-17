@@ -32,8 +32,13 @@
         </tr>
     </table>
 </div>
+<div style="text-align:center">
+    <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Lookup Source</button>
+</div>
+<CreatePdfComponent @bind-Status="status" Title="Multi Select" Title1="Enume" FileName="MultiSelect.pdf" FileName1="DayOfPersianWeek.pdf" />
 @code
 {
+    WindowStatus status;
     bool disabled;
     DayOfPersianWeek1 day;
     DayOfPersianWeek1 forDisable = (DayOfPersianWeek1)42;

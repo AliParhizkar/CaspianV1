@@ -107,7 +107,12 @@
         </Window>
     </Content>
 </Window>
+<div style="text-align:center">
+    <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">Source</button>
+</div>
+<CreatePdfComponent @bind-Status="pdfStatus" Title="Window" FileName="Window.pdf" />
 @code {
+    WindowStatus pdfStatus;
     WindowStatus Status;
     WindowStatus Status1;
     WindowStatus Status2;

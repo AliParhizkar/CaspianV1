@@ -1,0 +1,21 @@
+﻿@page "/Demo/Grid-Search"
+
+<div style="width:90%;margin:10px auto">
+    <fieldset>
+        <legend>ِDefault Search</legend>
+
+    </fieldset>
+    <DataGrid HideInsertIcon TEntity="Product" TableHeight="350">
+        <Columns>
+            <GridColumn Field="@(t => t.ProductCategory.Title)" Title="گروه محصول" />
+            <GridColumn Field="@(t => t.Title)" Title="محصول" />
+            <GridColumn Field="@(t => t.Price.Seprate3Digit())" Title="قیمت" />
+            <GridColumn Field="@(t => t.OutofStock)" Title="اتمام فروش" />
+            <GridColumn Field="@(t => t.ActiveType.FaText())" Title="وضعیت" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code {
+
+}

@@ -1,4 +1,5 @@
 ﻿@page "/Demo/LargeFileUpload"
+@inject IHostEnvironment host
 @inject FileUploadService service
 @namespace Demo.Web.Pages
 <div style="padding:20px 40px 0 0">
@@ -23,7 +24,7 @@
                     </td>
                     <td style="text-align:-webkit-center;height:60px">
                         <Fileupload Service="service" OnChange="ShowProrgres" OnFileUploadCompleted="FileUploadCompleted"
-                                MaxAllowedSize="Convert.ToInt32(filesSize[fileSize - 1] * 1000_000)" RelatedPath="F://Data" />
+                                MaxAllowedSize="Convert.ToInt32(filesSize[fileSize - 1] * 1000_000)" RelatedPath="@relatedPath" />
                     </td>
                 </tr>
             </table>
@@ -55,38 +56,48 @@
                 <td style="text-align:-webkit-center;height:60px">
                     <Fileupload Service="service" MaxFilesCount="Convert.ToInt32(fileCounts[fileCount - 1])"
                                 MaxAllowedSize="Convert.ToInt32(filesSize[fileSize1 - 1] * 1000_000)" OnChange="ShowProrgres"
-                                Multiple RelatedPath="F://Data" OnFilesUploadCompleted="FileUploadCompleted" />
+                                Multiple RelatedPath="@relatedPath" OnFilesUploadCompleted="FileUploadCompleted" />
                 </td>
             </tr>
         </table>
     </div>
 </div>
-<PopupWindow @bind-Status="status" OnClose="CloseStatus">
+<div style="text-align:center;padding-top:20px;">
+    <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">Lookup Source</button>
+</div>
+<PopupWindow @bind-Status="status" AutoHide="enableAutoHide">
     <FileUploadProgress Service="service" Style="width:450px;" />
 </PopupWindow>
+<CreatePdfComponent @bind-Status="pdfStatus" Title="Large File Upload" FileName="LargeFileUpload.pdf" />
 @code 
 {
+    WindowStatus pdfStatus;
     int fileSize = 1;
     int fileSize1 = 1;
     int fileCount = 1;
     WindowStatus status;
-    bool canClose;
+    bool enableAutoHide;
     double[] filesSize = new double[] { 0.5, 1, 2, 3, 5, 8, 10, 15, 30, 50 };
     int[] fileCounts = new int[] { 2, 3, 5, 8, 10 };
+    string relatedPath;
 
-    bool CloseStatus()
+    protected override void OnInitialized()
     {
-        return canClose;
+        if (host.IsProduction())
+            relatedPath = host.ContentRootPath + "\\Data";
+        else
+            relatedPath = "F://Data";
+        base.OnInitialized();
     }
 
     void ShowProrgres(InputFileChangeEventArgs e)
     {
-        canClose = false;
+        enableAutoHide = false;
         status = WindowStatus.Open;
     }
 
     void FileUploadCompleted()
     {
-        canClose = true;
+        enableAutoHide = true;
     }
 }

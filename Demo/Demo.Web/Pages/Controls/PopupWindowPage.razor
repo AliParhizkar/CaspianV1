@@ -105,17 +105,21 @@
         style="width:500px;height:250px;border-radius:150px;top:10px;left:350px;"
     </div>
 </PopupWindow>
-<PopupWindow @bind-Status="autoHideStatus" OnClose="() => autoHide" Style="width:450px;height:200px;top:40px;left:350px;">
+<PopupWindow @bind-Status="autoHideStatus" AutoHide="autoHide" Style="width:450px;height:200px;top:40px;left:350px;">
     <div style="padding:50px; 30px 30px 30px">
         <hr />
         <div style="padding:0 20px">
-            <CheckBox @bind-Value="autoHide" />
-            <label>Enable auto hide</label>
+            <CheckBox @bind-Value="autoHide" Title="Enable auto hide" />
         </div>
     </div>
 </PopupWindow>
+<div style="text-align:center">
+    <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">Source</button>
+</div>
+<CreatePdfComponent @bind-Status="pdfStatus" Title="Popup Window" FileName="PopupWindow.pdf" />
 @code 
 {
+    WindowStatus pdfStatus;
     int? top;
     int? left;
     int? width;

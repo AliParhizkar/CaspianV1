@@ -165,7 +165,7 @@
                 {
                     uploadedBytes += read;
                     Service.Progress.SetData(filesData, uploadedBytes);
-                    await using var readData = new MemoryStream(buffer.AsMemory().Slice(0, read).ToArray());
+                    using var readData = new MemoryStream(buffer.AsMemory().Slice(0, read).ToArray());
                     using FileStream fs = File.Exists(path) ? File.Open(path, FileMode.Append) : File.Create(path);
                     readData.WriteTo(fs);
                     await fs.FlushAsync();
@@ -179,6 +179,8 @@
                 while (exception.InnerException != null)
                     exception = exception.InnerException;
                 fileData.ErrorMessage = exception.Message;
+                Service.Progress.SetData(filesData, uploadedBytes);
+                await Service.Progress.UploadCompleted();
             }
             finally
             {

@@ -161,8 +161,12 @@
         </table>
     </div>
 </div>
-
+<div style="text-align:center">
+    <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Numeric Textbox</button>
+</div>
+<CreatePdfComponent @bind-Status="status" Title="Numeric Textbox" FileName="NumericTextbox.pdf" />
 @code {
+    WindowStatus status;
     IControl control;
     int total = 8;
     int intValue;

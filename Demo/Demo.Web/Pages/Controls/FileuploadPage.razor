@@ -8,29 +8,34 @@
         <hr />
         <h4 style="padding-right:80px;">With Content</h4>
         <Fileupload OnChange="async e => await SaveFileData1(e)" Title="Click for upload">
-            <PictureBox NoContentTitle="لطفا برای آپلود عکس کلیک نمایید" Data="imageData1" style="width:300px;height:350px;background-size:cover" />
+            <PictureBox NoContentTitle="لطفا برای آپلود عکس کلیک نمایید" Data="imageDataWidthoutContent" style="width:300px;height:350px;background-size:cover" />
         </Fileupload>
+        <div style="text-align:center;padding:15px;">
+            <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Lookup Source</button>
+        </div>
     </div>
     <div style="display:table-cell;width:50%;padding-right:40px">
         <hr />
         <h4 style="padding-right:40px;">Without Content</h4>
-        <PictureBox Data="imageData" style="width:300px;height:350px;background-position: center center" />
+        <PictureBox Data="imageDataWidthContent" style="width:300px;height:350px;background-position: center center" />
         <div style="display:table-cell;height:50px;vertical-align:middle">
             <Fileupload OnChange="async e => await SaveFileData(e)" />
         </div>
     </div>
 </div>
+<CreatePdfComponent @bind-Status="status" Title="PictureBox-File Upload" FileName="FileUpload.pdf" />
 @code
 {
-    byte[] imageData;
-    byte[] imageData1;
+    WindowStatus status;
+    byte[] imageDataWidthContent;
+    byte[] imageDataWidthoutContent;
     async Task SaveFileData(InputFileChangeEventArgs file)
     {
-        imageData = await file.File.GetByteArrayAsync();
+        imageDataWidthContent = await file.File.GetByteArrayAsync();
     }
 
     async Task SaveFileData1(InputFileChangeEventArgs file)
     {
-        imageData1 = await file.File.GetByteArrayAsync();
+        imageDataWidthoutContent = await file.File.GetByteArrayAsync();
     }
 }

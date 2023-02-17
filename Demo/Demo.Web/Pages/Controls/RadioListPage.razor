@@ -87,11 +87,11 @@
                                 <RadioList @bind-Value="orderType" >
                                     <RadioItems>
                                         <div style="height:30px;text-align:center;display:table-row">
-                                            <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Salon" />
+                                            <RadioItem Value="Model.OrderType.Salon" />
                                         </div>
                                         <div>
-                                            <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Tel" />
-                                            <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Internet" />
+                                            <RadioItem Value="Model.OrderType.Tel" />
+                                            <RadioItem Value="Model.OrderType.Internet" />
                                         </div>
                                     </RadioItems>
                                 </RadioList>
@@ -166,10 +166,10 @@
                     <td colspan="4">
                         <RadioList @bind-Value="orderType" >
                             <RadioItems>
-                                <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Salon" Disabled="salon" />
-                                <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Package" Disabled="packaging" />
-                                <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Tel" Disabled="tel" />
-                                <RadioItem TValue="Demo.Model.OrderType?" Value="Demo.Model.OrderType.Internet" Disabled="internet" />
+                                <RadioItem Value="Model.OrderType.Salon" Disabled="salon" />
+                                <RadioItem Value="Model.OrderType.Package" Disabled="packaging" />
+                                <RadioItem Value="Model.OrderType.Tel" Disabled="tel" />
+                                <RadioItem Value="Model.OrderType.Internet" Disabled="internet" />
                             </RadioItems>
                         </RadioList>
                     </td>
@@ -178,10 +178,14 @@
         </div>
     </div>
 </div>
-
+<div style="text-align:center;padding:15px">
+    <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Lookup Source</button>
+</div>
+<CreatePdfComponent @bind-Status="status" Title="Radio List" Title1="Order Type-Enum" FileName="RadioList.pdf" FileName1="OrderType-Enum.pdf" />
 
 @code {
-    Demo.Model.OrderType? orderType = Demo.Model.OrderType.Salon;
+    WindowStatus status;
+    Model.OrderType? orderType = Model.OrderType.Salon;
     int? selectedNumber;
     IList<SelectListItem> items;
     bool disabled;
