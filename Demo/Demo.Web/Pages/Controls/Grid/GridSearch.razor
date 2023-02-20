@@ -1,11 +1,75 @@
-﻿@page "/Demo/Grid-Search"
+﻿@namespace Demo.Web
+@page "/Demo/Grid-Search"
 
 <div style="width:90%;margin:10px auto">
-    <fieldset>
-        <legend>ِDefault Search</legend>
-
-    </fieldset>
-    <DataGrid HideInsertIcon TEntity="Product" TableHeight="350">
+    <div style="display:flex;padding:0 10px 15px 10px;">
+        <div style="width:50%">
+            <h4>Default Search</h4>
+            <table style="width:90%;margin:0 auto">
+                <tr>
+                    <td>
+                        <label>محصول</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="product.Title" Search />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>نوع محصول</label>
+                    </td>
+                    <td>
+                        <ComboBox TValue="int" TEntity="ProductCategory" @bind-Value="product.ProductCategoryId" 
+                            TextExpression="t => t.Title"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>وضعیت</label>
+                    </td>
+                    <td>
+                        <DropdownList @bind-Value="product.ActiveType" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="width:50%">
+            <h4>Custom-Search</h4>
+            <table style="width:90%;margin:0 auto">
+                <tr>
+                    <td>
+                        <label>از قیمت</label>
+                    </td>
+                    <td colspan="2">
+                        <NumericTextBox @bind-Value="fromPrice" OnChange="ReloadGrid" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>تا قیمت</label>
+                    </td>
+                    <td colspan="2">
+                        <NumericTextBox @bind-Value="toPrice" OnChange="ReloadGrid" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>اتمام فروش</label>
+                    </td>
+                    <td style="width:100px;text-align:center">
+                        <CheckBox @bind-Value="isOutOfStock" OnChange="ReloadGrid" />
+                    </td>
+                    <td style="text-align:center">
+                        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Source</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <DataGrid @ref="grid" Search="product" HideInsertIcon TEntity="Product" TableHeight="275"
+        ConditionExpr="t => (fromPrice == null || t.Price >= fromPrice) && 
+        (toPrice == null || t.Price <= toPrice) && (isOutOfStock == null || t.OutofStock == isOutOfStock)">
         <Columns>
             <GridColumn Field="@(t => t.ProductCategory.Title)" Title="گروه محصول" />
             <GridColumn Field="@(t => t.Title)" Title="محصول" />
@@ -15,7 +79,17 @@
         </Columns>
     </DataGrid>
 </div>
-
+<CreatePdfComponent @bind-Status="status" Title="Grid Search" FileName="Grid-Search.pdf" />
 @code {
+    WindowStatus status;
+    DataGrid<Product> grid;
+    Product product = new Product();
+    int? fromPrice;
+    int? toPrice;
+    bool? isOutOfStock;
 
+    void ReloadGrid()
+    {
+        grid.EnableLoading();
+    }
 }

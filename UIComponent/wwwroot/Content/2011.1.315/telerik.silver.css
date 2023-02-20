@@ -318,8 +318,8 @@ html input[disabled], textarea[disabled] {
     left: calc(-50% + 25px);
     top: calc(50% - 25px);
     border: 6px solid currentColor;
-    border-color: #62c6c6 #62c6c670 #62c6c640 #62c6c610;
-    animation: loding 1.2s linear infinite;
+    border-color: #62c6c6 #62c6c6 #62c6c6 #62c6c600;
+    animation: loding 1s linear infinite;
 }
 @keyframes loding {
     0% {

@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });//builder.Services.AddSingleton<FormAppState>();
 builder.Services.AddSingleton<WindowAppState>();
+builder.Services.AddTransient(typeof(GridService<>));
 builder.Services.AddTransient<FileUploadService>();
 builder.Services.AddScoped<BatchService>();
 builder.Services.AddSingleton<SingletonMenuService>(t => 

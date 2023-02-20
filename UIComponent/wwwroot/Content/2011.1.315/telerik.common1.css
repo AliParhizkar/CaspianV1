@@ -847,8 +847,8 @@ span, label, td, th {
     overflow:visible;
 }
 
-.c-treeview .fa-chevron-left {
-    cursor:pointer;
+.c-treeview .fa-chevron-left, .c-treeview .fa-chevron-down {
+    cursor: pointer;
 }
 .errorMessage div {
     border-color: transparent;

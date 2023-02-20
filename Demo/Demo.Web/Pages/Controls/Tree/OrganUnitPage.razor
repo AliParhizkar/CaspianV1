@@ -1,7 +1,12 @@
 ﻿@page "/Demo/HierarchyTree"
 @inherits BasePage
-<div style="padding:20px 40px 0 0">
-    <h3>Hierarchy Tree</h3>
+<div style="padding:20px 40px 0 0;display:flex">
+    <div style="width:50%">
+        <h3>Hierarchy Tree</h3>
+    </div>
+    <div style="width:50%;text-align:center">
+        <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">Source</button>
+    </div>
 </div>
 <div style="display:flex;width:90%;margin:0 auto">
     <div style="display:table-cell;width:50%;padding-left:40px">
@@ -95,8 +100,10 @@
         </div>
     </div>
 </div>
+<CreatePdfComponent @bind-Status="pdfStatus" Title="Hierarchy Tree" FileName="HierarchyTree.pdf" />
 @code 
 {
+    WindowStatus pdfStatus;
     int[] values;
     int? value;
     //----------------------

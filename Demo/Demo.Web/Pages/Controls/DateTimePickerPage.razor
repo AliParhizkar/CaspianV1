@@ -117,6 +117,7 @@
 <CreatePdfComponent @bind-Status="status" Title="Default" FileName="@sourceName" />
 @code 
 {
+    WindowStatus status;
     string sourceName;
     bool dateDisable;
     bool dateOpenOnFocus;
@@ -126,7 +127,6 @@
     TimeSpan? time;
     DatePicker<DateTime?> datePicker;
     TimePicker<TimeSpan?> timePicker;
-    WindowStatus status;
 
     void DatePickerSource()
     {

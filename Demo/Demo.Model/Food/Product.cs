@@ -1,4 +1,5 @@
-﻿using Caspian.Engine;
+﻿using Caspian.Common;
+using Caspian.Engine;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -72,9 +73,15 @@ namespace Demo.Model
         public byte[] Image { get; set; }
 
         /// <summary>
-        /// مشخصات گروه محصول
+        /// مشخصات گروه محصول 
         /// </summary>
         [ForeignKey(nameof(ProductCategoryId)), ReportField("گروه محصول")]
         public virtual ProductCategory ProductCategory { get; set; }
+
+        /// <summary>
+        /// سفارشهای محصول
+        /// </summary>
+        [CheckOnDelete("برای محصول سفارش ثبت شده و امکان حذف آن وجود ندارد")]
+        public virtual IList<OrderDeatil> OrderDeatils { get; set; }
     }
 }

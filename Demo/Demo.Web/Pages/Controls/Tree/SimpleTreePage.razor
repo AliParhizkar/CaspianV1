@@ -2,8 +2,13 @@
 @inherits BasePage
 @using Caspian.Engine.Model
 @using Caspian.Engine.Service
-<div style="padding:20px 40px 0 0">
-    <h3>Tree View</h3>
+<div style="padding:20px 40px 0 0;display:flex">
+    <div style="width:50%">
+        <h3>Tree View</h3>
+    </div>
+    <div style="width:50%;text-align:center">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Source</button>
+    </div>
 </div>
 <div style="display:flex;width:90%;margin:0 auto">
     <div style="display:table-cell;width:50%;padding-left:40px">
@@ -17,9 +22,9 @@
                 </RadioItems>
             </RadioList>
             <div style="text-align:center;padding:10px 0 3px 0">
-                <span style="color:seagreen;font-weight:bold;font-size:14px;">تعداد @(count) منو انتخاب شده است</span>
+                <span style="color:seagreen;font-weight:bold;font-size:14px;">تعداد @(expandedSeletedNodesCount) منو انتخاب شده است</span>
             </div>
-            <CTreeView @ref="tree" TEntity="TreeViewItem" OnChange="Change" style="height:calc(100vh - 218px);margin-right:5px;" Source="source" />
+            <CTreeView @ref="expandedTree" TEntity="TreeViewItem" OnChange="ExpandedNodeChange" style="height:calc(100vh - 218px);margin-right:5px;" Source="expandedSource" />
         </div>
     </div>
     <div style="display:table-cell;width:50%;padding-right:40px">
@@ -27,21 +32,22 @@
         <div style="padding:0 40px;">
             <h4 style="padding-right:40px;">Load on expand</h4>
             <div style="text-align:center;padding:10px 0 3px 0">
-                <span style="color:seagreen;font-weight:bold;font-size:14px;">تعداد @(count1) منو انتخاب شده است</span>
+                <span style="color:seagreen;font-weight:bold;font-size:14px;">تعداد @(collapsedSeletedNodesCount) منو انتخاب شده است</span>
             </div>
-            <CTreeView @ref="tree1" OnChange="Change1" OnCollapsed="OnCollapsed" TEntity="TreeViewItem" style="height:calc(100vh - 196px);margin-right:5px;" Source="source1" OnExpanded="async node => await OnExpanded(node)" />
+            <CTreeView @ref="tree1" OnChange="CollapsedNodeChange" OnCollapsed="OnCollapsed" TEntity="TreeViewItem" style="height:calc(100vh - 196px);margin-right:5px;" Source="collapsedSource" OnExpanded="async node => await OnExpanded(node)" />
         </div>
     </div>
 </div>
-   
+<CreatePdfComponent @bind-Status="status" Title="Simple Tree" FileName="SimpleTree.pdf" />
 @code 
 {
     bool expanded;
-    int count;
-    int count1;
-    IList<TreeViewItem> source;
-    IList<TreeViewItem> source1;
-    CTreeView<TreeViewItem> tree;
+    WindowStatus status;
+    int expandedSeletedNodesCount;
+    int collapsedSeletedNodesCount;
+    IList<TreeViewItem> expandedSource;
+    IList<TreeViewItem> collapsedSource;
+    CTreeView<TreeViewItem> expandedTree;
     CTreeView<TreeViewItem> tree1;
 
     void OnCollapsed(TreeViewItem node)
@@ -51,7 +57,30 @@
 
     }
 
-    void Change1(TreeViewItem node)
+    void ExpandedNodeChange(TreeViewItem item)
+    {
+        // This is for tow level tree
+        if (item.Items != null)
+        {
+            foreach (var child in item.Items)
+                child.Selected = item.Selected;
+        }
+        var parent = item.Parent;
+        if (parent != null)
+        {
+            var siblings = parent.Items;
+            if (siblings.All(t => t.Selected == true))
+                parent.Selected = true;
+            else if (siblings.All(t => t.Selected == false))
+                parent.Selected = false;
+            else
+                parent.Selected = null;
+            parent = parent.Parent;
+        }
+        expandedSeletedNodesCount = expandedTree.GetSeletcedItems().Count(t => t.Depth == 2);
+    }
+
+    void CollapsedNodeChange(TreeViewItem node)
     {
         if (node.Depth == 1)
         {
@@ -74,7 +103,7 @@
             else
                 parent.Selected = null;
         }
-        count1 = tree1.GetSeletcedItems().Count(t => t.Depth == 2);
+        collapsedSeletedNodesCount = tree1.GetSeletcedItems().Count(t => t.Depth == 2);
     }
 
     async Task OnExpanded(TreeViewItem node)
@@ -94,37 +123,14 @@
 
     void ExpandedChanged()
     {
-        foreach (var item in source)
+        foreach (var item in expandedSource)
             item.Expanded = expanded;
-    }
-
-    void Change(TreeViewItem item)
-    {
-        // This is for tow level tree
-        if (item.Items != null)
-        {
-            foreach (var child in item.Items)
-                child.Selected = item.Selected;
-        }
-        var parent = item.Parent;
-        if (parent != null)
-        {
-            var siblings = parent.Items;
-            if (siblings.All(t => t.Selected == true))
-                parent.Selected = true;
-            else if (siblings.All(t => t.Selected == false))
-                parent.Selected = false;
-            else
-                parent.Selected = null;
-            parent = parent.Parent;
-        }
-        count = tree.GetSeletcedItems().Count(t => t.Depth == 2);
     }
 
     protected override async Task OnInitializedAsync()
     {
         using var scope = CreateScope();
-        source = await new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo)
+        expandedSource = await new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo)
             .Select(t => new TreeViewItem()
                 {
                     Text = t.Title,
@@ -139,7 +145,7 @@
                         Selectable = true
                     }).ToList()
                 }).ToListAsync();
-        source1 = source.Select(t => new TreeViewItem()
+        collapsedSource = expandedSource.Select(t => new TreeViewItem()
         {
             Expanded = false,
             Collabsable = true,
