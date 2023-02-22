@@ -103,15 +103,6 @@
 </div>
 @code
 {
-    async Task ToggleOutofstock(int id)
-    {
-        using var scope = ServiceScopeFactory.CreateScope();
-        var service = new ProductService(scope.ServiceProvider);
-        await service.ToggleOutofstock(id);
-        await service.SaveChangesAsync();
-        await CrudGrid.Reload();
-    }
-
     async Task<bool> showConfirmForPrice(EditContext context)
     {
         if (UpsertData.Price > 0 || (await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟")))
