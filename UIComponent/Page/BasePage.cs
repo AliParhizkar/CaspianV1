@@ -77,9 +77,9 @@ namespace Caspian.UI
             block = false;
         }
 
-        public void Alert(string message)
+        public async Task Alert(string message)
         {
-            MessageBox.Alert(message);
+            await MessageBox.Alert(message);
         }
 
         public async Task<bool> Confirm(string message)

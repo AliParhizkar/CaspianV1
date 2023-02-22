@@ -1,11 +1,10 @@
-﻿using Demo.Model;
+﻿using System;
+using Demo.Model;
 using System.Linq;
 using Caspian.Engine;
 using Caspian.Common;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Demo.Service
 {

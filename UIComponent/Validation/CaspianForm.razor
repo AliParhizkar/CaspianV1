@@ -49,7 +49,7 @@
     public EventCallback OnReset { get; set; }
 
     [Parameter]
-    public Func<EditContext, Task<bool>> OnValidSubmit { get; set; }
+    public EventCallback<EditContext> OnValidSubmit { get; set; }
 
     internal EventCallback<EditContext> OnInternalSubmit { get; set; }
 
@@ -95,10 +95,9 @@
         var result = await (Task<ValidationResult>)asyncValidationTask;
         if (result.IsValid)
         {
-            bool isValidSubmit = true;
-            if (OnValidSubmit != null)
-                isValidSubmit = await OnValidSubmit.Invoke(context);
-            if (isValidSubmit && OnInternalValidSubmit.HasDelegate)
+            if (OnValidSubmit.HasDelegate)
+                await OnValidSubmit.InvokeAsync(context);
+            if (OnInternalValidSubmit.HasDelegate)
                 await OnInternalValidSubmit.InvokeAsync(context);
 
         }

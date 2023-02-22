@@ -153,24 +153,28 @@ h1 {
 
     .accordion .link {
         cursor: pointer;
-        display: block;
-        padding: 8px 22px;
-        text-align: right;
+        padding: 9px 8px 0 0;
         color: white;
         font-size: 13px;
         border: 1px solid #d5d5d5;
         border-left: 1px solid #1c1c1c;
-        position: relative;
         -webkit-transition: all 0.4s ease;
         -o-transition: all 0.4s ease;
         transition: all 0.4s ease;
         height:37px;
     }
-.page.hideMenu .link span {
-    display: none;
+        .accordion .link span{
+            width:110px;
+            display:inline-block;
+        }
+        .page.hideMenu .link span {
+            display: none;
+        }
+.page.hideMenu .link .fa-chevron-down{
+    display:none;
 }
 .page.hideMenu .accordion .submenu {
-    display: none!important;
+    display: none !important;
 }
 .page.hideMenu .c-menu-icon div {
     display: none;
@@ -185,21 +189,15 @@ h1 {
     width:27px;
 }
 .accordion li i {
-    position: absolute;
     color: white;
     -webkit-transition: all 0.4s ease;
     -o-transition: all 0.4s ease;
     transition: all 0.4s ease;
     font-style: normal;
-    right: 5px;
-    top: 12px;
 }
 
         .accordion li i.fa-chevron-down {
-            right: auto;
-            left: 5px;
             font-size: 12px;
-            top:10px;
         }
 
     .accordion li.open .link {

@@ -298,8 +298,10 @@
             $('body').unbind('keyup.confirmMessage');
             if (status) {
                 $('.c-messagebox .c-primary').focus();
+                
                 $('body').bind('keyup.confirmMessage', async function (e) {
                     var key = e.keyCode;
+                    console.log($(e.target).hasClass('c-primary'))
                     if (!$(e.target).hasClass('c-primary')) {
                         if (key == 13 || key == 27) {
                             await dotnet.invokeMethodAsync('HideConfirm', key == 13);

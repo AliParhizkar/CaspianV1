@@ -308,10 +308,11 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
-
+.page {
+    display:flex;
+}
 .page .content {
     width: calc(100% - 160px);
-    float:right;
 }
 .c-login {
     width: 468px;

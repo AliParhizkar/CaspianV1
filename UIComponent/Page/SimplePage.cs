@@ -21,27 +21,31 @@ namespace Caspian.UI
 
         protected virtual async Task UpsertAsync(TEntity data)
         {
-            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
-            using var scope = CreateScope();
-            
-            var service = scope.ServiceProvider.GetService<ISimpleService<TEntity>>();
-            if (service == null)
-                throw new CaspianException("خطا: Service od type ISimpleService<" + typeof(TEntity).Name + "> not implimented", null);
-            if (id == 0)
-                await service.AddAsync(data);
-            else
-                await service.UpdateAsync(data);
-            await service.SaveChangesAsync();
-            if (id == 0)
+            var result = await BeforUpsertAsync(data);
+            if (result)
             {
-                id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
-                await CrudGrid.SelectRowById(id);
+                var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
+                using var scope = CreateScope();
+
+                var service = scope.ServiceProvider.GetService<ISimpleService<TEntity>>();
+                if (service == null)
+                    throw new CaspianException("خطا: Service od type ISimpleService<" + typeof(TEntity).Name + "> not implimented", null);
+                if (id == 0)
+                    await service.AddAsync(data);
+                else
+                    await service.UpdateAsync(data);
+                await service.SaveChangesAsync();
+                if (id == 0)
+                {
+                    id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
+                    await CrudGrid.SelectRowById(id);
+                }
+                else
+                    await CrudGrid.Reload();
+                if (UpsertWindow != null)
+                    await UpsertWindow.Close();
+                await UpsertForm.ResetAsync();
             }
-            else
-                await CrudGrid.Reload();
-            if (UpsertWindow != null)
-                await UpsertWindow.Close();
-            await UpsertForm.ResetAsync();
         }
 
         protected CaspianForm<TEntity> UpsertForm { get; set; }
@@ -74,6 +78,10 @@ namespace Caspian.UI
             }
         }
 
+        protected async virtual Task<bool> BeforUpsertAsync(TEntity data)
+        {
+            return await Task.FromResult(true);
+        }
 
         protected virtual async Task DeleteAsync(TEntity data)
         {

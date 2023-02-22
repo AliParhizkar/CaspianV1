@@ -200,6 +200,7 @@ html input[disabled], textarea[disabled] {
     box-sizing: border-box;
     direction: ltr;
     font-size:15px;
+    background-color:transparent;
 }
 .t-state-disabled .t-input{
     color:gray!important;

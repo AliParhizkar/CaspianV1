@@ -6,7 +6,7 @@
     base.BuildRenderTree(__builder);
 }
 <div style="width:95%;margin:10px auto">
-    <CaspianForm @ref="UpsertForm" Model="UpsertData">
+    <CaspianForm @ref="UpsertForm" Model="UpsertData" OnReset="() => UpsertData.Image = null">
         <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
         <table style="width:100%">
             <tr>

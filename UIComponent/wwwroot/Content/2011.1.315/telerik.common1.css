@@ -677,7 +677,6 @@ span, label, td, th {
     padding-top:3px;*/
 }
 .sidebar {
-    float: right;
     width: 160px;
     box-sizing: border-box;
     height: 100vh;
@@ -1299,7 +1298,6 @@ input:-moz-placeholder {
     left: 0;
     background-color: #000;
     opacity: 0.5;
-    display:none;
     z-index: 15;
 }
 
@@ -2362,6 +2360,7 @@ html body .t-grid tbody .t-button-icon {
     border-width: 1px;
     border-radius: 0 8px 8px 0;
     font-size:14px;
+    background-color:transparent;
 }
 .t-window label {
     color: #656565;
@@ -2770,6 +2769,7 @@ label{
     border-width: 1px;
     height: 30px;
     border-color: rgba(0,0,0,0.12);
+    background-color:transparent;
 }
 
 .t-stringtextbox.t-state-hover .t-input {

@@ -59,12 +59,13 @@
     ElementReference overlay;
     ElementReference box;
     bool show;
-    bool? ConfirmResult = null;
+    bool? confirmResult = null;
+    bool? AlertResult = null;
     MessageType messageType;
 
     void UpdateConfirmResult(bool result)
     {
-        ConfirmResult = result;
+        confirmResult = result;
     }
 
     protected override void OnInitialized()
@@ -101,7 +102,7 @@
 
     async Task<bool> Show(string message)
     {
-        ConfirmResult = null;
+        confirmResult = null;
         if (message.HasValue())
             Message = message;
         show = true;
@@ -109,12 +110,12 @@
         StateHasChanged();
         var task = Task.Run<bool>(async () =>
         {
-            while (ConfirmResult == null)
+            while (confirmResult == null)
                 await Task.Delay(100);
             show = false;
             await jsRuntime.InvokeVoidAsync("$.telerik.enableDefaultShortKey", false);
             await InvokeAsync(StateHasChanged);
-            return ConfirmResult.Value;
+            return confirmResult.Value;
         });
         return await task;
     }
@@ -122,31 +123,18 @@
     [JSInvokable]
     public void HideConfirm(bool result)
     {
-        ConfirmResult = result;
+        confirmResult = result;
     }
 
-    public void Alert(string message)
+    public async Task Alert(string message)
     {
-        if (message.HasValue())
-            Message = message;
-        show = true;
-        StateHasChanged();
         messageType = MessageType.Info;
+        await Show(message);
     }
 
     public async Task<bool> Confirm(string message)
     {
         messageType = MessageType.Quession;
         return await Show(message);
-    }
-
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (show)
-        {
-            show = false;
-            await jsRuntime.InvokeVoidAsync("$.telerik.showMessageBox", overlay, box, show);
-        }
-        await base.OnAfterRenderAsync(firstRender);
     }
 }

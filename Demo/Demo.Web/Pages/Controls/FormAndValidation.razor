@@ -1,116 +1,120 @@
 ﻿@page "/Demo/FormAndValidation"
 @namespace Demo.Web.Pages
-@inherits SimplePage<Product>
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
-
-<div style="width:90%;margin:0 auto">
-    <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400">
-        <Columns>
-            <GridColumn Field="t => t.ProductCategory.Title" Title="گروه غذا" />
-            <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.ActiveType.FaText()" />
-            <GridColumn Field="t => t.Price.Seprate3Digit()" />
-            <GridColumn Field="t => t.PriceOuterBound.Seprate3Digit()" />
-            <GridColumn Field="t => t.OutofStock" />
-            <GridCommandColumns />
-        </Columns>
-    </DataGrid>
-    <Window @ref="UpsertWindow" Title="محصول" Style="width:500px">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData" OnValidSubmit="showConfirmForPrice">
-                <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>گروه غذا</label>
-                        </td>
-                        <td>
-                            <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=UpsertData.ProductCategoryId TextExpression="t => t.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width:100px;">
-                            <label>عنوان</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>کد</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value=UpsertData.Code Style="direction:ltr" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>قیمت</label>
-                        </td>
-                        <td>
-                            <NumericTextBox @bind-Value="UpsertData.Price"
-                                            OnChange="@(() =>
-                                                                 {
-                                                                     if (UpsertData.PriceOuterBound == 0)
-                                                                         UpsertData.PriceOuterBound = UpsertData.Price;
-                                                                 })" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>قیمت بیرون بر</label>
-                        </td>
-                        <td>
-                            <NumericTextBox @bind-Value="UpsertData.PriceOuterBound" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>وعده غذایی</label>
-                        </td>
-                        <td>
-                            <MultiSelectBox @bind-Value="UpsertData.Meal" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>اتمام فروش</label>
-                        </td>
-                        <td>
-                            <CheckBox @bind-Value="UpsertData.OutofStock" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>وضعیت</label>
-                        </td>
-                        <td>
-                            <DropdownList @bind-Value="UpsertData.ActiveType" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
-            </CaspianForm>
-        </Content>
-    </Window>
+<div style="width:550px;margin: 40px auto 0 auto;text-align:center">
+    <h4>Form & Validation</h4>
 </div>
+<div style="width:550px;margin: 10px auto;border:1px solid darkgray;border-radius:12px;padding:30px 30px 15px 30px;">
+    <CaspianForm Model="UpsertData"
+                 OnReset="Reset"
+                 OnSubmit="FormSubmit"
+                 OnValidSubmit="ValidSubmit" 
+                 OnInvalidSubmit="InvalidSubmit">
+        <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
+        <table style="width:90%;margin:0 auto">
+            <tr>
+                <td>
+                    <label>گروه غذا</label>
+                </td>
+                <td>
+                    <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=UpsertData.ProductCategoryId TextExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width:100px;">
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>کد</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value=UpsertData.Code Style="direction:ltr" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>قیمت</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="UpsertData.Price" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>قیمت بیرون بر</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="UpsertData.PriceOuterBound" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>وعده غذایی</label>
+                </td>
+                <td>
+                    <MultiSelectBox @bind-Value="UpsertData.Meal" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>اتمام فروش</label>
+                </td>
+                <td>
+                    <CheckBox @bind-Value="UpsertData.OutofStock" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>وضعیت</label>
+                </td>
+                <td>
+                    <DropdownList @bind-Value="UpsertData.ActiveType" />
+                </td>
+            </tr>
+            <tr>
+                <td style="height:35px;" colspan="2">
+                    <FormCommandButton />
+                </td>
+            </tr>
+        </table>
+    </CaspianForm>
+</div>
+<div style="text-align:center">
+    <button @onclick="_ => status = WindowStatus.Open" class="c-btn c-primary">Source</button>
+</div>
+<CreatePdfComponent @bind-Status="status" Title="Form & Validation" FileName="Form&Validation.pdf" 
+    Title1="Service" FileName1="ProductService.pdf" />
+
 @code
 {
-    async Task<bool> showConfirmForPrice(EditContext context)
-    {
-        if (UpsertData.Price > 0 || (await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟")))
-            return true;
-        return false;
-    }
-}
-@code 
-{
+    WindowStatus status;
+    Product UpsertData = new Product();
 
+    async Task FormSubmit()
+    {
+        await Alert("Form Submited");
+    }
+
+    void Reset()
+    {
+        ShowMessage("For is reset");
+    }
+
+    void InvalidSubmit()
+    {
+        ShowMessage("Product is invalid");
+    }
+
+    void ValidSubmit(EditContext context)
+    {
+        ShowMessage("product is Valid");
+    }
 }

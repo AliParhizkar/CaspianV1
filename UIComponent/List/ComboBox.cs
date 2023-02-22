@@ -178,7 +178,7 @@ namespace Caspian.UI
             {
                 if (SelectedIndex == -1)
                     SelectedIndex = 0;
-                if (Items.Count > SelectedIndex)
+                if (Items != null && Items.Count > SelectedIndex)
                 {
                     await SetValue(Items[SelectedIndex].Value);
                     text = Items[SelectedIndex].Text;

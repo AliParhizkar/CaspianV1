@@ -22,11 +22,7 @@
                 OnSubmit="() =>
                             {
                                 UpsertData.ProductCategoryId = productCategoryId.Value;
-                            }"
-                OnValidSubmit='async (context) =>
-                                {
-                                    return UpsertData.Price > 0 || await Confirm("ایا با ثبت محصول با مبلغ صفر موافقید؟");
-                                }'>
+                            }">
                 <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
                 <table style="width:95%;margin:0 auto">
                     <tr>
@@ -108,11 +104,10 @@
 {
     int? productCategoryId;
 
-
-    async Task<bool> showConfirmForPrice()
+    protected override async Task<bool> BeforUpsertAsync(Product data)
     {
-        if (UpsertData.Price > 0 || (await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟")))
-            return true;
-        return false;
+        if (data.Price == 0)
+            return await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟");
+        return await base.BeforUpsertAsync(data);
     }
 }
