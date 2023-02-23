@@ -39,6 +39,9 @@ namespace Caspian.UI
         [Inject, JsonIgnore]
         public FormAppState FormAppState { get; set; }
 
+        [CascadingParameter]
+        public CrudComponent<TEntity> CrudComponent { get; set; }
+
         [Parameter, JsonIgnore]
         public bool HidePageSize { get; set; }
 
@@ -547,6 +550,8 @@ namespace Caspian.UI
                 selectedIds = new List<int>();
             tableAttrs = new Dictionary<string, object>();
             commandColumnAdded = false;
+            if (CrudComponent != null)
+                CrudComponent.CrudGrid = this;
             OnInitializedOperation();
             base.OnInitialized();
         }

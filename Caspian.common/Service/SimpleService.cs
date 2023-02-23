@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using FluentValidation;
+using System.Reflection;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
@@ -7,8 +8,6 @@ using FluentValidation.Results;
 using FluentValidation.Internal;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common.Service

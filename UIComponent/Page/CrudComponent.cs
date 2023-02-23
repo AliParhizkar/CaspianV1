@@ -10,18 +10,59 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Caspian.UI
 {
-    public partial class SimplePage<TEntity>: BasePage where TEntity: class
+    public partial class CrudComponent<TEntity>: ICrudComponent where TEntity : class
     {
         string errorMessage;
-        protected DataGrid<TEntity> CrudGrid { get; set; }
-        protected Window UpsertWindow { get; set; }
+        MessageBox messageBox;
+        int userId;
 
-        protected virtual async Task UpsertAsync(TEntity data)
+        public DataGrid<TEntity> CrudGrid { get; set; }
+
+        public Window UpsertWindow { get; set; }
+
+        public CaspianForm<TEntity> UpsertForm { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public string Style { get; set; }
+
+        [Parameter]
+        public TEntity UpsertData { get; set; }
+
+        [CascadingParameter]
+        Task<AuthenticationState> authenticationStateTask { get; set; }
+
+        [Parameter]
+        public Func<Task<bool>> BeforUpsert { get; set; }
+
+        IServiceScope CreateScope()
         {
-            var result = await BeforUpsertAsync(data);
+            var scope = ServiceScopeFactory.CreateScope();
+            scope.ServiceProvider.GetService<CaspianDataService>().UserId = userId;
+            return scope;
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            if (authenticationStateTask != null)
+            {
+                var result = await authenticationStateTask;
+                userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+            }
+            await base.OnInitializedAsync();
+        }
+
+        async Task UpsertAsync(TEntity data)
+        {
+            var result = true;
+            if (BeforUpsert != null)
+                result = await BeforUpsert.Invoke();
             if (result)
             {
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
@@ -48,21 +89,14 @@ namespace Caspian.UI
             }
         }
 
-        protected CaspianForm<TEntity> UpsertForm { get; set; }
-
-        protected TEntity UpsertData { get; set; } = Activator.CreateInstance<TEntity>();
-
-        protected TEntity SearchData { get; set; } = Activator.CreateInstance<TEntity>();
-
+        void ICrudComponent.SetWindow(Window window)
+        {
+            UpsertWindow = window;
+        }
         void FormInitial()
         {
             if (UpsertForm != null)
             {
-                //UpsertForm.OnInternalSubmit = EventCallback.Factory.Create<EditContext>(this, (EditContext context) =>
-                //{
-                //    if (context.Model != UpsertData)
-                //        throw new CaspianException("خطا: Model in Edit Context is changed only model properties can changed", null);
-                //});
                 UpsertForm.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context) =>
                 {
                     await UpsertAsync((TEntity)context.Model);
@@ -78,12 +112,7 @@ namespace Caspian.UI
             }
         }
 
-        protected async virtual Task<bool> BeforUpsertAsync(TEntity data)
-        {
-            return await Task.FromResult(true);
-        }
-
-        protected virtual async Task DeleteAsync(TEntity data)
+        async Task DeleteAsync(TEntity data)
         {
             using var scope = CreateScope();
             var service = scope.ServiceProvider.GetService<ISimpleService<TEntity>>();
@@ -91,7 +120,7 @@ namespace Caspian.UI
             if (result.IsValid)
             {
                 errorMessage = null;
-                if (!CrudGrid.DeleteMessage.HasValue() || await Confirm(CrudGrid.DeleteMessage))
+                if (!CrudGrid.DeleteMessage.HasValue() || await messageBox.Confirm(CrudGrid.DeleteMessage))
                 {
                     var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
                     var old = await service.SingleAsync(id);
@@ -102,7 +131,7 @@ namespace Caspian.UI
                     }
                     catch (DbUpdateConcurrencyException exp)
                     {
-                        ShowMessage("این آیتم قبلا حذف شده است");
+                        errorMessage = "این آیتم قبلا حذف شده است";
                     }
                     await CrudGrid.Reload();
                 }
@@ -116,7 +145,7 @@ namespace Caspian.UI
             FormInitial();
             if (CrudGrid != null)
             {
-                CrudGrid.Search = SearchData;
+                //CrudGrid.Search = SearchData;
                 CrudGrid.OnInternalDelete = EventCallback.Factory.Create<TEntity>(this, async (data) =>
                 {
                     await DeleteAsync(data);
@@ -175,6 +204,5 @@ namespace Caspian.UI
             }
             await base.OnAfterRenderAsync(firstRender);
         }
-
     }
 }

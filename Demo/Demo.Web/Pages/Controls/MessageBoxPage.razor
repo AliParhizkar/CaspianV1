@@ -36,18 +36,27 @@
                  <StringTextBox @bind-Value="confirmMessage" />
             </div>
     </div>
+    <div>
+        <button @onclick="() => status = WindowStatus.Open">On Window</button>
+    </div>
     <div style="display:table-footer-group">
         <span style="color:red;">@errorMessage</span>
     </div>
 </div>
 <div style="text-align:center;">
-    <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Source</button>
+    <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">Source</button>
 </div>
-<CreatePdfComponent @bind-Status="status" Title="Message" FileName="Message.pdf" />
+<Window @bind-Status="status" Title="Message On Window" Style="width:500px;height:300px;">
+    <Content>
+        <button @onclick='async () => await Confirm("سلام سلام ")'>Confirm</button>
+    </Content>
+</Window>
+<CreatePdfComponent @bind-Status="pdfStatus" Title="Message" FileName="Message.pdf" />
 
 @code
 {
     WindowStatus status;
+    WindowStatus pdfStatus;
     string message = "ثبت با موفقیت انجام شد", alertMessage = "سفارش ثبت شد، امکان ثبت شند حسابداری وجود ندارد", confirmMessage = "آیا با حذف موافقید؟", errorMessage = "";
 
     void simpleMessage()

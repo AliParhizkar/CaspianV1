@@ -550,13 +550,14 @@ span, label, td, th {
     right: 0;
     opacity: 1;
     background-color: #f6f6f6;
-    margin: 10% auto;
+    margin: 0 auto;
     text-align: center;
     padding: 10px 5px 5px 10px;
     z-index: 99999;
     box-shadow: 3px 3px 5px 0 slategrey;
     animation-name: messagebox;
     animation-duration: .5s;
+    top: 120px;
 }
 
 @keyframes messagebox {
@@ -1299,6 +1300,7 @@ input:-moz-placeholder {
     background-color: #000;
     opacity: 0.5;
     z-index: 15;
+    display:none;
 }
 
 .t-window .t-overlay {

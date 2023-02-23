@@ -98,6 +98,9 @@
     [Parameter, JsonProperty("parentChaild")]
     public bool ParentChaild { get; set; }
 
+    [CascadingParameter, JsonIgnore]
+    internal ICrudComponent CrudComponent { get; set; }
+
     public async Task Open()
     {
         isOpend = true;
@@ -128,6 +131,8 @@
 
     protected override void OnInitialized()
     {
+        if (CrudComponent != null)
+            CrudComponent.SetWindow(this);
         AppState.Window = this;
         id = WindowId;
         Modal = true;

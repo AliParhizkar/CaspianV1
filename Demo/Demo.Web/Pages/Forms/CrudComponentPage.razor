@@ -1,0 +1,123 @@
+﻿@page "/Demo/CrudProduct"
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<CrudComponent UpsertData="upsertData" Style="width:90%;margin:5px auto" BeforUpsert="ConfirmForPrice">
+    <table style="width:100%">
+        <tr>
+            <td>
+                <label>عنوان</label>
+            </td>
+            <td>
+                <StringTextBox @bind-Value="searchData.Title" Search/>
+            </td>
+        </tr>
+    </table>
+    <DataGrid Search="searchData">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Price.Seprate3Digit()" />
+            <GridColumn Field="t => t.PriceOuterBound.Seprate3Digit()" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Title="محصول" Style="width:500px">
+        <Content>
+            <CaspianForm Model="upsertData">
+                <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
+                <table style="width:95%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>گروه محصول</label>
+                        </td>
+                        <td>
+                            <ComboBox TValue="int" TEntity="ProductCategory" @bind-Value="upsertData.ProductCategoryId" TextExpression="t => t.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>عنوان</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="upsertData.Title" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>قیمت</label>
+                        </td>
+                        <td>
+                            <NumericTextBox @bind-Value="upsertData.Price"
+                                            OnChange="@(() =>
+                                                                 {
+                                                                     if (upsertData.PriceOuterBound == 0)
+                                                                         upsertData.PriceOuterBound = upsertData.Price;
+                                                                 })" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>قیمت بیرون بر</label>
+                        </td>
+                        <td>
+                            <NumericTextBox @bind-Value="upsertData.PriceOuterBound" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>وعده های غذایی</label>
+                        </td>
+                        <td>
+                            <MultiSelectBox @bind-Value="upsertData.Meal" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>وضعیت</label>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="upsertData.ActiveType" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>تخفیف پذیر</label>
+                        </td>
+                        <td>
+                            <CheckBox @bind-Value="upsertData.Discountable" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="text-align:center">
+                            <WindowCommandButtons />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
+</CrudComponent>
+
+
+@code 
+{
+    Product searchData;
+    Product upsertData;
+
+    protected override void OnInitialized()
+    {
+        searchData = new Product();
+        upsertData = new Product();
+        base.OnInitialized();
+    }
+
+    async Task<bool> ConfirmForPrice()
+    {
+        if (upsertData.Price == 0)
+            return await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟");
+        return true;
+    }
+}

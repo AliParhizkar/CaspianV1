@@ -1,0 +1,15 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@inject IJSRuntime jsRuntime
+@inject IServiceScopeFactory ServiceScopeFactory
+<div style="@Style">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>
+<MessageBox @ref="messageBox" />
+
+@code 
+{
+
+}

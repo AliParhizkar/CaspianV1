@@ -15,7 +15,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid PersistState @bind-Search="SearchData" @ref="CrudGrid" TEntity="Province">
+    <DataGrid PersistState @bind-Search="SearchData"  @ref="CrudGrid" TEntity="Province">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.ActiveType.FaText()" />

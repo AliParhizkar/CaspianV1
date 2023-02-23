@@ -2,7 +2,7 @@
 @inject IJSRuntime JSRuntime
 @if (show)
 {
-    <div @ref="overlay" class="t-overlay">
+    <div @ref="overlay" class="t-overlay t-messageeeeeeee">
 
     </div>
     <div @ref="box" class="c-messagebox">
@@ -106,7 +106,7 @@
         if (message.HasValue())
             Message = message;
         show = true;
-        await jsRuntime.InvokeVoidAsync("$.telerik.enableDefaultShortKey", true, DotNetObjectReference.Create(this));
+        await jsRuntime.InvokeVoidAsync("$.telerik.enableDefaultShortKey", true, DotNetObjectReference.Create(this), overlay, box);
         StateHasChanged();
         var task = Task.Run<bool>(async () =>
         {
@@ -136,5 +136,12 @@
     {
         messageType = MessageType.Quession;
         return await Show(message);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (overlay.Id != null)
+            await jsRuntime.InvokeVoidAsync("$.telerik.showMessageBox", overlay, box);
+        await base.OnAfterRenderAsync(firstRender);
     }
 }

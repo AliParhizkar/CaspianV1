@@ -294,22 +294,7 @@
                 }
             });
         },
-        enableDefaultShortKey: function (status, dotnet) {
-            $('body').unbind('keyup.confirmMessage');
-            if (status) {
-                $('.c-messagebox .c-primary').focus();
-                
-                $('body').bind('keyup.confirmMessage', async function (e) {
-                    var key = e.keyCode;
-                    console.log($(e.target).hasClass('c-primary'))
-                    if (!$(e.target).hasClass('c-primary')) {
-                        if (key == 13 || key == 27) {
-                            await dotnet.invokeMethodAsync('HideConfirm', key == 13);
-                        }
-                    }
-                });
-            }
-        },
+        
         bindControl: function (control, options, controlType) {
             options = JSON.parse(options);
             switch (controlType) {
@@ -431,12 +416,30 @@
         updateSearchText: function (input, text) {
             $(input).val(text);
         },
-        showMessageBox: function (overlay, box, status) {
+        enableDefaultShortKey: function (status, dotnet, overlay, box) {
+            $('body').unbind('keyup.confirmMessage');
+            if (status) {
+                $.telerik.showMessageBox(overlay, box);
+                $('.c-messagebox .c-primary').focus();
+                $('body').bind('keyup.confirmMessage', async function (e) {
+                    var key = e.keyCode;
+                    console.log($(e.target).hasClass('c-primary'))
+                    if (!$(e.target).hasClass('c-primary')) {
+                        if (key == 13 || key == 27) {
+                            await dotnet.invokeMethodAsync('HideConfirm', key == 13);
+                        }
+                    }
+                });
+            }
+        },
+
+        showMessageBox: function (overlay, box) {
             let item;
             $('.t-widget.t-window').each(function () {
                 if ($(this).css('display') == 'block')
                     item = $(this)[0];
             });
+            debugger;
             if (item) {
                 $(item).append(overlay).append(box);
                 $(box).css('top', 10);
