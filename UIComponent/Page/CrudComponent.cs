@@ -145,7 +145,6 @@ namespace Caspian.UI
             FormInitial();
             if (CrudGrid != null)
             {
-                //CrudGrid.Search = SearchData;
                 CrudGrid.OnInternalDelete = EventCallback.Factory.Create<TEntity>(this, async (data) =>
                 {
                     await DeleteAsync(data);
@@ -191,7 +190,7 @@ namespace Caspian.UI
                 });
                 if (errorMessage != null)
                 {
-                    await jsRuntime.InvokeVoidAsync("$.telerik.showMessage", errorMessage);
+                    await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
                     errorMessage = null;
                 }
             }

@@ -145,7 +145,7 @@
         else
             Items = Source.ToList();
         var json = this.ConvertToJson();
-        jsRuntime.InvokeVoidAsync("$.telerik.bindControl", htmlElement, json, UiControlType.DropdownList);
+        jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, json, UiControlType.DropdownList);
         return base.OnAfterRenderAsync(firstRender);
     }
 }

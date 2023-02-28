@@ -423,11 +423,11 @@ namespace Caspian.UI
             if (firstRender)
             {
                 var data = new JsLookupValueSetter(this);
-                await jsRuntime.InvokeVoidAsync("$.telerik.bindLookupValue", DotNetObjectReference.Create(data), Input);
+                await jsRuntime.InvokeVoidAsync("$.caspian.bindLookupValue", DotNetObjectReference.Create(data), Input);
             }
             if (Focused)
                 Focused = false;
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindLookup", Input, SearchForm, json);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindLookup", Input, SearchForm, json);
             await base.OnAfterRenderAsync(firstRender);
         }
 

@@ -162,7 +162,7 @@ namespace Caspian.UI
                 });
                 if (errorMessage != null)
                 {
-                    await jsRuntime.InvokeVoidAsync("$.telerik.showMessage", errorMessage);
+                    await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
                     errorMessage = null;
                 }
             }

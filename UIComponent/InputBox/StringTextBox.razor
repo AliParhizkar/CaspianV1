@@ -118,7 +118,7 @@
     {
         var json = this.ConvertToJson();
         Focused = false;
-        await jsRuntime.InvokeVoidAsync("$.telerik.bindControl", htmlElement, json, UiControlType.TextBox);
+        await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, json, UiControlType.TextBox);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

@@ -90,7 +90,7 @@ namespace Caspian.Engine.RuleGenerator
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
-                await jSRuntime.InvokeVoidAsync("$.telerik.fitMainToParent");
+                await jSRuntime.InvokeVoidAsync("$.caspian.fitMainToParent");
             await base.OnAfterRenderAsync(firstRender);
         }
 

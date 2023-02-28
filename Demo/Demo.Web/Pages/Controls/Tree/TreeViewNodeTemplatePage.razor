@@ -5,7 +5,10 @@
         <h3>Tree View</h3>
     </div>
     <div style="width:50%;text-align:center">
-        <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">Source</button>
+        <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
     </div>
 </div>
 <div style="display:flex;width:90%;margin:0 auto">
@@ -46,8 +49,7 @@
                             <tr>
                                 <td></td>
                                 <td style="text-align:center">
-                                    <button type="submit" class="c-btn c-primary">ثبت</button>
-                                    <button type="button" @onclick="() => status = WindowStatus.Close" class="c-btn c-danger">انصراف</button>
+                                    <WindowCommandButtons />
                                 </td>
                             </tr>
                         </table>

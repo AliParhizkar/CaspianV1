@@ -81,7 +81,7 @@
                     if (arg.FileCount == 1)
                     {
                         if (arg.File.Size > MaxAllowedSize)
-                            await jSRuntime.InvokeVoidAsync("$.telerik.showMessage", $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.Seprate3Digit()} می باشد.");
+                            await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.Seprate3Digit()} می باشد.");
                         else
                         {
                             if (OnChange.HasDelegate)
@@ -92,7 +92,7 @@
                     else
                     {
                         if (arg.FileCount > MaxFilesCount)
-                            await jSRuntime.InvokeVoidAsync("$.telerik.showMessage", $"شما حداکثر مجاز به انتخاب {MaxFilesCount} فایل برای بارگذاری می باشید.");
+                            await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", $"شما حداکثر مجاز به انتخاب {MaxFilesCount} فایل برای بارگذاری می باشید.");
                         else
                         {
                             var files = arg.GetMultipleFiles(MaxFilesCount).ToArray();
@@ -101,7 +101,7 @@
                                 if (file.Size > MaxAllowedSize)
                                 {
                                     flag = false;
-                                    await jSRuntime.InvokeVoidAsync("$.telerik.showMessage", $" حجم فایل {file.Name} بیش از حجم مجاز ({MaxAllowedSize.Seprate3Digit()}) می باشد.");
+                                    await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", $" حجم فایل {file.Name} بیش از حجم مجاز ({MaxAllowedSize.Seprate3Digit()}) می باشد.");
                                     break;
                                 }
                             if (flag)
@@ -117,7 +117,7 @@
                 {
                     var file = arg.File;
                     if (arg.File.Size > MaxAllowedSize)
-                        await jSRuntime.InvokeVoidAsync("$.telerik.showMessage", $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.Seprate3Digit()} می باشد.");
+                        await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.Seprate3Digit()} می باشد.");
                     else
                     {
                         if (OnChange.HasDelegate)

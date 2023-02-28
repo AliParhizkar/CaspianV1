@@ -114,7 +114,10 @@
     </div>
 </PopupWindow>
 <div style="text-align:center">
-    <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">Source</button>
+    <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">
+        Source
+        <i class="fa fa-code"></i>
+    </button>
 </div>
 <CreatePdfComponent @bind-Status="pdfStatus" Title="Popup Window" FileName="PopupWindow.pdf" />
 @code 

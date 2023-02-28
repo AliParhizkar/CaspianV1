@@ -111,12 +111,12 @@ namespace Caspian.UI
             }
             if (errorMessage.HasValue())
             {
-                await jsRuntime.InvokeVoidAsync("$.telerik.showMessage", errorMessage);
+                await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
                 errorMessage = null;
             }
             else if (FormAppState.Element.HasValue)
             {
-                await jsRuntime.InvokeVoidAsync("$.telerik.focusAndShowErrorMessage", FormAppState.Element, FormAppState.ErrorMessage);
+                await jsRuntime.InvokeVoidAsync("$.caspian.focusAndShowErrorMessage", FormAppState.Element, FormAppState.ErrorMessage);
                 FormAppState.Element = null;
             }
         }

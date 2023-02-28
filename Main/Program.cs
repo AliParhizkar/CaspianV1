@@ -15,6 +15,7 @@ builder.Services.AddSingleton<WindowAppState>();
 builder.Services.AddTransient(typeof(GridService<>));
 builder.Services.AddTransient<FileUploadService>();
 builder.Services.AddScoped<BatchService>();
+builder.Services.AddScoped<BasePageService>();
 builder.Services.AddSingleton<SingletonMenuService>(t => 
 {
     using var context = new Caspian.Engine.Model.Context();

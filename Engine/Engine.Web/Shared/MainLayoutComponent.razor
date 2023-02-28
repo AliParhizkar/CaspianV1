@@ -19,13 +19,19 @@
                 <div class="sidebar">
                     <div class="c-menu-icon">
                         <div>
-                            <i @onclick="ToggeleMenu" class="fa fa-bars" />
+                            <span class="c-container">
+                                <i @onclick="ToggeleMenu" class="fa fa-bars" />
+                            </span>
                         </div>
                         <div style="width:100px">
-                            <i @onclick="async () => await Logout()" title="خروج" class="fa fa-sign-out" />
+                            <span class="c-container">
+                                <i @onclick="async () => await Logout()" title="خروج" class="fa fa-sign-out" />
+                            </span>
                         </div>
                         <div>
-                            <i @onclick="MainMenu" class="fa fa-th" />
+                            <span class="c-container">
+                                <i @onclick="MainMenu" class="fa fa-th" />
+                            </span>
                         </div>
                     </div>
                     <DataMenu OnChange="() => hideMenu = false" MenusId="menusId" />

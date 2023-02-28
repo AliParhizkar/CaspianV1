@@ -46,7 +46,7 @@
                     HAlign = HorizontalAlign.ConvertToInt()
                 });
             }
-            await jSRuntime.InvokeVoidAsync("$.telerik.bindPopupWindow", DotNetObjectReference.Create(this), json);
+            await jSRuntime.InvokeVoidAsync("$.caspian.bindPopupWindow", DotNetObjectReference.Create(this), json);
         }
         await base.OnAfterRenderAsync(firstRender);
     }

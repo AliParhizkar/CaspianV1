@@ -106,14 +106,14 @@
         if (message.HasValue())
             Message = message;
         show = true;
-        await jsRuntime.InvokeVoidAsync("$.telerik.enableDefaultShortKey", true, DotNetObjectReference.Create(this), overlay, box);
+        await jsRuntime.InvokeVoidAsync("$.caspian.enableDefaultShortKey", true, DotNetObjectReference.Create(this), overlay, box);
         StateHasChanged();
         var task = Task.Run<bool>(async () =>
         {
             while (confirmResult == null)
                 await Task.Delay(100);
             show = false;
-            await jsRuntime.InvokeVoidAsync("$.telerik.enableDefaultShortKey", false);
+            await jsRuntime.InvokeVoidAsync("$.caspian.enableDefaultShortKey", false);
             await InvokeAsync(StateHasChanged);
             return confirmResult.Value;
         });
@@ -138,10 +138,4 @@
         return await Show(message);
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (overlay.Id != null)
-            await jsRuntime.InvokeVoidAsync("$.telerik.showMessageBox", overlay, box);
-        await base.OnAfterRenderAsync(firstRender);
-    }
 }

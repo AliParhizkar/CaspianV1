@@ -1,117 +1,88 @@
 ﻿@page "/Demo/DateAndTime"
 @namespace Demo.Web.Pages
-<div style="padding:20px 40px 0 0">
-    <h3>Date And Time Picker</h3>
-</div>
-<div style="display:table;width:90%;margin:0 auto">
-    <div style="display:table-cell;width:50%;padding-left:40px">
-        <hr />
-        <h4 style="padding-right:40px;">Date picker-default</h4>
-        <table style="height:210px;margin-right:80px">
-            <tr>
-                <td style="width:155px;">
-                    <label>Disable</label>
-                </td>
-                <td>
-                    <CheckBox @bind-Value="dateDisable" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Open on focus</label>
-                </td>
-                <td>
-                    <CheckBox @bind-Value="dateOpenOnFocus" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Action</label>
-                </td>
-                <td style="text-align:center">
-                    <button class="t-button" @onclick="async () => await DatePickerFocuc() ">فـوکـوس</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Selected Culture Date</label>
-                </td>
-                <td style="text-align:center;direction:ltr">
-                    <label style="color:red;">@(date.HasValue ? date.Value.ToShortDateString() : "-----")</label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Selected Persian Date</label>
-                </td>
-                <td style="text-align:center">
-                    <label style="color:red;">@(date.HasValue ? date.ToPersianDateString() : "-----")</label>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <DatePicker @ref="datePicker" @bind-Value="date" OpenOnFocus="dateOpenOnFocus" Disabled="dateDisable" />
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <button @onclick="DatePickerSource" class="c-btn c-primary">Source</button>
-                </td>
-            </tr>
-        </table>
+<div class="row d-head">
+    <div class="row-md-6">
+        <h3>Date And Time Picker</h3>
     </div>
-    <div style="display:table-cell;width:50%;padding-right:40px">
-        <hr />
-        <h4 style="padding-right:40px;">Time picker-default</h4>
-        <table style="height:210px;margin-right:80px">
-            <tr>
-                <td style="width:155px;">
-                    <label>Disable</label>
-                </td>
-                <td>
-                    <CheckBox @bind-Value="timeDisable" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Open on focus</label>
-                </td>
-                <td>
-                    <CheckBox @bind-Value="timeOpenOnFocus" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Action</label>
-                </td>
-                <td style="text-align:center">
-                    <button class="t-button" @onclick="async () => await TimePickerFocuc()">فـوکـوس</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Selected time</label>
-                </td>
-                <td style="text-align:center">
-                    <label style="color:red;">@(time.HasValue ? time.Value.ShortString() : "-----")</label>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2"></td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <TimePicker @ref="timePicker" @bind-Value="time" Disabled="timeDisable" />
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <button @onclick="TimePickerSource" class="c-btn c-primary">Source</button>
-                </td>
-            </tr>
-        </table>
+</div>
+<div class="d-body">
+    <div class="row">
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Date picker</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="dateDisable" Title="Disabled" />
+                    </div>
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="dateOpenOnFocus" Title="Open on focus" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Action</label>
+                    </div>
+                    <div class="d-center-align col-md-6">
+                        <button class="t-button" @onclick="async () => await DatePickerFocuc() ">فـوکـوس</button>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Selected Culture Date</label>
+                    </div>
+                    <div class="d-center-align col-md-6">
+                        <label style="color:red;">@(date.HasValue ? date.Value.ToShortDateString() : "-----")</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Selected Persian Date</label>
+                    </div>
+                    <div class="d-center-align col-md-6">
+                        <label style="color:red;">@(date.HasValue ? date.ToPersianDateString() : "-----")</label>
+                    </div>
+                    <div class="col-md-12">
+                        <DatePicker @ref="datePicker" @bind-Value="date" OpenOnFocus="dateOpenOnFocus" Disabled="dateDisable" />
+                    </div>
+                    <div class="col-md-12 d-center-align">
+                        <button @onclick="DatePickerSource" class="c-btn c-primary">
+                            Source
+                            <i class="fa fa-code"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Time picker</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="timeDisable" Title="Disabled" />
+                    </div>
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="timeOpenOnFocus" Title="Open on focus" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Action</label>
+                    </div>
+                    <div class="col-md-6 d-center-align">
+                        <button class="t-button" @onclick="async () => await TimePickerFocuc()">فـوکـوس</button>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Selected time</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="color:red;">@(time.HasValue ? time.Value.ShortString() : "-----")</label>
+                    </div>
+                    <div class="col-md-12">
+                        <TimePicker @ref="timePicker" @bind-Value="time" Disabled="timeDisable" />
+                    </div>
+                    <div class="col-md-12 d-center-align">
+                        <button @onclick="TimePickerSource" class="c-btn c-primary">
+                            Source
+                            <i class="fa fa-code"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <CreatePdfComponent @bind-Status="status" Title="Default" FileName="@sourceName" />

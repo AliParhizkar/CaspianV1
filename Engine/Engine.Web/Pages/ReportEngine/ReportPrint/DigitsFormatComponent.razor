@@ -84,7 +84,7 @@
         }
         if (message.HasValue())
         {
-            await jsRundTime.InvokeVoidAsync("$.telerik.showMessage", message);
+            await jsRundTime.InvokeVoidAsync("$.caspian.showMessage", message);
             message = null;
         }
         await base.OnAfterRenderAsync(firstRender);

@@ -13,13 +13,16 @@
          <h4 style="padding-right:40px;">Action</h4>
         <div style="height:210px;margin-right:80px">
             <div style="height:60px">
-                 <button class="c-btn c-outline-primary"  @onclick="simpleMessage">Simple message</button>
+                 <button class="c-btn c-outline-primary"  @onclick="SimpleMessage">Simple message</button>
             </div>
             <div style="height:60px">
-                 <button class="c-btn c-outline-info" @onclick="alertMessageAction">Alert</button>
+                 <button class="c-btn c-outline-info" @onclick="AlertMessageAction">Alert</button>
             </div>
             <div style="height:60px">
-                 <button class="c-btn c-outline-secondary" @onclick="confirmMessageAction">Confirm</button>
+                 <button class="c-btn c-outline-secondary" @onclick="ConfirmMessageAction">Confirm</button>
+            </div>
+            <div style="height:60px">
+                <button class="c-btn c-outline-success" @onclick="() => status1 = WindowStatus.Open">Show On Window</button>
             </div>
          </div>
     </div>
@@ -36,30 +39,76 @@
                  <StringTextBox @bind-Value="confirmMessage" />
             </div>
     </div>
-    <div>
-        <button @onclick="() => status = WindowStatus.Open">On Window</button>
-    </div>
     <div style="display:table-footer-group">
         <span style="color:red;">@errorMessage</span>
     </div>
 </div>
 <div style="text-align:center;">
-    <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">Source</button>
+    <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">
+        Source
+        <i class="fa fa-code"></i>
+    </button>
 </div>
-<Window @bind-Status="status" Title="Message On Window" Style="width:500px;height:300px;">
+<Window @bind-Status="status1"  Title="Window 1" Style="width:700px;height:500px">
     <Content>
-        <button @onclick='async () => await Confirm("سلام سلام ")'>Confirm</button>
+        <h3>Window 1</h3>
+        <hr />
+        <div style="display:flex;padding:5px 0">
+            <div style="width:33.3%;text-align:center">
+                <button class="c-btn c-primary" @onclick="() => { status2 = WindowStatus.Open; }">Window 2</button>
+            </div>
+            <div style="width:33.3%;text-align:center">
+                <button class="c-btn c-info" @onclick='async () => await Alert("Alert on window1")'>Alert</button>
+            </div>
+            <div style="width:33.3%;text-align:center">
+                <button class="c-btn c-success" @onclick='async () => await Confirm("Confirm on window1")'>Confirm</button>
+            </div>
+        </div>
+        <Window @bind-Status="status2" Title="Window 2" Style="width:600px;height:400px">
+            <Content>
+                <h3>Window 2</h3>
+                <hr />
+                <div style="display:flex;padding:5px 0">
+                    <div style="width:33.3%;text-align:center">
+                        <button class="c-btn c-primary" @onclick="() => { status3 = WindowStatus.Open; }">Window 3</button>
+                    </div>
+                    <div style="width:33.3%;text-align:center">
+                        <button class="c-btn c-info" @onclick='async () => await Alert("Alert on window2")'>Alert</button>
+                    </div>
+                    <div style="width:33.3%;text-align:center">
+                        <button class="c-btn c-success" @onclick='async () => await Confirm("Confirm on window2")'>Confirm</button>
+                    </div>
+                </div>
+                
+                <Window @bind-Status="status3" Title="Window 3" Style="width:500px;height:300px">
+                    <Content>
+                        <h4>Window 3</h4>
+                        <hr />
+                        <div style="display:flex;padding:5px 0">
+                            <div style="width:50%;text-align:center">
+                                <button class="c-btn c-info" @onclick='async () => await Alert("Alert on window3")'>Alert</button>
+                            </div>
+                            <div style="width:50%;text-align:center">
+                                <button class="c-btn c-success" @onclick='async () => await Confirm("Confirm on window3")'>Confirm</button>
+                            </div>
+                        </div>
+                    </Content>
+                </Window>
+            </Content>
+        </Window>
     </Content>
 </Window>
 <CreatePdfComponent @bind-Status="pdfStatus" Title="Message" FileName="Message.pdf" />
 
 @code
 {
-    WindowStatus status;
+    WindowStatus status1;
+    WindowStatus status2;
+    WindowStatus status3;
     WindowStatus pdfStatus;
     string message = "ثبت با موفقیت انجام شد", alertMessage = "سفارش ثبت شد، امکان ثبت شند حسابداری وجود ندارد", confirmMessage = "آیا با حذف موافقید؟", errorMessage = "";
 
-    void simpleMessage()
+    void SimpleMessage()
     {
         if (message.HasValue())
         {
@@ -70,18 +119,18 @@
             errorMessage = "لطفا متن پیام را مشخص نمایید.";
     }
 
-    void alertMessageAction()
+    async void AlertMessageAction()
     {
         if (alertMessage.HasValue())
         {
             errorMessage = null;
-            Alert(alertMessage);
+            await Alert(alertMessage);
         }
         else
             errorMessage = "لطفا متن پیام را مشخص نمایید.";
     }
 
-    async Task confirmMessageAction()
+    async Task ConfirmMessageAction()
     {
         if (confirmMessage.HasValue())
         {

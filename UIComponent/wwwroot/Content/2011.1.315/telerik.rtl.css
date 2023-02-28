@@ -2,9 +2,8 @@
 
 .t-rtl
 {
-    direction: rtl;
-    zoom: 1;
-    text-align:right;
+/*    direction: rtl;
+    text-align:right;*/
 }
 
 .t-rtl .t-button-icontext .t-icon
@@ -427,6 +426,17 @@ fieldset.t-widget{
 {
     width:calc(100% - 4px);
     margin:2px;
+}
+
+
+.t-ltr .t-datepicker .t-input, .t-ltr .t-timepicker .t-input {
+    border-radius: 8px 0 0 8px;
+}
+
+.t-ltr .t-picker-wrap .t-select {
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+    border-right-width:1px;
 }
 
 

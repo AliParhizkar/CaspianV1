@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Caspian.UI
 {
-    public class BasePage: ComponentBase
+    public partial class BasePage: ComponentBase
     {
         string message;
         bool? block;
-        protected MessageBox MessageBox;
-        protected bool sholdRender = true;
+        MessageBox MessageBox;
+        bool sholdRender = true;
         BasePage child;
         
         public static bool IsStarted { get; set; }
@@ -79,23 +78,19 @@ namespace Caspian.UI
 
         public async Task Alert(string message)
         {
-            await MessageBox.Alert(message);
+            var window = Service.Peek();
+            if (window != null)
+                await window.GetMessageBox().Alert(message);
+            else
+                await MessageBox.Alert(message);
         }
 
         public async Task<bool> Confirm(string message)
         {
+            var window = Service.Peek();
+            if (window != null)
+                return await window.GetMessageBox().Confirm(message);
             return await MessageBox.Confirm(message);
-        }
-
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            builder.OpenComponent(1, typeof(MessageBox));
-            builder.AddComponentReferenceCapture(1, capturedRef => 
-            { 
-                MessageBox = capturedRef as MessageBox; 
-            });
-            builder.CloseComponent();
-            base.BuildRenderTree(builder);
         }
 
         protected IList<SelectListItem> GetSelectList(params string[] array)
@@ -127,7 +122,7 @@ namespace Caspian.UI
         protected async Task DownloadFile(string fileName, MemoryStream fileContent)
         {
             using var streamRef = new DotNetStreamReference(fileContent);
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindFileDownload", fileName, streamRef);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindFileDownload", fileName, streamRef);
         }
 
         protected override void OnInitialized()
@@ -149,7 +144,7 @@ namespace Caspian.UI
         /// </summary>
         protected async Task EnableWindowClick(BasePage child)
         {
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindWindowClick", DotNetObjectReference.Create(child));
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindWindowClick", DotNetObjectReference.Create(child));
         }
 
         protected virtual void OnWindowClick()
@@ -159,20 +154,20 @@ namespace Caspian.UI
 
         protected async Task BindTooltip()
         {
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindTooltip");
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindTooltip");
         }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (message.HasValue())
             {
-                await jsRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+                await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
                 message = null;
             }
             if (block.HasValue)
             {
                 var tempBlock = block.Value;
-                await jsRuntime.InvokeVoidAsync("$.telerik.blockManagement", tempBlock);
+                await jsRuntime.InvokeVoidAsync("$.caspian.blockManagement", tempBlock);
             }
             if (block == true)
                 block = false;

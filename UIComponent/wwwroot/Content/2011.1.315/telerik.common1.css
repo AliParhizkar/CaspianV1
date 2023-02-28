@@ -1,12 +1,43 @@
 ﻿/* base stylesheet */
-.c-menu-icon {
-    height: 25px;
-    background-color: #e5e5e5;
-    padding: 0;
-    overflow: hidden;
-    display: flex;
-    flex-basis: content;
+
+.c-menu-icon .c-container {
+    display: inline-block;
 }
+
+.c-default-page {
+    height: calc(100vh - 53px);
+    box-sizing: border-box;
+}
+.c-copy-right {
+    background-color: #e5e5e5;
+    height: 26px;
+    box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-top: 1px solid rgb(177 177 177);
+}
+.c-copy-right .c-icon{
+    display:inline-block;
+    width:32px;
+    height:16px;
+    vertical-align:middle;
+    background-image:url(/_Content/UiComponent/Content/Images/copy-right-icon.png);
+}
+.c-copy-right .c-title {
+    line-height: 25px;
+    color: #8c1111;
+    white-space:nowrap;
+}
+    .c-menu-icon {
+        height: 25px;
+        background-color: #e5e5e5;
+        padding: 1px 1px 0 0;
+        overflow: hidden;
+        display: flex;
+        flex-basis: content;
+    }
 .c-hidden {
     visibility:hidden;
     color:transparent;
@@ -54,20 +85,41 @@ progress::-webkit-progress-value {
     background-color: #369ACA;
     border-radius: 0 8px 8px 0;
 }
-progress[value] {
-    background-color: yellow;
-    border-radius: 0 8px 8px 0;
+.sidebar .c-container {
+    width: 25px;
+    height: 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    vertical-align: middle;
+    padding-top: 2px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
 }
+    .sidebar .c-container:hover {
+        width: 25px;
+        height: 24px;
+        vertical-align: middle;
+        border-color: #898989;
+        background-color: #d1d1d1;
+    }
+    progress[value] {
+        background-color: yellow;
+        border-radius: 0 8px 8px 0;
+    }
         .c-menu-icon .fa {
             color: #423d96;
-            font-size: 24px;
+            font-size: 19px;
             cursor: pointer;
         }
     .c-menu-icon div {
         width:27px;
         text-align:center;
-        padding-top:1px;
     }
+.c-menu-icon .fa-th {
+    font-size: 17px !important;
+    padding-top: 2px;
+}
 .c-main-head {
     height: 26px;
     background-color: #e5e5e5;
@@ -216,6 +268,20 @@ progress[value] {
         background-color: #6c757d;
         border-color: #6c757d;
     }
+
+.c-outline-success {
+    color: #28a745;
+    background-color: transparent;
+    background-image: none;
+    border-color: #28a745;
+}
+
+    .c-outline-success:hover {
+        color: #fff;
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
 .c-secondary {
     color: #fff;
     background-color: #6c757d;
@@ -498,8 +564,9 @@ span, label, td, th {
 
 .t-checkbox .t-title {
     font-size: 14px;
-    padding: 0 3px 0 8px;
+    padding: 5px;
     color: #5d5f60;
+    vertical-align: middle;
 }
 .t-checkbox.t-disabled .t-title {
     color: #b9b9b9;
@@ -699,33 +766,34 @@ span, label, td, th {
     opacity: 0;
     width: 20px;
     height: 20px;
+    display: none;
 }
 .t-radios .t-icon {
-    width: 22px;
-    height: 22px;
-    display:inline-block;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
     border-width: 2px;
-    border-radius:13px;
+    border-radius: 13px;
     border-style: solid;
-    border-color: rgba(0, 0, 0, 0.5)
+    border-color: rgba(0, 0, 0, 0.4);
+    padding: 4px;
 }
 .t-radios .t-title {
     padding:0 5px;
     cursor:context-menu;
 }
-    .t-radios .t-radio {
-        display: table-cell;
-    }
-        .t-radios .c-radio {
-            background-color: #ff6358;
-            width: 12px;
-            height: 12px;
-            position: relative;
-            top: -22px;
-            display: block;
-            left: -3px;
-            border-radius: 8px;
-        }
+.t-radios .t-radio {
+    white-space: nowrap;
+    display:inline-block;
+}
+
+.t-radios .c-radio {
+    background-color: #ff6358;
+    width: 12px;
+    height: 12px;
+    display: block;
+    border-radius: 8px;
+}
 .t-radios .t-disabled .c-radio {
     background-color: lightgray;
 }
@@ -1300,16 +1368,11 @@ input:-moz-placeholder {
     background-color: #000;
     opacity: 0.5;
     z-index: 15;
-    display:none;
 }
 
 .t-window .t-overlay {
     background-color: #a8a7a8;
-    opacity: 0;
-    filter: alpha(opacity=0);
     position: absolute;
-    width: 100%;
-    height: 100%;
 }
 
 /* TabStrip */
@@ -1324,12 +1387,24 @@ input:-moz-placeholder {
     border-radius: 8px 8px 0 0;
     background-color: #e6e7e8;
 }
-    .t-tabstrip .c-selected-panel {
-        background-color: red;
-        display: block;
-        width: 100%;
-        height: 3px;
+@keyframes tabstripwidth {
+    0% {
+        width: 20%;
     }
+
+    100% {
+        width: 100%;
+    }
+}
+.t-tabstrip .c-selected-panel {
+    animation-name: tabstripwidth;
+    animation-duration: 0.4s;
+    background-color: red;
+    display: block;
+    width: 100%;
+    height: 3px;
+    margin: 0 auto;
+}
     .t-tabstrip .t-tabstrip-items {
         overflow: hidden;
         white-space: nowrap;
@@ -2328,7 +2403,6 @@ html body .t-grid tbody .t-button-icon {
     cursor: default;
     box-sizing: border-box;
     background-color: inherit;
-    border-radius: 0 8px 8px 0;
     overflow:hidden;
 }
 .t-dropdown .t-state-error {
@@ -2724,16 +2798,18 @@ div.t-numerictextbox {
     overflow:visible;
     height:34px;
 }
+
 .t-checkbox.t-disabled .t-icon i {
     color: #cccccc;
 }
 .t-checkbox .t-icon {
-    display:inline-block;
-    border: 1px solid rgba(0,0,0,0.25);
+    display: inline-block;
+    border: 1px solid rgba(0,0,0,0.4);
     border-radius: 3px;
     width: 18px;
     height: 18px;
     box-sizing: border-box;
+    vertical-align: middle;
     text-align:center;
 }
     .t-checkbox .t-icon i {

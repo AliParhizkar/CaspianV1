@@ -70,7 +70,7 @@ namespace Caspian.UI
             {
                 Focused = false;
                 oldJson = json;
-                await jsRuntime.InvokeVoidAsync("$.telerik.bindControl", htmlElement, json, UiControlType.TextBox);
+                await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, json, UiControlType.TextBox);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

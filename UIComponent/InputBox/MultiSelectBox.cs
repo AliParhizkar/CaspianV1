@@ -56,7 +56,7 @@ namespace Caspian.UI
             {
                 errorMessage = ErrorMessage,
             });
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindMultiSelect", htmlElement, json);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindMultiSelect", htmlElement, json);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

@@ -75,8 +75,8 @@
                                                 else
                                                     selectedIds.Add(id);
                                             }
-                                            if (OnRowSelect != null)
-                                                await OnRowSelect.Invoke(item);
+                                            if (OnRowSelect.HasDelegate)
+                                                await OnRowSelect.InvokeAsync(item);
                                             if (OnInternalRowSelect.HasDelegate)
                                                 await OnInternalRowSelect.InvokeAsync(id);
                                             await SetStateGridData();

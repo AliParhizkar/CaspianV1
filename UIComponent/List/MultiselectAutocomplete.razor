@@ -71,10 +71,10 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JSRuntime.InvokeVoidAsync("$.telerik.bindMultiselectLookup", element);
+        await JSRuntime.InvokeVoidAsync("$.caspian.bindMultiselectLookup", element);
         if (message.HasValue())
         {
-            await JSRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+            await JSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
             message = null;
         }
         await base.OnAfterRenderAsync(firstRender);

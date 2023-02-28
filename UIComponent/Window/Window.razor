@@ -1,6 +1,7 @@
 ﻿@namespace Caspian.UI
 @implements IInputValueInitializer
 @implements IWindow
+@inject BasePageService Service
 @if (!LoadOnContent || Status == WindowStatus.Open)
 {
     <CascadingValue TValue="IWindow" Value="this" Name="ParentWindow">
@@ -25,6 +26,7 @@
                 <div class="t-window-content t-content">
                     @if (Content != null && Status == WindowStatus.Open)
                     {
+                        <MessageBox @ref="messageBox" />
                         @Content
                     }
                 </div>
@@ -35,6 +37,7 @@
 
 @code
 {
+    MessageBox messageBox;
     bool isOpend;
     protected int id;
     WindowStatus oldStatus;
@@ -149,10 +152,23 @@
         base.OnParametersSet();
     }
 
+    public MessageBox GetMessageBox()
+    {
+        return messageBox;
+    }
+
     protected async override Task OnParametersSetAsync()
     {
         if (Status == WindowStatus.Open && oldStatus != WindowStatus.Open)
+        {
             isOpend = true;
+            Service.Push(this);
+        }
+        if (Status != WindowStatus.Open && oldStatus == WindowStatus.Open)
+        {
+            Service.Pop();
+            messageBox = null;
+        }
         oldStatus = Status;
         await base.OnParametersSetAsync();
     }
@@ -170,12 +186,12 @@
         if (!LoadOnContent || Status == WindowStatus.Open)
         {
             var json = this.ConvertToJson();
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindControl", window, json, UiControlType.Window);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", window, json, UiControlType.Window);
         }
         if (firstRender)
         {
             var data = new JsValueSetter(this);
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindValue", DotNetObjectReference.Create(data), window, UiControlType.Window);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindValue", DotNetObjectReference.Create(data), window, UiControlType.Window);
         }
         await base.OnAfterRenderAsync(firstRender);
     }

@@ -588,7 +588,7 @@ namespace Caspian.UI
             if (firstRender)
             {
                 var data = new JsValueSetter(this, this);
-                await jsRuntime.InvokeVoidAsync("$.telerik.bindComboBox", DotNetObjectReference.Create(data), input, Pageable);
+                await jsRuntime.InvokeVoidAsync("$.caspian.bindComboBox", DotNetObjectReference.Create(data), input, Pageable);
             }
             if (focused)
             {
@@ -598,9 +598,9 @@ namespace Caspian.UI
             if (Status != oldStatus)
             {
                 oldStatus = Status;
-                await jsRuntime.InvokeVoidAsync("$.telerik.toggleComboboxStatus", input, Status);
+                await jsRuntime.InvokeVoidAsync("$.caspian.toggleComboboxStatus", input, Status);
             }
-            await jsRuntime.InvokeVoidAsync("$.telerik.serversideCombobox", input, ErrorMessage, Disabled, Status);
+            await jsRuntime.InvokeVoidAsync("$.caspian.serversideCombobox", input, ErrorMessage, Disabled, Status);
             if (valueChanged)
             {
                 valueChanged = false;

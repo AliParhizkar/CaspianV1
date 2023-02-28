@@ -372,3 +372,12 @@ a, .btn-link {
             .c-login .c-action button:hover {
                 background-color: #00D8DC;
             }
+
+.sys-page {
+    display:flex;
+    height:calc(100vh)
+}
+.sys-sidebar {
+    width:250px;
+
+}

@@ -1,170 +1,146 @@
 ﻿@page "/Demo/RadioList"
 @namespace Demo.Web.Pages
-<div style="padding:20px 40px 0 0">
-    <h3>Radio List Button</h3>
-</div>
-<div style="display:table;width:90%;margin:0 auto">
-    <div style="display:table-row">
-        <div style="width:50%;display:table-cell;padding-left:40px;">
-             <hr />
-             <ul>
-                 <li>
-                    <h4>Bind to enum</h4>
-                    <table style="margin-right:40px;height:210px">
-                        <tr>
-                            <td style="width:150px;">
-                                <label>Disable</label>
-                            </td>
-                            <td>
-                                <CheckBox @bind-Value="disabled" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Selected Value</label>
-                            </td>
-                            <td>
-                                <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "----")</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Selected Title</label>
-                            </td>
-                            <td>
-                                <label style="color:red;">@(orderType.HasValue ? orderType.FaText() : "----")</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Selected Enum Title</label>
-                            </td>
-                            <td>
-                                <label style="color:red;">@(orderType.HasValue ? orderType.ToString() : "----")</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <RadioList Disabled="disabled" @bind-Value="orderType" />
-                            </td>
-                        </tr>
-                    </table>
-                 </li>
-             </ul>
-        </div>
-        <div style="width:50%;display:table-cell;padding-right:40px;">
-            <hr />
-            <ul>
-                 <li>
-                    <h4>Some Of Items And Custom Align</h4>
-                    <table style="margin-right:40px;height:210px">
-                        <tr>
-                            <td>
-                                <label>Selected Value</label>
-                            </td>
-                            <td>
-                                <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "----")</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Selected Title</label>
-                            </td>
-                            <td>
-                                <label style="color:red;">@(orderType.HasValue ? orderType.FaText() : "----")</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Selected Enum Title</label>
-                            </td>
-                            <td>
-                                <label style="color:red;">@(orderType.HasValue ? orderType.ToString() : "----")</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <RadioList @bind-Value="orderType" >
-                                    <RadioItems>
-                                        <div style="height:30px;text-align:center;display:table-row">
-                                            <RadioItem Value="Model.OrderType.Salon" />
-                                        </div>
-                                        <div>
-                                            <RadioItem Value="Model.OrderType.Tel" />
-                                            <RadioItem Value="Model.OrderType.Internet" />
-                                        </div>
-                                    </RadioItems>
-                                </RadioList>
-                            </td>
-                        </tr>
-                    </table>
-                 </li>
-             </ul>
-        </div>
+<div class="row d-head">
+    <div class="col-md-6">
+        <h3>Radio List Button</h3>
     </div>
-    <div style="display:table-row">
-        <div style="width:50%;display:table-cell;padding-left:40px;">
-            <hr />
-            <h4>Bind to Data Source</h4>
-            <table style="margin-right:40px;height:120px">
-                <tr>
-                    <td>
+    <div class="d-source-btn col-md-6">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
+</div>
+<div class="d-body">
+    <div class="row">
+        <div class="col-md-6 d-control">
+             <hr />
+             <div class="d-container">
+                <h4>Bind to enum</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="disabled" Title="Disable" />
+                    </div>
+                    <div class="col-md-6">
                         <label>Selected Value</label>
-                    </td>
-                    <td>
-                        <label style="color:red;">@(selectedNumber.HasValue ? selectedNumber.Value : "----")</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "----")</label>
+                    </div>
+                    <div class="col-md-6">
                         <label>Selected Title</label>
-                    </td>
-                    <td>
-                        <label style="color:red;">@(selectedNumber.HasValue ? items[selectedNumber.Value - 1].Text : "----")</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <RadioList @bind-Value="selectedNumber" Source="items" />
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="color:red;">@(orderType.HasValue ? orderType.FaText() : "----")</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Selected Enum Title</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="color:red;">@(orderType.HasValue ? orderType.ToString() : "----")</label>
+                    </div>
+                    <div class="col-md-12">
+                        <RadioList Disabled="disabled" @bind-Value="orderType" />
+                    </div>
+                </div>
+             </div>
         </div>
-        <div style="width:50%;display:table-cell;padding-right:40px;">
+        <div class="col-md-6 d-control">
             <hr />
-            <h4>Disable Items</h4>
-            <table style="margin-right:40px;height:120px">
-                <tr>
-                    <td>
-                        <label>سالن</label>
-                    </td>
-                    <td>
-                        <CheckBox @bind-Value="salon" />
-                    </td>
-                    <td>
-                        <label>بیرون بر</label>
-                    </td>
-                    <td>
-                        <CheckBox @bind-Value="packaging" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>تلفنی</label>
-                    </td>
-                    <td>
-                        <CheckBox @bind-Value="tel" />
-                    </td>
-                    <td>
-                        <label>اینترنتی</label>
-                    </td>
-                    <td>
-                        <CheckBox @bind-Value="internet" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <RadioList @bind-Value="orderType" >
+            <div class="d-container">
+                <h4>Custom Align</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Selected Value</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "----")</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Selected Title</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="color:red;">@(orderType.HasValue ? orderType.FaText() : "----")</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Selected Enum Title</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="color:red;">@(orderType.HasValue ? orderType.ToString() : "----")</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Selected Enum Title</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="color:red;">@(orderType.HasValue ? orderType.ToString() : "----")</label>
+                    </div>
+                    <div class="col-md-12">
+                        <table>
+                            <tr>
+                                <td colspan="2">
+                                    <RadioList @bind-Value="orderType">
+                                        <RadioItems>
+                                            <div style="height:30px;text-align:center;display:table-row">
+                                                <RadioItem Value="Model.OrderType.Salon" />
+                                            </div>
+                                            <div>
+                                                <RadioItem Value="Model.OrderType.Package" />
+                                                <RadioItem Value="Model.OrderType.Tel" />
+                                            </div>
+                                            <div style="height:30px;text-align:center;display:table-row">
+                                                <RadioItem Value="Model.OrderType.Internet" />
+                                            </div>
+                                        </RadioItems>
+                                    </RadioList>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Bind to Data Source</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Selected Value</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="color:red;">@(selectedNumber.HasValue ? selectedNumber.Value : "----")</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Selected Title</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label style="color:red;">@(selectedNumber.HasValue ? items[selectedNumber.Value - 1].Text : "----")</label>
+                    </div>
+                    <div class="col-md-12">
+                        <RadioList @bind-Value="selectedNumber" Source="items" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Disable Items</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <CheckBox @bind-Value="salon" Title="@Model.OrderType.Salon.FaText()" />
+                    </div>
+                    <div class="col-md-6">
+                        <CheckBox @bind-Value="packaging" Title="@Model.OrderType.Package.FaText()" />
+                    </div>
+                    <div class="col-md-6">
+                        <CheckBox @bind-Value="tel" Title="@Model.OrderType.Tel.FaText()" />
+                    </div>
+                    <div class="col-md-6">
+                        <CheckBox @bind-Value="internet" Title="@Model.OrderType.Internet.FaText()" />
+                    </div>
+                    <div class="col-md-12">
+                        <RadioList @bind-Value="orderType">
                             <RadioItems>
                                 <RadioItem Value="Model.OrderType.Salon" Disabled="salon" />
                                 <RadioItem Value="Model.OrderType.Package" Disabled="packaging" />
@@ -172,14 +148,11 @@
                                 <RadioItem Value="Model.OrderType.Internet" Disabled="internet" />
                             </RadioItems>
                         </RadioList>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-<div style="text-align:center;padding:15px">
-    <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Lookup Source</button>
 </div>
 <CreatePdfComponent @bind-Status="status" Title="Radio List" Title1="Order Type-Enum" FileName="RadioList.pdf" FileName1="OrderType-Enum.pdf" />
 

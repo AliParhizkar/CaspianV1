@@ -92,7 +92,7 @@
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         var json = this.ConvertToJson();
-        jsRuntime.InvokeVoidAsync("$.telerik.bindControl", htmlElement, json, UiControlType.TimePicker);
+        jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, json, UiControlType.TimePicker);
         return base.OnAfterRenderAsync(firstRender);
     }
 }

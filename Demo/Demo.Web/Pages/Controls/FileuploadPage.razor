@@ -1,25 +1,44 @@
 ﻿@page "/Demo/Fileupload"
 @namespace Demo.Web.Pages
-<div style="padding:20px 40px 0 0">
-    <h3>FileUpload & Picture Box</h3>
-</div>
-<div style="display:table;width:90%;margin:0 auto">
-    <div style="display:table-cell;width:50%;padding-left:40px">
-        <hr />
-        <h4 style="padding-right:80px;">With Content</h4>
-        <Fileupload OnChange="async e => await SaveFileData1(e)" Title="Click for upload">
-            <PictureBox NoContentTitle="لطفا برای آپلود عکس کلیک نمایید" Data="imageDataWidthoutContent" style="width:300px;height:350px;background-size:cover" />
-        </Fileupload>
-        <div style="text-align:center;padding:15px;">
-            <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">Lookup Source</button>
-        </div>
+<div class="row d-head">
+    <div class="col-md-6">
+        <h3>FileUpload & Picture Box</h3>
     </div>
-    <div style="display:table-cell;width:50%;padding-right:40px">
-        <hr />
-        <h4 style="padding-right:40px;">Without Content</h4>
-        <PictureBox Data="imageDataWidthContent" style="width:300px;height:350px;background-position: center center" />
-        <div style="display:table-cell;height:50px;vertical-align:middle">
-            <Fileupload OnChange="async e => await SaveFileData(e)" />
+</div>
+<div class="d-body">
+    <div class="row">
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>With Content</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <Fileupload OnChange="async e => await SaveFileData1(e)" Title="Click for upload">
+                            <PictureBox NoContentTitle="لطفا برای آپلود عکس کلیک نمایید" Data="imageDataWidthoutContent" style="width:300px;height:350px;background-size:cover" />
+                        </Fileupload>
+                    </div>
+                    <div>
+                        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+                            Source
+                            <i class="fa fa-code"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Items filter</h4>
+                <div class="row">
+                    <div>
+                        <PictureBox Data="imageDataWidthContent" style="width:300px;height:350px;background-position: center center" />
+                    </div>
+                    <div class="d-center-align">
+                        <Fileupload OnChange="async e => await SaveFileData(e)" />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

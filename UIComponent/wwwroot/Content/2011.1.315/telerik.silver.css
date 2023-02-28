@@ -218,6 +218,10 @@ html input[disabled], textarea[disabled] {
 .t-dropdown .t-dropdown-wrap {
     background-image: linear-gradient(#f6f6f6,#ebebeb);
     border-color: rgba(0,0,0,0.12);
+    font-size: 0;
+    margin: 2px;
+    height: 30px;
+    box-sizing: border-box;
 }
     .t-dropdown .t-dropdown-wrap:not(.t-state-disabled):hover {
         background-image: linear-gradient(#e6e6e6,#e1e1e1);

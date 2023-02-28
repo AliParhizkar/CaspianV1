@@ -70,7 +70,7 @@ namespace Caspian.UI
             {
                 await DataBind();
                 StateHasChanged();
-                await jsRuntime.InvokeVoidAsync("$.telerik.dadaGridBind", mainDiv);
+                await jsRuntime.InvokeVoidAsync("$.caspian.dadaGridBind", mainDiv);
             }
             await base.OnAfterRenderAsync(firstRender);
         }
@@ -343,7 +343,7 @@ namespace Caspian.UI
         internal EventCallback<TEntity> OnInternalDelete { get; set; }
 
         [Parameter, JsonIgnore]
-        public Func<TEntity, Task> OnRowSelect { get; set; }
+        public EventCallback<TEntity> OnRowSelect { get; set; }
 
         [JsonIgnore]
         public EventCallback<int> OnInternalRowSelect { get; set; }

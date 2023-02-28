@@ -48,7 +48,7 @@ namespace Caspian.UI
         async protected override Task OnAfterRenderAsync(bool firstRender)
         {
             var json = this.ConvertToJson();
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindControl", htmlElement, json, UiControlType.DatePicker);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, json, UiControlType.DatePicker);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

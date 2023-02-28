@@ -31,10 +31,10 @@
         if (Data != null)
         {
             var data = Convert.ToBase64String(Data);
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindImage", span, data, ContentType);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindImage", span, data, ContentType);
         }
         else
-            await jsRuntime.InvokeVoidAsync("$.telerik.bindImage", span, null);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindImage", span, null);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

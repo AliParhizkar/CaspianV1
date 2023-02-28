@@ -27,7 +27,7 @@ namespace Caspian.UI
                 show = true;
                 if (OnInternalShow.HasDelegate)
                     await OnInternalShow.InvokeAsync();
-                await jSRuntime.InvokeVoidAsync("$.telerik.enableAutoHide", DotNetObjectReference.Create(this));
+                await jSRuntime.InvokeVoidAsync("$.caspian.enableAutoHide", DotNetObjectReference.Create(this));
             }
         }
 
@@ -152,7 +152,7 @@ namespace Caspian.UI
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
-                await jSRuntime.InvokeVoidAsync("$.telerik.bindLookupTree", input);
+                await jSRuntime.InvokeVoidAsync("$.caspian.bindLookupTree", input);
             await base.OnAfterRenderAsync(firstRender);
         }
 

@@ -63,7 +63,10 @@
     </div>
 </div>
 <div style="text-align:center;padding-top:20px;">
-    <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">Lookup Source</button>
+    <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">
+        Source
+        <i class="fa fa-code"></i>
+    </button>
 </div>
 <PopupWindow @bind-Status="status" AutoHide="enableAutoHide">
     <FileUploadProgress Service="service" Style="width:450px;" />
