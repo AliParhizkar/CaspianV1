@@ -12,64 +12,34 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// نوع مشتری
-        /// </summary>
-        [DisplayName("نوع مشتری"), ReportField]
+        [DisplayName("Customer type"), ReportField]
         public CustomerType CustomerType { get; set; }
 
-        /// <summary>
-        /// نام
-        /// </summary>
-        [DisplayName("نام"), ReportField]
+        [DisplayName("First name"), ReportField]
         public string FName { get; set; }
 
-        /// <summary>
-        /// نام خانوادگی
-        /// </summary>
-        [DisplayName("نام خانوادگی"), ReportField]
+        [DisplayName("Last name"), ReportField]
         public string LName { get; set; }
 
-        /// <summary>
-        /// جنسیت
-        /// </summary>
-        [DisplayName("جنسیت"), ReportField]
+        [DisplayName("Gender"), ReportField]
         public Gender? Gender { get; set; }
 
-        /// <summary>
-        /// عنوان شرکت
-        /// </summary>
-        [DisplayName("عنوان شرکت"), ReportField]
+        [DisplayName("Company name"), ReportField]
         public string CompanyName { get; set; }
 
-        /// <summary>
-        /// شماره مشتری
-        /// </summary>
-        [DisplayName("شماره مشتری")]
+        [DisplayName("Customer number")]
         public int CustomerNumber { get; set; }
 
-        /// <summary>
-        /// شماره همراه
-        /// </summary>
-        [DisplayName("شماره همراه"), ReportField]
+        [DisplayName("Mobile number"), ReportField]
         public string MobileNumber { get; set; }
 
-        /// <summary>
-        /// تلفن
-        /// </summary>
-        [DisplayName("تلفن"), ReportField]
+        [DisplayName("Tel"), ReportField]
         public string Tel { get; set; }
 
-        /// <summary>
-        /// مشخصات سفارشهای مشتری
-        /// </summary>
-        [CheckOnDelete("مشتری دارای سفارش می باشد")]
+        [CheckOnDelete("The customer has Orders and can not be removed")]
         public virtual IList<Order> Orders { get; set; }
 
-        /// <summary>
-        /// عضویت های مشتری در گروه ها مشتریان
-        /// </summary>
-        [CheckOnDelete("مشتری عضو گروه می باشد و امکان حذف وی وجود ندارد.")]
+        [CheckOnDelete("Customer is member of group and can not be removed")]
         public virtual IList<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
     }
 }

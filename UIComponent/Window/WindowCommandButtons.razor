@@ -1,14 +1,25 @@
 ﻿@namespace Caspian.UI
+@inject WindowAppState AppState
+@inject CaspianDataService DataService
 <div class="c-window-action">
     <button class="c-btn c-primary" type="submit">@SumitButtonTitle</button>
-    <button class="c-btn c-danger" type="button" @onclick="CloseWindow">انصراف</button>
+    <button class="c-btn c-danger" type="button" @onclick="CloseWindow">@CancelButtonTitle</button>
 </div>
 
 @code 
-{ 
+{
     protected override void OnInitialized()
     {
-        SumitButtonTitle = "ثبت";
+        if (DataService.Language == Language.Fa)
+        {
+            SumitButtonTitle = "ثبت";
+            CancelButtonTitle = "انصراف";
+        }
+        else
+        {
+            SumitButtonTitle = "Save";
+            CancelButtonTitle = "Cancel";
+        }
         base.OnInitialized();
     }
 
@@ -20,9 +31,10 @@
     [CascadingParameter(Name = "ParentWindow")]
     public IWindow Window { get; set; }
 
-    [Inject]
-    public WindowAppState AppState { get; set; }
 
     [Parameter]
     public string SumitButtonTitle { get; set; }
+
+    [Parameter]
+    public string CancelButtonTitle { get; set; }
 }

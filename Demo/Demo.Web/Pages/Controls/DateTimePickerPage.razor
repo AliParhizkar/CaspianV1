@@ -1,8 +1,14 @@
 ﻿@page "/Demo/DateAndTime"
 @namespace Demo.Web.Pages
 <div class="row d-head">
-    <div class="row-md-6">
+    <div class="col-md-6">
         <h3>Date And Time Picker</h3>
+    </div>
+    <div class="d-source-btn col-md-6">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
     </div>
 </div>
 <div class="d-body">
@@ -21,29 +27,23 @@
                     <div class="col-md-6">
                         <label>Action</label>
                     </div>
-                    <div class="d-center-align col-md-6">
+                    <div class="text-center col-md-6">
                         <button class="t-button" @onclick="async () => await DatePickerFocuc() ">فـوکـوس</button>
                     </div>
                     <div class="col-md-6">
                         <label>Selected Culture Date</label>
                     </div>
-                    <div class="d-center-align col-md-6">
+                    <div class="text-center col-md-6">
                         <label style="color:red;">@(date.HasValue ? date.Value.ToShortDateString() : "-----")</label>
                     </div>
                     <div class="col-md-6">
                         <label>Selected Persian Date</label>
                     </div>
-                    <div class="d-center-align col-md-6">
+                    <div class="text-center col-md-6">
                         <label style="color:red;">@(date.HasValue ? date.ToPersianDateString() : "-----")</label>
                     </div>
                     <div class="col-md-12">
                         <DatePicker @ref="datePicker" @bind-Value="date" OpenOnFocus="dateOpenOnFocus" Disabled="dateDisable" />
-                    </div>
-                    <div class="col-md-12 d-center-align">
-                        <button @onclick="DatePickerSource" class="c-btn c-primary">
-                            Source
-                            <i class="fa fa-code"></i>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                     <div class="col-md-6">
                         <label>Action</label>
                     </div>
-                    <div class="col-md-6 d-center-align">
+                    <div class="col-md-6 text-center">
                         <button class="t-button" @onclick="async () => await TimePickerFocuc()">فـوکـوس</button>
                     </div>
                     <div class="col-md-6">
@@ -74,22 +74,15 @@
                     <div class="col-md-12">
                         <TimePicker @ref="timePicker" @bind-Value="time" Disabled="timeDisable" />
                     </div>
-                    <div class="col-md-12 d-center-align">
-                        <button @onclick="TimePickerSource" class="c-btn c-primary">
-                            Source
-                            <i class="fa fa-code"></i>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<CreatePdfComponent @bind-Status="status" Title="Default" FileName="@sourceName" />
+<CreatePdfComponent @bind-Status="status" Title="Date Picker & Time Picker" FileName="DatePicker&TimePicker.pdf" />
 @code 
 {
     WindowStatus status;
-    string sourceName;
     bool dateDisable;
     bool dateOpenOnFocus;
     bool timeDisable;
@@ -98,18 +91,6 @@
     TimeSpan? time;
     DatePicker<DateTime?> datePicker;
     TimePicker<TimeSpan?> timePicker;
-
-    void DatePickerSource()
-    {
-        sourceName = "DatePicker.pdf";
-        status = WindowStatus.Open;
-    }
-
-    void TimePickerSource()
-    {
-        sourceName = "TimePicker.pdf";
-        status = WindowStatus.Open;
-    }
 
     async Task DatePickerFocuc()
     {

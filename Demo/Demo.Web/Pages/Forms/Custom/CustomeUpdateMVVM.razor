@@ -4,78 +4,54 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:90%;margin:0 auto">
-    <div style="padding:8px 0">
-        <table style="width:100%">
-            <tr>
-                <td>
-                    <label>گروه محصول</label>
-                </td>
-                <td>
-                    <ComboBox @bind-Value="SearchData.ProductCategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Title" />
-                </td>
-                <td>
-                    <label>عنوان</label>
-                </td>
-                <td>
-                    <StringTextBox @bind-Value="SearchData.Title" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>وضعیت</span>
-                </td>
-                <td colspan="3">
-                    <DropdownList @bind-Value="SearchData.ActiveType" />
-                </td>
-            </tr>
-        </table>
+<div class="row p-4 c-controls">
+    <div class="col-md-2 ps-3">
+        <label>Product category</label>
     </div>
-    <div style="display:flex">
-        <label>اعمال قیمت بصورت تومان</label>
-        <CheckBox @bind-Value="toman" />
+    <div class="col-md-4 pe-4">
+        <ComboBox @bind-Value="SearchData.ProductCategoryId" TValue="int" TEntity="ProductCategory" 
+            TextExpression="t => t.Title" />
     </div>
-    <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400" HideInsertIcon>
-        <Columns>
-            <GridColumn Field="t => t.ProductCategory.Title" Title="گروه محصول" />
-            <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
-                <Template>
-                    <NumericTextBox Focused="selectedId == context.Data.Id && row == 1" TValue="int" Value="toman ? context.Data.Price / 10 : context.Data.Price" ValueChanged="value => PriceChanged(context.Data, value)"
-                                    @onkeyup="async e =>
-                                {
-                                    await UpdatePrice(e, context.Data.Id, context.Data.Price);
-                                }" />
-                </Template>
-            </GridColumn>
-            <GridColumn Field="t => t.PriceOuterBound.ToString()" style="width:150px;">
-                <Template>
-                    <NumericTextBox Focused="selectedId == context.Data.Id && row == 2" TValue="int" Value="toman ? context.Data.PriceOuterBound / 10 : context.Data.PriceOuterBound" ValueChanged="value => PriceOuterbindChanged(context.Data, value)"
-                                    @onkeyup="async e =>
-                                          {
-                                              await UpdatePriceOuterBound(e, context.Data.Id, context.Data.PriceOuterBound);
-                                          }" />
-                </Template>
-            </GridColumn>
-        </Columns>
-    </DataGrid>
+    <div class="col-md-1 ps-4">
+        <label>Status</label>
+    </div>
+    <div class="col-md-3 pe-3">
+        <DropdownList @bind-Value="SearchData.ActiveType" />
+    </div>
+    <div class="d-source-btn col-md-2">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
+    <div class="col-md-12">
+        <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400" HideInsertIcon>
+            <Columns>
+                <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
+                <GridColumn Field="t => t.Title" />
+                <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
+                    <Template>
+                        <NumericTextBox Focused="selectedId == context.Data.Id && col == 1" TValue="int" Value="context.Data.Price" ValueChanged="value => context.Data.Price = value"
+                                        @onkeyup="async e => await UpdatePrice(e, context.Data.Id, context.Data.Price)" />
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="t => t.TakeoutPrice.ToString()" style="width:150px;">
+                    <Template>
+                        <NumericTextBox Focused="selectedId == context.Data.Id && col == 2" TValue="int" Value="context.Data.TakeoutPrice" ValueChanged="value => context.Data.TakeoutPrice = value"
+                                        @onkeyup="async e => await UpdateTakeoutPrice(e, context.Data.Id, context.Data.TakeoutPrice)" />
+                    </Template>
+                </GridColumn>
+            </Columns>
+        </DataGrid>
+    </div>
 </div>
-
+<CreatePdfComponent @bind-Status="status" Title="Custom update" FileName="CustomUpdate1.pdf"
+                    Title1="Product service" FileName1="productService.pdf" />
 @code
 {
-    bool toman;
+    WindowStatus status;
     int? selectedId;
-    int? row;
-
-    void PriceChanged(Product product, int price)
-    {
-        product.Price = toman ? price * 10 : price;
-    }
-
-    void PriceOuterbindChanged(Product product, int priceOuterbind)
-    {
-        product.PriceOuterBound = toman ? priceOuterbind * 10 : priceOuterbind;
-    }
+    int? col;
 
     async Task UpdatePrice(KeyboardEventArgs e, int productId, int price)
     {
@@ -86,32 +62,25 @@
             await productService.UpdatePrice(productId, price);
             await productService.SaveChangesAsync();
             selectedId = productId;
-            row = 2;
+            col = 2;
         }
     }
 
-    async Task UpdatePriceOuterBound(KeyboardEventArgs e, int productId, int priceOuterBound)
+    async Task UpdateTakeoutPrice(KeyboardEventArgs e, int productId, int takeoutPrice)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
             using var scope = ServiceScopeFactory.CreateScope();
             var productService = new ProductService(scope.ServiceProvider);
-            await productService.UpdatePriceOuterBound(productId, priceOuterBound);
+            await productService.UpdateTakeoutPrice(productId, takeoutPrice);
             await productService.SaveChangesAsync();
             await CrudGrid.SelectNextRow();
             if (CrudGrid.SelectedRowId.HasValue)
             {
                 selectedId = CrudGrid.SelectedRowId.Value;
-                row = 1;
+                col = 1;
             }
         }
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        selectedId = null;
-        row = null;
-        base.OnAfterRender(firstRender);
     }
 }
 

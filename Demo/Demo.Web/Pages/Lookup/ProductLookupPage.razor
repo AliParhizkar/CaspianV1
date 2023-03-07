@@ -5,12 +5,12 @@
     @if (Searchable)
     {
         <div style="padding:0 50px 5px 50px;">
-            <StringTextBox @bind-Value="SearchData.Title" placeholder="عنوان" />
+            <StringTextBox @bind-Value="SearchData.Title" placeholder="Title" />
         </div>
     }
     <DataGrid @ref="Grid" TEntity="Product" Search="SearchData" TableHeight="200" HidePageSize>
         <Columns>
-            <GridColumn Field="t => t.ProductCategory.Title" Title="گروه غذا" />
+            <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
             <GridColumn Field="t => t.Title" />
         </Columns>
     </DataGrid>

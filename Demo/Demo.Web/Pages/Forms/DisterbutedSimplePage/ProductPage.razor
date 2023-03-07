@@ -19,7 +19,7 @@
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Price.Seprate3Digit()" />
-            <GridColumn Field="t => t.PriceOuterBound.Seprate3Digit()" />
+            <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
             <GridColumn Field="t => t.ActiveType.ToString()">
                 <Template>
                     <CheckBox TValue="bool" Value="context.Data.ActiveType == ActiveType.Enable"
@@ -65,8 +65,8 @@
                             <NumericTextBox @bind-Value="UpsertData.Price"
                                             OnChange="@(() =>
                                                                  {
-                                                                     if (UpsertData.PriceOuterBound == 0)
-                                                                         UpsertData.PriceOuterBound = UpsertData.Price;
+                                                                     if (UpsertData.TakeoutPrice == 0)
+                                                                         UpsertData.TakeoutPrice = UpsertData.Price;
                                                                  })" />
                         </td>
                     </tr>
@@ -75,7 +75,7 @@
                             <label>قیمت بیرون بر</label>
                         </td>
                         <td>
-                            <NumericTextBox @bind-Value="UpsertData.PriceOuterBound" />
+                            <NumericTextBox @bind-Value="UpsertData.TakeoutPrice" />
                         </td>
                     </tr>
                     <tr>

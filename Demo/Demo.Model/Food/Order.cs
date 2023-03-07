@@ -1,5 +1,4 @@
-﻿using Engine.Model;
-using Caspian.Engine;
+﻿using Caspian.Engine;
 using Caspian.Common;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -13,27 +12,15 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// تاریخ سفارش
-        /// </summary>
-        [DisplayName("تاریخ سفارش"), ReportField("تاریخ سفارش")]
+        [DisplayName("Order date"), ReportField("تاریخ سفارش")]
         public DateTime? Date { get; set; }
 
-        //[ForeignKey(nameof(Date))]
-        //public PersianDateTable PersianDate { get; set; }
-
-        /// <summary>
-        /// کد مشتری
-        /// </summary>
-        [DisplayName("مشتری")]
+        [DisplayName("Customer")]
         public int? CustomerId { get; set; }
 
-        [DisplayName("شماره سفارش")]
+        [DisplayName("Order number")]
         public int? OrderNo { get; set; }
 
-        /// <summary>
-        /// مشخصات مشتری
-        /// </summary>
         [ForeignKey(nameof(CustomerId)),ReportField("مشخصات مشتری")]
         public virtual Customer Customer { get; set; }
 
@@ -42,30 +29,18 @@ namespace Demo.Model
         [ForeignKey(nameof(DeliveryId))]
         public virtual Delivery Delivery { get; set; }
 
-        /// <summary>
-        /// نوع سفارش
-        /// </summary>
-        [DisplayName("نوع سفارش"), ReportField("نوع سفارش")]
+        [DisplayName("Order type"), ReportField("نوع سفارش")]
         public OrderType OrderType { get; set; }
 
-        /// <summary>
-        /// وضعیت سفارش
-        /// </summary>
-        [DisplayName("وضعیت سفارش")]
+        [DisplayName("Status")]
         public OrderStatus? OrderStatus { get; set; }
 
         public int? TotalAmount { get; set; }
 
-        /// <summary>
-        /// توضیحات
-        /// </summary>
-        [DisplayName("توضیحات")]
+        [DisplayName("Description")]
         public string Description { get; set; }
 
-        /// <summary>
-        /// محصولات سفارش
-        /// </summary>
-        [CheckOnDelete("سفارش دارای محصول می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("The order has details and can not remove")]
         public virtual IList<OrderDeatil> OrderDeatils { get; set; }
     }
 }

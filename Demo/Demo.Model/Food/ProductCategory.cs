@@ -12,31 +12,19 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [ReportField("عنوان گروه محصول"), DisplayName("عنوان")]
+        [DisplayName("Title"), ReportField("عنوان گروه محصول")]
         public string Title { get; set; }
 
-        /// <summary>
-        /// اولویت
-        /// </summary>
-        [DisplayName("اولویت")]
+        [DisplayName("Priority")]
         public int Priority { get; set; }
 
-        /// <summary>
-        /// کد
-        /// </summary>
-        [DisplayName("کد")]
+        [DisplayName("Code")]
         public string Code { get; set; }
 
-        /// <summary>
-        /// وضعیت فعال
-        /// </summary>
-        [DisplayName("وضعیت")]
+        [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
-        /// <summary>
-        /// لیست محصولات گروه محصول
-        /// </summary>
-        [CheckOnDelete("برای گروه محصول محصول تعریف شده است و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("This product Category has Product and can not be removed")]
         public virtual IList<Product> Products { get; set; }
     }
 }

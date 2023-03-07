@@ -5,22 +5,26 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:90%;margin:5px auto">
-    <table style="width:100%">
-        <tr>
-            <td>
-                <label>عنوان</label>
-            </td>
-            <td>
-                <StringTextBox @bind-Value="SearchData.Title" />
-            </td>
-        </tr>
-    </table>
-    <DataGrid @ref="CrudGrid" TEntity="CustomerGroup" Search="SearchData" TableHeight="400">
+<div class="p-4">
+    <div class="row c-controls ps-4  pe-4">
+        <div class="col-md-2">
+            <label>Title</label>
+        </div>
+        <div class="col-md-4">
+            <StringTextBox @bind-Value="SearchData.Title" />
+        </div>
+        <div class="col-md-2 ps-5">
+            <label>Status</label>
+        </div>
+        <div class="col-md-4">
+            <DropdownList @bind-Value="UpsertData.ActiveType" />
+        </div>
+    </div>
+    <DataGrid @ref="CrudGrid" TEntity="CustomerGroup" Search="SearchData" TableHeight="300">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.ActiveType.FaText()" />
-            <GridColumn Title="مشتریان" style="width:80px;">
+            <GridColumn Title="Customers" style="width:80px;">
                 <Template>
                     <IconButton Href='@($"/Demo/CustomerGroupAccessPage/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
@@ -28,33 +32,28 @@
             <GridCommandColumns/>
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="گروه مشتری" Style="width:400px">
+    <Window @ref="UpsertWindow" Title="Customer Group" Style="width:400px">
         <Content>
             <CaspianForm @ref="UpsertForm" Model="UpsertData">
                 <CaspianValidationValidator ValidatorType="typeof(CustomerGroupService)" />
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>عنوان</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>وضعیت</label>
-                        </td>
-                        <td>
-                            <DropdownList @bind-Value="UpsertData.ActiveType" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
+                <div class="row c-controls ps-3 pe-3">
+                    <div class="col-md-3"> 
+                        <label>Title</label>
+                    </div>
+                    <div class="col-md-9">
+                        <StringTextBox @bind-Value="UpsertData.Title" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Status</label>
+                    </div>
+                    <div class="col-md-9">
+                        <DropdownList @bind-Value="UpsertData.ActiveType" />
+                    </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9">
+                        <FormCommandButton />
+                    </div>
+                </div>
             </CaspianForm>
         </Content>
     </Window>

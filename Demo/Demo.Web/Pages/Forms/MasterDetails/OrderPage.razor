@@ -1,100 +1,110 @@
 ﻿@page "/Demo/Order"
 @page "/Demo/Order/{MasterId:int}"
 @namespace Demo.Web.Pages
-
 @inherits MasterDetailPage<Order, OrderDeatil>
-<div style="margin:20px auto; width:95%;display:flex">
-    <div style="width:400px;padding-left:50px">
-        <h7 style="color:gray;padding-right:10px">سفارش</h7>
-        <a href="/Demo/Orders">
-            <span class="fa fa-first-order"></span>
-        </a>
-
+<div class="row p-3">
+    <div class="col-md-4 ps-3 pe-3">
+        <div class="row">
+            <div class="col-md-2 text-center">
+                <a href="/Demo/Orders">
+                    <span class="fa fa-first-order"></span>
+                </a>
+            </div>
+            <div class="col-md-10 text-center">
+                <h7 class="d-membership">Order</h7>
+            </div>
+        </div>
         <hr />
-        <CaspianForm @ref="MasterForm" Model="UpsertData" >
+        <CaspianForm @ref="MasterForm" Model="UpsertData">
             <CaspianValidationValidator ValidatorType="typeof(OrderService)" />
-            <table style="width:100%;margin:0 auto;height:220px;">
-                <tr>
-                    <td><label>تاریخ سفارش</label></td>
-                    <td>
-                        <DatePicker @bind-Value="UpsertData.Date" />
-                    </td>
-                </tr>
-                <tr>
-                    <td><label>نوع سفارش</label></td>
-                    <td>
-                        <DropdownList @bind-Value="UpsertData.OrderType" />
-                    </td>
-                </tr>
-                <tr>
-                    <td><label>مشتری</label></td>
-                    <td>
-                        <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>پیک</label>
-                    </td>
-                    <td>
-                        <ComboBox TValue="int?" TEntity="Delivery" @bind-Value="UpsertData.DeliveryId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
-                    </td>
-                </tr>
-                <tr>
-                    <td style="text-align:center" colspan="2">
-                        <label>توضیحات</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="8" />
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td style="text-align:center">
-                        <FormCommandButton />
-                    </td>
-                </tr>
-            </table>
+            <div class="row c-controls ps-3 pe-3">
+                <div class="col-md-4">
+                    <label>Order date</label>
+                </div>
+                <div class="col-md-8">
+                    <DatePicker @bind-Value="UpsertData.Date" />
+                </div>
+                <div class="col-md-4">
+                    <label>Order type</label>
+                </div>
+                <div class="col-md-8">
+                    <DropdownList @bind-Value="UpsertData.OrderType" />
+                </div>
+                <div class="col-md-4">
+                    <label>Customer</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId" 
+                        TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+                </div>
+                <div class="col-md-4">
+                    <label>Delivery</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TValue="int?" TEntity="Delivery" @bind-Value="UpsertData.DeliveryId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
+                </div>
+                <div class="col-md-4">
+                    <label>Description</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="4" />
+                </div>
+                <div class="col-md-12">
+                    <FormCommandButton />
+                </div>
+            </div>
         </CaspianForm>
     </div>
-    <div style="width:calc(100% - 400px)">
-        <h7 style="color:gray;padding-right:10px">اقلام سفارش</h7>
+    <div class="col-md-8 ps-3 text-center">
+        <div class="row">
+            <div class="col-md-8">
+                <h7 class="d-membership">Order Details</h7>
+            </div>
+            <div class="col-md-4 d-source-btn">
+                <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+                    Source
+                    <i class="fa fa-code"></i>
+                </button>
+            </div>
+        </div>
         <hr />
-        <DataGrid @ref="Grid" TEntity="OrderDeatil" TableHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
-            <Columns Context="con">
-                <GridColumn Field="t => t.Product.Title" Title="محصول">
-                    <EditTemplate>
-                        <AutoComplete TValue="int" TEntity="Product" @bind-Value="con.Data.ProductId" HideHeader AutoHide
-                                      TextExpression="t => t.Title" Title="محصول"
-                                      OnChange="async () => await SetPrice(con.Data)">
+        <div class="col-md-12 ps-3 pe-3">
+            <DataGrid @ref="Grid" TEntity="OrderDeatil" TableHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
+                <Columns Context="con">
+                    <GridColumn Field="t => t.Product.Title" Title="Product">
+                        <EditTemplate>
+                            <AutoComplete TValue="int" TEntity="Product" @bind-Value="con.Data.ProductId" HideHeader AutoHide
+                                          TextExpression="t => t.Title" Title="Product"
+                                          OnChange="async () => await SetPrice(con.Data)">
+                                <ProductLookupPage TValue="int" />
+                            </AutoComplete>                    
+                        </EditTemplate>
+                    </GridColumn>
+                    <GridColumn Field="t => t.Price.Seprate3Digit()">
+                        <EditTemplate>
+                            <span>@(con.Data.Price.Seprate3Digit())</span>
+                        </EditTemplate>
+                    </GridColumn>
+                    <GridColumn Field="t => t.Count">
+                        <EditTemplate>
+                            <NumericTextBox @ref="txtPrice" @bind-Value="con.Data.Count"
+                                            @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
+                        </EditTemplate>
+                    </GridColumn>
+                    <GridCommandColumns/>
+                </Columns>
+            </DataGrid>
 
-                                      <ProductLookupPage TValue="int" />
-
-                        </AutoComplete>                    
-                    </EditTemplate>
-                </GridColumn>
-                <GridColumn Field="t => t.Price.Seprate3Digit()">
-                    <EditTemplate>
-                        <span>@(con.Data.Price.Seprate3Digit())</span>
-                    </EditTemplate>
-                </GridColumn>
-                <GridColumn Field="t => t.Count">
-                    <EditTemplate>
-                        <NumericTextBox @ref="txtPrice" @bind-Value="con.Data.Count"
-                                        @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
-                    </EditTemplate>
-                </GridColumn>
-                <GridCommandColumns/>
-            </Columns>
-        </DataGrid>
+        </div>
     </div>
 </div>
 
+<CreatePdfComponent @bind-Status="status" Title="Custom update" FileName="CustomUpdate1.pdf"
+                    Title1="Product service" FileName1="productService.pdf" Title2="Order detail service" 
+                    FileName2="OrderDetailService.pdf" />
 @code 
 {
-    int myTemoId;
+    WindowStatus status;
     NumericTextBox<int> txtPrice;
     AutoComplete<Product, int> txtProduct;
 
@@ -108,7 +118,7 @@
     async Task UpsertOnEnter(KeyboardEventArgs e, UpsertMode mode)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
-            await Grid.ValidateUpsert(mode);
+            await Grid.ValidateAndUpsert(mode);
     }
 
     

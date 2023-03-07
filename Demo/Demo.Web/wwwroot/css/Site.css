@@ -1,4 +1,10 @@
-﻿.c-categories {
+﻿.d-panel-message{
+    color:red;
+}
+.d-tabpanel-container {
+    height: 70px
+}
+.c-categories {
     width: 150px;
     height: calc(100vh - 26px);
     border-left: 1px solid gray;
@@ -56,17 +62,18 @@
 }
 
 .c-header {
-    border:1px solid gray;
-    margin:5px;
-    border-radius:8px;
+    border: 1px solid #bdbdbd;
+    margin: 5px;
+    border-radius: 8px;
     padding: 10px 15px;
 }
 .c-body {
-    border: 1px solid gray;
-    margin:0 5px 5px 5px;
-    height:calc(100vh - 102px);
-    border-radius:8px;
-    overflow:auto;
+    border: 1px solid #bdbdbd;
+    margin: 0 5px 5px 5px;
+    height: calc(100vh - 127px);
+    border-radius: 8px;
+    overflow: auto;
+    padding: 0 20px;
 }
 .fa-first-order {
     color: #007bff!important;
@@ -105,12 +112,80 @@
         padding: 0 30px;
         align-items: center;
     }
-    .d-container .col-md-6{
+    .d-container .col-md-6, .d-container .col-md-12,
+    .d-container .col-md-3, .d-container .col-md-9,
+    .d-container .col-md-4, .d-container .col-md-8 {
         padding: 3px 0;
     }
-    .d-container .col-md-12 {
-        padding: 3px 0;
+
+.d-cascade hr {
+    margin:35px;
+    margin-top:10px;
+}
+.d-cascade .col-md-6, .d-cascade .col-md-12 {
+    text-align: center
+}
+.d-window1 {
+    color: #17a2b8;
+}
+.d-window2 {
+    color: #28a745;
+}
+.d-window3 {
+    color: #6c757d;
+}
+
+.t-rtl .d-tree-icon {
+    padding-right: 8px;
+}
+
+.t-ltr .d-tree-icon {
+    padding-left: 8px;
+}
+
+.d-tree-icon {
+    vertical-align: -webkit-baseline-middle;
+    cursor: pointer;
+}
+
+    .d-tree-icon .fa-plus {
+        color: #0dcaf0 !important;
+
     }
-    .d-center-align{
-        text-align:center;
+
+    .d-tree-icon .fa {
+        font-size: 18px !important;
     }
+.d-tree-result {
+    text-align: center;
+    padding: 10px 0 3px 0
+}
+
+    .d-tree-result span {
+        color: seagreen;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+.c-window-action {
+    margin-top:10px;
+    text-align:center;
+}
+
+.text-end {
+    text-align: -webkit-right!important;
+}
+
+.d-membership {
+    text-align: center;
+    color: #4f9995;
+    font-weight: bold;
+    font-size:13px;
+}
+
+.d-btn-container{
+    text-align:center;
+}
+.d-btn-container button{
+    margin:5px 0;
+}

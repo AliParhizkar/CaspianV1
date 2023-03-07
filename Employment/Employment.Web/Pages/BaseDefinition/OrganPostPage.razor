@@ -43,7 +43,7 @@
                             <label>رسته شغلی</label>
                         </td>
                         <td>
-                            <ComboBox TEntity="Occupation" TValue="int?" @bind-Value="occupationId" TextExpression="t => t.Title" Cascade="continer" />
+                            <ComboBox TEntity="Occupation" TValue="int?" @bind-Value="occupationId" TextExpression="t => t.Title" Cascade="container" />
                         </td>
                     </tr>
                     <tr>
@@ -51,7 +51,7 @@
                             <label>رشته شغلی</label>
                         </td>
                         <td>
-                            <ComboBox @ref="continer.Cascade" TEntity="CareerField" TValue="int" @bind-Value="UpsertData.CareerFieldId" TextExpression="t => t.Title" />
+                            <ComboBox @ref="container.Cascade" TEntity="CareerField" TValue="int" @bind-Value="UpsertData.CareerFieldId" TextExpression="t => t.Title" />
                         </td>
                     </tr>
                     <tr>
@@ -91,7 +91,7 @@
 </div>
 @code
 {
-    CascadContiner continer = new CascadContiner();
+    CascadContainer container = new CascadContainer();
     int? occupationId;
 
     async Task SetOccupationId()

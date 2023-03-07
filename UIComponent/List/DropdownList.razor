@@ -1,5 +1,6 @@
 ﻿@namespace Caspian.UI
 @typeparam TValue
+@inject CaspianDataService service
 @inherits CBaseInput<TValue>
 @{
     var className = "t-dropdown-wrap";
@@ -73,7 +74,7 @@
 
     protected override void OnParametersSet()
     {
-        text = "لطفا انتخاب نمائید";
+        text = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
         if (Value != null && !Value.Equals(default(TValue)))
         {
             if (Source == null)
@@ -128,11 +129,12 @@
     {
         if (Source == null)
         {
+            string str = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
             Items = new List<SelectListItem>();
             if (typeof(TValue).IsNullableType())
-                Items.Add(new SelectListItem(null, "لطفا انتخاب نمائید"));
+                Items.Add(new SelectListItem(null, str));
             else if (Search)
-                Items.Add(new SelectListItem("0", "لطفا انتخاب نمائید"));
+                Items.Add(new SelectListItem("0", str));
             var fields = GetFields();
             foreach (var field in fields.Where(t => !t.IsSpecialName))
             {

@@ -45,13 +45,10 @@
                                 }" />
                 </Template>
             </GridColumn>
-            <GridColumn Field="t => t.PriceOuterBound.ToString()" style="width:150px;">
+            <GridColumn Field="t => t.TakeoutPrice.ToString()" style="width:150px;">
                 <Template>
-                    <NumericTextBox @ref="PriceOuterBoundTextBox" TValue="int" @bind-Value="context.Data.PriceOuterBound"
-                                    @onkeyup="async e =>
-                                          {
-                                              await UpdatePriceOuterBound(e, context.Data.Id, context.Data.PriceOuterBound);
-                                          }" />
+                    <NumericTextBox @ref="PriceOuterBoundTextBox" TValue="int" @bind-Value="context.Data.TakeoutPrice"
+                                    @onkeyup="async e => await UpdatePriceOuterBound(e, context.Data.Id, context.Data.TakeoutPrice)" />
                 </Template>
             </GridColumn>
         </Columns>
@@ -60,8 +57,8 @@
 
 @code
 {
-    IList<NumericTextBox<int>> PriceTextBoxList;
-    IList<NumericTextBox<int>> PriceOuterBoundTextBoxList;
+    IList<NumericTextBox<int>> priceTextBoxList;
+    IList<NumericTextBox<int>> takeoutPriceTextBoxList;
 
     async Task UpdatePrice(KeyboardEventArgs e, int productId, int price)
     {
@@ -72,7 +69,7 @@
             await productService.UpdatePrice(productId, price);
             await productService.SaveChangesAsync();
             await CrudGrid.Reload();
-            await PriceOuterBoundTextBoxList[CrudGrid.SelectedRowIndex.Value].FocusAsync();
+            await takeoutPriceTextBoxList[CrudGrid.SelectedRowIndex.Value].FocusAsync();
         }
     }
 
@@ -82,18 +79,18 @@
         {
             using var scope = ServiceScopeFactory.CreateScope();
             var productService = new ProductService(scope.ServiceProvider);
-            await productService.UpdatePriceOuterBound(productId, priceOuterBound);
+            await productService.UpdateTakeoutPrice(productId, priceOuterBound);
             await productService.SaveChangesAsync();
             await CrudGrid.Reload();
             await CrudGrid.SelectNextRow();
-            await PriceTextBoxList[CrudGrid.SelectedRowIndex.Value].FocusAsync();
+            await priceTextBoxList[CrudGrid.SelectedRowIndex.Value].FocusAsync();
         }
     }
 
     protected override void OnInitialized()
     {
-        PriceTextBoxList = new List<NumericTextBox<int>>();
-        PriceOuterBoundTextBoxList = new List<NumericTextBox<int>>();
+        priceTextBoxList = new List<NumericTextBox<int>>();
+        takeoutPriceTextBoxList = new List<NumericTextBox<int>>();
         base.OnInitialized();
     }
 
@@ -104,39 +101,21 @@
             var count = CrudGrid.PageSize - CrudGrid.Items.Count;
             for (int i = 0; i < count; i++)
             {
-                PriceTextBoxList.Remove(PriceTextBoxList.Last());
-                PriceOuterBoundTextBoxList.Remove(PriceOuterBoundTextBoxList.Last());
+                priceTextBoxList.Remove(priceTextBoxList.Last());
+                takeoutPriceTextBoxList.Remove(takeoutPriceTextBoxList.Last());
             }
         }
     }
 
     NumericTextBox<int> PriceTextBox
     {
-        get
-        {
-            return null;
-        }
-        set
-        {
-            PriceTextBoxList.Add(value);
-        }
+        get { return null; }
+        set { priceTextBoxList.Add(value); }
     }
 
     NumericTextBox<int> PriceOuterBoundTextBox
     {
-        get
-        {
-            return null;
-        }
-        set
-        {
-            PriceOuterBoundTextBoxList.Add(value);
-        }
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-
-        base.OnAfterRender(firstRender);
+        get { return null; }
+        set { takeoutPriceTextBoxList.Add(value); }
     }
 }

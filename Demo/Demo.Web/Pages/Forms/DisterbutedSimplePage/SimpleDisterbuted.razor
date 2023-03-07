@@ -34,7 +34,7 @@
                         <GridColumn Field="t => t.Title" />
                         <GridColumn Field="t => t.ActiveType.FaText()" />
                         <GridColumn Field="t => t.Price.ToString()" />
-                        <GridColumn Field="t => t.PriceOuterBound.ToString()" />
+                        <GridColumn Field="t => t.TakeoutPrice.ToString()" />
                         <GridCommandColumns/>
                     </Columns>
                 </DataGrid>
@@ -71,8 +71,8 @@
                                         <NumericTextBox @bind-Value="UpsertData.Price"
                                                         OnChange="() =>
                                                                    {
-                                                                       if (UpsertData.PriceOuterBound == 0)
-                                                                           UpsertData.PriceOuterBound = UpsertData.Price;
+                                                                       if (UpsertData.TakeoutPrice == 0)
+                                                                           UpsertData.TakeoutPrice = UpsertData.Price;
                                                                    }" />
                                     </td>
                                 </tr>
@@ -81,7 +81,7 @@
                                         <label>قیمت بیرون بر</label>
                                     </td>
                                     <td>
-                                        <NumericTextBox @bind-Value="UpsertData.PriceOuterBound" />
+                                        <NumericTextBox @bind-Value="UpsertData.TakeoutPrice" />
                                     </td>
                                 </tr>
                                 <tr>

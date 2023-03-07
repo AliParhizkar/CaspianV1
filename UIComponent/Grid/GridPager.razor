@@ -1,11 +1,19 @@
 ﻿@namespace Caspian.UI
+@inject CaspianDataService service
+@{
+    string str = null;
+    if (service.Language == Language.Fa)
+        str = $"{startRowIndex}-{endRowIndex} از {TotalRecord} ردیف";
+    else
+        str = $"{startRowIndex}-{endRowIndex} From {TotalRecord} Rows";
+}
 <div class="t-grid-pager t-grid-bottom">
     <div class="t-pager t-reset">
         <a @onclick="GoToFirstPage" tabindex="-1" class="t-link @(PageNumber == 1 ? "t-state-disabled" : "")">
-            <i class="t-icon t-arrow-first fa fa-step-forward"></i>
+            <i class="t-icon t-arrow-first fa fa-step-backward"></i>
         </a>
         <a @onclick="GoToPrePage" tabindex="-1" class="t-link @(PageNumber == 1 ? "t-state-disabled" : "")">
-            <i class="t-icon t-arrow-prev fa fa-caret-right"></i>
+            <i class="t-icon t-arrow-next fa fa-caret-left"></i>
         </a>
         <div class="t-numeric">
             @if (startPageNumber > 1)
@@ -41,14 +49,14 @@
             }
         </div>
         <a @onclick="GoToNextPage" tabindex="-1" class="t-link @(PageNumber == PageCount ? "t-state-disabled" : "")">
-            <i class="t-icon t-arrow-next fa fa-caret-left"></i>
+            <i class="t-icon t-arrow-prev fa fa-caret-right"></i>
         </a>
         <a @onclick="GoToLastPage" tabindex="-1" class="t-link @(PageNumber == PageCount ? "t-state-disabled" : "")">
-            <i class="t-icon t-arrow-last fa fa-step-backward"></i>
+            <i class="t-icon t-arrow-last fa fa-step-forward"></i>
         </a>
     </div>
     <div class="t-status-text">
-        @(startRowIndex + "-" + endRowIndex + " از " + TotalRecord + " ردیف")
+        @(str)
     </div>
 @*    @if (!HidePageSize)
     {

@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.UI
+@inject CaspianDataService service
 <div  class="c-form-action">
     <button class="c-btn c-primary" @attributes="Attributes" type="submit">@SumitButtonTitle</button>
     <button class="c-btn c-danger" type="reset">@ResetButtonTitle</button>
@@ -8,8 +9,8 @@
 {
     protected override void OnInitialized()
     {
-        SumitButtonTitle = "ثـبـت";
-        ResetButtonTitle = "بازنشانی";
+        SumitButtonTitle = service.Language == Language.Fa ? "ثـبـت" : "Save";
+        ResetButtonTitle = service.Language == Language.Fa ? "بازنشانی" : "Reset";
         base.OnInitialized();
     }
 

@@ -5,124 +5,61 @@
     base.BuildRenderTree(__builder);
 }
 
-<div style="width:90%;margin:0 auto">
-    <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400">
+<div class="row p-4 c-controls">
+    <div class="col-md-3 ps-3 pb-4">
+        <label>Product category</label>
+    </div>
+    <div class="col-md-6 pb-4">
+        <ComboBox TValue="int" @bind-Value="SearchData.ProductCategoryId" TEntity="ProductCategory" TextExpression="t => t.Title" />
+    </div>
+    <div class="d-source-btn col-md-3 pb-4">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
+    <DataGrid @ref="CrudGrid" TEntity="Product" TableHeight="350" HideInsertIcon>
         <Columns>
-            <GridColumn Field="t => t.ProductCategory.Title" Title="گروه غذا" />
+            <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
             <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Field="t => t.ActiveType" Title="Is active">
+                <Template>
+                    <CheckBox TValue="bool" Value="context.Data.ActiveType == ActiveType.Enable" 
+                        ValueChanged="async value => await ToggleStatus(context.Data.Id)" />
+                </Template>
+            </GridColumn>
             <GridColumn Field="t => t.Price.Seprate3Digit()" />
-            <GridColumn Field="t => t.PriceOuterBound.Seprate3Digit()" />
+            <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
             <GridColumn Field="t => t.OutofStock.ToString()">
                 <Template>
-                    <CheckBox TValue="bool" Value="context.Data.OutofStock" ValueChanged="async value =>
-                        {
-                            await ToggleOutofstock(context.Data.Id);
-                        }" />
+                    <CheckBox TValue="bool" Value="context.Data.OutofStock" 
+                        ValueChanged="async value => await ToggleOutofstock(context.Data.Id)" />
                     </Template>
                 </GridColumn>
-                <GridCommandColumns/>
+                <GridCommandColumns DisableEditFunc="t => t.ActiveType == ActiveType.Disable"/>
             </Columns>
         </DataGrid>
-        <Window @ref="UpsertWindow" Title="محصول" Style="width:500px">
-            <Content>
-                <CaspianForm @ref="UpsertForm" Model="UpsertData" OnValidSubmit="showConfirmForPrice">
-                    <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
-                        <table style="width:90%;margin:0 auto">
-                            <tr>
-                                <td>
-                                    <label>گروه غذا</label>
-                                </td>
-                                <td>
-                                    <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=UpsertData.ProductCategoryId TextExpression= "t => t.Title" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width:100px;">
-                                    <label>عنوان</label>
-                                </td>
-                                <td>
-                                    <StringTextBox @bind-Value="UpsertData.Title" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>کد</label>
-                                </td>
-                                <td>
-                                    <StringTextBox @bind-Value=UpsertData.Code Style="direction:ltr" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>قیمت</label>
-                                </td>
-                                <td>
-                                    <NumericTextBox @bind-Value="UpsertData.Price"
-                                                    OnChange="@(() =>
-                                                                 {
-                                                                     if (UpsertData.PriceOuterBound == 0)
-                                                                         UpsertData.PriceOuterBound = UpsertData.Price;
-                                                                 })" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>قیمت بیرون بر</label>
-                                </td>
-                                <td>
-                                    <NumericTextBox @bind-Value="UpsertData.PriceOuterBound" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>وعده غذایی</label>
-                                </td>
-                                <td>
-                                    <MultiSelectBox @bind-Value="UpsertData.Meal" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>اتمام فروش</label>
-                                </td>
-                                <td>
-                                    <CheckBox @bind-Value="UpsertData.OutofStock" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>وضعیت</label>
-                                </td>
-                                <td>
-                                    <DropdownList @bind-Value="UpsertData.ActiveType" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <FormCommandButton />
-                                </td>
-                            </tr>
-                        </table>
-                </CaspianForm>
-            </Content>
-        </Window>
 </div>
+<CreatePdfComponent @bind-Status="status" Title="Custom update" FileName="CustomUpdate.pdf"
+                    Title1="Product service" FileName1="productService.pdf" />
 @code
 {
-    async Task ToggleOutofstock(int id)
+    WindowStatus status;
+    async Task ToggleStatus(int id)
     {
-        using var scope = ServiceScopeFactory.CreateScope();
+        using var scope = CreateScope();
         var service = new ProductService(scope.ServiceProvider);
-        await service.ToggleOutofstock(id);
+        await service.ToggleStatusAsync(id);
         await service.SaveChangesAsync();
         await CrudGrid.Reload();
     }
 
-    async Task<bool> showConfirmForPrice(EditContext context)
+    async Task ToggleOutofstock(int id)
     {
-        if (UpsertData.Price > 0 || (await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟")))
-            return true;
-        return false;
+        using var scope = CreateScope();
+        var service = new ProductService(scope.ServiceProvider);
+        await service.ToggleOutofstock(id);
+        await service.SaveChangesAsync();
+        await CrudGrid.Reload();
     }
 }

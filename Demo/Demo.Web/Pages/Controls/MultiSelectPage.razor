@@ -1,42 +1,50 @@
 ﻿@page "/Demo/MultiSelect"
 @namespace Demo.Web.Pages
-<div style="width:95%;margin:10px auto">
-    <h3>Multi Select </h3>
-    <p>
-        این کنترل برای نوعهای شمارشی که بصورت ضریبی از دو تعریف شده اند بصورت چند انتخابی می تواند مورد استفاده قرار بگیرد
-    </p>
-    <table style="width:100%">
-        <tr>
-            <td>
-                <label>Control disable</label>
-            </td>
-            <td>
-                <CheckBox @bind-Value="disabled" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Disable items</label>
-            </td>
-            <td>
-                <MultiSelectBox @bind-Value="forDisable" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Result</label>
-            </td>
-            <td>
-                <MultiSelectBox @bind-Value="day" Disabled="disabled" DisabledValue="forDisable" />          
-            </td>
-        </tr>
-    </table>
+<div class="row d-head">
+    <div class="col-md-6">
+        <h3>Multi Select</h3>
+    </div>
+    <div class="d-source-btn col-md-6">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
 </div>
-<div style="text-align:center">
-    <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-        Source
-        <i class="fa fa-code"></i>
-    </button>
+<div class="d-body">
+    <div class="row">
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Bind to enum</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="disabled" Title="Control disable" />
+                    </div>
+                    <div class="col-md-12">
+                        <MultiSelectBox @bind-Value="day" Disabled="disabled" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Disable Some Items</h4>
+                <div class="row">
+                    <div class="text-center col-md-12">
+                        <label>Disable items</label>
+                    </div>
+                    <div class="col-md-12">
+                        <MultiSelectBox @bind-Value="forDisable" />
+                    </div>
+                    <div class="col-md-12">
+                        <MultiSelectBox @bind-Value="day" DisabledValue="forDisable" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <CreatePdfComponent @bind-Status="status" Title="Multi Select" Title1="Enume" FileName="MultiSelect.pdf" FileName1="DayOfPersianWeek.pdf" />
 @code

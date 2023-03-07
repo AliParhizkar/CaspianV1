@@ -1,108 +1,110 @@
 ﻿@page "/Demo/HierarchyTree"
 @inherits BasePage
-<div style="padding:20px 40px 0 0;display:flex">
-    <div style="width:50%">
+<div class="row d-head">
+    <div class="col-md-6">
         <h3>Hierarchy Tree</h3>
     </div>
-    <div style="width:50%;text-align:center">
+    <div class="d-source-btn col-md-6">
         <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">
             Source
             <i class="fa fa-code"></i>
         </button>
     </div>
 </div>
-<div style="display:flex;width:90%;margin:0 auto">
-    <div style="display:table-cell;width:50%;padding-left:40px">
-        <hr />
-        <div style="padding:0 40px;">
-            <h4>Data-binding</h4>
-        </div>
-        <div style="height:40px;width:70%;margin:0 auto;padding:5px 25px;display:flex;flex-wrap:wrap">
-            <div style="width:35px;">
-                <span @onclick="async () => await ShowEditForm(null, false)" style="font-size:23px;color:#0dcaf0;padding-top:12px;cursor:pointer" class="fa fa-plus"></span>
+<div class="d-body">
+    <div class="row">
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Data-binding</h4>
+                <div class="row">
+                    <div class="col-md-1 d-tree-icon">
+                        <span @onclick="async () => await ShowEditForm(null, false)" class="fa fa-plus"></span>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <label>Status</label>
+                    </div>
+                    <div class="col-md-8">
+                        <RadioList @bind-Value="@activeType" OnChange="async () => await tree.ReloadAsync()" Style="width:200px;" />
+                    </div>
+                    <div class="col-md-12">
+                        <StringTextBox @bind-Value="@organSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
+                    </div>
+                    <div class="col-md-12">
+                        <CTreeView @ref="tree" TEntity="OrganUnit" style="height:calc(100vh - 230px)" TextFunc="t => t.Title" ParentNodeFilterFunc="t => t.ParentOrganId == null" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
+                            <Template>
+                                <TreeNodeTemplate Levels="new byte[]{1, 2, 3, 4, 5, 6}">
+                                    <span class="d-tree-icon">
+                                        <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
+                                    </span>
+                                    <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
+                                        <span class="fa fa-pencil"></span>
+                                    </span>
+                                    <span class="d-tree-icon" @onclick="async () => await DeleteOrganUnit(context)">
+                                        <span class="fa fa-trash"></span>
+                                    </span>
+                                </TreeNodeTemplate>
+                            </Template>
+                        </CTreeView>
+                    </div>
+                </div>
             </div>
-            <div style="padding-top:9px;width:calc(100% - 40px);display:flex">
-                <span style="width:65px;">
-                    <label style="font-size:14px;font-weight:bold">وضعیت</label>
-                </span>
-                <RadioList @bind-Value="@activeType" OnChange="async () => await tree.ReloadAsync()" Style="width:200px;" />
-            </div>
         </div>
-        <div style="width:70%;margin:0 auto">
-            <StringTextBox @bind-Value="@organSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو عنوان واحد سازمانی" />
-        </div>
-        <CTreeView @ref="tree" TEntity="OrganUnit" style="margin:5px auto;width:70%;;height:calc(100vh - 245px)" TextFunc="t => t.Title" ParentNodeFilterFunc="t => t.ParentOrganId == null" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
-            <Template>
-                <TreeNodeTemplate Levels="new byte[]{1, 2, 3, 4, 5, 6}">
-                    <span style="padding-right:12px;" class="t-grid-delete">
-                        <span style="color:#0dcaf0" @onclick="async () => await ShowEditForm(context, false)" class="t-icon t-delete fa fa-plus"></span>
-                    </span>
-                    <span style="padding:0" class="t-grid-edit" @onclick="async () => await ShowEditForm(context, true)">
-                        <span class="t-icon t-edit fa fa-pencil"></span>
-                    </span>
-                    <span style="padding:0" class="t-grid-delete" @onclick="async () => await DeleteOrganUnit(context)">
-                        <span class="t-icon t-delete fa fa-trash"></span>
-                    </span>
-                </TreeNodeTemplate>
-            </Template>
-        </CTreeView>
-        <Window @bind-Status="status" Style="width:450px;" OnOpen="() => firstControl.Focus()">
-            <Content>
-                <CaspianForm Model="organUnit" OnValidSubmit="async t => await UpsertOrganUnit()">
-                    <CaspianValidationValidator ValidatorType="typeof(OrganUnitService)" />
-                    <table style="width:90%;margin:0 auto">
-                        <tr>
-                            <td>
-                                <label>عنوان</label>
-                            </td>
-                            <td>
-                                <StringTextBox @ref="firstControl" @bind-Value="organUnit.Title" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>وضعیت</label>
-                            </td>
-                            <td>
-                                <DropdownList @bind-Value="organUnit.ActiveType" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td style="text-align:center">
-                                <button type="submit" class="c-btn c-primary">ثبت</button>
-                                <button type="button" @onclick="() => status = WindowStatus.Close" class="c-btn c-danger">انصراف</button>
-                            </td>
-                        </tr>
-                    </table>
-                </CaspianForm>
-            </Content>
-        </Window>
-
-    </div>
-    <div style="display:table-cell;width:50%;padding-right:40px">
-        <hr />
-        <div style="padding:0 40px;">
-            <h4 style="padding-right:40px;">Autocomplete-Tree</h4>
-            <div style="padding-bottom:10px">
-                <AutoCompleteTree @bind-Value="values">
-                    <CTreeView TEntity="OrganUnit" TextFunc="t => t.Title" Selectable
-                               ParentNodeFilterFunc="t => t.ParentOrganId == null"
-                               FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))"
-                               style="margin:3px auto;width:350px;" />
-                </AutoCompleteTree>
-            </div>
-            <div>
-                <AutoCompleteTree @bind-Value="value">
-                    <CTreeView TEntity="OrganUnit" TextFunc="t => t.Title"
-                               ParentNodeFilterFunc="t => t.ParentOrganId == null"
-                               FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))"
-                               style="margin:3px auto;width:350px;" />
-                </AutoCompleteTree>
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Autocomplete-Tree</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <AutoCompleteTree @bind-Value="values">
+                            <CTreeView TEntity="OrganUnit" TextFunc="t => t.Title" Selectable
+                                       ParentNodeFilterFunc="t => t.ParentOrganId == null"
+                                       FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))"
+                                       style="margin:3px auto;width:350px;" />
+                        </AutoCompleteTree>
+                    </div>
+                    <div class="col-md-12">
+                        <AutoCompleteTree @bind-Value="value">
+                            <CTreeView TEntity="OrganUnit" TextFunc="t => t.Title"
+                                       ParentNodeFilterFunc="t => t.ParentOrganId == null"
+                                       FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))"
+                                       style="margin:3px auto;width:350px;" />
+                        </AutoCompleteTree>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<Window @bind-Status="status" Style="width:450px;" OnOpen="() => firstControl.Focus()">
+    <Content>
+        <CaspianForm Model="organUnit" OnValidSubmit="async t => await UpsertOrganUnit()">
+            <CaspianValidationValidator ValidatorType="typeof(OrganUnitService)" />
+            <div class="row c-controls ps-3 pe-3">
+                <div class="col-md-3">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-9">
+                    <StringTextBox @ref="firstControl" @bind-Value="organUnit.Title" />
+                </div>
+                <div class="col-md-3">
+                    <label>Status</label>
+                </div>
+                <div class="col-md-9">
+                    <DropdownList @bind-Value="organUnit.ActiveType" />
+                </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-9 text-ce">
+                    <WindowCommandButtons />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+
+
 <CreatePdfComponent @bind-Status="pdfStatus" Title="Hierarchy Tree" FileName="HierarchyTree.pdf" />
 @code 
 {

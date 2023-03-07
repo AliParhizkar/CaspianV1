@@ -5,22 +5,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("Provinces", Schema = "demo")]
-    public class Province
+    [Table("Countries ", Schema = "demo")]
+    public class Country
     {
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        [DisplayName("وضعیت")]
+        [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
-        /// <summary>
-        /// لیست شهرهای این استان
-        /// </summary>
-        [CheckOnDelete("استان دااری شهر می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("The country has Cities and can not removed")]
         public virtual IList<City> Cities { get; set; }
     }
 }

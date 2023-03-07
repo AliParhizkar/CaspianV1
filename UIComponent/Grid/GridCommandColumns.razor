@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.UI
+@inject CaspianDataService service
 @typeparam TEntity
 @{
     Grid.AddCommandColumn(HeaderTitle, HeaderWidth);
@@ -7,7 +8,7 @@
     @if (RowData?.UpsertMode != null)
     {
         <span class="c-check">
-            <span class="t-icon fa fa-check" @onclick="@(async () => await Grid.ValidateUpsert(RowData.UpsertMode.Value))"></span>
+            <span class="t-icon fa fa-check" @onclick="@(async () => await Grid.ValidateAndUpsert(RowData.UpsertMode.Value))"></span>
         </span>
         <span class="c-bar" @onclick="@(async () => await Grid.CalcelEdit(RowData.UpsertMode.Value))">
             <span class="t-icon fa fa-ban"></span>

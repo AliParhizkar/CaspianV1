@@ -1,113 +1,116 @@
 ﻿@page "/Demo/GridDisterbutedPage"
 @namespace Demo.Web.Pages
 @inherits SimplePage<Product>
-<div class="c-header">
-    <ComboBox TValue="int?" TEntity="ProductCategory" @bind-Value="productCategoryId" TextExpression="t => t.Title" OnValueChanged="() => CrudGrid.EnableLoading()" />
+<div class="c-controls c-header row m-3 align-items-center">
+    <div class="col-md-2 ps-2">
+        <label>Product Category</label>
+    </div>
+    <div class="col-md-7">
+        <ComboBox TValue="int?" TEntity="ProductCategory" @bind-Value="productCategoryId" TextExpression="t => t.Title" OnValueChanged="() => CrudGrid.EnableLoading()" />
+    </div>
+    <div class="d-source-btn col-md-3">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
 </div>
-<div class="c-body">
-@if (productCategoryId.HasValue)
-{
-    <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == productCategoryId.Value)" Search="SearchData" TableHeight="350">
-        <Columns>
-            <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.ActiveType.FaText()" />
-            <GridColumn Field="t => t.Price.ToString()" />
-            <GridColumn Field="t => t.PriceOuterBound.ToString()" />
-            <GridCommandColumns/>
-        </Columns>
-    </DataGrid>
-    <Window @ref="UpsertWindow" Title="محصول" Style="width:680px;">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData"
-                OnSubmit="() =>
-                            {
-                                UpsertData.ProductCategoryId = productCategoryId.Value;
-                            }">
-                <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
-                <table style="width:95%;margin:0 auto">
-                    <tr>
-                        <td style="width:100px;">
-                            <label>عنوان</label>
-                        </td>
-                        <td style="width:240px">
-                            <StringTextBox @bind-Value="UpsertData.Title" />
-                        </td>
-                        <td rowspan="6" style="padding-right:30px;">
-                            <Fileupload 
-                                OnChange="async (e) =>
-                                {
-                                    UpsertData.Image = await e.File.GetByteArrayAsync();
-                                }">
-                                <PictureBox Data="UpsertData.Image" style="width: 250px; height: 250px;" />
-                            </Fileupload>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>قیمت</label>
-                        </td>
-                        <td>
-                            <NumericTextBox @bind-Value="UpsertData.Price"
-                                OnChange="() =>
-                                    {
-                                        if (UpsertData.PriceOuterBound == 0)
-                                                UpsertData.PriceOuterBound = UpsertData.Price;
-                                    }" />
-                        </td>
-                    </tr>
-                        <tr>
-                        <td>
-                            <label>قیمت بیرون بر</label>
-                        </td>
-                        <td>
-                            <NumericTextBox @bind-Value="UpsertData.PriceOuterBound" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>وعده غذایی</label>
-                        </td>
-                        <td>
-                            <MultiSelectBox @bind-Value="UpsertData.Meal" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>تخفیف پذیر</label>
-                        </td>
-                        <td>
-                            <CheckBox @bind-Value="UpsertData.Discountable" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>وضعیت</label>
-                        </td>
-                        <td>
-                            <DropdownList @bind-Value="UpsertData.ActiveType" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"></td>
-                        <td style="text-align:center">
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
-            </CaspianForm>
-        </Content>
-    </Window>        
-}
+<div class="c-body ms-3 me-3">
+    @if (productCategoryId.HasValue)
+    {
+        <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == productCategoryId.Value)" Search="SearchData" TableHeight="350">
+            <Columns>
+                <GridColumn Field="t => t.Title" />
+                <GridColumn Field="t => t.ActiveType.FaText()" />
+                <GridColumn Field="t => t.Price.ToString()" />
+                    <GridColumn Field="t => t.TakeoutPrice.ToString()" />
+                <GridCommandColumns/>
+            </Columns>
+        </DataGrid>
+        <Window @ref="UpsertWindow" Title="Product" Style="width:750px;">
+            <Content>
+                <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="SetCategoryId">
+                    <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
+                    <div style="align-items:self-start" class="row c-controls ps-3 pe-3 align-items-self-start">
+                        <div class="col-md-7">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Title</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <StringTextBox @bind-Value="UpsertData.Title" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Price</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <NumericTextBox @bind-Value="UpsertData.Price" OnChange="SetCategoryId" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Take out price</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <NumericTextBox @bind-Value="UpsertData.TakeoutPrice" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Meal</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <MultiSelectBox @bind-Value="UpsertData.Meal" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Discountable</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <CheckBox @bind-Value="UpsertData.Discountable" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Status</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <DropdownList @bind-Value="UpsertData.ActiveType" />
+                                </div>
+                                <div class="col-md-12">
+                                    <WindowCommandButtons />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 ps-4">
+                            <div style="text-align:-webkit-right" class="col-md-12">
+                                <Fileupload OnChange="async (e) => await SetImage(e)">
+                                    <PictureBox Data="UpsertData.Image" style="width: 250px; height: 250px;" />
+                                </Fileupload>
+                            </div>
+                            <div class="col-md-12"></div>
+                        </div>
+                    </div>
+                </CaspianForm>
+            </Content>
+        </Window>        
+    }
 </div>
+
+<CreatePdfComponent @bind-Status="status" Title="Crud-Example 1" FileName="Crud-Example-1.pdf" />
 
 @code
 {
+    WindowStatus status;
     int? productCategoryId;
+
+    async Task SetImage(InputFileChangeEventArgs e)
+    {
+        UpsertData.Image = await e.File.GetByteArrayAsync();
+    }
+
+    void SetCategoryId()
+    {
+        UpsertData.ProductCategoryId = productCategoryId.Value;
+    }
 
     protected override async Task<bool> BeforUpsertAsync(Product data)
     {
         if (data.Price == 0)
-            return await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟");
+            return await Confirm("Do you want to register the product with zero amount?");
         return await base.BeforUpsertAsync(data);
     }
 }

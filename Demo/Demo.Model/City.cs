@@ -11,27 +11,18 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        /// <summary>
-        /// کد استان
-        /// </summary>
-        [DisplayName("استان")]
-        public int ProvinceId { get; set; }
+        [DisplayName("Country")]
+        public int CountryId { get; set; }
 
-        /// <summary>
-        /// مشخصات استان
-        /// </summary>
-        [ForeignKey(nameof(ProvinceId))]
-        public virtual Province Province { get; set; }
+        [ForeignKey(nameof(CountryId))]
+        public virtual Country Country { get; set; }
 
-        [DisplayName("وضعیت")]
+        [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
-        /// <summary>
-        /// لیست مناطق شهر
-        /// </summary>
         [CheckOnDelete("شهر داری منطقه می باشد و امکان حذف آن وجود ندارد.")]
         public virtual IList<Area> Areas { get; set; }
     }

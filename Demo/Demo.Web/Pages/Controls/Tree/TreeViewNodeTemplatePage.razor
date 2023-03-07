@@ -1,74 +1,82 @@
 ﻿@page "/Demo/NodeTemplate"
 @inherits BasePage
-<div style="padding:20px 40px 0 0;display:flex">
-    <div style="width:50%">
+<div class="row d-head">
+    <div class="col-md-6">
         <h3>Tree View</h3>
     </div>
-    <div style="width:50%;text-align:center">
+    <div class="d-source-btn col-md-6">
         <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">
             Source
             <i class="fa fa-code"></i>
         </button>
     </div>
 </div>
-<div style="display:flex;width:90%;margin:0 auto">
-    <div style="display:table-cell;width:50%;padding-left:40px">
-        <hr />
-        <div style="padding:0 40px;">
-            <h4>Custome Template</h4>
-            <CTreeView TEntity="TreeViewItem" OnCollapsed="OnCollapsed" style="height:calc(100vh - 163px);margin-right:5px;" Source="source" OnExpanded="async node => await OnExpanded(node)">
-                <Template>
-                    <TreeNodeTemplate Level="1">
-                        <span style="padding:0 8px 0 0;" class="t-grid-delete">
-                            <span style="color:#0dcaf0" @onclick="() => ShowEditForm(context, false)" class="t-icon t-delete fa fa-plus"></span>
-                        </span>
-                    </TreeNodeTemplate>
-                    <TreeNodeTemplate Level="2">
-                        <span style="padding:0 8px 0 0;" class="t-grid-edit" @onclick="() => ShowEditForm(context, true)">
-                            <span class="t-icon t-edit fa fa-pencil"></span>
-                        </span>
-                        <span class="t-grid-delete" @onclick="async () => await DeleteCity(context)">
-                            <span class="t-icon t-delete fa fa-trash"></span>
-                        </span>
-                    </TreeNodeTemplate>
-                </Template>
-            </CTreeView>
-            <Window @bind-Status="status" Style="width:350px;" OnOpen="() => firstControl.Focus()">
-                <Content>
-                    <CaspianForm Model="city" OnValidSubmit="async t => await UpsertCity()">
-                        <CaspianValidationValidator ValidatorType="typeof(CityService)" />
-                        <table style="width:90%;margin:0 auto">
-                            <tr>
-                                <td>
-                                    <label>عنوان</label>
-                                </td>
-                                <td>
-                                    <StringTextBox @ref="firstControl" @bind-Value="city.Title" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td style="text-align:center">
-                                    <WindowCommandButtons />
-                                </td>
-                            </tr>
-                        </table>
-                    </CaspianForm>
-                </Content>
-            </Window>
-        </div>
-    </div>
-    <div style="display:table-cell;width:50%;padding-right:40px">
-        <hr />
-        <div style="padding:0 40px;">
-            <h4 style="padding-right:40px;">Tree-Search</h4>
-            <div style="text-align:center;padding:10px 0 3px 0">
-                <StringTextBox placeholder="جستجوی شهرها" BindingType="BindingType.OnInput" Value="@strSearch" ValueChanged="SearchOnTree" />
+<div class="d-body">
+    <div class="row">
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Custome Template</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <CTreeView TEntity="TreeViewItem" OnCollapsed="OnCollapsed" style="height:calc(100vh - 163px);margin-right:5px;" Source="source" OnExpanded="async node => await OnExpanded(node)">
+                            <Template>
+                                <TreeNodeTemplate Level="1">
+                                    <span class=" d-tree-icon d-tree-add">
+                                        <span @onclick="() => ShowEditForm(context, false)" class="fa fa-plus"></span>
+                                    </span>
+                                </TreeNodeTemplate>
+                                <TreeNodeTemplate Level="2">
+                                    <span class="d-tree-icon d-tree-edit" @onclick="() => ShowEditForm(context, true)">
+                                        <span class="fa fa-pencil"></span>
+                                    </span>
+                                    <span class="d-tree-icon d-tree-delete" @onclick="async () => await DeleteCity(context)">
+                                        <span class="fa fa-trash"></span>
+                                    </span>
+                                </TreeNodeTemplate>
+                            </Template>
+                        </CTreeView>
+                    </div>
+                </div>
             </div>
-            <CTreeView TEntity="TreeViewItem" style="height:calc(100vh - 210px);margin-right:5px;" Source="searchSource" />
+        </div>
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Tree-Search</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <StringTextBox placeholder="City search" BindingType="BindingType.OnInput" Value="@strSearch" ValueChanged="SearchOnTree" />
+                    </div>
+                    <div class="col-md-12">
+                        <CTreeView TEntity="TreeViewItem" style="height:calc(100vh - 210px);margin-right:5px;" Source="searchSource" />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<Window Title="City" @bind-Status="status" Style="width:400px;" OnOpen="() => firstControl.Focus()">
+    <Content>
+        <CaspianForm Model="city" OnValidSubmit="async t => await UpsertCity()">
+            <CaspianValidationValidator ValidatorType="typeof(CityService)" />
+            <div class="row ps-3 pe-3">
+                <div class="col-md-3 c-controls">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-9">
+                    <StringTextBox @ref="firstControl" @bind-Value="city.Title" />
+                </div>
+                <div class="col-md-3"></div>
+                <div class="text-center col-md-9">
+                    <WindowCommandButtons />
+                </div>
+            </div>            
+            
+        </CaspianForm>
+    </Content>
+</Window>
+
 <CreatePdfComponent @bind-Status="pdfStatus" Title="Tree Node Template" FileName="TreeNodeTemplate.pdf" />
 
 @code 
@@ -103,7 +111,7 @@
         }
         await service.SaveChangesAsync();
         status = WindowStatus.Close;
-        tempNode.Items = await service.GetAll().Where(t => t.ProvinceId == city.ProvinceId)
+        tempNode.Items = await service.GetAll().Where(t => t.CountryId == city.CountryId)
             .Select(t => new TreeViewItem()
             {
                 Collabsable = false,
@@ -128,13 +136,13 @@
             using var scope = CreateScope();
             var old = await new CityService(scope.ServiceProvider).SingleAsync(cityId);
             city.Id = cityId;
-            city.ProvinceId = old.ProvinceId;
+            city.CountryId = old.CountryId;
             city.Title = old.Title;
         }
         else
         {
             ///در حالت ثبت
-            city.ProvinceId = Convert.ToInt32(nodeView.Value);
+            city.CountryId = Convert.ToInt32(nodeView.Value);
         }
         ///نود انتخاب شده
         node = nodeView;
@@ -147,7 +155,7 @@
         //این قسمت انتخابی است و میتواند به دو صورت بارگذاری در ابتدا و یا بارگذاری در باز کردن نود اعمال شود
         //برای اطلاعات بیشتر مراجعه شود به منوی قبلی
         using var scope = CreateScope();
-        source = await new ProvinceService(scope.ServiceProvider).GetAll().Select(t => new TreeViewItem()
+        source = await new CountryService(scope.ServiceProvider).GetAll().Select(t => new TreeViewItem()
         { 
             Collabsable = true,
             Text = t.Title,
@@ -168,9 +176,9 @@
     {
         ///در صورت بارگذاری در ابتدا نیازی به این بخش نیست
         using var scope = CreateScope();
-        var provinceId = Convert.ToInt32(node.Value);
+        var countryId = Convert.ToInt32(node.Value);
         node.Items = await new CityService(scope.ServiceProvider).GetAll()
-            .Where(t => t.ProvinceId == provinceId).Select(t => new TreeViewItem()
+            .Where(t => t.CountryId == countryId).Select(t => new TreeViewItem()
                 {
                     Collabsable = false,
                     Expanded = false,
@@ -193,7 +201,7 @@
             await service.SaveChangesAsync();
             ///پس از خذف شهر باید تمامی شهرهای استان(گره پرنت) دوباره بارگذاری شوند
             node.Parent.Items = await service.GetAll()
-            .Where(t => t.ProvinceId == city.ProvinceId).Select(t => new TreeViewItem()
+            .Where(t => t.CountryId == city.CountryId).Select(t => new TreeViewItem()
                 {
                     Collabsable = false,
                     Expanded = false,
@@ -212,7 +220,7 @@
         if (str == "")
             str = null;
         using var scope = CreateScope();
-        var query = new ProvinceService(scope.ServiceProvider).GetAll();
+        var query = new CountryService(scope.ServiceProvider).GetAll();
         if (str.HasValue())
             query = query.Where(t => t.Cities.Any(u => u.Title.Contains(str)));
         searchSource = await query.Select(t => new TreeViewItem()

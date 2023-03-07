@@ -1,0 +1,67 @@
+﻿@page "/Demo/ParameterCrudPage"
+@namespace Demo.Web.Pages
+@inherits SimplePage<Country>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:5px auto">
+    <div class="row c-controls">
+        <div class="col-md-3 ps-4">
+            <label>Title</label>
+        </div>
+        <div class="col-md-6">
+            <StringTextBox @bind-Value="SearchData.Title" />
+        </div>
+        <div class="d-source-btn col-md-3">
+            <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+                Source
+                <i class="fa fa-code"></i>
+            </button>
+        </div>
+    </div>
+    <DataGrid PersistState @bind-Search="SearchData" @ref="CrudGrid" TEntity="Country">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Title="Cities" style="width:50px">
+                <Template>
+                    <IconButton Href='@($"/Demo/City/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="Country" Style="width:450px">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(CountryService)" />
+                <div class="row c-controls ps-4 pe-4">
+                    <div class="col-md-4">
+                        <label>Title</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="UpsertData.Title" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Status</label>
+                    </div>
+                    <div class="col-md-8">
+                        <DropdownList @bind-Value="UpsertData.ActiveType" />
+                    </div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-8 align-content-center">
+                        <FormCommandButton />
+                    </div>
+                </div>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+
+<CreatePdfComponent @bind-Status="status" Title="Crud-Parameter" FileName="Crud-Parameter.pdf"
+    Title1="Country Model" FileName1="CountryModel.pdf"/>
+
+@code
+{
+    WindowStatus status;
+}

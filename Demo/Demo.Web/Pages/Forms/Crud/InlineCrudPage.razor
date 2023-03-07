@@ -4,76 +4,76 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<CrudComponent UpsertData="upsertData" Style="width:90%;margin:5px auto" BeforUpsert="ConfirmForPrice">
+<CrudComponent UpsertData="upsertData" Style="width:95%;margin:5px auto" BeforUpsert="ConfirmForPrice">
     <CaspianForm Model="upsertData" OnReset="() => upsertData.Image = null">
         <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
-        <table style="width:100%">
-            <tr>
-                <td style="width:80px">
-                    <label>گروه غذا</label>
-                </td>
-                <td>
-                    <ComboBox @bind-Value="upsertData.ProductCategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Title"
-                              OrderByExpression="t => t.Title" />
-                </td>
-                <td rowspan="4" style="width:50px"></td>
-                <td>
-                    <label>کد</label>
-                </td>
-                <td>
-                    <StringTextBox @bind-Value="upsertData.Code" />
-                </td>
-                <td rowspan="4" style="width:50px"></td>
-                <td rowspan="4">
-                    <Fileupload OnChange="async e =>
-                        {
-                            upsertData.Image = await e.File.GetByteArrayAsync();
-                        }">
-                        <PictureBox Data="upsertData.Image" style="width:200px;height:200px" />
-                    </Fileupload>
-                </td>
-
-            </tr>
-            <tr>
-                <td>
-                    <label>عنوان</label>
-                </td>
-                <td>
-                    <StringTextBox @bind-Value="upsertData.Title" />
-                </td>
-                <td>
-                    <label>وعده غذایی</label>
-                </td>
-                <td>
-                    <MultiSelectBox @bind-Value="upsertData.Meal" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>قیمت</label>
-                </td>
-                <td>
-                    <NumericTextBox @bind-Value="upsertData.Price" />
-                </td>
-                <td>
-                    <label>وضعیت</label>
-                </td>
-                <td>
-                    <DropdownList @bind-Value="upsertData.ActiveType" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>قیمت بیرون بر</label>
-                </td>
-                <td>
-                    <NumericTextBox @bind-Value="upsertData.PriceOuterBound" />
-                </td>
-                <td colspan="2" style="text-align:center">
-                    <FormCommandButton />
-                </td>
-            </tr>
-        </table>
+        <div class="row c-controls">
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Product category</label>
+                    </div>
+                    <div class="col-md-8">
+                        <ComboBox @bind-Value="upsertData.ProductCategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Title"
+                                  OrderByExpression="t => t.Title" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Title</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="upsertData.Title" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Price</label>
+                    </div>
+                    <div class="col-md-8">
+                        <NumericTextBox @bind-Value="upsertData.Price" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Take out price</label>
+                    </div>
+                    <div class="col-md-8">
+                        <NumericTextBox @bind-Value="upsertData.TakeoutPrice" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 ps-5 pe-5">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <label>Code</label>
+                    </div>
+                    <div class="col-md-10">
+                        <StringTextBox @bind-Value="upsertData.Code" />
+                    </div>
+                    <div class="col-md-2">
+                        <label>Meal</label>
+                    </div>
+                    <div class="col-md-10">
+                        <MultiSelectBox @bind-Value="upsertData.Meal" />
+                    </div>
+                    <div class="col-md-2">
+                        <label>Status</label>
+                    </div>
+                    <div class="col-md-10">
+                        <DropdownList @bind-Value="upsertData.ActiveType" />
+                    </div>
+                    <div class="col-md-8 align-content-center">
+                        <FormCommandButton />
+                    </div>
+                    <div class="col-md-4 align-content-center">
+                        <button type="button" @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+                            Source
+                            <i class="fa fa-code"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div  class="col-md-2 align-content-center">
+                <Fileupload OnChange="async e => await SetImage(e)">
+                    <PictureBox Data="upsertData.Image" style="width:200px;height:200px" />
+                </Fileupload>
+            </div>
+        </div>
     </CaspianForm>
     <DataGrid TEntity="Product" TableHeight="250">
         <Columns>
@@ -81,21 +81,29 @@
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.ActiveType.FaText()" />
             <GridColumn Field="t => t.Price.Seprate3Digit()" />
-            <GridColumn Field="t => t.PriceOuterBound.Seprate3Digit()" />
+            <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
             <GridColumn Field="t => t.Discountable.ToString()" />
             <GridCommandColumns />
         </Columns>
     </DataGrid>
 </CrudComponent>
 
+<CreatePdfComponent @bind-Status="status" Title="Crud-inline" FileName="Crud-inline.pdf" Title1="Service" FileName1="ProductService.pdf" Title2="Model" FileName2="ProductModel.pdf" />
+
 @code 
 {
+    WindowStatus status;
     Product upsertData = new Product();
+
+    async Task SetImage(InputFileChangeEventArgs e)
+    {
+        upsertData.Image = await e.File.GetByteArrayAsync();
+    }
 
     async Task<bool> ConfirmForPrice()
     {
         if (upsertData.Price == 0)
-            return await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟");
+            return await Confirm("Do you want to register the product with zero amount?");
         return true;
     }
 }

@@ -47,12 +47,12 @@ namespace Caspian.UI
             {
                 if (!HideEdit)
                 {
-                    HeaderTitle = "ویرایش";
+                    HeaderTitle = service.Language == Language.Fa ? "ویرایش" : "Edit";
                     if (!HideDelete)
                         HeaderTitle += "-";
                 }
                 if (!HideDelete)
-                    HeaderTitle += "حذف";
+                    HeaderTitle += service.Language == Language.Fa ? "حذف" : "Delete";
             }
             if (!HeaderWidth.HasValue())
             {

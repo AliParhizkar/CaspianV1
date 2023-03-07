@@ -1,0 +1,68 @@
+﻿@page "/Demo/City/{CountryId:int}"
+@namespace Demo.Web.Pages
+@inherits SimplePage<City>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:90%;margin:5px auto">
+    <div class="row c-controls">
+        <div class="col-md-3 ps-4">
+            <label>Title</label>
+        </div>
+        <div class="col-md-6">
+            <StringTextBox @bind-Value="SearchData.Title" />
+        </div>
+        <div class="d-source-btn col-md-3">
+            <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+                Source
+                <i class="fa fa-code"></i>
+            </button>
+        </div>
+    </div>
+    <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" ConditionExpr="t => CountryId == 0 || t.CountryId == CountryId" TableHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridCommandColumns/>
+        </Columns>
+    </DataGrid>
+    <Window @ref="UpsertWindow" Title="City" Style="width:450px" OnOpen="SetCountryId">
+        <Content>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(CityService)" />
+                <div class="row c-controls">
+                    <div class="col-md-4">
+                        <label>Title</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="UpsertData.Title" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Status</label>
+                    </div>
+                    <div class="col-md-8">
+                        <DropdownList @bind-Value="UpsertData.ActiveType" />
+                    </div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-8">
+                        <FormCommandButton />
+                    </div>
+                </div>
+            </CaspianForm>
+        </Content>
+    </Window>
+</div>
+<CreatePdfComponent @bind-Status="status" Title="Crud-Parameter user" FileName="Crud-ParameterUse.pdf" 
+    Title1="City Model" FileName1="CityModel.pdf"/>
+@code
+{
+    WindowStatus status;
+
+    void SetCountryId()
+    {
+        UpsertData.CountryId = CountryId;
+    }
+
+    [Parameter]
+    public int CountryId { get; set; }
+}

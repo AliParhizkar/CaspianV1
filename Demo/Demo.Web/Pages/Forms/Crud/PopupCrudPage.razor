@@ -1,117 +1,104 @@
-﻿@page "/Demo/PopupCrudPage"
-@namespace Demo.Web
-@inherits BasePage
+﻿@page "/Demo/PopupCrud"
+@inherits SimplePage<ProductCategory>
 @{
     base.BuildRenderTree(__builder);
 }
-<CrudComponent UpsertData="upsertData" Style="width:90%;margin:5px auto" BeforUpsert="ConfirmForPrice">
-    <table style="width:100%">
-        <tr>
-            <td>
-                <label>عنوان</label>
-            </td>
-            <td>
-                <StringTextBox @bind-Value="searchData.Title" Search />
-            </td>
-        </tr>
-    </table>
-    <DataGrid Search="searchData">
+<div class="ps-4 pe-4">
+    <div class="row c-controls">
+        <div class="col-md-3 ps-4">
+            <label>Title</label>
+        </div>
+        <div class="col-md-6">
+            <StringTextBox @bind-Value="SearchData.Title" />
+        </div>
+        <div class="d-source-btn col-md-3">
+            <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">
+                Source
+                <i class="fa fa-code"></i>
+            </button>
+        </div>
+    </div>
+    <DataGrid @ref="CrudGrid" TEntity="ProductCategory" Search="SearchData" TableHeight="400">
         <Columns>
             <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.Price.Seprate3Digit()" />
-            <GridColumn Field="t => t.PriceOuterBound.Seprate3Digit()" />
-            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Field="t => t.Code"  />
+            <GridColumn Field="t => t.ActiveType.FaText()"  />
+            <GridColumn Title="Popup" style="width:50px">
+                <Template>
+                    <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenPopupForm(context.Data.Id); }" />
+                </Template>
+            </GridColumn>
+            <GridColumn Title="Inform" style="width:50px">
+                <Template>
+                    <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenInformForm(context.Data.Id); }" />
+                </Template>
+            </GridColumn>
             <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window Title="محصول" Style="width:500px">
+    <Window @ref="UpsertWindow" Title="Product category" Style="width:500px;">
         <Content>
-            <CaspianForm Model="upsertData">
-                <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
-                <table style="width:95%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>گروه محصول</label>
-                        </td>
-                        <td>
-                            <ComboBox TValue="int" TEntity="ProductCategory" @bind-Value="upsertData.ProductCategoryId" TextExpression="t => t.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>عنوان</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="upsertData.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>قیمت</label>
-                        </td>
-                        <td>
-                            <NumericTextBox @bind-Value="upsertData.Price"
-                                            OnChange="@(() =>
-                                                                 {
-                                                                     if (upsertData.PriceOuterBound == 0)
-                                                                         upsertData.PriceOuterBound = upsertData.Price;
-                                                                 })" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>قیمت بیرون بر</label>
-                        </td>
-                        <td>
-                            <NumericTextBox @bind-Value="upsertData.PriceOuterBound" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>وعده های غذایی</label>
-                        </td>
-                        <td>
-                            <MultiSelectBox @bind-Value="upsertData.Meal" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>وضعیت</label>
-                        </td>
-                        <td>
-                            <DropdownList @bind-Value="upsertData.ActiveType" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>تخفیف پذیر</label>
-                        </td>
-                        <td>
-                            <CheckBox @bind-Value="upsertData.Discountable" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td style="text-align:center">
-                            <WindowCommandButtons />
-                        </td>
-                    </tr>
-                </table>
+            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                <CaspianValidationValidator ValidatorType="typeof(ProductCategoryService)" />
+                <div class="row c-controls ps-4 pe-4">
+                    <div class="col-md-4">
+                        <label>Title</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="UpsertData.Title" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Code</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="UpsertData.Code" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Status</label>
+                    </div>
+                    <div class="col-md-8">
+                        <DropdownList @bind-Value="UpsertData.ActiveType" />
+                    </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9 align-content-center">
+                        <FormCommandButton />
+                    </div>
+                </div>
             </CaspianForm>
         </Content>
     </Window>
-</CrudComponent>
-
-
+    <Window @bind-Status="status" Title="Product" Style="width:800px">
+        <Content>
+            @if (popupCategoryId.HasValue)
+            {
+                <PopupProductPage CategoryId="popupCategoryId.Value" />
+            }
+            @if (informCategoryId.HasValue)
+            {
+                <PopupInformPage CategoryId="informCategoryId.Value" />
+            }
+        </Content>
+    </Window>
+</div>
+<CreatePdfComponent @bind-Status="pdfStatus" Title="Crud-popup" FileName="Crud-popup.pdf"  />
 @code
 {
-    Product searchData = new Product();
-    Product upsertData = new Product();
+    WindowStatus pdfStatus;
+    int? popupCategoryId;
+    int? informCategoryId;
+    WindowStatus status = WindowStatus.Close;
 
-    async Task<bool> ConfirmForPrice()
+    void OpenPopupForm(int categoryId)
     {
-        if (upsertData.Price == 0)
-            return await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟");
-        return true;
+        popupCategoryId = categoryId;
+        informCategoryId = null;
+        status = WindowStatus.Open;
+    }
+
+    void OpenInformForm(int categoryId)
+    {
+        informCategoryId = categoryId;
+        popupCategoryId = null;
+        status = WindowStatus.Open;
     }
 }

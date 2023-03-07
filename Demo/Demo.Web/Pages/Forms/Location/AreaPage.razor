@@ -30,7 +30,7 @@
         <Columns>
             @if (CityId == 0)
             {
-                <GridColumn Field="t => t.City.Province.Title" Title="استان" />
+                <GridColumn Field="t => t.City.Country.Title" Title="استان" />
                 <GridColumn Field="t => t.City.Title" Title="شهر" />
             }
             <GridColumn Field="t => t.Title" />

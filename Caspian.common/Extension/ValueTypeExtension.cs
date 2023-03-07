@@ -72,6 +72,8 @@ namespace Caspian.Common
 
         public static string Seprate3Digit(this decimal value)
         {
+            if (value == 0)
+                return "0";
             var str = String.Format("{0:#,#.###}", value);
             str = str.Replace('/', '.');
             if (str.StartsWith("."))

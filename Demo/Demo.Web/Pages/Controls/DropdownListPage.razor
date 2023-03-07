@@ -5,6 +5,11 @@
     <div class="col-md-6">
         <h3>Dropdown List</h3>
     </div>
+    <div class="d-source-btn col-md-6">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source<i class="fa fa-code"></i>
+        </button>
+    </div>
 </div>
 <div class="d-body">
     <div class="row">
@@ -19,34 +24,29 @@
                     <div class="col-md-6">
                         <label>Action</label>
                     </div>
-                    <div class="col-md-6 d-center-align">
+                    <div class="col-md-6 text-center">
                         <button class="t-button" @onclick="async () => await DropdownFocus()">Focus</button>
                     </div>
                     <div class="col-md-6">
                         <label>Selected Value</label>
                     </div>
-                    <div class="col-md-6 d-center-align">
+                    <div class="col-md-6 text-center">
                         <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "-----")</label>
                     </div>
                     <div class="col-md-6">
                         <label>Selected Title</label>
                     </div>
-                    <div class="col-md-6 d-center-align">
+                    <div class="col-md-6 text-center">
                         <label style="color:red;">@(orderType.HasValue ? orderType.Value.FaText() : "-----")</label>
                     </div>
                     <div class="col-md-6">
                         <label>Selected Enum Title</label>
                     </div>
-                    <div class="col-md-6 d-center-align">
+                    <div class="col-md-6 text-center">
                         <label style="color:red;">@(orderType.HasValue ? orderType.Value.ToString() : "-----")</label>
                     </div>
                     <div class="col-md-10">
                         <DropdownList @ref="dropdownList" @bind-Value="orderType" Disabled="disable" />
-                    </div>
-                    <div style="padding-top:5px" class="col-md-10 d-center-align">
-                        <button @onclick="DropdownListFilterSource" class="c-btn c-primary">
-                            Source<i class="fa fa-code"></i>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -59,28 +59,23 @@
                     <div class="col-md-6">
                         <label>Selected Value</label>
                     </div>
-                    <div class="col-md-6 d-center-align">
+                    <div class="col-md-6 text-center">
                         <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "-----")</label>
                     </div>
                     <div class="col-md-6">
                         <label>Selected Title</label>
                     </div>
-                    <div class="col-md-6 d-center-align">
+                    <div class="col-md-6 text-center">
                         <label style="color:red;">@(orderType.HasValue ? orderType.Value.FaText() : "-----")</label>
                     </div>
                     <div class="col-md-6">
                         <label>Selected Enum Title</label>
                     </div>
-                    <div class="col-md-6 d-center-align">
+                    <div class="col-md-6 text-center">
                         <label style="color:red;">@(orderType.HasValue ? orderType.Value.ToString() : "-----")</label>
                     </div>
                     <div class="col-md-10">
                         <DropdownList @bind-Value="orderType" FilterFunc="orderType => orderType != Model.OrderType.Salon" />
-                    </div>
-                    <div style="padding-top:5px" class="col-md-10 d-center-align">
-                        <button @onclick="DropdownListFilterSource" class="c-btn c-primary">
-                            Source<i class="fa fa-code"></i>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -88,12 +83,10 @@
     </div>
 </div>
 
-<CreatePdfComponent @bind-Status="status" Title="Default" FileName="@sourceName" Title1="Enume Code" FileName1="@sourceName1" />
+<CreatePdfComponent @bind-Status="status" Title="Default" FileName="Dropdown.pdf" Title1="Enume Code" FileName1="OrderType-Enum.pdf" />
 
 @code 
 {
-    string sourceName;
-    string sourceName1;
     bool disable;
     Demo.Model.OrderType? orderType;
     DropdownList<Demo.Model.OrderType?> dropdownList;
@@ -102,20 +95,5 @@
     async Task DropdownFocus()
     {
         await dropdownList.FocusAsync();
-        
-    }
-
-    void  DropdownListSource()
-    {
-        sourceName = "Dropdown-1.pdf";
-        sourceName1 = "OrderType-Enum.pdf";
-        status = WindowStatus.Open;
-    }
-
-    void DropdownListFilterSource()
-    {
-        sourceName = "Dropdown-2.pdf";
-        sourceName1 = null;
-        status = WindowStatus.Open;
     }
 }

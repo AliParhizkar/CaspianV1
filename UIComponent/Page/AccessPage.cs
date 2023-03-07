@@ -135,7 +135,10 @@ namespace Caspian.UI
                 var tempData = CrudGrid.GetSelectedData();
                 if (tempData == null)
                 {
-                    ShowMessage("لطفا یک ردیف را برای حذف انتخاب نمایید.");
+                    if (dataService.Language == Language.Fa)
+                        ShowMessage("لطفا یک ردیف را برای حذف انتخاب نمایید.");
+                    else
+                        ShowMessage("Please select a row to delete");
                     return;
                 }
                 data = tempData;

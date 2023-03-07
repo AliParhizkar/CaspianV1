@@ -33,6 +33,7 @@ body {
         background-repeat: no-repeat;
         background-size: inherit;
         background-size:inherit;
+        font-size:14px;
     }
 
 .t-window-action .fa {
@@ -72,16 +73,7 @@ fieldset.t-widget legend {
     color: #c6c6c7;
     cursor:not-allowed;
 }
-/* webkit solution */
-::-webkit-input-placeholder {
-    text-align: right;
-    direction: rtl;
-}
-/* mozilla solution */
-input:-moz-placeholder {
-    text-align: right;
-    direction: rtl;
-}
+
 
 t-window-titlebar{
     
@@ -91,7 +83,6 @@ html input[disabled], textarea[disabled] {
     background-color: #ececec;
     cursor: not-allowed;
 }
-.t-header,
 .t-grid-header {
     background-image: none;
     line-height: 30px;
@@ -99,8 +90,6 @@ html input[disabled], textarea[disabled] {
     border-width: 1px;
     border-style: solid;
     border-color: rgba(0, 0, 0, .12);
-}
-.t-grid-header {
     color: white;
     background-color: #e9ebee;
 }
@@ -200,7 +189,6 @@ html input[disabled], textarea[disabled] {
     box-sizing: border-box;
     direction: ltr;
     font-size:15px;
-    background-color:transparent;
 }
 .t-state-disabled .t-input{
     color:gray!important;
@@ -259,10 +247,7 @@ html input[disabled], textarea[disabled] {
 .t-combobox .t-state-focused .t-input {
     border-color: rgba(0,0,0,0.24);
 }
-.t-combobox .t-state-focused .t-select {
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.4);
-    border-color: rgba(0,0,0,0.15);
-}
+
 .t-dropdown .t-state-focused {
     background-color: #bdb4af;
     transition: box-shadow 0.15s ease-out 0s;
@@ -397,10 +382,8 @@ html input[disabled], textarea[disabled] {
     position: fixed;
     z-index: 999999999;
     overflow: hidden;
-    direction: rtl;
-    left: 20px;
     color: #757575;
-    border-radius: 5px;
+    border-radius: 8px;
     border: 1px solid;
     border-color: rgba(0, 0, 0, .12);
     background-color: #eff1f5;
@@ -408,20 +391,18 @@ html input[disabled], textarea[disabled] {
     font-size: 14px;
 }
 #outMessage .t-title {
-    position: absolute;
-    right: 10px;
-    top: 8px;
+    display:inline-block;
+    width:calc(100% - 12px);
 }
 
 .t-widget.t-message .t-close {
-    display: block;
-    position: absolute;
-    top: 7px;
-    left: 9px;
+    display: inline-block;
     cursor: pointer;
 }
     .t-widget.t-message .t-close .fa{
         font-size:15px;
+        color:red;
+        vertical-align:middle;
     }
     .t-widget.t-message .t-close.-state-hover {
         background-color: #f7c3a6;
@@ -752,10 +733,14 @@ button:disabled {
 .t-HelpWindow > .t-header {
     height: 30px;
     background-image: linear-gradient(#f6f6f6,#dadada);
+    line-height:30px;
+    padding:0 8px;
 }
 .t-HelpWindow .t-grid-header .t-header {
     height: 30px;
     padding: 2px 0 !important;
+    line-height:30px;
+
 }
 .t-HelpWindow .t-grid-bottom{
     padding:3px 10px;

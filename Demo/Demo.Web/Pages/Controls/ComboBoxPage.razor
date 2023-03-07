@@ -1,115 +1,98 @@
 ﻿@page "/Demo/ComboBox"
 @namespace Demo.Web.Pages
-<div style="padding:20px 40px 0 0">
-    <h3>Combobox</h3>
+<div class="row d-head">
+    <div class="col-md-6">
+        <h3>Combobox</h3>
+    </div>
+    <div class="d-source-btn col-md-6">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
 </div>
-<div style="display:table;width:90%;margin:0 auto">
-    <div style="display:table-row">
-        <div style="display:table-cell;width:50%;padding-left:40px">
+<div class="d-body">
+    <div class="row">
+        <div class="col-md-6 d-control">
             <hr />
-            <h4 style="padding-right:40px;">Data Binding & Search</h4>
-            <table style="width:calc(100% - 75px);margin-right:75px;">
-                <tr>
-                    <td>
-                        <label>شهر</label>
-                    </td>
-                    <td>
+            <div class="d-container">
+                <h4>Data Binding & Search</h4>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>City</label>
+                    </div>
+                    <div class="col-md-9">
                         <ComboBox TValue="int?" @bind-Value="cityId" TEntity="City" TextExpression="t => t.Title" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>شهر</label>
-                    </td>
-                    <td>
-                        <ComboBox TValue="int?" @bind-Value="cityId1" TEntity="City" TextExpression='t => t.Province.Title + " " + t.Title' />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>مشتری</label>
-                    </td>
-                    <td>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Province City</label>
+                    </div>
+                    <div class="col-md-9">
+                        <ComboBox TValue="int?" @bind-Value="cityId1" TEntity="City" TextExpression='t => t.Country.Title + " " + t.Title' />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Customer</label>
+                    </div>
+                    <div class="col-md-9">
                         <ComboBox TValue="int?" @bind-Value="customerId" TEntity="Customer"
                                   TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' />
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button @onclick="ComboBoxSource" class="c-btn c-primary">
-                            Source
-                            <i class="fa fa-code"></i>
-                        </button>
-                    </td>
-                </tr>
-            </table>
+
+                    </div>
+                </div>
+            </div>
         </div>
-        <div style="display:table-cell;width:50%;padding-right:40px">
+        <div class="col-md-6 d-control">
             <hr />
-            <h4 style="padding-right:40px;">Cascade</h4>
-            <table style="width:calc(100% - 60px);margin-right:60px;">
-                <tr>
-                    <td>
-                        <label>شهر</label>
-                    </td>
-                    <td>
-                        <ComboBox TValue="int?" TEntity="City" TextExpression='t => t.Province.Title + " " + t.Title'
-                                  Cascade="continer" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>منطقه</label>
-                    </td>
-                    <td>
-                        <ComboBox @ref="continer.Cascade" TValue="int?" @bind-Value="areaId" TEntity="Area" TextExpression="t => t.Title" />
-                    </td>
-                </tr>
-            </table>
+            <div class="d-container">
+                <h4>Cascade</h4>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>City</label>
+                    </div>
+                    <div class="col-md-9">
+                        <ComboBox TValue="int?" TEntity="City" TextExpression='t => t.Country.Title + " " + t.Title'
+                                  Cascade="container" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Area</label>
+                    </div>
+                    <div class="col-md-9">
+                        <ComboBox @ref="container.Cascade" TValue="int?" @bind-Value="areaId" TEntity="Area" TextExpression="t => t.Title" />
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div style="display:table-row">
-        <div style="display:table-cell;width:50%;padding-left:40px">
+        <div class="col-md-6 d-control">
             <hr />
-            <h4 style="padding-right:40px;">Custom Cascade</h4>
-            <table style="width:calc(100% - 75px);margin-right:75px;overflow-y:auto">
-                <tr>
-                    <td>
-                        <label>استان</label>
-                    </td>
-                    <td>
-                        <ComboBox TValue="int?" TEntity="Province" @bind-Value="provinceId" TextExpression="t => t.Title"
-                            OnChange="LoadCity"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>شهر</label>
-                    </td>
-                    <td>
-                        <ComboBox @ref="cmbCity" TValue="int?" TEntity="City" TextExpression="t => t.Title" 
-                            ConditionExpression="t => t.ProvinceId == provinceId" />
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button @onclick="CustomeCascadeSource" class="c-btn c-primary">
-                            Source
-                            <i class="fa fa-code"></i>
-                        </button>
-                    </td>
-                </tr>
-            </table>
+            <div class="d-container">
+                <h4>Custom Cascade</h4>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Province</label>
+                    </div>
+                    <div class="col-md-9">
+                        <ComboBox TValue="int?" TEntity="Country" @bind-Value="countryId" TextExpression="t => t.Title"
+                                  OnChange="() => cmbCity.EnableLoading()" />
+
+                    </div>
+                    <div class="col-md-3">
+                        <label>City</label>
+                    </div>
+                    <div class="col-md-9">
+                        <ComboBox @ref="cmbCity" TValue="int?" TEntity="City" TextExpression="t => t.Title"
+                                  ConditionExpression="t => t.CountryId == countryId" />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<CreatePdfComponent @bind-Status="status" Title="Default" FileName="@sourceName" Title1="Model" FileName1="@sourceName1" />
+
+<CreatePdfComponent @bind-Status="status" Title="ComboBox" FileName="ComboBox.pdf" Title1="Model" FileName1="Customer.pdf"/>
 @code
 {
-    int? provinceId;
-    CascadContiner continer = new CascadContiner();
+    int? countryId;
+    CascadContainer container = new CascadContainer();
     ComboBox<City, int> cmb;
     ComboBox<City, int?> cmbCity;
 
@@ -118,26 +101,5 @@
     int? customerId;
     int? areaId;
 
-    string sourceName;
-    string sourceName1;
     WindowStatus status;
-
-    void LoadCity()
-    {
-        cmbCity.EnableLoading();
-    }
-
-    void CustomeCascadeSource()
-    {
-        sourceName = "ComboBox-1.pdf";
-        sourceName1 = null;
-        status = WindowStatus.Open;
-    }
-
-    void ComboBoxSource()
-    {
-        sourceName = "ComboBox.pdf";
-        sourceName1 = "ComboBox-model.pdf";
-        status = WindowStatus.Open;
-    }
 }

@@ -175,11 +175,20 @@ progress::-webkit-progress-value {
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 .c-subtree {
-    padding: 8px 15px 0 0;
     margin:0;
 }
-.c-tree-content .c-title{
-    cursor:pointer;
+.c-controls {
+    align-items:center;
+}
+.c-controls .col-md-1, .c-controls .col-md-2, .c-controls .col-md-3,
+.c-controls .col-md-4, .c-controls .col-md-5, .c-controls .col-md-6,
+.c-controls .col-md-7, .c-controls .col-md-8, .c-controls .col-md-9,
+.c-controls .col-md-10, .c-controls .col-md-11, .c-controls .col-md-12 {
+    padding: 4px 0;
+}
+
+.c-tree-content .c-title {
+    cursor: pointer;
 }
 .c-lookup-tree {
     height: 34px;
@@ -190,6 +199,7 @@ progress::-webkit-progress-value {
         height:30px;
         line-height:30px;
         border:none;
+        border-radius:8px;
     }
 .c-tree-content {
     overflow: auto;
@@ -457,25 +467,23 @@ form tr {
         height:calc(100% - 4px);
     }
 
-    .c-lookup >input {
-        padding-left: 25px !important;
-    }
+
 .c-lookup.t-state-error .fa-search {
     color: #ff89d2!important;
 }
 .c-lookup .fa-search {
     color: #423d96;
-    margin-top: -6px;
-    margin-right: -24px;
+    margin-top: -8px;
     z-index: 5;
     font-size: 18px;
     position: relative;
     cursor: pointer;
     vertical-align: middle;
 }
-    .t-HelpWindow .t-window-title {
-        margin-top: -1px !important;
-    }
+.t-HelpWindow .t-window-title {
+    width: calc(100% - 25px);
+    display: inline-block;
+}
 .c-page-size {
     width: 100px;
     float: left;
@@ -532,12 +540,14 @@ form tr {
 
     .t-checkbox {
         white-space: nowrap;
+        display:inline-block;
+        margin:2px;
     }
 .c-multi-select {
     border-width: 1px;
     border-style: solid;
     border-color: rgba(0,0,0,0.12);
-    padding: 3px 7px 7px 7px;
+    padding: 1px 7px;
     margin: 2px;
     border-radius: 8px;
 }
@@ -619,16 +629,18 @@ span, label, td, th {
     background-color: #f6f6f6;
     margin: 0 auto;
     text-align: center;
-    padding: 10px 5px 5px 10px;
+    padding: 12px 5px 15px 5px;
     z-index: 99999;
     box-shadow: 3px 3px 5px 0 slategrey;
     animation-name: messagebox;
     animation-duration: .5s;
     top: 120px;
 }
-
-@keyframes messagebox {
-    0% {
+    .c-messagebox .c-danger{
+        min-width:70px;
+    }
+    @keyframes messagebox {
+        0% {
         transform: scale(0.85);
     }
 
@@ -641,9 +653,6 @@ span, label, td, th {
     }
 }
 
-.t-grid-edit {
-    padding: 0 1px 0 10px;
-}
 .t-grid-pager .fa {
     color: #423d96;
 }
@@ -697,6 +706,7 @@ span, label, td, th {
     vertical-align: middle;
     text-align: justify;
     padding: 0 5px;
+    height: 75px;
 }
     .c-messagebox >.c-container{
         width:80px;
@@ -708,13 +718,19 @@ span, label, td, th {
     }
 
 .c-messagebox .c-icon {
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
     text-align: center;
     border-radius: 40px;
     display:inline-block;
 }
-
+.t-window-titlebar {
+    padding:5px 8px;
+}
+.t-window-title {
+    display: inline-block;
+    width: calc(100% - 20px);
+}
 .c-messagebox .c-question {
     border: 3px solid #facea8;
 }
@@ -722,13 +738,14 @@ span, label, td, th {
     border: 3px solid #bcb7f7;
 }
 .c-messagebox .fa-question {
-    font-size: 50px;
+    font-size: 30px;
     color: #f8bb86;
+    line-height: 45px;
 }
 .c-messagebox .fa-info {
-    font-size: 50px;
+    font-size: 30px;
     color: #b6b9ff;
-    line-height:65px;
+    line-height: 45px;
 }
     .t-grid-insert {
         overflow: hidden;
@@ -749,7 +766,6 @@ span, label, td, th {
     box-sizing: border-box;
     height: 100vh;
     background-color: #e5e5e5;
-    border-left: 1px solid #bfbfbf;
     overflow: hidden;
 }
 
@@ -779,12 +795,17 @@ span, label, td, th {
     padding: 4px;
 }
 .t-radios .t-title {
-    padding:0 5px;
-    cursor:context-menu;
+    padding: 0 5px;
+    cursor: context-menu;
+    line-height: 24px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: middle;
 }
 .t-radios .t-radio {
     white-space: nowrap;
     display:inline-block;
+    padding: 2px 0;
 }
 
 .t-radios .c-radio {
@@ -819,14 +840,16 @@ span, label, td, th {
 }
 .c-treeview .c-icon {
     vertical-align: middle;
-    width: 21px;
+    width: 16px;
     display: inline-block;
 }
 .t-tabstrip .t-content {
     text-align: initial;
 }
+.c-treeview > .c-subtree > li {
+    padding-right: 0;
+}
 .c-treeview li {
-    padding:5px 25px 5px 0;
     overflow:hidden;
 }
 .t-container {
@@ -879,10 +902,7 @@ span, label, td, th {
     text-align:initial;
 }
 .c-subtree .c-title{
-    padding-right:5px;
-}
-.c-treeview > .c-subtree > li {
-    padding-right: 0;
+    vertical-align:middle;
 }
 
 .t-access {
@@ -910,6 +930,12 @@ span, label, td, th {
     font-size: 14px;
     margin:5px;
 }
+ul {
+    padding:0;
+}
+.c-treeview li {
+    padding: 5px 0;
+}
 .t-stringtextbox{
     height:34px;
     overflow:visible;
@@ -917,6 +943,7 @@ span, label, td, th {
 
 .c-treeview .fa-chevron-left, .c-treeview .fa-chevron-down {
     cursor: pointer;
+    vertical-align:middle;
 }
 .errorMessage div {
     border-color: transparent;
@@ -977,7 +1004,7 @@ span, label, td, th {
     color: forestgreen;
     outline: none;
     text-decoration: none;
-    padding: 0px 7px 0 0;
+    padding: 0px 7px 0 25px;
 }
 a.t-grid-add :visited {
     color: #026002;
@@ -1216,25 +1243,12 @@ div.t-window {
     border-bottom: 1px solid;
     border-bottom-color: rgba(0, 0, 0, .12);
     font-weight: bold;
-    height: 36px;
     background-color: #f7f7f7;
 }
 
 .t-HelpWindow .t-window-action{
-    float:left;
     padding: 1px 0 0 8px;
     box-sizing:border-box;
-}
-
-.t-window-title {
-    cursor: default;
-    font-weight: bold;
-    position: absolute;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    right: .5em;
-    color: #757575;
-    margin: 2px 8px 0 0;
 }
 
     .t-window-title .t-image {
@@ -1248,15 +1262,6 @@ div.t-window {
     left: .5em;
     top: 0;
     white-space: nowrap;
-}
-input::-webkit-input-placeholder {
-    text-align: right;
-}
-input::-moz-placeholder {
-    text-align: right;
-}
-input:-moz-placeholder {
-    text-align: right;
 }
 .t-window-titlebar .t-window-action {
     /*width: 16px;
@@ -1386,6 +1391,7 @@ input:-moz-placeholder {
 .t-window-titlebar, .t-tabstrip {
     border-radius: 8px 8px 0 0;
     background-color: #e6e7e8;
+    border-bottom: 1px solid #b6b6b6;
 }
 @keyframes tabstripwidth {
     0% {
@@ -1393,25 +1399,27 @@ input:-moz-placeholder {
     }
 
     100% {
-        width: 100%;
+        width: calc(100% - 12px);
     }
 }
+
 .t-tabstrip .c-selected-panel {
     animation-name: tabstripwidth;
     animation-duration: 0.4s;
     background-color: red;
     display: block;
-    width: 100%;
+    width: calc(100% - 12px);
     height: 3px;
     margin: 0 auto;
+    margin-top: 2px;
 }
-    .t-tabstrip .t-tabstrip-items {
-        overflow: hidden;
-        white-space: nowrap;
-        text-align: right;
-        height: 35px;
-        background-color: #e6e7e8;
-    }
+.t-tabstrip .t-tabstrip-items {
+    overflow: hidden;
+    white-space: nowrap;
+    height: 31px;
+    background-color: #e6e7e8;
+    border-bottom: 1px solid #b6b6b6
+}
 
 .t-tabstrip-items .t-item,
 .t-panelbar .t-tabstrip-items .t-item {
@@ -1419,7 +1427,6 @@ input:-moz-placeholder {
     vertical-align: top;
     display: inline-block;
     zoom: 1;
-    border-left: solid 1px grey;
     padding: 0;
     height: 18px;
     position: relative;
@@ -1441,7 +1448,6 @@ input:-moz-placeholder {
 .t-panelbar .t-tabstrip-items .t-link {
     padding: 0px 5px;
     display: inline-block;
-    *display: inline;
     zoom: 1;
     border-bottom-width: 0;
     outline: 0;
@@ -1664,7 +1670,7 @@ input:-moz-placeholder {
 /* Grid */
     .t-grid table {
         width: 100%;
-        border-collapse: separate;
+        border-collapse: collapse;
         empty-cells: show;
         border: 0;
     }
@@ -1737,7 +1743,6 @@ div.t-grid-footer {
     overflow: hidden;
 }
 .t-grid-header th {
-    border-width: 0 0 0 1px;
     border-style: solid;
     border-color: rgba(0,0,0,0.08);
     color: #656565;
@@ -1841,10 +1846,7 @@ div.t-grid-footer {
 .t-pager .t-page-size,
 .t-grouping-row p {
     display: inline-block;
-    *display: inline;
-    zoom: 1;
     vertical-align: middle;
-    direction: rtl;
 }
 
 .t-pager .t-page-size {
@@ -1879,9 +1881,14 @@ div.t-grid-footer {
     border-right-style: solid;
 }
 
+.t-grid .t-status-text {
+    font-size: 12px;
+    color: #ff6358;
+    padding-top: 2px;
+}
+
 .t-grid .t-pager {
-    float: left;
-    cursor: default;
+    width: calc(100% - 120px);
 }
 
 .t-grid .t-status-text {
@@ -1890,8 +1897,8 @@ div.t-grid-footer {
 
 .t-pager .t-link {
     text-decoration: none;
-    line-height: 27px;
-    height: 27px;
+    line-height: 23px;
+    height: 25px;
     width: 15px;
     box-sizing: border-box;
     border-width: 0;
@@ -2283,7 +2290,7 @@ html body .t-grid tbody .t-button-icon {
     background-image: none !important;
     background-color: transparent !important;
     border-width: 0;
-    height:34px;
+    height:30px;
     overflow:visible;
 }
 
@@ -2360,7 +2367,7 @@ html body .t-grid tbody .t-button-icon {
 }
 
 .t-combobox .t-icon {
-    margin-top: 1px;
+    margin-top: 5px;
 }
 
 .t-dropdown .t-select,
@@ -2379,17 +2386,13 @@ html body .t-grid tbody .t-button-icon {
     vertical-align: top;
     width: 25px;
     background-color: inherit;
-    border-radius: 8px 0 0 8px;
     text-align:center;
-    border-right:1px solid rgba(0, 0, 0, 0.12);
 }
 
-.t-dropdown .t-state-hover .t-t-select {
-    border-right: 1px solid rgba(0, 0, 0, 0.24);
-}
-
-.t-dropdown .t-state-disabled .t-t-select {
-    border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+.t-combobox .t-select {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, .12);
 }
 
 .t-dropdown .t-input,
@@ -2397,13 +2400,13 @@ html body .t-grid tbody .t-button-icon {
     display: inline-block;
     line-height: 30px;
     height: 28px;
-    padding-right: 3px;
+    padding: 0 4px;
     width: calc(100% - 25px);
     font-size: 14px;
     cursor: default;
     box-sizing: border-box;
     background-color: inherit;
-    overflow:hidden;
+    overflow: hidden;
 }
 .t-dropdown .t-state-error {
     border-color: rgba(255, 0, 0, 0.19) !important;
@@ -2416,6 +2419,7 @@ html body .t-grid tbody .t-button-icon {
     line-height: 18px;
     font-size: 17px;
     color: #656565;
+    text-align:center;
 }
 .t-dropdown-wrap.t-state-disabled span{
     border-color: rgba(0,0,0,0.2)!important;
@@ -2426,28 +2430,40 @@ html body .t-grid tbody .t-button-icon {
 }
 .t-state-disabled .t-header {
 }
+.t-dropdown-wrap {
+    margin: 2px;
+    height: 30px;
+    box-sizing: border-box;
+    font-size: 0;
+}
 .t-combobox .t-input {
     height: 30px;
-    border: 0;
-    padding-right: 8px;
+    padding:0 4px;
     width: calc(100% - 28px);
     box-sizing: border-box;
     border-style: solid;
     border-width: 1px;
     border-radius: 0 8px 8px 0;
     font-size:14px;
-    background-color:transparent;
 }
-.t-window label {
-    color: #656565;
-    font-weight:bold;
+.c-controls label {
+    display: inline-block;
+    background-color: #efefef;
+    border-radius: 8px;
+    font-weight: bold;
+    line-height: 30px;
+    padding: 0 8px;
+    width: calc(100% - 4px);
 }
-
+.c-action .c-primary{
+    min-width:70px;
+}
 .t-picker-wrap .t-select,
 .t-dropdown-wrap .t-select {
     height: 30px;
     width: 28px;
     background-image: linear-gradient(#f6f6f6,#f1f1f1);
+    text-align: center;
 }
 .t-state-error .t-select {
     background-image: linear-gradient(#ffd9d9,#fff0f0) !important;
@@ -2474,7 +2490,7 @@ html body .t-grid tbody .t-button-icon {
         color: black;
         font-size: 15px;
         line-height: 30px;
-        padding-right: 4px;
+        padding:0 4px;
     }
         .t-popup .t-item:not(.t-state-selected):hover {
             background-color: #ededed;
@@ -3880,6 +3896,7 @@ div.t-slider {
     display: table;
     overflow:hidden;
     position: relative;
+    width:100%;
 }
     .t-upload .t-input {
         position: absolute;

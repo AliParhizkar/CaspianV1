@@ -11,16 +11,14 @@
                 {
                     <div class="t-window-titlebar t-header">
                         <span class="t-window-title">@Title</span>
-                        <div class="t-window-actions" @onclick="() => { Status = WindowStatus.Close; }">
-                            <span @onclick="() =>
-                                        {
-                                            if (StatusChanged.HasDelegate)
-                                                StatusChanged.InvokeAsync(WindowStatus.Close);
-                                            Status = WindowStatus.Close;
-                                        }" class="t-window-action t-link">
-                                <i class="fa fa-close"></i>
-                            </span>
-                        </div>
+                        <span @onclick="() =>
+                                    {
+                                        if (StatusChanged.HasDelegate)
+                                            StatusChanged.InvokeAsync(WindowStatus.Close);
+                                        Status = WindowStatus.Close;
+                                    }" class="t-window-action t-link">
+                            <i class="fa fa-close"></i>
+                        </span>
                     </div>
                 }
                 <div class="t-window-content t-content">

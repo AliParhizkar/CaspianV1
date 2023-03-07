@@ -11,27 +11,15 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// کد مشتری
-        /// </summary>
-        [DisplayName("مشتری")]
+        [DisplayName("Customer")]
         public int CustomerId { get; set; }
 
-        /// <summary>
-        /// مشخصات مشتری
-        /// </summary>
         [ForeignKey(nameof(CustomerId))]
         public virtual Customer Customer { get; set; }
 
-        /// <summary>
-        /// کد گروه مشتریان
-        /// </summary>
-        [DisplayName("گروه مشتری")]
+        [DisplayName("Customer Group")]
         public int CustomerGroupId { get; set; }
 
-        /// <summary>
-        /// مشخصات گروه مشتریان
-        /// </summary>
         [ForeignKey(nameof(CustomerGroupId))]
         public virtual CustomerGroup CustomerGroup { get; set; }
     }

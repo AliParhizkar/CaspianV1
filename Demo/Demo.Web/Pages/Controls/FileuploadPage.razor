@@ -4,6 +4,12 @@
     <div class="col-md-6">
         <h3>FileUpload & Picture Box</h3>
     </div>
+    <div class="d-source-btn col-md-6">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
 </div>
 <div class="d-body">
     <div class="row">
@@ -14,14 +20,8 @@
                 <div class="row">
                     <div class="col-md-12">
                         <Fileupload OnChange="async e => await SaveFileData1(e)" Title="Click for upload">
-                            <PictureBox NoContentTitle="لطفا برای آپلود عکس کلیک نمایید" Data="imageDataWidthoutContent" style="width:300px;height:350px;background-size:cover" />
+                            <PictureBox NoContentTitle="Click for upload" Data="imageDataWidthoutContent" style="width:300px;height:350px;background-size:cover" />
                         </Fileupload>
-                    </div>
-                    <div>
-                        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-                            Source
-                            <i class="fa fa-code"></i>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                     <div>
                         <PictureBox Data="imageDataWidthContent" style="width:300px;height:350px;background-position: center center" />
                     </div>
-                    <div class="d-center-align">
+                    <div style="padding-top:10px" class="text-center">
                         <Fileupload OnChange="async e => await SaveFileData(e)" />
                     </div>
                 </div>
@@ -48,6 +48,7 @@
     WindowStatus status;
     byte[] imageDataWidthContent;
     byte[] imageDataWidthoutContent;
+
     async Task SaveFileData(InputFileChangeEventArgs file)
     {
         imageDataWidthContent = await file.File.GetByteArrayAsync();

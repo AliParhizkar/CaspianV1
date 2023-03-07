@@ -68,7 +68,11 @@ namespace Caspian.UI
             var context = new ValidationContext<Object>(EditContext.Model);
             using var scope = ServiceScopeFactory.CreateScope();
             if (CaspianDataService != null)
-                scope.ServiceProvider.GetService<CaspianDataService>().UserId = CaspianDataService.UserId;
+            {
+                var dataService = scope.ServiceProvider.GetService<CaspianDataService>();
+                dataService.UserId = CaspianDataService.UserId;
+                dataService.Language = CaspianDataService.Language;
+            }
             Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             if (Source != null)
                 (Validator as ISimpleService).SetSource(Source);

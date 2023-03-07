@@ -10,8 +10,7 @@ namespace Demo.Service
         public CityService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync(t => t.ProvinceId, "شهری با این عنوان در این استان تعریف شده است.");
-            var userId = UserId;
+            RuleFor(t => t.Title).Required().UniqAsync(t => t.CountryId, "a city with this title is defined in the system");
         }
     }
 }

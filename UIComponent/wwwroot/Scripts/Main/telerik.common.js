@@ -727,6 +727,7 @@
         },
 
         showMessage: function (a, b) {
+            debugger;
             if (b)
                 $.telerik.outMessage().show({ 'Message': a, 'kind': b });
             else

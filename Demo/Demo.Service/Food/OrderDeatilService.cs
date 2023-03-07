@@ -15,9 +15,9 @@ namespace Demo.Service
         public OrderDeatilService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Price).CustomValue(t => t < 0, "قیمت نمی تواند منفی باشد");
-            RuleFor(t => t.Count).CustomValue(t => t <= 0, "واحد باید بزرگتر از صفر باشد");
-            RuleFor(t => t.ProductId).Custom(t => Source != null && Source.Any(u => u.ProductId == t.ProductId && t != u), "این محصول در حال حاضر ثبت شده است");
+            RuleFor(t => t.Price).CustomValue(t => t < 0, "The price cannot be negative");
+            RuleFor(t => t.Count).CustomValue(t => t <= 0, "The unit must be greater than zero");
+            RuleFor(t => t.ProductId).Custom(t => Source != null && Source.Any(u => u.ProductId == t.ProductId && t != u), "This product has been added to the invoice");
         }
 
         [ReportMethod("گزارش فروش")]

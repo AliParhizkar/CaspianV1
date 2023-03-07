@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Collections;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
-using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
@@ -132,7 +130,10 @@ namespace Caspian.UI
             var array = arrayList.ToArray(type);
             Value = (TValue)(Convert.ChangeType(array, typeof(TValue)));
             valueIsUpdated = true;
-            searchText = selectedNodesValue.Count + " آیتم انتخاب شده است";
+            if (service.Language == Common.Language.Fa)
+                searchText = $"{selectedNodesValue.Count} آیتم انتخاب شده است";
+            else
+                searchText = $"{selectedNodesValue.Count} item are selected";
             if (ValueChanged.HasDelegate)
                 await ValueChanged.InvokeAsync(Value);
         }

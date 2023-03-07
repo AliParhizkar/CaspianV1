@@ -6,12 +6,12 @@ using System;
 
 namespace Demo.Service
 {
-    public class ProvinceService : SimpleService<Province>, ISimpleService<Province>
+    public class CountryService : SimpleService<Country>, ISimpleService<Country>
     {
-        public ProvinceService(IServiceProvider provider)
+        public CountryService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("استانی با این عنوان تعریف شده است");
+            RuleFor(t => t.Title).Required().UniqAsync("A country with this title is defined in the system");
         }
     }
 }

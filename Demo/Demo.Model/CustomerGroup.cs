@@ -11,22 +11,13 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// عنوان گروه
-        /// </summary>
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        /// <summary>
-        /// وضعیت فعالیت
-        /// </summary>
-        [DisplayName("وضعیت فعالیت")]
+        [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
-        /// <summary>
-        /// عضویت های گروه
-        /// </summary>
-        [CheckOnDelete("گروه مشتریان دارای عضویت می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("Customer Group has Memberships and can not Removed")]
         public virtual IList<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
     }
 }

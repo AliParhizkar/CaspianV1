@@ -16,18 +16,12 @@ namespace Demo.Model
         [ForeignKey(nameof(ParentOrganId))]
         public virtual OrganUnit ParentOrgan { get; set; }
 
-        /// <summary>
-        /// عنوان
-        /// </summary>
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
         public ActiveType ActiveType { get; set; }
 
-        /// <summary>
-        /// زیرواحدهای سازمانی واحد سازمانی
-        /// </summary>
-        [CheckOnDelete("واحد سازمانی داراری زیرواحد سازمانی می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("Organ unit has subunit and can not be removed")]
         public virtual ICollection<OrganUnit> SuborganUnits { get; set; }
     }
 }

@@ -12,76 +12,40 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// عنوان محصول
-        /// </summary>
-        [DisplayName("عنوان"), ReportField("عنوان محصول")]
+        [DisplayName("Title"), ReportField("عنوان محصول")]
         public string Title { get; set; }
 
-        /// <summary>
-        /// کد
-        /// </summary>
-        [DisplayName("کد")]
+        [DisplayName("Code")]
         public string Code { get; set; }
 
-        /// <summary>
-        /// کد گروه محصول
-        /// </summary>
-        [DisplayName("گروه محصول")]
+        [DisplayName("Product Category")]
         public int ProductCategoryId { get; set; }
 
-        /// <summary>
-        /// قیمت
-        /// </summary>
-        [DisplayName("قیمت"), ReportField]
+        [DisplayName("Price"), ReportField]
         public int Price { get; set; }
 
-        /// <summary>
-        /// قیمت بیرون بر
-        /// </summary>
-        [DisplayName("قیمت بیرون بر"), ReportField]
-        public int PriceOuterBound { get; set; }
+        [DisplayName("Take out price"), ReportField]
+        public int TakeoutPrice { get; set; }
 
-        /// <summary>
-        /// وعده های غذایی
-        /// </summary>
-        [DisplayName("وعده های غذایی")]
+        [DisplayName("Meal")]
         public Meal Meal { get; set; }
 
-        /// <summary>
-        /// اتمام فروش
-        /// </summary>
-        [DisplayName("اتمامی فروش")]
+        [DisplayName("Out of stock")]
         public bool OutofStock { get; set; }
 
-        /// <summary>
-        /// تخفیف پذیر
-        /// </summary>
-        [DisplayName("تخفیف پذیر")]
+        [DisplayName("Discountable")]
         public bool Discountable { get; set; }
 
-        /// <summary>
-        /// وضعیت فعال
-        /// </summary>
-        [DisplayName("وضعیت")]
+        [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
-        /// <summary>
-        /// تصویر
-        /// </summary>
-        [DisplayName("تصویر")]
+        [DisplayName("Image")]
         public byte[] Image { get; set; }
 
-        /// <summary>
-        /// مشخصات گروه محصول 
-        /// </summary>
         [ForeignKey(nameof(ProductCategoryId)), ReportField("گروه محصول")]
         public virtual ProductCategory ProductCategory { get; set; }
 
-        /// <summary>
-        /// سفارشهای محصول
-        /// </summary>
-        [CheckOnDelete("برای محصول سفارش ثبت شده و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("This product is ordered and cannot be removed")]
         public virtual IList<OrderDeatil> OrderDeatils { get; set; }
     }
 }

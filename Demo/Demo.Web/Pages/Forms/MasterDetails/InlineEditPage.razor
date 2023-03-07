@@ -2,6 +2,14 @@
 @page "/Demo/MaterialReceipt/{MasterId:int}"
 @namespace Demo.Web.Pages
 @inherits MasterDetailPage<StoreHouseReceipt, MaterialReceipt>
+<div class="row p-3">
+    <div class="col-md-3">
+
+    </div>
+    <div class="col-md-9">
+
+    </div>
+</div>
 <div style="margin:10px auto; width:97%;display:flex">
     <div style="width:300px;margin:22px 0 0 25px;">
         <CaspianForm @ref="MasterForm" Model="UpsertData">
@@ -101,14 +109,14 @@
             if (receipt?.Material.SubunitId != null)
                 await txtSubunit.FocusAsync();
             else
-                await Grid.ValidateUpsert(mode);
+                await Grid.ValidateAndUpsert(mode);
         }
     }
 
     async Task SubUnitChanged(KeyboardEventArgs e, MaterialReceipt receipt, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")
-            await Grid.ValidateUpsert(mode);
+            await Grid.ValidateAndUpsert(mode);
     }
 
     async Task UpdateMaterialReceipt(int materialId, MaterialReceipt materialReceipt)

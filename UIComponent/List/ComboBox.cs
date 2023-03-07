@@ -80,7 +80,7 @@ namespace Caspian.UI
         public EnableLoadContiner EnableLoadContiner { get; set; }
 
         [Parameter, JsonIgnore]
-        public CascadContiner Cascade { get; set; }
+        public CascadContainer Cascade { get; set; }
 
         [Parameter, JsonIgnore]
         public Expression<Func<TEntity, object>> OrderByExpression { get; set; }

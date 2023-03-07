@@ -1,5 +1,6 @@
 ﻿@namespace Caspian.UI
 @inject IJSRuntime JSRuntime
+@inject CaspianDataService service
 @if (show)
 {
     <div @ref="overlay" class="t-overlay t-messageeeeeeee">
@@ -70,8 +71,17 @@
 
     protected override void OnInitialized()
     {
-        OkButtonTitle = YesButtonTitle = "تائید";
-        NoButtonTitle = "انصراف";
+        if (service.Language == Language.Fa)
+        {
+            OkButtonTitle = YesButtonTitle = "تائید";
+            NoButtonTitle = "انصراف";
+        }
+        else
+        {
+            OkButtonTitle = "Ok";
+            YesButtonTitle = "Yes";
+            NoButtonTitle = "No";
+        }
         base.OnInitialized();
     }
 

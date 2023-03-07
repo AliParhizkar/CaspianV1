@@ -4,93 +4,85 @@
     if (hideHeader)
         autoHide = true;
 }
-<div style="padding:20px 40px 0 0">
-    <h3>Lookup</h3>
-</div>
-<div style="display:table;width:90%;margin:0 auto">
-    <div style="display:table-cell;width:50%;padding-left:40px">
-         <hr />
-         <h4 style="padding-right:40px;">Lookup seting</h4>
-            <table style="margin-right:70px;height:200px;">
-                <tr>
-                    <td style="width:30px">
-                        <CheckBox @bind-Value="disabled" />
-                    </td>
-                    <td>
-                        <label>Disabled</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <CheckBox @bind-Value="hideHeader" />
-                    </td>
-                    <td>
-                        <label>Hide header</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <CheckBox @bind-Value="hideIcon" />
-                    </td>
-                    <td>
-                        <label>Hide icon</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                    <CheckBox @bind-Value="autoHide" Disabled="hideHeader" Title="Auto hide" />
-                    </td>
-                    <td>
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <CheckBox @bind-Value="openOnFocus" />
-                    </td>
-                    <td>
-                        <label>Open on focus</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <CheckBox @bind-Value="closeOnBlur" />
-                    </td>
-                    <td>
-                        <label>Close on blur</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <CheckBox @bind-Value="searchable" />
-                    </td>
-                    <td>
-                        <label>Searchable</label>
-                    </td>
-                </tr>
-            </table>
+<div class="row d-head">
+    <div class="col-md-6">
+        <h3>Autocomplete & Lookup</h3>
     </div>
-    <div style="display:table-cell;width:50%;padding-right:40px">
-        <hr />
-        <h4 style="padding-right:40px;">Product lookup</h4>
-        <div style="width:80%;margin:10px auto">
-            <AutoComplete TEntity="Product" TValue="int?" @bind-Value="Id" HideHeader="hideHeader" AutoHide="autoHide" Title="جستجوی غذا"
-                TextExpression="t => t.Title" OpenOnFocus="openOnFocus" CloseOnBlur="closeOnBlur" Disabled="disabled" 
-                HideIcon="hideIcon">
-                <ProductLookupPage TValue="int?" Searchable="searchable"  />
-            </AutoComplete>
+    <div class="d-source-btn col-md-3">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Autocomplete Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
+    <div class="d-source-btn col-md-3">
+        <button @onclick="() => statusLookup = WindowStatus.Open" class="c-btn c-primary">
+            Lookup Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
+</div>
+<div class="d-body">
+    <div class="row">
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4>Default seting</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="disabled" Title="Disable" />
+                    </div>
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="hideHeader" Title="Hide Header" />
+                    </div>
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="hideIcon" Title="Hide Icon" />
+                    </div>
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="autoHide" Disabled="hideHeader" Title="Auto hide" />
+                    </div>
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="openOnFocus" Title="Open On Focus" />
+                    </div>
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="closeOnBlur" Title="Close On Blur" />
+                    </div>
+                </div>
+            </div>
         </div>
-        <div style="text-align:center;padding:10px 0">
-            <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-                Autocomplete Source
-                <i class="fa fa-code"></i>
-            </button>
-        </div>
-        <div style="text-align:center;padding:10px 0">
-            <button @onclick="() => statusLookup = WindowStatus.Open" class="c-btn c-primary">
-                Lookup Source
-                <i class="fa fa-code"></i>    
-            </button>
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4 style="padding-right:40px;">Customer lookup</h4>
+                <div class="row">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <AutoComplete TEntity="Customer" TValue="int?" @bind-Value="Id" HideHeader="hideHeader" AutoHide="autoHide" Title="Customer Search"
+                                          TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName'
+                                          OpenOnFocus="openOnFocus" CloseOnBlur="closeOnBlur" Disabled="disabled" HideIcon="hideIcon">
+                                <CustomerLookupComponent TValue="int?" UseParameter="useParameter" />
+                            </AutoComplete>
+                        </div>
+                        <div class="col-md-12">
+                            <CheckBox @bind-Value="useParameter" Title="Use Parameter" />
+                        </div>
+                        @if (useParameter)
+                        {
+                            <div class="col-md-4">
+                                <label>Customer Type</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList @bind-Value="customerType" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Gender</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList @bind-Value="gender" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -107,7 +99,9 @@
     bool autoHide;
     bool hideIcon;
     bool hideHeader;
-    bool searchable;
+    bool useParameter;
     bool closeOnBlur;
     bool openOnFocus;
+    CustomerType? customerType;
+    Gender? gender;
 }

@@ -1,8 +1,8 @@
-﻿using System.Reflection;
+﻿using Caspian.Common;
+using System.Reflection;
 using Caspian.Common.Extension;
 using Caspian.Common.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Caspian.Engine
 {

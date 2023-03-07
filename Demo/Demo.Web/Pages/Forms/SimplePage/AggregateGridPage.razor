@@ -1,19 +1,30 @@
 ﻿@page "/Demo/AggregateGridPage"
 @namespace Demo.Web.Pages
 @inherits BasePage
-<div style="width:95%;margin:10px auto">
+<div class="row p-5">
+    <div class="col-9 ps-3 pb-2">
+        <h5>Aggregate function for customer and order</h5>
+    </div>
+    <div class="d-source-btn col-md-3">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
     <DataGrid TEntity="Order" HideInsertIcon>
         <Columns>
-            <GridColumn AggregateField='t => t.Key.CustomerId == null ? "---" : t.Key.Customer.CustomerType == CustomerType.Real ? t.Key.Customer.FName + " " + t.Key.Customer.LName : t.Key.Customer.CompanyName' Title="مشتری" />
-            <GridColumn AggregateField="t => t.Count()" Title="تعداد" />
-            <GridColumn AggregateField="t => t.Sum(u => u.TotalAmount)" Title="مجموع" />
-            <GridColumn AggregateField="t => t.Max(u => u.TotalAmount)" Title="بیشترین" />
-            <GridColumn AggregateField="t => t.Min(u => u.TotalAmount)" Title="کمترین" />
+            <GridColumn AggregateField='t => t.Key.CustomerId == null ? "---" : t.Key.Customer.CustomerType == CustomerType.Real ? t.Key.Customer.FName + " " + t.Key.Customer.LName : t.Key.Customer.CompanyName' Title="Customer" />
+            <GridColumn AggregateField="t => t.Count()" Title="Orders Count" />
+            <GridColumn AggregateField="t => t.Sum(u => u.TotalAmount)" Title="Sum order amount" />
+            <GridColumn AggregateField="t => t.Max(u => u.TotalAmount)" Title="Maximum amount" />
+            <GridColumn AggregateField="t => t.Min(u => u.TotalAmount)" Title="Minimum amount" />
         </Columns>
     </DataGrid>
 </div>
-
+<CreatePdfComponent @bind-Status="status" Title="Aggregate grid" FileName="Aggregate-Grid.pdf"
+                    Title1="Order model" FileName1="orderModel.pdf" />
 @code
 {
 
+    WindowStatus status;
 }

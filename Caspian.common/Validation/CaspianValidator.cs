@@ -12,6 +12,7 @@ namespace Caspian.Common
 {
     public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator, IEntity where TModel : class
     {
+        
         public CaspianValidator(IServiceProvider provider)
         {
             ServiceProvider = provider;
@@ -19,6 +20,7 @@ namespace Caspian.Common
             Context = provider.GetService(contextType) as MyContext;
             var data = provider.GetService(typeof(CaspianDataService)) as CaspianDataService;
             UserId = data.UserId;
+            Language = data.Language ?? Language.En;
             foreach (var info in typeof(TModel).GetProperties())
             {
                 var type = info.PropertyType;
@@ -59,6 +61,8 @@ namespace Caspian.Common
             AddRule(rule);
             return new RuleBuilder<TModel, object>(rule, this);
         }
+
+        public Language Language { get; private set; }
 
         public int UserId { get;private set; }
         /// <summary>
@@ -144,7 +148,12 @@ namespace Caspian.Common
                     if (index < fields.Count() || fields.Count() < 3)
                     {
                         if (tempValue == 0)
-                            message = attr == null ? "لطفا مقدار فیلد را مشخص نمایید" : "لطفا " + attr.DisplayName + " را مشخص نمایید.";
+                        {
+                            if (Language == Language.En)
+                                message = attr == null ? "Please specify the value of the field" : "Please specify " + attr.DisplayName ;
+                            else
+                                message = attr == null ? "" : "لطفا " + attr.DisplayName + " را مشخص نمایید.";
+                        }
                         else
                             message = attr == null ? "خطا: In type " + info.PropertyType.Name + " value " + value + " is invalid" : "لطفا " + attr.DisplayName + " را مشخص نمایید";
                     }

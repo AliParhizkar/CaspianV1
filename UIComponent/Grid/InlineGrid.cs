@@ -159,7 +159,7 @@ namespace Caspian.UI
             }
         }
 
-        public async Task ValidateUpsert(UpsertMode upsertMode)
+        public async Task ValidateAndUpsert(UpsertMode upsertMode)
         {
             if (upsertMode == UpsertMode.Edit)
             {
@@ -205,7 +205,6 @@ namespace Caspian.UI
                 }
             }
             StateHasChanged();
-
         }
 
         public void CreateInsert()

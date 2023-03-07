@@ -14,8 +14,8 @@ namespace Demo.Service
         public OrderService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Date).CustomValue(t => t == null, "لطفا تاریخ سفارش را مشخص نمائید");
-            RuleFor(t => t.OrderDeatils).CustomValue(t => t == null || !t.Any(), "سفارش باید حداقل یک محصول داشته باشد");
+            RuleFor(t => t.Date).CustomValue(t => t == null, "Please specify the order date");
+            RuleFor(t => t.OrderDeatils).CustomValue(t => t == null || !t.Any(), "The order must have at least one product");
             RuleForEach(t => t.OrderDeatils).SetValidator(new OrderDeatilService(provider));
             RuleFor(t => t.OrderStatus).Custom(t => t.DeliveryId.HasValue && t.OrderStatus == OrderStatus.Canceled,
                 "سفارش دارای پیک می باشد و امکان لغو آن وجود ندارد");

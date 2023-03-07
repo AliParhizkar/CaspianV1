@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Caspian.Engine;
 using System.Runtime.CompilerServices;
 using System.Linq.Dynamic.Core;
+using FluentValidation.Validators;
 
 namespace Caspian.Common
 {
@@ -58,19 +59,35 @@ namespace Caspian.Common
             });
         }
 
+        public static Language GetLanguage(this CustomContext context)
+        {
+            Language language = Language.Fa;
+            if (context.ParentContext.RootContextData.ContainsKey("__ServiceScope"))
+            {
+                var provider = context.ParentContext.RootContextData["__ServiceScope"] as IServiceProvider;
+                var service = provider.GetService<CaspianDataService>();
+                language = service.Language ?? Language.Fa;
+            }
+            return language;
+        }
 
         public static IRuleBuilderInitial<TModel, TProperty> Required<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, 
             Func<TModel, bool> func = null, string message = null)
         {
             return ruleBuilder.Custom((value, context) =>
             {
+                
+                var language = context.GetLanguage();
                 if (value is string && Convert.ToString(value) == "")
                     value = default(TProperty);
                 if ((value == null) && func?.Invoke((TModel)context.InstanceToValidate) != false)
                 {
                     var attr = typeof(TModel).GetProperty(context.PropertyName).GetCustomAttribute<DisplayNameAttribute>();
                     var name = attr == null ? context.DisplayName : attr.DisplayName;
-                    message = message ?? "لطفا " + name + " را مشخص نمایید";
+                    if (language == Language.Fa)
+                        message = message ?? $"لطفا {name} را مشخص نمایید";
+                    else
+                        message = message ?? $"Please specify the {name}";
                     context.AddFailure(message);
                 }
             });
@@ -80,9 +97,13 @@ namespace Caspian.Common
         {
             return ruleBuilder.Custom((value, context) =>
             {
+                var language = context.GetLanguage();
                 if (value != null && (value.CompareTo(min) == -1 || value.CompareTo(max) == 1))
                 {
-                    message = message ?? "مقدار " + context.DisplayName + " باید بین {0} و {1} باشد";
+                    if (language == Language.Fa)
+                        message = message ?? "مقدار " + context.DisplayName + " باید بین {0} و {1} باشد";
+                    else
+                        message = message ?? "The value of " + context.DisplayName + " should be between {0} and {1} ";
                     context.AddFailure(string.Format(message, min, max));
                 }
             });
@@ -260,6 +281,7 @@ namespace Caspian.Common
             {
                 if (value != null)
                 {
+                    var language = context.GetLanguage();
                     var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>() ?? infoId.GetCustomAttribute<DisplayNameAttribute>();
                     string message = null;
                     if (value.Equals(0))
@@ -274,7 +296,12 @@ namespace Caspian.Common
                                 flag = true;
                         }
                         if (!flag)
-                            message = "لطفا " + (displayAttr?.DisplayName ?? infoId.Name) + " را مشخص نمایید";
+                        {
+                            if (language == Language.Fa)
+                                message = $"لطفا {(displayAttr?.DisplayName ?? infoId.Name)} را مشخص نمایید";
+                            else
+                                message = $"Please specify the {(displayAttr?.DisplayName ?? infoId.Name)}";
+                        }
                     }
                     else
                     {

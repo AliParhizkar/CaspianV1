@@ -153,19 +153,17 @@ h1 {
 
     .accordion .link {
         cursor: pointer;
-        padding: 9px 8px 0 0;
         color: white;
         font-size: 13px;
         border: 1px solid #d5d5d5;
-        border-left: 1px solid #1c1c1c;
         -webkit-transition: all 0.4s ease;
         -o-transition: all 0.4s ease;
         transition: all 0.4s ease;
         height:37px;
     }
-        .accordion .link span{
-            width:110px;
-            display:inline-block;
+        .accordion .link span {
+            width: 111px;
+            display: inline-block;
         }
         .page.hideMenu .link span {
             display: none;
@@ -218,7 +216,6 @@ h1 {
     .accordion li.default .submenu {
         display: block;
         overflow:hidden;
-        background-image:linear-gradient(-90deg, #353535, #818181);
     }
 /**
  * Submenu

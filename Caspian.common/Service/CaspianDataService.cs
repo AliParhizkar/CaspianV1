@@ -3,13 +3,14 @@ namespace Caspian.Common
 {
     public class CaspianDataService
     {
-        public CaspianDataService()
-        {
-            GUId = Guid.NewGuid().ToString();
-        }
-
         public int UserId { get; set; }
 
-        public string GUId { get; private set; }
+        public Language? Language { get; set; } = Common.Language.En;
+    }
+
+    public enum Language
+    {
+        Fa = 1,
+        En
     }
 }

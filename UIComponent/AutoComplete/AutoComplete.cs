@@ -364,7 +364,6 @@ namespace Caspian.UI
             }
             inputAttrs = new Dictionary<string, object>();
             inputAttrs["class"] = AutoHide ? "t-input auto-hide" : "t-input";
-            inputAttrs["style"] = "direction:rtl";
             Container?.SetControl(this);
             if (OpenOnFocus)
             {

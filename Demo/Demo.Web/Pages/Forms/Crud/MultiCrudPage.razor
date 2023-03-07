@@ -6,16 +6,20 @@
 }
 
 <CrudComponent UpsertData="upsertCategory" Style="width:90%;margin:5px auto">
-    <table style="width:100%">
-        <tr>
-            <td>
-                <label>عنوان</label>
-            </td>
-            <td>
-                <StringTextBox @bind-Value="SearchCategory.Title" Search />
-            </td>
-        </tr>
-    </table>
+    <div class="row c-controls">
+        <div class="col-md-3 ps-4">
+            <label>Title</label>
+        </div>
+        <div class="col-md-6">
+            <StringTextBox @bind-Value="SearchCategory.Title" Search />
+        </div>
+        <div class="d-source-btn col-md-3">
+            <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+                Source
+                <i class="fa fa-code"></i>
+            </button>
+        </div>
+    </div>
     <DataGrid TEntity="ProductCategory" Search="SearchCategory" TableHeight="206" OnRowSelect="ProductCategorySelected">
         <Columns>
             <GridColumn Field="t => t.Title" />
@@ -23,34 +27,28 @@
             <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window Title="نوع محصول" Style="width:500px">
+    <Window Title="Product Category" Style="width:500px">
         <Content>
             <CaspianForm Model="upsertCategory">
                 <CaspianValidationValidator ValidatorType="typeof(ProductCategoryService)" />
-                <table style="width:95%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>عنوان</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="upsertCategory.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>وضعیت</label>
-                        </td>
-                        <td>
-                            <DropdownList @bind-Value="upsertCategory.ActiveType" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td style="text-align:center">
-                            <WindowCommandButtons />
-                        </td>
-                    </tr>
-                </table>
+                <div class="row c-controls">
+                    <div class="col-md-4">
+                        <label>Title</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="upsertCategory.Title" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Status</label>
+                    </div>
+                    <div class="col-md-8">
+                        <DropdownList @bind-Value="upsertCategory.ActiveType" />
+                    </div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-8">
+                        <WindowCommandButtons />
+                    </div>
+                </div>
             </CaspianForm>
         </Content>
     </Window>
@@ -62,99 +60,80 @@
         <div class="c-continner-head">
             <span>@productTitle</span>
         </div>
-        <table style="width:100%">
-            <tr>
-                <td>
-                    <label>عنوان</label>
-                </td>
-                <td>
-                    <StringTextBox @bind-Value="SearchProduct.Title" Search />
-                </td>
-            </tr>
-        </table>
+        <div class="row c-controls">
+            <div class="col-md-3 ps-4">
+                <label>Title</label>
+            </div>
+            <div class="col-md-9 pe-4">
+                <StringTextBox @bind-Value="SearchProduct.Title" Search />
+            </div>
+        </div>
         <DataGrid @ref="grid" TEntity="Product" Search="SearchProduct" TableHeight="206" ConditionExpr="t => t.ProductCategoryId == productcategoryId">
             <Columns>
                 <GridColumn Field="t => t.Title" />
                 <GridColumn Field="t => t.Price.Seprate3Digit()" />
-                <GridColumn Field="t => t.PriceOuterBound.Seprate3Digit()" />
+                <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
                 <GridColumn Field="t => t.ActiveType.FaText()" />
                 <GridCommandColumns />
             </Columns>
         </DataGrid>
-        <Window Title="محصول" Style="width:500px">
+        <Window Title="Product" Style="width:500px" OnOpen="SetCategory">
             <Content>
                 <CaspianForm Model="upsertProduct">
                     <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
-                    <table style="width:95%;margin:0 auto">
-                        <tr>
-                            <td>
-                                <label>عنوان</label>
-                            </td>
-                            <td>
-                                <StringTextBox @bind-Value="upsertProduct.Title" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>قیمت</label>
-                            </td>
-                            <td>
-                                <NumericTextBox @bind-Value="upsertProduct.Price"
-                                            OnChange="@(() =>
-                                                                 {
-                                                                     if (upsertProduct.PriceOuterBound == 0)
-                                                                         upsertProduct.PriceOuterBound = upsertProduct.Price;
-                                                                 })" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>قیمت بیرون بر</label>
-                            </td>
-                            <td>
-                                <NumericTextBox @bind-Value="upsertProduct.PriceOuterBound" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>وعده های غذایی</label>
-                            </td>
-                            <td>
-                                <MultiSelectBox @bind-Value="upsertProduct.Meal" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>وضعیت</label>
-                            </td>
-                            <td>
-                                <DropdownList @bind-Value="upsertProduct.ActiveType" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>تخفیف پذیر</label>
-                            </td>
-                            <td>
-                                <CheckBox @bind-Value="upsertProduct.Discountable" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td style="text-align:center">
-                                <WindowCommandButtons />
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="row c-controls">
+                        <div class="col-md-4">
+                            <label>Title</label>
+                        </div>
+                        <div class="col-md-8">
+                            <StringTextBox @bind-Value="upsertProduct.Title" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Price</label>
+                        </div>
+                        <div class="col-md-8">
+                            <NumericTextBox @bind-Value="upsertProduct.Price" OnChange="SetTakeoutPrice" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Take out Price</label>
+                        </div>
+                        <div class="col-md-8">
+                            <NumericTextBox @bind-Value="upsertProduct.TakeoutPrice" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Meal</label>
+                        </div>
+                        <div class="col-md-8">
+                            <MultiSelectBox @bind-Value="upsertProduct.Meal" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Status</label>
+                        </div>
+                        <div class="col-md-8">
+                            <DropdownList @bind-Value="upsertProduct.ActiveType" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Discountable</label>
+                        </div>
+                        <div class="col-md-8">
+                            <CheckBox @bind-Value="upsertProduct.Discountable" />
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8 align-content-center">
+                            <WindowCommandButtons />
+                        </div>
+                    </div>
                 </CaspianForm>
             </Content>
         </Window>
     </CrudComponent>
 }
 
+<CreatePdfComponent @bind-Status="status" Title="Crud-Multi-Entity" FileName="Crud-Multi-Entity.pdf" Title1="Service" FileName1="ProductService.pdf" Title2="Model" FileName2="ProductModel.pdf" />
 
 @code 
 {
+    WindowStatus status;
     string productTitle;
     DataGrid<Product> grid;
     ProductCategory upsertCategory = new ProductCategory();
@@ -164,6 +143,17 @@
     Product SearchProduct = new Product();
 
     int? productcategoryId;
+
+    void SetCategory()
+    {
+        upsertProduct.ProductCategoryId = productcategoryId.Value;
+    }
+
+    void SetTakeoutPrice()
+    {
+        if (upsertProduct.TakeoutPrice == 0)
+            upsertProduct.TakeoutPrice = upsertProduct.Price;
+    }
 
     async void ProductCategorySelected(ProductCategory category)
     {

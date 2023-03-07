@@ -14,23 +14,23 @@ namespace Demo.Service
         public ProductService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("محصولی با این عنوان تعریف شده است");
-            RuleFor(t => t.Price).CustomValue(t => t < 0, "مبلغ کالا نمی تواند منفی باشد.");
-            RuleFor(t => t.PriceOuterBound).CustomValue(t => t < 0, "مبلغ بیرون بر نمی تواند منفی باشد.");
-            RuleFor(t => t.Meal).CustomValue(t => t == 0, "حداقل یکی از وعده های غذایی باید انتخاب شوند");
-            RuleFor(t => t.Code).UniqAsync("محصولی با این کد در سیستم وجود دارد")
+            RuleFor(t => t.Title).Required().UniqAsync("A product has been defined with this title");
+            RuleFor(t => t.Price).CustomValue(t => t < 0, "The product price cannot be negative");
+            RuleFor(t => t.TakeoutPrice).CustomValue(t => t < 0, "The take out price cannot be negative");
+            RuleFor(t => t.Meal).CustomValue(t => t == 0, "At least one meal must be selected");
+            RuleFor(t => t.Code).UniqAsync("There is a product with this code in the system")
                 .CustomValue(code => 
                 {
                     if (!code.HasValue())
                         return false;
                     return code.Length < 3;
-                }, "کد کالا حداقل باید سه رقمی باشد")
+                }, "The product code must be at least three digits long")
                 .Custom(p => 
                 {
                     if (!p.Code.HasValue())
                         return false;
                     return new ProductCategoryService(ServiceProvider).GetAll().Any(pc => pc.Code == p.Code);
-                }, "گروه محصولی با این کد در سیستم ثبت شده است");
+                }, "There is a product category with this code in the system");
         }
 
 
@@ -41,17 +41,10 @@ namespace Demo.Service
             await UpdateAsync(old);
         }
 
-        public async Task UpdateActiveType(int id, bool value)
+        public async Task UpdateTakeoutPrice(int id, int takeoutPrice)
         {
             var old = await SingleAsync(id);
-            old.ActiveType = value ? ActiveType.Enable : ActiveType.Disable;
-            await UpdateAsync(old);
-        }
-
-        public async Task UpdatePriceOuterBound(int id, int priceOuterBound)
-        {
-            var old = await SingleAsync(id);
-            old.PriceOuterBound = priceOuterBound;
+            old.TakeoutPrice = takeoutPrice;
             await UpdateAsync(old);
         }
 
@@ -59,6 +52,13 @@ namespace Demo.Service
         {
             var old = await SingleAsync(id);
             old.ActiveType = old.ActiveType == ActiveType.Enable ? old.ActiveType = ActiveType.Disable : old.ActiveType = ActiveType.Enable;
+            await UpdateAsync(old);
+        }
+
+        public async Task ToggleStatusAsync(int id)
+        {
+            var old = await SingleAsync(id);
+            old.ActiveType = old.ActiveType == ActiveType.Enable ? ActiveType.Disable : ActiveType.Enable;
             await UpdateAsync(old);
         }
 

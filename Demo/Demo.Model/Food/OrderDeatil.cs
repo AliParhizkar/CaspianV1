@@ -11,10 +11,7 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// کد سفارش
-        /// </summary>
-        [DisplayName("سفارش")]
+        [DisplayName("Order")]
         public int OrderId { get; set; }
 
         /// <summary>
@@ -23,30 +20,18 @@ namespace Demo.Model
         [ForeignKey(nameof(OrderId)), ReportField("مشخصات سفارش")]
         public virtual Order Order { get; set; }
 
-        [DisplayName("شرح")]
+        [DisplayName("Descript")]
         public string Descript { get; set; }
 
-        /// <summary>
-        /// کد محصول
-        /// </summary>
         public int ProductId { get; set; }
 
-        /// <summary>
-        /// مشخصات محصول
-        /// </summary>
         [ForeignKey(nameof(ProductId)), ReportField("مشخصات محصول")]
         public virtual Product Product { get; set; }
 
-        /// <summary>
-        /// قیمت محصول
-        /// </summary>
-        [DisplayName("قیمت"), ReportField("قیمت")]
+        [DisplayName("Price"), ReportField("قیمت")]
         public int Price { get; set; }
 
-        /// <summary>
-        /// تعداد محصول
-        /// </summary>
-        [DisplayName("تعداد"), ReportField("تعداد")]
+        [DisplayName("Count"), ReportField("تعداد")]
         public int Count { get; set; }
     }
 }

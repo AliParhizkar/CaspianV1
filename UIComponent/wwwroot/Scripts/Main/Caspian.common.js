@@ -26,8 +26,6 @@ function moverItem() {
             });
         },
 
-
-
         enableAutoHide: function (dotnet) {
             $.telerik.autoHidedotnetObject = dotnet;
             $('body').unbind('mousedown.autoHidedotnetObject');
@@ -170,8 +168,12 @@ function moverItem() {
             const resizeObserver = new ResizeObserver(entries => {
                 for (let entry of entries) {
                     if (entry.contentBoxSize && entry.contentBoxSize[0]) {
-                        if ($(grv).find('.t-grid-content').height() < $(grv).find('.t-grid-content table').height())
-                            $(grv).find('.t-grid-header').css('padding-left', 11);
+                        if ($(grv).find('.t-grid-content').height() < $(grv).find('.t-grid-content table').height()) {
+                            if ($('body').hasClass('t-rtl'))
+                                $(grv).find('.t-grid-header').css('padding-left', 11);
+                            else
+                                $(grv).find('.t-grid-header').css('padding-right', 11);
+                        }
                         else
                             $(grv).find('.t-grid-header').css('padding-left', 0);
                     }
@@ -635,6 +637,18 @@ function moverItem() {
                     });
                     break;
             }
+        },
+
+        blockManagement: function (flag) {
+            console.log(flag)
+        },
+
+        blockUI: function () {
+            $.blockUI({ message: '<img src="/Content/loading_big.gif" />', css: { backgroundColor: 'transparent', border: '1px none transparent' } });
+        },
+
+        unblockUI: function () {
+            $.unblockUI();
         },
     }
 })(jQuery);
@@ -2534,7 +2548,7 @@ function moverItem() {
         function create() {
             var odv = $('<div class="t-widget t-message" id="outMessage"></div>');
             $("body").append(odv);
-            $("#outMessage").html('<div class="t-window-titlebar">&nbsp;<div class="t-window-action"><span class="t-close"><i class="fa fa-close"></i></span><span class="t-title"></span></div></div><div style="padding:5px 5px 5px 5px;text-align:justify"></div>');
+            $("#outMessage").html('<div class="t-window-titlebar"><span class="t-title"></span><span class="t-close"><i class="fa fa-close"></i></span></div><div style="padding:5px 5px 5px 5px;text-align:justify"></div>');
             $("#outMessage .t-close").click(function () {
                 hide();
             });
@@ -2547,6 +2561,7 @@ function moverItem() {
             });
         };
         this.show = function (msg) {
+            let isltr = $('body').hasClass('t-rtl');
             if (typeof msg == 'string') {
                 try {
                     msg = eval('(' + msg + ')');
@@ -2555,7 +2570,7 @@ function moverItem() {
                 }
                 catch (ex) {
                     this.message = msg;
-                    this.title = "پیغام";
+                    this.title = isltr ? "پیغام" : "Message";
                 }
             }
             else {
