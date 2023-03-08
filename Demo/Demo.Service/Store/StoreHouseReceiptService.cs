@@ -7,9 +7,9 @@ using System.Linq;
 
 namespace Demo.Service
 {
-    public class StoreHouseReceiptService : SimpleService<StoreHouseReceipt>, ISimpleService<StoreHouseReceipt>
+    public class WareHouseReceiptService : SimpleService<WarehouseReceipt>, ISimpleService<WarehouseReceipt>
     {
-        public StoreHouseReceiptService(IServiceProvider provider)
+        public WareHouseReceiptService(IServiceProvider provider)
             : base(provider)
         {
             RuleFor(t => t.Date).CustomValue(t => t == null, "تاریخ حواله باید مشخص باشد")

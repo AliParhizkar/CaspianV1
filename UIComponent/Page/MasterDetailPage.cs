@@ -126,7 +126,7 @@ namespace Caspian.UI
             Grid.ClearSource();
             UpsertData = Activator.CreateInstance<TMaster>();
             await OnMasterEntityCreatedAsync();
-            ShowMessage("ثبت با موفقیت انجام شد");
+            ShowMessage("Registration was done successfully");
         }
     }
 }

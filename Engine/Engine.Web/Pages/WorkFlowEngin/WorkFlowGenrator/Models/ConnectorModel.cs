@@ -3,6 +3,7 @@ using Caspian.Engine;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Main.Models
 {
@@ -117,10 +118,10 @@ namespace Main.Models
 
     public enum ConnectorType
     {
-        [EnumField("کاربری")]
+        [Display(Name = "کاربری")]
         UserDefined = 1,
 
-        [EnumField("سیستمی")]
+        [Display(Name = "سیستمی")]
         Systemic
     }
 }

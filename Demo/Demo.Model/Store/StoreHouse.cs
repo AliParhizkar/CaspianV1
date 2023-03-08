@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Demo.Model
 {
     [Table("StoreHouses", Schema = "demo")]
-    public class StoreHouse
+    public class Warehouse
     {
         [Key]
         public int Id { get; set; }
@@ -18,6 +18,6 @@ namespace Demo.Model
         /// رسیدهای انبار
         /// </summary>
         [CheckOnDelete("برای انبار رسید صادر شده و امکان حذف آن وجود ندارد")]
-        public virtual ICollection<StoreHouseReceipt> StoreHouseReceipt { get; set; }
+        public virtual ICollection<WarehouseReceipt> WarehouseReceipt { get; set; }
     }
 }

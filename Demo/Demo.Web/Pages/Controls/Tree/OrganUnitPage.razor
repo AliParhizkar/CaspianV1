@@ -32,7 +32,8 @@
                         <StringTextBox @bind-Value="@organSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
                     </div>
                     <div class="col-md-12">
-                        <CTreeView @ref="tree" TEntity="OrganUnit" style="height:calc(100vh - 230px)" TextFunc="t => t.Title" ParentNodeFilterFunc="t => t.ParentOrganId == null" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
+                        <CTreeView @ref="tree" TEntity="OrganUnit" style="height:calc(100vh - 230px)"
+                            TextFunc="t => t.Title" ParentNodeFilterFunc="t => t.ParentOrganId == null" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
                             <Template>
                                 <TreeNodeTemplate Levels="new byte[]{1, 2, 3, 4, 5, 6}">
                                     <span class="d-tree-icon">

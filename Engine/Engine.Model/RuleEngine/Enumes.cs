@@ -1,4 +1,5 @@
 ﻿using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Engine
 {
@@ -61,7 +62,7 @@ namespace Caspian.Engine
         /// <summary>
         /// دراینصورت
         /// </summary>
-        [EnumField("عملگر شرطی اگر ")]
+        [Display(Name = "عملگر شرطی اگر ")]
         QuestionMark = 1,
         
         /// <summary>
@@ -77,73 +78,73 @@ namespace Caspian.Engine
         /// <summary>
         /// بزرگتر از
         /// </summary>
-        [EnumField("بزرگتر از")]
+        [Display(Name = "بزرگتر از")]
         BT,
 
         /// <summary>
         /// بزرگتر مساوی با
         /// </summary>
-        [EnumField("بزرگتر مساوی با")]
+        [Display(Name = "بزرگتر مساوی با")]
         BTE,
         
         /// <summary>
         /// کوچکتر از
         /// </summary>
-        [EnumField("کوچکتر از")]
+        [Display(Name = "کوچکتر از")]
         LT = 6,
         
         /// <summary>
         /// کوچکتر مساوی با
         /// </summary>
-        [EnumField("کوچکتر مساوی با")]
+        [Display(Name = "کوچکتر مساوی با")]
         LTE,
 
         /// <summary>
         /// مساوی با
         /// </summary>
-        [EnumField("مساوی با")]
+        [Display(Name = "مساوی با")]
         Equ = 8,
         
         /// <summary>
         /// مخالف(نامساوی با)
         /// </summary>
-        [EnumField("مخالف(نامساوی با)")]
+        [Display(Name = "مخالف(نامساوی با)")]
         NotEqu,
 
         /// <summary>
         /// یای منطقی
         /// </summary>
-        [EnumField("یای منطقی")]
+        [Display(Name = "یای منطقی")]
         Or,
 
         /// <summary>
         /// وی منطقی
         /// </summary>
-        [EnumField("وی منطقی")]
+        [Display(Name = "وی منطقی")]
         And = 11,
         
         /// <summary>
         /// عملگر ریاضی جمع
         /// </summary>
-        [EnumField("جمع")]
+        [Display(Name = "جمع")]
         Plus,
         
         /// <summary>
         /// عملگر ریاضی تفریق
         /// </summary>
-        [EnumField("تفریق")]
+        [Display(Name = "تفریق")]
         Minus = 13,
         
         /// <summary>
         /// عملگر ریاضی ضرب
         /// </summary>
-        [EnumField("ضرب")]
+        [Display(Name = "ضرب")]
         Stra,
         
         /// <summary>
         /// عملگر ریاضی تقسیم
         /// </summary>
-        [EnumField("تقسیم")]
+        [Display(Name = "تقسیم")]
         Slash,
         
         /// <summary>
@@ -206,10 +207,10 @@ namespace Caspian.Engine
 
     public enum ImplementType: byte
     {
-        [EnumField("فرمول")]
+        [Display(Name = "فرمول")]
         Rule = 1,
 
-        [EnumField("فرم")]
+        [Display(Name = "فرم")]
         Form
     }
 
@@ -218,25 +219,25 @@ namespace Caspian.Engine
         /// <summary>
         /// عدد صحیح
         /// </summary>
-        [EnumField("عدد صحیح")]
+        [Display(Name = "عدد صحیح")]
         Int = 1,
 
-        [EnumField("اعداد اعشاری")]
+        [Display(Name = "اعداد اعشاری")]
         Double = 2,
 
-        [EnumField("تاریخ")]
+        [Display(Name = "تاریخ")]
         Date = 4,
 
-        [EnumField("بولین")]
+        [Display(Name = "بولین")]
         Bool = 16,
 
-        [EnumField("نوع شمارشی")]
+        [Display(Name = "نوع شمارشی")]
         Enum = 32,
 
-        [EnumField("زمان")]
+        [Display(Name = "زمان")]
         Time = 64,
 
-        [EnumField("رشته ای")]
+        [Display(Name = "رشته ای")]
         String = 128
     }
 
@@ -248,19 +249,19 @@ namespace Caspian.Engine
         /// <summary>
         /// پارامتر اصلی
         /// </summary>
-        [EnumField("پارامتر اصلی")]
+        [Display(Name = "پارامتر اصلی")]
         MainParameter = 1,
 
         /// <summary>
         /// پارامتر پویا
         /// </summary>
-        [EnumField("پارامتر پویا")]
+        [Display(Name = "پارامتر پویا")]
         DaynamicParameter,
 
         /// <summary>
         /// قانون
         /// </summary>
-        [EnumField("قانون")]
+        [Display(Name = "قانون")]
         RuleParameter
     }
 }

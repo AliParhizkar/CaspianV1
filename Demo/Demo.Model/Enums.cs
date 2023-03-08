@@ -1,4 +1,5 @@
 ﻿using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Demo.Model
 {
@@ -10,13 +11,13 @@ namespace Demo.Model
         /// <summary>
         /// حقیقی
         /// </summary>
-        [EnumField("حقیقی")]
+        [Display(Name = "حقیقی")]
         Real = 1,
 
         /// <summary>
         /// حقوقی
         /// </summary>
-        [EnumField("حقوقی")]
+        [Display(Name = "حقوقی")]
         Legal
     }
 
@@ -28,13 +29,13 @@ namespace Demo.Model
         /// <summary>
         /// مرد
         /// </summary>
-        [EnumField("مرد")]
+        [Display(Name = "مرد")]
         Male = 1,
 
         /// <summary>
         /// زن
         /// </summary>
-        [EnumField("زن")]
+        [Display(Name = "زن")]
         Female
     }
 
@@ -46,13 +47,13 @@ namespace Demo.Model
         /// <summary>
         /// فعال
         /// </summary>
-        [EnumField("فعال")]
+        [Display(Name = "فعال")]
         Enable = 1,
 
         /// <summary>
         /// غیرفعال
         /// </summary>
-        [EnumField("غیرفعال")]
+        [Display(Name = "غیرفعال")]
         Disable
     }
 
@@ -64,25 +65,25 @@ namespace Demo.Model
         /// <summary>
         /// سالن
         /// </summary>
-        [EnumField("سالن")]
+        [Display(Name = "سالن")]
         Salon = 1,
 
         /// <summary>
         /// بیرون بر
         /// </summary>
-        [EnumField("بیرون بر")]
+        [Display(Name = "بیرون بر")]
         Package,
 
         /// <summary>
         /// تلفنی
         /// </summary>
-        [EnumField("تلفنی")]
+        [Display(Name = "تلفنی")]
         Tel,
 
         /// <summary>
         /// اینترنتی
         /// </summary>
-        [EnumField("اینترنتی")]
+        [Display(Name = "اینترنتی")]
         Internet
     }
 
@@ -94,13 +95,13 @@ namespace Demo.Model
         /// <summary>
         /// لغو
         /// </summary>
-        [EnumField("لغو")]
+        [Display(Name = "لغو")]
         Canceled = 1,
 
         /// <summary>
         /// نهایی
         /// </summary>
-        [EnumField("نهایی")]
+        [Display(Name = "نهایی")]
         Finaled
     }
 
@@ -112,25 +113,25 @@ namespace Demo.Model
         /// <summary>
         /// سالن
         /// </summary>
-        [EnumField("سالن")]
+        [Display(Name = "سالن")]
         Salo = 1,
 
         /// <summary>
         /// بیرون بر
         /// </summary>
-        [EnumField("بیرون بر")]
+        [Display(Name = "بیرون بر")]
         Package = 2,
 
         /// <summary>
         /// تلفنی
         /// </summary>
-        [EnumField("تلفنی")]
+        [Display(Name = "تلفنی")]
         Tel = 4,
 
         /// <summary>
         /// اینترنتی
         /// </summary>
-        [EnumField("اینترنتی")]
+        [Display(Name = "اینترنتی")]
         Internet = 8
     }
 
@@ -139,19 +140,19 @@ namespace Demo.Model
         /// <summary>
         /// صبحانه
         /// </summary>
-        [EnumField("صبحانه")]
+        [Display(Name = "صبحانه")]
         Breakfast = 1,
 
         /// <summary>
         /// نهار
         /// </summary>
-        [EnumField("نهار")]
+        [Display(Name = "نهار")]
         Lunch = 2,
 
         /// <summary>
         /// شام
         /// </summary>
-        [EnumField("شام")]
+        [Display(Name = "شام")]
         Dinner = 4,
     }
 }

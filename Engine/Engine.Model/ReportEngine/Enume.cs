@@ -1,4 +1,5 @@
 ﻿using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Engine
 {
@@ -10,13 +11,13 @@ namespace Caspian.Engine
         /// <summary>
         /// سطح1
         /// </summary>
-        [EnumField("سطح1")]
+        [Display(Name = "سطح1")]
         Level1 = 1,
 
         /// <summary>
         /// سطح1و2
         /// </summary>
-        [EnumField("سطح1و2")]
+        [Display(Name = "سطح1و2")]
         Level1_2
     }
 
@@ -48,19 +49,19 @@ namespace Caspian.Engine
 
     public enum CompositionMethodType: byte
     {
-        [EnumField("تعداد")]
+        [Display(Name = "تعداد")]
         Count= 1,
 
-        [EnumField("مینیمم")]
+        [Display(Name = "مینیمم")]
         Min,
 
-        [EnumField("ماکزیمم")]
+        [Display(Name = "ماکزیمم")]
         Max,
 
-        [EnumField("مجموع")]
+        [Display(Name = "مجموع")]
         Sum,
 
-        [EnumField("میانگین")]
+        [Display(Name = "میانگین")]
         Avg
     }
 

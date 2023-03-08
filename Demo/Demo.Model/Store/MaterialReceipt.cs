@@ -12,31 +12,19 @@ namespace Demo.Model
 
         public int ReceiptId { get; set; }
 
-        [DisplayName("محصول")]
+        [DisplayName("Materia")]
         public int MaterialId { get; set; }
 
-        /// <summary>
-        /// مشخصات حواله
-        /// </summary>
         [ForeignKey(nameof(ReceiptId))]
-        public virtual StoreHouseReceipt Receipt { get; set; }
+        public virtual WarehouseReceipt Receipt { get; set; }
 
-        /// <summary>
-        /// مشخصات محصول
-        /// </summary>
         [ForeignKey(nameof(MaterialId))]
         public virtual Material Material { get; set; }
 
-        /// <summary>
-        /// واحد اصلی
-        /// </summary>
-        [DisplayName("واحد اصلی")]
+        [DisplayName("Quantity-main")]
         public int QuantityMain { get; set; }
 
-        /// <summary>
-        /// واحد فرعی
-        /// </summary>
-        [DisplayName("واحد فرعی")]
+        [DisplayName("Quantity-sub")]
         public int? QuantitySub { get; set; }
     }
 }

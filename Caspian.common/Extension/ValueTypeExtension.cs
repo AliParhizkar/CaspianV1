@@ -2,6 +2,7 @@
 using System.Globalization;
 using Caspian.Common.Extension;
 using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Common
 {
@@ -139,9 +140,9 @@ namespace Caspian.Common
             var enumes = new Dictionary<TValue, string>();
             foreach (FieldInfo fi in currentEnum.GetType().GetFields().Where(t => !t.IsSpecialName))
             {
-                EnumFieldAttribute da = (EnumFieldAttribute)Attribute.GetCustomAttribute(fi, typeof(EnumFieldAttribute));
+                var da = fi.GetCustomAttribute<DisplayAttribute>();
                 if (da != null)
-                    enumes.Add((TValue)fi.GetValue(currentEnum), da.DisplayName);
+                    enumes.Add((TValue)fi.GetValue(currentEnum), da.Name);
                 else
                     enumes.Add((TValue)fi.GetValue(currentEnum), fi.Name);
             }
@@ -167,15 +168,15 @@ namespace Caspian.Common
 
         public static string FaText(this Enum field)
         {
-            EnumFieldAttribute da;
+            DisplayAttribute da;
             if (field == null)
                 return null;
             var fi = field.GetType().GetField(field.ToString());
             if (fi == null)
                 throw new Exception("هیچ فیلدی برای " + field.GetType().Name + " با مقدار " + field + " تعریف نشده است.");
-            da = (EnumFieldAttribute)Attribute.GetCustomAttribute(fi, typeof(EnumFieldAttribute));
+            da = fi.GetCustomAttribute<DisplayAttribute>();
             if (da != null)
-                return da.DisplayName;
+                return da.Name;
             return Convert.ToString(field);
         }
 
@@ -184,9 +185,9 @@ namespace Caspian.Common
             Dictionary<string, string> enumes = new Dictionary<string, string>();
             foreach (FieldInfo fi in currentEnum.GetType().GetFields().Where(t => !t.IsSpecialName))
             {
-                var da = (EnumFieldAttribute)Attribute.GetCustomAttribute(fi, typeof(EnumFieldAttribute));
+                var da = fi.GetCustomAttribute<DisplayAttribute>();
                 if (da != null)
-                    enumes.Add(da.DisplayName, fi.GetValue(currentEnum).ToString());
+                    enumes.Add(da.Name, fi.GetValue(currentEnum).ToString());
                 else
                     enumes.Add(fi.Name, Convert.ToInt32(fi.GetValue(currentEnum)).ToString());
             }

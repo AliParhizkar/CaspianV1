@@ -1,0 +1,35 @@
+﻿@page "/Demo/Batch/Custom/Master"
+@using Caspian.Common.Extension
+@inject NavigationManager navigationManager
+@inherits BasePage
+@namespace Demo.Web.Pages
+<div class="p-4">
+    <div class="p-3">
+        <CheckBox @bind-Value="onlyThisDay" Title="Only show today orders " OnChange="() => Grid.EnableLoading()" />
+    </div>
+    <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" TableHeight="300"
+              ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
+        <Columns>
+            <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />
+            <GridColumn Field="t => t.OrderType.FaText()" />
+            <GridColumn Field="t => t.OrderNo" Title="Order no" />
+            <GridColumn Field="t => t.Customer.FName + ' ' + t.Customer.LName" Title="Customer" />
+            <GridColumn Field="t => t.Delivery.FName + ' ' + t.Delivery.LName" Title="Delivery" />
+            <GridColumn Field="t => t.OrderStatus.FaText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+
+</div>
+@code
+{
+    bool onlyThisDay = true;
+    DateTime date = DateTime.Now.Date;
+    DataGrid<Order> Grid;
+
+    void UpsertOrder(Order order)
+    {
+        string url = "Demo/Batch/Custom/Details" + (order.Id > 0 ? "/" + order.Id : "");
+        navigationManager.NavigateTo(url);
+    }
+}

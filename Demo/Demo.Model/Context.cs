@@ -26,9 +26,9 @@ namespace Demo.Model
 
         public DbSet<Area> Areas { get; set; }
 
-        public DbSet<StoreHouse> StoreHouses { get; set; }
+        public DbSet<Warehouse> Warehouses { get; set; }
 
-        public DbSet<StoreHouseReceipt> Receipts { get; set; }
+        public DbSet<WarehouseReceipt> Receipts { get; set; }
 
         public DbSet<MaterialReceipt> ProductReceipts { get; set; }
 

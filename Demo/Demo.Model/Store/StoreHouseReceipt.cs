@@ -8,8 +8,8 @@ namespace Demo.Model
     /// <summary>
     /// رسید انبار
     /// </summary>
-    [Table("StoreHouseReceipt", Schema = "demo")]
-    public class StoreHouseReceipt
+    [Table("WarehouseReceipt", Schema = "demo")]
+    public class WarehouseReceipt
     {
         [Key]
         public int Id { get; set; }
@@ -19,10 +19,10 @@ namespace Demo.Model
         /// </summary>
         public DateTime? Date { get; set; }
 
-        public int StoreHouseId { get; set; }
+        public int WarehouseId { get; set; }
 
-        [ForeignKey(nameof(StoreHouseId))]
-        public virtual StoreHouse StoreHouse { get; set; }
+        [ForeignKey(nameof(WarehouseId))]
+        public virtual Warehouse Warehouse { get; set; }
 
         public string Comment { get; set; }
 

@@ -1,4 +1,4 @@
-﻿using Caspian.Common.Attributes;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Common
 {
@@ -10,13 +10,13 @@ namespace Caspian.Common
         /// <summary>
         /// صعودی
         /// </summary>
-        [EnumField("صعودی")]
+        [Display(Name = "صعودی")]
         Asc = 1,
 
         /// <summary>
         /// نزولی
         /// </summary>
-        [EnumField("نزولی")]
+        [Display(Name = "نزولی")]
         Decs = 2
     }
 }

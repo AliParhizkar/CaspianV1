@@ -6,9 +6,9 @@ using System;
 
 namespace Demo.Service
 {
-    public class StoreHouseService : SimpleService<StoreHouse>, ISimpleService<StoreHouse>
+    public class WareHouseService : SimpleService<Warehouse>, ISimpleService<Warehouse>
     {
-        public StoreHouseService(IServiceProvider provider)
+        public WareHouseService(IServiceProvider provider)
             : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("انباری با این عنوان در سیستم تعریف شده است.");

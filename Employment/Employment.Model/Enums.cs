@@ -1,4 +1,5 @@
 ﻿using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Employment.Model
 {
@@ -8,19 +9,19 @@ namespace Employment.Model
     [EnumType("رتبه")]
     public enum BaseType : byte
     {
-        [EnumField("مقدماتی")]
+        [Display(Name = "مقدماتی")]
         Preliminary = 1,
 
-        [EnumField("مهارتی")]
+        [Display(Name = "مهارتی")]
         Skills,
 
-        [EnumField("رتبه 3")]
+        [Display(Name = "رتبه 3")]
         Rank3,
 
-        [EnumField("رتبه 2")]
+        [Display(Name = "رتبه 2")]
         Rank2,
 
-        [EnumField("رتبه 1")]
+        [Display(Name = "رتبه 1")]
         Rank1
     }
 
@@ -30,37 +31,37 @@ namespace Employment.Model
         /// <summary>
         /// زیردیپلم
         /// </summary>
-        [EnumField("زیردیپلم")]
+        [Display(Name = "زیردیپلم")]
         Highschool = 1,
 
         /// <summary>
         /// دیپلم
         /// </summary>
-        [EnumField("دیپلم")]
+        [Display(Name = "دیپلم")]
         Diploma,
 
         /// <summary>
         /// فوق دیپلم
         /// </summary>
-        [EnumField("فوق دیپلم")]
+        [Display(Name = "فوق دیپلم")]
         AssociateDegree,
 
         /// <summary>
         /// لیسانس
         /// </summary>
-        [EnumField("لیسانس")]
+        [Display(Name = "لیسانس")]
         Bachelor,
 
         /// <summary>
         /// فوق لیسانس
         /// </summary>
-        [EnumField("فوق لیسانس")]
+        [Display(Name = "فوق لیسانس")]
         Master,
 
         /// <summary>
         /// دکترا
         /// </summary>
-        [EnumField("دکترا")]
+        [Display(Name = "دکترا")]
         PHD
     }
 
@@ -73,13 +74,13 @@ namespace Employment.Model
         /// <summary>
         /// مرد
         /// </summary>
-        [EnumField("مرد")]
+        [Display(Name = "مرد")]
         Male,
 
         /// <summary>
         /// زن
         /// </summary>
-        [EnumField("زن")]
+        [Display(Name = "زن")]
         Female
     }
 
@@ -89,13 +90,13 @@ namespace Employment.Model
         /// <summary>
         /// فعال
         /// </summary>
-        [EnumField("فعال")]
+        [Display(Name = "فعال")]
         Enable = 1,
 
         /// <summary>
         /// غیرفعال
         /// </summary>
-        [EnumField("غیرفعال")]
+        [Display(Name = "غیرفعال")]
         Disable
     }
 

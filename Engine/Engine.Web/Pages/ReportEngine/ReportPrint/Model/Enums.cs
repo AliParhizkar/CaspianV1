@@ -1,4 +1,5 @@
 ﻿using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace ReportUiModels
 {
@@ -56,26 +57,26 @@ namespace ReportUiModels
         /// <summary>
         /// همه ی صفحات
         /// </summary>
-        [EnumField("همه ی صفحات")]
+        [Display(Name = "همه ی صفحات")]
         AllPages = 1,
 
         /// <summary>
         /// بجز صفحه ی اول
         /// </summary>
-        [EnumField("بجز صفحه ی اول")]
+        [Display(Name = "بجز صفحه ی اول")]
         ExceptFirstPage,
 
         /// <summary>
         /// بجز صفحه ی آخر
         /// </summary>
 
-        [EnumField("بجز صفحه ی آخر")]
+        [Display(Name = "بجز صفحه ی آخر")]
         ExceptLastPage,
 
         /// <summary>
         /// بجز صفحه ی اول و آخر
         /// </summary>
-        [EnumField("بجز صفحه ی اول و آخر")]
+        [Display(Name = "بجز صفحه ی اول و آخر")]
         ExceptFirstAndLastPage
     }
 
@@ -93,13 +94,13 @@ namespace ReportUiModels
         /// <summary>
         /// ,
         /// </summary>
-        [EnumField(",")]
+        [Display(Name = ",")]
         Camma = 1,
 
         /// <summary>
         /// ،
         /// </summary>
-        [EnumField(".")]
+        [Display(Name = ".")]
         Dot,
     }
 
@@ -111,13 +112,13 @@ namespace ReportUiModels
         /// <summary>
         /// .
         /// </summary>
-        [EnumField(".")]
+        [Display(Name = ".")]
         Dot = 1,
 
         /// <summary>
         /// /
         /// </summary>
-        [EnumField("/")]
+        [Display(Name = "/")]
         Slash
     }
 
@@ -126,25 +127,25 @@ namespace ReportUiModels
         /// <summary>
         /// شماره ردیف
         /// </summary>
-        [EnumField("شماره ردیف")]
+        [Display(Name = "شماره ردیف")]
         Line = 1,
 
         /// <summary>
         /// شماره صفحه
         /// </summary>
-        [EnumField("شماره صفحه")]
+        [Display(Name = "شماره صفحه")]
         PageNumber,
 
         /// <summary>
         /// شماره ی صفحه از کل
         /// </summary>
-        [EnumField("شماره صفحه از کل")]
+        [Display(Name = "شماره صفحه از کل")]
         PageNofM,
 
         /// <summary>
         /// تعداد کل صفحات
         /// </summary>
-        [EnumField("تعداد کل صفحات")]
+        [Display(Name = "تعداد کل صفحات")]
         TotalPageCount
     }
 
@@ -156,37 +157,37 @@ namespace ReportUiModels
         /// <summary>
         /// تاریخ جاری سیستم
         /// </summary>
-        [EnumField("تاریخ جاری")]
+        [Display(Name = "تاریخ جاری")]
         Date = 1,
 
         /// <summary>
         /// نام کاربرجاری
         /// </summary>
-        [EnumField("نام کاربر")]
+        [Display(Name = "نام کاربر")]
         FName,
 
         /// <summary>
         /// نام خانوادگی کاربرجاری
         /// </summary>
-        [EnumField("نام خانوادگی کاربر")]
+        [Display(Name = "نام خانوادگی کاربر")]
         LName,
 
         /// <summary>
         /// نام نام خانوادگی کاربر جاری
         /// </summary>
-        [EnumField("نام و نام خانوادگی کاربر")]
+        [Display(Name = "نام و نام خانوادگی کاربر")]
         FLName,
 
         /// <summary>
         /// کد کاربری/پرسنلی کاربر جاری
         /// </summary>
-        [EnumField("کد کاربری/پرسنلی کاربر")]
+        [Display(Name = "کد کاربری/پرسنلی کاربر")]
         UserId,
 
         /// <summary>
         /// کد ملی کاربر جاری
         /// </summary>
-        [EnumField("کد ملی کاربر")]
+        [Display(Name = "کد ملی کاربر")]
         NatinalCode
     }
 
@@ -247,31 +248,31 @@ namespace ReportUiModels
         /// <summary>
         /// مجموع
         /// </summary>
-        [EnumField("مجموع")]
+        [Display(Name = "مجموع")]
         Sum,
 
         /// <summary>
         /// میانگین
         /// </summary>
-        [EnumField("میانگین")]
+        [Display(Name = "میانگین")]
         Avg,
 
         /// <summary>
         /// تعداد
         /// </summary>
-        [EnumField("تعداد")]
+        [Display(Name = "تعداد")]
         Count,
 
         /// <summary>
         /// مینیمم
         /// </summary>
-        [EnumField("مینیمم")]
+        [Display(Name = "مینیمم")]
         Min,
 
         /// <summary>
         /// ماکزیمم
         /// </summary>
-        [EnumField("ماکزیمم")]
+        [Display(Name = "ماکزیمم")]
         Max
     }
 
@@ -284,16 +285,16 @@ namespace ReportUiModels
 
     public enum ColumnCountType
     {
-        [EnumField("تک ستونه")]
+        [Display(Name = "تک ستونه")]
         Once = 1,
 
-        [EnumField("دو ستونه")]
+        [Display(Name = "دو ستونه")]
         Tow,
 
-        [EnumField("سه ستونه")]
+        [Display(Name = "سه ستونه")]
         Tree,
 
-        [EnumField("چهار ستونه")]
+        [Display(Name = "چهار ستونه")]
         Four
     }
 

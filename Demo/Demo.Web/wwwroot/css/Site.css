@@ -77,10 +77,7 @@
 }
 .fa-first-order {
     color: #007bff!important;
-    position: absolute;
-    top: 38px;
-    padding-right: 267px;
-    font-size: 34px!important;
+    font-size: 32px!important;
     cursor:pointer;
 }
 
@@ -176,6 +173,7 @@
     text-align: -webkit-right!important;
 }
 
+a::
 .d-membership {
     text-align: center;
     color: #4f9995;
@@ -188,4 +186,14 @@
 }
 .d-btn-container button{
     margin:5px 0;
+}
+.c-icon-button.c-simple{
+    width:33px!important;
+    height:33px!important;
+}
+.c-icon-button .fa-minus{
+    padding-top:0!important;
+}
+.c-icon-button .fa-plus{
+    padding-top:0!important;
 }

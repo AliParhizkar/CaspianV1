@@ -1,0 +1,140 @@
+﻿@page "/Demo/Batch/Inline/Details"
+@page "/Demo/Batch/Inline/Details/{MasterId:int}"
+@namespace Demo.Web.Pages
+@inherits MasterDetailPage<WarehouseReceipt, MaterialReceipt>
+<div class="row p-3">
+    <div class="col-md-4 ps-3 pe-3">
+        <div class="row align-items-baseline">
+            <div class="col-md-2 text-center">
+                <a href="/Demo/Batch/Inline/Master">
+                    <span class="fa fa-first-order"></span>
+                </a>
+            </div>
+            <div class="col-md-10 text-center">
+                <h7 class="d-membership">Material receipt</h7>
+            </div>
+        </div>
+        <hr />
+        <CaspianForm @ref="MasterForm" Model="UpsertData">
+            <CaspianValidationValidator ValidatorType="typeof(WareHouseReceiptService)" />
+            <div class="row c-controls ps-3 pe-3">
+                <div class="col-md-4">
+                    <label>Receipt date</label>
+                </div>
+                <div class="col-md-8">
+                    <DatePicker @bind-Value="UpsertData.Date" />
+                </div>
+                <div class="col-md-4">
+                    <label>Warehouse</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TValue="int" TEntity="Warehouse" @bind-Value="UpsertData.WarehouseId" TextExpression="t => t.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>Description</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Comment" MultiLine Rows="3" />
+                </div>
+                <div class="col-md-12">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </div>
+    <div class="col-md-8 ps-3 text-center">
+        <div class="row align-items-baseline">
+            <div class="col-md-8">
+                <h7 class="d-membership">Materials receipt</h7>
+            </div>
+            <div class="col-md-4 d-source-btn">
+                <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+                    Source
+                    <i class="fa fa-code"></i>
+                </button>
+            </div>
+        </div>
+        <hr />
+        <DataGrid @ref="Grid" TEntity="MaterialReceipt" TableHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
+            <Columns Context="con">
+                <GridColumn Field="t => t.Material.Title" Title="Material" >
+                    <EditTemplate>
+                        <AutoComplete TValue="int" TEntity="Material" @bind-Value="con.Data.MaterialId" HideHeader AutoHide
+                                      TextExpression="t => t.Title" Title="Material"
+                                      OnChange="async () => await UpdateMaterialReceipt(con.Data.MaterialId, con.Data)">
+                            <MaterialLookupPage TValue="int" />
+                        </AutoComplete>
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field="t => t.QuantityMain" style="width:110px;">
+                    <EditTemplate>
+                        <NumericTextBox @ref="txtMainUnit" @onkeyup="async e =>  await MainUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantityMain" />
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field="t => t.Material.MainUnit.Title" Title="Main unit" style="width:80px">
+                    <Template>
+                        <span>@(con.Data?.Material?.MainUnit?.Title)</span>
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="t => t.QuantitySub" style="width:110px;">
+                    <EditTemplate>
+                        @if (con.Data?.Material?.SubunitId != null)
+                        {
+                                <NumericTextBox @ref="txtSubunit" @onkeyup="async e =>  await SubUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantitySub" />
+                        }
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field="t => t.Material.Subunit.Title" Title="Sub unit" style="width:80px">
+                    <Template>
+                        <span>@(con.Data?.Material?.Subunit?.Title)</span>
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="t => t.Material.SubunitId" Title="" style="display:none;width:0" />
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+
+    </div>
+</div>
+
+@code
+{
+    WindowStatus status;
+    NumericTextBox<int> txtMainUnit;
+    NumericTextBox<int?> txtSubunit;
+    protected override Task OnMasterEntityCreatedAsync()
+    {
+        if (UpsertData.Id == 0)
+            UpsertData.Date = DateTime.Now.Date;
+        return base.OnMasterEntityCreatedAsync();
+    }
+
+    async Task MainUnitChanged(KeyboardEventArgs e, MaterialReceipt receipt, UpsertMode mode)
+    {
+        if (e.Key == "Enter" || e.Key == "NumpadEnter")
+        {
+            if (receipt?.Material.SubunitId != null)
+                await txtSubunit.FocusAsync();
+            else
+                await Grid.ValidateAndUpsert(mode);
+        }
+    }
+
+    async Task SubUnitChanged(KeyboardEventArgs e, MaterialReceipt receipt, UpsertMode mode)
+    {
+        if (e.Key == "Enter" || e.Key == "NumpadEnter")
+            await Grid.ValidateAndUpsert(mode);
+    }
+
+    async Task UpdateMaterialReceipt(int materialId, MaterialReceipt materialReceipt)
+    {
+        if (materialId > 0)
+        {
+            using var scope = CreateScope();
+            materialReceipt.Material = await new MaterialService(scope.ServiceProvider).GetAll().Where(t => t.Id == materialId)
+                .Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync();
+            await txtMainUnit.FocusAsync();
+
+        }
+    }
+}

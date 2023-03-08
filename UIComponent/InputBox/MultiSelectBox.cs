@@ -4,10 +4,11 @@ using Caspian.Common;
 using Newtonsoft.Json;
 using System.Reflection;
 using Microsoft.JSInterop;
+using System.ComponentModel;
 using System.Threading.Tasks;
-using Caspian.Common.Attributes;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.UI
 {
@@ -42,8 +43,8 @@ namespace Caspian.UI
                 var value = field.GetValue(null);
                 if (Convert.ToInt64(value) != Math.Pow(2, index))
                     throw new CaspianException("In type " + typeof(TValue).Name + " field " + field.Name + " value is invalid");
-                var attr = field.GetCustomAttribute<EnumFieldAttribute>();
-                var title = attr == null ? field.Name : attr.DisplayName;
+                var attr = field.GetCustomAttribute<DisplayAttribute>();
+                var title = attr == null ? field.Name : attr.Name;
                 Items.Add((TValue)value, title);
                 index++;
             }

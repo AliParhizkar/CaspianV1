@@ -3,6 +3,7 @@ using System.Globalization;
 using Caspian.Common.Extension;
 using System.ComponentModel.DataAnnotations.Schema;
 using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Common
 {
@@ -491,43 +492,43 @@ namespace Caspian.Common
         /// <summary>
         /// شنبه
         /// </summary>
-        [EnumField("شنبه")]
+        [Display(Name = "شنبه")]
         Sat = 1,
         
         /// <summary>
         /// یکشنبه
         /// </summary>
-        [EnumField("یکشنبه")]
+        [Display(Name = "یکشنبه")]
         Sun,
         
         /// <summary>
         /// دوشنبه
         /// </summary>
-        [EnumField("دوشنبه")]
+        [Display(Name = "دوشنبه")]
         Mon,
         
         /// <summary>
         /// سه شنبه
         /// </summary>
-        [EnumField("سه شنبه")]
+        [Display(Name = "سه شنبه")]
         Tus,
 
         /// <summary>
         /// چهارشنبه
         /// </summary>
-        [EnumField("چهارشنبه")]
+        [Display(Name = "چهارشنبه")]
         Wed,
 
         /// <summary>
         /// پنجشنبه
         /// </summary>
-        [EnumField("پنجشنبه")]
+        [Display(Name = "پنجشنبه")]
         Teh,
 
         /// <summary>
         /// جمعه
         /// </summary>
-        [EnumField("جمعه")]
+        [Display(Name = "جمعه")]
         Fri
     }
 
@@ -539,73 +540,73 @@ namespace Caspian.Common
         /// <summary>
         /// فروردین
         /// </summary>
-        [EnumField("فروردین")]
+        [Display(Name = "فروردین")]
         Farvardin = 1,
 
         /// <summary>
         /// اردیبهشت
         /// </summary>
-        [EnumField("اردیبهشت")]
+        [Display(Name = "اردیبهشت")]
         Ordibehesht,
 
         /// <summary>
         /// خرداد
         /// </summary>
-        [EnumField("خرداد")]
+        [Display(Name = "خرداد")]
         Khordad,
 
         /// <summary>
         /// تیر
         /// </summary>
-        [EnumField("تیر")]
+        [Display(Name = "تیر")]
         Tear,
 
         /// <summary>
         /// مرداد
         /// </summary>
-        [EnumField("مرداد")]
+        [Display(Name = "مرداد")]
         Mordad,
 
         /// <summary>
         /// شهریور
         /// </summary>
-        [EnumField("شهریور")]
+        [Display(Name = "شهریور")]
         Shahrivar,
 
         /// <summary>
         /// مهر
         /// </summary>
-        [EnumField("مهر")]
+        [Display(Name = "مهر")]
         Mehr,
 
         /// <summary>
         /// آبان
         /// </summary>
-        [EnumField("آبان")]
+        [Display(Name = "آبان")]
         Aban,
 
         /// <summary>
         /// آذر
         /// </summary>
-        [EnumField("آذر")]
+        [Display(Name = "آذر")]
         Azar,
 
         /// <summary>
         /// دی
         /// </summary>
-        [EnumField("دی")]
+        [Display(Name = "دی")]
         Day,
 
         /// <summary>
         /// بهمن
         /// </summary>
-        [EnumField("بهمن")]
+        [Display(Name = "بهمن")]
         Bahman,
 
         /// <summary>
         /// اسفند
         /// </summary>
-        [EnumField("اسفند")]
+        [Display(Name = "اسفند")]
         Esfand
     }
 
@@ -617,43 +618,43 @@ namespace Caspian.Common
         /// <summary>
         /// شنبه
         /// </summary>
-        [EnumField("شنبه")]
+        [Display(Name = "شنبه")]
         Sat = 1,
 
         /// <summary>
         /// یکشنبه
         /// </summary>
-        [EnumField("یکشنبه")]
+        [Display(Name = "یکشنبه")]
         Sun = 2,
 
         /// <summary>
         /// دوشنبه
         /// </summary>
-        [EnumField("دوشنبه")]
+        [Display(Name = "دوشنبه")]
         Mon = 4,
 
         /// <summary>
         /// سه شنبه
         /// </summary>
-        [EnumField("سه شنبه")]
+        [Display(Name = "سه شنبه")]
         Tus = 8,
 
         /// <summary>
         /// چهارشنبه
         /// </summary>
-        [EnumField("چهارشنبه")]
+        [Display(Name = "چهارشنبه")]
         Wed = 16,
 
         /// <summary>
         /// پنجشنبه
         /// </summary>
-        [EnumField("پنجشنبه")]
+        [Display(Name = "پنجشنبه")]
         Teh = 32,
 
         /// <summary>
         /// جمعه
         /// </summary>
-        [EnumField("جمعه")]
+        [Display(Name = "جمعه")]
         Fri = 64
     }
 }

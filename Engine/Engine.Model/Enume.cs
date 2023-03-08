@@ -1,25 +1,26 @@
 ﻿using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Engine
 {
     public enum CalculationType: byte
     {
-        [EnumField("کاربر")]
+        [Display( Name = "کاربر")]
         UserData = 1,
 
-        [EnumField("فرم")]
+        [Display(Name = "فرم")]
         FormData
     }
 
     public enum DataParameterType: byte
     {
-        [EnumField("پارامترهای پویا")]
+        [Display(Name = "پارامترهای پویا")]
         DynamicParameters = 1,
 
-        [EnumField("خصوصیت های موجودیت")]
+        [Display(Name = "خصوصیت های موجودیت")]
         EntityProperties,
 
-        [EnumField("قوانین")]
+        [Display(Name = "قوانین")]
         FormRule
     }
 
@@ -28,37 +29,37 @@ namespace Caspian.Engine
         /// <summary>
         /// بزرگتر از
         /// </summary>
-        [EnumField("بزرگتر از")]
+        [Display(Name = "بزرگتر از")]
         GreaterThan = 1,
 
         /// <summary>
         /// بزرگتر مساوی با
         /// </summary>
-        [EnumField("بزرگتر مساوی با")]
+        [Display(Name = "بزرگتر مساوی با")]
         GreaterThanOrEqual,
 
         /// <summary>
         /// کوچکتر از
         /// </summary>
-        [EnumField("کوچکتر از")]
+        [Display(Name = "کوچکتر از")]
         LessThan,
 
         /// <summary>
         /// کوچکتر مساوی با
         /// </summary>
-        [EnumField("کوچکتر مساوی با")]
+        [Display(Name = "کوچکتر مساوی با")]
         LessThanOrEqual,
 
         /// <summary>
         /// برابر با
         /// </summary>
-        [EnumField("برابر با")]
+        [Display(Name = "برابر با")]
         Equal,
 
         /// <summary>
         /// مخالف با
         /// </summary>
-        [EnumField("مخالف با")]
+        [Display(Name = "مخالف با")]
         NotEqual
     }
 

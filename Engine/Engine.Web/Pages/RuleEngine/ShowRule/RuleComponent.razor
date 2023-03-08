@@ -144,7 +144,7 @@
                     {
                         var value1 = Convert.ToInt64(field.GetValue(null));
                         if (value1 == Convert.ToInt64(value))
-                            ruleValue = field.GetCustomAttribute<EnumFieldAttribute>().DisplayName;
+                            ruleValue = field.GetCustomAttribute<DisplayAttribute>().Name;
                     }
                 }
                 break;

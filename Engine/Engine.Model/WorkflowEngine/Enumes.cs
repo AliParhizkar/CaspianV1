@@ -1,4 +1,5 @@
 ﻿using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Engine
 {
@@ -10,40 +11,40 @@ namespace Caspian.Engine
         /// <summary>
         /// کاربر جاری
         /// </summary>
-        [EnumField("ایجاد کننده")]
+        [Display(Name = "ایجاد کننده")]
         Creator = 1,
         
         /// <summary>
         /// مافوق کاربر 
         /// </summary>
-        [EnumField("مافوق کاربر")]
+        [Display(Name = "مافوق کاربر")]
         Master,
 
         /// <summary>
         /// مافوق مافوق کاربر
         /// </summary>
-        [EnumField("مافوق مافوق کاربر")]
+        [Display(Name = "مافوق مافوق کاربر")]
         MasterOfMaster,
         
         /// <summary>
         /// کاربری با کد خاص
         /// </summary>
-        [EnumField("کاربری با کد خاص")]
+        [Display(Name = "کاربری با کد خاص")]
         UserBySpecialId,
         
         /// <summary>
         /// کاربری با پست خاص
         /// </summary>
-        [EnumField("کاربری با پست خاص")]
+        [Display(Name = "کاربری با پست خاص")]
         UserBySpecialPost
     }
 
     public enum ResultType : byte
     {
-        [EnumField("صحیح")]
+        [Display(Name = "صحیح")]
         Integer,
 
-        [EnumField("اعشاری")]
+        [Display(Name = "اعشاری")]
         Numeric
     }
 
@@ -51,18 +52,18 @@ namespace Caspian.Engine
     {
         String = 1,
 
-        [EnumField("عدد صحیح")]
+        [Display(Name = "عدد صحیح")]
         Integer,
         
-        [EnumField("عدد اعشاری")]
+        [Display(Name = "عدد اعشاری")]
         Numeric,
 
         Date,
 
-        [EnumField("چند گزینه ای")]
+        [Display(Name = "چند گزینه ای")]
         DropdownList,
 
-        [EnumField("درست/نادرست")]
+        [Display(Name = "درست/نادرست")]
         CheckBox,
 
         TreeStateCheckBox,
@@ -102,76 +103,76 @@ namespace Caspian.Engine
         /// <summary>
         /// نام و نام خانوادگی
         /// </summary>
-        [EnumField("نام و نام خانوادگی")]
+        [Display(Name = "نام و نام خانوادگی")]
         FLName = 1,
 
         /// <summary>
         /// امضاء
         /// </summary>
-        [EnumField("امضاء")]
+        [Display(Name = "امضاء")]
         Signture,
 
         /// <summary>
         /// کد پرسنلی
         /// </summary>
-        [EnumField("کد پرسنلی")]
+        [Display(Name = "کد پرسنلی")]
         PersonalCode,
 
         /// <summary>
         /// پست سازمانی
         /// </summary>
-        [EnumField("پست سازمانی")]
+        [Display(Name = "پست سازمانی")]
         OrganPost,
 
         /// <summary>
         /// واحد سازمانی
         /// </summary>
-        [EnumField("واحد سازمانی")]
+        [Display(Name = "واحد سازمانی")]
         OrganUnit,
 
         /// <summary>
         /// کد کاربری
         /// </summary>
-        [EnumField("کد کاربری")]
+        [Display(Name = "کد کاربری")]
         UserId,
 
         /// <summary>
         /// نام
         /// </summary>
-        [EnumField("نام")]
+        [Display(Name = "نام")]
         FName,
 
         /// <summary>
         /// نام خانوادگی
         /// </summary>
-        [EnumField("نام خانوادگی")]
+        [Display(Name = "نام خانوادگی")]
         LName,
 
         /// <summary>
         /// جنسیت
         /// </summary>
-        [EnumField("جنسیت")]
+        [Display(Name = "جنسیت")]
         Gender
     }
 
     public enum DataModelFieldType: byte
     {
-        [EnumField("زشته ای")]
+        [Display(Name = "زشته ای")]
         String = 1,
 
-        [EnumField("تاریخ")]
+        [Display(Name = "تاریخ")]
         Date,
 
-        [EnumField("زمان")]
+        [Display(Name = "زمان")]
         Time,
 
-        [EnumField("تاریخ و زمان")]
+        [Display(Name = "تاریخ و زمان")]
         DateAndTime,
 
-        [EnumField("عدد صحیح")]
+        [Display(Name = "عدد صحیح")]
         Integer,
 
-        [EnumField("عدد اعشاری")]
+        [Display(Name = "عدد اعشاری")]
         Decimal,
     }
 }

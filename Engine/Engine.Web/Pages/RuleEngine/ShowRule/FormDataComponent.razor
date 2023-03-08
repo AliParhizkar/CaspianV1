@@ -135,7 +135,7 @@
                         {
                             var value1 = Convert.ToInt64(field.GetValue(null));
                             if (value1 == Convert.ToInt64(value))
-                                return field.GetCustomAttribute<EnumFieldAttribute>().DisplayName;
+                                return field.GetCustomAttribute<DisplayAttribute>().Name;
                         }
                     }
                     throw new NotImplementedException("خطای عدم پیاده سازی");

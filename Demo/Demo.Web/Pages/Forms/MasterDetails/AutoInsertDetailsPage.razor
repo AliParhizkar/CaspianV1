@@ -1,12 +1,12 @@
-﻿@page "/Demo/Order"
-@page "/Demo/Order/{MasterId:int}"
+﻿@page "/Demo/Batch/AutoInser/Details"
+@page "/Demo/Batch/AutoInser/Details/{MasterId:int}"
 @namespace Demo.Web.Pages
 @inherits MasterDetailPage<Order, OrderDeatil>
 <div class="row p-3">
     <div class="col-md-4 ps-3 pe-3">
         <div class="row">
             <div class="col-md-2 text-center">
-                <a href="/Demo/Orders">
+                <a href="/Demo/Batch/AutoInser/Master">
                     <span class="fa fa-first-order"></span>
                 </a>
             </div>
@@ -102,7 +102,7 @@
 <CreatePdfComponent @bind-Status="status" Title="Custom update" FileName="CustomUpdate1.pdf"
                     Title1="Product service" FileName1="productService.pdf" Title2="Order detail service" 
                     FileName2="OrderDetailService.pdf" />
-@code 
+@code
 {
     WindowStatus status;
     NumericTextBox<int> txtPrice;
@@ -121,7 +121,7 @@
             await Grid.ValidateAndUpsert(mode);
     }
 
-    
+
     async Task SetPrice(OrderDeatil detail)
     {
         if (detail.ProductId > 0)

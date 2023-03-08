@@ -38,7 +38,7 @@
                 </span>
             </div>
             <div class="c-container">
-                <span class="c-title">@Message</span>
+                <span class="c-title">@((MarkupString)Message)</span>
             </div>
         </div>
         <div class="c-action">
@@ -114,7 +114,7 @@
     {
         confirmResult = null;
         if (message.HasValue())
-            Message = message;
+            Message = message.Replace("\n", "<br/>");
         show = true;
         await jsRuntime.InvokeVoidAsync("$.caspian.enableDefaultShortKey", true, DotNetObjectReference.Create(this), overlay, box);
         StateHasChanged();

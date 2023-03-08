@@ -29,7 +29,7 @@ namespace Caspian.Engine.Service
             await base.UpdateAsync(entity);
         }
 
-        public async Task IncPriority(MenuCategory curent, MenuCategory next)
+        public async Task IncPriorityAsync(MenuCategory curent, MenuCategory next)
         {
             var temp = curent.Ordering;
             curent.Ordering = next.Ordering;
@@ -38,7 +38,7 @@ namespace Caspian.Engine.Service
             await base.UpdateAsync(next);
         }
 
-        public async Task DecPriority(MenuCategory curent, MenuCategory pre)
+        public async Task DecPriorityAsync(MenuCategory curent, MenuCategory pre)
         {
             var temp = curent.Ordering;
             curent.Ordering = pre.Ordering;

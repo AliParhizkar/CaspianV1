@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using Caspian.Common.Attributes;
 
 namespace Caspian.Common
@@ -8,31 +9,31 @@ namespace Caspian.Common
         /// <summary>
         /// بخش اصلی
         /// </summary>
-        [EnumField("Engin")]
+        [Display(Name = "Engin")]
         Engine = 1,
 
         /// <summary>
         /// دمو
         /// </summary>
-        [EnumField("دمو")]
+        [Display(Name = "دمو")]
         Demo,
 
         /// <summary>
         /// کارگزینی
         /// </summary>
-        [EnumField("کارگزینی")]
+        [Display(Name = "کارگزینی")]
         Employment,
 
         /// <summary>
         /// کارتابل
         /// </summary>
-        [EnumField("کارتابل")]
+        [Display(Name = "کارتابل")]
         Kartable,
 
         /// <summary>
         /// حقوق و دستمزد
         /// </summary>
-        [EnumField("حقوق و دستمزد")]
+        [Display(Name = "حقوق و دستمزد")]
         Payment
     }
 

@@ -1,4 +1,5 @@
 using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Demo.Model
 {
@@ -7,13 +8,13 @@ namespace Demo.Model
         /// <summary>
         /// عدد صحیح
         /// </summary>
-        [EnumField("عدد صحیح")]
+        [Display(Name = "عدد صحیح")]
         Int,
 
         /// <summary>
         /// عدد اعشاری
         /// </summary>
-        [EnumField("عدد اعشاری")]
+        [Display(Name = "عدد اعشاری")]
         Decimal
     }
 }

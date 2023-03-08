@@ -264,7 +264,7 @@
                     var fields = info.PropertyType.GetUnderlyingType().GetFields().Where(t => !t.IsSpecialName);
                     foreach (var field in fields)
                     {
-                        var text = field.GetCustomAttribute<EnumFieldAttribute>()?.DisplayName ?? field.Name;
+                        var text = field.GetCustomAttribute<DisplayAttribute>()?.Name ?? field.Name;
                         sourceArray[index].Add(new SelectListItem(Convert.ToInt32(field.GetValue(null)).ToString(), text));
                     }
                 }
@@ -300,7 +300,7 @@
                     var fields = enumType.GetUnderlyingType().GetFields().Where(t => !t.IsSpecialName);
                     foreach (var field in fields)
                     {
-                        var text = field.GetCustomAttribute<EnumFieldAttribute>()?.DisplayName ?? field.Name;
+                        var text = field.GetCustomAttribute<DisplayAttribute>()?.Name ?? field.Name;
                         sourceArray[index].Add(new SelectListItem(Convert.ToInt32(field.GetValue(null)).ToString(), text));
                     }
                     break;

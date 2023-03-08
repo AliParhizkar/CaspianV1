@@ -1,0 +1,250 @@
+﻿@page "/Demo/Batch/Custom/Details"
+@page "/Demo/Batch/Custom/Details/{MasterId:int}"
+@inherits MasterDetailPage<Order, OrderDeatil>
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<style type="text/css">
+    .product {
+        border: 1px solid lightgray;
+        padding: 5px;
+        margin: 5px;
+        display: inline-block;
+        border-radius: 15px;
+        width: 100px;
+        text-align: center;
+        font-weight: bold;
+        cursor: pointer;
+        background-color: aliceblue;
+    }
+
+    .products {
+        border: 1px solid lightgray;
+        max-height: 200px;
+        overflow: auto;
+        margin-bottom: 10px;
+        border-radius: 17px;
+        width: calc(100% - 300px)
+    }
+</style>
+<div class="row p-3">
+    <div class="col-md-4 ps-3 pe-3">
+        <div class="row">
+            <div class="col-md-2 text-center">
+                <a href="/Demo/Batch/Custom/Master">
+                    <span class="fa fa-first-order"></span>
+                </a>
+            </div>
+            <div class="col-md-10 text-center">
+                <h7 class="d-membership">Order</h7>
+            </div>
+        </div>
+        <hr />
+        <CaspianForm @ref="MasterForm" Model="UpsertData">
+            <CaspianValidationValidator ValidatorType="typeof(OrderService)" />
+            <div class="row c-controls ps-3 pe-3">
+                <div class="col-md-4">
+                    <label>Order date</label>
+                </div>
+                <div class="col-md-8">
+                    <DatePicker @bind-Value="UpsertData.Date" />
+                </div>
+                <div class="col-md-4">
+                    <label>Order type</label>
+                </div>
+                <div class="col-md-8">
+                    <DropdownList @bind-Value="UpsertData.OrderType" />
+                </div>
+                <div class="col-md-4">
+                    <label>Customer</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
+                </div>
+                <div class="col-md-12">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+        <div class="pt-3 text-center pe-3">
+            <div class="pt-3">
+                <button @onclick="InsertedProducts" class="c-btn c-primary">Inserted products</button>
+            </div>
+            <div class="pt-3">
+                <button @attributes="btnAttr" @onclick="UpdatedProducts" class="c-btn c-primary">Updated products</button>
+            </div>
+            <div class="pt-3">
+                <button @attributes="btnAttr" @onclick="DeletedProducts" class="c-btn c-primary">Deleted products</button>
+            </div>
+            <div class="pt-3">
+                <button @attributes="btnAttr" @onclick="PostToDatabase" class="c-btn c-primary">Post to database</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 ps-3 ">
+        <div class="row align-items-baseline">
+            <div class="col-md-8">
+                <h7 class="d-membership">Products</h7>
+            </div>
+            <div class="col-md-4 d-source-btn">
+                <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+                    Source
+                    <i class="fa fa-code"></i>
+                </button>
+            </div>
+        </div>
+        <hr />
+        @if (products != null)
+        {
+            <div class="ps-4">
+                @foreach (var product in products)
+                {
+                    <span @onclick="async () => await AddUpsertProduct(product)" class="product">@product.Title</span>
+                }
+            </div>
+        }
+        <div class="pt-3">
+            <DataGrid @ref="Grid" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == MasterId" TableHeight="250" HideInsertIcon>
+                <Columns>
+                    <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
+                    <GridColumn Field="t => t.Product.Title" Title="Product" />
+                    <GridColumn Field="t => t.Price.Seprate3Digit()" Title="Price" />
+                    <GridColumn Field="t => t.Count" Title="Count">
+                        <Template>
+                            <IconButton IconType="IconType.Plus" @onclick="async () => await IncCount(context.Data)" />
+                            <span style="display:inline-block;width:38px;height:38px;">@context.Data.Count</span>
+                            <IconButton IconType="IconType.Minus" @onclick="async () => await DecCount(context.Data)" />
+                        </Template>
+                    </GridColumn>
+                </Columns>
+            </DataGrid>
+        </div>
+    </div>
+</div>
+@code
+{
+    WindowStatus status;
+    IList<Product> products;
+    IDictionary<string, object> btnAttr;
+
+    protected override Task OnMasterEntityCreatedAsync()
+    {
+        UpsertData.Date = DateTime.Now.Date;
+        return base.OnMasterEntityCreatedAsync();
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var scope = CreateScope();
+        products = await new ProductService(scope.ServiceProvider).GetAll().ToListAsync();
+        foreach (var product in products)
+            product.Image = null;
+        btnAttr = new Dictionary<string, object>();
+        if (MasterId == 0)
+            btnAttr.Add("disabled", "disabled");
+        await base.OnInitializedAsync();
+    }
+
+    async Task UpdatedProducts()
+    {
+        var products = Grid.GetUpdatedEntities();
+        if (products.Count == 0)
+            await Alert("No products have been updated");
+        else
+        {
+            var str = $"Updated products count: {products.Count}\nUpdated products Id: {{ ";
+            var isFirst = true;
+            foreach (var product in products)
+            {
+                if (!isFirst)
+                    str += ", ";
+                str += product.ProductId;
+                isFirst = false;
+            }
+            await Alert(str + " }");
+        }
+    }
+
+    async Task DeletedProducts()
+    {
+        var products = Grid.GetDeletedEntities();
+        if (products.Count == 0)
+            await Alert("No products have been deleted");
+        else
+        {
+            var str = $"Deleted products count: {products.Count}\n Deleted products Id {{ ";
+            var isFirst = true;
+            foreach (var product in products)
+            {
+                if (!isFirst)
+                    str += ", ";
+                str += product.ProductId;
+                isFirst = false;
+            }
+            await Alert(str + " }");
+        }
+    }
+
+    async Task InsertedProducts()
+    {
+        var products = Grid.GetInsertedEntities();
+        if (products.Count == 0)
+            await Alert("No products have been added");
+        else
+        {
+            var str = $"Added Products count: {products.Count}\n Added products Id: {{";
+            var isFirst = true;
+            foreach (var product in products)
+            {
+                if (!isFirst)
+                    str += ", ";
+                str += product.ProductId;
+                isFirst = false;
+            }
+            await Alert(str + " }");
+        }
+    }
+
+    async Task PostToDatabase()
+    {
+        var message = await Grid.PostToDatabaseAsync();
+        message = message ?? "The grid is synchronized with the database";
+        ShowMessage(message);
+    }
+
+    async Task AddUpsertProduct(Product product)
+    {
+        var old = Grid.AllRecords().SingleOrDefault(t => t.ProductId == product.Id);
+        if (old == null)
+        {
+            await Grid.InsertAsync(new OrderDeatil()
+                {
+                    Count = 1,
+                    Price = product.Price,
+                    ProductId = product.Id,
+                    OrderId = MasterId
+                });
+        }
+        else
+        {
+            old.Count = old.Count + 1;
+            await Grid.UpdateAsync(old);
+        }
+    }
+
+    async Task IncCount(OrderDeatil detail)
+    {
+        detail.Count++;
+        await Grid.UpdateAsync(detail);
+    }
+
+    async Task DecCount(OrderDeatil detail)
+    {
+        detail.Count--;
+        if (detail.Count == 0)
+            await Grid.RemoveAsync(detail);
+        else
+            await Grid.UpdateAsync(detail);
+    }
+}

@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.UI
+@using System.ComponentModel.DataAnnotations;
 @typeparam TEntity
 @typeparam TValue
 @implements ICheckboxList<TValue>
@@ -150,9 +151,9 @@
                 dic = new Dictionary<TValue, string>();
                 foreach (FieldInfo fi in type.GetFields().Where(t => !t.IsSpecialName))
                 {
-                    EnumFieldAttribute da = (EnumFieldAttribute)Attribute.GetCustomAttribute(fi, typeof(EnumFieldAttribute));
+                    var da = fi.GetCustomAttribute<DisplayAttribute>();
                     if (da != null)
-                        dic.Add((TValue)fi.GetValue(null), da.DisplayName);
+                        dic.Add((TValue)fi.GetValue(null), da.Name);
                     else
                         dic.Add((TValue)fi.GetValue(null), fi.Name);
                 }

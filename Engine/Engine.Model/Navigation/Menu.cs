@@ -11,27 +11,15 @@ namespace Caspian.Engine.Model
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// عنوان فارسی منو
-        /// </summary>
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        /// <summary>
-        /// آدرس صفحه
-        /// </summary>
-        [DisplayName("آدرس صفحه")]
+        [DisplayName("Source")]
         public string Source { get; set; }
 
-        /// <summary>
-        /// کد منوی اصلی
-        /// </summary>
-        [DisplayName("منوی اصلی")]
+        [DisplayName("Menu category")]
         public int? MenuCategoryId { get; set; }
 
-        /// <summary>
-        /// مشخصات منوی اصلی
-        /// </summary>
         [ForeignKey(nameof(MenuCategoryId))]
         public virtual  MenuCategory MenuCategory { get; set; }
 
@@ -39,19 +27,16 @@ namespace Caspian.Engine.Model
 
         public int Ordering { get; set; }
 
-        /// <summary>
-        /// نمایش در منو
-        /// </summary>
-        [DisplayName("نمایش در منو")]
+        [DisplayName("Show in menu")]
         public bool ShowonMenu { get; set; }
 
         /// <summary>
-        /// آدرسهایی که در دیتابیس وجود دارند ولی در سیستم نیستند
+        /// Addresses that exist in the database but are not in the system
         /// </summary>
-        [DisplayName("آدرس نامعتبر")]
+        [DisplayName("Invalid address")]
         public bool InvalidAddress { get; set; }
 
-        [CheckOnDelete("منو دارای دستیابی می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("The menu has access and cannot be deleted")]
         public IList<MenuAccessibility> Accessibilities { get; set; }
     }
 }
