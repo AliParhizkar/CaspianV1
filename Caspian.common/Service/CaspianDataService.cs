@@ -5,7 +5,7 @@ namespace Caspian.Common
     {
         public int UserId { get; set; }
 
-        public Language? Language { get; set; } = Common.Language.En;
+        public Language? Language { get; set; } = Common.Language.Fa;
     }
 
     public enum Language

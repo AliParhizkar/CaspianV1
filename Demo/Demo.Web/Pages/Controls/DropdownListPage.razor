@@ -1,7 +1,7 @@
 ﻿@page "/Demo/DropdownList" 
 @namespace Demo.Web.Pages
 @inherits BasePage
-<div class="row d-head">
+<div class="row ps-4 pe-4 pt-3">
     <div class="col-md-6">
         <h3>Dropdown List</h3>
     </div>
@@ -11,72 +11,70 @@
         </button>
     </div>
 </div>
-<div class="d-body">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Bind To Enum</h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="disable" Title="Disable" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Action</label>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <button class="t-button" @onclick="async () => await DropdownFocus()">Focus</button>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Selected Value</label>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "-----")</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Selected Title</label>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <label style="color:red;">@(orderType.HasValue ? orderType.Value.FaText() : "-----")</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Selected Enum Title</label>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <label style="color:red;">@(orderType.HasValue ? orderType.Value.ToString() : "-----")</label>
-                    </div>
-                    <div class="col-md-10">
-                        <DropdownList @ref="dropdownList" @bind-Value="orderType" Disabled="disable" />
-                    </div>
+<div class="row ps-3 pe-3">
+    <div class="col-md-6 ps-4 pe-4">
+        <hr />
+        <div class="d-container">
+            <h4>Bind To Enum</h4>
+            <div class="row">
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="disable" Title="Disable" />
+                </div>
+                <div class="col-md-6">
+                    <label>Action</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <button class="t-button" @onclick="async () => await DropdownFocus()">Focus</button>
+                </div>
+                <div class="col-md-6">
+                    <label>Selected Value</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "-----")</label>
+                </div>
+                <div class="col-md-6">
+                    <label>Selected Title</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.FaText() : "-----")</label>
+                </div>
+                <div class="col-md-6">
+                    <label>Selected Enum Title</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ToString() : "-----")</label>
+                </div>
+                <div class="col-md-10">
+                    <DropdownList @ref="dropdownList" @bind-Value="orderType" Disabled="disable" />
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Items filter</h4>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Selected Value</label>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "-----")</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Selected Title</label>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <label style="color:red;">@(orderType.HasValue ? orderType.Value.FaText() : "-----")</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Selected Enum Title</label>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <label style="color:red;">@(orderType.HasValue ? orderType.Value.ToString() : "-----")</label>
-                    </div>
-                    <div class="col-md-10">
-                        <DropdownList @bind-Value="orderType" FilterFunc="orderType => orderType != Model.OrderType.Salon" />
-                    </div>
+    </div>
+    <div class="col-md-6 ps-4 pe-4">
+        <hr />
+        <div class="d-container">
+            <h4>Items filter</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Selected Value</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "-----")</label>
+                </div>
+                <div class="col-md-6">
+                    <label>Selected Title</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.FaText() : "-----")</label>
+                </div>
+                <div class="col-md-6">
+                    <label>Selected Enum Title</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ToString() : "-----")</label>
+                </div>
+                <div class="col-md-10">
+                    <DropdownList @bind-Value="orderType" FilterFunc="orderType => orderType != Model.OrderType.Salon" />
                 </div>
             </div>
         </div>

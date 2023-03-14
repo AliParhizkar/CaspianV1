@@ -234,14 +234,14 @@ namespace Caspian.Common
             }
         }
 
-        public DayOfPersianWeek1? DayOfWeek1
+        public DayOfWeekBitwise? DayOfWeek1
         {
             get
             {
                 if (IsNull)
                     return null;
                 var i = this.DayOfWeek.Value.ConvertToInt().Value - 1;
-                return (DayOfPersianWeek1)Math.Pow(2, i);
+                return (DayOfWeekBitwise)Math.Pow(2, i);
             }
         }
 
@@ -610,51 +610,30 @@ namespace Caspian.Common
         Esfand
     }
 
-    /// <summary>
-    /// روزهای سال در تقویم شمسی بصورت توانی از دو
-    /// </summary>
-    public enum DayOfPersianWeek1: byte
+    public enum DayOfWeekBitwise : byte
     {
-        /// <summary>
-        /// شنبه
-        /// </summary>
-        [Display(Name = "شنبه")]
-        Sat = 1,
-
-        /// <summary>
-        /// یکشنبه
-        /// </summary>
-        [Display(Name = "یکشنبه")]
-        Sun = 2,
-
-        /// <summary>
-        /// دوشنبه
-        /// </summary>
-        [Display(Name = "دوشنبه")]
-        Mon = 4,
+        [Display(Name = "Monday")]
+        Mon = 1,
 
         /// <summary>
         /// سه شنبه
         /// </summary>
-        [Display(Name = "سه شنبه")]
-        Tus = 8,
+        [Display(Name = "Tuesday")]
+        Tus = 2,
 
-        /// <summary>
-        /// چهارشنبه
-        /// </summary>
-        [Display(Name = "چهارشنبه")]
-        Wed = 16,
+        [Display(Name = "Wednesday")]
+        Wed = 4,
 
-        /// <summary>
-        /// پنجشنبه
-        /// </summary>
-        [Display(Name = "پنجشنبه")]
-        Teh = 32,
+        [Display(Name = "Thursday ")]
+        Teh = 8,
 
-        /// <summary>
-        /// جمعه
-        /// </summary>
-        [Display(Name = "جمعه")]
-        Fri = 64
+        [Display(Name = "Friday ")]
+        Fri = 16,
+
+        [Display(Name = "Saturday")]
+        Sat = 32,
+
+        [Display(Name = "Sunday")]
+        Sun = 64,
     }
 }

@@ -4,95 +4,77 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:550px;margin: 40px auto 0 auto;text-align:center">
+<div class="d-form">
     <h4>Form & Validation</h4>
-</div>
-<div style="width:550px;margin: 10px auto;border:1px solid darkgray;border-radius:12px;padding:30px 30px 15px 30px;">
-    <CaspianForm Model="UpsertData"
-                 OnReset="Reset"
-                 OnSubmit="FormSubmit"
-                 OnValidSubmit="ValidSubmit" 
-                 OnInvalidSubmit="InvalidSubmit">
-        <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
-        <table style="width:90%;margin:0 auto">
-            <tr>
-                <td>
-                    <label>گروه غذا</label>
-                </td>
-                <td>
+    <div class="data-form-container">
+        <CaspianForm Model="UpsertData"
+                     OnReset="Reset"
+                     OnSubmit="FormSubmit"
+                     OnValidSubmit="ValidSubmit"
+                     OnInvalidSubmit="InvalidSubmit">
+            <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
+            <div class="row c-controls p-4 pb-2">
+                <div class="col-md-4">
+                    <label>Product category</label>
+                </div>
+                <div class="col-md-8">
                     <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=UpsertData.ProductCategoryId TextExpression="t => t.Title" />
-                </td>
-            </tr>
-            <tr>
-                <td style="width:100px;">
-                    <label>عنوان</label>
-                </td>
-                <td>
+                </div>
+                <div class="col-md-4">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Title" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>کد</label>
-                </td>
-                <td>
-                    <StringTextBox @bind-Value=UpsertData.Code Style="direction:ltr" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>قیمت</label>
-                </td>
-                <td>
+                </div>
+                <div class="col-md-4">
+                    <label>Code</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value=UpsertData.Code />
+                </div>
+                <div class="col-md-4">
+                    <label>Price</label>
+                </div>
+                <div class="col-md-8">
                     <NumericTextBox @bind-Value="UpsertData.Price" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>قیمت بیرون بر</label>
-                </td>
-                <td>
+                </div>
+                <div class="col-md-4">
+                    <label>Take out price</label>
+                </div>
+                <div class="col-md-8">
                     <NumericTextBox @bind-Value="UpsertData.TakeoutPrice" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>وعده غذایی</label>
-                </td>
-                <td>
+                </div>
+                <div class="col-md-4">
+                    <label>Meal</label>
+                </div>
+                <div class="col-md-8">
                     <MultiSelectBox @bind-Value="UpsertData.Meal" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>اتمام فروش</label>
-                </td>
-                <td>
-                    <CheckBox @bind-Value="UpsertData.OutofStock" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>وضعیت</label>
-                </td>
-                <td>
+                </div>
+                <div class="col-md-4">
+                    <label>Status</label>
+                </div>
+                <div class="col-md-8">
                     <DropdownList @bind-Value="UpsertData.ActiveType" />
-                </td>
-            </tr>
-            <tr>
-                <td style="height:35px;" colspan="2">
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <CheckBox @bind-Value="UpsertData.OutofStock" Title="Out of stock" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8 text-center">
                     <FormCommandButton />
-                </td>
-            </tr>
-        </table>
-    </CaspianForm>
+                </div>
+            </div>
+        </CaspianForm>
+    </div>
 </div>
-<div style="text-align:center">
+<div class="text-center">
     <button @onclick="_ => status = WindowStatus.Open" class="c-btn c-primary">
         Source
         <i class="fa fa-code"></i>
     </button>
 </div>
+
 <CreatePdfComponent @bind-Status="status" Title="Form & Validation" FileName="Form&Validation.pdf" 
     Title1="Service" FileName1="ProductService.pdf" />
 

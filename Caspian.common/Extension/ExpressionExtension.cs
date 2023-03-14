@@ -169,6 +169,13 @@ namespace Caspian.Common.Extension
             return Expression.Lambda(body, param);
         }
 
+        public static ParameterExpression GetParameter(this MemberExpression expr) 
+        {
+            while(expr.Expression.NodeType == ExpressionType.MemberAccess) 
+                expr = expr.Expression as MemberExpression;
+            return expr.Expression as ParameterExpression;
+        }
+
         public static bool CompareMemberExpression(this MemberExpression expression1, MemberExpression expression2)
         {
             var str1 = expression1.ToString();

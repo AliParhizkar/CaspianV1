@@ -1,6 +1,6 @@
 ﻿@page "/Demo/DateAndTime"
 @namespace Demo.Web.Pages
-<div class="row d-head">
+<div class="row p-4 pb-0">
     <div class="col-md-6">
         <h3>Date And Time Picker</h3>
     </div>
@@ -11,69 +11,67 @@
         </button>
     </div>
 </div>
-<div class="d-body">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Date picker</h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="dateDisable" Title="Disabled" />
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="dateOpenOnFocus" Title="Open on focus" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Action</label>
-                    </div>
-                    <div class="text-center col-md-6">
-                        <button class="t-button" @onclick="async () => await DatePickerFocuc() ">فـوکـوس</button>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Selected Culture Date</label>
-                    </div>
-                    <div class="text-center col-md-6">
-                        <label style="color:red;">@(date.HasValue ? date.Value.ToShortDateString() : "-----")</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Selected Persian Date</label>
-                    </div>
-                    <div class="text-center col-md-6">
-                        <label style="color:red;">@(date.HasValue ? date.ToPersianDateString() : "-----")</label>
-                    </div>
-                    <div class="col-md-12">
-                        <DatePicker @ref="datePicker" @bind-Value="date" OpenOnFocus="dateOpenOnFocus" Disabled="dateDisable" />
-                    </div>
+<div class="row ps-4 pe-4">
+    <div class="col-md-6 ps-4 pe-4">
+        <hr />
+        <div class="ps-4 pe-4">
+            <h4>Date picker</h4>
+            <div class="row c-controls ps-4 pe-4">
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="dateDisable" Title="Disabled" />
+                </div>
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="dateOpenOnFocus" Title="Open on focus" />
+                </div>
+                <div class="col-md-6">
+                    <label>Action</label>
+                </div>
+                <div class="text-center col-md-6">
+                    <button class="t-button" @onclick="async () => await DatePickerFocuc() ">فـوکـوس</button>
+                </div>
+                <div class="col-md-6">
+                    <label>Selected Culture Date</label>
+                </div>
+                <div class="text-center col-md-6">
+                    <span style="color:red;">@(date.HasValue ? date.Value.ToShortDateString() : "-----")</span>
+                </div>
+                <div class="col-md-6">
+                    <label>Selected Persian Date</label>
+                </div>
+                <div class="text-center col-md-6">
+                    <span style="color:red;">@(date.HasValue ? date.ToPersianDateString() : "-----")</span>
+                </div>
+                <div class="col-md-10">
+                    <DatePicker @ref="datePicker" @bind-Value="date" OpenOnFocus="dateOpenOnFocus" Disabled="dateDisable" />
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Time picker</h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="timeDisable" Title="Disabled" />
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="timeOpenOnFocus" Title="Open on focus" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Action</label>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <button class="t-button" @onclick="async () => await TimePickerFocuc()">فـوکـوس</button>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Selected time</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label style="color:red;">@(time.HasValue ? time.Value.ShortString() : "-----")</label>
-                    </div>
-                    <div class="col-md-12">
-                        <TimePicker @ref="timePicker" @bind-Value="time" Disabled="timeDisable" />
-                    </div>
+    </div>
+    <div class="col-md-6 ps-4 pe-4">
+        <hr />
+        <div class="row c-controls ps-4 pe-4">
+            <h4>Time picker</h4>
+            <div class="row ps-4 pe-4">
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="timeDisable" Title="Disabled" />
+                </div>
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="timeOpenOnFocus" Title="Open on focus" />
+                </div>
+                <div class="col-md-6">
+                    <label>Action</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <button class="t-button" @onclick="async () => await TimePickerFocuc()">فـوکـوس</button>
+                </div>
+                <div class="col-md-6">
+                    <label>Selected time</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <span style="color:red;">@(time.HasValue ? time.Value.ShortString() : "-----")</span>
+                </div>
+                <div class="col-md-10">
+                    <TimePicker @ref="timePicker" @bind-Value="time" Disabled="timeDisable" />
                 </div>
             </div>
         </div>
