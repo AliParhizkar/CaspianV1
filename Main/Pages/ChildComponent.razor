@@ -1,0 +1,17 @@
+﻿@typeparam TEntity
+@attribute [CascadingTypeParameter(nameof(TEntity))]
+<div class="p-child">
+    @ChildContent
+</div>
+
+@code
+{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public TEntity Data { get; set; }
+
+    [Parameter]
+    public TEntity Search { get; set; }
+}

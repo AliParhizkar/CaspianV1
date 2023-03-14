@@ -1,9 +1,11 @@
 ﻿@namespace Caspian.Engine.Navigation
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 @inject IJSRuntime jSRuntime
 @inject NavigationManager navigationManager
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject SingletonMenuService SingletonMenuService
+@inject ProtectedSessionStorage Storege
 
 <div id="mainmenu">
     @if (Categories != null)

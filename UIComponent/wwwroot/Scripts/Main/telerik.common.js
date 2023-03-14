@@ -1041,7 +1041,7 @@
             //if (!$(ctr).hasClass('.t-state-error'))
             //    $(ctr).addClass('t-state-error');
             var html = new $t.stringBuilder();
-            html.cat('<div class="errorMessage"><Span>' + msg + '</Span><div></div></div>');
+            html.cat('<div class="errorMessage"><span class="c-icon"></span><Span>' + msg + '</Span><div></div></div>');
             $(ctr).append(html.string());
         },
         hideErrorMessage: function (ctr, msg) {

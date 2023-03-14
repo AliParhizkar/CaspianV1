@@ -28,8 +28,10 @@ namespace Caspian.UI
         IList<int> selectedIds;
         IList<object> DynamicData;
         IList<ColumnData> columnsData;
+        IList<ColumnData> RangeFilterColumnsData;
         IDictionary<string, object> tableAttrs;
         IList<MemberExpression> SelectExpressions;
+
 
         public int? SelectedRowIndex { get; private set; }
 
@@ -47,7 +49,7 @@ namespace Caspian.UI
 
         internal void AddColumnData(GridColumn<TEntity> column)
         {
-            columnsData.Add(new ColumnData()
+            var columnData = new ColumnData()
             {
                 Title = column.Title,
                 Expression = column.Field?.Body,
@@ -58,7 +60,10 @@ namespace Caspian.UI
                 Width = column.Width,
                 OrderType = column.OrderType,
                 Resizeable = column.Template == null && !column.IsCheckBox
-            });
+            };
+            columnsData.Add(columnData);
+            if (column.FromExpression != null || column.ToExpression != null)
+                RangeFilterColumnsData.Add(columnData);
             StateHasChanged();
         }
 
@@ -109,7 +114,10 @@ namespace Caspian.UI
             Expression expression = null;
             foreach (var col in columnsData.Where(t => t.FromExpression != null || t.ToExpression != null))
             {
-                Expression memberExpr = parameter.ReplaceParameter(col.Expression);
+                var colExpr = col.Expression;
+                if (colExpr.NodeType == ExpressionType.Call) 
+                    colExpr = (colExpr as MethodCallExpression).Arguments[0];
+                Expression memberExpr = parameter.ReplaceParameter(colExpr);
                 if (memberExpr.Type.IsNullableType())
                     memberExpr = Expression.Property(memberExpr, "Value");
                 if (col.FromExpression != null)
@@ -179,18 +187,32 @@ namespace Caspian.UI
                 if (col.OrderType != null && col.Orderable)
                 {
                     Expression orderbyExpr = col.Expression;
-                    if (orderbyExpr.NodeType == ExpressionType.Call)
+                    ParameterExpression param = null; ;
+                    if (orderbyExpr.NodeType == ExpressionType.Conditional)
                     {
-                        var callExpr = orderbyExpr as MethodCallExpression;
-                        if (callExpr.Arguments.Count > 0)
-                            orderbyExpr = callExpr.Arguments[0];
-                        else
-                            orderbyExpr = callExpr.Object;
+                        foreach(var exp in new ExpressionSurvey().Survey(orderbyExpr))
+                        {
+                            param = exp.GetParameter();
+                            if (param != null)
+                                break;
+                        }
                     }
-                    if (orderbyExpr.NodeType == ExpressionType.Convert)
-                        orderbyExpr = (orderbyExpr as UnaryExpression).Operand;
-                    var param = Expression.Parameter(typeof(TEntity), "t");
-                    orderbyExpr = param.ReplaceParameter(orderbyExpr as MemberExpression);
+                    else
+                    {
+                        if (orderbyExpr.NodeType == ExpressionType.Call)
+                        {
+                            var callExpr = orderbyExpr as MethodCallExpression;
+                            if (callExpr.Arguments.Count > 0)
+                                orderbyExpr = callExpr.Arguments[0];
+                            else
+                                orderbyExpr = callExpr.Object;
+                        }
+                        if (orderbyExpr.NodeType == ExpressionType.Convert)
+                            orderbyExpr = (orderbyExpr as UnaryExpression).Operand;
+                        param = Expression.Parameter(typeof(TEntity), "t");
+                        orderbyExpr = param.ReplaceParameter(orderbyExpr as MemberExpression);
+                    }
+
                     var lambdaExpression = Expression.Lambda(orderbyExpr, param);
                     if (col.OrderType == OrderType.Asc)
                         query = query.OrderBy(lambdaExpression).OfType<TEntity>();
@@ -545,13 +567,17 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            DeleteMessage = "آیا با حذف موافقید؟";
+            if (CaspianDataService.Language == Language.Fa)
+                DeleteMessage = "آیا با حذف موافقید؟";
+            else
+                DeleteMessage = "Do yo";yfh
             if (SelectType == SelectType.Multi)
                 selectedIds = new List<int>();
             tableAttrs = new Dictionary<string, object>();
             commandColumnAdded = false;
             if (CrudComponent != null)
                 CrudComponent.CrudGrid = this;
+            RangeFilterColumnsData = new List<ColumnData>();
             OnInitializedOperation();
             base.OnInitialized();
         }
@@ -583,6 +609,27 @@ namespace Caspian.UI
                 tableAttrs.Remove("class");
             if (TableWidth.HasValue)
                 tableAttrs["style"] = "width:" + TableWidth + "px";
+            foreach(var col in RangeFilterColumnsData)
+            {
+                if (col.FromExpression != null)
+                {
+                    var fromValue = GetFromToValue(col.FromExpression);
+                    if (fromValue == null && col.FromValue != null || fromValue != null && !fromValue.Equals(col.FromValue))
+                    {
+                        EnableLoading();
+                        col.FromValue = fromValue;
+                    }
+                }
+                if (col.ToExpression != null)
+                {
+                    var toValue = GetFromToValue(col.ToExpression);
+                    if (toValue == null && col.ToValue != null || toValue != null && !toValue.Equals(col.ToValue))
+                    {
+                        EnableLoading();
+                        col.ToValue = toValue;
+                    }
+                }
+            }
             base.OnParametersSet();
         }
 

@@ -2,7 +2,7 @@
 @typeparam TEntity
 @typeparam TValue
 @inject IServiceScopeFactory ServiceScopeFactory
-<div class="t-widget t-combobox">
+<div class="t-widget t-combobox" data-bind="@ErrorMessage">
     <div class="@className">
         <input @ref="input" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await OnNochangeKeyDown(arg)"
                
@@ -11,7 +11,7 @@
             <i class="t-icon t-arrow-down fa fa-caret-down"></i>
         </span>
     </div>
-    @if (Items != null)
+    @if (Items != null && Status == WindowStatus.Open)
     {
         <div class="t-animation-container">
             <div class="t-popup t-group">

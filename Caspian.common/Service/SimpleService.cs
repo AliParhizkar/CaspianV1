@@ -70,6 +70,7 @@ namespace Caspian.Common.Service
             context.RootContextData["__ServiceScope"] = ServiceProvider;
             if (!context.IsChildContext)
                 context.RootContextData["__MasterInstanse"] = context.InstanceToValidate;
+            
             return base.ValidateAsync(context, cancellation);
         }
 

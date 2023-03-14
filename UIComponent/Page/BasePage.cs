@@ -21,6 +21,9 @@ namespace Caspian.UI
         
         public static bool IsStarted { get; set; }
 
+        [CascadingParameter]
+        public ClassNameContainner ClassNameContainner { get; set; }
+
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
 
@@ -44,6 +47,11 @@ namespace Caspian.UI
             {
                 var result = await authenticationStateTask;
                 UserId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+                var path = new Uri(NavigationManager.Uri).AbsolutePath;
+                if (path.StartsWith("/Demo", StringComparison.OrdinalIgnoreCase))
+                    DataService.Language = Language.En;
+                else
+                    DataService.Language = Language.Fa;
                 DataService.UserId = UserId;
             }
             await base.OnInitializedAsync();
@@ -129,6 +137,8 @@ namespace Caspian.UI
         {
             if (GlobalScope == null)
                 GlobalScope = CreateScope();
+            if (ClassNameContainner != null)
+                ClassNameContainner.ClassName = this.GetType().Name;
             base.OnInitialized();
         }
 

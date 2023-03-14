@@ -5,28 +5,62 @@
     <title></title>
     <script src="jquery-1.8.2.js"></script>
     <style type="text/css">
-        .c-propertyWindow{
+        .parent {
             border:1px solid red;
-            width:180px;
-            margin:0;
-            height:100vh;
-            box-sizing:border-box;
-            list-style:none;
-            padding:5px;
+            height:30px;
+            position:relative;
         }
-        .item{
-            flex: 1 1 0;
-            border: 1px solid red
+        .child{
+            border:1px solid red;
+            height:300px;
+            width:100%;
+            margin-top:33px;
+            position:absolute;
         }
-        span{
-            white-space:pre-line;
+        .cc-container{
+            border:1px solid blue;
+            height:30px;
+            overflow:visible;
+            width:300px;
         }
     </style>
     <script type="text/javascript">
-       
+        Date.prototype.getFirstDateInCalendar = function () {
+            let date = new Date(this.valueOf());
+            let day = date.getDate() - 1;
+            date = date.addDays(-day);
+            day = date.getDay() - 1;
+            if (day < 0)
+                day += 7;
+            return date.addDays(-day);
+        }
+        Date.prototype.addMonth = function (months) {
+            let date = new Date(this.valueOf());
+            date.setMonth(date.getMonth() + months);
+            return date;
+        }
+        Date.prototype.addDays = function (days) {
+            let date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        }
+        let date = new Date();
+        date = date.addMonth(-7);
+
     </script>
 </head>
 <body style="direction:rtl;margin:0;padding:0">
-    <span>1<br/>2<br/>3</span>
+<table style="width:350px;">
+    <tr>
+        <td>
+            <div class="parent">
+                <div class="child">
+
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
 </body>
 </html>

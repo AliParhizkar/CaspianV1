@@ -5,6 +5,7 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
+    <BaseOutputPath>bin\Demo\</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

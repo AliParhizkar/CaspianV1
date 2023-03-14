@@ -42,7 +42,7 @@
                 var result = await ((CustomAuthenticationStateProvider)stateProvider).Login(user.Id.ToString());
                 var url = new Uri(navigationManager.Uri).LocalPath;
                 if (url.StartsWith("/login", StringComparison.OrdinalIgnoreCase))
-                    navigationManager.NavigateTo("/Default");
+                    navigationManager.NavigateTo("/Demo", true);
             }
         }
     }

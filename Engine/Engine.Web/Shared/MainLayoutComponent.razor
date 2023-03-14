@@ -1,9 +1,12 @@
 ﻿@namespace Caspian.Engine.Shared
 @using Caspian.Engine.Web
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject SingletonMenuService MenuService
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider stateProvider
+@inject ProtectedSessionStorage storage
+@inject CaspianDataService dataService
 @{
     var className = "page";
     if (hideMenu)
@@ -63,7 +66,14 @@
                     }
                     else
                     {
-                        <h1 style="color:red">شما مجاز به ورود به این صفحه نیستید</h1>
+                        if (dataService.Language == Language.Fa)
+                        {
+                            <h1 style="color:red">شما به این صفحه دسترسی ندارید</h1>
+                        }
+                        else
+                        {
+                            <h1 style="color:red">You do not have access to this page</h1>
+                        }
                     }
                 </div>
             }
@@ -108,6 +118,8 @@
         if (url.EndsWith('/'))
             url = url.Substring(0, url.Length - 1);
         var menu = MenuService.GetMenu(url);
+        menuId = 0;
+        title = "";
         if (menu != null)
         {
             menuId = menu.Id;

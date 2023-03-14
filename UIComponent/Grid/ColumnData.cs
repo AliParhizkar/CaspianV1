@@ -11,7 +11,11 @@ namespace Caspian.UI
 
         public LambdaExpression FromExpression { get; set; }
 
+        public object FromValue { get; set; }
+
         public LambdaExpression ToExpression { get; set; }
+
+        public object ToValue { get; set; }
 
         public Expression Expression { get; set; }
 

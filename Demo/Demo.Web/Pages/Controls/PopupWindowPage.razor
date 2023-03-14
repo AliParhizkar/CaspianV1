@@ -37,32 +37,60 @@
         <div class="col-md-6 d-control">
             <hr />
             <div class="d-container">
-                <h4>Custom Size & Position</h4>
-                <div class="row">
-                    <div class="col-md-1">
-                        <label>Left</label>
+                <h4>Custom Position</h4>
+                <div class="row c-controls">
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="enableCustomHorizontalAlign" Title="Custom horizontal align" />
                     </div>
-                    <div class="col-md-2">
-                        <NumericTextBox @bind-Value="left" maxlength="3"/>
-                     </div>
-                    <div class="col-md-1">
-                        <label>Top</label>
+                    @if (enableCustomHorizontalAlign)
+                    {
+                        <div class="col-md-2">
+                            <label>Left</label>
+                        </div>
+                        <div class="col-md-4 pe-4">
+                            <NumericTextBox @bind-Value="left" Disabled="right.HasValue" maxlength="3" />
+                        </div>
+                        <div class="col-md-2">
+                            <label>Right</label>
+                        </div>
+                        <div class="col-md-4 pe-4">
+                            <NumericTextBox @bind-Value="right" Disabled="left.HasValue" maxlength="3" />
+                        </div>
+                    }
+                    else
+                    {
+                        left = null;
+                        right = null;
+                        <div class="col-md-12">
+                            <RadioList Style="width:100%" @bind-Value="customHorizontalAlign" />
+                        </div>
+                    }
+                    <div class="col-md-12">
+                        <CheckBox @bind-Value="enableCustomVerticalAlign" Title="Custom vertical align" />
                     </div>
-                    <div class="col-md-2">
-                        <NumericTextBox @bind-Value="top" maxlength="3"/>
-                     </div>
-                    <div class="col-md-1">
-                        <label>Width</label>
-                    </div>
-                    <div class="col-md-2">
-                        <NumericTextBox @bind-Value="width" maxlength="3"/>
-                    </div>
-                    <div class="col-md-1">
-                        <label>Height</label>
-                    </div>
-                    <div class="col-md-2">
-                        <NumericTextBox @bind-Value="height" maxlength="3"/>
-                    </div>
+                    @if (enableCustomVerticalAlign)
+                    {
+                        <div class="col-md-2">
+                            <label>Top</label>
+                        </div>
+                        <div class="col-md-4 pe-4">
+                            <NumericTextBox @bind-Value="top" Disabled="bottom.HasValue" maxlength="3" />
+                        </div>
+                        <div class="col-md-2">
+                            <label>Bottom</label>
+                        </div>
+                        <div class="col-md-4 pe-4">
+                            <NumericTextBox @bind-Value="bottom" Disabled="top.HasValue" maxlength="3" />
+                        </div>
+                    }
+                    else
+                    {
+                        top = null;
+                        bottom = null;
+                        <div class="col-md-12">
+                            <RadioList Style="width:100%" @bind-Value="customVerticalAlign" />
+                        </div>
+                    }
                     <div class="text-center col-md-12">
                         <button class="c-btn c-info" @onclick="() => { status1 = WindowStatus.Open; }">Show Popup</button>
                     </div>
@@ -93,24 +121,19 @@
         </div>
     </div>
 </div>
-<PopupWindow @bind-Status="status" HorizontalAlign="hAlign" VerticalAlign="vAlign">
+<PopupWindow @bind-Status="status" AutoHide HorizontalAlign="hAlign" VerticalAlign="vAlign">
     <div style="width:500px;height:300px;text-align:center;padding-top:30px;">
         <h3>Popup Window</h3>
     </div>
 </PopupWindow>
-@{
-    left = left ?? 5;
-    top = top ?? 5;
-    width = width ?? 500;
-    height = height ?? 350;
-    string style = "top:" + top.ToString() + "px;left:" + left + "px;width:" + width + "px;height:" + height + "px";
-}
-<PopupWindow @bind-Status="status1" Style="@style">
+
+<PopupWindow @bind-Status="status1" Left="left" Right="right" Top="top" Bottom="bottom" 
+    HorizontalAlign="customHorizontalAlign" VerticalAlign="customVerticalAlign">
     <div style="width:500px;height:300px;text-align:center;padding-top:30px;">
         <h3>Popup Window</h3>
     </div>
 </PopupWindow>
-<PopupWindow @bind-Status="status2" Style="width:450px;height:200px;border-radius:150px;top:10px;left:350px;">
+<PopupWindow @bind-Status="status2" Style="width:450px;height:200px;border-radius:150px;top:35px;left:350px;">
     <div style="text-align:center;padding-top:80px;direction:ltr;font-size:14px;font-weight:900">
         style="width:500px;height:250px;border-radius:150px;top:10px;left:350px;"
     </div>
@@ -126,19 +149,23 @@
 <CreatePdfComponent @bind-Status="pdfStatus" Title="Popup Window" FileName="PopupWindow.pdf" />
 @code 
 {
+    bool enableCustomVerticalAlign = true;
+    bool enableCustomHorizontalAlign = true;
     WindowStatus pdfStatus;
-    int? top;
-    int? left;
-    int? width;
-    int? height;
+    int? top = 100;
+    int? bottom;
+    int? left = 200;
+    int? right;
     bool autoHide;
 
     WindowStatus status;
     WindowStatus status1;
     WindowStatus status2;
     WindowStatus autoHideStatus;
-    VerticalAlign vAlign = VerticalAlign.Top;
+    VerticalAlign vAlign = VerticalAlign.Center;
     HorizontalAlign hAlign = HorizontalAlign.Center;
+    VerticalAlign customVerticalAlign = VerticalAlign.Center;
+    HorizontalAlign customHorizontalAlign = HorizontalAlign.Center;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

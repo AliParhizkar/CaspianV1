@@ -84,7 +84,7 @@
                                                 <RadioItem Value="Model.OrderType.Salon" />
                                             </div>
                                             <div>
-                                                <RadioItem Value="Model.OrderType.Package" />
+                                                <RadioItem Value="Model.OrderType.Takeout" />
                                                 <RadioItem Value="Model.OrderType.Tel" />
                                             </div>
                                             <div style="height:30px;text-align:center;display:table-row">
@@ -131,7 +131,7 @@
                         <CheckBox @bind-Value="salon" Title="@Model.OrderType.Salon.FaText()" />
                     </div>
                     <div class="col-md-6">
-                        <CheckBox @bind-Value="packaging" Title="@Model.OrderType.Package.FaText()" />
+                        <CheckBox @bind-Value="packaging" Title="@Model.OrderType.Takeout.FaText()" />
                     </div>
                     <div class="col-md-6">
                         <CheckBox @bind-Value="tel" Title="@Model.OrderType.Tel.FaText()" />
@@ -143,7 +143,7 @@
                         <RadioList @bind-Value="orderType">
                             <RadioItems>
                                 <RadioItem Value="Model.OrderType.Salon" Disabled="salon" />
-                                <RadioItem Value="Model.OrderType.Package" Disabled="packaging" />
+                                <RadioItem Value="Model.OrderType.Takeout" Disabled="packaging" />
                                 <RadioItem Value="Model.OrderType.Tel" Disabled="tel" />
                                 <RadioItem Value="Model.OrderType.Internet" Disabled="internet" />
                             </RadioItems>

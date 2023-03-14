@@ -254,7 +254,13 @@ namespace Caspian.UI
             if (Disabled)
                 className += " t-state-disabled";
             else
-                className += " t-state-default";
+            {
+                if (ErrorMessage.HasValue())
+                    className += " t-state-error";
+                else
+                    className += " t-state-default";
+            }
+                
             attrs = new Dictionary<string, object>();
             if (Disabled)
                 attrs.Add("disabled", "disabled");
@@ -595,12 +601,7 @@ namespace Caspian.UI
                 focused = false;
                 await input.FocusAsync();
             }
-            if (Status != oldStatus)
-            {
-                oldStatus = Status;
-                await jsRuntime.InvokeVoidAsync("$.caspian.toggleComboboxStatus", input, Status);
-            }
-            await jsRuntime.InvokeVoidAsync("$.caspian.serversideCombobox", input, ErrorMessage, Disabled, Status);
+            //await jsRuntime.InvokeVoidAsync("$.caspian.serversideCombobox", input, ErrorMessage, Disabled, Status);
             if (valueChanged)
             {
                 valueChanged = false;

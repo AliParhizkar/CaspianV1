@@ -208,8 +208,10 @@
             //thisObj._blur();
         });
         $(element).focus(function () {
-           if (self.errorMessage && $(this).parent().hasClass('t-state-error'))
-                $t.showErrorMessage($(self.element).closest('.t-widget')[0], self.errorMessage);
+            let message = $(element).closest('.t-widget').attr('data-bind');
+            if (message)
+                $t.showErrorMessage($(self.element).closest('.t-widget')[0], message);
+
             thisObj._focus();
         });
         if (this.group && this.type != 'string') {

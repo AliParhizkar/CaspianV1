@@ -1,5 +1,15 @@
-﻿.d-panel-message{
-    color:red;
+﻿.d-form {
+    width: 550px;
+    margin: 40px auto;
+    text-align: center;
+}
+.data-form-container {
+    border: 1px solid darkgray;
+    border-radius: 12px;
+    text-align:left;
+}
+.d-panel-message {
+    color: red;
 }
 .d-tabpanel-container {
     height: 70px

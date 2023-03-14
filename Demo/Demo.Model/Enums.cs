@@ -3,156 +3,81 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Demo.Model
 {
-    /// <summary>
-    /// نوع مشتری
-    /// </summary>
     public enum CustomerType: byte
     {
-        /// <summary>
-        /// حقیقی
-        /// </summary>
-        [Display(Name = "حقیقی")]
+        [Display(Name = "Real person")]
         Real = 1,
 
-        /// <summary>
-        /// حقوقی
-        /// </summary>
-        [Display(Name = "حقوقی")]
+        [Display(Name = "Legal person")]
         Legal
     }
 
-    /// <summary>
-    /// جنسیت
-    /// </summary>
     public enum Gender: byte
     {
-        /// <summary>
-        /// مرد
-        /// </summary>
-        [Display(Name = "مرد")]
+        [Display(Name = "Male")]
         Male = 1,
 
-        /// <summary>
-        /// زن
-        /// </summary>
-        [Display(Name = "زن")]
+        [Display(Name = "Female")]
         Female
     }
 
-    /// <summary>
-    /// وضعیت فعالیت
-    /// </summary>
     public enum ActiveType: byte
     {
-        /// <summary>
-        /// فعال
-        /// </summary>
-        [Display(Name = "فعال")]
+        [Display(Name = "Enable")]
         Enable = 1,
 
-        /// <summary>
-        /// غیرفعال
-        /// </summary>
-        [Display(Name = "غیرفعال")]
+        [Display(Name = "Disable")]
         Disable
     }
 
-    /// <summary>
-    /// نوع سفارش
-    /// </summary>
     public enum OrderType: byte
     {
-        /// <summary>
-        /// سالن
-        /// </summary>
-        [Display(Name = "سالن")]
+        [Display(Name = "Salon")]
         Salon = 1,
 
-        /// <summary>
-        /// بیرون بر
-        /// </summary>
-        [Display(Name = "بیرون بر")]
-        Package,
+        [Display(Name = "Take out")]
+        Takeout,
 
-        /// <summary>
-        /// تلفنی
-        /// </summary>
-        [Display(Name = "تلفنی")]
+        [Display(Name = "Tel")]
         Tel,
 
-        /// <summary>
-        /// اینترنتی
-        /// </summary>
-        [Display(Name = "اینترنتی")]
+        [Display(Name = "Internet")]
         Internet
     }
 
-    /// <summary>
-    /// وضعیت
-    /// </summary>
     public enum OrderStatus: byte
     {
-        /// <summary>
-        /// لغو
-        /// </summary>
-        [Display(Name = "لغو")]
+        [Display(Name = "Canceled")]
         Canceled = 1,
 
-        /// <summary>
-        /// نهایی
-        /// </summary>
-        [Display(Name = "نهایی")]
+        [Display(Name = "Finaled")]
         Finaled
     }
 
-    /// <summary>
-    /// نوع سفارش
-    /// </summary>
     public enum OrderKind2 : byte
     {
-        /// <summary>
-        /// سالن
-        /// </summary>
-        [Display(Name = "سالن")]
+        [Display(Name = "Salon")]
         Salo = 1,
 
-        /// <summary>
-        /// بیرون بر
-        /// </summary>
-        [Display(Name = "بیرون بر")]
-        Package = 2,
+        [Display(Name = "Take out")]
+        Takeout = 2,
 
-        /// <summary>
-        /// تلفنی
-        /// </summary>
-        [Display(Name = "تلفنی")]
+        [Display(Name = "Tel")]
         Tel = 4,
 
-        /// <summary>
-        /// اینترنتی
-        /// </summary>
-        [Display(Name = "اینترنتی")]
+        [Display(Name = "Internet")]
         Internet = 8
     }
 
     public enum Meal : byte
     {
-        /// <summary>
-        /// صبحانه
-        /// </summary>
-        [Display(Name = "صبحانه")]
+        [Display(Name = "Breakfast")]
         Breakfast = 1,
 
-        /// <summary>
-        /// نهار
-        /// </summary>
-        [Display(Name = "نهار")]
+        [Display(Name = "Lunch")]
         Lunch = 2,
 
-        /// <summary>
-        /// شام
-        /// </summary>
-        [Display(Name = "شام")]
+        [Display(Name = "Dinner")]
         Dinner = 4,
     }
 }

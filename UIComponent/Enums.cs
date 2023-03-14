@@ -27,8 +27,8 @@
 
     public enum HorizontalAlign
     {
-        Right = 1,
+        Left = 1,
         Center,
-        Left,
+        Right,
     }
 }

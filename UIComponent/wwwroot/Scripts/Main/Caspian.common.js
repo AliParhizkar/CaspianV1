@@ -182,7 +182,7 @@ function moverItem() {
             resizeObserver.observe($(grv).find('.t-grid-content')[0]);
             $(grv).find('.t-grid-header-wrap th').mousemove(function (e) {
                 let left = $(this).offset().left, right = left + $(this).width(), x = e.clientX;
-                if ((x - left) < 5 || (right - x) < 5) {
+                if ((x - left) < 5 || (right - x) < 5 || $(grv).data('mouseState')) {
                     $(this).css('cursor', 'col-resize');
                     $(grv).data('resize', true);
                 }
@@ -197,8 +197,9 @@ function moverItem() {
             });
             $(grv).find('.t-grid-header-wrap th').mousedown(function (e) {
                 if ($(grv).data('resize')) {
+                    var rtl = $('body').hasClass('t-rtl');
                     let left = $(this).offset().left, right = left + $(this).width(), x = e.clientX;
-                    if (x - left < 5) {
+                    if (x - left < 5 && rtl || right - x < 5 && !rtl) {
                         $(grv).data('curent', $(this));
                         $(grv).data('curentWidth', $(this).width());
                         let $next = $(this).next();
@@ -209,7 +210,7 @@ function moverItem() {
                         $(grv).data('other', $next);
                         $(grv).data('otherWidth', $next.width());
                     }
-                    if (right - x < 5) {
+                    if (right - x < 5 && rtl || x - left < 5 && !rtl) {
                         $(grv).data('curent', $(this));
                         $(grv).data('curentWidth', $(this).outerWidth());
                         let $prev = $(this).prev();
@@ -236,16 +237,30 @@ function moverItem() {
                     let dif = $(grv).data('xStart') - e.clientX;
                     if ($(grv).data('gridStatus') == 2)
                         dif = -dif;
+                    if ($('body').hasClass('t-ltr'))
+                        dif = -dif;
                     let curentWidth = $(grv).data('curentWidth');
-                    $(grv).data('curent').outerWidth(curentWidth + dif);
-                    let curentIndex = $(grv).find('.t-grid-header-wrap th').index($(grv).data('curent'));
-                    $(grv).find('.t-grid-content table tr').first().children().eq(curentIndex).outerWidth(curentWidth + dif);
-                    $(grv).find('.c-grid-inline table tr').first().children().eq(curentIndex).outerWidth(curentWidth + dif);
                     let otherWidth = $(grv).data('otherWidth');
+                    let curentResult = Math.floor(curentWidth) + Math.floor(dif) - 1,
+                        otherResult = Math.floor(otherWidth) - Math.floor(dif) - 1;
+                    if (curentResult < 30 || otherResult < 30)
+                        return;
+
+                    $(grv).data('curent').outerWidth(curentResult);
+                    let curentIndex = $(grv).find('.t-grid-header-wrap th').index($(grv).data('curent'));
+                    $(grv).find('.t-grid-content table tr').first().children().eq(curentIndex).outerWidth(curentResult);
+                    $(grv).find('.c-grid-inline table tr').first().children().eq(curentIndex).outerWidth(curentResult);
                     let otherIndex = $(grv).find('.t-grid-header-wrap th').index($(grv).data('other'));
-                    $(grv).data('other').outerWidth(otherWidth - dif);
-                    $(grv).find('.t-grid-content table tr').first().children().eq(otherIndex).outerWidth(otherWidth - dif);
-                    $(grv).find('.c-grid-inline table tr').first().children().eq(otherIndex).outerWidth(otherWidth - dif);
+                    $(grv).data('other').outerWidth(otherResult);
+                    $(grv).find('.t-grid-content table tr').first().children().eq(otherIndex).outerWidth(otherResult);
+                    $(grv).find('.c-grid-inline table tr').first().children().eq(otherIndex).outerWidth(otherResult);
+                    if ($(grv).find('.t-grid-content').height() < $(grv).find('.t-grid-content table').height()) {
+                        if ($('body').hasClass('t-ltr'))
+                            $(grv).find('.t-grid-header').css('padding-right', 11);
+                        else
+                            $(grv).find('.t-grid-header').css('padding-left', 11);
+                    } else 
+                        $(grv).find('.t-grid-header').css('padding-right', 0).css('padding-left', 0);;
                 }
             });
             $(grv).find('.t-grid-content').scroll(function () {
@@ -275,30 +290,34 @@ function moverItem() {
         toggleComboboxStatus: function (input, status) {
             let $control = $(input).closest('.t-combobox').find('.t-popup');
             let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
+            debugger;
             if (status == 1) {
-                let height = $control.height() + 5;
-                if (height > 300)
-                    height = 300;
-                $control.animate({ top: -height }, 300, function () {
-                    $continer.css('display', 'none');
-                });
+                //let height = $control.height() + 5;
+                //if (height > 300)
+                //    height = 300;
+                //$control.animate({ top: -height }, 300, function () {
+                //    $continer.css('display', 'none');
+                //});
             } else if (status == 2) {
-                var $cmb = $(input).closest('.t-widget');
-                $continer.css('display', 'block').css('left', $cmb.position().left).width($cmb.width() - 4);
-                let height = $control.height() + 5;
-                if (height > 300)
-                    height = 300;
-                $continer.css('height', height);
-                $control.css('top', -height);
-                $('.errorMessage').remove();
-                $control.animate({ top: 0 }, 300);
+                //var $cmb = $(input).closest('.t-widget');
+                //$continer.css('display', 'block').css('left', $cmb.position().left).width($cmb.width() - 4);
+                //let height = $control.height() + 5;
+                //if (height > 300)
+                //    height = 300;
+                //$continer.css('height', 0);
+                ////$control.css('top', -height);
+                //$('.errorMessage').remove();
+                //$control.animate({ height: height }, 3000);
             }
         },
 
         serversideCombobox: function (input, errorMessage, diable, status) {
+            
             if (status == 2) {
                 let $control = $(input).closest('.t-combobox').find('.t-popup');
+                $control.css('display', 'block');
                 let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
+                
                 let height = $control.height() + 5;
                 if (height > 300)
                     height = 300;
@@ -331,35 +350,6 @@ function moverItem() {
                 height = 300;
             if (status == 2)
                 $continer.css('height', height);
-            //if (input.oldStatus != status) {
-            //    if (status == 2 && $continer.css('display') != 'block') {
-            //        $continer.css('display', 'block');
-            //        let height = $control.height() + 5;
-            //        if (height > 300)
-            //            height = 300;
-            //        $continer.css('height', height);
-            //        $control.css('top', -height);
-            //        $('.errorMessage').remove();
-            //        $control.animate({ top: 0 }, 300);
-            //    }
-
-            //    if (status == 1 && $continer.css('display') == 'block') {
-            //        let height = $control.height() + 5;
-            //        if (height > 300)
-            //            height = 300;
-            //        $control.animate({ top: -height }, 300, function () {
-            //            $continer.css('display', 'none');
-            //        });
-            //    }
-            //    input.oldStatus = status;
-            //} else if ($continer.css('display') == 'block') {
-            //    let height = $control.height() + 5;
-            //    if (height > 300)
-            //        height = 300;
-            //    $continer.css('height', height);
-            //    debugger;
-            //}
-
         },
 
         bindComboBox(dotnetHelper, input, pageable) {
@@ -372,11 +362,17 @@ function moverItem() {
                     }
                 });
             }
-            const resizeObserver = new ResizeObserver(() => {
+            let div = $(input).closest('.t-combobox');
+            $(div).find('.t-animation-container').width(div.width());
+            const mutationObserver = new MutationObserver(() => {
                 let div = $(input).closest('.t-combobox');
                 $(div).find('.t-animation-container').width(div.width());
             });
-            resizeObserver.observe($(input).closest('.t-combobox')[0]);
+            mutationObserver.observe($(input).closest('.t-combobox')[0], {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
             $(input).keypress(function (e) {
                 let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
                 if (e.keyCode == 13 && $continer.css('display') == 'block')
@@ -392,8 +388,9 @@ function moverItem() {
                     $control.removeClass('t-state-hover').addClass('t-state-default');
             });
             $(input).focusin(function () {
-                if (input.errorMessage)
-                    $.telerik.showErrorMessage($(input).closest('.t-widget')[0], input.errorMessage);
+                let message = $(input).closest('.t-widget').attr('data-bind');
+                if (message)
+                    $.telerik.showErrorMessage($(input).closest('.t-widget')[0], message);
                 $control.removeClass('t-state-hover').removeClass('t-state-default').addClass('t-state-focused');
             });
             $(input).focusout(function () {
@@ -406,37 +403,24 @@ function moverItem() {
             });
         },
 
-        bindPopupWindow: function (dotnet, align) {
+        bindPopupWindow: function (dotnet, pos) {
+            pos = JSON.parse(pos);
             $('.c-popup-window').css('display', 'block');
-            let top, left;
+            var className = $('.c-popup-window').attr('class');
+            $('.c-popup-window').attr('class', 'auto-hide c-popup-window');
             let width = $('.c-popup-window').width();
             let height = $('.c-popup-window').height();
-            var windowWidth = $('.content').width();
-            var windowHeight = $(window).height();
-            align = JSON.parse(align);
-            switch (align.VAlign) {
-                case 1:
-                    top = 30;
-                    break;
-                case 2:
-                    top = (windowHeight - height) / 2;
-                    break;
-                case 3:
-                    top = windowHeight - height + 10;
-                    break;
+            $('.c-popup-window').width(width).height(height).attr('class', className);
+            if (pos.left != undefined) {
+                let left = pos.left + $('.sidebar').width();
+                $('.c-popup-window').css({ left: left, right: 'auto' });
             }
-            switch (align.HAlign) {
-                case 1:
-                    left = windowWidth - width;
-                    break;
-                case 2:
-                    left = (windowWidth - width) / 2;
-                    break;
-                case 3:
-                    left = 5;
-                    break;
-            }
-            $('.c-popup-window').css('left', left).css('top', top);
+            else if (pos.right != undefined)
+                $('.c-popup-window').css({ left: 'auto', right: pos.right });
+            if (pos.top != undefined)
+                $('.c-popup-window').css({ top: pos.top + 26, bottom: 'auto' });
+            else if (pos.bottom != undefined)
+                $('.c-popup-window').css({ top: 'auto', bottom: pos.bottom });
             $c.enableAutoHide(dotnet);
         },
 
@@ -1152,7 +1136,7 @@ function moverItem() {
             //if (!$(ctr).hasClass('.t-state-error'))
             //    $(ctr).addClass('t-state-error');
             var html = new $t.stringBuilder();
-            html.cat('<div class="errorMessage"><Span>' + msg + '</Span><div></div></div>');
+            html.cat('<div class="errorMessage"><span class="c-icon"><i class="fa fa-info" aria-hidden="true"></i></span><Span class="c-content">' + msg + '</Span><span class="c-pointer"></span></div>');
             $(ctr).append(html.string());
         },
         hideErrorMessage: function (ctr, msg) {

@@ -2,16 +2,19 @@
 @inject IJSRuntime jSRuntime
 @if (Status == WindowStatus.Open)
 {
-    <div style="@Style" class="auto-hide c-popup-window">
+    <div style="@Style" class="@className">
         @ChildContent
     </div>
 }
 
 @code 
 {
+    string className;
+
     protected override void OnInitialized()
     {
         Status = WindowStatus.Close;
+
         base.OnInitialized();
     }
 
@@ -31,7 +34,49 @@
     public RenderFragment ChildContent{ get; set; }
 
     [Parameter]
+    public int? Left { get; set; }
+
+    [Parameter]
+    public int? Right { get; set; }
+
+    [Parameter]
+    public int? Top { get; set; }
+
+    [Parameter]
+    public int? Bottom { get; set; }
+
+    [Parameter]
     public string Style { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        className = "auto-hide c-popup-window";
+        switch(VerticalAlign)
+        {
+            case VerticalAlign.Top:
+                className += " c-top";
+                break;
+            case VerticalAlign.Bottom:
+                className += " c-bottom";                
+                break;
+            case VerticalAlign.Center:
+                className += " c-top c-bottom";
+                break;
+        }
+        switch(HorizontalAlign)
+        {
+            case HorizontalAlign.Left:
+                className += " c-left";
+                break;
+            case HorizontalAlign.Right:
+                className += " c-right";
+                break;
+            case HorizontalAlign.Center:
+                className += " c-left c-right";
+                break;
+        }
+        base.OnParametersSet();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -42,8 +87,14 @@
             {
                 json = JsonConvert.SerializeObject(new
                 {
-                    VAlign = VerticalAlign.ConvertToInt(),
-                    HAlign = HorizontalAlign.ConvertToInt()
+                    left = Left,
+                    right = Right,
+                    top = Top,
+                    bottom = Bottom
+                }, new JsonSerializerSettings()
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    DefaultValueHandling = DefaultValueHandling.Ignore
                 });
             }
             await jSRuntime.InvokeVoidAsync("$.caspian.bindPopupWindow", DotNetObjectReference.Create(this), json);

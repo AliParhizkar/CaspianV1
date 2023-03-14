@@ -1,13 +1,9 @@
 ﻿@using Caspian.UI
+@using Demo.Model;
 @page "/"
-@inherits BasePage
-@inject IJSRuntime jSRuntime
-@{
-    base.BuildRenderTree(__builder);
-}
-<a href="/Login">ورود</a>
 
 @code 
 {
-    WindowStatus status;
+    Product data;
+    Product search;
 }

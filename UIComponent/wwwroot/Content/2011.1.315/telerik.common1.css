@@ -1,5 +1,13 @@
 ﻿/* base stylesheet */
 
+.c-popup-window.c-top{
+    top:30px;
+}
+
+.c-popup-window.c-bottom {
+    bottom: 5px;
+} 
+
 .c-menu-icon .c-container {
     display: inline-block;
 }
@@ -154,6 +162,7 @@ progress::-webkit-progress-value {
             height: 100vh;
         }
 .c-popup-window {
+    margin:auto auto;
     position: absolute;
     border: 1px solid #d7d6d6;
     display: none;
@@ -543,6 +552,12 @@ form tr {
         display:inline-block;
         margin:2px;
     }
+.c-grid-command {
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
+
+}
 .c-multi-select {
     border-width: 1px;
     border-style: solid;
@@ -871,7 +886,6 @@ span, label, td, th {
     padding: 0;
     width: 100%;
     z-index: 100000000;
-    overflow:hidden;
 }
 .t-alert {
     margin: 3px 10px 0 0;
@@ -919,16 +933,17 @@ span, label, td, th {
 }
 .errorMessage {
     text-align: justify !important;
-    background-color: #fff4c9;
+    background-color: white;
     color: #635145;
     z-index: 99999999;
-    border-radius: 5px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    box-shadow: 2px 2px 2px 0px rgb(0 0 0 / 30%);
     position: absolute;
     font-weight: bold;
-    padding:3px 7px;
+    padding: 4px 7px;
     font-size: 14px;
-    margin:5px;
+    margin: 5px;
+    border: 1px solid #bbbbbb;
 }
 ul {
     padding:0;
@@ -945,16 +960,17 @@ ul {
     cursor: pointer;
     vertical-align:middle;
 }
-.errorMessage div {
-    border-color: transparent;
-    border-bottom-color: #ffe79e;
-    left: 50%;
-    top: -14px;
+.errorMessage .c-pointer {
+    left: 20px;
+    top: -6px;
     border-style: solid;
-    border-width: 7px;
-    height: 0px;
+    border-width: 1px 0 0 1px;
+    height: 10px;
     position: absolute;
-    width: 0px;
+    width: 10px;
+    transform: rotate(45deg);
+    background-color: white;
+    border-color: #bbbbbb;
 }
 .t-reset {
     margin: 0;
@@ -1681,7 +1697,7 @@ div.t-window {
 
 .t-grid-header .t-header,
 .t-grid-header .t-last-header {
-    padding: 3px 0;
+    padding: 3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2290,7 +2306,7 @@ html body .t-grid tbody .t-button-icon {
     background-image: none !important;
     background-color: transparent !important;
     border-width: 0;
-    height:30px;
+    height:31px;
     overflow:visible;
 }
 
@@ -2308,7 +2324,6 @@ html body .t-grid tbody .t-button-icon {
     .t-combobox > .t-dropdown-wrap {
         border-radius: 8px;
         margin: 1px;
-        overflow: hidden;
     }
 
 * html .t-combobox .t-dropdown-wrap {
@@ -2381,12 +2396,13 @@ html body .t-grid tbody .t-button-icon {
 }
 .t-dropdown-wrap .t-t-select {
     line-height: 30px;
-    height: 28px;
+    height: 30px;
     display: inline-block;
     vertical-align: top;
     width: 25px;
     background-color: inherit;
     text-align:center;
+    border-radius:0 8px 8px 0;
 }
 
 .t-combobox .t-select {
@@ -2399,7 +2415,7 @@ html body .t-grid tbody .t-button-icon {
 .t-selectbox .t-input {
     display: inline-block;
     line-height: 30px;
-    height: 28px;
+    height: 30px;
     padding: 0 4px;
     width: calc(100% - 25px);
     font-size: 14px;
@@ -2407,6 +2423,7 @@ html body .t-grid tbody .t-button-icon {
     box-sizing: border-box;
     background-color: inherit;
     overflow: hidden;
+    border-radius:8px 0 0 8px;
 }
 .t-dropdown .t-state-error {
     border-color: rgba(255, 0, 0, 0.19) !important;
@@ -2447,13 +2464,16 @@ html body .t-grid tbody .t-button-icon {
     font-size:14px;
 }
 .c-controls label {
-    display: inline-block;
+    display: block;
     background-color: #efefef;
     border-radius: 8px;
     font-weight: bold;
     line-height: 30px;
     padding: 0 8px;
     width: calc(100% - 4px);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .c-action .c-primary{
     min-width:70px;
@@ -2517,27 +2537,20 @@ html body .t-grid tbody .t-button-icon {
     }
 
             .t-calendar .t-header {
-                padding: .1em 0;
-                text-align: center;
                 background-color: chocolate;
-                font-size:15px;
-                font-weight:bold;
+                font-size: 15px;
+                font-weight: bold;
+                padding: 6px 8px;
             }
 
     .t-calendar .t-nav-prev,
     .t-calendar .t-nav-next {
-        position: absolute;
-        top: 9px;
+
     }
 
-    .t-calendar .t-nav-prev {
-        left: 1%;
-    }
-
-    .t-calendar .t-nav-next {
-        right: 1%;
-    }
-
+            .t-calendar .t-nav-next {
+                text-align:end;
+            }
             .t-calendar .t-content {
                 text-align: right;
                 display: table;
@@ -2558,8 +2571,11 @@ html body .t-grid tbody .t-button-icon {
     }
 
 
-    .t-calendar .t-nav-fast {
-    }
+            .t-calendar .t-nav-fast {
+                width: 143px;
+                display: inline-block;
+                text-align: center;
+            }
 
         .t-calendar .t-nav-fast .t-icon {
             vertical-align: top;
@@ -2616,7 +2632,24 @@ html body .t-grid tbody .t-button-icon {
 }
 
 .errorMessage span {
-    display:inline-block!important;
+    display: inline-block !important;
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+}
+
+.errorMessage .c-icon {
+    width: 30px;
+    height: 30px;
+    background-color:#FFA300;
+    vertical-align: middle;
+    border-radius:4px;
+    text-align:center;
+}
+.errorMessage .fa-info {
+    color:white;
+    font-size:16px;
+    vertical-align:text-top;
 }
 
 .t-datetimepicker {
@@ -2843,7 +2876,7 @@ div.t-numerictextbox {
 label{
     font-size:12px;
 }
-.t-numerictextbox .t-input /*alignment of arrows in WebKit*/ {
+.t-numerictextbox >.t-input /*alignment of arrows in WebKit*/ {
     margin: 2px;
     border-radius: 8px;
     border-style: solid;
@@ -2904,7 +2937,7 @@ label{
     padding: 3px 4px 2px 3px;
 }
 
-.t-numerictextbox .t-icon {
+.t-numerictextbox> .t-icon {
     margin-left: -16px;
 }
 
@@ -2915,17 +2948,6 @@ label{
     zoom: 1;
 }
 
-.t-numerictextbox .t-arrow-up {
-    vertical-align: top;
-    margin-top: 1px;
-    height: 10px;
-}
-
-.t-numerictextbox .t-arrow-down {
-    vertical-align: bottom;
-    margin-bottom: 1px;
-    height: 11px;
-}
 
 /* ColorPicker */
 

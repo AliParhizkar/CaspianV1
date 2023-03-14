@@ -20,7 +20,7 @@
             </button>
         </div>
     </div>
-    <DataGrid TEntity="ProductCategory" Search="SearchCategory" TableHeight="206" OnRowSelect="ProductCategorySelected">
+    <DataGrid TEntity="ProductCategory" Search="SearchCategory" TableHeight="208" OnRowSelect="ProductCategorySelected">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.ActiveType.FaText()" />
@@ -31,7 +31,7 @@
         <Content>
             <CaspianForm Model="upsertCategory">
                 <CaspianValidationValidator ValidatorType="typeof(ProductCategoryService)" />
-                <div class="row c-controls">
+                <div class="row c-controls ps-4 pe-4 pt-2 pb-2">
                     <div class="col-md-4">
                         <label>Title</label>
                     </div>

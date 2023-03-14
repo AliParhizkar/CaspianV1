@@ -4,14 +4,14 @@
 <div class="c-lookup-page" style="width:580px;">
     @if (UseParameter)
     {
-        <div class="row">
+        <div class="row p-3">
             <div class="col-md-2">
                 <label>Person Type</label>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 pe-3">
                 <DropdownList @bind-Value="CustomerType" OnChange="() => Grid.EnableLoading()" />
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2 ps-3 pt-1">
                 <label>Gender</label>
             </div>
             <div class="col-md-4">

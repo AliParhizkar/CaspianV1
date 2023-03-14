@@ -17,10 +17,15 @@ namespace Caspian.Common
         {
             ServiceProvider = provider;
             var contextType = new AssemblyInfo().GetDbContextType(typeof(TModel));
+            if (contextType.Namespace == "Demo.Model")
+                Language = Language.En;
+            else
+                Language= Language.Fa;
             Context = provider.GetService(contextType) as MyContext;
             var data = provider.GetService(typeof(CaspianDataService)) as CaspianDataService;
             UserId = data.UserId;
-            Language = data.Language ?? Language.En;
+            if (!data.Language.HasValue)
+                data.Language = Language;
             foreach (var info in typeof(TModel).GetProperties())
             {
                 var type = info.PropertyType;

@@ -147,16 +147,6 @@ html input[disabled], textarea[disabled] {
         line-height:28px;
         box-sizing:border-box;
     }
-.t-state-hover .t-arrow-up {
-    background-position: -48px -160px;
-}
-/*.t-state-hover .t-arrow-down { background-position: -47px -176px; }*/
-
-.t-numerictextbox .t-arrow-up { background-position: -16px -162px; }
-.t-numerictextbox .t-arrow-down { background-position: -16px -178px; }
-
-.t-arrow-up-small { background-position: 0 -304px; }
-.t-arrow-down-small { background-position: -16px -304px; }
 
 .t-combobox .t-state-default .t-input{
     border-color: rgba(0,0,0,0.12);
@@ -218,14 +208,15 @@ html input[disabled], textarea[disabled] {
     .t-dropdown .t-dropdown-wrap:focus {
         box-shadow: 0 0 3px 0 grey;
     }
-    .t-animation-container .t-popup {
-        background-color: #f9f9f9;
-        border: 1px solid #c5c5c5;
-        max-height:300px;
-        min-height:30px;
-        overflow:auto;
-        border-radius:8px;
-    }
+.t-animation-container .t-popup {
+    background-color: #f9f9f9;
+    border: 1px solid #c5c5c5;
+    max-height: 300px;
+    min-height: 30px;
+    overflow: auto;
+    border-radius: 8px;
+    box-shadow: -2px 3px 5px 0px dimgrey;
+}
 .t-picker-wrap{
     margin:2px;
     border-radius:8px;

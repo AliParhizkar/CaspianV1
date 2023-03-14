@@ -32,4 +32,9 @@
 
         Contains = 2
     }
+
+    public class ClassNameContainner
+    {
+        public string ClassName { get; set; }
+    }
 }

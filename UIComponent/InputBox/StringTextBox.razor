@@ -6,7 +6,7 @@
     else if (ErrorMessage != null)
         className += " t-state-error";
 
-<div class="@className">
+<div class="@className" data-bind="@ErrorMessage">
     @if (MultiLine)
     {
         <textarea @ref="htmlElement" style="@Style" @attributes="InputAttributes" @onchange="ChangeValue">@Value</textarea>

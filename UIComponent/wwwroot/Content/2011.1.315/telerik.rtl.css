@@ -1,9 +1,17 @@
 /* base stylesheet */
+.t-rtl .errorMessage .c-content {
+    padding-right: 5px;
+}
+
+.t-ltr .errorMessage .c-content {
+    padding-left: 5px;
+}
+
 
 .t-rtl
 {
-/*    direction: rtl;
-    text-align:right;*/
+    direction: rtl;
+    text-align:right;
 }
 
     .t-rtl .t-grid-header th {
@@ -27,9 +35,9 @@
 }
 
 
-    .t-rtl .accordion .open i {
-        padding-right: 3px;
-    }
+.t-rtl .accordion .link i:not(.c-icon) {
+    padding-right: 3px;
+}
 .t-ltr .accordion .link i:not(.c-icon) {
     padding-left: 3px;
 }
@@ -65,7 +73,7 @@
     }
 
     .t-rtl .accordion .link {
-        padding: 9px 8px 0 0;
+        padding: 9px 4px 0 0;
         border-left: 1px solid #1c1c1c;
     }
 
@@ -81,12 +89,12 @@
 .t-ltr .t-grid-edit {
     padding: 0 14px 0 3px;
 }
-.t-rtl .sidebar {
-    border-left: 1px solid #bfbfbf;
+.t-rtl .page .content {
+    border-right: 1px solid #bfbfbf;
 }
 
-.t-ltr .sidebar {
-    border-right: 1px solid #bfbfbf;
+.t-ltr .page .content {
+    border-left: 1px solid #bfbfbf;
 }
 
 .t-rtl .t-button-icontext .t-icon
@@ -552,3 +560,16 @@ fieldset.t-widget{
     text-align: right;
     direction: rtl;
 }
+
+.t-ltr .c-popup-window.c-left, .t-ltr .hideMenu .c-popup-window.c-center {
+    left: 165px
+}
+
+.t-ltr .hideMenu .c-popup-window.c-left, .t-ltr .hideMenu .c-popup-window.c-center {
+    left: 35px;
+}
+
+.t-ltr .c-popup-window.c-right, .t-ltr .c-popup-window.c-center {
+    right: 5px
+}
+

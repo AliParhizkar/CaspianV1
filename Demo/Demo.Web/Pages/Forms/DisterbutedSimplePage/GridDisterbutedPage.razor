@@ -22,8 +22,8 @@
             <Columns>
                 <GridColumn Field="t => t.Title" />
                 <GridColumn Field="t => t.ActiveType.FaText()" />
-                <GridColumn Field="t => t.Price.ToString()" />
-                    <GridColumn Field="t => t.TakeoutPrice.ToString()" />
+                <GridColumn Field="t => t.Price.Seprate3Digit()" />
+                    <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
                 <GridCommandColumns/>
             </Columns>
         </DataGrid>

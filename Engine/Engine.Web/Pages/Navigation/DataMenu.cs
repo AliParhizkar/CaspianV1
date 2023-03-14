@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using Caspian.Engine.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
+using Caspian.Engine.Service;
 
 namespace Caspian.Engine.Navigation
 {
@@ -32,6 +33,7 @@ namespace Caspian.Engine.Navigation
         protected override void OnInitialized()
         {
             var url = navigationManager.Uri.Substring(navigationManager.BaseUri.Length);
+            navigationManager.LocationChanged += NavigationManager_LocationChanged;
             curentUrl = '/' + url;
             var segments = url.Split('/');
             if (url.HasValue() && segments.Length > 0 && !segments[0].Equals("login", StringComparison.OrdinalIgnoreCase))
@@ -46,6 +48,32 @@ namespace Caspian.Engine.Navigation
                 }
             }
             base.OnInitialized();
+        }
+        protected override async Task OnInitializedAsync()
+        {
+            var item = await Storege.GetAsync<string>("CurentShowUrl");
+            if (item.Success)
+            {
+                sholdRender = true;
+                curentUrl = item.Value;
+            }
+            await base.OnInitializedAsync();
+        }
+
+        private void NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
+        {
+            var uri = new Uri(navigationManager.Uri);
+            var url = "";
+            foreach (var segment in uri.Segments)
+            {
+                if (!Int64.TryParse(segment, out _))
+                    url += segment;
+            }
+            if (url.EndsWith('/'))
+                url = url.Substring(0, url.Length - 1);
+            var menu = SingletonMenuService.GetMenu(url);
+            if (menu.ShowonMenu)
+                Storege.SetAsync("CurentShowUrl", url);
         }
 
         [Parameter]
