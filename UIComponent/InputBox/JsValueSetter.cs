@@ -93,5 +93,11 @@ namespace Caspian.UI
         {
             listValueInitializer.Close();
         }
+
+        [JSInvokable]
+        public void SetStringValue(object id)
+        {
+            listValueInitializer.SelectSelectItem(Convert.ToString(id));
+        }
     }
 }

@@ -1,39 +1,41 @@
 ﻿@namespace Demo.Web
 @page "/Demo/Grid-DataBinding"
-<div style="width:95%;margin:10px auto">
+
+<div class="ps-4 pe-4 pt-3">
     <h3>Grid</h3>
     <hr />
-    <div style="display:flex">
-        
-        <div style="width:50%;text-align:center">
+    <div class="row ps-5">
+        <div class="col-md-9 ps-4">
             <h4>Data Binding</h4>
         </div>
-        <div style="text-align:center;width:50%">
+        <div class="col-md-3">
             <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
                 Source
                 <i class="fa fa-code"></i>
             </button>
         </div>
     </div>
-    <DataGrid HideInsertIcon TEntity="Customer" TableHeight="350" >
-        <Columns Context="customer">
-            <GridColumn Field="@(t => t.CustomerType.FaText())" Title="نوع مشتری" />
-            <GridColumn Field="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" Title="نام مشتری" />
-            <GridColumn Field="t => t.Gender.FaText()" style="width:100px">
-                <Template>
-                    @if (customer.Data.Gender == Gender.Male)
-                    {
-                        <span class="c-icon fa fa-male"></span>
-                    }
-                    else if (customer.Data.Gender == Gender.Female)
-                    {
-                        <span class="c-icon fa fa-female"></span>
-                    }
-                </Template>
-            </GridColumn>
-            <GridColumn Field="t => t.MobileNumber.CallSeprator('-')" />
-        </Columns>
-    </DataGrid>
+    <div class="ps-4 pe-4">
+        <DataGrid HideInsertIcon TEntity="Customer" TableHeight="350">
+            <Columns Context="customer">
+                <GridColumn Field="@(t => t.CustomerType.FaText())" Title="Customer type" />
+                <GridColumn Field="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)"/>
+                <GridColumn Field="t => t.Gender.FaText()" style="width:100px">
+                    <Template>
+                        @if (customer.Data.Gender == Gender.Male)
+                        {
+                            <span class="c-icon fa fa-male"></span>
+                        }
+                        else if (customer.Data.Gender == Gender.Female)
+                        {
+                            <span class="c-icon fa fa-female"></span>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="t => t.MobileNumber.CallSeprator('-')" />
+            </Columns>
+        </DataGrid>
+    </div>
 </div>
 <CreatePdfComponent @bind-Status="status" Title="Grid Data Binding" FileName="Grid-DataBinding.pdf" />
 

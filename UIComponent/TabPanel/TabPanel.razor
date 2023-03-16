@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.UI
+@inject IJSRuntime JSRuntime
 <CascadingValue Value="this" Name="ParentTabPanel">
     @if (Vertical)
     {
@@ -6,48 +7,54 @@
 
         </div>
     }
-    else
+    else if (tabPanels != null)
     {
-        <div style="@Style" class="t-widget t-tabstrip t-header">
-            <ul class="t-reset t-tabstrip-items">
-                @{ var index = 1;}
-                @foreach (var item in tabPanels)
-                {
-                    var className = "t-item ";
-                    if (index == TabIndex)
-                        className += "t-state-active";
-                    else
-                        className += "t-state-default";
-                    <li class="@className">
-                        @if (index == TabIndex)
-                        {
-                            <span class="t-link">@item.Title</span>
-                            @if (item.Closeable)
-                            {
-                                <span class="t-close"></span>
-                            }
-                            <span class="c-selected-panel"></span>
+        <div @ref="element" class="t-widget t-tabstrip">
+            <div style="@Style" class="t-widget t-header">
+                <div class="c-tabstrip-items">
+                    <ul class="t-reset t-tabstrip-items">
+                        @{
+                            var index = 1;
                         }
-                        else
+                        @foreach (var item in tabPanels)
                         {
-                            int tabIndex = index;
-                            <span class="t-link"
-                                  @onclick="async () =>
+                            var className = "t-item ";
+                            if (index == TabIndex)
+                                className += "t-state-active";
+                            else
+                                className += "t-state-default";
+                            <li class="@className">
+                                @if (index == TabIndex)
+                                {
+                                    <span class="t-link">@((MarkupString)item.Title)</span>
+                                    @if (item.Closeable)
+                                    {
+                                        <span class="t-close"></span>
+                                    }
+                                }
+                                else
+                                {
+                                    int tabIndex = index;
+                                    <span class="t-link"
+                              @onclick="async () =>
                                               {
                                                   TabIndex = tabIndex;
                                                   CurentTabpanel = item;
                                                   await this.TabIndexChanged.InvokeAsync(tabIndex);
-                                              }">@item.Title</span>
-                            @if (item.Closeable)
-                            {
-                                <span class="t-close"></span>
-                            }
-                        }
+                                              }">@((MarkupString)item.Title)</span>
+                                    @if (item.Closeable)
+                                    {
+                                        <span class="t-close"></span>
+                                    }
+                                }
 
-                    </li>
-                    index++;
-                }
-            </ul>
+                            </li>
+                            index++;
+                        }
+                    </ul>
+                    <span class="c-selected-panel"></span>
+                </div>
+            </div>
             @Tabs
         </div>
     }
@@ -56,13 +63,14 @@
 {
     IList<TabPanelItem> tabPanels;
     internal TabPanelItem CurentTabpanel;
+    ElementReference element;
 
     internal void AddTabData(TabPanelItem tab)
     {
         if (!tabPanels.Contains(tab))
         {
             tabPanels.Add(tab);
-            if (tabPanels.Count >= TabIndex)
+            if (tabPanels.Count >= TabIndex && TabIndex > 0)
                 CurentTabpanel = tabPanels[TabIndex - 1];
             StateHasChanged();
         }
@@ -100,5 +108,11 @@
     {
         tabPanels = new List<TabPanelItem>();
         return base.OnParametersSetAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("$.caspian.bindTabpanel", element);
+        await base.OnAfterRenderAsync(firstRender);
     }
 }

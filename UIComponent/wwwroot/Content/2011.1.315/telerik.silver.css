@@ -215,7 +215,6 @@ html input[disabled], textarea[disabled] {
     min-height: 30px;
     overflow: auto;
     border-radius: 8px;
-    box-shadow: -2px 3px 5px 0px dimgrey;
 }
 .t-picker-wrap{
     margin:2px;

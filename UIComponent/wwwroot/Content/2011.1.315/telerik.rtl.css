@@ -1,4 +1,12 @@
 /* base stylesheet */
+.t-rtl .t-dropdown-wrap .t-t-select {
+    border-radius: 8px 0 0 8px;
+}
+
+.t-ltr .t-dropdown-wrap .t-t-select {
+    border-radius: 0 8px 8px 0;
+}
+
 .t-rtl .errorMessage .c-content {
     padding-right: 5px;
 }

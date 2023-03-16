@@ -570,7 +570,7 @@ namespace Caspian.UI
             if (CaspianDataService.Language == Language.Fa)
                 DeleteMessage = "آیا با حذف موافقید؟";
             else
-                DeleteMessage = "Do yo";yfh
+                DeleteMessage = "Do you agree to delete?";
             if (SelectType == SelectType.Multi)
                 selectedIds = new List<int>();
             tableAttrs = new Dictionary<string, object>();

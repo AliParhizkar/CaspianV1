@@ -21,10 +21,10 @@
     box-sizing: border-box;
 }
 
-.fa-code {
-    color: #fff!important;
-    font-size: 16px!important;
-    padding-right:5px;
+.fa-code, .fa-bar-chart {
+    color: #636363 !important;
+    font-size: 16px !important;
+    padding-right: 5px;
 }
     .c-categories ul{
         padding:0 ;
@@ -206,4 +206,29 @@ a::
 }
 .c-icon-button .fa-plus{
     padding-top:0!important;
+}
+
+.c-content-main {
+    background-color: #F3F6F9;
+    padding-left: 1.875rem;
+    padding-right: 1.875rem;
+    padding-top: 1.875rem;
+}
+p {
+    font-size: 1rem;
+    text-indent: 2em;
+    line-height: 1.75;
+    font-family: 'Segoe UI';
+    padding: 1.75rem;
+    border-radius: 0.25rem;
+    border: 0.0625rem solid #E0E3E7;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.13), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.11);
+    box-sizing: border-box;
+    background-clip: padding-box;
+    background-color: #FFFFFF;
+}
+
+.d-content {
+    padding: 1.75rem;
+    background-color:white;
 }

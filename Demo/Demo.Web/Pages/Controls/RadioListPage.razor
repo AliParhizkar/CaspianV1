@@ -1,23 +1,23 @@
 ﻿@page "/Demo/RadioList"
 @namespace Demo.Web.Pages
-<div class="row d-head">
+<div class="row ps-4 pe-4 pt-3">
     <div class="col-md-6">
         <h3>Radio List Button</h3>
     </div>
-    <div class="d-source-btn col-md-6">
+    <div class="col-md-6 text-center">
         <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
             Source
             <i class="fa fa-code"></i>
         </button>
     </div>
 </div>
-<div class="d-body">
+<div class="row ps-4 pe-4">
     <div class="row">
-        <div class="col-md-6 d-control">
+        <div class="col-md-6 ps-4 pe-4">
              <hr />
-             <div class="d-container">
+             <div class="ps-4 pe-4">
                 <h4>Bind To Enum</h4>
-                <div class="row">
+                <div class="row ps-4 pe-4 c-controls">
                     <div class="col-md-12">
                         <CheckBox @bind-Value="disabled" Title="Disable" />
                     </div>
@@ -45,11 +45,11 @@
                 </div>
              </div>
         </div>
-        <div class="col-md-6 d-control">
+        <div class="col-md-6 ps-4">
             <hr />
-            <div class="d-container">
+            <div class="ps-4 pe-4">
                 <h4>Custom Align</h4>
-                <div class="row">
+                <div class="row c-controls ps-4">
                     <div class="col-md-6">
                         <label>Selected Value</label>
                     </div>
@@ -74,36 +74,34 @@
                     <div class="col-md-6">
                         <label style="color:red;">@(orderType.HasValue ? orderType.ToString() : "----")</label>
                     </div>
-                    <div class="col-md-12">
-                        <table>
-                            <tr>
-                                <td colspan="2">
-                                    <RadioList @bind-Value="orderType">
-                                        <RadioItems>
-                                            <div style="height:30px;text-align:center;display:table-row">
-                                                <RadioItem Value="Model.OrderType.Salon" />
-                                            </div>
-                                            <div>
-                                                <RadioItem Value="Model.OrderType.Takeout" />
-                                                <RadioItem Value="Model.OrderType.Tel" />
-                                            </div>
-                                            <div style="height:30px;text-align:center;display:table-row">
-                                                <RadioItem Value="Model.OrderType.Internet" />
-                                            </div>
-                                        </RadioItems>
-                                    </RadioList>
-                                </td>
-                            </tr>
-                        </table>
+                    <div class="col-md-12 ps-4">
+                        <RadioList @bind-Value="orderType">
+                            <RadioItems>
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <RadioItem Value="Model.OrderType.Salon" />
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <RadioItem Value="Model.OrderType.Takeout" />
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <RadioItem Value="Model.OrderType.Tel" />
+                                    </div>
+                                    <div class="col-md-12 text-center ms-2">
+                                        <RadioItem Value="Model.OrderType.Internet" />
+                                    </div>
+                                </div>
+                            </RadioItems>
+                        </RadioList>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-control">
+        <div class="col-md-6 ps-4">
             <hr />
-            <div class="d-container">
+            <div class="ps-4">
                 <h4>Bind to Data Source</h4>
-                <div class="row">
+                <div class="row c-controls ps-4">
                     <div class="col-md-6">
                         <label>Selected Value</label>
                     </div>
@@ -122,9 +120,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-control">
+        <div class="col-md-6 ps-4">
             <hr />
-            <div class="d-container">
+            <div class="ps-4">
                 <h4>Disable Items</h4>
                 <div class="row">
                     <div class="col-md-6">

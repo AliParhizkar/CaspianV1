@@ -13,56 +13,54 @@
         </button>
     </div>
 </div>
-<div class="d-body">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Single File</h4>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Maximum size of file</label>
-                    </div>
-                    <div class="col-md-6">
-                        <DropdownList @bind-Value="fileSize" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Fileupload</label>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <Fileupload Service="service" OnChange="ShowProrgres" OnFileUploadCompleted="FileUploadCompleted"
-                                    MaxAllowedSize="Convert.ToInt32(filesSize[fileSize - 1] * 1000_000)" RelatedPath="@relatedPath" />
+<div class="row">
+    <div class="col-md-6 d-control">
+        <hr />
+        <div class="d-container">
+            <h4>Single File</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Maximum size of file</label>
+                </div>
+                <div class="col-md-6">
+                    <DropdownList @bind-Value="fileSize" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
+                </div>
+                <div class="col-md-6">
+                    <label>Fileupload</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <Fileupload Service="service" OnChange="ShowProrgres" OnFileUploadCompleted="FileUploadCompleted"
+                                MaxAllowedSize="Convert.ToInt32(filesSize[fileSize - 1] * 1000_000)" RelatedPath="@relatedPath" />
 
-                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Multiple Files</h4>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Maximum size of files</label>
-                    </div>
-                    <div class="col-md-6">
-                        <DropdownList @bind-Value="fileSize1" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Maximum numer of files file</label>
-                    </div>
-                    <div class="col-md-6">
-                        <DropdownList @bind-Value="fileCount" Source="@(SelectListItem.CreateList("Two", "Three", "Five", "Eight", "Ten"))" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Fileupload</label>
-                    </div>
-                    <div class="text-center col-md-6">
-                        <Fileupload Service="service" MaxFilesCount="Convert.ToInt32(fileCounts[fileCount - 1])"
+    </div>
+    <div class="col-md-6 d-control">
+        <hr />
+        <div class="d-container">
+            <h4>Multiple Files</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Maximum size of files</label>
+                </div>
+                <div class="col-md-6">
+                    <DropdownList @bind-Value="fileSize1" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
+                </div>
+                <div class="col-md-6">
+                    <label>Maximum numer of files file</label>
+                </div>
+                <div class="col-md-6">
+                    <DropdownList @bind-Value="fileCount" Source="@(SelectListItem.CreateList("Two", "Three", "Five", "Eight", "Ten"))" />
+                </div>
+                <div class="col-md-6">
+                    <label>Fileupload</label>
+                </div>
+                <div class="text-center col-md-6">
+                    <Fileupload Service="service" MaxFilesCount="Convert.ToInt32(fileCounts[fileCount - 1])"
                                 MaxAllowedSize="Convert.ToInt32(filesSize[fileSize1 - 1] * 1000_000)" OnChange="ShowProrgres"
                                 Multiple RelatedPath="@relatedPath" OnFilesUploadCompleted="FileUploadCompleted" />
 
-                    </div>
                 </div>
             </div>
         </div>

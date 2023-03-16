@@ -1,6 +1,6 @@
 ﻿@page "/Demo/StringTextBox"
 @namespace Demo.Web.Pages
-<div class="row d-head">
+<div class="row ps-4 pe-4 pt-3">
     <div class="col-md-6">
         <h3>String Textbox</h3>
     </div>
@@ -11,77 +11,75 @@
         </button>
     </div>
 </div>
-<div class="d-body">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Single line</h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="disable" Title="Disable" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Binding type</label>
-                    </div>
-                    <div class="col-md-6">
-                        <RadioList @bind-Value="bindingType" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Max length</label>
-                    </div>
-                    <div class="col-md-6">
-                        <NumericTextBox @bind-Value="maxlength" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Text</label>
-                    </div>
-                    <div class="col-md-6">
-                        <span style="color:red;">@(title.HasValue() ? title : "--------")</span>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Action</label>
-                    </div>
-                    <div class="col-md-6">
-                        <button style="width:50px" class="t-button" @onclick="async () => { await SetFocus(); }">Focus</button>
-                    </div>
-                    <div class="col-md-8">
-                        <StringTextBox @ref="textBox" @bind-Value="title" Disabled="disable" MaxLength="maxlength" BindingType="bindingType" />
-                    </div>
+<div class="row ps-4 pe-4">
+    <div class="col-md-6 ps-4 pe-4">
+        <hr />
+        <div class="ps-4 pe-4">
+            <h4>Single line</h4>
+            <div class="row c-controls ps-4">
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="disable" Title="Disable" />
+                </div>
+                <div class="col-md-6">
+                    <label>Binding type</label>
+                </div>
+                <div class="col-md-6">
+                    <RadioList @bind-Value="bindingType" />
+                </div>
+                <div class="col-md-6">
+                    <label>Max length</label>
+                </div>
+                <div class="col-md-6">
+                    <NumericTextBox @bind-Value="maxlength" />
+                </div>
+                <div class="col-md-6">
+                    <label>Text</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <span style="color:red;">@(title.HasValue() ? title : "--------")</span>
+                </div>
+                <div class="col-md-6">
+                    <label>Action</label>
+                </div>
+                <div class="col-md-6">
+                    <button style="width:50px" class="t-button" @onclick="async () => { await SetFocus(); }">Focus</button>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @ref="textBox" @bind-Value="title" Disabled="disable" MaxLength="maxlength" BindingType="bindingType" />
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Multi line</h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="disable1" Title="Disable" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Max length</label>
-                    </div>
-                    <div class="col-md-6">
-                        <NumericTextBox @bind-Value="maxlength1" Style="width:100px" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Text</label>
-                    </div>
-                    <div class="col-md-6">
-                        <span style="color:red;">@(title1.HasValue() ? title1 : "--------")</span>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Action</label>
-                    </div>
-                    <div class="col-md-6">
-                        <button style="width:50px" class="t-button" @onclick="async () => { await SetFocus1(); }">Focus</button>
-                    </div>
-                    <div class="col-md-12">
-                        <StringTextBox @ref="textBox1" @bind-Value="title1" MultiLine Disabled="disable1" Rows="4" MaxLength="maxlength1" />
-                    </div>
-
+    </div>
+    <div class="col-md-6 ps-4 pe-4">
+        <hr />
+        <div class="ps-4 pe-4">
+            <h4>Multi line</h4>
+            <div class="row ps-4 c-controls">
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="disable1" Title="Disable" />
                 </div>
+                <div class="col-md-6">
+                    <label>Max length</label>
+                </div>
+                <div class="col-md-6">
+                    <NumericTextBox @bind-Value="maxlength1" Style="width:100px" />
+                </div>
+                <div class="col-md-6">
+                    <label>Text</label>
+                </div>
+                <div class="col-md-6 text-center">
+                    <span style="color:red;">@(title1.HasValue() ? title1 : "--------")</span>
+                </div>
+                <div class="col-md-6">
+                    <label>Action</label>
+                </div>
+                <div class="col-md-6">
+                    <button style="width:50px" class="t-button" @onclick="async () => { await SetFocus1(); }">Focus</button>
+                </div>
+                <div class="col-md-12">
+                    <StringTextBox @ref="textBox1" @bind-Value="title1" MultiLine Disabled="disable1" Rows="4" MaxLength="maxlength1" />
+                </div>
+
             </div>
         </div>
     </div>

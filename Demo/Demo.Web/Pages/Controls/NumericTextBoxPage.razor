@@ -1,123 +1,121 @@
 ﻿@page "/Demo/NumericTextBox"
 @namespace Demo.Web.Pages
-<div class="row d-head">
-    <div class="col-md-6">
+<div class="row align-items-center">
+    <div class="col-md-6 ps-4 pe-4 pt-3">
         <h3>Numeric Text Box</h3>
     </div>
-    <div class="d-source-btn col-md-6">
+    <div class="col-md-6 text-center">
         <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
             Source
             <i class="fa fa-code"></i>
         </button>
     </div>
 </div>
-<div class="d-body">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Integer Text Box</h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="nullable" Title="Nullable" />
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="disable" Title="Disable" />
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="digitGrouping" Title="Digit Grouping" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Binding type</label>
-                    </div>
-                    <div class="col-md-6">
-                        <RadioList @bind-Value="BindingType" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Digit Number</label>
-                    </div>
-                    <div class="col-md-6">
-                        <NumericTextBox Style="width:100px" @bind-Value="total" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Value</label>
-                    </div>
-                    <div class="col-md-6">
-                        <span style="color:red">@(nullable ? intNullValue.Seprate3Digit() : intValue.Seprate3Digit())</span>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Action</label>
-                    </div>
-                    <div class="col-md-6">
-                        <button class="t-button" @onclick="async () => { await control.FocusAsync(); }">Focus</button>
-                    </div>
-                    <div class="col-md-8">
-                        @if (nullable)
-                        {
-                            <NumericTextBox @ref="control" @bind-Value="intNullValue" Total="total" BindingType="BindingType" DigitGrouping="digitGrouping" Disabled="disable" />
-                        }
-                        else
-                        {
-                            <NumericTextBox @ref="control" @bind-Value="intValue" Total="total" BindingType="BindingType" DigitGrouping="digitGrouping" Disabled="disable" />
-                        }
-                    </div>
+<div class="row ps-4 pe-4">
+    <div class="col-md-6 ps-4 pe-4">
+        <hr />
+        <div class="ps-4">
+            <h4>Integer Text Box</h4>
+            <div class="row c-controls ps-4">
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="nullable" Title="Nullable" />
+                </div>
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="disable" Title="Disable" />
+                </div>
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="digitGrouping" Title="Digit Grouping" />
+                </div>
+                <div class="col-md-5">
+                    <label>Binding type</label>
+                </div>
+                <div class="col-md-7">
+                    <RadioList @bind-Value="BindingType" />
+                </div>
+                <div class="col-md-5">
+                    <label>Digit Number</label>
+                </div>
+                <div class="col-md-7">
+                    <NumericTextBox @bind-Value="total" />
+                </div>
+                <div class="col-md-5">
+                    <label>Value</label>
+                </div>
+                <div class="col-md-7 text-center">
+                    <span style="color:red">@(nullable ? intNullValue.Seprate3Digit() : intValue.Seprate3Digit())</span>
+                </div>
+                <div class="col-md-5">
+                    <label>Action</label>
+                </div>
+                <div class="col-md-7 text-center">
+                    <button class="t-button" @onclick="async () => { await control.FocusAsync(); }">Focus</button>
+                </div>
+                <div class="col-md-8">
+                    @if (nullable)
+                    {
+                        <NumericTextBox @ref="control" @bind-Value="intNullValue" Total="total" BindingType="BindingType" DigitGrouping="digitGrouping" Disabled="disable" />
+                    }
+                    else
+                    {
+                        <NumericTextBox @ref="control" @bind-Value="intValue" Total="total" BindingType="BindingType" DigitGrouping="digitGrouping" Disabled="disable" />
+                    }
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Decimal Text Box</h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="nullable1" Title="Nullable" />
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="disable1" Title="Disable" />
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="digitGrouping1" Title="Digit Grouping" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Binding Type</label>
-                    </div>
-                    <div class="col-md-6">
-                        <RadioList @bind-Value="BindingType1" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Digit Number</label>
-                    </div>
-                    <div class="col-md-6">
-                        <NumericTextBox Style="width:100px" @bind-Value="total1" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Decimal Number</label>
-                    </div>
-                    <div class="col-md-6">
-                        <NumericTextBox Style="width:100px" @bind-Value="numberDigit" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Value</label>
-                    </div>
-                    <div class="col-md-6">
-                        <span style="color:red">@(nullable1 ? decimalNullValue.Seprate3Digit() : decimalValue.Seprate3Digit())</span>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Action</label>
-                    </div>
-                    <div class="col-md-6">
-                        <button class="t-button" @onclick="async () => { await control1.FocusAsync(); }">Focus</button>
-                    </div>
-                    <div class="col-md-12">
-                        @if (nullable)
-                        {
-                            <NumericTextBox @ref="control1" @bind-Value="decimalNullValue" Total="total1" NumberDigit="numberDigit" BindingType="BindingType1" DigitGrouping="digitGrouping1" Disabled="disable1" />
-                        }
-                        else
-                        {
-                            <NumericTextBox @ref="control1" @bind-Value="decimalValue" Total="total1" NumberDigit="numberDigit" BindingType="BindingType1" DigitGrouping="digitGrouping1" Disabled="disable1" />
-                        }
-                    </div>
+    </div>
+    <div class="col-md-6 ps-4 pe-4">
+        <hr />
+        <div class="ps-4">
+            <h4>Decimal Text Box</h4>
+            <div class="row c-controls ps-4">
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="nullable1" Title="Nullable" />
+                </div>
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="disable1" Title="Disable" />
+                </div>
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="digitGrouping1" Title="Digit Grouping" />
+                </div>
+                <div class="col-md-5">
+                    <label>Binding Type</label>
+                </div>
+                <div class="col-md-7">
+                    <RadioList @bind-Value="BindingType1" />
+                </div>
+                <div class="col-md-5">
+                    <label>Digit Number</label>
+                </div>
+                <div class="col-md-7">
+                    <NumericTextBox @bind-Value="total1" />
+                </div>
+                <div class="col-md-5">
+                    <label>Decimal Number</label>
+                </div>
+                <div class="col-md-7">
+                    <NumericTextBox @bind-Value="numberDigit" />
+                </div>
+                <div class="col-md-5">
+                    <label>Value</label>
+                </div>
+                <div class="col-md-7 text-center">
+                    <span style="color:red">@(nullable1 ? decimalNullValue.Seprate3Digit() : decimalValue.Seprate3Digit())</span>
+                </div>
+                <div class="col-md-5">
+                    <label>Action</label>
+                </div>
+                <div class="col-md-7 text-center">
+                    <button class="t-button" @onclick="async () => { await control1.FocusAsync(); }">Focus</button>
+                </div>
+                <div class="col-md-8">
+                    @if (nullable)
+                    {
+                        <NumericTextBox @ref="control1" @bind-Value="decimalNullValue" Total="total1" NumberDigit="numberDigit" BindingType="BindingType1" DigitGrouping="digitGrouping1" Disabled="disable1" />
+                    }
+                    else
+                    {
+                        <NumericTextBox @ref="control1" @bind-Value="decimalValue" Total="total1" NumberDigit="numberDigit" BindingType="BindingType1" DigitGrouping="digitGrouping1" Disabled="disable1" />
+                    }
                 </div>
             </div>
         </div>

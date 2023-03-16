@@ -45,6 +45,17 @@ namespace Caspian.Common
             return param.CreateMemberExpresion(path);
         }
 
+        Expression Test(Expression expr)
+        {
+            var q = expr.ToString();
+            return null;
+        }
+
+        public void FilterParameters(Expression expr)
+        {
+            Survey(expr, Test);
+        }
+
         public Expression ReduceAggregate(Expression expr, ParameterExpression param)
         {
             return Survey<ParameterExpression>(expr, param, ReduceAggregateFunc);

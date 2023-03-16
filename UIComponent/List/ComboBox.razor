@@ -7,7 +7,7 @@
         <input @ref="input" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await OnNochangeKeyDown(arg)"
                
                @oninput="async arg => await OnChangeValue(arg)" type="text" class="t-input" />
-        <span @onclick="ToggelDropdownList" class="t-select t-header">
+        <span @onmousedown="ToggelDropdownList" class="t-select t-header">
             <i class="t-icon t-arrow-down fa fa-caret-down"></i>
         </span>
     </div>
@@ -23,7 +23,7 @@
                             string className = "t-item";
                             if (SelectedIndex == index || index == 0 && SelectedIndex == -1)
                                 className += " t-state-selected";
-                            <li @onclick="async () => { await SelectSelectItem(item); }" class="@className">
+                            <li class="@className" value="@item.Value">
                                 @if (ChildContent == null)
                                 {
                                     <span>@item.Text</span>

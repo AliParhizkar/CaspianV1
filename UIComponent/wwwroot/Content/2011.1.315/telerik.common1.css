@@ -850,8 +850,9 @@ span, label, td, th {
     color: dimgray;
     font-size: 14px;
 }
-.t-checkbox.t-disabled .t-icon{
+.t-checkbox.t-disabled .t-icon {
     background-color: #eaeaea;
+    border-color: #bebebe;
 }
 .c-treeview .c-icon {
     vertical-align: middle;
@@ -882,11 +883,32 @@ span, label, td, th {
 }
 .t-animation-container {
     position: absolute;
-    overflow: visible;
-    padding: 0;
-    width: 100%;
+    overflow: hidden;
     z-index: 100000000;
+    left: -5px;
+    right: -5px;
+    padding-left: 5px;
+    border-radius: 8px;
 }
+.c-animate-down {
+    top: 31px;
+}
+    .c-animate-down .t-group {
+        top: -100%;
+        box-shadow: -2px 3px 5px 0px dimgrey;
+        transition: top .4s cubic-bezier(0.35, 0, 0.25, 1);
+    }
+    .c-animate-up {
+        bottom: 33px;
+        padding-top:7px;
+    }
+
+        .c-animate-up .t-group {
+            box-shadow: -2px -2px 8px 0px dimgrey;
+            bottom: -100%;
+            transition: bottom .4s cubic-bezier(0.35, 0, 0.25, 1);
+        }
+
 .t-alert {
     margin: 3px 10px 0 0;
 }
@@ -1193,7 +1215,7 @@ html body .t-button-bare {
     border-radius: 8px;
     overflow: hidden;
     position: absolute;
-    width: calc(100% - 2px);
+    width: calc(100% - 10px);
     box-sizing: border-box;
 }
 
@@ -1404,10 +1426,17 @@ div.t-window {
     background-color: transparent !important;
     overflow: hidden;
 }
+    .t-tabstrip .t-header {
+        background-color: #f0f0f0;
+        border-bottom: 1px solid #cdcdcd;
+    }
+.c-tabstrip-items {
+    position: relative;
+    width: fit-content;
+}
 .t-window-titlebar, .t-tabstrip {
-    border-radius: 8px 8px 0 0;
     background-color: #e6e7e8;
-    border-bottom: 1px solid #b6b6b6;
+    border: 1px solid #b6b6b6;
 }
 @keyframes tabstripwidth {
     0% {
@@ -1420,21 +1449,18 @@ div.t-window {
 }
 
 .t-tabstrip .c-selected-panel {
-    animation-name: tabstripwidth;
-    animation-duration: 0.4s;
     background-color: red;
     display: block;
-    width: calc(100% - 12px);
-    height: 3px;
-    margin: 0 auto;
-    margin-top: 2px;
+    height: 2px;
+    position:absolute;
+    width:0;
+    margin-top: -4px;
+    transition: left .2s cubic-bezier(0.35, 0, 0.25, 1),right .25s cubic-bezier(0.35, 0, 0.25, 1);
 }
 .t-tabstrip .t-tabstrip-items {
     overflow: hidden;
     white-space: nowrap;
-    height: 31px;
-    background-color: #e6e7e8;
-    border-bottom: 1px solid #b6b6b6
+    height: 29px;
 }
 
 .t-tabstrip-items .t-item,
@@ -1464,9 +1490,8 @@ div.t-window {
 .t-panelbar .t-tabstrip-items .t-link {
     padding: 0px 5px;
     display: inline-block;
-    zoom: 1;
     border-bottom-width: 0;
-    outline: 0;
+    font-size:16px;
 }
 
 .t-tabstrip-items .t-icon,
@@ -1501,7 +1526,7 @@ div.t-window {
 
 /* PanelBar */
 
-.t-panelbar {
+        .t-panelbar {
     zoom: 1;
 }
 
@@ -2307,7 +2332,7 @@ html body .t-grid tbody .t-button-icon {
     background-color: transparent !important;
     border-width: 0;
     height:31px;
-    overflow:visible;
+    position:relative;
 }
 
     .t-combobox .t-continer {
@@ -2402,7 +2427,6 @@ html body .t-grid tbody .t-button-icon {
     width: 25px;
     background-color: inherit;
     text-align:center;
-    border-radius:0 8px 8px 0;
 }
 
 .t-combobox .t-select {

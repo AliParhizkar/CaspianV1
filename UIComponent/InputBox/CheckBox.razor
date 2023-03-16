@@ -2,13 +2,13 @@
 @typeparam TValue
 @inherits CBaseInput<TValue>
 
-<span class="t-checkbox" @attributes="attrs" @onclick="ChangeValue">
-    <span class="t-icon">
+<span class="t-checkbox" @attributes="attrs">
+    <span class="t-icon" @onclick="ChangeValue">
         <i @attributes="@iconAtttrs" aria-hidden="true"></i>
     </span>
     @if (Title.HasValue())
     {
-        <span class="t-title">@Title</span>
+        <span class="t-title" @onclick="ChangeValue">@Title</span>
     }
 </span>
 @code

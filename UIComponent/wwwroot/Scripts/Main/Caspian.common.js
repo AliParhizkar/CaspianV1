@@ -37,7 +37,32 @@ function moverItem() {
                 }
             });
         },
+        bindTabpanel: function (ctr) {
+            let left = $(ctr).find('.t-state-active').position().left + 5;
+            let width = ($(ctr).find('.t-state-active').width()) - 10;
+            let right = $(ctr).find('.t-tabstrip-items').width() - (left + width);
+            $(ctr).find('.c-selected-panel').css('left', left).css('width', width);
+            //const mutationObserver = new MutationObserver(() => {
+            //    debugger;
+            //    let left = $(ctr).find('.t-state-active').position().left + 5;
+            //    let width = ($(ctr).find('.t-state-active').width()) - 10;
+            //    let right = $(ctr).find('.t-tabstrip-items').width() - (left + width);
+            //    $(ctr).find('.c-selected-panel').css('left', left).css('right', right).width('auto');
 
+            //});
+            //mutationObserver.observe($(ctr).find('.t-content.t-state-active')[0], {
+            //    attributes: true,
+            //    childList: true,
+            //    subtree: true
+            //});
+            //const resizeObserver = new ResizeObserver(() => {
+            //    let left = $(ctr).find('.t-state-active').position().left + 5;
+            //    let width = ($(ctr).find('.t-state-active').width()) - 10;
+            //    let right = $(ctr).find('.t-tabstrip-items').width() - (left + width);
+            //    $(ctr).find('.c-selected-panel').css('left', left).css('right', right).width('auto');
+            //});
+            //resizeObserver.observe($(ctr)[0]);
+        },
         bindLookupTree: function (input) {
             const mutationObserver = new MutationObserver(() => {
                 var location = $(input).offset();
@@ -362,11 +387,35 @@ function moverItem() {
                     }
                 });
             }
-            let div = $(input).closest('.t-combobox');
-            $(div).find('.t-animation-container').width(div.width());
+
             const mutationObserver = new MutationObserver(() => {
-                let div = $(input).closest('.t-combobox');
-                $(div).find('.t-animation-container').width(div.width());
+                let $group = $(input).closest('.t-combobox').find('.t-group');
+                let $animate = $(input).closest('.t-combobox').find('.t-animation-container');
+                let height = $group.outerHeight();
+                $(input).closest('.t-combobox').find('.t-item').mousedown((e) => {
+                    let $group = $(input).closest('.t-combobox').find('.c-animate-down .t-group');
+                    $group.css('top', '-100%');
+                    $group = $(input).closest('.t-combobox').find('.c-animate-up .t-group');
+                    $group.css('bottom', '-100%');
+                    let value = $(e.target).attr('value');
+                    console.log(value)
+                    setTimeout(async () => await dotnetHelper.invokeMethodAsync('SetStringValue', value), 200);
+                });
+                if ($group.offset()) {
+                    let loc = $group.offset().top - $(window).scrollTop();
+                    if (loc > $(window).height() / 2) {
+                        $animate.addClass('c-animate-up').removeClass('c-animate-down');
+                        $animate.height(height);
+                        $group.css('bottom', 0);
+                    }
+                    else {
+                        $animate.addClass('c-animate-down').removeClass('c-animate-up');
+                        $animate.height(height + 7);
+                        $group.css('top', 0);
+                    }
+
+                }
+
             });
             mutationObserver.observe($(input).closest('.t-combobox')[0], {
                 attributes: false,
@@ -398,8 +447,13 @@ function moverItem() {
                 $control.removeClass('t-state-focused').addClass('t-state-default');
             });
             $(window).bind('click', function (e) {
-                if (!$(e.target).closest('.t-combobox').hasClass('t-combobox'))
-                    dotnetHelper.invokeMethodAsync('Close');
+                if (!$(e.target).closest('.t-combobox').hasClass('t-combobox')) {
+                    let $group = $(input).closest('.t-combobox').find('.c-animate-down .t-group');
+                    $group.css('top', '-100%');
+                    $group = $(input).closest('.t-combobox').find('.c-animate-up .t-group');
+                    $group.css('bottom', '-100%');
+                    setTimeout(() => dotnetHelper.invokeMethodAsync('Close'), 200);
+                }
             });
         },
 

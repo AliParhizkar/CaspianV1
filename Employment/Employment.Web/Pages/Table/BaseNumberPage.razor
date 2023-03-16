@@ -4,20 +4,32 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:90%;margin:5px auto">
+<div class="ps-4 pe-4 pt-3">
+    <div class="row ps-3 pe-3 c-controls">
+        <div class="col-md-2">
+            <label>پایه تحصیلی</label>
+        </div>
+        <div class="col-md-4 ps-4">
+            <DropdownList @bind-Value="SearchData.BaseStudy" FilterFunc="t => t > BaseStudy.Diploma" />
+        </div>
+        <div class="col-md-2 pe-4">
+            <label>رتبه</label>
+        </div>
+        <div class="col-md-4">
+            <DropdownList @bind-Value="SearchData.BaseType" />
+        </div>
+    </div>
     <table style="width:100%">
         <tr>
             <td>
-                <label>پایه تحصیلی</label>
+                
             </td>
             <td>
-                <DropdownList @bind-Value="SearchData.BaseStudy" FilterFunc="t => t > BaseStudy.Diploma" />
             </td>
             <td>
-                <label>رتبه</label>
+                
             </td>
             <td>
-                <DropdownList @bind-Value="SearchData.BaseType" />
             </td>
         </tr>
     </table>

@@ -12,5 +12,7 @@ namespace Caspian.UI
         Task IncPageNumber();
 
         void Close();
+
+        Task SelectSelectItem(string id);
     }
 }

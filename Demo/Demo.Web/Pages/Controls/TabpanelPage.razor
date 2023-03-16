@@ -1,5 +1,21 @@
 ﻿@page "/Demo/TabPanel"
 @namespace Demo.Web.Pages
+<div style="width:90%;margin:50px auto">
+    <TabPanel @bind-TabIndex="simpleTabIndex">
+        <Tabs>
+            <TabPanelItem Title='<i class="fa fa-code"></i>Identity information'>
+                <span>Identity information</span>
+            </TabPanelItem>
+            <TabPanelItem Title="Job specification">
+                <span>job specification</span>
+            </TabPanelItem>
+            <TabPanelItem Title="Children's profile">
+                <span>Children's profile</span>
+            </TabPanelItem>
+        </Tabs>
+    </TabPanel>
+</div>
+
 <div class="row d-head">
     <div class="col-md-6">
         <h3>TabPanel</h3>
@@ -19,24 +35,12 @@
                 <h4>Simple</h4>
                 <div class="row">
                     <div class="col-md-12">
-                        <TabPanel @bind-TabIndex="simpleTabIndex">
-                            <Tabs>
-                                <TabPanelItem Title="Identity information">
-                                    <span>Identity information</span>
-                                </TabPanelItem>
-                                <TabPanelItem Title="Job specification">
-                                    <span>job specification</span>
-                                </TabPanelItem>
-                                <TabPanelItem Title="Children's profile">
-                                    <span>Children's profile</span>
-                                </TabPanelItem>
-                            </Tabs>
-                        </TabPanel>
+
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-control">
+        <div class="">
             <hr />
             <div class="d-container">
                 <h4>Dynamic Items</h4>

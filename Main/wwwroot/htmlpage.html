@@ -1,66 +1,107 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-    <script src="jquery-1.8.2.js"></script>
-    <style type="text/css">
-        .parent {
-            border:1px solid red;
-            height:30px;
-            position:relative;
-        }
-        .child{
-            border:1px solid red;
-            height:300px;
-            width:100%;
-            margin-top:33px;
-            position:absolute;
-        }
-        .cc-container{
-            border:1px solid blue;
-            height:30px;
-            overflow:visible;
-            width:300px;
-        }
-    </style>
-    <script type="text/javascript">
-        Date.prototype.getFirstDateInCalendar = function () {
-            let date = new Date(this.valueOf());
-            let day = date.getDate() - 1;
-            date = date.addDays(-day);
-            day = date.getDay() - 1;
-            if (day < 0)
-                day += 7;
-            return date.addDays(-day);
-        }
-        Date.prototype.addMonth = function (months) {
-            let date = new Date(this.valueOf());
-            date.setMonth(date.getMonth() + months);
-            return date;
-        }
-        Date.prototype.addDays = function (days) {
-            let date = new Date(this.valueOf());
-            date.setDate(date.getDate() + days);
-            return date;
-        }
-        let date = new Date();
-        date = date.addMonth(-7);
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <script src="jquery-1.8.2.js"></script>
+        <style type="text/css">
+            .parent {
+                border:1px solid red;
+                height:30px;
+                position:relative;
+            }
+            .child{
+                border:1px solid red;
+                height:300px;
+                width:100%;
+                margin-top:33px;
+                position:absolute;
+            }
+            .cc-container{
+                border:1px solid blue;
+                height:30px;
+                overflow:visible;
+                width:300px;
+            }
+        </style>
+        <script type="text/javascript">
+            Date.prototype.getFirstDateInCalendar = function () {
+                let date = new Date(this.valueOf());
+                let day = date.getDate() - 1;
+                date = date.addDays(-day);
+                day = date.getDay() - 1;
+                if (day < 0)
+                    day += 7;
+                return date.addDays(-day);
+            }
+            Date.prototype.addMonth = function (months) {
+                let date = new Date(this.valueOf());
+                date.setMonth(date.getMonth() + months);
+                return date;
+            }
+            Date.prototype.addDays = function (days) {
+                let date = new Date(this.valueOf());
+                date.setDate(date.getDate() + days);
+                return date;
+            }
+            let date = new Date();
+            date = date.addMonth(-7);
 
-    </script>
-</head>
-<body style="direction:rtl;margin:0;padding:0">
-<table style="width:350px;">
-    <tr>
-        <td>
-            <div class="parent">
-                <div class="child">
+        </script>
+        <style type="text/css">
 
+            .test-main {
+                width: 350px;
+                height: 30px;
+                position: relative;
+                border: 1px solid #d8d8d8;
+                margin: 10px auto;
+                border-radius:8px;
+            }
+            .fortest {
+                position: absolute;
+                border: 1px solid #d8d8d8;
+                width: calc(100% - 10px);
+                top: -300px;
+                box-shadow: 0 2px 10px dimgrey;
+                border-radius: 8px;
+                transition: top .4s cubic-bezier(0.35, 0, 0.25, 1)
+            }
+            .fortest >div{
+                text-align:center;
+                height:30px;
+                vertical-align:middle;
+                line-height:30px;
+            }
+            .t-animation{
+                top:32px;
+                position:absolute;
+                left:-5px;
+                right:-5px;
+                overflow:hidden;
+                height:100px;
+                padding-left:5px;
+            }
+        </style>
+        <script type="text/javascript">
+            function open1() {
+                document.getElementById('_12').style.top = "2px";
+            }
+        </script>
+    </head>
+    <body style="margin:0;padding:0">
+        <div style="height:500px;">
+
+        </div>
+        <button onclick="open1()">...</button>
+        <div class="test-main">
+            <div class="t-animation">
+                <div id="_12" class="fortest">
+                    <div class="c-item">1</div>
+                    <div class="c-item">2</div>
+                    <div class="c-item">3</div>
                 </div>
             </div>
-        </td>
-    </tr>
-</table>
-
-</body>
+        </div>
+    </body>
 </html>

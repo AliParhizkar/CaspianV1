@@ -5,7 +5,12 @@
     base.BuildRenderTree(__builder);
 }
 <div class="c-default-page">
-
+    <div style="width:350px;margin:30px auto">
+        <ComboBox TValue="int?" @bind-Value="id" TEntity="Country" TextExpression="t => t.Title" />
+        <div style="padding-top:380px">
+            <ComboBox TValue="int?" @bind-Value="id1" TEntity="City" TextExpression="t => t.Title" />
+        </div>
+    </div>
 </div>
 <div class="c-copy-right">
     <span class="c-icon"></span>
@@ -19,5 +24,6 @@
 </div>
 @code
 {
-
+    int? id;
+    int? id1;
 }

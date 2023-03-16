@@ -143,13 +143,15 @@ namespace Caspian.UI
             Disabled = true;
         }
 
-        async Task SelectSelectItem(SelectListItem item)
+        public async Task SelectSelectItem(string id)
         {
+            var item = Items.Single(t => t.Value == id);
             if (!item.Disabled)
             {
                 await SetValue(item.Value);
                 text = item.Text;
                 Status = WindowStatus.Close;
+                StateHasChanged();
             }
         }
 

@@ -1,46 +1,44 @@
 ﻿@page "/Demo/MultiSelect"
 @namespace Demo.Web.Pages
-<div class="row d-head">
+<div class="row ps-4 pe-4 pt-3">
     <div class="col-md-6">
         <h3>Multi Select</h3>
     </div>
-    <div class="d-source-btn col-md-6">
+    <div class="col-md-6 text-center">
         <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
             Source
             <i class="fa fa-code"></i>
         </button>
     </div>
 </div>
-<div class="d-body">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Bind to enum</h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="disabled" Title="Control disable" />
-                    </div>
-                    <div class="col-md-12">
-                        <MultiSelectBox @bind-Value="day" Disabled="disabled" />
-                    </div>
+<div class="row ps-4 pe-4">
+    <div class="col-md-6 d-control">
+        <hr />
+        <div class="row ps-4">
+            <h4>Bind to enum</h4>
+            <div class="row c-controls">
+                <div class="col-md-12">
+                    <CheckBox @bind-Value="disabled" Title="Control disable" />
+                </div>
+                <div class="col-md-12">
+                    <MultiSelectBox @bind-Value="day" Disabled="disabled" />
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Disable Some Items</h4>
-                <div class="row">
-                    <div class="text-center col-md-12">
-                        <label>Disable items</label>
-                    </div>
-                    <div class="col-md-12">
-                        <MultiSelectBox @bind-Value="forDisable" />
-                    </div>
-                    <div class="col-md-12">
-                        <MultiSelectBox @bind-Value="day" DisabledValue="forDisable" />
-                    </div>
+    </div>
+    <div class="col-md-6">
+        <hr />
+        <div class="row ps-4 pe-4">
+            <h4>Disable Some Items</h4>
+            <div class="row">
+                <div class="text-center col-md-12">
+                    <label>Disable items</label>
+                </div>
+                <div class="col-md-12">
+                    <MultiSelectBox @bind-Value="forDisable" />
+                </div>
+                <div class="col-md-12">
+                    <MultiSelectBox @bind-Value="day" DisabledValue="forDisable" />
                 </div>
             </div>
         </div>
