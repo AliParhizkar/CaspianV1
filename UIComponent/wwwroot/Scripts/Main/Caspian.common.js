@@ -312,30 +312,6 @@ function moverItem() {
             $(input).data('dotnetHelper', dotnetHelper);
         },
 
-        toggleComboboxStatus: function (input, status) {
-            let $control = $(input).closest('.t-combobox').find('.t-popup');
-            let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
-            debugger;
-            if (status == 1) {
-                //let height = $control.height() + 5;
-                //if (height > 300)
-                //    height = 300;
-                //$control.animate({ top: -height }, 300, function () {
-                //    $continer.css('display', 'none');
-                //});
-            } else if (status == 2) {
-                //var $cmb = $(input).closest('.t-widget');
-                //$continer.css('display', 'block').css('left', $cmb.position().left).width($cmb.width() - 4);
-                //let height = $control.height() + 5;
-                //if (height > 300)
-                //    height = 300;
-                //$continer.css('height', 0);
-                ////$control.css('top', -height);
-                //$('.errorMessage').remove();
-                //$control.animate({ height: height }, 3000);
-            }
-        },
-
         serversideCombobox: function (input, errorMessage, diable, status) {
             
             if (status == 2) {
@@ -377,6 +353,47 @@ function moverItem() {
                 $continer.css('height', height);
         },
 
+        bindDropdownList(dotnetHelper, ddl) {
+            const mutationObserver = new MutationObserver(() => {
+                let $animate = $(ddl).find('.t-animation-container');
+                let $group = $animate.find('.t-group');
+                let height = $group.outerHeight();
+                if ($group.offset()) {
+                    $group.bind('click', () => {
+                        let $group = $(ddl).find('.c-animate-down .t-group');
+                        $group.css('top', '-100%');
+                        $group = $(ddl).find('.c-animate-up .t-group');
+                        $group.css('bottom', '-100%');
+                    });
+                    let loc = $group.offset().top - $(window).scrollTop();
+                    if (loc > $(window).height() / 2) {
+                        $animate.addClass('c-animate-up').removeClass('c-animate-down');
+                        $animate.height(height);
+                        $group.css('bottom', 0);
+                    }
+                    else {
+                        $animate.addClass('c-animate-down').removeClass('c-animate-up');
+                        $animate.height(height + 7);
+                        $group.css('top', 0);
+                    }
+                }
+            });
+            mutationObserver.observe($(ddl)[0], {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+            $(window).bind('click', function (e) {
+                if (!$(e.target).closest('.t-dropdown').hasClass('t-dropdown')) {
+                    let $group = $(ddl).find('.c-animate-down .t-group');
+                    $group.css('top', '-100%');
+                    $group = $(ddl).find('.c-animate-up .t-group');
+                    $group.css('bottom', '-100%');
+                    setTimeout(() => dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
+                }
+            });
+        },
+
         bindComboBox(dotnetHelper, input, pageable) {
             if (pageable) {
                 let div = $(input).closest('.t-combobox').find('.t-group');
@@ -387,7 +404,6 @@ function moverItem() {
                     }
                 });
             }
-
             const mutationObserver = new MutationObserver(() => {
                 let $group = $(input).closest('.t-combobox').find('.t-group');
                 let $animate = $(input).closest('.t-combobox').find('.t-animation-container');
@@ -398,7 +414,6 @@ function moverItem() {
                     $group = $(input).closest('.t-combobox').find('.c-animate-up .t-group');
                     $group.css('bottom', '-100%');
                     let value = $(e.target).attr('value');
-                    console.log(value)
                     setTimeout(async () => await dotnetHelper.invokeMethodAsync('SetStringValue', value), 200);
                 });
                 if ($group.offset()) {
@@ -413,9 +428,7 @@ function moverItem() {
                         $animate.height(height + 7);
                         $group.css('top', 0);
                     }
-
                 }
-
             });
             mutationObserver.observe($(input).closest('.t-combobox')[0], {
                 attributes: false,

@@ -23,7 +23,7 @@
                             string className = "t-item";
                             if (SelectedIndex == index || index == 0 && SelectedIndex == -1)
                                 className += " t-state-selected";
-                            <li class="@className" value="@item.Value">
+                            <li @onclick="async () => await SetValueAndClose(item)" class="@className" value="@item.Value">
                                 @if (ChildContent == null)
                                 {
                                     <span>@item.Text</span>

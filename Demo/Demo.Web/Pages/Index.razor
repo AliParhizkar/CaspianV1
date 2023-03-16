@@ -6,9 +6,9 @@
 }
 <div class="c-default-page">
     <div style="width:350px;margin:30px auto">
-        <ComboBox TValue="int?" @bind-Value="id" TEntity="Country" TextExpression="t => t.Title" />
+        <DropdownList @bind-Value="id" />
         <div style="padding-top:380px">
-            <ComboBox TValue="int?" @bind-Value="id1" TEntity="City" TextExpression="t => t.Title" />
+            <DropdownList @bind-Value="id1" />
         </div>
     </div>
 </div>
@@ -24,6 +24,6 @@
 </div>
 @code
 {
-    int? id;
-    int? id1;
+    Demo.Model.OrderType? id;
+    Demo.Model.OrderType? id1;
 }

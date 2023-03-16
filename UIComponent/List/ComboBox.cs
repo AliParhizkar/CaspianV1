@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices;
 
 namespace Caspian.UI
 {
@@ -143,15 +144,14 @@ namespace Caspian.UI
             Disabled = true;
         }
 
-        public async Task SelectSelectItem(string id)
+        public async Task SetValueAndClose(SelectListItem item)
         {
-            var item = Items.Single(t => t.Value == id);
             if (!item.Disabled)
             {
                 await SetValue(item.Value);
                 text = item.Text;
+                await Task.Delay(300);
                 Status = WindowStatus.Close;
-                StateHasChanged();
             }
         }
 

@@ -889,6 +889,7 @@ span, label, td, th {
     right: -5px;
     padding-left: 5px;
     border-radius: 8px;
+    height:300px;
 }
 .c-animate-down {
     top: 31px;
@@ -1053,6 +1054,7 @@ a.t-grid-add :visited {
 .t-dropdown {
     border-width: 0;
     height:32px;
+    position:relative;
 }
 
 ::-webkit-scrollbar {

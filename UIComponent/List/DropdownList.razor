@@ -1,5 +1,5 @@
 ﻿@namespace Caspian.UI
-@using System.ComponentModel.DataAnnotations;
+@using System.ComponentModel.DataAnnotations
 @typeparam TValue
 @inject CaspianDataService service
 @inherits CBaseInput<TValue>
@@ -12,20 +12,63 @@
     else
         className += " t-state-error";
 }
-<div @attributes="attrs" class="t-widget t-dropdown">
-    <div class="@className">
+<div @ref="element" @attributes="attrs" class="t-widget t-dropdown">
+    <div class="@className" @onclick="OpenWindow">
         <span class="t-input">@(text)</span>
-        <span class="t-t-select">
+        <span class="t-t-select" >
             <i class="t-icon t-arrow-down fa fa-caret-down"></i>
         </span>
         <input @ref="htmlElement" @attributes="inputAttrs" @onchange="UpdateValue" autocomplete="off" style="display:none" />
     </div>
+    @if (status == WindowStatus.Open)
+    {
+        <div class="t-animation-container">
+            <div class="t-popup t-group">
+                <ul class="t-reset">
+                    @foreach(var item in Items)
+                    {
+                        string name = "t-item";
+                        if (IsEqual(item.Value, Value))
+                            name += " t-state-selected";
+                        <li @onclick="async () => await SetValue(item.Value)" class="@name" value="@item.Value">@item.Text</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
 </div>
 @code
 {
+    ElementReference element;
     string text;
     Dictionary<string, object> attrs;
     Dictionary<string, object> inputAttrs;
+    WindowStatus status;
+    List<SelectListItem> Items;
+
+    bool IsEqual(string value1, TValue value2)
+    {
+        if (value1 == null)
+            return value2 == null;
+        if (value2 == null)
+            return value1 == null;
+        var temp1 = Convert.ToInt32(value1);
+        var temp2 = Convert.ChangeType(value2, typeof(TValue).GetUnderlyingType());
+        return temp1.Equals(Convert.ToInt32(temp2));
+    }
+
+    void OpenWindow()
+    {
+        if (status != WindowStatus.Open)
+            status = WindowStatus.Open;
+    }
+
+    public override async Task SetValue(object obj)
+    {
+        await base.SetValue(obj);
+        await Task.Delay(300);
+        status = WindowStatus.Close;
+    }
 
     async Task UpdateValue(ChangeEventArgs arg)
     {
@@ -67,14 +110,36 @@
         base.OnInitialized();
     }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public IList<SelectListItem> Source { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public Func<TValue, bool> FilterFunc { get; set; }
 
     protected override void OnParametersSet()
     {
+        if (Source == null)
+        {
+            if(Items == null)
+            {
+                string str = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
+                Items = new List<SelectListItem>();
+                if (typeof(TValue).IsNullableType())
+                    Items.Add(new SelectListItem(null, str));
+                else if (Search)
+                    Items.Add(new SelectListItem("0", str));
+                var fields = GetFields();
+                foreach (var field in fields.Where(t => !t.IsSpecialName))
+                {
+                    var attr = field.GetCustomAttribute<DisplayAttribute>();
+                    var value = Convert.ToInt32(field.GetValue(null));
+                    Items.Add(new SelectListItem(value.ToString(),
+                        attr == null ? field.Name : attr.Name));
+                }
+            }
+        }
+        else
+            Items = Source.ToList();
         text = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
         if (Value != null && !Value.Equals(default(TValue)))
         {
@@ -126,32 +191,20 @@
         return fields;
     }
 
-    [JsonProperty("data")]
-    public List<SelectListItem> Items { get; set; }
-
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Source == null)
+        if (firstRender)
         {
-            string str = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
-            Items = new List<SelectListItem>();
-            if (typeof(TValue).IsNullableType())
-                Items.Add(new SelectListItem(null, str));
-            else if (Search)
-                Items.Add(new SelectListItem("0", str));
-            var fields = GetFields();
-            foreach (var field in fields.Where(t => !t.IsSpecialName))
-            {
-                var attr = field.GetCustomAttribute<DisplayAttribute>();
-                var value = Convert.ToInt32(field.GetValue(null));
-                Items.Add(new SelectListItem(value.ToString(),
-                    attr == null ? field.Name : attr.Name));
-            }
+            var dotnet = DotNetObjectReference.Create(this);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindDropdownList", dotnet, element);
         }
-        else
-            Items = Source.ToList();
-        var json = this.ConvertToJson();
-        jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, json, UiControlType.DropdownList);
-        return base.OnAfterRenderAsync(firstRender);
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable]
+    public void CloseWindow()
+    {
+        status = WindowStatus.Close;
+        StateHasChanged();
     }
 }

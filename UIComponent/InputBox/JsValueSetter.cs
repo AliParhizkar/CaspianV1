@@ -1,9 +1,6 @@
 ﻿using System;
 using Microsoft.JSInterop;
-using Caspian.Common.Extension;
-using Caspian.Common;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace Caspian.UI
 {
@@ -92,12 +89,6 @@ namespace Caspian.UI
         public void Close()
         {
             listValueInitializer.Close();
-        }
-
-        [JSInvokable]
-        public void SetStringValue(object id)
-        {
-            listValueInitializer.SelectSelectItem(Convert.ToString(id));
         }
     }
 }
