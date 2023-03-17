@@ -40,7 +40,7 @@ function moverItem() {
                         $(elm).find('.c-to-state').css('opacity', 1);
                         setTimeout(() => $(elm).find('.c-from-state').css('display', 'none'), 400);
                     }
-                    else {
+                    else if (oldIndex == 3) {
 
                     }
                     break;
