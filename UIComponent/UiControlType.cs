@@ -4,19 +4,11 @@
     {
         TextBox = 1,
 
-        DropdownList,
-
         DatePicker,
 
         TimePicker,
 
-        Window,
-
-        Grid,
-
-        CheckBox,
-
-        ComboBox
+        Window
     }
 
     public enum BindingType

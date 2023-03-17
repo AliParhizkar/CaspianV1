@@ -311,9 +311,10 @@ a, .btn-link {
 .page {
     display:flex;
 }
-.page .content {
-    width: calc(100% - 160px);
-}
+    .page .content {
+        width: calc(100% - 160px);
+        transition: width .4s ease;
+    }
 .c-login {
     width: 468px;
     height: 697px;

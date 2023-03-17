@@ -595,8 +595,8 @@ namespace Caspian.UI
         {
             if (firstRender)
             {
-                var data = new JsValueSetter(this, this);
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindComboBox", DotNetObjectReference.Create(data), input, Pageable);
+                var dotnet = DotNetObjectReference.Create(this);
+                await jsRuntime.InvokeVoidAsync("$.caspian.bindComboBox", dotnet, input, Pageable);
             }
             if (focused)
             {
@@ -657,5 +657,18 @@ namespace Caspian.UI
             LoadData = true;
             Items = null;
         }
+
+        [JSInvokable]
+        public async Task IncPageNumberInvokable()
+        {
+            await IncPageNumber();
+        }
+
+        [JSInvokable]
+        public void CloseInvokable()
+        {
+            Close();
+        }
+
     }
 }

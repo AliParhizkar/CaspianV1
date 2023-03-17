@@ -1,0 +1,158 @@
+﻿@namespace Caspian.UI
+@inject CaspianDataService service
+@inject IJSRuntime JSRuntime
+@{
+    string title = "";
+    switch(index)
+    {
+        case 1:
+            title = months[selectedMonth - 1] + " " + year;
+            break;
+        case 2:
+            title = year.ToString();
+            break;
+        case 3:
+            var startYear = (year / 10) * 10;
+            title = $"{startYear}-{startYear + 10}";
+            break;
+    }
+}
+<div @ref="element" class="t-widget t-calendar t-datepicker-calendar">
+    <div class="t-header" @onclick="NavigateUp" >
+        <span class="t-link t-nav-prev">
+            <span class="t-icon fa fa-arrow-left"></span>
+        </span>
+        <span class="t-link t-nav-fast">@title</span>
+        <span class="t-link t-nav-next ">
+            <span class="t-icon fa fa-arrow-right"></span>
+        </span>
+    </div>
+    @switch(index)
+    {
+        case 1:
+            if (oldIndex == null)
+            {
+                <MonthComponent Date="date" />
+            }
+            else
+            {
+                int coldIndex = (selectedMonth - 1) % 4;
+                int rowIndex = (selectedMonth - 1) / 4;
+                string className = $"c-days c-left-{coldIndex} c-top-{rowIndex}";
+                <YearComponent SelectedMonth="selectedMonth" />
+                <div class="@className">
+                    <MonthComponent Date="date" />
+                </div>
+            }
+            break;
+        case 2:
+            <div class="c-to-state">
+                <YearComponent SelectedMonth="selectedMonth" SelectedMonthChanged="async month => await NavigateDown(month)" />
+            </div>
+            if (oldIndex == 1)
+            {
+                <div class="c-from-state">
+                    <MonthComponent Date="date" />
+                </div>
+            }
+            else if (oldIndex == 3)
+            {
+                <div class="c-from-state">
+                    <DecadeComponent SelectedYear="year" />
+                </div>
+            }
+            break;
+        case 3:
+            <div class="c-to-state">
+                <DecadeComponent SelectedYear="year" SelectedYearChanged="async year => await NavigateDown(year)" />
+            </div>
+            if (oldIndex == 2)
+            {
+                <div class="c-from-state">
+                    <YearComponent SelectedMonth="selectedMonth" />
+                </div>
+            }
+            break;
+    }
+</div>
+
+@code {
+    int? oldIndex = null;
+    int index = 1;
+    ElementReference element;
+    string[] months;
+    DateTime date = DateTime.Now;
+    int selectedMonth;
+    int year;
+
+    [Parameter]
+    public DateTime Date { get; set; }
+
+    async Task NavigateUp()
+    {
+        switch(index)
+        {
+            case 1:
+                index = 2;
+                oldIndex = 1;
+                await Task.Delay(400);
+                oldIndex = null;
+                break;
+            case 2:
+                index = 3;
+                oldIndex = 2;
+                await Task.Delay(400);
+                oldIndex = null;
+                break;
+        }
+    }
+
+    async Task NavigateDown(int data)
+    {
+        switch(index)
+        {
+            case 1:
+
+                break;
+            case 2:
+                index = 1;
+                oldIndex = 2;
+                selectedMonth = data;
+                date = new DateTime(date.Year, selectedMonth, 1);
+                await Task.Delay(400);
+                oldIndex = null;
+                break;
+            case 3:
+                index = 2;
+                oldIndex = 3;
+                year = data;
+                //date = new DateTime(year, 1, 1);
+                //await Task.Delay(400);
+                //oldIndex = null;
+                break;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        service.Language = Language.En;
+        if (service.Language == Language.Fa)
+            months = new string[] { "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"};
+        else
+            months = new string[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        selectedMonth = date.Month;
+        year = date.Year;
+        base.OnParametersSet();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("$.caspian.bindDatePicker", element, index, oldIndex);
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

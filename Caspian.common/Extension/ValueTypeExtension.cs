@@ -3,6 +3,8 @@ using System.Globalization;
 using Caspian.Common.Extension;
 using Caspian.Common.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace Caspian.Common
 {
@@ -80,6 +82,14 @@ namespace Caspian.Common
             if (str.StartsWith("."))
                 return '0' + str;
             return str;
+        }
+
+        public static DateTime FirstDayInCalendar(this DateTime  date)
+        {
+            var day = date.Day;
+            date = date.AddDays(-day);
+            day = date.DayOfWeek.ConvertToInt().Value;
+            return date.AddDays(-day);
         }
 
         public static string Seprate3Digit(this decimal? value)

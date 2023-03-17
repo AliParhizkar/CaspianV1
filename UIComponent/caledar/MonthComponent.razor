@@ -1,0 +1,65 @@
+﻿@namespace Caspian.UI
+@inject CaspianDataService service
+
+<table class="t-content">
+    <tr class="t-week-header">
+        @foreach (var item in WeekDays)
+        {
+            <th>@item</th>
+        }
+    </tr>
+    @for (int i = 0; i < 6; i++)
+    {
+        <tr>
+            @for (int j = 0; j < 7; j++)
+            {
+                if (i == 0 && MonthDays[i, j] > 10 || i >= 4 && MonthDays[i, j] < 10)
+                {
+                    <td class="t-other-month">@MonthDays[i, j]</td>
+                }
+                else
+                {
+                    <td>@MonthDays[i, j]</td>
+                }
+            }
+        </tr>
+
+    }
+</table>
+@code
+{
+    string[] WeekDays;
+    int[,] MonthDays;
+
+    protected override void OnInitialized()
+    {
+        if (service.Language == Language.En)
+            WeekDays = new string[7] { "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" };
+        else
+            WeekDays = new string[7] { "ش", "ی", "د", "س", "چ", "پ", "ج" };
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (service.Language == Language.En)
+        {
+            MonthDays = new int[6, 7];
+            var date = Date.FirstDayInCalendar();
+            for (int i = 0; i < 6; i++)
+                for (int j = 0; j < 7; j++)
+                {
+                    MonthDays[i, j] = date.Day;
+                    date = date.AddDays(1);
+                }
+        }
+        else
+        {
+
+        }
+        base.OnParametersSet();
+    }
+
+    [Parameter]
+    public DateTime Date { get; set; }
+}

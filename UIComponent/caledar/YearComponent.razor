@@ -1,0 +1,60 @@
+﻿@namespace Caspian.UI
+@inject CaspianDataService service
+<table class="t-content t-meta-view">
+    @{
+        int index = 1;
+    }
+    @for (int i = 0; i < 3; i++)
+    {
+        <tr>
+            @for (int j = 0; j < 4; j++)
+            {
+                var tempIndex = index;
+                string className = index == SelectedMonth ? " t-state-selected" : null;
+                <td class="@className" @onclick="async () => await ChangeMonth(tempIndex)">
+                    <span class="t-link">@months[i, j]</span>
+                </td>
+                index++;
+            }
+        </tr>
+    }
+</table>
+
+@code
+{
+    string[,] months;
+    async Task ChangeMonth(int month)
+    {
+        SelectedMonth = month;
+        await SelectedMonthChanged.InvokeAsync(month);
+    }
+
+    protected override void OnInitialized()
+    {
+        if (service.Language == Language.Fa)
+        {
+            months = new string[,]
+            {
+                {"فروردین", "تیر", "مهر", "دی"},
+                {"اردیبهشت", "مرداد", "آبان", "بهمن"},
+                {"خرداد", "شهریور", "آذر", "اسفند"}
+            };
+        }
+        else
+        {
+            months = new string[,]
+            {
+                {"Jan", "Feb", "Mar", "Apr"},
+                {"May", "Jun", "Jul", "Aug"},
+                {"Sep", "Oct", "Now", "Dec"}
+            };
+        }
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public int SelectedMonth { get; set; }
+
+    [Parameter]
+    public EventCallback<int> SelectedMonthChanged { get; set; }
+}
