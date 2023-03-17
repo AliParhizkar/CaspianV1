@@ -1,0 +1,57 @@
+﻿@namespace Caspian.UI
+<table class="t-content t-meta-view">
+    @{
+        var index = 1;
+        var decadeValue = SelectedDecade * 10;
+    }
+    @for (int i = 0; i < 3; i++)
+    {
+        <tr>
+            @for (int j = 0; j < 4; j++)
+            {
+                var tempIndex = index;
+                string className = Decades[i, j] == decadeValue ? " t-state-selected" : null;
+                var decade = Decades[i, j];
+                <td class="@className" @onclick="async () => await ChangeDecade(decade, tempIndex)">
+                    <span class="t-link">@(Decades[i, j] + " " + (Decades[i, j] + 10))</span>
+                </td>
+                index++;
+            }
+        </tr>
+    }
+</table>
+
+@code
+{
+    int[,] Decades;
+
+    async Task ChangeDecade(int decade, int index)
+    {
+        SelectedDecade = decade;
+        SelectedDecadeIndex = index;
+        await SelectedDecadeChanged.InvokeAsync(decade);
+    }
+
+    protected override void OnParametersSet()
+    {
+        var startDecade = (SelectedDecade / 10) * 100 - 50;
+        Decades = new int[3, 4];
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                Decades[i, j] = startDecade;
+                startDecade += 10;
+            }
+        }
+        base.OnParametersSet();
+    }
+
+    public int SelectedDecadeIndex{ get; private set; }
+
+    [Parameter]
+    public int SelectedDecade { get; set; }
+
+    [Parameter]
+    public EventCallback<int> SelectedDecadeChanged { get; set; }
+}

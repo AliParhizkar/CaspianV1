@@ -25,32 +25,47 @@ function moverItem() {
                 });
             });
         },
-        bindDatePicker: function (elm, index, oldIndex) {
+        bindDatePicker: function (elm, index, vNavigation) {
             switch (index) {
                 case 1:
-                    if (oldIndex == 2) {
-                        $(elm).find('.c-days').css('left', 0).css('top', 35).css('width', 212).css('height', 200);
+                    if (vNavigation == 2) {//down
+                        $(elm).find('.c-down-to-state').css('left', 0).css('top', 35).width(212).height(200);
+                        $(elm).find('.c-down-from-state').css('opacity', 0.1);
                         setTimeout(() => $(elm).find('.t-meta-view').css('display', 'none'), 400);
                     }
                     break;
                 case 2:
-                    if (oldIndex == 1) {
-                        let pos = $(elm).find('.c-to-state .t-state-selected').position();
-                        $(elm).find('.c-from-state').width(47).height(60).css('top', pos.top + 38).css('left', pos.left + 3);
-                        $(elm).find('.c-to-state').css('opacity', 1);
-                        setTimeout(() => $(elm).find('.c-from-state').css('display', 'none'), 400);
+                    if (vNavigation == 1) {//up
+                        let pos = $(elm).find('.c-up-to-state .t-state-selected').position();
+                        $(elm).find('.c-up-from-state').width(47).height(60).css('top', pos.top + 38).css('left', pos.left + 3);
+                        $(elm).find('.c-up-to-state').css('opacity', 1);
+                        setTimeout(() => $(elm).find('.c-up-from-state').css('display', 'none'), 400);
                     }
-                    else if (oldIndex == 3) {
-
+                    else if (vNavigation == 2) {//down
+                        $(elm).find('.c-down-to-state').css('left', 0).css('top', 35).width(212).height(200);
+                        $(elm).find('.c-down-from-state').css('opacity', 0.1);
+                        setTimeout(() => $(elm).find('.t-meta-view').css('display', 'none'), 400);
                     }
                     break;
                 case 3:
-                    if (oldIndex == 2) {
-                        $(elm).find('.c-from-state .t-state-selected').removeClass('t-state-selected');
-                        let pos = $(elm).find('.c-to-state .t-state-selected').position();
-                        $(elm).find('.c-from-state').width(47).height(60).css('top', pos.top + 38).css('left', pos.left + 3);
-                        $(elm).find('.c-to-state').css('opacity', 1);
-                        setTimeout(() => $(elm).find('.c-from-state').css('display', 'none'), 400);
+                    if (vNavigation == 1) {//up
+                        let pos = $(elm).find('.c-up-to-state .t-state-selected').position();
+                        $(elm).find('.c-up-from-state').width(47).height(60).css('top', pos.top + 38).css('left', pos.left + 3);
+                        $(elm).find('.c-up-to-state').css('opacity', 1);
+                        setTimeout(() => $(elm).find('.c-up-from-state').css('display', 'none'), 400);
+                    }
+                    else if (vNavigation == 2) {//down
+                        $(elm).find('.c-down-to-state').css('left', 0).css('top', 35).width(212).height(200);
+                        $(elm).find('.c-down-from-state').css('opacity', 0.1);
+                        setTimeout(() => $(elm).find('.t-meta-view').css('display', 'none'), 400);
+                    }
+                    break;
+                case 4:
+                    if (vNavigation == 1) {//up
+                        let pos = $(elm).find('.c-up-to-state .t-state-selected').position();
+                        $(elm).find('.c-up-from-state').width(47).height(60).css('top', pos.top + 38).css('left', pos.left + 3);
+                        $(elm).find('.c-up-to-state').css('opacity', 1);
+                        setTimeout(() => $(elm).find('.c-up-from-state').css('display', 'none'), 400);
                     }
                     break;
             }

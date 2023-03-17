@@ -13,13 +13,15 @@
         <tr>
             @for (int j = 0; j < 7; j++)
             {
-                if (i == 0 && MonthDays[i, j] > 10 || i >= 4 && MonthDays[i, j] < 10)
+                var day = MonthDays[i, j];
+                if (i == 0 && day > 10 || i >= 4 && day < 10)
                 {
-                    <td class="t-other-month">@MonthDays[i, j]</td>
+                    <td class="t-other-month">@day</td>
                 }
                 else
                 {
-                    <td>@MonthDays[i, j]</td>
+                    string className = Date.Day == day ? "t-state-selected" : "";
+                    <td class="@className">@day</td>
                 }
             }
         </tr>

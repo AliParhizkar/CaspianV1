@@ -1,5 +1,8 @@
 ﻿/* base stylesheet */
 
+.t-other-month {
+    color: #8a2a33;
+}
 .c-week-days {
     display: flex;
     flex-wrap: nowrap;
@@ -907,7 +910,7 @@ span, label, td, th {
 .t-combobox .t-state-disabled input{
     border-color: rgba(0,0,0,0.12);
 }
-.c-from-state {
+.c-up-from-state {
     position: absolute;
     overflow: hidden;
     z-index: 1;
@@ -917,14 +920,16 @@ span, label, td, th {
     top:35px;
     transition: width .4s ease, height .4s ease, left .4s ease, top .4s ease;
 }
-.c-to-state {
+.c-up-to-state {
     height: 200px;
     width: 212px;
     position: absolute;
     opacity: 0.1;
     transition: opacity .4s cubic-bezier(0.35, 0, 0.25, 1)
 }
-
+    .c-up-from-state .t-content{
+        height:100%!important;
+    }
     .t-animation-container {
         position: absolute;
         overflow: hidden;
@@ -952,17 +957,24 @@ span, label, td, th {
             bottom: -100%;
             transition: bottom .4s ease;
         }
-.c-days {
+.c-down-to-state .t-content{
+    height:100%!important;
+}
+
+.c-down-from-state {
+    transition: opacity .4s ease;
+}
+.c-down-to-state {
     position: absolute;
     width: 47px;
     height: 60px;
     overflow: hidden;
-    transition: left .4s cubic-bezier(0.35, 0, 0.25, 1), top .4s cubic-bezier(0.35, 0, 0.25, 1),
-        width .4s cubic-bezier(0.35, 0, 0.25, 1), height .4s cubic-bezier(0.35, 0, 0.25, 1);
+    transition: left .4s ease, top .4s ease, width .4s ease, height .4s ease;
 }
-.c-left-0{
-    left:3px;
-}
+
+    .c-left-0 {
+        left: 3px;
+    }
     .c-left-1{
         left:56px;
     }

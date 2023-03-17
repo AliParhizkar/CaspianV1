@@ -1,15 +1,20 @@
 ﻿@namespace Caspian.UI
 <table class="t-content t-meta-view">
+    @{
+        var index = 1;
+    }
     @for (int i = 0; i < 3; i++)
     {
         <tr>
             @for (int j = 0; j < 4; j++)
             {
+                var tempIndex = index;
                 string className = years[i, j] == SelectedYear ? " t-state-selected" : null;
                 var year = years[i, j];
-                <td class="@className" @onclick="async () => await ChangeYear(year)">
+                <td class="@className" @onclick="async () => await ChangeYear(year, tempIndex)">
                     <span class="t-link">@years[i, j]</span>
                 </td>
+                index++;
             }
         </tr>
     }
@@ -19,9 +24,10 @@
 {
     int[,] years;
 
-    async Task ChangeYear(int year)
+    async Task ChangeYear(int year, int index)
     {
         SelectedYear = year;
+        SelectedYearIndex = index;
         await SelectedYearChanged.InvokeAsync(year);
     }
 
@@ -45,4 +51,6 @@
 
     [Parameter]
     public EventCallback<int> SelectedYearChanged { get; set; }
+
+    public int SelectedYearIndex { get; private set; }
 }
