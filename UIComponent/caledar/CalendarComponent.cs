@@ -86,6 +86,14 @@ namespace Caspian.UI
     public enum VNavigation
     {
         Up = 1,
+        
         Down
+    }
+
+    public enum HNavigation
+    {
+        LeftToRight = 1,
+
+        RightToLeft,
     }
 }

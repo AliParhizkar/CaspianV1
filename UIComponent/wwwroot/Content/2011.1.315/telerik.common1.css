@@ -1,8 +1,41 @@
 ﻿/* base stylesheet */
+@keyframes navigateltr {
+    from {
+        left: 0
+    }
 
-.t-other-month {
-    color: #8a2a33;
+    to {
+        left: -242px
+    }
 }
+.c-navigate-h {
+    display: flex;
+    width: 454px;
+    position: absolute;
+}
+.c-navigate-ltr {
+    animation-name: navigateltr;
+    animation-duration: .4s;
+    left: -242px;
+}
+
+    .c-navigate-h .c-curent {
+        margin-right: 15px;
+    }
+    .c-navigate-h .c-other {
+        margin-left:15px;
+    }
+        .c-navigate-h > div {
+            width: 212px;
+            height: 200px;
+            position: relative;
+        }
+
+
+
+    .t-other-month {
+        color: #8a2a33;
+    }
 .c-week-days {
     display: flex;
     flex-wrap: nowrap;

@@ -24,11 +24,11 @@
 <div @ref="element" class="t-widget t-calendar t-datepicker-calendar">
     <div class="t-header"  >
         <span class="t-link t-nav-prev">
-            <span class="t-icon fa fa-arrow-left"></span>
+            <span class="t-icon fa fa-arrow-left" @onclick="async () => await NavigateLTR()"></span>
         </span>
         <span class="t-link t-nav-fast" @onclick="NavigateUp">@title</span>
         <span class="t-link t-nav-next ">
-            <span class="t-icon fa fa-arrow-right"></span>
+            <span class="t-icon fa fa-arrow-right" @onclick="async () => await NavigateRTL()"></span>
         </span>
     </div>
     @switch(index)
@@ -36,7 +36,21 @@
         case 1:
             if (vNavigation == null)
             {
-                <MonthComponent Date="date" />
+                if (hNavigation == null)
+                {
+                    <MonthComponent Date="date" />
+                }
+                else if (hNavigation == HNavigation.LeftToRight)
+                {
+                    <div class="c-navigate-h c-navigate-ltr">
+                        <div class="c-curent">
+                            <MonthComponent Date="date.AddMonths(-1)" />
+                        </div>
+                        <div class="c-other">
+                            <MonthComponent Date="date" />
+                        </div>
+                    </div>
+                }
             }
             else if (vNavigation == VNavigation.Down)
             {
