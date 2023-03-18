@@ -3,19 +3,19 @@
 @inject IJSRuntime JSRuntime
 @{
     string title = "";
-    switch(index)
+    switch (viewType)
     {
-        case 1:
-            title = months[selectedMonth - 1] + " " + selectedYear;
+        case ViewType.Month:
+            title = months[date.Month - 1] + " " + date.Year;
             break;
-        case 2:
-            title = selectedYear.ToString();
+        case ViewType.Year:
+            title = date.Year.ToString();
             break;
-        case 3:
-            var startYear = (selectedYear / 10) * 10;
+        case ViewType.Decade:
+            var startYear = selectedDecade * 10;
             title = $"{startYear}-{startYear + 10}";
             break;
-        case 4:
+        case ViewType.Century:
             var startDecade = (selectedDecade / 10) * 100;
             title = $"{startDecade}-{startDecade + 100}";
             break;
@@ -31,9 +31,9 @@
             <span class="t-icon fa fa-arrow-right" @onclick="async () => await NavigateRTL()"></span>
         </span>
     </div>
-    @switch(index)
+    @switch (viewType)
     {
-        case 1:
+        case ViewType.Month:
             if (vNavigation == null)
             {
                 if (hNavigation == null)
@@ -42,7 +42,18 @@
                 }
                 else if (hNavigation == HNavigation.LeftToRight)
                 {
-                    <div class="c-navigate-h c-navigate-ltr">
+                    <div class="c-navigate-h c-navigate-ltr-from c-navigate-ltr-to">
+                        <div class="c-curent">
+                            <MonthComponent Date="date" />
+                        </div>
+                        <div class="c-other">
+                            <MonthComponent Date="date.AddMonths(1)" />
+                        </div>
+                    </div>
+                }
+                else //HNavigation.RightToLeft
+                {
+                    <div class="c-navigate-h c-navigate-rtl-to">
                         <div class="c-curent">
                             <MonthComponent Date="date.AddMonths(-1)" />
                         </div>
@@ -54,26 +65,51 @@
             }
             else if (vNavigation == VNavigation.Down)
             {
-                int coldIndex = (selectedMonth - 1) % 4;
-                int rowIndex = (selectedMonth - 1) / 4;
+                int coldIndex = (date.Month - 1) % 4;
+                int rowIndex = (date.Month - 1) / 4;
                 string className = $"c-down-to-state c-left-{coldIndex} c-top-{rowIndex}";
                 <div class="c-down-from-state">
-                    <YearComponent SelectedMonth="selectedMonth" />
+                    <YearComponent SelectedMonth="date.Month" />
                 </div>
                 <div class="@className">
                     <MonthComponent Date="date" />
                 </div>
             }
             break;
-        case 2:
+        case ViewType.Year:
             if (vNavigation == null)
             {
-                <YearComponent SelectedMonth="selectedMonth" SelectedMonthChanged="async month => await NavigateDown(month)" />
+                if (hNavigation == null)
+                {
+                    <YearComponent SelectedMonth="date.Month" SelectedMonthChanged="async month => await NavigateDown(month)" />
+                }
+                else if (hNavigation == HNavigation.LeftToRight)
+                {
+                    <div class="c-navigate-h c-navigate-ltr-from c-navigate-ltr-to">
+                        <div class="c-curent">
+                            <YearComponent SelectedMonth="date.Month" />
+                        </div>
+                        <div class="c-other">
+                            <YearComponent SelectedMonth="date.Month + 1" />
+                        </div>
+                    </div>
+                }
+                else //HNavigation.RightToLeft
+                {
+                    <div class="c-navigate-h c-navigate-rtl-to">
+                        <div class="c-curent">
+                            <YearComponent SelectedMonth="date.Month - 1" />
+                        </div>
+                        <div class="c-other">
+                            <YearComponent SelectedMonth="date.Month" />
+                        </div>
+                    </div>
+                }
             }
             else if (vNavigation == VNavigation.Up)
             {
                 <div class="c-up-to-state">
-                    <YearComponent SelectedMonth="selectedMonth"  />
+                    <YearComponent SelectedMonth="date.Month"  />
                 </div>
                 <div class="c-up-from-state">
                     <MonthComponent Date="date" />
@@ -81,36 +117,59 @@
             }
             else //VNavigation.Down
             {
-                int selectedYearIndex = decadeComponent.SelectedYearIndex;
-                int colIndex = (selectedYearIndex - 1) % 4;
-                int rowIndex = (selectedYearIndex - 1) / 4;
-                string className = $"c-down-to-state c-left-{colIndex} c-top-{rowIndex}";
+                int index = date.Year % 10 + 1;
+                string className = $"c-down-to-state c-left-{index % 4} c-top-{index / 4}";
                 <div class="c-down-from-state">
-                    <DecadeComponent SelectedYear="selectedYear" Decade="selectedDecade" />
+                    <DecadeComponent SelectedYear="date.Year" Decade="selectedDecade" />
                 </div>
                 <div class="@className">
-                    <YearComponent SelectedMonth="selectedMonth"  />
+                    <YearComponent SelectedMonth="date.Month"  />
                 </div>
             }
             break;
-        case 3:
+        case ViewType.Decade:
             if (vNavigation == null)
             {
-                <DecadeComponent @ref="decadeComponent" SelectedYear="selectedYear" Decade="selectedDecade"
-                    SelectedYearChanged="async year => await NavigateDown(year)" />
+                if (hNavigation == null)
+                {
+                    <DecadeComponent SelectedYear="date.Year" Decade="selectedDecade"
+                        SelectedYearChanged="async year => await NavigateDown(year)" />
+                }
+                else if (hNavigation == HNavigation.LeftToRight)
+                {
+                    <div class="c-navigate-h c-navigate-ltr-from c-navigate-ltr-to">
+                        <div class="c-curent">
+                            <DecadeComponent SelectedYear="date.Year" Decade="selectedDecade"/>
+                        </div>
+                        <div class="c-other">
+                            <DecadeComponent SelectedYear="date.Year" Decade="selectedDecade + 1"/>
+                        </div>
+                    </div>
+                }
+                else //HNavigation.RightToLeft
+                {
+                    <div class="c-navigate-h c-navigate-rtl-to">
+                        <div class="c-curent">
+                            <DecadeComponent SelectedYear="date.Year" Decade="selectedDecade - 1" />
+                        </div>
+                        <div class="c-other">
+                            <DecadeComponent SelectedYear="date.Year" Decade="selectedDecade" />
+                        </div>
+                    </div>
+                }
             }
             else if (vNavigation == VNavigation.Up)
             {
                 <div class="c-up-from-state">
-                    <YearComponent SelectedMonth="selectedMonth" />
+                    <YearComponent SelectedMonth="date.Month" />
                 </div>
                 <div class="c-up-to-state">
-                    <DecadeComponent SelectedYear="selectedYear" Decade="selectedDecade" />
+                    <DecadeComponent SelectedYear="date.Year" Decade="selectedDecade" />
                 </div>
             }
             else //VNavigation.Down
             {
-                var selectedDecadeIndex = centuaryComponent.SelectedDecadeIndex;
+                var selectedDecadeIndex = selectedDecade % 10 + 1;
                 int colIndex = (selectedDecadeIndex - 1) % 4;
                 int rowIndex = (selectedDecadeIndex - 1) / 4;
                 string className = $"c-down-to-state c-left-{colIndex} c-top-{rowIndex}";
@@ -118,19 +177,19 @@
                     <CentuaryComponent SelectedDecade="selectedDecade" />
                 </div>
                 <div class="@className">
-                    <DecadeComponent SelectedYear="selectedYear" Decade="selectedDecade" />
+                    <DecadeComponent SelectedYear="date.Year" Decade="selectedDecade" />
                 </div>
             }
             break;
-        case 4:
+        case ViewType.Century:
             if (vNavigation == null)
             {
-                <CentuaryComponent @ref="centuaryComponent" SelectedDecade="selectedDecade" SelectedDecadeChanged="async decade => await NavigateDown(decade)" />
+                <CentuaryComponent SelectedDecade="selectedDecade" SelectedDecadeChanged="async decade => await NavigateDown(decade)" />
             }
             else if (vNavigation == VNavigation.Up)
             {
                 <div class="c-up-from-state">
-                    <DecadeComponent SelectedYear="selectedYear" Decade="selectedDecade" />
+                    <DecadeComponent SelectedYear="date.Year" Decade="selectedDecade" />
                 </div>
                 <div class="c-up-to-state">
                     <CentuaryComponent SelectedDecade="selectedDecade" />

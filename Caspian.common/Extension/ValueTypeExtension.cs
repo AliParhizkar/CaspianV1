@@ -111,6 +111,21 @@ namespace Caspian.Common
             return date.ToPersianDate().ToString();
         }
 
+        public static DateTime ChangeDay(this DateTime date, int day)
+        {
+            return new DateTime(date.Year, date.Month, day);
+        }
+
+        public static DateTime ChangeMonth(this DateTime date, int month)
+        {
+            return new DateTime(date.Year, month, date.Day);
+        }
+
+        public static DateTime ChangeYear(this DateTime date, int year)
+        {
+            return new DateTime(year, date.Month, date.Day);
+        }
+
         public static double Floor(this double d, int digits)
         {
             d = d * Math.Pow(10, digits);

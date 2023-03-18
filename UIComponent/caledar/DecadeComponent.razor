@@ -1,20 +1,22 @@
 ﻿@namespace Caspian.UI
 <table class="t-content t-meta-view">
-    @{
-        var index = 1;
-    }
     @for (int i = 0; i < 3; i++)
     {
         <tr>
             @for (int j = 0; j < 4; j++)
             {
-                var tempIndex = index;
-                string className = years[i, j] == SelectedYear ? " t-state-selected" : null;
                 var year = years[i, j];
-                <td class="@className" @onclick="async () => await ChangeYear(year, tempIndex)">
-                    <span class="t-link">@years[i, j]</span>
-                </td>
-                index++;
+                if (year == null)
+                {
+                    <td>...</td>
+                }
+                else
+                {
+                    string className = years[i, j] == SelectedYear ? " t-state-selected" : null;
+                    <td class="@className" @onclick="async () => await ChangeYear(year.Value)">
+                        <span class="t-link">@years[i, j]</span>
+                    </td>
+                }
             }
         </tr>
     }
@@ -22,25 +24,30 @@
 
 @code 
 {
-    int[,] years;
+    int?[,] years;
 
-    async Task ChangeYear(int year, int index)
+    async Task ChangeYear(int year)
     {
         SelectedYear = year;
-        SelectedYearIndex = index;
         await SelectedYearChanged.InvokeAsync(year);
     }
 
     protected override void OnParametersSet()
     {
-        var startYear = Decade * 10 - 1;
-        years = new int[3, 4];
+        var startYear = Decade * 10;
+        years = new int?[3, 4];
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                years[i, j] = startYear;
-                startYear++;
+                //first and last item is null
+                if (i == 0 && j == 0 || i == 2 && j == 3)
+                    years[i, j] = null;
+                else
+                {
+                    years[i, j] = startYear;
+                    startYear++;   
+                }
             }
         }
         base.OnParametersSet();
@@ -54,6 +61,4 @@
 
     [Parameter]
     public EventCallback<int> SelectedYearChanged { get; set; }
-
-    public int SelectedYearIndex { get; private set; }
 }

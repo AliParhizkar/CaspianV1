@@ -9,25 +9,24 @@ namespace Caspian.UI
     public partial class CalendarComponent
     {
         VNavigation? vNavigation;
-        int index = 1;
+        ViewType viewType = ViewType.Month;
         ElementReference element;
         string[] months;
         DateTime date = DateTime.Now;
-        int selectedMonth;
-        int selectedYear;
+        //int selectedYear;
         int selectedDecade;
-        DecadeComponent decadeComponent;
-        CentuaryComponent centuaryComponent;
+        //DecadeComponent decadeComponent;
+        //CentuaryComponent centuaryComponent;
 
         [Parameter]
         public DateTime Date { get; set; }
 
         async Task NavigateUp()
         {
-            if (index < 4)
+            if (viewType < ViewType.Century)
             {
                 vNavigation = VNavigation.Up;
-                index++;
+                viewType++;
                 await Task.Delay(400);
                 vNavigation = null;
             }
@@ -36,24 +35,19 @@ namespace Caspian.UI
         async Task NavigateDown(int data)
         {
             vNavigation = VNavigation.Down;
-            switch (index)
+            switch (viewType)
             {
-                case 1:
-
+                case ViewType.Year:
+                    date = date.ChangeMonth(data);
                     break;
-                case 2:
-                    index = 1;
-                    selectedMonth = data;
+                case ViewType.Decade:
+                    date = date.ChangeYear(data);
                     break;
-                case 3:
-                    index = 2;
-                    selectedYear = data;
-                    break;
-                case 4:
-                    index = 3;
+                case ViewType.Century:
                     selectedDecade = data;
                     break;
             }
+            viewType--;
             await Task.Delay(400);
             vNavigation = null;
         }
@@ -70,15 +64,13 @@ namespace Caspian.UI
 
         protected override void OnParametersSet()
         {
-            selectedMonth = date.Month;
-            selectedYear = date.Year;
             selectedDecade = date.Year / 10;
             base.OnParametersSet();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("$.caspian.bindDatePicker", element, index, vNavigation);
+            await JSRuntime.InvokeVoidAsync("$.caspian.bindDatePicker", element, viewType, vNavigation);
             await base.OnAfterRenderAsync(firstRender);
         }
     }
@@ -95,5 +87,16 @@ namespace Caspian.UI
         LeftToRight = 1,
 
         RightToLeft,
+    }
+
+    public enum ViewType
+    {
+        Month = 1,
+
+        Year,
+
+        Decade,
+
+        Century
     }
 }

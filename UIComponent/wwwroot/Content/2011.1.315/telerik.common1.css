@@ -1,20 +1,40 @@
 ﻿/* base stylesheet */
 @keyframes navigateltr {
     from {
+        left: -242px
+    }
+
+    to {
+        left: 0
+    }
+}
+
+@keyframes navigatertl {
+    from {
         left: 0
     }
 
     to {
-        left: -242px
+        left: -242px;
     }
 }
+
 .c-navigate-h {
     display: flex;
     width: 454px;
     position: absolute;
 }
-.c-navigate-ltr {
+.c-navigate-ltr-from {
+    left: -242px;
+} 
+
+.c-navigate-ltr-to {
     animation-name: navigateltr;
+    animation-duration: .4s;
+    left: 0;
+}
+.c-navigate-rtl-to {
+    animation-name: navigatertl;
     animation-duration: .4s;
     left: -242px;
 }
