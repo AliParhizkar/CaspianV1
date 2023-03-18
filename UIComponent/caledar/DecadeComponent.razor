@@ -33,7 +33,7 @@
 
     protected override void OnParametersSet()
     {
-        var startYear = (SelectedYear / 10) * 10 - 1;
+        var startYear = Decade * 10 - 1;
         years = new int[3, 4];
         for (int i = 0; i < 3; i++)
         {
@@ -45,6 +45,9 @@
         }
         base.OnParametersSet();
     }
+
+    [Parameter]
+    public int Decade { get; set; }
 
     [Parameter]
     public int SelectedYear { get; set; }

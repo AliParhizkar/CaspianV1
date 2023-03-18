@@ -22,11 +22,11 @@
     }
 }
 <div @ref="element" class="t-widget t-calendar t-datepicker-calendar">
-    <div class="t-header" @onclick="NavigateUp" >
+    <div class="t-header"  >
         <span class="t-link t-nav-prev">
             <span class="t-icon fa fa-arrow-left"></span>
         </span>
-        <span class="t-link t-nav-fast">@title</span>
+        <span class="t-link t-nav-fast" @onclick="NavigateUp">@title</span>
         <span class="t-link t-nav-next ">
             <span class="t-icon fa fa-arrow-right"></span>
         </span>
@@ -72,7 +72,7 @@
                 int rowIndex = (selectedYearIndex - 1) / 4;
                 string className = $"c-down-to-state c-left-{colIndex} c-top-{rowIndex}";
                 <div class="c-down-from-state">
-                    <DecadeComponent SelectedYear="selectedYear" />
+                    <DecadeComponent SelectedYear="selectedYear" Decade="selectedDecade" />
                 </div>
                 <div class="@className">
                     <YearComponent SelectedMonth="selectedMonth"  />
@@ -82,7 +82,8 @@
         case 3:
             if (vNavigation == null)
             {
-                <DecadeComponent @ref="decadeComponent" SelectedYear="selectedYear" SelectedYearChanged="async year => await NavigateDown(year)" />
+                <DecadeComponent @ref="decadeComponent" SelectedYear="selectedYear" Decade="selectedDecade"
+                    SelectedYearChanged="async year => await NavigateDown(year)" />
             }
             else if (vNavigation == VNavigation.Up)
             {
@@ -90,7 +91,7 @@
                     <YearComponent SelectedMonth="selectedMonth" />
                 </div>
                 <div class="c-up-to-state">
-                    <DecadeComponent SelectedYear="selectedYear" />
+                    <DecadeComponent SelectedYear="selectedYear" Decade="selectedDecade" />
                 </div>
             }
             else //VNavigation.Down
@@ -103,7 +104,7 @@
                     <CentuaryComponent SelectedDecade="selectedDecade" />
                 </div>
                 <div class="@className">
-                    <DecadeComponent SelectedYear="selectedYear" />
+                    <DecadeComponent SelectedYear="selectedYear" Decade="selectedDecade" />
                 </div>
             }
             break;
@@ -115,7 +116,7 @@
             else if (vNavigation == VNavigation.Up)
             {
                 <div class="c-up-from-state">
-                    <DecadeComponent SelectedYear="selectedYear" />
+                    <DecadeComponent SelectedYear="selectedYear" Decade="selectedDecade" />
                 </div>
                 <div class="c-up-to-state">
                     <CentuaryComponent SelectedDecade="selectedDecade" />

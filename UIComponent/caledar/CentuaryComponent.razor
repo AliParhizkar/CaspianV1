@@ -2,7 +2,6 @@
 <table class="t-content t-meta-view">
     @{
         var index = 1;
-        var decadeValue = SelectedDecade * 10;
     }
     @for (int i = 0; i < 3; i++)
     {
@@ -10,10 +9,10 @@
             @for (int j = 0; j < 4; j++)
             {
                 var tempIndex = index;
-                string className = Decades[i, j] == decadeValue ? " t-state-selected" : null;
+                string className = Decades[i, j] == SelectedDecade ? " t-state-selected" : null;
                 var decade = Decades[i, j];
                 <td class="@className" @onclick="async () => await ChangeDecade(decade, tempIndex)">
-                    <span class="t-link">@(Decades[i, j] + " " + (Decades[i, j] + 10))</span>
+                    <span class="t-link">@((decade * 10) + " " + (decade * 10 + 10))</span>
                 </td>
                 index++;
             }
@@ -34,14 +33,14 @@
 
     protected override void OnParametersSet()
     {
-        var startDecade = (SelectedDecade / 10) * 100 - 50;
+        var startDecade = (SelectedDecade / 10) * 10;
         Decades = new int[3, 4];
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 4; j++)
             {
                 Decades[i, j] = startDecade;
-                startDecade += 10;
+                startDecade++;
             }
         }
         base.OnParametersSet();

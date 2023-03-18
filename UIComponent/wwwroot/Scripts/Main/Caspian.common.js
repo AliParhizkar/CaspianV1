@@ -30,8 +30,7 @@ function moverItem() {
                 case 1:
                     if (vNavigation == 2) {//down
                         $(elm).find('.c-down-to-state').css('left', 0).css('top', 35).width(212).height(200);
-                        $(elm).find('.c-down-from-state').css('opacity', 0.1);
-                        setTimeout(() => $(elm).find('.t-meta-view').css('display', 'none'), 400);
+                        $(elm).find('.c-down-from-state').css('opacity', 0);
                     }
                     break;
                 case 2:
@@ -43,8 +42,7 @@ function moverItem() {
                     }
                     else if (vNavigation == 2) {//down
                         $(elm).find('.c-down-to-state').css('left', 0).css('top', 35).width(212).height(200);
-                        $(elm).find('.c-down-from-state').css('opacity', 0.1);
-                        setTimeout(() => $(elm).find('.t-meta-view').css('display', 'none'), 400);
+                        $(elm).find('.c-down-from-state').css('opacity', 0);
                     }
                     break;
                 case 3:
@@ -56,8 +54,7 @@ function moverItem() {
                     }
                     else if (vNavigation == 2) {//down
                         $(elm).find('.c-down-to-state').css('left', 0).css('top', 35).width(212).height(200);
-                        $(elm).find('.c-down-from-state').css('opacity', 0.1);
-                        setTimeout(() => $(elm).find('.t-meta-view').css('display', 'none'), 400);
+                        $(elm).find('.c-down-from-state').css('opacity', 0);
                     }
                     break;
                 case 4:
