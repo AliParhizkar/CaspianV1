@@ -12,7 +12,9 @@
                 }
                 else
                 {
-                    string className = years[i, j] == SelectedYear ? " t-state-selected" : null;
+                    string className = years[i, j] == Date.Year ? " t-state-selected" : null;
+                    if (!isActiveYears[i, j])
+                        className += " t-disable";
                     <td class="@className" @onclick="async () => await ChangeYear(year.Value)">
                         <span class="t-link">@years[i, j]</span>
                     </td>
@@ -25,17 +27,19 @@
 @code 
 {
     int?[,] years;
+    bool[,] isActiveYears;
 
     async Task ChangeYear(int year)
     {
-        SelectedYear = year;
-        await SelectedYearChanged.InvokeAsync(year);
+        Date = new DateTime(year, Date.Month, Date.Day);
+        await DateChanged.InvokeAsync(Date);
     }
 
     protected override void OnParametersSet()
     {
-        var startYear = Decade * 10;
+        var year = (Date.Year / 10) * 10; 
         years = new int?[3, 4];
+        isActiveYears = new bool[3, 4];
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -45,8 +49,14 @@
                     years[i, j] = null;
                 else
                 {
-                    years[i, j] = startYear;
-                    startYear++;   
+                    years[i, j] = year;
+                    var isActive = true;
+                    if (FromDate.HasValue && year < FromDate.Value.Year)
+                        isActive = false;
+                    if (isActive && ToDate.HasValue && year > ToDate.Value.Year)
+                        isActive = false;
+                    isActiveYears[i, j] = isActive;
+                    year++;
                 }
             }
         }
@@ -54,11 +64,14 @@
     }
 
     [Parameter]
-    public int Decade { get; set; }
+    public DateTime Date { get; set; }
 
     [Parameter]
-    public int SelectedYear { get; set; }
+    public EventCallback<DateTime> DateChanged { get; set; }
 
     [Parameter]
-    public EventCallback<int> SelectedYearChanged { get; set; }
+    public DateTime? FromDate { get; set; }
+
+    [Parameter]
+    public DateTime? ToDate { get; set; }
 }

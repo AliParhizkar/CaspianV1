@@ -542,15 +542,28 @@ fieldset.t-widget{
     margin:2px;
 }
 
-
-.t-ltr .t-datepicker .t-input, .t-ltr .t-timepicker .t-input {
+.t-rtl .t-calendar .t-icon {
+    transform: rotate(180deg);
+    width: 15px;
+    height: 14px;
+}
+.t-rtl .t-calendar .t-nav-fast {
+    width:155px;
+}
+.t-ltr .t-datepicker .t-input:not(.t-rtl .t-input), .t-ltr .t-timepicker .t-input:not(.t-rtl .t-input) {
     border-radius: 8px 0 0 8px;
 }
 
-.t-ltr .t-picker-wrap .t-select {
+.t-rtl .t-picker-wrap .t-select {
+    border-radius: 8px 0 0 8px;
+    border-right: none;
+    border-left-width: 1px;
+}
+
+.t-ltr .t-picker-wrap .t-select:not(.t-rtl .t-select) {
     border-radius: 0 8px 8px 0;
     border-left: none;
-    border-right-width:1px;
+    border-right-width: 1px;
 }
 
 .t-rtl .t-dropdown-wrap .t-t-select {

@@ -10,7 +10,9 @@
             @for (int j = 0; j < 4; j++)
             {
                 var tempIndex = index;
-                string className = index == SelectedMonth ? " t-state-selected" : null;
+                string className = index == Date.Month ? "t-state-selected" : null;
+                if (!isActiveMonth[i, j])
+                    className += " t-disable";
                 <td class="@className" @onclick="async () => await ChangeMonth(tempIndex)">
                     <span class="t-link">@months[i, j]</span>
                 </td>
@@ -23,10 +25,11 @@
 @code
 {
     string[,] months;
+    bool[,] isActiveMonth;
     async Task ChangeMonth(int month)
     {
-        SelectedMonth = month;
-        await SelectedMonthChanged.InvokeAsync(month);
+        Date = new DateTime(Date.Year, month, Date.Day);
+        await DateChanged.InvokeAsync(Date);
     }
 
     protected override void OnInitialized()
@@ -53,8 +56,40 @@
     }
 
     [Parameter]
-    public int SelectedMonth { get; set; }
+    public DateTime Date { get; set; }
 
     [Parameter]
-    public EventCallback<int> SelectedMonthChanged { get; set; }
+    public EventCallback<DateTime> DateChanged { get; set; }
+
+    [Parameter]
+    public DateTime? FromDate { get; set; }
+
+    [Parameter]
+    public DateTime? ToDate { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        isActiveMonth = new bool[3, 4];
+        int month = 1;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 4; j++)
+            {
+                var isActive = true;
+                if (FromDate.HasValue)
+                {
+                    var fromYear = FromDate.Value.Year;
+                    if (Date.Year < fromYear || Date.Year == fromYear && month < FromDate.Value.Month)
+                        isActive = false;
+                }
+                if (isActive && ToDate.HasValue)
+                {
+                    var toYear = ToDate.Value.Year;
+                    if (Date.Year > toYear || Date.Year == toYear && month > ToDate.Value.Month)
+                        isActive = false;
+                }
+                isActiveMonth[i, j] = isActive;
+                month++;
+            }
+        base.OnParametersSet();
+    }
 }

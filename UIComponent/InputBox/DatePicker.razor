@@ -6,12 +6,20 @@
     if (ErrorMessage.HasValue())
         className += " t-state-error";
 }
-<div class="t-widget t-datepicker">
+<div @ref="element" class="t-widget t-datepicker">
     <div class="@(className)">
         <input value="@text" @ref="htmlElement" class="t-input" autocomplete="off" @onchange="ChangeValue" />
-        <span class="t-select" style="left:inherit">
+        <span class="t-select" style="left:inherit" @onclick="OpenWindow">
             <i class="t-icon t-icon-calendar fa fa-calendar" title="تقویم شمسی"></i>
         </span>
     </div>
+    @if (Status == WindowStatus.Open)
+    {
+        DateTime date = Value == null ? DateTime.Today : Convert.ToDateTime(Value);
+        <div class="t-animation-container">
+            <CalendarComponent Date="date" DateChanged="async d => await ChangeDate(d)" 
+                FromDate="FromDate" ToDate="ToDate"/>
+        </div>
+    }
 </div>
 

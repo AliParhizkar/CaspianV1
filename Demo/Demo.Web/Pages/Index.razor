@@ -5,8 +5,12 @@
     base.BuildRenderTree(__builder);
 }
 <div class="c-default-page">
-    <div style="width:350px;margin:30px auto">
-        <CalendarComponent />
+    <div style="width:350px;margin:30px auto;padding:20px;background-color:white;">
+        <DatePicker @bind-Value="date" ToDate="DateTime.Now.AddYears(2)" />
+    </div>
+    <div style="height:250px"></div>
+    <div style="width:350px;margin:30px auto;padding:20px;background-color:white;">
+        <DatePicker @bind-Value="date" />
     </div>
 </div>
 <div class="c-copy-right">
@@ -21,6 +25,7 @@
 </div>
 @code
 {
+    DateTime date = DateTime.Now;
     int[] days = new int[42];
 
     protected override void OnInitialized()

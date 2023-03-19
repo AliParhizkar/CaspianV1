@@ -12,7 +12,9 @@
                 }
                 else
                 {
-                    string className = Decades[i, j] == SelectedDecade ? " t-state-selected" : null;
+                    string className = Decades[i, j] == selectedDecade ? " t-state-selected" : null;
+                    if (!isActiveDecades[i, j])
+                        className += " t-disable";
                     <td class="@className" @onclick="async () => await ChangeDecade(decade.Value)">
                         <span class="t-link">@((decade * 10) + " " + (decade * 10 + 10))</span>
                     </td>
@@ -26,17 +28,26 @@
 @code
 {
     int?[,] Decades;
+    bool[,] isActiveDecades;
+    int selectedDecade;
 
     async Task ChangeDecade(int decade)
     {
-        SelectedDecade = decade;
-        await SelectedDecadeChanged.InvokeAsync(decade);
+        Date = new DateTime(decade * 10, Date.Month, Date.Day);
+        await DateChanged.InvokeAsync(Date);
     }
 
     protected override void OnParametersSet()
     {
-        var startDecade = (SelectedDecade / 10) * 10;
+        selectedDecade = Date.Year / 10;
+        var decade = (selectedDecade / 10) * 10;
         Decades = new int?[3, 4];
+        isActiveDecades = new bool[3, 4];
+        int? fromDecade = null, toDecade = null;
+        if (FromDate.HasValue)
+            fromDecade = FromDate.Value.Year / 10;
+        if (ToDate.HasValue)
+            toDecade = ToDate.Value.Year / 10;
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -46,8 +57,11 @@
                     Decades[i, j] = null;
                 else
                 {
-                    Decades[i, j] = startDecade;
-                    startDecade++;
+                    var isDisable = fromDecade.HasValue && decade > fromDecade || 
+                        toDecade.HasValue && decade < toDecade;
+                    isActiveDecades[i, j] = !isDisable;
+                    Decades[i, j] = decade;
+                    decade++;
                 }
             }
         }
@@ -55,8 +69,14 @@
     }
 
     [Parameter]
-    public int SelectedDecade { get; set; }
+    public DateTime Date { get; set; }
 
     [Parameter]
-    public EventCallback<int> SelectedDecadeChanged { get; set; }
+    public EventCallback<DateTime> DateChanged { get; set; }
+
+    [Parameter]
+    public DateTime? FromDate { get; set; }
+
+    [Parameter]
+    public DateTime? ToDate { get; set; }
 }

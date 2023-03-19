@@ -25,7 +25,8 @@ function moverItem() {
                 });
             });
         },
-        bindDatePicker: function (elm, index, vNavigation) {
+
+        bindCalendar: function (elm, index, vNavigation) {
             switch (index) {
                 case 1:
                     if (vNavigation == 2) {//down
@@ -352,7 +353,6 @@ function moverItem() {
         bindLookupValue: function (dotnetHelper, input) {
             $(input).data('dotnetHelper', dotnetHelper);
         },
-
         serversideCombobox: function (input, errorMessage, diable, status) {
             
             if (status == 2) {
@@ -392,6 +392,58 @@ function moverItem() {
                 height = 300;
             if (status == 2)
                 $continer.css('height', height);
+        },
+
+        bindDatePicker(dotnetHelper, ctr) {
+            
+            $(ctr).mouseenter(() => {
+                let $element = $(ctr).find('.t-picker-wrap');
+                if (!$element.hasClass('t-state-selected')) 
+                    $element.addClass('t-state-hover');
+            });
+            $(ctr).mouseleave(() => {
+                $(ctr).find('.t-picker-wrap').removeClass('t-state-hover');
+            });
+            $(ctr).find('input').focus(() => {
+                $(ctr).find('.t-picker-wrap').removeClass('t-state-hover').addClass('t-state-selected');
+            });
+            $(ctr).find('input').blur(() => {
+                $(ctr).find('.t-picker-wrap').removeClass('t-state-selected');
+            });
+            $(window).bind('click', function (e) {
+                if (!$(e.target).closest('.t-calendar').hasClass('t-calendar') &&
+                        $(e.target).closest('.t-picker-wrap')[0] != $(ctr).find('.t-picker-wrap')[0]) {
+                    $(ctr).find('.c-animate-down .t-datepicker-calendar').css('top', '-100%');
+                    $(ctr).find('.c-animate-up .t-datepicker-calendar').css('bottom', '-100%');
+                    setTimeout(() => dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
+                }
+            });
+            const mutationObserver = new MutationObserver(() => {
+                let $animate = $(ctr).find('.t-animation-container');
+                let $calendar = $animate.find('.t-datepicker-calendar');
+                $calendar.find('table tr .t-item').click(() => {
+                    $(ctr).find('.c-animate-down .t-datepicker-calendar').css('top', '-100%');
+                    $(ctr).find('.c-animate-up .t-datepicker-calendar').css('bottom', '-100%');
+                });
+                if ($animate.offset()) {
+                    let loc = $animate.offset().top - $(window).scrollTop();
+                    if (loc > $(window).height() / 2) {
+                        $animate.addClass('c-animate-up').removeClass('c-animate-down');
+                        $animate.height(237);
+                        $calendar.css('bottom', 0);
+                    }
+                    else {
+                        $animate.addClass('c-animate-down').removeClass('c-animate-up');
+                        $animate.height(242);
+                        $calendar.css('top', 0);
+                    }
+                }
+            });
+            mutationObserver.observe($(ctr)[0], {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
         },
 
         bindDropdownList(dotnetHelper, ddl) {

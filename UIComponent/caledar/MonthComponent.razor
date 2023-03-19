@@ -14,14 +14,19 @@
             @for (int j = 0; j < 7; j++)
             {
                 var day = MonthDays[i, j];
-                if (i == 0 && day > 10 || i >= 4 && day < 15)
+                var date = MonthDates[i, j];
+                var isActive = isActiveDate[i, j];
+                string className = isActive ? "t-item" : "t-disable";
+                if (date.Month != Date.Month)
                 {
-                    <td class="t-other-month">@day</td>
+                    className += " t-other-month";
+                    <td @onclick="async () => await DateSelected(date, isActive)" class="@className">@day</td>
                 }
                 else
                 {
-                    string className = Date.Day == day ? "t-state-selected" : "";
-                    <td class="@className">@day</td>
+                    if (isActive && Date.Day == day)
+                        className += " t-state-selected";
+                    <td @onclick="async () => await DateSelected(date, isActive)" class="@className">@day</td>
                 }
             }
         </tr>
@@ -32,6 +37,17 @@
 {
     string[] WeekDays;
     int[,] MonthDays;
+    DateTime[,] MonthDates;
+    bool[,] isActiveDate;
+
+    async Task DateSelected(DateTime date, bool isActive)
+    {
+        if (isActive)
+        {
+            Date = date;
+            await DateChanged.InvokeAsync(date);
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -47,11 +63,20 @@
         if (service.Language == Language.En)
         {
             MonthDays = new int[6, 7];
+            MonthDates = new DateTime[6, 7];
+            isActiveDate = new bool[6, 7];
             var date = Date.FirstDayInCalendar();
             for (int i = 0; i < 6; i++)
                 for (int j = 0; j < 7; j++)
                 {
                     MonthDays[i, j] = date.Day;
+                    MonthDates[i, j] = date;
+                    var isActive = true;
+                    if (FromDate.HasValue && date < FromDate.Value)
+                        isActive = false;
+                    else if (ToDate.HasValue && date > ToDate.Value)
+                        isActive = false;
+                    isActiveDate[i, j] = isActive;
                     date = date.AddDays(1);
                 }
         }
@@ -64,4 +89,13 @@
 
     [Parameter]
     public DateTime Date { get; set; }
+
+    [Parameter]
+    public DateTime? FromDate { get; set; }
+
+    [Parameter]
+    public DateTime? ToDate { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> DateChanged { get; set; }
 }

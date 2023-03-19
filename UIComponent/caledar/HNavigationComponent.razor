@@ -1,1 +1,55 @@
-﻿
+﻿@namespace Caspian.UI
+<div class="@className">
+    <div class="c-curent">
+        <CalendarControl Date="startDate" ViewType="ViewType" />
+    </div>
+    <div class="c-other">
+        <CalendarControl Date="endDate" ViewType="ViewType" />
+    </div>
+</div>
+
+
+@code
+{
+    string className;
+    DateTime startDate, endDate;
+
+    [Parameter]
+    public HNavigation HNavigation { get; set; }
+
+    [Parameter]
+    public DateTime Date { get; set; } 
+
+    [Parameter]
+    public ViewType ViewType { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (HNavigation == HNavigation.LeftToRight)
+        {
+            className = "c-navigate-h c-navigate-ltr-from c-navigate-ltr-to";
+            startDate = Date;
+            if (ViewType == ViewType.Month)
+                endDate = Date.AddMonths(1);
+            else
+            {
+                var value = Convert.ToInt32(Math.Pow(10, ViewType.Year.ConvertToInt().Value - 1));
+                endDate = Date.AddYears(value);
+            }
+        }
+        else
+        {
+            className = "c-navigate-h c-navigate-rtl-to";
+            if (ViewType == ViewType.Month)
+                startDate = Date.AddMonths(-1);
+            else
+            {
+                var value = Convert.ToInt32(Math.Pow(10, ViewType.Year.ConvertToInt().Value - 1));
+                startDate = Date.AddYears(-value);
+            }
+            endDate = Date;
+        }
+        base.OnParametersSet();
+    }
+
+}

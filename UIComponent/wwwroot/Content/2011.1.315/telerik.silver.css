@@ -99,7 +99,7 @@ html input[disabled], textarea[disabled] {
     font-size:14px;
 }
 
-.t-datepicker .t-state-selected  {
+.t-datepicker >.t-state-selected  {
     box-shadow: 0 0 3px 0 grey;
     border-color: rgba(0, 0, 0, 0.24);
 }

@@ -1,0 +1,25 @@
+﻿@namespace Caspian.UI
+@switch (ViewType)
+{
+    case ViewType.Month:
+        <MonthComponent Date="Date" />
+        break;
+    case ViewType.Year:
+        <YearComponent Date="Date" />
+        break;
+    case ViewType.Decade:
+        <DecadeComponent Date="Date" />
+        break;
+    case ViewType.Century:
+        <CentuaryComponent Date="Date" />
+        break;
+}
+
+@code 
+{
+    [Parameter]
+    public DateTime Date { get; set; }
+
+    [Parameter]
+    public ViewType ViewType { get; set; }
+}

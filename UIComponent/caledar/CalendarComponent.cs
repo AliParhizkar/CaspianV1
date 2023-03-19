@@ -13,13 +13,27 @@ namespace Caspian.UI
         ElementReference element;
         string[] months;
         DateTime date = DateTime.Now;
-        //int selectedYear;
-        int selectedDecade;
-        //DecadeComponent decadeComponent;
-        //CentuaryComponent centuaryComponent;
+        string navigateDownClassName;
+        string headerTitle;
 
         [Parameter]
         public DateTime Date { get; set; }
+
+        [Parameter]
+        public EventCallback<DateTime> DateChanged { get; set; }
+
+        [Parameter]
+        public DateTime? FromDate { get; set; }
+
+        [Parameter]
+        public DateTime? ToDate { get; set; }
+
+        async Task ChangeDate(DateTime dateTime)
+        {
+            Date = dateTime;
+            await DateChanged.InvokeAsync(dateTime);
+
+        }
 
         async Task NavigateUp()
         {
@@ -27,27 +41,58 @@ namespace Caspian.UI
             {
                 vNavigation = VNavigation.Up;
                 viewType++;
+                CalendarTitleInit();
                 await Task.Delay(400);
                 vNavigation = null;
             }
         }
 
-        async Task NavigateDown(int data)
+        void CalendarTitleInit()
         {
-            vNavigation = VNavigation.Down;
             switch (viewType)
             {
+                case ViewType.Month:
+                    headerTitle = months[date.Month - 1] + " " + date.Year;
+                    break;
                 case ViewType.Year:
-                    date = date.ChangeMonth(data);
+                    headerTitle = date.Year.ToString();
                     break;
                 case ViewType.Decade:
-                    date = date.ChangeYear(data);
+                    var startYear = date.Year / 10 *10;
+                    headerTitle = $"{startYear}-{startYear + 10}";
                     break;
                 case ViewType.Century:
-                    selectedDecade = data;
+                    var startDecade = date.Year / 100 * 100;
+                    headerTitle = $"{startDecade}-{startDecade + 100}";
                     break;
             }
+        }
+
+        void ClassNameInit()
+        {
+            int index = 0;
+            switch (viewType)
+            {
+                case ViewType.Month:
+                    index = date.Month - 1;
+                    break;
+                case ViewType.Year:
+                    index = date.Year % 10 + 1;
+                    break;
+                case ViewType.Decade:
+                    index = (date.Year / 10) % 10 + 1;
+                    break;
+            }
+            navigateDownClassName = $"c-down-to-state c-left-{index % 4} c-top-{index / 4}";
+        }
+
+        async Task NavigateDown(DateTime dateTime)
+        {
+            vNavigation = VNavigation.Down;
+            date = dateTime;
             viewType--;
+            ClassNameInit();
+            CalendarTitleInit();
             await Task.Delay(400);
             vNavigation = null;
         }
@@ -64,13 +109,15 @@ namespace Caspian.UI
 
         protected override void OnParametersSet()
         {
-            selectedDecade = date.Year / 10;
+            date = Date;
+            ClassNameInit();
+            CalendarTitleInit();
             base.OnParametersSet();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("$.caspian.bindDatePicker", element, viewType, vNavigation);
+            await JSRuntime.InvokeVoidAsync("$.caspian.bindCalendar", element, viewType, vNavigation);
             await base.OnAfterRenderAsync(firstRender);
         }
     }
@@ -89,6 +136,9 @@ namespace Caspian.UI
         RightToLeft,
     }
 
+    /// <summary>
+    /// This enum should start from 1 and order of fields should not changed
+    /// </summary>
     public enum ViewType
     {
         Month = 1,

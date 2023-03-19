@@ -9,8 +9,27 @@ namespace Caspian.UI
 {
     public partial class DatePicker<TValue> : CBaseInput<TValue>
     {
+        WindowStatus Status;
         Dictionary<string, object> attrs;
         string text;
+        ElementReference element;
+
+        void OpenWindow()
+        {
+            Status = WindowStatus.Open;
+        }
+
+        async Task ChangeDate(DateTime date)
+        {
+            if (typeof(TValue) == typeof(DateTime) || typeof(TValue) == typeof(DateTime?))
+                Value = (TValue)Convert.ChangeType(date, typeof(DateTime));
+            else
+                Value = (TValue)Convert.ChangeType(date.ToPersianDate(), typeof(PersianDate));
+            text= date.Date.ToPersianDateString();
+            await Task.Delay(400);
+            Status = WindowStatus.Close;
+        }
+
         async void ChangeValue(ChangeEventArgs arg)
         {
             TValue value = default;
@@ -24,6 +43,12 @@ namespace Caspian.UI
 
         [Parameter]
         public bool OpenOnFocus { get; set; }
+
+        [Parameter]
+        public DateTime? FromDate { get; set; }
+
+        [Parameter]
+        public DateTime? ToDate { get; set; }
 
         protected override void OnInitialized()
         {
@@ -47,9 +72,19 @@ namespace Caspian.UI
 
         async protected override Task OnAfterRenderAsync(bool firstRender)
         {
-            var json = this.ConvertToJson();
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, json, UiControlType.DatePicker);
+            if (firstRender)
+            {
+                var dotnet = DotNetObjectReference.Create(this);
+                await jsRuntime.InvokeVoidAsync("$.caspian.bindDatePicker", dotnet, element);
+            }
             await base.OnAfterRenderAsync(firstRender);
+        }
+
+        [JSInvokable]
+        public void CloseWindow()
+        {
+            Status = WindowStatus.Close;
+            StateHasChanged();
         }
     }
 }
