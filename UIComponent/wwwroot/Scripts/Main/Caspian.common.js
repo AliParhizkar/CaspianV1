@@ -452,11 +452,13 @@ function moverItem() {
                 let $group = $animate.find('.t-group');
                 let height = $group.outerHeight();
                 if ($group.offset()) {
-                    $group.find('.t-item').bind('click', () => {
+                    $group.find('.t-item').bind('click', (e) => {
                         let $group = $(ddl).find('.c-animate-down .t-group');
-                        $group.css('top', '-100%');
-                        $group = $(ddl).find('.c-animate-up .t-group');
-                        $group.css('bottom', '-100%');
+                        if (!$(e.target).closest('.t-item').hasClass('t-disable')) {
+                            $group.css('top', '-100%');
+                            $group = $(ddl).find('.c-animate-up .t-group');
+                            $group.css('bottom', '-100%');
+                        }
                     });
                     let loc = $group.offset().top - $(window).scrollTop();
                     if (loc > $(window).height() / 2) {
@@ -680,15 +682,6 @@ function moverItem() {
                     $(control).data('tDatePicker').updateState(options);
                     break;
                 case 4:
-                    let placements = ['top', 'left', 'right', 'bottom'];
-                    let aligns = ['left', 'right', 'center'];
-                    options.placement = placements[options.placementType - 1];
-                    options.align = aligns[options.alignType - 1];
-                    if (!$(control).data('tTimePicker'))
-                        $(control).tTimePicker(options);
-                    $(control).data('tTimePicker').updateState(options);
-                    break;
-                case 5:
                     if (!$(control).data('tWindow'))
                         $(control).tWindow(options);
                     $(control).data('tWindow').updateState(options);

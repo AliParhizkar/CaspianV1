@@ -30,7 +30,9 @@
                         string name = "t-item";
                         if (IsEqual(item.Value, Value))
                             name += " t-state-selected";
-                        <li @onclick="async () => await SetValue(item.Value)" class="@name" value="@item.Value">@item.Text</li>
+                        if (item.Disabled)
+                            name += " t-disable";
+                        <li @onclick="async () => await SetValueForActiveItem(item)" class="@name">@item.Text</li>
                     }
                 </ul>
             </div>
@@ -61,6 +63,12 @@
     {
         if (status != WindowStatus.Open)
             status = WindowStatus.Open;
+    }
+
+    async Task SetValueForActiveItem(SelectListItem item)
+    {
+        if (!item.Disabled)
+            await SetValue(item.Value);
     }
 
     public override async Task SetValue(object obj)
@@ -116,6 +124,9 @@
     [Parameter]
     public Func<TValue, bool> FilterFunc { get; set; }
 
+    [Parameter]
+    public Func<TValue, bool> DisableFunc { get; set; }
+
     protected override void OnParametersSet()
     {
         if (Source == null)
@@ -132,9 +143,15 @@
                 foreach (var field in fields.Where(t => !t.IsSpecialName))
                 {
                     var attr = field.GetCustomAttribute<DisplayAttribute>();
-                    var value = Convert.ToInt32(field.GetValue(null));
-                    Items.Add(new SelectListItem(value.ToString(),
-                        attr == null ? field.Name : attr.Name));
+                    var value = field.GetValue(null);
+                    var disable = false;
+                    if (DisableFunc != null)
+                    {
+                        var enumValue = (TValue)Convert.ChangeType(value, typeof(TValue));
+                        disable = DisableFunc.Invoke(enumValue);
+                    }
+                    var intValue = Convert.ToInt32(value);
+                    Items.Add(new SelectListItem(intValue.ToString(), attr == null ? field.Name : attr.Name, disable));
                 }
             }
         }

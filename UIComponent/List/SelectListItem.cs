@@ -25,13 +25,10 @@ namespace Caspian.UI
             Disabled = disabled;
         }
 
-        [JsonProperty("text")]
         public string Text { get; set; }
 
-        [JsonProperty("value")]
         public string Value { get; set; }
 
-        [JsonProperty("disabled")]
         public bool Disabled { get; set; }
     }
 }

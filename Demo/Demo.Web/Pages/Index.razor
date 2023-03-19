@@ -6,11 +6,11 @@
 }
 <div class="c-default-page">
     <div style="width:350px;margin:30px auto;padding:20px;background-color:white;">
-        <DatePicker @bind-Value="date" ToDate="DateTime.Now.AddYears(2)" />
+        <DropdownList @bind-Value="type" DisableFunc="t => t < Model.OrderType.Tel" />
     </div>
     <div style="height:250px"></div>
     <div style="width:350px;margin:30px auto;padding:20px;background-color:white;">
-        <DatePicker @bind-Value="date" />
+        <DropdownList @bind-Value="type1" />
     </div>
 </div>
 <div class="c-copy-right">
@@ -35,7 +35,7 @@
         base.OnInitialized();
     }
 
-    Demo.Model.OrderType? type;
+    Demo.Model.OrderType type;
     Demo.Model.OrderType? type1;
     int? id;
     int? id1;

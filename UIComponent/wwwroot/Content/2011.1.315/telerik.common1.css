@@ -18,7 +18,10 @@
         left: -242px;
     }
 }
+.t-dropdown .t-group .t-disable{
+    color:#838383;
 
+}
 .c-navigate-h {
     display: flex;
     width: 454px;
@@ -1582,7 +1585,8 @@ div.t-window {
 .t-window-titlebar, .t-tabstrip {
     background-color: #e6e7e8;
     border: 1px solid #b6b6b6;
-    overflow:visible;
+    overflow: visible;
+    border-radius: 8px 8px 0 0;
 }
 @keyframes tabstripwidth {
     0% {
@@ -2681,7 +2685,7 @@ html body .t-grid tbody .t-button-icon {
         line-height: 30px;
         padding:0 4px;
     }
-        .t-popup .t-item:not(.t-state-selected):hover {
+        .t-popup .t-item:not(.t-state-selected, .t-disable):hover {
             background-color: #ededed;
         }
         /* Calendar */
