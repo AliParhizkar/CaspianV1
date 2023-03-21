@@ -210,11 +210,10 @@
     $t.window.prototype = {
         updateState: function (options) {
             $.extend(this, options);
-            let $moveItem = $(this.element).find('.t-window-titlebar')
+            let $moveItem = $(this.element).find('.t-window-titlebar');
             $moveItem.unbind('mousedown.bindwindowdraging');
             $('body').unbind('mousemove.bindwindowdraging');
             $moveItem.css('cursor', 'default');
-            
             if (this.draggable) {
                 $moveItem.css('cursor', 'move');
                 $moveItem.bind("mousedown.bindwindowdraging", function (e) {
@@ -251,9 +250,9 @@
                 //    $element.css({ top: offset.top, left: offset.left })
                 //        .css({ visibility: 'visible', display: 'none' });
                 //}
-                $element
-                    .toggleClass('t-rtl', $element.closest('.t-rtl').length > 0)
-                    .appendTo(document.body);
+                //$element
+                //    .toggleClass('t-rtl', $element.closest('.t-rtl').length > 0)
+                //    .appendTo(document.body);
             }
             switch (options.status) {
                 case 1:
@@ -276,7 +275,6 @@
             resizeElement.css('min-height', height);
             resizeElement.height('auto');
         },
-
         overlay: function (visible) {
             if (!this.overlayItem) {
                 var self_ = this;
@@ -295,7 +293,6 @@
             }
             return this.overlayItem;
         },
-
         windowActionHandler: function (e) {
             var $target = $(e.target).closest('.t-window-action').find('.fa'),
                 contextWindow = this;
@@ -313,7 +310,6 @@
                 }
             });
         },
-
         center: function () {
             var $element = $(this.element),
                 $window = $(window);
@@ -324,11 +320,9 @@
 
             return this;
         },
-
         validateElements: function(){
             return !$(this.element).checkError();
         },
-
         title: function (text) {
             var $title = $('.t-window-titlebar > .t-window-title', this.element);
 

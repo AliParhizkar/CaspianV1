@@ -446,6 +446,83 @@ function moverItem() {
             });
         },
 
+        bindDragAndDrop: function (dragableDom, header) {
+            //header.style.display =
+            //$window.css('display', 'block');
+            header.onmousedown = function (e) {
+                e = e || window.event;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = function (e) {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                };
+                document.onmousemove = function (e) {
+                    e = e || window.event;
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    dragableDom.style.top = (dragableDom.offsetTop - pos2) + "px";
+                    dragableDom.style.left = (dragableDom.offsetLeft - pos1) + "px";
+                }
+            }
+        },
+
+        bindWindow(dotnet, window) {
+            console.log($(window).attr('status'))
+            const mutationObserver = new MutationObserver((mutationList) => {
+                mutationList.forEach(mutation => {
+                    if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
+                        
+                        let $window = $(mutation.target).closest('.t-window');
+                        
+                        if ($(mutation.target).attr('status') == "2") {
+                            $window.css('display', 'block');
+                            let $header = $window.find('.t-header');
+                            if ($(mutation.target).attr('draggable') != undefined) {
+                                $header.css('cursor', 'all-scroll');
+                                $.caspian.bindDragAndDrop($window[0], $header[0]);
+                            }
+                            else
+                                $header.css('cursor', 'default');
+                            let $parent = $window.parent().closest('.t-window');
+                            if (!$parent[0])
+                                $parent = $('.c-content-main');
+                            let left = ($parent.width() - $window.width()) / 2;
+                            $window.css('left', left)
+                            let $overlay = $('<div class="t-overlay"></div>');
+                            $overlay.appendTo($parent);
+                            $window.data('overlay', $overlay);
+                            $window.addClass('window-animate');
+                            setTimeout(function () {
+                                $window.addClass('window-animate');
+                                $overlay.css('opacity', .5);
+                                $window.css('top', 35);
+                                setTimeout(() => $window.removeClass('window-animate'), 400)
+                            }, 25);
+                        }
+                        else {
+                            let $overlay = $window.data('overlay');
+                            $window.addClass('window-animate');
+                            setTimeout(function () {
+                                $overlay.css('opacity', 0);
+                                $window.css('top', 0);
+                                setTimeout(function () {
+                                    $overlay.remove();
+                                    $window.css('display', 'none');
+                                }, 200);
+                            }, 25)
+                        }
+                    }
+                });
+            });
+            mutationObserver.observe($(window)[0], {
+                attributes: true,
+                childList: false,
+                subtree: false
+            });
+        },
         bindDropdownList(dotnetHelper, ddl) {
             const mutationObserver = new MutationObserver(() => {
                 let $animate = $(ddl).find('.t-animation-container');

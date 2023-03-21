@@ -2,36 +2,33 @@
 @implements IInputValueInitializer
 @implements IWindow
 @inject BasePageService Service
-@if (!LoadOnContent || Status == WindowStatus.Open)
-{
-    <CascadingValue TValue="IWindow" Value="this" Name="ParentWindow">
-        <CascadingValue Value="(id + 2)" Name="WindowId">
-            <div @attributes="attrs" @ref="window" class="t-widget t-window">
-                @if (!HideTitle)
-                {
-                    <div class="t-window-titlebar t-header">
-                        <span class="t-window-title">@Title</span>
-                        <span @onclick="() =>
+<CascadingValue TValue="IWindow" Value="this" Name="ParentWindow">
+    <CascadingValue Value="(id + 2)" Name="WindowId">
+        <div @attributes="attrs" class="t-widget t-window">
+            @if (!HideTitle)
+            {
+                <div class="t-window-titlebar t-header">
+                    <span class="t-window-title">@Title</span>
+                    <span @onclick="() =>
                                     {
                                         if (StatusChanged.HasDelegate)
                                             StatusChanged.InvokeAsync(WindowStatus.Close);
                                         Status = WindowStatus.Close;
                                     }" class="t-window-action t-link">
-                            <i class="fa fa-close"></i>
-                        </span>
-                    </div>
-                }
-                <div class="t-window-content t-content">
-                    @if (Content != null && Status == WindowStatus.Open)
-                    {
-                        <MessageBox @ref="messageBox" />
-                        @Content
-                    }
+                        <i class="fa fa-close"></i>
+                    </span>
                 </div>
+            }
+            <div @ref="window"  status="@Status.ConvertToInt()" draggable="@(Draggable)" class="t-window-content t-content">
+                @if (Status == WindowStatus.Open)
+                {
+                    <MessageBox @ref="messageBox" />
+                    @Content
+                }
             </div>
-        </CascadingValue>
+        </div>
     </CascadingValue>
-}
+</CascadingValue>
 
 @code
 {
@@ -42,7 +39,7 @@
     Dictionary<string, object> attrs = new Dictionary<string, object>();
 
     [JsonIgnore]
-    protected ElementReference window;
+    public ElementReference window { get; private set; }
 
     [Inject, JsonIgnore]
     protected IJSRuntime jsRuntime { get; set; }
@@ -50,16 +47,13 @@
     [Inject, JsonIgnore]
     public WindowAppState AppState { get; set; }
 
-    [CascadingParameter(Name = "WindowId"), JsonProperty("windowId")]
-    public int WindowId { get; set; }
-
     [Parameter, JsonIgnore]
     public string Id { get; set; }
 
     [Parameter, JsonIgnore]
     public string Style { get; set; }
 
-    [Parameter, JsonProperty("title")]
+    [Parameter]
     public string Title { get; set; }
 
     [Parameter, JsonIgnore]
@@ -92,9 +86,6 @@
 
     [Parameter, JsonProperty("draggable")]
     public bool Draggable { get; set; }
-
-    [Parameter]
-    public bool LoadOnContent { get; set; }
 
     [Parameter, JsonProperty("parentChaild")]
     public bool ParentChaild { get; set; }
@@ -135,7 +126,6 @@
         if (CrudComponent != null)
             CrudComponent.SetWindow(this);
         AppState.Window = this;
-        id = WindowId;
         Modal = true;
         Draggable = true;
         base.OnInitialized();
@@ -167,7 +157,6 @@
             Service.Pop();
             messageBox = null;
         }
-        oldStatus = Status;
         await base.OnParametersSetAsync();
     }
 
@@ -181,15 +170,9 @@
             if (OnOpen.HasDelegate)
                 await OnOpen.InvokeAsync();
         }
-        if (!LoadOnContent || Status == WindowStatus.Open)
-        {
-            var json = this.ConvertToJson();
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", window, json, UiControlType.Window);
-        }
         if (firstRender)
         {
-            var data = new JsValueSetter(this);
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindValue", DotNetObjectReference.Create(data), window, UiControlType.Window);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindWindow", DotNetObjectReference.Create(this), window);
         }
         await base.OnAfterRenderAsync(firstRender);
     }

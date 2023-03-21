@@ -60,8 +60,10 @@
                                 <span>@title</span>
                             </div>
                         </div>
-                        <div class="c-content-main">
-                            @ChildContent
+                        <div @ref="pageElement" class="c-content-main">
+                            <CascadingValue Value="pageElement" Name="PageElement">
+                                @ChildContent
+                            </CascadingValue>
                         </div>
                     }
                     else
@@ -95,6 +97,7 @@
     int menuId;
     bool userHasAccess;
     bool userIsAuthenticated;
+    ElementReference pageElement;
 
     [CascadingParameter]
     public Task<AuthenticationState> authenticationStateTask { get; set; }
