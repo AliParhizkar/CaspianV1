@@ -3022,11 +3022,14 @@ div.t-treeview {
 /* NumericTextBox */
 
 div.t-numerictextbox {
-    zoom: 1;
     vertical-align: middle;
     white-space: nowrap;
     overflow:visible;
     height:34px;
+}
+
+.t-HelpWindow.c-animate{
+    transition: top .4s ease;
 }
 
 .t-checkbox.t-disabled .t-icon i {

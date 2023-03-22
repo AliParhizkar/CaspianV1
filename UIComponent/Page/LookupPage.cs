@@ -85,8 +85,8 @@ namespace Caspian.UI
                         var text = TextExpression.Compile().Invoke(entity);
                         TextBox.SetText(text);
                         await TextBox.SetValue(id);
-                        TextBox.CloseHelpForm();
                         MultiselectAutocomplete?.AddToList(new SelectListItem(id.ToString(), text));
+                        await TextBox.CloseHelpForm(true);
                     });
                 }
             }

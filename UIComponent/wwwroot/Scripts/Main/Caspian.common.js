@@ -201,34 +201,75 @@ function moverItem() {
             }
         },
 
-        bindLookup: function (input, searchForm, options) {
-            options = JSON.parse(options);
-            var txt = $(input).data('tTextBox');
-            if (!txt) {
-                $(input).tTextBox(options);
-                txt = $(input).data('tTextBox');
-            }
-            txt.updateState(options);
-            if (options.autoHide && options.status == 2) {
-                $('body').unbind('click.autoHidedotnetObject');
-                $('body').bind('click.autoHidedotnetObject', async function (e) {
-                    console.log($(e.target))
-                    if (!$(e.target).closest('.t-HelpWindow').hasClass('t-HelpWindow') && $(e.target)[0] != $(input)[0]) {
-                        $('body').unbind('click.autoHidedotnetObject');
-                        await $(input).data('dotnetHelper').invokeMethodAsync('HideForm');
+        closeLookupWindow: function ($window) {
+            $window.css('top', -$window.height() - 12);
+        },
+
+        bindLookup: function (dotnet, input) {
+            let $lookup = $(input).closest('.c-lookup');
+            
+            const mutationObserver = new MutationObserver((mutationList) => {
+                mutationList.forEach(mutation => {
+                    if (mutation.type == 'attributes' && mutation.attributeName == 'status' && $(mutation.target).attr('status') == "2") {
+                        let $animat = $(mutation.target).find('.t-animation-container');
+                        let $window = $(mutation.target).find('.t-HelpWindow');
+                        $animat.height($window.height() + 10);
+                        let left = $(mutation.target).position().left - ($window.width() - $(mutation.target).width()) / 2;
+                        let top = $(mutation.target).position().top + 40;
+                        $animat.css('left', left).width($window.width() + 10).css('top', top);
+                        $window.css('top', -$window.height());
+                        setTimeout(() => {
+                            $window.addClass('c-animate');
+                            $window.css('top', 0);
+                        }, 25);
+                        $window.find('.t-window-action').click(() => $.caspian.closeLookupWindow($window));
+                        $window.find('.t-grid-content').mousedown(() => $.caspian.closeLookupWindow($window));
+                        let $lookup = $(mutation.target);
+                        if ($lookup.attr('autoHide') != undefined) {
+                            $('body').unbind('mousedown.lookup');
+                            $('body').bind('mousedown.lookup', async function (e) {
+                                if (!$(e.target).closest('.c-lookup').hasClass('c-lookup')) {
+                                    $.caspian.closeLookupWindow($window);
+                                    await dotnet.invokeMethodAsync('Close');
+                                }
+                            });
+                        }
                     }
                 });
-            }
-            $(searchForm).appendTo($(input).parent()).css('top', $(input).position().top + 37);
+            });
+            mutationObserver.observe($lookup[0], {
+                attributes: true,
+                childList: false,
+                subtree: false
+            });
 
-            if (!$(searchForm).data('tHelpWindow'))
-                $(searchForm).tHelpWindow();
-            $(searchForm).data('tHelpWindow').textBox = $(input).data('tTextBox');
-            $(input).data('tTextBox').searchForm = $(searchForm).data('tHelpWindow');
-            if (options.status == 2)
-                $(searchForm).data('tHelpWindow').open();
-            else
-                $(searchForm).data('tHelpWindow').close();
+            //options = JSON.parse(options);
+            //var txt = $(input).data('tTextBox');
+            //if (!txt) {
+            //    $(input).tTextBox(options);
+            //    txt = $(input).data('tTextBox');
+            //}
+            //txt.updateState(options);
+            //if (options.autoHide && options.status == 2) {
+            //    $('body').unbind('click.autoHidedotnetObject');
+            //    $('body').bind('click.autoHidedotnetObject', async function (e) {
+            //        console.log($(e.target))
+            //        if (!$(e.target).closest('.t-HelpWindow').hasClass('t-HelpWindow') && $(e.target)[0] != $(input)[0]) {
+            //            $('body').unbind('click.autoHidedotnetObject');
+            //            await $(input).data('dotnetHelper').invokeMethodAsync('HideForm');
+            //        }
+            //    });
+            //}
+            //$(searchForm).appendTo($(input).parent()).css('top', $(input).position().top + 37);
+
+            //if (!$(searchForm).data('tHelpWindow'))
+            //    $(searchForm).tHelpWindow();
+            //$(searchForm).data('tHelpWindow').textBox = $(input).data('tTextBox');
+            //$(input).data('tTextBox').searchForm = $(searchForm).data('tHelpWindow');
+            //if (options.status == 2)
+            //    $(searchForm).data('tHelpWindow').open();
+            //else
+            //    $(searchForm).data('tHelpWindow').close();
         },
 
         dadaGridBind: function (grv) {
@@ -350,9 +391,6 @@ function moverItem() {
             });
         },
 
-        bindLookupValue: function (dotnetHelper, input) {
-            $(input).data('dotnetHelper', dotnetHelper);
-        },
         serversideCombobox: function (input, errorMessage, diable, status) {
             
             if (status == 2) {

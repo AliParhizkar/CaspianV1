@@ -790,7 +790,6 @@ button:disabled {
 }
 
 .t-HelpWindow {
-    display: none;
     position: absolute;
     z-index: 10000000;
     background-color: white;

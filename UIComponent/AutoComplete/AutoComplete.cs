@@ -29,11 +29,13 @@ namespace Caspian.UI
         SearchState SearchState;
         ValidationMessageStore _messageStore;
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
+        ElementReference input;
+        WindowStatus status;
 
         void SetSearchValue(ChangeEventArgs e)
         {
-            if (WindowStatus == WindowStatus.Close)
-                WindowStatus = WindowStatus.Open;
+            if (status == WindowStatus.Close)
+                status = WindowStatus.Open;
             if (mustClear)
             {
                 Text = "";
@@ -77,12 +79,6 @@ namespace Caspian.UI
         [CascadingParameter, JsonIgnore]
         public EditContext CurrentEditContext { get; set; }
 
-        [JsonIgnore]
-        private ElementReference SearchForm;
-
-        [JsonIgnore]
-        private ElementReference Input;
-
         [Parameter, JsonIgnore]
         public TValue Value { get; set; }
 
@@ -113,9 +109,6 @@ namespace Caspian.UI
         [JsonProperty("type")]
         public string TextBoxType { get; private set; } = "string";
 
-        [JsonProperty("status")]
-        public WindowStatus WindowStatus { get; set; }
-
         [Parameter, JsonIgnore]
         public bool Required { get; set; }
 
@@ -133,7 +126,7 @@ namespace Caspian.UI
             SearchState = new SearchState();
             shouldRender = true;
             SearchState.EntityType = typeof(TEntity);
-            WindowStatus = WindowStatus.Close;
+            status = WindowStatus.Close;
             base.OnInitialized();
         }
 
@@ -191,7 +184,7 @@ namespace Caspian.UI
             if (ErrorMessage != null && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = Input;
+                FormAppState.Element = input;
                 FormAppState.ErrorMessage = ErrorMessage;
             }
         }
@@ -250,12 +243,12 @@ namespace Caspian.UI
             if (ErrorMessage == null && !Validate())
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = Input;
+                FormAppState.Element = input;
             }
             if (ErrorMessage != null && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = Input;
+                FormAppState.Element = input;
             }
         }
 
@@ -277,10 +270,18 @@ namespace Caspian.UI
             return false;
         }
 
-        public void CloseHelpForm()
+        public async Task CloseHelpForm(bool sholdRender = false)
         {
-            WindowStatus = WindowStatus.Close;
-            StateHasChanged();
+            await Task.Delay(200);
+            status = WindowStatus.Close;
+            if (sholdRender)
+                StateHasChanged();
+        }
+
+        [JSInvokable]
+        public async Task Close()
+        {
+            await CloseHelpForm(true);
         }
 
         async Task OnKeyUp(KeyboardEventArgs e)
@@ -312,7 +313,7 @@ namespace Caspian.UI
                         await SetValue(SearchState.Grid.SelectedRowId.Value, false);
                     break;
                 case "Escape":
-                    WindowStatus = WindowStatus.Close;
+                    status = WindowStatus.Close;
                     break;
                 case "Backspace":
                     if (!Value.Equals(default(TValue)))
@@ -341,7 +342,7 @@ namespace Caspian.UI
 
         public async Task FocusAsync()
         {
-            await Input.FocusAsync();
+            await input.FocusAsync();
         }
 
         public void Focus()
@@ -369,7 +370,7 @@ namespace Caspian.UI
             {
                 inputAttrs.Add("onfocus", new Action(() =>
                 {
-                    WindowStatus = WindowStatus.Open;
+                    status = WindowStatus.Open;
                     SearchStr = "";
                 }));
             }
@@ -377,7 +378,7 @@ namespace Caspian.UI
             {
                 inputAttrs.Add("onblur", new Action(() =>
                 {
-                    WindowStatus = WindowStatus.Close;
+                    status = WindowStatus.Close;
                 }));
             }
             if (Disabled)
@@ -408,7 +409,7 @@ namespace Caspian.UI
             if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = Input;
+                FormAppState.Element = input;
                 FormAppState.ErrorMessage = ErrorMessage;
             }
             if (SearchState.Grid != null && !SearchState.Grid.OnInternalRowSelect.HasDelegate)
@@ -421,12 +422,9 @@ namespace Caspian.UI
             var json = this.ConvertToJson();
             if (firstRender)
             {
-                var data = new JsLookupValueSetter(this);
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindLookupValue", DotNetObjectReference.Create(data), Input);
+                var dotnet = DotNetObjectReference.Create(this);
+                await jsRuntime.InvokeVoidAsync("$.caspian.bindLookup", dotnet, input);
             }
-            if (Focused)
-                Focused = false;
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindLookup", Input, SearchForm, json);
             await base.OnAfterRenderAsync(firstRender);
         }
 
@@ -447,7 +445,6 @@ namespace Caspian.UI
                 expr = Expression.Lambda(expr, param);
                 Text = await service.GetAll().Where(expr).Select(TextExpression).FirstOrDefaultAsync();
                 oldText = Text;
-                WindowStatus = WindowStatus.Close;
             }
             else
                 Text = oldText;
@@ -460,7 +457,7 @@ namespace Caspian.UI
                 type = Nullable.GetUnderlyingType(type);
             var tempValue = Convert.ChangeType(id, type);
             Value = (TValue)tempValue;
-            WindowStatus = WindowStatus.Close;
+            await SetText();
             if (fireEvent)
             {
                 if (ValueChanged.HasDelegate)
@@ -468,7 +465,7 @@ namespace Caspian.UI
                 if (OnChange.HasDelegate)
                     await OnChange.InvokeAsync(Value);
             }
-            await SetText();
+            
         }
 
         public void SetText(string text)

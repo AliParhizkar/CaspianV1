@@ -4,13 +4,14 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<Window @bind-Status="status" Title="تست" Style="width:500px;height:350px">
-    <Content>
-        <span>سلام</span>
-    </Content>
-</Window>
-<button @onclick="ToggelStatus">++</button>
-<div class="c-copy-right">
+<div style="width:350px;margin:0 auto">
+    <AutoComplete TEntity="Customer" TValue="int?" @bind-Value="Id" Title="Customer Search"
+                  TextExpression='t => t.MobileNumber'>
+        <CustomerLookupComponent TValue="int?" />
+    </AutoComplete>
+</div>
+
+<div style="display:none" class="c-copy-right">
     <span class="c-icon"></span>
     <span class="c-title">
         تمامی حقوق معنوی این نرم افزار برای شرکت 
@@ -22,13 +23,5 @@
 </div>
 @code
 {
-    WindowStatus status;
-
-    void ToggelStatus()
-    {
-        if (status == WindowStatus.Open)
-            status = WindowStatus.Close;
-        else
-            status = WindowStatus.Open;
-    }
+    int? Id;
 }

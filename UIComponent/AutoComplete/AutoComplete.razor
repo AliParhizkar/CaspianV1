@@ -1,7 +1,6 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity
 @typeparam TValue
-@implements IAutoCompleteValueInitializer
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject IServiceProvider provider
 @{
@@ -18,8 +17,8 @@
         className += " t-state-error";
 }
 
-<div class="@className">
-    <input @ref="Input" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => await OnKeyDownHandler(e))"
+<div status="@status.ConvertToInt()" class="@className" autoHide="@AutoHide">
+    <input @ref="input" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => await OnKeyDownHandler(e))"
            @attributes="inputAttrs" @onkeyup="@(async e => await OnKeyUp(e))" />
     @if (!HideIcon)
     {
@@ -28,32 +27,39 @@
                         {
                             if (!Disabled)
                             {
-                                WindowStatus = WindowStatus.Open;
+                                status = WindowStatus.Open;
                                 Focused = true;
                             }
                         })"></span>
     }
-</div>
-<div @ref="SearchForm" class="t-HelpWindow">
-    @if (!HideHeader)
+    @if (status == WindowStatus.Open)
     {
-        <div class="t-header">
-            <span class="t-window-title">@(Title)</span>
-            <span class="t-window-action t-link" @onclick="() => { WindowStatus = WindowStatus.Close; }">
-                <i class="fa fa-close"></i>
-            </span>
+        <div class="t-animation-container">
+            <div class="t-HelpWindow">
+                @if (!HideHeader)
+                {
+                    <div class="t-header">
+                        <span class="t-window-title">@(Title)</span>
+                        <span class="t-window-action t-link" @onclick="async () => await CloseHelpForm()">
+                            <i class="fa fa-close"></i>
+                        </span>
+                    </div>
+                }
+                <div class="t-content">
+                    <CascadingValue Name="LookupStringSearchValue" Value="SearchStr">
+                        <CascadingValue Name="AutoComplateState" Value="SearchState">
+                            <CascadingValue Value="false" Name="GridEditableList">
+                                <CascadingValue Value=this>
+                                    @ChildContent
+                                </CascadingValue>
+                            </CascadingValue>
+                        </CascadingValue>
+                    </CascadingValue>
+                </div>
+            </div>
         </div>
+
     }
-    <div class="t-content">
-        <CascadingValue Name="LookupStringSearchValue" Value="SearchStr">
-            <CascadingValue Name="AutoComplateState" Value="SearchState">
-                <CascadingValue Value="false" Name="GridEditableList">
-                <CascadingValue Value=this>
-                    @ChildContent
-                </CascadingValue>
-                </CascadingValue>
-            </CascadingValue>
-        </CascadingValue>
-    </div>
 </div>
+
 
