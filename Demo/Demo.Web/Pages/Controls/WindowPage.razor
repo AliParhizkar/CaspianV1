@@ -63,7 +63,7 @@
     </div>
 </div>
 
-<Window @bind-Status="Status" Modal=modal Resizable=resizeable Draggable="dragable" Title="@title" HideTitle="hideTitle" Style="width:600px;height:350px">
+<Window @bind-Status="Status" Modal=modal Resizable=resizeable Draggable="dragable" Title="@title" HideTitle="hideTitle" Style="width:600px;">
     <Content>
         @if (hideTitle)
         {
@@ -73,6 +73,9 @@
             </div>
             <hr/>
         }
+        <div style="height:810px;border:1px solid red">
+
+        </div>
     </Content>
 </Window>
 

@@ -114,6 +114,12 @@ namespace Caspian.UI
             }
         }
 
+        public bool MultiSelectable
+        {
+            get { return Selectable; }
+            set { Selectable = value; }
+        }
+
         async Task OnNodeChanged(TreeViewItem node)
         {
             if (node.Items != null)

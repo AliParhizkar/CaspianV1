@@ -3,18 +3,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Demo.Model
 {
-    public enum NumericType
+    public enum ControlSize
     {
-        /// <summary>
-        /// عدد صحیح
-        /// </summary>
-        [Display(Name = "عدد صحیح")]
-        Int,
+        [Display(Name = "Small")]
+        Small,
 
-        /// <summary>
-        /// عدد اعشاری
-        /// </summary>
-        [Display(Name = "عدد اعشاری")]
-        Decimal
+        [Display(Name = "Medium")]
+        Medium,
+
+        [Display(Name = "Large")]
+        Large,
+
+        [Display(Name = "Auto")]
+        Auto
     }
 }

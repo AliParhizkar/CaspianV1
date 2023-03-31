@@ -18,9 +18,9 @@
         left: -242px;
     }
 }
-.t-dropdown .t-group .t-disable{
-    color:#838383;
-
+.t-dropdown .t-group .t-disable {
+    color: #838383;
+    cursor: not-allowed;
 }
 .c-navigate-h {
     display: flex;
@@ -71,9 +71,21 @@
         text-align: center;
         line-height: 21px;
     }
-    .c-popup-window.c-top {
-        top: 30px;
-    }
+.c-popup-window.c-top  {
+    top: 5px;
+}
+
+.c-popup-window.c-bottom {
+    bottom: 5px;
+}
+
+.c-popup-window.c-left{
+    left: 5px;
+}
+
+.c-popup-window.c-right {
+    right: 5px;
+}
 
 .c-month-days {
     display: flex;
@@ -299,19 +311,37 @@ progress::-webkit-progress-value {
         line-height:30px;
         border:none;
         border-radius:8px;
+        padding:0 5px;
     }
 .c-tree-content {
-    overflow: auto;
     position: absolute;
-    background-color: white;
-    margin-top:4px;
-    box-shadow: 0px 4px 8px 0px rgb(0 0 0 / 50%);
+    overflow: hidden;
+    padding-left: 5px;
+    margin-left: -3px;
     border-radius:8px;
 }
-.c-tree-content .c-treeview {
-    border: none!important;
-    
+    .c-tree-content .c-treeview {
+        height: calc(100% - 8px);
+        width: calc(100% - 10px);
+        position: absolute;
+        background-color: white;
+        box-shadow: -1px 2px 6px 1px #b8b6b6;
+    }
+.c-animate-down .c-treeview {
+    top:-100%;
+    transition: top .4s ease;
 }
+
+.c-animate-up .c-treeview {
+    bottom: -100%;
+    transition: bottom .4s ease;
+}
+
+    .c-tree-content.c-animate-up {
+        bottom:40px;
+/*        transition: bottom .4s ease;
+        box-shadow: -1px 2px 6px 1px #b8b6b6;*/
+    }
 .c-lookup-tree .c-content {
     border-width: 1px;
     border-style: solid;
@@ -667,8 +697,8 @@ form tr {
         box-shadow: 0 0 3px 0 grey;
     }
     .t-window-content {
-        max-height: calc(100vh - 65px);
-        overflow: auto;
+/*        max-height: calc(100vh - 65px);
+        overflow: auto;*/
     }
 span, label, td, th {
     -webkit-user-select: none;
@@ -955,9 +985,13 @@ span, label, td, th {
 .c-treeview > .c-subtree > li {
     padding-right: 0;
 }
-.c-treeview li {
-    overflow:hidden;
+.c-treeview .c-subtree .c-animate-tree {
+    transition: height .4s ease;
 }
+    
+    .c-treeview li {
+        overflow: hidden;
+    }
 .t-container {
     width: 90%;
     margin: 5px auto;
@@ -1115,20 +1149,37 @@ span, label, td, th {
     margin: 5px;
     border: 1px solid #bbbbbb;
 }
-ul {
-    padding:0;
+.c-node-template {
+    height:27px;
 }
+ul {
+    padding: 0;
+}
+.c-treeview .c-subtree{
+    padding-bottom:5px;
+    width:fit-content;
+}
+
 .c-treeview li {
-    padding: 5px 0;
+    padding: 2px 0;
+    white-space:nowrap;
 }
 .t-stringtextbox{
     height:34px;
     overflow:visible;
 }
 
-.c-treeview .fa-chevron-left, .c-treeview .fa-chevron-down {
+.c-treeview .fa-chevron-right {
     cursor: pointer;
-    vertical-align:middle;
+    vertical-align: middle;
+    transition: transform .4s ease;
+}
+
+.c-expand .fa-chevron-right {
+    transform: rotate(90deg);
+}
+.c-collaps .fa-chevron-right {
+    transform: rotate(0);
 }
 .errorMessage .c-pointer {
     left: 20px;
@@ -1588,7 +1639,6 @@ div.t-window {
     background-color: #e6e7e8;
     border: 1px solid #b6b6b6;
     overflow: visible;
-    border-radius: 8px 8px 0 0;
 }
 @keyframes tabstripwidth {
     0% {
@@ -1878,6 +1928,7 @@ div.t-window {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    box-sizing:border-box;
 }
 
 .t-grid-header .t-last-header {
@@ -1909,7 +1960,7 @@ div, input, textarea {
 }
 
 .t-grid td {
-    padding: .1em .5em;
+    padding: 0 3px;
     border: 0;
     vertical-align: middle;
     line-height: 1.6em;
@@ -2666,6 +2717,11 @@ html body .t-grid tbody .t-button-icon {
     border: 1px solid rgba(255, 0, 0, 0.3) !important;
     border-right: none !important;
 }
+.t-state-disabled .t-select {
+    cursor: not-allowed !important;
+    background-image: none !important;
+    background-color: #eaeaea;
+}
 .t-picker-wrap .t-select {
     border-style: solid;
     border-width: 1px;
@@ -3028,8 +3084,13 @@ div.t-numerictextbox {
     height:34px;
 }
 
-.t-HelpWindow.c-animate{
+.c-lookup-animate-down {
     transition: top .4s ease;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.5);
+}
+.c-lookup-animate-up {
+    transition: bottom .4s ease;
+    box-shadow: 0 1px 9px 3px rgba(0, 0, 0, 0.5);
 }
 
 .t-checkbox.t-disabled .t-icon i {

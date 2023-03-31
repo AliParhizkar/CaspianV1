@@ -15,5 +15,7 @@ namespace Caspian.UI
         IList<TreeViewItem> GetSeletcedItems();
 
         void SetSelectedNodesValue(IList<string> values);
+
+        bool MultiSelectable { get; set; }
     }
 }

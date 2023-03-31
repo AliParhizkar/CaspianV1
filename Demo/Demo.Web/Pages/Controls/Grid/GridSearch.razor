@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="col-md-12 pt-4">
-        <DataGrid @ref="grid" Search="product" HideInsertIcon TEntity="Product" TableHeight="275"
+        <DataGrid PageSize="5" @ref="grid" Search="product" HideInsertIcon TEntity="Product" TableHeight="275"
                   ConditionExpr="t => isOutOfStock == null || t.OutofStock == isOutOfStock">
             <Columns>
                 <GridColumn Field="@(t => t.ProductCategory.Title)" Title="Product category" />

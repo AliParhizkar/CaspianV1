@@ -82,45 +82,69 @@ function moverItem() {
         bindTabpanel: function (ctr) {
             let left = $(ctr).find('.t-state-active').position().left + 5;
             let width = ($(ctr).find('.t-state-active').width()) - 10;
-            let right = $(ctr).find('.t-tabstrip-items').width() - (left + width);
+            $(ctr).find('.t-tabstrip-items').width() - (left + width);
             $(ctr).find('.c-selected-panel').css('left', left).css('width', width);
-            //const mutationObserver = new MutationObserver(() => {
-            //    debugger;
-            //    let left = $(ctr).find('.t-state-active').position().left + 5;
-            //    let width = ($(ctr).find('.t-state-active').width()) - 10;
-            //    let right = $(ctr).find('.t-tabstrip-items').width() - (left + width);
-            //    $(ctr).find('.c-selected-panel').css('left', left).css('right', right).width('auto');
-
-            //});
-            //mutationObserver.observe($(ctr).find('.t-content.t-state-active')[0], {
-            //    attributes: true,
-            //    childList: true,
-            //    subtree: true
-            //});
-            //const resizeObserver = new ResizeObserver(() => {
-            //    let left = $(ctr).find('.t-state-active').position().left + 5;
-            //    let width = ($(ctr).find('.t-state-active').width()) - 10;
-            //    let right = $(ctr).find('.t-tabstrip-items').width() - (left + width);
-            //    $(ctr).find('.c-selected-panel').css('left', left).css('right', right).width('auto');
-            //});
-            //resizeObserver.observe($(ctr)[0]);
         },
-        bindLookupTree: function (input) {
+        bindLookupTree: function (dotnet, input) {
             const mutationObserver = new MutationObserver(() => {
-                var location = $(input).offset();
-                var $ctr = $(input).closest('.c-lookup-tree').find('.c-tree-content');
-                var maxHeight = $(window).height() - location.top - 46;
-                var marginRight = ($(input).closest('.c-lookup-tree').width() - $ctr.width()) / 2 - 8;
-                $ctr.css('max-height', maxHeight);
-                console.log(marginRight);
-                $ctr.css('margin-right', marginRight);
+                let location = $(input).position();
+                let $ctr = $(input).closest('.c-lookup-tree').find('.c-tree-content');
+                let maxHeight = null;;
+                let width = $(input).closest('.c-lookup-tree').width();
+                $content = $ctr.find('.c-treeview');
+                if ($content.width() > width) {
+                    $ctr.css('left', (width - $content.width()) / 2 + location.left);
+                    width = $content.width();
+                }
+                else
+                    $ctr.find('.c-treeview').width('calc(100% - 8px)');
+                let scrolTop = $('.c-content-main').scrollTop();
+                let downToUp = location.top > $(window).height() / 2;
+                let $animate = null;
+                if (downToUp) {
+                    maxHeight = location.top;
+                    $animate = $ctr.addClass('c-animate-up').css('bottom', $(window).height() - location.top - 22 - scrolTop);
+                }
+                else {
+                    
+                    maxHeight = $(window).height() - location.top - 62;
+                    $animate = $ctr.addClass('c-animate-down').css('top', location.top + 34);
+                }
+                $animate = $animate.find('.c-treeview');
+                $ctr.css('height', maxHeight).width(width + 2);
+                setTimeout(() => {
+                    if (downToUp) 
+                        $animate.css('bottom', 0);
+                     else
+                        $animate.css('top', 0);
+                    $ctr.find('.c-node-template').click(() => {
+                        if ($(input).closest('.c-lookup-tree').attr('multiselect') == undefined) {
+                            let $animate = $(input).closest('.c-lookup-tree').find('.c-animate-down >.c-treeview');
+                            $animate.css('top', "-100%");
+                            $animate = $(input).closest('.c-lookup-tree').find('.c-animate-up >.c-treeview');
+                            $animate.css('bottom', "-100%");
+                        }
+                    });
+                }, 25);
             });
             mutationObserver.observe($(input).closest('.c-lookup-tree')[0], {
                 attributes: false,
                 childList: true,
                 subtree: false
             });
+            $('body').bind('click', e => {
+                var flag = $(input).closest('.c-lookup-tree').find('.c-tree-content').hasClass('c-tree-content');
+                if (!$(e.target).closest('.auto-hide').hasClass('auto-hide') && flag) {
+                    let $animate = $(input).closest('.c-lookup-tree').find('.c-animate-down >.c-treeview');
+                    $animate.css('top', "-100%");
+                    $animate = $(input).closest('.c-lookup-tree').find('.c-animate-up >.c-treeview');
+                    $animate.css('bottom', "-100%");
+                    setTimeout(async () => {
+                        await dotnet.invokeMethodAsync("HideForm");
+                    }, 200);
 
+                }
+            });
             $(input).unbind('focus');
             $(input).bind('focus', function () {
                 $(input).closest('.c-content').addClass('c-state-focus')
@@ -130,7 +154,6 @@ function moverItem() {
                 $(input).closest('.c-content').removeClass('c-state-focus')
             });
         },
-
         showMessage: function (a, b) {
             if (b)
                 $.telerik.outMessage().show({ 'Message': a, 'kind': b });
@@ -139,7 +162,78 @@ function moverItem() {
         },
 
         bindTree: function (tree) {
+            $(tree).find('.c-expand,.c-collaps').each((index, t) => {
+                $(t).height(parseInt($(t).height()) + 1);
+            });
+            const mutationObserver = new MutationObserver((list) => {
+                list.every(t => {
+                    if ($(t.target).hasClass('c-collaps') || $(t.target).hasClass('c-expand')) {
+                        if ($(t.target).attr('class') == 'c-expand') {
+                            $(t.target).find('.c-expand,.c-collaps').each((index, t) => {
+                                $(t).height(parseInt($(t).height()) + 1);
+                            }); 
+                        }
+                        let height1 = $(t.target).find('.c-node-template').height();
+                        let height2 = $(t.target).find('.c-subtree').height();
+                        if (height2 == null)
+                            height2 = 4;
+                        else
+                            height2 += 5;
+                        let height = height1 + height2;
+                        if (height != t.target.offsetHeight) {
+                            let $parent = $(t.target).parent().closest('.c-expand');
+                            while ($parent.hasClass('c-expand')) {
+                                $parent.height('auto');
+                                $parent = $parent.parent().closest('.c-expand');
+                            }
+                            if (!$parent.parent().hasClass('c-subtree'))
+                                $parent.height('auto');
+                            $(t.target).addClass('c-animate-tree');
+                            setTimeout(() => {
+                                $(t.target).height(height);
+                                setTimeout(() => {
+                                    $(t.target).removeClass('c-animate-tree');
+                                    let $parent = $(t.target).parent().closest('.c-expand');
+                                    while ($parent.hasClass('c-expand')) {
+                                        $parent.height($parent.height());
+                                        $parent = $parent.parent().closest('.c-expand');
+                                    }
+                                }, 400);
+                            }, 25);
+                        }
+                        return false;
+                    }
+                    if ($(t.target).hasClass('c-subtree')) {
+                        let $element = $(t.target).closest('.c-expand');
+                        let $parent = $element.parent().closest('.c-expand');
+                        if (!$parent.parent().hasClass('.c-subtree')) 
+                            $parent.height('auto');
+                        let height1 = $element.find('.c-node-template').height();
+                        let height2 = $(t.target).height();
+                        if (height2 == null)
+                            height2 = 4;
+                        else
+                            height2 += 5;
+                        let height = height1 + height2;
+                        if (height != $element.height()) {
+                            $element.addClass('c-animate-tree');
+                            setTimeout(() => {
+                                $element.height(height);
+                                setTimeout(() => {
+                                    $element.removeClass('c-animate-tree');
 
+                                }, 400);
+                            }, 25);
+                        }
+                        return false;
+                    }
+                });
+            });
+            mutationObserver.observe(tree, {
+                attributes: false,
+                childList: true,
+                subtree: true,
+            });
         },
 
         getItem: function (element) {
@@ -201,8 +295,11 @@ function moverItem() {
             }
         },
 
-        closeLookupWindow: function ($window) {
-            $window.css('top', -$window.height() - 12);
+        closeLookupWindow: function ($window, topToDown) {
+            if (topToDown)
+                $window.css('bottom', -$window.height() - 12);
+            else
+                $window.css('top', -$window.height() - 12);
         },
 
         bindLookup: function (dotnet, input) {
@@ -213,23 +310,41 @@ function moverItem() {
                     if (mutation.type == 'attributes' && mutation.attributeName == 'status' && $(mutation.target).attr('status') == "2") {
                         let $animat = $(mutation.target).find('.t-animation-container');
                         let $window = $(mutation.target).find('.t-HelpWindow');
-                        $animat.height($window.height() + 10);
+                        
                         let left = $(mutation.target).position().left - ($window.width() - $(mutation.target).width()) / 2;
-                        let top = $(mutation.target).position().top + 40;
-                        $animat.css('left', left).width($window.width() + 10).css('top', top);
-                        $window.css('top', -$window.height());
+                        $animat.css('left', left).width($window.width() + 10);
+                        let loc = $animat.offset().top - $(window).scrollTop();
+                        let top = $(mutation.target).position().top;
+                        let downToUp = loc > $(window).height() / 2;
+                        if (downToUp) {
+                            $animat.css('bottom', $(window).height() - top - 20);
+                            $window.css('bottom', -$window.height());
+                            $animat.height($window.height() + 10);
+                        }
+                        else {
+                            $animat.css('top', top + 40);
+                            $window.css('top', -$window.height());
+                            $animat.height($window.height() + 10);
+                        }
                         setTimeout(() => {
-                            $window.addClass('c-animate');
-                            $window.css('top', 0);
+                            if (loc > $(window).height() / 2) {
+                                $window.addClass('c-lookup-animate-up');
+                                $window.css('bottom', 0);
+                            }
+                            else {
+                                $window.addClass('c-lookup-animate-down');
+                                $window.css('top', 0);
+                            }
                         }, 25);
-                        $window.find('.t-window-action').click(() => $.caspian.closeLookupWindow($window));
-                        $window.find('.t-grid-content').mousedown(() => $.caspian.closeLookupWindow($window));
+
+                        $window.find('.t-window-action').click(() => $.caspian.closeLookupWindow($window, downToUp));
+                        $window.find('.t-grid-content').mousedown(() => $.caspian.closeLookupWindow($window, downToUp));
                         let $lookup = $(mutation.target);
                         if ($lookup.attr('autoHide') != undefined) {
                             $('body').unbind('mousedown.lookup');
                             $('body').bind('mousedown.lookup', async function (e) {
                                 if (!$(e.target).closest('.c-lookup').hasClass('c-lookup')) {
-                                    $.caspian.closeLookupWindow($window);
+                                    $.caspian.closeLookupWindow($window, downToUp);
                                     await dotnet.invokeMethodAsync('Close');
                                 }
                             });
@@ -242,34 +357,6 @@ function moverItem() {
                 childList: false,
                 subtree: false
             });
-
-            //options = JSON.parse(options);
-            //var txt = $(input).data('tTextBox');
-            //if (!txt) {
-            //    $(input).tTextBox(options);
-            //    txt = $(input).data('tTextBox');
-            //}
-            //txt.updateState(options);
-            //if (options.autoHide && options.status == 2) {
-            //    $('body').unbind('click.autoHidedotnetObject');
-            //    $('body').bind('click.autoHidedotnetObject', async function (e) {
-            //        console.log($(e.target))
-            //        if (!$(e.target).closest('.t-HelpWindow').hasClass('t-HelpWindow') && $(e.target)[0] != $(input)[0]) {
-            //            $('body').unbind('click.autoHidedotnetObject');
-            //            await $(input).data('dotnetHelper').invokeMethodAsync('HideForm');
-            //        }
-            //    });
-            //}
-            //$(searchForm).appendTo($(input).parent()).css('top', $(input).position().top + 37);
-
-            //if (!$(searchForm).data('tHelpWindow'))
-            //    $(searchForm).tHelpWindow();
-            //$(searchForm).data('tHelpWindow').textBox = $(input).data('tTextBox');
-            //$(input).data('tTextBox').searchForm = $(searchForm).data('tHelpWindow');
-            //if (options.status == 2)
-            //    $(searchForm).data('tHelpWindow').open();
-            //else
-            //    $(searchForm).data('tHelpWindow').close();
         },
 
         dadaGridBind: function (grv) {
@@ -320,14 +407,14 @@ function moverItem() {
                     }
                     if (right - x < 5 && rtl || x - left < 5 && !rtl) {
                         $(grv).data('curent', $(this));
-                        $(grv).data('curentWidth', $(this).outerWidth());
+                        $(grv).data('curentWidth', $(this).width());
                         let $prev = $(this).prev();
                         if ($prev[0] == null)
                             $(grv).data('gridStatus', 3);
                         else
                             $(grv).data('gridStatus', 2);
                         $(grv).data('other', $(this).prev());
-                        $(grv).data('otherWidth', $(this).prev().outerWidth());
+                        $(grv).data('otherWidth', $(this).prev().width());
                     }
                     $(grv).data('mouseState', true);
                     $(grv).data('xStart', e.clientX);
@@ -349,19 +436,18 @@ function moverItem() {
                         dif = -dif;
                     let curentWidth = $(grv).data('curentWidth');
                     let otherWidth = $(grv).data('otherWidth');
-                    let curentResult = Math.floor(curentWidth) + Math.floor(dif) - 1,
-                        otherResult = Math.floor(otherWidth) - Math.floor(dif) - 1;
+                    let curentResult = curentWidth + dif, otherResult = otherWidth - dif;
                     if (curentResult < 30 || otherResult < 30)
                         return;
-
-                    $(grv).data('curent').outerWidth(curentResult);
+                    console.log(curentResult, otherResult)
+                    $(grv).data('curent').width(curentResult);
                     let curentIndex = $(grv).find('.t-grid-header-wrap th').index($(grv).data('curent'));
-                    $(grv).find('.t-grid-content table tr').first().children().eq(curentIndex).outerWidth(curentResult);
-                    $(grv).find('.c-grid-inline table tr').first().children().eq(curentIndex).outerWidth(curentResult);
+                    $(grv).find('.t-grid-content table tr').first().children().eq(curentIndex).width(curentResult);
+                    $(grv).find('.c-grid-inline table tr').first().children().eq(curentIndex).width(curentResult);
                     let otherIndex = $(grv).find('.t-grid-header-wrap th').index($(grv).data('other'));
-                    $(grv).data('other').outerWidth(otherResult);
-                    $(grv).find('.t-grid-content table tr').first().children().eq(otherIndex).outerWidth(otherResult);
-                    $(grv).find('.c-grid-inline table tr').first().children().eq(otherIndex).outerWidth(otherResult);
+                    $(grv).data('other').width(otherResult);
+                    $(grv).find('.t-grid-content table tr').first().children().eq(otherIndex).width(otherResult);
+                    $(grv).find('.c-grid-inline table tr').first().children().eq(otherIndex).width(otherResult);
                     if ($(grv).find('.t-grid-content').height() < $(grv).find('.t-grid-content table').height()) {
                         if ($('body').hasClass('t-ltr'))
                             $(grv).find('.t-grid-header').css('padding-right', 11);
@@ -436,7 +522,7 @@ function moverItem() {
             
             $(ctr).mouseenter(() => {
                 let $element = $(ctr).find('.t-picker-wrap');
-                if (!$element.hasClass('t-state-selected')) 
+                if (!$element.hasClass('t-state-selected') && !$element.hasClass('t-state-disabled')) 
                     $element.addClass('t-state-hover');
             });
             $(ctr).mouseleave(() => {
@@ -508,7 +594,6 @@ function moverItem() {
         },
 
         bindWindow(dotnet, window) {
-            console.log($(window).attr('status'))
             const mutationObserver = new MutationObserver((mutationList) => {
                 mutationList.forEach(mutation => {
                     if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
@@ -519,7 +604,6 @@ function moverItem() {
                             $window.css('display', 'block');
                             let $header = $window.find('.t-header');
                             if ($(mutation.target).attr('draggable') != undefined) {
-                                $header.css('cursor', 'all-scroll');
                                 $.caspian.bindDragAndDrop($window[0], $header[0]);
                             }
                             else
@@ -640,7 +724,7 @@ function moverItem() {
             mutationObserver.observe($(input).closest('.t-combobox')[0], {
                 attributes: false,
                 childList: true,
-                subtree: false
+                subtree: true
             });
             $(input).keypress(function (e) {
                 let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
@@ -678,6 +762,7 @@ function moverItem() {
         },
 
         bindPopupWindow: function (dotnet, pos) {
+            debugger;
             pos = JSON.parse(pos);
             $('.c-popup-window').css('display', 'block');
             var className = $('.c-popup-window').attr('class');
@@ -685,14 +770,12 @@ function moverItem() {
             let width = $('.c-popup-window').width();
             let height = $('.c-popup-window').height();
             $('.c-popup-window').width(width).height(height).attr('class', className);
-            if (pos.left != undefined) {
-                let left = pos.left + $('.sidebar').width();
-                $('.c-popup-window').css({ left: left, right: 'auto' });
-            }
+            if (pos.left != undefined) 
+                $('.c-popup-window').css({ left: pos.left, right: 'auto' });
             else if (pos.right != undefined)
                 $('.c-popup-window').css({ left: 'auto', right: pos.right });
             if (pos.top != undefined)
-                $('.c-popup-window').css({ top: pos.top + 26, bottom: 'auto' });
+                $('.c-popup-window').css({ top: pos.top, bottom: 'auto' });
             else if (pos.bottom != undefined)
                 $('.c-popup-window').css({ top: 'auto', bottom: pos.bottom });
             $c.enableAutoHide(dotnet);
@@ -778,6 +861,7 @@ function moverItem() {
         },
 
         bindControl: function (control, options, controlType) {
+
             options = JSON.parse(options);
             switch (controlType) {
                 case 1:

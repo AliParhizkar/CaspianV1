@@ -28,7 +28,7 @@
     bool[,] isActiveMonth;
     async Task ChangeMonth(int month)
     {
-        Date = new DateTime(Date.Year, month, Date.Day);
+        Date = new DateTime(Date.Year, month, 1);
         await DateChanged.InvokeAsync(Date);
     }
 

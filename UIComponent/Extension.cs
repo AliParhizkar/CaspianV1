@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -6,6 +8,12 @@ namespace Caspian.UI
 {
     public static class Extension
     {
+        public static string GetText(this IList<SelectListItem> items, string value) 
+        {
+            var item = items.SingleOrDefault(t => t.Value == value);
+            return item?.Text;
+        }
+
         public async static Task<byte[]> GetByteArrayAsync(this IBrowserFile file)
         {
             using var stream = file.OpenReadStream(51200000);

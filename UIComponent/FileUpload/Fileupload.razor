@@ -1,6 +1,7 @@
 ﻿@namespace Caspian.UI
 @using System.IO;
 @inject IJSRuntime jSRuntime
+@inject CaspianDataService dataService
 <div style="@Style" class="t-widget t-upload">
     <Microsoft.AspNetCore.Components.Forms.InputFile @attributes="attrs" OnChange="ViewFile" />
     <div class="t-content">
@@ -81,7 +82,12 @@
                     if (arg.FileCount == 1)
                     {
                         if (arg.File.Size > MaxAllowedSize)
-                            await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.Seprate3Digit()} می باشد.");
+                        {
+                            var message = dataService.Language == Language.Fa ? 
+                                $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.Seprate3Digit()} می باشد." : 
+                                $"The maximum size allowed for uploading is{MaxAllowedSize.Seprate3Digit()}";
+                            await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+                        }
                         else
                         {
                             if (OnChange.HasDelegate)
@@ -92,7 +98,11 @@
                     else
                     {
                         if (arg.FileCount > MaxFilesCount)
-                            await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", $"شما حداکثر مجاز به انتخاب {MaxFilesCount} فایل برای بارگذاری می باشید.");
+                        {
+                            var message = dataService.Language == Language.Fa ? $"حداکثر تعداد فایل مجاز برای آپلود {MaxFilesCount} عدد است" :
+                                $"The maximum number of files allowed for upload is {MaxFilesCount}";
+                            await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+                        }
                         else
                         {
                             var files = arg.GetMultipleFiles(MaxFilesCount).ToArray();

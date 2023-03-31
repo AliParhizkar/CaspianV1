@@ -25,7 +25,6 @@ namespace Caspian.UI
                 show = true;
                 if (OnInternalShow.HasDelegate)
                     await OnInternalShow.InvokeAsync();
-                await jSRuntime.InvokeVoidAsync("$.caspian.enableAutoHide", DotNetObjectReference.Create(this));
             }
         }
 
@@ -42,15 +41,18 @@ namespace Caspian.UI
 
         async Task setValue(ChangeEventArgs e)
         {
-            searchText = valueIsUpdated ? "" : Convert.ToString(e.Value);
-            valueIsUpdated = false;
-            if (OnInternalChanged.HasDelegate)
-                await OnInternalChanged.InvokeAsync(searchText);
-            if (show == false)
-                await ShowTree();
-            if (multiSelectable)
-                treeView.SetSelectedNodesValue(selectedNodesValue);
-            await treeView.ReloadAsync();
+            if (treeView != null)
+            {
+                searchText = valueIsUpdated ? "" : Convert.ToString(e.Value);
+                valueIsUpdated = false;
+                if (OnInternalChanged.HasDelegate)
+                    await OnInternalChanged.InvokeAsync(searchText);
+                if (show == false)
+                    await ShowTree();
+                if (multiSelectable)
+                    treeView.SetSelectedNodesValue(selectedNodesValue);
+                await treeView.ReloadAsync();
+            }
         }
 
         public EventCallback<string> OnInternalChanged { get; set; }
@@ -79,6 +81,7 @@ namespace Caspian.UI
         public void SetTreeView(ITreeView treeView)
         {
             this.treeView = treeView;
+            treeView.MultiSelectable= multiSelectable;
             if (valueIsUpdated)
             {
                 valueIsUpdated = false;
@@ -100,13 +103,17 @@ namespace Caspian.UI
 
         public async Task SetValueAsync(TreeViewItem node)
         {
-            var type = typeof(TValue).GetUnderlyingType();
-            Value = (TValue)Convert.ChangeType(node.Value, type);
-            searchText = node.Text;
-            valueIsUpdated = true;
-            show = false;
-            if (ValueChanged.HasDelegate)
-                await ValueChanged.InvokeAsync(Value);
+            if (!multiSelectable)
+            {
+                var type = typeof(TValue).GetUnderlyingType();
+                Value = (TValue)Convert.ChangeType(node.Value, type);
+                searchText = node.Text;
+                valueIsUpdated = true;
+                if (ValueChanged.HasDelegate)
+                    await ValueChanged.InvokeAsync(Value);
+                await Task.Delay(200);
+                show = false;
+            }
         }
 
         public void SetSelectedNodesValue(TreeViewItem node)
@@ -153,7 +160,11 @@ namespace Caspian.UI
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
-                await jSRuntime.InvokeVoidAsync("$.caspian.bindLookupTree", input);
+            {
+                
+                var dotnet = DotNetObjectReference.Create(this);
+                await jSRuntime.InvokeVoidAsync("$.caspian.bindLookupTree", dotnet, input);
+            }
             await base.OnAfterRenderAsync(firstRender);
         }
 

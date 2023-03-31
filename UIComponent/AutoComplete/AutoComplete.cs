@@ -452,20 +452,22 @@ namespace Caspian.UI
 
         public async Task SetValue(long id, bool fireEvent = true)
         {
-            var type = typeof(TValue);
-            if (type.IsNullableType())
-                type = Nullable.GetUnderlyingType(type);
-            var tempValue = Convert.ChangeType(id, type);
-            Value = (TValue)tempValue;
-            await SetText();
-            if (fireEvent)
+            if (!Disabled)
             {
-                if (ValueChanged.HasDelegate)
-                    await ValueChanged.InvokeAsync(Value);
-                if (OnChange.HasDelegate)
-                    await OnChange.InvokeAsync(Value);
+                var type = typeof(TValue);
+                if (type.IsNullableType())
+                    type = Nullable.GetUnderlyingType(type);
+                var tempValue = Convert.ChangeType(id, type);
+                Value = (TValue)tempValue;
+                await SetText();
+                if (fireEvent)
+                {
+                    if (ValueChanged.HasDelegate)
+                        await ValueChanged.InvokeAsync(Value);
+                    if (OnChange.HasDelegate)
+                        await OnChange.InvokeAsync(Value);
+                }
             }
-            
         }
 
         public void SetText(string text)

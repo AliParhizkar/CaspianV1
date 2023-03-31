@@ -38,11 +38,6 @@
     right: 20px;
 }
 
-.t-ltr .c-subtree .fa-chevron-left {
-    transform: rotate(180deg);
-}
-
-
 .t-rtl .accordion .link i:not(.c-icon) {
     padding-right: 3px;
 }
@@ -71,6 +66,7 @@
 
 .t-ltr .c-treeview > .c-subtree {
     padding: 10px 20px;
+
 }
 
     .t-rtl .accordion li.default .submenu {
@@ -582,16 +578,3 @@ fieldset.t-widget{
     text-align: right;
     direction: rtl;
 }
-
-.t-ltr .c-popup-window.c-left, .t-ltr .hideMenu .c-popup-window.c-center {
-    left: 165px
-}
-
-.t-ltr .hideMenu .c-popup-window.c-left, .t-ltr .hideMenu .c-popup-window.c-center {
-    left: 35px;
-}
-
-.t-ltr .c-popup-window.c-right, .t-ltr .c-popup-window.c-center {
-    right: 5px
-}
-

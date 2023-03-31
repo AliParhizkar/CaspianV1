@@ -157,6 +157,7 @@
             Service.Pop();
             messageBox = null;
         }
+        oldStatus = Status;
         await base.OnParametersSetAsync();
     }
 

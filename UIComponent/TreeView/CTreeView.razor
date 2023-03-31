@@ -14,13 +14,7 @@
                     {
                         if (ChildContent == null)
                         {
-                            <TreeNode @bind-Selected="item.Selected" Item="item" OnExpanded="node => 
-                                {
-                                    
-                                }" OnCollapsed="node => 
-                                {
-                                    
-                                }"
+                            <TreeNode @bind-Selected="item.Selected" Item="item"
                       OnClick="async node => await NodeClicked(node)"
                                 OnChanged="async node => await SelectStateChanged(node)"
                                 OnSelected="async (node) =>
@@ -42,7 +36,7 @@
                         }
                     }
                 }
-            </ul>
+                </ul>
             </CascadingValue>
         </div>
     }
@@ -81,7 +75,4 @@
                 </ul>
             </CascadingValue>
         </div>
-    }
-    @code
-    {
     }

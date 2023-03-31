@@ -293,8 +293,10 @@ namespace Caspian.UI
                         var item = dic.SingleOrDefault(t => t.Key == array[0]);
                         if (item.Key == null)
                         {
-                            var tempList = new List<MemberExpression>();
-                            tempList.Add(expression);
+                            var tempList = new List<MemberExpression>
+                            {
+                                expression
+                            };
                             dic.Add(array[0], tempList.ToList());
                         }
                         else

@@ -1,10 +1,11 @@
 ﻿@inject IJSRuntime JSRuntime
 @namespace Caspian.UI
 <li @ref="Node" class="@(Item.Expanded ? "c-expand" : "c-collaps")">
-    @if (Item.Collabsable)
-    {
-        <span class="c-icon">
-            <i @onclick="async () =>
+    <div class="c-node-template">
+        @if (Item.Collabsable)
+        {
+            <span class="c-icon">
+                <i @onclick="async () =>
                          {
                              if (Item.Expanded)
                              {
@@ -19,12 +20,12 @@
                                      await OnExpanded.InvokeAsync(Item);
                              }
                              Collapsed = !Item.Expanded;
-                         }" class="@(Item.Expanded ? "fa fa-chevron-down" : "fa fa-chevron-left")"></i>
-        </span>
-    }
-    @if (Item.Selectable)
-    {
-        <CheckBox Value="Item.Selected" Disabled="Item.Disabled" TwoState
+                         }" class="fa fa-chevron-right"></i>
+            </span>
+        }
+        @if (Item.Selectable)
+        {
+            <CheckBox Value="Item.Selected" Disabled="Item.Disabled" TwoState
                   ValueChanged="async (bool? value) =>
                            {
                                Item.Selected = value;
@@ -32,8 +33,8 @@
                                    await OnSelected.InvokeAsync(Item);
                                await OnChanged.InvokeAsync(Item);
                            }" />
-    }
-    <span class="c-title" @onclick="async () =>
+        }
+        <span class="c-title" @onclick="async () =>
                                     {
                                         if (!Item.Disabled)
                                         {
@@ -49,21 +50,22 @@
                                         }
 
                                     }">
-        @Item.Text
-    </span>
-    @if (Item.Depth == null)
-    {
-        if (Item.Parent == null)
-            Item.Depth = 1;
-        else
-            Item.Depth = Convert.ToByte(Item.Parent.Depth.Value + 1);
-    }
-    @if (Item.ShowTemplate && CascadeData?.Template != null)
-    {
-        <CascadingValue Value="Item.Depth" Name="NodeDepthOnTree">
-            @CascadeData.Template(Item)
-        </CascadingValue>
-    }
+            @Item.Text
+        </span>
+        @if (Item.Depth == null)
+        {
+            if (Item.Parent == null)
+                Item.Depth = 1;
+            else
+                Item.Depth = Convert.ToByte(Item.Parent.Depth.Value + 1);
+        }
+        @if (Item.ShowTemplate && CascadeData?.Template != null)
+        {
+            <CascadingValue Value="Item.Depth" Name="NodeDepthOnTree">
+                @CascadeData.Template(Item)
+            </CascadingValue>
+        }
+    </div>
     @if (Item.Items != null && Item.Expanded)
     {
         <ul class="c-subtree">
@@ -131,14 +133,4 @@
 
     [Parameter]
     public TreeViewItem Item { get; set; }
-
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (Collapsed.HasValue)
-        {
-            //await JSRuntime.InvokeVoidAsync("$.caspian.bindTreeView", Node, Collapsed.Value);
-            Collapsed = null;
-        }
-        await base.OnAfterRenderAsync(firstRender);
-    }
 }

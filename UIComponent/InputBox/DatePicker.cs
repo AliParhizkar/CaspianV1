@@ -16,29 +16,36 @@ namespace Caspian.UI
 
         void OpenWindow()
         {
-            Status = WindowStatus.Open;
+            if (!Disabled)
+                Status = WindowStatus.Open;
         }
 
         async Task ChangeDate(DateTime date)
         {
-            if (typeof(TValue) == typeof(DateTime) || typeof(TValue) == typeof(DateTime?))
-                Value = (TValue)Convert.ChangeType(date, typeof(DateTime));
-            else
-                Value = (TValue)Convert.ChangeType(date.ToPersianDate(), typeof(PersianDate));
-            text= date.Date.ToPersianDateString();
-            await Task.Delay(400);
-            Status = WindowStatus.Close;
+            if (!Disabled)
+            {
+                if (typeof(TValue) == typeof(DateTime) || typeof(TValue) == typeof(DateTime?))
+                    Value = (TValue)Convert.ChangeType(date, typeof(DateTime));
+                else
+                    Value = (TValue)Convert.ChangeType(date.ToPersianDate(), typeof(PersianDate));
+                text = date.Date.ToPersianDateString();
+                await Task.Delay(400);
+                Status = WindowStatus.Close;
+            }
         }
 
         async void ChangeValue(ChangeEventArgs arg)
         {
-            TValue value = default;
-            var strValue = Convert.ToString(arg.Value);
-            
-            if (!strValue.Contains("_"))
-                value = (TValue)Convert.ChangeType(new PersianDate(strValue).GetMiladyDate().Value, typeof(DateTime));
-            Value = value;
-            await ValueChanged.InvokeAsync(value);
+            if (!Disabled)
+            {
+                TValue value = default;
+                var strValue = Convert.ToString(arg.Value);
+
+                if (!strValue.Contains("_"))
+                    value = (TValue)Convert.ChangeType(new PersianDate(strValue).GetMiladyDate().Value, typeof(DateTime));
+                Value = value;
+                await ValueChanged.InvokeAsync(value);
+            }
         }
 
         [Parameter]
@@ -63,6 +70,15 @@ namespace Caspian.UI
                 attrs.Add("id", Id.Replace('.', '_'));
                 attrs.Add("name", Id.Replace('.', '_'));
             }
+            if (OpenOnFocus)
+            {
+                attrs["onfocus"] = EventCallback.Factory.Create(this, () =>
+                {
+                    Status = WindowStatus.Open;
+                });
+            }
+            else
+                attrs.Remove("onfocus");
             if (Value == null || Convert.ToDateTime(Value) == default(DateTime))
                 text = "";
             else

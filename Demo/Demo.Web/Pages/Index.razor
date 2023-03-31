@@ -1,14 +1,36 @@
 ﻿@page "/Demo"
 @inherits BasePage
 @namespace Demo.Web.Pages
+@using Caspian.Engine.Service;
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:350px;margin:0 auto">
-    <AutoComplete TEntity="Customer" TValue="int?" @bind-Value="Id" Title="Customer Search"
-                  TextExpression='t => t.MobileNumber'>
-        <CustomerLookupComponent TValue="int?" />
-    </AutoComplete>
+<div style="padding:0" class="col-md-12 d-control">
+    <div class="d-container">
+        <div class="row">
+            <div class="col-md-12">
+                <div style="margin:0 auto">
+                    <AutoCompleteTree @bind-Value="value">
+                        <CTreeView TEntity="OrganUnit" TextFunc="t => t.Title"
+                               ParentNodeFilterFunc="t => t.ParentOrganId == null"
+                               FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))"
+                               style="width:350px;" />
+                    </AutoCompleteTree>
+                </div>
+                <div style="height:450px;">
+
+                </div>
+                <div style="margin:0 auto">
+                    <AutoCompleteTree @bind-Value="value">
+                        <CTreeView TEntity="OrganUnit" TextFunc="t => t.Title"
+                                   ParentNodeFilterFunc="t => t.ParentOrganId == null"
+                                   FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))"
+                                   style="width:350px;" />
+                    </AutoCompleteTree>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div style="display:none" class="c-copy-right">
@@ -23,5 +45,9 @@
 </div>
 @code
 {
-    int? Id;
+    int value;
+    int[] values;
+
+
 }
+

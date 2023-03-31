@@ -61,21 +61,24 @@
 
     void OpenWindow()
     {
-        if (status != WindowStatus.Open)
+        if (status != WindowStatus.Open && !Disabled)
             status = WindowStatus.Open;
     }
 
     async Task SetValueForActiveItem(SelectListItem item)
     {
-        if (!item.Disabled)
+        if (!item.Disabled && !Disabled)
             await SetValue(item.Value);
     }
 
     public override async Task SetValue(object obj)
     {
-        await base.SetValue(obj);
-        await Task.Delay(300);
-        status = WindowStatus.Close;
+        if (!Disabled)
+        {
+            await base.SetValue(obj);
+            await Task.Delay(300);
+            status = WindowStatus.Close;
+        }
     }
 
     async Task UpdateValue(ChangeEventArgs arg)
@@ -131,28 +134,25 @@
     {
         if (Source == null)
         {
-            if(Items == null)
+            string str = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
+            Items = new List<SelectListItem>();
+            if (typeof(TValue).IsNullableType())
+                Items.Add(new SelectListItem(null, str));
+            else if (Search)
+                Items.Add(new SelectListItem("0", str));
+            var fields = GetFields();
+            foreach (var field in fields.Where(t => !t.IsSpecialName))
             {
-                string str = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
-                Items = new List<SelectListItem>();
-                if (typeof(TValue).IsNullableType())
-                    Items.Add(new SelectListItem(null, str));
-                else if (Search)
-                    Items.Add(new SelectListItem("0", str));
-                var fields = GetFields();
-                foreach (var field in fields.Where(t => !t.IsSpecialName))
+                var attr = field.GetCustomAttribute<DisplayAttribute>();
+                var value = field.GetValue(null);
+                var disable = false;
+                if (DisableFunc != null)
                 {
-                    var attr = field.GetCustomAttribute<DisplayAttribute>();
-                    var value = field.GetValue(null);
-                    var disable = false;
-                    if (DisableFunc != null)
-                    {
-                        var enumValue = (TValue)Convert.ChangeType(value, typeof(TValue));
-                        disable = DisableFunc.Invoke(enumValue);
-                    }
-                    var intValue = Convert.ToInt32(value);
-                    Items.Add(new SelectListItem(intValue.ToString(), attr == null ? field.Name : attr.Name, disable));
+                    var enumValue = (TValue)Convert.ChangeType(value, typeof(TValue));
+                    disable = DisableFunc.Invoke(enumValue);
                 }
+                var intValue = Convert.ToInt32(value);
+                Items.Add(new SelectListItem(intValue.ToString(), attr == null ? field.Name : attr.Name, disable));
             }
         }
         else

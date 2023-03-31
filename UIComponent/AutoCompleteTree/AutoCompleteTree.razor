@@ -3,8 +3,8 @@
 @inject IJSRuntime jSRuntime
 @inject CaspianDataService service
 @implements IAutoCompleteTree
-<div class="auto-hide c-lookup-tree">
-    <div class="c-content">
+<div class="auto-hide c-lookup-tree" multiselect="@multiSelectable">
+    <div class="c-content" >
         <input @ref="input" value="@searchText" @oninput="async e => await setValue(e)" />
         <span @onclick="async () => await ShowTree()" class="fa fa-search"></span>
     </div>

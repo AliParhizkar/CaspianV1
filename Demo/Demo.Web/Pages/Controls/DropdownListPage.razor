@@ -1,113 +1,271 @@
 ﻿@page "/Demo/DropdownList" 
 @namespace Demo.Web.Pages
 @inherits BasePage
-<h3 class="p-4">Dropdown list</h3>
+<h2 class="p-4">Dropdown list</h2>
+<h3>Binding</h3>
 <p>
-    this component usually bind to Enum or Nullable Enum, of course this component can bind to any type of data, if you bind this control to Enum this control automatically fill from Enum Fields.
+    this component usually bind to <b>Enum</b> or <b>Nullable Enum</b>, of course this component can bind to <b>any type of data</b>, 
+    if you bind this control to <b>Enum</b> this control automatically <b>fill from Enum Fields</b>. 
+    This control is a <b>key-value</b> control where the <b>Enum Fields</b> specifies the <b>key</b> and the <b>Display Attribute of Fields</b> specifies the value.
+    And also by <b>binding</b> this control to <b>Nullable Enum</b>, an item is <b>added to the beginning of the list</b> whose <b>key is null</b> and <b>value is whatever you want</b>, for example please select...
 </p>
 <TabPanel @bind-TabIndex=selectedIndex>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content">
-                <DropdownList @ref="dropdownList" Style="max-width:350px;" @bind-Value="orderType" Disabled="disable" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Bind to enum</h4>
+                        <span class="c-demo-description">In this example <b><i>orderType</i></b> is an <b>enum variable</b> and the control bind to it</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <DropdownList @bind-Value="orderType" />
+                                </div>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected Value</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(orderType.ConvertToInt())</label>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected Title</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(orderType.FaText())</label>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected Enum Title</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(orderType.ToString())</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Bind to nullable enum</h4>
+                        <span class="c-demo-description">In this example <b><i>nullableOrderType</i></b> is an <b>nullable enum variable</b> and the control bind to it</span>
+
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <DropdownList @bind-Value="nullableOrderType" />
+                                </div>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected Value</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(nullableOrderType.HasValue ? nullableOrderType.Value.ConvertToInt() : "---")</label>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected Title</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(nullableOrderType.HasValue ? nullableOrderType.Value.FaText() : "---")</label>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected Enum Title</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(nullableOrderType.HasValue ? nullableOrderType.Value.ToString() : "---")</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Bind to other type</h4>
+                        <span class="c-demo-description">In this example <b><i>otherType</i></b> is an <b>int? variable</b> and the control bind to it. The control is filled from <b>source</b> that is a <b>list of Select List Item</b></span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <DropdownList @bind-Value="otherType" Source="otherTypeItems" />
+                                </div>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected Value</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(otherType.HasValue ? otherType.Value : "---")</label>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected Title</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(otherType.HasValue ? otherTypeItems.GetText(otherType.Value.ToString()) : "---")</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Source">
+            <p>
+                In this example we bind this control to <b>orderType</b> that is a enum variable
+            </p>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Enum">
+
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-4">General properties</h3>
+<p>
+    We can specify <b>general properties</b> such as <b>width</b> and <b>disable</b>. if we do not specify the width of the control, its width will be 100% and fit to parent. And also this component automatically drop down, or up based on its position.
+</p>
+
+<TabPanel >
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content">
-                <DropdownList @ref="dropdownList" Style="max-width:350px;" @bind-Value="orderType" Disabled="disable" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Width property</h4>
+                        <span class="c-demo-description">By setting the <b>Style</b> parameter, we can easily <b>change width</b> and other css properties of the control. it has <b>intellisense</b> for css properties</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Control size</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList @bind-Value="controlSize" />
+                            </div>
+                            <div class="col-md-12">
+                                <DropdownList Style="@GetStyle()" @bind-Value="orderType" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Disable control</h4>
+                        <span class="c-demo-description">By setting the <b>Disabled</b> parameter, we can easily <b>enable & disable</b> the control. This parameter is a <b>boolean</b> parameter</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Enable/Disable</label>
+                            </div>
+                            <div class="col-md-8">
+                                <CheckBox @bind-Value="disable" />
+                            </div>
+                            <div class="col-md-12">
+                                <DropdownList @bind-Value="nullableOrderType" Disabled="disable" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Source">
+            <p>
+                In this example we bind this control to <b>orderType</b> that is a enum variable
+            </p>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-4">Disable & filter items</h3>
+<p>
+    In some cases, especially in enum binding, we want to <b>filter and disable some items</b>. As mentioned before, by binding the control to the enum, it will be filled with enum fields and we want to filter some items.
+    for this purpose we have <b>two functions</b> whose <b>input parameter</b> is of the <b>enum type</b> and whose <b>return value</b> is of the <b>boolean type</b>
+</p>
+<TabPanel @bind-TabIndex=selectedIndex>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Items filter</h4>
+                        <span class="c-demo-description">In this example, we filter the order type and display only the in-person types</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Enable filtering</label>
+                            </div>
+                            <div class="pe-5 col-md-6">
+                                <CheckBox @bind-Value="filtering" />
+                            </div>
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <DropdownList @bind-Value="orderType" FilterFunc="t => !filtering || t.ConvertToInt() <= 2"  />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Items disable</h4>
+                        <span class="c-demo-description">In this example, we disable some items of the order type (only the in-person order type is active)</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Disable Items</label>
+                            </div>
+                            <div class="pe-5 col-md-6">
+                                <CheckBox @bind-Value="itemDisable" />
+                            </div>
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <DropdownList @bind-Value="orderType" DisableFunc="t => itemDisable && t.ConvertToInt() > 2" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-<div class="row ps-4 pe-4 pt-3">
-    <div class="col-md-6">
-        <h3>Dropdown List</h3>
-    </div>
-    <div class="d-source-btn col-md-6">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Source<i class="fa fa-code"></i>
-        </button>
-    </div>
-</div>
-<div class="row ps-3 pe-3 ">
-    <div class="col-md-6 ps-4 pe-4">
-        <hr />
-        <div class="ps-4 pe-4">
-            <h4>Bind To Enum</h4>
-            <div class="row ps-4 c-controls">
-                <div class="col-md-12">
-                    <CheckBox @bind-Value="disable" Title="Disable" />
-                </div>
-                <div class="col-md-5">
-                    <label>Action</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <button class="t-button" @onclick="async () => await DropdownFocus()">Focus</button>
-                </div>
-                <div class="col-md-5">
-                    <label>Selected Value</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "-----")</label>
-                </div>
-                <div class="col-md-5">
-                    <label>Selected Title</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.FaText() : "-----")</label>
-                </div>
-                <div class="col-md-5">
-                    <label>Selected Enum Title</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ToString() : "-----")</label>
-                </div>
-                <div class="col-md-10">
-                    <DropdownList @ref="dropdownList" @bind-Value="orderType" Disabled="disable" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 ps-4 pe-4">
-        <hr />
-        <div class="ps-4 pe-4">
-            <h4>Items filter</h4>
-            <div class="row ps-4 c-controls">
-                <div class="col-md-5">
-                    <label>Selected Value</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ConvertToInt() : "-----")</label>
-                </div>
-                <div class="col-md-5">
-                    <label>Selected Title</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.FaText() : "-----")</label>
-                </div>
-                <div class="col-md-5">
-                    <label>Selected Enum Title</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <label style="color:red;">@(orderType.HasValue ? orderType.Value.ToString() : "-----")</label>
-                </div>
-                <div class="col-md-10">
-                    <DropdownList @bind-Value="orderType" FilterFunc="orderType => orderType != Model.OrderType.Salon" />
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<CreatePdfComponent @bind-Status="status" Title="Default" FileName="Dropdown.pdf" Title1="Enume Code" FileName1="OrderType-Enum.pdf" />
-
 @code 
 {
     int selectedIndex = 1;
     bool disable;
-    Demo.Model.OrderType? orderType;
+    bool filtering = true;
+    bool itemDisable = true;
+    ControlSize controlSize = ControlSize.Auto;
+    Demo.Model.OrderType orderType = Model.OrderType.Salon;
+    Demo.Model.OrderType? nullableOrderType;
+    int? otherType;
+    IList<SelectListItem> otherTypeItems;
+
     DropdownList<Demo.Model.OrderType?> dropdownList;
     WindowStatus status;
+
+    string GetStyle()
+    {
+        switch(controlSize)
+        {
+            case ControlSize.Large:
+                return "width:300px";
+            case ControlSize.Medium:
+                return "width:200px";
+            case ControlSize.Small:
+                return "width:150px";
+            case ControlSize.Auto:
+                return "";
+        }
+        throw new NotImplementedException();
+    }
+
+    protected override void OnInitialized()
+    {
+        otherTypeItems = SelectListItem.CreateList("One", "Two", "Three", "Four", "Five", "Six", "seven", "eight", "nine", "ten");
+        base.OnInitialized();
+    }
 
     async Task DropdownFocus()
     {
