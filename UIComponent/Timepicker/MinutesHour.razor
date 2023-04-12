@@ -1,0 +1,35 @@
+﻿@namespace Caspian.UI
+<div class="c-time-minutes">
+    <svg width="270" height="270">
+        <g transform="translate(135,135)">
+            <line x1="0" y1="0" x2="0" y2="-110"></line>
+            <circle r="5" cx="0" cy="-110"></circle>
+            <circle r="20" cx="0" cy="-110"></circle>
+            <circle r="2" cx="0" cy="0"></circle>
+        </g>
+    </svg>
+    <div class="c-tick-container">
+        @for (int index = 0; index < itemsTop.Length; index++)
+        {
+            int tempIndex = index;
+            string str = (tempIndex * 5).ToString();
+            if (tempIndex < 2)
+            {
+                str = "0" + str;
+            }
+            <div style="left:@(itemsLeft[tempIndex].ToString().Replace('/', '.'))px;top:@(itemsTop[tempIndex].ToString().Replace('/', '.'))px" class="c-tick">@str</div>
+        }
+    </div>
+</div>
+
+@code 
+{
+    double[] itemsLeft = new double[] { 115, 170, 210, 225, 210, 170, 115, 60, 19.7372, 5, 19.7372, 60 };
+    double[] itemsTop = new double[] { 5, 19.732, 60, 115, 170, 210, 225, 210, 170, 115, 60, 19.7372 };
+
+    [Parameter]
+    public int SelectedMinute { get; set; }
+
+    [Parameter]
+    public EventCallback<int> SelectedMinuteChanged { get; set; }
+}

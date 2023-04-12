@@ -26,6 +26,62 @@ function moverItem() {
             });
         },
 
+        setMinute: function (elm, e, type, min, max) {
+            let pos = $(elm).find('circle').eq(2).position();
+            let x = e.pageX - pos.left - 2;
+            let y = e.pageY - pos.top - 2;
+            let deg = Math.atan(y / x);
+            if (x < 0)
+                deg += Math.PI;
+            let minute = Math.round(deg / Math.PI * 30 + 15);
+            if (minute == 60)
+                minute = 0;
+            let text = minute.toString();
+            if (minute < 10)
+                text = '0' + text;
+            $(elm).closest('.c-timepicker').find('.c-span-minutes').text(text);
+            let x2 = null, y2 = null;
+            if (type == 1) {
+                x2 = Math.cos(deg) * 110;
+                y2 = Math.sin(deg) * 110;
+            }
+            else {
+                let factor = (minute - 15) / 30 * Math.PI;
+                x2 = Math.cos(factor) * 110;
+                y2 = Math.sin(factor) * 110;
+            }
+            let $svg = $(elm).find('svg');
+            $svg.find('circle').eq(0).attr('cx', x2).attr('cy', y2);
+            $svg.find('circle').eq(1).attr('cx', x2).attr('cy', y2);
+            $svg.find('line').attr('x2', x2).attr('y2', y2);
+
+        },
+        bindTimepicker: function (elm) {
+            elm
+            let xItems = [];
+            xItems.push()
+            $(elm).find('.c-time-minutes .c-tick-container').mousedown(e => {
+                let pos = $(elm).find('circle').eq(2).position();
+                let r = Math.pow(e.pageX - pos.left - 2, 2) + Math.pow(e.pageY - pos.top - 2, 2);
+                if (r > 8000) {
+                    $.caspian.xStart = e.pageX;
+                    $.caspian.yStart = e.pageY;
+                    $.caspian.startus = 1;
+                    $.caspian.lineX2 = $(elm).find('svg line').attr('x2');
+                    $.caspian.lineY2 = $(elm).find('svg line').attr('y2');
+                    $.caspian.setMinute($(elm).find('.c-time-minutes')[0], e);
+                }
+            });
+            $('body').bind('mousemove.timepicker', e => {
+                if ($.caspian.startus == 1) {
+                    $.caspian.setMinute($(elm).find('.c-time-minutes')[0], e, 2);
+                }
+            });
+            $('body').bind('mouseup', e => {
+                $.caspian.startus = 0;
+            });
+        },
+
         bindCalendar: function (elm, index, vNavigation) {
             switch (index) {
                 case 1:

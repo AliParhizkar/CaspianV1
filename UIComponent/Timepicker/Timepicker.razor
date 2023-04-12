@@ -1,6 +1,64 @@
 ﻿@namespace Caspian.UI
-
+@inject IJSRuntime JSRuntime
+@{
+    string hClass = "c-span-hours", mClass = "c-span-minutes";
+    if (selected)
+        hClass += " c-selected";
+    else
+        mClass += " c-selected";
+    string className = "c-timepicker";
+    if (navigate == true)
+        className += " c-animate-down";
+    else if (navigate == false)
+        className += " c-animate-up";
+    string strHour = hour.ToString();
+    if (hour < 10)
+        strHour = "0" + strHour;
+}
+<div @ref="element" class="@className" >
+    <div class="c-time-head">
+        <div>
+            <span @onclick="() => StateChanged(false)" class="@hClass">@strHour</span>:<span @onclick="() => StateChanged(true)" class="@mClass">00</span>
+        </div>
+    </div>
+    <div class="c-time-body">
+        <div class="c-time-palet">
+            <DayHours SelectedHour="hour" SelectedHourChanged="HoureChanged" />
+            <MinutesHour SelectedMinute="minute" SelectedMinuteChanged="MinuteChanged" />
+        </div>
+    </div>
+</div>
 @code 
 {
+    int hour = 4;
+    int minute = 14;
+    bool? navigate = null;
+    ElementReference element;
+    bool selected;
 
+    void StateChanged(bool state)
+    {
+        selected = state;
+        navigate = state;
+    }
+
+    void HoureChanged(int hour)
+    {
+        navigate = true;
+        this.hour = hour;
+        selected = true;
+    }
+
+    void MinuteChanged(int minute)
+    {
+        navigate = false;
+        this.minute = minute;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("$.caspian.bindTimepicker", element);
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }

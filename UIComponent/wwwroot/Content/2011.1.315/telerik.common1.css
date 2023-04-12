@@ -18,10 +18,136 @@
         left: -242px;
     }
 }
-.t-dropdown .t-group .t-disable {
-    color: #838383;
-    cursor: not-allowed;
+.c-tick-container {
+    position: absolute;
+    width: 270px;
+    height: 270px;
+    border-radius: 50%;
 }
+.c-timepicker {
+    border: 1px solid red;
+    width: 300px;
+    height: 450px;
+    font-family: "Roboto",sans-serif;
+    position:absolute;
+}
+
+    .c-timepicker .c-tick:hover {
+        background-color: rgba(0,150,136,0.25);
+    }
+
+.c-time-head {
+    height: 100px;
+    background-color: #4285f4;
+    padding-top: 8px;
+}
+    .c-time-head .c-selected {
+        color: #b2dfdb;
+    }
+    .c-time-body {
+        padding-top: 1.25rem;
+        overflow:hidden;
+        height:290px;
+    }
+.c-time-minutes svg{
+    position:absolute;
+}
+.c-tick-inner {
+    font-size: 17px;
+}
+
+.c-time-hour, .c-time-minutes {
+    width: 270px;
+    height: 270px;
+    position: relative;
+    border-radius: 50%;
+    margin: 0 auto;
+    background-color: #eee;
+    user-select: none;
+    font-size: 15px;
+}
+.c-time-minutes {
+    opacity: 0;
+    transform: scale(.8);
+    top: -270px;
+    z-index:-1;
+}
+.c-time-palet {
+    width: 270px;
+    height: 270px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+.c-animate-down .c-time-hour {
+    transition: .2s opacity ease, .2s transform ease;
+    transform: scale(1.2);
+    opacity: 0;
+}
+
+.c-animate-down .c-time-minutes {
+    transform: scale(1);
+    opacity: 1;
+    z-index: 1;
+    transition-duration: .3s, .35s;
+    transition-property: opacity, transform;
+    transition-delay: .15s
+}
+.c-animate-up .c-time-minutes {
+    transition: .2s opacity ease, .2s transform ease;
+    transform: scale(.8);
+    opacity: 0;
+}
+.c-animate-up .c-time-hour {
+    transform: scale(1);
+    opacity: 1;
+    transition-duration: .3s, .35s;
+    transition-property: opacity, transform;
+    transition-delay: .15s
+}
+
+
+
+
+.c-timepicker line {
+    stroke: rgba(0,150,136,0.25);
+    stroke-width: 1;
+}
+.c-timepicker circle {
+    fill: rgba(0,150,136,0.25);
+
+}
+
+    .c-tick {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        color: #666;
+        text-align: center;
+        cursor: pointer;
+        background-color: rgba(0,150,136,0);
+        border-radius: 50%;
+        transition: background-color .4s;
+        pointer-events: all;
+    }
+
+.c-time-head div {
+    width: 170px;
+    height: 84px;
+    margin: 0 auto;
+    font-size: 4.375rem;
+    color: white;
+    line-height: 84px;
+}
+    .c-time-head span {
+        transition:color .4s ease
+    }
+
+    .t-dropdown .t-group .t-disable {
+        color: #838383;
+        cursor: not-allowed;
+    }
 .c-navigate-h {
     display: flex;
     width: 454px;
@@ -53,8 +179,6 @@
             height: 200px;
             position: relative;
         }
-
-
 
     .t-other-month {
         color: #8a2a33;
@@ -1035,7 +1159,7 @@ span, label, td, th {
         border-radius: 8px;
     }
 .c-animate-down {
-    top: 31px;
+    /*top: 31px;*/
 }
 
     .c-animate-down .t-group, .c-animate-down .t-datepicker-calendar {
@@ -1044,8 +1168,8 @@ span, label, td, th {
         transition: top .4s cubic-bezier(0.35, 0, 0.25, 1);
     }
     .c-animate-up {
-        bottom: 33px;
-        padding-top:7px;
+/*        bottom: 33px;
+        padding-top:7px;*/
     }
 
         .c-animate-up .t-group, .c-animate-up .t-datepicker-calendar {

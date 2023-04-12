@@ -1,0 +1,53 @@
+﻿@namespace Caspian.UI
+@{
+    string left = null, top = null;
+    if (SelectedHour > 0 && SelectedHour < 13)
+    {
+        left = (itemsLeft[SelectedHour] - 115).ToString().Replace("/", ".");
+        top = (itemsTop[SelectedHour] - 115).ToString().Replace("/", ".");
+    }
+    else
+    {
+        left = (itemsLeft[SelectedHour] - 115).ToString().Replace("/", ".");
+        top = (itemsTop[SelectedHour] - 115).ToString().Replace("/", ".");
+    }
+}
+
+<div class="c-time-hour">
+    <svg width="270" height="270">
+        <g transform="translate(135,135)">
+            <line x1="0" y1="0" x2="@(left)" y2="@(top)"></line>
+            <circle r="5" cx="@(left)" cy="@(top)"></circle>
+            <circle r="20" cx="@(left)" cy="@(top)"></circle>
+            <circle r="2" cx="0" cy="0"></circle>
+        </g>
+    </svg>
+    @for (var index = 0; index < itemsTop.Length; index++)
+    {
+        string className = index > 0 && index <= 12 ? "c-tick c-tick-inner" : "c-tick";
+        string str = index == 0 ? "00" : index.ToString();
+        int tempIndex = index;
+        <div @onclick="async () => await HourSelected(tempIndex) " style="left:@(itemsLeft[index].ToString().Replace('/', '.'))px;top:@(itemsTop[index].ToString().Replace('/', '.'))px;" class="@className">@str</div>
+    }
+</div>
+
+@code 
+{
+    double[] itemsTop = new double[] { 5, 45.718, 75, 115, 155, 184.282, 195, 184.282, 155, 115, 75, 45.718,
+        35, 19.7372, 60, 115, 170, 210.263, 225, 210.263, 170, 115, 60, 19.7372};
+
+    double[] itemsLeft = new double[] { 115, 155, 184.282, 195, 184.282, 155, 115, 75, 45.718, 35, 45.718, 75, 
+    115, 170, 210, 225, 210, 170, 115, 60, 19.7372, 5, 19.7372, 60};
+
+    async Task HourSelected(int hour)
+    {
+        if (SelectedHourChanged.HasDelegate)
+            await SelectedHourChanged.InvokeAsync(hour);
+    }
+
+    [Parameter]
+    public int SelectedHour { get; set; }
+
+    [Parameter]
+    public EventCallback<int> SelectedHourChanged { get; set; }
+}
