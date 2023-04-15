@@ -26,8 +26,19 @@ function moverItem() {
             });
         },
 
-        setMinute: function (elm, e, type, min, max) {
+        clearTime: function (elm) {
+            $(elm).find('line').attr('x2', 0).attr('y2', -110);
+            $(elm).find('circle').each((index, cir) => {
+                if (index < 2)
+                    $(cir).attr('cx', 0).attr('cy', -110);
+            });
+        },
+        setMinute: function (elm, e, type) {
+            let from = $(elm).attr('from');
+            let to = $(elm).attr('to');
             let pos = $(elm).find('circle').eq(2).position();
+            if (!pos)
+                return;
             let x = e.pageX - pos.left - 2;
             let y = e.pageY - pos.top - 2;
             let deg = Math.atan(y / x);
@@ -36,10 +47,15 @@ function moverItem() {
             let minute = Math.round(deg / Math.PI * 30 + 15);
             if (minute == 60)
                 minute = 0;
+            if (from != undefined && minute < from)
+                return false;
+            if (to != undefined && minute > to)
+                return false;
             let text = minute.toString();
             if (minute < 10)
                 text = '0' + text;
             $(elm).closest('.c-timepicker').find('.c-span-minutes').text(text);
+            $(elm).closest('.c-timepicker')
             let x2 = null, y2 = null;
             if (type == 1) {
                 x2 = Math.cos(deg) * 110;
@@ -54,12 +70,103 @@ function moverItem() {
             $svg.find('circle').eq(0).attr('cx', x2).attr('cy', y2);
             $svg.find('circle').eq(1).attr('cx', x2).attr('cy', y2);
             $svg.find('line').attr('x2', x2).attr('y2', y2);
-
+            return true;
         },
-        bindTimepicker: function (elm) {
-            elm
-            let xItems = [];
-            xItems.push()
+        getTime: function (elem) {
+            return $(elem).find('.c-span-hours').text() + ':' + $(elem).find('.c-span-minutes').text();
+        },
+        setTime: function (elem, dotnet) {
+            let $panel = $(elem).find('.c-timepicker');
+            let height = $panel.height() + 2;
+            if ($(elem).position().top > height) 
+                $panel.css('bottom', -height);
+            else
+                $panel.css('top', -height);
+            let $input = $(elem).find('input');
+            $input.val($.caspian.getTime(elem));
+            setTimeout(async () => {
+                var event = new Event('change');
+                $input[0].dispatchEvent(event);
+                await dotnet.invokeMethodAsync("CloseWindow");
+            }, 200);
+        },
+        bindTimepicker: function (dotnet, element) {
+            $(element).mouseenter(() => {
+                let $element = $(element).find('.t-picker-wrap');
+                if (!$element.hasClass('t-state-selected') && !$element.hasClass('t-state-disabled'))
+                    $element.addClass('t-state-hover');
+            });
+            $(element).mouseleave(() => {
+                $(element).find('.t-picker-wrap').removeClass('t-state-hover');
+            });
+            $(element).find('input').focus(() => {
+                $(element).find('.t-picker-wrap').removeClass('t-state-hover').addClass('t-state-selected');
+            });
+            $(element).find('input').blur(() => {
+                $(element).find('.t-picker-wrap').removeClass('t-state-selected');
+            });
+            const mutationObserver = new MutationObserver(() => {
+                let elem = element;
+                let $panel = $(elem).find('.c-timepicker');
+                let height = $panel.height() + 2;
+                let $container = $(elem).find('.t-animation-container');
+                if ($(elem).position().top > height) {
+                    $container.addClass('c-animate-up').removeClass('c-animate-down');
+                    setTimeout(() => {
+                        $container.find('.c-timepicker').css('bottom', 0);
+                    }, 10);
+                }
+                else {
+                    $container.addClass('c-animate-down').removeClass('c-animate-up');
+                    setTimeout(() => {
+                        $container.find('.c-timepicker').css('top', 0);
+                    }, 10);
+                }
+                $container.width($panel.width() + 8).height(height);
+                $(elem).find('.c-cancel').click(() => {
+                    if ($(elem).position().top > height)
+                        $panel.css('bottom', -height);
+                    else
+                        $panel.css('top', -height);
+                    setTimeout(async () => {
+                        await dotnet.invokeMethodAsync("CloseWindow");
+                    }, 200);
+                });
+                $(elem).find('.c-ok').click(() => {
+                    $.caspian.setTime(elem, dotnet);
+                });
+                $(elem).find('.c-clear').click(() => {
+                    $.caspian.clearTime($(elem).find('.c-time-hour')[0]);
+                    $.caspian.clearTime($(elem).find('.c-time-minutes')[0]);
+                    $(elem).find('.c-span-hours').text('00');
+                    $(elem).find('.c-span-minutes').text('00');
+                });
+                $.caspian.bindTimePanel($(elem).find('.c-timepicker')[0], dotnet); 
+            });
+            mutationObserver.observe($(element)[0], {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+            $('body').click(async e => {
+                let elem = element;
+                if ($(e.target).closest('.t-timepicker')[0] != elem) {
+                    let $panel = $(elem).find('.c-timepicker');
+                    if ($panel.hasClass('c-timepicker')) {
+                        let height = $panel.height() + 2;
+                        if ($(elem).position().top > height)
+                            $panel.css('bottom', -height);
+                        else
+                            $panel.css('top', -height);
+                        setTimeout(async () => {
+                            await dotnet.invokeMethodAsync("CloseWindow");
+                        }, 200);
+                    }
+                }
+            })
+        },
+        bindTimePanel: function (elm, dotnet) {
+            let isValid = false;
             $(elm).find('.c-time-minutes .c-tick-container').mousedown(e => {
                 let pos = $(elm).find('circle').eq(2).position();
                 let r = Math.pow(e.pageX - pos.left - 2, 2) + Math.pow(e.pageY - pos.top - 2, 2);
@@ -69,8 +176,14 @@ function moverItem() {
                     $.caspian.startus = 1;
                     $.caspian.lineX2 = $(elm).find('svg line').attr('x2');
                     $.caspian.lineY2 = $(elm).find('svg line').attr('y2');
-                    $.caspian.setMinute($(elm).find('.c-time-minutes')[0], e);
+                    isValid = $.caspian.setMinute($(elm).find('.c-time-minutes')[0], e);
                 }
+            }).mouseup(e => {
+                setTimeout(() => {
+                    if (isValid && !$(elm).find('.c-time-footer').hasClass('c-time-footer')) {
+                        $.caspian.setTime($(elm).closest('.t-timepicker')[0], dotnet);
+                    }
+                }, 100);
             });
             $('body').bind('mousemove.timepicker', e => {
                 if ($.caspian.startus == 1) {
@@ -81,7 +194,6 @@ function moverItem() {
                 $.caspian.startus = 0;
             });
         },
-
         bindCalendar: function (elm, index, vNavigation) {
             switch (index) {
                 case 1:

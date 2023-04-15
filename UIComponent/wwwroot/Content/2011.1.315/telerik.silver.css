@@ -99,7 +99,7 @@ html input[disabled], textarea[disabled] {
     font-size:14px;
 }
 
-.t-datepicker >.t-state-selected  {
+.t-picker-wrap.t-state-selected  {
     box-shadow: 0 0 3px 0 grey;
     border-color: rgba(0, 0, 0, 0.24);
 }
@@ -157,11 +157,11 @@ html input[disabled], textarea[disabled] {
 .t-dropdown-wrap.t-state-hover .t-select {
     border-color: rgba(0,0,0,0.15);
 }
-.t-datepicker .t-state-hover .t-input {
+.t-picker-wrap.t-state-hover .t-input {
     border-color: rgba(0,0,0,0.24);
 }
 
-.t-datepicker .t-state-hover .t-select {
+.t-picker-wrap.t-state-hover .t-select {
     background-image: linear-gradient(#00000010,#00000020);
     border-color: rgba(0,0,0,0.15);
 }

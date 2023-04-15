@@ -1,64 +1,107 @@
 ﻿@namespace Caspian.UI
+@typeparam TValue
 @inject IJSRuntime JSRuntime
+@inherits CBaseInput<TValue>
+@using System.Text.RegularExpressions
 @{
-    string hClass = "c-span-hours", mClass = "c-span-minutes";
-    if (selected)
-        hClass += " c-selected";
-    else
-        mClass += " c-selected";
-    string className = "c-timepicker";
-    if (navigate == true)
-        className += " c-animate-down";
-    else if (navigate == false)
-        className += " c-animate-up";
-    string strHour = hour.ToString();
-    if (hour < 10)
-        strHour = "0" + strHour;
-}
-<div @ref="element" class="@className" >
-    <div class="c-time-head">
-        <div>
-            <span @onclick="() => StateChanged(false)" class="@hClass">@strHour</span>:<span @onclick="() => StateChanged(true)" class="@mClass">00</span>
-        </div>
+    string str = "";
+    TimeSpan time = default(TimeSpan);
+    if (Value != null)
+    {
+        time = (TimeSpan)Convert.ChangeType(Value, typeof(TimeSpan));
+        str = time.ShortString();
+    }
+    string className = "t-picker-wrap";
+    if (Disabled)
+        className += " t-state-disabled";
+} 
+<div @ref="htmlElement" class="t-widget t-timepicker">
+    <div @attributes="attrs" class="@className">
+        @if (DefaultState)
+        {
+            <input disabled="@Disabled" type="time" value="@str" class="t-input" @onchange="ChangeValue" />
+        }
+        else
+        {
+            <input disabled="@Disabled" value="@str" class="t-input" @onchange="ChangeValue" />
+            <span @onclick="OpenTimePanel" class="t-select">
+                <span class="t-icon t-icon-clock fa fa-clock-o"></span>
+            </span>
+        }
+
     </div>
-    <div class="c-time-body">
-        <div class="c-time-palet">
-            <DayHours SelectedHour="hour" SelectedHourChanged="HoureChanged" />
-            <MinutesHour SelectedMinute="minute" SelectedMinuteChanged="MinuteChanged" />
+    @if (status == WindowStatus.Open && !DefaultState)
+    {
+        <div class="t-animation-container">
+            <TimePanel FromTime="FromTime" ToTime="ToTime" AutoSelect="AutoSelect" Hour="time.Hours" Minute="time.Minutes" />
         </div>
-    </div>
+    }
 </div>
-@code 
+@code
 {
-    int hour = 4;
-    int minute = 14;
-    bool? navigate = null;
-    ElementReference element;
-    bool selected;
+    WindowStatus status;
 
-    void StateChanged(bool state)
+    void OpenTimePanel()
     {
-        selected = state;
-        navigate = state;
+        if (!Disabled)
+            status = WindowStatus.Open;    
     }
 
-    void HoureChanged(int hour)
+    [Parameter]
+    public bool AutoSelect { get; set; } = true;
+
+    [Parameter]
+    public bool DefaultState { get; set; }
+
+    [Parameter]
+    public TimeSpan? FromTime { get; set; }
+
+    [Parameter]
+    public TimeSpan? ToTime { get; set; }
+
+    async void ChangeValue(ChangeEventArgs arg)
     {
-        navigate = true;
-        this.hour = hour;
-        selected = true;
+        TValue value = default;
+        var isValid = false;
+        var str = Convert.ToString(arg.Value);
+        if (!Disabled && str.IndexOf('_') == -1)
+        {
+            if (Regex.IsMatch(str, "^[0,1][0-9]|2[0-3]:[0-5][0-9]$"))
+            {
+                var time = TimeSpan.Parse(str);
+                isValid = true;
+                if (FromTime.HasValue && FromTime.Value < time)
+                    isValid = false;
+                if (ToTime.HasValue && ToTime.Value > time)
+                    isValid = false;
+                if (isValid)
+                    value = (TValue)Convert.ChangeType(time, typeof(TimeSpan));
+            }
+        }
+        if (isValid)
+        {
+            Value = value;
+            if (ValueChanged.HasDelegate)
+                await ValueChanged.InvokeAsync(value);
+        }
     }
 
-    void MinuteChanged(int minute)
-    {
-        navigate = false;
-        this.minute = minute;
-    }
+    IDictionary<string, object> attrs = new Dictionary<string, object>();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-            await JSRuntime.InvokeVoidAsync("$.caspian.bindTimepicker", element);
+        {
+            var dotnet = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("$.caspian.bindTimepicker", dotnet, htmlElement);
+        }
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable]
+    public void CloseWindow()
+    {
+        status = WindowStatus.Close;
+        StateHasChanged();
     }
 }

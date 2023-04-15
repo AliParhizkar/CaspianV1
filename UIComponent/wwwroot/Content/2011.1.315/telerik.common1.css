@@ -25,30 +25,95 @@
     border-radius: 50%;
 }
 .c-timepicker {
-    border: 1px solid red;
-    width: 300px;
-    height: 450px;
+    border: 1px solid #c5c5c5;
+    width: 285px;
     font-family: "Roboto",sans-serif;
-    position:absolute;
+    position: absolute;
+    overflow: hidden;
+    border-radius: 35px 35px 0 0;
+}
+.t-animation-container.c-animate-down .c-timepicker {
+    top: -400px;
+    transition: 0.4s top ease;
+}
+.t-animation-container.c-animate-up .c-timepicker {
+    transition: 0.4s bottom ease;
+    bottom:-400px;
+}
+.t-timepicker .t-state-hover input {
+    border-color: rgba(0,0,0,0.24);
+}
+.c-timepicker .c-tick:not(.c-tick-disabled):hover {
+    background-color: rgba(0,150,136,0.25);
 }
 
-    .c-timepicker .c-tick:hover {
-        background-color: rgba(0,150,136,0.25);
+.c-timepicker .c-tick-disabled{
+    color: darkgray;
+    cursor:default;
+}
+
+input[type=time]{
+    border-radius:8px!important;
+}
+
+.c-time-footer {
+    padding: 0 12px 6px 12px;
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes gradient {
+    0% {
+        background: radial-gradient(circle at center, rgba(125, 125, 255, 0 ) 0%, #fff 0%, #fff 100%);
     }
 
-.c-time-head {
-    height: 100px;
-    background-color: #4285f4;
-    padding-top: 8px;
+    25% {
+        background: radial-gradient(circle at center, rgba(125, 125, 255, 0.3 ) 10%, #fff 25%, #fff 100%);
+    }
+
+    50% {
+        background: radial-gradient(circle at center, rgba(125, 125, 255, 0.3 ) 30%, #fff 50%, #fff 100%);
+    }
+
+    75% {
+        background: radial-gradient(circle at center, rgba(125, 125, 255, 0.3 ) 50%, #fff 75%, #fff 100%);
+    }
+
+    100% {
+        background: radial-gradient(circle at center, rgba(125, 125, 255, 0.3 ) 70%, #fff 100%, #fff 100%);
+    }
 }
+
+    .c-time-footer button {
+        font-size: 0.8rem;
+        min-width: 64px;
+        line-height: 30px;
+        border-radius: 8px;
+        border: none;
+        background-color: transparent;
+        color: #3b71ca;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 4px 8px;
+    }
+        .c-time-footer button:active {
+            animation: gradient 100ms;
+        }
+
+        .c-time-footer button:hover {
+            background-color: rgba(0, 0, 0, .08);
+        }
+
+        .c-time-head {
+            background-color: #4285f4;
+        }
     .c-time-head .c-selected {
         color: #b2dfdb;
     }
-    .c-time-body {
-        padding-top: 1.25rem;
-        overflow:hidden;
-        height:290px;
-    }
+.c-time-body {
+    padding-top: 0.5rem;
+    overflow: hidden;
+    height: 283px;
+}
 .c-time-minutes svg{
     position:absolute;
 }
@@ -79,13 +144,13 @@
     border-radius: 50%;
     margin: 0 auto;
 }
-.c-animate-down .c-time-hour {
+.c-time-animate-down .c-time-hour {
     transition: .2s opacity ease, .2s transform ease;
     transform: scale(1.2);
     opacity: 0;
 }
 
-.c-animate-down .c-time-minutes {
+.c-time-animate-down .c-time-minutes {
     transform: scale(1);
     opacity: 1;
     z-index: 1;
@@ -93,21 +158,18 @@
     transition-property: opacity, transform;
     transition-delay: .15s
 }
-.c-animate-up .c-time-minutes {
+.c-time-animate-up .c-time-minutes {
     transition: .2s opacity ease, .2s transform ease;
     transform: scale(.8);
     opacity: 0;
 }
-.c-animate-up .c-time-hour {
+.c-time-animate-up .c-time-hour {
     transform: scale(1);
     opacity: 1;
     transition-duration: .3s, .35s;
     transition-property: opacity, transform;
     transition-delay: .15s
 }
-
-
-
 
 .c-timepicker line {
     stroke: rgba(0,150,136,0.25);
@@ -133,12 +195,12 @@
     }
 
 .c-time-head div {
-    width: 170px;
-    height: 84px;
+    width: 140px;
+    height: 70px;
     margin: 0 auto;
-    font-size: 4.375rem;
+    font-size: 3.375rem;
     color: white;
-    line-height: 84px;
+    line-height: 74px;
 }
     .c-time-head span {
         transition:color .4s ease
@@ -1159,7 +1221,7 @@ span, label, td, th {
         border-radius: 8px;
     }
 .c-animate-down {
-    /*top: 31px;*/
+    top: 31px;
 }
 
     .c-animate-down .t-group, .c-animate-down .t-datepicker-calendar {
@@ -1168,8 +1230,8 @@ span, label, td, th {
         transition: top .4s cubic-bezier(0.35, 0, 0.25, 1);
     }
     .c-animate-up {
-/*        bottom: 33px;
-        padding-top:7px;*/
+        bottom: 33px;
+        padding-top:7px;
     }
 
         .c-animate-up .t-group, .c-animate-up .t-datepicker-calendar {
@@ -2693,7 +2755,7 @@ html body .t-grid tbody .t-button-icon {
         width: calc(100% - 28px);
         border-width:1px;
         height:30px;
-        border-color:rgba(0, 0, 0, 0.2)
+        border-color:rgba(0, 0, 0, 0.12)
     }
 .t-datepicker .fa-calendar {
     vertical-align: middle;

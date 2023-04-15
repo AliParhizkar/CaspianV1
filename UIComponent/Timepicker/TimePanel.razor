@@ -1,0 +1,87 @@
+﻿@namespace Caspian.UI
+@inject IJSRuntime JSRuntime
+@{
+    string hClass = "c-span-hours", mClass = "c-span-minutes";
+    if (selected)
+        hClass += " c-selected";
+    else
+        mClass += " c-selected";
+    string className = "c-timepicker";
+    if (navigate == true)
+        className += " c-time-animate-down";
+    else if (navigate == false)
+        className += " c-time-animate-up";
+    string strHour = Hour.ToString();
+    if (Hour < 10)
+        strHour = "0" + strHour;
+    string strMinute = Minute.ToString();
+    if (Minute < 10)
+        strMinute = "0" + strMinute;
+    int? fromMinute = null, toMinute = null;
+    if (FromTime.HasValue && Hour == FromTime.Value.Hours)
+        fromMinute = FromTime.Value.Minutes;
+    if (ToTime.HasValue && Hour == ToTime.Value.Hours)
+        toMinute = ToTime.Value.Minutes;
+}
+<div class="@className">
+    <div class="c-time-head">
+        <div>
+            <span @onclick="() => StateChanged(false)" class="@hClass">@strHour</span>:<span @onclick="() => StateChanged(true)" class="@mClass">@strMinute</span>
+        </div>
+    </div>
+    <div class="c-time-body">
+        <div class="c-time-palet">
+            <DayHours FromHour="FromTime?.Hours" ToHour="ToTime?.Hours" SelectedHour="Hour" SelectedHourChanged="HoureChanged" />
+            <MinutesHour FromMinute="fromMinute" ToMinute="toMinute" SelectedMinute="Minute" SelectedMinuteChanged="MinuteChanged" />
+        </div>
+    </div>
+    @if (!AutoSelect)
+    {
+        <div class="c-time-footer">
+            <div class="w-100 d-flex justify-content-between">
+                <button class="c-clear">Clear</button>
+                <button class="c-cancel">Cancel</button>
+                <button class="c-ok">Ok</button>
+            </div>
+        </div>
+    }
+</div>
+@code
+{
+    bool? navigate = null;
+    bool selected;
+
+    [Parameter]
+    public bool AutoSelect { get; set; }
+
+    void StateChanged(bool state)
+    {
+        selected = state;
+        navigate = state;
+    }
+
+    [Parameter]
+    public int Hour { get; set; }
+
+    [Parameter]
+    public int Minute { get; set; }
+
+    [Parameter]
+    public TimeSpan? FromTime { get; set; }
+
+    [Parameter]
+    public TimeSpan? ToTime { get; set; }
+
+    void HoureChanged(int hour)
+    {
+        navigate = true;
+        Hour = hour;
+        selected = true;
+    }
+
+    void MinuteChanged(int minute)
+    {
+        navigate = false;
+        this.Minute = minute;
+    }
+}

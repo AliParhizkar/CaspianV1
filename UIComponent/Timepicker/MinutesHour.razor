@@ -1,10 +1,15 @@
 ﻿@namespace Caspian.UI
-<div class="c-time-minutes">
+@{
+    var radian = (SelectedMinute - 15) * Math.PI / 30;
+    string top = (110 * Math.Sin(radian)).ToString().Replace('/', '.'),
+    left = (110 * Math.Cos(radian)).ToString().Replace('/', '.');
+}
+<div class="c-time-minutes" from="@FromMinute" to="@ToMinute">
     <svg width="270" height="270">
         <g transform="translate(135,135)">
-            <line x1="0" y1="0" x2="0" y2="-110"></line>
-            <circle r="5" cx="0" cy="-110"></circle>
-            <circle r="20" cx="0" cy="-110"></circle>
+            <line x1="0" y1="0" x2="@left" y2="@top"></line>
+            <circle r="5" cx="@left" cy="@top"></circle>
+            <circle r="20" cx="@left" cy="@top"></circle>
             <circle r="2" cx="0" cy="0"></circle>
         </g>
     </svg>
@@ -17,7 +22,13 @@
             {
                 str = "0" + str;
             }
-            <div style="left:@(itemsLeft[tempIndex].ToString().Replace('/', '.'))px;top:@(itemsTop[tempIndex].ToString().Replace('/', '.'))px" class="c-tick">@str</div>
+            var disable = FromMinute.HasValue && FromMinute.Value > index * 5;
+            if (ToMinute.HasValue && ToMinute.Value < index * 5)
+                disable = true;
+            string className = "c-tick";
+            if (disable)
+                className += " c-tick-disabled";
+            <div class="@className" style="left:@(itemsLeft[tempIndex].ToString().Replace('/', '.'))px;top:@(itemsTop[tempIndex].ToString().Replace('/', '.'))px">@str</div>
         }
     </div>
 </div>
@@ -29,6 +40,12 @@
 
     [Parameter]
     public int SelectedMinute { get; set; }
+
+    [Parameter]
+    public int? FromMinute { get; set; }
+
+    [Parameter]
+    public int? ToMinute { get; set; }
 
     [Parameter]
     public EventCallback<int> SelectedMinuteChanged { get; set; }

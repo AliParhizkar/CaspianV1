@@ -71,7 +71,7 @@
                     <span style="color:red;">@(time.HasValue ? time.Value.ShortString() : "-----")</span>
                 </div>
                 <div class="col-md-10">
-                    <TimePicker @ref="timePicker" @bind-Value="time" Disabled="timeDisable" />
+                    
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@
     DateTime? date;
     TimeSpan? time;
     DatePicker<DateTime?> datePicker;
-    TimePicker<TimeSpan?> timePicker;
+    
 
     async Task DatePickerFocuc()
     {
@@ -97,6 +97,6 @@
 
     async Task TimePickerFocuc()
     {
-        await timePicker.FocusAsync();
+        
     }
 }

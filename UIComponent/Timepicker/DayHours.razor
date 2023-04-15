@@ -24,7 +24,15 @@
     </svg>
     @for (var index = 0; index < itemsTop.Length; index++)
     {
-        string className = index > 0 && index <= 12 ? "c-tick c-tick-inner" : "c-tick";
+        string className = "c-tick";
+        var disable = FromHour.HasValue && FromHour.Value > index;
+        if (ToHour.HasValue && ToHour.Value < index)
+            disable = true;
+        if (disable)
+            className += " c-tick-disabled";
+        if (index > 0 && index <= 12)
+            className += " c-tick-inner";
+
         string str = index == 0 ? "00" : index.ToString();
         int tempIndex = index;
         <div @onclick="async () => await HourSelected(tempIndex) " style="left:@(itemsLeft[index].ToString().Replace('/', '.'))px;top:@(itemsTop[index].ToString().Replace('/', '.'))px;" class="@className">@str</div>
@@ -41,9 +49,20 @@
 
     async Task HourSelected(int hour)
     {
-        if (SelectedHourChanged.HasDelegate)
+        var enable = true;
+        if (FromHour.HasValue && hour < FromHour.Value)
+            enable = false;
+        if (ToHour.HasValue && hour > ToHour.Value)
+            enable = false;
+        if (enable && SelectedHourChanged.HasDelegate)
             await SelectedHourChanged.InvokeAsync(hour);
     }
+
+    [Parameter]
+    public int? FromHour { get; set; }
+
+    [Parameter]
+    public int? ToHour { get; set; }
 
     [Parameter]
     public int SelectedHour { get; set; }
