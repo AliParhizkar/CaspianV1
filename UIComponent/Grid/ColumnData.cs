@@ -21,9 +21,9 @@ namespace Caspian.UI
 
         public Expression AggregateExpression { get; set; }
 
-        public OrderType? OrderType { get; set; }
+        public SortType? SortType { get; set; }
 
-        public bool Orderable { get; set; }
+        public bool Sortable { get; set; }
 
         public bool Resizeable { get; set; }
     }

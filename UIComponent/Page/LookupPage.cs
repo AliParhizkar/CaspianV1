@@ -31,7 +31,7 @@ namespace Caspian.UI
         }
 
         [CascadingParameter]
-        public AutoComplete<TEntity, TValue> TextBox { get; set; }
+        public AutoComplete<TEntity, TValue> AutoComplete { get; set; }
 
         internal Expression<Func<TEntity, string>> TextExpression { get; private set; }   
 
@@ -41,15 +41,15 @@ namespace Caspian.UI
         [CascadingParameter(Name = "AutoComplateState")]
         public SearchState SearchState { get; set; }
 
-        [CascadingParameter(Name = "MultiselectAutocomplete")]
-        public MultiselectAutocomplete MultiselectAutocomplete { get; set; }
-
         protected override async Task OnParametersSetAsync()
         {
             if (Grid != null && SearchState != null)
             {
                 if (Grid.InternalConditionExpr == null)
+                {
+                    
                     Grid.InternalConditionExpr = SearchExpression.Body;
+                }
                 if (Grid.SelectedRowId == null)
                     Grid.SelectFirstRow();
                 SearchState.Grid = Grid;
@@ -61,11 +61,6 @@ namespace Caspian.UI
                 }
             }
             await base.OnParametersSetAsync();
-        }
-
-        protected void SetSearchExpression(Expression<Func<TEntity, bool>> expr)
-        {
-            SearchExpression = expr;
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -83,10 +78,10 @@ namespace Caspian.UI
                         var service = new SimpleService<TEntity>(scope.ServiceProvider);
                         var entity = await service.SingleAsync(id);
                         var text = TextExpression.Compile().Invoke(entity);
-                        TextBox.SetText(text);
-                        await TextBox.SetValue(id);
-                        MultiselectAutocomplete?.AddToList(new SelectListItem(id.ToString(), text));
-                        await TextBox.CloseHelpForm(true);
+                        AutoComplete.SetText(text);
+                        await AutoComplete.SetValue(id);
+                        
+                        await AutoComplete.CloseHelpForm(true);
                     });
                 }
             }

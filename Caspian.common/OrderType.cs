@@ -5,7 +5,7 @@ namespace Caspian.Common
     /// <summary>
     /// نوع مرتب سازی
     /// </summary>
-    public enum OrderType : byte
+    public enum SortType: byte
     {
         /// <summary>
         /// صعودی

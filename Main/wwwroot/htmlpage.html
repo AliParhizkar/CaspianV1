@@ -4,53 +4,18 @@
         <meta charset="utf-8" />
         <title></title>
         <script src="jquery-1.8.2.js"></script>
-
+            
         <script type="text/javascript">
-
+            function test(e) {
+                //e.preventDefault();
+                console.log(e.target.value)
+            }
         </script>
         <style type="text/css">
-            @keyframes gradient {
-                0% {
-                    background: radial-gradient(circle at center, rgba( 255, 125, 125, 0 ) 0%, #fff 0%, #fff 100%);
-                }
 
-                25% {
-                    background: radial-gradient(circle at center, rgba( 255, 125, 125, 0.3 ) 10%, #fff 25%, #fff 100%);
-                }
-
-                50% {
-                    background: radial-gradient(circle at center, rgba( 255, 125, 125, 0.3 ) 30%, #fff 50%, #fff 100%);
-                }
-
-                75% {
-                    background: radial-gradient(circle at center, rgba( 255, 125, 125, 0.3 ) 50%, #fff 75%, #fff 100%);
-                }
-
-                100% {
-                    color: #fff;
-                    background: radial-gradient(circle at center, rgba( 255, 125, 125, 0.3 ) 70%, #fff 100%, #fff 100%);
-                }
-            }
-
-            body {
-                background: #68d;
-            }
-
-            button {
-                margin-left: calc( 50vw - 175px );
-                margin-top: calc( 50vh - 30px );
-                width: 350px;
-                height: 60px;
-                border: none;
-            }
-
-                button:active {
-                    /* set time duration to your needs */
-                    animation: gradient 100ms;
-                }
         </style>
     </head>
     <body style="margin:0;padding:0">
-        <input type="date" />
+        <input id="_123" onkeypress="test(event)"  />
     </body>
 </html>

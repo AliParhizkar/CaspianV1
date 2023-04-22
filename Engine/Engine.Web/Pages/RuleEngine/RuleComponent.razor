@@ -18,7 +18,7 @@
     <DataGrid @ref="CrudGrid" TEntity="Rule" ConditionExpr="t => t.SystemKind == Subsystem" Search="SearchData" TableHeight="400">
         <Columns>
             <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.ResultType.FaText()" Title="نوع خروجی" />
+            <GridColumn Field="t => t.ResultType.EnumText()" Title="نوع خروجی" />
             <GridColumn Field="t => t.Priority" />
             <GridColumn Field="t => t.IsValid" Title="نهایی" />
             <GridColumn Title="ایجاد" style="width:80px">

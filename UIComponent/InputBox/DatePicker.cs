@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class DatePicker<TValue> : CBaseInput<TValue>
+    public partial class DatePicker<TValue> : CBaseInput<TValue> 
     {
         WindowStatus Status;
         Dictionary<string, object> attrs;
@@ -29,6 +29,8 @@ namespace Caspian.UI
                 else
                     Value = (TValue)Convert.ChangeType(date.ToPersianDate(), typeof(PersianDate));
                 text = date.Date.ToPersianDateString();
+                if (ValueChanged.HasDelegate)
+                    await ValueChanged.InvokeAsync(Value);
                 await Task.Delay(400);
                 Status = WindowStatus.Close;
             }
@@ -41,7 +43,9 @@ namespace Caspian.UI
                 TValue value = default;
                 var strValue = Convert.ToString(arg.Value);
 
-                if (!strValue.Contains("_"))
+                if (strValue.Contains("-"))
+                    value = (TValue)Convert.ChangeType(strValue, typeof(DateTime));
+                else if (strValue.HasValue())
                     value = (TValue)Convert.ChangeType(new PersianDate(strValue).GetMiladyDate().Value, typeof(DateTime));
                 Value = value;
                 await ValueChanged.InvokeAsync(value);
@@ -56,6 +60,9 @@ namespace Caspian.UI
 
         [Parameter]
         public DateTime? ToDate { get; set; }
+
+        [Parameter]
+        public bool DefaultMode { get; set; }
 
         protected override void OnInitialized()
         {

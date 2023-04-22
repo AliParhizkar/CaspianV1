@@ -18,6 +18,10 @@
         left: -242px;
     }
 }
+.t-default-mode{
+    width:100%!important;
+    border-radius:8px!important;
+}
 .c-tick-container {
     position: absolute;
     width: 270px;
@@ -31,6 +35,11 @@
     position: absolute;
     overflow: hidden;
     border-radius: 35px 35px 0 0;
+    background-color: white;
+    border-radius: 35px 35px 5px 5px;
+}
+.c-animate-down .c-timepicker {
+    box-shadow: 0 2px 10px dimgrey
 }
 .t-animation-container.c-animate-down .c-timepicker {
     top: -400px;
@@ -38,7 +47,8 @@
 }
 .t-animation-container.c-animate-up .c-timepicker {
     transition: 0.4s bottom ease;
-    bottom:-400px;
+    bottom: -400px;
+    box-shadow: -2px -2px 8px 0px dimgrey;
 }
 .t-timepicker .t-state-hover input {
     border-color: rgba(0,0,0,0.24);
@@ -258,15 +268,19 @@ input[type=time]{
         line-height: 21px;
     }
 .c-popup-window.c-top  {
-    top: 5px;
+    top: 31px;
 }
 
 .c-popup-window.c-bottom {
     bottom: 5px;
 }
 
-.c-popup-window.c-left{
-    left: 5px;
+.hideMenu .c-popup-window.c-left{
+    left: 35px;
+}
+
+.c-popup-window.c-left {
+    left: 165px;
 }
 
 .c-popup-window.c-right {
@@ -398,10 +412,10 @@ progress::-webkit-progress-value {
         border-color: #898989;
         background-color: #d1d1d1;
     }
-    progress[value] {
-        background-color: yellow;
-        border-radius: 0 8px 8px 0;
-    }
+.c-custome progress[value] {
+    background-color: yellow;
+    border-radius: 0 8px 8px 0;
+}
         .c-menu-icon .fa {
             color: #423d96;
             font-size: 19px;
@@ -451,7 +465,7 @@ progress::-webkit-progress-value {
         }
 .c-popup-window {
     margin:auto auto;
-    position: absolute;
+    position: fixed;
     border: 1px solid #d7d6d6;
     display: none;
     border-radius: 8px;
@@ -1075,8 +1089,11 @@ span, label, td, th {
     .t-grid-insert.t-open {
         border-bottom: 1px solid #d8d8d8;
     }
-.t-radios{
-    display:table;
+.t-radios {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 .submenu li{
     white-space:nowrap;
@@ -1126,7 +1143,7 @@ span, label, td, th {
 .t-radios .t-radio {
     white-space: nowrap;
     display:inline-block;
-    padding: 2px 0;
+    padding: 5px 0;
 }
 
 .t-radios .c-radio {
@@ -1795,7 +1812,7 @@ div.t-window {
     top: 0;
     left: 0;
     background-color: #000;
-    opacity: 0.1;
+    opacity: 0.4;
     z-index: 15;
     transition:opacity .4s ease;
 }
@@ -1805,26 +1822,38 @@ div.t-window {
     position: absolute;
 }
 
+#outMessage .c-content {
+    padding:5px;
+    text-align:justify;
+    min-height:100px
+}
 /* TabStrip */
 .t-tabstrip {
     margin: 0;
     padding: 0;
     zoom: 1;
-    background-color: transparent !important;
     overflow: hidden;
 }
     .t-tabstrip .t-header {
         background-color: #f0f0f0;
         border-bottom: 1px solid #cdcdcd;
+        border-radius:8px 8px 0 0;
     }
 .c-tabstrip-items {
     position: relative;
     width: fit-content;
 }
-.t-window-titlebar, .t-tabstrip {
+.t-tabstrip {
+    background-color: white;
+    border: 1px solid #c3c3c3;
+    border-radius: 8px 8px 0 0;
+    overflow:visible;
+}
+.t-window-titlebar {
     background-color: #e6e7e8;
-    border: 1px solid #b6b6b6;
+    
     overflow: visible;
+    border-radius: 8px 8px 0 0;
 }
 @keyframes tabstripwidth {
     0% {
@@ -3327,7 +3356,6 @@ label{
     border-width: 1px;
     height: 30px;
     border-color: rgba(0,0,0,0.12);
-    background-color:transparent;
 }
 
 .t-stringtextbox.t-state-hover .t-input {
@@ -4349,7 +4377,7 @@ div.t-slider {
     display: table;
     overflow:hidden;
     position: relative;
-    width:100%;
+    width:fit-content;
 }
     .t-upload .t-input {
         position: absolute;
@@ -4369,6 +4397,7 @@ div.t-slider {
     }
     .t-upload button{
         width:40px;
+        margin:0;
     }
     .t-dropzone,
     .t-upload-files {

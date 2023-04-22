@@ -2,7 +2,7 @@
 @typeparam TEntity
 @typeparam TValue
 @inject IServiceScopeFactory ServiceScopeFactory
-<div class="t-widget t-combobox" data-bind="@ErrorMessage">
+<div style="@Style" class="t-widget t-combobox" error-message="@ErrorMessage">
     <div class="@className">
         <input @ref="input" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await OnNochangeKeyDown(arg)"
                

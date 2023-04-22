@@ -1,152 +1,177 @@
-﻿
-@page "/Demo/PopupWindow"
+﻿@page "/Demo/PopupWindow"
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
-<div class="row d-head">
-    <div class="col-md-6">
-        <h3>Popup Window</h3>
-    </div>
-    <div class="d-source-btn col-md-6">
-        <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-</div>
-<div class="d-body">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Setting</h4>
+<h2>Popup window</h2>
+<p>
+    We can place this control <b>anywhere we want</b>.
+    It is <b>closed</b> by <b>clicking on the body</b>, but we can <b>prevent it from closing</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
                 <div class="row">
-                    <div class="col-md-12">
-                        <RadioList Style="width:100%" @bind-Value="vAlign" />
+                    <div class="col-md-6">
+                        <h4>Vertical and horizontal align</h4>
+                        <span class="c-demo-description">In this example, we use <b>HorizontalAlign parameter</b> for <b>horizontal align(left, center, right)</b> and use <b>VerticalAlign parameter</b> for vertical align(top, middle, bottom).</span>
                     </div>
-                    <div class="col-md-12">
-                        <RadioList Style="width:100%" @bind-Value="hAlign" />
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Vertical align</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <RadioList @bind-Value="vAlign" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Horizontal align</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <RadioList @bind-Value="hAlign" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Popup window</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <button class="c-btn c-primary" @onclick="() => alignStatus = WindowStatus.Open">Show Popup</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-12 text-center">
-                        <button class="c-btn c-primary" @onclick="() => { status = WindowStatus.Open; }">Show Popup</button>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Custom position</h4>
+                        <span class="c-demo-description">In this example, we use <b>Top, Left, Right and Bottom parameters</b> to set <b>top, left, right, bottom position</b>, These parameters are <b>nullable integers</b> and, if set, <b>override the align parameters</b>.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-12">
+                                <CheckBox @bind-Value="enableCustomHorizontalAlign" Title="Custom horizontal align" />
+                            </div>
+                            @if (enableCustomHorizontalAlign)
+                            {
+                                <div class="col-md-3 ps-5">
+                                    <label>Left</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <NumericTextBox @bind-Value="left" Disabled="right.HasValue" maxlength="3" />
+                                </div>
+                                <div class="col-md-3 ps-5">
+                                    <label>Right</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <NumericTextBox @bind-Value="right" Disabled="left.HasValue" maxlength="3" />
+                                </div>
+                            }
+                            else
+                            {
+                                left = null;
+                                right = null;
+                                <div class="col-md-12 ps-5 pe-5">
+                                    <RadioList @bind-Value="customHorizontalAlign" />
+                                </div>
+                            }
+                            <div class="ps-5 col-md-12">
+                                <CheckBox @bind-Value="enableCustomVerticalAlign" Title="Custom vertical align" />
+                            </div>
+                            @if (enableCustomVerticalAlign)
+                            {
+                                <div class="col-md-3 ps-5">
+                                    <label>Top</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <NumericTextBox @bind-Value="top" Disabled="bottom.HasValue" maxlength="3" />
+                                </div>
+                                <div class="col-md-3 ps-5">
+                                    <label>Bottom</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <NumericTextBox @bind-Value="bottom" Disabled="top.HasValue" maxlength="3" />
+                                </div>
+                            }
+                            else
+                            {
+                                top = null;
+                                bottom = null;
+                                <div class="col-md-12 ps-5 pe-5">
+                                    <RadioList @bind-Value="customVerticalAlign" />
+                                </div>
+                            }
+                            <div class="ps-5 col-md-6">
+                                <label>Popup window</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <button class="c-btn c-primary" @onclick="() => customPositionStatus = WindowStatus.Open">Show Popup</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Custom appearance</h4>
+                        <span class="c-demo-description">In this example we use the <b>Style Parameter</b> to create a custom appearance</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="col-md-6 ps-5">
+                                <label>Popup window</label>
+                            </div>
+                            <div class="col-md-6 pe-6 text-center">
+                                <button class="c-btn c-success" @onclick="() => { customAppearanceStatus = WindowStatus.Open; }">Show Popup</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Prevent closing</h4>
+                        <span class="c-demo-description">In this example we use the <b>AutoHide Parameter</b> to <b>enable/disable auto hide</b>, this parameter is <b>boolean</b>.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="col-md-6 ps-5">
+                                <label>Popup window</label>
+                            </div>
+                            <div class="col-md-6 pe-6 text-center">
+                                <button class="c-btn c-success" @onclick="() => { autoHide = false; preventClosingStatus = WindowStatus.Open; }">Show Popup</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Custom Position</h4>
-                <div class="row c-controls">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="enableCustomHorizontalAlign" Title="Custom horizontal align" />
-                    </div>
-                    @if (enableCustomHorizontalAlign)
-                    {
-                        <div class="col-md-2">
-                            <label>Left</label>
-                        </div>
-                        <div class="col-md-4 pe-4">
-                            <NumericTextBox @bind-Value="left" Disabled="right.HasValue" maxlength="3" />
-                        </div>
-                        <div class="col-md-2">
-                            <label>Right</label>
-                        </div>
-                        <div class="col-md-4 pe-4">
-                            <NumericTextBox @bind-Value="right" Disabled="left.HasValue" maxlength="3" />
-                        </div>
-                    }
-                    else
-                    {
-                        left = null;
-                        right = null;
-                        <div class="col-md-12">
-                            <RadioList Style="width:100%" @bind-Value="customHorizontalAlign" />
-                        </div>
-                    }
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="enableCustomVerticalAlign" Title="Custom vertical align" />
-                    </div>
-                    @if (enableCustomVerticalAlign)
-                    {
-                        <div class="col-md-2">
-                            <label>Top</label>
-                        </div>
-                        <div class="col-md-4 pe-4">
-                            <NumericTextBox @bind-Value="top" Disabled="bottom.HasValue" maxlength="3" />
-                        </div>
-                        <div class="col-md-2">
-                            <label>Bottom</label>
-                        </div>
-                        <div class="col-md-4 pe-4">
-                            <NumericTextBox @bind-Value="bottom" Disabled="top.HasValue" maxlength="3" />
-                        </div>
-                    }
-                    else
-                    {
-                        top = null;
-                        bottom = null;
-                        <div class="col-md-12">
-                            <RadioList Style="width:100%" @bind-Value="customVerticalAlign" />
-                        </div>
-                    }
-                    <div class="text-center col-md-12">
-                        <button class="c-btn c-info" @onclick="() => { status1 = WindowStatus.Open; }">Show Popup</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Custom</h4>
-                <div class="row">
-                    <div class="text-center col-md-12">
-                        <button class="c-btn c-success" @onclick="() => { status2 = WindowStatus.Open; }">Show Popup</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Auto Hide</h4>
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <button class="c-btn c-success" @onclick="() => { autoHide = false; autoHideStatus = WindowStatus.Open; }">Show Popup</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<PopupWindow @bind-Status="status" AutoHide HorizontalAlign="hAlign" VerticalAlign="vAlign">
-    <div style="width:500px;height:300px;text-align:center;padding-top:30px;">
-        <h3>Popup Window</h3>
-    </div>
-</PopupWindow>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
-<PopupWindow @bind-Status="status1" Left="left" Right="right" Top="top" Bottom="bottom" 
-    HorizontalAlign="customHorizontalAlign" VerticalAlign="customVerticalAlign">
+<PopupWindow @bind-Status="alignStatus" HorizontalAlign="hAlign" VerticalAlign="vAlign">
     <div style="width:500px;height:300px;text-align:center;padding-top:30px;">
         <h3>Popup Window</h3>
     </div>
 </PopupWindow>
-<PopupWindow @bind-Status="status2" Style="width:450px;height:200px;border-radius:150px;top:35px;left:350px;">
+<PopupWindow @bind-Status="customPositionStatus" Left="left" Right="right" Top="top" Bottom="bottom"
+             HorizontalAlign="customHorizontalAlign" VerticalAlign="customVerticalAlign">
+    <div style="width:500px;height:300px;text-align:center;padding-top:30px;">
+        <h3>Popup Window</h3>
+    </div>
+</PopupWindow>
+<PopupWindow @bind-Status="customAppearanceStatus" Style="width:450px;height:200px;border-radius:150px;top:35px;left:350px;">
     <div style="text-align:center;padding-top:80px;direction:ltr;font-size:14px;font-weight:900">
         style="width:500px;height:250px;border-radius:150px;top:10px;left:350px;"
     </div>
 </PopupWindow>
-<PopupWindow @bind-Status="autoHideStatus" AutoHide="autoHide" Style="width:450px;height:200px;top:40px;left:350px;">
-    <div style="padding:50px; 30px 30px 30px">
+<PopupWindow @bind-Status="preventClosingStatus" AutoHide="autoHide" Style="width:480px;height:230px;top:40px;left:350px;">
+    <div style="padding:50px 30px 30px 30px">
         <hr />
+        <h4>Prevent closing</h4>
+        <h6>To enable auto-hide, please check the box below</h6>
         <div style="padding:0 20px">
             <CheckBox @bind-Value="autoHide" Title="Enable auto hide" />
         </div>
     </div>
 </PopupWindow>
-<CreatePdfComponent @bind-Status="pdfStatus" Title="Popup Window" FileName="PopupWindow.pdf" />
+
 @code 
 {
     bool enableCustomVerticalAlign = true;
@@ -158,13 +183,13 @@
     int? right;
     bool autoHide;
 
-    WindowStatus status;
-    WindowStatus status1;
-    WindowStatus status2;
-    WindowStatus autoHideStatus;
-    VerticalAlign vAlign = VerticalAlign.Center;
+    WindowStatus alignStatus;
+    WindowStatus customPositionStatus;
+    WindowStatus customAppearanceStatus;
+    WindowStatus preventClosingStatus;
+    VerticalAlign vAlign = VerticalAlign.Middle;
     HorizontalAlign hAlign = HorizontalAlign.Center;
-    VerticalAlign customVerticalAlign = VerticalAlign.Center;
+    VerticalAlign customVerticalAlign = VerticalAlign.Middle;
     HorizontalAlign customHorizontalAlign = HorizontalAlign.Center;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

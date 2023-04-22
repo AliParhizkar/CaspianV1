@@ -2,6 +2,7 @@
 @implements IInputValueInitializer
 @implements IWindow
 @inject BasePageService Service
+
 <CascadingValue TValue="IWindow" Value="this" Name="ParentWindow">
     <CascadingValue Value="(id + 2)" Name="WindowId">
         <div @attributes="attrs" class="t-widget t-window">
@@ -19,7 +20,7 @@
                     </span>
                 </div>
             }
-            <div @ref="window"  status="@Status.ConvertToInt()" draggable="@(Draggable)" class="t-window-content t-content">
+            <div @ref="window"  status="@Status.ConvertToInt()" modal="@(Modal)" draggable="@(Draggable)" class="t-window-content t-content">
                 @if (Status == WindowStatus.Open)
                 {
                     <MessageBox @ref="messageBox" />

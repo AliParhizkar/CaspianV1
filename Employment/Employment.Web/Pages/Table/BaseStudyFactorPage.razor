@@ -17,7 +17,7 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="BaseStudyFactor" Search="SearchData">
         <Columns>
-            <GridColumn Field="t => t.BaseStudy.FaText()" />
+            <GridColumn Field="t => t.BaseStudy.EnumText()" />
             <GridColumn Field="t => t.Factor" />
             <GridCommandColumns/>
         </Columns>

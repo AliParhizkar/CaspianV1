@@ -1,61 +1,66 @@
 ﻿@page "/Demo/TabPanel"
 @namespace Demo.Web.Pages
-<div style="width:90%;margin:50px auto">
-    <TabPanel @bind-TabIndex="simpleTabIndex">
-        <Tabs>
-            <TabPanelItem Title='<i class="fa fa-code"></i>Identity information'>
-                <span>Identity information</span>
-            </TabPanelItem>
-            <TabPanelItem Title="Job specification">
-                <span>job specification</span>
-            </TabPanelItem>
-            <TabPanelItem Title="Children's profile">
-                <span>Children's profile</span>
-            </TabPanelItem>
-        </Tabs>
-    </TabPanel>
-</div>
-
-<div class="row d-head">
-    <div class="col-md-6">
-        <h3>TabPanel</h3>
-    </div>
-    <div class="d-source-btn col-md-6">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-</div>
-<div class="d-head">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Simple</h4>
-                <div class="row">
-                    <div class="col-md-12">
-
-                    </div>
-                </div>
+<h2>Tabpanel</h2>
+<p>
+    The tabpanel has <b>tabs and content</b>. You can <b>use Html</b> in tabs and content. We can add tabs <b>statically and dynamically</b>.
+</p>
+<h3 class="pt-3">Tabpanel-Static</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
+            <div class="ps-4 pe-4 pt-4 pb-4">
+                <TabPanel>
+                    <Tabs>
+                        <TabPanelItem Title='<i class="fa fa-code"></i>Identity information'>
+                            <div class="text-center pt-4 pb-4">
+                                <h3>Identity information</h3>
+                            </div>
+                        </TabPanelItem>
+                        <TabPanelItem Title="Job specification">
+                            <div class="text-center pt-4 pb-4">
+                                <h3>Job specification</h3>
+                            </div>
+                        </TabPanelItem>
+                        <TabPanelItem Title="Children's profile">
+                            <div class="text-center pt-4 pb-4">
+                                <h3>Children's profile</h3>
+                            </div>
+                        </TabPanelItem>
+                    </Tabs>
+                </TabPanel>
             </div>
-        </div>
-        <div class="">
-            <hr />
-            <div class="d-container">
-                <h4>Dynamic Items</h4>
-                <div class="row">
-                    <div class="col-md-12 d-tabpanel-container">
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Tabpanel-Dynamic</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
+            <div class="ps-4 pe-4 pt-4 pb-4">
+                <div class="row c-controls">
+                    <div class="col-md-3 ps-4">
+                        <label>Dynamic items</label>
+                    </div>
+                    <div class="col-md-2 text-center">
                         <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => { UpateList(t, 1, "Identity"); })" Title="Identity" />
+                    </div>
+                    <div class="col-md-2 text-center">
                         <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => { UpateList(t, 2, "Job specification"); })" Title="Job" />
+                    </div>
+                    <div class="col-md-2 text-center">
                         <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => { UpateList(t, 3, "Wife's profile"); })" Title="Wife" />
+                    </div>
+                    <div class="col-md-2 text-center">
                         <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => { UpateList(t, 4, "Home Address"); })" Title="Home" />
                     </div>
                     @if (dic.Any())
                     {
                         if (tabIndex > dic.Count)
                             tabIndex = dic.Count;
-                        <div class="col-md-12 d-tabpanel-container">
+                        <div class="col-md-3 ps-4">
+                            <label>Selected tab index</label>
+                        </div>
+                        <div class="col-md-8">
                             <RadioList TValue="int" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => { tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1; }">
                                 <RadioItems>
                                     <RadioItem Value="1" Title="Identity" />
@@ -64,14 +69,17 @@
                                     <RadioItem Value="4" Title="Home" />
                                 </RadioItems>
                             </RadioList>
+
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-12 pt-4">
                             <TabPanel @bind-TabIndex="tabIndex">
                                 <Tabs>
                                     @foreach (var item in dic)
                                     {
                                         <TabPanelItem Title="@(item.Value)">
-                                            <span>@(item.Value)</span>
+                                            <div class="text-center pt-4 pb-4">
+                                                <h3>@(item.Value)</h3>
+                                            </div>
                                         </TabPanelItem>
                                     }
                                 </Tabs>
@@ -84,11 +92,9 @@
                     }
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<CreatePdfComponent @bind-Status="status" Title="TabPanel" FileName="TabPanel.pdf" />
-
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code
 {
     WindowStatus status;

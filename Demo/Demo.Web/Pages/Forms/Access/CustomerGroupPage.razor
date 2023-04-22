@@ -23,7 +23,7 @@
     <DataGrid @ref="CrudGrid" TEntity="CustomerGroup" Search="SearchData" TableHeight="300">
         <Columns>
             <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Field="t => t.ActiveType.EnumText()" />
             <GridColumn Title="Customers" style="width:80px;">
                 <Template>
                     <IconButton Href='@($"/Demo/CustomerGroupAccessPage/{context.Data.Id}")' IconType="IconType.Wpforms" />

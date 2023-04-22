@@ -1,11 +1,16 @@
 ﻿@namespace Caspian.UI
 @using System.Threading;
-<div style="@Style" class="c-progress-bar">
+@{
+    string className = null;
+    if (CustomAppearance)
+        className = "c-custome";
+}
+<div style="@Style" class="@className">
     @if (filesData != null)
     {
         foreach(var data in filesData)
         {
-            var className = data.IsFailed ? "fa fa-times-circle" : data.Value == data.Max ? "fa fa-check-circle" : "c-hidden";
+            className = data.IsFailed ? "fa fa-times-circle" : data.Value == data.Max ? "fa fa-check-circle" : "c-hidden";
             <div class="c-progress-item">
                 <span>@data.FileName</span>
                 <progress value="@data.Value" max="@data.Max" />
@@ -15,7 +20,7 @@
     }
     @if (!multiple && fileData != null)
     {
-        var className = fileData.IsFailed ? "fa fa-times-circle" : fileData.Value == fileData.Max ? "fa fa-check-circle" : "c-hidden";
+        className = fileData.IsFailed ? "fa fa-times-circle" : fileData.Value == fileData.Max ? "fa fa-check-circle" : "c-hidden";
         <div class="c-progress-item">
             <span>@fileData.FileName</span>
             <progress value="@fileData.Value" max="@fileData.Max" />
@@ -35,6 +40,9 @@
 
         base.OnInitialized();
     }
+
+    [Parameter]
+    public bool CustomAppearance { get; set; }
 
     [Parameter]
     public string Style { get; set; }

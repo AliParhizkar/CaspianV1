@@ -133,7 +133,7 @@ namespace Caspian.Common
         public static string ToPersianDateStringDayOfWeek(this DateTime date)
         {
             var pdate = date.ToPersianDate();
-            return pdate.DayOfWeek.FaText() + " " + pdate.ToString();
+            return pdate.DayOfWeek.EnumText() + " " + pdate.ToString();
         }
 
         public static string ToPersianDateString(this DateTime? date)
@@ -164,24 +164,24 @@ namespace Caspian.Common
             return enumes;
         }
 
-        public static string CallSeprator(this string number, char chr)
+        public static string CallFormat(this string number, char chr)
         {
             if (number.HasValue() && number.Length == 11)
                 return number.Substring(0, 4) + chr + number.Substring(4, 3) + chr + number.Substring(7, 4);
             return number;
         }
 
-        public static string FaText(this Enum field, string nullText)
+        public static string EnumText(this Enum field, string nullText)
         {
             if (nullText != null)
             {
                 if (field == null || field.ToString() == "0")
                     return nullText;
             }
-            return field.FaText();
+            return field.EnumText();
         }
 
-        public static string FaText(this Enum field)
+        public static string EnumText(this Enum field)
         {
             DisplayAttribute da;
             if (field == null)

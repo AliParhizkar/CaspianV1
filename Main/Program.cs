@@ -14,6 +14,7 @@ builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.De
 builder.Services.AddSingleton<WindowAppState>();
 builder.Services.AddTransient(typeof(GridService<>));
 builder.Services.AddTransient<FileUploadService>();
+builder.Services.AddTransient<CascadeService>();
 builder.Services.AddScoped<BatchService>();
 builder.Services.AddScoped<BasePageService>();
 builder.Services.AddSingleton<SingletonMenuService>(t => 

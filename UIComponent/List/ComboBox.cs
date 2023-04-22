@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices;
 
 namespace Caspian.UI
 {
@@ -53,6 +52,9 @@ namespace Caspian.UI
         [JsonProperty("errorMessage")]
         public string ErrorMessage { get; set; }
 
+        [Parameter]
+        public string Style { get; set; }
+
         [Inject, JsonIgnore]
         public FormAppState FormAppState { get; set; }
 
@@ -81,7 +83,7 @@ namespace Caspian.UI
         public EnableLoadContiner EnableLoadContiner { get; set; }
 
         [Parameter, JsonIgnore]
-        public CascadContainer Cascade { get; set; }
+        public CascadeService CascadeService { get; set; }
 
         [Parameter, JsonIgnore]
         public Expression<Func<TEntity, object>> OrderByExpression { get; set; }
@@ -469,7 +471,12 @@ namespace Caspian.UI
                     //if (multiSelect)
                     //    total = query.Count();
                     if (OrderByExpression != null)
-                        query = query.OrderBy(OrderByExpression);
+                    {
+                        if (SortType == SortType.Decs)
+                            query = query.OrderByDescending(OrderByExpression);
+                        else
+                            query = query.OrderBy(OrderByExpression);
+                    }
 
                     if (text.HasValue())
                     {
@@ -522,6 +529,9 @@ namespace Caspian.UI
 
             }
         }
+
+        [Parameter]
+        public SortType SortType { get; set; }
 
         public async Task ResetAsync()
         {
@@ -622,14 +632,14 @@ namespace Caspian.UI
                 if (type.IsNullableType())
                     type = Nullable.GetUnderlyingType(type);
                 var convertedValue = (TValue)Convert.ChangeType(value, type);
-                Cascade?.Cascade?.CascadTo(typeof(TEntity), convertedValue);
+                CascadeService?.Cascade?.CascadTo(typeof(TEntity), convertedValue);
                 Value = convertedValue;
                 await ValueChanged.InvokeAsync(convertedValue);
                 valueChanged = true;
             }
             else
             {
-                Cascade?.Cascade?.CascadTo(typeof(TEntity), null);
+                CascadeService?.Cascade?.CascadTo(typeof(TEntity), null);
                 Value = default(TValue);
                 await ValueChanged.InvokeAsync(default(TValue));
                 valueChanged = true;

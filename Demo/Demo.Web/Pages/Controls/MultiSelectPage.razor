@@ -1,54 +1,94 @@
 ﻿@page "/Demo/MultiSelect"
 @namespace Demo.Web.Pages
-<div class="row ps-4 pe-4 pt-3">
-    <div class="col-md-6">
-        <h3>Multi Select</h3>
-    </div>
-    <div class="col-md-6 text-center">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-</div>
-<div class="row ps-4 pe-4">
-    <div class="col-md-6 d-control">
-        <hr />
-        <div class="row ps-4">
-            <h4>Bind to enum</h4>
-            <div class="row c-controls">
-                <div class="col-md-12">
-                    <CheckBox @bind-Value="disabled" Title="Control disable" />
-                </div>
-                <div class="col-md-12">
-                    <MultiSelectBox @bind-Value="day" Disabled="disabled" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <hr />
-        <div class="row ps-4 pe-4">
-            <h4>Disable Some Items</h4>
-            <div class="row">
-                <div class="text-center col-md-12">
-                    <label>Disable items</label>
-                </div>
-                <div class="col-md-12">
-                    <MultiSelectBox @bind-Value="forDisable" />
-                </div>
-                <div class="col-md-12">
-                    <MultiSelectBox @bind-Value="day" DisabledValue="forDisable" />
+<h2>Multi select</h2>
+<h3>Binding</h3>
+<p>
+    This component is bind to <b>Enum Type</b> whose fields value is a <b>multiple of two</b>, because of this, you can select multiple items and the <b>value is equal with Or Bitwise of fields value</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Bind to enum</h4>
+                        <span class="c-demo-description">In this example <b><i>meal</i></b> is an <b>enum variable</b> and the control bind to it</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <MultiSelectBox @bind-Value="meal" />
+                                </div>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected Value</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(meal.ConvertToInt())</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<CreatePdfComponent @bind-Status="status" Title="Multi Select" Title1="Enume" FileName="MultiSelect.pdf" FileName1="DayOfPersianWeek.pdf" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Source">
+            <p>
+                In this example we bind this control to <b>orderType</b> that is a enum variable
+            </p>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Enum">
+
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-4">Disable and disable some items</h3>
+<p>
+    In some cases we want to disable some items, For this, we can use the DisabledValue parameter. and also we can disable and enable control
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Control & items disable</h4>
+                        <span class="c-demo-description">The bit value of the <b>DisabledValue parameter</b> disables its equivalent items</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Diabled</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <CheckBox @bind-Value="disabled" />
+                            </div>
+                            <div class="ps-5 pe-5 col-md-12">
+                                <MultiSelectBox @bind-Value="disabledMeal" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Diabled Value</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(meal.ConvertToInt())</label>
+                            </div>
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <MultiSelectBox @bind-Value="meal" DisabledValue="disabledMeal" Disabled="disabled" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
 @code
 {
+    Meal meal;
+    Meal disabledMeal = (Meal)5;
     WindowStatus status;
     bool disabled;
-    DayOfWeekBitwise day;
-    DayOfWeekBitwise forDisable = (DayOfWeekBitwise)42;
 }

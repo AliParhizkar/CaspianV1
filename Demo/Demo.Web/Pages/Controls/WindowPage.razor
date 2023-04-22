@@ -4,78 +4,166 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div class="row d-head">
-    <div class="col-md-6">
-        <h3>Window</h3>
-    </div>
-    <div class="d-source-btn col-md-6">
-        <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-</div>
-<div class="d-body">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Window Setting</h4>
+<h2>Window</h2>
+<p>
+    We can <b>have multiple cascading windows</b>, use <b>medallion window</b>, <b>draggable, resizable, custom title</b>, etc.
+</p>
+<h3 class="pt-3">Genaral properties</h3>
+<p>
+    We can specify general properties like <b>width, and title, modal, draggable</b>, etc.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
                 <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="dragable" Title="Dragable" />
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="resizeable" Title="Resizeable" />
-                    </div>
-                   <div class="col-md-12">
-                        <CheckBox @bind-Value="modal" Title="Modal" />
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="hideTitle" Title="Hide Title" />
+                    <div class="col-md-6">
+                        <h4>Width property</h4>
+                        <span class="c-demo-description">By setting the <b>Style</b> parameter, we can easily <b>change width</b> and other css properties of the control. it has <b>intellisense</b> for css properties</span>
                     </div>
                     <div class="col-md-6">
-                        <label>Title</label>
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Control size</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList @bind-Value="controlSize" FilterFunc="t => t != ControlSize.Auto"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Window</label>
+                            </div>
+                            <div class="col-md-8 text-center">
+                                <button class="c-btn c-primary" @onclick="() => { widthWindowStatus = WindowStatus.Open; }">...</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        <StringTextBox @bind-Value="title" />
+                        <hr />
+                        <h4>Modal & Draggable</h4>
+                        <span class="c-demo-description">By setting the <b>Modal</b> parameter, we can easily <b>enable & disable modal</b>. This parameter is a <b>boolean</b> parameter. And we can also use the <b></b> to enable and disable <b>drag</b></span>
                     </div>
                     <div class="col-md-6">
-                        <label>Open</label>
+                        <hr />
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Modal</label>
+                            </div>
+                            <div class="col-md-8">
+                                <CheckBox @bind-Value="modal"  />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Draggable</label>
+                            </div>
+                            <div class="col-md-8">
+                                <CheckBox @bind-Value="draggable" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Window</label>
+                            </div>
+                            <div class="col-md-8 text-center">
+                                <button class="c-btn c-primary" @onclick="() => { modalAndDraggableStatus = WindowStatus.Open; }">...</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-6 text-center">
-                        <button class="c-btn c-primary" @onclick="() => { Status = WindowStatus.Open; }">...</button>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Title & custom title</h4>
+                        <span class="c-demo-description">By setting the <b>Title</b> parameter, we can easily <b>specify the title</b>. This parameter is a <b>string</b> parameter. And we can also <b>create custom header</b></span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Title</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox @bind-Value="title" Disabled="hideHeader" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Hide header</label>
+                            </div>
+                            <div class="col-md-8">
+                                <CheckBox @bind-Value="hideHeader" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Window</label>
+                            </div>
+                            <div class="col-md-8 text-center">
+                                <button class="c-btn c-primary" @onclick="() => { headerWindowStatus = WindowStatus.Open; }">...</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Cascade Window</h4>
-                <div class="row">
-                    <div class="text-center col-md-12">
-                        <button class="c-btn c-info" @onclick="() => {Status1 = WindowStatus.Open;}">Open</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
-<Window @bind-Status="Status" Modal=modal Resizable=resizeable Draggable="dragable" Title="@title" HideTitle="hideTitle" Style="width:600px;">
+<h3 class="pt-3">Cascade windows</h3>
+<p>
+    We can use <b>windows in cascade</b>, for this purpose we need to <b>create each window inside another window</b>(as content)
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Cascade windows</h4>
+                        <span class="c-demo-description">In this example we have <b>three nested windows</b>, each one <b>created as another content</b>.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Window</label>
+                            </div>
+                            <div class="col-md-8 text-center">
+                                <button class="c-btn c-primary" @onclick="() => { Status1 = WindowStatus.Open; }">...</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<Window @bind-Status="widthWindowStatus" Title="Width property window" Style="@(GetStyle())">
     <Content>
-        @if (hideTitle)
+        <div class="p-5 text-center">
+            <h3>@controlSize.EnumText()</h3>
+        </div>
+    </Content>
+</Window>
+<Window @bind-Status="modalAndDraggableStatus" Modal="modal" Draggable="draggable" Title="Modal & dragable window">
+    <Content>
+        <div class="p-5 text-center">
+            <CheckBox @bind-Value="modal" Disabled Title="Modal" />
+        </div>
+        <div class="p-5 text-center">
+            <CheckBox @bind-Value="draggable" Disabled Title="Draggable" />
+        </div>
+    </Content>
+</Window>
+<Window @bind-Status="headerWindowStatus" Title="@(title)">
+    <Content>
+        @if (hideHeader)
         {
             <div style="display:flex">
-                <h5 style = "width:calc(100% - 33px); padding:10px 25px 0 0;">Window</h5>
-                <button @onclick="() => Status = WindowStatus.Close" style="border:none;color:gray;background-color:transparent">X</button>
+                <h5 style="width:calc(100% - 33px); padding:10px 25px 0 0;">Window</h5>
+                <button @onclick="() => headerWindowStatus = WindowStatus.Close" style="border:none;color:gray;background-color:transparent">X</button>
             </div>
-            <hr/>
+            <hr />
+            <div class="p-5 text-center">
+                <h3>Custom header</h3>
+            </div>
         }
-        <div style="height:810px;border:1px solid red">
+        else
+        {
+            <div class="p-5 text-center">
+                <h3>Title:@(title)</h3>
+            </div>
+        }
 
-        </div>
     </Content>
 </Window>
 
@@ -127,18 +215,20 @@
         </Window>
     </Content>
 </Window>
-<CreatePdfComponent @bind-Status="pdfStatus" Title="Window" FileName="Window.pdf" />
 @code {
-    WindowStatus pdfStatus;
-    WindowStatus Status;
+    ControlSize controlSize = ControlSize.Medium;
+
+    WindowStatus widthWindowStatus;
+    WindowStatus modalAndDraggableStatus;
+    WindowStatus headerWindowStatus;
     WindowStatus Status1;
     WindowStatus Status2;
     WindowStatus Status3;
-    bool dragable = true;
-    bool hideTitle;
+    bool draggable = true;
+    bool hideHeader;
     bool modal = true;
     bool resizeable;
-    string title = "Window";
+    string title = "Title & custom header";
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
@@ -147,4 +237,17 @@
         await base.OnAfterRenderAsync(firstRender);
     }
 
+    string GetStyle()
+    {
+        switch (controlSize)
+        {
+            case ControlSize.Large:
+                return "width:600px";
+            case ControlSize.Medium:
+                return "width:450px";
+            case ControlSize.Small:
+                return "width:300px";
+        }
+        throw new NotImplementedException();
+    }
 }

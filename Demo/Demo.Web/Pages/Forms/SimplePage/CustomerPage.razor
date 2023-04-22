@@ -23,9 +23,9 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="Customer" Search="SearchData" ConditionExpr="t => (name == null || t.FName.Contains(name) || t.LName.Contains(name) || t.CompanyName.Contains(name)) && (callNumber == null || t.MobileNumber.StartsWith(callNumber) || t.Tel.StartsWith(callNumber))">
         <Columns Context="customer">
-            <GridColumn Field="@(t => t.CustomerType.FaText())" Title="نوع مشتری" />
+            <GridColumn Field="@(t => t.CustomerType.EnumText())" Title="نوع مشتری" />
             <GridColumn Field="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" Title="نام مشتری" />
-            <GridColumn Field="t => t.Gender.FaText()" style="width:100px">
+            <GridColumn Field="t => t.Gender.EnumText()" style="width:100px">
                 <Template>
                     @if (customer.Data.Gender == Gender.Male)
                     {

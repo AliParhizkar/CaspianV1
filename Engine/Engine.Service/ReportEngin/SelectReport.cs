@@ -386,7 +386,7 @@ namespace Caspian.Engine
                             if (fieldType.IsNullableType())
                                 fieldType = Nullable.GetUnderlyingType(fieldType);
                             if (fieldType.IsEnumType())
-                                tempValue = (Enum.ToObject(fieldType, Convert.ToInt32(tempValue)) as Enum).FaText();
+                                tempValue = (Enum.ToObject(fieldType, Convert.ToInt32(tempValue)) as Enum).EnumText();
                             else
                                 tempValue = Convert.ChangeType(tempValue, fieldType);
                         }
@@ -394,7 +394,7 @@ namespace Caspian.Engine
                         {
                             var tempType = GetEqualType(param.TitleEn);
                             if (tempType.IsEnumType())
-                                tempValue = (tempValue as Enum).FaText();
+                                tempValue = (tempValue as Enum).EnumText();
                             if (tempType.GetUnderlyingType() == typeof(DateTime) && tempValue != null)
                                 tempValue = ((DateTime)tempValue).ToPersianDateString();
                         }

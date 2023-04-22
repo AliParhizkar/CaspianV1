@@ -2,12 +2,12 @@
 @using System.IO;
 @inject IJSRuntime jSRuntime
 @inject CaspianDataService dataService
-<div style="@Style" class="t-widget t-upload">
+<div  class="t-widget t-upload">
     <Microsoft.AspNetCore.Components.Forms.InputFile @attributes="attrs" OnChange="ViewFile" />
     <div class="t-content">
         @if (ChildContent == null)
         {
-            <button class="c-btn c-primary">@Title</button>
+            <button style="@Style" class="c-btn c-primary">@Title</button>
         }
         else
         {

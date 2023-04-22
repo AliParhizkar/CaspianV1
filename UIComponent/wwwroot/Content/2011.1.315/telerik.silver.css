@@ -97,6 +97,7 @@ html input[disabled], textarea[disabled] {
 .t-widget.t-grid 
 {
     font-size:14px;
+    background-color:white;
 }
 
 .t-picker-wrap.t-state-selected  {
@@ -363,10 +364,6 @@ html input[disabled], textarea[disabled] {
     background-color: #b6cef2;
 }
 
-.t-state-active {
-/*    background-color: rgba(255,99,88,0.2) !important;
-    border-color: #ff6358!important;*/
-}
 .t-widget.t-message {
     width: 250PX;
     top: 5PX;
@@ -378,8 +375,10 @@ html input[disabled], textarea[disabled] {
     border: 1px solid;
     border-color: rgba(0, 0, 0, .12);
     background-color: #eff1f5;
-    box-shadow: 3px 3px 5px 0 slategrey;
+    box-shadow: -4px 4px 6px 0 slategrey;
     font-size: 14px;
+    top:-120px;
+    transition:.4s top ease;
 }
 #outMessage .t-title {
     display:inline-block;

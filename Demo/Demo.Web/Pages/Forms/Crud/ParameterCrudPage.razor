@@ -22,7 +22,7 @@
     <DataGrid PersistState @bind-Search="SearchData" @ref="CrudGrid" TEntity="Country">
         <Columns>
             <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Field="t => t.ActiveType.EnumText()" />
             <GridColumn Title="Cities" style="width:50px">
                 <Template>
                     <IconButton Href='@($"/Demo/City/{context.Data.Id}")' IconType="IconType.Wpforms" />

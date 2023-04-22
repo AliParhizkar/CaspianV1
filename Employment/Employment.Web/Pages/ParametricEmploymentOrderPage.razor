@@ -138,7 +138,7 @@
                 {
                     var enumValue = Convert.ToInt32(field.GetValue(null));
                     if (enumValue == Convert.ToInt32(value))
-                        return ((Enum)field.GetValue(null)).FaText();
+                        return ((Enum)field.GetValue(null)).EnumText();
                 }
                 break;
             case ValueTypeKind.Int:

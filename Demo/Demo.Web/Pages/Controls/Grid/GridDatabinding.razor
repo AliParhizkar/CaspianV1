@@ -1,45 +1,131 @@
 ﻿@namespace Demo.Web
 @page "/Demo/Grid-DataBinding"
+<h2>Grid-Databinding</h2>
+<p>
+    After <b>grid data binding</b>, we have <b>paging</b>, <b>default search</b> and <b>sorting (increasing and decreasing) without any coding</b>.
+</p>
+<h3>Simple Data binding</h3>
+<p>
+    We can easily bind the <b>grid to the entity</b>, we just  specify the <b>TEntity parameter</b>, then we can declare the <b>columns of the grid</b> and specify the <b>Field parameter</b> which is the <b>lambda expression</b> and specified column data.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6 pe-4">
+                        <h4>Using simple expression</h4>
+                        <span class="c-demo-description">In this example we <b>specify the TEntity parameter</b> in the grid and specify the <b>Field parameter</b> in column (this is a <b>lambda expression</b>)</span>
+                    </div>
+                    <div class="col-md-6">
+                        <DataGrid TEntity="Country" HideInsertIcon>
+                            <Columns>
+                                <GridColumn Field="t => t.Title" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Using property expression(join)</h4>
+                        <span class="c-demo-description">
+                            In this example, we have <b>two columns (country title and city title). we use property expression (join) to fetch country title. </b>
+                        </span>
+                        <h4 class="pt-4">Column title</h4>
+                        <span>
+                            We <b>have specified the column title</b>
+                            (by default it is <b>filled</b> with <b>the DisplayAttribute of property</b>, but we can <b>override it</b>)
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <DataGrid TEntity="City" HideInsertIcon>
+                            <Columns>
+                                <GridColumn Field="t => t.Country.Title" Title="Country" />
+                                <GridColumn Field="t => t.Title" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="pe-3">
+                            <h4>Complex (Conditional & Add) expression</h4>
+                            <span class="pe-4 c-demo-description">
+                                In this example, if the customer is a <b>real customer</b>, we <b>fetch the first and last name</b>, <b>otherwise</b> (it is a legal customer), we <b>fetch the company name</b>.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <DataGrid TEntity="Customer" HideInsertIcon>
+                            <Columns>
+                                <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + t.LName : t.CompanyName' Title="Name" />
+                                <GridColumn Field="t => t.MobileNumber" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="pe-3">
+                            <h4>Extension method(Call expression)</h4>
+                            <span class="pe-4 c-demo-description">
+                                In this example we use <b>extension method</b> to display <b>Customer type</b>, <b>Gender</b> and <b>mobile number</b>.
+                            </span>
+                            <h6 class="pt-3">
+                                <span class="fa fa-info">&nbsp;Note:</span>
+                            </h6>
+                            <div>
+                                <span class="fw-bolder">EnumText method: </span><span>We extension this method to enum, in this method we use enum DisplayAttribute to display the enum text.</span>
+                            </div>
+                            <div class="pt-3">
+                                <span class="fw-bolder">CallFormat method: </span><span>We create this extension method to display the mobile number in a special format.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <DataGrid TEntity="Customer" HideInsertIcon>
+                            <Columns>
+                                <GridColumn Field="t => t.CustomerType.EnumText()" />
+                                <GridColumn Field="t => t.Gender.EnumText()" />
+                                <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+                                <GridColumn Field="t => t.MobileNumber.CallFormat('-')" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="pe-3">
+                            <h4>Custome template</h4>
+                            <span class="pe-4 c-demo-description">
+                                In this example we use <b>custom template</b> to display <b>Gender</b>.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <DataGrid TEntity="Customer" HideInsertIcon>
+                            <Columns>
+                                <GridColumn Field="t => t.CustomerType.EnumText()" />
+                                <GridColumn Field="t => t.Gender">
+                                    <Template>
+                                        @if (context.Data.Gender == Gender.Male)
+                                        {
+                                            <span class="fa fa-male"></span>
+                                        }
+                                        else if (context.Data.Gender == Gender.Female)
+                                        {
+                                            <span class="fa fa-female"></span>
+                                        }
+                                    </Template>
+                                </GridColumn>
+                                <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
-<div class="ps-4 pe-4 pt-3">
-    <h3>Grid</h3>
-    <hr />
-    <div class="row ps-5">
-        <div class="col-md-9 ps-4">
-            <h4>Data Binding</h4>
-        </div>
-        <div class="col-md-3">
-            <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-                Source
-                <i class="fa fa-code"></i>
-            </button>
-        </div>
-    </div>
-    <div class="ps-4 pe-4">
-        <DataGrid HideInsertIcon TEntity="Customer" TableHeight="350">
-            <Columns Context="customer">
-                <GridColumn Field="@(t => t.CustomerType.FaText())" Title="Customer type" />
-                <GridColumn Field="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)"/>
-                <GridColumn Field="t => t.Gender.FaText()" style="width:100px">
-                    <Template>
-                        @if (customer.Data.Gender == Gender.Male)
-                        {
-                            <span class="c-icon fa fa-male"></span>
-                        }
-                        else if (customer.Data.Gender == Gender.Female)
-                        {
-                            <span class="c-icon fa fa-female"></span>
-                        }
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="t => t.MobileNumber.CallSeprator('-')" />
-            </Columns>
-        </DataGrid>
-    </div>
-</div>
-<CreatePdfComponent @bind-Status="status" Title="Grid Data Binding" FileName="Grid-DataBinding.pdf" />
 
-
-@code {
-    WindowStatus status;
-}

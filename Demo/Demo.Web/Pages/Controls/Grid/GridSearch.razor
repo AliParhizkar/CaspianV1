@@ -1,77 +1,195 @@
 ﻿@namespace Demo.Web
 @page "/Demo/Grid-Search"
-<div class="row p-4 pb-0">
-    <div class="col-md-6 pe-4">
-        <h4>Default Search</h4>
-        <div class="row c-controls">
-            <div class="col-md-4 ps-4">
-                <label>Product</label>
+<h2>Grid-Searching</h2>
+<p>
+    We can search in the grid in the <b>three Modes</b>
+    In this page we <b>describe this modes</b>.
+</p>
+<h3 class="pt-3">Search on string enum and foreign key</h3>
+<p>
+    We can easily search on <b>string</b>, <b>enum</b> and <b>foreign key</b>. It is enough to <b>define a variable of type TEntity</b> and set <b>Search parameter</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6 pe-4">
+                        <h4>Search on string type</h4>
+                        <span class="c-demo-description">In this example, we define a variable of <b>Customer type</b> and <b>bind first name, last name and company name</b> for search. </span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row pb-3 c-controls ps-3 pe-3">
+                            <div class="col-md-4">
+                                <label>First name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox Search @bind-Value="customerSearch.FName" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Last name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox Search @bind-Value="customerSearch.LName" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Company name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox Search @bind-Value="customerSearch.CompanyName" />
+                            </div>
+                        </div>
+                        <DataGrid TEntity="Customer" HideInsertIcon Search="customerSearch">
+                            <Columns>
+                                <GridColumn Field="t => t.CustomerType.EnumText()" />
+                                <GridColumn Field="t => t.FName" />
+                                <GridColumn Field="t => t.LName" />
+                                <GridColumn Field="t => t.CompanyName" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Search on enum</h4>
+                        <span class="c-demo-description">
+                            In this example, we use <b>customer type</b> and <b>gender</b> for search.
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row pb-3 c-controls ps-3 pe-3">
+                            <div class="col-md-4">
+                                <label>Customer type</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList Search @bind-Value="customerSearch.CustomerType" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Gender</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList @bind-Value="customerSearch.Gender" />
+                            </div>
+                        </div>
+                        <DataGrid TEntity="Customer" HideInsertIcon Search="customerSearch">
+                            <Columns>
+                                <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+                                <GridColumn Field="t => t.CustomerType.EnumText()" />
+                                <GridColumn Field="t => t.Gender.EnumText()" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="pe-3">
+                            <h4>Search on foreign key</h4>
+                            <span class="pe-4 c-demo-description">
+                                In this example, we define a variable of City type and bind CountryId for search.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row pb-3 c-controls ps-3 pe-3">
+                            <div class="col-md-4">
+                                <label>Country id</label>
+                            </div>
+                            <div class="col-md-8">
+                                <ComboBox TValue="int" TEntity="Country" @bind-Value="citySearch.CountryId" TextExpression="t => t.Title" />
+                            </div>
+                        </div>
+                        <DataGrid TEntity="City" HideInsertIcon Search="citySearch">
+                            <Columns>
+                                <GridColumn Field="t => t.Country.Title" Title="Country" />
+                                <GridColumn Field="t => t.Title" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-8 pe-4">
-                <StringTextBox @bind-Value="product.Title" Search />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3></h3>
+<h3 class="pt-3">Search on number, date and time</h3>
+<p>
+    Usually we search <b>in range</b> for <b>number, date and time</b>. For example <b>from date-to date</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6 pe-4">
+                        <h4>Search on number</h4>
+                        <span class="c-demo-description">In this example, we define a variable of <b>Customer type</b> and <b>bind first name, last name and company name</b> for search. </span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row pb-3 c-controls ps-3 pe-3">
+                            <div class="col-md-4">
+                                <label>From price</label>
+                            </div>
+                            <div class="col-md-8">
+                                <NumericTextBox @bind-Value="fromPrice" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>To price</label>
+                            </div>
+                            <div class="col-md-8">
+                                <NumericTextBox @bind-Value="toPrice" />
+                            </div>
+                        </div>
+                        <DataGrid TEntity="Product" HideInsertIcon>
+                            <Columns>
+                                <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
+                                <GridColumn Field="t => t.Title" />
+                                <GridColumn Field="t => t.Price.Seprate3Digit()" @bind-From="fromPrice" @bind-To="toPrice" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                    <div class="col-md-6 pe-4">
+                        <hr />
+                        <h4>Search on date</h4>
+                        <span class="c-demo-description">In this example, we define a variable of <b>Customer type</b> and <b>bind first name, last name and company name</b> for search. </span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row pb-3 c-controls ps-3 pe-3">
+                            <div class="col-md-4">
+                                <label>From date</label>
+                            </div>
+                            <div class="col-md-8">
+                                <NumericTextBox @bind-Value="fromDate" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>To date</label>
+                            </div>
+                            <div class="col-md-8">
+                                <NumericTextBox @bind-Value="toDate" />
+                            </div>
+                        </div>
+                        <DataGrid TEntity="OrderDeatil" HideInsertIcon>
+                            <Columns>
+                                <GridColumn Field="t => t.Order.Date" Title="Order date" />
+                                <GridColumn Field="t => t.Product.Title" />
+                                <GridColumn Field="t => t.Count" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4 ps-4">
-                <label>Product category</label>
-            </div>
-            <div class="col-md-8 pe-4">
-                <ComboBox TValue="int" TEntity="ProductCategory" @bind-Value="product.ProductCategoryId"
-                          TextExpression="t => t.Title" />
-            </div>
-            <div class="col-md-4 ps-4">
-                <label>Status</label>
-            </div>
-            <div class="col-md-8 pe-4">
-                <DropdownList @bind-Value="product.ActiveType" />
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 ps-6">
-        <h4>Custom-Search</h4>
-        <div class="row c-controls">
-            <div class="col-md-4 ps-4">
-                <label>Price-From</label>
-            </div>
-            <div class="col-md-8 pe-4">
-                <NumericTextBox @bind-Value="fromPrice" />
-            </div>
-            <div class="col-md-4 ps-4">
-                <label>Price-To</label>
-            </div>
-            <div class="col-md-8 pe-4">
-                <NumericTextBox @bind-Value="toPrice" />
-            </div>
-            <div class="col-md-6 ps-4">
-                <CheckBox @bind-Value="isOutOfStock" OnChange="() => grid.EnableLoading()" Title="Out of stock" />
-            </div>
-            <div class="col-md-6 text-center">
-                <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-                    Source
-                    <i class="fa fa-code"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-12 pt-4">
-        <DataGrid PageSize="5" @ref="grid" Search="product" HideInsertIcon TEntity="Product" TableHeight="275"
-                  ConditionExpr="t => isOutOfStock == null || t.OutofStock == isOutOfStock">
-            <Columns>
-                <GridColumn Field="@(t => t.ProductCategory.Title)" Title="Product category" />
-                <GridColumn Field="@(t => t.Title)" Title="Product" />
-                <GridColumn Field="@(t => t.Price.Seprate3Digit())" Title="Price" @bind-From="fromPrice" @bind-To="toPrice"  />
-                <GridColumn Field="@(t => t.OutofStock)" Title="Outof stock" />
-                <GridColumn Field="@(t => t.ActiveType.FaText())" Title="Status" />
-            </Columns>
-        </DataGrid>
-    </div>
-
-</div>
-
-<CreatePdfComponent @bind-Status="status" Title="Grid Search" FileName="Grid-Search.pdf" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code {
-    WindowStatus status;
-    DataGrid<Product> grid;
-    Product product = new Product();
+    //Default search
+    City citySearch = new City();
+    Customer customerSearch = new Customer();
+    //
     object fromPrice;
     object toPrice;
+    object fromDate;
+    object toDate;
+    //
     bool? isOutOfStock;
 }

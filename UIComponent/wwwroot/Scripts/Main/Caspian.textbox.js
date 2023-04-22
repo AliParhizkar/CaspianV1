@@ -1,5 +1,5 @@
 ﻿(function ($) {
-    let $t = $.telerik;
+    let $t = $.caspian;
     function seprate3Digit(str, start, end, keyCode, seprate) {
         let array = str.replace('-', '').split('.');
         let str1 = array[0];
@@ -127,14 +127,6 @@
             $(element).setCursorPosition(selection.start + 1, selection.start + 1);
 
     }
-    function enableLable(element) {
-        let id = $(element).attr('id');
-
-        if ($(element).is('[disabled=disabled]'))
-            $('label[for=' + id + ']').css('color', '#e5e2e2');
-        else
-            $('label[for=' + id + ']').css('color', '');
-    }
     $t.textbox = function (element, options) {
         updateFlag = true;
         $.extend(this, options);
@@ -154,7 +146,6 @@
         });
         this.element = element;
         let self = this;
-        enableLable(element);
         let $element = this.$element = $(element)
             .bind({
                 focus: function (e) {
@@ -175,18 +166,8 @@
                     thisObj.keyIsOperate = false;
                 }
             }).bind("paste", $.proxy(this._paste, this));
-        let builder = new $t.stringBuilder();
         this.keyIsOperate = false;
-        this.enabled = !$element.is('[disabled]');
-        builder.buffer = [];
-        builder.cat('[ |').cat(this.groupSeparator).catIf('|' + this.symbol, this.symbol).cat(']');
-        this.replaceRegExp = new RegExp(builder.string(), 'g');
-        builder.buffer = [];
-        this.$text = $(builder.string()).insertBefore($element)
-            .click(function (e) {
-                element.focus();
-            });
-        this[this.enabled ? 'enable' : 'disable']();
+
         if (this.type != 'string') {
             this.numFormat = this.numFormat === undefined ? this.type.charAt(0) : this.numFormat;
             let separator = this.separator;
@@ -196,23 +177,13 @@
             this.maxValue = this.parse(this.maxValue, separator);
             this.decimals = { '190': '.', '188': ',', '110': separator };
         }
-        $t.bind(this, {
-            load: this.onLoad,
-            valueChange: this.onValueChange,
-            ekeyPress: this.onKeyPress,
-            change: this.onChange
-        });
         $(element).blur(function (e) {
-            //e.preventDefault();
-            $t.hideErrorMessage($(element).closest('.t-widget')[0], self.errorMessage);
-            //thisObj._blur();
+            
         });
         $(element).focus(function () {
             let message = $(element).closest('.t-widget').attr('data-bind');
             if (message)
                 $t.showErrorMessage($(self.element).closest('.t-widget')[0], message);
-
-            thisObj._focus();
         });
         if (this.group && this.type != 'string') {
             $(element).val($t.get3Digit($(element).val()));
@@ -263,153 +234,9 @@
         },
         updateState: function (options) {
             $.extend(this, options);
-            if (options.disabled) 
-                this.disable()
-            else if (options.disabled == false)
-                this.enable();
             if (options.focused) 
                 this.focus();
             this.errorMessage = options.errorMessage;
-        },
-        _keydown: function (e) {
-            this.key = e.keyCode;
-            let key = e.keyCode || e.which;
-            if (this.simpleSearchUrl)
-                this.type = "string";
-            if (this.type != "string") {
-                this.digits = this.digits || 0;
-                this.total = this.total || 8;
-                this.seprate = ',';
-                let _self = this;
-                if (this.group && key != 9) {
-                    setTimeout($.proxy(function () {
-                        let selection = $(_self.element).getSelection();
-                        let oldValue = $(_self.element).val().substring(0, selection.start);
-                        let oldCount = (oldValue.match(/,/g) || []).length;
-                        let value = $(_self.element).val();
-                        if (value.length == 0 || value[value.length - 1] != '.')
-                            $(_self.element).val($.telerik.get3Digit(_self.value()));
-                        let newValue = $(_self.element).val().substring(0, selection.start);
-                        let newCount = (newValue.match(/,/g) || []).length;
-
-                        let count = newCount - oldCount;
-                        $(_self.element).setCursorPosition(selection.start + count, selection.end + count);
-
-                    }, this), 0);
-                }
-                if ([8, 9, 13, 27, 37, 39, 35, 36, 46].indexOf(key) != -1)
-                    return true;
-                if (e.ctrlKey && (key == 67 || 86))
-                    return true;
-                let selection = $(_self.element).getSelection();
-                if (selection.end > selection.start)
-                    return true;
-                
-                if (key >= 48 && key <= 58 || key >= 96 && key < 106) {
-                    let value = $(this.element).val().replace(/\,/g, '');
-                    let hasDot = value.includes(".");
-                    if (hasDot) {
-                        let digitCount = this.total - this.digits;
-                        let array = value.split('.');
-                        if (selection.start <= array[0].length) {
-                            if (array[0].length >= digitCount)
-                                return false;
-                        } if (array[1].length >= this.digits)
-                            return false;
-                    } else if (value.length >= this.total)
-                        return false;
-                    return true;
-                } else if (this.digits && (key == 110 || key == 190))
-                    return true;
-                return false;
-            }
-            setTimeout($.proxy(function () {
-                
-                let key = e.keyCode || e.which;
-                if (key == 8) {
-                    this.keyIsOperate = true;
-                }
-                let self_ = this;
-                if (this.searchForm) {
-                    //this.searchForm.open();
-                }
-                self_.valueOld = self_.value();  
-            }, this));
-        },
-        _keypress: function (e) {
-            //key = e.keyCode || e.which;
-            //$t.trigger(this.element, 'ekeyPress', e);
-            //if (this.type == 'string') {
-            //    if (this.checkNumeric && (key < 48 || key > 57))
-            //        e.preventDefault();
-            //    setTimeout($.proxy(function () {
-
-            //    }, this));
-            //}
-        },
-        focus: function () {
-            this._focus();
-            this.$element.focus();
-        },
-        _focus: function () {
-            this.tempValue = this.value();
-            this.$element.css('color', this.$text.css("color"));
-            this.$text.hide();
-        },
-        _blur: function () {
-            //this.$element.removeClass('t-state-error');
-            //if (this.type != 'string') {
-            //    let min = this.minValue,
-            //    max = this.maxValue,
-            //    parsedValue = this.parse(this.$element.val());
-            //    if (parsedValue) {
-            //        if (min != null && parsedValue < min) {
-            //            parsedValue = min;
-            //        } else if (max != null && parsedValue > max) {
-            //            parsedValue = max;
-            //        }
-            //        parsedValue = parseFloat(parsedValue.toFixed(this.digits));
-            //    }
-            //}
-            //else
-            //    parsedValue = this.parse(this.$element.val());
-        },
-        _clearTimer: function (e) {
-            clearTimeout(this.timeout);
-            clearInterval(this.timer);
-            clearInterval(this.acceleration);
-        },
-        _stepper: function (e, stepMod) {
-            if (e.which == 1) {
-
-                let step = this.step;
-
-                this._modify(stepMod * step);
-
-                this.timeout = setTimeout($.proxy(function () {
-                    this.timer = setInterval($.proxy(function () {
-                        this._modify(stepMod * step);
-                    }, this), 80);
-
-                    this.acceleration = setInterval(function () { step += 1; }, 1000);
-                }, this), 200);
-            }
-        },
-        _modify: function (step) {
-            if (this.type != 'string') {
-                let value = this.parse(this.element.value),
-                min = this.minValue,
-                max = this.maxValue;
-
-                value = value ? value + step : step;
-
-                if (min !== null && value < min) {
-                    value = min;
-                } else if (max !== null && value > max) {
-                    value = max;
-                }
-                this._update(parseFloat(value.toFixed(this.digits)));
-            }
         },
         _update: function (val) {
             if (this.val != val) {
@@ -443,22 +270,6 @@
                 this.val = value;
                 this.$text.html(value);
             }
-        },
-        enable: function () {
-            this.enabled = true;
-            this.$element.removeAttr("disabled");
-            this.$element.closest('.t-widget').removeClass('t-state-disabled');
-            enableLable(this.element);
-        },
-        disable: function () {
-            this.enabled = false;
-            this.$element.attr('disabled', 'disabled');
-            this.$element.closest('.t-widget').addClass('t-state-disabled');
-            if (!this.val && this.val != 0)
-                this.$text.html('');
-            else if (true == $.browser.msie)
-                this.$text.hide();
-            enableLable(this.element);
         },
         value: function (value) {
             if (arguments.length == 1 && value == null) {
@@ -543,278 +354,14 @@
         let type = 'numeric';
         if (options && options.type)
             type = options.type;
-        if (type != "string") {
-            let defaults = $.fn.tTextBox.defaults[type];
-            defaults.digits = $t.cultureInfo[type + 'decimaldigits'];
-            defaults.separator = $t.cultureInfo[type + 'decimalseparator'];
-            defaults.groupSize = $t.cultureInfo[type + 'groupsize'];
-            defaults.positive = $t.cultureInfo[type + 'positive'];
-            defaults.negative = $t.cultureInfo[type + 'negative'];
-            defaults.symbol = $t.cultureInfo[type + 'symbol'];
-
-            options = $.extend({}, defaults, options);
-        }
-        else
-            $.extend(this, options);
+        $.extend(this, options);
         options.type = type;
         return this.each(function () {
             let $element = $(this);
             options = $.meta ? $.extend({}, options, $element.data()) : options;
 
-            if (!$element.data('tTextBox')) {
+            if (!$element.data('tTextBox')) 
                 $element.data('tTextBox', new $t.textbox(this, options));
-                $t.trigger(this, 'load');
-            }
-
         });
     };
-    let commonDefaults = {
-        val: null,
-        text: '',
-        inputAttributes: ''
-    };
-    $.fn.tTextBox.defaults = {
-        numeric: $.extend(commonDefaults, {
-            minValue: -100,
-            maxValue: 100
-        }),
-        currency: $.extend(commonDefaults, {
-            minValue: 0,
-            maxValue: 1000
-        }),
-        percent: $.extend(commonDefaults, {
-            minValue: 0,
-            maxValue: 100
-        })
-    };
-
-    // * - placeholder for the symbol
-    // n - placeholder for the number
-    $.fn.tTextBox.patterns = {
-        numeric: {
-            negative: ['(n)', '-n', '- n', 'n-', 'n -']
-        },
-        currency: {
-            positive: ['*n', 'n*', '* n', 'n *'],
-            negative: ['(*n)', '-*n', '*-n', '*n-', '(n*)', '-n*', 'n-*', 'n*-', '-n *', '-* n', 'n *-', '* n-', '* -n', 'n- *', '(* n)', '(n *)']
-        },
-        percent: {
-            positive: ['n *', 'n*', '*n'],
-            negative: ['-n *', '-n*', '-*n']
-        }
-    };
-
-    if (!$t.cultureInfo.numericnegative)
-        $.extend($t.cultureInfo, { //default en-US settings
-            currencydecimaldigits: 2,
-            currencydecimalseparator: '.',
-            currencygroupseparator: ',',
-            currencygroupsize: 3,
-            currencynegative: 0,
-            currencypositive: 0,
-            currencysymbol: '$',
-            numericdecimaldigits: 2,
-            numericdecimalseparator: '.',
-            numericgroupseparator: ',',
-            numericgroupsize: 3,
-            numericnegative: 1,
-            percentdecimaldigits: 2,
-            percentdecimalseparator: '.',
-            percentgroupseparator: ',',
-            percentgroupsize: 3,
-            percentnegative: 0,
-            percentpositive: 0,
-            percentsymbol: '%'
-        });
-
-    let customFormatRegEx = /[0#?]/;
-
-    function reverse(str) {
-        return str.split('').reverse().join('');
-    }
-
-    function injectInFormat(val, format, appendExtras) {
-        let i = 0, j = 0,
-            fLength = format.length,
-            vLength = val.length,
-            builder = new $t.stringBuilder();
-
-        while (i < fLength && j < vLength && format.substring(i).search(customFormatRegEx) >= 0) {
-
-            if (format.charAt(i).match(customFormatRegEx))
-                builder.cat(val.charAt(j++));
-            else
-                builder.cat(format.charAt(i));
-
-            i++;
-        }
-
-        builder.catIf(val.substring(j), j < vLength && appendExtras)
-               .catIf(format.substring(i), i < fLength);
-
-        let result = reverse(builder.string()),
-            zeroIndex;
-
-        if (result.indexOf('#') > -1)
-            zeroIndex = result.indexOf('0');
-
-        if (zeroIndex > -1) {
-            let first = result.slice(0, zeroIndex),
-                second = result.slice(zeroIndex, result.length);
-            result = first.replace(/#/g, '') + second.replace(/#/g, '0');
-        } else {
-            result = result.replace(/#/g, '');
-        }
-
-        if (result.indexOf(',') == 0)
-            result = result.replace(/,/g, '');
-
-        return appendExtras ? result : reverse(result);
-    }
-
-    $t.textbox.formatNumber = function (number,
-                                        format,
-                                        digits,
-                                        separator,
-                                        groupSeparator,
-                                        groupSize,
-                                        positive,
-                                        negative,
-                                        symbol,
-                                        isTextBox) {
-
-        if (!format) return number;
-
-        let type, customFormat, negativeFormat, zeroFormat, sign = number < 0;
-
-        format = format.split(':');
-        format = format.length > 1 ? format[1].replace('}', '') : format[0];
-
-        let isCustomFormat = format.search(customFormatRegEx) != -1;
-
-        if (isCustomFormat) {
-            format = format.split(';');
-            customFormat = format[0];
-            negativeFormat = format[1];
-            zeroFormat = format[2];
-            format = (sign && negativeFormat ? negativeFormat : customFormat).indexOf('%') != -1 ? 'p' : 'n';
-        }
-
-        switch (format.toLowerCase()) {
-            case 'd':
-                return Math.round(number).toString();
-            case 'c':
-                type = 'currency'; break;
-            case 'n':
-                type = 'numeric'; break;
-            case 'p':
-                type = 'percent';
-                if (!isTextBox) number = Math.abs(number) * 100;
-                break;
-            default:
-                return number.toString();
-        }
-
-        let zeroPad = function (str, count, left) {
-            for (let l = str.length; l < count; l++)
-                str = left ? ('0' + str) : (str + '0');
-
-            return str;
-        }
-
-        let addGroupSeparator = function (number, groupSeperator, groupSize) {
-            if (groupSeparator && groupSize != 0) {
-                let regExp = new RegExp('(-?[0-9]+)([0-9]{' + groupSize + '})');
-                while (regExp.test(number)) {
-                    number = number.replace(regExp, '$1' + groupSeperator + '$2');
-                }
-            }
-            return number;
-        }
-
-        let cultureInfo = cultureInfo || $t.cultureInfo,
-            patterns = $.fn.tTextBox.patterns,
-            undefined;
-
-        //define Number Formating info.
-        digits = digits || digits === 0 ? digits : cultureInfo[type + 'decimaldigits'];
-        separator = separator !== undefined ? separator : cultureInfo[type + 'decimalseparator'];
-        groupSeparator = groupSeparator !== undefined ? groupSeparator : cultureInfo[type + 'groupseparator'];
-        groupSize = groupSize || groupSize == 0 ? groupSize : cultureInfo[type + 'groupsize'];
-        negative = negative || negative === 0 ? negative : cultureInfo[type + 'negative'];
-        positive = positive || positive === 0 ? positive : cultureInfo[type + 'positive'];
-        symbol = symbol || cultureInfo[type + 'symbol'];
-
-        let exponent, left, right;
-
-        if (isCustomFormat) {
-            let splits = (sign && negativeFormat ? negativeFormat : customFormat).split('.'),
-                leftF = splits[0],
-                rightF = splits.length > 1 ? splits[1] : '',
-                lastIndexZero = $t.lastIndexOf(rightF, '0'),
-                lastIndexSharp = $t.lastIndexOf(rightF, '#');
-            digits = (lastIndexSharp > lastIndexZero ? lastIndexSharp : lastIndexZero) + 1;
-        }
-
-        let factor = Math.pow(10, digits);
-        let rounded = (Math.round(number * factor) / factor);
-        number = isFinite(rounded) ? rounded : number;
-
-        let split = number.toString().split(/e/i);
-        exponent = split.length > 1 ? parseInt(split[1]) : 0;
-        split = split[0].split('.');
-
-        left = split[0];
-        left = sign ? left.replace('-', '') : left;
-
-        right = split.length > 1 ? split[1] : '';
-
-        if (exponent) {
-            if (!sign) {
-                right = zeroPad(right, exponent, false);
-                left += right.slice(0, exponent);
-                right = right.substr(exponent);
-            } else {
-                left = zeroPad(left, exponent + 1, true);
-                right = left.slice(exponent, left.length) + right;
-                left = left.slice(0, exponent);
-            }
-        }
-
-        let rightLength = right.length;
-        if (digits < 1 || (isCustomFormat && lastIndexZero == -1 && rightLength === 0))
-            right = ''
-        else
-            right = rightLength > digits ? right.slice(0, digits) : zeroPad(right, digits, false);
-
-        let result;
-        if (isCustomFormat) {
-            if (left == 0) left = '';
-
-            left = injectInFormat(reverse(left), reverse(leftF), true);
-            left = leftF.indexOf(',') != -1 ? addGroupSeparator(left, groupSeparator, groupSize) : left;
-
-            right = right && rightF ? injectInFormat(right, rightF) : '';
-
-            result = number === 0 && zeroFormat ? zeroFormat
-                : (sign && !negativeFormat ? '-' : '') + left + (right.length > 0 ? separator + right : '');
-
-        } else {
-
-            left = addGroupSeparator(left, groupSeparator, groupSize)
-            patterns = patterns[type];
-            let pattern = sign ? patterns['negative'][negative]
-                        : symbol ? patterns['positive'][positive]
-                        : null;
-
-            let numberString = left + (right.length > 0 ? separator + right : '');
-
-            result = pattern ? pattern.replace('n', numberString).replace('*', symbol) : numberString;
-        }
-        return result;
-    }
-
-    $.extend($t.formatters, {
-        number: $t.textbox.formatNumber
-    });
 })(jQuery);

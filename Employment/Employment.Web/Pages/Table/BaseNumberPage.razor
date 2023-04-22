@@ -35,8 +35,8 @@
     </table>
     <DataGrid @ref="CrudGrid" TEntity="BaseNumber" Search="SearchData">
         <Columns>
-            <GridColumn Field="t => t.BaseStudy.FaText()" />
-            <GridColumn Field="t => t.BaseType.FaText()" />
+            <GridColumn Field="t => t.BaseStudy.EnumText()" />
+            <GridColumn Field="t => t.BaseType.EnumText()" />
             <GridColumn Field="t => t.Factor.Seprate3Digit()" />
             <GridCommandColumns/>
         </Columns>

@@ -6,7 +6,7 @@ namespace Demo.Model
     public enum ControlSize
     {
         [Display(Name = "Small")]
-        Small,
+        Small = 1,
 
         [Display(Name = "Medium")]
         Medium,

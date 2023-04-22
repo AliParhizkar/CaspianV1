@@ -182,7 +182,7 @@ namespace Caspian.Engine.Service
                 foreach (var str in item.TitleEn.Split('.'))
                     propertyExpr = Expression.Property(propertyExpr, str);
                 propertyExpr = Expression.Lambda(propertyExpr, new ParameterExpression[] { t });
-                orderExprList.Add(new TempOrderExpr(propertyExpr, item.OrderType));
+                orderExprList.Add(new TempOrderExpr(propertyExpr, item.SortType));
             }
             while (expr.NodeType == ExpressionType.Call)
             {
@@ -190,12 +190,12 @@ namespace Caspian.Engine.Service
                 if (callExpr.Method.Name == "OrderBy" || callExpr.Method.Name == "ThenBy")
                 {
                     var quoteExpr = (callExpr.Arguments[1] as UnaryExpression).Operand;
-                    orderExprList.Add(new TempOrderExpr(quoteExpr, OrderType.Asc));
+                    orderExprList.Add(new TempOrderExpr(quoteExpr, SortType.Asc));
                 }
                 if (callExpr.Method.Name == "OrderByDescending" || callExpr.Method.Name == "ThenByDescending")
                 {
                     var quoteExpr = (callExpr.Arguments[1] as UnaryExpression).Operand;
-                    orderExprList.Add(new TempOrderExpr(quoteExpr, OrderType.Decs));
+                    orderExprList.Add(new TempOrderExpr(quoteExpr, SortType.Decs));
                 }
                 expr = callExpr.Arguments[0];
             }
@@ -203,7 +203,7 @@ namespace Caspian.Engine.Service
             bool firstOrderBy = true;
             foreach (var orderExpr in orderExprList)
             {
-                if (orderExpr.OrderType == OrderType.Asc)
+                if (orderExpr.SortType == SortType.Asc)
                     if (firstOrderBy)
                     {
                         source = source.OrderBy(orderExpr.Expr as LambdaExpression);
@@ -350,17 +350,17 @@ namespace Caspian.Engine.Service
 
     internal class TempOrderExpr
     {
-        public TempOrderExpr(Expression expr, OrderType? orderType)
+        public TempOrderExpr(Expression expr, SortType? sortType)
         {
             Expr = expr;
-            if (orderType.HasValue)
-                OrderType = orderType.Value;
+            if (sortType.HasValue)
+                SortType = sortType.Value;
             else
-                OrderType = OrderType.Asc;
+                SortType = SortType.Asc;
         }
 
         public Expression Expr { get; set; }
 
-        public OrderType OrderType { get; set; }
+        public SortType SortType { get; set; }
     }
 }

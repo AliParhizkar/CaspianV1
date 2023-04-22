@@ -17,9 +17,9 @@
 } 
 <div @ref="htmlElement" class="t-widget t-timepicker">
     <div @attributes="attrs" class="@className">
-        @if (DefaultState)
+        @if (DefaultMode)
         {
-            <input disabled="@Disabled" type="time" value="@str" class="t-input" @onchange="ChangeValue" />
+            <input disabled="@Disabled" type="time" value="@str" class="t-input t-default-mode" @onchange="ChangeValue" />
         }
         else
         {
@@ -30,7 +30,7 @@
         }
 
     </div>
-    @if (status == WindowStatus.Open && !DefaultState)
+    @if (status == WindowStatus.Open && !DefaultMode)
     {
         <div class="t-animation-container">
             <TimePanel FromTime="FromTime" ToTime="ToTime" AutoSelect="AutoSelect" Hour="time.Hours" Minute="time.Minutes" />
@@ -48,10 +48,10 @@
     }
 
     [Parameter]
-    public bool AutoSelect { get; set; } = true;
+    public bool AutoSelect { get; set; }
 
     [Parameter]
-    public bool DefaultState { get; set; }
+    public bool DefaultMode { get; set; }
 
     [Parameter]
     public TimeSpan? FromTime { get; set; }

@@ -1,0 +1,215 @@
+﻿@page "/Demo/Timepicker"
+@namespace Demo.Web.Pages
+<h2>Time Picker</h2>
+<h3>Binding</h3>
+<p>
+    this component bind to <b>TimpeSpan</b> or <b>Nullable TimpeSpan</b>. It can be used in two modes, default mode (browser time picker) and custom mode. In custom mode this component moves(drop) up or down based on its location
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Bind to <i>TimeSpan</i></h4>
+                        <span class="c-demo-description">In this example we bind the component to <b><i>time</i></b> which is a <b>TimeSpan variable</b></span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <Timepicker @bind-Value="time" />
+                                </div>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected time</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(time.ShortString())</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Bind to <i>nullable TimeSpan</i> </h4>
+                        <span class="c-demo-description">In this example web bind the component to <b><i>nullableTime</i></b> which is a <b>nullable TimeSpan variable</b></span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <Timepicker @bind-Value="nullableTime" />
+                                </div>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected time</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(nullableTime.HasValue ? nullableTime.Value.ShortString() : "---")</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-5">Default mode</h3>
+<p>
+    As mentioned earlier, this component can be used in two ways: the default mode (browser time picker) and the custom mode.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Browser time picker</h4>
+                        <span class="c-demo-description">In this example, we use the browser's time picker. Obviously, in this case, we will be limited to the features of the browser's time picker.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <Timepicker DefaultMode @bind-Value="time" />
+                                </div>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected time</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(time.ShortString())</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-4">General properties</h3>
+<p>
+    We can specify <b>general properties</b> such as <b>width</b> and <b>disable</b>. if we do not specify the width of the control, its width will be 100% and fit to parent.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Width property</h4>
+                        <span class="c-demo-description">By setting the <b>Style</b> parameter, we can easily <b>change width</b> and other css properties of the control. it has <b>intellisense</b> for css properties</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Control size</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList @bind-Value="controlSize" />
+                            </div>
+                            <div class="col-md-12">
+                                <Timepicker Style="@GetStyle()" @bind-Value="time" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Disable control</h4>
+                        <span class="c-demo-description">By setting the <b>Disabled</b> parameter, we can easily <b>enable & disable</b> the control. This parameter is a <b>boolean</b> parameter</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Enable/Disable</label>
+                            </div>
+                            <div class="col-md-8">
+                                <CheckBox @bind-Value="disable" />
+                            </div>
+                            <div class="col-md-12">
+                                <Timepicker @bind-Value="time" Disabled="disable" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Auto select</h4>
+                        <span class="c-demo-description">If we set the AutoSelect parameter to true, then the time picker will be set by selecting the minutes</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-12">
+                                <Timepicker @bind-Value="time" AutoSelect />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-4">Enable time within a range</h3>
+<p>
+    In our custom mode, we can enable a specific <b>range of time</b>, or <b>from a time</b>, or <b>until a specific time</b> to select.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Enable/disable range of Time</h4>
+                        <span class="c-demo-description">We use two parameters <b>FromTime</b> and <b>ToTime</b> to determine the <b>active range</b>, if each parameter is null, the restriction is removed.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>From time</label>
+                            </div>
+                            <div class="col-md-8">
+                                <Timepicker @bind-Value="fromTime" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>To Time</label>
+                            </div>
+                            <div class="col-md-8">
+                                <Timepicker @bind-Value="toTime" />
+                            </div>
+                            <div class="col-md-12">
+                                <Timepicker @bind-Value="time" FromTime="fromTime" ToTime="toTime" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+@code
+{
+    TimeSpan time = DateTime.Now.TimeOfDay;
+    bool disable;
+    TimeSpan? nullableTime;
+    ControlSize controlSize = ControlSize.Auto;
+    TimeSpan? fromTime = new TimeSpan(4, 25, 0);
+    TimeSpan? toTime = new TimeSpan(19, 25, 0);
+
+    string GetStyle()
+    {
+        switch (controlSize)
+        {
+            case ControlSize.Large:
+                return "width:300px";
+            case ControlSize.Medium:
+                return "width:200px";
+            case ControlSize.Small:
+                return "width:150px";
+            case ControlSize.Auto:
+                return "";
+        }
+        throw new NotImplementedException();
+    }
+}

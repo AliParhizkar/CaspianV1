@@ -62,7 +62,7 @@ namespace Caspian.UI
         public Expression<Func<object>> ToExpression { get; set; }
 
         [Parameter]
-        public OrderType? OrderType { get; set; }
+        public SortType? SortType { get; set; }
 
         [Parameter]
         public bool ForTest { get; set; }

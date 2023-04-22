@@ -245,7 +245,7 @@
                     break;
             }
             if (PrintParam.TotalFuncType.HasValue)
-                faTitle = PrintParam.TotalFuncType.FaText() + '(' + faTitle + ')';
+                faTitle = PrintParam.TotalFuncType.EnumText() + '(' + faTitle + ')';
             PrintParam.TitleFa = '{' + faTitle + '}';
             PrintParam.TitleEn = '{' + enTitle + '}';
             updateData = true;

@@ -56,9 +56,9 @@ namespace Caspian.UI
                 AggregateExpression = column.AggregateField?.Body,
                 FromExpression = column.FromExpression,
                 ToExpression = column.ToExpression,
-                Orderable = column.Field?.Body as BinaryExpression == null,
+                Sortable = column.Field?.Body as BinaryExpression == null,
                 Width = column.Width,
-                OrderType = column.OrderType,
+                SortType = column.SortType,
                 Resizeable = column.Template == null && !column.IsCheckBox
             };
             columnsData.Add(columnData);
@@ -184,7 +184,7 @@ namespace Caspian.UI
             var index = 0;
             foreach (var col in columnsData)
             {
-                if (col.OrderType != null && col.Orderable)
+                if (col.SortType != null && col.Sortable)
                 {
                     Expression orderbyExpr = col.Expression;
                     ParameterExpression param = null; ;
@@ -214,9 +214,9 @@ namespace Caspian.UI
                     }
 
                     var lambdaExpression = Expression.Lambda(orderbyExpr, param);
-                    if (col.OrderType == OrderType.Asc)
+                    if (col.SortType == SortType.Asc)
                         query = query.OrderBy(lambdaExpression).OfType<TEntity>();
-                    else if (col.OrderType == OrderType.Decs)
+                    else if (col.SortType == SortType.Decs)
                         query = query.OrderByDescending(lambdaExpression).OfType<TEntity>();
                 }
                 index++;
@@ -344,7 +344,7 @@ namespace Caspian.UI
         public Func<IQueryable<TEntity>, IQueryable<TEntity>> OnDataBinding { get; set; }
 
         [Parameter, JsonIgnore]
-        public int TableHeight { get; set; } = 400;
+        public int TableHeight { get; set; } = 250;
 
         [Parameter, JsonIgnore]
         public int? TableWidth { get; set; }

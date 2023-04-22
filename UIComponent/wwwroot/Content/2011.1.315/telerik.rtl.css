@@ -31,11 +31,11 @@
 }
 
 .t-rtl .t-message {
-    left: 20px;
+    left: 7px;
 }
 
 .t-ltr .t-message {
-    right: 20px;
+    right: 7px;
 }
 
 .t-rtl .accordion .link i:not(.c-icon) {

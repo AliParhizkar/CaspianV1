@@ -7,7 +7,7 @@
 <div style="width:90%;margin:5px auto">
     <DataGrid @ref="CrudGrid" TEntity="DataParameter" Search="SearchData" ConditionExpr="t => t.ResultParameterId == ParameterId">
         <Columns>
-            <GridColumn Field="t => t.ParameterType.FaText()" />
+            <GridColumn Field="t => t.ParameterType.EnumText()" />
             <GridColumn Field="t => t.PropertyName">
                 <Template>
                     <span>@properties.SingleOrDefault(t => t.Value == context.Data.PropertyName)?.Text</span>

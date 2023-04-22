@@ -1,51 +1,285 @@
 ﻿@page "/Demo/Fileupload"
 @namespace Demo.Web.Pages
-<div class="row ps-4 pe-4 pt-3">
-    <div class="col-md-6">
-        <h3>FileUpload & Picture Box</h3>
-    </div>
-    <div class="text-center col-md-6">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-</div>
-<div class="row ps-4 pe-4">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>With Content</h4>
+@inject IHostEnvironment host
+@inject FileUploadService service
+<h2>Fileupload</h2>
+<p>
+    We use FileUpload in two modes: uploading <b>small files</b> and uploading <b>large files</b>, for uploading small files we <b>can keep the content of the file in memory</b>, but for large files we <b>need to store the data on file</b> or <b>file table</b>, Also, for uploading large files, we usually use the <b>progress bar</b>.
+</p>
+<h3>Picturebox & uploading small files</h3>
+<p>
+    As mentioned earlier, we can use FileUpload to <b>upload small files</b> like <b>photos</b>, we can also use Picturebox to display photos.We use it in two modes: <b>with content</b> and <b>without content</b>
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
                 <div class="row">
-                    <div class="col-md-12">
-                        <Fileupload OnChange="async e => await SaveFileData1(e)" Title="Click for upload">
-                            <PictureBox NoContentTitle="Click for upload" Data="imageDataWidthoutContent" style="width:300px;height:350px;background-size:cover" />
-                        </Fileupload>
+                    <div class="col-md-6">
+                        <h4>Without content</h4>
+                        <span class="c-demo-description">In this example, the fileupload does not have <b>ChildContent</b>, and we can only change its <b>title</b> and <b>style</b></span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls align-items-center">
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <PictureBox Data="imageDataWidthContent" style="width:300px;height:350px;background-position: center center" />
+                                </div>
+                            </div>
+                            <div class="col-md-5 ps-5 align-items-center">
+                                <label>File upload</label>
+                            </div>
+                            <div class="col-md-7 align-items-center">
+                                <Fileupload OnChange="async e => await SaveFileData(e)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>With content</h4>
+                        <span class="c-demo-description">In this example we are using <b>picturebox as ChildContent</b>, so if you <b>click on the Picturebox</b> the <b>browser form</b> will be displayed for uploading.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <Fileupload MaxAllowedSize="40_000" OnChange="async e => await SaveFileData1(e)" Title="Click for upload">
+                                        <PictureBox NoContentTitle="Click for upload" Data="imageDataWidthoutContent" style="width:300px;height:350px;background-size:cover" />
+                                    </Fileupload>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Items filter</h4>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-4">General properties</h3>
+<p>
+    We can specify general properties like <b>height</b>, <b>width</b>, and <b>title</b>, etc for <b>fileupload</b> and <b>picturebox</b>
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
                 <div class="row">
-                    <div>
-                        <PictureBox Data="imageDataWidthContent" style="width:300px;height:350px;background-position: center center" />
+                    <div class="col-md-6">
+                        <h4>Fileupload properties</h4>
+                        <span class="c-demo-description">By setting the <b>Style</b> parameter, we can easily change <b>width, Height</b> and other css properties of the control. it has intellisense for css properties, and you can use <b>Title</b> parameter to set the <b>title</b> of the component</span>
                     </div>
-                    <div style="padding-top:10px" class="text-center">
-                        <Fileupload OnChange="async e => await SaveFileData(e)" />
+                    <div class="col-md-6">
+                        <div class="row c-controls align-items-center">
+                            <div class="col-md-5 ps-5 align-items-center">
+                                <label>File upload</label>
+                            </div>
+                            <div class="ps-5 col-md-7 align-items-center">
+                                <Fileupload Title="Click me" Style="width:80px;height:40px;background-color:deeppink;color:white;border:none;font-weight:bold" OnChange="async e => await SaveFileData(e)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Picturebox properties</h4>
+                        <span class="c-demo-description">By setting the <b>Style</b> parameter, we can easily change <b>width, Height</b> and other css properties of the control. it has intellisense for css properties, and you can use <b>NoContentTitle</b> parameter to set the <b>no content title</b> of the component</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="col-md-12">
+                                <div class=" c-demo-control">
+                                    <Fileupload MaxAllowedSize="40_000" OnChange="async e => await SaveFileData1(e)" Title="Click for upload">
+                                        <PictureBox NoContentTitle="Click me for upload" Data="imageDataWidthoutContent" style="width:250px;height:300px;background-size:100% 100%" />
+                                    </Fileupload>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-5">Large file upload</h3>
+<p>
+    As mentioned earlier, we can use file upload to <b>upload large files</b>, the contents of these files are <b>stored in a file or file table</b>. We can <b>upload single file</b> or <b>upload multiple files together. We can also use the <b>progress bar</b>, we can use <b>FileUploadService</b> to <b>communicate between</b> these two components, both components have a <b></b> for this purpose.</b>.
+</p>
+<p>
+    <span class="fa fa-info"></span>note: Here we have created FileUpload and progress bar separately (Simple of SOLID) so that we can use these two components in different ways. And we also use FileUploadService to communicate between these two components
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Single file upload</h4>
+                        <span class="c-demo-description">In this case, we can only upload <b>one file</b> This is the default mode.</span>
+                        <h4 class="pt-3">Parameters:</h4>
+                        <div class="ps-3">
+                            <div>
+                                <span class="d-title">MaxAllowedSize: </span><span class="c-demo-description">This parameter is used to control the <b>file size</b>.</span>
+                            </div>
+                            <div class="pt-3">
+                                <span class="d-title">RelatedPath: </span><span class="c-demo-description">This parameter is used to specify the <b>address of the folder</b> where the file will be saved.</span>
+                            </div>
+                            <div class="pt-3">
+                                <span class="d-title">Service: </span><span class="c-demo-description">This parameter is used to <b>communicate</b> between <b>FileUpload</b> and the <b>progress bar</b>.</span>
+                            </div>
+                        </div>
+                        <h4 class="pt-3">Events:</h4>
+                        <div class="ps-3">
+                            <div>
+                                <span class="d-title">OnChange: </span><span class="c-demo-description">This event is fired immediately after <b>starting the upload</b>, and we can <b>control file properties</b> like its type, in this example we <b>open a PopupWindow </b>to display a progress bar.</span>
+                            </div>
+                            <div class="pt-3">
+                                <span class="d-title">OnFileUploadCompleted: </span><span class="c-demo-description">This event is fired <b>after the upload is complete</b>. In this event we can access the <b>properties of the saved file</b> such as <b>its name</b>.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls align-items-center">
+                            <div class="col-md-6 ps-5">
+                                <label>Maximum size of file</label>
+                            </div>
+                            <div class="col-md-6">
+                                <DropdownList @bind-Value="fileSize" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
+                            </div>
+                            <div class="col-md-6 ps-5">
+                                <label>Fileupload</label>
+                            </div>
+                            <div class="col-md-6">
+                                <Fileupload Title="Single file upload" Style="width:130px;" Service="service" OnChange="ShowProrgres" OnFileUploadCompleted="FileUploadCompleted"
+                                            MaxAllowedSize="Convert.ToInt32(filesSize[fileSize - 1] * 1000_000)" RelatedPath="@relatedPath" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Multiple file upload</h4>
+                        <span class="c-demo-description">In this case, we can <b>upload several files together</b>, for this purpose we must <b>set the Multiple parameter to true</b>. </span>
+                        <h4 class="pt-3">Parameters:</h4>
+                        <div class="ps-3">
+                            <div>
+                                <span class="d-title">Multiple: </span><span class="c-demo-description">This parameter is of <b>boolean type</b>, which makes it possible to <b>upload multiple files</b></span>
+                            </div>
+                            <div class="pt-3">
+                                <span class="d-title">MaxFilesCount: </span><span class="c-demo-description">This parameter is used to control the <b>number of files</b> selected for uploading</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="col-md-6">
+                                <label>Maximum size of files</label>
+                            </div>
+                            <div class="col-md-6">
+                                <DropdownList @bind-Value="fileSize1" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Maximum numer of files file</label>
+                            </div>
+                            <div class="col-md-6">
+                                <DropdownList @bind-Value="fileCount" Source="@(SelectListItem.CreateList("Two", "Three", "Five", "Eight", "Ten"))" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Fileupload</label>
+                            </div>
+                            <div class="text-center col-md-6">
+                                <Fileupload Title="Multiple file upload" Style="width:145px;height:45px;" Service="service" MaxFilesCount="Convert.ToInt32(fileCounts[fileCount - 1])"
+                                            MaxAllowedSize="Convert.ToInt32(filesSize[fileSize1 - 1] * 1000_000)" OnChange="ShowProrgres"
+                                            Multiple RelatedPath="@relatedPath" OnFilesUploadCompleted="FileUploadCompleted" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-4">Progress bar</h3>
+<p>
+    We use a progress bar to show the progress of the file is uploading.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Default properties</h4>
+                        <span class="c-demo-description">By setting the Style parameter, we can easily change width and other css properties of the control. it has intellisense for css properties.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls align-items-center">
+                            <div class="col-md-6 ps-5">
+                                <label>Control size</label>
+                            </div>
+                            <div class="col-md-6">
+                                <DropdownList @bind-Value="controlSize" FilterFunc="t => t != ControlSize.Auto" />
+                            </div>
+                            <div class="col-md-6 ps-5">
+                                <label>Custom appearance</label>
+                            </div>
+                            <div class="col-md-6">
+                                <CheckBox @bind-Value="customAppearance" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 pt-2">
+                        <span class="fa fa-info"></span><span style="font-size:16px;font-weight:bold">Please upload a file to show the progress bar</span>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<PopupWindow @bind-Status="status" AutoHide="enableAutoHide">
+    <div class="p-2">
+        <FileUploadProgress CustomAppearance="customAppearance" Service="service" Style="@GetStyle()" />
     </div>
-<CreatePdfComponent @bind-Status="status" Title="PictureBox-File Upload" FileName="FileUpload.pdf" />
+</PopupWindow>
 @code
 {
+    bool customAppearance;
     WindowStatus status;
+    int fileSize = 1;
+    int fileSize1 = 1;
+    int fileCount = 1;
     byte[] imageDataWidthContent;
     byte[] imageDataWidthoutContent;
+    bool enableAutoHide;
+    string relatedPath;
+    double[] filesSize = new double[] { 0.5, 1, 2, 5, 10, 20, 50 };
+    int[] fileCounts = new int[] { 2, 3, 5, 8, 10 };
+    ControlSize controlSize = ControlSize.Medium;
+
+    protected override void OnInitialized()
+    {
+        if (host.IsProduction())
+            relatedPath = host.ContentRootPath + "\\Data";
+        else
+            relatedPath = "F://Data";
+        base.OnInitialized();
+    }
+
+    string GetStyle()
+    {
+        switch (controlSize)
+        {
+            case ControlSize.Large:
+                return "width:600px";
+            case ControlSize.Medium:
+                return "width:400px";
+            case ControlSize.Small:
+                return "width:300px";
+        }
+        throw new NotImplementedException();
+    }
 
     async Task SaveFileData(InputFileChangeEventArgs file)
     {
@@ -55,5 +289,16 @@
     async Task SaveFileData1(InputFileChangeEventArgs file)
     {
         imageDataWidthoutContent = await file.File.GetByteArrayAsync();
+    }
+
+    void ShowProrgres(InputFileChangeEventArgs e)
+    {
+        enableAutoHide = false;
+        status = WindowStatus.Open;
+    }
+
+    void FileUploadCompleted()
+    {
+        enableAutoHide = true;
     }
 }

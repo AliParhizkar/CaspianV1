@@ -1,6 +1,7 @@
 ﻿@page "/Employment/OrganPost"
 @namespace Demo.Web.Pages
 @inherits SimplePage<OrganPost>
+@inject CascadeService service
 @{
     base.BuildRenderTree(__builder);
 
@@ -43,7 +44,7 @@
                             <label>رسته شغلی</label>
                         </td>
                         <td>
-                            <ComboBox TEntity="Occupation" TValue="int?" @bind-Value="occupationId" TextExpression="t => t.Title" Cascade="container" />
+                            <ComboBox TEntity="Occupation" TValue="int?" @bind-Value="occupationId" TextExpression="t => t.Title" CascadeService="service" />
                         </td>
                     </tr>
                     <tr>
@@ -51,7 +52,7 @@
                             <label>رشته شغلی</label>
                         </td>
                         <td>
-                            <ComboBox @ref="container.Cascade" TEntity="CareerField" TValue="int" @bind-Value="UpsertData.CareerFieldId" TextExpression="t => t.Title" />
+                            <ComboBox @ref="service.Cascade" TEntity="CareerField" TValue="int" @bind-Value="UpsertData.CareerFieldId" TextExpression="t => t.Title" />
                         </td>
                     </tr>
                     <tr>
@@ -91,7 +92,6 @@
 </div>
 @code
 {
-    CascadContainer container = new CascadContainer();
     int? occupationId;
 
     async Task SetOccupationId()

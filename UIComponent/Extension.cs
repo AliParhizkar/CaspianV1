@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,20 @@ namespace Caspian.UI
         {
             var item = items.SingleOrDefault(t => t.Value == value);
             return item?.Text;
+        }
+
+        public static string GetCssClassName(this DefaultLayout layout)
+        {
+            switch (layout)
+            {
+                case DefaultLayout.SpaceBetween: return "between";
+                case DefaultLayout.SpaceEvenly: return "evenly";
+                case DefaultLayout.FlexStart: return "start";
+                case DefaultLayout.FlexEnd: return "end";
+                case DefaultLayout.SpaceAround: return "around";
+                case DefaultLayout.Center: return "center";
+            }
+            throw new NotImplementedException();
         }
 
         public async static Task<byte[]> GetByteArrayAsync(this IBrowserFile file)

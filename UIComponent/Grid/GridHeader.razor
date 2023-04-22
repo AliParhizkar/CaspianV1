@@ -11,9 +11,9 @@
                                       {
                                           OrderByChanged(!e.CtrlKey, col);
                                       }">@(col.Title)</span>
-                            @if (col.OrderType.HasValue && col.Orderable)
+                            @if (col.SortType.HasValue && col.Sortable)
                             {
-                                var className = col.OrderType == OrderType.Asc ? "fa fa-sort-amount-asc" : "fa fa-sort-amount-desc";
+                                var className = col.SortType == SortType.Asc ? "fa fa-sort-amount-asc" : "fa fa-sort-amount-desc";
                                 <span @onclick="(MouseEventArgs e) =>
                                       {
                                           OrderByChanged(!e.CtrlKey, col);
@@ -34,23 +34,23 @@
 
     async void OrderByChanged(bool clearAllOrdering, ColumnData data)
     {
-        if (data.Orderable)
+        if (data.Sortable)
         {
-            var ordering = data.OrderType;
+            var ordering = data.SortType;
             if (clearAllOrdering)
                 foreach (var col in ColumnsData)
-                    col.OrderType = null;
+                    col.SortType = null;
             switch (ordering)
             {
-                case OrderType.Asc:
-                    data.OrderType = OrderType.Decs;
+                case SortType.Asc:
+                    data.SortType = SortType.Decs;
                     //attrs["class"] = "fa fa-sort-amount-asc";
                     break;
-                case OrderType.Decs:
-                    data.OrderType = null;
+                case SortType.Decs:
+                    data.SortType = null;
                     break;
                 case null:
-                    data.OrderType = OrderType.Asc;
+                    data.SortType = SortType.Asc;
                     //attrs["class"] = "fa fa-sort-amount-desc";
                     break;
             }

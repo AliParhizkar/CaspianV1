@@ -22,7 +22,7 @@
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Code"  />
-            <GridColumn Field="t => t.ActiveType.FaText()"  />
+            <GridColumn Field="t => t.ActiveType.EnumText()" />
             <GridColumn Title="Popup" style="width:50px">
                 <Template>
                     <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenPopupForm(context.Data.Id); }" />

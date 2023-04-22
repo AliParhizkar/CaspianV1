@@ -1,102 +1,351 @@
 ﻿@page "/Demo/ComboBox"
 @namespace Demo.Web.Pages
-<div class="row p-4">
-    <div class="col-md-6">
-        <h3>Combobox</h3>
-    </div>
-    <div class="d-source-btn col-md-6">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-</div>
-<div class="row ps-4 pe-4">
-    <div class="col-md-6 pe-4">
-        <hr />
-        <div class="d-container">
-            <h4>Data Binding & Search</h4>
-            <div class="row c-controls align-items-center">
-                <div class="col-md-3">
-                    <label>City</label>
+@inherits BasePage
+@inject CascadeService service
+<h2>Combobox</h2>
+<p>
+    This control is a <b>key-value control</b> that is <b>usually bind to entity</b> type, although it can use the <b>SelectListItem list as a resource</b>.
+</p>
+<h3>Binding</h3>
+<p>
+    We can bind this control to <b>any data type</b>. It is usually used to <b>determine the foreign key.</b> and its data is <b>fetched from table</b>. Because it is a <b>Key-Value control</b>, the <b>entity's primary key is KEY</b> and <b>VALUE must be specified by the programmer</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Bind to string</h4>
+                        <span class="c-demo-description">In this example, we fill combobox from <b>Source parameter</b> and bind it to <b>string</b>.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Country</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox @bind-Value="CountryId" TValue="string" TEntity="SelectListItem" Source="countries" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Country id</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(CountryId ?? "---")</label>
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Country id</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                @if (countries != null)
+                                {
+                                    <label style="color:red;">@(countries.SingleOrDefault(t => t.Value == CountryId)?.Text ?? "---")</label>
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-9">
-                    <ComboBox TValue="int?" @bind-Value="cityId" TEntity="City" TextExpression="t => t.Title" />
-                </div>
-                <div class="col-md-3">
-                    <label>Province City</label>
-                </div>
-                <div class="col-md-9">
-                    <ComboBox TValue="int?" @bind-Value="cityId1" TEntity="City" TextExpression='t => t.Country.Title + " " + t.Title' />
-                </div>
-                <div class="col-md-3">
-                    <label>Customer</label>
-                </div>
-                <div class="col-md-9">
-                    <ComboBox TValue="int?" @bind-Value="customerId" TEntity="Customer"
-                              TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' />
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Data Binding & Search</h3>
+<p>
+    We can easily bind the control to the entity, we know that the combo box is a Key-Value control, the <b>key of the entity is Key</b>, and the programmer can easily <b>determine the Value as Expression</b>.
+    <br/>Because we are <b>searching on the database</b>, we have <b>no limit on the number of records</b> in the table.
 
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Simple expression</h4>
+                        <span class="c-demo-description">
+                            In this example we specify <b>TEntity parameter</b>, (the type of entity the control binds to it) and also set <b>TextExpression parameter</b> (that is a <b>Lambda Expression</b> and <b>has intellisense</b>)
+                            <b>country tittle set as text</b>.
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Country</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox @bind-Value="countryId" TValue="int?" TEntity="Country" TextExpression="t => t.Title" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr/>
+                        <h4>Other expression</h4>
+                        <span class="c-demo-description">
+                            In this example, we set the TEntity to City and set TextExpression parameter with the Country title concat the City title.
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Country city</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox @bind-Value="cityId" TValue="int?" TEntity="City" TextExpression="t => t.Country.Title + ' ' + t.Title" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr/>
+                        <h4>Complex expression</h4>
+                        <span class="c-demo-description">
+                            In this example, we set the TEntity to Customer and set TextExpression parameter 
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Customer</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox @bind-Value="customerId" TValue="int?" TEntity="Customer" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-6 ps-4">
-        <hr />
-        <div class="d-container">
-            <h4>Cascade</h4>
-            <div class="row c-controls">
-                <div class="col-md-3">
-                    <label>City</label>
-                </div>
-                <div class="col-md-9">
-                    <ComboBox TValue="int?" TEntity="City" TextExpression='t => t.Country.Title + " " + t.Title'
-                              Cascade="container" />
-                </div>
-                <div class="col-md-3">
-                    <label>Area</label>
-                </div>
-                <div class="col-md-9">
-                    <ComboBox @ref="container.Cascade" TValue="int?" @bind-Value="areaId" TEntity="Area" TextExpression="t => t.Title" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Filtering and sorting</h3>
+<p>
+    We can <b>filter</b> and <b>sort </b>(<b>increment and decrease</b>) Combobox data.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Filtering</h4>
+                        <span class="c-demo-description">
+                            In this example, we <b>filter customers</b> in a <b>real and legal</b> way.
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Real customer</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox @bind-Value="customerId" TValue="int?" TEntity="Customer" TextExpression='t => t.FName + " " + t.LName' ConditionExpression="t => t.CustomerType == CustomerType.Real" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>legal customer</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox @bind-Value="customerId" TValue="int?" TEntity="Customer" TextExpression="t => t.CompanyName" ConditionExpression="t => t.CustomerType == CustomerType.Legal" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>sorting</h4>
+                        <span class="c-demo-description">
+                            In this example, we <b>sort the countries</b> in <b>ascending</b> and <b>descending</b> order
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Ascending sort</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox @bind-Value="countryId" TValue="int?" TEntity="Country" TextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Descending sort</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox @bind-Value="countryId" TValue="int?" TEntity="Country" TextExpression="t => t.Title" OrderByExpression="t => t.Title" SortType="SortType.Decs" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-6 pe-4">
-        <hr />
-        <div class="d-container">
-            <h4>Custom Cascade</h4>
-            <div class="row c-controls">
-                <div class="col-md-3">
-                    <label>Province</label>
-                </div>
-                <div class="col-md-9">
-                    <ComboBox TValue="int?" TEntity="Country" @bind-Value="countryId" TextExpression="t => t.Title"
-                              OnChange="() => cmbCity.EnableLoading()" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
-                </div>
-                <div class="col-md-3">
-                    <label>City</label>
-                </div>
-                <div class="col-md-9">
-                    <ComboBox @ref="cmbCity" TValue="int?" TEntity="City" TextExpression="t => t.Title"
-                              ConditionExpression="t => t.CountryId == countryId" />
+<h3 class="pt-4">General properties</h3>
+<p>
+    We can specify <b>general properties</b> such as <b>width</b> and <b>disable</b>. if we do not specify the width of the control, its width will be 100% and fit to parent. And also this component automatically drop down, or up based on its position.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Width property</h4>
+                        <span class="c-demo-description">By setting the <b>Style</b> parameter, we can easily <b>change width</b> and other css properties of the control. it has <b>intellisense</b> for css properties</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Control size</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList @bind-Value="controlSize" />
+                            </div>
+                            <div class="col-md-12">
+                                <ComboBox TValue="int?" TEntity="Country" @bind-Value="countryId" TextExpression="t => t.Title" Style="@GetStyle()"  />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Disable control</h4>
+                        <span class="c-demo-description">By setting the <b>Disabled</b> parameter, we can easily <b>enable & disable</b> the control. This parameter is a <b>boolean</b> parameter</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Enable/Disable</label>
+                            </div>
+                            <div class="col-md-8">
+                                <CheckBox @bind-Value="disable" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Action</label>
+                            </div>
+                            <div class="col-md-8 text-center">
+                                <button class="c-btn c-primary" @onclick="async () => await cmbCountry.FocusAsync()">Focus</button>
+                            </div>
+                            <div class="col-md-12">
+                                <ComboBox @ref="cmbCountry" TValue="int?" TEntity="Country" @bind-Value="countryId" Disabled="disable" TextExpression="t => t.Title"  />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<CreatePdfComponent @bind-Status="status" Title="ComboBox" FileName="ComboBox.pdf" Title1="Model" FileName1="Customer.pdf"/>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Source">
+            <p>
+                In this example we bind this control to <b>orderType</b> that is a enum variable
+            </p>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Cascade combobox</h3>
+<p>
+    We can use <b>CascadeService</b> to <b>cascade two comboboxes</b>, it is a <b>transient service</b> and can be <b>injected into the page</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Cascade combobox</h4>
+                        <span class="c-demo-description">In this example we injected the CascadeService and used it to create the cascade combobox</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Country</label>
+                            </div>
+                            <div class="col-md-8">
+                                <ComboBox TValue="int?" TEntity="Country" @bind-Value="countryId" TextExpression="t => t.Title" CascadeService="service" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>City</label>
+                            </div>
+                            <div class="col-md-8">
+                                <ComboBox @ref="service.Cascade" TValue="int?" TEntity="City" @bind-Value="cityId" TextExpression="t => t.Title" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Custom cascade </h3>
+<p>
+    We can create a <b>custom cascade</b>, using the <b>combo box filter feature</b>. With <b>any changes to the master control</b>, combo box  <b>data must be reloaded</b> from the database.
+    <span class="fa fa-info"></span>note: After any change in the filter parameters, we need to reload the data from the database.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Custome Cascade</h4>
+                        <span class="c-demo-description">In this example we injected the CascadeService and used it to create the cascade combobox.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Customer type</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList @bind-Value="customerType" OnChange="() => cmbCustomer.EnableLoading()" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Customer</label>
+                            </div>
+                            <div class="col-md-8">
+                                <ComboBox @ref="cmbCustomer" TValue="int?" TEntity="Customer" @bind-Value="customerId" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' ConditionExpression="t => t.CustomerType == customerType" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code
 {
-    int? countryId;
-    CascadContainer container = new CascadContainer();
-    ComboBox<City, int> cmb;
-    ComboBox<City, int?> cmbCity;
-
-    int? cityId;
-    int? cityId1;
+    bool disable;
+    IList<SelectListItem> countries;
+    string CountryId;
+    ControlSize controlSize = ControlSize.Auto;
+    CustomerType customerType = CustomerType.Real;
     int? customerId;
-    int? areaId;
+    int? countryId;
+    ComboBox<Country, int?> cmbCountry;
+    ComboBox<Customer, int?> cmbCustomer;
+    int? cityId;
 
-    WindowStatus status;
+    string GetStyle()
+    {
+        switch (controlSize)
+        {
+            case ControlSize.Large:
+                return "width:300px";
+            case ControlSize.Medium:
+                return "width:200px";
+            case ControlSize.Small:
+                return "width:150px";
+            case ControlSize.Auto:
+                return "";
+        }
+        throw new NotImplementedException();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        countries = await new CountryService(scope.ServiceProvider).GetAll().Select(t => new SelectListItem()
+        {
+            Value = t.Id.ToString(),
+            Text = t.Title
+        }).ToListAsync();
+        await base.OnInitializedAsync();
+    }
 }

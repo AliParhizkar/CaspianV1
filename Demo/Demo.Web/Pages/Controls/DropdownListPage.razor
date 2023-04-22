@@ -1,7 +1,7 @@
 ﻿@page "/Demo/DropdownList" 
 @namespace Demo.Web.Pages
 @inherits BasePage
-<h2 class="p-4">Dropdown list</h2>
+<h2>Dropdown list</h2>
 <h3>Binding</h3>
 <p>
     this component usually bind to <b>Enum</b> or <b>Nullable Enum</b>, of course this component can bind to <b>any type of data</b>, 
@@ -9,7 +9,7 @@
     This control is a <b>key-value</b> control where the <b>Enum Fields</b> specifies the <b>key</b> and the <b>Display Attribute of Fields</b> specifies the value.
     And also by <b>binding</b> this control to <b>Nullable Enum</b>, an item is <b>added to the beginning of the list</b> whose <b>key is null</b> and <b>value is whatever you want</b>, for example please select...
 </p>
-<TabPanel @bind-TabIndex=selectedIndex>
+<TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content">
@@ -35,7 +35,7 @@
                                 <label>Selected Title</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;">@(orderType.FaText())</label>
+                                <label style="color:red;">@(orderType.EnumText())</label>
                             </div>
                             <div class="ps-5 col-md-6">
                                 <label>Selected Enum Title</label>
@@ -69,7 +69,7 @@
                                 <label>Selected Title</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;">@(nullableOrderType.HasValue ? nullableOrderType.Value.FaText() : "---")</label>
+                                <label style="color:red;">@(nullableOrderType.HasValue ? nullableOrderType.Value.EnumText() : "---")</label>
                             </div>
                             <div class="ps-5 col-md-6">
                                 <label>Selected Enum Title</label>
@@ -108,14 +108,6 @@
                     </div>
                 </div>
             </div>
-        </TabPanelItem>
-        <TabPanelItem Title="<i class='fa fa-code'></i>Source">
-            <p>
-                In this example we bind this control to <b>orderType</b> that is a enum variable
-            </p>
-        </TabPanelItem>
-        <TabPanelItem Title="<i class='fa fa-code'></i>Enum">
-
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -180,7 +172,7 @@
     In some cases, especially in enum binding, we want to <b>filter and disable some items</b>. As mentioned before, by binding the control to the enum, it will be filled with enum fields and we want to filter some items.
     for this purpose we have <b>two functions</b> whose <b>input parameter</b> is of the <b>enum type</b> and whose <b>return value</b> is of the <b>boolean type</b>
 </p>
-<TabPanel @bind-TabIndex=selectedIndex>
+<TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content">
@@ -232,7 +224,6 @@
 </TabPanel>
 @code 
 {
-    int selectedIndex = 1;
     bool disable;
     bool filtering = true;
     bool itemDisable = true;

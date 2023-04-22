@@ -26,7 +26,7 @@
                                           ValueChanged="@(value =>
                                                           {
                                                               PrintParam.TotalFuncType = value;
-                                                              PrintParam.TitleFa = '{' + PrintParam.TotalFuncType.FaText() + '}';
+                                                              PrintParam.TitleFa = '{' + PrintParam.TotalFuncType.EnumText() + '}';
                                                           })" />
                         </td>
                     </tr>
@@ -83,7 +83,7 @@
                                           ValueChanged="value => 
                                                         {
                                                             PrintParam.SystemVariable = value;
-                                                            PrintParam.TitleFa =  PrintParam.SystemVariable.HasValue ? ('{' + PrintParam.SystemVariable.FaText() + '}') : null; 
+                                                            PrintParam.TitleFa =  PrintParam.SystemVariable.HasValue ? ('{' + PrintParam.SystemVariable.EnumText() + '}') : null;
                                                         }" />
                         </td>
                     </tr>
@@ -100,7 +100,7 @@
                                           ValueChanged="value => 
                                                         {
                                                             PrintParam.SystemFiledType = value;
-                                                            PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.FaText() + '}';
+                                                            PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.EnumText() + '}';
                                                              StateHasChanged();
                                                         }" />
                         </td>
@@ -151,9 +151,9 @@
         if (!PrintParam.TitleFa.HasValue())
         {
             if (PrintParam.SystemFiledType.HasValue)
-                PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.FaText() + '}';
+                PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.EnumText() + '}';
             if (PrintParam.SystemVariable.HasValue)
-                PrintParam.TitleFa = '{' + PrintParam.SystemVariable.FaText() + '}';
+                PrintParam.TitleFa = '{' + PrintParam.SystemVariable.EnumText() + '}';
         }
         if (PrintParam.TitleFa == "{}")
             PrintParam.TitleFa = "";
@@ -167,12 +167,12 @@
             if (PrintParam.SystemVariable.HasValue)
             {
                 PrintParam.Member = '{' + PrintParam.SystemVariable.Value.ToString() + '}';
-                PrintParam.TitleFa = '{' + PrintParam.SystemVariable.FaText() + '}';
+                PrintParam.TitleFa = '{' + PrintParam.SystemVariable.EnumText() + '}';
             }
             if (PrintParam.SystemFiledType.HasValue)
             {
                 PrintParam.Member = '{' + PrintParam.SystemFiledType.Value.ToString() + '}';
-                PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.FaText() + '}';
+                PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.EnumText() + '}';
             }
             if (PrintParam.TitleEn.HasValue())
             {

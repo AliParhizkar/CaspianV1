@@ -20,7 +20,7 @@ namespace Caspian.UI
         
     }
 
-    public class CascadContainer 
+    public class CascadeService 
     {
         public ICascading Cascade { get; set; }
     }

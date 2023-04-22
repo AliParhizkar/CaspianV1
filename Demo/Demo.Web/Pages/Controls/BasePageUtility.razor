@@ -1,0 +1,212 @@
+﻿@page "/Demo/BasePageFeatures"
+@namespace Demo.Web.Pages
+@inherits BasePage
+@inject IHostEnvironment host
+@{
+    base.BuildRenderTree(__builder);
+}
+<h2>Base page features</h2>
+<p>
+    We have <b>many facilities</b> in the <b>BasePage class</b> that we can use by <b>inheriting from this class</b>. Here we describe the features.
+</p>
+<h3>Simple message & Alert & Confirm</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Simple message</h4>
+                        <span class="c-demo-description">In this example we use the <b>ShowMessage method</b> to <b>display a message</b>, this method get a <b>string as the message</b> and <b>displays it.</b></span>
+                   </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Simple message</label>
+                            </div>
+                            <div class="pe-5 col-md-6">
+                                <StringTextBox @bind-Value="simpleMessage" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Action</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <button class="c-btn c-outline-primary"  @onclick="SimpleMessage">Simple message</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Alert</h4>
+                        <span class="c-demo-description">In this example, we use the <b>Alert method</b> to <b>display the message</b>. This method is an <b>async method</b>.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Message</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <StringTextBox @bind-Value="alertMessage" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Action</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <button class="c-btn c-outline-info" @onclick="async () => await AlertMessageAsync()">Alert</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Confirm</h4>
+                        <span class="c-demo-description">We usually use the <b>Confirm method</b> to <b>confirm from user</b>. This method is an <b>async method</b>.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Message</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <StringTextBox @bind-Value="confirmMessage" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Action</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <button class="c-btn c-outline-info" @onclick="async () => await ConfirmMessageAsync()">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Show on window</h3>
+<p>
+    If we have <b>multiple cascade-windows</b>, <b>Alert and Confirm</b> should be shown in the <b>last open window</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Cascade-windows</h4>
+                        <span class="c-demo-description">In this example, we have <b>three Cascade-Windows</b> and the <b>Alert and Confirm</b> is always shown in the last window.</span>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <button class="c-btn c-outline-success" @onclick="() => status1 = WindowStatus.Open">Open window</button>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Download</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>download</h4>
+                        <span class="c-demo-description">In this example, we use the <b>DownloadFile method</b> for downloading. This method has <b>two parameters</b> the first parameter is the <b>name of the file after downloading</b>, and the second is the <b>content of the file (byte array or memory stream)</b>.</span>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <button class="c-btn c-outline-success" @onclick="async () => await DownloadFile()">Download</button>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<Window @bind-Status="status1"  Title="Window 1" Style="width:700px;height:500px">
+    <Content>
+        <h3>Window 1</h3>
+        <hr />
+        <div style="display:flex;padding:5px 0">
+            <div style="width:33.3%;text-align:center">
+                <button class="c-btn c-primary" @onclick="() => { status2 = WindowStatus.Open; }">Window 2</button>
+            </div>
+            <div style="width:33.3%;text-align:center">
+                <button class="c-btn c-info" @onclick='async () => await Alert("Alert on window1")'>Alert</button>
+            </div>
+            <div style="width:33.3%;text-align:center">
+                <button class="c-btn c-success" @onclick='async () => await Confirm("Confirm on window1")'>Confirm</button>
+            </div>
+        </div>
+        <Window @bind-Status="status2" Title="Window 2" Style="width:600px;height:400px">
+            <Content>
+                <h3>Window 2</h3>
+                <hr />
+                <div style="display:flex;padding:5px 0">
+                    <div style="width:33.3%;text-align:center">
+                        <button class="c-btn c-primary" @onclick="() => { status3 = WindowStatus.Open; }">Window 3</button>
+                    </div>
+                    <div style="width:33.3%;text-align:center">
+                        <button class="c-btn c-info" @onclick='async () => await Alert("Alert on window2")'>Alert</button>
+                    </div>
+                    <div style="width:33.3%;text-align:center">
+                        <button class="c-btn c-success" @onclick='async () => await Confirm("Confirm on window2")'>Confirm</button>
+                    </div>
+                </div>
+                
+                <Window @bind-Status="status3" Title="Window 3" Style="width:500px;height:300px">
+                    <Content>
+                        <h4>Window 3</h4>
+                        <hr />
+                        <div style="display:flex;padding:5px 0">
+                            <div style="width:50%;text-align:center">
+                                <button class="c-btn c-info" @onclick='async () => await Alert("Alert on window3")'>Alert</button>
+                            </div>
+                            <div style="width:50%;text-align:center">
+                                <button class="c-btn c-success" @onclick='async () => await Confirm("Confirm on window3")'>Confirm</button>
+                            </div>
+                        </div>
+                    </Content>
+                </Window>
+            </Content>
+        </Window>
+    </Content>
+</Window>
+
+
+@code 
+{
+    WindowStatus status1;
+    WindowStatus status2;
+    WindowStatus status3;
+    string simpleMessage = "Hello!: i am a simple message";
+    string alertMessage = "Hello!: i am alert message";
+    string confirmMessage = "Hello!: i am confirm message";
+
+    void SimpleMessage()
+    {
+        ShowMessage(simpleMessage);
+    }
+
+    async Task DownloadFile()
+    {
+        var path = host.ContentRootPath + "\\Data\\resumes.pdf";
+        var byteArray = await File.ReadAllBytesAsync(path);
+        await base.DownloadFile("resumes.pdf", byteArray);
+    }
+
+    async Task AlertMessageAsync()
+    {
+        
+        await Alert(alertMessage);
+    }
+
+    async Task ConfirmMessageAsync()
+    {
+        var result = await Confirm(confirmMessage);
+        if (result)
+            ShowMessage("Yes button clicked");
+        else
+            ShowMessage("No button clicked");
+    }
+}

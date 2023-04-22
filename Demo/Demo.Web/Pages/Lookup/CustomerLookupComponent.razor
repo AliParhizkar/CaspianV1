@@ -6,7 +6,7 @@
     {
         <div class="row p-3">
             <div class="col-md-2">
-                <label>Person Type</label>
+                <label>Person type</label>
             </div>
             <div class="col-md-4 pe-3">
                 <DropdownList @bind-Value="CustomerType" OnChange="() => Grid.EnableLoading()" />
@@ -21,7 +21,7 @@
     }
     <DataGrid @ref="Grid" TEntity="Customer" Search="SearchData" TableHeight="200" HidePageSize>
         <Columns Context="customer">
-            <GridColumn Field="t => t.CustomerType" Title="Customer Type" />
+            <GridColumn Field="t => t.CustomerType" Title="Customer type" />
             <GridColumn Field='t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Customer Name" />
             <GridColumn Field="t => t.Gender" style="width:100px" Title="Gender">
                 <Template>
@@ -35,7 +35,7 @@
                     }
                 </Template>
             </GridColumn>
-            <GridColumn Field="t => t.MobileNumber.CallSeprator('-')" Title="Mobile Number" />
+            <GridColumn Field="t => t.MobileNumber.CallFormat('-')" Title="Mobile Number" />
         </Columns>
     </DataGrid>
 </div>

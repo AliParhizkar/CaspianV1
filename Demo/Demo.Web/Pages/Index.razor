@@ -5,11 +5,7 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<span>@value.ShortString()</span>
-<Timepicker Disabled TValue="TimeSpan" Value="value" FromTime="fromTime" ToTime="toTime" />
-<div style="height:400px;">
 
-</div>
 
 
 <div style="display:none" class="c-copy-right">
@@ -24,8 +20,7 @@
 </div>
 @code
 {
-    TimeSpan fromTime = new TimeSpan(5, 25, 0);
-    TimeSpan toTime = new TimeSpan(15, 45, 0);
-    TimeSpan value = new TimeSpan(8, 35, 0);
+    IList<SelectListItem> list = SelectListItem.CreateList("Ali", "Reza", "Mohamad Reza", "Magid", "Hosein", "Alireza");
+    int id;
 }
 

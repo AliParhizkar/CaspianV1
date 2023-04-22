@@ -10,7 +10,7 @@
         className += " t-selected";
     else
         className += " t-default";
-    <span style="@Style" class="@className">
+    <div style="@Style" class="@className">
         <span @onclick="OnMouseClick" class="t-icon">
             <input type="radio" class="c-radio-button" />
             @if (selected)
@@ -22,7 +22,7 @@
         {
             <span class="t-title" @onclick="OnMouseClick">@Title</span>
         }
-    </span>
+    </div>
 }
 @code
 {
@@ -61,7 +61,7 @@
         if (!Title.HasValue())
         {
             if (typeof(TValue).GetUnderlyingType().IsEnum && Value != null)
-                Title = (Value as Enum).FaText();
+                Title = (Value as Enum).EnumText();
         }
         base.OnParametersSet();
     }

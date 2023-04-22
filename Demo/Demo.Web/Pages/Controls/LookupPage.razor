@@ -1,5 +1,68 @@
 ﻿@page "/Demo/Lookup"
 @namespace Demo.Web.Pages
+
+<h2>Lookup</h2>
+<p>
+    This control is used to <b>look up</b> and <b>bind to the foreign key</b>. this control <b>consists of two components:</b> <b>autocomplete</b> and <b>lookup page</b>.
+    we describe this components separately.
+</p>
+<h3>Autocomplete component</h3>
+<p>
+    We use this component for <b>binding</b> and <b>simple search</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Default setting</h4>
+                        <span class="c-demo-description">In this example, we fill combobox from <b>Source parameter</b> and bind it to <b>string</b>.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Hide icon</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <CheckBox @bind-Value="hideIcon" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Hide header</label>
+                            </div>
+                            <div class="pe-5 col-md-8 ">
+                                <CheckBox @bind-Value="hideHeader" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Disable</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <CheckBox @bind-Value="disabled" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Action</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+<h3>Comparison with combobox</h3>
+<ul class="d-demo-list">
+    <li>
+        In this control, we can display <b>several fields</b> (columns). We have sorting, pagination and column resizing.
+    </li>
+    <li>
+        In this control we can search on <b>several fields</b>, for example: search on <b>customer type</b>, 
+        <b>first name</b>, <b>last name</b>, <b>company name</b> and <b>gender</b>.
+    </li>
+</ul>
 @{
     if (hideHeader)
         autoHide = true;
@@ -7,18 +70,6 @@
 <div class="row d-head">
     <div class="col-md-6">
         <h3>Autocomplete & Lookup</h3>
-    </div>
-    <div class="d-source-btn col-md-3">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Autocomplete Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-    <div class="d-source-btn col-md-3">
-        <button @onclick="() => statusLookup = WindowStatus.Open" class="c-btn c-primary">
-            Lookup Source
-            <i class="fa fa-code"></i>
-        </button>
     </div>
 </div>
 <div class="d-body">
@@ -32,10 +83,10 @@
                         <CheckBox @bind-Value="disabled" Title="Disable" />
                     </div>
                     <div class="col-md-12">
-                        <CheckBox @bind-Value="hideHeader" Title="Hide Header" />
+                       
                     </div>
                     <div class="col-md-12">
-                        <CheckBox @bind-Value="hideIcon" Title="Hide Icon" />
+                        
                     </div>
                     <div class="col-md-12">
                         <CheckBox @bind-Value="autoHide" Disabled="hideHeader" Title="Auto hide" />
@@ -56,7 +107,8 @@
                 <div class="row c-controls">
                     <div class="col-md-12">
                         <AutoComplete TEntity="Customer" TValue="int?" @bind-Value="Id" HideHeader="hideHeader" AutoHide="autoHide" Title="Customer Search"
-                                      TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName'
+                                    
+                                    TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName'
                                       OpenOnFocus="openOnFocus" CloseOnBlur="closeOnBlur" Disabled="disabled" HideIcon="hideIcon">
                             <CustomerLookupComponent TValue="int?" UseParameter="useParameter" />
                         </AutoComplete>

@@ -22,7 +22,7 @@
     <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" ConditionExpr="t => CountryId == 0 || t.CountryId == CountryId" TableHeight="350">
         <Columns>
             <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.ActiveType.FaText()" />
+            <GridColumn Field="t => t.ActiveType.EnumText()" />
             <GridCommandColumns/>
         </Columns>
     </DataGrid>

@@ -46,7 +46,7 @@ namespace Caspian.Engine.Service
             var temp = TypeOperationsData.SingleOrDefault(t => t.FirstType == firstType && t.SecondType == secondType &&
                 t.OperatorsType.Contains(operatorType));
             if (temp == null)
-                throw new Exception("عملگر" + operatorType.FaText() + " برای نوعهای" + firstType.FaText() + " و " + secondType.FaText() + "نامعتبر می باشد", null);
+                throw new Exception("عملگر" + operatorType.EnumText() + " برای نوعهای" + firstType.EnumText() + " و " + secondType.EnumText() + "نامعتبر می باشد", null);
             return temp.Result;
         }
 

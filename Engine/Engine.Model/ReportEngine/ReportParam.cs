@@ -44,7 +44,7 @@ namespace Caspian.Engine.Model
         /// نوع مرتب سازی 
         /// </summary>
         [DisplayName("ترتیب")]
-        public OrderType? OrderType { get; set; }
+        public SortType? SortType { get; set; }
 
         /// <summary>
         /// نوع متد در گروهبندی پایگاه داده ای

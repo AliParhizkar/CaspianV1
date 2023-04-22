@@ -1,145 +1,180 @@
 ﻿@page "/Demo/NumericTextBox"
 @namespace Demo.Web.Pages
-<div class="row align-items-center">
-    <div class="col-md-6 ps-4 pe-4 pt-3">
-        <h3>Numeric Text Box</h3>
-    </div>
-    <div class="col-md-6 text-center">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-</div>
-<div class="row ps-4 pe-4">
-    <div class="col-md-6 ps-4 pe-4">
-        <hr />
-        <div class="ps-4">
-            <h4>Integer Text Box</h4>
-            <div class="row c-controls ps-4">
-                <div class="col-md-12">
-                    <CheckBox @bind-Value="nullable" Title="Nullable" />
-                </div>
-                <div class="col-md-12">
-                    <CheckBox @bind-Value="disable" Title="Disable" />
-                </div>
-                <div class="col-md-12">
-                    <CheckBox @bind-Value="digitGrouping" Title="Digit Grouping" />
-                </div>
-                <div class="col-md-5">
-                    <label>Binding type</label>
-                </div>
-                <div class="col-md-7">
-                    <RadioList @bind-Value="BindingType" />
-                </div>
-                <div class="col-md-5">
-                    <label>Digit Number</label>
-                </div>
-                <div class="col-md-7">
-                    <NumericTextBox @bind-Value="total" />
-                </div>
-                <div class="col-md-5">
-                    <label>Value</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <span style="color:red">@(nullable ? intNullValue.Seprate3Digit() : intValue.Seprate3Digit())</span>
-                </div>
-                <div class="col-md-5">
-                    <label>Action</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <button class="t-button" @onclick="async () => { await control.FocusAsync(); }">Focus</button>
-                </div>
-                <div class="col-md-8">
-                    @if (nullable)
-                    {
-                        <NumericTextBox @ref="control" @bind-Value="intNullValue" Total="total" BindingType="BindingType" DigitGrouping="digitGrouping" Disabled="disable" />
-                    }
-                    else
-                    {
-                        <NumericTextBox @ref="control" @bind-Value="intValue" Total="total" BindingType="BindingType" DigitGrouping="digitGrouping" Disabled="disable" />
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 ps-4 pe-4">
-        <hr />
-        <div class="ps-4">
-            <h4>Decimal Text Box</h4>
-            <div class="row c-controls ps-4">
-                <div class="col-md-12">
-                    <CheckBox @bind-Value="nullable1" Title="Nullable" />
-                </div>
-                <div class="col-md-12">
-                    <CheckBox @bind-Value="disable1" Title="Disable" />
-                </div>
-                <div class="col-md-12">
-                    <CheckBox @bind-Value="digitGrouping1" Title="Digit Grouping" />
-                </div>
-                <div class="col-md-5">
-                    <label>Binding Type</label>
-                </div>
-                <div class="col-md-7">
-                    <RadioList @bind-Value="BindingType1" />
-                </div>
-                <div class="col-md-5">
-                    <label>Digit Number</label>
-                </div>
-                <div class="col-md-7">
-                    <NumericTextBox @bind-Value="total1" />
-                </div>
-                <div class="col-md-5">
-                    <label>Decimal Number</label>
-                </div>
-                <div class="col-md-7">
-                    <NumericTextBox @bind-Value="numberDigit" />
-                </div>
-                <div class="col-md-5">
-                    <label>Value</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <span style="color:red">@(nullable1 ? decimalNullValue.Seprate3Digit() : decimalValue.Seprate3Digit())</span>
-                </div>
-                <div class="col-md-5">
-                    <label>Action</label>
-                </div>
-                <div class="col-md-7 text-center">
-                    <button class="t-button" @onclick="async () => { await control1.FocusAsync(); }">Focus</button>
-                </div>
-                <div class="col-md-8">
-                    @if (nullable)
-                    {
-                        <NumericTextBox @ref="control1" @bind-Value="decimalNullValue" Total="total1" NumberDigit="numberDigit" BindingType="BindingType1" DigitGrouping="digitGrouping1" Disabled="disable1" />
-                    }
-                    else
-                    {
-                        <NumericTextBox @ref="control1" @bind-Value="decimalValue" Total="total1" NumberDigit="numberDigit" BindingType="BindingType1" DigitGrouping="digitGrouping1" Disabled="disable1" />
-                    }
+<h2>BasePage</h2>
+<h3>Binding</h3>
+<p>
+    This component can be bind to <b>integer</b> (long, intermediate, short, ...) and <b>decimal</b> (double, decimal, float, ...) and can be bind to <b>nullable numeric type.</b><br/><b>Binding</b> can be done in <b>two ways:</b> <b>on input</b> and <b>on change.</b> we can use <b>BindingType parameter</b> to specify it.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Bind to integer</h4>
+                        <span class="c-demo-description">In this example <b><i>intValue</i></b> is an <b>int variable</b> and the control bind to it. And we also use the <b>BindingType parameter</b> to <b>specify the type of binding</b> (on input or on change).</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Binding type</label>
+                            </div>
+                            <div class="pe-5 col-md-6">
+                                <RadioList @bind-Value="bindingType" />
+                            </div>
+                            <div class="col-md-12 ps-5 pe-5">
+                                <NumericTextBox @bind-Value="intValue" BindingType="bindingType" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>value</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@intValue.Seprate3Digit()</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Bind to nullable integer</h4>
+                        <span class="c-demo-description">In this example <b><i>intNullableValue</i></b> is an <b>int nullable variable</b> and the control bind to it. And we also use the <b>Total parameter</b> to specify the <b>number of digits</b></span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Total digits</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <NumericTextBox @bind-Value="total" Style="width:80px" />
+                            </div>
+                            <div class="ps-5 pe-5 col-md-12">
+                                <NumericTextBox @bind-Value="intNullableValue" Total="total" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Value</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(intNullableValue == null ? "---" : intNullableValue.Seprate3Digit())</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Bind to decimal</h4>
+                        <span class="c-demo-description">In this example <b><i>decimalValue</i></b> is an <b>decimal variable</b> and the control bind to it. and we also use <b>NumberDigit parameter </b>to determine the <b>number of decimal places</b></span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Total digits</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <NumericTextBox @bind-Value="total" Style="width:80px" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>number of digits</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <NumericTextBox @bind-Value="numberDigit" Style="width:80px" />
+                            </div>
+                            <div class="col-md-12 ps-5 pe-5">
+                                <NumericTextBox @bind-Value="decimalValue" Total="total" NumberDigit="numberDigit" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Value</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <label style="color:red;">@(decimalValue.Seprate3Digit())</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<CreatePdfComponent @bind-Status="status" Title="Numeric Textbox" FileName="NumericTextbox.pdf" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">General properties</h3>
+<p>
+    We can specify general properties such as width and disable. if we do not specify the width of the control, its width will be 100% and fit to parent. And we also can call FocusAsync method to focus to the control.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Width property</h4>
+                        <span class="c-demo-description">By setting the <b>Style</b> parameter, we can easily <b>change width</b> and <b>other css properties</b> of the control. it <b>has intellisense</b> for css properties.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="col-md-6 ps-5">
+                                <label>Control size</label>
+                            </div>
+                            <div class="col-md-6 pe-5">
+                                <DropdownList @bind-Value="controlSize" />
+                            </div>
+                            <div class="col-md-12 ps-5 pe-5">
+                                <NumericTextBox @bind-Value="intValue" Style="@GetStyle()" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Disable control</h4>
+                        <span class="c-demo-description">By setting the <b>Disabled parameter</b>, we can easily <b>enable & disable</b> the control. This parameter is a <b>boolean</b> parameter</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Enable/Disable</label>
+                            </div>
+                            <div class="pe-5 col-md-6">
+                                <CheckBox @bind-Value="disable" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Action</label>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <button disabled="@disable" @onclick="async () => await control.FocusAsync()" class="c-btn c-primary">Focus</button>
+                            </div>
+                            <div class="ps-5 pe-5 col-md-12">
+                                <NumericTextBox @ref="control" @bind-Value="intValue" Disabled="disable" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code {
-    WindowStatus status;
     IControl control;
     int total = 8;
     int intValue;
     bool disable;
-    bool nullable;
     int numberDigit = 2;
-    int? intNullValue;
+    int? intNullableValue;
     bool digitGrouping = true;
     decimal decimalValue;
-    decimal? decimalNullValue;
-    BindingType BindingType = BindingType.OnChange;
-    //---------------------------------------------------
-    IControl control1;
-    int total1 = 8;
-    bool disable1;
-    bool nullable1;
-    bool digitGrouping1;
-    BindingType BindingType1 = BindingType.OnChange;
+    BindingType bindingType = BindingType.OnChange;
+    ControlSize controlSize = ControlSize.Auto;
+
+    string GetStyle()
+    {
+        switch (controlSize)
+        {
+            case ControlSize.Large:
+                return "width:300px";
+            case ControlSize.Medium:
+                return "width:200px";
+            case ControlSize.Small:
+                return "width:150px";
+            case ControlSize.Auto:
+                return "";
+        }
+        throw new NotImplementedException();
+    }
 }

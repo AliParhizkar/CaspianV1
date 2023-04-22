@@ -109,7 +109,7 @@
         {
             case ParameterType.MainParameter:
                 var info = Model.GetType().GetProperty(token.EnTitle);
-                return (info.GetValue(Model) as Enum).FaText();
+                return (info.GetValue(Model) as Enum).EnumText();
             case ParameterType.RuleParameter:
                 isComplex = true;
                 return RulesValue.Single(t => t.Key == token.RuleIdValue.Value).Value.ToString();

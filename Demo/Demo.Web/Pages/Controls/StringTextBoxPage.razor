@@ -1,16 +1,165 @@
 ﻿@page "/Demo/StringTextBox"
 @namespace Demo.Web.Pages
-<div class="row ps-4 pe-4 pt-3">
-    <div class="col-md-6">
-        <h3>String Textbox</h3>
-    </div>
-    <div class="col-md-6 text-center">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-</div>
+<h2>String textbox</h2>
+<p>
+    We can use this control in both <b>single-line</b> and <b>multi-line</b> modes
+</p>
+<h3>Binding</h3>
+<p>
+    As the name of this control implies, this control is bindt to the string type (not a text editor).
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Single line</h4>
+                        <span class="c-demo-description">In this example <b><i>title</i></b> is an <b>string variable</b> and the control bind to it. And we also use the <b>BindingType parameter</b> to <b>specify the type of binding</b> (on input or on change).</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Binding type</label>
+                            </div>
+                            <div class="pe-5 col-md-6">
+                                <RadioList @bind-Value="bindingType" />
+                            </div>
+                            <div class="col-md-12 ps-5 pe-5">
+                                <StringTextBox @bind-Value="title" BindingType="bindingType" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Text</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <span style="color:red;">@(title.HasValue() ? title : "--------")</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Multi line</h4>
+                        <span class="c-demo-description">In this example <b><i>title</i></b> is an <b>string variable</b> and the control bind to it. And we also use the <b>rows parameter</b> to <b>specify the number rows</b> .</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Number of rows</label>
+                            </div>
+                            <div class="pe-5 col-md-6">
+                                <NumericTextBox @bind-Value="rows" />
+                            </div>
+                            <div class="col-md-12 ps-5 pe-5">
+                                <StringTextBox @bind-Value="title1" MultiLine Rows="rows" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Text</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <span style="color:red;">@(title1.HasValue() ? title1 : "--------")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">General properties</h3>
+<p>
+    We can specify general properties such as width and disable. if we do not specify the width of the control, its width will be 100% and fit to parent. And we also can call FocusAsync method to focus to the control.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Width property</h4>
+                        <span class="c-demo-description">By setting the <b>Style</b> parameter, we can easily <b>change width</b> and <b>other css properties</b> of the control. it <b>has intellisense</b> for css properties.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="col-md-6 ps-5">
+                                <label>Control size</label>
+                            </div>
+                            <div class="col-md-6 pe-5">
+                                <DropdownList @bind-Value="controlSize" />
+                            </div>
+                            <div class="col-md-12 ps-5 pe-5">
+                                <StringTextBox @bind-Value="title" Style="@GetStyle()" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Disable control</h4>
+                        <span class="c-demo-description">By setting the <b>Disabled parameter</b>, we can easily <b>enable & disable</b> the control. This parameter is a <b>boolean</b> parameter</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Enable/Disable</label>
+                            </div>
+                            <div class="pe-5 col-md-6">
+                                <CheckBox @bind-Value="disable" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Action</label>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <button disabled="@disable" @onclick="async () => await textBox.FocusAsync()" class="c-btn c-primary">Focus</button>
+                            </div>
+                            <div class="col-md-12 ps-5 pe-5">
+                                <StringTextBox @ref="textBox" @bind-Value="title1" Disabled="disable" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Text</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <span style="color:red;">@(title1.HasValue() ? title1 : "--------")</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Max length</h4>
+                        <span class="c-demo-description">We can use the <b>MaxLength parameter</b> to specify the <b>maximum length</b> that can be <b>entered in the text box</b></span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Max length</label>
+                            </div>
+                            <div class="pe-5 col-md-6">
+                                <NumericTextBox @bind-Value="maxlength" />
+                            </div>
+                            <div class="col-md-12 ps-5 pe-5">
+                                <StringTextBox @bind-Value="title1" MaxLength="maxlength" />
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Text</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <span style="color:red;">@(title1.HasValue() ? title1 : "--------")</span>
+                            </div>
+                            <div class="ps-5 col-md-6">
+                                <label>Length</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <span style="color:red;">@(title1.HasValue() ? title1.Length : "--------")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
 <div class="row ps-4 pe-4">
     <div class="col-md-6 ps-4 pe-4">
         <hr />
@@ -36,7 +185,7 @@
                     <label>Text</label>
                 </div>
                 <div class="col-md-6 text-center">
-                    <span style="color:red;">@(title.HasValue() ? title : "--------")</span>
+                    
                 </div>
                 <div class="col-md-6">
                     <label>Action</label>
@@ -50,42 +199,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 ps-4 pe-4">
-        <hr />
-        <div class="ps-4 pe-4">
-            <h4>Multi line</h4>
-            <div class="row ps-4 c-controls">
-                <div class="col-md-12">
-                    <CheckBox @bind-Value="disable1" Title="Disable" />
-                </div>
-                <div class="col-md-6">
-                    <label>Max length</label>
-                </div>
-                <div class="col-md-6">
-                    <NumericTextBox @bind-Value="maxlength1" Style="width:100px" />
-                </div>
-                <div class="col-md-6">
-                    <label>Text</label>
-                </div>
-                <div class="col-md-6 text-center">
-                    <span style="color:red;">@(title1.HasValue() ? title1 : "--------")</span>
-                </div>
-                <div class="col-md-6">
-                    <label>Action</label>
-                </div>
-                <div class="col-md-6">
-                    <button style="width:50px" class="t-button" @onclick="async () => { await SetFocus1(); }">Focus</button>
-                </div>
-                <div class="col-md-12">
-                    <StringTextBox @ref="textBox1" @bind-Value="title1" MultiLine Disabled="disable1" Rows="4" MaxLength="maxlength1" />
-                </div>
-
-            </div>
-        </div>
-    </div>
 </div>
-
-<CreatePdfComponent @bind-Status="status" Title="String Textbox" FileName="StringTextbox.pdf" />
 
 @code {
     WindowStatus status;
@@ -94,12 +208,13 @@
     int maxlength = 12;
     StringTextBox textBox;
     BindingType bindingType = BindingType.OnChange;
+    ControlSize controlSize = ControlSize.Auto;
     //--------------------------------------------
     bool disable1;
     string title1;
     int maxlength1 = 25;
     StringTextBox textBox1;
-
+    int? rows = 4;
     async Task SetFocus()
     {
         await textBox.FocusAsync();
@@ -108,5 +223,21 @@
     async Task SetFocus1()
     {
         await textBox1.FocusAsync();
+    }
+
+    string GetStyle()
+    {
+        switch (controlSize)
+        {
+            case ControlSize.Large:
+                return "width:300px";
+            case ControlSize.Medium:
+                return "width:200px";
+            case ControlSize.Small:
+                return "width:150px";
+            case ControlSize.Auto:
+                return "";
+        }
+        throw new NotImplementedException();
     }
 }
