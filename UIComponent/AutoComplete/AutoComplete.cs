@@ -3,20 +3,18 @@ using System.Linq;
 using Newtonsoft.Json;
 using System.Reflection;
 using Microsoft.JSInterop;
-using Caspian.Common.Service;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace Caspian.UI
 {
-    public partial class AutoComplete<TEntity, TValue> : IControl where TEntity: class 
+    public partial class AutoComplete<TValue> : IControl
     {
         string Text;
         string oldText;
@@ -49,65 +47,56 @@ namespace Caspian.UI
             }
         }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public bool HideHeader { get; set; }
 
-        [JsonProperty("focused")]
+        [Parameter]
+        public string Style { get; set; }
+
         public bool Focused { get; private set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public string Title { get; set; } = "حستجو ...";
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public bool HideIcon { get; set; }
 
-        [Parameter, JsonProperty("autoHide")]
+        [Parameter]
         public bool AutoHide { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public bool Disabled { get; set; }
 
-        [Parameter, JsonProperty("bindingType")]
+        [Parameter]
         public BindingType BindingType { get; set; } = BindingType.OnInput;
 
         [Inject, JsonIgnore]
         protected IJSRuntime jsRuntime { get; set; }
 
-        [CascadingParameter, JsonIgnore]
         public EditContext CurrentEditContext { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public TValue Value { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public EventCallback<TValue> ValueChanged { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public Expression<Func<TValue>> ValueExpression { get; set; }
-        
-        [Parameter, JsonIgnore]
-        public Expression<Func<TEntity, string>> TextExpression { get; set; }
 
         [JsonIgnore]
         public string Id { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public bool OpenOnFocus { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public bool CloseOnBlur { get; set; }
 
-        [Parameter, JsonProperty("minCharForSearch")]
-        public short? MinCharForSearch { get; set; }
-
-        [JsonProperty("errorMessage")]
         public string ErrorMessage { get; set; }
-
-        [JsonProperty("type")]
-        public string TextBoxType { get; private set; } = "string";
 
         [Parameter, JsonIgnore]
         public bool Required { get; set; }
@@ -125,7 +114,6 @@ namespace Caspian.UI
         {
             SearchState = new SearchState();
             shouldRender = true;
-            SearchState.EntityType = typeof(TEntity);
             status = WindowStatus.Close;
             base.OnInitialized();
         }
@@ -374,28 +362,19 @@ namespace Caspian.UI
                     SearchStr = "";
                 }));
             }
-            if (CloseOnBlur)
-            {
-                inputAttrs.Add("onblur", new Action(() =>
-                {
-                    status = WindowStatus.Close;
-                }));
-            }
+            //if (CloseOnBlur)
+            //{
+            //    inputAttrs.Add("onblur", new Action(async () =>
+            //    {
+            //        await Task.Delay(200);
+            //        status = WindowStatus.Close;
+            //    }));
+            //}
             if (Disabled)
                 inputAttrs.Add("disabled", true);
             if (HideHeader)
                 AutoHide = true;
             base.OnParametersSet();
-        }
-
-        protected string ConvertToJson()
-        {
-            var setting = new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore
-            };
-            return JsonConvert.SerializeObject(this, setting);
         }
 
         protected override async Task OnParametersSetAsync()
@@ -419,7 +398,6 @@ namespace Caspian.UI
                     await this.SetValue(id);
                 });
             }
-            var json = this.ConvertToJson();
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);
@@ -435,15 +413,15 @@ namespace Caspian.UI
             else if (!Value.Equals(Oldvalue))
             {
                 Oldvalue = Value;
-                using var scope = ServiceScopeFactory.CreateScope();
-                var service = scope.ServiceProvider.GetService(typeof(ISimpleService<TEntity>)) as SimpleService<TEntity>;
-                var type1 = typeof(TEntity);
-                var param = Expression.Parameter(type1, "t");
-                var pKey = type1.GetPrimaryKey();
-                Expression expr = Expression.Property(param, pKey);
-                expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(Value, pKey.PropertyType)));
-                expr = Expression.Lambda(expr, param);
-                Text = await service.GetAll().Where(expr).Select(TextExpression).FirstOrDefaultAsync();
+                //using var scope = ServiceScopeFactory.CreateScope();
+                //var service = scope.ServiceProvider.GetService(typeof(ISimpleService<TEntity>)) as SimpleService<TEntity>;
+                //var type1 = typeof(TEntity);
+                //var param = Expression.Parameter(type1, "t");
+                //var pKey = type1.GetPrimaryKey();
+                //Expression expr = Expression.Property(param, pKey);
+                //expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(Value, pKey.PropertyType)));
+                //expr = Expression.Lambda(expr, param);
+                //Text = await service.GetAll().Where(expr).Select(TextExpression).FirstOrDefaultAsync();
                 oldText = Text;
             }
             else

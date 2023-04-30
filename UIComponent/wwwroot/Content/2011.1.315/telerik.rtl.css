@@ -3,6 +3,22 @@
     border-radius: 8px 0 0 8px;
 }
 
+.t-rtl .t-state-error .t-select {
+    border-right: none !important;
+}
+
+.t-ltr .t-state-error .t-select {
+    border-left: none !important;
+}
+
+.t-rtl .t-state-error .t-select {
+    border-right: 1px solid rgba(255, 0, 0, 0.19) !important;
+}
+
+.t-ltr .t-state-error .t-select {
+    border-right: 1px solid rgba(255, 0, 0, 0.19) !important;
+}
+
 .t-ltr .t-dropdown-wrap .t-t-select {
     border-radius: 0 8px 8px 0;
 }
@@ -568,6 +584,13 @@ fieldset.t-widget{
 
 .t-ltr .t-dropdown-wrap .t-t-select {
     border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+.t-rtl .t-state-error .t-t-select {
+    border-right: 1px solid rgba(255, 0, 0, 0.12);
+}
+
+.t-ltr .t-state-error .t-t-select {
+    border-left: 1px solid rgba(255, 0, 0, 0.12);
 }
 .t-rtl ::-webkit-input-placeholder {
     text-align: right;

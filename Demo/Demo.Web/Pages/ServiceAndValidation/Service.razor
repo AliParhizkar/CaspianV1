@@ -1,0 +1,26 @@
+﻿@page "/Demo/Service"
+<h2>Service & dependency injection</h2>
+<h3>System architecture</h3>
+<p>
+    In this system we have at least three layer for each business: <b>entity layer, service layer, presentation layer</b>.
+</p>
+<h3>Entity layer</h3>
+<p>
+    In this layer we define <b>entities</b> and <b>enum types</b> that are used in the <b>service</b> and <b>presentation</b> layer.
+</p>
+<h3>Service(business) layer</h3>
+<p>
+    In this layer, we define <b>business rules</b>, perform <b>insert</b>, <b>update</b> and <b>delete</b> operations. We create <b>calculation methods</b> and etc.
+</p>
+<h3>Service</h3>
+<p>
+    We create at least one <b>service</b> for each <b>entity</b>. All these services inherit from the <b>SimpleService</b> class, which is a <b>Generic</b> class and <b>entity</b> is its <b>parameter</b>, These services also implement the <b>ISimpleService interface</b>.
+</p>
+<h3>SimpleService&lt;TEntity&gt;</h3>
+<div>
+
+</div>
+@code 
+{
+
+}

@@ -68,14 +68,8 @@
     async Task SetValueForActiveItem(SelectListItem item)
     {
         if (!item.Disabled && !Disabled)
-            await SetValue(item.Value);
-    }
-
-    public override async Task SetValue(object obj)
-    {
-        if (!Disabled)
         {
-            await base.SetValue(obj);
+            await SetValue(item.Value);
             await Task.Delay(300);
             status = WindowStatus.Close;
         }

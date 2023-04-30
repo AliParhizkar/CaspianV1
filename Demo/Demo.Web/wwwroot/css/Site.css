@@ -243,7 +243,14 @@ a::
     padding-top: 1.875rem;
     padding-bottom: 1.875rem;
 }
-p {
+.d-document{
+    background-color:white;
+    padding:8px;
+}
+.d-document p span {
+    font-size: 14px !important;
+}
+p:not(.d-document p) {
     font-size: 1rem;
     text-indent: 2em;
     line-height: 1.75;

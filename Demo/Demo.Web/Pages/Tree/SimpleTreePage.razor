@@ -1,0 +1,170 @@
+﻿@page "/Demo/SimpleTree"
+@inherits BasePage
+@using Caspian.Engine.Model
+@using Caspian.Engine.Service
+<div class="row d-head">
+    <div class="col-md-6">
+        <h3>Tree View</h3>
+    </div>
+    <div class="d-source-btn col-md-6">
+        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
+            Source
+            <i class="fa fa-code"></i>
+        </button>
+    </div>
+</div>
+<div class="d-body">
+    <div class="row">
+        <div class="col-md-6 d-control">
+            <hr/>
+            <div class="d-container">
+                <h4>Load on first</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <RadioList @bind-Value="expanded" OnChange="ExpandedChanged">
+                            <RadioItems>
+                                <RadioItem style="width:112px" TValue="bool" Value="false" Title="Collapsed" />
+                                <RadioItem TValue="bool" Value="true" Title="Expanded" />
+                            </RadioItems>
+                        </RadioList>
+                        <div class="d-tree-result">
+                            <span>Selected menus count:@(expandedSeletedNodesCount) </span>
+                        </div>
+                        <CTreeView @ref="expandedTree" TEntity="TreeViewItem" OnChange="ExpandedNodeChange" style="height:calc(100vh - 218px);margin-right:5px;" Source="expandedSource" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-control">
+            <hr />
+            <div class="d-container">
+                <h4 style="padding-right:40px;">Load on expand</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-tree-result">
+                            <span>SelectedMenus Count: @(collapsedSeletedNodesCount)</span>
+                        </div>
+                        <CTreeView @ref="tree1" OnChange="CollapsedNodeChange" OnCollapsed="OnCollapsed" TEntity="TreeViewItem" style="height:calc(100vh - 196px);margin-right:5px;" Source="collapsedSource" OnExpanded="async node => await OnExpanded(node)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code 
+{
+    bool expanded;
+    WindowStatus status;
+    int expandedSeletedNodesCount;
+    int collapsedSeletedNodesCount;
+    IList<TreeViewItem> expandedSource;
+    IList<TreeViewItem> collapsedSource;
+    CTreeView<TreeViewItem> expandedTree;
+    CTreeView<TreeViewItem> tree1;
+
+    void OnCollapsed(TreeViewItem node)
+    {
+        node.Items = null;
+        node.Selected = false;
+    }
+
+    void ExpandedNodeChange(TreeViewItem item)
+    {
+        // This is for tow level tree
+        if (item.Items != null)
+        {
+            foreach (var child in item.Items)
+                child.Selected = item.Selected;
+        }
+        var parent = item.Parent;
+        if (parent != null)
+        {
+            var siblings = parent.Items;
+            if (siblings.All(t => t.Selected == true))
+                parent.Selected = true;
+            else if (siblings.All(t => t.Selected == false))
+                parent.Selected = false;
+            else
+                parent.Selected = null;
+            parent = parent.Parent;
+        }
+        expandedSeletedNodesCount = expandedTree.GetSeletcedItems().Count(t => t.Depth == 2);
+    }
+
+    void CollapsedNodeChange(TreeViewItem node)
+    {
+        if (node.Depth == 1)
+        {
+            if (node.Items == null)
+                node.Selected = false;
+            else
+            {
+                foreach (var item in node.Items)
+                    item.Selected = node.Selected;
+            }
+        }
+        if (node.Depth == 2)
+        {
+            var parent = node.Parent;
+            var items = parent.Items;
+            if (items.All(t => t.Selected == true))
+                parent.Selected = true;
+            else if (items.All(t => t.Selected == false))
+                parent.Selected = false;
+            else
+                parent.Selected = null;
+        }
+        collapsedSeletedNodesCount = tree1.GetSeletcedItems().Count(t => t.Depth == 2);
+    }
+
+    async Task OnExpanded(TreeViewItem node)
+    {
+        using var scope = CreateScope();
+        var categoryId = Convert.ToInt32(node.Value);
+        node.Items = await new MenuService(scope.ServiceProvider).GetAll()
+            .Where(t => t.MenuCategoryId == categoryId).Select(t => new TreeViewItem()
+                { 
+                    Collabsable = false,
+                    Expanded = false,
+                    Selectable = true,
+                    Text = t.Title,
+                    Value = t.Id.ToString()
+                }).ToListAsync();
+    }
+
+    void ExpandedChanged()
+    {
+        foreach (var item in expandedSource)
+            item.Expanded = expanded;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        expandedSource = await new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo)
+            .Select(t => new TreeViewItem()
+                {
+                    Text = t.Title,
+                    Expanded = false,
+                    Selectable = true,
+                    Value = t.Id.ToString(),
+                    Items = t.Menus.Select(u => new TreeViewItem()
+                    {
+                        Collabsable = false,
+                        Text = u.Title,
+                        Value = u.Id.ToString(),
+                        Selectable = true
+                    }).ToList()
+                }).ToListAsync();
+        collapsedSource = expandedSource.Select(t => new TreeViewItem()
+        {
+            Expanded = false,
+            Collabsable = true,
+            Selectable = true,
+            Text = t.Text,
+            Value = t.Value
+        }).ToList();
+        await base.OnInitializedAsync();
+    }
+}

@@ -10,7 +10,7 @@ namespace Employment.Service
         public CityService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("شهری با این عنوان در سیستم ثبت شده است");
+            RuleFor(t => t.Title).Required().UniqAsync("A city with this title is registered in the system");
             var userId = UserId;
         }
     }

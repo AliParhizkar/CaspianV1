@@ -1,9 +1,12 @@
 ﻿@page "/Demo/Lookup"
 @namespace Demo.Web.Pages
-
+@{
+    if (hideHeader)
+        autoHide = true;
+}
 <h2>Lookup</h2>
 <p>
-    This control is used to <b>look up</b> and <b>bind to the foreign key</b>. this control <b>consists of two components:</b> <b>autocomplete</b> and <b>lookup page</b>.
+    This control is used to <b>look up</b> and <b>bind to the foreign key</b>. this control <b>consists of two components:</b> <b>autocomplete</b> and <b>lookup window</b>.
     we describe this components separately.
 </p>
 <h3>Autocomplete component</h3>
@@ -16,22 +19,46 @@
             <div class="d-content">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4>Default setting</h4>
-                        <span class="c-demo-description">In this example, we fill combobox from <b>Source parameter</b> and bind it to <b>string</b>.</span>
+                        <h4>Binding</h4>
+                        <span class="c-demo-description">In this example, we <b>bind the component to customerId</b>, which is a <b>nullable int field</b></span>
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Customer</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                                <AutoComplete @bind-Value="customerId">
+                                    <CustomerLookupWindow />
+                                </AutoComplete>
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Customer id</label>
+                            </div>
+                            <div class="col-md-8 pe-5 text-center">
+                                <label style="color:red;">@(customerId?.ToString() ?? "---")</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Default parameters</h4>
+                        <span class="c-demo-description">In this example, we use the <b>Style, Disabled, and HideIcon parameters </b> to set the <b>width </b>of the component, <b>enable & disable</b> the component, and <b>hide & show</b> the advanced search icon.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Control size</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                                <DropdownList @bind-Value="controlSize" />
+                            </div>                            
                             <div class="ps-5 col-md-4">
                                 <label>Hide icon</label>
                             </div>
                             <div class="pe-5 col-md-8">
                                 <CheckBox @bind-Value="hideIcon" />
-                            </div>
-                            <div class="ps-5 col-md-4">
-                                <label>Hide header</label>
-                            </div>
-                            <div class="pe-5 col-md-8 ">
-                                <CheckBox @bind-Value="hideHeader" />
                             </div>
                             <div class="ps-5 col-md-4">
                                 <label>Disable</label>
@@ -43,7 +70,154 @@
                                 <label>Action</label>
                             </div>
                             <div class="pe-5 col-md-8 text-center">
-                                
+                                <button disabled="@disabled" class="c-btn c-primary" @onclick="async () => await acCsutomer.FocusAsync()">Focus</button>
+                            </div>
+                            <div class="ps-5 col-md-12 pe-5">
+                                <AutoComplete TValue="int?" @ref="acCsutomer" Style="@GetStyle()" Disabled="disabled" HideIcon="hideIcon">
+                                    <CustomerLookupWindow />
+                                </AutoComplete>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Others parameters</h4>
+                        <span class="c-demo-description">All parameters are used to <b>manage</b> the <b>appearance and functionality</b> of the <b>lookup</b>, and they are all <b>booleans</b>.</span>
+                        <div class="ps-3">
+                            <div class="pt-3">
+                                <span class="d-title">AutoHide: </span><span class="c-demo-description">If the value of this parameter is true, the <b>lookup will be hidden</b> by <b>clicking on the body</b>.</span>
+                            </div>
+                            <div class="pt-3">
+                                <span class="d-title">HideHeader: </span><span class="c-demo-description">This parameter is used to <b>show/hide</b> lookup header(usually this parameter and AutoHide  parameter is equal).</span>
+                            </div>
+                            <div class="pt-3">
+                                <span class="d-title">OpenOnFocus: </span><span class="c-demo-description">If the value of this parameter is true, the <b>lookup will be shown</b> <b>with focus on the control</b>.</span>
+                            </div>
+                            <div class="pt-3">
+                                <span class="d-title">CloseOnBlur: </span><span class="c-demo-description">If the value of this parameter is true, the <b>lookup will be hidden</b> with <b>focus out(blur)</b>.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Auto hide</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                                <CheckBox @bind-Value="autoHide" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Hide header</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                                <CheckBox @bind-Value="hideHeader" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Open on focus</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                                <CheckBox @bind-Value="openOnFocus" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Close on blur</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                                <label style="color:red;">It will be created in the future</label>
+                            </div>
+                            <div class="ps-5 col-md-12 pe-5">
+                                <AutoComplete TValue="int?" AutoHide="autoHide" HideHeader="hideHeader" OpenOnFocus="openOnFocus" CloseOnBlur="closeOnBlur">
+                                    <CustomerLookupWindow />
+                                </AutoComplete>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Lookup window</h3>
+<p>
+    To create the Lookup window, we need to <b>inherit from LookupWindow</b> class(it has two generic parameters, <b>first TEntity</b> (customer) and second <b>TValue</b>), then we need to specify three things:
+</p>
+<ul class="d-demo-list">
+    <li>
+        <b>TextExpression: </b>The <i>TextExpression</i> specifies the <i>autocomplete text</i>, we can specify the text as we want. For this purpose we use <i>InitialTextExpression</i> method.
+    </li>
+    <li>
+        <b>SearchExpression: </b>The <i>SearchExpression</i> specifies <i>simple search</i> (search on autocomplete) we can specify it as we want. For this purpose we use <i>InitialSearchExpression</i> method.
+    </li>
+    <li>
+        <b>Grid: </b>We use grid to <i>display entities, pagination, sorting, entity selection</i>, etc. We use <i>@@ref</i> to determine the grade.
+    </li>
+</ul>
+<p>
+    After creating the lookup we can use it, but in some cases we can customize it.
+</p>
+
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Text expression</h4>
+                        <span class="c-demo-description">By default, we set the text expression in the <b>Lookup Window</b>, but we can <b>override it</b> with the <b>TextExpression parameter</b>.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Customer</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                                <AutoComplete @bind-Value="customerId">
+                                    <CustomerLookupWindow TextExpression='t => (t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName) + " " + t.MobileNumber' />
+                                </AutoComplete>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Advanced search</h4>
+                        <span class="c-demo-description">We can <b>customize</b> the <b>LookupWindow</b> search <b>however we want</b>, making it similar to the <b>grid-search</b> (explained earlier in Grid-Search).</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Customer</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                                <AutoComplete @bind-Value="customerId">
+                                    <AdvanceSearchCustomerWindow  />
+                                </AutoComplete>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Parameter search</h4>
+                        <span class="c-demo-description">In some cases we want to <b>pass the parameter</b> to the lookup window and <b>filter the data</b>. In this example, if the <b>customer type has a value</b>, we <b>filter the data</b> and <b>disable it</b> in the lookup window..</span>
+
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Customer type</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <DropdownList @bind-Value="customerKind" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Customer</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                            <parametricCustomerSearchWindow TValue="int?" />
+                                <AutoComplete @bind-Value="customerId">
+                                    <CustomerParametricLookupWindow CustomerKind="customerKind" />
+                                </AutoComplete>
                             </div>
                         </div>
                     </div>
@@ -53,105 +227,35 @@
     </Tabs>
 </TabPanel>
 
-<h3>Comparison with combobox</h3>
-<ul class="d-demo-list">
-    <li>
-        In this control, we can display <b>several fields</b> (columns). We have sorting, pagination and column resizing.
-    </li>
-    <li>
-        In this control we can search on <b>several fields</b>, for example: search on <b>customer type</b>, 
-        <b>first name</b>, <b>last name</b>, <b>company name</b> and <b>gender</b>.
-    </li>
-</ul>
-@{
-    if (hideHeader)
-        autoHide = true;
-}
-<div class="row d-head">
-    <div class="col-md-6">
-        <h3>Autocomplete & Lookup</h3>
-    </div>
-</div>
-<div class="d-body">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4>Default seting</h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="disabled" Title="Disable" />
-                    </div>
-                    <div class="col-md-12">
-                       
-                    </div>
-                    <div class="col-md-12">
-                        
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="autoHide" Disabled="hideHeader" Title="Auto hide" />
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="openOnFocus" Title="Open On Focus" />
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="closeOnBlur" Title="Close On Blur" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4 style="padding-right:40px;">Customer lookup</h4>
-                <div class="row c-controls">
-                    <div class="col-md-12">
-                        <AutoComplete TEntity="Customer" TValue="int?" @bind-Value="Id" HideHeader="hideHeader" AutoHide="autoHide" Title="Customer Search"
-                                    
-                                    TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName'
-                                      OpenOnFocus="openOnFocus" CloseOnBlur="closeOnBlur" Disabled="disabled" HideIcon="hideIcon">
-                            <CustomerLookupComponent TValue="int?" UseParameter="useParameter" />
-                        </AutoComplete>
-                    </div>
-                    <div class="col-md-12">
-                        <CheckBox @bind-Value="useParameter" Title="Use Parameter" />
-                    </div>
-                    @if (useParameter)
-                    {
-                        <div class="col-md-4">
-                            <label>Customer Type</label>
-                        </div>
-                        <div class="col-md-8">
-                            <DropdownList @bind-Value="customerType" />
-                        </div>
-                        <div class="col-md-4">
-                            <label>Gender</label>
-                        </div>
-                        <div class="col-md-8">
-                            <DropdownList @bind-Value="gender" />
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<CreatePdfComponent @bind-Status="status" Title="Autocomplete" FileName="Autocomplete.pdf" />
-<CreatePdfComponent @bind-Status="statusLookup" Title="Lookup" FileName="Lookup.pdf" />
-
 @code
 {
-    WindowStatus status;
-    WindowStatus statusLookup;
+    ControlSize controlSize = ControlSize.Auto;
+    AutoComplete<int?> acCsutomer;
     int? id1;
-    int? Id;
     bool disabled;
     bool autoHide;
     bool hideIcon;
+    int? customerId;
     bool hideHeader;
     bool useParameter;
-    bool closeOnBlur;
+    bool closeOnBlur = true;
     bool openOnFocus;
     CustomerType? customerType;
+    CustomerType? customerKind = CustomerType.Real;
     Gender? gender;
+    string GetStyle()
+    {
+        switch (controlSize)
+        {
+            case ControlSize.Large:
+                return "width:300px";
+            case ControlSize.Medium:
+                return "width:200px";
+            case ControlSize.Small:
+                return "width:150px";
+            case ControlSize.Auto:
+                return "";
+        }
+        throw new NotImplementedException();
+    }
 }

@@ -1,0 +1,104 @@
+﻿@page "/Demo/FormAndValidation"
+@namespace Demo.Web.Pages
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<h2>Form & Validation</h2>
+<p>
+    We use the <b>CaspianForm</b> component to <b>validate the model</b> and <b>reset</b> components. In validation we use a service to validate a model.
+</p>
+<h3>Service & dependency injection</h3>
+<p>
+    In the <b>service layer</b>, we create at <b>least one service</b> for <b>each entity</b>. All these services <b>inherit</b> from the <b>SimpleService class</b>, which is a <b>Generic class</b> and entity is <b>its parameter</b>, 
+    These services also implement the ISimpleService interface.
+    <br />The <b>infrastructure automatically injects all services and use them</b>.
+</p>
+<div class="d-form">
+    <h4>Form & Validation</h4>
+    <div class="data-form-container">
+        <CaspianForm Model="UpsertData">
+            <div class="row c-controls p-4 pb-2">
+                <div class="col-md-4">
+                    <label>Product category</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=UpsertData.ProductCategoryId TextExpression="t => t.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>Code</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value=UpsertData.Code />
+                </div>
+                <div class="col-md-4">
+                    <label>Price</label>
+                </div>
+                <div class="col-md-8">
+                    <NumericTextBox @bind-Value="UpsertData.Price" />
+                </div>
+                <div class="col-md-4">
+                    <label>Take out price</label>
+                </div>
+                <div class="col-md-8">
+                    <NumericTextBox @bind-Value="UpsertData.TakeoutPrice" />
+                </div>
+                <div class="col-md-4">
+                    <label>Meal</label>
+                </div>
+                <div class="col-md-8">
+                    <MultiSelectBox @bind-Value="UpsertData.Meal" />
+                </div>
+                <div class="col-md-4">
+                    <label>Status</label>
+                </div>
+                <div class="col-md-8">
+                    <DropdownList @bind-Value="UpsertData.ActiveType" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8 text-center">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </div>
+</div>
+<div class="text-center">
+    <button @onclick="_ => status = WindowStatus.Open" class="c-btn c-primary">
+        Source
+        <i class="fa fa-code"></i>
+    </button>
+</div>
+
+
+@code
+{
+    WindowStatus status;
+    Product UpsertData = new Product();
+
+    async Task FormSubmit()
+    {
+        await Alert("Form Submited");
+    }
+
+    void Reset()
+    {
+        ShowMessage("For is reset");
+    }
+
+    void InvalidSubmit()
+    {
+        ShowMessage("Product is invalid");
+    }
+
+    void ValidSubmit(EditContext context)
+    {
+        ShowMessage("product is Valid");
+    }
+}

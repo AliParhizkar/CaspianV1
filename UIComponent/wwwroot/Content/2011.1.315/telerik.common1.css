@@ -885,6 +885,7 @@ form tr {
     padding: 1px 7px;
     margin: 2px;
     border-radius: 8px;
+    height: 30px;
 }
     .c-multi-select.t-state-error {
         border-color: rgba(255, 0, 0, 0.19) !important;
@@ -955,10 +956,10 @@ span, label, td, th {
     padding: 5px;
 }
 .c-messagebox {
-    position: absolute;
+    position: fixed;
     border-radius: 8px;
     width: 400px;
-    left: 0;
+    left: 160px;
     right: 0;
     opacity: 1;
     background-color: #f6f6f6;
@@ -987,7 +988,9 @@ span, label, td, th {
         transform: scale(1);
     }
 }
-
+.hideMenu .c-messagebox {
+    left: 30px;
+}
 .t-grid-pager .fa {
     color: #423d96;
 }
@@ -2781,7 +2784,7 @@ html body .t-grid tbody .t-button-icon {
     .t-picker-wrap .t-input,
     .t-combobox .t-input {
         vertical-align: top;
-        width: calc(100% - 28px);
+        width: calc(100% - 27px);
         border-width:1px;
         height:30px;
         border-color:rgba(0, 0, 0, 0.12)
@@ -2839,7 +2842,7 @@ html body .t-grid tbody .t-button-icon {
 }
 .t-dropdown-wrap .t-t-select {
     line-height: 30px;
-    height: 30px;
+    height: 28px;
     display: inline-block;
     vertical-align: top;
     width: 25px;
@@ -2857,9 +2860,9 @@ html body .t-grid tbody .t-button-icon {
 .t-selectbox .t-input {
     display: inline-block;
     line-height: 30px;
-    height: 30px;
+    height: 28px;
     padding: 0 4px;
-    width: calc(100% - 25px);
+    width: calc(100% - 27px);
     font-size: 14px;
     cursor: default;
     box-sizing: border-box;
@@ -2898,7 +2901,7 @@ html body .t-grid tbody .t-button-icon {
 .t-combobox .t-input {
     height: 30px;
     padding:0 4px;
-    width: calc(100% - 28px);
+    width: calc(100% - 27px);
     box-sizing: border-box;
     border-style: solid;
     border-width: 1px;
@@ -2923,14 +2926,14 @@ html body .t-grid tbody .t-button-icon {
 .t-picker-wrap .t-select,
 .t-dropdown-wrap .t-select {
     height: 30px;
-    width: 28px;
+    width: 27px;
     background-image: linear-gradient(#f6f6f6,#f1f1f1);
     text-align: center;
 }
 .t-state-error .t-select {
-    background-image: linear-gradient(#ffd9d9,#fff0f0) !important;
-    border: 1px solid rgba(255, 0, 0, 0.3) !important;
-    border-right: none !important;
+    background-image: linear-gradient(#ffecec,#fff0f0) !important;
+    border: 1px solid rgba(255, 0, 0, 0.2) !important;
+}
 }
 .t-state-disabled .t-select {
     cursor: not-allowed !important;

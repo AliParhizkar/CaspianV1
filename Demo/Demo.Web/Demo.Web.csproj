@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Pdf\**" />
+    <Content Remove="wwwroot\Pdf\**" />
+    <EmbeddedResource Remove="wwwroot\Pdf\**" />
+    <None Remove="wwwroot\Pdf\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Pages\Index.razor" />
   </ItemGroup>
 
@@ -38,10 +45,6 @@
     <Reference Include="Microsoft.EntityFrameworkCore">
       <HintPath>..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\5.0.10\lib\netstandard2.1\Microsoft.EntityFrameworkCore.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\Pdf\" />
   </ItemGroup>
 
 </Project>

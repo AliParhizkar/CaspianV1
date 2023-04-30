@@ -41,17 +41,21 @@
                     <div class="col-md-3 ps-4">
                         <label>Dynamic items</label>
                     </div>
-                    <div class="col-md-2 text-center">
-                        <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => { UpateList(t, 1, "Identity"); })" Title="Identity" />
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => { UpateList(t, 2, "Job specification"); })" Title="Job" />
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => { UpateList(t, 3, "Wife's profile"); })" Title="Wife" />
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => { UpateList(t, 4, "Home Address"); })" Title="Home" />
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => { UpateList(t, 1, "Identity"); })" Title="Identity" />
+                            </div>
+                            <div class="col-md-3">
+                                <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => { UpateList(t, 2, "Job specification"); })" Title="Job" />
+                            </div>
+                            <div class="col-md-3">
+                                <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => { UpateList(t, 3, "Wife's profile"); })" Title="Wife" />
+                            </div>
+                            <div class="col-md-3">
+                                <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => { UpateList(t, 4, "Home Address"); })" Title="Home" />
+                            </div>
+                        </div>
                     </div>
                     @if (dic.Any())
                     {
@@ -61,12 +65,12 @@
                             <label>Selected tab index</label>
                         </div>
                         <div class="col-md-8">
-                            <RadioList TValue="int" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => { tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1; }">
+                            <RadioList TValue="int" DefaultLayout="DefaultLayout.SpaceAround" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => { tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1; }">
                                 <RadioItems>
-                                    <RadioItem Value="1" Title="Identity" />
-                                    <RadioItem Value="2" Title="Job" />
-                                    <RadioItem Value="3" Title="Wife" />
-                                    <RadioItem Value="4" Title="Home" />
+                                    @foreach(var item in dic)
+                                    {
+                                        <RadioItem Value="item.Key" Title="@(item.Value)" />
+                                    }
                                 </RadioItems>
                             </RadioList>
 
@@ -88,7 +92,9 @@
                     }
                     else
                     {
-                        <span class="d-panel-message">Please select at least one item to display</span>
+                        <div style="height:188px;" class="pt-5 text-center">
+                            <h5 style="color:palevioletred">Please select at least one item to display</h5>
+                        </div>
                     }
                 </div>
             </div>

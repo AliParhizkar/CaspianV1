@@ -95,44 +95,47 @@
 
     public virtual async Task SetValue(object obj)
     {
-        var type = DynamicType ?? typeof(TValue);
-        if (type.IsNullableType() && obj != null)
-            type = Nullable.GetUnderlyingType(type);
-        Value = default(TValue);
-        valueIsChanged = true;
-        if (obj != null)
+        if (!Disabled)
         {
-            if (type.IsEnum)
+            var type = DynamicType ?? typeof(TValue);
+            if (type.IsNullableType() && obj != null)
+                type = Nullable.GetUnderlyingType(type);
+            Value = default(TValue);
+            valueIsChanged = true;
+            if (obj != null)
             {
-                object value = default(TValue);
-                Enum.TryParse(type, obj.ToString(), out value);
-                Value = (TValue)value;
-            }
-            else
-                Value = (TValue)Convert.ChangeType(obj, type);
-        }
-        if (CurrentEditContext != null && !reseting)
-        {
-
-            var model = CurrentEditContext.Model;
-            //FormAppState.AllControlsIsValid = true;
-            if (_FieldName.HasValue())
-            {
-                var info = model.GetType().GetProperty(_FieldName);
-                if (info == null && !Validate())
-                    FormAppState.AllControlsIsValid = false;
-                else if (info != null)
+                if (type.IsEnum)
                 {
-                    var field = new FieldIdentifier(CurrentEditContext.Model, _FieldName);
-                    info.SetValue(model, Value);
-                    CurrentEditContext.NotifyFieldChanged(field);
+                    object value = default(TValue);
+                    Enum.TryParse(type, obj.ToString(), out value);
+                    Value = (TValue)value;
+                }
+                else
+                    Value = (TValue)Convert.ChangeType(obj, type);
+            }
+            if (CurrentEditContext != null && !reseting)
+            {
+
+                var model = CurrentEditContext.Model;
+                //FormAppState.AllControlsIsValid = true;
+                if (_FieldName.HasValue())
+                {
+                    var info = model.GetType().GetProperty(_FieldName);
+                    if (info == null && !Validate())
+                        FormAppState.AllControlsIsValid = false;
+                    else if (info != null)
+                    {
+                        var field = new FieldIdentifier(CurrentEditContext.Model, _FieldName);
+                        info.SetValue(model, Value);
+                        CurrentEditContext.NotifyFieldChanged(field);
+                    }
                 }
             }
+            reseting = false;
+            await ValueChanged.InvokeAsync(Value);
+            if (OnChange.HasDelegate)
+                await OnChange.InvokeAsync();
         }
-        reseting = false;
-        await ValueChanged.InvokeAsync(Value);
-        if (OnChange.HasDelegate)
-            await OnChange.InvokeAsync();
     }
 
     [Parameter, JsonIgnore]

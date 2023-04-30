@@ -1,30 +1,59 @@
 ﻿@page "/Demo/AggregateGridPage"
 @namespace Demo.Web.Pages
 @inherits BasePage
-<div class="row p-5">
-    <div class="col-9 ps-3 pb-2">
-        <h5>Aggregate function for customer and order</h5>
-    </div>
-    <div class="d-source-btn col-md-3">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-    <DataGrid TEntity="Order" HideInsertIcon>
-        <Columns>
-            <GridColumn AggregateField='t => t.Key.CustomerId == null ? "---" : t.Key.Customer.CustomerType == CustomerType.Real ? t.Key.Customer.FName + " " + t.Key.Customer.LName : t.Key.Customer.CompanyName' Title="Customer" />
-            <GridColumn AggregateField="t => t.Count()" Title="Orders Count" />
-            <GridColumn AggregateField="t => t.Sum(u => u.TotalAmount)" Title="Sum order amount" />
-            <GridColumn AggregateField="t => t.Max(u => u.TotalAmount)" Title="Maximum amount" />
-            <GridColumn AggregateField="t => t.Min(u => u.TotalAmount)" Title="Minimum amount" />
-        </Columns>
-    </DataGrid>
-</div>
-<CreatePdfComponent @bind-Status="status" Title="Aggregate grid" FileName="Aggregate-Grid.pdf"
-                    Title1="Order model" FileName1="orderModel.pdf" />
-@code
-{
+<h2>Group by & aggregate functions</h2>
+<p>
+    In some cases we want to use the <b>group by</b> and <b>aggregate functions</b>,
+    in this <b>infrastructure</b> we can <b>bind the grid</b> to the <b>data</b> and use <b>aggregate functions</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Group, by customer</h4>
+                        <span class="c-demo-description">
+                            In this example we <b>bind the grid</b> to the <b>Order entity</b> and use the <b>AggregateField</b> parameter instead of the <b>Field</b> parameter.
+                            <br />
+                            We have <b>grouped</b> by <b>customer</b>.
+                            <br />
+                            We display --- for <b>orders without customer</b> (CustomerId is null)
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <DataGrid TEntity="Order" HideInsertIcon>
+                            <Columns>
+                                <GridColumn AggregateField='t => t.Key.CustomerId == null ? "---" : t.Key.Customer.CustomerType == CustomerType.Real ? t.Key.Customer.FName + " " + t.Key.Customer.LName : t.Key.Customer.CompanyName' Title="Customer" />
+                                <GridColumn AggregateField="t => t.Count()" Title="Count" />
+                                <GridColumn AggregateField="t => t.Sum(u => u.TotalAmount)" Title="Sum" />
+                                <GridColumn AggregateField="t => t.Average(u => u.TotalAmount)" Title="Average" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="pe-4">
+                            <h4>Group, by product</h4>
+                            <span class="c-demo-description">
+                                In this example we <b>bind the grid</b> to the <b>OrderDeatil entity</b>
+                                We have <b>grouped</b> by <b>product</b>.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <DataGrid TEntity="OrderDeatil" HideInsertIcon>
+                            <Columns>
+                                <GridColumn AggregateField="t => t.Key.Product.Title" Title="Product" />
+                                <GridColumn AggregateField="t => t.Sum(u => u.Count)" Title="Count" />
+                                <GridColumn AggregateField="t => t.Sum(u => u.Count * u.Price)" Title="Sum price" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
-    WindowStatus status;
-}

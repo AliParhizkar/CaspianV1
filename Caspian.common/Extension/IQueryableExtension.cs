@@ -86,8 +86,11 @@ namespace Caspian.Common.Extension
         }
 
         public async static Task<Tuple<IList<TEntity>, IList<object>>> AggregateValuesAsync<TEntity>(this IQueryable<TEntity> query, 
-            IList<Expression> aggregateExpressions)
+            IList<Expression> aggregateExpressions, int pageNumber, int pageSize)
         {
+            if (pageNumber > 1)
+                query = query.Skip((pageNumber - 1) * pageSize);
+            query = query.Take(pageSize);
             var values = await query.CreateAggregateQuery(aggregateExpressions).OfType<object>().ToListAsync();
             var entities = new List<TEntity>();
             var list = new List<object>();

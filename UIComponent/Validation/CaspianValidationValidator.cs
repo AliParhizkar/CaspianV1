@@ -128,6 +128,15 @@ namespace Caspian.UI
             }
         }
 
+        protected override void OnInitialized()
+        {
+            if (CaspianForm != null)
+            {
+
+            }
+            base.OnInitialized();
+        }
+
         protected override void OnAfterRender(bool firstRender)
         {
             if (CaspianForm != null)

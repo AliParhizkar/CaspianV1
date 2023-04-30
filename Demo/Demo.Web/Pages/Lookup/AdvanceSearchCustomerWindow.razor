@@ -1,0 +1,63 @@
+﻿@typeparam TValue
+@inherits LookupWindow<Customer, TValue>
+@namespace Demo.Web.Pages
+<div class="p-2 row">
+    <div class="col-md-2">
+        <label>Customer type</label>
+    </div>
+    <div class="col-md-4 pe-5">
+        <DropdownList @bind-Value="SearchData.CustomerType" Search />
+    </div>
+    <div class="col-md-2">
+        @if (SearchData.CustomerType == CustomerType.Legal)
+        {
+            <label>Company name </label>
+        }
+        else
+        {
+            <label>Last name</label>
+        }
+    </div>
+    <div class="col-md-4">
+        @if (SearchData.CustomerType == CustomerType.Legal)
+        {
+            <StringTextBox @bind-Value="SearchData.CompanyName" />
+        }
+        else
+        {
+            <StringTextBox @bind-Value="SearchData.LName" />
+        }
+    </div>
+</div>
+<div class="c-lookup-page" style="width:750px;">
+    <DataGrid @ref="Grid" TEntity="Customer" TableHeight="150" Search="SearchData" HidePageSize>
+        <Columns Context="customer">
+            <GridColumn Field="t => t.CustomerType" Title="Customer type" />
+            <GridColumn Field='t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Customer Name" />
+            <GridColumn Field="t => t.Gender" style="width:100px" Title="Gender">
+                <Template>
+                    @if (customer.Data.Gender == Model.Gender.Male)
+                    {
+                        <span class="c-icon fa fa-male"></span>
+                    }
+                    else if (customer.Data.Gender == Model.Gender.Female)
+                    {
+                        <span class="c-icon fa fa-female"></span>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field="t => t.MobileNumber.CallFormat('-')" Title="Mobile Number" />
+        </Columns>
+    </DataGrid>
+</div>
+
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.FName.Contains(LookupStringSearchValue) || t.LName.Contains(LookupStringSearchValue) || t.MobileNumber.Contains(LookupStringSearchValue));
+        InitialTextExpression(t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName);
+        base.OnInitialized();
+    }
+}

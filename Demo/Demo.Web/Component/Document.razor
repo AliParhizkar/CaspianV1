@@ -1,0 +1,24 @@
+﻿@inject IHostEnvironment host
+<div class="d-document">
+    @((MarkupString)content)
+</div>
+@{
+    content = null;
+}
+@code 
+{
+    string content;
+    protected override async Task OnInitializedAsync()
+    {
+        if (!FileName.EndsWith(".htm", StringComparison.CurrentCultureIgnoreCase))
+            FileName += ".htm";
+        var path = host.ContentRootPath;
+        path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\" + FileName;
+        content = await File.ReadAllTextAsync(path);
+        content = content.Replace("�", "&nbsp;");
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter]
+    public string FileName { get; set; }
+}

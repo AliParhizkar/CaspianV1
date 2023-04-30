@@ -1,8 +1,13 @@
 ﻿@namespace Caspian.UI
 @inject IJSRuntime jsRuntime
 @inject FormAppState FormAppState
+@inject IServiceProvider provider;
 @typeparam TEntity
-
+@{
+    var modelType = Model.GetType();
+    var serviceType = typeof(ISimpleService<>).MakeGenericType(modelType);
+    serviceType = provider.GetService(serviceType).GetType();
+}
 <EditForm EditContext="EditContext"
           OnSubmit="@(async context => await OnFormSubmitHandler(context))"
 
@@ -13,10 +18,10 @@
                               await OnInternalReset.InvokeAsync();
                       })" >
     <CascadingValue Value="this" Name="ParentForm">
+        <CaspianValidationValidator ValidatorType="serviceType" />
         @ChildContent
     </CascadingValue>
 </EditForm>
-
 @code 
 {
 

@@ -236,7 +236,7 @@ namespace Caspian.UI
                 {
                     var aggregateExprList = columnsData.Where(t => t.AggregateExpression != null).Select(t => t.AggregateExpression).ToList();
                     Total = await query.CreateAggregateQuery(aggregateExprList).OfType<object>().CountAsync();
-                    var tuple = await query.AggregateValuesAsync(aggregateExprList);
+                    var tuple = await query.AggregateValuesAsync(aggregateExprList, PageNumber, PageSize);
                     Items = tuple.Item1;
                     DynamicData = tuple.Item2;
                 }

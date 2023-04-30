@@ -99,14 +99,11 @@
     </div>
 </div>
 
-<CreatePdfComponent @bind-Status="status" Title="Custom update" FileName="CustomUpdate1.pdf"
-                    Title1="Product service" FileName1="productService.pdf" Title2="Order detail service" 
-                    FileName2="OrderDetailService.pdf" />
 @code
 {
     WindowStatus status;
     NumericTextBox<int> txtPrice;
-    AutoComplete<Product, int> txtProduct;
+    AutoComplete<int> txtProduct;
 
     protected override async Task OnMasterEntityCreatedAsync()
     {

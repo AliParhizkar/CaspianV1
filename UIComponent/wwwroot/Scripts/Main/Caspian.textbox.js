@@ -182,8 +182,8 @@
         });
         $(element).focus(function () {
             let message = $(element).closest('.t-widget').attr('data-bind');
-            if (message)
-                $t.showErrorMessage($(self.element).closest('.t-widget')[0], message);
+            //if (message)
+            //    $t.showErrorMessage($(self.element).closest('.t-widget')[0], message);
         });
         if (this.group && this.type != 'string') {
             $(element).val($t.get3Digit($(element).val()));

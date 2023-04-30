@@ -1,5 +1,5 @@
 ﻿(function($) {
-    var $c = $.caspian = {
+    let $c = $.caspian = {
         bindTooltip() {
             let tooltipTriggerList = [];
             $('[data-bs-toggle="tooltip"]').each(function () {
@@ -21,6 +21,14 @@
                 if (index < 2)
                     $(cir).attr('cx', 0).attr('cy', -110);
             });
+        },
+        showErrorMessage: function (ctr, msg) {
+            $(ctr).find('.errorMessage').remove();
+            $('<div class="errorMessage"><span class="c-icon"><i class="fa fa-info" aria-hidden="true"></i></span><Span class="c-content">'
+                + msg + '</Span><span class="c-pointer"></span></div>').appendTo(ctr);
+        },
+        hideErrorMessage: function (ctr) {
+            $(ctr).find('.errorMessage').remove();
         },
         setMinute: function (elm, e, type) {
             let from = $(elm).attr('from');
@@ -188,7 +196,7 @@
             switch (index) {
                 case 1:
                     if (vNavigation == 2) {//down
-                        $(elm).find('.c-down-to-state').css('left', 0).css('top', 35).width(212).height(200);
+                        $(elm).find('.c-down-to-state').css('left', 0).css('top', 36).width(212).height(200);
                         $(elm).find('.c-down-from-state').css('opacity', 0);
                     }
                     break;
@@ -481,30 +489,39 @@
         },
         bindLookup: function (dotnet, input) {
             let $lookup = $(input).closest('.c-lookup');
-            
+            if ($lookup.attr('closeonblur') != undefined) {
+                $lookup.attr('tabindex', 0);
+                $lookup.focusout(async () => {
+                    //let downToUp = top > $(window).height() / 2 - 20;
+                    //$.caspian.closeLookupWindow($lookup.find('.t-HelpWindow'), downToUp);
+                    
+                    //await dotnet.invokeMethodAsync('Close');
+                });
+            }
             const mutationObserver = new MutationObserver((mutationList) => {
                 mutationList.forEach(mutation => {
                     if (mutation.type == 'attributes' && mutation.attributeName == 'status' && $(mutation.target).attr('status') == "2") {
+
                         let $animat = $(mutation.target).find('.t-animation-container');
                         let $window = $(mutation.target).find('.t-HelpWindow');
-                        
                         let left = $(mutation.target).position().left - ($window.width() - $(mutation.target).width()) / 2;
+                        if (left + $window.width() > $('.c-content-main').outerWidth())
+                            left = $('.c-content-main').outerWidth() - $window.width() - 28;
                         $animat.css('left', left).width($window.width() + 10);
-                        let loc = $animat.offset().top - $(window).scrollTop();
                         let top = $(mutation.target).position().top;
-                        let downToUp = loc > $(window).height() / 2;
+                        let downToUp = top > $(window).height() / 2 - 20;
                         if (downToUp) {
-                            $animat.css('bottom', $(window).height() - top - 20);
+                            $animat.css('bottom', $('.c-content-main').outerHeight() - top - $('.c-content-main').scrollTop());
                             $window.css('bottom', -$window.height());
                             $animat.height($window.height() + 10);
                         }
                         else {
-                            $animat.css('top', top + 40);
+                            $animat.css('top', top + $('.c-content-main').scrollTop() + 35);
                             $window.css('top', -$window.height());
                             $animat.height($window.height() + 10);
                         }
                         setTimeout(() => {
-                            if (loc > $(window).height() / 2) {
+                            if (top > $(window).height() / 2) {
                                 $window.addClass('c-lookup-animate-up');
                                 $window.css('bottom', 0);
                             }
@@ -783,7 +800,7 @@
                         let $window = $(mutation.target).closest('.t-window');
                         if ($(mutation.target).attr('status') == "2") {
                             $window.css('display', 'block');
-                            let $header = $window.find('.t-header');
+                            let $header = $window.find('.t-window-titlebar');
                             if ($(mutation.target).attr('draggable') != undefined) {
                                 $.caspian.bindDragAndDrop($window[0], $header[0]);
                                 $header.css('cursor', 'move');
@@ -936,14 +953,13 @@
                     $control.removeClass('t-state-hover').addClass('t-state-default');
             });
             $(input).focusin(function () {
-                let message = $(input).closest('.t-widget').attr('data-bind');
+                let message = $(input).closest('.t-widget').attr('error-message');
                 if (message)
-                    $.telerik.showErrorMessage($(input).closest('.t-widget')[0], message);
-                $control.removeClass('t-state-hover').removeClass('t-state-default').addClass('t-state-focused');
+                    $.caspian.showErrorMessage($(input).closest('.t-widget')[0], message);
             });
             $(input).focusout(function () {
                 $control.removeClass('t-state-focused').addClass('t-state-default');
-                //$.caspian.hideErrorMessage($(input).closest('.t-widget')[0]);
+                $.caspian.hideErrorMessage($(input).closest('.t-widget')[0]);
             });
             $(window).bind('click', function (e) {
                 if (!$(e.target).closest('.t-combobox').hasClass('t-combobox')) {
@@ -1052,7 +1068,6 @@
             }
         },
         bindControl: function (control, options, controlType) {
-
             options = JSON.parse(options);
             switch (controlType) {
                 case 1:
@@ -1076,63 +1091,3 @@
         },
     }
 })(jQuery);
-
-
-$.caspian.outMessage = function () {
-
-    this.message = '';
-    this.title = "خطا";
-    this.kind = 1;
-    this.timeOut = 2000;
-
-    function create() {
-        var odv = $('<div class="t-widget t-message" id="outMessage"></div>');
-        $("body").append(odv);
-        $("#outMessage").html('<div class="t-window-titlebar"><span class="t-title"></span><span class="t-close"><i class="fa fa-close"></i></span></div><div style="padding:5px 5px 5px 5px;text-align:justify"></div>');
-        $("#outMessage .t-close").click(function () {
-            hide();
-        });
-        $("#outMessage .t-close").mouseover(function () {
-            if (!$(this).hasClass('t-state-hover'))
-                $(this).addClass('t-state-hover');
-        });
-        $("#outMessage .t-close").mouseout(function () {
-            $(this).removeClass('t-state-hover');
-        });
-    };
-    this.show = function (msg) {
-        let isltr = $('body').hasClass('t-rtl');
-        if (typeof msg == 'string') {
-            try {
-                msg = eval('(' + msg + ')');
-                this.message = msg.Message;
-                this.title = msg.kind == 1 ? "خطا" : "پیغام";
-            }
-            catch (ex) {
-                this.message = msg;
-                this.title = isltr ? "پیغام" : "Message";
-            }
-        }
-        else {
-            this.message = msg.Message;
-            this.title = msg.kind == 1 ? "خطا" : "پیغام";
-        }
-        flag = false;
-        $("#outMessage").remove();
-        create();
-        height = 30;
-        $("#outMessage .t-title").text(this.title);
-        $("#outMessage").children().eq(1).html(this.message);
-        $("#outMessage").css('opacity', 0.1);
-        $("#outMessage").show();
-        $("#outMessage").css('height', height + "px");
-        opa = 1 - $("#outMessage").css('opacity');
-        opa = opa / (125 - height);
-        flag = true;
-        moverItem();
-        if (timer != null)
-            clearTimeout(timer);
-        timer = setTimeout('hide()', 4000);
-    };
-    return this;
-}
