@@ -14,7 +14,7 @@
     else
         InputAttributes.Remove("disabled");
 }
-<div class="@className" style="@Style">
+<div error-message="@ErrorMessage" class="@className" style="@Style">
     @{
         var text = Convert.ToString(Value);
         var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);

@@ -22,10 +22,13 @@
                     $(cir).attr('cx', 0).attr('cy', -110);
             });
         },
-        showErrorMessage: function (ctr, msg) {
+        showErrorMessage: function (ctr) {
             $(ctr).find('.errorMessage').remove();
-            $('<div class="errorMessage"><span class="c-icon"><i class="fa fa-info" aria-hidden="true"></i></span><Span class="c-content">'
-                + msg + '</Span><span class="c-pointer"></span></div>').appendTo(ctr);
+            let msg = $(ctr).attr('error-message');
+            if (msg) {
+                $('<div class="errorMessage"><span class="c-icon"><i class="fa fa-info" aria-hidden="true"></i></span><Span class="c-content">'
+                    + msg + '</Span><span class="c-pointer"></span></div>').appendTo(ctr);
+            }
         },
         hideErrorMessage: function (ctr) {
             $(ctr).find('.errorMessage').remove();
@@ -426,32 +429,8 @@
                 subtree: true,
             });
         },
-        getItem: function (element) {
-            var item = $(element).data('tTextBox');
-            if (!item)
-                item = $(element).data('tDatePicker');
-            if (!item)
-                item = $(element).data('tDropDownList');
-            if (!item)
-                item = $(element).data('tComboBox');
-            if (!item)
-                item = $(element).data('tTimePicker');
-            if (!item)
-                item = $(element).data('tReportControl');
-            if (!item)
-                item = $(element).data('tPictureBox');
-            if (!item)
-                item = $(element).data('tCheckBox');
-            return item;
-        },
-        focusAndShowErrorMessage(element, message) {
-            let item = $.caspian.getItem(element);
-            if (item) {
-                item.errorMessage = message;
-                item.focus();
-            }
-            else
-                $(element).focus();
+        focusAndShowErrorMessage(element) {
+            $(element).focus();
         },
         showMessageBox: function (overlay, box) {
             let item;
@@ -628,11 +607,11 @@
                     if ($('body').hasClass('t-ltr'))
                         dif = -dif;
                     let curentWidth = $(grv).data('curentWidth');
-                    let otherWidth = $(grv).data('otherWidth');
+                    let otherWidth = $(grv).data('otherWidth') - 1;
                     let curentResult = curentWidth + dif, otherResult = otherWidth - dif;
                     if (curentResult < 30 || otherResult < 30)
                         return;
-                    console.log(curentResult, otherResult)
+                    
                     $(grv).data('curent').width(curentResult);
                     let curentIndex = $(grv).find('.t-grid-header-wrap th').index($(grv).data('curent'));
                     $(grv).find('.t-grid-content table tr').first().children().eq(curentIndex).width(curentResult);
@@ -647,7 +626,7 @@
                         else
                             $(grv).find('.t-grid-header').css('padding-left', 11);
                     } else 
-                        $(grv).find('.t-grid-header').css('padding-right', 0).css('padding-left', 0);;
+                        $(grv).find('.t-grid-header').css('padding-right', 0).css('padding-left', 0);
                 }
             });
             $(grv).find('.t-grid-content').scroll(function () {
@@ -893,10 +872,12 @@
             $(window).bind('click', function (e) {
                 if (!$(e.target).closest('.t-dropdown').hasClass('t-dropdown')) {
                     let $group = $(ddl).find('.c-animate-down .t-group');
-                    $group.css('top', '-100%');
-                    $group = $(ddl).find('.c-animate-up .t-group');
-                    $group.css('bottom', '-100%');
-                    setTimeout(() => dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
+                    if ($(ddl).find('.t-group')[0]) {
+                        $group.css('top', '-100%');
+                        $group = $(ddl).find('.c-animate-up .t-group');
+                        $group.css('bottom', '-100%');
+                        setTimeout(() => dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
+                    }
                 }
             });
         },
@@ -953,9 +934,7 @@
                     $control.removeClass('t-state-hover').addClass('t-state-default');
             });
             $(input).focusin(function () {
-                let message = $(input).closest('.t-widget').attr('error-message');
-                if (message)
-                    $.caspian.showErrorMessage($(input).closest('.t-widget')[0], message);
+                $.caspian.showErrorMessage($(input).closest('.t-widget')[0]);
             });
             $(input).focusout(function () {
                 $control.removeClass('t-state-focused').addClass('t-state-default');

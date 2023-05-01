@@ -178,12 +178,10 @@
             this.decimals = { '190': '.', '188': ',', '110': separator };
         }
         $(element).blur(function (e) {
-            
+            $.caspian.hideErrorMessage($(element).closest('.t-widget')[0]);
         });
         $(element).focus(function () {
-            let message = $(element).closest('.t-widget').attr('data-bind');
-            //if (message)
-            //    $t.showErrorMessage($(self.element).closest('.t-widget')[0], message);
+            $.caspian.showErrorMessage($(element).closest('.t-widget')[0]);
         });
         if (this.group && this.type != 'string') {
             $(element).val($t.get3Digit($(element).val()));
