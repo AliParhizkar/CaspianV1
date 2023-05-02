@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Employment.Service
 {
-    public class CareerFieldService : SimpleService<CareerField>, ISimpleService<CareerField>
+    public class CareerFieldService : BaseService<CareerField>, IBaseService<CareerField>
     {
         public CareerFieldService(IServiceProvider provider)
             : base(provider)

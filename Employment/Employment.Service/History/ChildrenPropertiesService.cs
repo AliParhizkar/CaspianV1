@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Employment.Service
 {
-    public class ChildrenPropertiesService : SimpleService<ChildrenProperties>, ISimpleService<ChildrenProperties>
+    public class ChildrenPropertiesService : BaseService<ChildrenProperties>, IBaseService<ChildrenProperties>
     {
         public ChildrenPropertiesService(IServiceProvider provider)
             :base(provider)

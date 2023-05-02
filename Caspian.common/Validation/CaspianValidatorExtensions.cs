@@ -193,8 +193,8 @@ namespace Caspian.Common
             }
             Expression memberExpr = param.CreateMemberExpresion(str.Substring(str.IndexOf('.') + 1));
             var selectExpr = Expression.Lambda(memberExpr, param);
-            var serviceType = typeof(SimpleService<>).MakeGenericType(info.PropertyType);
-            var service = Activator.CreateInstance(serviceType, scope) as ISimpleService;
+            var serviceType = typeof(BaseService<>).MakeGenericType(info.PropertyType);
+            var service = Activator.CreateInstance(serviceType, scope) as IBaseService;
             var query = service.GetAllRecords();
             if (conditionExpr != null)
                 query = query.Where(conditionExpr);
@@ -267,10 +267,10 @@ namespace Caspian.Common
                 {
                     using var scope = ((IServiceScopeFactory)contex.ParentContext.RootContextData["__ServiceScopeFactory"])
                         .CreateScope();
-                    var service = new SimpleService<TModel>(scope.ServiceProvider);
+                    var service = new BaseService<TModel>(scope.ServiceProvider);
                     return !await service.GetAll(default(TModel)).AnyAsync(lambda);
                 }
-                var service1 = new SimpleService<TModel>(scope1.ServiceProvider);
+                var service1 = new BaseService<TModel>(scope1.ServiceProvider);
                 return !await service1.GetAll(default(TModel)).AnyAsync(lambda);
             }).WithMessage(errorMessage);
         }
@@ -309,19 +309,24 @@ namespace Caspian.Common
                         if (context.ParentContext.RootContextData.ContainsKey("__ServiceScopeFactory"))
                         {
                             using var scope = ((IServiceScopeFactory)context.ParentContext.RootContextData["__ServiceScopeFactory"]).CreateScope();
-                            var serviceType = typeof(ISimpleService<>).MakeGenericType(info.PropertyType);
-                            var service = scope.ServiceProvider.GetService(serviceType) as ISimpleService;
+                            var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
+                            var service = scope.ServiceProvider.GetService(serviceType) as IBaseService;
                             result = await service.AnyAsync(Convert.ToInt32(value));
                         }
                         else
                         {
                             var scope = (IServiceScope)context.ParentContext.RootContextData["__ServiceScope"];
-                            var serviceType = typeof(ISimpleService<>).MakeGenericType(info.PropertyType);
-                            var service = scope.ServiceProvider.GetService(serviceType) as ISimpleService;
+                            var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
+                            var service = scope.ServiceProvider.GetService(serviceType) as IBaseService;
                             result = await service.AnyAsync(Convert.ToInt32(value));
                         }
                         if (!result)
-                            message = (displayAttr?.DisplayName ?? infoId.Name) + "ی با کد " + value + " وجود ندارد.";
+                        {
+                            if (language == Language.Fa)
+                                message = (displayAttr?.DisplayName ?? infoId.Name) + "ی با کد " + value + " وجود ندارد.";
+                            else
+                                message = $"There is no {displayAttr?.DisplayName ?? infoId.Name} with Id {value}";
+                        }
                     }
                     if (message.HasValue())
                         context.AddFailure(message);

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class TokenService : SimpleService<Token>
+    public class TokenService : BaseService<Token>
     {
         public TokenService(IServiceProvider provider)
             :base(provider)

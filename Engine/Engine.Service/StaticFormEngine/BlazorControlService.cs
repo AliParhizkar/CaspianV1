@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Caspian.Engine.Service
 {
-    public class BlazorControlService : SimpleService<BlazorControl>
+    public class BlazorControlService : BaseService<BlazorControl>
     {
         public BlazorControlService(IServiceProvider provider)
             :base(provider)

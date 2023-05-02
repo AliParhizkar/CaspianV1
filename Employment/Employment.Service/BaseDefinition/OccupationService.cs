@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Employment.Service
 {
-    public class OccupationService : SimpleService<Occupation>, ISimpleService<Occupation>
+    public class OccupationService : BaseService<Occupation>, IBaseService<Occupation>
     {
         public OccupationService(IServiceProvider provider)
             : base(provider)

@@ -36,7 +36,7 @@ namespace Caspian.UI
             if (MasterId > 0)
             {
                 using var scope = CreateScope();
-                var masterService = scope.ServiceProvider.GetService(typeof(ISimpleService<TMaster>)) as SimpleService<TMaster>;
+                var masterService = scope.ServiceProvider.GetService(typeof(IBaseService<TMaster>)) as BaseService<TMaster>;
                 UpsertData = await masterService.SingleAsync(MasterId);
             }
             await OnMasterEntityCreatedAsync();
@@ -82,9 +82,9 @@ namespace Caspian.UI
         {
             using var scope = CreateScope();
             var provider = scope.ServiceProvider;
-            var masterService = provider.GetService(typeof(ISimpleService<TMaster>)) as SimpleService<TMaster>;
+            var masterService = provider.GetService(typeof(IBaseService<TMaster>)) as BaseService<TMaster>;
             await masterService.UpdateAsync(UpsertData);
-            var detailService = provider.GetService(typeof(ISimpleService<TDetail>)) as SimpleService<TDetail>;
+            var detailService = provider.GetService(typeof(IBaseService<TDetail>)) as BaseService<TDetail>;
             var insertedEntities = Grid.GetInsertedEntities();
             if (insertedEntities.Count > 0)
                 await detailService.AddRangeAsync(insertedEntities);
@@ -109,7 +109,7 @@ namespace Caspian.UI
             var list = Grid.GetInsertedEntities();
             using var scope = CreateScope();
             var provider = scope.ServiceProvider;
-            var masterService = provider.GetService(typeof(ISimpleService<TMaster>)) as SimpleService<TMaster>;
+            var masterService = provider.GetService(typeof(IBaseService<TMaster>)) as BaseService<TMaster>;
             using var transaction = masterService.Context.Database.BeginTransaction();
             
             await masterService.AddAsync(UpsertData);
@@ -118,7 +118,7 @@ namespace Caspian.UI
             var masterInfo = typeof(TDetail).GetForeignKey(typeof(TMaster));
             foreach (var item in list)
                 masterInfo.SetValue(item, masterId);
-            var detailService = provider.GetService(typeof(ISimpleService<TDetail>)) as SimpleService<TDetail>;
+            var detailService = provider.GetService(typeof(IBaseService<TDetail>)) as BaseService<TDetail>;
             await detailService.AddRangeAsync(list);
             await detailService.SaveChangesAsync();
             await OnUpsertAsync(scope, list);

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Demo.Service
 {
-    public class WareHouseReceiptService : SimpleService<WarehouseReceipt>, ISimpleService<WarehouseReceipt>
+    public class WareHouseReceiptService : BaseService<WarehouseReceipt>, IBaseService<WarehouseReceipt>
     {
         public WareHouseReceiptService(IServiceProvider provider)
             : base(provider)

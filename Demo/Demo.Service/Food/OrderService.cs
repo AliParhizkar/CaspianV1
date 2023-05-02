@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Demo.Service
 {
     [ReportClass]
-    public class OrderService : SimpleService<Order>, ISimpleService<Order>
+    public class OrderService : BaseService<Order>, IBaseService<Order>
     {
         public OrderService(IServiceProvider provider)
             :base(provider)

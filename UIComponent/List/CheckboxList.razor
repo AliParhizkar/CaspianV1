@@ -65,7 +65,7 @@
             Items = new List<SelectListItem>();
             if (Source == null)
             {
-                var service = Provider.GetService(typeof(ISimpleService<TEntity>)) as ISimpleService<TEntity>;
+                var service = Provider.GetService(typeof(IBaseService<TEntity>)) as IBaseService<TEntity>;
                 var query = service.GetAll(default(TEntity));
                 if (ConditionExpression != null)
                     query = query.Where(ConditionExpression);

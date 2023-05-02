@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Service
 {
-    public class RuleService : SimpleService<Rule>, ISimpleService<Rule>
+    public class RuleService : BaseService<Rule>, IBaseService<Rule>
     {
         public RuleService(IServiceProvider provider)
             :base(provider)

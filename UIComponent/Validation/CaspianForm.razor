@@ -5,7 +5,7 @@
 @typeparam TEntity
 @{
     var modelType = Model.GetType();
-    var serviceType = typeof(ISimpleService<>).MakeGenericType(modelType);
+    var serviceType = typeof(IBaseService<>).MakeGenericType(modelType);
     serviceType = provider.GetService(serviceType).GetType();
 }
 <EditForm EditContext="EditContext"

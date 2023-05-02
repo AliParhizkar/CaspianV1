@@ -214,9 +214,8 @@
                                 <label>Customer</label>
                             </div>
                             <div class="col-md-8 pe-5">
-                            <parametricCustomerSearchWindow TValue="int?" />
                                 <AutoComplete @bind-Value="customerId">
-                                    <CustomerParametricLookupWindow CustomerKind="customerKind" />
+                                    <parametricCustomerSearchWindow CustomerKind="customerKind" />
                                 </AutoComplete>
                             </div>
                         </div>

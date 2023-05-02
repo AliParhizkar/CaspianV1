@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Employment.Service
 {
-    public class ExtraFactorService : SimpleService<ExtraFactor>, ISimpleService<ExtraFactor>
+    public class ExtraFactorService : BaseService<ExtraFactor>, IBaseService<ExtraFactor>
     {
         public ExtraFactorService(IServiceProvider provider)
             : base(provider)

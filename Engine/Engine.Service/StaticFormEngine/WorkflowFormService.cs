@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine.Service
 {
-    public class WorkflowFormService : SimpleService<Engine.WorkflowForm>, ISimpleService<Engine.WorkflowForm>
+    public class WorkflowFormService : BaseService<Engine.WorkflowForm>, IBaseService<Engine.WorkflowForm>
     {
         public WorkflowFormService(IServiceProvider provider)
             :base(provider)

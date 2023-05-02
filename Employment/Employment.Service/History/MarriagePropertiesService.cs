@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Employment.Service
 {
-    public class MarriagePropertiesService : SimpleService<MarriageProperties>, ISimpleService<MarriageProperties>
+    public class MarriagePropertiesService : BaseService<MarriageProperties>, IBaseService<MarriageProperties>
     {
         public MarriagePropertiesService(ServiceProvider provider)
             :base(provider)

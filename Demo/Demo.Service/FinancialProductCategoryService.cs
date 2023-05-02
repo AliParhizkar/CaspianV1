@@ -6,7 +6,7 @@ using System;
 
 namespace Demo.Service
 {
-    public class FinancialProductCategoryService : SimpleService<FinancialProductCategory>, ISimpleService<FinancialProductCategory>
+    public class FinancialProductCategoryService : BaseService<FinancialProductCategory>, IBaseService<FinancialProductCategory>
     {
         public FinancialProductCategoryService(IServiceProvider provider)
             : base(provider)

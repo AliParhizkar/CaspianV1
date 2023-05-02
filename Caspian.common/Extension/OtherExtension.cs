@@ -17,10 +17,10 @@ namespace Caspian.Common.Extension
                 if (type.IsClass && type.BaseType.IsGenericType && type.Name != "CaspianValidator`1")
                 {
                     var type1 = type.BaseType.GetGenericArguments()[0];
-                    if (type.BaseType == typeof(SimpleService<>).MakeGenericType(type1))
+                    if (type.BaseType == typeof(BaseService<>).MakeGenericType(type1))
                     {
                         services.AddTransient(type);
-                        services.AddTransient(typeof(ISimpleService<>).MakeGenericType(type1), type);
+                        services.AddTransient(typeof(IBaseService<>).MakeGenericType(type1), type);
                     }
                 }
             }

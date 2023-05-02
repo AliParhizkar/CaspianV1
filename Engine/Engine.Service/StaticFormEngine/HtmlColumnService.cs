@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class HtmlColumnService : SimpleService<HtmlColumn>, ISimpleService<HtmlColumn>
+    public class HtmlColumnService : BaseService<HtmlColumn>, IBaseService<HtmlColumn>
     {
         public HtmlColumnService(IServiceProvider provider)
             :base(provider)

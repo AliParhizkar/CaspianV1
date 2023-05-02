@@ -69,7 +69,7 @@ namespace Caspian.Common
 
         public Language Language { get; private set; }
 
-        public int UserId { get;private set; }
+        public int UserId { get; set; }
         /// <summary>
         /// In Master-Details insert MasterInfo should not Validate for Foreign Key
         /// </summary>
@@ -102,7 +102,7 @@ namespace Caspian.Common
                         }
                         else
                         {
-                            var serviceType = typeof(SimpleService<>).MakeGenericType(type);
+                            var serviceType = typeof(BaseService<>).MakeGenericType(type);
                             var service = Activator.CreateInstance(serviceType, ServiceProvider);
                             IQueryable query = serviceType.GetMethod("GetAll").Invoke(service, new object[] { null }) as IQueryable;
                             var name = type.GetProperties().First(t => t.PropertyType == typeof(TModel)).GetCustomAttribute<ForeignKeyAttribute>().Name;
@@ -122,7 +122,6 @@ namespace Caspian.Common
                     }
                 }
             });
-
         }
 
         private IRuleBuilderInitial<TModel, object> RuleForEnum(PropertyInfo info)
@@ -139,33 +138,38 @@ namespace Caspian.Common
                 if (value != null && !Enum.IsDefined(info.PropertyType, value))
                 {
                     var fields = info.PropertyType.GetFields().Where(t => !t.IsSpecialName);
-                    var index = 0;
-                    foreach (var field in fields)
+                    var enumIsValid = false;
+                    foreach(var field in fields)
                     {
-                        if (Convert.ToInt32(field.GetValue(null)) == Math.Pow(2, index))
-                            index++;
-                        else
+                        if (field.GetValue(null) == value) 
+                        {
+                            enumIsValid = true; 
                             break;
+                        }
                     }
-                    var tempValue = Convert.ToInt64(value);
-                    var attr = info.GetCustomAttribute<DisplayNameAttribute>();
-                    string message = null;
-                    if (index < fields.Count() || fields.Count() < 3)
+                    if (!enumIsValid)
                     {
+                        var tempValue = Convert.ToInt64(value);
+                        var attr = info.GetCustomAttribute<DisplayNameAttribute>();
+                        string message = null;
                         if (tempValue == 0)
                         {
                             if (Language == Language.En)
-                                message = attr == null ? "Please specify the value of the field" : "Please specify " + attr.DisplayName ;
+                                message = attr == null ? "Please specify the value of the field" : "Please specify " + attr.DisplayName;
                             else
                                 message = attr == null ? "" : "لطفا " + attr.DisplayName + " را مشخص نمایید.";
                         }
                         else
-                            message = attr == null ? "خطا: In type " + info.PropertyType.Name + " value " + value + " is invalid" : "لطفا " + attr.DisplayName + " را مشخص نمایید";
+                        {
+                            if (Language == Language.Fa)
+                                message = $"مقدار {tempValue} برای نوع شمارشی {info.PropertyType.Name} نامعتبر است";
+                            else
+                                message = $"Value {tempValue} is invalid for {info.PropertyType.Name}";
+                        }
+                            
+                        if (message.HasValue())
+                            context.AddFailure(message);
                     }
-                    else if (tempValue < 0 || tempValue > Math.Pow(2, index) - 1)
-                        message = "مقدار " + tempValue + " برای نوع شمارشی " + info.PropertyType.Name + " نامعتبر است";
-                    if (message.HasValue())                        
-                        context.AddFailure(message);
                 }
             });
             return ruleBuilder;

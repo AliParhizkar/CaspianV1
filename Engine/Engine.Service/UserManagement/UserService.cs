@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 
 namespace Caspian.Engine.Service
 {
-    public class UserService: SimpleService<User>
+    public class UserService: BaseService<User>
     {
         public string OldPassword { get; set; }
 

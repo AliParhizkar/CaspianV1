@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Service
 {
-    public class MenuAccessibilityService : SimpleService<MenuAccessibility>
+    public class MenuAccessibilityService : BaseService<MenuAccessibility>
     {
         public MenuAccessibilityService(IServiceProvider provider) :
             base(provider)

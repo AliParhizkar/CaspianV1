@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class DataModelFieldService : SimpleService<DataModelField>
+    public class DataModelFieldService : BaseService<DataModelField>
     {
         public DataModelFieldService(IServiceProvider provider)
             :base(provider)

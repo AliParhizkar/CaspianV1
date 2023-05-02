@@ -3,7 +3,7 @@ using Caspian.Common.Service;
 
 namespace Caspian.Engine.Service
 {
-    public class DataParameterService : SimpleService<DataParameter>, ISimpleService<DataParameter>
+    public class DataParameterService : BaseService<DataParameter>, IBaseService<DataParameter>
     {
         public DataParameterService(IServiceProvider provider)
             :base(provider)

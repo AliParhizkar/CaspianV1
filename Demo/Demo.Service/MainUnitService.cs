@@ -5,7 +5,7 @@ using Caspian.Common.Service;
 
 namespace Demo.Service
 {
-    public class MainUnitService : SimpleService<MainUnit>, ISimpleService<MainUnit>
+    public class MainUnitService : BaseService<MainUnit>, IBaseService<MainUnit>
     {
         public MainUnitService(IServiceProvider provider)
             : base(provider)

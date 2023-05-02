@@ -1,4 +1,7 @@
 ﻿@page "/Demo/Service"
+@using FluentValidation.Results;
+@inject IServiceScopeFactory ServiceScopeFactory
+@inherits BasePage
 <h2>Service & dependency injection</h2>
 <h3>System architecture</h3>
 <p>
@@ -14,13 +17,334 @@
 </p>
 <h3>Service</h3>
 <p>
-    We create at least one <b>service</b> for each <b>entity</b>. All these services inherit from the <b>SimpleService</b> class, which is a <b>Generic</b> class and <b>entity</b> is its <b>parameter</b>, These services also implement the <b>ISimpleService interface</b>.
+    We create at least one <b>service</b> for each <b>entity</b>. All these services inherit from the <b>BaseService</b> class, which is a <b>Generic</b> class and <b>entity</b> is its <b>generic parameter</b>, These services also implement the <b>IBaseService interface</b>.
 </p>
-<h3>SimpleService&lt;TEntity&gt;</h3>
+<h3>BaseService&lt;TEntity&gt;</h3>
 <p>
-
+    BaseService has a <b>constructor</b> with a parameter of type <b>IServiceProvide</b> and uses it for <b>dependency injection</b>.
 </p>
+<h3 class="pt-2">Dependency injection</h3>
+<p>
+    Infrastructure automatically <b>injects all services</b> as <b>scoped service</b>, we can declare the scope by <b>IServiceScopeFactory</b> or use the <b>CreateScope method of BasePage</b>, this method in addition to creating the scope <b>set UserId</b> automatically.
+</p>
+<TabPanel Style="height:300px">
+    <Tabs>
+        <TabPanelItem Title="C# code">
+            <div class="p-4">
+                <Document FileName="Service-Declaration" />
+                <hr />
+                <h5>Instead of the above code, we can write the following code.</h5>
+                <div>
+                    <Document FileName="Service-Declaration-1" />
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="Razor">
+            <div class="p-4">
+                <h5>Section 1</h5>
+                <Document FileName="Service-Declaration-razor" />
+                <hr />
+                <h5>Section 2</h5>
+                <div>
+                    <Document FileName="Service-Declaration-1-razor" />
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+<ul class="d-demo-list mt-3">
+    <li>
+        BaseService automatically checks default rules like <b>foreign key</b> (in <b>insert-update(upsert)</b> and <b>delete</b>) and <b>enum value</b> without <b>any coding</b>. <br />
+    </li>
+    <li>
+        We can check uniqueness (one or more fields) without coding.
+    </li>
+</ul>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Check foreign key for upsert</h4>
+                        <span class="c-demo-description"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Country</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox @bind-Value="upsertCountryId" TValue="int?" TEntity="SelectListItem" Source="countries" OnChange="() => upsertResult = null" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Country id</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(upsertCountryId?.ToString() ?? "---")</label>
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Validation status</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(upsertResult == null ? "---" : upsertResult.IsValid == true ? "Is valid" : "Is invalid")</label>
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Error message</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(upsertResult?.IsValid == false ? upsertResult.Errors[0] : "---")</label>
+                            </div>
+                            <div class="pt-2 ps-5 pe-5 col-md-12 text-center">
+                                <button class="c-btn c-primary" @onclick="async () => await CheckForeignKeyForUpsert()">Click to validate</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Check foreign key for delete</h4>
+                        <span class="c-demo-description"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Country</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox @bind-Value="deleteCountryId" TValue="int?" TEntity="Country" TextExpression="t => t.Title + '(' + t.Cities.Count() + ')'" OnChange="() => deleteResult = null" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Country id</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(deleteCountryId?.ToString() ?? "---")</label>
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Validation status</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(deleteResult == null ? "---" : deleteResult.IsValid == true ? "Is valid" : "Is invalid")</label>
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Error message</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(deleteResult?.IsValid == false ? deleteResult.Errors[0] : "---")</label>
+                            </div>
+                            <div class="pt-2 ps-5 pe-5 col-md-12 text-center">
+                                <button class="c-btn c-primary" @onclick="async () => await CheckForeignKeyForDelete()">Click to validate</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Check enume</h4>
+                        <span class="c-demo-description"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Order Type</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <DropdownList @bind-Value="orderType" Source='SelectListItem.CreateList("Salon", "Takeout", "Tel", "Internet", "Invalid order type")' OnChange="() => enumResult = null" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Enum value</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <label style="color:red;">@(Convert.ToInt32(orderType))</label>
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Validation status</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(enumResult == null ? "---" : enumResult.IsValid == true ? "Is valid" : "Is invalid")</label>
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Error message</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(enumResult?.IsValid == false ? enumResult.Errors[0] : "---")</label>
+                            </div>
+                            <div class="pt-2 ps-5 pe-5 col-md-12 text-center">
+                                <button class="c-btn c-primary" @onclick="async () => await CheckEnum()">Click to validate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Check unique</h3>
+<p>
+    As with other business rules, <b>fields uniqueness</b> is also checked in the service.<br />
+    We extend <b>IRuleBuilder</b> and add <b>UniqAsync</b> method to it, and use it for <b>uniqueness check</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Single field</h4>
+                        <span class="c-demo-description">.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Country title</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <StringTextBox @bind-Value="countryTitle" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Validation status</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(countryResult == null ? "---" : countryResult.IsValid == true ? "Is valid" : "Is invalid")</label>
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Error message</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(countryResult?.IsValid == false ? countryResult.Errors[0] : "---")</label>
+                            </div>
+                            <div class="pt-2 ps-5 pe-5 col-md-12 text-center">
+                                <button class="c-btn c-primary" @onclick="async () => await CheckCountryTitleUnique()">Click to validate</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Multiple fields</h4>
+                        <span class="c-demo-description"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>City title</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <StringTextBox @bind-Value="cityTitle" />
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Validation status</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(cityResult == null ? "---" : cityResult.IsValid == true ? "Is valid" : "Is invalid")</label>
+                            </div>
+                            <div class="ps-5 col-md-4">
+                                <label>Error message</label>
+                            </div>
+                            <div class="pe-5 col-md-8 text-center">
+                                <label style="color:red;">@(cityResult?.IsValid == false ? cityResult.Errors[0] : "---")</label>
+                            </div>
+                            <div class="pt-2 ps-5 pe-5 col-md-12 text-center">
+                                <button disabled="@(countryId == null)" class="c-btn c-primary" @onclick="async () => await CheckCityTitleUnique()">Click to validate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code 
 {
+    int? upsertCountryId;
+    int? deleteCountryId;
+    OrderType orderType = OrderType.Salon;
+    string countryTitle;
+    string cityTitle;
+    int? countryId;
+    IList<SelectListItem> countries;
+    ValidationResult upsertResult;
+    ValidationResult deleteResult;
+    ValidationResult enumResult;
+    ValidationResult countryResult;
+    ValidationResult cityResult;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var scope = ServiceScopeFactory.CreateScope();
+        var service = new CityService(scope.ServiceProvider);
+        service.UserId = UserId;
+        var city = await service.GetAll().FirstOrDefaultAsync();
+        countryId = city?.Id;
+        cityTitle = city?.Title;
+        countries = await new CountryService(scope.ServiceProvider).GetAll().Take(5)
+        .Select(t => new SelectListItem()
+        {
+            Text = t.Title,
+            Value = t.Id.ToString()
+        }).ToListAsync();
+        countries.Add(new SelectListItem("1256985", "Invalid Country"));
+        countryTitle = countries.FirstOrDefault()?.Text;
+        await base.OnInitializedAsync();
+    }
+
+    async Task CheckForeignKeyForUpsert()
+    {
+        var scope = CreateScope();
+        var service = new CityService(scope.ServiceProvider);
+        var city = new City()
+            {
+                CountryId = upsertCountryId ?? 0,
+                ActiveType = ActiveType.Enable,
+                Title = "For Test"
+            };
+        upsertResult = await service.ValidateAsync(city);
+    }
+
+    async Task CheckForeignKeyForDelete()
+    {
+        if (deleteCountryId == null)
+            ShowMessage("Please specify country to validate");
+        else
+        {
+            var scope = CreateScope();
+            var service = new CountryService(scope.ServiceProvider);
+            var country = await service.SingleAsync(deleteCountryId.Value);
+            deleteResult = await service.ValidateRemoveAsync(country);
+        }
+
+    }
+
+    async Task CheckEnum()
+    {
+        var scope = CreateScope();
+        var service = new EnumOrderService(scope.ServiceProvider);
+        var order = new Order()
+        {
+            OrderType = orderType,
+        };
+        enumResult = await service.ValidateAsync(order);
+    }
+
+    async Task CheckCountryTitleUnique()
+    {
+        var scope = CreateScope();
+        countryResult = await new CountryService(scope.ServiceProvider).ValidateAsync(new Country()
+        {
+            Title = countryTitle,
+            ActiveType = ActiveType.Enable
+        });
+    }
+
+    async Task CheckCityTitleUnique()
+    {
+        var scope = CreateScope();
+        cityResult = await new CityService(scope.ServiceProvider).ValidateAsync(new City()
+        {
+            CountryId = countryId.Value,
+            Title = cityTitle,
+            ActiveType = ActiveType.Enable
+        });
+    }
 }

@@ -145,7 +145,7 @@ namespace Caspian.UI
             }
             var id = Convert.ToInt32(typeof(TAccess).GetPrimaryKey().GetValue(data));
             using var scope = CreateScope();
-            var service = new SimpleService<TAccess>(scope.ServiceProvider);
+            var service = new BaseService<TAccess>(scope.ServiceProvider);
             var old = await service.SingleOrDefaultAsync(id);
             if (old == null)
             {

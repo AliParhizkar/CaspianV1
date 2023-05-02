@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class ReportService : SimpleService<Report>
+    public class ReportService : BaseService<Report>
     {
         public ReportService(IServiceProvider provider)
             :base(provider)

@@ -27,7 +27,7 @@ namespace Caspian.UI
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
                 using var scope = CreateScope();
 
-                var service = scope.ServiceProvider.GetService<ISimpleService<TEntity>>();
+                var service = scope.ServiceProvider.GetService<IBaseService<TEntity>>();
                 if (service == null)
                     throw new CaspianException("خطا: Service od type ISimpleService<" + typeof(TEntity).Name + "> not implimented", null);
                 if (id == 0)
@@ -86,7 +86,7 @@ namespace Caspian.UI
         protected virtual async Task DeleteAsync(TEntity data)
         {
             using var scope = CreateScope();
-            var service = scope.ServiceProvider.GetService<ISimpleService<TEntity>>();
+            var service = scope.ServiceProvider.GetService<IBaseService<TEntity>>();
             var result = await service.ValidateAsync(data, t => t.IncludeRuleSets("Remove"));
             if (result.IsValid)
             {
@@ -129,7 +129,7 @@ namespace Caspian.UI
                         UpsertWindow.OnInternalOpen = EventCallback.Factory.Create(this, async () =>
                         {
                             using var scope = CreateScope();
-                            var service = new SimpleService<TEntity>(scope.ServiceProvider);
+                            var service = new BaseService<TEntity>(scope.ServiceProvider);
                             var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
                             TEntity tempData = null;
                             if (value == 0)
@@ -151,7 +151,7 @@ namespace Caspian.UI
                         else
                         {
                             using var scope = CreateScope();
-                            var service = new SimpleService<TEntity>(scope.ServiceProvider);
+                            var service = new BaseService<TEntity>(scope.ServiceProvider);
                             tempData = await service.SingleAsync(value);
                         }
                         UpsertData.CopySimpleProperty(tempData);

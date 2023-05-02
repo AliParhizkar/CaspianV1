@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Employment.Service
 {
-    public class EmploymentOrderTypeService : SimpleService<EmploymentOrderType>, ISimpleService<EmploymentOrderType>
+    public class EmploymentOrderTypeService : BaseService<EmploymentOrderType>, IBaseService<EmploymentOrderType>
     {
         public EmploymentOrderTypeService(IServiceProvider provider)
             : base(provider)

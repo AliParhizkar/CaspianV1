@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Employment.Service
 {
-    public class OrganPostService : SimpleService<OrganPost>, ISimpleService<OrganPost>
+    public class OrganPostService : BaseService<OrganPost>, IBaseService<OrganPost>
     {
         public OrganPostService(IServiceProvider provider)
             : base(provider)

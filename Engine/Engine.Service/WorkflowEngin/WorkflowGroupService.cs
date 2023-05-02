@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class WorkflowGroupService : SimpleService<WorkflowGroup>
+    public class WorkflowGroupService : BaseService<WorkflowGroup>
     {
         public WorkflowGroupService(IServiceProvider provider)
             : base(provider)

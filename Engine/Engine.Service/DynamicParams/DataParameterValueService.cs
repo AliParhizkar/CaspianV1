@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class DataParameterValueService : SimpleService<DataParameterValue>, ISimpleService<DataParameterValue>
+    public class DataParameterValueService : BaseService<DataParameterValue>, IBaseService<DataParameterValue>
     {
         public DataParameterValueService(IServiceProvider provider)
             :base(provider)

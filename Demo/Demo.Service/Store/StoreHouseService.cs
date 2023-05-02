@@ -6,7 +6,7 @@ using System;
 
 namespace Demo.Service
 {
-    public class WareHouseService : SimpleService<Warehouse>, ISimpleService<Warehouse>
+    public class WareHouseService : BaseService<Warehouse>, IBaseService<Warehouse>
     {
         public WareHouseService(IServiceProvider provider)
             : base(provider)

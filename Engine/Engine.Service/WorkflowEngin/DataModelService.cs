@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class DataModelService : SimpleService<DataModel>
+    public class DataModelService : BaseService<DataModel>
     {
         public DataModelService(IServiceProvider provider)
             : base(provider)

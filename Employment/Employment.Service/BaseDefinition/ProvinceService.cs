@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Employment.Service
 {
-    public class ProvinceService : SimpleService<Province>, ISimpleService<Province>
+    public class ProvinceService : BaseService<Province>, IBaseService<Province>
     {
         public ProvinceService(IServiceProvider provider)
             : base(provider)

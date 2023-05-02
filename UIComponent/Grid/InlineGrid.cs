@@ -33,7 +33,7 @@ namespace Caspian.UI
 
         public void OnInitializedOperation()
         {
-            var type = typeof(ISimpleService<TEntity>);
+            var type = typeof(IBaseService<TEntity>);
             using var scope = ServiceScopeFactory.CreateScope();
             var dataService = scope.ServiceProvider.GetService(typeof(CaspianDataService)) as CaspianDataService;
             dataService.UserId = CaspianDataService.UserId;

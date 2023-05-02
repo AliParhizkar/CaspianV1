@@ -5,7 +5,7 @@ using Caspian.Common.Extension;
 
 namespace Caspian.Engine.Service
 {
-    public class ActivityService : SimpleService<Activity>
+    public class ActivityService : BaseService<Activity>
     {
         public ActivityService(IServiceProvider provider)
             :base(provider)

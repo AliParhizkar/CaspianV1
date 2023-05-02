@@ -6,7 +6,7 @@ using Caspian.Common;
 
 namespace Caspian.Engine.Service
 {
-    public class MenuCategoryService : SimpleService<MenuCategory>, ISimpleService<MenuCategory>
+    public class MenuCategoryService : BaseService<MenuCategory>, IBaseService<MenuCategory>
     {
         public MenuCategoryService(IServiceProvider provider)
             :base(provider)

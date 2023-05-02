@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine.Service
 {
-    public class ReportParamService : SimpleService<ReportParam>
+    public class ReportParamService : BaseService<ReportParam>
     {
         public ReportParamService(IServiceProvider provider)
             :base(provider)

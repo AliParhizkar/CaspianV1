@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Employment.Service
 {
-    public class WorkHistoryService : SimpleService<WorkHistory>, ISimpleService<WorkHistory>
+    public class WorkHistoryService : BaseService<WorkHistory>, IBaseService<WorkHistory>
     {
         public WorkHistoryService(ServiceProvider provider)
             :base(provider)

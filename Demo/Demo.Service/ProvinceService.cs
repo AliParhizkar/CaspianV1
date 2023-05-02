@@ -6,7 +6,7 @@ using System;
 
 namespace Demo.Service
 {
-    public class CountryService : SimpleService<Country>, ISimpleService<Country>
+    public class CountryService : BaseService<Country>, IBaseService<Country>
     {
         public CountryService(IServiceProvider provider)
             : base(provider)

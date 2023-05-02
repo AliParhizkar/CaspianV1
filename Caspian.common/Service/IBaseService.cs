@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 
 namespace Caspian.Common.Service
 {
-    public interface ISimpleService<TEntity>: IEntity, IValidator<TEntity>
+    public interface IBaseService<TEntity>: IEntity, IValidator<TEntity>
     {
         IQueryable<TEntity> GetAll(TEntity entity = default);
 
@@ -20,7 +19,7 @@ namespace Caspian.Common.Service
         Task<TEntity> SingleOrDefaultAsync(int id);
     }
 
-    public interface ISimpleService
+    public interface IBaseService
     {
         IQueryable GetAllRecords();
 

@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Employment.Service
 {
-    public class OrganUnitService : SimpleService<OrganUnit>, ISimpleService<OrganUnit>
+    public class OrganUnitService : BaseService<OrganUnit>, IBaseService<OrganUnit>
     {
         public OrganUnitService(IServiceProvider provider)
             : base(provider)

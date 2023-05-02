@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Caspian.Engine.Service
 {
-    public class ReportGroupService : SimpleService<ReportGroup>, ISimpleService<ReportGroup>
+    public class ReportGroupService : BaseService<ReportGroup>, IBaseService<ReportGroup>
     {
         public ReportGroupService(IServiceProvider provider)
             :base(provider)

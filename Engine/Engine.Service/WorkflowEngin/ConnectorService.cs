@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class ConnectorService : SimpleService<Connector>
+    public class ConnectorService : BaseService<Connector>
     {
         public ConnectorService(IServiceProvider provider)
             :base(provider)

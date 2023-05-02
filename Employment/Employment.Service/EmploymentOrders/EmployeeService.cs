@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Employment.Service
 {
-    public class EmployeeService : SimpleService<Employee>, ISimpleService<Employee>
+    public class EmployeeService : BaseService<Employee>, IBaseService<Employee>
     {
         public EmployeeService(IServiceProvider provider) :
             base(provider)

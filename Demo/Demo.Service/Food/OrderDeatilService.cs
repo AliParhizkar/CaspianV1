@@ -10,7 +10,7 @@ using System;
 namespace Demo.Service
 {
     [ReportClass]
-    public class OrderDeatilService : SimpleService<OrderDeatil>, ISimpleService<OrderDeatil>
+    public class OrderDeatilService : BaseService<OrderDeatil>, IBaseService<OrderDeatil>
     {
         public OrderDeatilService(IServiceProvider provider)
             :base(provider)

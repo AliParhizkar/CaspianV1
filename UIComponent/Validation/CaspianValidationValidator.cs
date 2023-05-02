@@ -75,7 +75,7 @@ namespace Caspian.UI
             }
             Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             if (Source != null)
-                (Validator as ISimpleService).SetSource(Source);
+                (Validator as IBaseService).SetSource(Source);
             if (BatchService?.IgnorePropertyInfo != null)
             {
                 context.RootContextData["__IgnorePropertyInfo"] = BatchService?.IgnorePropertyInfo;

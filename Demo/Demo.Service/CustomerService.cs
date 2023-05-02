@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Demo.Service
 {
     [ReportClass]
-    public class CustomerService : SimpleService<Customer>, ISimpleService<Customer>
+    public class CustomerService : BaseService<Customer>, IBaseService<Customer>
     {
         public CustomerService(IServiceProvider provider)
             :base(provider)

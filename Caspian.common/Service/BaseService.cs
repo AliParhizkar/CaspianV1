@@ -12,10 +12,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common.Service
 {
-    public class SimpleService<TEntity> : CaspianValidator<TEntity>, ISimpleService, IDisposable, ISimpleService<TEntity> where TEntity : class
+    public class BaseService<TEntity> : CaspianValidator<TEntity>, IBaseService, IDisposable, IBaseService<TEntity> where TEntity : class
     {
         protected ReadOnlyCollection<TEntity> Source;
-        public SimpleService(IServiceProvider provider)
+        public BaseService(IServiceProvider provider)
             :base(provider)
         {
             
@@ -50,9 +50,9 @@ namespace Caspian.Common.Service
             }
         }
 
-        public ISimpleService<T> GetEntityService<T>() where T: class
+        public IBaseService<T> GetEntityService<T>() where T: class
         {
-            return new SimpleService<T>(ServiceProvider);
+            return new BaseService<T>(ServiceProvider);
         }
 
         public TService GetService<TService>() where TService : class

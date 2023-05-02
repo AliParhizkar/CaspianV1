@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class HtmlRowService : SimpleService<HtmlRow>, ISimpleService<HtmlRow>
+    public class HtmlRowService : BaseService<HtmlRow>, IBaseService<HtmlRow>
     {
         public HtmlRowService(IServiceProvider provider)
             :base(provider)

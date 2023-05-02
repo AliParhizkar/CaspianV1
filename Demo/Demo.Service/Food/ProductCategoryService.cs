@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {
-    public class ProductCategoryService : SimpleService<ProductCategory>, ISimpleService<ProductCategory>
+    public class ProductCategoryService : BaseService<ProductCategory>, IBaseService<ProductCategory>
     {
         public ProductCategoryService(IServiceProvider provider)
             : base(provider)

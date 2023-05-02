@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class RoleService: SimpleService<Role>
+    public class RoleService: BaseService<Role>
     {
         public RoleService(IServiceProvider provider) :
             base(provider)

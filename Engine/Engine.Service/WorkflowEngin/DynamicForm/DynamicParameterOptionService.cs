@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class DynamicParameterOptionService : SimpleService<DynamicParameterOption>
+    public class DynamicParameterOptionService : BaseService<DynamicParameterOption>
     {
         public DynamicParameterOptionService(IServiceProvider provider)
             :base(provider)

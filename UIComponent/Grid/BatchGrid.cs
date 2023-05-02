@@ -24,8 +24,8 @@ namespace Caspian.UI
 
         IQueryable GetQueryForType(Type type, object value)
         {
-            var serviceType = typeof(ISimpleService<>).MakeGenericType(type);
-            var service = ServiceScopeFactory.CreateScope().ServiceProvider.GetService(serviceType) as ISimpleService;
+            var serviceType = typeof(IBaseService<>).MakeGenericType(type);
+            var service = ServiceScopeFactory.CreateScope().ServiceProvider.GetService(serviceType) as IBaseService;
             var query = service.GetAllRecords();
             var param = Expression.Parameter(type, "t");
             Expression expr = Expression.Property(param, type.GetPrimaryKey());
@@ -48,8 +48,8 @@ namespace Caspian.UI
 
         public async Task<string> PostToDatabaseAsync()
         {
-            var serviceType = typeof(ISimpleService<TEntity>);
-            var service = ServiceScopeFactory.CreateScope().ServiceProvider.GetService(serviceType) as SimpleService<TEntity>;
+            var serviceType = typeof(IBaseService<TEntity>);
+            var service = ServiceScopeFactory.CreateScope().ServiceProvider.GetService(serviceType) as BaseService<TEntity>;
             var insertedEntities = GetInsertedEntities();
             foreach(var entity in insertedEntities)
             {
@@ -231,7 +231,7 @@ namespace Caspian.UI
         {
             var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
             using var scope = ServiceScopeFactory.CreateScope();
-            var service = scope.ServiceProvider.GetService(typeof(ISimpleService<TEntity>)) as SimpleService<TEntity>;
+            var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
             var result = await service.ValidateRemoveAsync(entity);
             if (result.IsValid)
             {

@@ -6,7 +6,7 @@ using System;
 
 namespace Demo.Service
 {
-    public class CustomerGroupMembershipService : SimpleService<CustomerGroupMembership>, ISimpleService<CustomerGroupMembership>
+    public class CustomerGroupMembershipService : BaseService<CustomerGroupMembership>, IBaseService<CustomerGroupMembership>
     {
         public CustomerGroupMembershipService(IServiceProvider provider)
             :base(provider)

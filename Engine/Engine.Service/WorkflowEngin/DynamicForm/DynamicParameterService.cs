@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Service
 {
-    public class DynamicParameterService : SimpleService<DynamicParameter>
+    public class DynamicParameterService : BaseService<DynamicParameter>
     {
         public DynamicParameterService(IServiceProvider provider)
             :base(provider)

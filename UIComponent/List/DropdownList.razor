@@ -164,7 +164,14 @@
                 }
             }
             else
-                text = Source.SingleOrDefault(t => t.Value == Convert.ToString(Value))?.Text;
+            {
+                string strValue = null;
+                if (typeof(TValue).GetUnderlyingType().IsEnum)
+                    strValue = Convert.ToString(Convert.ToInt32(Value));
+                else
+                    strValue = Convert.ToString(Convert.ToInt32(Value));
+                text = Source.SingleOrDefault(t => t.Value == strValue)?.Text;
+            }
         }
         attrs = new Dictionary<string, object>();
         if (Style.HasValue())

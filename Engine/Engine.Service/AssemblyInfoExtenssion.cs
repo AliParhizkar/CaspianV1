@@ -66,9 +66,9 @@ namespace Caspian.Engine.Service
                     if (baseType.IsGenericType && baseType.GenericTypeArguments.Length == 1)
                     {
                         var genericType = baseType.GenericTypeArguments[0];
-                        if (baseType == typeof(SimpleService<>).MakeGenericType(genericType))
+                        if (baseType == typeof(BaseService<>).MakeGenericType(genericType))
                         {
-                            services.AddScoped(typeof(ISimpleService<>).MakeGenericType(genericType), provider => Activator.CreateInstance(type, provider));
+                            services.AddScoped(typeof(IBaseService<>).MakeGenericType(genericType), provider => Activator.CreateInstance(type, provider));
                         }
                     }
                     baseType = baseType.BaseType;
