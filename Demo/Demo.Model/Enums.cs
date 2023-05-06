@@ -69,6 +69,7 @@ namespace Demo.Model
         Internet = 8
     }
 
+    [EnumType(Isbitw = true)]
     public enum Meal : byte
     {
         [Display(Name = "Breakfast")]

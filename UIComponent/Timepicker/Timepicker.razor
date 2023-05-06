@@ -15,7 +15,7 @@
     if (Disabled)
         className += " t-state-disabled";
 } 
-<div @ref="htmlElement" class="t-widget t-timepicker">
+<div @ref="htmlElement" class="t-widget t-timepicker" style="@(Style)">
     <div @attributes="attrs" class="@className">
         @if (DefaultMode)
         {

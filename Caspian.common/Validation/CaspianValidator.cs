@@ -7,6 +7,7 @@ using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using FluentValidation.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
+using Caspian.Common.Attributes;
 
 namespace Caspian.Common
 {
@@ -135,21 +136,34 @@ namespace Caspian.Common
             var ruleBuilder = new RuleBuilder<TModel, object>(rule, this);
             ruleBuilder.Custom((value, context) =>
             {
+                
                 if (value != null && !Enum.IsDefined(info.PropertyType, value))
                 {
-                    var fields = info.PropertyType.GetFields().Where(t => !t.IsSpecialName);
+                    var tempValue = Convert.ToInt64(value);
                     var enumIsValid = false;
-                    foreach(var field in fields)
+                    var isbitwise = info.PropertyType.GetUnderlyingType().GetCustomAttribute<EnumTypeAttribute>()?.Isbitw == true;
+                    var fields = info.PropertyType.GetFields().Where(t => !t.IsSpecialName);
+                    if (isbitwise)
                     {
-                        if (field.GetValue(null) == value) 
+                        var max = Convert.ToInt64(fields.Max(t => t.GetValue(null)));
+                        if (tempValue >= 0 && tempValue < 2 * max) 
+                            enumIsValid = true;
+                    }
+                    else
+                    {
+                        foreach (var field in fields)
                         {
-                            enumIsValid = true; 
-                            break;
+                            if (field.GetValue(null) == value)
+                            {
+                                enumIsValid = true;
+                                break;
+                            }
                         }
                     }
+
                     if (!enumIsValid)
                     {
-                        var tempValue = Convert.ToInt64(value);
+                        
                         var attr = info.GetCustomAttribute<DisplayNameAttribute>();
                         string message = null;
                         if (tempValue == 0)

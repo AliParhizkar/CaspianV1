@@ -41,7 +41,7 @@ namespace Caspian.UI
                     await CrudGrid.SelectRowById(id);
                 }
                 else
-                    await CrudGrid.Reload();
+                    await CrudGrid.ReloadAsync();
                 if (UpsertWindow != null)
                     await UpsertWindow.Close();
                 await UpsertForm.ResetAsync();
@@ -104,7 +104,7 @@ namespace Caspian.UI
                     {
                         ShowMessage("این آیتم قبلا حذف شده است");
                     }
-                    await CrudGrid.Reload();
+                    await CrudGrid.ReloadAsync();
                 }
             }
             else

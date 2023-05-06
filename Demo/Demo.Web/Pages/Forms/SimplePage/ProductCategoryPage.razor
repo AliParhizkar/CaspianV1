@@ -98,7 +98,7 @@
         var service = new ProductCategoryService(scope.ServiceProvider);
         await service.IncPriorityAsync(category);
         await service.SaveChangesAsync();
-        await CrudGrid.Reload();
+        await CrudGrid.ReloadAsync();
         await CrudGrid.SelectRowById(category.Id);
     }
 
@@ -108,7 +108,7 @@
         var service = new ProductCategoryService(scope.ServiceProvider);
         await service.DecPriorityAsync(category);
         await service.SaveChangesAsync();
-        await CrudGrid.Reload();
+        await CrudGrid.ReloadAsync();
         await CrudGrid.SelectRowById(category.Id);
     }
 }

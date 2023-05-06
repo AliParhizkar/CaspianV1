@@ -189,8 +189,10 @@ html input[disabled], textarea[disabled] {
 .t-state-disabled .t-input{
     color:gray!important;
 }
-.t-state-disabled{
-    background-image:none!important;
+.t-dropdown .t-state-disabled {
+    background-image: none !important;
+    background-color: #e2e2e2;
+    cursor: not-allowed;
 }
 .t-numerictextbox.t-state-hover .t-input {
     border-color: rgba(0,0,0,0.24);
@@ -455,14 +457,6 @@ button:disabled {
     border:1px solid lightgray;
 }
 
-
-.t-state-disabled,
-.t-state-disabled:hover,
-.t-state-disabled .t-link,
-.t-state-disabled .t-button {
-    color: #999;
-    background-image: none;
-}
 
 .t-header .t-state-disabled,
 .t-header .t-state-disabled .t-link {

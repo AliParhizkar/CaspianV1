@@ -116,7 +116,7 @@ namespace Caspian.UI
                 service.RemoveRange(deletedList);
             await service.SaveChangesAsync();
             await transaction.CommitAsync();
-            await Reload();
+            await ReloadAsync();
             return null;
         }
 

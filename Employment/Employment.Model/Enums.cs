@@ -6,7 +6,6 @@ namespace Employment.Model
     /// <summary>
     /// رتبه
     /// </summary>
-    [EnumType("رتبه")]
     public enum BaseType : byte
     {
         [Display(Name = "مقدماتی")]
@@ -25,7 +24,6 @@ namespace Employment.Model
         Rank1
     }
 
-    [EnumType("پایه تحصیلی")]
     public enum BaseStudy: byte
     {
         /// <summary>
@@ -68,7 +66,6 @@ namespace Employment.Model
     /// <summary>
     /// زن
     /// </summary>
-    [EnumType("جنسیت")]
     public enum Gender:byte
     {
         /// <summary>
@@ -84,7 +81,6 @@ namespace Employment.Model
         Female
     }
 
-    [EnumType("وضعیت فعال")]
     public enum ActiveType: byte
     {
         /// <summary>

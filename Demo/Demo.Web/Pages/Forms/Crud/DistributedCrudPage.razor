@@ -1,4 +1,4 @@
-﻿@page "/Demo/GridDisterbutedPage"
+﻿@page "/Demo/DistributedCrud"
 @namespace Demo.Web.Pages
 @inherits SimplePage<Product>
 <div class="c-controls c-header row m-3 align-items-center">
@@ -7,12 +7,6 @@
     </div>
     <div class="col-md-7">
         <ComboBox TValue="int?" TEntity="ProductCategory" @bind-Value="productCategoryId" TextExpression="t => t.Title" OnValueChanged="() => CrudGrid.EnableLoading()" />
-    </div>
-    <div class="d-source-btn col-md-3">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
     </div>
 </div>
 <div class="c-body ms-3 me-3">

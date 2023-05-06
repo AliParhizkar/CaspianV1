@@ -1,4 +1,4 @@
-﻿@page "/Demo/Product"
+﻿@page "/Demo/CustomeInlineUpdate"
 @namespace Demo.Web.Pages
 @inherits SimplePage<Product>
 @{
@@ -49,7 +49,7 @@
         var service = new ProductService(scope.ServiceProvider);
         await service.ToggleStatusAsync(id);
         await service.SaveChangesAsync();
-        await CrudGrid.Reload();
+        await CrudGrid.ReloadAsync();
     }
 
     async Task ToggleOutofstock(int id)
@@ -58,6 +58,6 @@
         var service = new ProductService(scope.ServiceProvider);
         await service.ToggleOutofstock(id);
         await service.SaveChangesAsync();
-        await CrudGrid.Reload();
+        await CrudGrid.ReloadAsync();
     }
 }

@@ -1,0 +1,104 @@
+﻿@page "/Demo/InformCrud"
+@namespace Demo.Web
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<h2>Inform page</h2>
+<p>
+    In this example, instead of a <b>pop-up window</b>, we place the form on the page. 
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="ps-3 pe-3">
+                <CrudComponent TEntity="Product" UpsertData="upsertData">
+                    <CaspianForm Model="upsertData" OnReset="() => upsertData.Image = null">
+                        <div class="row c-controls data-form-container mt-3 ps-3 pt-3 pb-3">
+                            <div class="col-md-5 pe-4">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <label>Product category</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <ComboBox @bind-Value="upsertData.ProductCategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Title"
+                                                  OrderByExpression="t => t.Title" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Title</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="upsertData.Title" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Meal</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <MultiSelectBox @bind-Value="upsertData.Meal" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Status</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <DropdownList @bind-Value="upsertData.ActiveType" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <label>Price</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <NumericTextBox @bind-Value="upsertData.Price" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Take out price</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <NumericTextBox @bind-Value="upsertData.TakeoutPrice" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="upsertData.Code" />
+                                    </div>
+                                    <div class="col-md-8 align-content-center">
+                                        <FormCommandButton />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 ps-4 align-content-center">
+                                <Fileupload OnChange="SetImage">
+                                    <PictureBox Data="upsertData.Image" style="width:200px;height:200px" />
+                                </Fileupload>
+                            </div>
+                        </div>
+                    </CaspianForm>
+                    <DataGrid TEntity="Product" TableHeight="250">
+                        <Columns>
+                            <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
+                            <GridColumn Field="t => t.Title" />
+                            <GridColumn Field="t => t.ActiveType.EnumText()" />
+                            <GridColumn Field="t => t.Price.Seprate3Digit()" />
+                            <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
+                            <GridColumn Field="t => t.Discountable.ToString()" />
+                            <GridCommandColumns />
+                        </Columns>
+                    </DataGrid>
+                </CrudComponent>
+
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+@code
+{
+    Product upsertData = new Product();
+
+    async Task SetImage(InputFileChangeEventArgs e)
+    {
+        upsertData.Image = await e.File.GetByteArrayAsync();
+    }
+}

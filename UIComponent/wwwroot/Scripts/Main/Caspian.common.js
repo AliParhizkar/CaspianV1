@@ -1,5 +1,16 @@
 ﻿(function($) {
     let $c = $.caspian = {
+        gridData: {
+            resize: 0,
+            gridStatus:0,
+            mouseState: 0,
+            curent: null,
+            other: null,
+            curentWidth: 0,
+            otherWidth: 0,
+            xStart: 0,
+            grid: null,
+        },
         bindTooltip() {
             let tooltipTriggerList = [];
             $('[data-bs-toggle="tooltip"]').each(function () {
@@ -531,8 +542,9 @@
                 subtree: false
             });
         },
-        dadaGridBind: function (grv) {
+        dadaGridBind: function (grid) {
             const resizeObserver = new ResizeObserver(entries => {
+                let grv = grid;
                 for (let entry of entries) {
                     if (entry.contentBoxSize && entry.contentBoxSize[0]) {
                         if ($(grv).find('.t-grid-content').height() < $(grv).find('.t-grid-content table').height()) {
@@ -546,78 +558,79 @@
                     }
                 }
             });
-            resizeObserver.observe($(grv).find('.t-grid-content')[0]);
-            $(grv).find('.t-grid-header-wrap th').mousemove(function (e) {
+            resizeObserver.observe($(grid).find('.t-grid-content')[0]);
+            $(grid).find('.t-grid-header-wrap th').mousemove(function (e) {
                 let left = $(this).offset().left, right = left + $(this).width(), x = e.clientX;
-                if ((x - left) < 5 || (right - x) < 5 || $(grv).data('mouseState')) {
+                if ((x - left) < 5 || (right - x) < 5 || $c.gridData.mouseState) {
                     $(this).css('cursor', 'col-resize');
-                    $(grv).data('resize', true);
+                    $c.gridData.resize = true;
                 }
                 else {
                     $(this).css('cursor', '');
-                    $(grv).data('resize', true);
+                    $c.gridData.resize = true;
                 }
             });
-            $(grv).find('.t-grid-content').scroll(function () {
-                var scrollLeft = $(this).scrollLeft();
+            $(grid).find('.t-grid-content').scroll(function () {
+                let scrollLeft = $(this).scrollLeft();
                 $(grv).find('.t-grid-header').scrollLeft(scrollLeft);
             });
-            $(grv).find('.t-grid-header-wrap th').mousedown(function (e) {
-                if ($(grv).data('resize')) {
-                    var rtl = $('body').hasClass('t-rtl');
+            $(grid).find('.t-grid-header-wrap th').mousedown(function (e) {
+                $c.gridData.grid = $(e.target).closest('.t-grid');
+                if ($c.gridData.resize) {
+                    let rtl = $('body').hasClass('t-rtl');
                     let left = $(this).offset().left, right = left + $(this).width(), x = e.clientX;
                     if (x - left < 5 && rtl || right - x < 5 && !rtl) {
-                        $(grv).data('curent', $(this));
-                        $(grv).data('curentWidth', $(this).width());
+                        $c.gridData.curent = $(this);
+                        $c.gridData.curentWidth = $(this).width()
                         let $next = $(this).next();
                         if ($next[0] == null)
-                            $(grv).data('gridStatus', 3);
+                            $c.gridData.gridStatus = 3;
                         else
-                            $(grv).data('gridStatus', 1);
-                        $(grv).data('other', $next);
-                        $(grv).data('otherWidth', $next.width());
+                            $c.gridData.gridStatus = 1;
+                        $c.gridData.other = $next;
+                        $c.gridData.otherWidth = $next.width()
                     }
                     if (right - x < 5 && rtl || x - left < 5 && !rtl) {
-                        $(grv).data('curent', $(this));
-                        $(grv).data('curentWidth', $(this).width());
+                        $c.gridData.curent = $(this);
+                        $c.gridData.curentWidth = $(this).width()
                         let $prev = $(this).prev();
                         if ($prev[0] == null)
-                            $(grv).data('gridStatus', 3);
+                            $c.gridData.gridStatus = 3;
                         else
-                            $(grv).data('gridStatus', 2);
-                        $(grv).data('other', $(this).prev());
-                        $(grv).data('otherWidth', $(this).prev().width());
+                            $c.gridData.gridStatus = 2;
+                        $c.gridData.other = $(this).prev();
+                        $c.gridData.otherWidth = $(this).prev().width();
                     }
-                    $(grv).data('mouseState', true);
-                    $(grv).data('xStart', e.clientX);
+                    $c.gridData.mouseState = true;
+                    $c.gridData.xStart = e.clientX;
                 }
             });
             $('body').unbind('click.gridresize');
             $('body').bind('click.gridresize', function (e) {
-                $(grv).data('mouseState', false);
+                $c.gridData.mouseState = false;
             });
             $('body').unbind('mousemove.gridresize');
             $('body').bind('mousemove.gridresize', function (e) {
-                if ($(grv).data('mouseState') == true) {
-                    if ($(grv).data('gridStatus') == 3)
+                let grv = $c.gridData.grid;
+                if ($c.gridData.mouseState == true) {
+                    if ($c.gridData.gridStatus == 3)
                         return;
-                    let dif = $(grv).data('xStart') - e.clientX;
-                    if ($(grv).data('gridStatus') == 2)
+                    let dif = $c.gridData.xStart - e.clientX;
+                    if ($c.gridData.gridStatus == 2)
                         dif = -dif;
                     if ($('body').hasClass('t-ltr'))
                         dif = -dif;
-                    let curentWidth = $(grv).data('curentWidth');
-                    let otherWidth = $(grv).data('otherWidth') - 1;
+                    let curentWidth = $c.gridData.curentWidth;
+                    let otherWidth = $c.gridData.otherWidth - 1;
                     let curentResult = curentWidth + dif, otherResult = otherWidth - dif;
                     if (curentResult < 30 || otherResult < 30)
                         return;
-                    
-                    $(grv).data('curent').width(curentResult);
-                    let curentIndex = $(grv).find('.t-grid-header-wrap th').index($(grv).data('curent'));
+                    $c.gridData.curent.width(curentResult);
+                    let curentIndex = $(grv).find('.t-grid-header-wrap th').index($c.gridData.curent);
                     $(grv).find('.t-grid-content table tr').first().children().eq(curentIndex).width(curentResult);
                     $(grv).find('.c-grid-inline table tr').first().children().eq(curentIndex).width(curentResult);
-                    let otherIndex = $(grv).find('.t-grid-header-wrap th').index($(grv).data('other'));
-                    $(grv).data('other').width(otherResult);
+                    let otherIndex = $(grv).find('.t-grid-header-wrap th').index($c.gridData.other);
+                    $c.gridData.other.width(otherResult);
                     $(grv).find('.t-grid-content table tr').first().children().eq(otherIndex).width(otherResult);
                     $(grv).find('.c-grid-inline table tr').first().children().eq(otherIndex).width(otherResult);
                     if ($(grv).find('.t-grid-content').height() < $(grv).find('.t-grid-content table').height()) {
@@ -629,14 +642,16 @@
                         $(grv).find('.t-grid-header').css('padding-right', 0).css('padding-left', 0);
                 }
             });
-            $(grv).find('.t-grid-content').scroll(function () {
+            $(grid).find('.t-grid-content').scroll(function () {
+                let grv = grid;
                 let scrollLeft = $(this).scrollLeft();
                 $(grv).find('.t-grid-header-wrap').scrollLeft(scrollLeft);
             });
-            $(grv).find('.c-page-size .fa-angle-up').click(function () {
+            $(grid).find('.c-page-size .fa-angle-up').click(function () {
+                let grv = grid;
                 $(grv).find('.c-page-size ul').css('display', 'block');
             });
-            $(grv).find('.c-page-size li').click(function () {
+            $(grid).find('.c-page-size li').click(function () {
                 let value = $(this).text();
                 let $input = $(grv).find('.c-page-size input');
                 let oldValue = $input.val();
@@ -778,6 +793,7 @@
                     if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
                         let $window = $(mutation.target).closest('.t-window');
                         if ($(mutation.target).attr('status') == "2") {
+                            $window.css('top', $('.c-content-main').scrollTop() - 20);
                             $window.css('display', 'block');
                             let $header = $window.find('.t-window-titlebar');
                             if ($(mutation.target).attr('draggable') != undefined) {
@@ -804,8 +820,6 @@
                                 $overlay.appendTo($parent);
                                 $window.data('overlay', $overlay);
                             }
-                            $window.addClass('window-animate');
-
                             setTimeout(function () {
                                 $window.addClass('window-animate');
                                 if ($overlay) 
@@ -826,7 +840,7 @@
                                         $overlay.remove();
                                     $window.css('display', 'none');
                                 }, 200);
-                            }, 25)
+                            }, 25);
                         }
                     }
                 });
@@ -971,28 +985,19 @@
             $c.enableAutoHide(dotnet);
         },
         bindMultiSelect: function (element, json) {
-            json = JSON.parse(json);
-            $(element).data('message', json.errorMessage);
-            let maxWidth = 0;
-            $(element).find('.t-checkbox').each(function () {
-                var width = $(this).find('.t-title').width();
-                if (width > maxWidth)
-                    maxWidth = width;
+            $(element).unbind('focus');
+            $(element).bind('focus', function () {
+                let message = $(element).attr('error-message');
+                console.log(message)
+                if (message) {
+                    $.caspian.showErrorMessage(element, message);
+                    $(element).find('.errorMessage').css('margin-top', '35px')
+                }
             });
-            $(element).find('.t-checkbox').width(maxWidth + 30);
-            if (!$(element).data('bind')) {
-                $(element).data('bind', true);
-                $(element).unbind('focus');
-                $(element).bind('focus', function () {
-                    let message = $(element).data('message');
-                    if (message)
-                        $.telerik.showErrorMessage(element, message);
-                });
-                $(element).unbind('blur');
-                $(element).bind('blur', function () {
-                    $.telerik.hideErrorMessage(element);
-                });
-            }
+            $(element).unbind('blur');
+            $(element).bind('blur', function () {
+                $.caspian.hideErrorMessage(element);
+            });
             if (json.focused) {
                 $(element).focus();
 

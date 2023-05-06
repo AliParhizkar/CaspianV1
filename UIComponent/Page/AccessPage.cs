@@ -125,7 +125,7 @@ namespace Caspian.UI
             if (id > 0)
                 Pkey.SetValue(data, 0);
             await base.UpsertAsync(data);
-            await MemberGrid.Reload();
+            await MemberGrid.ReloadAsync();
         }
 
         protected async override Task DeleteAsync(TAccess data = null)

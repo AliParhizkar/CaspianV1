@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Routing;
 
 namespace Caspian.UI
 {
@@ -39,7 +40,7 @@ namespace Caspian.UI
         Task<AuthenticationState> authenticationStateTask { get; set; }
 
         [Parameter]
-        public Func<Task<bool>> BeforUpsert { get; set; }
+        public EventCallback<FormData<TEntity>> OnUpsert { get; set; }
 
         IServiceScope CreateScope()
         {
@@ -60,10 +61,13 @@ namespace Caspian.UI
 
         async Task UpsertAsync(TEntity data)
         {
-            var result = true;
-            if (BeforUpsert != null)
-                result = await BeforUpsert.Invoke();
-            if (result)
+            var formData = new FormData<TEntity>()
+            {
+                Model = data
+            };
+            if (OnUpsert.HasDelegate)
+                await OnUpsert.InvokeAsync(formData);
+            if (!formData.Cancel)
             {
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
                 using var scope = CreateScope();
@@ -82,7 +86,7 @@ namespace Caspian.UI
                     await CrudGrid.SelectRowById(id);
                 }
                 else
-                    await CrudGrid.Reload();
+                    await CrudGrid.ReloadAsync();
                 if (UpsertWindow != null)
                     await UpsertWindow.Close();
                 await UpsertForm.ResetAsync();
@@ -133,7 +137,7 @@ namespace Caspian.UI
                     {
                         errorMessage = "این آیتم قبلا حذف شده است";
                     }
-                    await CrudGrid.Reload();
+                    await CrudGrid.ReloadAsync();
                 }
             }
             else

@@ -95,7 +95,7 @@ namespace Caspian.UI
             if (deletedEntities.Count > 0)
                 detailService.RemoveRange(deletedEntities);
             masterService.SaveChanges();
-            await Grid.Reload();
+            await Grid.ReloadAsync();
             ShowMessage("بروزرسانی با موفقیت انجام شد");
         }
 

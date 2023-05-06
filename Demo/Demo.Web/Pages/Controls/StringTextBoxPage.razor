@@ -159,48 +159,6 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-
-<div class="row ps-4 pe-4">
-    <div class="col-md-6 ps-4 pe-4">
-        <hr />
-        <div class="ps-4 pe-4">
-            <h4>Single line</h4>
-            <div class="row c-controls ps-4">
-                <div class="col-md-12">
-                    <CheckBox @bind-Value="disable" Title="Disable" />
-                </div>
-                <div class="col-md-6">
-                    <label>Binding type</label>
-                </div>
-                <div class="col-md-6">
-                    <RadioList @bind-Value="bindingType" />
-                </div>
-                <div class="col-md-6">
-                    <label>Max length</label>
-                </div>
-                <div class="col-md-6">
-                    <NumericTextBox @bind-Value="maxlength" />
-                </div>
-                <div class="col-md-6">
-                    <label>Text</label>
-                </div>
-                <div class="col-md-6 text-center">
-                    
-                </div>
-                <div class="col-md-6">
-                    <label>Action</label>
-                </div>
-                <div class="col-md-6">
-                    <button style="width:50px" class="t-button" @onclick="async () => { await SetFocus(); }">Focus</button>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @ref="textBox" @bind-Value="title" Disabled="disable" MaxLength="maxlength" BindingType="bindingType" />
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 @code {
     WindowStatus status;
     bool disable;

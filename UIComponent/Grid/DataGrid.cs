@@ -425,7 +425,7 @@ namespace Caspian.UI
             SholdRendered = true;
         }
 
-        public async Task Reload()
+        public async Task ReloadAsync()
         {
             EnableLoading();
 
@@ -438,6 +438,7 @@ namespace Caspian.UI
             }
             else if (SelectedRowIndex != null && SelectedRowIndex.Value >= Items.Count)
                 SelectedRowIndex = Items.Count - 1;
+            StateHasChanged();
         }
 
         public async Task ResetGrid()

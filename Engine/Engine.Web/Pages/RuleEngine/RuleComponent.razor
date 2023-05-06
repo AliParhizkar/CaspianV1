@@ -136,6 +136,6 @@
             .Include("Tokens.RuleValue").SingleAsync(ruleId);
         rule.Priority = service.CalculateRulePriority(rule);
         await service.SaveChangesAsync();
-        await CrudGrid.Reload();
+        await CrudGrid.ReloadAsync();
     }
 }

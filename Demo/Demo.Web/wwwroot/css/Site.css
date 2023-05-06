@@ -7,7 +7,7 @@
     list-style-type: disc;
     font-size: 1rem;
     font-family: 'Segoe UI';
-    padding: 1.75rem 4rem !important;
+    padding: 1.75rem 4rem;
     border-radius: 0.25rem;
     border: 0.0625rem solid #E0E3E7;
     box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.13), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.11);
@@ -16,15 +16,29 @@
     background-color: #FFFFFF;
 }
 .data-form-container {
-    border: 1px solid darkgray;
+    border: 1px solid #d7d7d7;
     border-radius: 12px;
     text-align: left;
 }
-p .fa-info, .d-content .fa-info {
-    color: #ff3d40;
-    padding-right: 5px;
-    font-size: 20px;
+.d-content .d-demo-list, .d-demo-inner-list {
+    font-size: 14px;
+    border: none;
+    box-shadow: none;
+    padding: .5rem 1.5rem .5rem 2.5rem !important;
 }
+    .d-demo-inner-list{
+        list-style-type:square;
+    }
+    .d-content .d-demo-list li {
+        padding: 5px 0;
+    }
+    p .fa-info, .d-content .fa-info {
+        color: #ff3d40;
+        padding-right: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        display:inline;
+    }
 .d-content .d-title{
     font-size:16px;
     font-weight:900;
@@ -32,6 +46,8 @@ p .fa-info, .d-content .fa-info {
 .c-demo-description {
     font-size: 14px;
     color: #2c2c2c;
+    text-align:justify;
+    display:inline-block;
 }
 .c-demo-control {
     padding: 10px 3rem;
@@ -207,9 +223,13 @@ p .fa-info, .d-content .fa-info {
     text-align:center;
 }
 
-.text-end {
-    text-align: -webkit-right!important;
-}
+    .c-window-action button{
+        min-width:60px;
+    }
+
+    .text-end {
+        text-align: -webkit-right !important;
+    }
 
 a::
 .d-membership {
@@ -262,6 +282,7 @@ p:not(.d-document p) {
     box-sizing: border-box;
     background-clip: padding-box;
     background-color: #FFFFFF;
+    text-align:justify;
 }
 
 .d-content {

@@ -1,103 +1,57 @@
 ﻿@page "/Demo/PopupCrud"
-@inherits SimplePage<ProductCategory>
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
-<div class="ps-4 pe-4">
-    <div class="row c-controls">
-        <div class="col-md-3 ps-4">
-            <label>Title</label>
-        </div>
-        <div class="col-md-6">
-            <StringTextBox @bind-Value="SearchData.Title" />
-        </div>
-        <div class="d-source-btn col-md-3">
-            <button @onclick="() => pdfStatus = WindowStatus.Open" class="c-btn c-primary">
-                Source
-                <i class="fa fa-code"></i>
-            </button>
-        </div>
-    </div>
-    <DataGrid @ref="CrudGrid" TEntity="ProductCategory" Search="SearchData" TableHeight="400">
-        <Columns>
-            <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.Code"  />
-            <GridColumn Field="t => t.ActiveType.EnumText()" />
-            <GridColumn Title="Popup" style="width:50px">
-                <Template>
-                    <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenPopupForm(context.Data.Id); }" />
-                </Template>
-            </GridColumn>
-            <GridColumn Title="Inform" style="width:50px">
-                <Template>
-                    <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenInformForm(context.Data.Id); }" />
-                </Template>
-            </GridColumn>
-            <GridCommandColumns />
-        </Columns>
-    </DataGrid>
-    <Window @ref="UpsertWindow" Title="Product category" Style="width:500px;">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                <CaspianValidationValidator ValidatorType="typeof(ProductCategoryService)" />
-                <div class="row c-controls ps-4 pe-4">
-                    <div class="col-md-4">
-                        <label>Title</label>
+<h2>Popup CRUD</h2>
+<p>
+    In this example, we have created <b>a components</b> that have a parameter named <b>CategoryId</b>, By clicking the icon, we display the component on the window.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <CrudComponent UpsertData="upsertCategory">
+                <div class="ps-4 pe-4 row">
+                    <div class="col-md-5 d-content pe-4 pt-5">
+                        <span class="c-demo-description">In this example, OpenPopupForm method set the popupCategoryId field(used as component parameter) and open window to display the component. </span>
                     </div>
-                    <div class="col-md-8">
-                        <StringTextBox @bind-Value="UpsertData.Title" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Code</label>
-                    </div>
-                    <div class="col-md-8">
-                        <StringTextBox @bind-Value="UpsertData.Code" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Status</label>
-                    </div>
-                    <div class="col-md-8">
-                        <DropdownList @bind-Value="UpsertData.ActiveType" />
-                    </div>
-                    <div class="col-md-3"></div>
-                    <div class="col-md-9 align-content-center">
-                        <FormCommandButton />
+                    <div class="col-md-7 pt-3 pb-3">
+                        <DataGrid HideInsertIcon TEntity="ProductCategory" TableHeight="250">
+                            <Columns>
+                                <GridColumn Field="t => t.Title" />
+                                <GridColumn Field="t => t.ActiveType.EnumText()" />
+                                <GridColumn Title="Popup" style="width:50px">
+                                    <Template>
+                                        <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenPopupForm(context.Data.Id); }" />
+                                    </Template>
+                                </GridColumn>
+                                <GridCommandColumns />
+                            </Columns>
+                        </DataGrid>
                     </div>
                 </div>
-            </CaspianForm>
-        </Content>
-    </Window>
-    <Window @bind-Status="status" Title="Product" Style="width:800px">
-        <Content>
-            @if (popupCategoryId.HasValue)
-            {
-                <PopupProductPage CategoryId="popupCategoryId.Value" />
-            }
-            @if (informCategoryId.HasValue)
-            {
-                <PopupInformPage CategoryId="informCategoryId.Value" />
-            }
-        </Content>
-    </Window>
-</div>
+            </CrudComponent>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+<Window @bind-Status="status" Title="Product" Style="width:850px">
+    <Content>
+        <PopupProductPage CategoryId="popupCategoryId.Value" />
+    </Content>
+</Window>
+
+
 @code
 {
-    WindowStatus pdfStatus;
+    ProductCategory upsertCategory = new ProductCategory();
+    ProductCategory searchCategory = new ProductCategory();
     int? popupCategoryId;
-    int? informCategoryId;
     WindowStatus status = WindowStatus.Close;
 
     void OpenPopupForm(int categoryId)
     {
         popupCategoryId = categoryId;
-        informCategoryId = null;
-        status = WindowStatus.Open;
-    }
-
-    void OpenInformForm(int categoryId)
-    {
-        informCategoryId = categoryId;
-        popupCategoryId = null;
         status = WindowStatus.Open;
     }
 }

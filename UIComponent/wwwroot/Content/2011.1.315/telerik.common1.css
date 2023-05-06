@@ -28,6 +28,9 @@
     height: 270px;
     border-radius: 50%;
 }
+.c-form-action button{
+    min-width:65px;
+}
 .c-timepicker {
     border: 1px solid #c5c5c5;
     width: 285px;
@@ -879,13 +882,14 @@ form tr {
 
 }
 .c-multi-select {
+    display:flex;
+    flex-wrap:wrap;
     border-width: 1px;
     border-style: solid;
     border-color: rgba(0,0,0,0.12);
     padding: 1px 7px;
     margin: 2px;
     border-radius: 8px;
-    height: 30px;
 }
     .c-multi-select.t-state-error {
         border-color: rgba(255, 0, 0, 0.19) !important;
@@ -2842,11 +2846,9 @@ html body .t-grid tbody .t-button-icon {
 }
 .t-dropdown-wrap .t-t-select {
     line-height: 30px;
-    height: 28px;
     display: inline-block;
     vertical-align: top;
-    width: 25px;
-    background-color: inherit;
+    width: 27px;
     text-align:center;
 }
 
@@ -2860,15 +2862,10 @@ html body .t-grid tbody .t-button-icon {
 .t-selectbox .t-input {
     display: inline-block;
     line-height: 30px;
-    height: 28px;
     padding: 0 4px;
     width: calc(100% - 27px);
     font-size: 14px;
-    cursor: default;
     box-sizing: border-box;
-    background-color: inherit;
-    overflow: hidden;
-    border-radius:8px 0 0 8px;
 }
 .t-dropdown .t-state-error {
     border-color: rgba(255, 0, 0, 0.19) !important;
@@ -2886,12 +2883,7 @@ html body .t-grid tbody .t-button-icon {
 .t-dropdown-wrap.t-state-disabled span{
     border-color: rgba(0,0,0,0.2)!important;
 }
-.t-dropdown-wrap.t-state-disabled .t-input, .t-dropdown-wrap.t-state-disabled .t-t-select {
-    background-color: #eaeaea;
-    cursor: not-allowed;
-}
-.t-state-disabled .t-header {
-}
+
 .t-dropdown-wrap {
     margin: 2px;
     height: 30px;

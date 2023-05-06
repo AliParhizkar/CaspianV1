@@ -18,9 +18,7 @@ namespace Caspian.Common.Attributes
     public class EnumTypeAttribute: Attribute
     {
         public string Title { get; set; }
-        public EnumTypeAttribute(string title)
-        {
-            Title = title;
-        }
+
+        public bool Isbitw { get; set; }
     }
 }

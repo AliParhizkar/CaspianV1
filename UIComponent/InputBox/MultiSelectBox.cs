@@ -4,7 +4,6 @@ using Caspian.Common;
 using Newtonsoft.Json;
 using System.Reflection;
 using Microsoft.JSInterop;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
@@ -31,6 +30,9 @@ namespace Caspian.UI
             if (ValueChanged.HasDelegate)
                 await ValueChanged.InvokeAsync(Value);
         }
+
+        [Parameter]
+        public DefaultLayout DefaultLayout { get; set; } = DefaultLayout.SpaceBetween;
 
         protected override void OnInitialized()
         {

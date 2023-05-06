@@ -2,20 +2,22 @@
 using Caspian.Engine.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
-
+using Microsoft.AspNetCore.Components.Authorization ;
 
 namespace Main
 {
     [ApiController]
     public class ReportController : Controller
     {
-        IServiceScopeFactory ScopeFactory;
         IHostEnvironment Environment;
-        public ReportController(IServiceScopeFactory scopeFactory, IHostEnvironment environment)
+        IServiceScopeFactory ScopeFactory;
+        AuthenticationStateProvider stateProvider;
+
+        public ReportController(IServiceScopeFactory scopeFactory, IHostEnvironment environment, AuthenticationStateProvider provider)
         {
-            ScopeFactory = scopeFactory;
             Environment = environment;
+            ScopeFactory = scopeFactory;
+            stateProvider= provider;
         }
 
         [Route("[controller]/GetReport")]

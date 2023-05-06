@@ -4,59 +4,59 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:90%;margin:5px auto">
-    <div class="row c-controls">
-        <div class="col-md-3 ps-4">
-            <label>Title</label>
-        </div>
-        <div class="col-md-6">
-            <StringTextBox @bind-Value="SearchData.Title" />
-        </div>
-        <div class="d-source-btn col-md-3">
-            <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-                Source
-                <i class="fa fa-code"></i>
-            </button>
-        </div>
-    </div>
-    <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" ConditionExpr="t => CountryId == 0 || t.CountryId == CountryId" TableHeight="350">
-        <Columns>
-            <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.ActiveType.EnumText()" />
-            <GridCommandColumns/>
-        </Columns>
-    </DataGrid>
-    <Window @ref="UpsertWindow" Title="City" Style="width:450px" OnOpen="SetCountryId">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                <CaspianValidationValidator ValidatorType="typeof(CityService)" />
-                <div class="row c-controls">
-                    <div class="col-md-4">
-                        <label>Title</label>
-                    </div>
-                    <div class="col-md-8">
-                        <StringTextBox @bind-Value="UpsertData.Title" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Status</label>
-                    </div>
-                    <div class="col-md-8">
-                        <DropdownList @bind-Value="UpsertData.ActiveType" />
-                    </div>
-                    <div class="col-md-4"></div>
-                    <div class="col-md-8">
-                        <FormCommandButton />
-                    </div>
+<p>
+    In this example we have the CountryId as the url parameter and use it to set the CountryId property of the city on form submit.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row c-controls">
+                <div class="col-md-3 ps-4 pt-4">
+                    <label>Title</label>
                 </div>
-            </CaspianForm>
-        </Content>
-    </Window>
-</div>
+                <div class="col-md-6">
+                    <StringTextBox @bind-Value="SearchData.Title" />
+                </div>
+            </div>
+            <div class="p-4 pt-1">
+                <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" ConditionExpr="t => CountryId == 0 || t.CountryId == CountryId" TableHeight="350">
+                    <Columns>
+                        <GridColumn Field="t => t.Title" />
+                        <GridColumn Field="t => t.ActiveType.EnumText()" />
+                        <GridCommandColumns />
+                    </Columns>
+                </DataGrid>
+            </div>
+            <Window @ref="UpsertWindow" Title="City" Style="width:450px">
+                <Content>
+                    <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="SetCountryId">
+                        <div class="row c-controls ps-4 pe-4">
+                            <div class="col-md-3">
+                                <label>Title</label>
+                            </div>
+                            <div class="col-md-9">
+                                <StringTextBox @bind-Value="UpsertData.Title" />
+                            </div>
+                            <div class="col-md-3">
+                                <label>Status</label>
+                            </div>
+                            <div class="col-md-9">
+                                <DropdownList @bind-Value="UpsertData.ActiveType" />
+                            </div>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-9">
+                                <FormCommandButton />
+                            </div>
+                        </div>
+                    </CaspianForm>
+                </Content>
+            </Window>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
 @code
 {
-    WindowStatus status;
-
     void SetCountryId()
     {
         UpsertData.CountryId = CountryId;

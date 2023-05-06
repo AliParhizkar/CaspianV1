@@ -173,7 +173,7 @@
             .Include("ResultParameters.Rule").SingleAsync(id);
         param.Priority = service.CalculatePriority(param);
         await service.SaveChangesAsync();
-        await CrudGrid.Reload();
+        await CrudGrid.ReloadAsync();
     }
 
     [Parameter]

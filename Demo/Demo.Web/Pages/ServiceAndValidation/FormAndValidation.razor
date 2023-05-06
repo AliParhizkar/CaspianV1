@@ -22,48 +22,71 @@
                         <span class="c-demo-description">In this example, we defined the <b>UpsertData</b> field (of <b>product</b> type) and <b>bind the form</b> to it with the <b>Model</b> parameter.</span>
                         <h4 class="pt-4">Control binding</h4>
                         <span class="c-demo-description">All controls inside the form must be bind to <b>UpsertData</b>(the model form bind to it) properties.</span>
+                        <div class="pt-3">
+                            <span class="fa fa-info"> Note:</span>
+                        </div>
+                        <ul class="d-demo-list">
+                            <li>
+                                On form submit, the state of controls with invalid data is set to error.
+                            </li>
+                            <li>
+                                In invalid submit, the first control with invalid data is focused.
+                            </li>
+                            <li>
+                                In the error-state, the error message is <b>displayed</b> in the <b>focus-in</b> mode and <b>hidden</b> in the <b>focus-out</b> mode.
+                            </li>
+                            <li>
+                                In <b>resetting</b> the form, the <b>data</b> and <b>error-state</b> are cleared.
+                            </li>
+                        </ul>
                     </div>
                     <div class="col-md-7">
-                        <CaspianForm Model="UpsertData">
+                        <CaspianForm Model="upsertData">
                             <div class="data-form-container p-4">
                                 <div class="row c-controls">
                                     <div class="col-md-4">
                                         <label>Product category</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=UpsertData.ProductCategoryId TextExpression="t => t.Title" />
+                                        <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=upsertData.ProductCategoryId TextExpression="t => t.Title" />
                                     </div>
                                     <div class="col-md-4">
                                         <label>Title</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <StringTextBox @bind-Value="UpsertData.Title" />
+                                        <StringTextBox @bind-Value="upsertData.Title" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="upsertData.Code" />
                                     </div>
                                     <div class="col-md-4">
                                         <label>Price</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <NumericTextBox @bind-Value="UpsertData.Price" />
+                                        <NumericTextBox @bind-Value="upsertData.Price" />
                                     </div>
                                     <div class="col-md-4">
                                         <label>Take out price</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <NumericTextBox @bind-Value="UpsertData.TakeoutPrice" />
+                                        <NumericTextBox @bind-Value="upsertData.TakeoutPrice" />
                                     </div>
                                     <div class="col-md-4">
                                         <label>Meal</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <MultiSelectBox @bind-Value="UpsertData.Meal" />
+                                        <MultiSelectBox @bind-Value="upsertData.Meal" />
                                     </div>
                                     <div class="col-md-4">
                                         <label>Status</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <DropdownList @bind-Value="UpsertData.ActiveType" />
+                                        <DropdownList @bind-Value="upsertData.ActiveType" />
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="pt-5 col-md-12">
                                         <FormCommandButton SumitButtonTitle="Submit" />
                                     </div>
                                 </div>
@@ -75,12 +98,92 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-
-
+<h3 class="pt-3">Form events</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4>Form events</h4>
+                        <span class="c-demo-description">In this section, we describe the events of the form, these events include:</span>
+                        <ul class="d-demo-list">
+                            <li>
+                                <b>OnSubmit: </b>This event is fired after form submission and before model validation, some model initialization can be done in this event.
+                            </li>
+                            <li>
+                                <b>OnInvalidSubmit: </b>This event is fired after validating the model and if the model is invalid.
+                            </li>
+                            <li>
+                                <b>OnValidSubmit: </b>This event is fired after validating the model and if the model is valid.
+                            </li>
+                            <li>
+                                <b>OnReset: </b>This event is fired after the form is reset.
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-7">
+                        <CaspianForm Model="upsertData" >
+                            <div class="data-form-container p-4">
+                                <div class="row c-controls">
+                                    <div class="col-md-4">
+                                        <label>Product category</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=upsertData.ProductCategoryId TextExpression="t => t.Title" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Title</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="upsertData.Title" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="upsertData.Code" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Price</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <NumericTextBox @bind-Value="upsertData.Price" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Take out price</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <NumericTextBox @bind-Value="upsertData.TakeoutPrice" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Meal</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <MultiSelectBox @bind-Value="upsertData.Meal" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Status</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <DropdownList @bind-Value="upsertData.ActiveType" />
+                                    </div>
+                                    <div class="pt-5 col-md-12">
+                                        <FormCommandButton SumitButtonTitle="Submit" />
+                                    </div>
+                                </div>
+                            </div>
+                        </CaspianForm>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code
 {
     WindowStatus status;
-    Product UpsertData = new Product();
+    Product upsertData = new Product();
 
     async Task FormSubmit()
     {
@@ -89,7 +192,7 @@
 
     void Reset()
     {
-        ShowMessage("For is reset");
+        ShowMessage("Form is reset");
     }
 
     void InvalidSubmit()

@@ -68,7 +68,7 @@
             var productService = new ProductService(scope.ServiceProvider);
             await productService.UpdatePrice(productId, price);
             await productService.SaveChangesAsync();
-            await CrudGrid.Reload();
+            await CrudGrid.ReloadAsync();
             await takeoutPriceTextBoxList[CrudGrid.SelectedRowIndex.Value].FocusAsync();
         }
     }
@@ -81,7 +81,7 @@
             var productService = new ProductService(scope.ServiceProvider);
             await productService.UpdateTakeoutPrice(productId, priceOuterBound);
             await productService.SaveChangesAsync();
-            await CrudGrid.Reload();
+            await CrudGrid.ReloadAsync();
             await CrudGrid.SelectNextRow();
             await priceTextBoxList[CrudGrid.SelectedRowIndex.Value].FocusAsync();
         }

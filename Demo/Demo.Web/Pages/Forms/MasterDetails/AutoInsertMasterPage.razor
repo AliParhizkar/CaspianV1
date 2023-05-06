@@ -42,7 +42,7 @@
         {
             await service.UpdateAsync(old);
             await service.SaveChangesAsync();
-            await Grid.Reload();
+            await Grid.ReloadAsync();
         }
         catch (CaspianException ex)
         {
