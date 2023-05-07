@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Caspian.UI
 {
@@ -24,10 +26,10 @@ namespace Caspian.UI
             textExpression = expr;
         }
 
-
         protected override void OnInitialized()
         {
             SearchData = Activator.CreateInstance<TEntity>();
+            AutoComplete.LookupWindow = this;
             base.OnInitialized();
         }
 
@@ -72,6 +74,14 @@ namespace Caspian.UI
             await base.OnParametersSetAsync();
         }
 
+        async Task<string> ILookupWindow.GetText(int id)
+        {
+            using var scope = CreateScope();
+            var service = new BaseService<TEntity>(scope.ServiceProvider);
+            var entity = await service.SingleAsync(id);
+            return textExpression.Compile().Invoke(entity);
+        }
+
         protected override void OnAfterRender(bool firstRender)
         {
             if (Grid != null)
@@ -83,13 +93,9 @@ namespace Caspian.UI
                     {
                         if (textExpression == null)
                             throw new InvalidOperationException("خطا: TextExpression is null you must set TextExpression in page");
-                        using var scope = CreateScope();
-                        var service = new BaseService<TEntity>(scope.ServiceProvider);
-                        var entity = await service.SingleAsync(id);
-                        var text = textExpression.Compile().Invoke(entity);
+                        var text = await (this as ILookupWindow).GetText(id);
                         AutoComplete.SetText(text);
                         await AutoComplete.SetValue(id);
-                        
                         await AutoComplete.CloseHelpForm(true);
                     });
                 }

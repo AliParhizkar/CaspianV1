@@ -104,21 +104,21 @@ namespace Caspian.UI
                 insertContinerHouldhasFocus = false;
                 await insertContiner.FocusAsync();
             }
-            //if (shouldSetFocuc)
-            //{
-            //    shouldSetFocuc = false;
-            //    await updateContiner.FocusAsync();
-            //}
-            //if (errorMessage.HasValue())
-            //{
-            //    await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
-            //    errorMessage = null;
-            //}
-            //else if (FormAppState.Element.HasValue)
-            //{
-            //    await jsRuntime.InvokeVoidAsync("$.caspian.focusAndShowErrorMessage", FormAppState.Element, FormAppState.ErrorMessage);
-            //    FormAppState.Element = null;
-            //}
+            if (shouldSetFocuc)
+            {
+                shouldSetFocuc = false;
+                await updateContiner.FocusAsync();
+            }
+            if (errorMessage.HasValue())
+            {
+                await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
+                errorMessage = null;
+            }
+            else if (FormAppState.Element.HasValue)
+            {
+                await jsRuntime.InvokeVoidAsync("$.caspian.focusAndShowErrorMessage", FormAppState.Element);
+                FormAppState.Element = null;
+            }
         }
 
         public async Task CalcelEdit(UpsertMode upsertMode)

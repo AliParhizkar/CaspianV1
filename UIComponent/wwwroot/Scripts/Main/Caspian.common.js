@@ -327,11 +327,11 @@
             });
             $(input).unbind('focus');
             $(input).bind('focus', function () {
-                $(input).closest('.c-content').addClass('c-state-focus')
+                $(input).closest('.c-content').addClass('c-state-focus');
             });
             $(input).unbind('blur');
             $(input).bind('blur', function () {
-                $(input).closest('.c-content').removeClass('c-state-focus')
+                $(input).closest('.c-content').removeClass('c-state-focus');
             });
         },
         get3Digit: function (num) {
@@ -348,6 +348,9 @@
             setTimeout(() => {
                 $("#outMessage").remove();
             }, 300);
+        },
+        focusAndShowErrorMessage: function (element) {
+            $(element).focus();
         },
         showMessage: function (message) {
             if ($.caspian.infoTimer)
@@ -479,6 +482,12 @@
         },
         bindLookup: function (dotnet, input) {
             let $lookup = $(input).closest('.c-lookup');
+            $(input).focus(() => {
+                $.caspian.showErrorMessage($lookup[0]);
+            });
+            $(input).blur(() => {
+                $.caspian.hideErrorMessage($lookup[0]);
+            });
             if ($lookup.attr('closeonblur') != undefined) {
                 $lookup.attr('tabindex', 0);
                 $lookup.focusout(async () => {

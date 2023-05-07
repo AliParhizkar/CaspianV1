@@ -1,6 +1,8 @@
 ﻿@namespace Caspian.UI
 @typeparam TValue
 @attribute [CascadingTypeParameter(nameof(TValue))]
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject IJSRuntime jsRuntime
 @{
     var attrs = new Dictionary<string, object>();
     if (Id.HasValue())
@@ -15,7 +17,7 @@
         className += " t-state-error";
 }
 
-<div  closeOnBlur="@CloseOnBlur" style="@Style" status="@status.ConvertToInt()" class="@className" autoHide="@AutoHide">
+<div style="@Style" closeOnBlur="@CloseOnBlur" error-message="@ErrorMessage" status="@status.ConvertToInt()" class="@className" autoHide="@AutoHide">
     <input @ref="input" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => await OnKeyDownHandler(e))"
            @attributes="inputAttrs" @onkeyup="@(async e => await OnKeyUp(e))" />
     @if (!HideIcon)
@@ -56,7 +58,6 @@
                 </div>
             </div>
         </div>
-
     }
 </div>
 

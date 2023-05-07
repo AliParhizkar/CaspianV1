@@ -3,20 +3,45 @@
 @inject NavigationManager navigationManager
 @inherits BasePage
 @namespace Demo.Web.Pages
-<div class="p-4">
-    <div class="p-3">
-        <CheckBox @bind-Value="onlyThisDay" Title="Only show today orders " OnChange="() => Grid.EnableLoading()" />
-    </div>
-    <DataGrid @ref="Grid" TEntity="WarehouseReceipt" OnUpsert="t => UpsertOrder(t)" TableHeight="300"
-              ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
-        <Columns>
-            <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />
-            <GridColumn Field="t => t.Warehouse.Title" Title="Warehouse" />
-            <GridCommandColumns />
-        </Columns>
-    </DataGrid>
+<h2>Batch operation</h2>
+<p>
+    In batch operation we have <b>master-detail</b> entity, and want to <b>insert or update</b> master, <b>and insert, update, delete many details</b>.
+    <br />
+    For example in <b>order CRUD operation</b> we insert <b>a order</b> with many <b>orderdetils</b> or update <b>order</b> with insert, update, delete many <b>orderdetils.</b>
+</p>
+<p>
+    In batch operations, we usually perform the upsert operation on a new form, so we use the OnUpsert parameter to navigate to that form.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row pb-3">
+                <div class="col-md-6 p-3 pt-5">
+                    <h4>Warehouse invoice</h4>
+                    <span class="c-demo-description">
+                        In this example, we set <b>OnUpsert</b> parameter to redirect to a new page. All operations on the <b>Master</b> and <b>details</b> are done on this page.
+                    </span>
+                </div>
+                <div class="col-md-6 pe-3">
+                    <div class="p-3">
+                        <CheckBox @bind-Value="onlyThisDay" Title="Only show today orders " OnChange="() => Grid.EnableLoading()" />
+                    </div>
+                    <DataGrid @ref="Grid" TEntity="WarehouseReceipt" OnUpsert="t => UpsertOrder(t)" TableHeight="300"
+                            ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
+                        <Columns>
+                            <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />
+                            <GridColumn Field="t => t.Warehouse.Title" Title="Warehouse" />
+                            <GridCommandColumns />
+                        </Columns>
+                    </DataGrid>
+                </div>
+            </div>
 
-</div>
+
+
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code
 {
     bool onlyThisDay = true;

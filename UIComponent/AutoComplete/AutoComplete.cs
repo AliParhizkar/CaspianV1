@@ -47,6 +47,8 @@ namespace Caspian.UI
             }
         }
 
+        internal ILookupWindow LookupWindow { get; set; }
+
         [Parameter]
         public bool HideHeader { get; set; }
 
@@ -73,9 +75,7 @@ namespace Caspian.UI
         [Parameter]
         public BindingType BindingType { get; set; } = BindingType.OnInput;
 
-        [Inject, JsonIgnore]
-        protected IJSRuntime jsRuntime { get; set; }
-
+        [CascadingParameter]
         public EditContext CurrentEditContext { get; set; }
 
         [Parameter]
@@ -298,7 +298,12 @@ namespace Caspian.UI
                 case "Enter":
                 case "NumpadEnter":
                     if (SearchState?.Grid?.SelectedRowId != null)
-                        await SetValue(SearchState.Grid.SelectedRowId.Value, false);
+                    {
+                        var value = SearchState.Grid.SelectedRowId.Value;
+                        Text = await LookupWindow.GetText(value);
+                        await SetValue(value, false);
+                        await CloseHelpForm();
+                    }
                     break;
                 case "Escape":
                     status = WindowStatus.Close;
@@ -413,7 +418,8 @@ namespace Caspian.UI
             else if (!Value.Equals(Oldvalue))
             {
                 Oldvalue = Value;
-                //using var scope = ServiceScopeFactory.CreateScope();
+                using var scope = ServiceScopeFactory.CreateScope();
+                
                 //var service = scope.ServiceProvider.GetService(typeof(ISimpleService<TEntity>)) as SimpleService<TEntity>;
                 //var type1 = typeof(TEntity);
                 //var param = Expression.Parameter(type1, "t");

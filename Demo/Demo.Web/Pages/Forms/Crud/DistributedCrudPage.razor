@@ -1,108 +1,102 @@
 ﻿@page "/Demo/DistributedCrud"
 @namespace Demo.Web.Pages
-@inherits SimplePage<Product>
-<div class="c-controls c-header row m-3 align-items-center">
-    <div class="col-md-2 ps-2">
-        <label>Product Category</label>
-    </div>
-    <div class="col-md-7">
-        <ComboBox TValue="int?" TEntity="ProductCategory" @bind-Value="productCategoryId" TextExpression="t => t.Title" OnValueChanged="() => CrudGrid.EnableLoading()" />
-    </div>
-</div>
-<div class="c-body ms-3 me-3">
-    @if (productCategoryId.HasValue)
-    {
-        <DataGrid @ref="CrudGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == productCategoryId.Value)" Search="SearchData" TableHeight="350">
-            <Columns>
-                <GridColumn Field="t => t.Title" />
-                <GridColumn Field="t => t.ActiveType.EnumText()" />
-                <GridColumn Field="t => t.Price.Seprate3Digit()" />
-                    <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
-                <GridCommandColumns/>
-            </Columns>
-        </DataGrid>
-        <Window @ref="UpsertWindow" Title="Product" Style="width:750px;">
-            <Content>
-                <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="SetCategoryId">
-                    <CaspianValidationValidator ValidatorType="typeof(ProductService)" />
-                    <div style="align-items:self-start" class="row c-controls ps-3 pe-3 align-items-self-start">
-                        <div class="col-md-7">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>Title</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <StringTextBox @bind-Value="UpsertData.Title" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Price</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <NumericTextBox @bind-Value="UpsertData.Price" OnChange="SetCategoryId" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Take out price</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <NumericTextBox @bind-Value="UpsertData.TakeoutPrice" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Meal</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <MultiSelectBox @bind-Value="UpsertData.Meal" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Discountable</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <CheckBox @bind-Value="UpsertData.Discountable" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Status</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <DropdownList @bind-Value="UpsertData.ActiveType" />
-                                </div>
-                                <div class="col-md-12">
-                                    <WindowCommandButtons />
-                                </div>
-                            </div>
+@inherits BasePage
+<h2>Distributed CRUD</h2>
+<p>
+    In this example, the ProductCategoryId is updated outside of the form.
+    <br />The advantage of this form is that we can set the product category once, and insert many products.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row d-content">
+                <div class="col-md-4 pt-5 pe-3">
+                    <span class="c-demo-description">
+                        We bind <b>ProductCategoryId</b> property of upsertProduct to combobox, the combobox is placed outside the form.
+                    </span>
+                </div>
+                <div class="col-md-8">
+                    <div class="c-controls c-header row align-items-center">
+                        <div class="col-md-3 ps-2">
+                            <label>Product Category</label>
                         </div>
-                        <div class="col-md-5 ps-4">
-                            <div style="text-align:-webkit-right" class="col-md-12">
-                                <Fileupload OnChange="async (e) => await SetImage(e)">
-                                    <PictureBox Data="UpsertData.Image" style="width: 250px; height: 250px;" />
-                                </Fileupload>
-                            </div>
-                            <div class="col-md-12"></div>
+                        <div class="col-md-9">
+                            <ComboBox TValue="int" TEntity="ProductCategory" @bind-Value="upsertProduct.ProductCategoryId" TextExpression="t => t.Title" OnValueChanged="() => productGrid.EnableLoading()" />
                         </div>
                     </div>
-                </CaspianForm>
-            </Content>
-        </Window>        
-    }
-</div>
-
+                    <div class="c-body ps-3 pe-3">
+                        @if (upsertProduct.ProductCategoryId > 0)
+                        {
+                            <CrudComponent UpsertData="upsertProduct">
+                                <DataGrid @ref="productGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == upsertProduct.ProductCategoryId)" Search="searcProduct" TableHeight="350">
+                                    <Columns>
+                                        <GridColumn Field="t => t.Title" />
+                                        <GridColumn Field="t => t.ActiveType.EnumText()" />
+                                        <GridColumn Field="t => t.Price.Seprate3Digit()" />
+                                        <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
+                                        <GridCommandColumns />
+                                    </Columns>
+                                </DataGrid>
+                                <Window Title="Product" Style="width:500px;">
+                                    <Content>
+                                        <CaspianForm Model="upsertProduct">
+                                            <div class="row c-controls ps-3 pe-3">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label>Title</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <StringTextBox @bind-Value="upsertProduct.Title" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Price</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <NumericTextBox @bind-Value="upsertProduct.Price" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Take out price</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <NumericTextBox @bind-Value="upsertProduct.TakeoutPrice" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Meal</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <MultiSelectBox @bind-Value="upsertProduct.Meal" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Discountable</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <CheckBox @bind-Value="upsertProduct.Discountable" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Status</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <DropdownList @bind-Value="upsertProduct.ActiveType" />
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <WindowCommandButtons />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </CaspianForm>
+                                    </Content>
+                                </Window>
+                            </CrudComponent>
+                        }
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code
 {
-    WindowStatus status;
-    int? productCategoryId;
-
-    async Task SetImage(InputFileChangeEventArgs e)
-    {
-        UpsertData.Image = await e.File.GetByteArrayAsync();
-    }
-
-    void SetCategoryId()
-    {
-        UpsertData.ProductCategoryId = productCategoryId.Value;
-    }
-
-    protected override async Task<bool> BeforUpsertAsync(Product data)
-    {
-        if (data.Price == 0)
-            return await Confirm("Do you want to register the product with zero amount?");
-        return await base.BeforUpsertAsync(data);
-    }
+    Product upsertProduct = new Product();
+    Product searcProduct = new Product();
+    DataGrid<Product> productGrid;
 }

@@ -2,6 +2,14 @@
 @page "/Demo/Batch/Inline/Details/{MasterId:int}"
 @namespace Demo.Web.Pages
 @inherits MasterDetailPage<WarehouseReceipt, MaterialReceipt>
+<p>
+    This page is used for warehouse receipt operations. This operation can be divided into inserting and updating.
+</p>
+<ul class="d-demo-list">
+    <li><b>warehouse receipt: </b> 
+
+    </li>
+</ul>
 <div class="row p-3">
     <div class="col-md-4 ps-3 pe-3">
         <div class="row align-items-baseline">
@@ -16,7 +24,6 @@
         </div>
         <hr />
         <CaspianForm @ref="MasterForm" Model="UpsertData">
-            <CaspianValidationValidator ValidatorType="typeof(WareHouseReceiptService)" />
             <div class="row c-controls ps-3 pe-3">
                 <div class="col-md-4">
                     <label>Receipt date</label>
@@ -47,22 +54,15 @@
             <div class="col-md-8">
                 <h7 class="d-membership">Materials receipt</h7>
             </div>
-            <div class="col-md-4 d-source-btn">
-                <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-                    Source
-                    <i class="fa fa-code"></i>
-                </button>
-            </div>
         </div>
         <hr />
         <DataGrid @ref="Grid" TEntity="MaterialReceipt" TableHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
             <Columns Context="con">
                 <GridColumn Field="t => t.Material.Title" Title="Material" >
                     <EditTemplate>
-                        <AutoComplete TValue="int" TEntity="Material" @bind-Value="con.Data.MaterialId" HideHeader AutoHide
-                                      TextExpression="t => t.Title" Title="Material"
+                        <AutoComplete TValue="int" @bind-Value="con.Data.MaterialId" HideHeader AutoHide Title="Material"
                                       OnChange="async () => await UpdateMaterialReceipt(con.Data.MaterialId, con.Data)">
-                            <MaterialLookupPage TValue="int" />
+                            <MaterialLookupWindow />
                         </AutoComplete>
                     </EditTemplate>
                 </GridColumn>
@@ -99,9 +99,9 @@
 
 @code
 {
-    WindowStatus status;
     NumericTextBox<int> txtMainUnit;
     NumericTextBox<int?> txtSubunit;
+
     protected override Task OnMasterEntityCreatedAsync()
     {
         if (UpsertData.Id == 0)

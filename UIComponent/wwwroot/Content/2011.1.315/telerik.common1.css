@@ -1392,6 +1392,7 @@ ul {
     transform: rotate(0);
 }
 .errorMessage .c-pointer {
+    border-radius: 0 0 5px 0;
     left: 20px;
     top: -6px;
     border-style: solid;
@@ -2259,6 +2260,7 @@ div.t-grid-footer {
 }
 
 .t-grid-bottom {
+    text-align:left;
     padding: 3px 10px;
     border-width: 1px;
     border-style: solid;
@@ -3074,20 +3076,16 @@ html body .t-grid tbody .t-button-icon {
     border: 0;
 }
 
-.errorMessage span {
-    display: inline-block !important;
-    height: 40px;
-    line-height: 40px;
-    vertical-align: middle;
-}
-
 .errorMessage .c-icon {
     width: 30px;
     height: 30px;
-    background-color:#FFA300;
+    line-height: 35px;
+    background-color: #FFA300;
     vertical-align: middle;
-    border-radius:4px;
-    text-align:center;
+    border-radius: 4px;
+    text-align: center;
+    display: inline-block !important;
+    margin-right:6px;
 }
 .errorMessage .fa-info {
     color:white;

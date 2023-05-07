@@ -1,7 +1,7 @@
-﻿using System;
-using Caspian.Common;
+﻿using Caspian.Common;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
 
 namespace Demo.Model
 {
@@ -14,11 +14,9 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// تاریخ حواله
-        /// </summary>
         public DateTime? Date { get; set; }
 
+        [DisplayName("Warehouse")]
         public int WarehouseId { get; set; }
 
         [ForeignKey(nameof(WarehouseId))]
@@ -26,7 +24,7 @@ namespace Demo.Model
 
         public string Comment { get; set; }
 
-        [CheckOnDelete("برای حواله کالا ثبت شده وامکان حذف آن وجود ندارد")]
+        [CheckOnDelete("The warehouse receipt contains the goods and cannot be deleted.")]
         public virtual IList<MaterialReceipt> MaterialReceipts { get; set; }
     }
 }
