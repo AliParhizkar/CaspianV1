@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("MaterialReceipt", Schema = "demo")]
-    public class MaterialReceipt
+    [Table("ReceiptDetails", Schema = "demo")]
+    public class ReceiptDetail
     {
         [Key]
         public int Id { get; set; }

@@ -15,7 +15,7 @@ namespace Caspian.UI
         [Parameter]
         public int MasterId { get; set; }
 
-        protected CaspianForm<TMaster> MasterForm { get; set; }
+        protected CaspianForm<TMaster> Form { get; set; }
 
         protected DataGrid<TDetail> Grid { get; set; }
 
@@ -46,9 +46,9 @@ namespace Caspian.UI
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (MasterForm != null)
+            if (Form != null)
             {
-                MasterForm.OnInternalSubmit = EventCallback.Factory.Create<EditContext>(this, (EditContext context1) =>
+                Form.OnInternalSubmit = EventCallback.Factory.Create<EditContext>(this, (EditContext context1) =>
                 {
                     foreach (var info in typeof(TMaster).GetProperties())
                     {
@@ -57,11 +57,11 @@ namespace Caspian.UI
                             info.SetValue(UpsertData, Grid.AllRecords().AsEnumerable());
                     }
                 });
-                MasterForm.OnInternalReset = EventCallback.Factory.Create(this, () =>
+                Form.OnInternalReset = EventCallback.Factory.Create(this, () =>
                 {
                     Grid.ClearSource();
                 });
-                MasterForm.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context1) =>
+                Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context1) =>
                 {
                     if (MasterId == 0)
                         await InsertMaster(context1);

@@ -1066,9 +1066,7 @@ span, label, td, th {
     border-radius: 40px;
     display:inline-block;
 }
-.t-window-titlebar {
-    padding:5px 8px;
-}
+
 .t-window-title {
     display: inline-block;
     width: calc(100% - 20px);
@@ -1687,14 +1685,6 @@ div.t-window {
     transition:top .4s ease
 }
 
-.t-window-titlebar {
-    white-space: nowrap;
-    border-bottom: 1px solid;
-    border-bottom-color: rgba(0, 0, 0, .12);
-    font-weight: bold;
-    background-color: #f7f7f7;
-}
-
 .t-HelpWindow .t-window-action{
     padding: 1px 0 0 8px;
     box-sizing:border-box;
@@ -1858,10 +1848,16 @@ div.t-window {
     overflow:visible;
 }
 .t-window-titlebar {
-    background-color: #e6e7e8;
-    
+    white-space: nowrap;
+    border-bottom: 1px solid;
+    border-bottom-color: rgba(0, 0, 0, .12);
+    font-weight: bold;
     overflow: visible;
     border-radius: 8px 8px 0 0;
+}
+.t-window .t-header {
+    padding: 5px 8px;
+    background-color: #e6e7e8;
 }
 @keyframes tabstripwidth {
     0% {
@@ -2871,7 +2867,7 @@ html body .t-grid tbody .t-button-icon {
 }
 .t-dropdown .t-state-error {
     border-color: rgba(255, 0, 0, 0.19) !important;
-    background-color: #ffe9ec !important;
+    background-image: linear-gradient(#ffe9ec,#ffe3e3) !important;
 }
 
 .t-picker-wrap .t-icon,

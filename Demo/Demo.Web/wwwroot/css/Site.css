@@ -1,8 +1,22 @@
-﻿.d-form {
-    width: 550px;
-    margin: 40px auto;
-    text-align: center;
+﻿.d-window-header {
+    display: flex;
 }
+    .d-window-header h5 {
+        margin-bottom: 0 !important;
+        color: #a626c3;
+        width: calc(100% - 33px);
+        padding: 15px;
+    }
+    .d-window-header button {
+        border: none;
+        color: gray;
+        background-color: transparent;
+    }
+    .d-form {
+        width: 550px;
+        margin: 40px auto;
+        text-align: center;
+    }
 .d-demo-list {
     list-style-type: disc;
     font-size: 1rem;
@@ -127,10 +141,10 @@
     border-radius: 8px;
     overflow: auto;
 }
-.fa-first-order {
-    color: #007bff!important;
-    font-size: 32px!important;
-    cursor:pointer;
+.fa-arrow-left {
+    color: #974898 !important;
+    font-size: 32px !important;
+    cursor: pointer;
 }
 
 .d-head {

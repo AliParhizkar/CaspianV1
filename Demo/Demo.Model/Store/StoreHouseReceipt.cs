@@ -25,6 +25,6 @@ namespace Demo.Model
         public string Comment { get; set; }
 
         [CheckOnDelete("The warehouse receipt contains the goods and cannot be deleted.")]
-        public virtual IList<MaterialReceipt> MaterialReceipts { get; set; }
+        public virtual IList<ReceiptDetail> ReceiptDetails { get; set; }
     }
 }

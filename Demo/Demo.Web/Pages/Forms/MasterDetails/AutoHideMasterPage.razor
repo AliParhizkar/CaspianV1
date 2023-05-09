@@ -1,4 +1,4 @@
-﻿@page "/Demo/Batch/Inline/Master"
+﻿@page "/Demo/Batch/AutoHide/Master"
 @using Caspian.Common.Extension
 @inject NavigationManager navigationManager
 @inherits BasePage
@@ -16,45 +16,41 @@
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="row pb-3">
-                <div class="col-md-4 p-3 pt-5">
-                    <h4>Order</h4>
+                <div class="col-md-6 p-3 pt-5">
+                    <h4>Warehouse invoice</h4>
                     <span class="c-demo-description">
-                        In this example, we set <b>OnUpsert</b> parameter to redirect to a new page. All operations on the <b>Order</b> and <b>Orderdetails</b> are done on that page.
+                        In this example, we set <b>OnUpsert</b> parameter to redirect to a new page. All operations on the <b>Master</b> and <b>details</b> are done on this page.
                     </span>
                 </div>
-                <div class="col-md-8 pe-3">
+                <div class="col-md-6 pe-3">
                     <div class="p-3">
                         <CheckBox @bind-Value="onlyThisDay" Title="Only show today orders " OnChange="() => Grid.EnableLoading()" />
                     </div>
-                    <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" TableHeight="300"
+                    <DataGrid @ref="Grid" TEntity="WarehouseReceipt" OnUpsert="t => UpsertOrder(t)" TableHeight="300"
                             ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
                         <Columns>
                             <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />
-                            <GridColumn Field="t => t.OrderType.EnumText()" />
-                            <GridColumn Field="t => t.OrderNo" Title="Order no" />
-                            <GridColumn Field="t => t.Customer.FName + ' ' + t.Customer.LName" Title="Customer" />
+                            <GridColumn Field="t => t.Warehouse.Title" Title="Warehouse" />
                             <GridCommandColumns />
                         </Columns>
                     </DataGrid>
                 </div>
             </div>
+
+
+
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-<div class="p-4">
-
-
-
-</div>
 @code
 {
     bool onlyThisDay = true;
     DateTime date = DateTime.Now.Date;
-    DataGrid<Order> Grid;
+    DataGrid<WarehouseReceipt> Grid;
 
-    void UpsertOrder(Order order)
+    void UpsertOrder(WarehouseReceipt receipt)
     {
-        string url = "Demo/Batch/Inline/Details" + (order.Id > 0 ? "/" + order.Id : "");
+        string url = "Demo/Batch/AutoHide/Details" + (receipt.Id > 0 ? "/" + receipt.Id : "");
         navigationManager.NavigateTo(url);
     }
 }

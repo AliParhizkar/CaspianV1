@@ -12,7 +12,7 @@
     else
         className += " t-state-error";
 }
-<div @ref="element" @attributes="attrs" class="t-widget t-dropdown">
+<div @ref="element" @attributes="attrs" class="t-widget t-dropdown" error-message="@ErrorMessage">
     <div class="@className" @onclick="OpenWindow">
         <span class="t-input">@(text)</span>
         <span class="t-t-select" >
@@ -176,6 +176,7 @@
         attrs = new Dictionary<string, object>();
         if (Style.HasValue())
             attrs["style"] = Style;
+        attrs["tabindex"] = TabIndex ?? 0;
         inputAttrs = new Dictionary<string, object>();
 
         if (Id.HasValue())

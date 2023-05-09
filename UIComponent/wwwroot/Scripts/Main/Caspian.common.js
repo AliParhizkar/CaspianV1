@@ -349,9 +349,6 @@
                 $("#outMessage").remove();
             }, 300);
         },
-        focusAndShowErrorMessage: function (element) {
-            $(element).focus();
-        },
         showMessage: function (message) {
             if ($.caspian.infoTimer)
                 clearTimeout($.caspian.infoTimer);
@@ -444,7 +441,10 @@
             });
         },
         focusAndShowErrorMessage(element) {
-            $(element).focus();
+            if ($(element).closest('.t-dropdown').hasClass('t-dropdown'))
+                $(element).closest('.t-dropdown').focus();
+            else
+                $(element).focus();
         },
         showMessageBox: function (overlay, box) {
             let item;
@@ -713,7 +713,6 @@
                 $continer.css('height', height);
         },
         bindDatePicker(dotnetHelper, ctr) {
-            
             $(ctr).mouseenter(() => {
                 let $element = $(ctr).find('.t-picker-wrap');
                 if (!$element.hasClass('t-state-selected') && !$element.hasClass('t-state-disabled')) 
@@ -724,9 +723,11 @@
             });
             $(ctr).find('input').focus(() => {
                 $(ctr).find('.t-picker-wrap').removeClass('t-state-hover').addClass('t-state-selected');
+                $.caspian.showErrorMessage($(ctr).closest('.t-widget')[0]);
             });
             $(ctr).find('input').blur(() => {
                 $(ctr).find('.t-picker-wrap').removeClass('t-state-selected');
+                $.caspian.hideErrorMessage($(ctr).closest('.t-widget')[0]);
             });
             $(window).bind('click', function (e) {
                 if (!$(e.target).closest('.t-calendar').hasClass('t-calendar') &&
@@ -872,7 +873,9 @@
                             $group.css('top', '-100%');
                             $group = $(ddl).find('.c-animate-up .t-group');
                             $group.css('bottom', '-100%');
+                            $(ddl).find('.t-dropdown-wrap').removeClass('t-state-hover').addClass('t-state-default');
                         }
+                        
                     });
                     let loc = $group.offset().top - $(window).scrollTop();
                     if (loc > $(window).height() / 2) {
@@ -891,6 +894,24 @@
                 attributes: false,
                 childList: true,
                 subtree: false
+            });
+            $(ddl).mouseenter(e => {
+                $ddl = $(e.target).closest('.t-dropdown').find('.t-dropdown-wrap');
+                if (!$ddl.hasClass('t-state-error'))
+                    $ddl.removeClass('t-state-default').addClass('t-state-hover');
+            });
+            $(ddl).mouseleave(e => {
+                $ddl = $(e.target).closest('.t-dropdown').find('.t-dropdown-wrap');
+                if (!$ddl.hasClass('t-state-error'))
+                    $ddl.removeClass('t-state-hover').addClass('t-state-default');
+            });
+            $(ddl).focusin(() => {
+                $(ddl).find('.t-dropdown-wrap').removeClass('t-state-default').addClass('t-state-focused');
+                $.caspian.showErrorMessage($(ddl)[0]);
+            });
+            $(ddl).focusout(() => {
+                $(ddl).find('.t-dropdown-wrap').removeClass('t-state-focused').addClass('t-state-default');
+                $.caspian.hideErrorMessage($(ddl)[0]);
             });
             $(window).bind('click', function (e) {
                 if (!$(e.target).closest('.t-dropdown').hasClass('t-dropdown')) {
@@ -922,6 +943,7 @@
                     $group.css('top', '-100%');
                     $group = $(input).closest('.t-combobox').find('.c-animate-up .t-group');
                     $group.css('bottom', '-100%');
+                    $control.removeClass('t-state-hover').addClass('t-state-default');
                 });
                 if ($group.offset()) {
                     let loc = $group.offset().top - $(window).scrollTop();
@@ -957,6 +979,7 @@
                     $control.removeClass('t-state-hover').addClass('t-state-default');
             });
             $(input).focusin(function () {
+                $control.removeClass('t-state-default').addClass('t-state-focused');
                 $.caspian.showErrorMessage($(input).closest('.t-widget')[0]);
             });
             $(input).focusout(function () {

@@ -77,13 +77,13 @@
                                 <label>Title</label>
                             </div>
                             <div class="col-md-8">
-                                <StringTextBox @bind-Value="title" Disabled="hideHeader" />
+                                <StringTextBox @bind-Value="title" Disabled="customHeader" />
                             </div>
                             <div class="col-md-4">
-                                <label>Hide header</label>
+                                <label>Custom header</label>
                             </div>
                             <div class="col-md-8">
-                                <CheckBox @bind-Value="hideHeader" />
+                                <CheckBox @bind-Value="customHeader" />
                             </div>
                             <div class="col-md-4">
                                 <label>Window</label>
@@ -144,26 +144,26 @@
         </div>
     </Content>
 </Window>
-<Window @bind-Status="headerWindowStatus" Title="@(title)">
+<Window @bind-Status="headerWindowStatus" Title="@(title)" ShowCustomHeader="customHeader">
+    <HeaderTemplate >
+        <div class="d-window-header">
+            <h5>Custom Header</h5>
+            <button @onclick="() => headerWindowStatus = WindowStatus.Close">X</button>
+        </div>
+    </HeaderTemplate>
     <Content>
-        @if (hideHeader)
-        {
-            <div style="display:flex">
-                <h5 style="width:calc(100% - 33px); padding:10px 25px 0 0;">Window</h5>
-                <button @onclick="() => headerWindowStatus = WindowStatus.Close" style="border:none;color:gray;background-color:transparent">X</button>
-            </div>
-            <hr />
-            <div class="p-5 text-center">
-                <h3>Custom header</h3>
-            </div>
-        }
-        else
-        {
-            <div class="p-5 text-center">
+        <div class="p-5 text-center">
+            @if (customHeader)
+            {
+                <div class="p-5 text-center">
+                    <h3>Custom header</h3>
+                </div>
+            }
+            else
+            {
                 <h3>Title:@(title)</h3>
-            </div>
-        }
-
+            }
+        </div>
     </Content>
 </Window>
 
@@ -225,7 +225,7 @@
     WindowStatus Status2;
     WindowStatus Status3;
     bool draggable = true;
-    bool hideHeader;
+    bool customHeader;
     bool modal = true;
     bool resizeable;
     string title = "Title & custom header";

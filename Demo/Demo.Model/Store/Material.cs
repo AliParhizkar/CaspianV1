@@ -38,16 +38,10 @@ namespace Demo.Model
         [ForeignKey(nameof(SubunitId))]
         public virtual Subunit Subunit { get; set; }
 
-        /// <summary>
-        /// وضعیت
-        /// </summary>
-        [DisplayName("وضعیت")]
+        [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
-        /// <summary>
-        /// محصولات حواله
-        /// </summary>
-        [CheckOnDelete("برای این محصول حواله ثبت شده و امکان حذف آن وجود ندارد")]
-        public virtual IList<MaterialReceipt> MaterialReceipts { get; set; }
+        [CheckOnDelete("The material has receipt and can't be removed")]
+        public virtual IList<ReceiptDetail> ReceiptDetails { get; set; }
     }
 }

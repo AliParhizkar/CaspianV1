@@ -1,20 +1,45 @@
-﻿@page "/Demo/Batch/Inline/Details"
-@page "/Demo/Batch/Inline/Details/{MasterId:int}"
+﻿@page "/Demo/Batch/AutoHide/Details"
+@page "/Demo/Batch/AutoHide/Details/{MasterId:int}"
 @namespace Demo.Web.Pages
-@inherits MasterDetailPage<WarehouseReceipt, MaterialReceipt>
+@inherits MasterDetailPage<WarehouseReceipt, ReceiptDetail>
+<h2>Batch operation</h2>
+<h3>Warehouse receipt</h3>
 <p>
     This page is used for warehouse receipt operations. This operation can be divided into inserting and updating.
 </p>
 <ul class="d-demo-list">
-    <li><b>warehouse receipt: </b> 
-
+    <li>
+        <b>warehouse receipt insert:</b> It includes the following operations, these operations are performed together and transactionally:
+        <ul class="d-demo-inner-list">
+            <li><b>Inser warehouse receipt</b>: There must be a warehouse receipt to insert.</li>
+            <li><b>Insert receipt detail(s): There must be one or more material(s) for insert.</b></li>
+        </ul>
     </li>
+    <li>
+        <b>warehouse receipt update:</b> It includes the following operations, only one or more of these operations may be performed. these operations are performed together and transactionally:
+        <ul class="d-demo-inner-list">
+            <li><b>Update order receipt:</b> There may be no update to receipt.</li>
+            <li><b>Insert receipt detail(s):</b> There may be no, one or more receipt details to insert.</li>
+            <li><b>Update receipt detail(s):</b> There may be no, one or more receipt details to update.</li>
+            <li><b>delete receipt detail(s):</b> There may be no, one or more receipt details to update.</li>
+        </ul>
+    </li>
+</ul>
+<h3>MasterDetailPage&lt;TMaster, TDetail&gt;</h3>
+<p>
+    We can create warehouse receipt form <b>without any coding</b>, of course we can <b>modify</b> it by coding. To create it, we need to use the <b>MasterDetailPage</b> class, this class is a <b>generic class</b> with two parameters: <b>TMaster(WarehouseReceipt)</b> and <b>TDetail(ReceiptDetail)</b>. To use this class, we need to set its properties, we describe these properties.
+</p>
+<h4>MasterDetailPage class properties:</h4>
+<ul class="d-demo-inner-list">
+    <li><b>UpsertData: </b>This property is of type warehouse receipt which is used for gathering data, validation or upsert.</li>
+    <li><b>Form: </b>This form is used for validation, it validate both warehouse receipt and receipt detail. </li>
+    <li>3</li>
 </ul>
 <div class="row p-3">
     <div class="col-md-4 ps-3 pe-3">
         <div class="row align-items-baseline">
             <div class="col-md-2 text-center">
-                <a href="/Demo/Batch/Inline/Master">
+                <a href="/Demo/Batch/AutoHide/Master">
                     <span class="fa fa-first-order"></span>
                 </a>
             </div>
@@ -23,7 +48,7 @@
             </div>
         </div>
         <hr />
-        <CaspianForm @ref="MasterForm" Model="UpsertData">
+        <CaspianForm @ref="Form" Model="UpsertData">
             <div class="row c-controls ps-3 pe-3">
                 <div class="col-md-4">
                     <label>Receipt date</label>
@@ -56,7 +81,7 @@
             </div>
         </div>
         <hr />
-        <DataGrid @ref="Grid" TEntity="MaterialReceipt" TableHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
+        <DataGrid @ref="Grid" TEntity="ReceiptDetail" TableHeight="300" Inline Batch ConditionExpr="t => t.ReceiptId == MasterId">
             <Columns Context="con">
                 <GridColumn Field="t => t.Material.Title" Title="Material" >
                     <EditTemplate>
@@ -109,29 +134,29 @@
         return base.OnMasterEntityCreatedAsync();
     }
 
-    async Task MainUnitChanged(KeyboardEventArgs e, MaterialReceipt receipt, UpsertMode mode)
+    async Task MainUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")
         {
-            if (receipt?.Material.SubunitId != null)
+            if (detail?.Material.SubunitId != null)
                 await txtSubunit.FocusAsync();
             else
                 await Grid.ValidateAndUpsert(mode);
         }
     }
 
-    async Task SubUnitChanged(KeyboardEventArgs e, MaterialReceipt receipt, UpsertMode mode)
+    async Task SubUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")
             await Grid.ValidateAndUpsert(mode);
     }
 
-    async Task UpdateMaterialReceipt(int materialId, MaterialReceipt materialReceipt)
+    async Task UpdateMaterialReceipt(int materialId, ReceiptDetail detail)
     {
         if (materialId > 0)
         {
             using var scope = CreateScope();
-            materialReceipt.Material = await new MaterialService(scope.ServiceProvider).GetAll().Where(t => t.Id == materialId)
+            detail.Material = await new MaterialService(scope.ServiceProvider).GetAll().Where(t => t.Id == materialId)
                 .Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync();
             await txtMainUnit.FocusAsync();
 

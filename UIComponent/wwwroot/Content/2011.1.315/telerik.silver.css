@@ -167,9 +167,15 @@ html input[disabled], textarea[disabled] {
     border-color: rgba(0,0,0,0.15);
 }
 
-.t-dropdown-wrap.t-state-hover .t-input {
-    border-color: rgba(0,0,0,0.24);
+.t-dropdown-wrap.t-state-hover  {
+    background-image: linear-gradient(#00000010,#00000020)!important;
+    border-color: rgba(0,0,0,0.24)!important;
 }
+
+    .t-dropdown-wrap.t-state-hover .t-input {
+        border-color: rgba(0,0,0,0.24);
+    }
+
 .t-dropdown .t-dropdown-wrap:not(.t-state-disabled):hover {
     background-image: linear-gradient(#00000010,#00000020);
     border-color: rgba(0,0,0,0.24);
@@ -178,6 +184,7 @@ html input[disabled], textarea[disabled] {
 .t-dropdown-wrap.t-state-hover .t-select {
     background-image: linear-gradient(#00000010,#00000020);
 }
+
 .t-numerictextbox >.t-input {
     border-color: rgba(0,0,0,0.12);
     padding: 0 4px 0 4px;
@@ -243,7 +250,6 @@ html input[disabled], textarea[disabled] {
 }
 
 .t-dropdown .t-state-focused {
-    background-color: #bdb4af;
     transition: box-shadow 0.15s ease-out 0s;
     box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3) !important;
     background-image: inherit;

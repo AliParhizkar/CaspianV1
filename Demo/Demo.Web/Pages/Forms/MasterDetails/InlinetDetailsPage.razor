@@ -1,13 +1,87 @@
-﻿@page "/Demo/Batch/AutoInser/Details"
-@page "/Demo/Batch/AutoInser/Details/{MasterId:int}"
+﻿@page "/Demo/Batch/Inline/Details"
+@page "/Demo/Batch/Inline/Details/{MasterId:int}"
 @namespace Demo.Web.Pages
 @inherits MasterDetailPage<Order, OrderDeatil>
+<h2>Batch operation</h2>
+<h3>Order</h3>
+<p>
+    This page is used for Order operations. This operation can be divided into inserting and updating.
+</p>
+<ul class="d-demo-list">
+    <li>
+        <b>Order insert:</b> It includes the following operations, these operations are performed together and transactionally:
+        <ul class="d-demo-inner-list">
+            <li><b>Inser order</b>: There must be a order to insert.</li>
+            <li><b>Insert orderdetail(s)</b>: There must be one or more orderdetail(s) for insert.</li>
+        </ul>
+    </li>
+    <li>
+        <b>Order update:</b> It includes the following operations, only one or more of these operations may be performed. 
+        these operations are performed together and transactionally:
+        <ul class="d-demo-inner-list">
+            <li><b>Update order:</b> There may be no update to receipt.</li>
+            <li><b>Insert orderdetail(s):</b> There may be no, one or more receipt details to insert.</li>
+            <li><b>Update orderdetail(s):</b> There may be no, one or more receipt details to update.</li>
+            <li><b>delete orderdetail(s):</b> There may be no, one or more receipt details to update.</li>
+        </ul>
+    </li>
+</ul>
+<h3>MasterDetailPage&lt;TMaster, TDetail&gt;</h3>
+<p>
+    We can create order form <b>without any coding</b>, of course we can <b>modify</b> it by coding. 
+    To create it, we need to use the <b>MasterDetailPage</b> class, this class is a <b>generic class</b> with two parameters: <b>TMaster(Order)</b> and <b>TDetail(OrderDeatil)</b>.
+    To use this class, we need to set its properties, we describe these properties.
+</p>
+<h4>MasterDetailPage class properties:</h4>
+<ul class="d-demo-list">
+    <li><b>UpsertData: </b>This property is of type <b>TMaster(Order)</b> which is used for <b>gathering data, validation or upsert</b>.</li>
+    <li><b>Form: </b>This form is used for validation, it validate UpsertData(Order taht has one or more OrderDeatil). </li>
+    <li>
+        <b>Grid: </b>
+        This grid is bind to TDetail (Orderdetail) type, we describe some of its properties that we have used.
+        <ul class="d-demo-inner-list">
+            <li><b>Batch: </b>It's a boolean parameter taht enable <b>batch</b> operations.</li>
+            <li><b>Inline: </b>It's a boolean parameter that enable <b>inlin</b> upsert.</li>
+            <li><b>EditTemplate: </b>Use for spaecify add or edit inline template. </li>
+        </ul>
+    </li>
+</ul>
+<p>
+    <span class="fa fa-info"> Note: </span> Because the user (programmer) spaecify the <b>EditTemplate</b>,
+    it is possible to make <b>any kind of changes</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <h4>Order-Orderdetails</h4>
+                <span class="c-demo-description">In this example we can inser or update order, also insert update or delete orderdetail(s).</span>
+                <div class="pt-3">
+                    <span class="fa fa-info"> Note: </span><span class="c-demo-description">We use OrderService for validate both Order and orderdetails.</span>
+                </div>
+                <h4> User experience: </h4>
+                <ul class="d-demo-inner-list">
+                    <li>
+                        <b>Search product: </b> 
+                    </li>
+                    <li>
+                        <b>Select product: </b>
+                    </li>
+                    <li>
+                        <b>Upsert on eneter:</b>
+                    </li>
+                </ul>
+            </div>
+
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 <div class="row p-3">
     <div class="col-md-4 ps-3 pe-3">
         <div class="row">
             <div class="col-md-2 text-center">
-                <a href="/Demo/Batch/AutoInser/Master">
-                    <span class="fa fa-first-order"></span>
+                <a href="/Demo/Batch/Inline/Master">
+                    <span class="fa fa-arrow-left"></span>
                 </a>
             </div>
             <div class="col-md-10 text-center">
@@ -15,8 +89,7 @@
             </div>
         </div>
         <hr />
-        <CaspianForm @ref="MasterForm" Model="UpsertData">
-            <CaspianValidationValidator ValidatorType="typeof(OrderService)" />
+        <CaspianForm @ref="Form" Model="UpsertData">
             <div class="row c-controls ps-3 pe-3">
                 <div class="col-md-4">
                     <label>Order date</label>
@@ -59,12 +132,6 @@
         <div class="row">
             <div class="col-md-8">
                 <h7 class="d-membership">Order Details</h7>
-            </div>
-            <div class="col-md-4 d-source-btn">
-                <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-                    Source
-                    <i class="fa fa-code"></i>
-                </button>
             </div>
         </div>
         <hr />

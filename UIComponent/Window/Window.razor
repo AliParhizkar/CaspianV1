@@ -6,7 +6,7 @@
 <CascadingValue TValue="IWindow" Value="this" Name="ParentWindow">
     <CascadingValue Value="(id + 2)" Name="WindowId">
         <div @attributes="attrs" class="t-widget t-window">
-            @if (!HideTitle)
+            @if (HeaderTemplate == null || !ShowCustomHeader)
             {
                 <div class="t-window-titlebar t-header">
                     <span class="t-window-title">@Title</span>
@@ -18,6 +18,12 @@
                                     }" class="t-window-action t-link">
                         <i class="fa fa-close"></i>
                     </span>
+                </div>
+            }
+            else
+            {
+                <div class="t-window-titlebar">
+                    @HeaderTemplate
                 </div>
             }
             <div @ref="window"  status="@Status.ConvertToInt()" modal="@(Modal)" draggable="@(Draggable)" class="t-window-content t-content">
@@ -39,59 +45,61 @@
     WindowStatus oldStatus;
     Dictionary<string, object> attrs = new Dictionary<string, object>();
 
-    [JsonIgnore]
     public ElementReference window { get; private set; }
 
-    [Inject, JsonIgnore]
+    [Inject]
     protected IJSRuntime jsRuntime { get; set; }
 
-    [Inject, JsonIgnore]
+    [Inject]
     public WindowAppState AppState { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter,]
     public string Id { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public string Style { get; set; }
 
     [Parameter]
     public string Title { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public RenderFragment Content { get; set; }
 
-    [Parameter, JsonProperty("status")]
+    [Parameter]
+    public RenderFragment HeaderTemplate { get; set; }
+
+    [Parameter]
+    public bool ShowCustomHeader { get; set; }
+
+    [Parameter]
     public WindowStatus Status { get; set; } = WindowStatus.Close;
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public EventCallback<WindowStatus> StatusChanged { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public Expression<Func<WindowStatus>> StatusExpression { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public EventCallback OnOpen { get; set; }
 
     internal EventCallback OnInternalOpen { get; set; }
 
     internal EventCallback OnInternalClose { get; set; }
 
-    [Parameter, JsonProperty("modal")]
+    [Parameter]
     public bool Modal { get; set; } = true;
 
-    [Parameter, JsonProperty("resizable")]
+    [Parameter]
     public bool Resizable { get; set; }
 
-    [Parameter, JsonIgnore]
-    public bool HideTitle { get; set; }
-
-    [Parameter, JsonProperty("draggable")]
+    [Parameter]
     public bool Draggable { get; set; }
 
-    [Parameter, JsonProperty("parentChaild")]
+    [Parameter]
     public bool ParentChaild { get; set; }
 
-    [CascadingParameter, JsonIgnore]
+    [CascadingParameter]
     internal ICrudComponent CrudComponent { get; set; }
 
     public async Task Open()

@@ -418,16 +418,7 @@ namespace Caspian.UI
             else if (!Value.Equals(Oldvalue))
             {
                 Oldvalue = Value;
-                using var scope = ServiceScopeFactory.CreateScope();
-                
-                //var service = scope.ServiceProvider.GetService(typeof(ISimpleService<TEntity>)) as SimpleService<TEntity>;
-                //var type1 = typeof(TEntity);
-                //var param = Expression.Parameter(type1, "t");
-                //var pKey = type1.GetPrimaryKey();
-                //Expression expr = Expression.Property(param, pKey);
-                //expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(Value, pKey.PropertyType)));
-                //expr = Expression.Lambda(expr, param);
-                //Text = await service.GetAll().Where(expr).Select(TextExpression).FirstOrDefaultAsync();
+                var q = LookupWindow;
                 oldText = Text;
             }
             else

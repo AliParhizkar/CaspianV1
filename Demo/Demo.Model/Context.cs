@@ -30,7 +30,7 @@ namespace Demo.Model
 
         public DbSet<WarehouseReceipt> Receipts { get; set; }
 
-        public DbSet<MaterialReceipt> ProductReceipts { get; set; }
+        public DbSet<ReceiptDetail> ReceiptDetails { get; set; }
 
         public DbSet<OrganUnit> OrganUnits { get; set; }
     }

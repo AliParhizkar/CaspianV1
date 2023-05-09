@@ -38,7 +38,7 @@
         <IconButton @onclick="async () => await LoadMenus()" IconType="IconType.Refresh" title="Load menus" />
     </div>
     <div class="pt-4">
-        <DataGrid @ref="CrudGrid" TEntity="Menu" TableHeight="300" HideInsertIcon ConditionExpr='t => (InvalidAddress == null || t.InvalidAddress == InvalidAddress) && (ShowInMenu == null || t.ShowonMenu == ShowInMenu.Value) && (!OnlyUntitledMenus || t.Title == null) && t.Source.ToLower().StartsWith("/" + Subsystem.ToString().ToLower())'>
+        <DataGrid @ref="CrudGrid" TEntity="Menu" TableHeight="300" HideInsertIcon ConditionExpr='t => (InvalidAddress == null || t.InvalidAddress == InvalidAddress) && (ShowInMenu == null || t.ShowonMenu == ShowInMenu.Value) && (!OnlyUntitledMenus || t.Title == null) && t.SubSystemKind == Subsystem'>
             <Columns>
                 <GridColumn Field="t => t.Id" Title="Id" />
                 <GridColumn Field="t => t.MenuCategory.Title" Title="main menu" />

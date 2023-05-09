@@ -7,9 +7,9 @@ using Caspian.Common.Service;
 
 namespace Demo.Service
 {
-    public class MaterialReceiptService : BaseService<MaterialReceipt>, IBaseService<MaterialReceipt>
+    public class ReceiptDetailService : BaseService<ReceiptDetail>, IBaseService<ReceiptDetail>
     {
-        public MaterialReceiptService(IServiceProvider provider)
+        public ReceiptDetailService(IServiceProvider provider)
             : base(provider)
         {
             RuleFor(t => t.QuantityMain).Custom(t => t.QuantityMain == 0 && t.QuantitySub == null, "This parameter must be greater than zero.");
