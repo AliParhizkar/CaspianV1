@@ -110,11 +110,11 @@
                     <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                     <GridColumn Field="t => t.Product.Title" Title="Product" />
                     <GridColumn Field="t => t.Price.Seprate3Digit()" Title="Price" />
-                    <GridColumn Field="t => t.Count" Title="Count">
+                    <GridColumn Field="t => t.Quantity" Title="Quantity">
                         <Template>
-                            <IconButton IconType="IconType.Plus" @onclick="async () => await IncCount(context.Data)" />
-                            <span style="display:inline-block;width:38px;height:38px;">@context.Data.Count</span>
-                            <IconButton IconType="IconType.Minus" @onclick="async () => await DecCount(context.Data)" />
+                            <IconButton IconType="IconType.Plus" @onclick="async () => await IncQuantity(context.Data)" />
+                            <span style="display:inline-block;width:38px;height:38px;">@context.Data.Quantity</span>
+                            <IconButton IconType="IconType.Minus" @onclick="async () => await DecQuantity(context.Data)" />
                         </Template>
                     </GridColumn>
                 </Columns>
@@ -220,7 +220,7 @@
         {
             await Grid.InsertAsync(new OrderDeatil()
                 {
-                    Count = 1,
+                    Quantity = 1,
                     Price = product.Price,
                     ProductId = product.Id,
                     OrderId = MasterId
@@ -228,21 +228,21 @@
         }
         else
         {
-            old.Count = old.Count + 1;
+            old.Quantity = old.Quantity + 1;
             await Grid.UpdateAsync(old);
         }
     }
 
-    async Task IncCount(OrderDeatil detail)
+    async Task IncQuantity(OrderDeatil detail)
     {
-        detail.Count++;
+        detail.Quantity++;
         await Grid.UpdateAsync(detail);
     }
 
-    async Task DecCount(OrderDeatil detail)
+    async Task DecQuantity(OrderDeatil detail)
     {
-        detail.Count--;
-        if (detail.Count == 0)
+        detail.Quantity--;
+        if (detail.Quantity == 0)
             await Grid.RemoveAsync(detail);
         else
             await Grid.UpdateAsync(detail);

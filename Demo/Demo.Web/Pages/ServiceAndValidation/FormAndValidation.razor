@@ -96,6 +96,12 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="FormValidation" FileName="Binding" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Service">
+            <Document FolderName="Service/Services" FileName="ProductService" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 <h3 class="pt-3">Form events</h3>
@@ -123,7 +129,8 @@
                         </ul>
                     </div>
                     <div class="col-md-7">
-                        <CaspianForm Model="upsertData" >
+                        <CaspianForm Model="upsertData" OnSubmit="FormSubmit" OnReset="FormReset" 
+                                OnInvalidSubmit="InvalidSubmit" OnValidSubmit="ValidSubmit" >
                             <div class="data-form-container p-4">
                                 <div class="row c-controls">
                                     <div class="col-md-4">
@@ -178,6 +185,12 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="FormValidation" FileName="Events" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Service">
+            <Document FolderName="Service/Services" FileName="ProductService" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 @code
@@ -190,7 +203,7 @@
         await Alert("Form Submited");
     }
 
-    void Reset()
+    void FormReset()
     {
         ShowMessage("Form is reset");
     }

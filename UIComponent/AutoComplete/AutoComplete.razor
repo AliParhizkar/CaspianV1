@@ -1,7 +1,10 @@
 ﻿@namespace Caspian.UI
 @typeparam TValue
+@typeparam TEntity
 @attribute [CascadingTypeParameter(nameof(TValue))]
 @inject IJSRuntime jsRuntime
+@inject IServiceScopeFactory ServiceScopeFactory
+
 @{
     var attrs = new Dictionary<string, object>();
     if (Id.HasValue())

@@ -19,57 +19,59 @@
                                 <GridCommandColumns />
                             </Columns>
                         </DataGrid>
+                        <Window Title="Product CRUD" Style="width:500px">
+                            <Content>
+                                <CaspianForm Model="upsertProduct" OnSubmit="SetCategory">
+                                    <div class="row c-controls ps-4 pe-4">
+                                        <div class="col-md-4">
+                                            <label>Title</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <StringTextBox @bind-Value="upsertProduct.Title" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Price</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <NumericTextBox @bind-Value="upsertProduct.Price" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Take out price</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <NumericTextBox @bind-Value="upsertProduct.TakeoutPrice" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Meal</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <MultiSelectBox @bind-Value="upsertProduct.Meal" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Status</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <DropdownList @bind-Value="upsertProduct.ActiveType" />
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-8 align-content-center">
+                                            <FormCommandButton />
+                                        </div>
+                                    </div>
+                                </CaspianForm>
+                            </Content>
+                        </Window>
                     </CrudComponent>
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <div style="height:calc(100vh - 130px);overflow:auto">
+                <Document FolderName="Crud" FileName="PopupCrud1" />
+            </div>
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
-
-
-<Window Title="Product" Style="width:500px">
-    <Content>
-        <CaspianForm Model="upsertProduct" OnSubmit="SetCategory">
-            <div class="row c-controls ps-4 pe-4">
-                <div class="col-md-4">
-                    <label>Title</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="upsertProduct.Title" />
-                </div>
-                <div class="col-md-4">
-                    <label>Price</label>
-                </div>
-                <div class="col-md-8">
-                    <NumericTextBox @bind-Value="upsertProduct.Price" />
-                </div>
-                <div class="col-md-4">
-                    <label>Take out price</label>
-                </div>
-                <div class="col-md-8">
-                    <NumericTextBox @bind-Value="upsertProduct.TakeoutPrice" />
-                </div>
-                <div class="col-md-4">
-                    <label>Meal</label>
-                </div>
-                <div class="col-md-8">
-                    <MultiSelectBox @bind-Value="upsertProduct.Meal" />
-                </div>
-                <div class="col-md-4">
-                    <label>Status</label>
-                </div>
-                <div class="col-md-8">
-                    <DropdownList @bind-Value="upsertProduct.ActiveType" />
-                </div>
-                <div class="col-md-4"></div>
-                <div class="col-md-8 align-content-center">
-                    <FormCommandButton />
-                </div>
-            </div>
-        </CaspianForm>
-    </Content>
-</Window>
-
 @code
 {
     Product upsertProduct = new Product();

@@ -188,7 +188,7 @@ html input[disabled], textarea[disabled] {
 .t-numerictextbox >.t-input {
     border-color: rgba(0,0,0,0.12);
     padding: 0 4px 0 4px;
-    width: calc(100% - 4px);
+    width: calc(100% - 5px);
     box-sizing: border-box;
     direction: ltr;
     font-size:15px;

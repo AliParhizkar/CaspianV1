@@ -1,0 +1,37 @@
+﻿@typeparam TValue
+@inherits LookupWindow<Customer, TValue>
+@namespace Demo.Web.Pages
+
+<div class="c-lookup-page" style="width:750px;">
+    <DataGrid @ref="Grid" TEntity="Customer" TableHeight="150" ConditionExpr="t => CustomerType == null || t.CustomerType == CustomerType" HidePageSize>
+       <Columns Context="customer">
+            <GridColumn Field="t => t.CustomerType" Title="Customer type" />
+            <GridColumn Field='t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Customer Name" />
+            <GridColumn Field="t => t.Gender" style="width:100px" Title="Gender">
+                <Template>
+                    @if (customer.Data.Gender == Model.Gender.Male)
+                    {
+                            <span class="c-icon fa fa-male"></span>
+                    }
+                    else if (customer.Data.Gender == Model.Gender.Female)
+                    {
+                            <span class="c-icon fa fa-female"></span>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field="t => t.MobileNumber.CallFormat('-')" Title="Mobile Number" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code 
+{
+    [Parameter]
+    public CustomerType? CustomerType { get; set; }
+
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.FName.Contains(LookupStringSearchValue) || t.LName.Contains(LookupStringSearchValue) || t.MobileNumber.Contains(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

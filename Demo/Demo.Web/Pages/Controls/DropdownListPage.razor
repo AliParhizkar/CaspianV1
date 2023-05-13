@@ -109,6 +109,9 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="DropdownList" FileName="Binding" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 <h3 class="pt-4">General properties</h3>
@@ -160,10 +163,8 @@
                 </div>
             </div>
         </TabPanelItem>
-        <TabPanelItem Title="<i class='fa fa-code'></i>Source">
-            <p>
-                In this example we bind this control to <b>orderType</b> that is a enum variable
-            </p>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="DropdownList" FileName="Generalproperties" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -220,20 +221,29 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="DropdownList" FileName="ItemsDisableFilter" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 @code 
 {
+    OrderType orderType = OrderType.Salon;
+
+    OrderType? nullableOrderType; 
+    
     bool disable;
+    
+    IList<SelectListItem> otherTypeItems;
+    int? otherType;
+
     bool filtering = true;
     bool itemDisable = true;
     ControlSize controlSize = ControlSize.Auto;
-    Demo.Model.OrderType orderType = Model.OrderType.Salon;
-    Demo.Model.OrderType? nullableOrderType;
-    int? otherType;
-    IList<SelectListItem> otherTypeItems;
 
-    DropdownList<Demo.Model.OrderType?> dropdownList;
+    
+
+    DropdownList<OrderType?> dropdownList;
     WindowStatus status;
 
     string GetStyle()

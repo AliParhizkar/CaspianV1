@@ -67,7 +67,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <h4>Title & custom title</h4>
+                        <h4>Title & custom header</h4>
                         <span class="c-demo-description">By setting the <b>Title</b> parameter, we can easily <b>specify the title</b>. This parameter is a <b>string</b> parameter. And we can also <b>create custom header</b></span>
                     </div>
                     <div class="col-md-6">
@@ -96,6 +96,9 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Window" FileName="Generalproperties" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 
@@ -118,12 +121,15 @@
                                 <label>Window</label>
                             </div>
                             <div class="col-md-8 text-center">
-                                <button class="c-btn c-primary" @onclick="() => { Status1 = WindowStatus.Open; }">...</button>
+                                <button class="c-btn c-primary" @onclick="() => { status1 = WindowStatus.Open; }">...</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Window" FileName="CascadeWindow" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -168,7 +174,7 @@
 </Window>
 
 
-<Window @bind-Status="Status1"  Title="Window 1" Style="width:700px;height:500px">
+<Window @bind-Status="status1"  Title="Window 1" Style="width:700px;height:500px">
     <Content>
         <div class="row d-cascade">
             <div class="col-md-12">
@@ -180,10 +186,10 @@
             </div>
             <div class="col-md-6">
                 <hr />
-                <button class="c-btn c-success" @onclick="() => { Status2 = WindowStatus.Open; }">Window 2</button>
+                <button class="c-btn c-success" @onclick="() => { status2 = WindowStatus.Open; }">Window 2</button>
             </div>
         </div>
-        <Window @bind-Status="Status2" Title="Window 2" Style="width:600px;height:400px">
+        <Window @bind-Status="status2" Title="Window 2" Style="width:600px;height:400px">
             <Content>
                 <div class="row d-cascade">
                     <div class="col-md-12">
@@ -195,10 +201,10 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <button class="c-btn c-secondary" @onclick="() => { Status3 = WindowStatus.Open; }">Window 3</button>
+                        <button class="c-btn c-secondary" @onclick="() => { status3 = WindowStatus.Open; }">Window 3</button>
                     </div>
                 </div>
-                <Window @bind-Status="Status3" Title="Window 3" Style="width:500px;height:300px">
+                <Window @bind-Status="status3" Title="Window 3" Style="width:500px;height:300px">
                     <Content>
                         <div class="row d-cascade">
                             <div class="col-md-12">
@@ -221,9 +227,9 @@
     WindowStatus widthWindowStatus;
     WindowStatus modalAndDraggableStatus;
     WindowStatus headerWindowStatus;
-    WindowStatus Status1;
-    WindowStatus Status2;
-    WindowStatus Status3;
+    WindowStatus status1;
+    WindowStatus status2;
+    WindowStatus status3;
     bool draggable = true;
     bool customHeader;
     bool modal = true;

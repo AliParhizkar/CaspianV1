@@ -4,7 +4,7 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<h2>Inform page</h2>
+<h2>Inform CRUD</h2>
 <p>
     In this example, instead of a <b>pop-up window</b>, we place the form on the page. 
 </p>
@@ -22,7 +22,7 @@
                                     </div>
                                     <div class="col-md-8">
                                         <ComboBox @bind-Value="upsertData.ProductCategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Title"
-                                                  OrderByExpression="t => t.Title" />
+                                                    OrderByExpression="t => t.Title" />
                                     </div>
                                     <div class="col-md-4">
                                         <label>Title</label>
@@ -88,8 +88,13 @@
                         </Columns>
                     </DataGrid>
                 </CrudComponent>
-
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Crud" FileName="InformCrud" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Service">
+            <Document FolderName="Service/Services" FileName="ProductService" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

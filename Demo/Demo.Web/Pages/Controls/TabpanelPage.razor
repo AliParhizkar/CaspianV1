@@ -30,6 +30,9 @@
                 </TabPanel>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Razor'>
+            <Document FolderName="Tabpanel" FileName="Static" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 <h3 class="pt-3">Tabpanel-Dynamic</h3>
@@ -99,11 +102,13 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Razor'>
+            <Document FolderName="Tabpanel" FileName="Dynamic" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 @code
 {
-    WindowStatus status;
     int selectedId = 1, tabIndex = 1, simpleTabIndex = 1;
     IDictionary<int, string> dic = new Dictionary<int, string>();
 

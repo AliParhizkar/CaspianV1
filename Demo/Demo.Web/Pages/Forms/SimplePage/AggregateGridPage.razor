@@ -1,4 +1,4 @@
-﻿@page "/Demo/AggregateGridPage"
+﻿@page "/Demo/AggregateGrid"
 @namespace Demo.Web.Pages
 @inherits BasePage
 <h2>Group by & aggregate functions</h2>
@@ -11,7 +11,7 @@
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 pe-4">
                         <h4>Group, by customer</h4>
                         <span class="c-demo-description">
                             In this example we <b>bind the grid</b> to the <b>Order entity</b> and use the <b>AggregateField</b> parameter instead of the <b>Field</b> parameter.
@@ -46,13 +46,16 @@
                         <DataGrid TEntity="OrderDeatil" HideInsertIcon>
                             <Columns>
                                 <GridColumn AggregateField="t => t.Key.Product.Title" Title="Product" />
-                                <GridColumn AggregateField="t => t.Sum(u => u.Count)" Title="Count" />
-                                <GridColumn AggregateField="t => t.Sum(u => u.Count * u.Price)" Title="Sum price" />
+                                <GridColumn AggregateField="t => t.Sum(u => u.Quantity)" Title="Quantity" />
+                                <GridColumn AggregateField="t => t.Sum(u => u.Quantity * u.Price)" Title="Sum price" />
                             </Columns>
                         </DataGrid>
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="Grid-Aggregate" FileName="Data-Binding" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

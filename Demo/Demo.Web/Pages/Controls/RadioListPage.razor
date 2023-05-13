@@ -73,6 +73,9 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="RadioList" FileName="Binding" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 <h3 class="pt-3">Default layout</h3>
@@ -106,6 +109,9 @@
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="RadioList" FileName="Defaultlayout" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -156,6 +162,9 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="RadioList" FileName="CustomArrange" />
+        </TabPanelItem>
    </Tabs>
 </TabPanel>
 <h3 class="pt-3">Disable control and items</h3>
@@ -186,7 +195,7 @@
                                 <CheckBox @bind-Value="internet" Title="@Model.OrderType.Internet.EnumText()" />
                             </div>
                             <div class="col-md-12 ps-5">
-                                <RadioList @bind-Value="orderType" Disabled>
+                                <RadioList @bind-Value="orderType">
                                     <RadioItems>
                                         <RadioItem Value="Model.OrderType.Salon" Disabled="salon" />
                                         <RadioItem Value="Model.OrderType.Takeout" Disabled="packaging" />
@@ -219,11 +228,14 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="RadioList" FileName="DisableControlItems" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 
 @code {
-    Model.OrderType orderType = Model.OrderType.Salon;
+    OrderType orderType = OrderType.Salon;
     int? otherType;
     IList<SelectListItem> otherTypeItems;
     IList<SelectListItem> Countries;

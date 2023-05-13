@@ -85,7 +85,7 @@
             <Columns Context="con">
                 <GridColumn Field="t => t.Material.Title" Title="Material" >
                     <EditTemplate>
-                        <AutoComplete TValue="int" @bind-Value="con.Data.MaterialId" HideHeader AutoHide Title="Material"
+                        <AutoComplete TValue="int" TEntity="Material" @bind-Value="con.Data.MaterialId" HideHeader AutoHide Title="Material"
                                       OnChange="async () => await UpdateMaterialReceipt(con.Data.MaterialId, con.Data)">
                             <MaterialLookupWindow />
                         </AutoComplete>

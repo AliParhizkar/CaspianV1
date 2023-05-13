@@ -1,7 +1,6 @@
 ﻿using Caspian.Common;
 using Employment.Model;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Employment.Service
 {
@@ -11,7 +10,6 @@ namespace Employment.Service
             : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("A city with this title is registered in the system");
-            var userId = UserId;
         }
     }
 }

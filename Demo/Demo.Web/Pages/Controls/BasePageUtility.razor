@@ -82,6 +82,9 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Demo">
+            <Document FolderName="BasePage" FileName="Message" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 <h3 class="pt-3">Show on window</h3>
@@ -103,6 +106,9 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Demo">
+            <Document FolderName="BasePage" FileName="ShowOnWindow" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 <h3 class="pt-3">Download</h3>
@@ -112,7 +118,7 @@
             <div class="d-content">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4>download</h4>
+                        <h4>Download</h4>
                         <span class="c-demo-description">In this example, we use the <b>DownloadFile method</b> for downloading. This method has <b>two parameters</b> the first parameter is the <b>name of the file after downloading</b>, and the second is the <b>content of the file (byte array or memory stream)</b>.</span>
                     </div>
                     <div class="col-md-6 text-center">
@@ -120,6 +126,9 @@
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Demo">
+            <Document FolderName="BasePage" FileName="Download" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -197,7 +206,6 @@
 
     async Task AlertMessageAsync()
     {
-        
         await Alert(alertMessage);
     }
 

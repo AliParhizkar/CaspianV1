@@ -23,14 +23,14 @@
                         <div class="row c-controls align-items-center">
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
-                                    <PictureBox Data="imageDataWidthContent" style="width:300px;height:350px;background-position: center center" />
+                                    <PictureBox Data="imageDataWithoutContent" style="width:300px;height:350px;background-position: center center" />
                                 </div>
                             </div>
                             <div class="col-md-5 ps-5 align-items-center">
                                 <label>File upload</label>
                             </div>
                             <div class="col-md-7 align-items-center">
-                                <Fileupload OnChange="async e => await SaveFileData(e)" />
+                                <Fileupload Accept="image/*" OnChange="async e => await SaveFileDataWithoutContent(e)" />
                             </div>
                         </div>
                     </div>
@@ -44,8 +44,8 @@
                         <div class="row c-controls">
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
-                                    <Fileupload MaxAllowedSize="40_000" OnChange="async e => await SaveFileData1(e)" Title="Click for upload">
-                                        <PictureBox NoContentTitle="Click for upload" Data="imageDataWidthoutContent" style="width:300px;height:350px;background-size:cover" />
+                                    <Fileupload Accept="image/*" MaxAllowedSize="40_000" OnChange="async e => await SaveFileDataWithContent(e)" Title="Click for upload">
+                                        <PictureBox NoContentTitle="Click for upload" Data="imageDataWithContent" style="width:300px;height:350px;background-size:cover" />
                                     </Fileupload>
                                 </div>
                             </div>
@@ -53,6 +53,9 @@
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="FileUpload" FileName="FileUpload" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -67,7 +70,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h4>Fileupload properties</h4>
-                        <span class="c-demo-description">By setting the <b>Style</b> parameter, we can easily change <b>width, Height</b> and other css properties of the control. it has intellisense for css properties, and you can use <b>Title</b> parameter to set the <b>title</b> of the component</span>
+                        <span class="c-demo-description">By setting the <b>Style</b> parameter, we can easily change <b>width, Height</b> and other css properties of the control. it has intellisense for css properties, and you can use <b>Title</b> parameter to set the <b>title</b> of the component, We can use the <b>Accept</b> parameter to <b>filter</b> the <b>list of files</b> displayed in the <b>file browser</b>.</span>
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls align-items-center">
@@ -75,7 +78,7 @@
                                 <label>File upload</label>
                             </div>
                             <div class="ps-5 col-md-7 align-items-center">
-                                <Fileupload Title="Click me" Style="width:80px;height:40px;background-color:deeppink;color:white;border:none;font-weight:bold" OnChange="async e => await SaveFileData(e)" />
+                                <Fileupload Title="Click me" Accept="Image/*" Style="width:80px;height:40px;background-color:deeppink;color:white;border:none;font-weight:bold" OnChange="async e => await SaveFileDataWithoutContent(e)" />
                             </div>
                         </div>
                     </div>
@@ -89,8 +92,8 @@
                         <div class="row c-controls">
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
-                                    <Fileupload MaxAllowedSize="40_000" OnChange="async e => await SaveFileData1(e)" Title="Click for upload">
-                                        <PictureBox NoContentTitle="Click me for upload" Data="imageDataWidthoutContent" style="width:250px;height:300px;background-size:100% 100%" />
+                                    <Fileupload Accept="Image/*" MaxAllowedSize="40_000" OnChange="async e => await SaveFileDataWithContent(e)" Title="Click for upload">
+                                        <PictureBox NoContentTitle="Click me for upload" Data="imageDataWithoutContent" style="width:250px;height:300px;background-size:100% 100%" />
                                     </Fileupload>
                                 </div>
                             </div>
@@ -98,6 +101,9 @@
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="FileUpload" FileName="Generalproperties" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -144,14 +150,14 @@
                                 <label>Maximum size of file</label>
                             </div>
                             <div class="col-md-6">
-                                <DropdownList @bind-Value="fileSize" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
+                                <DropdownList @bind-Value="fileSizeSingle" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
                             </div>
                             <div class="col-md-6 ps-5">
                                 <label>Fileupload</label>
                             </div>
                             <div class="col-md-6">
                                 <Fileupload Title="Single file upload" Style="width:130px;" Service="service" OnChange="ShowProrgres" OnFileUploadCompleted="FileUploadCompleted"
-                                            MaxAllowedSize="Convert.ToInt32(filesSize[fileSize - 1] * 1000_000)" RelatedPath="@relatedPath" />
+                                            MaxAllowedSize="Convert.ToInt32(filesSize[fileSizeSingle - 1] * 1000_000)" RelatedPath="@relatedPath" />
 
                             </div>
                         </div>
@@ -177,7 +183,7 @@
                                 <label>Maximum size of files</label>
                             </div>
                             <div class="col-md-6">
-                                <DropdownList @bind-Value="fileSize1" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
+                                <DropdownList @bind-Value="fileSizeMultiple" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
                             </div>
                             <div class="col-md-6">
                                 <label>Maximum numer of files file</label>
@@ -190,7 +196,7 @@
                             </div>
                             <div class="text-center col-md-6">
                                 <Fileupload Title="Multiple file upload" Style="width:145px;height:45px;" Service="service" MaxFilesCount="Convert.ToInt32(fileCounts[fileCount - 1])"
-                                            MaxAllowedSize="Convert.ToInt32(filesSize[fileSize1 - 1] * 1000_000)" OnChange="ShowProrgres"
+                                            MaxAllowedSize="Convert.ToInt32(filesSize[fileSizeMultiple - 1] * 1000_000)" OnChange="ShowProrgres"
                                             Multiple RelatedPath="@relatedPath" OnFilesUploadCompleted="FileUploadCompleted" />
 
                             </div>
@@ -198,6 +204,9 @@
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="FileUpload" FileName="LargFileUpload" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -220,7 +229,7 @@
                                 <label>Control size</label>
                             </div>
                             <div class="col-md-6">
-                                <DropdownList @bind-Value="controlSize" FilterFunc="t => t != ControlSize.Auto" />
+                                <DropdownList @bind-Value="controlSize" />
                             </div>
                             <div class="col-md-6 ps-5">
                                 <label>Custom appearance</label>
@@ -228,30 +237,42 @@
                             <div class="col-md-6">
                                 <CheckBox @bind-Value="customAppearance" />
                             </div>
+                            <div class="col-md-6 ps-5">
+                                <label>File upload</label>
+                            </div>
+                            <div class="col-md-6">
+                                <Fileupload Service="service" RelatedPath="@relatedPath" />
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12 pt-2">
-                        <span class="fa fa-info"></span><span style="font-size:16px;font-weight:bold">Please upload a file to show the progress bar</span>
+                        <span class="fa fa-info"></span><span style="font-size:16px;font-weight:bold">Please upload a file to show the progressbar</span>
+                    </div>
+                    <div class="col-md-12 ps-5 pe-5 pt-3">
+                        <FileUploadProgress CustomAppearance="customAppearance" Service="service" Style="@GetStyle()" />
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="FileUpload" FileName="Progressbar" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
 <PopupWindow @bind-Status="status" AutoHide="enableAutoHide">
     <div class="p-2">
-        <FileUploadProgress CustomAppearance="customAppearance" Service="service" Style="@GetStyle()" />
+        <FileUploadProgress Service="service" />
     </div>
 </PopupWindow>
 @code
 {
     bool customAppearance;
     WindowStatus status;
-    int fileSize = 1;
-    int fileSize1 = 1;
+    int fileSizeSingle = 1;
+    int fileSizeMultiple = 1;
     int fileCount = 1;
-    byte[] imageDataWidthContent;
-    byte[] imageDataWidthoutContent;
+    byte[] imageDataWithContent;
+    byte[] imageDataWithoutContent;
     bool enableAutoHide;
     string relatedPath;
     double[] filesSize = new double[] { 0.5, 1, 2, 5, 10, 20, 50 };
@@ -277,18 +298,20 @@
                 return "width:400px";
             case ControlSize.Small:
                 return "width:300px";
+            case ControlSize.Auto:
+                return "";
         }
         throw new NotImplementedException();
     }
 
-    async Task SaveFileData(InputFileChangeEventArgs file)
+    async Task SaveFileDataWithContent(InputFileChangeEventArgs file)
     {
-        imageDataWidthContent = await file.File.GetByteArrayAsync();
+        imageDataWithContent = await file.File.GetByteArrayAsync();
     }
 
-    async Task SaveFileData1(InputFileChangeEventArgs file)
+    async Task SaveFileDataWithoutContent(InputFileChangeEventArgs file)
     {
-        imageDataWidthoutContent = await file.File.GetByteArrayAsync();
+        imageDataWithoutContent = await file.File.GetByteArrayAsync();
     }
 
     void ShowProrgres(InputFileChangeEventArgs e)

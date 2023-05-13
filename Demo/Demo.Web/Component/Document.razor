@@ -13,7 +13,10 @@
         if (!FileName.EndsWith(".htm", StringComparison.CurrentCultureIgnoreCase))
             FileName += ".htm";
         var path = host.ContentRootPath;
-        path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\" + FileName;
+        path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
+        if (FolderName.HasValue())
+            path += FolderName + '\\';
+        path += FileName;
         content = await File.ReadAllTextAsync(path);
         content = content.Replace("�", "&nbsp;");
         await base.OnInitializedAsync();
@@ -21,4 +24,7 @@
 
     [Parameter]
     public string FileName { get; set; }
+
+    [Parameter]
+    public string FolderName { get; set; }
 }

@@ -13,6 +13,39 @@
 <p>
     We use this component for <b>binding</b> and <b>simple search</b>.
 </p>
+<h3>Databinding</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>TEntity & TextExpression</h4>
+                        <span class="c-demo-description">
+                            In this example we specify <b>TEntity parameter</b>, (the type of entity the control binds to it) and also set <b>TextExpression parameter</b> (that is a <b>Lambda Expression</b> and <b>has intellisense</b>)
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Customer</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                                <AutoComplete TValue="int?" TEntity="Customer" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName'>
+                                    <CustomerLookupWindow />
+                                </AutoComplete>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Lookup" FileName="Data-Binding" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Binding & parameters</h3>
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
@@ -28,7 +61,7 @@
                                 <label>Customer</label>
                             </div>
                             <div class="col-md-8 pe-5">
-                                <AutoComplete @bind-Value="customerId">
+                                <AutoComplete TValue="int?" TEntity="Customer" @bind-Value="customerId" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName'>
                                     <CustomerLookupWindow />
                                 </AutoComplete>
                             </div>
@@ -73,7 +106,7 @@
                                 <button disabled="@disabled" class="c-btn c-primary" @onclick="async () => await acCsutomer.FocusAsync()">Focus</button>
                             </div>
                             <div class="ps-5 col-md-12 pe-5">
-                                <AutoComplete TValue="int?" @ref="acCsutomer" Style="@GetStyle()" Disabled="disabled" HideIcon="hideIcon">
+                                <AutoComplete TValue="int?" TEntity="Customer" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' @ref="acCsutomer" Style="@GetStyle()" Disabled="disabled" HideIcon="hideIcon">
                                     <CustomerLookupWindow />
                                 </AutoComplete>
                             </div>
@@ -126,7 +159,7 @@
                                 <label style="color:red;">It will be created in the future</label>
                             </div>
                             <div class="ps-5 col-md-12 pe-5">
-                                <AutoComplete TValue="int?" AutoHide="autoHide" HideHeader="hideHeader" OpenOnFocus="openOnFocus" CloseOnBlur="closeOnBlur">
+                                <AutoComplete TValue="int?" TEntity="Customer" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' AutoHide="autoHide" HideHeader="hideHeader" OpenOnFocus="openOnFocus" CloseOnBlur="closeOnBlur">
                                     <CustomerLookupWindow />
                                 </AutoComplete>
                             </div>
@@ -135,35 +168,32 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Lookup" FileName="Binding" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 <h3 class="pt-3">Lookup window</h3>
 <p>
-    To create the Lookup window, we need to <b>inherit from LookupWindow</b> class(it has two generic parameters, <b>first TEntity</b> (customer) and second <b>TValue</b>), then we need to specify three things:
+    To create the Lookup window, we inherit from the <b>LookupWindow&lt;TEntity, TValue&gt;</b> Generic class, 
+    then specify <b>Grid</b> and <b>Search Expressions.</b>
 </p>
 <ul class="d-demo-list">
     <li>
-        <b>TextExpression: </b>The <i>TextExpression</i> specifies the <i>autocomplete text</i>, we can specify the text as we want. For this purpose we use <i>InitialTextExpression</i> method.
+        <b>SearchExpression: </b>The <b>Search Expression</b> specifies <i>simple search</i> (search on autocomplete) we can specify it as we want. For this purpose we use <b>InitialSearchExpression</b> method.
     </li>
     <li>
-        <b>SearchExpression: </b>The <i>SearchExpression</i> specifies <i>simple search</i> (search on autocomplete) we can specify it as we want. For this purpose we use <i>InitialSearchExpression</i> method.
-    </li>
-    <li>
-        <b>Grid: </b>We use grid to <i>display entities, pagination, sorting, entity selection</i>, etc. We use <i>@@ref</i> to determine the grade.
+        <b>Grid: </b>We use <b>Grid</b> to <i>display entities, pagination, sorting, entity selection</i>, etc. We use <b>@@ref</b> to determine the Grid.
     </li>
 </ul>
-<p>
-    After creating the lookup we can use it, but in some cases we can customize it.
-</p>
-
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4>Text expression</h4>
-                        <span class="c-demo-description">By default, we set the text expression in the <b>Lookup Window</b>, but we can <b>override it</b> with the <b>TextExpression parameter</b>.</span>
+                        <h4>Simple lookup window</h4>
+                        <span class="c-demo-description">In this example we create <b>CustomerLookupWindow</b> and use it as <b>content</b> of AutoComplete.</span>
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls">
@@ -171,8 +201,8 @@
                                 <label>Customer</label>
                             </div>
                             <div class="col-md-8 pe-5">
-                                <AutoComplete @bind-Value="customerId">
-                                    <CustomerLookupWindow TextExpression='t => (t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName) + " " + t.MobileNumber' />
+                                <AutoComplete TValue="int?" TEntity="Customer" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName'>
+                                    <CustomerLookupWindow />
                                 </AutoComplete>
                             </div>
                         </div>
@@ -189,7 +219,8 @@
                                 <label>Customer</label>
                             </div>
                             <div class="col-md-8 pe-5">
-                                <AutoComplete @bind-Value="customerId">
+                                <AutoComplete TValue="int?" TEntity="Customer" 
+                                              TextExpression="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName">
                                     <AdvanceSearchCustomerWindow  />
                                 </AutoComplete>
                             </div>
@@ -198,8 +229,9 @@
                     <div class="col-md-6">
                         <hr />
                         <h4>Parameter search</h4>
-                        <span class="c-demo-description">In some cases we want to <b>pass the parameter</b> to the lookup window and <b>filter the data</b>. In this example, if the <b>customer type has a value</b>, we <b>filter the data</b> and <b>disable it</b> in the lookup window..</span>
-
+                        <span class="c-demo-description">In some cases we want to <b>pass the parameter</b> 
+                        to the lookup window and <b>filter the data</b>. In this example, if the <b>customer type has a value</b>, 
+                        we <b>filter the data</b></span>
                     </div>
                     <div class="col-md-6">
                         <hr />
@@ -214,8 +246,9 @@
                                 <label>Customer</label>
                             </div>
                             <div class="col-md-8 pe-5">
-                                <AutoComplete @bind-Value="customerId">
-                                    <parametricCustomerSearchWindow CustomerKind="customerKind" />
+                                <AutoComplete TValue="int?" TEntity="Customer"
+                                    TextExpression="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName">
+                                    <ParametricCustomerSearchWindow CustomerType="customerKind" />
                                 </AutoComplete>
                             </div>
                         </div>
@@ -223,13 +256,25 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Lookup" FileName="Using-Lookup-Window" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>lookup window">
+            <Document FolderName="Lookup" FileName="Simple-Lookup-Window" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Advance lookup window">
+            <Document FolderName="Lookup" FileName="Advance-Lookup-Window" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Parametric lookup window">
+            <Document FolderName="Lookup" FileName="Parametric-Lookup-Window" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 
 @code
 {
     ControlSize controlSize = ControlSize.Auto;
-    AutoComplete<int?> acCsutomer;
+    AutoComplete<int?, Customer> acCsutomer;
     int? id1;
     bool disabled;
     bool autoHide;
@@ -242,6 +287,7 @@
     CustomerType? customerType;
     CustomerType? customerKind = CustomerType.Real;
     Gender? gender;
+
     string GetStyle()
     {
         switch (controlSize)

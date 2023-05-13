@@ -1,6 +1,6 @@
 ﻿@page "/Demo/MultiSelect"
 @namespace Demo.Web.Pages
-<h2>Multi select</h2>
+<h2>Multiselect</h2>
 <h3>Binding</h3>
 <p>
     This component is bind to <b>Enum Type</b> whose fields value is a <b>multiple of two</b>, because of this, you can select multiple items and the <b>value is equal with Or Bitwise of fields value</b>.
@@ -32,17 +32,15 @@
                 </div>
             </div>
         </TabPanelItem>
-        <TabPanelItem Title="<i class='fa fa-code'></i>Source">
-            <p>
-                In this example we bind this control to <b>orderType</b> that is a enum variable
-            </p>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="MultiSelect" FileName="Binding" />
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Enum">
 
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-<h3 class="pt-4">Disable and disable some items</h3>
+<h3 class="pt-4">Component disable and disable some items</h3>
 <p>
     In some cases we want to disable some items, For this, we can use the DisabledValue parameter. and also we can disable and enable control
 </p>
@@ -82,13 +80,52 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="MultiSelect" FileName="Disable" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
-
+<h3 class="pt-3">Default layout</h3>
+<p>
+    We can arrange the multselect items according to the default layout.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Default layout</h4>
+                        <span class="c-demo-description">In this example, we use the <b>DefaultLayout parameter</b> to <b>arrange multiselect items</b>.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-6">
+                                <label>Layout</label>
+                            </div>
+                            <div class="pe-5 col-md-6 text-center">
+                                <DropdownList @bind-Value="layout" />
+                            </div>
+                            <div class="col-md-12 ps-5 pe-5">
+                                <MultiSelectBox DefaultLayout="layout" TValue="Meal" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 ps-5 pe-5 pt-5">
+                        <MultiSelectBox DefaultLayout="layout" TValue="Meal" />
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="MultiSelect" FileName="Defaultlayout" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code
 {
     Meal meal;
+    DefaultLayout layout = DefaultLayout.SpaceBetween;
     Meal disabledMeal = (Meal)5;
-    WindowStatus status;
     bool disabled;
 }

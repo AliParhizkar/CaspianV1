@@ -31,7 +31,7 @@ namespace Demo.Model
         [DisplayName("Price"), ReportField("قیمت")]
         public int Price { get; set; }
 
-        [DisplayName("Count"), ReportField("تعداد")]
-        public int Count { get; set; }
+        [DisplayName("Quantity"), ReportField("تعداد")]
+        public int Quantity { get; set; }
     }
 }

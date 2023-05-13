@@ -57,7 +57,6 @@
     protected override void OnInitialized()
     {
         InitialSearchExpression(t => LookupStringSearchValue == null || t.FName.Contains(LookupStringSearchValue) || t.LName.Contains(LookupStringSearchValue) || t.MobileNumber.Contains(LookupStringSearchValue));
-        InitialTextExpression(t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName);
         base.OnInitialized();
     }
 }

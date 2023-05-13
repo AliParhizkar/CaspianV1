@@ -10,41 +10,38 @@
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
-            <CrudComponent UpsertData="upsertCategory">
-                <div class="ps-4 pe-4 row">
-                    <div class="col-md-5 d-content pe-4 pt-5">
-                        <span class="c-demo-description">In this example, OpenPopupForm method set the popupCategoryId field(used as component parameter) and open window to display the component. </span>
-                    </div>
-                    <div class="col-md-7 pt-3 pb-3">
-                        <DataGrid HideInsertIcon TEntity="ProductCategory" TableHeight="250">
-                            <Columns>
-                                <GridColumn Field="t => t.Title" />
-                                <GridColumn Field="t => t.ActiveType.EnumText()" />
-                                <GridColumn Title="Popup" style="width:50px">
-                                    <Template>
-                                        <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenPopupForm(context.Data.Id); }" />
-                                    </Template>
-                                </GridColumn>
-                                <GridCommandColumns />
-                            </Columns>
-                        </DataGrid>
-                    </div>
+            <div class="ps-4 pe-4 row">
+                <div class="col-md-5 d-content pe-4 pt-5">
+                    <span class="c-demo-description">In this example, OpenPopupForm method set the popupCategoryId field(used as component parameter) and open window to display the component. </span>
                 </div>
-            </CrudComponent>
+                <div class="col-md-7 pt-3 pb-3">
+                <DataGrid HideInsertIcon TEntity="ProductCategory" TableHeight="250">
+                    <Columns>
+                        <GridColumn Field="t => t.Title" />
+                        <GridColumn Field="t => t.ActiveType.EnumText()" />
+                        <GridColumn Title="Popup" style="width:50px">
+                            <Template>
+                                <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenPopupForm(context.Data.Id); }" />
+                            </Template>
+                        </GridColumn>
+                        <GridCommandColumns />
+                    </Columns>
+                </DataGrid>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Crud" FileName="PopupCrud" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-
 <Window @bind-Status="status" Title="Product" Style="width:850px">
     <Content>
         <PopupProductPage CategoryId="popupCategoryId.Value" />
     </Content>
 </Window>
-
-
 @code
 {
-    ProductCategory upsertCategory = new ProductCategory();
     ProductCategory searchCategory = new ProductCategory();
     int? popupCategoryId;
     WindowStatus status = WindowStatus.Close;

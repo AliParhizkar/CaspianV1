@@ -636,13 +636,13 @@
                         return;
                     $c.gridData.curent.width(curentResult);
                     let curentIndex = $(grv).find('.t-grid-header-wrap th').index($c.gridData.curent);
-                    $(grv).find('.t-grid-content table tr').first().children().eq(curentIndex).width(curentResult);
-                    $(grv).find('.c-grid-inline table tr').first().children().eq(curentIndex).width(curentResult);
+                    $(grv).find('.c-grid-items tr').first().children().eq(curentIndex).width(curentResult);
+                    $(grv).find('.c-grid-insert tr').first().children().eq(curentIndex).width(curentResult);
                     let otherIndex = $(grv).find('.t-grid-header-wrap th').index($c.gridData.other);
                     $c.gridData.other.width(otherResult);
-                    $(grv).find('.t-grid-content table tr').first().children().eq(otherIndex).width(otherResult);
-                    $(grv).find('.c-grid-inline table tr').first().children().eq(otherIndex).width(otherResult);
-                    if ($(grv).find('.t-grid-content').height() < $(grv).find('.t-grid-content table').height()) {
+                    $(grv).find('.c-grid-items tr').first().children().eq(otherIndex).width(otherResult);
+                    $(grv).find('.c-grid-insert tr').first().children().eq(otherIndex).width(otherResult);
+                    if ($(grv).find('.t-grid-content').height() < $(grv).find('.c-grid-items').height()) {
                         if ($('body').hasClass('t-ltr'))
                             $(grv).find('.t-grid-header').css('padding-right', 11);
                         else

@@ -243,12 +243,11 @@
         text-align: -webkit-right !important;
     }
 
-a::
 .d-membership {
     text-align: center;
-    color: #4f9995;
+    color: #974898;
     font-weight: bold;
-    font-size:13px;
+    font-size: 25px;
 }
 
 .d-btn-container{
@@ -278,9 +277,6 @@ a::
 .d-document{
     background-color:white;
     padding:8px;
-}
-.d-document p span {
-    font-size: 14px !important;
 }
 p:not(.d-document p) {
     font-size: 1rem;

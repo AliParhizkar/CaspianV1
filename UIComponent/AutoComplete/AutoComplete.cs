@@ -11,10 +11,12 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
+using Caspian.Common.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.UI
 {
-    public partial class AutoComplete<TValue> : IControl
+    public partial class AutoComplete<TValue, TEntity> : IControl where TEntity: class
     {
         string Text;
         string oldText;
@@ -46,8 +48,6 @@ namespace Caspian.UI
                 SearchStr = Text;
             }
         }
-
-        internal ILookupWindow LookupWindow { get; set; }
 
         [Parameter]
         public bool HideHeader { get; set; }
@@ -86,6 +86,9 @@ namespace Caspian.UI
 
         [Parameter]
         public Expression<Func<TValue>> ValueExpression { get; set; }
+
+        [Parameter]
+        public Expression<Func<TEntity, string>> TextExpression { get; set; }
 
         [JsonIgnore]
         public string Id { get; set; }
@@ -285,6 +288,17 @@ namespace Caspian.UI
                 shouldRender = false;
         }
 
+        internal async Task<string> GetText(int value)
+        {
+            using var scope = ServiceScopeFactory.CreateScope();
+            var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
+            var t = Expression.Parameter(typeof(TEntity), "t");
+            Expression expr = Expression.Property(t, typeof(TEntity).GetPrimaryKey());
+            expr = Expression.Equal(expr, Expression.Constant(value)); 
+            var result = await service.GetAll().Where(Expression.Lambda(expr, t)).Select(TextExpression).FirstAsync();
+            return result;
+        }
+
         async Task OnKeyDownHandler(KeyboardEventArgs e)
         {
             switch (e.Code)
@@ -300,7 +314,7 @@ namespace Caspian.UI
                     if (SearchState?.Grid?.SelectedRowId != null)
                     {
                         var value = SearchState.Grid.SelectedRowId.Value;
-                        Text = await LookupWindow.GetText(value);
+                        Text = await GetText(value);
                         await SetValue(value, false);
                         await CloseHelpForm();
                     }
@@ -418,7 +432,7 @@ namespace Caspian.UI
             else if (!Value.Equals(Oldvalue))
             {
                 Oldvalue = Value;
-                var q = LookupWindow;
+                Text = await GetText(Convert.ToInt32(Value));
                 oldText = Text;
             }
             else

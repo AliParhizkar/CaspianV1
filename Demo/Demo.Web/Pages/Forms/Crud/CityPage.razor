@@ -1,6 +1,6 @@
 ﻿@page "/Demo/City/{CountryId:int}"
 @namespace Demo.Web.Pages
-@inherits SimplePage<City>
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
@@ -10,56 +10,64 @@
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
-            <div class="row c-controls">
-                <div class="col-md-3 ps-4 pt-4">
-                    <label>Title</label>
+            <CrudComponent UpsertData="upsertCity">
+                <div class="row c-controls pt-3">
+                    <div class="col-md-3 ps-4">
+                        <label>Title</label>
+                    </div>
+                    <div class="col-md-6">
+                        <StringTextBox @bind-Value="searchCity.Title" />
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <StringTextBox @bind-Value="SearchData.Title" />
+                <div class="p-4 pt-1">
+                    <DataGrid Search="searchCity" ConditionExpr="t => CountryId == 0 || t.CountryId == CountryId" TableHeight="350">
+                        <Columns>
+                            <GridColumn Field="t => t.Title" />
+                            <GridColumn Field="t => t.ActiveType.EnumText()" />
+                            <GridCommandColumns />
+                        </Columns>
+                    </DataGrid>
                 </div>
-            </div>
-            <div class="p-4 pt-1">
-                <DataGrid @ref="CrudGrid" TEntity="City" Search="SearchData" ConditionExpr="t => CountryId == 0 || t.CountryId == CountryId" TableHeight="350">
-                    <Columns>
-                        <GridColumn Field="t => t.Title" />
-                        <GridColumn Field="t => t.ActiveType.EnumText()" />
-                        <GridCommandColumns />
-                    </Columns>
-                </DataGrid>
-            </div>
-            <Window @ref="UpsertWindow" Title="City" Style="width:450px">
-                <Content>
-                    <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="SetCountryId">
-                        <div class="row c-controls ps-4 pe-4">
-                            <div class="col-md-3">
-                                <label>Title</label>
+                <Window Title="City" Style="width:450px">
+                    <Content>
+                        <CaspianForm Model="upsertCity" OnSubmit="SetCountryId">
+                            <div class="row c-controls ps-4 pe-4">
+                                <div class="col-md-3">
+                                    <label>Title</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <StringTextBox @bind-Value="upsertCity.Title" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Status</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <DropdownList @bind-Value="upsertCity.ActiveType" />
+                                </div>
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9">
+                                    <FormCommandButton />
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                <StringTextBox @bind-Value="UpsertData.Title" />
-                            </div>
-                            <div class="col-md-3">
-                                <label>Status</label>
-                            </div>
-                            <div class="col-md-9">
-                                <DropdownList @bind-Value="UpsertData.ActiveType" />
-                            </div>
-                            <div class="col-md-3"></div>
-                            <div class="col-md-9">
-                                <FormCommandButton />
-                            </div>
-                        </div>
-                    </CaspianForm>
-                </Content>
-            </Window>
+                        </CaspianForm>
+                    </Content>
+                </Window>
+            </CrudComponent>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Crud" FileName="ParameterCrud2" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
 
 @code
 {
+    City upsertCity = new City();
+    City searchCity = new City();
+
     void SetCountryId()
     {
-        UpsertData.CountryId = CountryId;
+        upsertCity.CountryId = CountryId;
     }
 
     [Parameter]

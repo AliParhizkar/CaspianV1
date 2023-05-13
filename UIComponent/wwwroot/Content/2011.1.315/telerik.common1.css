@@ -754,7 +754,7 @@ progress::-webkit-progress-value {
     color: #34b8f9;
     font-size: 23px;
     cursor: pointer;
-    margin-left: 6px;
+    margin-right: 12px;
 }
 .c-cancel-icon .fa {
     color: #da1b54;
@@ -1855,7 +1855,7 @@ div.t-window {
     overflow: visible;
     border-radius: 8px 8px 0 0;
 }
-.t-window .t-header {
+.t-window >.t-header {
     padding: 5px 8px;
     background-color: #e6e7e8;
 }
@@ -2872,11 +2872,11 @@ html body .t-grid tbody .t-button-icon {
 
 .t-picker-wrap .t-icon,
 .t-dropdown-wrap .t-icon {
-    vertical-align: middle;
-    line-height: 18px;
+    vertical-align: -webkit-baseline-middle;
+    line-height: 22px;
     font-size: 17px;
     color: #656565;
-    text-align:center;
+    text-align: center;
 }
 .t-dropdown-wrap.t-state-disabled span{
     border-color: rgba(0,0,0,0.2)!important;
@@ -3286,6 +3286,7 @@ div.t-numerictextbox {
     white-space: nowrap;
     overflow:visible;
     height:34px;
+    text-align:left;
 }
 
 .c-lookup-animate-down {

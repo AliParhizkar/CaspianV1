@@ -108,9 +108,11 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Grid-Search" FileName="Grid-Search" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
-<h3></h3>
 <h3 class="pt-3">Search on number, date and time</h3>
 <p>
     Usually we search <b>in range</b> for <b>number, date and time</b>. For example <b>from date-to date</b>.
@@ -159,25 +161,68 @@
                                 <label>From date</label>
                             </div>
                             <div class="col-md-8">
-                                <NumericTextBox @bind-Value="fromDate" />
+                                <DatePicker @bind-Value="fromDate" />
                             </div>
                             <div class="col-md-4">
                                 <label>To date</label>
                             </div>
                             <div class="col-md-8">
-                                <NumericTextBox @bind-Value="toDate" />
+                                <DatePicker @bind-Value="toDate" />
                             </div>
                         </div>
                         <DataGrid TEntity="OrderDeatil" HideInsertIcon>
                             <Columns>
-                                <GridColumn Field="t => t.Order.Date" Title="Order date" />
+                                <GridColumn Field="t => t.Order.Date" Title="Order date" @bind-From="fromDate" @bind-To="toDate" />
                                 <GridColumn Field="t => t.Product.Title" />
-                                <GridColumn Field="t => t.Count" />
+                                <GridColumn Field="t => t.Quantity" />
                             </Columns>
                         </DataGrid>
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Grid-Search" FileName="Grid-Search" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Custom search</h3>
+<p>
+    In some cases we want to search with a specific format.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-6 pe-4">
+                        <h4>Custom search:</h4>
+                        <span class="c-demo-description">
+                            In this example, the <b>isOutOfStock</b> variable is <b>nullable boolean</b>, if isOutOfStock <b>is null</b>, we have <b>no filter</b>, otherwise we filter based on the isOutOfStock variable.
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row pb-3 c-controls ps-3 pe-3">
+                            <div class="col-md-6">
+                                <label>Out of stock</label>
+                            </div>
+                            <div class="col-md-6">
+                                <CheckBox @bind-Value="isOutOfStock" OnChange="() => gridProduct.EnableLoading()" />
+                            </div>
+                        </div>
+                        <DataGrid @ref="gridProduct" TEntity="Product" HideInsertIcon ConditionExpr="t => isOutOfStock == null || t.OutofStock == isOutOfStock">
+                            <Columns>
+                                <GridColumn Field="t => t.Title" />
+                                <GridColumn Field="t => t.Price.Seprate3Digit()" />
+                                <GridColumn Field="t => t.OutofStock" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Grid-Search" FileName="Search-Custom" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -192,4 +237,5 @@
     object toDate;
     //
     bool? isOutOfStock;
+    DataGrid<Product> gridProduct;
 }

@@ -47,7 +47,7 @@
     </li>
 </ul>
 <p>
-    <span class="fa fa-info"> Note: </span> Because the user (programmer) spaecify the <b>EditTemplate</b>,
+    <span class="fa fa-info"> Note: </span> Because the user (programmer) specify the <b>EditTemplate</b>,
     it is possible to make <b>any kind of changes</b>.
 </p>
 <TabPanel>
@@ -62,114 +62,120 @@
                 <h4> User experience: </h4>
                 <ul class="d-demo-inner-list">
                     <li>
-                        <b>Search product: </b> 
+                        <b>Order: We can override the <b>OnMasterEntityCreatedAsync</b> method and set any <b>UpsertData</b> property, this method is called <b>after the upsert</b> and before the <b>form is reset</b>.</b>
                     </li>
                     <li>
-                        <b>Select product: </b>
-                    </li>
-                    <li>
-                        <b>Upsert on eneter:</b>
+                        <b>Orderdetail: </b> We have three user experience for Orderdetail
+                        <ul class="d-demo-inner-list">
+                            <li>
+                                <b>Product search: </b> We have assigned a code (from 100 to...) to each of the products and we can search for the product based on that.
+                            </li>
+                            <li>
+                                <b>On product select: </b> After selecting the product, we <b>get the price</b> of the product from the <b>database</b> and assign it to the <b>Price</b>, and also set <b>Quantity to 1</b> if the Quantity is 0.
+                            </li>
+                            <li>
+                                <b>Upsert on eneter: </b> Validation and insertion is done by pressing the enter key in txtQuantity.
+                            </li>
+                        </ul>
                     </li>
                 </ul>
+                <div class="row">
+                    <div class="col-md-4 row pe-3">
+                        <div class="col-md-2 text-start">
+                            <a href="/Demo/Batch/Inline/Master">
+                                <span class="fa fa-arrow-left"></span>
+                            </a>
+                        </div>
+                        <div class="col-md-10 text-center">
+                            <span class="d-membership">Order</span>
+                        </div>
+                        <hr class="mt-2" />
+                    </div>
+                    <div class="col-md-8 row ps-3 ">
+                        <div class="col-md-12 text-center">
+                            <span class="d-membership">Orderdetails</span>
+                            <hr class="mt-2" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 row pe-3">
+                        <CaspianForm @ref="Form" Model="UpsertData">
+                            <div class="row c-controls">
+                                <div class="col-md-4">
+                                    <label>Order date</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <DatePicker @bind-Value="UpsertData.Date" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Order type</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <DropdownList @bind-Value="UpsertData.OrderType" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Customer</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId"
+                                              TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Delivery</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <ComboBox TValue="int?" TEntity="Delivery" @bind-Value="UpsertData.DeliveryId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Description</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="4" />
+                                </div>
+                                <div class="col-md-12">
+                                    <FormCommandButton />
+                                </div>
+                            </div>
+                        </CaspianForm>
+                    </div>
+                    <div class="col-md-8 ps-3">
+                        <DataGrid @ref="Grid" TEntity="OrderDeatil" TableHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
+                            <Columns Context="con">
+                                <GridColumn Field="t => t.Product.Title" Title="Product">
+                                    <EditTemplate>
+                                        <AutoComplete TValue="int" TEntity="Product" @bind-Value="con.Data.ProductId"
+                                                      HideHeader AutoHide TextExpression="t => t.Title"
+                                                      OnChange="async () => await SetPrice(con.Data)">
+                                            <ProductLookupWindow />
+                                        </AutoComplete>
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridColumn Field="t => t.Price.Seprate3Digit()">
+                                    <EditTemplate>
+                                        <span>@(con.Data.Price.Seprate3Digit())</span>
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridColumn Field="t => t.Quantity">
+                                    <EditTemplate>
+                                        <NumericTextBox @ref="txtQuantity" @bind-Value="con.Data.Quantity"
+                                                        @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridCommandColumns />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                </div>
             </div>
-
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-<div class="row p-3">
-    <div class="col-md-4 ps-3 pe-3">
-        <div class="row">
-            <div class="col-md-2 text-center">
-                <a href="/Demo/Batch/Inline/Master">
-                    <span class="fa fa-arrow-left"></span>
-                </a>
-            </div>
-            <div class="col-md-10 text-center">
-                <h7 class="d-membership">Order</h7>
-            </div>
-        </div>
-        <hr />
-        <CaspianForm @ref="Form" Model="UpsertData">
-            <div class="row c-controls ps-3 pe-3">
-                <div class="col-md-4">
-                    <label>Order date</label>
-                </div>
-                <div class="col-md-8">
-                    <DatePicker @bind-Value="UpsertData.Date" />
-                </div>
-                <div class="col-md-4">
-                    <label>Order type</label>
-                </div>
-                <div class="col-md-8">
-                    <DropdownList @bind-Value="UpsertData.OrderType" />
-                </div>
-                <div class="col-md-4">
-                    <label>Customer</label>
-                </div>
-                <div class="col-md-8">
-                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId" 
-                        TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
-                </div>
-                <div class="col-md-4">
-                    <label>Delivery</label>
-                </div>
-                <div class="col-md-8">
-                    <ComboBox TValue="int?" TEntity="Delivery" @bind-Value="UpsertData.DeliveryId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
-                </div>
-                <div class="col-md-4">
-                    <label>Description</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="4" />
-                </div>
-                <div class="col-md-12">
-                    <FormCommandButton />
-                </div>
-            </div>
-        </CaspianForm>
-    </div>
-    <div class="col-md-8 ps-3 text-center">
-        <div class="row">
-            <div class="col-md-8">
-                <h7 class="d-membership">Order Details</h7>
-            </div>
-        </div>
-        <hr />
-        <div class="col-md-12 ps-3 pe-3">
-            <DataGrid @ref="Grid" TEntity="OrderDeatil" TableHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
-                <Columns Context="con">
-                    <GridColumn Field="t => t.Product.Title" Title="Product">
-                        <EditTemplate>
-                            <AutoComplete TValue="int" @bind-Value="con.Data.ProductId" HideHeader AutoHide
-                                          OnChange="async () => await SetPrice(con.Data)">
-                                <ProductLookupWindow />
-                            </AutoComplete>                    
-                        </EditTemplate>
-                    </GridColumn>
-                    <GridColumn Field="t => t.Price.Seprate3Digit()">
-                        <EditTemplate>
-                            <span>@(con.Data.Price.Seprate3Digit())</span>
-                        </EditTemplate>
-                    </GridColumn>
-                    <GridColumn Field="t => t.Count">
-                        <EditTemplate>
-                            <NumericTextBox @ref="txtPrice" @bind-Value="con.Data.Count"
-                                            @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
-                        </EditTemplate>
-                    </GridColumn>
-                    <GridCommandColumns/>
-                </Columns>
-            </DataGrid>
 
-        </div>
-    </div>
-</div>
 
 @code
 {
     WindowStatus status;
-    NumericTextBox<int> txtPrice;
-    AutoComplete<int> txtProduct;
+    NumericTextBox<int> txtQuantity;
+    AutoComplete<int, Product> txtProduct;
 
     protected override async Task OnMasterEntityCreatedAsync()
     {
@@ -192,9 +198,9 @@
             var scope = CreateScope();
             var old = await new ProductService(scope.ServiceProvider).SingleAsync(detail.ProductId);
             detail.Price = old.Price;
-            if (detail.Count == 0)
-                detail.Count = 1;
-            txtPrice.Focus();
+            if (detail.Quantity == 0)
+                detail.Quantity = 1;
+            txtQuantity.Focus();
         }
     }
 }

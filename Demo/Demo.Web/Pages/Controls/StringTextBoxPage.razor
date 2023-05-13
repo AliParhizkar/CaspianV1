@@ -26,13 +26,13 @@
                                 <RadioList @bind-Value="bindingType" />
                             </div>
                             <div class="col-md-12 ps-5 pe-5">
-                                <StringTextBox @bind-Value="title" BindingType="bindingType" />
+                                <StringTextBox @bind-Value="titleSingle" BindingType="bindingType" />
                             </div>
                             <div class="ps-5 col-md-6">
                                 <label>Text</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <span style="color:red;">@(title.HasValue() ? title : "--------")</span>
+                                <span style="color:red;">@(titleSingle.HasValue() ? titleSingle : "--------")</span>
                             </div>
                         </div>
                     </div>
@@ -51,18 +51,21 @@
                                 <NumericTextBox @bind-Value="rows" />
                             </div>
                             <div class="col-md-12 ps-5 pe-5">
-                                <StringTextBox @bind-Value="title1" MultiLine Rows="rows" />
+                                <StringTextBox @bind-Value="titleTextArea" MultiLine Rows="rows" />
                             </div>
                             <div class="ps-5 col-md-6">
                                 <label>Text</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <span style="color:red;">@(title1.HasValue() ? title1 : "--------")</span>
+                                <span style="color:red;">@(titleTextArea.HasValue() ? titleTextArea : "--------")</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="StringTextBox" FileName="Binding" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -88,7 +91,7 @@
                                 <DropdownList @bind-Value="controlSize" />
                             </div>
                             <div class="col-md-12 ps-5 pe-5">
-                                <StringTextBox @bind-Value="title" Style="@GetStyle()" />
+                                <StringTextBox @bind-Value="titleSingle" Style="@GetStyle()" />
                             </div>
                         </div>
                     </div>
@@ -104,22 +107,22 @@
                                 <label>Enable/Disable</label>
                             </div>
                             <div class="pe-5 col-md-6">
-                                <CheckBox @bind-Value="disable" />
+                                <CheckBox @bind-Value="disableSingle" />
                             </div>
                             <div class="ps-5 col-md-6">
                                 <label>Action</label>
                             </div>
                             <div class="col-md-6 text-center">
-                                <button disabled="@disable" @onclick="async () => await textBox.FocusAsync()" class="c-btn c-primary">Focus</button>
+                                <button disabled="@disableSingle" @onclick="async () => await textBox.FocusAsync()" class="c-btn c-primary">Focus</button>
                             </div>
                             <div class="col-md-12 ps-5 pe-5">
-                                <StringTextBox @ref="textBox" @bind-Value="title1" Disabled="disable" />
+                                <StringTextBox @ref="textBox" @bind-Value="titleTextArea" Disabled="disableSingle" />
                             </div>
                             <div class="ps-5 col-md-6">
                                 <label>Text</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <span style="color:red;">@(title1.HasValue() ? title1 : "--------")</span>
+                                <span style="color:red;">@(titleTextArea.HasValue() ? titleTextArea : "--------")</span>
                             </div>
                         </div>
                     </div>
@@ -135,52 +138,56 @@
                                 <label>Max length</label>
                             </div>
                             <div class="pe-5 col-md-6">
-                                <NumericTextBox @bind-Value="maxlength" />
+                                <NumericTextBox @bind-Value="maxlengthSingle" />
                             </div>
                             <div class="col-md-12 ps-5 pe-5">
-                                <StringTextBox @bind-Value="title1" MaxLength="maxlength" />
+                                <StringTextBox @bind-Value="titleSingle" MaxLength="maxlengthSingle" />
                             </div>
                             <div class="ps-5 col-md-6">
                                 <label>Text</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <span style="color:red;">@(title1.HasValue() ? title1 : "--------")</span>
+                                <span style="color:red;">@(titleSingle.HasValue() ? titleSingle : "--------")</span>
                             </div>
                             <div class="ps-5 col-md-6">
                                 <label>Length</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <span style="color:red;">@(title1.HasValue() ? title1.Length : "--------")</span>
+                                <span style="color:red;">@(titleSingle.HasValue() ? titleSingle.Length : "--------")</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="StringTextBox" FileName="Generalproperties" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 @code {
     WindowStatus status;
-    bool disable;
-    string title;
-    int maxlength = 12;
+    bool disableSingle;
+    string titleSingle;
+    int maxlengthSingle = 12;
     StringTextBox textBox;
     BindingType bindingType = BindingType.OnChange;
     ControlSize controlSize = ControlSize.Auto;
     //--------------------------------------------
     bool disable1;
-    string title1;
+    string titleTextArea;
     int maxlength1 = 25;
-    StringTextBox textBox1;
+    StringTextBox txtArea;
     int? rows = 4;
-    async Task SetFocus()
+
+    async Task SetFocusTextBox()
     {
         await textBox.FocusAsync();
     }
 
-    async Task SetFocus1()
+    async Task SetFocusTextArea()
     {
-        await textBox1.FocusAsync();
+        await txtArea.FocusAsync();
     }
 
     string GetStyle()

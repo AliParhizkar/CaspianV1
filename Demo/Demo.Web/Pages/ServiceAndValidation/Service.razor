@@ -31,22 +31,22 @@
     <Tabs>
         <TabPanelItem Title="C# code">
             <div class="p-4">
-                <Document FileName="Service-Declaration" />
+                <Document FolderName="Service" FileName="Service-Declaration" />
                 <hr />
                 <h5>Instead of the above code, we can write the following code.</h5>
                 <div>
-                    <Document FileName="Service-Declaration-1" />
+                    <Document FolderName="Service" FileName="Service-Declaration-1" />
                 </div>
             </div>
         </TabPanelItem>
         <TabPanelItem Title="Razor">
             <div class="p-4">
                 <h5>Section 1</h5>
-                <Document FileName="Service-Declaration-razor" />
+                <Document FolderName="Service" FileName="Service-Declaration-razor" />
                 <hr />
                 <h5>Section 2</h5>
                 <div>
-                    <Document FileName="Service-Declaration-1-razor" />
+                    <Document FolderName="Service" FileName="Service-Declaration-1-razor" />
                 </div>
             </div>
         </TabPanelItem>
@@ -140,7 +140,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <h4>Check enume</h4>
+                        <h4>Check enum</h4>
                         <span class="c-demo-description"></span>
                     </div>
                     <div class="col-md-6">
@@ -177,6 +177,12 @@
                     </div>
                 </div>
             </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="Service" FileName="BaseService" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Service">
+            <Document FolderName="Service/Services" FileName="ValidationService" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -253,6 +259,12 @@
                 </div>
             </div>
         </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="Service" FileName="CheckUnique" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Service">
+            <Document FolderName="Service/Services" FileName="ValidationService" />
+        </TabPanelItem>
     </Tabs>
 </TabPanel>
 @code 
@@ -276,7 +288,7 @@
         var service = new CityService(scope.ServiceProvider);
         service.UserId = UserId;
         var city = await service.GetAll().FirstOrDefaultAsync();
-        countryId = city?.Id;
+        countryId = city?.CountryId;
         cityTitle = city?.Title;
         countries = await new CountryService(scope.ServiceProvider).GetAll().Take(5)
         .Select(t => new SelectListItem()
@@ -285,7 +297,7 @@
             Value = t.Id.ToString()
         }).ToListAsync();
         countries.Add(new SelectListItem("1256985", "Invalid Country"));
-        countryTitle = countries.FirstOrDefault()?.Text;
+        countryTitle = (await new CountryService(scope.ServiceProvider).GetAll().FirstOrDefaultAsync()).Title;
         await base.OnInitializedAsync();
     }
 

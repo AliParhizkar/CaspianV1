@@ -63,6 +63,8 @@
         attrs["class"] = "t-input";
         if (Multiple)
             attrs["multiple"] = true;
+        if (Accept.HasValue())
+            attrs["accept"] = Accept;
         base.OnParametersSet();
     }
 
@@ -138,6 +140,9 @@
             }
         }
     }
+
+    [Parameter]
+    public string Accept { get; set; }
 
     [Parameter]
     public string RelatedPath { get; set; }

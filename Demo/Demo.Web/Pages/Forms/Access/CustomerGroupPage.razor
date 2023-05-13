@@ -10,14 +10,14 @@
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
-            <CrudComponent UpsertData="upsertGroup">
-                <div class="row ps-3  pe-3">
-                    <div class="col-md-5">
-                        <div class="pt-5 ps-3 pe-3">
-                            <span class="c-demo-description">In this example we create a link for navigation.</span>
-                        </div>
+            <div class="row ps-3  pe-3">
+                <div class="col-md-5">
+                    <div class="pt-5 ps-3 pe-3">
+                        <span class="c-demo-description">In this example we create a link for navigation.</span>
                     </div>
-                    <div class="col-md-7">
+                </div>
+                <div class="col-md-7">
+                    <CrudComponent UpsertData="upsertGroup">
                         <div class="row c-controls ">
                             <div class="col-md-4 ps-3">
                                 <label>Title</label>
@@ -38,10 +38,12 @@
                                 </Columns>
                             </DataGrid>
                         </div>
-                    </div>
+                    </CrudComponent>
                 </div>
-
-            </CrudComponent>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Access" FileName="SimpleCrud" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

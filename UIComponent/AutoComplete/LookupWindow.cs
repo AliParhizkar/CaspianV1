@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components;
-using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Caspian.UI
 {
@@ -12,7 +9,6 @@ namespace Caspian.UI
     {
         string oldSerachStringValue;
         Expression<Func<TEntity, bool>> SearchExpression;
-        internal Expression<Func<TEntity, string>> textExpression;
         protected DataGrid<TEntity> Grid;
         protected TEntity SearchData;
 
@@ -21,36 +17,20 @@ namespace Caspian.UI
             SearchExpression = expr;
         }
 
-        protected void InitialTextExpression(Expression<Func<TEntity, string>> expr)
-        {
-            textExpression = expr;
-        }
-
         protected override void OnInitialized()
         {
             SearchData = Activator.CreateInstance<TEntity>();
-            AutoComplete.LookupWindow = this;
             base.OnInitialized();
         }
 
         [CascadingParameter]
-        public AutoComplete<TValue> AutoComplete { get; set; }
-
-        [Parameter]
-        public Expression<Func<TEntity, string>> TextExpression { get; set; }   
+        public AutoComplete<TValue, TEntity> AutoComplete { get; set; }
 
         [CascadingParameter(Name = "LookupStringSearchValue")]
         public string LookupStringSearchValue { get; set; }
 
         [CascadingParameter(Name = "AutoComplateState")]
         public SearchState SearchState { get; set; }
-
-        protected override void OnParametersSet()
-        {
-            if (TextExpression != null)
-                textExpression = TextExpression;
-            base.OnParametersSet();
-        }
 
         protected override async Task OnParametersSetAsync()
         {
@@ -74,14 +54,6 @@ namespace Caspian.UI
             await base.OnParametersSetAsync();
         }
 
-        async Task<string> ILookupWindow.GetText(int id)
-        {
-            using var scope = CreateScope();
-            var service = new BaseService<TEntity>(scope.ServiceProvider);
-            var entity = await service.SingleAsync(id);
-            return textExpression.Compile().Invoke(entity);
-        }
-
         protected override void OnAfterRender(bool firstRender)
         {
             if (Grid != null)
@@ -91,9 +63,7 @@ namespace Caspian.UI
                 {
                     Grid.OnInternalRowSelect = EventCallback.Factory.Create<int>(this, async (int id) =>
                     {
-                        if (textExpression == null)
-                            throw new InvalidOperationException("خطا: TextExpression is null you must set TextExpression in page");
-                        var text = await (this as ILookupWindow).GetText(id);
+                        var text = await AutoComplete.GetText(id);
                         AutoComplete.SetText(text);
                         await AutoComplete.SetValue(id);
                         await AutoComplete.CloseHelpForm(true);

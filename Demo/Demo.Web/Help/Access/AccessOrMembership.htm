@@ -1,0 +1,960 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1256">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:iranyekan;
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cascadia Mono";
+	panose-1:2 11 6 9 2 0 0 2 0 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:8.0pt;
+	margin-left:0cm;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+h2
+	{mso-style-link:"Heading 2 Char";
+	margin-top:2.0pt;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	line-height:107%;
+	page-break-after:avoid;
+	font-size:13.0pt;
+	font-family:"Calibri Light",sans-serif;
+	color:#2F5496;
+	font-weight:normal;}
+span.Heading2Char
+	{mso-style-name:"Heading 2 Char";
+	mso-style-link:"Heading 2";
+	font-family:"Calibri Light",sans-serif;
+	color:#2F5496;}
+.MsoChpDefault
+	{font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US style='word-wrap:break-word'>
+
+<div class=WordSection1>
+
+<h2 style='margin-top:0cm'><b><span style='font-size:18.0pt;line-height:107%;
+font-family:"iranyekan",serif;color:#212529'>Access or membership:</span></b></h2>
+
+<p class=MsoNormal>        <span style='font-size:9.5pt;line-height:107%;
+font-family:"Cascadia Mono";color:black;background:yellow'>@page</span><span
+style='font-size:9.5pt;line-height:107%;font-family:"Cascadia Mono";color:black'>
+</span><span style='font-size:9.5pt;line-height:107%;font-family:"Cascadia Mono";
+color:#A31515'>&quot;/Demo/CustomerGroupAccessPage<span style='background:yellow'>/{MasterId:int}</span>&quot;</span></p>
+
+<p class=MsoNormal style='text-indent:19.85pt'><span style='font-size:9.5pt;
+line-height:107%;font-family:"Cascadia Mono";color:black;background:yellow'>@inherits</span><span
+style='font-size:9.5pt;line-height:107%;font-family:"Cascadia Mono";color:black'>
+</span><span style='font-size:9.5pt;line-height:107%;font-family:"Cascadia Mono";
+color:#2B91AF;background:yellow'>AccessPage</span><span style='font-size:9.5pt;
+line-height:107%;font-family:"Cascadia Mono";color:black'>&lt;</span><span
+style='font-size:9.5pt;line-height:107%;font-family:"Cascadia Mono";color:#2B91AF'>CustomerGroup</span><span
+style='font-size:9.5pt;line-height:107%;font-family:"Cascadia Mono";color:black'>,
+</span><span style='font-size:9.5pt;line-height:107%;font-family:"Cascadia Mono";
+color:#2B91AF'>CustomerGroupMembership</span><span style='font-size:9.5pt;
+line-height:107%;font-family:"Cascadia Mono";color:black'>, </span><span
+style='font-size:9.5pt;line-height:107%;font-family:"Cascadia Mono";color:#2B91AF'>Customer</span><span
+style='font-size:9.5pt;line-height:107%;font-family:"Cascadia Mono";color:black'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;text-indent:19.85pt;line-height:
+normal;text-autospace:none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&lt;</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:maroon'>div</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'> </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:red'>class</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>=&quot;row p-3&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-5&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>fieldset</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;c-search-container&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>legend</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>Search
+parameters</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&lt;/</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:maroon'>legend</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;row
+c-controls&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-4
+ps-3&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>Name</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-8
+pe-3&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>StringTextBox</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> <span
+style='background:yellow'>@</span></span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:purple'>bind-Value</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>name1</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>placeholder</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;First
+name/Last Name/Company name&quot;</span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:black'> </span><b><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:purple'>Search</span></b></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                                   
+</span><b><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>OnChange</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>() =&gt;
+MemberGrid.EnableLoading()</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-4
+ps-3&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>Mobile</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-8
+pe-3&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>StringTextBox</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> <span
+style='background:yellow'>@</span></span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:purple'>bind-Value</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>MemberSearch.MobileNumber</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-12
+text-center&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>hr</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>/&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>span</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;d-membership&quot;&gt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>Others
+Customers</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&lt;/</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:maroon'>span</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>fieldset</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>DataGrid</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> <span
+style='background:yellow'>@</span></span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:purple;background:yellow'>ref</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>MemberGrid</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>TEntity</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>Customer</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>HideInsertIcon</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Search</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>MemberSearch</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>TableHeight</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>250</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:79.4pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>ConditionExpr</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t =&gt; name1
+== </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>null</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> ||
+t.FName.Contains(name1) || t.LName.Contains(name1) || </span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:119.1pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t.CompanyName.Contains(name1)</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Columns</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>GridColumn</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Field</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@(</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t =&gt;
+t.CustomerType == </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#2B91AF'>CustomerType</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'>.Real ?  t.FName + </span><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot; &quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> + t.LName :
+t.CompanyName<span style='background:yellow'>)</span></span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:138.95pt;text-indent:19.85pt;line-height:normal;text-autospace:
+none'><b><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Title</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;Customer&quot;
+/&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>GridColumn</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Field</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t =&gt;
+t.CustomerNumber.ToString()</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>GridColumn</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Field</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t =&gt;
+t.MobileNumber</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Columns</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>DataGrid</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>    </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>    </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-1&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;row
+align-content-center h-100&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>CaspianForm</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> <span
+style='background:yellow'>@</span></span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:purple;background:yellow'>ref</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>UpsertForm</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Model</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>UpsertData</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;d-btn-container&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                       
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;
+background:yellow'>&lt;</span><b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:purple;background:yellow'>IconButton</span></b><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple;background:
+yellow'>IconType</span></b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue;background:yellow'>=&quot;</span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:#2B91AF;background:yellow'>IconType</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>.AngleRight</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>&quot;
+/&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>IconButton</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>type</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;button&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> <span
+style='background:yellow'>@</span></span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:purple;background:yellow'>onclick</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>=&quot;async</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>
+() =&gt; </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue;background:yellow'>await</span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:black;background:yellow'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>base</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>.DeleteAsync()</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>&quot;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                               
+</span><b><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>IconType</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>IconType</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>.AngleLeft</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>CaspianForm</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>    </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>    </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-6&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>fieldset</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;c-search-container&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>legend</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>Search
+parameters</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&lt;/</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:maroon'>legend</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;row
+c-controls&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-4
+ps-3&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>Name</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-8
+pe-3&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>StringTextBox</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> <span
+style='background:yellow'>@</span></span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:purple'>bind-Value</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>name2</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>placeholder</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;First
+name/Last name/Company name&quot;</span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:black'> </span><b><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:purple'>Search</span></b></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                    
+               </span><b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:purple'>OnChange</span></b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>=&quot;</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>() =&gt; CrudGrid.EnableLoading()</span><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-4
+ps-3&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>Mobile</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-8
+pe-3&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>StringTextBox</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> <span
+style='background:yellow'>@</span></span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:purple'>bind-Value</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>SearchData.Customer.MobileNumber</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-12
+text-center&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>hr</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>/&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>span</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;d-membership&quot;&gt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>Members
+Customers</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&lt;/</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:maroon'>span</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>fieldset</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>DataGrid</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> <span
+style='background:yellow'>@</span></span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:purple;background:yellow'>ref</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>CrudGrid</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>TEntity</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>CustomerGroupMembership</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>HideInsertIcon</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Search</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>SearchData</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>TableHeight</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>250</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:119.1pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>ConditionExpr</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t =&gt; name2
+== </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>null</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> ||
+t.Customer.FName.Contains(name2) || t.Customer.LName.Contains(name2) || </span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:119.1pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t.Customer.CompanyName.Contains(name2)</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>            </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Columns</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>GridColumn</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Field</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@(</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t =&gt;
+t.Customer.CustomerType == </span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:#2B91AF'>CustomerType</span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:black'>.Real ?  t.Customer.FName + </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot; &quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> + </span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:138.95pt;text-indent:19.85pt;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t.Customer.LName
+: t.Customer.CompanyName<span style='background:yellow'>)</span></span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Title</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;Customer&quot;
+/&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>GridColumn</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Field</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t =&gt;
+t.Customer.CustomerNumber.ToString()</span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>GridColumn</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Field</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>t =&gt;
+t.Customer.MobileNumber</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>              </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>GridCommandColumns</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple;background:
+yellow'>HideEdit</span></b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'> /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Columns</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>DataGrid</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@code</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
+white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;
+background:yellow'>{</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>string</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> name1;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>string</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> name2;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;text-indent:19.85pt;line-height:
+normal;text-autospace:none'><span style='background:yellow'>}</span></p>
+
+</div>
+
+</body>
+
+</html>
