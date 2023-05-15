@@ -15,8 +15,8 @@ namespace Demo.Model
         [DisplayName("Title"), ReportField("عنوان گروه محصول")]
         public string Title { get; set; }
 
-        [DisplayName("Priority")]
-        public int Priority { get; set; }
+        [DisplayName("Ordering")]
+        public int Ordering { get; set; }
 
         [DisplayName("Code")]
         public string Code { get; set; }

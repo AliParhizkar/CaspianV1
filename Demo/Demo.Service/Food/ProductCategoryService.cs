@@ -5,7 +5,6 @@ using Caspian.Common;
 using System.Threading.Tasks;
 using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {
@@ -14,46 +13,46 @@ namespace Demo.Service
         public ProductCategoryService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("گروه محصولی با این عنوان تعریف شده است");
-            RuleFor(t => t.Code).UniqAsync("گروه محصولی با این کد تعریف شده است")
+            RuleFor(t => t.Title).Required().UniqAsync("The title of the product category must be unique.");
+            RuleFor(t => t.Code).UniqAsync("The code of the product category must be unique.")
             .CustomValue(code => 
             {
                 if (!code.HasValue())
                     return false;
                 return code.Length > 2;
-            }, "کد گروه کالا حداکثر می تواند یک یا دو رقم داشته باشد")
+            }, "The product category code must be two digits at most.")
             .Custom(pc => 
             {
                 if (!pc.Code.HasValue())
                     return false;
                 return new ProductService(ServiceProvider).GetAll().Any(p => p.Code == pc.Code);
-            }, "محصولی با این کد تعریف شده است");
+            }, "A product with this code has been registered.");
         }
 
-        public async Task IncPriorityAsync(ProductCategory productCategory)
+        public async Task IncOrderingAsync(ProductCategory productCategory)
         {
-            var pre = await GetAll().Where(t => t.Priority < productCategory.Priority).OrderByDescending(t => t.Priority).FirstOrDefaultAsync();
+            var old = await SingleAsync(productCategory.Id);
+            var pre = await GetAll().Where(t => t.Ordering < old.Ordering).OrderByDescending(t => t.Ordering).FirstOrDefaultAsync();
             if (pre != null)
             {
-                var old = await SingleAsync(productCategory.Id);
-                var temp = old.Priority;
-                old.Priority = pre.Priority;
-                pre.Priority = temp;
+                var temp = old.Ordering;
+                old.Ordering = pre.Ordering;
+                pre.Ordering = temp;
                 await base.UpdateAsync(pre);
                 await base.UpdateAsync(old);
             }
             
         }
 
-        public async Task DecPriorityAsync(ProductCategory productCategory)
+        public async Task DecOrderingAsync(ProductCategory productCategory)
         {
-            var next = await GetAll().Where(t => t.Priority > productCategory.Priority).OrderBy(t => t.Priority).FirstOrDefaultAsync();
+            var old = await SingleAsync(productCategory.Id);
+            var next = await GetAll().Where(t => t.Ordering > old.Ordering).OrderBy(t => t.Ordering).FirstOrDefaultAsync();
             if (next != null)
             {
-                var old = await SingleAsync(productCategory.Id);
-                var temp = old.Priority;
-                old.Priority = next.Priority;
-                next.Priority = temp;
+                var temp = old.Ordering;
+                old.Ordering = next.Ordering;
+                next.Ordering = temp;
                 await base.UpdateAsync(next);
                 await base.UpdateAsync(old);
             }
@@ -61,14 +60,14 @@ namespace Demo.Service
 
         public async override Task<ProductCategory> AddAsync(ProductCategory entity)
         {
-            entity.Priority = (await GetAll().MaxAsync(t => (int?)t.Priority)).GetValueOrDefault() + 1;
+            entity.Ordering = (await GetAll().MaxAsync(t => (int?)t.Ordering)).GetValueOrDefault() + 1;
             return  await base.AddAsync(entity);
         }
 
         public async override Task UpdateAsync(ProductCategory entity)
         {
             var old = await SingleAsync(entity.Id);
-            entity.Priority = old.Priority;
+            entity.Ordering = old.Ordering;
             await base.UpdateAsync(entity);
         }
     }

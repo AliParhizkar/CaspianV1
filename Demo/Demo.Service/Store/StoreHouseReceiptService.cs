@@ -11,9 +11,9 @@ namespace Demo.Service
         public WareHouseReceiptService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Date).CustomValue(t => t == null, "تاریخ حواله باید مشخص باشد")
-                .CustomValue(t => t.HasValue && t.Value.Date > DateTime.Now.Date, "حواله نمی تواند به تاریخ آینده باشد.");
-            RuleFor(t => t.ReceiptDetails).CustomValue(t => t == null || !t.Any(), "حواله باید حداقل یک کالا داشته باشد");
+            RuleFor(t => t.Date).CustomValue(t => t == null, "Please specify the warehouse receipt date.")
+                .CustomValue(t => t.HasValue && t.Value.Date > DateTime.Now.Date, "The warehouse receipt date cannot be a future date.");
+            RuleFor(t => t.ReceiptDetails).CustomValue(t => t == null || !t.Any(), "Warehouse receipt must have at least one item.");
             RuleForEach(t => t.ReceiptDetails).SetValidator(new ReceiptDetailService(provider));
         }
     }

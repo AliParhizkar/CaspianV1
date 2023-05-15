@@ -72,7 +72,7 @@ namespace Caspian.Engine.Navigation
             if (url.EndsWith('/'))
                 url = url.Substring(0, url.Length - 1);
             var menu = SingletonMenuService.GetMenu(url);
-            if (menu.ShowonMenu)
+            if (menu?.ShowonMenu == true)
                 Storege.SetAsync("CurentShowUrl", url);
         }
 

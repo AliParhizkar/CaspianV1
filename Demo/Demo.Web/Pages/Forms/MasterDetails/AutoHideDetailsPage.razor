@@ -27,100 +27,139 @@
 </ul>
 <h3>MasterDetailPage&lt;TMaster, TDetail&gt;</h3>
 <p>
-    We can create warehouse receipt form <b>without any coding</b>, of course we can <b>modify</b> it by coding. To create it, we need to use the <b>MasterDetailPage</b> class, this class is a <b>generic class</b> with two parameters: <b>TMaster(WarehouseReceipt)</b> and <b>TDetail(ReceiptDetail)</b>. To use this class, we need to set its properties, we describe these properties.
+    We can create warehouse receipt form <b>without any coding</b>, of course we can <b>modify</b> it by coding. 
 </p>
-<h4>MasterDetailPage class properties:</h4>
-<ul class="d-demo-inner-list">
-    <li><b>UpsertData: </b>This property is of type warehouse receipt which is used for gathering data, validation or upsert.</li>
-    <li><b>Form: </b>This form is used for validation, it validate both warehouse receipt and receipt detail. </li>
-    <li>3</li>
-</ul>
-<div class="row p-3">
-    <div class="col-md-4 ps-3 pe-3">
-        <div class="row align-items-baseline">
-            <div class="col-md-2 text-center">
-                <a href="/Demo/Batch/AutoHide/Master">
-                    <span class="fa fa-first-order"></span>
-                </a>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <h4>Warehouse receipt-Receipt details</h4>
+                <span class="c-demo-description">In this example we can inser or update <b>warehouse receipt</b>, 
+                    also insert update or delete receiptdetail(s).
+                </span>
+                <div class="pt-3">
+                    <span class="fa fa-info"> Note: </span><span class="c-demo-description">We use WareHouseReceiptService
+                        for validate both Warehouse receip and Receipt details.
+                    </span>
+                </div>
+                <h5> User experience: </h5>
+                <ul class="d-demo-inner-list">
+                    <li>
+                        <b>Warehouse receipt</b>: We can override the <b>OnMasterEntityCreatedAsync</b> method and set any <b>UpsertData</b> property, this method is called <b>after the upsert</b> and before the <b>form is reset</b>.
+                    </li>
+                    <li>
+                        <b>Receipt details: </b> We have two user experience for Orderdetail
+                        <ul class="d-demo-inner-list">
+                            <li>
+                                <b>material autocomplete: </b>After selecting the material, we display the <b>title and text box</b> of the <b>main unit</b>, if the material <b>has a sub-unit</b>, we display its <b>title and text box</b>.
+                            </li>
+                            <li>
+                                <b>Main-unit text box: </b>By pressing the <b>enter key</b>, if the material <b>has a sub-unit</b>, the <b>focus</b> is given to the text box of the <b>sub-unit</b>. Otherwise, <b>validation</b> and upsert will take place.
+                            </li>
+                            <li>
+                                <b>Sub-Unit text box: </b> By pressing the <b>enter</b> key <b>validation</b> and upsert will take place.
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="row">
+                    <div class="col-md-4 row pe-3">
+                        <div class="col-md-2 text-start">
+                            <a href="/Demo/Batch/Inline/Master">
+                                <span class="fa fa-arrow-left"></span>
+                            </a>
+                        </div>
+                        <div class="col-md-10 text-center">
+                            <span class="d-membership">Warehouse receipt</span>
+                        </div>
+                        <hr class="mt-2" />
+                    </div>
+                    <div class="col-md-8 row ps-3 ">
+                        <div class="col-md-12 text-center">
+                            <span class="d-membership">Receipt details</span>
+                            <hr class="mt-2" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 row pe-3">
+                        <CaspianForm @ref="Form" Model="UpsertData">
+                            <div class="row c-controls ps-3 pe-3">
+                                <div class="col-md-4">
+                                    <label>Receipt date</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <DatePicker @bind-Value="UpsertData.Date" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Warehouse</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <ComboBox TValue="int" TEntity="Warehouse" @bind-Value="UpsertData.WarehouseId" TextExpression="t => t.Title" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Description</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <StringTextBox @bind-Value="UpsertData.Comment" MultiLine Rows="3" />
+                                </div>
+                                <div class="col-md-12">
+                                    <FormCommandButton />
+                                </div>
+                            </div>
+                        </CaspianForm>
+                    </div>
+                    <div class="col-md-8 ps-3">
+                        <DataGrid @ref="Grid" TEntity="ReceiptDetail" TableHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
+                            <Columns Context="con">
+                                <GridColumn Field="t => t.Material.Title" Title="Material">
+                                    <EditTemplate>
+                                        <AutoComplete TValue="int" TEntity="Material" @bind-Value="con.Data.MaterialId"
+                                                        HideHeader AutoHide Title="Material" TextExpression="t => t.Title"
+                                                        OnChange="async () => await UpdateMaterialReceipt(con.Data.MaterialId, con.Data)">
+                                            <MaterialLookupWindow />
+                                        </AutoComplete>
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridColumn Field="t => t.QuantityMain" style="width:110px;">
+                                    <EditTemplate>
+                                        <NumericTextBox @ref="txtMainUnit" @onkeyup="async e =>  await MainUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantityMain" />
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridColumn Field="t => t.Material.MainUnit.Title" Title="Main unit" style="width:80px">
+                                    <Template>
+                                        <span>@(con.Data?.Material?.MainUnit?.Title)</span>
+                                    </Template>
+                                </GridColumn>
+                                <GridColumn Field="t => t.QuantitySub" style="width:110px;">
+                                    <EditTemplate>
+                                        @if (con.Data?.Material?.SubunitId != null)
+                                        {
+                                            <NumericTextBox @ref="txtSubunit" @onkeyup="async e =>  await SubUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantitySub" />
+                                        }
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridColumn Field="t => t.Material.Subunit.Title" Title="Sub unit" style="width:80px">
+                                    <Template>
+                                        <span>@(con.Data?.Material?.Subunit?.Title)</span>
+                                    </Template>
+                                </GridColumn>
+                                <GridCommandColumns />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-10 text-center">
-                <h7 class="d-membership">Material receipt</h7>
-            </div>
-        </div>
-        <hr />
-        <CaspianForm @ref="Form" Model="UpsertData">
-            <div class="row c-controls ps-3 pe-3">
-                <div class="col-md-4">
-                    <label>Receipt date</label>
-                </div>
-                <div class="col-md-8">
-                    <DatePicker @bind-Value="UpsertData.Date" />
-                </div>
-                <div class="col-md-4">
-                    <label>Warehouse</label>
-                </div>
-                <div class="col-md-8">
-                    <ComboBox TValue="int" TEntity="Warehouse" @bind-Value="UpsertData.WarehouseId" TextExpression="t => t.Title" />
-                </div>
-                <div class="col-md-4">
-                    <label>Description</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.Comment" MultiLine Rows="3" />
-                </div>
-                <div class="col-md-12">
-                    <FormCommandButton />
-                </div>
-            </div>
-        </CaspianForm>
-    </div>
-    <div class="col-md-8 ps-3 text-center">
-        <div class="row align-items-baseline">
-            <div class="col-md-8">
-                <h7 class="d-membership">Materials receipt</h7>
-            </div>
-        </div>
-        <hr />
-        <DataGrid @ref="Grid" TEntity="ReceiptDetail" TableHeight="300" Inline Batch ConditionExpr="t => t.ReceiptId == MasterId">
-            <Columns Context="con">
-                <GridColumn Field="t => t.Material.Title" Title="Material" >
-                    <EditTemplate>
-                        <AutoComplete TValue="int" TEntity="Material" @bind-Value="con.Data.MaterialId" HideHeader AutoHide Title="Material"
-                                      OnChange="async () => await UpdateMaterialReceipt(con.Data.MaterialId, con.Data)">
-                            <MaterialLookupWindow />
-                        </AutoComplete>
-                    </EditTemplate>
-                </GridColumn>
-                <GridColumn Field="t => t.QuantityMain" style="width:110px;">
-                    <EditTemplate>
-                        <NumericTextBox @ref="txtMainUnit" @onkeyup="async e =>  await MainUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantityMain" />
-                    </EditTemplate>
-                </GridColumn>
-                <GridColumn Field="t => t.Material.MainUnit.Title" Title="Main unit" style="width:80px">
-                    <Template>
-                        <span>@(con.Data?.Material?.MainUnit?.Title)</span>
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="t => t.QuantitySub" style="width:110px;">
-                    <EditTemplate>
-                        @if (con.Data?.Material?.SubunitId != null)
-                        {
-                                <NumericTextBox @ref="txtSubunit" @onkeyup="async e =>  await SubUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantitySub" />
-                        }
-                    </EditTemplate>
-                </GridColumn>
-                <GridColumn Field="t => t.Material.Subunit.Title" Title="Sub unit" style="width:80px">
-                    <Template>
-                        <span>@(con.Data?.Material?.Subunit?.Title)</span>
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="t => t.Material.SubunitId" Title="" style="display:none;width:0" />
-                <GridCommandColumns />
-            </Columns>
-        </DataGrid>
-
-    </div>
-</div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="Batch" FileName="Batch-Autohide-1" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Warehouse receipt service">
+            <Document FolderName="Service/Services" FileName="WarehouseReceiptService" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Receipt details service">
+            <Document FolderName="Service/Services" FileName="ReceiptDetailsService" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
 @code
 {

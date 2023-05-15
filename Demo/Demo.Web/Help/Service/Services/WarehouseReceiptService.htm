@@ -47,7 +47,7 @@ div.WordSection1
 <div class=WordSection1>
 
 <p class=MsoNormal style='line-height:normal;background:white'><b><span
-style='font-size:18.0pt;font-family:"iranyekan",serif;color:#212529'>Country
+style='font-size:18.0pt;font-family:"iranyekan",serif;color:#212529'>Warehouse Receipt
 Service:</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
@@ -56,15 +56,15 @@ none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>class</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>CountryService</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>WareHouseReceiptService</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> : </span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>BaseService</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>&lt;</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>Country</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>WarehouseReceipt</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>&gt;, </span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>IBaseService</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>&lt;</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>Country</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>WarehouseReceipt</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>&gt;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
@@ -75,7 +75,7 @@ none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
 </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>public</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>CountryService</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>WareHouseReceiptService</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>IServiceProvider</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> provider)</span></p>
@@ -93,13 +93,50 @@ none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>    
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
 </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:#833C0B'>RuleFor</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(t =&gt;
-t.Title).</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:#833C0B'>Required</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:black'>().</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:#833C0B'>UniqAsync</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:black'>(</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:#A31515'>&quot;A country with this title is defined in the system&quot;</span><span
+t.Date).</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#833C0B'>CustomValue</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>(t =&gt; t == </span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:blue'>null</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'>, </span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:#A31515'>&quot;Please specify the warehouse receipt
+date.&quot;</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>)</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+.</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:#833C0B'>CustomValue</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(t =&gt;
+t.HasValue &amp;&amp; t.Value.Date &gt; DateTime.Now.Date, </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;The
+warehouse receipt date cannot be a future date.&quot;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>);</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:#833C0B'>RuleFor</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(t =&gt;
+t.ReceiptDetails).</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#833C0B'>CustomValue</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>(t =&gt; t == </span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:blue'>null</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'> || !t.</span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:#833C0B'>Any</span><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:black'>(), </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;Warehouse
+receipt must have at least one item.&quot;</span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:black'>);</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:#833C0B'>RuleForEach</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(t =&gt;
+t.ReceiptDetails).</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#833C0B'>SetValidator</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'>(</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:blue'>new</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'> </span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:#2B91AF'>ReceiptDetailService</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(provider));</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       

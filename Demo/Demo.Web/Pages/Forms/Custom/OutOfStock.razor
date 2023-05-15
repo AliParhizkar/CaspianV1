@@ -1,0 +1,55 @@
+﻿@page "/Demo/ProductUpdate"
+@namespace Demo.Web.Pages
+@inherits SimplePage<Product>
+@{
+    base.BuildRenderTree(__builder);
+}
+<h2>Custom update</h2>
+<p>
+    In this example we toggle out of stock value (it's of boolean type) in grid.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="p-4 row">
+                <span class="c-demo-description">In this example, we update the <b>database</b> and then update the grid 
+                    by calling the <b>ReloadAsync</b> method.
+                </span>
+            </div>
+            <div class="ps-4 pe-4 pb-4">
+                <DataGrid @ref="grid" TEntity="Product" TableHeight="300" HideInsertIcon>
+                    <Columns>
+                        <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
+                        <GridColumn Field="t => t.Title" />
+                        <GridColumn Field="t => t.Price.Seprate3Digit()" />
+                        <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
+                        <GridColumn Field="t => t.OutofStock">
+                            <Template>
+                                <CheckBox Value="context.Data.OutofStock" ValueChanged="async (bool t) => await ToggleOutofStock(context.Data.Id)" />
+                            </Template>
+                        </GridColumn>
+                    </Columns>
+                </DataGrid>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Custom" FileName="ProductUpdate" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Product service">
+            <Document FolderName="Service/Services" FileName="ProductService" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+@code 
+{
+    DataGrid<Product> grid;
+    async Task ToggleOutofStock(int productId)
+    {
+        using var scope = CreateScope();
+        var service = new ProductService(scope.ServiceProvider);
+        await service.ToggleOutofstock(productId);
+        await service.SaveChangesAsync();
+        await grid.ReloadAsync();
+    }
+}

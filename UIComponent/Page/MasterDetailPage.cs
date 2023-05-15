@@ -54,7 +54,7 @@ namespace Caspian.UI
                     {
                         var type = info.PropertyType;
                         if (type.IsCollectionType() && type.IsGenericType && type.GetGenericArguments()[0] == typeof(TDetail))
-                            info.SetValue(UpsertData, Grid.AllRecords().AsEnumerable());
+                            info.SetValue(UpsertData, Grid.GetAllRecords().AsEnumerable());
                     }
                 });
                 Form.OnInternalReset = EventCallback.Factory.Create(this, () =>

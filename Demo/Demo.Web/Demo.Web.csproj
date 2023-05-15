@@ -9,9 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Help\**" />
     <Compile Remove="wwwroot\Pdf\**" />
+    <Content Remove="Help\**" />
     <Content Remove="wwwroot\Pdf\**" />
+    <EmbeddedResource Remove="Help\**" />
     <EmbeddedResource Remove="wwwroot\Pdf\**" />
+    <None Remove="Help\**" />
     <None Remove="wwwroot\Pdf\**" />
   </ItemGroup>
 

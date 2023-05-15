@@ -3,24 +3,38 @@
 @inject NavigationManager navigationManager
 @inherits BasePage
 @namespace Demo.Web.Pages
-<div class="p-4">
-    <div class="p-3">
+<h2>Batch operation</h2>
+<h3>Batch-Custom</h3>
+<p>
+    Here is another example of <b>Master-Details</b>, In this example, we have created a custom form using <b>grid methods</b>. 
+    In this example, we tried to explain these methods.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+    <div class="p-4">
         <CheckBox @bind-Value="onlyThisDay" Title="Only show today orders " OnChange="() => Grid.EnableLoading()" />
     </div>
-    <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" TableHeight="300"
-              ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
-        <Columns>
-            <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />
-            <GridColumn Field="t => t.OrderType.EnumText()" />
-            <GridColumn Field="t => t.OrderNo" Title="Order no" />
-            <GridColumn Field="t => t.Customer.FName + ' ' + t.Customer.LName" Title="Customer" />
-            <GridColumn Field="t => t.Delivery.FName + ' ' + t.Delivery.LName" Title="Delivery" />
-            <GridColumn Field="t => t.OrderStatus.EnumText()" />
-            <GridCommandColumns />
-        </Columns>
-    </DataGrid>
-
-</div>
+    <div class="p-4 pt-0">
+        <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" TableHeight="300"
+                ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
+            <Columns>
+                <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />
+                <GridColumn Field="t => t.OrderType.EnumText()" />
+                <GridColumn Field="t => t.OrderNo" Title="Order no" />
+                <GridColumn Field="t => t.Customer.FName + ' ' + t.Customer.LName" Title="Customer" />
+                <GridColumn Field="t => t.Delivery.FName + ' ' + t.Delivery.LName" Title="Delivery" />
+                <GridColumn Field="t => t.OrderStatus.EnumText()" />
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+    </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="Batch" FileName="Batch-Custom" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code
 {
     bool onlyThisDay = true;

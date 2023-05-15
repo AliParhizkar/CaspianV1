@@ -28,7 +28,7 @@ namespace Demo.Service
                     }
                 }
                 return false;
-            }, "مقدار واحد فرعی نامعتبر است");
+            }, "The value of sub-unit is invalid");
         }
     }
 }

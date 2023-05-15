@@ -4,7 +4,6 @@
 @{
     base.BuildRenderTree(__builder);
 }
-
 <style type="text/css">
     .product {
         border: 1px solid lightgray;
@@ -28,103 +27,150 @@
         width: calc(100% - 300px)
     }
 </style>
-<div class="row p-3">
-    <div class="col-md-4 ps-3 pe-3">
-        <div class="row">
-            <div class="col-md-2 text-center">
-                <a href="/Demo/Batch/Custom/Master">
-                    <span class="fa fa-first-order"></span>
-                </a>
-            </div>
-            <div class="col-md-10 text-center">
-                <h7 class="d-membership">Order</h7>
-            </div>
-        </div>
-        <hr />
-        <CaspianForm @ref="Form" Model="UpsertData">
-            <CaspianValidationValidator ValidatorType="typeof(OrderService)" />
-            <div class="row c-controls ps-3 pe-3">
-                <div class="col-md-4">
-                    <label>Order date</label>
+<h3>Batch-Custom</h3>
+<p>
+    In this example, we have <b>a few products</b> to choose, with the <b>first click</b> on the product, 
+    it will be <b>added</b> to the grid, and with <b>subsequent clicks</b>, its <b>quantity</b> will increase.
+</p>
+<p>
+    In the grid, we can <b>increase</b> or <b>decrease</b> the quantity of products, if the number of a product becomes <b>zero</b>, it will be <b>removed</b> from the grid.
+</p>
+<p>
+    By clicking the <b>save button</b>, the <b>order</b> and <b>its details</b> will be saved together.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <h4>Inline grid methods:</h4>
+                <span class="c-demo-description">We use inline grid methods for orderdetail operations (insert, update and remove)
+                    in this example. Here we describe these methods:</span>
+                <ul class="d-demo-inner-list">
+                    <li>
+                        <b>InsertAsync: </b>We use this method to <b>validation & insert</b> the order details, 
+                        this method <b>retrieves the necessary data</b> from the <b>database</b> based on the <b>grid expressions</b>.
+                    </li>
+                    <li>
+                        <b>UpdateAsync: </b>We use this method to <b>validation & update</b> the order details, 
+                        this method <b>retrieves the necessary data</b> from the <b>database</b> based on the <b>grid expressions</b>.
+                    </li>
+                    <li>
+                        <b>RemoveAsync: </b>We use this method to <b>remove validation & remove</b> the order details.
+                    </li>
+                    <li>
+                        <b>GetAllRecords: </b>This method returns all the <b>records in the grid</b>, <span style="color:deeppink">these records are the grid objects, and changing them changes the grid data</span>.
+                    </li>
+                    <li>
+                        <b>GetInsertedEntities: </b>This method returns all <b>inserted records</b>. In these records, the <b>primary key value is zero</b>.
+                    </li>
+                    <li>
+                        <b>GetUpdatedEntities: </b>This method returns all <b>updated records</b>.
+                        This method may have data only in <b>editing mode</b>.
+                    </li>
+                    <li>
+                        <b>GetDeletedEntities: </b>This method returns all <b>removed records</b>.
+                        This method may have data only in <b>editing mode</b>.
+                    </li>
+                </ul>
+                <div class="pb-4">
+                    <span class="fa fa-info"> Note: </span><span class="c-demo-description">
+                        The grid operation (Insert, Update, Remove) only changes the grid data, and has no effect on the database data.
+                    </span>
                 </div>
-                <div class="col-md-8">
-                    <DatePicker @bind-Value="UpsertData.Date" />
+                <div class="row">
+                    <div class="col-md-4 row pe-3">
+                        <div class="col-md-2 text-start">
+                            <a href="/Demo/Batch/Custom/Master">
+                                <span class="fa fa-arrow-left"></span>
+                            </a>
+                        </div>
+                        <div class="col-md-10 text-center">
+                            <span class="d-membership">Order</span>
+                        </div>
+                        <hr class="mt-2" />
+                    </div>
+                    <div class="col-md-8 row ps-3 ">
+                        <div class="col-md-12 text-center">
+                            <span class="d-membership">Orderdetails</span>
+                            <hr class="mt-2" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 row pe-3">
+                        <CaspianForm @ref="Form" Model="UpsertData">
+                            <div class="row c-controls ps-3 pe-3">
+                                <div class="col-md-4">
+                                    <label>Order date</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <DatePicker @bind-Value="UpsertData.Date" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Order type</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <DropdownList @bind-Value="UpsertData.OrderType" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Customer</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
+                                </div>
+                                <div class="col-md-12">
+                                    <FormCommandButton />
+                                </div>
+                            </div>
+                        </CaspianForm>
+                        <div class="pt-3 text-center pe-3">
+                            <div class="pt-3">
+                                <button @onclick="InsertedProducts" class="c-btn c-primary">Inserted products</button>
+                            </div>
+                            <div class="pt-3">
+                                <button @attributes="btnAttr" @onclick="UpdatedProducts" class="c-btn c-primary">Updated products</button>
+                            </div>
+                            <div class="pt-3">
+                                <button @attributes="btnAttr" @onclick="DeletedProducts" class="c-btn c-primary">Deleted products</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 ps-3">
+                        @if (products != null)
+                        {
+                            <div class="ps-4">
+                                @foreach (var product in products)
+                                {
+                                    <span @onclick="async () => await AddUpsertProduct(product)" class="product">@product.Title</span>
+                                }
+                            </div>
+                        }
+                        <div class="pt-4">
+                            <DataGrid @ref="Grid" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == MasterId" TableHeight="250" HideInsertIcon>
+                                <Columns>
+                                    <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
+                                    <GridColumn Field="t => t.Product.Title" Title="Product" />
+                                    <GridColumn Field="t => t.Price.Seprate3Digit()" Title="Price" />
+                                    <GridColumn Field="t => t.Quantity" Title="Quantity">
+                                        <Template>
+                                            <IconButton IconType="IconType.Plus" @onclick="async () => await IncQuantity(context.Data)" />
+                                            <span style="display:inline-block;width:38px;height:38px;">@context.Data.Quantity</span>
+                                            <IconButton IconType="IconType.Minus" @onclick="async () => await DecQuantity(context.Data)" />
+                                        </Template>
+                                    </GridColumn>
+                                </Columns>
+                            </DataGrid>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <label>Order type</label>
-                </div>
-                <div class="col-md-8">
-                    <DropdownList @bind-Value="UpsertData.OrderType" />
-                </div>
-                <div class="col-md-4">
-                    <label>Customer</label>
-                </div>
-                <div class="col-md-8">
-                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
-                </div>
-                <div class="col-md-12">
-                    <FormCommandButton />
-                </div>
             </div>
-        </CaspianForm>
-        <div class="pt-3 text-center pe-3">
-            <div class="pt-3">
-                <button @onclick="InsertedProducts" class="c-btn c-primary">Inserted products</button>
-            </div>
-            <div class="pt-3">
-                <button @attributes="btnAttr" @onclick="UpdatedProducts" class="c-btn c-primary">Updated products</button>
-            </div>
-            <div class="pt-3">
-                <button @attributes="btnAttr" @onclick="DeletedProducts" class="c-btn c-primary">Deleted products</button>
-            </div>
-            <div class="pt-3">
-                <button @attributes="btnAttr" @onclick="PostToDatabase" class="c-btn c-primary">Post to database</button>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-8 ps-3 ">
-        <div class="row align-items-baseline">
-            <div class="col-md-8">
-                <h7 class="d-membership">Products</h7>
-            </div>
-            <div class="col-md-4 d-source-btn">
-                <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-                    Source
-                    <i class="fa fa-code"></i>
-                </button>
-            </div>
-        </div>
-        <hr />
-        @if (products != null)
-        {
-            <div class="ps-4">
-                @foreach (var product in products)
-                {
-                    <span @onclick="async () => await AddUpsertProduct(product)" class="product">@product.Title</span>
-                }
-            </div>
-        }
-        <div class="pt-3">
-            <DataGrid @ref="Grid" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == MasterId" TableHeight="250" HideInsertIcon>
-                <Columns>
-                    <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
-                    <GridColumn Field="t => t.Product.Title" Title="Product" />
-                    <GridColumn Field="t => t.Price.Seprate3Digit()" Title="Price" />
-                    <GridColumn Field="t => t.Quantity" Title="Quantity">
-                        <Template>
-                            <IconButton IconType="IconType.Plus" @onclick="async () => await IncQuantity(context.Data)" />
-                            <span style="display:inline-block;width:38px;height:38px;">@context.Data.Quantity</span>
-                            <IconButton IconType="IconType.Minus" @onclick="async () => await DecQuantity(context.Data)" />
-                        </Template>
-                    </GridColumn>
-                </Columns>
-            </DataGrid>
-        </div>
-    </div>
-</div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Batch" FileName="Batch-Custom-1" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
 @code
 {
-    WindowStatus status;
     IList<Product> products;
     IDictionary<string, object> btnAttr;
 
@@ -206,16 +252,9 @@
         }
     }
 
-    async Task PostToDatabase()
-    {
-        var message = await Grid.PostToDatabaseAsync();
-        message = message ?? "The grid is synchronized with the database";
-        ShowMessage(message);
-    }
-
     async Task AddUpsertProduct(Product product)
     {
-        var old = Grid.AllRecords().SingleOrDefault(t => t.ProductId == product.Id);
+        var old = Grid.GetAllRecords().SingleOrDefault(t => t.ProductId == product.Id);
         if (old == null)
         {
             await Grid.InsertAsync(new OrderDeatil()

@@ -1,0 +1,114 @@
+﻿@page "/Demo/CustomePriceUpdat"
+@namespace Demo.Web.Pages
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<h2>Custom update</h2>
+<p>
+    In this example, we want to quickly change the price and the take out price.
+</p>
+<p>
+    After changing the <b>price</b> by pressing the <b>enter key</b>, the changes are <b>saved</b> in the database and the <b>focus</b> is given to the control of the next column.
+    <br/>
+    After changing the <b>take out price</b> by pressing the <b>enter key</b>, the changes are <b>saved</b> in the database and the <b>next row</b> is selected for change.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="p-4 row ">
+                <span class="c-demo-description">
+                    In this example, the most important issue is <b>giving focus</b> to the controls. 
+                    We use <b>selectedId</b> and <b>colNumber</b> variables for this.
+                </span>
+            </div>
+            <ul class="d-demo-inner-list pb-2 mb-0">
+                <li>
+                    <b>colNumber:</b> The value of this variable is 1 for the first column and 2 for the second column.
+                </li>
+                <li>
+                    <b>selectedId:</b> After selecting the <b>next row</b> in the grid, the value of this variable will be the <b>SelectedRowId</b> in the grid.
+                </li>
+            </ul>
+            <div class="d-content pt-0">
+                <span class="fa fa-info"> Note:</span> <span class="c-demo-description">We use the <b>SelectNextRow method</b> to select the next row in the grid.</span>
+            </div>
+            <div class="row p-4 c-controls pt-0">
+                <div class="col-md-2 ps-3">
+                    <label>Product category</label>
+                </div>
+                <div class="col-md-4 pe-4">
+                    <ComboBox @bind-Value="searchProduct.ProductCategoryId" TValue="int" TEntity="ProductCategory"
+                        TextExpression="t => t.Title" />
+                </div>
+                <div class="col-md-2 ps-4">
+                    <label>Status</label>
+                </div>
+                <div class="col-md-4 pe-3">
+                    <DropdownList @bind-Value="searchProduct.ActiveType" />
+                </div>
+                <div class="col-md-12 pt-4">
+                    <DataGrid @ref="grid" TEntity="Product" Search="searchProduct" TableHeight="400" HideInsertIcon>
+                        <Columns>
+                            <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
+                            <GridColumn Field="t => t.Title" />
+                            <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
+                                <Template>
+                                    <NumericTextBox Focused="selectedId == context.Data.Id && colNumber == 1" TValue="int" Value="context.Data.Price" ValueChanged="value => context.Data.Price = value"
+                                            @onkeyup="async e => await UpdatePrice(e, context.Data.Id, context.Data.Price)" />
+                                </Template>
+                            </GridColumn>
+                            <GridColumn Field="t => t.TakeoutPrice.ToString()" style="width:150px;">
+                                <Template>
+                                    <NumericTextBox Focused="selectedId == context.Data.Id && colNumber == 2" TValue="int" Value="context.Data.TakeoutPrice" ValueChanged="value => context.Data.TakeoutPrice = value"
+                                                    @onkeyup="async e => await UpdateTakeoutPrice(e, context.Data.Id, context.Data.TakeoutPrice)" />
+                                </Template>
+                            </GridColumn>
+                        </Columns>
+                    </DataGrid>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Custom" FileName="Price-Update" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+@code
+{
+    int? selectedId;
+    int? colNumber;
+    Product searchProduct = new Product();
+    DataGrid<Product> grid;
+
+    async Task UpdatePrice(KeyboardEventArgs e, int productId, int price)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            using var scope = CreateScope();
+            var productService = new ProductService(scope.ServiceProvider);
+            await productService.UpdatePrice(productId, price);
+            await productService.SaveChangesAsync();
+            selectedId = productId;
+            colNumber = 2;
+        }
+    }
+
+    async Task UpdateTakeoutPrice(KeyboardEventArgs e, int productId, int takeoutPrice)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            using var scope = CreateScope();
+            var productService = new ProductService(scope.ServiceProvider);
+            await productService.UpdateTakeoutPrice(productId, takeoutPrice);
+            await productService.SaveChangesAsync();
+            await grid.SelectNextRow();
+            if (grid.SelectedRowId.HasValue)
+            {
+                selectedId = grid.SelectedRowId.Value;
+                colNumber = 1;
+            }
+        }
+    }
+}
+

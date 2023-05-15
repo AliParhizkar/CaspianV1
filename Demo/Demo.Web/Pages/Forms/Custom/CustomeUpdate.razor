@@ -34,7 +34,7 @@
     <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400" HideInsertIcon
               OnPageChanged="MangeControlsOnLastPage">
         <Columns>
-            <GridColumn Field="t => t.ProductCategory.Title" Title="گروه محصول" />
+            <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
                 <Template>
