@@ -51,9 +51,14 @@ namespace Caspian.UI
                     await ShowTree();
                 if (multiSelectable)
                     treeView.SetSelectedNodesValue(selectedNodesValue);
+                else if (OnChanged.HasDelegate)
+                    await OnChanged.InvokeAsync(searchText);
                 await treeView.ReloadAsync();
             }
         }
+
+        [Parameter]
+        public EventCallback OnChanged { get; set; }
 
         public EventCallback<string> OnInternalChanged { get; set; }
 

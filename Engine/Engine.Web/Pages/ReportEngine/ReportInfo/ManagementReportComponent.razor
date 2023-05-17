@@ -7,7 +7,7 @@
                            await StatusChanged.InvokeAsync(t); 
                        }">
     <Content>
-        <CTreeView @ref="Tree" OnExpanded="@(async (item) =>
+        <TreeView @ref="Tree" OnExpanded="@(async (item) =>
                                             {
                                                 using var scope = ServiceScopeFactory.CreateScope();
                                                 var service = new ReportService(scope.ServiceProvider);
@@ -36,7 +36,7 @@
 @code
 {
     IList<TreeViewItem> Nodes;
-    CTreeView<TreeViewItem> Tree;
+    TreeView<TreeViewItem> Tree;
 
     void PostParams()
     {

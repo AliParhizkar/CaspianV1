@@ -75,8 +75,8 @@
                     item.Parent = Item;
                 <TreeNode OnCollapsed="async node =>
                                    {
-                                       if (OnCollapsed.HasDelegate)
-                                           await OnCollapsed.InvokeAsync(node);
+                                        if (OnCollapsed.HasDelegate)
+                                            await OnCollapsed.InvokeAsync(node);
                                    }"
                           OnExpanded="async node =>
                                    {

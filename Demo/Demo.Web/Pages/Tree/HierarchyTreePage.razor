@@ -1,0 +1,171 @@
+﻿@page "/Demo/HierarchyTree"
+@inherits BasePage
+<h2>Hierarchy Tree</h2>
+<p>
+    Hierarchical entities have a <b>relationship with themselves</b>. 
+    Because of the <b>tree structure</b> of these entities, they are generally displayed with a tree.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row d-content">
+                <div class="col-md-6 pe-5">
+                    <h4>Databinding & search</h4>
+                    <span class="c-demo-description">
+                        To bind the tree to a hierarchical entity, we need to set the following parameters:
+                    </span>
+                    <ul class="d-demo-inner-list pe-0">
+                        <li>
+                            <b>TEntity: </b> The type of entity to which we want to bind the tree (OrganUnit type).
+                        </li>
+                        <li>
+                            <b>TextFunc: </b> This method takes entity as input and returns the text of each node.
+                        </li>
+                        <li>
+                            <b>FilterFunc </b>This method takes entity as input and returns true or false.
+                        </li>
+                    </ul>
+                    <span class="fa fa-info"> Note: </span> 
+                    <span class="c-demo-description">
+                        In the tree, we have used <b>IEnumerable</b> instead of <b>IQueryable</b>, so we use <b>Func</b> instead of <b>Expression</b>.
+                    </span>
+                </div>
+                <div class="col-md-6">
+                    <StringTextBox @bind-Value="@organSearch" OnChange="async () => await databindingTree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
+                    <TreeView @ref="databindingTree" TEntity="OrganUnit" style="height:500px" TextFunc="t => t.Title"
+                            FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType" />
+                </div>
+                <div class="col-md-6">
+                    <hr />
+                    <h4>Custom template</h4>
+                    <span class="c-demo-description pe-4">
+                        We can define custom template for hierarchical tree, for this we use <b>TreeNodeTemplate</b> as child parameter.
+                    </span>
+                    <h4 class="pt-3">TreeNodeTemplate</h4>
+                    <span class="c-demo-description pe-4">
+                        We can set the <b>AllLevels</b> parameter to true to create this template for all tree levels.
+                    </span>
+                </div>
+                <div class="col-md-6">
+                    <hr />
+                    <div class="row align-items-center">
+                        <div class="col-md-1 d-tree-icon text-center pb-1">
+                            <span @onclick="async () => await ShowEditForm(null, false)" class="fa fa-plus"></span>
+                        </div>
+                        <div class="col-md-11 pb-1">
+                            <StringTextBox @bind-Value="@organSearch" OnChange="async () => await customTemplateTree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
+                        </div>
+                        <div>
+                            <TreeView @ref="customTemplateTree" TEntity="OrganUnit" style="height:500px"
+                                       TextFunc="t => t.Title" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
+                                <Template>
+                                    <TreeNodeTemplate AllLevels>
+                                        <span class="d-tree-icon">
+                                            <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
+                                        </span>
+                                        <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
+                                            <span class="fa fa-pencil"></span>
+                                        </span>
+                                        <span class="d-tree-icon" @onclick="async () => await DeleteOrganUnit(context)">
+                                            <span class="fa fa-trash"></span>
+                                        </span>
+                                    </TreeNodeTemplate>
+                                </Template>
+                            </TreeView>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Tree" FileName="Hierarchy" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+<Window @bind-Status="status" Style="width:450px;" OnOpen="() => firstControl.Focus()">
+    <Content>
+        <CaspianForm Model="organUnit" OnValidSubmit="async t => await UpsertOrganUnit()">
+            <CaspianValidationValidator ValidatorType="typeof(OrganUnitService)" />
+            <div class="row c-controls ps-3 pe-3">
+                <div class="col-md-3">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-9">
+                    <StringTextBox @ref="firstControl" @bind-Value="organUnit.Title" />
+                </div>
+                <div class="col-md-3">
+                    <label>Status</label>
+                </div>
+                <div class="col-md-9">
+                    <DropdownList @bind-Value="organUnit.ActiveType" />
+                </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-9 text-ce">
+                    <WindowCommandButtons />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+
+@code
+{
+    ActiveType activeType = ActiveType.Enable;
+    string organSearch;
+    WindowStatus status;
+    OrganUnit organUnit;
+    TreeView<OrganUnit> databindingTree;
+    TreeView<OrganUnit> customTemplateTree;
+    IControl firstControl;
+
+    async Task DeleteOrganUnit(TreeViewItem node)
+    {
+        var organUnitId = Convert.ToInt32(node.Value);
+        using var scope = CreateScope();
+        var service = new OrganUnitService(scope.ServiceProvider);
+        var organUnit = await service.SingleAsync(organUnitId);
+        var result = await service.ValidateRemoveAsync(organUnit);
+        if (result.IsValid)
+        {
+            await service.RemoveAsync(organUnit);
+            await service.SaveChangesAsync();
+            customTemplateTree.RemoveFromTree(organUnit);
+        }
+        else
+            ShowMessage(result.Errors.First().ErrorMessage);
+    }
+
+    async Task ShowEditForm(TreeViewItem nodeView, bool isUpdate)
+    {
+        if (isUpdate)
+        {
+            ///در حالت ویرایش
+            var organUnitId = Convert.ToInt32(nodeView.Value);
+            using var scope = CreateScope();
+            organUnit = await new OrganUnitService(scope.ServiceProvider).SingleAsync(organUnitId);
+        }
+        else
+        {
+            organUnit = new OrganUnit();
+            organUnit.ActiveType = ActiveType.Enable;
+            organUnit.ParentOrganId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+        }
+        status = WindowStatus.Open;
+    }
+
+    async Task<bool> UpsertOrganUnit()
+    {
+        using var scope = CreateScope();
+        var service = new OrganUnitService(scope.ServiceProvider);
+        if (organUnit.Id == 0)
+            await service.AddAsync(organUnit);
+        else
+            await service.UpdateAsync(organUnit);
+        await service.SaveChangesAsync();
+        customTemplateTree.UpsertInTree(organUnit);
+        status = WindowStatus.Close;
+        StateHasChanged();
+        return true;
+    }
+}

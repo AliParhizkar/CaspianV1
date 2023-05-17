@@ -1,0 +1,175 @@
+﻿@page "/Demo/NodeTemplate"
+@inherits BasePage
+<h2>Custom template</h2>
+
+<p>
+    We can define a <b>Template</b> for each level of the tree, for this we use the <b>TreeNodeTemplate</b> component.
+    We can also use one template for multiple levels.
+</p>
+
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row d-content">
+                <div class="col-md-6">
+                    <h4>Custom template</h4>
+                    <span class="c-demo-description pe-5">
+                        In this example, we <b>put</b> the <b>insert icon</b> for the <b>first level</b> of the tree and the <b>edit and delete icon</b> for the <b>second level</b> of the tree.
+                    </span>
+                </div>
+                <div class="col-md-6">
+                    <TreeView TEntity="TreeViewItem" style="height:500px" Source="source">
+                        <Template>
+                            <TreeNodeTemplate Level="1">
+                                <span class=" d-tree-icon d-tree-add">
+                                    <span @onclick="() => ShowEditForm(context, false)" class="fa fa-plus"></span>
+                                </span>
+                            </TreeNodeTemplate>
+                            <TreeNodeTemplate Level="2">
+                                <span class="d-tree-icon d-tree-edit" @onclick="() => ShowEditForm(context, true)">
+                                    <span class="fa fa-pencil"></span>
+                                </span>
+                                <span class="d-tree-icon d-tree-delete" @onclick="async () => await DeleteCity(context)">
+                                    <span class="fa fa-trash"></span>
+                                </span>
+                            </TreeNodeTemplate>
+                        </Template>
+                    </TreeView>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Tree" FileName="Custom-Template" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+
+<Window Title="City" @bind-Status="status" Style="width:450px;" OnOpen="() => firstControl.Focus()">
+    <Content>
+        <CaspianForm Model="city" OnValidSubmit="async t => await UpsertCity()">
+            <div class="row ps-4 pe-4 c-controls">
+                <div class="col-md-3">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-9">
+                    <StringTextBox @ref="firstControl" @bind-Value="city.Title" />
+                </div>
+                <div class="col-md-3"></div>
+                <div class="text-center col-md-9">
+                    <WindowCommandButtons />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+
+@code
+{
+    IControl firstControl;
+    IList<TreeViewItem> source;
+    TreeViewItem selectedNode;
+    WindowStatus status;
+    City city;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        source = await new CountryService(scope.ServiceProvider).GetAll().Select(t => new TreeViewItem()
+            {
+                Collabsable = true,
+                Text = t.Title,
+                Value = t.Id.ToString(),
+                ShowTemplate = true,
+                Items = t.Cities.Select(u => new TreeViewItem()
+                {
+                    Collabsable = false,
+                    Text = u.Title,
+                    Value = u.Id.ToString(),
+                    ShowTemplate = true
+                }).ToList()
+            }).ToListAsync();
+    }
+
+    async Task UpsertCity()
+    {
+        using var scope = CreateScope();
+        var service = new CityService(scope.ServiceProvider);
+        TreeViewItem tempNode = null;
+        if (city.Id == 0)
+        {
+            await service.AddAsync(city);
+            ///selected node is country and must reload cities of country after upsert.
+            tempNode = selectedNode;
+            tempNode.Expanded = true;
+        }
+        else
+        {
+            await service.UpdateAsync(city);
+            /// selected node is city and must reload cities of country (parent node) after upsert. 
+            tempNode = selectedNode.Parent;
+        }
+        await service.SaveChangesAsync();
+        status = WindowStatus.Close;
+        tempNode.Items = await service.GetAll().Where(t => t.CountryId == city.CountryId)
+            .Select(t => new TreeViewItem()
+                {
+                    Collabsable = false,
+                    Expanded = false,
+                    Text = t.Title,
+                    Value = t.Id.ToString(),
+                    ShowTemplate = true
+                }).ToListAsync();
+    }
+
+    async Task ShowEditForm(TreeViewItem nodeView, bool isUpdate)
+    {
+        ///window opening
+        city = new City();
+        city.ActiveType = ActiveType.Enable;
+        if (isUpdate)
+        {
+            ///Edit mode
+            var cityId = Convert.ToInt32(nodeView.Value);
+            using var scope = CreateScope();
+            var old = await new CityService(scope.ServiceProvider).SingleAsync(cityId);
+            city.Id = cityId;
+            city.CountryId = old.CountryId;
+            city.Title = old.Title;
+        }
+        else
+        {
+            ///Insert mode
+            city.CountryId = Convert.ToInt32(nodeView.Value);
+        }
+        ///Selected node
+        selectedNode = nodeView;
+        status = WindowStatus.Open;
+    }
+
+    async Task DeleteCity(TreeViewItem node)
+    {
+        var cityId = Convert.ToInt32(node.Value);
+        using var scope = CreateScope();
+        var service = new CityService(scope.ServiceProvider);
+        var city = await service.SingleAsync(cityId);
+        var result = await service.ValidateRemoveAsync(city);
+        if (result.IsValid)
+        {
+            await service.RemoveAsync(city);
+            await service.SaveChangesAsync();
+            ///After removing the city, all the cities of the country (parent node) must be reloaded.
+            node.Parent.Items = await service.GetAll()
+            .Where(t => t.CountryId == city.CountryId).Select(t => new TreeViewItem()
+                {
+                    Collabsable = false,
+                    Expanded = false,
+                    Text = t.Title,
+                    Value = t.Id.ToString(),
+                    ShowTemplate = true
+                }).ToListAsync();
+        }
+        else
+            ShowMessage(result.Errors.First().ErrorMessage);
+    }
+}

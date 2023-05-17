@@ -1,0 +1,86 @@
+﻿@page "/Demo/AutocompleteTree"
+@inherits BasePage
+<h2>AutocompleteTree</h2>
+<p>
+    We can use this component in both <b>single-selection</b> and <b>multi-selection</b> ways.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row d-content">
+                <div class="col-md-6">
+                    <h4>Single-selection</h4>
+                    <span class="c-demo-description pe-5">
+                        In <b>single-selection</b> mode, the drop-down menu closes automatically after selecting an item.
+                    </span>
+                </div>
+                <div class="col-md-6 ps-3 pe-3">
+                    <div class="row c-controls">
+                        <div class="col-md-12">
+                            <AutoCompleteTree @bind-Value="value" OnChanged="SetOrganTitle">
+                                <TreeView TEntity="OrganUnit" TextFunc="t => t.Title" Selectable
+                                          FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
+                            </AutoCompleteTree>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Value: </label>
+                        </div>
+                        <div class="col-md-8 text-center">
+                            <label style="color:red;">@(OrganTitle ?? "---")</label>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Text: </label>
+                        </div>
+                        <div class="col-md-8 text-center">
+                            <label style="color:red;">@(value?.ToString() ?? "---")</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <hr />
+                    <h4>Multi-selection</h4>
+                    <span class="c-demo-description pe-5">
+                        In <b>multi-select</b> mode, the user can select multiple items from the drop-down menu, 
+                        and the drop-down is closed by clicking the body.
+                    </span>
+                </div>
+                <div class="col-md-6">
+                    <hr />
+                    <div class="row c-controls ps-3 pe-3">
+                        <div class="col-md-12">
+                            <AutoCompleteTree @bind-Value="values">
+                                <TreeView TEntity="OrganUnit" TextFunc="t => t.Title"
+                                          ParentNodeFilterFunc="t => t.ParentOrganId == null"
+                                          FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
+                            </AutoCompleteTree>
+                        </div>
+                        <div class="col-md-4">
+                            <label>number of organizations:</label>
+                        </div>
+                        <div class="col-md-8 text-center">
+                            <label style="color:red;">@(values == null ? "---" : values.Count())</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="Tree" FileName="AutocompleteTree" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+
+@code
+{
+    int? value;
+    int[] values;
+    string OrganTitle;
+
+    async Task SetOrganTitle()
+    {
+        using var scope = CreateScope();
+        var organ = await new OrganUnitService(scope.ServiceProvider).SingleAsync(value.Value);
+        OrganTitle = organ.Title;
+    }
+}

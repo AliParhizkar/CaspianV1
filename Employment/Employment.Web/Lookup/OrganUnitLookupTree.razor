@@ -1,5 +1,5 @@
 ﻿@namespace Employment.Web
-<CTreeView  TEntity="OrganUnit" TextFunc="t => t.Title" Selectable
+<TreeView  TEntity="OrganUnit" TextFunc="t => t.Title" Selectable
     ParentNodeFilterFunc="t => t.ParentOrganId == null"
            FilterFunc="t => (!SearchText.HasValue() || t.Title.StartsWith(SearchText))"
     style="margin:3px auto;width:350px;;height:calc(100vh - 50px)" />

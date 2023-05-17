@@ -13,10 +13,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class CTreeView<TEntity>: ComponentBase, ITreeView where TEntity: class
+    public partial class TreeView<TEntity>: ComponentBase, ITreeView where TEntity: class
     {
         ElementReference tree;
         IList<TreeViewItem> treeNodes;
+        Func<TEntity, bool> parentNodeFilterFunc;
 
         public EventCallback<TreeViewItem> OnInternalCHanged { get; set; }
 
@@ -88,9 +89,7 @@ namespace Caspian.UI
 
         async Task DataBindingAsync()
         {
-            if (Source == null && typeof(TEntity) == typeof(TreeViewItem))
-                Source = new List<TreeViewItem>();
-            if (Source == null)
+            if (Source == null && typeof(TEntity) != typeof(TreeViewItem))
             {
                 using var scope = ServiceScopeFactory.CreateScope();
                 var service = new BaseService<TEntity>(scope.ServiceProvider);
@@ -99,15 +98,18 @@ namespace Caspian.UI
                 if (ConditionExpression != null)
                     query = query.Where(ConditionExpression);
                 var dataList = await query.ToListAsync();
-                var items = dataList.Where(ParentNodeFilterFunc).ToList();
+                var items = dataList.Where(parentNodeFilterFunc).ToList();
                 var tree = new HierarchyTree<TEntity>();
                 tree.TextFunc = TextFunc;
+                var multSelect = false;
+                if (AutoComplete != null)
+                    multSelect = AutoComplete.MultiSelecable();
                 if (FilterFunc == null)
-                    treeNodes = tree.CreateTree(items, Selectable);
+                    treeNodes = tree.CreateTree(items, multSelect);
                 else
                 {
                     tree.FilterFunc = FilterFunc;
-                    treeNodes = tree.FilterTree(items, Selectable);
+                    treeNodes = tree.FilterTree(items, multSelect);
                 }
                 if (SelectedNodesValue != null)
                     tree.UpdateSelectedState(treeNodes, SelectedNodesValue);
@@ -147,6 +149,14 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             AutoComplete?.SetTreeView(this);
+            var info = typeof(TEntity).GetForeignKey(typeof(TEntity));
+            if (info != null)
+            {
+                parentNodeFilterFunc = entity =>
+                {
+                    return info.GetValue(entity) == null;
+                };
+            }
             base.OnInitialized();
         }
 
@@ -246,6 +256,8 @@ namespace Caspian.UI
             if (CascadeData == null)
                 CascadeData = new TreeViewCascadeData();
             CascadeData.Template = Template;
+            if (ParentNodeFilterFunc != null)
+                parentNodeFilterFunc = ParentNodeFilterFunc;
             base.OnParametersSet();
         }
 

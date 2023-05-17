@@ -15,7 +15,7 @@
         <StringTextBox @bind-Value="@organSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو عنوان واحد سازمانی" />
     </div>
 </div>
-<CTreeView @ref="tree" TEntity="OrganUnit" style="margin:5px auto 0 auto;width:70%;;height:calc(100vh - 75px)" TextFunc="t => t.Title" ParentNodeFilterFunc="t => t.ParentOrganId == null" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
+<TreeView @ref="tree" TEntity="OrganUnit" style="margin:5px auto 0 auto;width:70%;;height:calc(100vh - 75px)" TextFunc="t => t.Title" ParentNodeFilterFunc="t => t.ParentOrganId == null" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
     <Template>
         <TreeNodeTemplate Levels="new byte[]{1, 2, 3, 4, 5, 6}">
             <span style="padding-right:12px;" class="t-grid-delete">
@@ -29,7 +29,7 @@
             </span>
         </TreeNodeTemplate>
     </Template>
-</CTreeView>
+</TreeView>
 <Window @bind-Status="status" Style="width:450px;" OnOpen="() => firstControl.Focus()" >
     <Content>
         <CaspianForm Model="organUnit" OnValidSubmit="async t => await UpsertOrganUnit()">
@@ -69,7 +69,7 @@
     string organSearch;
     WindowStatus status;
     OrganUnit organUnit;
-    CTreeView<OrganUnit> tree;
+    TreeView<OrganUnit> tree;
     IControl firstControl;
 
     async Task DeleteOrganUnit(TreeViewItem node)

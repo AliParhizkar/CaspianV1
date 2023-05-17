@@ -6,8 +6,7 @@
                            await StatusChanged.InvokeAsync(value);
                        }">
     <Content>
-        
-        <CTreeView @ref="Tree" OnExpanded="@(async (item) =>
+        <TreeView @ref="Tree" OnExpanded="@(async (item) =>
                         {
                             var data = Newtonsoft.Json.JsonConvert.DeserializeObject<ReportNode>(item.Value);
                             var tempItems = (await new ReportTree().CreateTreeForSelect(Type, data, ReportParams));
@@ -40,7 +39,7 @@
     Type Type;
     IList<TreeViewItem> Nodes;
     IList<ReportParam> ReportParams;
-    CTreeView<TreeViewItem> Tree;
+    TreeView<TreeViewItem> Tree;
 
     async Task PostParams()
     {

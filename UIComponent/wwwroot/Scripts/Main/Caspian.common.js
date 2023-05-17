@@ -367,78 +367,78 @@
             }, 10);
         },
         bindTree: function (tree) {
-            $(tree).find('.c-expand,.c-collaps').each((index, t) => {
-                $(t).height(parseInt($(t).height()) + 1);
-            });
-            const mutationObserver = new MutationObserver((list) => {
-                list.every(t => {
-                    if ($(t.target).hasClass('c-collaps') || $(t.target).hasClass('c-expand')) {
-                        if ($(t.target).attr('class') == 'c-expand') {
-                            $(t.target).find('.c-expand,.c-collaps').each((index, t) => {
-                                $(t).height(parseInt($(t).height()) + 1);
-                            }); 
-                        }
-                        let height1 = $(t.target).find('.c-node-template').height();
-                        let height2 = $(t.target).find('.c-subtree').height();
-                        if (height2 == null)
-                            height2 = 4;
-                        else
-                            height2 += 5;
-                        let height = height1 + height2;
-                        if (height != t.target.offsetHeight) {
-                            let $parent = $(t.target).parent().closest('.c-expand');
-                            while ($parent.hasClass('c-expand')) {
-                                $parent.height('auto');
-                                $parent = $parent.parent().closest('.c-expand');
-                            }
-                            if (!$parent.parent().hasClass('c-subtree'))
-                                $parent.height('auto');
-                            $(t.target).addClass('c-animate-tree');
-                            setTimeout(() => {
-                                $(t.target).height(height);
-                                setTimeout(() => {
-                                    $(t.target).removeClass('c-animate-tree');
-                                    let $parent = $(t.target).parent().closest('.c-expand');
-                                    while ($parent.hasClass('c-expand')) {
-                                        $parent.height($parent.height());
-                                        $parent = $parent.parent().closest('.c-expand');
-                                    }
-                                }, 400);
-                            }, 25);
-                        }
-                        return false;
-                    }
-                    if ($(t.target).hasClass('c-subtree')) {
-                        let $element = $(t.target).closest('.c-expand');
-                        let $parent = $element.parent().closest('.c-expand');
-                        if (!$parent.parent().hasClass('.c-subtree')) 
-                            $parent.height('auto');
-                        let height1 = $element.find('.c-node-template').height();
-                        let height2 = $(t.target).height();
-                        if (height2 == null)
-                            height2 = 4;
-                        else
-                            height2 += 5;
-                        let height = height1 + height2;
-                        if (height != $element.height()) {
-                            $element.addClass('c-animate-tree');
-                            setTimeout(() => {
-                                $element.height(height);
-                                setTimeout(() => {
-                                    $element.removeClass('c-animate-tree');
+            //$(tree).find('.c-expand,.c-collaps').each((index, t) => {
+            //    $(t).height(parseInt($(t).height()) + 1);
+            //});
+            //const mutationObserver = new MutationObserver((list) => {
+            //    list.every(t => {
+            //        if ($(t.target).hasClass('c-collaps') || $(t.target).hasClass('c-expand')) {
+            //            if ($(t.target).attr('class') == 'c-expand') {
+            //                $(t.target).find('.c-expand,.c-collaps').each((index, t) => {
+            //                    $(t).height(parseInt($(t).height()) + 1);
+            //                }); 
+            //            }
+            //            let height1 = $(t.target).find('.c-node-template').height();
+            //            let height2 = $(t.target).find('.c-subtree').height();
+            //            if (height2 == null)
+            //                height2 = 4;
+            //            else
+            //                height2 += 5;
+            //            let height = height1 + height2;
+            //            if (height != t.target.offsetHeight) {
+            //                let $parent = $(t.target).parent().closest('.c-expand');
+            //                while ($parent.hasClass('c-expand')) {
+            //                    $parent.height('auto');
+            //                    $parent = $parent.parent().closest('.c-expand');
+            //                }
+            //                if (!$parent.parent().hasClass('c-subtree'))
+            //                    $parent.height('auto');
+            //                $(t.target).addClass('c-animate-tree');
+            //                setTimeout(() => {
+            //                    $(t.target).height(height);
+            //                    setTimeout(() => {
+            //                        $(t.target).removeClass('c-animate-tree');
+            //                        let $parent = $(t.target).parent().closest('.c-expand');
+            //                        while ($parent.hasClass('c-expand')) {
+            //                            $parent.height($parent.height());
+            //                            $parent = $parent.parent().closest('.c-expand');
+            //                        }
+            //                    }, 400);
+            //                }, 25);
+            //            }
+            //            return false;
+            //        }
+            //        if ($(t.target).hasClass('c-subtree')) {
+            //            let $element = $(t.target).closest('.c-expand');
+            //            let $parent = $element.parent().closest('.c-expand');
+            //            if (!$parent.parent().hasClass('.c-subtree')) 
+            //                $parent.height('auto');
+            //            let height1 = $element.find('.c-node-template').height();
+            //            let height2 = $(t.target).height();
+            //            if (height2 == null)
+            //                height2 = 4;
+            //            else
+            //                height2 += 5;
+            //            let height = height1 + height2;
+            //            if (height != $element.height()) {
+            //                $element.addClass('c-animate-tree');
+            //                setTimeout(() => {
+            //                    $element.height(height);
+            //                    setTimeout(() => {
+            //                        $element.removeClass('c-animate-tree');
 
-                                }, 400);
-                            }, 25);
-                        }
-                        return false;
-                    }
-                });
-            });
-            mutationObserver.observe(tree, {
-                attributes: false,
-                childList: true,
-                subtree: true,
-            });
+            //                    }, 400);
+            //                }, 25);
+            //            }
+            //            return false;
+            //        }
+            //    });
+            //});
+            //mutationObserver.observe(tree, {
+            //    attributes: false,
+            //    childList: true,
+            //    subtree: true,
+            //});
         },
         focusAndShowErrorMessage(element) {
             if ($(element).closest('.t-dropdown').hasClass('t-dropdown'))

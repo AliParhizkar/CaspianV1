@@ -1,5 +1,5 @@
 ﻿@namespace Caspian.UI
-@if (CurentLevel.HasValue && CurentLevel == Level || Levels != null && Levels.Contains(CurentLevel.Value))
+@if (AllLevels || CurentLevel.HasValue && CurentLevel == Level || Levels != null && Levels.Contains(CurentLevel.Value))
 {
     @ChildContent
 }
@@ -11,6 +11,9 @@
 
     [Parameter]
     public byte[] Levels { get; set; }
+
+    [Parameter]
+    public bool AllLevels { get; set; }
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }

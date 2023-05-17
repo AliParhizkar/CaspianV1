@@ -2,120 +2,92 @@
 @inherits BasePage
 @using Caspian.Engine.Model
 @using Caspian.Engine.Service
-<div class="row d-head">
-    <div class="col-md-6">
-        <h3>Tree View</h3>
-    </div>
-    <div class="d-source-btn col-md-6">
-        <button @onclick="() => status = WindowStatus.Open" class="c-btn c-primary">
-            Source
-            <i class="fa fa-code"></i>
-        </button>
-    </div>
-</div>
-<div class="d-body">
-    <div class="row">
-        <div class="col-md-6 d-control">
-            <hr/>
-            <div class="d-container">
-                <h4>Load on first</h4>
-                <div class="row">
-                    <div class="col-md-12">
+<h2>Tree View</h2>
+<h3>Databinding</h3>
+<p>
+    We use the <b>TreeViewItem</b> class to tree databinding, we create a list of <b>TreeViewItem</b> and set the
+    tree <b>Source</b> parameter. we can create tree in two mode.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row d-content">
+                <div class="col-md-6 pe-3">
+                    <h4>Load on first</h4>
+                    <span class="c-demo-description">
+                        In this case, we create the <bn>whole tree</bn> (nodes of all levels) at once. <br />
+                        In this example, the <b>first level</b> of the tree is the <b>menus category</b> and the <b>second level</b> is those <b>menus</b>.<br />
+                        In this case, because the whole tree is created at once. At first, we can expand all the nodes.
+                    </span>
+                </div>
+                <div class="col-md-6">
+                    <div class="ps-3 pe-4 pb-2">
                         <RadioList @bind-Value="expanded" OnChange="ExpandedChanged">
                             <RadioItems>
-                                <RadioItem style="width:112px" TValue="bool" Value="false" Title="Collapsed" />
+                                <RadioItem TValue="bool" Value="false" Title="Collapsed" />
                                 <RadioItem TValue="bool" Value="true" Title="Expanded" />
                             </RadioItems>
                         </RadioList>
-                        <div class="d-tree-result">
-                            <span>Selected menus count:@(expandedSeletedNodesCount) </span>
-                        </div>
-                        <CTreeView @ref="expandedTree" TEntity="TreeViewItem" OnChange="ExpandedNodeChange" style="height:calc(100vh - 218px);margin-right:5px;" Source="expandedSource" />
+                    </div>
+                    <TreeView TEntity="TreeViewItem" style="height:500px;" Source="loadOnFirstSource" />
+                </div>
+                <div class="col-md-6">
+                    <hr />
+                    <h4>Load on expand</h4>
+                    <span class="c-demo-description pe-5">
+                        In this example, we load only the <b>first level</b> (category of menus) of the tree. <br />
+                        In this example, the first level of the tree is the <b>menus category</b>When <b>expanding</b> the menu category according to the <b>category id</b>, we <b>load the menus</b> of that category.<br />
+                        In this example, At first, we can not <b>expand all the nodes</b>.
+                    </span>
+                    <div class="pt-2 pe-5">
+                        <span class="fa fa-info"> Note: </span><span class="c-demo-description">
+                            In this case, we need to <b>store</b> the <b>category id</b> in each node,
+                            we use the <b>Value</b> property of the <b>TreeViewItem</b> class for this.
+                        </span>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-6 d-control">
-            <hr />
-            <div class="d-container">
-                <h4 style="padding-right:40px;">Load on expand</h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="d-tree-result">
-                            <span>SelectedMenus Count: @(collapsedSeletedNodesCount)</span>
-                        </div>
-                        <CTreeView @ref="tree1" OnChange="CollapsedNodeChange" OnCollapsed="OnCollapsed" TEntity="TreeViewItem" style="height:calc(100vh - 196px);margin-right:5px;" Source="collapsedSource" OnExpanded="async node => await OnExpanded(node)" />
-                    </div>
+                <div class="col-md-6">
+                    <hr />
+                    <TreeView TEntity="TreeViewItem" style="height:500px;" Source="loadOnExpandSource" 
+                            OnExpanded="async node => await OnExpanded(node)" />
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="Tree" FileName="Databinding" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
 @code 
 {
-    bool expanded;
-    WindowStatus status;
-    int expandedSeletedNodesCount;
-    int collapsedSeletedNodesCount;
-    IList<TreeViewItem> expandedSource;
-    IList<TreeViewItem> collapsedSource;
-    CTreeView<TreeViewItem> expandedTree;
-    CTreeView<TreeViewItem> tree1;
+    bool expanded = true;
+    IList<TreeViewItem> loadOnFirstSource;
+    IList<TreeViewItem> loadOnExpandSource;
 
-    void OnCollapsed(TreeViewItem node)
+    protected override async Task OnInitializedAsync()
     {
-        node.Items = null;
-        node.Selected = false;
-    }
-
-    void ExpandedNodeChange(TreeViewItem item)
-    {
-        // This is for tow level tree
-        if (item.Items != null)
+        using var scope = CreateScope();
+        var query = new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo);
+        /// load menus category and menus together
+        loadOnFirstSource = await query.Select(t => new TreeViewItem()
         {
-            foreach (var child in item.Items)
-                child.Selected = item.Selected;
-        }
-        var parent = item.Parent;
-        if (parent != null)
-        {
-            var siblings = parent.Items;
-            if (siblings.All(t => t.Selected == true))
-                parent.Selected = true;
-            else if (siblings.All(t => t.Selected == false))
-                parent.Selected = false;
-            else
-                parent.Selected = null;
-            parent = parent.Parent;
-        }
-        expandedSeletedNodesCount = expandedTree.GetSeletcedItems().Count(t => t.Depth == 2);
-    }
-
-    void CollapsedNodeChange(TreeViewItem node)
-    {
-        if (node.Depth == 1)
-        {
-            if (node.Items == null)
-                node.Selected = false;
-            else
+            Text = t.Title,
+            Expanded = expanded,
+            Items = t.Menus.Select(u => new TreeViewItem()
             {
-                foreach (var item in node.Items)
-                    item.Selected = node.Selected;
-            }
-        }
-        if (node.Depth == 2)
+                Text = u.Title,
+                Collabsable = false
+            }).ToList()
+        }).ToListAsync();
+        /// load menus category and on node expand load menus
+        loadOnExpandSource = await query.Select(t => new TreeViewItem()
         {
-            var parent = node.Parent;
-            var items = parent.Items;
-            if (items.All(t => t.Selected == true))
-                parent.Selected = true;
-            else if (items.All(t => t.Selected == false))
-                parent.Selected = false;
-            else
-                parent.Selected = null;
-        }
-        collapsedSeletedNodesCount = tree1.GetSeletcedItems().Count(t => t.Depth == 2);
+            Text = t.Title,
+            Value = t.Id.ToString()
+        }).ToListAsync();
+
+        await base.OnInitializedAsync();
     }
 
     async Task OnExpanded(TreeViewItem node)
@@ -125,46 +97,14 @@
         node.Items = await new MenuService(scope.ServiceProvider).GetAll()
             .Where(t => t.MenuCategoryId == categoryId).Select(t => new TreeViewItem()
                 { 
-                    Collabsable = false,
-                    Expanded = false,
-                    Selectable = true,
                     Text = t.Title,
-                    Value = t.Id.ToString()
+                    Collabsable = false
                 }).ToListAsync();
     }
 
     void ExpandedChanged()
     {
-        foreach (var item in expandedSource)
+        foreach (var item in loadOnFirstSource)
             item.Expanded = expanded;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        using var scope = CreateScope();
-        expandedSource = await new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo)
-            .Select(t => new TreeViewItem()
-                {
-                    Text = t.Title,
-                    Expanded = false,
-                    Selectable = true,
-                    Value = t.Id.ToString(),
-                    Items = t.Menus.Select(u => new TreeViewItem()
-                    {
-                        Collabsable = false,
-                        Text = u.Title,
-                        Value = u.Id.ToString(),
-                        Selectable = true
-                    }).ToList()
-                }).ToListAsync();
-        collapsedSource = expandedSource.Select(t => new TreeViewItem()
-        {
-            Expanded = false,
-            Collabsable = true,
-            Selectable = true,
-            Text = t.Text,
-            Value = t.Value
-        }).ToList();
-        await base.OnInitializedAsync();
     }
 }

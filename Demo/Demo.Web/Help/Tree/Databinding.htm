@@ -1,0 +1,605 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1256">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:iranyekan;
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cascadia Mono";
+	panose-1:2 11 6 9 2 0 0 2 0 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:8.0pt;
+	margin-left:0cm;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US style='word-wrap:break-word'>
+
+<div class=WordSection1>
+
+<p class=MsoNormal style='line-height:normal;background:white'><b><span
+style='font-size:18.0pt;font-family:"iranyekan",serif;color:#212529'>Load on
+first<i>:</i></span></b></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;col-md-6&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;ps-3 pe-4
+pb-2&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>RadioList</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> @</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>bind-Value</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>expanded</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>OnChange</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>ExpandedChanged</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;&gt;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>RadioItems</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>RadioItem</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>TValue</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;bool&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Value</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;false&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Title</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;Collapsed&quot;
+/&gt;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                   
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>RadioItem</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>TValue</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;bool&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Value</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;true&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Title</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;Expanded&quot;
+/&gt;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>RadioItems</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>RadioList</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>CTreeView</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>TEntity</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>TreeViewItem</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>style</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;height:500px;&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Source</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>loadOnFirstSource</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@code</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
+white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;
+background:yellow'>{</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
+white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>    </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>bool</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> expanded = </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>true</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>;</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;text-indent:19.85pt;line-height:
+normal;background:white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#2B91AF'>IList</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>&lt;</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#2B91AF'>TreeViewItem</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'>&gt; loadOnFirstSource;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>protected</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>override</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>async</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>Task</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>OnInitializedAsync</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+   {</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>using</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>var</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> scope = </span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>CreateScope</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>();</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>var</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> query = </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>new</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>MenuCategoryService</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(scope.ServiceProvider).</span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>GetAll</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:79.4pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>.</span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>Where</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(t =&gt;
+t.SubSystemKind == </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#2B91AF'>SubSystemKind</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'>.Demo);</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;text-indent:19.85pt;line-height:
+normal;text-autospace:none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>        </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:gray'>///</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:green'> load menus category and menus together</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+       loadOnFirstSource = </span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:blue'>await</span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:black'> query.</span><span style='font-family:
+"Cascadia Mono";color:#833C0B'>Select</span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:black'>(t =&gt; </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>new</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>TreeViewItem</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>      
+     {</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>      
+       Text = t.Title,</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+  Expanded = expanded,</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+  Items = t.Menus.</span><span style='font-family:"Cascadia Mono";color:#833C0B'>Select</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(u =&gt; </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>new</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>TreeViewItem</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()   //<span
+style='background:yellow'>Menus load as subtree</span></span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+  {</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+  Text = u.Title,</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>               
+  Collabsable = </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>false</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+  }).</span><span style='font-family:"Cascadia Mono";color:#833C0B'>ToList</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+   }).</span><span style='font-family:"Cascadia Mono";color:#833C0B'>ToListAsync</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>();</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>await</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>base</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>.</span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>OnInitializedAsync</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>();</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;text-indent:19.85pt;line-height:
+normal;background:white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>}</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>void</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>ExpandedChanged</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+   {</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>foreach</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> (</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>var</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> item </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>in</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>
+loadOnFirstSource)</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>          
+   item.Expanded = expanded;</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;text-indent:19.85pt;line-height:
+normal;background:white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>}</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;text-indent:19.85pt;line-height:
+normal;background:white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
+white'><span style='color:black;background:yellow'>}</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&nbsp;</span></p>
+
+<div style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 0cm 1.0pt 0cm'>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none;border:none;padding:0cm'><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&nbsp;</span></p>
+
+</div>
+
+<p class=MsoNormal style='line-height:normal;background:white'><b><span
+style='font-size:18.0pt;font-family:"iranyekan",serif;color:#212529'>Load on
+expand<i>:</i></span></b></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;text-indent:19.85pt;line-height:
+normal;text-autospace:none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&lt;</span><b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:purple'>CTreeView</span></b><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'> </span><b><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:purple'>TEntity</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>TreeViewItem</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>style</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;height:500px;&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Source</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>loadOnExpandSource</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:75.7pt;text-indent:3.7pt;line-height:normal;text-autospace:none'><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>OnExpanded</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;<span
+style='background:yellow'>async</span></span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:black;background:yellow'> node =&gt; </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>await</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>
+OnExpanded(node)</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:16.15pt;text-indent:3.7pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@code</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
+white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;
+background:yellow'>{</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
+white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>    </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>IList</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>&lt;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>TreeViewItem</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>&gt; loadOnExpandSource;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>protected</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>override</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>async</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>Task</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>OnInitializedAsync</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+   {</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>using</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>var</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> scope = </span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>CreateScope</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>();</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>var</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> query = </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>new</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>MenuCategoryService</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(scope.ServiceProvider).</span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>GetAll</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:79.4pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>.</span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>Where</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(t =&gt;
+t.SubSystemKind == </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#2B91AF'>SubSystemKind</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'>.Demo);</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:gray'>///</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:green'> load menus
+category and on node expand load menus</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+loadOnExpandSource = </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>await</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'> query.</span><span style='font-family:"Cascadia Mono";color:#833C0B'>Select</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(t =&gt; </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>new</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>TreeViewItem</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        {</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+Text = t.Title,</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+Value = t.Id.</span><span style='font-family:"Cascadia Mono";color:#833C0B'>ToString</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        }).</span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>ToListAsync</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>();</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>await</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>base</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>.</span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>OnInitializedAsync</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>();</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
+white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+}</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>async</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>Task</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>OnExpanded</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>TreeViewItem</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> node)</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+   {</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>using</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>var</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> scope = </span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>CreateScope</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>();</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+   </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>var</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> categoryId = </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>Convert</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>.</span><span
+style='font-family:"Cascadia Mono";color:#833C0B'>ToInt32</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(node.Value);</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+   node.Items = </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>await</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'> </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>new</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'> </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#2B91AF'>MenuService</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>(scope.ServiceProvider).</span><span style='font-family:"Cascadia Mono";
+color:#833C0B'>GetAll</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>           
+  .</span><span style='font-family:"Cascadia Mono";color:#833C0B'>Where</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(t =&gt;
+t.MenuCategoryId == categoryId).</span><span style='font-family:"Cascadia Mono";
+color:#833C0B'>Select</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>(t =&gt; </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>new</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'> </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#2B91AF'>TreeViewItem</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>             
+{ </span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>              
+   Text = t.Title,</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>                 
+Collabsable = </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>false</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>             
+}).ToListAsync();</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
+white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+}</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt'><span style='background:yellow'>}</span></p>
+
+</div>
+
+</body>
+
+</html>

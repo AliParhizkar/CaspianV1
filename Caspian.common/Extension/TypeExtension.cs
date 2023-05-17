@@ -74,6 +74,9 @@ namespace Caspian.Common.Extension
         public static PropertyInfo GetForeignKey(this Type type, Type foreignKeyType)
         {
             var info = type.GetProperties().Single(t => t.PropertyType == foreignKeyType);
+            if (info == null) return null; 
+            var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
+            if (attr == null) return null;
             var foreignKeyName = info.GetCustomAttribute<ForeignKeyAttribute>().Name;
             return type.GetProperty(foreignKeyName);
         }

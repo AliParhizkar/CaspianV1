@@ -21,11 +21,11 @@
             <button @onclick="async () => await SaveData()" class="c-btn c-primary">ثبت همه</button>
         </div>
     </div>
-    <CTreeView @ref="tree" TEntity="TreeViewItem" exp OnChange="Change" style="height:calc(100vh - 103px);margin-right:5px;" Source="source" />
+    <TreeView @ref="tree" TEntity="TreeViewItem" exp OnChange="Change" style="height:calc(100vh - 103px);margin-right:5px;" Source="source" />
 }
 @code
 {
-    CTreeView<TreeViewItem> tree;
+    TreeView<TreeViewItem> tree;
     IList<TreeViewItem> source;
     User user;
 
