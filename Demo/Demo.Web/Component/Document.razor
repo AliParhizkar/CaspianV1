@@ -13,7 +13,10 @@
         if (!FileName.EndsWith(".htm", StringComparison.CurrentCultureIgnoreCase))
             FileName += ".htm";
         var path = host.ContentRootPath;
-        path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
+        if (host.IsDevelopment())
+            path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
+        else
+            path += "\\Help\\";
         if (FolderName.HasValue())
             path += FolderName + '\\';
         path += FileName;

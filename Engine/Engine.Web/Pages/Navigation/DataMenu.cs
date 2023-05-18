@@ -38,7 +38,8 @@ namespace Caspian.Engine.Navigation
             var segments = url.Split('/');
             if (url.HasValue() && segments.Length > 0 && !segments[0].Equals("login", StringComparison.OrdinalIgnoreCase))
             {
-                var subSystemKind = (SubSystemKind)typeof(SubSystemKind).GetField(segments[0]).GetValue(null);
+                var field = typeof(SubSystemKind).GetFields().Single(t => t.Name.Equals(segments[0], StringComparison.OrdinalIgnoreCase));
+                var subSystemKind = (SubSystemKind)field.GetValue(null);
                 if (OldSubSystem != subSystemKind)
                 {
                     Menus = SingletonMenuService.Menus.Where(t => t.ShowonMenu && t.MenuCategory.SubSystemKind == subSystemKind && MenusId.Contains(t.Id)).OrderBy(t => t.Ordering).ToList();

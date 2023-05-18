@@ -452,7 +452,6 @@
                 if ($(this).css('display') == 'block')
                     item = $(this)[0];
             });
-            debugger;
             if (item) {
                 $(item).append(overlay).append(box);
                 $(box).css('top', 10);

@@ -7,15 +7,17 @@ namespace Caspian.Engine.Web
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         string UserId;
-        AuthenticationState State;
+        string time;
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             ClaimsPrincipal user = null;
             if (UserId.HasValue())
             {
+                time = DateTime.Now.ToLongTimeString();
                 var identity = new ClaimsIdentity(new[]
                 {
                     new Claim("UserId", UserId ?? ""),
+                    new Claim("DateTime", time),
                 }, "Authentication type");
                 user = new ClaimsPrincipal(identity);
             }
@@ -30,7 +32,6 @@ namespace Caspian.Engine.Web
             UserId = userId;
             var task = this.GetAuthenticationStateAsync();
             this.NotifyAuthenticationStateChanged(task);
-            State = task.Result;
             return task;
         }
 

@@ -1824,7 +1824,12 @@ div.t-window {
 #outMessage .c-content {
     padding:5px;
     text-align:justify;
-    min-height:100px
+    min-height:100px;
+    background-color:white;
+    
+}
+#outMessage {
+    border: 1px solid #c3c3c3;
 }
 /* TabStrip */
 .t-tabstrip {
@@ -1848,6 +1853,10 @@ div.t-window {
     border-radius: 8px 8px 0 0;
     overflow:visible;
 }
+#outMessage .t-window-titlebar {
+    padding: 5px 10px;
+}
+#outMessage 
 .t-window-titlebar {
     white-space: nowrap;
     border-bottom: 1px solid;
