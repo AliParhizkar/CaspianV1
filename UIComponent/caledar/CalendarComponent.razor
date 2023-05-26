@@ -1,5 +1,4 @@
 ﻿@namespace Caspian.UI
-@inject CaspianDataService service
 @inject IJSRuntime JSRuntime
 <div @ref="element" class="t-widget t-calendar t-datepicker-calendar">
     <div class="t-header"  >
@@ -22,82 +21,82 @@
             case ViewType.Month:
                 if (vNavigation == null)
                 {
-                    <MonthComponent Date="date" DateChanged="async d => await ChangeDate(d)" 
+                    <MonthComponent CalendarType="CalendarType" Date="date" DateChanged="async d => await ChangeDate(d)" 
                         FromDate="FromDate" ToDate="ToDate" />
                 }
                 else if (vNavigation == VNavigation.Down)
                 {
                     <div class="c-down-from-state">
-                        <YearComponent Date="date" />
+                        <YearComponent Date="date" CalendarType="CalendarType" />
                     </div>
                     <div class="@navigateDownClassName">
-                        <MonthComponent Date="date" />
+                        <MonthComponent Date="date" CalendarType="CalendarType" />
                     </div>
                 }
                 break;
             case ViewType.Year:
                 if (vNavigation == null)
                 {
-                    <YearComponent Date="date" DateChanged="async d => await NavigateDown(d)"
+                    <YearComponent Date="date" DateChanged="async d => await NavigateDown(d)" CalendarType="CalendarType"
                         FromDate="FromDate" ToDate="ToDate"/>
                 }
                 else if (vNavigation == VNavigation.Up)
                 {
                     <div class="c-up-to-state">
-                        <YearComponent Date="date" />
+                        <YearComponent Date="date" CalendarType="CalendarType" />
                     </div>
                     <div class="c-up-from-state">
-                        <MonthComponent Date="date" />
+                        <MonthComponent Date="date" CalendarType="CalendarType" />
                     </div>
                 }
                 else //VNavigation.Down
                 {
                     <div class="c-down-from-state">
-                        <DecadeComponent Date="date" />
+                        <DecadeComponent Date="date" CalendarType="CalendarType" />
                     </div>
                     <div class="@navigateDownClassName">
-                        <YearComponent Date="date" />
+                        <YearComponent Date="date" CalendarType="CalendarType" />
                     </div>
                 }
                 break;
             case ViewType.Decade:
                 if (vNavigation == null)
                 {
-                    <DecadeComponent Date="date" DateChanged="async d => await NavigateDown(d)" 
+                    <DecadeComponent Date="date" DateChanged="async d => await NavigateDown(d)" CalendarType="CalendarType"
                         FromDate="FromDate" ToDate="ToDate"/>
                 }
                 else if (vNavigation == VNavigation.Up)
                 {
                     <div class="c-up-from-state">
-                        <YearComponent Date="date" />
+                        <YearComponent Date="date" CalendarType="CalendarType" />
                     </div>
                     <div class="c-up-to-state">
-                        <DecadeComponent Date="date" />
+                        <DecadeComponent Date="date" CalendarType="CalendarType" />
                     </div>
                 }
                 else //VNavigation.Down
                 {
                     <div class="c-down-from-state">
-                        <CentuaryComponent Date="date" />
+                        <CentuaryComponent Date="date" CalendarType="CalendarType" />
                     </div>
                     <div class="@navigateDownClassName">
-                        <DecadeComponent Date="date" />
+                        <DecadeComponent Date="date" CalendarType="CalendarType" />
                     </div>
                 }
                 break;
             case ViewType.Century:
                 if (vNavigation == null)
                 {
-                    <CentuaryComponent Date="date" DateChanged="async d => await NavigateDown(d)"
+                    <CentuaryComponent Date="date" DateChanged="async d => await NavigateDown(d)" CalendarType="CalendarType"
                         FromDate="FromDate" ToDate="ToDate"/>
                 }
                 else if (vNavigation == VNavigation.Up)
                 {
                     <div class="c-up-from-state">
-                        <DecadeComponent Date="date" />
+                        <DecadeComponent Date="date" CalendarType="CalendarType" />
                     </div>
                     <div class="c-up-to-state">
-                        <CentuaryComponent Date="date" />
+                        <CentuaryComponent Date="date" CalendarType="CalendarType" />
                     </div>
                 }
                 break;

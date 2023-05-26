@@ -26,7 +26,7 @@
     {
         DateTime date = Value == null ? DateTime.Today : Convert.ToDateTime(Value);
         <div class="t-animation-container">
-            <CalendarComponent Date="date" DateChanged="async d => await ChangeDate(d)" 
+            <CalendarComponent CalendarType="CalendarType" Date="date" DateChanged="async d => await ChangeDate(d)" 
                 FromDate="FromDate" ToDate="ToDate"/>
         </div>
     }

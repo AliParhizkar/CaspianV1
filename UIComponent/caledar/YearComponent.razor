@@ -1,6 +1,9 @@
 ﻿@namespace Caspian.UI
-@inject CaspianDataService service
-<table class="t-content t-meta-view">
+@{
+    string className = CalendarType == CalendarType.Gregorian ? "t-content t-meta-view" : "t-content t-meta-view c-dir-rtl";
+    int curentMonth = CalendarType == CalendarType.Gregorian ? Date.Month : monthConvertor[Date.ToPersianDate().Month.ConvertToInt().Value - 1];
+}
+<table class="@className">
     @{
         int index = 1;
     }
@@ -9,8 +12,8 @@
         <tr>
             @for (int j = 0; j < 4; j++)
             {
-                var tempIndex = index;
-                string className = index == Date.Month ? "t-state-selected" : null;
+                var tempIndex = CalendarType == CalendarType.Gregorian ? index : GetPersianMonth(i, j);
+                className = index == curentMonth ? "t-state-selected" : null;
                 if (!isActiveMonth[i, j])
                     className += " t-disable";
                 <td class="@className" @onclick="async () => await ChangeMonth(tempIndex)">
@@ -26,30 +29,46 @@
 {
     string[,] months;
     bool[,] isActiveMonth;
+    int[] monthConvertor = new int[] {1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12 };
+
+    [Parameter]
+    public CalendarType CalendarType { get; set; }
+
     async Task ChangeMonth(int month)
     {
-        Date = new DateTime(Date.Year, month, 1);
+        if (CalendarType == CalendarType.Gregorian)
+            Date = new DateTime(Date.Year, month, 1);
+        else
+        {
+            var year = Date.ToPersianDate().Year.Value;
+            Date = new PersianDate(year, (PersianMonth)month, 1).GetMiladyDate().Value;
+        }
         await DateChanged.InvokeAsync(Date);
+    }
+
+    int GetPersianMonth(int i, int j)
+    {
+        return 1 + i + j * 3;
     }
 
     protected override void OnInitialized()
     {
-        if (service.Language == Language.Fa)
-        {
-            months = new string[,]
-            {
-                {"فروردین", "تیر", "مهر", "دی"},
-                {"اردیبهشت", "مرداد", "آبان", "بهمن"},
-                {"خرداد", "شهریور", "آذر", "اسفند"}
-            };
-        }
-        else
+        if (CalendarType == CalendarType.Gregorian)
         {
             months = new string[,]
             {
                 {"Jan", "Feb", "Mar", "Apr"},
                 {"May", "Jun", "Jul", "Aug"},
                 {"Sep", "Oct", "Now", "Dec"}
+            };
+        }
+        else
+        {
+            months = new string[,]
+            {
+                {"فروردین", "تیر", "مهر", "دی"},
+                {"اردیبهشت", "مرداد", "آبان", "بهمن"},
+                {"خرداد", "شهریور", "آذر", "اسفند"}
             };
         }
         base.OnInitialized();
@@ -71,23 +90,64 @@
     {
         isActiveMonth = new bool[3, 4];
         int month = 1;
+        int? fromYear, toYear, fromMonth, toMonth;
+        if (CalendarType == CalendarType.Gregorian)
+        {
+            fromMonth = FromDate?.Month;
+            toMonth = ToDate?.Month;
+            fromYear = FromDate?.Year;
+            toYear = ToDate?.Year;
+        }
+        else
+        {
+            var pDate = FromDate.ToPersianDate();
+            fromYear = pDate?.Year;
+            fromMonth = pDate?.Month.ConvertToInt();
+            pDate = ToDate.ToPersianDate();
+            toYear = pDate?.Year;
+            toMonth = pDate?.Month.ConvertToInt();
+        }
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 4; j++)
             {
                 var isActive = true;
                 if (FromDate.HasValue)
                 {
-                    var fromYear = FromDate.Value.Year;
-                    if (Date.Year < fromYear || Date.Year == fromYear && month < FromDate.Value.Month)
-                        isActive = false;
+                    if (CalendarType == CalendarType.Gregorian)
+                    {
+                        if (Date.Year < fromYear || Date.Year == fromYear && month < fromMonth)
+                            isActive = false;
+                    }
+                    else
+                    {
+                        var pDate = Date.ToPersianDate();
+                        if (pDate.Year < fromYear || pDate.Year == fromYear && month < fromMonth)
+                            isActive = false;
+                    }
                 }
                 if (isActive && ToDate.HasValue)
                 {
-                    var toYear = ToDate.Value.Year;
-                    if (Date.Year > toYear || Date.Year == toYear && month > ToDate.Value.Month)
-                        isActive = false;
+                    if (CalendarType == CalendarType.Gregorian)
+                    {
+                        if (Date.Year > toYear || Date.Year == toYear && month > toMonth)
+                            isActive = false;
+                    }
+                    else
+                    {
+                        var pDate = Date.ToPersianDate();
+                        if (pDate.Year < toYear || pDate.Year == toYear && month > toMonth)
+                            isActive = false;
+                    }
+
                 }
-                isActiveMonth[i, j] = isActive;
+                if (CalendarType == CalendarType.Gregorian)
+                    isActiveMonth[i, j] = isActive;
+                else
+                {
+                    var x = (month - 1) % 3;
+                    var y = (month - 1) / 3;
+                    isActiveMonth[x, y] = isActive;
+                }
                 month++;
             }
         base.OnParametersSet();

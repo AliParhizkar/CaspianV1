@@ -141,7 +141,7 @@
     border-radius: 8px;
     overflow: auto;
 }
-.fa-arrow-left {
+.c-arrow-back .fa-arrow-left {
     color: #974898 !important;
     font-size: 32px !important;
     cursor: pointer;

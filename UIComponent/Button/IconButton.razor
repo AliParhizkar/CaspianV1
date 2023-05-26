@@ -6,16 +6,25 @@
 }
 @if (Href.HasValue())
 {
-<a href="@(Href)" class="c-icon-button">
-    <i class="@className"></i>
-</a>
+    if (Disabled)
+    {
+        <span class="c-icon-button t-state-disabled">
+            <i class="@className"></i>
+        </span>
+    }
+    else
+    {
+        <a href="@(Href)" class="c-icon-button">
+            <i class="@className"></i>
+        </a>
+    }
 }
 else
 {
-<button  @attributes="Attributes" class="c-icon-button @(Title.HasValue() ? "c-title" : "c-simple")">
-    <i class="@className"></i>
-    @Title 
-</button>
+    <button disabled="@Disabled"  @attributes="Attributes" class="c-icon-button @(Title.HasValue() ? "c-title" : "c-simple")">
+        <i class="@className"></i>
+        @Title 
+    </button>
 }
 
 
@@ -32,4 +41,7 @@ else
 
     [Parameter]
     public string Title { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
 }

@@ -19,5 +19,10 @@ namespace Demo.Service
             RuleFor(t => t.Quantity).CustomValue(t => t <= 0, "The unit must be greater than zero");
             RuleFor(t => t.ProductId).Custom(t => Source != null && Source.Any(u => u.ProductId == t.ProductId && t != u), "This product has been added to the invoice");
         }
+
+        public IQueryable<OrderDeatil> GetReportOrderDeatils(OrderDeatil orderDeatil)
+        {
+            return GetAll();
+        }
     }
 }

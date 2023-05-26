@@ -1,4 +1,5 @@
-﻿@using Caspian.UI
+﻿@inject IJSRuntime runTime
+@using Caspian.UI
 @using Demo.Model;
 @using Microsoft.AspNetCore.Components.Rendering;
 @using Microsoft.EntityFrameworkCore;
@@ -6,15 +7,266 @@
 @using System.Linq.Expressions
 @using Caspian.Common
 @page "/"
-<div>
-    @Test
+
+<div class="c-menu row text-center">
+    <div class="col-md-9 row">
+        <div class="col-md-4">
+            <span class="s-logo"></span>
+        </div>
+        <div class="col-md-2">
+            <button class="s-btn">
+                <span>Demo</span>
+            </button>
+        </div>
+        <div class="col-md-2">
+            <button class="s-btn">
+                <span>Resume</span>
+            </button>
+        </div>
+        <div class="col-md-2">
+            <button class="s-btn"><span>About Us</span></button>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <a href="/Login">
+            <button class="s-btn">
+                <span>Login</span>
+            </button>
+        </a>
+
+    </div>
 </div>
+<div class="c-hero mb-5">
+    <div class="c-padd">
+    </div>
+    <div class="c-message">
+        Software is easy to find, but; reliable software is hard to find
+    </div>
+</div>
+<h4 class="text-center">Relayable software</h4>
+<hr class="spiliter1" />
+<hr class="spiliter2" />
+<div class="row p-5 ps-4 pe-4">
+    <div class="col-md-6 pe-4">
+        <div class="list-item">
+            <div class="s-list reliable-icon-1">
+                <span />
+            </div>
+            <div class="list-info">
+                <h4>Quality</h4>
+                <span>For a software, the first condition of reliability is having the right quality, no one will trust poor quality software.</span>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="s-list">
+                <span />
+            </div>
+            <div class="list-info">
+                <h4>Cost & time</h4>
+                <span>The second condition is reliability, cost and time management of software system production and change.</span>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="s-list reliable-icon-3">
+                <span />
+            </div>
+            <div class="list-info">
+                <h4>Maintenance</h4>
+                <span>The third condition of reliability is the maintenance cost management, considering that the software maintenance period is longer than the production time, this item is more important.</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 ps-4">
+        <img style="width:100%" src="Images/Svg.png" />
+    </div>
+</div>
+<h4 class="text-center">How dao gain relayable software</h4>
+<hr class="spiliter1" />
+<hr class="spiliter2" />
+<div class="m-5 ms-0 me-0 box-container">
+    <div class="box">
+        <div class="box-item">
+            <div class="box-head">
+                <span class="box-title">Reusability</span>
+                <span class="fa fa-quote-right"></span>
+            </div>
+        </div>
+        <div class="box-item">
+            <div class="box-head">
+                <span class="box-title">Ease of use</span>
+                <span class="fa fa-quote-right"></span>
+            </div>
+        </div>
+        <div class="box-item">
+            <div class="box-head">
+                <span class="box-title">Unlimited development</span>
+                <span class="fa fa-quote-right"></span>
+            </div>
+        </div>
+        <div class="box-item">
+            <div class="box-head">
+                <span class="box-title">Avoid complexity</span>
+                <span class="fa fa-quote-right"></span>
+            </div>
+        </div>
+        <div class="box-item">
+            <div class="box-head">
+                <span class="box-title">Reduce coding</span>
+                <span class="fa fa-quote-right"></span>
+            </div>
+        </div>
+        <div class="box-item">
+            <div class="box-head">
+                <span class="box-title">Detecting error on compile time</span>
+                <span class="fa fa-quote-right"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<h4 class="text-center">Work experience</h4>
+<hr class="spiliter1" />
+<hr class="spiliter2" />
+<div onr="alert()" class="row p-5 c-work-experience">
+    <div class="col-md-6 pe-4">
+        <img style="width:100%" src="Images/work experience.jpg" />
+    </div>
+    <div class="col-md-6 ps-4">
+        <div class="list-item">
+            <div class="s-list blazor-icon">
+                <span />
+            </div>
+            <div class="list-info">
+                <h4>Blazor component</h4>
+                <span>For a software, the first condition of reliability is having the right quality, no one will trust poor quality software.</span>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="s-list food-icon">
+                <span />
+            </div>
+            <div class="list-info">
+                <h4>Food & restorant</h4>
+                <span>The second condition is reliability, cost and time management of software system production and change.</span>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="s-list hr-icon">
+                <span />
+            </div>
+            <div class="list-info">
+                <h4>Human resource</h4>
+                <span>The third condition of reliability is the maintenance cost management, considering that the software maintenance period is longer than the production time, this item is more important.</span>
+            </div>
+        </div>
+    </div>
+</div>
+<h4 class="text-center">Skills & Ability</h4>
+<hr class="spiliter1" />
+<hr class="spiliter2" />
+<div class="row c-skills mt-4">
+    <div class="col-md-7 ps-4 pt-5 pb-5">
+        <div class="s-head">
+            <div class="s-profile-head row">
+                <div class="col-md-9">
+                    <span class="p-caspian">Caspian</span>
+                    <span class="p-cto">CTO Profile</span>
+                </div>
+                <div class="col-md-3 text-end">
+                    <span class="fa fa-share-alt"></span>
+                    <span class="fa fa-download"></span>
+                </div>
+            </div>
+            <div class="s-profile row">
+                <div class="col-md-4 ps-4">
+                    <span class="s-profile-image"></span>
+                </div>
+                <div class="col-md-8 pe-2">
+                    <h4>Ali Parhizkar</h4>
+                    <span class="s-pos">Chief Development Officer</span>
+                    <div>
+                        <span>
+                            بعنوان برنامه نویس ارشد، 10 سال از 15 سال زندگی حرفه ام را صرف تولید کامپوننت هایی با Reusability بالا، سهولت بکارگیری، امکان توسعه تا حد لازم، اجتناب از پیچیدگی کد، کاهش حجم کدنویسی، شناسایی خطاها در زمان کامپایل به جای زمان
+                        </span>
+                    </div>
+                </div>
+                <hr class="mt-3" />
+                <div class="col-md-4 ps-4">
+                    <span class="c-skill-icon"></span>
+                </div>
+                <div class="col-md-8 pe-2">
+                    <h6 class="pt-4 pb-4 text-center">Skills & Experiment</h6>
+                    <div class="skill-head">
+                        <div class="skill-head-title">
+                            <span>Skills</span>
+                        </div>
+                        <div class="skill-head-rate">
+                            <span></span>
+                        </div>
+                        <div class="skill-head-expr">
+                            <span>Year</span>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-item-title">
+                            <span>Quality management </span>
+                        </div>
+                        <div class="skill-item-rate">
+                            <span>98%</span>
+                            <progress value="98" max="100"></progress>
+                        </div>
+                        <div class="skill-item-expr">
+                            <span>>9</span>
+                        </div>
+                    </div>
+                    <div class="skill-item c-odd">
+                        <div class="skill-item-title">
+                            <span>Cost & time management </span>
+                        </div>
+                        <div class="skill-item-rate">
+                            <span>98%</span>
+                            <progress value="98" max="100"></progress>
+                        </div>
+                        <div class="skill-item-expr">
+                            <span>>9</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-5 text-end pe-4 pt-5 pb-5">
+        <img src="Images/Skills.jpg" />
+    </div>
+</div>
+<footer>
+    <div style="color:white;" class="s-footer mt-5 p-4 row">
+        <div class="col-md-6">
+            <h5>Contact Us</h5>
+            <div class="pt-2 ps-5">
+                <span class="fa fa-map-marker"></span><span>No. 14, North Shahin St., Janat Abad Central, Tehran</span>
+            </div>
+        </div>
+        <div class="col-md-6 ps-5 pt-3">
+            <div class="ps-5 pt-4">
+                <span class="fa fa-phone"></span><span>+989193863224</span>
+            </div>
+            <div class="ps-5 pt-2">
+                <span class="fa fa-envelope"></span><span>a_parhizkar2002@yahoo.com</span>
+            </div>
+            <div class="ps-5 pt-2">
+                <span class="fa fa-github"></span><span>git</span>
+            </div>
+        </div>
+    </div>
+</footer>
 
 @code
 {
-    bool flag;
-    static void Test(RenderTreeBuilder __builder)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        <span>Test</span>
+        if (firstRender)
+            await runTime.InvokeVoidAsync("$.caspian.bindBox");
+        await base.OnAfterRenderAsync(firstRender);
     }
 }

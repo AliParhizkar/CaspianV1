@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -9,7 +10,7 @@ namespace Caspian.Engine.Service
         public ClassDeclarationSyntax GetClassOfForm(string className, string sourceCode)
         {
             var syntax = CSharpSyntaxTree.ParseText(sourceCode).GetRoot();
-            if (syntax.Kind() == SyntaxKind.CompilationUnit)
+            if (syntax.IsKind(SyntaxKind.CompilationUnit))
             {
                 var members = (syntax as CompilationUnitSyntax).Members;
                 foreach (var member in members)
@@ -59,7 +60,7 @@ namespace Caspian.Engine.Service
         public string FindSourceCode(string sourceCode)
         {
             var syntax = CSharpSyntaxTree.ParseText(sourceCode).GetRoot();
-            if (syntax.Kind() == SyntaxKind.CompilationUnit)
+            if (syntax.IsKind(SyntaxKind.CompilationUnit))
             {
                 var span = ((syntax as CompilationUnitSyntax).Members.Single() as NamespaceDeclarationSyntax)
                     .Members.FullSpan;

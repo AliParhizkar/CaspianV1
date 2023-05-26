@@ -5,7 +5,7 @@
 @implements IAutoCompleteTree
 <div class="auto-hide c-lookup-tree" multiselect="@multiSelectable">
     <div class="c-content" >
-        <input @ref="input" value="@searchText" @oninput="async e => await setValue(e)" />
+        <input @ref="input" value="@searchText" @oninput="async e => await Search(e)" />
         <span @onclick="async () => await ShowTree()" class="fa fa-search"></span>
     </div>
     @if (show)

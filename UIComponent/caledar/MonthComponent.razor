@@ -1,7 +1,11 @@
 ﻿@namespace Caspian.UI
-@inject CaspianDataService service
-
-<table class="t-content">
+@{
+    var pDate = Date.ToPersianDate();
+    int curentMonth = CalendarType == CalendarType.Gregorian ? Date.Month : pDate.Month.ConvertToInt().Value;
+    int curentDay = CalendarType == CalendarType.Gregorian ? Date.Day : pDate.Day.Value;
+    string className = CalendarType == CalendarType.Gregorian ? "t-content" : "t-content c-dir-rtl";
+}
+<table class="@className">
     <tr class="t-week-header">
         @foreach (var item in WeekDays)
         {
@@ -14,17 +18,18 @@
             @for (int j = 0; j < 7; j++)
             {
                 var day = MonthDays[i, j];
-                var date = MonthDates[i, j];
+                var month = MonthDates == null ? PersianMonthDates[i, j].Month.ConvertToInt().Value : MonthDates[i, j].Month;
                 var isActive = isActiveDate[i, j];
-                string className = isActive ? "t-item" : "t-disable";
-                if (date.Month != Date.Month)
+                className = isActive ? "t-item" : "t-disable";
+                var date = MonthDates == null ? PersianMonthDates[i, j].GetMiladyDate().Value : MonthDates[i, j];
+                if (month != curentMonth)
                 {
                     className += " t-other-month";
                     <td @onclick="async () => await DateSelected(date, isActive)" class="@className">@day</td>
                 }
                 else
                 {
-                    if (isActive && Date.Day == day)
+                    if (isActive && curentDay == day && month == curentMonth)
                         className += " t-state-selected";
                     <td @onclick="async () => await DateSelected(date, isActive)" class="@className">@day</td>
                 }
@@ -38,6 +43,7 @@
     string[] WeekDays;
     int[,] MonthDays;
     DateTime[,] MonthDates;
+    PersianDate[,] PersianMonthDates;
     bool[,] isActiveDate;
 
     async Task DateSelected(DateTime date, bool isActive)
@@ -49,9 +55,12 @@
         }
     }
 
+    [Parameter]
+    public CalendarType CalendarType { get; set; }
+
     protected override void OnInitialized()
     {
-        if (service.Language == Language.En)
+        if (CalendarType == CalendarType.Gregorian)
             WeekDays = new string[7] { "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" };
         else
             WeekDays = new string[7] { "ش", "ی", "د", "س", "چ", "پ", "ج" };
@@ -60,7 +69,7 @@
 
     protected override void OnParametersSet()
     {
-        if (service.Language == Language.En)
+        if (CalendarType == CalendarType.Gregorian)
         {
             MonthDays = new int[6, 7];
             MonthDates = new DateTime[6, 7];
@@ -82,7 +91,25 @@
         }
         else
         {
-
+            MonthDays = new int[6, 7];
+            PersianMonthDates = new PersianDate[6, 7];
+            isActiveDate = new bool[6, 7];
+            var pdate = Date.ToPersianDate().FirstDayInCalendar();
+            var date = pdate.GetMiladyDate().Value;
+            for (int i = 0; i < 6; i++)
+                for(int j = 0; j < 7; j++)
+                {
+                    MonthDays[i, j] = pdate.Day.Value;
+                    PersianMonthDates[i, j] = pdate;
+                    var isActive = true;
+                    if (FromDate.HasValue && date < FromDate.Value)
+                        isActive = false;
+                    else if (ToDate.HasValue && date > ToDate.Value)
+                        isActive = false;
+                    isActiveDate[i, j] = isActive;
+                    pdate = pdate.AddDays(1);
+                    date = date.AddDays(1);
+                }
         }
         base.OnParametersSet();
     }

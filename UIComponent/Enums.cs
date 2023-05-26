@@ -21,6 +21,13 @@ namespace Caspian.UI
         Minus,
     }
 
+    public enum CalendarType
+    {
+        Gregorian = 1,
+
+        Persian
+    }
+
     public enum DefaultLayout
     {
         [Display(Name = "Center")]

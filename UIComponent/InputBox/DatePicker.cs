@@ -53,6 +53,9 @@ namespace Caspian.UI
         }
 
         [Parameter]
+        public CalendarType CalendarType { get; set; } = CalendarType.Gregorian;
+
+        [Parameter]
         public bool OpenOnFocus { get; set; }
 
         [Parameter]

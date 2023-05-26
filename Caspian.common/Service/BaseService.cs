@@ -31,6 +31,13 @@ namespace Caspian.Common.Service
             return GetAll();
         }
 
+        public bool Any(Expression<Func<TEntity, bool>> expr = null)
+        {
+            if (expr == null)
+                return GetAll().Any();
+            return GetAll().Any(expr);
+        }
+
         public virtual IQueryable<TEntity> GetAll(TEntity search = null)
         {
             return Context.Set<TEntity>().Search(search);

@@ -1,21 +1,19 @@
 ﻿@namespace Caspian.Engine.WorkFlow
 @inherits SimplePage<Workflow>
+@inject IJSRuntime runTime
 @{
     base.BuildRenderTree(__builder);
 }
-@inject IJSRuntime runTime
-<div style="width:90%;margin:0 auto">
-    <table style="width:100%">
-        <tr>
-            <td>
-                <label>عنوان</label>
-            </td>
-            <td>
-                <StringTextBox @bind-Value="SearchData.Title" />
-            </td>
-        </tr>
-    </table>
-    <DataGrid @ref="CrudGrid" TEntity="Workflow" TableHeight="400" ConditionExpr="t => t.WorkflowGroupId == GroupId">
+<div class="p-4">
+    <div class="row c-controls ps-4 pe-4">
+        <div class="col-md-4">
+            <label>عنوان</label>
+        </div>
+        <div class="col-md-8">
+            <StringTextBox @bind-Value="SearchData.Title" />
+        </div>
+    </div>
+    <DataGrid @ref="CrudGrid" TEntity="Workflow" TableHeight="300" ConditionExpr="t => t.WorkflowGroupId == GroupId">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.DataModel.Title" Title="عنوان مدل داده ای" />
@@ -25,45 +23,43 @@
                     <a href="/Engine/WorkflowGenerator/@(context.Data.Id)" target="_blank">...</a>
                 </Template>
             </GridColumn>
-            <GridCommandColumns/>
+            <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="گردش کار" Style="width:500px"
-            OnOpen="() =>
-        {
-            UpsertData.WorkflowGroupId = GroupId;
-        }">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                <CaspianValidationValidator ValidatorType="typeof(WorkflowService)" />
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>عنوان</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>شرح</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Descript" MultiLine Rows="3" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
-            </CaspianForm>
-        </Content>
-    </Window>
 </div>
+
+<Window @ref="UpsertWindow" Title="گردش کار" Style="width:500px">
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="() => UpsertData.WorkflowGroupId = GroupId">
+            <div class="row ps-4 pe-4 c-controls">
+                <div class="col-md-4">
+                    <label>مدل داده ای</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TValue="int" TEntity="DataModel" @bind-Value="UpsertData.DataModelId"
+                              TextExpression="t => t.Title" ConditionExpression="t => t.WorkflowGroupId == GroupId" />
+                </div>
+                <div class="col-md-4">
+                    <label>عنوان</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>شرح</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Descript" MultiLine Rows="3" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+
 
 @code
 {

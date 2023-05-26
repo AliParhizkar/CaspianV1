@@ -39,7 +39,7 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
-        async Task setValue(ChangeEventArgs e)
+        async Task Search(ChangeEventArgs e)
         {
             if (treeView != null)
             {
@@ -49,10 +49,6 @@ namespace Caspian.UI
                     await OnInternalChanged.InvokeAsync(searchText);
                 if (show == false)
                     await ShowTree();
-                if (multiSelectable)
-                    treeView.SetSelectedNodesValue(selectedNodesValue);
-                else if (OnChanged.HasDelegate)
-                    await OnChanged.InvokeAsync(searchText);
                 await treeView.ReloadAsync();
             }
         }
@@ -116,6 +112,8 @@ namespace Caspian.UI
                 valueIsUpdated = true;
                 if (ValueChanged.HasDelegate)
                     await ValueChanged.InvokeAsync(Value);
+                if (OnChanged.HasDelegate)
+                    await OnChanged.InvokeAsync();
                 await Task.Delay(200);
                 show = false;
             }

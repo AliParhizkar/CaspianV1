@@ -1,6 +1,6 @@
 ﻿using Caspian.Common;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Service
 {
@@ -15,7 +15,13 @@ namespace Caspian.Engine.Service
             
             
             RuleFor(t => t.FieldType).Custom(t => t.EntityFullName.HasValue() && t.FieldType.HasValue, "نوع موجودیت و نوع فیلد فقط یکی می تواند پر باشد")
-                .Custom(t => !t.EntityFullName.HasValue() && t.FieldType == null, "نوع موجودیت و نوع فیلد یکی باید پر باشد");
+                .Custom(t => !t.EntityFullName.HasValue() && t.FieldType == null, "نوع موجودیت و نوع فیلد یکی باید پر باشد")
+                .CustomAsync(async t => 
+                {
+                    if (t.FieldType != DataModelFieldType.MultiSelect && t.Id > 0)
+                        return await new DataModelOptionService(provider).GetAll().AnyAsync(u => u.FieldId == t.Id);
+                    return false;
+                }, "فیلد دارای گزینه می باشد و امکان تغییر نوع آن وجود ندارد");
             
             RuleFor(t => t.Title).Required().UniqAsync(t => t.DataModelId, "آبجکتی با این عنوان در فرم ثبت شده است");
             

@@ -13,7 +13,6 @@ namespace Caspian.Common
 {
     public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator, IEntity where TModel : class
     {
-        
         public CaspianValidator(IServiceProvider provider)
         {
             ServiceProvider = provider;

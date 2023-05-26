@@ -5,34 +5,44 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:95%;margin:5px auto">
-    <div class="r-level-head">
-        <div class="c-title">
+
+<div class="ps-4 pe-4 pt-2">
+    <div class="row r-level-head">
+        <div class="col-md-8 c-title ps-5">
             <label>عنوان: </label>
             <span> @report?.Title</span>
         </div>
-        <div class="c-operator">
+        <div class="col-md-1 c-operator">
             <button class="r-button" @onclick='() =>
                                   {
                                       NavigationManager.NavigateTo($"/{Subsystem.ToString()}/ReportEngine/Report");
                                   }'>
-                    <span class="fa fa-pie-chart"></span><span>گزارش ها</span>
+                <span class="fa fa-pie-chart"></span><span>گزارش ها</span>
             </button>
+        </div>
+        <div class="col-md-1 c-operator">
             <button class="r-button" title="پارامترهای گزارش" @onclick="() =>
                                   {
                                       Status = WindowStatus.Open;
                                       reportParamShowType = ReportParamShowType.Simple;
-                                    }"><span class="fa fa-pie-chart"></span><span>پارامترها</span></button>
+                                    }">
+                    <span class="fa fa-pie-chart"></span><span>پارامترها</span>
+            </button>
+        </div>
+        <div class="col-md-1 c-operator">
             <button class="r-button" title="گزارش های مدیریتی" @onclick="() =>
                                   {
-                                      ManagerStatus = WindowStatus.Open;
+                                      Status = WindowStatus.Open;
                                       reportParamShowType = ReportParamShowType.Manager;
-                                  }"><span class="fa fa-pie-chart"></span><span>مدیریتی</span></button>
+                                  }">
+                <span class="fa fa-pie-chart"></span><span>مدیریتی</span>
+            </button>
+
         </div>
     </div>
-    <hr style="margin-top:0; margin-bottom:12px;"/>
-    <div class="r-level row">
-        <div style="width:calc(33% - 40px);float:right">
+    <hr class="mb-5"/>
+    <div class="r-level row align-items-center">
+        <div class="col-md-4">
             <div class="r-title">
                 <span>فیلدهای سطح اول</span>
             </div>
@@ -43,7 +53,7 @@
                 </Columns>
             </DataGrid>
         </div>
-        <div style="width:60px;float:right;height:400px;padding:150px 10px 0 0 ">
+        <div class="col-md-1 text-center" style="width:70px">
             <IconButton IconType="IconType.AngleLeft"
                         @onclick="async () =>
                                {
@@ -56,7 +66,7 @@
                                }" />
             </div>
         </div>
-        <div style="width: calc(33% - 40px);float:right;">
+        <div class="col-md-3">
             <div class="r-title">
                 <span>فیلدهای سطح دوم</span>
             </div>
@@ -69,13 +79,13 @@
                 </Columns>
             </DataGrid>
         </div>
-        <div style="width:60px;float:right;height:400px;padding:150px 10px 0 ">
+        <div class="col-md-1 text-center" style="width:70px">
             <IconButton IconType="IconType.AngleRight"
                         @onclick="async () =>
                         {
                             await ChangeParameterLevel(grid2.SelectedRowId, 2);
                         }" />
-            <div style="padding-top:10px">
+            <div class="pt-2">
                 <IconButton IconType="IconType.AngleRight"
                             @onclick="async () =>
                         {
@@ -83,7 +93,7 @@
                         }" />
             </div>
         </div>
-        <div style="width: calc(33% - 40px);float:right">
+        <div class="col-md-3">
             <div class="r-title">
                 <span>فیلدهای سطح سوم</span>
             </div>
@@ -98,19 +108,26 @@
         </div>
     </div>
 </div>
-@switch (reportParamShowType)
-{
-    case ReportParamShowType.Simple:
+
+<Window @bind-Status="Status" Title="پارامترهای گزارش">
+    <Content>
+        @switch(reportParamShowType)
+        {
+            case ReportParamShowType.Simple:
                 <SimpleReportParam @bind-Status="Status" ReportId="ReportId.Value"
                            OnParameterSave="() =>
-                                    {
-                                        CrudGrid.EnableLoading();
-                                    }" />
-        break;
-    case ReportParamShowType.Manager:
-                <ManagementReportComponent ReportId="ReportId.Value" @bind-Status="ManagerStatus" />
-        break;
-}
+                        {
+                            CrudGrid.EnableLoading();
+                        }" />
+                break;
+            case ReportParamShowType.Manager:
+                <ManagementReportComponent ReportId="ReportId.Value" @bind-Status="Status" />
+                break;
+        }
+
+    </Content>
+</Window>
+
 
 @code
 {
@@ -119,7 +136,6 @@
     DataGrid<ReportParam> grid3;
     //IList<ReportNode> Nodes;
     WindowStatus Status;
-    WindowStatus ManagerStatus;
     ReportParamShowType? reportParamShowType;
     Type Type;
     string message;

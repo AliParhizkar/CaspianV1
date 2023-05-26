@@ -92,6 +92,14 @@ namespace Caspian.Common
             return date.AddDays(-day);
         }
 
+        public static PersianDate FirstDayInCalendar(this PersianDate date)
+        {
+            var day = date.Day.Value;
+            date = date.AddDays(-day + 1);
+            day = date.DayOfWeek.ConvertToInt().Value - 1;
+            return date.AddDays(-day);
+        }
+
         public static string Seprate3Digit(this decimal? value)
         {
             if (value.HasValue)
@@ -104,6 +112,13 @@ namespace Caspian.Common
             var calendar = new PersianCalendar();
             return new PersianDate(calendar.GetYear(date), (PersianMonth)calendar.GetMonth(date), calendar.GetDayOfMonth(date), date.Hour, 
                 date.Minute, date.Second);
+        }
+
+        public static PersianDate ToPersianDate(this DateTime? date)
+        {
+            if (date == null)
+                return null;
+            return date.Value.ToPersianDate();
         }
 
         public static string ToPersianDateString(this DateTime date)

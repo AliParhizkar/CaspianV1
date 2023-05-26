@@ -48,7 +48,7 @@ namespace Caspian.Engine.Model
         /// شرح گزارش
         /// </summary>
         [DisplayName("شرح")]
-        public string? Descript { get; set; }
+        public string Descript { get; set; }
 
         /// <summary>
         /// گزارش های این گروه

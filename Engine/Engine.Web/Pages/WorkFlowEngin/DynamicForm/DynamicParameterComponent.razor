@@ -1,24 +1,19 @@
 ﻿@namespace Caspian.Engine.WorkflowEngine
 @inherits SimplePage<DynamicParameter>
 @{
-
     base.BuildRenderTree(__builder);
 }
-<div style="width:90%;margin:5px auto">
-    <div>
-        <table style="width:90%;margin:10px auto;">
-            <tr>
-                <td style="width:120px;">
-                    <label>روش محاسبه</label>
-                </td>
-                <td>
-                    <DropdownList @bind-Value="SearchData.CalculationType" />
-                </td>
-            </tr>
-        </table>
+<div class="p-4">
+    <div class="row c-controls ps-4 pe-4">
+        <div class="col-md-4">
+            <label>روش محاسبه</label>
+        </div>
+        <div class="col-md-8">
+            <DropdownList @bind-Value="SearchData.CalculationType" />
+        </div>
     </div>
     <DataGrid @ref="CrudGrid" TEntity="DynamicParameter" PersistState @bind-Search="SearchData">
-        <Columns Context="con" >
+        <Columns Context="con">
             <GridColumn Field="t => t.EntityName">
                 <Template>
                     <span>@(entities.Single(t => t.Value == con.Data.EntityName).Text)</span>
@@ -40,11 +35,11 @@
                 <Template>
                     @if (con.Data.ControlType == ControlType.DropdownList)
                     {
-                        <IconButton disabled="disabled" Href='@($"/{SubSystem.ToString()}/RuleEngine/DynamicParameterOption/{con.Data.Id}")' IconType="IconType.Wpforms" />
+                        <IconButton Href='@($"/{SubSystem.ToString()}/RuleEngine/DynamicParameterOption/{con.Data.Id}")' IconType="IconType.Wpforms" />
                     }
                     @if (con.Data.CalculationType == CalculationType.FormData)
                     {
-                        <IconButton disabled="disabled" Href='@($"/{SubSystem.ToString()}/RuleEngine/DataParameterValue/{con.Data.Id}")' IconType="IconType.Wpforms" />
+                        <IconButton Href='@($"/{SubSystem.ToString()}/RuleEngine/DataParameterValue/{con.Data.Id}")' IconType="IconType.Wpforms" />
                     }
                 </Template>
             </GridColumn>
@@ -52,15 +47,16 @@
                 <Template>
                     @if (con.Data.CalculationType == CalculationType.FormData)
                     {
-                        <IconButton disabled="disabled" Href='@($"/{SubSystem.ToString()}/RuleEngine/DataParameter/{con.Data.Id}")' IconType="IconType.Wpforms" />
+                        <IconButton Href='@($"/{SubSystem.ToString()}/RuleEngine/DataParameter/{con.Data.Id}")' IconType="IconType.Wpforms" />
                     }
                 </Template>
             </GridColumn>
-            <GridCommandColumns/>
+            <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="تعریف پارامتر" Style="width:450px"
-            OnOpen="() =>
+</div>
+<Window @ref="UpsertWindow" Title="تعریف پارامتر" Style="width:500px"
+        OnOpen="() =>
                     {
                         if (UpsertData.Id == 0)
                         {
@@ -68,87 +64,69 @@
                             UpsertData.SubSystem = SubSystem;
                         }
                     }">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                <CaspianValidationValidator ValidatorType="typeof(DynamicParameterService)" />
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>نظام پرداخت حقوق</label>
-                        </td>
-                        <td>
-                            <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="UpsertData.EntityName" Source="entities" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>عنوان فارسی پارامتر</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>عنوان لاتین پارامتر</label>
-                        </td>
-                        <td>
-                            <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.EnTitle" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>روش محاسبه</label>
-                        </td>
-                        <td>
-                            <RadioList Style="width:100%" @bind-Value="UpsertData.CalculationType" />
-                        </td>
-                    </tr>
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData">
+            <div class="row c-controls ps-4 pe-4">
+                <div class="col-md-4">
+                    <label>نظام پرداخت حقوق</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="UpsertData.EntityName" Source="entities" />
+                </div>
+                <div class="col-md-4">
+                    <label>عنوان فارسی پارامتر</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>عنوان لاتین پارامتر</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.EnTitle" />
+                </div>
+                <div class="col-md-4">
+                    <label>روش محاسبه</label>
+                </div>
+                <div class="col-md-8">
+                    <RadioList Style="width:100%" @bind-Value="UpsertData.CalculationType" />
+                </div>
+                @if (UpsertData.CalculationType == CalculationType.UserData)
+                {
+                    <div class="col-md-4">
+                        <label>نوع کنترل</label>
+                    </div>
+                    <div class="col-md-8">
+                        <DropdownList @bind-Value="UpsertData.ControlType" FilterFunc="t => ControlsType.Contains(t)" />
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-4">
+                        <label>نوع خروجی</label>
+                    </div>
+                    <div class="col-md-8">
+                        <DropdownList @bind-Value="UpsertData.ResultType" />
+                    </div>
+                }
+                @if (UpsertData.CalculationType == CalculationType.UserData && UpsertData.ControlType == ControlType.Numeric || UpsertData.CalculationType != CalculationType.UserData && UpsertData.ResultType == ResultType.Numeric)
+                {
+                    <div class="col-md-4">
+                        <label>تعداد ارقام اعشار</label>
+                    </div>
+                    <div class="col-md-8">
+                        <NumericTextBox @bind-Value="UpsertData.DecimalNumber" />
+                    </div>
+                }
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
 
-                    @if (UpsertData.CalculationType == CalculationType.UserData)
-                    {
-                            <tr>
-                                <td>
-                                    <label>نوع کنترل</label>
-                                </td>
-                                <td>
-                                    <DropdownList @bind-Value="UpsertData.ControlType" FilterFunc="t => ControlsType.Contains(t)" />
-                                </td>
-                            </tr>
-                    }
-                    else
-                    {
-                            <tr>
-                                <td>
-                                    <label>نوع خروجی</label>
-                                </td>
-                                <td>
-                                    <DropdownList @bind-Value="UpsertData.ResultType" />
-                                </td>
-                            </tr>
-                    }
-                    @if (UpsertData.CalculationType == CalculationType.UserData && UpsertData.ControlType == ControlType.Numeric || UpsertData.CalculationType != CalculationType.UserData && UpsertData.ResultType == ResultType.Numeric)
-                    {
-                            <tr>
-                                <td>
-                                    <label>تعداد ارقام اعشار</label>
-                                </td>
-                                <td>
-                                    <NumericTextBox @bind-Value="UpsertData.DecimalNumber" />
-                                </td>
-                            </tr>
-                    }
-                    <tr>
-                        <td></td>
-                        <td style="text-align:center">
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
-            </CaspianForm>
-        </Content>
-    </Window>
-</div>
 
 @code
 {

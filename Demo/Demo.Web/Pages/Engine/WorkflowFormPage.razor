@@ -1,0 +1,9 @@
+﻿@page "/Demo/WorkflowEngine/WorkflowForm/{GroupId:int}"
+
+<Caspian.Engine.WorkFlow.WorkflowFormComponent GroupId="GroupId" />
+
+@code 
+{
+    [Parameter]
+    public int GroupId { get; set; }
+}

@@ -3,8 +3,7 @@
 @{
     base.BuildRenderTree(__builder);
 }
-
-<div style="width:90%;margin:5px auto">
+<div class="p-4">
     <DataGrid @ref="CrudGrid" TEntity="DataParameter" Search="SearchData" ConditionExpr="t => t.ResultParameterId == ParameterId">
         <Columns>
             <GridColumn Field="t => t.ParameterType.EnumText()" />
@@ -15,11 +14,13 @@
             </GridColumn>
             <GridColumn Field="@(t => t.DynamicParameter.Title)" Title="پارامتر" />
             <GridColumn Field="@(t => t.Rule.Title)" Title="قانون" />
-            <GridCommandColumns/>
+            <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="فرم داده ای" Style="width:450px"
-            OnOpen="() =>
+
+</div>
+<Window @ref="UpsertWindow" Title="فرم داده ای" Style="width:500px"
+        OnOpen="() =>
                     {
                         if (UpsertData.Id == 0)
                         {
@@ -28,61 +29,52 @@
                         }
 
                     }">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                <CaspianValidationValidator ValidatorType="typeof(DataParameterService)" />
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>نوع پارامتر</label>
-                        </td>
-                        <td>
-                            <RadioList @bind-Value="UpsertData.ParameterType" />
-                        </td>
-                    </tr>
-                    @if (UpsertData.ParameterType == DataParameterType.DynamicParameters)
-                    {
-                        <tr>
-                            <td>
-                                <label>پارامتر</label>
-                            </td>
-                            <td>
-                                <ComboBox TEntity="DynamicParameter" TValue="int?" @bind-Value="UpsertData.DynamicParameterId" TextExpression="t => t.Title" />
-                            </td>
-                        </tr>
-                    }
-                    else if (UpsertData.ParameterType == DataParameterType.EntityProperties)
-                    {
-                        <tr>
-                            <td>
-                                <label>خصیصه</label>
-                            </td>
-                            <td>
-                                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="UpsertData.PropertyName" Source="properties" />
-                            </td>
-                        </tr>
-                    }
-                    else
-                    {
-                        <tr>
-                            <td>
-                                <label>قانون</label>
-                            </td>
-                            <td>
-                                <ComboBox TEntity="Rule" TValue="int?" @bind-Value="UpsertData.RuleId" TextExpression="t => t.Title" ConditionExpression="t => t.FormRule" />
-                            </td>
-                        </tr>
-                    }
-                    <tr>
-                        <td colspan="2">
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
-            </CaspianForm>
-        </Content>
-    </Window>
-</div>
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData">
+            <CaspianValidationValidator ValidatorType="typeof(DataParameterService)" />
+            <div class="row ps-3 pe-3 c-controls">
+                <div class="col-md-2">
+                    <label>نوع پارامتر</label>
+                </div>
+                <div class="col-md-10">
+                    <RadioList @bind-Value="UpsertData.ParameterType" />
+                </div>
+                @if (UpsertData.ParameterType == DataParameterType.DynamicParameters)
+                {
+                    <div class="col-md-2">
+                        <label>پارامتر</label>
+                    </div>
+                    <div class="col-md-10">
+                        <ComboBox TEntity="DynamicParameter" TValue="int?" @bind-Value="UpsertData.DynamicParameterId" TextExpression="t => t.Title" />
+                    </div>
+                }
+                else if (UpsertData.ParameterType == DataParameterType.EntityProperties)
+                {
+                    <div class="col-md-2">
+                        <label>خصیصه</label>
+                    </div>
+                    <div class="col-md-10">
+                        <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="UpsertData.PropertyName" Source="properties" />
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-2">
+                        <label>قانون</label>
+                    </div>
+                    <div class="col-md-10">
+                        <ComboBox TEntity="Rule" TValue="int?" @bind-Value="UpsertData.RuleId" TextExpression="t => t.Title" ConditionExpression="t => t.FormRule" />
+                    </div>
+                }
+                <div class="col-md-2"></div>
+                <div class="col-md-10">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+
 
 @code
 {

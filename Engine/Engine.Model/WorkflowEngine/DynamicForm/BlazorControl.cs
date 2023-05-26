@@ -29,26 +29,26 @@ namespace Caspian.Engine
         /// <summary>
         /// The property name of entity that control bind to it
         /// </summary>
-        public string? PropertyName { get; set; }
+        public string PropertyName { get; set; }
 
         public int? DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
         public virtual DynamicParameter DynamicParameter { get; set; }
 
-        public string? TextExpression { get; set; }
+        public string TextExpression { get; set; }
 
-        public string? FilterExpression { get; set; }
+        public string FilterExpression { get; set; }
 
         public bool MultiLine { get; set; }
 
         public byte? Height { get; set; }
 
-        public string? OnChange { get; set; }
+        public string OnChange { get; set; }
 
         public int? HtmlColumnId { get; set; }
 
         [ForeignKey(nameof(HtmlColumnId))]
-        public virtual HtmlColumn? HtmlColumn { get; set; }
+        public virtual HtmlColumn HtmlColumn { get; set; }
     }
 }

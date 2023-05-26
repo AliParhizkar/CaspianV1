@@ -18,9 +18,12 @@
         left: -242px;
     }
 }
-.t-default-mode{
-    width:100%!important;
-    border-radius:8px!important;
+.c-dir-rtl{
+    direction:rtl;
+}
+.t-default-mode {
+    width: 100% !important;
+    border-radius: 8px !important;
 }
 .c-tick-container {
     position: absolute;
@@ -1868,6 +1871,7 @@ div.t-window {
 .t-window >.t-header {
     padding: 5px 8px;
     background-color: #e6e7e8;
+    border-radius:8px 8px 0 0;
 }
 @keyframes tabstripwidth {
     0% {

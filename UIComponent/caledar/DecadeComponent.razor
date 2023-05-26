@@ -1,4 +1,7 @@
 ﻿@namespace Caspian.UI
+@{
+    var curentYear = CalendarType == CalendarType.Gregorian ? Date.Year : Date.ToPersianDate().Year;
+}
 <table class="t-content t-meta-view">
     @for (int i = 0; i < 3; i++)
     {
@@ -12,7 +15,7 @@
                 }
                 else
                 {
-                    string className = years[i, j] == Date.Year ? " t-state-selected" : null;
+                    string className = years[i, j] == curentYear ? " t-state-selected" : null;
                     if (!isActiveYears[i, j])
                         className += " t-disable";
                     <td class="@className" @onclick="async () => await ChangeYear(year.Value)">
@@ -31,15 +34,29 @@
 
     async Task ChangeYear(int year)
     {
-        Date = new DateTime(year, Date.Month, Date.Day);
+        if (CalendarType == CalendarType.Gregorian)
+            Date = new DateTime(year, Date.Month, Date.Day);
+        else
+        {
+            var pDate = Date.ToPersianDate();
+            pDate = new PersianDate(year, pDate.Month.Value, pDate.Day.Value);
+            Date = pDate.GetMiladyDate().Value;
+        }
+
         await DateChanged.InvokeAsync(Date);
     }
 
+    [Parameter]
+    public CalendarType CalendarType { get; set; }
+
     protected override void OnParametersSet()
     {
-        var year = (Date.Year / 10) * 10; 
+        var year = CalendarType == CalendarType.Gregorian ? Date.Year : Date.ToPersianDate().Year.Value;
+        year = (year / 10) * 10;
         years = new int?[3, 4];
         isActiveYears = new bool[3, 4];
+        int? fromYear = CalendarType == CalendarType.Gregorian ? FromDate?.Year : FromDate.ToPersianDate()?.Year, 
+            toYear = CalendarType == CalendarType.Gregorian ? ToDate?.Year : ToDate.ToPersianDate()?.Year;
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -51,9 +68,9 @@
                 {
                     years[i, j] = year;
                     var isActive = true;
-                    if (FromDate.HasValue && year < FromDate.Value.Year)
+                    if (FromDate.HasValue && year < fromYear.Value)
                         isActive = false;
-                    if (isActive && ToDate.HasValue && year > ToDate.Value.Year)
+                    if (isActive && ToDate.HasValue && year > toYear)
                         isActive = false;
                     isActiveYears[i, j] = isActive;
                     year++;

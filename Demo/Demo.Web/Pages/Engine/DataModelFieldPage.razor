@@ -1,0 +1,9 @@
+﻿@page "/Demo/WorkflowEngine/DataModelField/{DataModelId:int}"
+
+<Caspian.Engine.WorkFlow.DataModelFieldComponent DataModelId="DataModelId" />
+
+@code 
+{
+    [Parameter]
+    public int DataModelId { get; set; }
+}

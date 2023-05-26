@@ -3,6 +3,8 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
+using System.Reflection.Emit;
 
 namespace Caspian.Common.RowNumber
 {
@@ -10,9 +12,11 @@ namespace Caspian.Common.RowNumber
     {
         public static Type CreateType()
         {
-            var properties = new List<DynamicProperty>();
-            properties.Add(new DynamicProperty("Id", typeof(int)));
-            properties.Add(new DynamicProperty("RowNumber", typeof(long)));
+            var properties = new List<DynamicProperty>
+            {
+                new DynamicProperty("Id", typeof(int)),
+                new DynamicProperty("RowNumber", typeof(long))
+            };
             return DynamicClassFactory.CreateType(properties);
         }
 
@@ -28,9 +32,11 @@ namespace Caspian.Common.RowNumber
                 source = source.OrderBy(Expression.Lambda(exprId, u));
             }
             var type = CreateType();
-            var memberExprList = new List<MemberAssignment>();
-            memberExprList.Add(Expression.Bind(type.GetProperty("Id"), exprId));
-            memberExprList.Add(Expression.Bind(type.GetProperty("RowNumber"), rowNumberExpr));
+            var memberExprList = new List<MemberAssignment>
+            {
+                Expression.Bind(type.GetProperty("Id"), exprId),
+                Expression.Bind(type.GetProperty("RowNumber"), rowNumberExpr)
+            };
             var memberInit = Expression.MemberInit(Expression.New(type), memberExprList);
             var innerLambda = Expression.Lambda(memberInit, u);
             var body = source.Select(innerLambda).Expression;
@@ -60,8 +66,10 @@ namespace Caspian.Common.RowNumber
 
             var method = typeof(DbFunctionsExtensions).GetMethods().Where(t => t.Name == "RowNumber")
                 .ToArray()[desc.Count - 1];
-            var args = new List<Expression>();
-            args.Add(Expression.Property(null, typeof(EF).GetProperty("Functions")));
+            var args = new List<Expression>
+            {
+                Expression.Property(null, typeof(EF).GetProperty("Functions"))
+            };
             var type = query.ElementType;
             OrderByExprlist.Reverse();
             foreach (var param in OrderByExprlist)

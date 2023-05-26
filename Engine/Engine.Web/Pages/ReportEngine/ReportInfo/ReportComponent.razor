@@ -4,25 +4,23 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:90%;margin:0 auto">
-    <table style="width:100%">
-        <tr>
-            <td>
-                <label>عنوان</label>
-            </td>
-            <td>
-                <StringTextBox @bind-Value="SearchData.Title" />
-            </td>
-            <td>
-                <label>گروه </label>
-            </td>
-            <td>
-                <ComboBox TValue="int" @bind-Value="SearchData.ReportGroupId" TEntity="ReportGroup" TextExpression="t => t.Title"
-                          ConditionExpression="t => t.SubSystem == Subsystem" />
-            </td>
-        </tr>
-    </table>
-    <DataGrid @ref="CrudGrid" TEntity="Report" ConditionExpr="t => t.ReportGroup.SubSystem == Subsystem" Search="SearchData" TableHeight="400">
+<div class="p-4">
+    <div class="row c-controls ps-4 pt-4">
+        <div class="col-md-2">
+            <label>عنوان</label>
+        </div>
+        <div class="col-md-4 ps-4">
+            <StringTextBox @bind-Value="SearchData.Title" />
+        </div>
+        <div class="col-md-2 pe-4">
+            <label>گروه </label>
+        </div>
+        <div class="col-md-4">
+            <ComboBox TValue="int" @bind-Value="SearchData.ReportGroupId" TEntity="ReportGroup" TextExpression="t => t.Title"
+                      ConditionExpression="t => t.SubSystem == Subsystem" />
+        </div>
+    </div>
+    <DataGrid @ref="CrudGrid" TEntity="Report" ConditionExpr="t => t.ReportGroup.SubSystem == Subsystem" Search="SearchData" TableHeight="300">
         <Columns>
             <GridColumn Field="t => t.ReportGroup.Title" Title="گروه گزارش" />
             <GridColumn Field="t => t.Title" />
@@ -38,51 +36,42 @@
                     </a>
                 </Template>
             </GridColumn>
-            <GridCommandColumns/>
+            <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Style="width:400px" Title="گزارش">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                <CaspianValidationValidator ValidatorType="typeof(ReportService)" />
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>گروه گزارش</label>
-                        </td>
-                        <td>
-                            <ComboBox TValue="int" @bind-Value="UpsertData.ReportGroupId" TEntity="ReportGroup" TextExpression="t => t.Title"
-                                      ConditionExpression="t => t.SubSystem == Subsystem" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>عنوان</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>شرح</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Descript" MultiLine Rows="3" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        </td>
-                        <td>
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
-            </CaspianForm>
-        </Content>
-    </Window>
 </div>
+
+<Window @ref="UpsertWindow" Style="width:450px" Title="گزارش">
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData">
+            <div class="row ps-4 pe-4 c-controls">
+                <div class="col-md-4">
+                    <label>گروه گزارش</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TValue="int" @bind-Value="UpsertData.ReportGroupId" TEntity="ReportGroup" TextExpression="t => t.Title"
+                              ConditionExpression="t => t.SubSystem == Subsystem" />
+                </div>
+                <div class="col-md-4">
+                    <label>عنوان</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>شرح</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Descript" MultiLine Rows="3" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
 
 @code
 {

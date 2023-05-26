@@ -15,12 +15,17 @@ namespace Caspian.UI
         DateTime date = DateTime.Now;
         string navigateDownClassName;
         string headerTitle;
+        int[] monthConvertor = new int[] { 4, 8, 12, 3, 7, 11, 2, 6, 10, 1, 5, 9 };
+        //PersianDate pDate;
 
         [Parameter]
         public DateTime Date { get; set; }
 
         [Parameter]
         public EventCallback<DateTime> DateChanged { get; set; }
+
+        [Parameter]
+        public CalendarType CalendarType { get; set; }
 
         [Parameter]
         public DateTime? FromDate { get; set; }
@@ -49,20 +54,23 @@ namespace Caspian.UI
 
         void CalendarTitleInit()
         {
+            var pDate = date.ToPersianDate();
+            var year = CalendarType == CalendarType.Gregorian ? date.Year : pDate.Year.Value;
             switch (viewType)
             {
                 case ViewType.Month:
-                    headerTitle = months[date.Month - 1] + " " + date.Year;
+                    var month = CalendarType == CalendarType.Gregorian ? date.Month : pDate.Month.ConvertToInt().Value;
+                    headerTitle = months[month - 1] + " " + year;
                     break;
                 case ViewType.Year:
-                    headerTitle = date.Year.ToString();
+                    headerTitle = year.ToString();
                     break;
                 case ViewType.Decade:
-                    var startYear = date.Year / 10 *10;
+                    var startYear = year / 10 *10;
                     headerTitle = $"{startYear}-{startYear + 10}";
                     break;
                 case ViewType.Century:
-                    var startDecade = date.Year / 100 * 100;
+                    var startDecade = year / 100 * 100;
                     headerTitle = $"{startDecade}-{startDecade + 100}";
                     break;
             }
@@ -74,7 +82,8 @@ namespace Caspian.UI
             switch (viewType)
             {
                 case ViewType.Month:
-                    index = date.Month - 1;
+                    index = CalendarType == CalendarType.Gregorian ? date.Month - 1 : 
+                        monthConvertor[date.ToPersianDate().Month.ConvertToInt().Value - 1] - 1;
                     break;
                 case ViewType.Year:
                     index = date.Year % 10 + 1;
@@ -99,11 +108,10 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            service.Language = Language.En;
-            if (service.Language == Language.Fa)
-                months = new string[] { "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند" };
-            else
+            if (CalendarType == CalendarType.Gregorian)
                 months = new string[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+            else
+                months = new string[] { "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند" };
             base.OnInitialized();
         }
 

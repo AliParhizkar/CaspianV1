@@ -1,0 +1,9 @@
+﻿@page "/Demo/ReportEngine/ReportParam/{ReportId:int}"
+
+<ReportParamComponent ReportId="ReportId" Subsystem="SubSystemKind.Demo" />
+
+@code 
+{
+    [Parameter]
+    public int ReportId { get; set; }
+}

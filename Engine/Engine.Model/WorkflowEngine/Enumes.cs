@@ -1,4 +1,5 @@
 ﻿using Caspian.Common.Attributes;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Engine
@@ -157,7 +158,7 @@ namespace Caspian.Engine
 
     public enum DataModelFieldType: byte
     {
-        [Display(Name = "زشته ای")]
+        [Display(Name = "رشته ای")]
         String = 1,
 
         [Display(Name = "تاریخ")]
@@ -174,5 +175,8 @@ namespace Caspian.Engine
 
         [Display(Name = "عدد اعشاری")]
         Decimal,
+
+        [Display(Name = "چند گزینه ای")]
+        MultiSelect
     }
 }

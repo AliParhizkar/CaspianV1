@@ -1,5 +1,5 @@
-﻿@namespace Caspian.Engine.WorkFlow
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@namespace Caspian.Engine.WorkFlow
 @inherits SimplePage<DataModelField>
 @{
     base.BuildRenderTree(__builder);
@@ -8,74 +8,68 @@
     if (UpsertData.FieldType.HasValue)
         UpsertData.EntityFullName = null;
 }
-<div style="width:95%;margin:5px auto;">
-    <DataGrid @ref="CrudGrid" TEntity="DataModelField" TableHeight="400" ConditionExpr="t => t.DataModelId == DataModelId">
+
+<div class="p-4">
+    <DataGrid @ref="CrudGrid" TEntity="DataModelField" TableHeight="300" ConditionExpr="t => t.DataModelId == DataModelId">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.EntityFullName" />
             <GridColumn Field="t => t.FieldName" />
             <GridColumn Field="t => t.FieldType.EnumText()" />
             <GridColumn Field="t => t.IsCollection" style="text-align:center" Title="بصورت لیست" />
-            <GridCommandColumns/>
+            <GridColumn style="width:80px;" Title="گزینه ها">
+                <Template>
+                    <IconButton Disabled="context.Data.FieldType != DataModelFieldType.MultiSelect" Href='@($"/{Subsystem.ToString()}/WorkflowEngine/DataModelOption/{context.Data.Id}")' IconType="IconType.Wpforms"  />
+                </Template>
+            </GridColumn>
+            <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:500px" OnOpen="FormOpen">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                <CaspianValidationValidator ValidatorType="typeof(DataModelFieldService)" />
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>نام موجودیت</label>
-                        </td>
-                        <td>
-                            <ComboBox @bind-Value="UpsertData.EntityFullName" TValue="string" TEntity="SelectListItem" Source="workflowEntityTypes" Disabled="UpsertData.FieldType.HasValue" OnValueChanged="SetFieldData" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span>نوع فیلد</span>
-                        </td>
-                        <td>
-                            <DropdownList @bind-Value="UpsertData.FieldType" Disabled="UpsertData.EntityFullName.HasValue()" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>نام فارسی</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>عنوان لاتین فیلد</label>
-                        </td>
-                        <td>
-                            <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.FieldName" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>بصورت لیست</label>
-                        </td>
-                        <td>
-                            <CheckBox @bind-Value="UpsertData.IsCollection" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
-
-            </CaspianForm>
-        </Content>
-    </Window>
 </div>
+
+<Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:500px" OnOpen="FormOpen">
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData">
+            <div class="row ps-4 pe-4 c-controls">
+                <div class="col-md-4">
+                    <label>نام موجودیت</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox @bind-Value="UpsertData.EntityFullName" TValue="string" TEntity="SelectListItem" Source="workflowEntityTypes" Disabled="UpsertData.FieldType.HasValue" OnValueChanged="SetFieldData" />
+                </div>
+                <div class="col-md-4">
+                    <label>نوع فیلد</label>
+                </div>
+                <div class="col-md-8">
+                    <DropdownList @bind-Value="UpsertData.FieldType" Disabled="UpsertData.EntityFullName.HasValue()" />
+                </div>
+                <div class="col-md-4">
+                    <label>نام فارسی</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>عنوان لاتین فیلد</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.FieldName" />
+                </div>
+                <div class="col-md-4">
+                    <label>بصورت لیست</label>
+                </div>
+                <div class="col-md-8">
+                    <CheckBox @bind-Value="UpsertData.IsCollection" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+
 @code
 {
     IList<SelectListItem> workflowEntityTypes;
@@ -106,6 +100,9 @@
 
     [Parameter]
     public int DataModelId { get; set; }
+
+    [Parameter]
+    public SubSystemKind Subsystem { get; set; }
 
     void FormOpen()
     {

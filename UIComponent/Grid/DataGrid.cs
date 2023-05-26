@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Caspian.UI
 {
@@ -103,6 +104,11 @@ namespace Caspian.UI
         protected override bool ShouldRender()
         {
             return mustRender;
+        }
+
+        public IQueryable<TEntity> GetAllEntities(IServiceScope scope)
+        {
+            return GetQuery(scope);
         }
 
         IQueryable<TEntity> GetQuery(IServiceScope scope)

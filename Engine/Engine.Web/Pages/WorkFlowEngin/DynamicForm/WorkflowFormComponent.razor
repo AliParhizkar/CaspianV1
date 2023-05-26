@@ -3,18 +3,16 @@
 @{ 
     base.BuildRenderTree(__builder);
 }
-<div style="width:90%;margin:0 auto">
-    <table style="width:100%">
-        <tr>
-            <td>
-                <label>عنوان</label>
-            </td>
-            <td>
-                <StringTextBox @bind-Value="SearchData.Title" />
-            </td>
-        </tr>
-    </table>
-    <DataGrid @ref="CrudGrid" TEntity="WorkflowForm" Search="SearchData" TableHeight="400" >
+<div class="p-4">
+    <div class="row c-controls ps-4 pe-4">
+        <div class="col-md-4">
+            <label>عنوان</label>
+        </div>
+        <div class="col-md-8">
+            <StringTextBox @bind-Value="SearchData.Title" />
+        </div>
+    </div>
+    <DataGrid @ref="CrudGrid" TEntity="WorkflowForm" Search="SearchData" TableHeight="300">
         <Columns>
             <GridColumn Field="t => t.Title" Title="عنوان" />
             <GridColumn Field="t => t.ColumnCount" Title="تعداد ستونها" />
@@ -23,49 +21,44 @@
                     <a href="/Engine/FormGenerator/@(context.Data.Id)" target="_blank">...</a>
                 </Template>
             </GridColumn>
-            <GridCommandColumns/>
+            <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:400px" OnOpen="FormOpen">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                <CaspianValidationValidator ValidatorType="typeof(WorkflowFormService)" />
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>عنوان</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>تعداد ستونها</label>
-                        </td>
-                        <td>
-                            <NumericTextBox @bind-Value="UpsertData.ColumnCount" /> 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                             <label>نام فرم</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Name" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
-            </CaspianForm>
-        </Content>
-    </Window>
+
 </div>
+
+<Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:450px" OnOpen="FormOpen">
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData">
+            <div class="row reportSelect ps-4 pe-4 c-controls">
+                <div class="col-md-4">
+                    <label>عنوان</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>تعداد ستونها</label>
+                </div>
+                <div class="col-md-8">
+                    <NumericTextBox @bind-Value="UpsertData.ColumnCount" />
+                </div>
+                <div class="col-md-4">
+                    <label>نام فرم</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Name" />
+                </div>
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+
 
 @code
 {

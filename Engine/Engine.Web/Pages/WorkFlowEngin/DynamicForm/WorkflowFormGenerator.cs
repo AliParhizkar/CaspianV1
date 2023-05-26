@@ -60,11 +60,7 @@ namespace Caspian.Engine.WorkflowEngine
                 rows.RemoveAt(selectedRowIndex);
         }
 
-        protected override void OnInitialized()
-        {
-            base.EnableWindowClick(this);
-            base.OnInitialized();
-        }
+        
 
         protected override void OnWindowClick()
         {

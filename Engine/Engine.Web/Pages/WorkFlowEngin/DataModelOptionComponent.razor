@@ -1,0 +1,44 @@
+﻿@namespace Caspian.Engine.WorkFlow
+@inherits SimplePage<DataModelOption>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4">
+    <DataGrid @ref="CrudGrid" TEntity="DataModelOption" TableHeight="300" ConditionExpr="t => t.FieldId == FieldId">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Name" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+<Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:500px">
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="() => UpsertData.FieldId = FieldId">
+            <div class="row ps-4 pe-4 c-controls">
+                <div class="col-md-4">
+                    <label>عنوان فارسی</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>عنوان لاتین</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.Name" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+@code 
+{
+    [Parameter]
+    public int FieldId { get; set; }
+}

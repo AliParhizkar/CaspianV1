@@ -49,5 +49,8 @@ namespace Caspian.Engine
 
         [CheckOnDelete("فیلد به کنترل تخصیص داده شده و امکان حذف آن وجود ندارد")]
         public virtual IList<BlazorControl> BlazorControls { get; set; }
+
+        [CheckOnDelete("فیلد داده ای دارای گزینه است و امکان حذف آن وجود ندارد")]
+        public virtual IList<DataModelOption> DataModelOptions { get; set; } 
     }
 }

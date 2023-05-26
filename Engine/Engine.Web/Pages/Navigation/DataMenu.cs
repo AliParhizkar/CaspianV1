@@ -42,7 +42,7 @@ namespace Caspian.Engine.Navigation
                 var subSystemKind = (SubSystemKind)field.GetValue(null);
                 if (OldSubSystem != subSystemKind)
                 {
-                    Menus = SingletonMenuService.Menus.Where(t => t.ShowonMenu && t.MenuCategory.SubSystemKind == subSystemKind && MenusId.Contains(t.Id)).OrderBy(t => t.Ordering).ToList();
+                    Menus = SingletonMenuService.Menus.Where(t => t.ShowonMenu && t.SubSystemKind == subSystemKind && MenusId.Contains(t.Id)).OrderBy(t => t.Ordering).ToList();
                     Categories = SingletonMenuService.Categories.Where(t => t.SubSystemKind == subSystemKind)
                         .OrderBy(t => t.Ordering).ToList();
                     OldSubSystem = subSystemKind;

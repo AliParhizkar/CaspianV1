@@ -26,13 +26,13 @@
                             <label>Value: </label>
                         </div>
                         <div class="col-md-8 text-center">
-                            <label style="color:red;">@(OrganTitle ?? "---")</label>
+                            <label style="color:red;">@(value?.ToString() ?? "---")</label>
                         </div>
                         <div class="col-md-4">
                             <label>Text: </label>
                         </div>
                         <div class="col-md-8 text-center">
-                            <label style="color:red;">@(value?.ToString() ?? "---")</label>
+                            <label style="color:red;">@(OrganTitle ?? "---")</label>
                         </div>
                     </div>
                 </div>

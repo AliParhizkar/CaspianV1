@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using Caspian.Common.Extension;
-using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common
 {
@@ -27,7 +25,9 @@ namespace Caspian.Common
         {
             if (param1.IsNull || param2.IsNull)
                 return null;
+            
             var date1 = new PersianCalendar().ToDateTime(param1.Year.Value, (int)param1.Month.Value, param1.Day.Value, 0, 0, 0, 0);
+            
             var date2 = new PersianCalendar().ToDateTime(param2.Year.Value, (int)param2.Month.Value, param2.Day.Value, 0, 0, 0, 0);
             return (date1 - date2).Days;
         }
@@ -286,29 +286,8 @@ namespace Caspian.Common
         {
             if (IsNull)
                 return null;
-            int year = day / 365;
-            int remine = day % 365;
-            int month = remine / 30;
-            int day1 = remine % 30;
-            day1 += Day.Value;
-            month += (int)Month;
-            year += Year.Value;
-            if (month > 12)
-            {
-                year++;
-                month -= 12;
-            }
-            if (day1 > 30)
-            {
-                month++;
-                day1 -= 30;
-                if (month == 12)
-                {
-                    month = 0;
-                    year++;
-                }
-            }
-            return new PersianDate(year, (PersianMonth)month, day);
+            var date = this.GetMiladyDate().Value.AddDays(day);
+            return date.ToPersianDate();
         }
 
         public override string ToString()

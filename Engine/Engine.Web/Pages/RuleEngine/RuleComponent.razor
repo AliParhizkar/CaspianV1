@@ -4,18 +4,16 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:90%;margin:0 auto">
-    <table style="width:100%">
-        <tr>
-            <td>
-                <label>عنوان</label>
-            </td>
-            <td>
-                <StringTextBox @bind-Value="SearchData.Title" />
-            </td>
-        </tr>
-    </table>
-    <DataGrid @ref="CrudGrid" TEntity="Rule" ConditionExpr="t => t.SystemKind == Subsystem" Search="SearchData" TableHeight="400">
+<div class="p-4">
+    <div class="row c-controls ps-4 pe-4">
+        <div class="col-md-4">
+            <label>عنوان</label>
+        </div>
+        <div class="col-md-8">
+            <StringTextBox @bind-Value="SearchData.Title" />
+        </div>
+    </div>
+    <DataGrid @ref="CrudGrid" TEntity="Rule" ConditionExpr="t => t.SystemKind == Subsystem" Search="SearchData" TableHeight="300">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.ResultType.EnumText()" Title="نوع خروجی" />
@@ -33,85 +31,72 @@
                     </span>
                 </Template>
             </GridColumn>
-            <GridCommandColumns/>
+            <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" OnOpen="() => { UpsertData.SystemKind = Subsystem; }" Title="فرمول" Style="width:400px">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                @{
-                    var disable = UpsertData.Priority != null;
-                }
-                <CaspianValidationValidator ValidatorType="typeof(RuleService)" />
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>نوع فرمول</label>
-                        </td>
-                        <td>
-                            <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="UpsertData.TypeName" Disabled="disable" Source="RuleTypes" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width:90px">
-                            <label>نوع خروجی</label>
-                        </td>
-                        <td>
-                            <DropdownList @bind-Value="UpsertData.ResultType" Disabled="disable" />
-                        </td>
-                    </tr>
-                    @if (UpsertData.ResultType == ValueTypeKind.Enum)
-                    {
 
-                            <tr>
-                                <td>
-                                    <label>نوع شمارشی</label>
-                                </td>
-                                <td>
-                                    <DropdownList @bind-Value="UpsertData.EnumTypeName" Source="modelEnums" Disabled="disable" />
-                                </td>
-                            </tr>
-                    }
-                    <tr>
-                        <td>
-                            <label>قانون فرم</label>
-                        </td>
-                        <td>
-                            <CheckBox @bind-Value="UpsertData.FormRule" Disabled="disable" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>عنوان</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>شرح</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Descript" MultiLine Rows="3" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
-            </CaspianForm>
-
-        </Content>
-    </Window>
 </div>
+
+<Window @ref="UpsertWindow" Title="فرمول" Style="width:450px">
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="() => UpsertData.SystemKind = Subsystem">
+            @{
+                var disable = UpsertData.Priority != null;
+            }
+            <div class="row c-controls ps-4 pe-4">
+                <div class="col-md-4">
+                    <label>نوع فرمول</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="UpsertData.TypeName" 
+                            Disabled="disable" Source="RuleTypes" />
+                </div>
+                <div class="col-md-4">
+                    <label>نوع خروجی</label>
+                </div>
+                <div class="col-md-8">
+                    <DropdownList @bind-Value="UpsertData.ResultType" Disabled="disable" />
+                </div>
+                @if (UpsertData.ResultType == ValueTypeKind.Enum)
+                {
+                    <div class="col-md-4">
+                        <label>نوع شمارشی</label>
+                    </div>
+                    <div class="col-md-8">
+                        <DropdownList @bind-Value="UpsertData.EnumTypeName" Source="modelEnums" Disabled="disable" />
+                    </div>
+                }
+                <div class="col-md-4">
+                    <label>قانون فرم</label>
+                </div>
+                <div class="col-md-8">
+                    <CheckBox @bind-Value="UpsertData.FormRule" Disabled="disable" />
+                </div>
+                <div class="col-md-4">
+                    <label>عنوان</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>شرح</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Descript" MultiLine Rows="3" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+
 
 @code
 {
-    List<SelectListItem> RuleTypes;
+    IList<SelectListItem> RuleTypes;
     IList<SelectListItem> modelEnums;
 
     [Parameter]

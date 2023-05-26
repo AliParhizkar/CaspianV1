@@ -58,7 +58,7 @@ namespace Caspian.Engine.WorkflowEngine
             await base.OnInitializedAsync();
         }
 
-        string? GetSourceFile()
+        string GetSourceFile()
         {
             if (form.SourceFileName.HasValue())
             {

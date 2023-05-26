@@ -33,21 +33,39 @@
 
     async Task ChangeDecade(int decade)
     {
-        Date = new DateTime(decade * 10, Date.Month, Date.Day);
+        if (CalendarType == CalendarType.Gregorian)
+            Date = new DateTime(decade * 10, Date.Month, Date.Day);
+        else
+        {
+            var pDate = Date.ToPersianDate();
+            pDate = new PersianDate(decade * 10, pDate.Month.Value, pDate.Day.Value);
+            Date = pDate.GetMiladyDate().Value;
+        }
         await DateChanged.InvokeAsync(Date);
     }
 
     protected override void OnParametersSet()
     {
-        selectedDecade = Date.Year / 10;
+        selectedDecade = CalendarType == CalendarType.Gregorian ? Date.Year / 10 : Date.ToPersianDate().Year.Value / 10;
+
         var decade = (selectedDecade / 10) * 10;
         Decades = new int?[3, 4];
         isActiveDecades = new bool[3, 4];
         int? fromDecade = null, toDecade = null;
         if (FromDate.HasValue)
-            fromDecade = FromDate.Value.Year / 10;
+        {
+            if (CalendarType == CalendarType.Gregorian)
+                fromDecade = FromDate.Value.Year / 10;
+            else
+                fromDecade = FromDate.ToPersianDate().Year.Value / 10;
+        }
         if (ToDate.HasValue)
-            toDecade = ToDate.Value.Year / 10;
+        {
+            if (CalendarType == CalendarType.Gregorian)
+                toDecade = ToDate.Value.Year / 10;
+            else
+                toDecade = ToDate.ToPersianDate().Year.Value / 10;
+        }
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -57,8 +75,8 @@
                     Decades[i, j] = null;
                 else
                 {
-                    var isDisable = fromDecade.HasValue && decade > fromDecade || 
-                        toDecade.HasValue && decade < toDecade;
+                    var isDisable = fromDecade.HasValue && decade < fromDecade || 
+                        toDecade.HasValue && decade > toDecade;
                     isActiveDecades[i, j] = !isDisable;
                     Decades[i, j] = decade;
                     decade++;
@@ -70,6 +88,9 @@
 
     [Parameter]
     public DateTime Date { get; set; }
+
+    [Parameter]
+    public CalendarType CalendarType { get; set; }
 
     [Parameter]
     public EventCallback<DateTime> DateChanged { get; set; }

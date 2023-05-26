@@ -349,6 +349,29 @@
                 $("#outMessage").remove();
             }, 300);
         },
+        bindBox: function () {
+            $('.box').mousedown(e => {
+                $.xStart = e.clientX;
+                $.left = $('.box').offset().left
+                $.down = true;
+            });
+            $('.box').mousemove(e => {
+                if ($.down) {
+                    let dif = e.clientX - $.xStart;
+                    let maxleft = $(window).width() * 0.03;
+                    let minLeft = $(window).width() - $('.box').width() - 20;
+                    let left = $.left + dif;
+                    if (left <= minLeft)
+                        left = minLeft;
+                    if (left >= maxleft)
+                        left = maxleft;
+                    $('.box').css('left', left);
+                }
+            });
+            $('body').mouseup(e => {
+                $.down = false;
+            });
+        },
         showMessage: function (message) {
             if ($.caspian.infoTimer)
                 clearTimeout($.caspian.infoTimer);
@@ -796,6 +819,9 @@
             anchorElement.remove();
             URL.revokeObjectURL(url);
         },
+        openWindow: function ($window) {
+
+        },
         bindWindow(dotnet, window) {
             const mutationObserver = new MutationObserver((mutationList) => {
                 mutationList.forEach(mutation => {
@@ -822,7 +848,6 @@
                             }
                             let left = ($parent.width() - $window.width()) / 2;
                             $window.css('left', left);
-                            
                             let $overlay = null;
                             if ($(mutation.target).attr('modal') != undefined) {
                                 $overlay = $('<div class="t-overlay"></div>');

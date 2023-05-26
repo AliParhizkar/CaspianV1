@@ -1,0 +1,8 @@
+﻿@page "/Demo/WorkflowEngine/DataModel/{GroupId:int}"
+<Caspian.Engine.WorkFlow.DataModelComponent GroupId="GroupId" SubSystem="SubSystemKind.Demo" />
+
+@code 
+{
+    [Parameter]
+    public int GroupId { get; set; }
+}

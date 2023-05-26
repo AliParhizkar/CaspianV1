@@ -1,12 +1,6 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
 @inherits BasePage
-<Window Status="Status" Title="پارامترهای گزارش"
-        StatusChanged="async value =>
-                       {
-                           await StatusChanged.InvokeAsync(value);
-                       }">
-    <Content>
-        <TreeView @ref="Tree" OnExpanded="@(async (item) =>
+<TreeView @ref="Tree" OnExpanded="@(async (item) =>
                         {
                             var data = Newtonsoft.Json.JsonConvert.DeserializeObject<ReportNode>(item.Value);
                             var tempItems = (await new ReportTree().CreateTreeForSelect(Type, data, ReportParams));
@@ -21,18 +15,16 @@
                                 Disabled = t.Selected
                             }).ToList();
                         })" style="width:500px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="TreeViewItem" Source="Nodes" />
-        <div style="text-align:left;padding-left:75px;padding-top:10px;">
-            <button style="width:60px" class="c-btn c-primary" @onclick="PostParams">ثبت</button>
-            <button class="c-btn c-danger"
-                    @onclick="async () =>
+<div style="text-align:left;padding-left:75px;padding-top:10px;">
+    <button style="width:60px" class="c-btn c-primary" @onclick="PostParams">ثبت</button>
+    <button class="c-btn c-danger"
+            @onclick="async () =>
                                   {
                                       await StatusChanged.InvokeAsync( WindowStatus.Close);
                                   }">
-                انصراف
-            </button>
-        </div>
-    </Content>
-</Window>
+        انصراف
+    </button>
+</div>
 
 @code
 {
