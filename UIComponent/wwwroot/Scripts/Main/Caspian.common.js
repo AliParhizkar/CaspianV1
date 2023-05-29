@@ -260,10 +260,16 @@
             });
         },
         bindTabpanel: function (ctr) {
-            let left = $(ctr).find('.t-state-active').position().left + 5;
-            let width = ($(ctr).find('.t-state-active').width()) - 10;
-            $(ctr).find('.t-tabstrip-items').width() - (left + width);
-            $(ctr).find('.c-selected-panel').css('left', left).css('width', width);
+            var pos = $(ctr).find('.t-state-active').position();
+            if ($(ctr).hasClass('t-vertical')) {
+                let top = pos.top;
+                $(ctr).find('.c-selected-panel').css('top', top + 8);
+            } else {
+                let left = pos.left + 5;
+                let width = ($(ctr).find('.t-state-active').width()) - 10;
+                $(ctr).find('.t-tabstrip-items').width() - (left + width);
+                $(ctr).find('.c-selected-panel').css('left', left).css('width', width);
+            }
         },
         bindLookupTree: function (dotnet, input) {
             const mutationObserver = new MutationObserver(() => {
@@ -487,7 +493,6 @@
                 $('.c-messagebox .c-primary').focus();
                 $('body').bind('keyup.confirmMessage', async function (e) {
                     var key = e.keyCode;
-                    console.log($(e.target).hasClass('c-primary'))
                     if (!$(e.target).hasClass('c-primary')) {
                         if (key == 13 || key == 27) {
                             await dotnet.invokeMethodAsync('HideConfirm', key == 13);
@@ -820,62 +825,65 @@
             URL.revokeObjectURL(url);
         },
         openWindow: function ($window) {
-
+            $content = $window.find('.t-window-content');
+            if ($content.attr('status') == "2") {
+                $window.css('top', $('.c-content-main').scrollTop() - 20);
+                $window.css('display', 'block');
+                let $header = $window.find('.t-window-titlebar');
+                if ($content.attr('draggable') != undefined) {
+                    $.caspian.bindDragAndDrop($window[0], $header[0]);
+                    $header.css('cursor', 'move');
+                }
+                else {
+                    $header[0].onmousedown = null;
+                    $header.css('cursor', 'default');
+                }
+                let $parent = $window.parent().closest('.t-window');
+                $c.scrollTop = 0;
+                if (!$parent[0]) {
+                    $c.scrollTop = $('.c-content-main').scrollTop() - 20;
+                    $window.css('top', $c.scrollTop);
+                    $parent = $('.c-content-main');
+                }
+                let width = $parent.width() || $('body').width();
+                let left = (width - $window.width()) / 2;
+                $window.css('left', left);
+                let $overlay = null;
+                if ($content.attr('modal') != undefined) {
+                    //$overlay = $('<div class="t-overlay"></div>');
+                    //$overlay.appendTo($parent);
+                    $window.data('overlay', $overlay);
+                }
+                setTimeout(function () {
+                    $window.addClass('window-animate');
+                    if ($overlay)
+                        $overlay.css('opacity', .5);
+                    $window.css('top', 40 + $c.scrollTop);
+                    setTimeout(() => $window.removeClass('window-animate'), 400);
+                }, 25);
+            }
+            else {
+                let $overlay = $window.data('overlay');
+                $window.addClass('window-animate');
+                setTimeout(function () {
+                    if ($overlay)
+                        $overlay.css('opacity', 0);
+                    $window.css('top', 0 + $c.scrollTop);
+                    setTimeout(function () {
+                        if ($overlay)
+                            $overlay.remove();
+                        $window.css('display', 'none');
+                    }, 200);
+                }, 25);
+            }
         },
         bindWindow(dotnet, window) {
+            $c.openWindow($(window).closest('.t-window'));
             const mutationObserver = new MutationObserver((mutationList) => {
                 mutationList.forEach(mutation => {
                     if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
                         let $window = $(mutation.target).closest('.t-window');
-                        if ($(mutation.target).attr('status') == "2") {
-                            $window.css('top', $('.c-content-main').scrollTop() - 20);
-                            $window.css('display', 'block');
-                            let $header = $window.find('.t-window-titlebar');
-                            if ($(mutation.target).attr('draggable') != undefined) {
-                                $.caspian.bindDragAndDrop($window[0], $header[0]);
-                                $header.css('cursor', 'move');
-                            }
-                            else {
-                                $header[0].onmousedown = null;
-                                $header.css('cursor', 'default');
-                            }
-                            let $parent = $window.parent().closest('.t-window');
-                            $c.scrollTop = 0;
-                            if (!$parent[0]) {
-                                $c.scrollTop = $('.c-content-main').scrollTop() - 20;
-                                $window.css('top', $c.scrollTop);
-                                $parent = $('.c-content-main');
-                            }
-                            let left = ($parent.width() - $window.width()) / 2;
-                            $window.css('left', left);
-                            let $overlay = null;
-                            if ($(mutation.target).attr('modal') != undefined) {
-                                $overlay = $('<div class="t-overlay"></div>');
-                                $overlay.appendTo($parent);
-                                $window.data('overlay', $overlay);
-                            }
-                            setTimeout(function () {
-                                $window.addClass('window-animate');
-                                if ($overlay) 
-                                    $overlay.css('opacity', .5);
-                                $window.css('top', 40 + $c.scrollTop);
-                                setTimeout(() => $window.removeClass('window-animate'), 400)
-                            }, 25);
-                        }
-                        else {
-                            let $overlay = $window.data('overlay');
-                            $window.addClass('window-animate');
-                            setTimeout(function () {
-                                if ($overlay)
-                                    $overlay.css('opacity', 0);
-                                $window.css('top', 0 + $c.scrollTop);
-                                setTimeout(function () {
-                                    if ($overlay)
-                                        $overlay.remove();
-                                    $window.css('display', 'none');
-                                }, 200);
-                            }, 25);
-                        }
+                        $c.openWindow($window);
                     }
                 });
             });

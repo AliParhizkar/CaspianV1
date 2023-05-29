@@ -140,7 +140,7 @@
         this.controlType = report.controlKind.bond;
         hasFocuse = true;
         this.element = element;
-        onlyHeaderBond = false;
+        //onlyHeaderBond = true;
         controlls = [];
         $element = $(element);
     };
@@ -217,7 +217,7 @@
             }
             return list;
         },
-        createBond: function (data, ) {
+        createBond: function (data) {
             if (arguments.length > 0)
                 bondsData = data;
             $element.html('');

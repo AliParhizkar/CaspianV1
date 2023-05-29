@@ -79,16 +79,17 @@ namespace Caspian.Engine.ReportPrint
                     Page.Report.SubReportLevel = report.SubReportLevel;
                 }
             }
-            if (DataModelId > 0)
+            if (DataModelId == 1)
             {
                 Page = new ReportUiModels.ReportPrintPage();
-                Page.Bonds = new List<Bond>();
-                Page.Bonds.Add(new Bond()
+                Page.Bonds = new List<Bond>()
                 {
-                    Height = 10,
-                    DataLevel = 1,
-                    BondType= BondType.DataBond
-                });
+                    new Bond()
+                    {
+                        Height = 10,
+                        BondType= BondType.PageHeader
+                    }
+                };
                 Page.Width = 21;
                 Page.Height = 29.7M;
             }

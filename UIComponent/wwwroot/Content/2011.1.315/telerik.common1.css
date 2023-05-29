@@ -31,8 +31,47 @@
     height: 270px;
     border-radius: 50%;
 }
-.c-form-action button{
-    min-width:65px;
+.t-tabstrip.t-vertical{
+    display:flex;
+}
+    .t-tabstrip.t-vertical .c-selected-panel {
+        width: 2px !important;
+        height: 31px;
+        left:156px!important;
+        transition: top .2s cubic-bezier(0.35, 0, 0.25, 1)!important;
+    }
+    .t-tabstrip.t-vertical .t-header {
+        border-radius: 8px 0 0 0;
+        border-bottom: none;
+    }
+    .t-tabstrip.t-vertical .t-content{
+        width:calc(100% - 160px);
+    }
+    .t-tabstrip.t-vertical .t-tabstrip-items {
+        width: 160px;
+        height: auto;
+    }
+        .t-tabstrip.t-vertical .t-tabstrip-items .t-link{
+            display:inline-block;
+            width:160px;
+            cursor:pointer;
+        }
+        .t-tabstrip.t-vertical .t-tabstrip-items .t-item {
+            display: block !important;
+            height: 39px;
+            line-height: 39px;
+            border-right: none;
+            border-bottom: 1px solid #d6d6d6;
+            transition: background-color .4s cubic-bezier(0.35, 0, 0.25, 1) !important;
+            padding:0!important;
+            margin:0!important;
+        }
+            .t-tabstrip.t-vertical .t-tabstrip-items .t-item:hover {
+                background-color: #e5e5e5;
+                border-color: #cacaca;
+            }
+.c-form-action button {
+    min-width: 65px;
 }
 .c-timepicker {
     border: 1px solid #c5c5c5;
@@ -1915,11 +1954,6 @@ div.t-window {
     border-bottom: 1px solid #d2d2d2;
 }
 
-.t-tabstrip-items .t-state-active,
-.t-panelbar .t-tabstrip-items .t-state-active {
-    padding-bottom: 1px;
-    margin-bottom: -1px;
-}
 
 .t-tabstrip-items .t-link,
 .t-panelbar .t-tabstrip-items .t-link {

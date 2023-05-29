@@ -71,14 +71,14 @@ namespace Caspian.Engine
         Start = 1,
 
         /// <summary>
-        /// پردازش کاربر
+        /// فعالیت
         /// </summary>
-        User,
+        Task,
 
         /// <summary>
-        /// انجام عملیات توسط سیستم
+        /// درگاه
         /// </summary>
-        Validator,
+        Gateway,
 
         /// <summary>
         /// پایان
@@ -89,11 +89,77 @@ namespace Caspian.Engine
         /// توضیحات
         /// </summary>
         Comment,
+    }
+
+    public enum TaskType
+    {
+        /// <summary>
+        /// فعالیت کاربر
+        /// </summary>
+        UserTask = 1,
 
         /// <summary>
-        /// عملیات بررسی توسط سیستم
+        /// فعالیت قوانین تجاری
         /// </summary>
-        Parallelogram1
+        BusinessRuleTask,
+
+        /// <summary>
+        /// فعالیت سرویس
+        /// </summary>
+        ServiceTask,
+
+        /// <summary>
+        /// فعالیت ارسال
+        /// </summary>
+        SendTask,
+
+        /// <summary>
+        /// فعالیت دریافت
+        /// </summary>
+        ReceiveTask,
+
+        /// <summary>
+        /// فعالیت کدنویسی
+        /// </summary>
+        ScriptTask,
+
+        /// <summary>
+        /// فعالیت دستی
+        /// </summary>
+        ManualTask
+    }
+
+    public enum GatewayType
+    {
+        /// <summary>
+        /// درگاه انحصاری
+        /// </summary>
+        ExclusiveGateway = 1,
+
+        /// <summary>
+        /// درگاه انحصاری مبتنی بر رویداد
+        /// </summary>
+        EventbasedGateway,
+
+        /// <summary>
+        /// درگاه موازی
+        /// </summary>
+        ParallelGateway,
+
+        /// <summary>
+        /// درگاه موازی مبتنی بر رویداد
+        /// </summary>
+        ParallelEventbasedGateway,
+
+        /// <summary>
+        /// درگاه فراگیر
+        /// </summary>
+        InclusiveGatewa,
+
+        /// <summary>
+        /// درگاه پیچیده
+        /// </summary>
+        ComplexGatewa
     }
 
     public enum DynamicParameterType: byte

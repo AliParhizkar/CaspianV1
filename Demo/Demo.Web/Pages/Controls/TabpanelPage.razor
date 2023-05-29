@@ -5,7 +5,8 @@
     The tabpanel has <b>tabs and content</b>. You can <b>use Html</b> in tabs and content. We can add tabs <b>statically and dynamically</b>.
 </p>
 <h3 class="pt-3">Tabpanel-Static</h3>
-<TabPanel>
+
+<TabPanel @bind-TabIndex="tabIndex">
     <Tabs>
         <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
             <div class="ps-4 pe-4 pt-4 pb-4">
@@ -107,9 +108,40 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
+<h3 class="pt-3">Horizontal Alignment</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
+            <div class="ps-4 pe-4 pt-4 pb-4">
+                <TabPanel Vertical>
+                    <Tabs>
+                        <TabPanelItem Title="Item 1">
+                            <div class="p-5 m-5 text-center" style="border:1px solid red">
+                                <h4>Tabpanel 1</h4>
+                            </div>
+                        </TabPanelItem>
+                        <TabPanelItem Title="Item 2">
+                            <div class="p-5 m-5 text-center" style="border:1px solid red">
+                                <h4>Tabpanel 2</h4>
+                            </div>
+                        </TabPanelItem>
+                        <TabPanelItem Title="Item 3">
+                            <div class="p-5 m-5 text-center" style="border:1px solid red">
+                                <h4>Tabpanel 3</h4>
+                            </div>
+                        </TabPanelItem>
+                    </Tabs>
+                </TabPanel>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Razor'>
+            <Document FolderName="Tabpanel" FileName="Horizontal" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code
 {
-    int selectedId = 1, tabIndex = 1, simpleTabIndex = 1;
+    int selectedId = 1, tabIndex = 1;
     IDictionary<int, string> dic = new Dictionary<int, string>();
 
     protected override void OnInitialized()

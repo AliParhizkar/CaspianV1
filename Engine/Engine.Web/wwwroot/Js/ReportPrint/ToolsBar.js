@@ -262,8 +262,10 @@
             if ($(this).attr('id') == '_14' || $(this).attr('id') == '_15')
                 $(this).parent().find('input').css('border-color', '#dbce99');
             var id = $(this).attr('id'), curentControl = page.getCurentControl();
-            if (curentControl && id) {
-                id = parseInt(id.substr(1)), ctr = getCurentElement(), ctrType = curentControl.controlType;
+            if (curentControl && id || id == '_34') {
+                id = parseInt(id.substr(1)), ctr = getCurentElement();
+                if (curentControl)
+                    ctrType = curentControl.controlType;
                 let alignment = null, font = null, $ctr = null, val = null, t = null, border = null, win = null;
                 switch (id) {
                     case 1:

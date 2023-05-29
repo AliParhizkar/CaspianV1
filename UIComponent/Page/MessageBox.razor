@@ -1,12 +1,10 @@
 ﻿@namespace Caspian.UI
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime jsRuntime
 @inject CaspianDataService service
 @if (show)
 {
-    <div @ref="overlay" class="t-overlay t-messageeeeeeee">
-
-    </div>
-    <div @ref="box" class="c-messagebox">
+    <div class="t-overlay t-messageeeeeeee"></div>
+    <div  class="c-messagebox">
         <div class="c-content">
             @{
                 string className = "c-icon ";
@@ -57,8 +55,6 @@
 }
 @code
 {
-    ElementReference overlay;
-    ElementReference box;
     bool show;
     bool? confirmResult = null;
     bool? AlertResult = null;
@@ -84,9 +80,6 @@
         }
         base.OnInitialized();
     }
-
-    [Inject]
-    IJSRuntime jsRuntime { get; set; }
 
     [Parameter]
     public string Message { get; set; }
@@ -116,7 +109,7 @@
         if (message.HasValue())
             Message = message.Replace("\n", "<br/>");
         show = true;
-        await jsRuntime.InvokeVoidAsync("$.caspian.enableDefaultShortKey", true, DotNetObjectReference.Create(this), overlay, box);
+        await jsRuntime.InvokeVoidAsync("$.caspian.enableDefaultShortKey", true, DotNetObjectReference.Create(this));
         StateHasChanged();
         var task = Task.Run<bool>(async () =>
         {

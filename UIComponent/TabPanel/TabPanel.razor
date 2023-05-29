@@ -1,63 +1,57 @@
 ﻿@namespace Caspian.UI
 @inject IJSRuntime JSRuntime
+@{
+    var className = Vertical ? "t-widget t-tabstrip t-vertical" : "t-widget t-tabstrip";
+}
 <CascadingValue Value="this" Name="ParentTabPanel">
-    @if (Vertical)
-    {
-        <div style="@Style" class="t-widget t-tabstrip t-vertical">
-
-        </div>
-    }
-    else if (tabPanels != null)
-    {
-        <div @ref="element" style="@Style" class="t-widget t-tabstrip">
-            <div class="t-widget t-header">
-                <div class="c-tabstrip-items">
-                    <ul class="t-reset t-tabstrip-items">
-                        @{
-                            var index = 1;
-                        }
-                        @foreach (var item in tabPanels)
-                        {
-                            var className = "t-item ";
-                            if (index == TabIndex)
-                                className += "t-state-active";
+    <div @ref="element" style="@Style" class="@className">
+        <div class="t-widget t-header">
+            <div class="c-tabstrip-items">
+                <ul class="t-reset t-tabstrip-items">
+                    @{
+                        var index = 1;
+                    }
+                    @foreach (var item in tabPanels)
+                    {
+                        var className = "t-item ";
+                        if (index == TabIndex)
+                            className += "t-state-active";
+                        else
+                            className += "t-state-default";
+                        <li class="@className">
+                            @if (index == TabIndex)
+                            {
+                                <span class="t-link">@((MarkupString)item.Title)</span>
+@*                                @if (item.Closeable)
+                                {
+                                    <span class="t-close"></span>
+                                }*@
+                            }
                             else
-                                className += "t-state-default";
-                            <li class="@className">
-                                @if (index == TabIndex)
-                                {
-                                    <span class="t-link">@((MarkupString)item.Title)</span>
-                                    @if (item.Closeable)
-                                    {
-                                        <span class="t-close"></span>
-                                    }
-                                }
-                                else
-                                {
-                                    int tabIndex = index;
-                                    <span class="t-link"
+                            {
+                                int tabIndex = index;
+                                <span class="t-link"
                               @onclick="async () =>
                                               {
                                                   TabIndex = tabIndex;
                                                   CurentTabpanel = item;
                                                   await this.TabIndexChanged.InvokeAsync(tabIndex);
                                               }">@((MarkupString)item.Title)</span>
-                                    @if (item.Closeable)
-                                    {
-                                        <span class="t-close"></span>
-                                    }
+                                @if (item.Closeable)
+                                {
+                                    <span class="t-close"></span>
                                 }
+                            }
 
-                            </li>
-                            index++;
-                        }
-                    </ul>
-                    <span class="c-selected-panel"></span>
-                </div>
+                        </li>
+                        index++;
+                    }
+                </ul>
+                <span class="c-selected-panel"></span>
             </div>
-            @Tabs
         </div>
-    }
+        @Tabs
+    </div>
 </CascadingValue>
 @code 
 {
@@ -76,6 +70,7 @@
         }
     }
 
+    [Parameter]
     public bool Vertical { get; set; }
 
     [Parameter]

@@ -388,8 +388,11 @@ legend {
     display:flex;
 }
 .c-workflow-designer {
-    border: 1px solid red;
     height: 100vh;
-    width: calc(100% - 250px);
+    width: calc(100% - 320px);
     box-sizing: border-box;
+}
+.c-workflow-designer canvas{
+    border:none!important;
+    z-index:9!important;
 }

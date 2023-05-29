@@ -1,4 +1,13 @@
 /* base stylesheet */
+
+.t-rtl .t-tabstrip.t-vertical .t-header {
+    border-left: 1px solid #cdcdcd;
+}
+
+.t-ltr .t-tabstrip.t-vertical .t-header {
+    border-right: 1px solid #cdcdcd;
+}
+
 .t-rtl .t-dropdown-wrap .t-t-select {
     border-radius: 8px 0 0 8px;
 }

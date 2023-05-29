@@ -16,16 +16,16 @@ namespace Main.Models
         public ActivityModel(Activity activity)
         {
             Id = activity.Id.ToString();
-            switch(activity.ActivityType)
-            {
-                case ActivityType.Start: Category = "Start";break;
-                case ActivityType.User: Category = "";break;
-                case ActivityType.Validator: Category = "Validator"; break;
-                case ActivityType.End: Category = "End"; break;
-                case ActivityType.Comment: Category = "Comment"; break;
-                case ActivityType.Parallelogram1: Category = "Parallelogram1";break;
-                default: throw new NotImplementedException("خطای عدم پیاده سازی");
-            }
+            //switch(activity.ActivityType)
+            //{
+            //    case ActivityType.Start: Category = "Start";break;
+            //    case ActivityType.User: Category = "";break;
+            //    case ActivityType.Validator: Category = "Validator"; break;
+            //    case ActivityType.End: Category = "End"; break;
+            //    case ActivityType.Comment: Category = "Comment"; break;
+            //    case ActivityType.Parallelogram1: Category = "Parallelogram1";break;
+            //    default: throw new NotImplementedException("خطای عدم پیاده سازی");
+            //}
             Location = activity.Left + " " + activity.Top;
             Text = activity.Title;
             var actions = activity.OutConnectors.Select(t => t.Title);

@@ -417,32 +417,28 @@ rBorder.prototype = {
     getBorder: function (element) {
         var borderStyle = 'solid';
         var borderWidth = '1px', color = '#000000', borderKind = 0;
-        if ($(element).css('border-top-style') != undefined && $(element).css('border-top-style') != 'none') {
+        if ($(element).css('border-top-style') && $(element).css('border-top-style') != 'none' && $(element).css('border-top-width') != '0px') {
             borderStyle = $(element).css('border-top-style');
-            if ($(element).css('border-top-width') != '0px')
-                borderWidth = $(element).css('border-top-width');
+            borderWidth = $(element).css('border-top-width');
             color = $(element).css('border-top-color');
             borderKind |= 1;
         }
-        if ($(element).css('border-bottom-style') && $(element).css('border-bottom-style') != 'none') {
+        if ($(element).css('border-bottom-style') && $(element).css('border-bottom-style') != 'none' && $(element).css('border-bottom-width') != '0px') {
             borderStyle = $(element).css('border-bottom-style');
-            if ($(element).css('border-bottom-width') != '0px')
-                borderWidth = $(element).css('border-bottom-width');
+            borderWidth = $(element).css('border-bottom-width');
             borderWidth = $(element).css('border-bottom-width');
             color = $(element).css('border-bottom-color');
             borderKind |= 2;
         }
-        if ($(element).css('border-left-style') && $(element).css('border-left-style') != 'none') {
+        if ($(element).css('border-left-style') && $(element).css('border-left-style') != 'none' && $(element).css('border-left-width') != '0px') {
             borderStyle = $(element).css('border-left-style');
-            if ($(element).css('border-left-width') != '0px')
-                borderWidth = $(element).css('border-left-width');
+            borderWidth = $(element).css('border-left-width');
             color = $(element).css('border-left-color');
             borderKind |= 4;
         }
-        if ($(element).css('border-right-style') && $(element).css('border-right-style') != 'none') {
+        if ($(element).css('border-right-style') && $(element).css('border-right-style') != 'none' && $(element).css('border-right-width') != '0px') {
             borderStyle = $(element).css('border-right-style');
-            if ($(element).css('border-right-width') != '0px')
-                borderWidth = $(element).css('border-right-width');
+            borderWidth = $(element).css('border-right-width');
             color = $(element).css('border-right-color');
             borderKind |= 8;
         }

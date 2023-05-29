@@ -1,37 +1,64 @@
 ﻿(function ($) {
     var myDiagram;
     var $w = $.workflow = {
+
+        toolsbox: function () {
+            let $ = go.GraphObject.make;
+            console.log(myDiagram.nodeTemplateMap)
+            palette = $(go.Palette, 'workflowPalette', {
+                maxSelectionCount: 1,
+                nodeTemplateMap: myDiagram.nodeTemplateMap,
+            });
+            
+            let data = [];
+            data.push({ category: 'Start'});
+            data.push({ category: 'UserActivity' });
+            data.push({ category: 'ValidatorActivity' });
+            palette.model = new go.GraphLinksModel(data);
+        },
+        changeActivity: function (id, text, ) {
+
+        },
+
         init: function (dotNetObjectReference, myData) {
             let activities = JSON.parse(myData);
             $w.dotnet = dotNetObjectReference;
             let $ = go.GraphObject.make;
             myDiagram = $(go.Diagram, "workflowDesigner", {
-                //grid: $(go.Panel, "Grid",  // a simple 10x10 grid
-                //    $(go.Shape, "LineH", { stroke: "lightgray", strokeWidth: 0.5 }),
-                //    $(go.Shape, "LineV", { stroke: "lightgray", strokeWidth: 0.5 })
-                //)
+                "draggingTool.dragsLink": false,
+
             });
+            myDiagram.addDiagramListener("ChangedSelection",
+                e => {
+                    if (myDiagram.selection.count == 1) {
+                        //fill propertyWindow;
+                        var q = myDiagram.selection[0].part.data;
+
+                    } else {
+                        //disable propertyWindow
+                    }
+                });
             myDiagram.nodeTemplateMap.add("UserActivity",
                 $(go.Node, "Auto", new go.Binding("location", "loc", go.Point.parse),
                     $(go.Shape, "RoundedRectangle", {
                     fill: $(go.Brush, "Linear", { 1: "lightblue", 0: "#eef" }),
-                    stroke: "lightblue", strokeWidth: 2,
-                    click: $w.ActivitySelect,
-                    angle: 90
-                }), $(go.Panel, "Table", { defaultAlignment: go.Spot.TopRight, margin: 0, click: $w.ActivitySelect }, $(go.RowColumnDefinition, { column: 1, width: 0 }), $(go.Picture, {
-                    source: "_content/Engine.Web/Content/Workflow/Images/UserActivity.png", row: 0, column: 0,
-                    width: 120, height: 40, margin: 0,
+                        stroke: "lightblue", strokeWidth: 2,
+                        click: $w.ActivitySelect,
+                        angle: 90
+                    }), $(go.Panel, "Table", { defaultAlignment: go.Spot.TopRight, margin: 0, click: $w.ActivitySelect }, $(go.RowColumnDefinition, { column: 1, width: 0 }), $(go.Picture, {
+                        source: "_content/Engine.Web/Content/Workflow/Images/UserActivity.png", row: 0, column: 0,
+                        width: 120, height: 40, margin: 0,
                     
-                }), $(go.TextBlock, 
-                    new go.Binding("text", "title"), {
-                    row: 1, column: 0,
-                    textAlign: "center",
-                    alignment: go.Spot.TopCenter,
-                    height: 30,
-                    width: 100,
-                    font: "14px bold Arial",
-                    margin: 5
-                }))));
+                    }), $(go.TextBlock, 
+                        new go.Binding("text", "title"), {
+                        row: 1, column: 0,
+                        textAlign: "center",
+                        alignment: go.Spot.TopCenter,
+                        height: 30,
+                        width: 100,
+                        font: "14px bold Arial",
+                        margin: 5
+                    }))));
 
             myDiagram.nodeTemplateMap.add("ValidatorActivity",
                 $(go.Node, "Auto", new go.Binding("location", "loc", go.Point.parse),
@@ -62,46 +89,46 @@
                             { desiredSize: new go.Size(70, 70), fill: "transparent", stroke: "#09d3ac", strokeWidth: 3.5 }),
                         $(go.TextBlock, "Start", {text: "Start"})
                     )));
+            $w.toolsbox();
+            let data = [];
+            if (activities != null) {
+                activities.forEach(function (activity) {
+                    let loc = activity.Left + ' ' + activity.Top;
+                    let category = '';
+                    switch (activity.ActivityType) {
+                        case 1:
+                            category = 'Start';
+                            break;
+                        case 2:
+                            category = 'UserActivity';
+                            break;
+                        case 3:
+                            category = 'ValidatorActivity';
+                            break;
 
-
-
-            let data = []
-            activities.forEach(function (activity) {
-                let loc = activity.Left + ' ' + activity.Top;
-                console.log(activity.Id)
-                let category = '';
-                switch (activity.ActivityType) {
-                    case 1:
-                        category = 'Start';
-                        break;
-                    case 2:
-                        category = 'UserActivity';
-                        break;
-                    case 3:
-                        category = 'ValidatorActivity';
-                        break;
-                    
-                }
-                data.push({
-                    category: category,
-                    key: activity.Id,
-                    title: activity.Title,
-                    loc: loc
+                    }
+                    data.push({
+                        category: category,
+                        key: activity.Id,
+                        title: activity.Title,
+                        loc: loc
+                    });
                 });
-            });
-            myDiagram.model = new go.GraphLinksModel(data, [
-                { from: "1", to: "2" },
-                { from: "2", to: "3" },
-                { from: "3", to: "4" },
-                { from: "3", to: "5" }
-            ]);
+                myDiagram.model = new go.GraphLinksModel(data, [
+                    { from: "1", to: "2" },
+                    { from: "2", to: "3" },
+                    { from: "3", to: "4" },
+                    { from: "3", to: "5" }
+                ]);
+            }
         },
 
         ActivitySelect: function (node, e) {
             let data = e.part.data;
             if (myDiagram.selection.count == 1) {
                 myDiagram.selection.each(t => {
-                    let data = t.part.data;
+                    let id = t.part.data.key;
+                    //alert(id)
                 });
             }
 
@@ -109,10 +136,10 @@
 
         getActivityCodebehindString: function () {
             if (myDiagram.selection.count == 1) {
-                myDiagram.selection.each(t => {
-                    var id = t.part.data.key;
-                    $w.dotnet.invokeMethodAsync("GetActivityCodebehindString", id).then(t => {
-                        var data = {
+                myDiagram.selection.each(async t => {
+                    let id = t.part.data.key;
+                    await $w.dotnet.invokeMethodAsync("GetActivityCodebehindString", id).then(t => {
+                        let data = {
                             action: 'setActivityCodebehind',
                             content: t
                         };
@@ -122,12 +149,11 @@
             }
         },
 
-
         getActivitySourceCodeString: function () {
             if (myDiagram.selection.count == 1) {
-                myDiagram.selection.each(t => {
+                myDiagram.selection.each(async t => {
                     var id = t.part.data.key;
-                    $w.dotnet.invokeMethodAsync("getActivitySourceCodeString", id).then(t => {
+                    await $w.dotnet.invokeMethodAsync("getActivitySourceCodeString", id).then(t => {
                         var data = {
                             action: 'setActivitySourceCode',
                             content: t
@@ -137,13 +163,6 @@
                 });
             }
         },
-
-
-
-
-
-
-
 
         connectorText: function (link) {
             switch (link.fromNode.data.category) {
@@ -167,19 +186,19 @@
             node.part.data.actorType = value;
         },
 
-        setActivityProperty: function (node) {
+        setActivityProperty: async function (node) {
             var data = node.part.data;
             var activity = { title: data.text, actorType: data.actorType };
-            $w.dotNetObjectReference.invokeMethodAsync('ShowActivityProperty', activity);
+            await $w.dotNetObjectReference.invokeMethodAsync('ShowActivityProperty', activity);
             $w.curentNode = node;
         },
 
-        systemAction: function (link) {
+        systemAction: async function (link) {
             var obj = link.data;
             if (!obj)
                 obj = {};
             obj.fromActivity = link.fromNode.data;
-            $w.dotNetObjectReference.invokeMethodAsync('ShowMethodReturnRefrence', obj);
+            await $w.dotNetObjectReference.invokeMethodAsync('ShowMethodReturnRefrence', obj);
             $w.curentLink = link;
             //var url = checkActionsUrl;
             //$.telerik.post(url, obj, function (result) {
@@ -221,13 +240,13 @@
             myDiagram.model.setDataProperty(tempLink, "text", data.title);
         },
 
-        userDefineAction: function (link) {
+        userDefineAction: async function (link) {
             var data = link.data;
             //win.selectedObject = win.getObject();
             data.title = link.data.text;
             data.activity = {};
             $w.curentLink = link;
-            $w.dotNetObjectReference.invokeMethodAsync('ShowUserAndProperyRefrence', data);
+            await $w.dotNetObjectReference.invokeMethodAsync('ShowUserAndProperyRefrence', data);
             //win.saveData = function (data) {
 
             //};
@@ -273,9 +292,9 @@
             myDiagram.model.setDataProperty(tempNode, "text", action.faTitle);
         },
 
-        showFormForProcessMethod: function (e) {
+        showFormForProcessMethod: async function (e) {
             let data = e.targetObject.part.data.action || {};
-            $w.dotNetObjectReference.invokeMethodAsync('ShowProcessAction', data);
+            await $w.dotNetObjectReference.invokeMethodAsync('ShowProcessAction', data);
             $w.curentNode = e.targetObject;
             //$.telerik.post(processMethodsUrl, obj, function (result) {
             //    $.telerik.unblockUI();
@@ -302,11 +321,11 @@
             myDiagram.model.setDataProperty(tempNode, "text", action.faTitle);
         },
 
-        showFormForCheckMethods: function (e, obj) {
+        showFormForCheckMethods: async function (e, obj) {
             let data = obj.part.data.action;
             if (!data)
                 data = {};
-            $w.dotNetObjectReference.invokeMethodAsync('CheckMethods', data);
+            await $w.dotNetObjectReference.invokeMethodAsync('CheckMethods', data);
             $w.curentNode = obj;
             //$.telerik.blockUI();
             //$.telerik.post(checkMethodsUrl, action, function (result) {
@@ -324,7 +343,7 @@
             //});
         },
 
-        showFormForFieldsInit: function (e) {
+        showFormForFieldsInit: async function (e) {
             var data = e.targetObject.part.data;
             if (data.dynamicFields == null)
                 data.dynamicFields = [];
@@ -332,15 +351,15 @@
             //win.saveFields = function (fields) {
             //    data.dynamicFields = fields;
             //};
-            $w.dotNetObjectReference.invokeMethodAsync('ActivityDynamicField', data.dynamicFields);
+            await $w.dotNetObjectReference.invokeMethodAsync('ActivityDynamicField', data.dynamicFields);
         },
 
-        showFormForFieldsInit1: function (e) {
+        showFormForFieldsInit1: async function (e) {
             var data = e.targetObject.part.data;
             if (data.fields == null)
                 data.fields = [];
             data.id = data.key;
-            $w.dotNetObjectReference.invokeMethodAsync('ActivityField', data);
+            await $w.dotNetObjectReference.invokeMethodAsync('ActivityField', data);
             //var win = $.telerik.getWindow();
             //win.selectedObject = data;
 
@@ -354,12 +373,12 @@
             //win.open();
         },
 
-        save: function () {
+        save: async function () {
             if (confirm('آیا با ثبت موافقید؟')) {
                 var obj = new Object();
                 obj.nodeDataArray = myDiagram.model.nodeDataArray;
                 obj.linkDataArray = myDiagram.model.linkDataArray;
-                $w.dotNetObjectReference.invokeMethodAsync('Save', JSON.stringify(obj));
+                await $w.dotNetObjectReference.invokeMethodAsync('Save', JSON.stringify(obj));
             }
         }
     }

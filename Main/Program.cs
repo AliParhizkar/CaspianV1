@@ -11,8 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });//builder.Services.AddSingleton<FormAppState>();
-builder.Services.AddSingleton<WindowAppState>();
-builder.Services.AddTransient(typeof(GridService<>));
 builder.Services.AddTransient<FileUploadService>();
 builder.Services.AddTransient<CascadeService>();
 builder.Services.AddScoped<BatchService>();
