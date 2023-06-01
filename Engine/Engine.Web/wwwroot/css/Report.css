@@ -5,12 +5,6 @@
 .datepicker-holder button {
     margin: 10px 5px;
 }
-.c-workflow-pallete {
-    border: 1px solid red;
-    width: 140px;
-    height: 100vh;
-}
-
 .datepicker-holder div[class|=col] {
     margin-top: 10px;
 }

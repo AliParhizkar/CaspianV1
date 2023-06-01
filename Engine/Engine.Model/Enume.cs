@@ -1,4 +1,5 @@
 ﻿using Caspian.Common.Attributes;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Engine
@@ -86,80 +87,128 @@ namespace Caspian.Engine
         End,
 
         /// <summary>
+        /// رویداد
+        /// </summary>
+        Event,
+
+        /// <summary>
         /// توضیحات
         /// </summary>
         Comment,
+
+        
     }
 
-    public enum TaskType
+    public enum TaskType: byte
     {
         /// <summary>
         /// فعالیت کاربر
         /// </summary>
-        UserTask = 1,
+        [Display(Name = "فعالیت-کاربر")]
+        User = 1,
 
         /// <summary>
         /// فعالیت قوانین تجاری
         /// </summary>
-        BusinessRuleTask,
+        [Display(Name = "فعالیت-قوانین تجاری")]
+        BusinessRule,
 
         /// <summary>
         /// فعالیت سرویس
         /// </summary>
-        ServiceTask,
+        [Display(Name = "فعالیت-سرویس")] 
+        Service,
 
         /// <summary>
         /// فعالیت ارسال
         /// </summary>
-        SendTask,
+        [Display(Name = "فعالیت-ارسال")] 
+        Send,
 
         /// <summary>
         /// فعالیت دریافت
         /// </summary>
-        ReceiveTask,
+        [Display(Name = "فعالیت-دریافت")] 
+        Receive,
 
         /// <summary>
         /// فعالیت کدنویسی
         /// </summary>
-        ScriptTask,
+        [Display(Name = "فعالیت-کدنویسی")] 
+        Script,
 
         /// <summary>
         /// فعالیت دستی
         /// </summary>
-        ManualTask
+        [Display(Name = "فعالیت-دستی")] 
+        Manual
     }
 
-    public enum GatewayType
+    public enum GatewayType: byte
     {
         /// <summary>
         /// درگاه انحصاری
         /// </summary>
-        ExclusiveGateway = 1,
+        [Display(Name = "انحصاری")]
+        Exclusive = 1,
 
         /// <summary>
         /// درگاه انحصاری مبتنی بر رویداد
         /// </summary>
-        EventbasedGateway,
+        [Display(Name = "انحصاری مبتنی بر رویداد")] 
+        Eventbased,
 
         /// <summary>
         /// درگاه موازی
         /// </summary>
-        ParallelGateway,
+        [Display(Name = "موازی")]
+        Parallel,
 
         /// <summary>
         /// درگاه موازی مبتنی بر رویداد
         /// </summary>
-        ParallelEventbasedGateway,
+        [Display(Name = "موازی مبتنی بر رویداد")]
+        ParallelEventbased,
 
         /// <summary>
         /// درگاه فراگیر
         /// </summary>
-        InclusiveGatewa,
+        [Display(Name = "فراگیر")]
+        Inclusive,
 
         /// <summary>
         /// درگاه پیچیده
         /// </summary>
-        ComplexGatewa
+        [Display(Name = "پیچیده")]
+        Complex
+    }
+
+    public enum EventTriggerType:byte
+    {
+        [Display(Name = "علامت")]
+        Signal = 1,
+
+        [Display(Name = "پیام")]
+        Message,
+
+        [Display(Name = "تایمر")]
+        Timer,
+
+        Terminate,
+
+        [Display(Name = "خطا")]
+        Error,
+
+        [Display(Name = "شرطی")]
+        Conditional,
+
+        Multiple,
+
+        [Display(Name = "موازی")]
+        Parallel,
+
+        [Display(Name = "لغو")]
+        Cancel
     }
 
     public enum DynamicParameterType: byte

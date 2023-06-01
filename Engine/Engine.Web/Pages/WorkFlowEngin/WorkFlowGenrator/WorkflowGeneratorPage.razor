@@ -1,56 +1,104 @@
 ﻿@page "/Engine/WorkflowGenerator/{WorkflowId:int}"
+@namespace Caspian.Engine.WorkFlow
 @using Newtonsoft.Json
+@using Syncfusion.Blazor.Diagram
+@using Syncfusion.Blazor.Diagram.SymbolPalette
+@using System.Collections.ObjectModel;
+@using global::Engine.Web.Services;
 @inherits BasePage
 @inject IHostEnvironment Environment 
 <div class="c-workflow">
     <div class="c-property-window">
-
+        <WFPropertyWindow Node="selectedNode" />
     </div>
     <div id="workflowDesigner" class="c-workflow-designer">
-         
+        <SfDiagramComponent Nodes="nodes" NodeCreating="NodeCreating" @ref="diagram" SelectionChanged="NodeSelected" />
+
     </div>
     <div id="workflowPalette" class="c-workflow-pallete">
+        <PaletteComponent @ref="palette" />
     </div>
 </div>
 
 
 @code
 {
+    Node selectedNode;
+    PaletteComponent palette; 
+    SfDiagramComponent diagram;
+    DiagramObjectCollection<Node> nodes;
+
     [Parameter]
-    public int WorkflowId{ get; set; }
-    IList<Activity> Activities;
+    public int WorkflowId { get; set; }
+
+    void NodeSelected(SelectionChangedEventArgs e)
+    {
+        if (e.NewValue.Count == 1 && e.NewValue[0] is Node)
+            selectedNode = e.NewValue[0] as Node;
+        else
+            selectedNode = null;
+    }
+
+    void NodeCreating(IDiagramObject obj)
+    {
+        var node = obj as Node;
+        node.Style.StrokeColor = "#b200ff";
+        node.Constraints = NodeConstraints.Default & ~(NodeConstraints.Rotate | NodeConstraints.Resize);
+        if (node.Shape is BpmnActivity)
+        {
+            node.Width = 120;
+            if (node.Annotations.Count == 0)
+                node.Annotations.Add(new ShapeAnnotation()
+                {
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Offset = new DiagramPoint(0.95, 0.5)
+                });
+        }
+        if (node.Shape is BpmnEvent)
+            node.Width = node.Height = 40;
+        if (node.Shape is BpmnGateway)
+        {
+            node.Width = 50;
+            node.Height = 50;
+        }
+        //Node added from palette
+        if (node.Data == null)
+        {
+            ///Unselect and select node for change (bug of syncfusion)
+            diagram.UnSelect(node);
+            diagram.Select(new ObservableCollection<IDiagramObject> { node });
+            selectedNode = node;
+        }
+
+    }
 
     protected override async Task OnInitializedAsync()
     {
         var scope = CreateScope();
-        Activities = await new ActivityService(scope.ServiceProvider).GetAll().Where(t => t.WorkflowId == WorkflowId).ToListAsync();
+        nodes = new DiagramObjectCollection<Node>();
+        var actvities = await new ActivityService(scope.ServiceProvider).GetAll().Where(t => t.WorkflowId == WorkflowId).ToListAsync();
+        nodes = new DiagramObjectCollection<Node>();
+        foreach (var activity in actvities)
+        {
+            var bpmNode = activity.ConvertToBpmNode();
+            nodes.Add(bpmNode);
+        }
         await base.OnInitializedAsync();
     }
 
-    [JSInvokable]
-    public async Task<string> GetActivityCodebehindString(int activityId)
-    {
-        var scope = CreateScope();
-        var code = await new ActivityService(scope.ServiceProvider).GetCodebehindAsync(activityId);
-        return code;
-    }
 
-    [JSInvokable]
-    public async Task<string> getActivitySourceCodeString(int activityId)
-    {
-        var scope = CreateScope();
-        var basePath = Environment.ContentRootPath + "Data\\Code\\";
-        var code = await new ActivityService(scope.ServiceProvider).GetSourceCodeAsync(activityId, basePath);
-        return code;
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (palette != null)
         {
-            var json = JsonConvert.SerializeObject(Activities);
-            await jsRuntime.InvokeVoidAsync("$.workflow.init", DotNetObjectReference.Create(this), json);
+            var temp = palette.GetPalettes();
+            temp.Targets = new DiagramObjectCollection<SfDiagramComponent>
+            {
+                diagram
+            };
         }
+
         await base.OnAfterRenderAsync(firstRender);
 
     }

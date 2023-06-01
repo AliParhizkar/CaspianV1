@@ -26,7 +26,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
   </ItemGroup>
-
+  <ItemGroup>
+	<PackageReference Include="Syncfusion.Blazor.Diagram" Version="21.1.35" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
     <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />

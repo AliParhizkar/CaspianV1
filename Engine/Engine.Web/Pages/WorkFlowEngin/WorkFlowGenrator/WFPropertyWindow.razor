@@ -1,0 +1,62 @@
+﻿@namespace Caspian.Engine.WorkFlow
+@using Syncfusion.Blazor.Diagram
+@using global::Engine.Web.Services
+
+<div class="w-property-window">
+    <div>
+        <label class="pe-3">عنوان</label>
+        <StringTextBox @bind-Value="activity.Title" OnChange="ActivityUpdated" />
+    </div>
+    <div class="pt-2">
+        <label class="pe-3">شرح</label>
+        <StringTextBox MultiLine Rows="5" />
+    </div>
+    @if (activity.ActivityType == ActivityType.Task)
+    {
+        <div class="pt-2">
+            <label class="pe-3">نوع فعالیت</label>
+            <DropdownList @bind-Value="activity.TaskType" OnChange="ActivityUpdated" />
+        </div>
+    }
+    @if (activity.ActivityType == ActivityType.Gateway)
+    {
+        <div class="pt-2">
+            <label class="pe-3">نوع درگاه</label>
+            <DropdownList @bind-Value="activity.GatewayType" OnChange="ActivityUpdated" />
+        </div>
+    }
+    @if (activity.ActivityType == ActivityType.Event)
+    {
+        <div class="pt-2">
+            <label class="pe-3">محرک</label>
+            <DropdownList @bind-Value="activity.EventTriggerType" OnChange="ActivityUpdated" />
+        </div>
+    }
+</div>
+@code 
+{
+    Activity activity;
+
+    [Parameter]
+    public Node Node { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        activity = Node?.ConvertToActivity() ?? new Activity();
+        base.OnParametersSet();
+    }
+
+    void ActivityUpdated()
+    {
+        Node.Style.StrokeColor = "#b200ff";
+        
+        if (Node.Annotations.Count > 0)
+            Node.Annotations[0].Content = activity.Title;
+        if (activity.ActivityType == ActivityType.Task)
+            (Node.Shape as BpmnActivity).TaskType = activity.TaskType.ConvertToBpmnTask();
+        if (activity.ActivityType == ActivityType.Gateway)
+            (Node.Shape as BpmnGateway).GatewayType = activity.GatewayType.ConvertToBpmnGateway();
+        if (activity.ActivityType == ActivityType.Event)
+            (Node.Shape as BpmnEvent).Trigger = activity.EventTriggerType.ConvertToBpmnEventTrigger();
+    }
+}

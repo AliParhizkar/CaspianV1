@@ -13,7 +13,9 @@
     <EmbeddedResource Remove="Data\Code\**" />
     <None Remove="Data\Code\**" />
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Syncfusion.Blazor.Diagram" Version="21.1.35" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>

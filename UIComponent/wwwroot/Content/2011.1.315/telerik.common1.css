@@ -2912,6 +2912,8 @@ html body .t-grid tbody .t-button-icon {
     width: calc(100% - 27px);
     font-size: 14px;
     box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .t-dropdown .t-state-error {
     border-color: rgba(255, 0, 0, 0.19) !important;

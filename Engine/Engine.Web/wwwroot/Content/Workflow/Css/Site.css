@@ -312,14 +312,17 @@ legend {
         }
 
 .c-property-window {
-    width: 180px;
+    width: 230px;
     margin: 0;
     height: 100vh;
-    border-left: 1px dashed gray;
-    overflow:hidden;
+    border-left: 1px dashed #b200ff;
+    padding:8px;
 }
-    .c-property-window.c-minimize{
-        width:60px;
+    .w-property-window >label{
+        padding-right:8px;
+    }
+    .c-property-window.c-minimize {
+        width: 60px;
     }
     .c-form-designer {
         width: calc(100% - 180px);
@@ -379,6 +382,13 @@ legend {
     width:178px;
 }
 
+.c-workflow-pallete {
+    border-right: 1px dashed darkgray;
+    width: 50px;
+    overflow: hidden;
+    padding-left:8px;
+}
+
 .c-properties label{
     font-size:10px;
     white-space:nowrap;
@@ -389,8 +399,9 @@ legend {
 }
 .c-workflow-designer {
     height: 100vh;
-    width: calc(100% - 320px);
+    width: calc(100% - 280px);
     box-sizing: border-box;
+    border-right: 1px dashed #b200ff;
 }
 .c-workflow-designer canvas{
     border:none!important;

@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Help.rar" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Pages\Index.razor" />
   </ItemGroup>
 

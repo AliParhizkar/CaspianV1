@@ -60,10 +60,10 @@ namespace Main.Models
                     break;
                 case "":
                 case null:
-                    activity.ActivityType = ActivityType.User;
+                    //activity.ActivityType = ActivityType.User;
                     break;
                 case "Validator":
-                    activity.ActivityType = ActivityType.Validator;
+                    //activity.ActivityType = ActivityType.Validator;
                     break;
                 case "End":
                     activity.ActivityType = ActivityType.End;
@@ -72,7 +72,7 @@ namespace Main.Models
                     activity.ActivityType = ActivityType.Comment;
                     break;
                 case "Parallelogram1":
-                    activity.ActivityType = ActivityType.Parallelogram1;
+                    //activity.ActivityType = ActivityType.Parallelogram1;
                     break;
                 default:
                     throw new NotImplementedException("عدم پیاده سازی");

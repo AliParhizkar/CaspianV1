@@ -4,6 +4,7 @@ using Caspian.Engine.Web;
 using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
+using Syncfusion.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
 //new RazorPageProceccor().Proccess();
@@ -15,6 +16,7 @@ builder.Services.AddTransient<FileUploadService>();
 builder.Services.AddTransient<CascadeService>();
 builder.Services.AddScoped<BatchService>();
 builder.Services.AddScoped<BasePageService>();
+builder.Services.AddSyncfusionBlazor();
 builder.Services.AddSingleton<SingletonMenuService>(t => 
 {
     using var context = new Caspian.Engine.Model.Context();

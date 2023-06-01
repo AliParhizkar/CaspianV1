@@ -1,0 +1,55 @@
+﻿@namespace Caspian.Engine.WorkFlow
+@using Syncfusion.Blazor.Diagram
+@using Syncfusion.Blazor.Diagram.SymbolPalette
+
+<SfSymbolPaletteComponent @ref="@symbolPalette"
+                          Palettes="@palettes" SymbolWidth="50" SymbolHeight="50">
+</SfSymbolPaletteComponent>
+
+@code 
+{
+    SfSymbolPaletteComponent symbolPalette;
+    DiagramObjectCollection<Palette> palettes;
+    DiagramObjectCollection<NodeBase> paletteNodes;
+
+    protected override void OnInitialized()
+    {
+        palettes = new DiagramObjectCollection<Palette>();
+        paletteNodes = new DiagramObjectCollection<NodeBase>();
+        InitPaletteModel();
+        base.OnInitialized();
+    }
+
+    void InitPaletteModel()
+    {
+        CreatePaletteNode(new BpmnEvent() { EventType = BpmnEventType.Start });
+        CreatePaletteNode(new BpmnEvent() { EventType = BpmnEventType.End });
+        CreatePaletteNode(new BpmnEvent() { EventType = BpmnEventType.Intermediate });
+        CreatePaletteNode(new BpmnActivity() { ActivityType = BpmnActivityType.Task });
+        CreatePaletteNode(new BpmnGateway() { GatewayType = BpmnGatewayType.None });
+        CreatePaletteNode(new BpmnFlow() { Flow = BpmnFlowType.SequenceFlow});
+        palettes = new DiagramObjectCollection<Palette>()
+        {
+           new Palette(){Symbols = paletteNodes, IsExpanded = false},
+        };
+    }
+
+    void CreatePaletteNode(DiagramObject obj)
+    {
+        var node = new Node()
+        {
+            Style = new ShapeStyle() { StrokeColor = "darkgray" },
+
+        };
+        if (obj is Shape)
+        {
+            node.Shape = obj as Shape;
+            paletteNodes.Add(node);
+        }
+    }
+
+    public SfSymbolPaletteComponent GetPalettes()
+    {
+        return symbolPalette;
+    }
+}

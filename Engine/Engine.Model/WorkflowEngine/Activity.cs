@@ -21,11 +21,17 @@ namespace Caspian.Engine
 
         public ActivityType ActivityType { get; set; }
 
+        public TaskType? TaskType { get; set; }
+
         public string SourceCodeFileName { get; set; }
 
-        public int Left { get; set; }
+        public double Left { get; set; }
 
-        public int Top { get; set; }
+        public double Top { get; set; }
+
+        public GatewayType? GatewayType { get; set; }
+
+        public EventTriggerType? EventTriggerType { get; set; }
 
         /// <summary>
         /// نوع عامل
