@@ -92,11 +92,14 @@ namespace Caspian.Engine
         Event,
 
         /// <summary>
+        /// زیرفعالیت
+        /// </summary>
+        SubProccess,
+
+        /// <summary>
         /// توضیحات
         /// </summary>
-        Comment,
-
-        
+        Comment
     }
 
     public enum TaskType: byte

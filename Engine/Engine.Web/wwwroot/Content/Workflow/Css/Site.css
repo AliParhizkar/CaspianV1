@@ -5,10 +5,14 @@
     margin: 3px 0 3px 0;
     background-image: url('/_Content/Engine.Web/Content/Images/Toolsbox.png');
 }*/
+.c-property-window .fa-save{
+    font-size:16px;
+    color:darkgray;
+    cursor:pointer;
+}
 
-.workflowzoom
-{
-    background-position:-45px 0;
+.workflowzoom {
+    background-position: -45px 0;
 }
 .zoomfit
 {
@@ -383,10 +387,10 @@ legend {
 }
 
 .c-workflow-pallete {
-    border-right: 1px dashed darkgray;
+    border-right: 1px dashed #b200ff;
     width: 50px;
     overflow: hidden;
-    padding-left:8px;
+    padding-left: 8px;
 }
 
 .c-properties label{
@@ -402,6 +406,7 @@ legend {
     width: calc(100% - 280px);
     box-sizing: border-box;
     border-right: 1px dashed #b200ff;
+    border-left: 1px dashed #b200ff;
 }
 .c-workflow-designer canvas{
     border:none!important;

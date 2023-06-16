@@ -252,7 +252,6 @@ html input[disabled], textarea[disabled] {
 .t-dropdown .t-state-focused {
     transition: box-shadow 0.15s ease-out 0s;
     box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3) !important;
-    background-image: inherit;
 }
 
 .t-reset .t-state-selected

@@ -9,10 +9,13 @@
 @inject IHostEnvironment Environment 
 <div class="c-workflow">
     <div class="c-property-window">
-        <WFPropertyWindow Node="selectedNode" />
+        <div>
+            <span @onclick="SaveOnclick" class="fa fa-save"></span>
+        </div>
+        <WFPropertyWindow Nodes="nodes" Node="selectedNode" connectorsData="connectorsData" Connector="selectedConnector" />
     </div>
     <div id="workflowDesigner" class="c-workflow-designer">
-        <SfDiagramComponent Nodes="nodes" NodeCreating="NodeCreating" @ref="diagram" SelectionChanged="NodeSelected" />
+        <SfDiagramComponent ConnectorCreating="ConnectorCreating" Connectors="connectors" Nodes="nodes" NodeCreating="NodeCreating" @ref="diagram" SelectionChanged="NodeSelected" />
 
     </div>
     <div id="workflowPalette" class="c-workflow-pallete">
@@ -24,9 +27,79 @@
 @code
 {
     Node selectedNode;
-    PaletteComponent palette; 
+    Connector newConnector;
+    PaletteComponent palette;
     SfDiagramComponent diagram;
+    Connector selectedConnector;
     DiagramObjectCollection<Node> nodes;
+    DiagramObjectCollection<Connector> connectors;
+    IDictionary<string, ConnectorData> connectorsData;
+    string errorMessage;
+
+    async Task SaveOnclick()
+    {
+        using var scope = CreateScope();
+        var service = new ActivityService(scope.ServiceProvider);
+        var oldIds = await service.GetActivities(WorkflowId).Select(t => t.Id).ToListAsync();
+        var transaction = await service.Context.Database.BeginTransactionAsync();
+        foreach(var node in nodes)
+        {
+            ///Insert & update nodes
+            var activity = node.ConvertToActivity();
+            activity.WorkflowId = WorkflowId;
+
+
+            if (node.ID.StartsWith("CNode"))
+            {
+                var id = Convert.ToInt32(node.ID.Substring(5));
+                var old = await service.SingleAsync(id);
+                oldIds.Remove(id);
+                activity.Id = id;
+                old.CopyEntity(activity);
+            }
+            else
+                await service.AddAsync(activity);
+            errorMessage = (await service.ValidateAsync(activity)).Errors.FirstOrDefault()?.ErrorMessage;
+            if (errorMessage.HasValue())
+            {
+                diagram.Select(new ObservableCollection<IDiagramObject> { node });
+                return;
+            }
+            await service.SaveChangesAsync();
+        }
+        ///remove nodes
+        foreach(var id in oldIds)
+        {
+            var old = await service.SingleAsync(id);
+            await service.RemoveAsync(old);
+            await service.SaveChangesAsync();
+        }
+        var connectorService = new ConnectorService(scope.ServiceProvider);
+        oldIds = await connectorService.GetConnectors(WorkflowId).Select(t => t.Id).ToListAsync();
+        foreach(var connector in connectors)
+        {
+            var con = connector.ConvertToNodeConnector(connectorsData, nodes.ToList());
+            if (connector.ID.StartsWith("Connector"))
+            {
+                var id = Convert.ToInt32(connector.ID.Substring(9));
+                var old = await connectorService.SingleAsync(id);
+                oldIds.Remove(id);
+                con.Id = id;
+                old.CopyEntity(con);
+            }
+            else
+                await connectorService.AddAsync(con);
+            errorMessage = (await connectorService.ValidateAsync(con)).Errors.FirstOrDefault()?.ErrorMessage;
+            if (errorMessage.HasValue())
+            {
+                diagram.Select(new ObservableCollection<IDiagramObject> { connector });
+                return;
+            }
+            await connectorService.SaveChangesAsync();
+        }
+        await transaction.CommitAsync();
+        ShowMessage("ثبت با موفقیت انجام شد");
+    }
 
     [Parameter]
     public int WorkflowId { get; set; }
@@ -34,9 +107,28 @@
     void NodeSelected(SelectionChangedEventArgs e)
     {
         if (e.NewValue.Count == 1 && e.NewValue[0] is Node)
+        {
             selectedNode = e.NewValue[0] as Node;
+            if (selectedNode.Data == null)
+                selectedNode.Data = new NodeData();
+        }
         else
             selectedNode = null;
+        if (e.NewValue.Count == 1 && e.NewValue[0] is Connector)
+            selectedConnector = e.NewValue[0] as Connector;
+        else
+            selectedConnector = null;
+    }
+
+    async void ConnectorCreating(IDiagramObject obj)
+    {
+        newConnector = obj as Connector;
+        if (!connectorsData.ContainsKey(newConnector.ID))
+            connectorsData[newConnector.ID] = new ConnectorData();
+        /// syncfusion bug
+        await Task.Delay(1);
+        newConnector.Type = ConnectorSegmentType.Straight;
+        newConnector.CanAutoLayout = true;
     }
 
     void NodeCreating(IDiagramObject obj)
@@ -46,7 +138,7 @@
         node.Constraints = NodeConstraints.Default & ~(NodeConstraints.Rotate | NodeConstraints.Resize);
         if (node.Shape is BpmnActivity)
         {
-            node.Width = 120;
+            node.Width = 120; 
             if (node.Annotations.Count == 0)
                 node.Annotations.Add(new ShapeAnnotation()
                 {
@@ -69,7 +161,6 @@
             diagram.Select(new ObservableCollection<IDiagramObject> { node });
             selectedNode = node;
         }
-
     }
 
     protected override async Task OnInitializedAsync()
@@ -83,10 +174,17 @@
             var bpmNode = activity.ConvertToBpmNode();
             nodes.Add(bpmNode);
         }
+        var connectors1 = await new ConnectorService(scope.ServiceProvider).GetAll()
+            .Where(t => t.Activity.WorkflowId == WorkflowId).ToListAsync();
+        connectors = new DiagramObjectCollection<Connector>();
+        connectorsData = new Dictionary<string, ConnectorData>();
+        foreach (var connector in connectors1)
+        {
+            var bpmnConnector = connector.ConvertToBpmnConnector(connectorsData);
+            connectors.Add(bpmnConnector);
+        }
         await base.OnInitializedAsync();
     }
-
-
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -98,8 +196,11 @@
                 diagram
             };
         }
-
+        if (errorMessage.HasValue())
+        {
+            ShowMessage(errorMessage);
+            errorMessage = null;
+        }
         await base.OnAfterRenderAsync(firstRender);
-
     }
 }

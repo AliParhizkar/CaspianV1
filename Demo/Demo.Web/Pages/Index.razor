@@ -6,31 +6,8 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<button @onclick="() => status = WindowStatus.Open">Open</button>
-
-@if (status == WindowStatus.Open)
-{
-    <Window Status="WindowStatus.Open">
-        <Content>
-            <div class="p-5 m-5">
-                <button @onclick="() => status = WindowStatus.Close">Close</button>
-            </div>
-        </Content>
-    </Window>
-}
 
 
-
-<div style="display:none" class="c-copy-right">
-    <span class="c-icon"></span>
-    <span class="c-title">
-        تمامی حقوق معنوی این نرم افزار برای شرکت 
-        <u><b>
-            نگین رایان کاسپین
-            </b>
-        </u>
-        محفوظ می باشد</span>
-</div>
 @code
 {
     WindowStatus status;

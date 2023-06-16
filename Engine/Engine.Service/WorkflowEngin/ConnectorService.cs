@@ -1,23 +1,20 @@
-﻿using Caspian.Common.Service;
+﻿using Caspian.Common;
+using Caspian.Common.Service;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class ConnectorService : BaseService<Connector>
+    public class ConnectorService : BaseService<NodeConnector>
     {
         public ConnectorService(IServiceProvider provider)
             :base(provider)
         {
 
         }
-        /// <summary>
-        /// این متد تمامی لینک های گردش را حذف می کند
-        /// </summary>
-        /// <param name="workflowId"></param>
-        public void RemoverWorkflowConnectors(int workflowId)
+
+        public IQueryable<NodeConnector> GetConnectors(int workflowId)
         {
-            var connectors = GetAll().Where(t => t.Activity.WorkflowId == workflowId);
-            RemoveRange(connectors);
+            return GetAll().Where(t => t.Activity.WorkflowId == workflowId);
         }
     }
 }

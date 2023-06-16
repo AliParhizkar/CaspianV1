@@ -1,121 +1,192 @@
-﻿@page "/Demo/CustomeUpdate"
+﻿@page "/Demo/CustomerAndCustomerGroup"
 @namespace Demo.Web.Pages
-@inherits SimplePage<Product>
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:90%;margin:0 auto">
-    <div style="padding:8px 0">
-        <table style="width:100%">
-            <tr>
-                <td>
-                    <label>گروه محصول</label>
-                </td>
-                <td>
-                    <ComboBox @bind-Value="SearchData.ProductCategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Title" />
-                </td>
-                <td>
-                    <label>عنوان</label>
-                </td>
-                <td>
-                    <StringTextBox @bind-Value="SearchData.Title" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>وضعیت</span>
-                </td>
-                <td colspan="3">
-                    <DropdownList @bind-Value="SearchData.ActiveType" />
-                </td>
-            </tr>
-        </table>
-    </div>
-    <DataGrid @ref="CrudGrid" TEntity="Product" Search="SearchData" TableHeight="400" HideInsertIcon
-              OnPageChanged="MangeControlsOnLastPage">
-        <Columns>
-            <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
-            <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
-                <Template>
-                    <NumericTextBox @ref="PriceTextBox" TValue="int" @bind-Value="context.Data.Price"
-                                    @onkeyup="async e =>
-                                {
-                                    await UpdatePrice(e, context.Data.Id, context.Data.Price);
-                                }" />
-                </Template>
-            </GridColumn>
-            <GridColumn Field="t => t.TakeoutPrice.ToString()" style="width:150px;">
-                <Template>
-                    <NumericTextBox @ref="PriceOuterBoundTextBox" TValue="int" @bind-Value="context.Data.TakeoutPrice"
-                                    @onkeyup="async e => await UpdatePriceOuterBound(e, context.Data.Id, context.Data.TakeoutPrice)" />
-                </Template>
-            </GridColumn>
-        </Columns>
-    </DataGrid>
-</div>
+<h2>Custom Master-details</h2>
+<p>
+    In this example, we can Upsert and delete the customer and its groups.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="p-4">
+                <span class="c-demo-description">
+                    In this example we do the following together:
+                </span>
+                <ul class="d-demo-inner-list">
+                    <li>
+                        <b>Insert customer & Groups: </b> We can insert a customer (Master) and many groups (Details) together (maybe only insert customer withoth any groups).
+                    </li>
+                    <li>
+                        <b>Update customer & add or remove Groups : </b> We can update customer (Master) and add or remove groups(details) together.
+                    </li>
+                    <li>
+                        <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
+                    </li>
+                </ul>
+                <CrudComponent TEntity="Customer" UpsertData="customer" OnUpsert="async formData => await UpdateDatabaseAsync(formData)">
+        <DataGrid @ref="grid" Search="search" TableHeight="400">
+            <Columns>
+                <GridColumn Field="t => t.CustomerType" />
+                <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+                <GridColumn Field="t => t.MobileNumber.CallFormat(' ')" />
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+        <Window OnOpen="async () => await loadGroups()" @ref="window" Title="Customer & Groups" Style="width:450px;">
+            <Content>
+                <CaspianForm Model="customer">
+                    <TabPanel>
+                        <Tabs>
+                            <TabPanelItem Title="Customer">
+                                <div class="row p-4 pt-2 pb-2 c-controls" style="height:320px">
+                                    <div class="col-md-4">
+                                        <label>Customer Type</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <DropdownList @bind-Value="customer.CustomerType" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>First Name</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="customer.FName"
+                                                        Disabled="customer.CustomerType == CustomerType.Legal" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Last Name</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="customer.LName"
+                                                        Disabled="customer.CustomerType == CustomerType.Legal" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Gender</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <DropdownList @bind-Value="customer.Gender"
+                                                        Disabled="customer.CustomerType == CustomerType.Legal" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Company Name</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="customer.CompanyName"
+                                                        Disabled="customer.CustomerType == CustomerType.Real" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Mobile Number</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="customer.MobileNumber" MaxLength="11" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Tel</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="customer.Tel" />
+                                    </div>
+                                </div>
+                            </TabPanelItem>
+                            <TabPanelItem Title="Groups">
+                                <div class="p-4" style="height:320px">
+                                    <CheckboxList TValue="int" TEntity="CustomerGroup" @bind-Values="groupsId"
+                                                    TextExpression="t => t.Title" />
+                                </div>
+                            </TabPanelItem>
+                        </Tabs>
+                    </TabPanel>
+                    <div class="pt-4 pt-0 pb-2">
+                        <FormCommandButton />
+                    </div>
+                </CaspianForm>
+            </Content>
+        </Window>
+    </CrudComponent>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Custom" FileName="Customer&Groups" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
 
 @code
 {
-    IList<NumericTextBox<int>> priceTextBoxList;
-    IList<NumericTextBox<int>> takeoutPriceTextBoxList;
+    Window window;
+    DataGrid<Customer> grid;
+    Customer customer = new Customer();
+    Customer search = new Customer();
+    IList<int> groupsId;
 
-    async Task UpdatePrice(KeyboardEventArgs e, int productId, int price)
+    async Task loadGroups()
     {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        if (customer.Id > 0)
         {
-            using var scope = ServiceScopeFactory.CreateScope();
-            var productService = new ProductService(scope.ServiceProvider);
-            await productService.UpdatePrice(productId, price);
-            await productService.SaveChangesAsync();
-            await CrudGrid.ReloadAsync();
-            await takeoutPriceTextBoxList[CrudGrid.SelectedRowIndex.Value].FocusAsync();
+            ///In update we should fill groupsId field
+            using var scope = CreateScope();
+            groupsId = await new CustomerGroupMembershipService(scope.ServiceProvider).GetAll()
+                .Where(t => t.CustomerId == customer.Id).Select(t => t.CustomerGroupId).ToListAsync();
         }
+        else
+            groupsId = new List<int>();
     }
 
-    async Task UpdatePriceOuterBound(KeyboardEventArgs e, int productId, int priceOuterBound)
+    async Task UpdateDatabaseAsync(FormData<Customer> form)
     {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        form.Cancel = true;
+        using var scope = CreateScope();
+        var provider = scope.ServiceProvider;
+        Customer result = customer;
+        IList<CustomerGroupMembership> removedGroups = null;
+        var service = new CustomerService(provider);
+        ///Only in customer update we should remove groups
+        if (customer.Id > 0)
         {
-            using var scope = ServiceScopeFactory.CreateScope();
-            var productService = new ProductService(scope.ServiceProvider);
-            await productService.UpdateTakeoutPrice(productId, priceOuterBound);
-            await productService.SaveChangesAsync();
-            await CrudGrid.ReloadAsync();
-            await CrudGrid.SelectNextRow();
-            await priceTextBoxList[CrudGrid.SelectedRowIndex.Value].FocusAsync();
+            ///The groups removed from list and exist in database, this groups should removed from database
+            removedGroups = await new CustomerGroupMembershipService(provider)
+                .GetAll().Where(t => t.CustomerId == customer.Id && !groupsId.Contains(t.CustomerGroupId))
+                .ToListAsync();
+
         }
-    }
-
-    protected override void OnInitialized()
-    {
-        priceTextBoxList = new List<NumericTextBox<int>>();
-        takeoutPriceTextBoxList = new List<NumericTextBox<int>>();
-        base.OnInitialized();
-    }
-
-    void MangeControlsOnLastPage()
-    {
-        if (CrudGrid.PageCount == CrudGrid.PageNumber)
+        IEnumerable<CustomerGroupMembership> addedGroups = null;
+        var transaction = await service.Context.Database.BeginTransactionAsync();
+        if (customer.Id == 0)
         {
-            var count = CrudGrid.PageSize - CrudGrid.Items.Count;
-            for (int i = 0; i < count; i++)
+            result = await service.AddAsync(customer);
+            ///we should doing insert to fill Id of customer
+            await service.SaveChangesAsync();
+            ///after customer id fill from database
+            addedGroups = groupsId.Select(t => new CustomerGroupMembership()
             {
-                priceTextBoxList.Remove(priceTextBoxList.Last());
-                takeoutPriceTextBoxList.Remove(takeoutPriceTextBoxList.Last());
-            }
+                CustomerId = customer.Id,
+                CustomerGroupId = t
+            });
         }
-    }
-
-    NumericTextBox<int> PriceTextBox
-    {
-        get { return null; }
-        set { priceTextBoxList.Add(value); }
-    }
-
-    NumericTextBox<int> PriceOuterBoundTextBox
-    {
-        get { return null; }
-        set { takeoutPriceTextBoxList.Add(value); }
+        else
+        {
+            await service.UpdateAsync(customer);
+            var oldGroupsId = await new CustomerGroupMembershipService(provider).GetAll()
+                .Where(t => t.CustomerId == customer.Id).Select(t => t.CustomerGroupId).ToListAsync();
+            addedGroups = groupsId.Where(t => !oldGroupsId.Contains(t)).Select(t => new CustomerGroupMembership()
+            {
+                CustomerGroupId = t,
+                CustomerId = customer.Id
+            });
+        }
+        var membershipService = new CustomerGroupMembershipService(provider);
+        /// Add groups
+        await membershipService.AddRangeAsync(addedGroups);
+        ///Remove groups
+        membershipService.RemoveRange(removedGroups);
+        await service.SaveChangesAsync();
+        await transaction.CommitAsync();
+        ///After transaction commited we can select row
+        await grid.SelectRowById(result.Id);
+        /// we must close window on last
+        await window.Close();
     }
 }

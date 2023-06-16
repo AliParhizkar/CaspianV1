@@ -3,7 +3,7 @@
 @implements IWindow
 @inject BasePageService Service
 @inject IJSRuntime jsRuntime
-@if (Status == WindowStatus.Open)
+@if (Status == WindowStatus.Open && Modal)
 {
     <div class="t-overlay"></div>
 }

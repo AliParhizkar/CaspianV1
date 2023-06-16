@@ -37,7 +37,7 @@ namespace Caspian.Engine
         /// مشخصات عملیات انجام شده
         /// </summary>
         [ForeignKey(nameof(ConnectorId))]
-        public virtual Connector Connector { get; set; }
+        public virtual NodeConnector Connector { get; set; }
 
         public int No { get; set; }
 

@@ -83,14 +83,17 @@ namespace Caspian.Common.Service
 
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
-            foreach(var info in typeof(TEntity).GetProperties())
+            foreach (var info in typeof(TEntity).GetProperties())
             {
                 var type = info.PropertyType;
                 if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || (type.IsCollectionType() && type != typeof(string)))
                     info.SetValue(entity, default);
             }
-            var result = await Context.Set<TEntity>().AddAsync(entity);
-            return result.Entity;
+            var result = await ValidateAsync(entity);
+            if (result.Errors.Count > 0)
+                throw new CaspianException(result.Errors[0].ErrorMessage);
+            var result1 = await Context.Set<TEntity>().AddAsync(entity);
+            return result1.Entity;
         }
 
         public virtual void UpdateRange(IEnumerable<TEntity> entities)
@@ -100,6 +103,14 @@ namespace Caspian.Common.Service
 
         public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
         {
+            if (entities == null || !entities.Any()) 
+                return;
+            foreach(var entity in entities)
+            {
+                var result = await ValidateAsync(entity);
+                if (!result.IsValid)
+                    throw new CaspianException(result.Errors.First().ErrorMessage);
+            }
             foreach (var info in typeof(TEntity).GetProperties())
             {
                 if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || info.PropertyType.IsCollectionType())
@@ -167,8 +178,16 @@ namespace Caspian.Common.Service
             return await GetAll().AnyAsync(expr);
         }
 
-        public void RemoveRange(IEnumerable<TEntity> entities)
+        public async void RemoveRange(IEnumerable<TEntity> entities)
         {
+            if (entities == null || !entities.Any())
+                return;
+            foreach (var entity in entities)
+            {
+                var result = await ValidateRemoveAsync(entity);
+                if (!result.IsValid)
+                    throw new CaspianException(result.Errors.First().ErrorMessage);
+            }
             Context.RemoveRange(entities);
         }
 

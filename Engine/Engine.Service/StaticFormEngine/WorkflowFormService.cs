@@ -221,7 +221,7 @@ namespace Caspian.Engine.Service
             return str.ToString();
         }
 
-        public async override Task Remove(int id)
+        public void Remove(int id)
         {
             //await base.Remove(id);
             //var fields = new WfFormEntityFieldService(ServiceScope).GetAll().Where(t => t.WorkflowFormId == id);

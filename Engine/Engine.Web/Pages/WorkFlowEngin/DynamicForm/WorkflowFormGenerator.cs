@@ -98,7 +98,7 @@ namespace Caspian.Engine.WorkflowEngine
         {
             using var scope = CreateScope();
             var service = new WorkflowFormService(scope.ServiceProvider);
-            await service.Remove(WorkflowFormId);
+            service.Remove(WorkflowFormId);
             foreach (var row in rows)
             {
                 row.WorkflowForm = null;

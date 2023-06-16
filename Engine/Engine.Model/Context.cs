@@ -29,7 +29,7 @@ namespace Caspian.Engine.Model
 
         public DbSet<Activity> Activities { get; set; }
 
-        public DbSet<Connector> Connectors { get; set; }
+        public DbSet<NodeConnector> Connectors { get; set; }
 
         public DbSet<TaskOperation> TaskOperations { get; set; }
 

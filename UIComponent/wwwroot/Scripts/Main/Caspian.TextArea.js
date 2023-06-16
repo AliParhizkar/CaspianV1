@@ -1,20 +1,11 @@
 ﻿(function ($) {
-    var $t = $.caspian;
-    $t.textArea = function (element, options) {
+    var $C = $.caspian;
+    $C.textArea = function (element, options) {
         this.element = element;
         $.extend(this, options);
-        var thisObject = this;
-        $(element).change(function () {
-            if (thisObject.onChange != undefined)
-                thisObject.onChange(thisObject);
-            $t.trigger(element, 'changeValue', { dataItem: null });
-        });
-        $(element).bind({
-            click: $.proxy(this.click, this)
-        });
     }
 
-    $t.textArea.prototype = {
+    $C.textArea.prototype = {
         updateState: function (data) {
             if (data.focused)
                 this.focus();
@@ -52,7 +43,7 @@
 
     $.fn.tTextArea = function (options) {
         if (!$(this).data('tTextArea'))
-            $(this).data('tTextArea', new $t.textArea(this, options));
+            $(this).data('tTextArea', new $C.textArea(this, options));
         return $(this).data('tTextArea');
     };
 })(jQuery);

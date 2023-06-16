@@ -44,6 +44,9 @@
         hideErrorMessage: function (ctr) {
             $(ctr).find('.errorMessage').remove();
         },
+        fitMainToParent: function () {
+
+        },
         setMinute: function (elm, e, type) {
             let from = $(elm).attr('from');
             let to = $(elm).attr('to');
@@ -383,7 +386,10 @@
                 clearTimeout($.caspian.infoTimer);
             $("#outMessage").remove();
             var odv = $('<div class="t-widget t-message" id="outMessage"></div>');
-            $(".c-content-main").append(odv);
+            if ($(".c-content-main")[0])
+                $(".c-content-main").append(odv);
+            else
+                $("body").append(odv);
             $("#outMessage").html('<div class="t-window-titlebar"><span class="t-title">Info</span><span class="t-close"><i class="fa fa-close"></i></span></div><div class="c-content">' + message + '</div>');
             $("#outMessage .t-close").click(function () {
                 $.caspian.hideMessage();

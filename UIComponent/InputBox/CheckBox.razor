@@ -24,10 +24,7 @@
     [Parameter]
     public bool TwoState{ get; set; }
 
-    [Parameter]
-    public ICheckboxList<TValue> CheckboxList { get; set; }
-
-    protected async override Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         attrs = new Dictionary<string, object>();
         if (Id.HasValue())
@@ -59,36 +56,9 @@
                     className += " t-unselected";
                 }
             }
-            else
-            {
-                if (Value != null && Value.Equals(CheckboxList.Value))
-                {
-                    iconAtttrs["class"] = "fa fa-check";
-                    className += " t-selected";
-                }
-                else
-                {
-                    iconAtttrs.Remove("class");
-                    className += " t-unselected";
-                }
-                if (CheckboxList?.Values != null)
-                {
-                    if (CheckboxList.Values.Contains(Value))
-                    {
-                        iconAtttrs["class"] = "fa fa-check";
-                        className += " t-selected";
-                    }
-                    else
-                    {
-                        iconAtttrs.Remove("class");
-                        className += " t-unselected";
-                    }
-                }
-            }
         }
         attrs.Add("class", className);
-        if (CheckboxList == null)
-            await base.OnParametersSetAsync();
+        base.OnParametersSet();
     }
 
     async void  ChangeValue()
@@ -123,18 +93,6 @@
                 await ValueChanged.InvokeAsync(Value);
             if (OnChange.HasDelegate)
                 await OnChange.InvokeAsync(Value);
-        }
-        else
-        {
-            if (CheckboxList.ValueChanged.HasDelegate)
-            {
-                if (Value != null && Value.Equals(CheckboxList.Value))
-                    await CheckboxList.ValueChanged.InvokeAsync(default(TValue));
-                else
-                    await CheckboxList.ValueChanged.InvokeAsync(Value);
-            }
-            if (CheckboxList.ValuesChanged.HasDelegate)
-                await CheckboxList.UpdateValue(Value);
         }
     }
 }

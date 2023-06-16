@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Caspian.Engine
 {
     [Table("Connectors", Schema = "cmn")]
-    public class Connector
+    public class NodeConnector
     {
         [Key]
         public int Id { get; set; }
@@ -16,12 +16,16 @@ namespace Caspian.Engine
         [DisplayName("عنوان")]
         public string Title { get; set; }
 
+        [DisplayName("شرح")]
+        public string Description { get; set; }
+
         /// <summary>
         /// آیا اعتبارسنجی در انجام عملیات صورت پذیرد
         /// </summary>
         [DisplayName("اعتبارسنجی")]
         public bool CheckValidation { get; set; }
 
+        [DisplayName("گره مبدا")]
         public int ActivityId { get; set; }
 
         [ForeignKey(nameof(ActivityId)), InverseProperty("OutConnectors")]
@@ -46,7 +50,8 @@ namespace Caspian.Engine
         [DisplayName("ارزش")]
         public decimal? Value { get; set; }
 
-        public int? ToActivityId { get; set; }
+        [DisplayName("گره مقصد")]
+        public int ToActivityId { get; set; }
 
         [ForeignKey(nameof(ToActivityId))]
         public virtual Activity ToActivity { get; set; }

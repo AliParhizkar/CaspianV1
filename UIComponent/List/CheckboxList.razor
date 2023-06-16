@@ -2,31 +2,26 @@
 @using System.ComponentModel.DataAnnotations;
 @typeparam TEntity
 @typeparam TValue
-@implements ICheckboxList<TValue>
 @inject IServiceProvider Provider
-
 <fieldset class="t-checkbox-list">
     <legend>@(Title)</legend>
-    <span class="t-content" style="@Style">
+    <div class="c-checkbox-list" style="@Style">
         @if (dic != null)
         {
-        
             foreach (var item in dic)
             {
-                <CheckBox ValueChanged="async (TValue value) =>
-                                         {
-                                             await UpdateValue(value);
-                                         }" CheckboxList="this" Value="item.Key" Title="@item.Value" />
+                var flag = Values.Contains(item.Key);
+                <CheckBox TValue="bool" Value="flag" ValueChanged="async check => await UpdateValue(item.Key, check)" 
+                    Title="@item.Value" />
             }
         }
         else if (Source != null)
         {
             foreach (var item in Source)
             {
-                <CheckBox ValueChanged="async (TValue value) =>
-                                         {
-                                             await UpdateValue(value);
-                                         }" CheckboxList="this" Value="(TValue)Convert.ChangeType(item.Value, typeof(TValue))" Title="@item.Text" Disabled="item.Disabled" />
+                var value = (TValue)Convert.ChangeType(item.Value, typeof(TValue));
+                var flag = Values.Contains(value);
+                <CheckBox TValue="bool" Value="flag" ValueChanged="async check => await UpdateValue(value, check)" Title="@item.Text" Disabled="item.Disabled" />
             }
         }
         else if (typeof(TEntity) != typeof(SelectListItem))
@@ -35,11 +30,13 @@
             {
                 foreach (var item in Items)
                 {
-                
-                    <CheckBox ValueChanged="async (TValue value) =>
-                                         {
-                                             await UpdateValue(value);
-                                         }" CheckboxList="this" Value="(TValue)Convert.ChangeType(item.Value, typeof(TValue).GetUnderlyingType())" Title="@item.Text" Disabled="item.Disabled" />
+                    var value = (TValue)Convert.ChangeType(item.Value, typeof(TValue).GetUnderlyingType());
+                    var flag = Values != null && Values.Contains(value);
+                    <div class="c-item">
+                        <CheckBox TValue="bool" Value="flag" ValueChanged="async check => await UpdateValue(value, check)"
+                            Title="@item.Text" Disabled="item.Disabled" />
+                    </div>
+                    
                 }
             }
         }
@@ -47,7 +44,7 @@
         {
             @CheckboxItems.Invoke(this)
         }
-    </span>
+    </div>
 </fieldset>
 
 
@@ -71,7 +68,7 @@
                     query = query.Where(ConditionExpression);
                 if (OrderByExpression != null)
                     query = query.OrderBy(OrderByExpression);
-                var list = new ExpressionSurvey().Survey(DisplayTextExpression);
+                var list = new ExpressionSurvey().Survey(TextExpression);
                 if (DisableExpression != null)
                 {
                     var tempList = new ExpressionSurvey().Survey(DisableExpression);
@@ -96,41 +93,30 @@
                     list.Add(pKeyExpr);
                 var lambda = parameter.CreateLambdaExpresion(list);
                 var dataList = await query.GetValuesAsync(list);
-                var displayFunc = DisplayTextExpression.Compile();
+                var displayFunc = TextExpression.Compile();
                 var valueFunc = Expression.Lambda(pKeyExpr, parameter).Compile();
                 Delegate disableFunc = DisableExpression?.Compile();
                 foreach (var item in dataList)
                 {
                     var text = Convert.ToString(displayFunc.DynamicInvoke(item));
                     var value = Convert.ToString(valueFunc.DynamicInvoke(item));
-                    var disabled = Convert.ToBoolean(disableFunc.DynamicInvoke(item));
+                    var disabled = disableFunc == null ? false : Convert.ToBoolean(disableFunc.DynamicInvoke(item));
                     Items.Add(new SelectListItem(value, text, disabled));
                 }
             }
         }
     }
 
-    public async Task UpdateValue(TValue value)
+    public async Task UpdateValue(TValue value, bool check)
     {
-        if (ValueChanged.HasDelegate && ValuesChanged.HasDelegate)
-            throw new CaspianException("خطا: For Checkbox component only one of the Value or Values property must bind", null);
-        if (ValueChanged.HasDelegate)
-        {
-            Value = value;
-            await ValueChanged.InvokeAsync(Value);
-        }
+        if (Values == null)
+            Values = new List<TValue>();
+        if (Values.Contains(value))
+            Values.Remove(value);
+        else
+            Values.Add(value);
         if (ValuesChanged.HasDelegate)
-        {
-            if (Values == null)
-                Values = new List<TValue>();
-            if (Single)
-                Values.Clear();
-            if (!Values.Contains(value))
-                Values.Add(value);
-            else
-                Values.Remove(value);
             await ValuesChanged.InvokeAsync(Values);
-        }
     }
 
     protected async override Task OnParametersSetAsync()
@@ -141,7 +127,7 @@
 
     protected override void OnInitialized()
     {
-        //LoadData = true;
+        LoadData = true;
         if (CheckboxItems == null)
         {
             var type = typeof(TValue).GetUnderlyingType();
@@ -162,32 +148,23 @@
         base.OnInitialized();
     }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public string Title{ get; set; }
 
-    [Parameter, JsonIgnore]
-    public Expression<Func<TEntity, string>> DisplayTextExpression { get; set; }
+    [Parameter]
+    public Expression<Func<TEntity, string>> TextExpression { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public Expression<Func<TEntity, bool>> OrderByExpression { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public Expression<Func<TEntity, bool>> ConditionExpression { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public Expression<Func<TEntity, bool>> DisableExpression { get; set; }
 
     [Parameter]
     public string Style { get; set; }
-
-    [Parameter]
-    public TValue Value { get; set; }
-
-    [Parameter]
-    public EventCallback<TValue> ValueChanged { get; set; }
-
-    [Parameter]
-    public Expression<Func<TValue>> ValueExpression { get; set; }
 
     [Parameter]
     public IList<TValue> Values { get; set; }
@@ -197,9 +174,6 @@
 
     [Parameter]
     public Expression<Func<IList<TValue>>> ValuesExpression { get; set; }
-
-    [Parameter]
-    public bool Single { get; set; }
 
     [Parameter]
     public IList<SelectListItem> Source { get; set; }

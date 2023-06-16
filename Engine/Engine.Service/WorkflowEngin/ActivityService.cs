@@ -10,8 +10,8 @@ namespace Caspian.Engine.Service
         public ActivityService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("فعالیتی با این عنوان در سیستم ثبت شده است");
-            RuleFor(t => t.Name).Required().UniqAsync("فعالیتی با این نام در سیستم ثبت شده است")
+            RuleFor(t => t.Title).Required(t => t.ActivityType == ActivityType.Task).UniqAsync("فعالیتی با این عنوان در سیستم ثبت شده است");
+            RuleFor(t => t.Name).UniqAsync("فعالیتی با این نام در سیستم ثبت شده است")
                 .Custom(t => t.Name.IsValidIdentifire(), "لطفا فقط از اعداد و حروف لاتین برای نامگذاری استفاده نمایید.");
         }
 
@@ -58,7 +58,7 @@ namespace Caspian.Engine.Service
             return GetAll().Where(t => t.WorkflowId == workflowId);
         }
 
-        public Connector GetConnector(Activity activity, object data, string action)
+        public NodeConnector GetConnector(Activity activity, object data, string action)
         {
             var list = activity.OutConnectors.Where(t => t.Title == action).ToList();
             if (list.Count == 1)

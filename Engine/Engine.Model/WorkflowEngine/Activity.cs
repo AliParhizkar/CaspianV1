@@ -7,7 +7,7 @@ namespace Caspian.Engine
     [Table("Activities", Schema = "cmn")]
     public class Activity
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
@@ -18,6 +18,9 @@ namespace Caspian.Engine
 
         [DisplayName("نام")]
         public string Name { get; set; }
+
+        [DisplayName("شرح")]
+        public string Description { get; set; }
 
         public ActivityType ActivityType { get; set; }
 
@@ -46,9 +49,9 @@ namespace Caspian.Engine
         public virtual Workflow Workflow { get; set; }
 
         [InverseProperty(nameof(Activity))]
-        public virtual IList<Connector> OutConnectors { get; set; }
+        public virtual IList<NodeConnector> OutConnectors { get; set; }
 
         [InverseProperty("ToActivity")]
-        public virtual IList<Connector> InConnectors { get; set; }
+        public virtual IList<NodeConnector> InConnectors { get; set; }
     }
 }

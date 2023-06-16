@@ -5,11 +5,25 @@
 <div class="w-property-window">
     <div>
         <label class="pe-3">عنوان</label>
-        <StringTextBox @bind-Value="activity.Title" OnChange="ActivityUpdated" />
+        @if (nodeConnector == null)
+        {
+            <StringTextBox @bind-Value="activity.Title" OnChange="ActivityUpdated" />
+        }
+        else
+        {
+            <StringTextBox @bind-Value="nodeConnector.Title" OnChange="ConnectorUpdated" />
+        }
     </div>
     <div class="pt-2">
         <label class="pe-3">شرح</label>
-        <StringTextBox MultiLine Rows="5" />
+        @if (nodeConnector == null)
+        {
+            <StringTextBox @bind-Value="activity.Description" OnChange="ActivityUpdated" />
+        }
+        else
+        {
+            <StringTextBox @bind-Value="nodeConnector.Description" OnChange="ConnectorUpdated" />
+        }
     </div>
     @if (activity.ActivityType == ActivityType.Task)
     {
@@ -36,27 +50,52 @@
 @code 
 {
     Activity activity;
-
+    NodeConnector nodeConnector;
     [Parameter]
     public Node Node { get; set; }
+
+    [Parameter]
+    public Connector Connector { get; set; }
+
+    [Parameter]
+    public IDictionary<string, ConnectorData> connectorsData { get; set; }
+
+    [Parameter]
+    public IList<Node> Nodes { get; set; }
 
     protected override void OnParametersSet()
     {
         activity = Node?.ConvertToActivity() ?? new Activity();
+        nodeConnector = Connector?.ConvertToNodeConnector(connectorsData, Nodes);
         base.OnParametersSet();
     }
 
     void ActivityUpdated()
     {
+        if (Node == null)
+            return;    
         Node.Style.StrokeColor = "#b200ff";
-        
+
         if (Node.Annotations.Count > 0)
             Node.Annotations[0].Content = activity.Title;
+        var date = Node.Data as NodeData;
+        date.Title = activity.Title;
+        date.Description = activity.Description;
         if (activity.ActivityType == ActivityType.Task)
             (Node.Shape as BpmnActivity).TaskType = activity.TaskType.ConvertToBpmnTask();
         if (activity.ActivityType == ActivityType.Gateway)
             (Node.Shape as BpmnGateway).GatewayType = activity.GatewayType.ConvertToBpmnGateway();
         if (activity.ActivityType == ActivityType.Event)
             (Node.Shape as BpmnEvent).Trigger = activity.EventTriggerType.ConvertToBpmnEventTrigger();
+    }
+
+    void ConnectorUpdated()
+    {
+        if (Connector != null)
+        {
+            (connectorsData[Connector.ID] as ConnectorData).Title = nodeConnector.Title;
+            (connectorsData[Connector.ID] as ConnectorData).Description = nodeConnector.Description;
+            Connector.Annotations[0].Content = nodeConnector.Title;
+        }
     }
 }

@@ -1,31 +1,91 @@
-﻿using Caspian.Engine;
+﻿using Caspian.Common;
+using Caspian.Engine;
 using Syncfusion.Blazor.Diagram;
 
 namespace Engine.Web.Services
 {
     public static class WorkflowExtension
     {
+        public static Connector ConvertToBpmnConnector(this NodeConnector nodeConnector, IDictionary<string, ConnectorData> connectors)
+        {
+            var data = connectors.ContainsKey("Connector" + nodeConnector.Id) ? connectors["Connector" + nodeConnector.Id] :
+                new ConnectorData();
+            data.Title = nodeConnector.Title;
+            data.Description = nodeConnector.Description;
+            connectors["Connector" + nodeConnector.Id] = data;
+            
+            return new Connector()
+            {
+                Annotations = new DiagramObjectCollection<PathAnnotation>()
+                {
+                    new PathAnnotation()
+                    {
+                        Content = nodeConnector.Title,
+                        SegmentAngle = true,
+                        Style = new TextStyle()
+                        {
+                            FontSize= 14,
+                            TextAlign= TextAlign.Right,
+                        },
+                        Alignment = AnnotationAlignment.Before,
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                    }
+                },
+                ID = "Connector" + nodeConnector.Id,
+                Shape = new BpmnFlow()
+                {
+                    Flow = BpmnFlowType.SequenceFlow
+                },
+                CanAutoLayout = true,
+                Type = ConnectorSegmentType.Straight,
+                SourceID = "CNode" + nodeConnector.ActivityId,
+                TargetID = "CNode" + nodeConnector.ToActivityId
+            };
+        }
+
+        public static NodeConnector ConvertToNodeConnector(this Connector connector, IDictionary<string, ConnectorData> connectorsData, IList<Node> nodes) 
+        {
+            var con = new NodeConnector();
+            var data = connectorsData[connector.ID];
+            con.Title = data?.Title;
+            con.Description = data?.Description;
+            if (connector.ID.StartsWith("Connector") ) 
+            {
+                var id = connector.ID.Substring(9);
+                con.Id = Convert.ToInt32(id);
+            }
+            if (connector.SourceID?.StartsWith("CNode") == true)
+            {
+                var id = nodes.Single(t => t.ID == connector.SourceID.ToString()).ID;
+                con.ActivityId = Convert.ToInt32(id.Substring(5));
+            }
+            if (connector.TargetID?.StartsWith("CNode") == true)
+            {
+                var id = nodes.Single(t => t.ID == connector.TargetID.ToString()).ID;
+                con.ToActivityId = Convert.ToInt32(id.Substring(5));
+            }
+            return con;
+        }
+
         public static Node ConvertToBpmNode(this Activity activity)
         {
-            var node = new Node();
-            node.ID = activity.Id.ToString();
-            node.OffsetX = activity.Left; 
-            node.OffsetY = activity.Top;
-            node.Width = 40;
-            node.Height = 40;
-            node.Data = new object()
+            var node = new Node()
             {
-
+                OffsetX = activity.Left,
+                ID = "CNode" + activity.Id.ToString(),
+                OffsetY = activity.Top,
+                Width = 40,
+                Height = 40,
+                Data = new NodeData()
+                {
+                    Title = activity.Title,
+                    Description = activity.Description
+                },
+                Ports = new DiagramObjectCollection<PointPort>
+                {
+                    CreatePort(0.5, 0.5),
+                }
             };
-            node.Annotations = new DiagramObjectCollection<ShapeAnnotation>
-                    {
-                        new ShapeAnnotation()
-                        {
-                            Content = activity.Title,
-                            HorizontalAlignment = HorizontalAlignment.Right,
-                            Offset = new DiagramPoint(0.95, 0.5),
-                        }
-                    };
             switch (activity.ActivityType)
             {
                 case ActivityType.Start:
@@ -38,7 +98,16 @@ namespace Engine.Web.Services
                     node.Shape = new BpmnActivity()
                     {
                         ActivityType = BpmnActivityType.Task,
-                        TaskType = activity.TaskType.ConvertToBpmnTask()
+                        TaskType = activity.TaskType.ConvertToBpmnTask(),
+                    };
+                    node.Annotations = new DiagramObjectCollection<ShapeAnnotation>
+                    {
+                        new ShapeAnnotation()
+                        {
+                            Content = activity.Title,
+                            HorizontalAlignment = HorizontalAlignment.Right,
+                            Offset = new DiagramPoint(0.95, 0.5),
+                        }
                     };
                     break;
                 case ActivityType.Gateway:
@@ -60,19 +129,39 @@ namespace Engine.Web.Services
             return node;
         }
 
+        static PointPort CreatePort(double x, double y)
+        {
+            return new PointPort()
+            {
+                Height = 12,
+                Width = 12,
+                Shape = PortShapes.Circle,
+                Offset = new DiagramPoint(x, y),
+                Visibility = PortVisibility.Hover,
+                
+                Style = new ShapeStyle()
+                {
+                    Fill = "#8CC63F",
+                },
+                Constraints = PortConstraints.Default | PortConstraints.Draw
+            };
+        }
+
         public static Activity ConvertToActivity(this Node node)
         {
             if (node == null) 
                 return null;
+            var data = node.Data as NodeData;
             var activity = new Activity()
             {
-                Title = node.Annotations.Count == 0 ? "" : node.Annotations[0].Content,
                 ActivityType = node.Shape.ConvertToActivityType(),
                 TaskType = node.Shape.ConvertToTaskType(),
                 GatewayType = node.Shape.ConvertToGatewayType(),
                 EventTriggerType = node.Shape.ConvertToTriggerType(),
                 Left = node.OffsetX,
-                Top = node.OffsetY
+                Top = node.OffsetY,
+                Title = data.Title,
+                Description = data.Description
             };
             return activity;
         }

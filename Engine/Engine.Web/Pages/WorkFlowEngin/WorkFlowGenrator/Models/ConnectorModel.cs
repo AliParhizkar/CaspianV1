@@ -26,7 +26,7 @@ namespace Main.Models
 
         }
 
-        public ConnectorModel(Connector connector)
+        public ConnectorModel(NodeConnector connector)
         {
             Id = connector.Id.ToString();
             From = connector.ActivityId.ToString();
@@ -87,9 +87,9 @@ namespace Main.Models
             return JsonConvert.SerializeObject(this);
         }
 
-        public Connector GetConnector()
+        public NodeConnector GetConnector()
         {
-            var connector = new Connector();
+            var connector = new NodeConnector();
             connector.ActivityId = Convert.ToInt32(From);
             connector.ToActivityId = Convert.ToInt32(To);
             connector.PortType = GetPortType(FromPort);

@@ -26,6 +26,7 @@
         CreatePaletteNode(new BpmnEvent() { EventType = BpmnEventType.End });
         CreatePaletteNode(new BpmnEvent() { EventType = BpmnEventType.Intermediate });
         CreatePaletteNode(new BpmnActivity() { ActivityType = BpmnActivityType.Task });
+        CreatePaletteNode(new BpmnActivity() { ActivityType = BpmnActivityType.CollapsedSubProcess });
         CreatePaletteNode(new BpmnGateway() { GatewayType = BpmnGatewayType.None });
         CreatePaletteNode(new BpmnFlow() { Flow = BpmnFlowType.SequenceFlow});
         palettes = new DiagramObjectCollection<Palette>()
@@ -40,6 +41,22 @@
         {
             Style = new ShapeStyle() { StrokeColor = "darkgray" },
 
+        };
+        node.Ports = new DiagramObjectCollection<PointPort>
+        {
+            new PointPort()
+            {
+                Height = 12,
+                Width = 12,
+                Shape = PortShapes.Circle,
+                Offset = new DiagramPoint(0.5, 0.5),
+                Visibility = PortVisibility.Hover,
+                Style = new ShapeStyle()
+                {
+                    Fill = "#8CC63F",
+                },
+                Constraints = PortConstraints.Default | PortConstraints.Draw
+            }
         };
         if (obj is Shape)
         {

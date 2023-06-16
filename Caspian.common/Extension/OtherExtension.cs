@@ -117,7 +117,17 @@ namespace Caspian.Common.Extension
         }
 
 
-
+        public static void CopyEntity<TEntity>(this TEntity entity, TEntity newObject)
+        {
+            var keyName = typeof(TEntity).GetPrimaryKey().Name;
+            foreach (var info in typeof(TEntity).GetProperties().Where(t => t.Name != keyName))
+            {
+                var value = info.GetValue(newObject);
+                var type = info.PropertyType;
+                if (value != null && type.IsValueType || type == typeof(string)) 
+                    info.SetValue(entity, value);
+            }
+        }
 
         public static object GetMyValue(this object obj, string strName, bool checkNull = true)
         {

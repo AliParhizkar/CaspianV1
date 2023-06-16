@@ -40,7 +40,7 @@ namespace Caspian.Common
                     Expression expr = Expression.Property(param, infoId);
                     expr = Expression.Convert(expr, typeof(object));
                     expr = Expression.Lambda(expr, param);
-                    RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyAsync(info, infoId, MasterInfo);
+                    RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyAsync(info, infoId);
                 }
             }
             RuleSet("remove", () =>
@@ -70,10 +70,6 @@ namespace Caspian.Common
         public Language Language { get; private set; }
 
         public int UserId { get; set; }
-        /// <summary>
-        /// In Master-Details insert MasterInfo should not Validate for Foreign Key
-        /// </summary>
-        internal PropertyInfo MasterInfo { get; set; }
 
         public IServiceProvider ServiceProvider { get; private set; }
 

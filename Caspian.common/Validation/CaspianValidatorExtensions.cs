@@ -275,7 +275,7 @@ namespace Caspian.Common
             }).WithMessage(errorMessage);
         }
 
-        public static IRuleBuilder<TModel, TProperty> CheckForeignKeyAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, PropertyInfo info, PropertyInfo infoId, PropertyInfo masterInfo) where TModel : class
+        public static IRuleBuilder<TModel, TProperty> CheckForeignKeyAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, PropertyInfo info, PropertyInfo infoId) where TModel : class
         {
             return ruleBuilder.CustomAsync(async (value, context, token) => 
             {
