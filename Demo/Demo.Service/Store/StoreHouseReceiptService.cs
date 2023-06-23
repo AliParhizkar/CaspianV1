@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Demo.Service
 {
-    public class WareHouseReceiptService : BaseService<WarehouseReceipt>, IBaseService<WarehouseReceipt>
+    public class WareHouseReceiptService : MasterDetailsService<WarehouseReceipt, ReceiptDetail>, IMasterDetailsService<WarehouseReceipt, ReceiptDetail>
     {
         public WareHouseReceiptService(IServiceProvider provider)
             : base(provider)

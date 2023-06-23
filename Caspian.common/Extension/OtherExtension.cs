@@ -91,29 +91,12 @@ namespace Caspian.Common.Extension
 
         public static void CopySimpleProperty<TModel>(this TModel model, TModel newModel)
         {
-            try
+            foreach (var info in typeof(TModel).GetProperties())
             {
-                foreach (var info in typeof(TModel).GetProperties())
-                {
-                    try
-                    {
-                        var type = info.PropertyType;
-                        if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
-                        {
-                            info.SetValue(model, info.GetValue(newModel));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
+                var type = info.PropertyType;
+                if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
+                    info.SetValue(model, info.GetValue(newModel));
             }
-            catch (Exception ex)
-            {
-
-            }
-
         }
 
 

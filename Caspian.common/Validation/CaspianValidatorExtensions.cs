@@ -11,6 +11,7 @@ using Caspian.Engine;
 using System.Runtime.CompilerServices;
 using System.Linq.Dynamic.Core;
 using FluentValidation.Validators;
+using System.Text.RegularExpressions;
 
 namespace Caspian.Common
 {
@@ -46,18 +47,18 @@ namespace Caspian.Common
             });
         }
 
-        public static IRuleBuilderInitial<TModel, TProperty> IgnoreForeignKey<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
-            Action<ForeignKeyValidationConfig<TModel, TProperty>> config) where TModel : class
-        {
+        //public static IRuleBuilderInitial<TModel, TProperty> IgnoreForeignKey<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        //    Action<ForeignKeyValidationConfig<TModel, TProperty>> config) where TModel : class
+        //{
             
-            return ruleBuilder.Custom((value, context) =>
-            {
-                var validatiorConfig = new ForeignKeyValidationConfig<TModel, TProperty>();
-                config.Invoke(validatiorConfig);
-                if (!context.ParentContext.RootContextData.ContainsKey("__IgnoreForeignKey"))
-                    context.ParentContext.RootContextData.Add("__IgnoreForeignKey", validatiorConfig);
-            });
-        }
+        //    return ruleBuilder.Custom((value, context) =>
+        //    {
+        //        var validatiorConfig = new ForeignKeyValidationConfig<TModel, TProperty>();
+        //        config.Invoke(validatiorConfig);
+        //        if (!context.ParentContext.RootContextData.ContainsKey("__IgnoreForeignKey"))
+        //            context.ParentContext.RootContextData.Add("__IgnoreForeignKey", validatiorConfig);
+        //    });
+        //}
 
         public static Language GetLanguage(this CustomContext context)
         {
@@ -116,8 +117,14 @@ namespace Caspian.Common
                 if (mobileNumber != null)
                 {
                     var strMobileNumber = mobileNumber.ToString();
-                    if (strMobileNumber.Length != 11 || !strMobileNumber.StartsWith("09"))
-                        context.AddFailure("شماره همراه باید 11 رقم باشد و با 09 شروع شود");
+                    if (!Regex.IsMatch(strMobileNumber, "09\\d{9}"))
+                    {
+                        var language = context.GetLanguage();
+                        if (language == Language.Fa)
+                            context.AddFailure("شماره همراه باید 11 رقم باشد و با 09 شروع شود");
+                        else
+                            context.AddFailure("Mobile number must be 11 digits and start with 09(09125845632)");
+                    }
                 }
             });
         }
@@ -289,7 +296,6 @@ namespace Caspian.Common
                         var flag = false;
                         if (context.ParentContext.RootContextData.ContainsKey("__IgnorePropertyInfo"))
                         {
-                            
                             var info = context.ParentContext.RootContextData["__IgnorePropertyInfo"] as PropertyInfo;
                             var MastreId = Convert.ToInt32(context.ParentContext.RootContextData["__MasterId"]);
                             if (info == infoId && MastreId == 0)

@@ -80,7 +80,7 @@
 
                         </div>
                         <div class="col-md-12 pt-4">
-                            <TabPanel @bind-TabIndex="tabIndex">
+                            <TabPanel @ref="dynamicPanel" @bind-TabIndex="tabIndex">
                                 <Tabs>
                                     @foreach (var item in dic)
                                     {
@@ -115,18 +115,18 @@
             <div class="ps-4 pe-4 pt-4 pb-4">
                 <TabPanel Vertical>
                     <Tabs>
-                        <TabPanelItem Title="Item 1">
-                            <div class="p-5 m-5 text-center" style="border:1px solid red">
+                        <TabPanelItem Title="Panel 1">
+                            <div class="p-5 m-5 text-center">
                                 <h4>Tabpanel 1</h4>
                             </div>
                         </TabPanelItem>
-                        <TabPanelItem Title="Item 2">
-                            <div class="p-5 m-5 text-center" style="border:1px solid red">
+                        <TabPanelItem Title="Panel 2">
+                            <div class="p-5 m-5 text-center">
                                 <h4>Tabpanel 2</h4>
                             </div>
                         </TabPanelItem>
-                        <TabPanelItem Title="Item 3">
-                            <div class="p-5 m-5 text-center" style="border:1px solid red">
+                        <TabPanelItem Title="Panel 3">
+                            <div class="p-5 m-5 text-center">
                                 <h4>Tabpanel 3</h4>
                             </div>
                         </TabPanelItem>
@@ -141,6 +141,7 @@
 </TabPanel>
 @code
 {
+    TabPanel dynamicPanel;
     int selectedId = 1, tabIndex = 1;
     IDictionary<int, string> dic = new Dictionary<int, string>();
 
@@ -155,6 +156,7 @@
 
     void UpateList(bool flag, int value, string title)
     {
+        dynamicPanel.ClearTabs();
         if (flag)
             dic.Add(value, title);
         else

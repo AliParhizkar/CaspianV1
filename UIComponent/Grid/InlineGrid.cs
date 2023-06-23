@@ -25,7 +25,6 @@ namespace Caspian.UI
         CaspianContainer updateContiner;
         RowData<TEntity> insertedEntity;
         bool insertContinerHouldhasFocus;
-        PropertyInfo ignoreValidateProperty;
         CaspianValidationValidator validator;
 
         [Inject]
@@ -37,6 +36,7 @@ namespace Caspian.UI
             using var scope = ServiceScopeFactory.CreateScope();
             var dataService = scope.ServiceProvider.GetService(typeof(CaspianDataService)) as CaspianDataService;
             dataService.UserId = CaspianDataService.UserId;
+
             serviceType = scope.ServiceProvider.GetService(type).GetType();
             if (!AutoHide && Inline)
                 CreateInsert();
@@ -50,9 +50,6 @@ namespace Caspian.UI
 
         [Parameter]
         public bool AutoHide { get; set; } 
-
-        [Parameter]
-        public Expression<Func<TEntity, Object>> IgnoreForeignKeyInfo { get; set; } 
 
         void RollBackEntity()
         {
@@ -86,13 +83,6 @@ namespace Caspian.UI
 
         void OnParameterSetInint()
         {
-            if (IgnoreForeignKeyInfo != null && ignoreValidateProperty == null)
-            {
-                Expression expr = IgnoreForeignKeyInfo.Body;
-                if (expr.NodeType == ExpressionType.Convert)
-                    expr = (expr as UnaryExpression).Operand;
-                ignoreValidateProperty = (expr as MemberExpression).Member as PropertyInfo;
-            }
             if (!HideInsertIcon)
                 HideInsertIcon = !AutoHide && Inline;
         }

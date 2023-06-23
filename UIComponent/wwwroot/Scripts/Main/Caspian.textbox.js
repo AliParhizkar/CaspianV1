@@ -140,10 +140,6 @@
             $(element).mask(this.maskedText);
         this.id = $(element).attr('id');
         let thisObj = this;
-        $(element).parent().find('a').click(function () {
-            if (thisObj.enabled)
-                thisObj.showHelpWindow();
-        });
         this.element = element;
         let self = this;
         let $element = this.$element = $(element)

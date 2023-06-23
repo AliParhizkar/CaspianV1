@@ -34,7 +34,6 @@ namespace Caspian.Common
                 var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
                 if (attr != null)
                 {
-                    //if (info.GetValue())
                     var infoId = typeof(TModel).GetProperty(attr.Name);
                     var param = Expression.Parameter(typeof(TModel), "t");
                     Expression expr = Expression.Property(param, infoId);
@@ -52,6 +51,7 @@ namespace Caspian.Common
                 expr = Expression.Lambda(expr, param);
                 CheckOnDelete(expr as Expression<Func<TModel, object>>);
             });
+            
         }
 
         protected IRuleBuilderInitial<TModel, object> RuleForRemove()
@@ -185,35 +185,35 @@ namespace Caspian.Common
         }
     }
 
-    public class ForeignKeyValidationConfig<TMaster, TDetail> :  IForeignKeyValidationConfig where TMaster : class
-    {
-        public Func<TMaster, bool> ConditionFunc { get; private set; }
+    //public class ForeignKeyValidationConfig<TMaster, TDetail> :  IForeignKeyValidationConfig where TMaster : class
+    //{
+    //    public Func<TMaster, bool> ConditionFunc { get; private set; }
 
-        public PropertyInfo PropertyInfo { get; private set; }
+    //    public PropertyInfo PropertyInfo { get; private set; }
 
-        public ForeignKeyValidationConfig<TMaster, TDetail> Condition(Func<TMaster, bool> func)
-        {
-            ConditionFunc = func;
-            return this;
-        }
+    //    public ForeignKeyValidationConfig<TMaster, TDetail> Condition(Func<TMaster, bool> func)
+    //    {
+    //        ConditionFunc = func;
+    //        return this;
+    //    }
 
-        public bool HasCondition(object obj)
-        {
-            return ConditionFunc.Invoke(obj as TMaster);
-        }
+    //    public bool HasCondition(object obj)
+    //    {
+    //        return ConditionFunc.Invoke(obj as TMaster);
+    //    }
 
-        public ForeignKeyValidationConfig<TMaster, TDetail> Property<TProperty>(Expression<Func<TDetail, TProperty>> expr)
-        {
-            PropertyInfo = (expr.Body as MemberExpression).Member as PropertyInfo;
-            return this;
-        }
-    }
+    //    public ForeignKeyValidationConfig<TMaster, TDetail> Property<TProperty>(Expression<Func<TDetail, TProperty>> expr)
+    //    {
+    //        PropertyInfo = (expr.Body as MemberExpression).Member as PropertyInfo;
+    //        return this;
+    //    }
+    //}
 
-    public interface IForeignKeyValidationConfig
-    {
-        bool HasCondition(object obj);
+    //public interface IForeignKeyValidationConfig
+    //{
+    //    bool HasCondition(object obj);
 
-        PropertyInfo PropertyInfo { get; }
-    }
+    //    PropertyInfo PropertyInfo { get; }
+    //}
 
 }

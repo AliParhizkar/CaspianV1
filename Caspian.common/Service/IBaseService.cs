@@ -2,6 +2,11 @@
 
 namespace Caspian.Common.Service
 {
+    public interface IMasterDetailsService<TMaster, TDetails>: IBaseService<TMaster>
+    {
+
+    }
+
     public interface IBaseService<TEntity>: IEntity, IValidator<TEntity>
     {
         IQueryable<TEntity> GetAll(TEntity entity = default);

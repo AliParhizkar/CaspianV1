@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Demo.Service
 {
     [ReportClass]
-    public class CustomerService : BaseService<Customer>, IBaseService<Customer>
+    public class CustomerService : MasterDetailsService<Customer, CustomerGroupMembership>, IMasterDetailsService<Customer, CustomerGroupMembership>
     {
         public CustomerService(IServiceProvider provider)
             :base(provider)

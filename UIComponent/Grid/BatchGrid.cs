@@ -210,8 +210,15 @@ namespace Caspian.UI
             return list;
         }
 
+        public IList<TEntity> GetUpsertedEntities()
+        {
+            var list = GetInsertedEntities().ToList();
+            list.AddRange(GetUpdatedEntities());
+            return list;
+        }
+
         /// <summary>
-        /// This method used for insert records to database
+        /// Get the Entities added to source
         /// </summary>
         /// <returns></returns>
         public IList<TEntity> GetInsertedEntities()
