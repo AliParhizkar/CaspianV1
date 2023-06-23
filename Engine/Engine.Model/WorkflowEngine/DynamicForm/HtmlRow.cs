@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Caspian.Common;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine
@@ -16,6 +17,7 @@ namespace Caspian.Engine
         [ForeignKey(nameof(WorkflowFormId))]
         public WorkflowForm WorkflowForm { get; set; }
 
+        [CheckOnDelete(false)]
         public IList<HtmlColumn> Columns { get; set; }
     }
 }

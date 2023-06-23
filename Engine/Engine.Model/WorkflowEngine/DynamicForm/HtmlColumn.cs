@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Caspian.Common;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine
@@ -21,8 +22,9 @@ namespace Caspian.Engine
         public int? InnerRowId { get; set; }   
 
         [ForeignKey(nameof(InnerRowId))]
-        public virtual InnerRow? InnerRow { get; set; }
+        public virtual InnerRow InnerRow { get; set; }
 
+        [CheckOnDelete(false)]
         [InverseProperty("HtmlColumn")]
         public virtual IList<InnerRow> InnerRows { get; set; }
 

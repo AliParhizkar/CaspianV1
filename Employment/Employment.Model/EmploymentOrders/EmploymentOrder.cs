@@ -70,6 +70,9 @@ namespace Employment.Model
         [DisplayName("پایه")]
         public byte Rank { get; set; }
 
+        [DisplayName("شرح")]
+        public string Descript { get; set; }
+
         public int EmploymentOrderTypeId { get; set; }
 
         [ForeignKey(nameof(EmploymentOrderTypeId))]

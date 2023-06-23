@@ -89,6 +89,8 @@ namespace Caspian.Common
                         var attr = info.GetCustomAttribute<CheckOnDeleteAttribute>();
                         if (attr == null)
                             throw new CaspianException("خطا: On type " + info.DeclaringType.Name + " property " + info.Name + " must has CheckOnDelete Attribute", 5);
+                        if (!attr.Check)
+                            continue;
                         var type = info.PropertyType.GetGenericArguments()[0];
                         var pkey = type.GetPrimaryKey();
                         var foreignKey = pkey.GetCustomAttribute<ForeignKeyAttribute>();
