@@ -6,78 +6,9 @@
 }
 
 
-<div class="ps-4 pe-4 pt-4 pb-4">
-    <div class="row c-controls">
-        <div class="col-md-3 ps-4">
-            <label>Dynamic items</label>
-        </div>
-        <div class="col-md-9">
-            <div class="row">
-                <div class="col-md-3">
-                    <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => { UpateList(t, 1, "Identity"); })" Title="Identity" />
-                </div>
-                <div class="col-md-3">
-                    <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => { UpateList(t, 2, "Job specification"); })" Title="Job" />
-                </div>
-                <div class="col-md-3">
-                    <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => { UpateList(t, 3, "Wife's profile"); })" Title="Wife" />
-                </div>
-                <div class="col-md-3">
-                    <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => { UpateList(t, 4, "Home Address"); })" Title="Home" />
-                </div>
-            </div>
-        </div>
-        @if (dic.Any())
-        {
-            if (tabIndex > dic.Count)
-                tabIndex = dic.Count;
-            <div class="col-md-3 ps-4">
-                <label>Selected tab index</label>
-            </div>
-            <div class="col-md-12 pt-4">
-                <TabPanel @bind-TabIndex="tabIndex">
-                    <Tabs>
-                        @foreach (var item in dic)
-                        {
-                            <TabPanelItem Title="@(item.Value)">
-                                <div class="text-center pt-4 pb-4">
-                                    <h3>@(item.Value)</h3>
-                                </div>
-                            </TabPanelItem>
-                        }
-                    </Tabs>
-                </TabPanel>
-            </div>
-        }
-        else
-        {
-            <div style="height:188px;" class="pt-5 text-center">
-                <h5 style="color:palevioletred">Please select at least one item to display</h5>
-            </div>
-        }
-    </div>
-</div>
 
 @code
 {
-    protected override void OnInitialized()
-    {
-        dic.Add(1, "Identity");
-        dic.Add(2, "Job specification");
-        dic.Add(3, "Wife's profile");
-        dic.Add(4, "Home Address");
-        base.OnInitialized();
-    }
 
-    void UpateList(bool flag, int value, string title)
-    {
-        if (flag)
-            dic.Add(value, title);
-        else
-            dic.Remove(value);
-    }
-
-    int selectedId = 1, tabIndex = 1;
-    IDictionary<int, string> dic = new Dictionary<int, string>();
 }
 
