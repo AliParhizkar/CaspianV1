@@ -73,6 +73,7 @@ namespace Employment.Model
         [DisplayName("شرح")]
         public string Descript { get; set; }
 
+        [DisplayName("نوع حکم")]
         public int EmploymentOrderTypeId { get; set; }
 
         [ForeignKey(nameof(EmploymentOrderTypeId))]

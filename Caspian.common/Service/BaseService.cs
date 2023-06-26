@@ -57,16 +57,6 @@ namespace Caspian.Common.Service
             }
         }
 
-        public IBaseService<T> GetEntityService<T>() where T: class
-        {
-            return new BaseService<T>(ServiceProvider);
-        }
-
-        public TService GetService<TService>() where TService : class
-        {
-            return (TService)Activator.CreateInstance(typeof(TService), ServiceProvider);
-        }
-
         public async virtual Task<ValidationResult> ValidateRemoveAsync(TEntity entity)
         {
             return await ValidateAsync(new ValidationContext<TEntity>(entity, new PropertyChain(), new RulesetValidatorSelector("remove")));
