@@ -11,9 +11,9 @@ namespace Caspian.Engine
 
         public string Caption { get; set; }
         
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
-        public string? CustomeFieldName { get; set; }
+        public string CustomeFieldName { get; set; }
         
         public ControlType ControlType { get; set; }
 

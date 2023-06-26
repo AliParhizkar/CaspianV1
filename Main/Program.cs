@@ -5,6 +5,7 @@ using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using Syncfusion.Blazor;
+using Demo.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 //new RazorPageProceccor().Proccess();
@@ -26,15 +27,16 @@ builder.Services.AddSingleton<SingletonMenuService>(t =>
         Menus = context.Menus.ToList()
     };
 });
+
 builder.Services.AddSingleton(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
 builder.Services.AddSingleton<FormAppState>();
 builder.Services.AddScoped<CaspianDataService>();
 builder.Services.AddScoped<Demo.Model.Context>();
 builder.Services.AddScoped<Caspian.Engine.Model.Context>();
 builder.Services.AddScoped<Employment.Model.Context>();
-SubSystemKind.Demo.GetServiceAssembly().InjectServices(builder.Services);
-SubSystemKind.Employment.GetServiceAssembly().InjectServices(builder.Services);
-SubSystemKind.Engine.GetServiceAssembly().InjectServices(builder.Services);
+typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
+typeof(Employment.Service.CityService).Assembly.InjectServices(builder.Services);
+typeof(Caspian.Engine.Service.ActivityService).Assembly.InjectServices(builder.Services);
 builder.Services.AddAuthentication("Cookies").AddCookie();
 var app = builder.Build();
 CS.Con = builder.Configuration.GetConnectionString("CaspianDb");

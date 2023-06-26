@@ -8,7 +8,6 @@
     <PropertyWindow @ref="propertyWindow" Id="@Id" FormName="@formName" OnChange="UpdateControlData" Control="selectedControl" />
     <div class="c-form-designer">
         <div class="c-tools-bar">
-            <button class="w-button w-form-load" title="حذف کنترل"></button>
             <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="info => AddControl(info)" OnDynamicParameterSelect="parameter => AddControl(parameter)" OnFieldSelect="field => AddControl(field)" />
             <button @onclick="RemoveSelectedControl" class="w-button w-ctr-delete" title="حذف کنترل"></button>
             <div class="w-seprator"></div>
@@ -41,52 +40,56 @@
                     row.WorkflowForm = null;
                     var rowIndex = rows.IndexOf(row);
                     <div class="row">
-                        @foreach(var col in row.Columns)
+                        @if (row.Columns != null)
                         {
-                            var colIndex = row.Columns.IndexOf(col);
-                            var className = "c-item col-md-" + col.Span;
-                            if (col.Hidden)
-                                className += " c-hidden";
-                            if (rowIndex == selectedRowIndex && selectedControl == null)
+                            foreach (var col in row.Columns)
                             {
-                                if (selectedInnerRowIndex == -1 && (colIndex == selectedColIndex || selectedColsIndex.Contains(colIndex)))
-                                    className += " c-selected";
-                            }
-                            <div @onclick="e => {SelectRow(e, rowIndex, colIndex); }" class="@(className)">
-                                @if (col.InnerRows != null && col.Component == null)
+                                var colIndex = row.Columns.IndexOf(col);
+                                var className = "c-item col-md-" + col.Span;
+                                if (col.Hidden)
+                                    className += " c-hidden";
+                                if (rowIndex == selectedRowIndex && selectedControl == null)
                                 {
-                                    foreach(var innerRow in col.InnerRows)
+                                    if (selectedInnerRowIndex == -1 && (colIndex == selectedColIndex || selectedColsIndex.Contains(colIndex)))
+                                        className += " c-selected";
+                                }
+                                <div @onclick="e => {SelectRow(e, rowIndex, colIndex); }" class="@(className)">
+                                    @if (col.InnerRows != null && col.Component == null)
                                     {
-                                        var innerRowIndex = col.InnerRows.IndexOf(innerRow);
-                                        <div class="row">
-                                            @foreach(var col1 in innerRow.HtmlColumns)
-                                            {
-                                                className = $"c-item c-row-{innerRow.Span} col-{12 / innerRow.HtmlColumns.Count}";
-                                                var innerColIndex = innerRow.HtmlColumns.IndexOf(col1);
-                                                if (selectedControl == null && rowIndex == selectedRowIndex && colIndex == selectedColIndex && innerRowIndex == selectedInnerRowIndex && innerColIndex == selectedInnerColIndex)
-                                                    className += " c-selected";
-                                                <div @onclick:stopPropagation="true" @onclick="() => {SelectInnerRow(rowIndex, colIndex, innerRowIndex, innerColIndex); }" class="@(className)">
-                                                    @{
-                                                        var ctr = col1.Component;
-                                                        if (ctr != null)
-                                                        {
-                                                            //ctr.DataModelField = null;
-                                                            <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr"  />
+                                        foreach (var innerRow in col.InnerRows)
+                                        {
+                                            var innerRowIndex = col.InnerRows.IndexOf(innerRow);
+                                            <div class="row">
+                                                @foreach (var col1 in innerRow.HtmlColumns)
+                                                {
+                                                    className = $"c-item c-row-{innerRow.Span} col-{12 / innerRow.HtmlColumns.Count}";
+                                                    var innerColIndex = innerRow.HtmlColumns.IndexOf(col1);
+                                                    if (selectedControl == null && rowIndex == selectedRowIndex && colIndex == selectedColIndex && innerRowIndex == selectedInnerRowIndex && innerColIndex == selectedInnerColIndex)
+                                                        className += " c-selected";
+                                                    <div @onclick:stopPropagation="true" @onclick="() => {SelectInnerRow(rowIndex, colIndex, innerRowIndex, innerColIndex); }" class="@(className)">
+                                                        @{
+                                                            var ctr = col1.Component;
+                                                            if (ctr != null)
+                                                            {
+                                                                //ctr.DataModelField = null;
+                                                                <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
+                                                            }
                                                         }
-                                                    }
-                                                </div>
-                                            }
-                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
                                     }
-                                }
-                                else if(col.Component != null)
-                                {
-                                    var ctr = col.Component;
-                                    ctr.DataModelField = null;
-                                    <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
-                                }
-                            </div>
+                                    else if (col.Component != null)
+                                    {
+                                        var ctr = col.Component;
+                                        ctr.DataModelField = null;
+                                        <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
+                                    }
+                                </div>
+                            }
                         }
+
                     </div>
                 }
             </div>

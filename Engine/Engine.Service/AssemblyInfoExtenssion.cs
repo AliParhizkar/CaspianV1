@@ -61,7 +61,7 @@ namespace Caspian.Engine.Service
             foreach(var type in types)
             {
                 var baseType = type.BaseType;
-                while(baseType != typeof(object))
+                while(baseType != typeof(object) && baseType != null)
                 {
                     if (baseType.IsGenericType)
                     {

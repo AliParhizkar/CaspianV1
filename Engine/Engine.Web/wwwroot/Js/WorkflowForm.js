@@ -53,7 +53,10 @@
                 action: 'sendSourceCode',
                 content: ''
             };
-            window.chrome.webview.postMessage(data);;
+            if (window.chrome.webview)
+                window.chrome.webview.postMessage(data);
+            else
+                $.caspian.showMessage('امکان ذخیره وجود ندارد.');
         },
         loadForm: function (formId) {
             var data = {
@@ -64,7 +67,7 @@
         },
         saveCodeFile: async function (code) {
             if (code == '' || code.length < 20) 
-                $.telerik.showMessage('هیچ کدی برای ارسال وجود ندارد یا کد فاقد اعتبار می باشد.')
+                $.caspian.showMessage('هیچ کدی برای ارسال وجود ندارد یا کد فاقد اعتبار می باشد.')
             else
                 await $.workflowForm.dotnet.invokeMethodAsync('SaveFile', code);
         },

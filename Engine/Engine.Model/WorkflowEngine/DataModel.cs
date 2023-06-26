@@ -24,7 +24,7 @@ namespace Caspian.Engine
         public virtual WorkflowGroup WorkflowGroup { get; set; }
 
         [DisplayName("شرح")]
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         [CheckOnDelete("مدل داده ای دارای گردش کار می باشد و امکان حذف آن وجود ندارد")]
         public virtual IList<Workflow> Workflows { get; set; }

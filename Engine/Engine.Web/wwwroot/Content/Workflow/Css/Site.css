@@ -328,13 +328,13 @@ legend {
     .c-property-window.c-minimize {
         width: 60px;
     }
-    .c-form-designer {
-        width: calc(100% - 180px);
-        height: 10vh;
-        margin: 0;
-        height: 100vh;
-        overflow:hidden;
-    }
+.c-form-designer {
+    width: calc(100% - 230px);
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    border-right: 1px dashed #b200ff;
+}
     .c-property-window .c-icons {
         display: flex;
         flex-wrap: nowrap;

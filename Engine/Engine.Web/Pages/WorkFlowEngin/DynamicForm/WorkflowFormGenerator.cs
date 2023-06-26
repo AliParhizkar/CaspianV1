@@ -97,34 +97,39 @@ namespace Caspian.Engine.WorkflowEngine
         async Task Save()
         {
             using var scope = CreateScope();
-            var service = new WorkflowFormService(scope.ServiceProvider);
+            scope.GetService<WorkflowFormService>();
+            using var service = new WorkflowFormService(scope.ServiceProvider);
             service.Remove(WorkflowFormId);
             foreach (var row in rows)
             {
                 row.WorkflowForm = null;
-                foreach(var col in row.Columns)
+                if (row.Columns != null)
                 {
-                    col.Row = null;
-                    if (col.Component != null)
+                    foreach (var col in row.Columns)
                     {
-                        col.Component.DataModelField = null;
-                        col.Component.DynamicParameter = null;
-                    }
-                    foreach(var innerRow in col.InnerRows)
-                    {
-                        innerRow.HtmlColumn = null;
-                        foreach(var col1 in innerRow.HtmlColumns)
+                        col.Row = null;
+                        if (col.Component != null)
                         {
-                            col1.Row = null;
-                            if (col1.Component != null)
+                            col.Component.DataModelField = null;
+                            col.Component.DynamicParameter = null;
+                        }
+                        foreach (var innerRow in col.InnerRows)
+                        {
+                            innerRow.HtmlColumn = null;
+                            foreach (var col1 in innerRow.HtmlColumns)
                             {
-                                col1.Component.DataModelField = null;
-                                col1.Component.DynamicParameter = null;
+                                col1.Row = null;
+                                if (col1.Component != null)
+                                {
+                                    col1.Component.DataModelField = null;
+                                    col1.Component.DynamicParameter = null;
+                                }
                             }
                         }
                     }
                 }
             }
+
             await new HtmlRowService(scope.ServiceProvider).AddRangeAsync(rows);
             await service.SaveChangesAsync();
         }
@@ -164,7 +169,13 @@ namespace Caspian.Engine.WorkflowEngine
 
         void RemoveSelectedControl()
         {
-
+            if (selectedInnerRowIndex >= 0)
+            {
+                if (selectedColIndex >= 0 && selectedInnerColIndex >= 0)
+                    rows[selectedRowIndex].Columns[selectedColIndex].InnerRows[selectedInnerRowIndex].HtmlColumns[selectedInnerColIndex].Component = null;
+            }
+            else if (selectedRowIndex >= 0 && selectedColIndex >= 0)
+                rows[selectedRowIndex].Columns[selectedColIndex].Component = null;
         }
 
         void AddRowToDown()
@@ -467,7 +478,7 @@ namespace Caspian.Engine.WorkflowEngine
         [JSInvokable]
         public async Task SaveFile(string code)
         {
-            var path = Environment.ContentRootPath + "Data\\Code\\";
+            var path = Environment.ContentRootPath + "\\Data\\Code\\";
             using var scope = CreateScope();
             var service = new WorkflowFormService(scope.ServiceProvider);
             var form = await service.SingleAsync(WorkflowFormId);

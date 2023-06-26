@@ -205,7 +205,7 @@ namespace Caspian.Engine.Service
             var form = await GetAll().Include(t => t.WorkflowGroup).SingleAsync(workflowFormId);
             if (form.SourceFileName.HasValue())
             {
-                var path = basePath + "Data\\Code\\" + form.SourceFileName + ".cs";
+                var path = basePath + "\\Data\\Code\\" + form.SourceFileName + ".cs";
                 var result = await File.ReadAllTextAsync(path);
                 if (result.HasValue())
                     return await File.ReadAllTextAsync(path);
