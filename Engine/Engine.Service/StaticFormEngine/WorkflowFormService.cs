@@ -35,7 +35,7 @@ namespace Caspian.Engine.Service
             throw new NotImplementedException("خطای عدم پیاده سازی");
         }
 
-        string GetCustomFieldControl(BlazorControl control)
+        string GetCustomFieldControl(BlazorControl control, bool isServerSide)
         {
             switch (control.ControlType)
             {
@@ -45,6 +45,14 @@ namespace Caspian.Engine.Service
                     return "\t\tNumericTextBox<decimal?> txt" + control.CustomeFieldName + ";\n";
                 case ControlType.String:
                     return "\t\tStringTextBox txt" + control.CustomeFieldName + ";\n";
+                case ControlType.ComboBox:
+                    var str = "\t\tComboBox<" + control.DataModelField.EntityType.Name;
+                    var id = control.CustomeFieldName;
+                    if (id.EndsWith("Id"))
+                        id = id.Substring(0, id.Length - 2);
+                    if (isServerSide)
+                        str += ", int?";
+                    return str + "> cmb" + id + ";\n";
             }
             throw new NotImplementedException("خطای عدم پیاده سازی");
         }
@@ -54,7 +62,7 @@ namespace Caspian.Engine.Service
             if (ctr.DynamicParameterId.HasValue)
                 return GetDynamicParameterControl(ctr);
             else if (ctr.CustomeFieldName.HasValue())
-                return GetCustomFieldControl(ctr);
+                return GetCustomFieldControl(ctr, isServerSide);
             var entityType = new AssemblyInfo().GetModelType(subSystem, ctr.DataModelField.EntityFullName);
             var info = entityType.GetProperty(ctr.PropertyName);
             switch (ctr.ControlType)
@@ -74,7 +82,7 @@ namespace Caspian.Engine.Service
                         if (info.PropertyType.IsNullableType())
                             str += "?";
                     }
-                    return str + ">cmb" + fkInfo.Name + ";\n";
+                    return str + "> cmb" + fkInfo.Name + ";\n";
                 case ControlType.String:
                     return "\t\tStringTextBox txt" + ctr.PropertyName + ";\n";
                 case ControlType.Date:
@@ -109,10 +117,11 @@ namespace Caspian.Engine.Service
             str.Append("namespace Caspian.Dynamic.WorkflowForm\n{\n");
             str.Append("\tpublic partial class " + form.Name + ": BasePage\n\t{\n");
             str.Append("\t\t/// Fields of form\n");
-            var fields = await new DataModelFieldService(ServiceProvider).GetAll().Where(t => t.DataModelId == dataModelId).ToListAsync();
+            var fields = await new DataModelFieldService(ServiceProvider).GetAll().Where(t => t.DataModelId == dataModelId)
+                    .Include(t => t.EntityType).ToListAsync();
             foreach(var field in fields)
             {
-                var typeName = field.EntityFullName ?? DataModelFieldService.GetControlTypeName(field.FieldType.Value);
+                string typeName = DataModelFieldService.GetFieldTypeName(field);
                 str.Append("\t\t" + typeName + " " + field.FieldName + ";\n");
             }
             var rows = await new HtmlRowService(ServiceProvider).GetAll().Where(t => t.WorkflowFormId == workflowFormId)
@@ -219,22 +228,6 @@ namespace Caspian.Engine.Service
             str.Append("\t\t}\n");
             str.Append("\t}\n}");
             return str.ToString();
-        }
-
-        public void Remove(int id)
-        {
-            //await base.Remove(id);
-            //var fields = new WfFormEntityFieldService(ServiceScope).GetAll().Where(t => t.WorkflowFormId == id);
-            //new WfFormEntityFieldService(ServiceScope).RemoveRange(fields);
-            var contextId = Context.ContextId;
-            var controls = new BlazorControlService(ServiceProvider).GetAll().Where(t => t.HtmlColumn.Row.WorkflowFormId == id || t.HtmlColumn.InnerRow.HtmlColumn.Row.WorkflowFormId == id);
-            new BlazorControlService(ServiceProvider).RemoveRange(controls);
-            var columns = new HtmlColumnService(ServiceProvider).GetAll().Where(t => t.Row.WorkflowFormId == id || t.InnerRow.HtmlColumn.Row.WorkflowFormId == id);
-            new HtmlColumnService(ServiceProvider).RemoveRange(columns);
-            var rows = new HtmlRowService(ServiceProvider).GetAll().Where(t => t.WorkflowFormId == id);
-            new HtmlRowService(ServiceProvider).RemoveRange(rows);
-            var innerRows = new InnerRowService(ServiceProvider).GetAll().Where(t => t.HtmlColumn.Row.WorkflowFormId == id);
-            new InnerRowService(ServiceProvider).RemoveRange(innerRows);
         }
     }
 }

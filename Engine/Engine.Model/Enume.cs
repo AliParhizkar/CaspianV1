@@ -64,6 +64,21 @@ namespace Caspian.Engine
         NotEqual
     }
 
+    public enum ValidationType: byte
+    {
+        /// <summary>
+        /// معتبر
+        /// </summary>
+        [Display(Name = "معتبر")]
+        Valid = 1,
+
+        /// <summary>
+        /// نامعتبر
+        /// </summary>
+        [Display(Name = "نامعتبر")]
+        Invalid 
+    }
+
     public enum ActivityType : byte
     {
         /// <summary>

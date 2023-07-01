@@ -66,7 +66,7 @@
                                                     var innerColIndex = innerRow.HtmlColumns.IndexOf(col1);
                                                     if (selectedControl == null && rowIndex == selectedRowIndex && colIndex == selectedColIndex && innerRowIndex == selectedInnerRowIndex && innerColIndex == selectedInnerColIndex)
                                                         className += " c-selected";
-                                                    <div @onclick:stopPropagation="true" @onclick="() => {SelectInnerRow(rowIndex, colIndex, innerRowIndex, innerColIndex); }" class="@(className)">
+                                                    <div @onclick:stopPropagation @onclick="() => {SelectInnerRow(rowIndex, colIndex, innerRowIndex, innerColIndex); }" class="@(className)">
                                                         @{
                                                             var ctr = col1.Component;
                                                             if (ctr != null)

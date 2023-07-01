@@ -5,10 +5,8 @@ using Microsoft.JSInterop;
 using System.ComponentModel;
 using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Caspian.Engine.WorkflowEngine
 {
@@ -42,8 +40,8 @@ namespace Caspian.Engine.WorkflowEngine
         async Task SelectControl(BlazorControl ctr)
         {
             selectedControl = ctr;
-            using var scope = CreateScope();
-            Id = await new BlazorControlService(scope.ServiceProvider).GetId(subSystemKind, ctr);
+            using var service = CreateScope().GetService<BlazorControlService>();
+            Id = await service.GetId(subSystemKind, ctr);
         }
 
         void ToggleWindowStatus()
@@ -60,8 +58,6 @@ namespace Caspian.Engine.WorkflowEngine
                 rows.RemoveAt(selectedRowIndex);
         }
 
-        
-
         protected override void OnWindowClick()
         {
             propertySelector.HideSelector();
@@ -72,7 +68,7 @@ namespace Caspian.Engine.WorkflowEngine
         protected override async Task OnInitializedAsync()
         {
             using var scope = CreateScope();
-            var formService = new WorkflowFormService(scope.ServiceProvider);
+            var formService = scope.GetService<WorkflowFormService>();
             var form = await formService.GetAll().Include(t => t.WorkflowGroup).SingleAsync(t => t.Id == WorkflowFormId);
             forms = await formService.GetAll().Where(t => t.WorkflowGroupId == form.WorkflowGroupId).ToListAsync();
             columnsCount = form.ColumnCount;
@@ -80,7 +76,7 @@ namespace Caspian.Engine.WorkflowEngine
             formName = form.Name;
             formTitle = form.Title;
             dataModelId = form.DataModelId;
-            rows = await new HtmlRowService(scope.ServiceProvider).GetRows(WorkflowFormId);
+            rows = await scope.GetService<HtmlRowService>().GetRows(WorkflowFormId);
             selectedColsIndex = new List<int>();
             await base.OnInitializedAsync();
         }
@@ -97,41 +93,70 @@ namespace Caspian.Engine.WorkflowEngine
         async Task Save()
         {
             using var scope = CreateScope();
-            scope.GetService<WorkflowFormService>();
-            using var service = new WorkflowFormService(scope.ServiceProvider);
-            service.Remove(WorkflowFormId);
-            foreach (var row in rows)
+            var service = scope.GetService<WorkflowFormService>();
+            var rowService = scope.GetService<HtmlRowService>();
+            var colService = scope.GetService<HtmlColumnService>(); 
+            var innerRowService = scope.GetService<InnerRowService>();
+            var columns = new List<HtmlColumn>();
+            var transaction = await service.Context.Database.BeginTransactionAsync();
+
+            foreach(var row in rows)
             {
-                row.WorkflowForm = null;
-                if (row.Columns != null)
+                var rowCols = row.Columns;
+                if (row.Id == 0)
                 {
-                    foreach (var col in row.Columns)
-                    {
-                        col.Row = null;
-                        if (col.Component != null)
-                        {
-                            col.Component.DataModelField = null;
-                            col.Component.DynamicParameter = null;
-                        }
-                        foreach (var innerRow in col.InnerRows)
-                        {
-                            innerRow.HtmlColumn = null;
-                            foreach (var col1 in innerRow.HtmlColumns)
-                            {
-                                col1.Row = null;
-                                if (col1.Component != null)
-                                {
-                                    col1.Component.DataModelField = null;
-                                    col1.Component.DynamicParameter = null;
-                                }
-                            }
-                        }
-                    }
+                    await rowService.AddAsync(row);
+                    await rowService.SaveChangesAsync();
+                    foreach(var col in rowCols)
+                        col.RowId = row.Id;
+                }
+                foreach (var col in rowCols)
+                    columns.Add(col);
+            }
+            var innerRows = new List<InnerRow>();
+            foreach(var col in columns)
+            {
+                var colInnerRows = col.InnerRows;
+                if (col.Id == 0)
+                {
+                    await colService.AddAsync(col);
+                    await colService.SaveChangesAsync();
+                }
+                else
+                {
+                    await colService.UpdateAsync(col);
+                    await colService.SaveChangesAsync();
+                }
+                foreach (var row in colInnerRows)
+                {
+                    row.HtmlColumnId = col.Id;
+                    innerRows.Add(row);
                 }
             }
-
-            await new HtmlRowService(scope.ServiceProvider).AddRangeAsync(rows);
-            await service.SaveChangesAsync();
+            columns = new List<HtmlColumn>();
+            foreach (var row in innerRows)
+            {
+                var rowCols = row.HtmlColumns;
+                if (row.Id == 0)
+                {
+                    await innerRowService.AddAsync(row);
+                    await innerRowService.SaveChangesAsync();
+                }
+                foreach (var col in rowCols)
+                {
+                    col.InnerRowId = row.Id;
+                    columns.Add(col);
+                }
+            }
+            foreach(var col in columns)
+            {
+                if (col.Id == 0)
+                    await colService.AddAsync(col);
+                else
+                    await colService.UpdateAsync(col);
+                await colService.SaveChangesAsync();
+            }
+            await transaction.CommitAsync();
         }
 
         void SaveAll()
@@ -269,6 +294,9 @@ namespace Caspian.Engine.WorkflowEngine
                     break;
                 case DataModelFieldType.Integer:
                     controlType = ControlType.Integer;
+                    break;
+                case DataModelFieldType.Relational:
+                    controlType = ControlType.ComboBox;
                     break;
                 default:
                     throw new NotImplementedException("خطای عدم پیاده سازی");
@@ -464,7 +492,7 @@ namespace Caspian.Engine.WorkflowEngine
         public async Task<string> GetCodebehindString()
         {
             using var scope = CreateScope();
-            return await new WorkflowFormService(scope.ServiceProvider).GetCodebehindAsync(WorkflowFormId, dataModelId);
+            return await scope.GetService<WorkflowFormService>().GetCodebehindAsync(WorkflowFormId, dataModelId);
         }
 
         [JSInvokable]
@@ -472,60 +500,38 @@ namespace Caspian.Engine.WorkflowEngine
         {
             using var scope = CreateScope();
             var basePath = Environment.ContentRootPath;
-            return await new WorkflowFormService(scope.ServiceProvider).GetSourceCode(basePath, WorkflowFormId);
+            return await scope.GetService<WorkflowFormService>().GetSourceCode(basePath, WorkflowFormId);
         }
 
         [JSInvokable]
-        public async Task SaveFile(string code)
+        public async Task SaveCodeAndView(string code)
         {
-            var path = Environment.ContentRootPath + "\\Data\\Code\\";
-            using var scope = CreateScope();
-            var service = new WorkflowFormService(scope.ServiceProvider);
-            var form = await service.SingleAsync(WorkflowFormId);
             if (code.HasValue())
             {
-                var method = new CodeManager().GetInitializeMethod(form.Name, code);
-                foreach (var item in method.Body.Statements)
+                var path = Environment.ContentRootPath + "\\Data\\Code\\";
+                using var scope = CreateScope();
+                var service = scope.GetService<WorkflowFormService>();
+                var form = await service.SingleAsync(WorkflowFormId);
+                var datas = new CodeManager().GetExpressionData(form.Name, code);
+                foreach ( var data in datas )
                 {
-                    switch (item.Kind())
+                    var control = await GetControl(data.Id);
+                    if (control != null)
                     {
-                        case SyntaxKind.ExpressionStatement:
-                            var expr = (item as ExpressionStatementSyntax).Expression;
-                            if (expr.Kind() == SyntaxKind.SimpleAssignmentExpression)
-                            {
-                                var expr1 = expr as AssignmentExpressionSyntax;
-                                BlazorControl control = null;
-                                string property = null;
-                                if (expr1.Left.Kind() == SyntaxKind.SimpleMemberAccessExpression)
-                                {
-                                    var letf = expr1.Left as MemberAccessExpressionSyntax;
-                                    var id = (letf.Expression as IdentifierNameSyntax).Identifier.Text;
-                                    control = await GetControl(id);
-                                    property = letf.Name.Identifier.Text;
-                                }
-                                if (control != null && expr1.Right.Kind() == SyntaxKind.SimpleLambdaExpression)
-                                {
-                                    var span = expr1.Right.FullSpan;
-                                    var expression = code.Substring(span.Start, span.Length);
-                                    if (property == "TextExpression")
-                                        control.TextExpression = expression;
-                                    else if (property == "FilterExpression")
-                                        control.FilterExpression = expression;
-                                }
-                            }
-                            break;
-                        default:
-                            throw new InvalidOperationException("خطای عدم پیاده سازی");
+                        if (data.PropertyName == "TextExpression")
+                            control.TextExpression = data.Expression;
+                        else if (data.PropertyName == "ConditionExpression")
+                            control.ConditionExpression = data.Expression;
                     }
                 }
+                if (!form.SourceFileName.HasValue())
+                {
+                    form.SourceFileName = Path.GetRandomFileName();
+                    await service.SaveChangesAsync();
+                }
+                File.WriteAllText(path + form.SourceFileName + ".cs", code);
             }
             await Save();
-            if (!form.SourceFileName.HasValue())
-            {
-                form.SourceFileName = Path.GetRandomFileName();
-                await service.SaveChangesAsync();
-            }
-            File.WriteAllText(path + form.SourceFileName + ".cs", code);
             ShowMessage("ثبت با موفقیت انجام شد");
             StateHasChanged();
         }
@@ -533,7 +539,7 @@ namespace Caspian.Engine.WorkflowEngine
         async Task<BlazorControl> GetControl(string id)
         {
             using var scope = CreateScope();
-            var service = new BlazorControlService(scope.ServiceProvider);
+            var service = scope.GetService<BlazorControlService>();
             foreach(var row in rows)
             {
                 foreach(var col in row.Columns)

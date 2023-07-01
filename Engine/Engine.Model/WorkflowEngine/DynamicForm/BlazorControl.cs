@@ -38,7 +38,7 @@ namespace Caspian.Engine
 
         public string TextExpression { get; set; }
 
-        public string FilterExpression { get; set; }
+        public string ConditionExpression { get; set; }
 
         public bool MultiLine { get; set; }
 
@@ -48,7 +48,6 @@ namespace Caspian.Engine
 
         public int? HtmlColumnId { get; set; }
 
-        [ForeignKey(nameof(HtmlColumnId))]
         public virtual HtmlColumn HtmlColumn { get; set; }
     }
 }

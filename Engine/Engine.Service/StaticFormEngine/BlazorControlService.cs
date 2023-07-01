@@ -1,6 +1,5 @@
 ﻿using Caspian.Common;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
@@ -40,6 +39,13 @@ namespace Caspian.Engine.Service
                 case ControlType.ComboBox:
                     if (ctr.DataModelField == null)
                         ctr.DataModelField = await new DataModelFieldService(ServiceProvider).SingleAsync(ctr.DataModelFieldId);
+                    if (ctr.DataModelField.FieldType == DataModelFieldType.Relational)
+                    {
+                        var name = ctr.DataModelField.FieldName;
+                        if (name.EndsWith("Id"))
+                            name = name.Substring(0, name.Length - "Id".Length);
+                        return "cmb" + name;
+                    }
                     var entityType = new AssemblyInfo().GetModelType(subSystemKind, ctr.DataModelField.EntityFullName);
                     var info = entityType.GetProperties().SingleOrDefault(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == ctr.PropertyName);
                     if (info == null)

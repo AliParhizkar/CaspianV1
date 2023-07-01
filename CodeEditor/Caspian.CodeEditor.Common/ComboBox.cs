@@ -8,14 +8,9 @@ namespace Capian.Dynamicform.Component
 
         public Expression<Func<TEntity, bool>> ConditionExpression { get; set; }
 
-        public void ReloadData()
-        {
-
-        }
-
         public void EnableLoading()
         {
-
+            throw new NotImplementedException();
         }
     }
 }

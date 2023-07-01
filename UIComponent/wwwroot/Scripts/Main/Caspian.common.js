@@ -212,6 +212,7 @@
         bindCalendar: function (elm, index, vNavigation) {
             switch (index) {
                 case 1:
+                    console.log(elm)
                     if (vNavigation == 2) {//down
                         $(elm).find('.c-down-to-state').css('left', 0).css('top', 36).width(212).height(200);
                         $(elm).find('.c-down-from-state').css('opacity', 0);
@@ -773,7 +774,8 @@
             const mutationObserver = new MutationObserver(() => {
                 let $animate = $(ctr).find('.t-animation-container');
                 let $calendar = $animate.find('.t-datepicker-calendar');
-                $calendar.find('table tr .t-item').click(() => {
+                $calendar.find('table tr .t-item').unbind('click.daySelect');
+                $calendar.find('table tr .t-item').bind('click.daySelect', () => {
                     $(ctr).find('.c-animate-down .t-datepicker-calendar').css('top', '-100%');
                     $(ctr).find('.c-animate-up .t-datepicker-calendar').css('bottom', '-100%');
                 });

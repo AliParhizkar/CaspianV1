@@ -177,6 +177,9 @@ namespace Caspian.Engine
         Decimal,
 
         [Display(Name = "چند گزینه ای")]
-        MultiSelect
+        MultiSelect,
+
+        [Display(Name = "رابطه ای")]
+        Relational
     }
 }

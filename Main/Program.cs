@@ -5,7 +5,7 @@ using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using Syncfusion.Blazor;
-using Demo.Service;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 //new RazorPageProceccor().Proccess();

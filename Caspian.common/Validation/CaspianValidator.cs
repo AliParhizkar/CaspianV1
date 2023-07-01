@@ -6,8 +6,8 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using FluentValidation.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
 using Caspian.Common.Attributes;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common
 {
@@ -51,7 +51,6 @@ namespace Caspian.Common
                 expr = Expression.Lambda(expr, param);
                 CheckOnDelete(expr as Expression<Func<TModel, object>>);
             });
-            
         }
 
         protected IRuleBuilderInitial<TModel, object> RuleForRemove()

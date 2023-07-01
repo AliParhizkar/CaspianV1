@@ -81,6 +81,20 @@ namespace Caspian.Common.Extension
             return type.GetProperty(foreignKeyName);
         }
 
+        public static PropertyInfo GetOneToOnePropertyInfo(this Type type)
+        {
+            foreach(var info in type.GetProperties())
+            {
+                var type1 = info.PropertyType;
+                if (!type1.IsValueType && !type1.IsGenericType && type != typeof(string) && type != typeof(byte[]))
+                {
+                    if (info.GetCustomAttribute<ForeignKeyAttribute>() == null)
+                        return info;
+                }
+            }
+            return null;
+        }
+
         public static PropertyInfo GetPrimaryKey(this Type type, bool checkAnyType = false)
         {
             var keys = type.GetProperties().Where(t => t.CustomAttributes.Any(u => u.AttributeType == typeof(KeyAttribute))).ToList();

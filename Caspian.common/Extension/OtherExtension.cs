@@ -83,7 +83,7 @@ namespace Caspian.Common.Extension
             foreach (var info in typeof(TModel).GetProperties())
             {
                 var type = info.PropertyType;
-                if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
+                if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
                     info.SetValue(newEntity, info.GetValue(model));
             }
             return newEntity;
@@ -94,7 +94,7 @@ namespace Caspian.Common.Extension
             foreach (var info in typeof(TModel).GetProperties())
             {
                 var type = info.PropertyType;
-                if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
+                if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
                     info.SetValue(model, info.GetValue(newModel));
             }
         }

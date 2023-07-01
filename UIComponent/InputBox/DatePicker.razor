@@ -12,7 +12,9 @@
     <div class="@(className)">
         @if (DefaultMode)
         {
-            <input type="date" @attributes="@attrs" disabled="@Disabled" value="@text" class="t-input t-default-mode" autocomplete="off" @onchange="ChangeValue" />
+            var array = text.Split('/');
+            var str = array[1] + '/' + array[2] + '/' + array[0];
+            <input type="date" @attributes="@attrs" disabled="@Disabled" value="" class="t-input t-default-mode" autocomplete="off" @onchange="ChangeValue" />
         }
         else
         {

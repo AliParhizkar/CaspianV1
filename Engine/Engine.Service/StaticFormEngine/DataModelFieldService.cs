@@ -24,14 +24,39 @@ namespace Caspian.Engine.Service
                 }, "فیلد دارای گزینه می باشد و امکان تغییر نوع آن وجود ندارد");
             
             RuleFor(t => t.Title).Required().UniqAsync(t => t.DataModelId, "آبجکتی با این عنوان در فرم ثبت شده است");
-            
+            RuleFor(t => t.EntityTypeId).Required(t => t.FieldType == DataModelFieldType.Relational)
+                .Custom(t => t.EntityTypeId.HasValue && t.FieldType != DataModelFieldType.Relational, "نوع موجودیت باید خالی باشد.");
             RuleFor(t => t.FieldName).Required().UniqAsync(t => t.DataModelId, "آبجکتی با این عنوان در فرم ثبت شده است")
                 .CustomValue(t => t.IsValidIdentifire(), "برای تعریف متغیر فقط از کاراکترهای لاتین و یا اعداد استفاده کنید.");
         }
 
-        public static string GetControlTypeName(DataModelFieldType type)
+        public static string GetFieldTypeName(DataModelField field)
         {
-            switch (type)
+            if (field.EntityFullName.HasValue())
+                return field.EntityFullName;
+            switch (field.FieldType.Value)
+            {
+                case DataModelFieldType.String:
+                    return "string";
+                case DataModelFieldType.Integer:
+                    return "int?";
+                case DataModelFieldType.Decimal:
+                    return "decimal?";
+                case DataModelFieldType.Date:
+                    return "DateTime?";
+                case DataModelFieldType.Relational:
+                    return "int?";
+                default: throw new NotImplementedException("خطای عدم پیاده سازی");
+            }
+        }
+
+        public static string GetControlTypeName(DataModelField field)
+        {
+            if (field.EntityFullName.HasValue())
+                return field.EntityFullName;
+            if (field.FieldType == DataModelFieldType.Relational)
+                return "int?";
+            switch (field.FieldType.Value)
             {
                 case DataModelFieldType.String:
                     return "string";

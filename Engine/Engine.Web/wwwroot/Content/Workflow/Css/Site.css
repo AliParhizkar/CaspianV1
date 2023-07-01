@@ -5,10 +5,17 @@
     margin: 3px 0 3px 0;
     background-image: url('/_Content/Engine.Web/Content/Images/Toolsbox.png');
 }*/
-.c-property-window .fa-save{
-    font-size:16px;
-    color:darkgray;
-    cursor:pointer;
+.c-add-control .c-title{
+    display:inline-block;
+    width:180px;
+}
+.c-add-control .fa-caret-left{
+    color:gray;
+}
+.c-property-window .fa-save {
+    font-size: 16px;
+    color: darkgray;
+    cursor: pointer;
 }
 
 .workflowzoom {
@@ -177,7 +184,7 @@
 }
 
 .c-row-1 {
-    height: 79px;
+    height: 59px;
 }
 
 .c-row-2 {
@@ -210,20 +217,27 @@
     background-position-x: -201px;
     background-position-y: -63px;
 }
-
+.c-dynamic-form-controls label{
+    font-weight:bold;
+    color:darkgray;
+}
 .static-form .c-item {
     border: 1px dashed #e0e0e0;
-    min-height: 80px;
+    min-height: 60px;
     padding: 0;
 }
 
     .static-form .c-item .c-item {
-        min-height: 80px;
+        min-height: 60px;
     }
 
-.static-form .c-selected {
-    background-color: #dcefff;
-}
+    .static-form .c-item.c-selected {
+        background-color: #dcefff !important;
+    }
+
+    .c-dynamic-form-controls.c-selected .t-widget {
+        background-color: #dcefff !important;
+    }
 
 
 legend {
@@ -236,11 +250,7 @@ legend {
 }
 
 .c-dynamic-form-controls {
-    border: 1px solid #d1d1d1;
-    border-radius: 16px;
-    padding: 2px 8px 8px 8px;
-    margin: 10px;
-    margin-top: 5px;
+    margin: 5px;
 }
 
 .c-form-controls {

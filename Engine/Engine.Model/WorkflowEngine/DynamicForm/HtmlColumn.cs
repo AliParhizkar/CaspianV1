@@ -17,7 +17,7 @@ namespace Caspian.Engine
         public int? RowId { get; set; }
 
         [ForeignKey(nameof(RowId))]
-        public virtual HtmlRow? Row { get; set; }
+        public virtual HtmlRow Row { get; set; }
 
         public int? InnerRowId { get; set; }   
 

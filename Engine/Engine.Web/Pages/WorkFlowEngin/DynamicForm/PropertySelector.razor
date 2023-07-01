@@ -1,7 +1,7 @@
 ﻿@namespace Caspian.Engine.WorkflowEngine
 @inherits BasePage
 <div style="height:54px;">
-    <button @onclick="() => showEntityType = !showEntityType" class="w-button w-controls-entity" title="مدل داده ای"></button>
+    <button @onclick="ShowEntityType" class="w-button w-controls-entity" title="مدل داده ای"></button>
     <div class="c-add-control auto-hide">
         @if (showEntityType)
         {
@@ -10,7 +10,11 @@
                 {
                     var className = item.FieldName == SelectedFieldName ? "c-selected" : null;
                     <li @onclick="async () => await EntityType(item.FieldName)" @onclick:stopPropagation @onclick:preventDefault class="@className">
-                        @item.Title
+                        <span class="c-title">@item.Title</span>
+                        @if (item.EntityFullName.HasValue())
+                        {
+                            <span class="c-icon fa fa-caret-left"></span>
+                        }
                         @if (showEntityProperties && item.FieldName == SelectedFieldName)
                         {
                             <ul class="c-property">
@@ -61,10 +65,24 @@
     int? selectedDynamicParameterId;
     bool showParameter;
 
+    async Task ShowEntityType()
+    {
+        showEntityType = true;
+        await EnableWindowClick(this);
+    }
+
     void ShowDynamicParameter()
     {
         selectedPropertyInfo = null;
         showParameter = true;
+    }
+
+    protected override void OnWindowClick()
+    {
+        showEntityType = false;
+        showEntityProperties = false;
+        StateHasChanged();
+        base.OnWindowClick();
     }
 
     async Task SelecteDynamicParameter(int parameterId, int dataModelFieldId)

@@ -106,5 +106,40 @@ namespace Caspian.Engine.Service
             }
             return null;
         }
+         
+        public IList<ExpressionData> GetExpressionData(string className, string sourceCode)
+        {
+            var method = new CodeManager().GetInitializeMethod(className, sourceCode);
+            var list = new List<ExpressionData>();
+            foreach (var item in method.Body.Statements)
+            {
+                switch (item.Kind())
+                {
+                    case SyntaxKind.ExpressionStatement:
+                        var expr = (item as ExpressionStatementSyntax).Expression;
+                        if (expr.Kind() == SyntaxKind.SimpleAssignmentExpression)
+                        {
+                            var data = new ExpressionData();
+                            var expr1 = expr as AssignmentExpressionSyntax;
+                            if (expr1.Left.Kind() == SyntaxKind.SimpleMemberAccessExpression)
+                            {
+                                var letf = expr1.Left as MemberAccessExpressionSyntax;
+                                data.Id = (letf.Expression as IdentifierNameSyntax).Identifier.Text;
+                                data.PropertyName = letf.Name.Identifier.Text;
+                            }
+                            if (expr1.Right.Kind() == SyntaxKind.SimpleLambdaExpression)
+                            {
+                                var span = expr1.Right.FullSpan;
+                                data.Expression = sourceCode.Substring(span.Start, span.Length);
+                            }
+                            list.Add(data);
+                        }
+                        break;
+                    default:
+                        throw new InvalidOperationException("خطای عدم پیاده سازی");
+                }
+            }
+            return list;
+        }
     }
 }

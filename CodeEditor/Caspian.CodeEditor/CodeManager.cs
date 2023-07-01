@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -59,9 +61,7 @@ namespace WpfApp1
         {
             CSharpSyntaxNode type = FindMethod(className, methodName, sourceCode).ReturnType;
             if (type.Kind() == SyntaxKind.IdentifierName)
-            {
                 return (type as IdentifierNameSyntax).Identifier.Text == "Task";
-            } 
             if (type.Kind() == SyntaxKind.GenericName)
             {
                 return (type as GenericNameSyntax).Identifier.Text == "Task";
@@ -72,11 +72,13 @@ namespace WpfApp1
         public MethodDeclarationSyntax FindMethod(string className, string methodName, string sourceCode)
         {
             var classOfForm = GetClassOfForm(className, sourceCode);
+            
             foreach (var member3 in classOfForm.Members)
             {
                 if (member3.Kind() == SyntaxKind.MethodDeclaration)
                 {
                     var method = member3 as MethodDeclarationSyntax;
+                            
                     //method.ReturnType.
                     if (method!.Identifier.Text == methodName)
                         return method;
@@ -113,6 +115,33 @@ namespace WpfApp1
                 return node;
             }
             throw new NotImplementedException("خطای عدم پیاده سازی");
+        }
+
+        public void GetAllEventhandlerName(string className, string sourceCode)
+        {
+            var classOfForm = GetClassOfForm(className, sourceCode);
+            IList<string> eventHandlerNames= new List<string>();
+            foreach (var member3 in classOfForm.Members)
+            {
+                if (member3.Kind() == SyntaxKind.MethodDeclaration)
+                {
+                    var method = member3 as MethodDeclarationSyntax;
+                    var parametersCount = method.ParameterList.Parameters.Count;
+                    if (method.ReturnType.Kind() == SyntaxKind.PredefinedType)
+                    {
+                        var preDefind = method.ReturnType as PredefinedTypeSyntax;
+                        if (preDefind.Keyword.Kind() == SyntaxKind.VoidKeyword)
+                        {
+                            if (parametersCount == 0)
+                                eventHandlerNames.Add(method.Identifier.Text);
+                        }
+                    }else if (method.ReturnType.Kind() == SyntaxKind.IdentifierName)
+                    {
+                        if (parametersCount == 0)
+                            eventHandlerNames.Add(method.Identifier.Text);
+                    }
+                }
+            }
         }
     }
 }

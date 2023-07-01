@@ -78,6 +78,7 @@ namespace RoslynPadReplSample
         void SelectNode(CSharpSyntaxNode node, string txt = null)
         {
             tabControl.SelectedIndex = 2;
+            var q = node.Kind();
             switch (node.Kind())
             {
                 case SyntaxKind.Block:
@@ -177,8 +178,7 @@ namespace RoslynPadReplSample
                     if (codeEditor.Text != "")
                     {
                         var methodSyntax = _codeManager.GetInitializeMethod(className, codeEditor.Text);
-                        var node = _codeManager.FindExpression(methodSyntax, Property);
-                        SelectNode(node, id + '.' + Property + " = ");
+                        
                     }
                     break;
                 case "sendSourceCode":
@@ -196,6 +196,8 @@ namespace RoslynPadReplSample
                     className = dynamicObject.ClassName.Value;
                     id = dynamicObject.Id.Value;
                     var eventHandler = dynamicObject.EventHandler.Value;
+                    if (codeEditor.Text == "")
+                        await webViewForm.CoreWebView2.ExecuteScriptAsync("$.workflowForm.getSourceCodeString()");
                     if (codeEditor.Text != "")
                     {
                         ClassDeclarationSyntax mainClass = _codeManager.GetClassOfForm(className, codeEditor.Text);
@@ -203,14 +205,13 @@ namespace RoslynPadReplSample
                         if (methodSyntax == null)
                         {
                             var close = mainClass.GetLastToken();
-                            var line = mainClass.SyntaxTree.GetLineSpan(close.Span).StartLinePosition.Line;
+                            var line = mainClass.SyntaxTree.GetLineSpan(close.FullSpan).StartLinePosition.Line;
                             var lineSpan = mainClass.SyntaxTree.GetText().Lines[line].Span;
-                            var str = codeEditor.Text.Substring(0, lineSpan.Start);
-                            var qqq = codeEditor.Text.Substring(lineSpan.Start, lineSpan.Length);
-                            str += "\n\t\tpublic void " + eventHandler + "()\n\t\t{\n\n\t\t}\n";
-                            var str1 = codeEditor.Text.Substring(lineSpan.End);
-                            str += codeEditor.Text.Substring(lineSpan.End);
-                            codeEditor.Text = str;
+                            var strStart = codeEditor.Text.Substring(0, lineSpan.Start);
+                            var strMethod = "\n\t\tpublic void " + eventHandler + "()\n\t\t{\n\t\t\t\n\t\t}\n";
+                            var strEnd = codeEditor.Text.Substring(lineSpan.Start);
+                            codeEditor.Text = strStart + strMethod + strEnd;
+                            codeEditor.Select(strStart.Length + strMethod.Length - 5, 1);
                         }
                         else
                         {

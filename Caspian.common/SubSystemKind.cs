@@ -53,6 +53,11 @@ namespace Caspian.Common
             return SubSystemExt.GetAssembly(systemKind, true);
         }
 
+        public static bool HasEntityType(this SubSystemKind systemKind, string namespace_, string name)
+        {
+            return GetEntityAssembly(systemKind).GetTypes().Any(t => t.Namespace == namespace_ && t.Name == name); 
+        }
+
         public static Assembly GetServiceAssembly(this SubSystemKind systemKind)
         {
             return SubSystemExt.GetAssembly(systemKind, false);

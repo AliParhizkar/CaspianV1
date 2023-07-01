@@ -16,10 +16,6 @@
             <StringTextBox @bind-Value="@(Control.Caption)" @onblur="async () => await StateChanged()" />
         </div>
         <div class="pt-2">
-            <label class="pe-3">مقدار</label>
-            <StringTextBox @bind-Value="Value" OnChange="async () => await StateChanged()" />
-        </div>
-        <div class="pt-2">
             <label class="pe-3">شرح</label>
             <StringTextBox @bind-Value="Control.Description" Rows="4" MultiLine OnChange="async () => await StateChanged()" />
         </div>
@@ -30,8 +26,8 @@
                 <StringTextBox Style="direction:ltr" @onclick="TextExpressionSelected" readonly @bind-Value="Control.TextExpression" />
             </div>
             <div class="pt-2">
-                <label class="pe-3">Filter Expression</label>
-                <StringTextBox Style="direction:ltr" @onclick="FilterExpressionSelected" readonly @bind-Value="Control.FilterExpression" />
+                <label class="pe-3">Condition Expression</label>
+                <StringTextBox Style="direction:ltr" @onclick="ConditionExpressionSelected" readonly @bind-Value="Control.ConditionExpression" />
             </div>
         }
         else if (Control.ControlType == ControlType.String)
@@ -80,9 +76,6 @@
     public string Id { get; set; }
 
     [Parameter]
-    public string Value{ get; set; }
-
-    [Parameter]
     public string FormName{ get; set; }
 
     protected override void OnInitialized()
@@ -98,9 +91,9 @@
         base.OnParametersSet();
     }
 
-    void FilterExpressionSelected()
+    void ConditionExpressionSelected()
     {
-        propertyName = "FilterExpression";
+        propertyName = "ConditionExpression";
     }
 
     async Task StateChanged()
@@ -113,7 +106,10 @@
     {
         if (!Control.OnChange.HasValue())
         {
-            Control.OnChange = Id + "OnChange";
+            var index = 0;
+            while (index < Id.Length && Id[index] == Id[index].ToString().ToLower()[0])
+                index++;
+            Control.OnChange = Id.Substring(index) + "_OnChange";
             await StateChanged();
         }
         eventName = Control.OnChange;

@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
+using System.Globalization;
 
 namespace Caspian.UI
 {
@@ -28,7 +29,8 @@ namespace Caspian.UI
                     Value = (TValue)Convert.ChangeType(date, typeof(DateTime));
                 else
                     Value = (TValue)Convert.ChangeType(date.ToPersianDate(), typeof(PersianDate));
-                text = date.Date.ToPersianDateString();
+                text = date.Date.ToADDateString();
+                DateTime epoch = new DateTime(1, 1, 1, new HijriCalendar());
                 if (ValueChanged.HasDelegate)
                     await ValueChanged.InvokeAsync(Value);
                 await Task.Delay(400);
@@ -92,7 +94,12 @@ namespace Caspian.UI
             if (Value == null || Convert.ToDateTime(Value) == default(DateTime))
                 text = "";
             else
-                text = Convert.ToDateTime(Value).Date.ToPersianDateString();
+            {
+                if (DefaultMode)
+                    text = Convert.ToDateTime(Value).Date.ToADDateString();
+                else
+                    text = Convert.ToDateTime(Value).Date.ToADDateString();
+            }
             base.OnParametersSet();
         }
 

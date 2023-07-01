@@ -48,15 +48,16 @@
                 window.chrome.webview.postMessage(data);
             });
         },
-        sendSaveRequest: function () {
-            var data = {
-                action: 'sendSourceCode',
-                content: ''
-            };
-            if (window.chrome.webview)
+        sendSaveRequest: async function () {
+            if (window.chrome.webview) {
+                let data = {
+                    action: 'sendSourceCode',
+                    content: ''
+                };
                 window.chrome.webview.postMessage(data);
+            }
             else
-                $.caspian.showMessage('امکان ذخیره وجود ندارد.');
+                await $w.saveCodeFile(null);
         },
         loadForm: function (formId) {
             var data = {
@@ -66,10 +67,7 @@
             window.chrome.webview.postMessage(data);;
         },
         saveCodeFile: async function (code) {
-            if (code == '' || code.length < 20) 
-                $.caspian.showMessage('هیچ کدی برای ارسال وجود ندارد یا کد فاقد اعتبار می باشد.')
-            else
-                await $.workflowForm.dotnet.invokeMethodAsync('SaveFile', code);
+            await $.workflowForm.dotnet.invokeMethodAsync('SaveCodeAndView', code);
         },
     }
 })(jQuery);

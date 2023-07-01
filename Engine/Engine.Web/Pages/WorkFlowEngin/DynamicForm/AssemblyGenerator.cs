@@ -11,6 +11,8 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel;
 
 namespace Caspian.Engine.WorkflowEngine
 {
@@ -30,15 +32,18 @@ namespace Caspian.Engine.WorkflowEngine
                     using var scope = CreateScope();
                     var service = new WorkflowFormService(scope.ServiceProvider);
                     form = await service.GetAll().Include("Rows").Include("WorkflowGroup").Include("Rows.Columns")
-                        .Include("Rows.Columns.Component").Include("Rows.Columns.Component.DataModelField")
+                        .Include("Rows.Columns.Component")
+                        .Include("Rows.Columns.Component.DataModelField")
+                        .Include("Rows.Columns.Component.DataModelField.EntityType")
                         .Include("Rows.Columns.Component.DynamicParameter")
                         .Include("Rows.Columns.Component.DynamicParameter.Options")
                         .Include("Rows.Columns.InnerRows").Include("Rows.Columns.InnerRows.HtmlColumns")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField")
+                        .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField.EntityType")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DynamicParameter")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DynamicParameter.Options")
-                        .SingleAsync(t => t.Id == WorkflowFormId);
+                        .SingleAsync(WorkflowFormId);
                     isloading = true;
                     try
                     {
@@ -62,7 +67,7 @@ namespace Caspian.Engine.WorkflowEngine
         {
             if (form.SourceFileName.HasValue())
             {
-                var path = Environment.ContentRootPath + "Data\\Code\\" + form.SourceFileName + ".cs";
+                var path = Environment.ContentRootPath + "\\Data\\Code\\" + form.SourceFileName + ".cs";
                 var content =  File.ReadAllText(path);
                 if (!content.HasValue())
                     return null;
@@ -111,7 +116,8 @@ namespace Caspian.Engine.WorkflowEngine
         {
             using var scope = CreateScope();
             var service = new WorkflowFormService(scope.ServiceProvider);
-            var fields = new DataModelFieldService(scope.ServiceProvider).GetAll().Where(t => t.DataModelId == form.DataModelId).ToList();
+            var fields = await new DataModelFieldService(scope.ServiceProvider).GetAll()
+                .Where(t => t.DataModelId == form.DataModelId).Include(t => t.EntityType).ToListAsync();
             var str = new StringBuilder();
             str.Append("using Caspian.UI;\n");
             str.Append("using System;\n");
@@ -125,16 +131,17 @@ namespace Caspian.Engine.WorkflowEngine
             str.Append("namespace Caspian.Engine.CodeGenerator\n{\n\t");
             str.Append("public partial class " + form.Name + ": BasePage\n");
             str.Append("\t{\n");
+            str.Append("\n\t\t//Fields\n");
             foreach (var field in fields)
             {
                 var typeName = "";
                 if (field.EntityFullName.HasValue())
                     typeName = field.EntityFullName;
                 else
-                    typeName = DataModelFieldService.GetControlTypeName(field.FieldType.Value);
+                    typeName = DataModelFieldService.GetControlTypeName(field);
                 str.Append("\t\t" + typeName + ' ' + field.FieldName + ";\n");
             }
-            str.Append("\n\t\t//Dynamic parameters\n");
+            str.Append("\n\t\t//Form controls\n");
             var list = new List<DynamicParameter>();
             foreach (var row in form.Rows)
                 foreach (var col in row.Columns)
@@ -283,6 +290,34 @@ namespace Caspian.Engine.WorkflowEngine
                     //-----------------------------------------
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
+                case ControlType.ComboBox:
+                    var typeName = control.DataModelField.EntityType.Name;
+                    str.Append("\t\t\tbuilder.OpenComponent<ComboBox<" + typeName + ", int?>>(2);\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + control.DataModelField.FieldName + ");\n");
+                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<int?>(this, value => { " 
+                        + control.DataModelField.FieldName + " = value; }));\n");
+                    if (control.OnChange.HasValue())
+                    {
+                        if (isAsync == true)
+                            str.Append("\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, async () => await " + control.OnChange + "()));\n");
+                        else
+                            str.Append("\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, () => " + control.OnChange + "()));\n");
+                    }
+                    str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, cmb =>\n");
+                    str.Append("\t\t\t{\n");
+                    var strName = parameterName;
+                    if (parameterName.EndsWith("Id"))
+                        strName = parameterName.Substring(0, strName.Length - "Id".Length);
+                    strName = "cmb" + strName;
+                    str.Append("\t\t\t\t" + strName + " = cmb as ComboBox<" + typeName + ", int?>;\n");
+                    if (control.TextExpression.HasValue())
+                        str.Append("\t\t\t\t" + strName + ".TextExpression = " + control.TextExpression + ";\n");
+                    if (control.ConditionExpression.HasValue())
+                        str.Append("\t\t\t\t" + strName + ".ConditionExpression = " + control.ConditionExpression + ";\n");
+                    str.Append("\t\t\t});\n");
+                    str.Append("\t\t\tbuilder.CloseComponent();\n");
+
+                    break;
                 case ControlType.DropdownList:
                     strType = parameterName;
                     str.Append("\t\t\tbuilder.OpenComponent<DropdownList<" + strType + ">>(2);\n");
@@ -336,8 +371,7 @@ namespace Caspian.Engine.WorkflowEngine
             var strType = type.GetUnderlyingType().Name;
             if (type.IsNullableType())
                 strType += "?";
-            var scope = CreateScope();
-            var service = new BlazorControlService(scope.ServiceProvider);
+            using var service = CreateScope().GetService<BlazorControlService>();
             var id = await service.GetId(form.WorkflowGroup.SubSystemKind, component);
             switch (component.ControlType)
             {
@@ -391,8 +425,8 @@ namespace Caspian.Engine.WorkflowEngine
                     str.Append("\t\t\t\t" + id + " = cmb as ComboBox<" + typeName + ", " + strType + ">;\n");
                     if (component.TextExpression.HasValue())
                         str.Append("\t\t\t\t" + id + ".TextExpression = " + component.TextExpression + ";\n");
-                    if (component.FilterExpression.HasValue())
-                        str.Append("\t\t\t\t" + id + ".ConditionExpression = " + component.FilterExpression + ";\n");
+                    if (component.ConditionExpression.HasValue())
+                        str.Append("\t\t\t\t" + id + ".ConditionExpression = " + component.ConditionExpression + ";\n");
                     str.Append("\t\t\t});\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;

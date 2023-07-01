@@ -1,0 +1,151 @@
+﻿@namespace Caspian.Engine.WorkflowEngine
+@inherits SimplePage<EntityType>
+<style type="text/css">
+    .fa-check{
+        color: #34b8f9;
+        font-size: 28px;
+        vertical-align: middle;
+    }
+
+    .fa-exclamation-triangle{
+        color: #d25324;
+        font-size: 28px;
+        vertical-align: middle;
+    }
+</style>
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4">
+    <div class="row c-controls">
+        <div class="col-md-1">
+            <label>زیرسیستم</label>
+        </div>
+        <div class="col-md-4 ps-4">
+            <DropdownList @bind-Value="SearchData.SubSystem" />
+        </div>
+        <div class="col-md-1 pe-4">
+            <label>وضعیت</label>
+        </div>
+        <div class="col-md-4">
+            <DropdownList @bind-Value="SearchData.ValidationType" />
+        </div>
+        <div class="col-md-2 text-center">
+            <button class="c-icon-button c-title" @onclick="ValidateEntitiesType">
+                اعتبارسنجی
+                <i class="fa fa-refresh"></i>
+            </button>
+        </div>
+    </div>
+    <DataGrid @ref="CrudGrid" TEntity="EntityType">
+        <Columns Context="con">
+            <GridColumn Field="t => t.SubSystem.EnumText()" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Namespace" />
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.ValidationType">
+                <Template>
+                    @{
+                        var className = con.Data.ValidationType == ValidationType.Valid ? "fa fa-check" : "fa fa-exclamation-triangle";
+                    }
+                    <span class="@className"></span>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window @ref="UpsertWindow" Title="موجودیت ها" Style="width:500px">
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="UpdateModel">
+            <div class="row c-controls ps-4 pe-4">
+                <div class="col-md-3">
+                    <label>زیرسیستم</label>
+                </div>
+                <div class="col-md-9">
+                    <DropdownList @bind-Value="subSystem" FilterFunc="t => t != SubSystemKind.Engine" OnChange="UpdateSource" />
+                </div>
+                <div class="col-md-3">
+                    <label>موجودیت</label>
+                </div>
+                <div class="col-md-9">
+                    <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="typeName" Source="source" />
+                </div>
+                <div class="col-md-3">
+                    <label>عنوان فارسی </label>
+                </div>
+                <div class="col-md-9">
+                    <StringTextBox @bind-Value="UpsertData.Title" />
+                </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-9">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+
+
+@code
+{
+    string typeName;
+    SubSystemKind subSystem;
+    IList<SelectListItem> source;
+
+    [Parameter]
+    public SubSystemKind SubSystemKind { get; set; }
+
+    void UpdateSource()
+    {
+        if (subSystem > 0)
+        {
+            source = subSystem.GetEntityAssembly().GetTypes().Where(t => t.GetCustomAttribute<TableAttribute>() != null)
+                .Select(t => new SelectListItem()
+                    {
+                        Value = t.Namespace + '-' + t.Name,
+                        Text = t.Name
+                    }).ToList();
+        }
+
+    }
+
+    void UpdateModel()
+    {
+        UpsertData.SubSystem = subSystem;
+        if (typeName.HasValue())
+        {
+            var items = source.Single(t => t.Value == typeName).Value.Split('-');
+            UpsertData.Namespace = items[0];
+            UpsertData.Name = items[1];
+            var status = subSystem.HasEntityType(items[0], items[1]);
+            UpsertData.ValidationType = status ? ValidationType.Valid : ValidationType.Invalid; 
+        }
+        else
+            ShowMessage("لطفا نوع موجودیت را مشخص نمایید.");
+    }
+
+    async Task ValidateEntitiesType()
+    {
+        using var service = CreateScope().GetService<EntityTypeService>();
+        var list = await service.GetAll().ToListAsync();
+        foreach(var item in list)
+        {
+            var status = item.SubSystem.HasEntityType(item.Namespace, item.Name);
+            if (status && item.ValidationType == ValidationType.Invalid || !status && item.ValidationType == ValidationType.Valid)
+            {
+                var old = await service.SingleAsync(item.Id);
+                old.ValidationType = status ? ValidationType.Valid : ValidationType.Invalid;
+                await service.SaveChangesAsync();
+            }
+        }
+        await CrudGrid.ReloadAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        subSystem = SubSystemKind;
+        UpdateSource();
+        base.OnParametersSet();
+    }
+}

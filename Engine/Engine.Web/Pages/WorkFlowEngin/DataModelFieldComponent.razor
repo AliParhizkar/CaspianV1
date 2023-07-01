@@ -16,7 +16,8 @@
             <GridColumn Field="t => t.EntityFullName" />
             <GridColumn Field="t => t.FieldName" />
             <GridColumn Field="t => t.FieldType.EnumText()" />
-            <GridColumn Field="t => t.IsCollection" style="text-align:center" Title="بصورت لیست" />
+            <GridColumn Field="t => t.EntityType.Title" Title="نوع موجودیت" />
+            <GridColumn Field="t => t.IsDetails" style="text-align:center" Title="بصورت جزئیات" />
             <GridColumn style="width:80px;" Title="گزینه ها">
                 <Template>
                     <IconButton Disabled="context.Data.FieldType != DataModelFieldType.MultiSelect" Href='@($"/{Subsystem.ToString()}/WorkflowEngine/DataModelOption/{context.Data.Id}")' IconType="IconType.Wpforms"  />
@@ -56,10 +57,17 @@
                     <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.FieldName" />
                 </div>
                 <div class="col-md-4">
+                    <label>نوع موجودیت</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TValue="int?" TEntity="Caspian.Engine.EntityType" @bind-Value="UpsertData.EntityTypeId"
+                        TextExpression="t => t.Title" Disabled="UpsertData.FieldType != DataModelFieldType.Relational"/>
+                </div>
+                <div class="col-md-4">
                     <label>بصورت لیست</label>
                 </div>
                 <div class="col-md-8">
-                    <CheckBox @bind-Value="UpsertData.IsCollection" />
+                    <CheckBox @bind-Value="UpsertData.IsDetails" />
                 </div>
                 <div class="col-md-4"></div>
                 <div class="col-md-8">

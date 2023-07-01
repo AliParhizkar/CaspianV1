@@ -51,9 +51,29 @@ namespace Caspian.Common.Service
             if (Context.Entry(entity).State != EntityState.Modified)
             {
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+                object oneToOne = null;
+                var info = typeof(TEntity).GetOneToOnePropertyInfo();
+                if (info != null)
+                {
+                    oneToOne = info.GetValue(entity);
+                    if (oneToOne != null)
+                    {
+                        foreach(var info1 in oneToOne.GetType().GetProperties())
+                        {
+                            var type = info1.PropertyType;
+                            if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]))
+                                info1.SetValue(oneToOne, null);
+
+                        }
+                    }
+                }
                 var old = await SingleOrDefaultAsync(id);
                 if (old != null)
+                {
                     old.CopySimpleProperty(entity);
+                    info.SetValue(old, oneToOne);
+                }
+
             }
         }
 
@@ -73,23 +93,23 @@ namespace Caspian.Common.Service
 
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
+            var result = await ValidateAsync(entity);
+            if (result.Errors.Count > 0)
+                throw new CaspianException(result.Errors[0].ErrorMessage);
             foreach (var info in typeof(TEntity).GetProperties())
             {
                 var type = info.PropertyType;
                 if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || (type.IsCollectionType() && type != typeof(string)))
                     info.SetValue(entity, default);
             }
-            var result = await ValidateAsync(entity);
-            if (result.Errors.Count > 0)
-                throw new CaspianException(result.Errors[0].ErrorMessage);
             var result1 = await Context.Set<TEntity>().AddAsync(entity);
             return result1.Entity;
         }
 
-        public virtual void UpdateRange(IEnumerable<TEntity> entities)
-        {
-            Context.Set<TEntity>().UpdateRange(entities);
-        }
+        //public virtual void UpdateRange(IEnumerable<TEntity> entities)
+        //{
+        //    Context.Set<TEntity>().UpdateRange(entities);
+        //}
 
         public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
         {

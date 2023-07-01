@@ -10,7 +10,7 @@ namespace Employment.Model
     /// مشخصات مدارک تحصیلی
     /// </summary>
     [Table("EducationDegrees", Schema = "emp")]
-    public class EducationDegree
+    public partial class EducationDegree
     {
         [Key]
         public int Id { get; set; }

@@ -6,16 +6,20 @@ namespace Capian.Dynamicform.Component
     {
         public static bool HasValue(this string str)
         {
-            if (str == null || str == "")
-                return false;
-            return true;
+            throw new NotImplementedException();
         }
 
         public static int? ConvertToInt(this Enum curentEnum)
         {
-            if (curentEnum == null)
-                return null;
-            return Convert.ToInt32(curentEnum);
+            throw new NotImplementedException();
+        }
+    }
+
+    public static class DIExtensions
+    {
+        public static TService GetService<TService>(this IServiceScope scope) where TService : class
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -18,14 +18,14 @@
                         <div class="row c-controls">
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
-                                    <DatePicker FromDate="DateTime.Now"  CalendarType="CalendarType.Persian" @bind-Value="date" />
+                                    <DatePicker CalendarType="CalendarType.Persian" @bind-Value="date" />
                                 </div>
                             </div>
                             <div class="ps-5 col-md-6">
                                 <label>Selected date</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;">@(date.ToShortDateString())</label>
+                                <label style="color:red;direction:ltr">@(date.ToADDateString())</label>
                             </div>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                                 <label>Selected date</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;">@(nullableDate.HasValue ? nullableDate.Value.ToShortDateString() : "---")</label>
+                                <label style="color:red;">@(nullableDate.HasValue ? nullableDate.Value.ToADDateString() : "---")</label>
                             </div>
                         </div>
                     </div>
@@ -75,14 +75,14 @@
                         <div class="row c-controls">
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
-                                    <DatePicker DefaultMode @bind-Value="date" />
+                                    <DatePicker DefaultMode @bind-Value="defauktModeDate" />
                                 </div>
                             </div>
                             <div class="ps-5 col-md-6">
                                 <label>Selected date</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;">@(date.ToShortDateString())</label>
+                                <label style="color:red;">@(defauktModeDate.ToADDateString())</label>
                             </div>
                         </div>
                     </div>
@@ -190,6 +190,7 @@
 @code
 {
     DateTime date = DateTime.Now;
+    DateTime? defauktModeDate = DateTime.Now;
     bool disable;
     DateTime? nullableDate;
     ControlSize controlSize = ControlSize.Auto;

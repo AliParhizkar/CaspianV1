@@ -15,7 +15,7 @@ namespace Caspian.UI
     {
         string message;
         bool? block;
-        MessageBox MessageBox;
+        protected MessageBox MessageBox;
         bool sholdRender = true;
         BasePage child;
         
@@ -154,6 +154,7 @@ namespace Caspian.UI
         /// </summary>
         protected async Task EnableWindowClick(BasePage child)
         {
+            this.child = child;
             await jsRuntime.InvokeVoidAsync("$.caspian.bindWindowClick", DotNetObjectReference.Create(child));
         }
 

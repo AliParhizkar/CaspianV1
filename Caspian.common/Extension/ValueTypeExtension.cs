@@ -121,6 +121,25 @@ namespace Caspian.Common
             return date.Value.ToPersianDate();
         }
 
+        public static string ToADDateString(this DateTime? date)
+        {
+            if (date == null)
+                return "";
+            return date.Value.ToADDateString();
+        }
+
+        public static string ToADDateString(this DateTime date)
+        {
+            var str = date.Year + "/";
+            if (date.Month < 10)
+                str += "0";
+            str += date.Month + "/";
+            if (date.Day < 10)
+                str += "0";
+            str += date.Day;
+            return str;
+        }
+
         public static string ToPersianDateString(this DateTime date)
         {
             return date.ToPersianDate().ToString();

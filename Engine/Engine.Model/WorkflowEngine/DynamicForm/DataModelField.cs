@@ -15,7 +15,7 @@ namespace Caspian.Engine
         [Key]
         public int Id { get; set; }
 
-        public int DataModelId { get; set; }
+        public int? DataModelId { get; set; }
 
         [ForeignKey(nameof(DataModelId))]
         public virtual DataModel DataModel { get; set; }
@@ -26,7 +26,7 @@ namespace Caspian.Engine
         [DisplayName("نام موجودیت")]
         public string EntityFullName { get; set; }
 
-        [DisplayName("نام فیلد")]
+        [DisplayName("نوع فیلد")]
         public DataModelFieldType? FieldType { get; set; }
 
         /// <summary>
@@ -42,10 +42,16 @@ namespace Caspian.Engine
         [DisplayName("نام فیلد")]
         public string FieldName { get; set; }
 
+        [DisplayName("نوع موجودیت")]
+        public int? EntityTypeId { get; set; }
+
+        [ForeignKey(nameof(EntityTypeId))]
+        public virtual EntityType EntityType { get; set; }
+
         /// <summary>
-        /// declare entity must bind to array 
+        /// Check Entity type can be as Details
         /// </summary>
-        public bool IsCollection { get; set; }
+        public bool IsDetails { get; set; }
 
         [CheckOnDelete("فیلد به کنترل تخصیص داده شده و امکان حذف آن وجود ندارد")]
         public virtual IList<BlazorControl> BlazorControls { get; set; }
