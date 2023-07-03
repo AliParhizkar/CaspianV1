@@ -4,11 +4,11 @@
 @{
     base.BuildRenderTree(__builder);
 }
-
-
+<span>@value</span>
+<NumericTextBox @bind-Value="value" Total="8" NumberDigit="2" />
 
 @code
 {
-
+    decimal value;
 }
 

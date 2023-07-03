@@ -2,6 +2,7 @@
 @namespace Demo.Web.Pages
 @inject IHostEnvironment host
 @inject FileUploadService service
+@inherits BasePage
 <h2>Fileupload</h2>
 <p>
     We use FileUpload in two modes: uploading <b>small files</b> and uploading <b>large files</b>, for uploading small files we <b>can keep the content of the file in memory</b>, but for large files we <b>need to store the data on file</b> or <b>file table</b>, Also, for uploading large files, we usually use the <b>progress bar</b>.
@@ -30,7 +31,7 @@
                                 <label>File upload</label>
                             </div>
                             <div class="col-md-7 align-items-center">
-                                <Fileupload Accept="image/*" OnChange="async e => await SaveFileDataWithoutContent(e)" />
+                                <Fileupload Accept="image/*" MaxAllowedSize="40_000" OnChange="async e => await SaveFileDataWithoutContent(e)" />
                             </div>
                         </div>
                     </div>
@@ -92,7 +93,7 @@
                         <div class="row c-controls">
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
-                                    <Fileupload Accept="Image/*" MaxAllowedSize="40_000" OnChange="async e => await SaveFileDataWithContent(e)" Title="Click for upload">
+                                    <Fileupload Accept="Image/*" MaxAllowedSize="40_000" OnChange="async e => await SaveFileDataWithoutContent(e)" Title="Click for upload">
                                         <PictureBox NoContentTitle="Click me for upload" Data="imageDataWithoutContent" style="width:250px;height:300px;background-size:100% 100%" />
                                     </Fileupload>
                                 </div>
@@ -195,7 +196,7 @@
                                 <label>Fileupload</label>
                             </div>
                             <div class="text-center col-md-6">
-                                <Fileupload Title="Multiple file upload" Style="width:145px;height:45px;" Service="service" MaxFilesCount="Convert.ToInt32(fileCounts[fileCount - 1])"
+                                <Fileupload Title="Multiple file upload" Style="width:145px;" Service="service" MaxFilesCount="Convert.ToInt32(fileCounts[fileCount - 1])"
                                             MaxAllowedSize="Convert.ToInt32(filesSize[fileSizeMultiple - 1] * 1000_000)" OnChange="ShowProrgres"
                                             Multiple RelatedPath="@relatedPath" OnFilesUploadCompleted="FileUploadCompleted" />
 
@@ -241,7 +242,7 @@
                                 <label>File upload</label>
                             </div>
                             <div class="col-md-6">
-                                <Fileupload Service="service" RelatedPath="@relatedPath" />
+                                <Fileupload Service="service" MaxAllowedSize="10_000_000" RelatedPath="@relatedPath" />
                             </div>
                         </div>
                     </div>

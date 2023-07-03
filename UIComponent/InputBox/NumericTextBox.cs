@@ -1,20 +1,19 @@
 ﻿using System;
 using Caspian.Common;
 using Newtonsoft.Json;
+using System.Threading;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
 using Caspian.Common.Extension;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
-using System.Linq.Expressions;
-using Microsoft.Extensions.Logging;
-using System.Threading;
 
 namespace Caspian.UI
 {
     public partial class NumericTextBox<TValue>: CBaseInput<TValue>
     {
         string oldJson;
+        int? maxLength = 8;
 
         [Parameter, JsonProperty("total")]
         public int Total { get; set; }
@@ -28,6 +27,8 @@ namespace Caspian.UI
         async Task onChangeValue(ChangeEventArgs arg)
         {
             var str = arg.Value.ToString().Replace(",", "");
+            if (str == "-")
+                str = "";
             if (str.HasValue())
             {
                 var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
@@ -55,6 +56,10 @@ namespace Caspian.UI
                 InputAttributes["id"] = Id.Replace('.', '_');
                 InputAttributes["name"] = Id.Replace('.', '_');
             }
+            if (NumberDigit == 0)
+                maxLength = Total;
+            else
+                maxLength = null;
             base.OnParametersSet();
         }
 

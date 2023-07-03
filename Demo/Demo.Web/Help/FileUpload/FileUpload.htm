@@ -148,18 +148,26 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Accept</span></
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;image/*&quot;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple;background:
-yellow'>OnChange</span></b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:blue;background:yellow'>=&quot;async</span><span style='font-size:9.5pt;
-font-family:"Cascadia Mono";color:black;background:yellow'> e =&gt; </span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue;background:yellow'>await</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>
-</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>SaveFileDataWithoutContent<span
-style='background:yellow'> (e)</span></span><span style='font-size:9.5pt;
-font-family:"Cascadia Mono";color:blue;background:yellow'>&quot;</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'> /&gt;</span></p>
+yellow'>MaxAllowedSize</span></b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>=&quot;</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>40_000</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>&quot;</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'> </span></p>
 
 <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
-margin-left:19.85pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
+margin-left:79.4pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple;background:
+yellow'>OnChange</span></b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>=&quot;async</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'> e =&gt; </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>await</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'> </span><b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#833C0B'>SaveFileDataWithoutContent</span></b><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:black'>(e)</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot; /&gt;</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:39.7pt;line-height:normal;text-autospace:none'><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
@@ -183,14 +191,24 @@ white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;
 background:yellow'>{</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>byte</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>[]
+imageDataWithContent;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
    </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>async</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>Task</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>
-SaveFileDataWithContent(</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:#2B91AF'>InputFileChangeEventArgs</span><span style='font-size:9.5pt;
-font-family:"Cascadia Mono";color:black'> file)</span></p>
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#833C0B'>SaveFileDataWithContent</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>InputFileChangeEventArgs</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> file)</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
@@ -200,10 +218,12 @@ none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
    imageDataWithContent = </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
 color:blue'>await</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:black'> file.File.GetByteArrayAsync();</span></p>
+color:black'> file.File.</span><b><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:#833C0B'>GetByteArrayAsync</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>();</span></p>
 
 <p class=MsoNormal style='margin-left:19.85pt'><span style='font-size:9.5pt;
-line-height:107%;font-family:"Cascadia Mono";color:black'>   }</span></p>
+line-height:107%;font-family:"Cascadia Mono";color:black'>    }</span></p>
 
 <p class=MsoNormal style='margin-left:19.85pt'><span style='background:yellow'>}</span></p>
 
@@ -258,13 +278,13 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;image/*&qu
 
 <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
 margin-left:79.4pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><b><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>Title</span></b><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;Click for
-upload&quot; </span><b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:purple'>MaxAllowedSize</span></b><span style='font-size:9.5pt;font-family:
-"Cascadia Mono";color:blue'>=&quot;</span><span style='font-size:9.5pt;
-font-family:"Cascadia Mono";color:black'>40_000</span><span style='font-size:
-9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;&gt;</span></p>
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple;background:
+yellow'>Title</span></b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:blue'>=&quot;Click for upload&quot; </span><b><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:purple;background:yellow'>MaxAllowedSize</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>40_000</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;&gt;</span></p>
 
 <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
 margin-left:59.55pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
@@ -317,14 +337,23 @@ white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;
 background:yellow'>{</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>byte</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>[] imageDataWithContent;</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
+white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
    </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>async</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>Task</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>
-SaveFileDataWithContent(</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:#2B91AF'>InputFileChangeEventArgs</span><span style='font-size:9.5pt;
-font-family:"Cascadia Mono";color:black'> file)</span></p>
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#833C0B'>SaveFileDataWithContent</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#2B91AF'>InputFileChangeEventArgs</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> file)</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
@@ -334,10 +363,12 @@ none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
    imageDataWithContent = </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
 color:blue'>await</span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:black'> file.File.GetByteArrayAsync();</span></p>
+color:black'> file.File.</span><b><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:#833C0B'>GetByteArrayAsync</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>();</span></p>
 
 <p class=MsoNormal style='margin-left:19.85pt'><span style='font-size:9.5pt;
-line-height:107%;font-family:"Cascadia Mono";color:black'>    }</span></p>
+line-height:107%;font-family:"Cascadia Mono";color:black'>   }</span></p>
 
 <p class=MsoNormal style='margin-left:19.85pt'><span style='background:yellow'>}</span></p>
 

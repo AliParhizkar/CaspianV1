@@ -36,7 +36,7 @@
     public bool Multiple { get; set; }
 
     [Parameter]
-    public int MaxAllowedSize { get; set; } = 512000;
+    public int? MaxAllowedSize { get; set; }
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
@@ -65,13 +65,25 @@
             attrs["multiple"] = true;
         if (Accept.HasValue())
             attrs["accept"] = Accept;
+        if (MaxAllowedSize == null)
+        {
+            if (Service == null)
+                MaxAllowedSize = 50_000;
+            else
+                MaxAllowedSize = 512_000;
+        }
         base.OnParametersSet();
     }
 
     async Task ViewFile(InputFileChangeEventArgs arg)
     {
         if (Service == null && OnChange.HasDelegate)
-            await OnChange.InvokeAsync(arg);
+        {
+            if (arg.File.Size > MaxAllowedSize)
+                await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", $"The file size should be less than {MaxAllowedSize / 1000} KB");
+            else
+                await OnChange.InvokeAsync(arg);
+        }    
         if (Service != null)
         {
             var result = true;
@@ -129,7 +141,17 @@
                 {
                     var file = arg.File;
                     if (arg.File.Size > MaxAllowedSize)
-                        await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.Seprate3Digit()} می باشد.");
+                    {
+                        var fileSize = "";
+                        if (MaxAllowedSize.Value >= 1000_000)
+                            fileSize = MaxAllowedSize.Value / 1000_000 + "MB";
+                        else if (MaxAllowedSize.Value >= 1000)
+                            fileSize = MaxAllowedSize.Value / 1000 + "KB";
+                        var message = dataService.Language == Language.Fa ? $"حداکثر مجاز برای حجم فایل برابر {fileSize} می باشد." :
+                            $"The file size should be less than {fileSize}";
+                        await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+
+                    }
                     else
                     {
                         if (OnChange.HasDelegate)
@@ -211,7 +233,6 @@
 
     async Task SaveFile(IBrowserFile file)
     {
-
         byte[] buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(4096);
         await using var timer = Service.Progress.Inintialze(file.Name, (int)file.Size);
         var fileData = new FileUploadData();

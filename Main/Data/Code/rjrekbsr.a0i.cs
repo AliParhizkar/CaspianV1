@@ -9,8 +9,10 @@ namespace Caspian.Dynamic.WorkflowForm
 	{
 		public void Initialize()
 		{
+            cmbMajor.TextExpression = t => t.Title;
+            cmbEducationDegree.TextExpression = t => t.Title;
 			cmbEmploymentOrderType.TextExpression = t => t.Title + t.Code;
-			cmbEducationDegree.TextExpression = t => t.Title;
+			cmbMajor.ConditionExpression = t => t.EducationDegreeId == EducationDegreeId;
 		}
 
 		public async Task EmploymentOrderType_OnChange()
@@ -31,9 +33,13 @@ namespace Caspian.Dynamic.WorkflowForm
 			
 		}
 
-		public async Task EducationDegree_OnChange()
+		public void EducationDegree_OnChange()
 		{
-			await Confirm("سلام خوبی");
+            if (EducationDegreeId == null)
+                cmbMajor.Disable();
+            else
+                cmbMajor.Enable();
+            cmbMajor.EnableLoading();
 		}
     }
 }

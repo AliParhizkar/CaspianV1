@@ -21,21 +21,21 @@
         text = text.Replace(decimalDigits, '.');
         if (DigitGrouping)
         {
-            var array = text.Split('.');
-            text = "";
-            if (array[0].HasValue())
-                text += string.Format("{0:#,0}", Convert.ToInt64(array[0]));
-            if (array.Length == 2 && array[1].HasValue())
-                text += '.' + string.Format("{0:#,0}", Convert.ToInt64(array[1]));
+            //var array = text.Split('.');
+            //text = "";
+            //if (array[0].HasValue())
+            //    text += string.Format("{0:#,0}", Convert.ToInt64(array[0]));
+            //if (array.Length == 2 && array[1].HasValue())
+            //    text += '.' + string.Format("{0:#,0}", Convert.ToInt64(array[1]));
         }
 
     }
     @if (BindingType == BindingType.OnChange)
     {
-        <input @ref="htmlElement" value="@text" @attributes="InputAttributes" @onchange="onChangeValue" class="t-input" />
+        <input @ref="htmlElement" @attributes="InputAttributes" value="@text" @onchange="onChangeValue" class="t-input" />
     }
     else
     {
-        <input @ref="htmlElement" value="@text" @attributes="InputAttributes" @oninput="onChangeValue" class="t-input" />
+        <input @ref="htmlElement" maxlength="@maxLength" value="@text" @attributes="InputAttributes" @oninput="onChangeValue" class="t-input" />
     }
 </div>

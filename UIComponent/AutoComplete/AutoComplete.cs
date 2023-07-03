@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace Caspian.UI
 {
@@ -301,6 +302,7 @@ namespace Caspian.UI
 
         async Task OnKeyDownHandler(KeyboardEventArgs e)
         {
+            
             switch (e.Code)
             {
                 case "ArrowUp":

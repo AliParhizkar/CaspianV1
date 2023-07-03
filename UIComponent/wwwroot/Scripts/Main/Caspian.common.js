@@ -212,7 +212,12 @@
         bindCalendar: function (elm, index, vNavigation) {
             switch (index) {
                 case 1:
-                    console.log(elm)
+                    $(elm).find('table tr .t-item').unbind('click.daySelect');
+                    $(elm).find('table tr .t-item').bind('click.daySelect', () => {
+                        let $ctr = $(elm).closest('.t-datepicker');
+                        $ctr.find('.c-animate-down .t-datepicker-calendar').css('top', '-100%');
+                        $ctr.find('.c-animate-up .t-datepicker-calendar').css('bottom', '-100%');
+                    });
                     if (vNavigation == 2) {//down
                         $(elm).find('.c-down-to-state').css('left', 0).css('top', 36).width(212).height(200);
                         $(elm).find('.c-down-from-state').css('opacity', 0);
@@ -763,22 +768,17 @@
                 $(ctr).find('.t-picker-wrap').removeClass('t-state-selected');
                 $.caspian.hideErrorMessage($(ctr).closest('.t-widget')[0]);
             });
-            $(window).bind('click', function (e) {
+            $(window).bind('click', e => {
                 if (!$(e.target).closest('.t-calendar').hasClass('t-calendar') &&
                         $(e.target).closest('.t-picker-wrap')[0] != $(ctr).find('.t-picker-wrap')[0]) {
                     $(ctr).find('.c-animate-down .t-datepicker-calendar').css('top', '-100%');
                     $(ctr).find('.c-animate-up .t-datepicker-calendar').css('bottom', '-100%');
-                    setTimeout(() => dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
+                    setTimeout(async () => await dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
                 }
             });
             const mutationObserver = new MutationObserver(() => {
                 let $animate = $(ctr).find('.t-animation-container');
                 let $calendar = $animate.find('.t-datepicker-calendar');
-                $calendar.find('table tr .t-item').unbind('click.daySelect');
-                $calendar.find('table tr .t-item').bind('click.daySelect', () => {
-                    $(ctr).find('.c-animate-down .t-datepicker-calendar').css('top', '-100%');
-                    $(ctr).find('.c-animate-up .t-datepicker-calendar').css('bottom', '-100%');
-                });
                 if ($animate.offset()) {
                     let loc = $animate.offset().top - $(window).scrollTop();
                     if (loc > $(window).height() / 2) {
@@ -953,14 +953,14 @@
                 $(ddl).find('.t-dropdown-wrap').removeClass('t-state-focused').addClass('t-state-default');
                 $.caspian.hideErrorMessage($(ddl)[0]);
             });
-            $(window).bind('click', function (e) {
+            $(window).bind('click', e => {
                 if (!$(e.target).closest('.t-dropdown').hasClass('t-dropdown')) {
                     let $group = $(ddl).find('.c-animate-down .t-group');
                     if ($(ddl).find('.t-group')[0]) {
                         $group.css('top', '-100%');
                         $group = $(ddl).find('.c-animate-up .t-group');
                         $group.css('bottom', '-100%');
-                        setTimeout(() => dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
+                        setTimeout(async () => await dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
                     }
                 }
             });
@@ -968,10 +968,10 @@
         bindComboBox(dotnetHelper, input, pageable) {
             if (pageable) {
                 let div = $(input).closest('.t-combobox').find('.t-group');
-                div.bind('scroll', function (e) {
+                div.bind('scroll', async e => {
                     var height = $(this).scrollTop() + $(this).innerHeight();
-                    if (height > $(this).find('.t-reset').height() + 1) 
-                        dotnetHelper.invokeMethodAsync('IncPageNumberInvokable');
+                    if (height > $(this).find('.t-reset').height() + 1)
+                        await dotnetHelper.invokeMethodAsync('IncPageNumberInvokable');
                 });
             }
             const mutationObserver = new MutationObserver(() => {
@@ -1022,17 +1022,17 @@
                 $control.removeClass('t-state-default').addClass('t-state-focused');
                 $.caspian.showErrorMessage($(input).closest('.t-widget')[0]);
             });
-            $(input).focusout(function () {
+            $(input).focusout(() => {
                 $control.removeClass('t-state-focused').addClass('t-state-default');
                 $.caspian.hideErrorMessage($(input).closest('.t-widget')[0]);
             });
-            $(window).bind('click', function (e) {
+            $(window).bind('click', e => {
                 if (!$(e.target).closest('.t-combobox').hasClass('t-combobox')) {
                     let $group = $(input).closest('.t-combobox').find('.c-animate-down .t-group');
                     $group.css('top', '-100%');
                     $group = $(input).closest('.t-combobox').find('.c-animate-up .t-group');
                     $group.css('bottom', '-100%');
-                    setTimeout(() => dotnetHelper.invokeMethodAsync('CloseInvokable'), 200);
+                    setTimeout(async () => await dotnetHelper.invokeMethodAsync('CloseInvokable'), 200);
                 }
             });
         },
@@ -1145,5 +1145,12 @@
         unblockUI: function () {
             $.unblockUI();
         },
+        bindWindowClick: function (dotnet) {
+            $('body').unbind('click.windowClick');
+            $('body').bind('click.windowClick', async function (e) {
+                if (!$(e.target).closest('.auto-hide').hasClass('auto-hide'))
+                    await dotnet.invokeMethodAsync('WindowClick')
+            });
+        }
     }
 })(jQuery);

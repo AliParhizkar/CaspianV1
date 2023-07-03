@@ -43,6 +43,8 @@ namespace Caspian.UI
             if (!Disabled)
             {
                 TValue value = default;
+                if (CalendarType == CalendarType.Persian)
+                    value = (TValue)Convert.ChangeType(new PersianDate("01/01/01").GetMiladyDate().Value, typeof(DateTime));
                 var strValue = Convert.ToString(arg.Value);
 
                 if (strValue.Contains("-"))

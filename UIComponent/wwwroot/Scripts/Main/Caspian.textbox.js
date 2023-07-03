@@ -138,6 +138,7 @@
         });
         if (this.maskedText)
             $(element).mask(this.maskedText);
+        $(element).find
         this.id = $(element).attr('id');
         let thisObj = this;
         this.element = element;
@@ -156,14 +157,33 @@
                     }, 10);
                     $(input).parent().removeClass('t-state-hover');
                 },
-                keydown: $.proxy(this._keydown, this),
-                keypress: $.proxy(this._keypress, this),
                 keyup: function (e) {
                     thisObj.keyIsOperate = false;
                 }
             }).bind("paste", $.proxy(this._paste, this));
         this.keyIsOperate = false;
+        $(element).unbind("keypress.input");
+        $(element).bind("keypress.input", e => {
+            let isValid = false, total = options.total, digits = options.digits, selection = $(element).getSelection();
+            let code = e.keyCode;
+            let value = $(element).val();
+            if (code == 46) {
+                let remain = value.length - selection.end;
+                if (remain <= digits && value.indexOf('.') == -1)
+                    isValid = true;
+                console.log(isValid)
 
+            }
+            if (code >= 48 && code <= 57 || code == 13 || code == 45 && selection.start == 0 && value.substr(selection.end).indexOf('-') == -1)
+                isValid = true;
+            if (selection.start == 0 && selection.end == 0 && value.length > 0 && value[0] == '-' && code >= 48 && code <= 57)
+                isValid = false;
+            let len = value.replace('-', '').replace('.', '').length;
+            if (len == total && selection.start == selection.end && code != 45 && code != 46) 
+                isValid = false;
+            if (!isValid && this.type != 'string')
+                e.preventDefault();
+        });
         if (this.type != 'string') {
             this.numFormat = this.numFormat === undefined ? this.type.charAt(0) : this.numFormat;
             let separator = this.separator;
