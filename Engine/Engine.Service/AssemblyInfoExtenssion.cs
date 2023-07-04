@@ -31,7 +31,7 @@ namespace Caspian.Engine.Service
         {
             var entityType = info.DeclaringType;
             if (entityType.GetProperties().Any(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name))
-                return ControlType.ComboBox;
+                return ControlType.List;
             var type =  info.PropertyType.GetUnderlyingType();
             if (type.IsMultiSelectEnum())
                 return ControlType.CheckListBox;

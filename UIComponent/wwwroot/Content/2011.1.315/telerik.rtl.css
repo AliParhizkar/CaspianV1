@@ -166,11 +166,10 @@
     margin-left: -24px;
 }
 .t-rtl .c-lookup .fa-search {
-    margin-right: -24px;
+    left:24px;
 }
 
 .t-ltr .c-lookup >input {
-    padding-right: 25px !important;
 }
 .t-rtl .c-lookup > input {
     padding-left: 25px !important;
@@ -543,11 +542,12 @@ fieldset.t-widget{
 .t-multitextbox
 {
     border-width:0px;
+    padding:1px;
 }
 .t-multitextbox textarea
 {
     width:calc(100% - 4px);
-    margin:2px;
+    margin:0px;
 }
 
 .t-rtl .t-calendar .t-icon {

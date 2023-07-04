@@ -77,7 +77,7 @@ namespace Caspian.UI
         public Func<IQueryable<TEntity>, string, IQueryable<TEntity>> OnDataBinding { get; set; }
 
         [Parameter, JsonIgnore]
-        public EventCallback OnValueChanged { get; set; }
+        public EventCallback OnChanged { get; set; }
 
         [Parameter, JsonIgnore]
         public EnableLoadContiner EnableLoadContiner { get; set; }
@@ -617,8 +617,8 @@ namespace Caspian.UI
             if (valueChanged)
             {
                 valueChanged = false;
-                if (OnValueChanged.HasDelegate)
-                    await OnValueChanged.InvokeAsync();
+                if (OnChanged.HasDelegate)
+                    await OnChanged.InvokeAsync();
             }
             await base.OnAfterRenderAsync(firstRender);
         }

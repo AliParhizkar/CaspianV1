@@ -49,5 +49,10 @@ namespace Caspian.Engine
         public int? HtmlColumnId { get; set; }
 
         public virtual HtmlColumn HtmlColumn { get; set; }
+
+        public int? LookupTypeId { get; set; }
+
+        [ForeignKey(nameof(LookupTypeId))]
+        public virtual LookupType LookupType { get; set; } 
     }
 }

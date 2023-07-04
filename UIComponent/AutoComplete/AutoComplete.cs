@@ -4,20 +4,19 @@ using Newtonsoft.Json;
 using System.Reflection;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
+using Caspian.Common.Service;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
-using Caspian.Common.Service;
-using Microsoft.EntityFrameworkCore;
-using System.Collections;
 
 namespace Caspian.UI
 {
-    public partial class AutoComplete<TValue, TEntity> : IControl where TEntity: class
+    public partial class AutoComplete<TEntity, TValue> : IControl where TEntity: class
     {
         string Text;
         string oldText;
@@ -70,6 +69,16 @@ namespace Caspian.UI
         [Parameter]
         public bool AutoHide { get; set; }
 
+        public void Enable()
+        {
+            Disabled = false;
+        }
+
+        public void Disable()
+        {
+            Disabled = true;
+        }
+
         [Parameter]
         public bool Disabled { get; set; }
 
@@ -112,7 +121,7 @@ namespace Caspian.UI
         public CaspianContainer Container { get; set; }
 
         [Parameter, JsonIgnore]
-        public EventCallback<TValue> OnChange { get; set; }
+        public EventCallback OnChange { get; set; }
 
         protected override void OnInitialized()
         {
@@ -283,7 +292,7 @@ namespace Caspian.UI
                 if (ValueChanged.HasDelegate)
                     await ValueChanged.InvokeAsync(Value);
                 if (OnChange.HasDelegate)
-                    await OnChange.InvokeAsync(Value);
+                    await OnChange.InvokeAsync();
             }
             else
                 shouldRender = false;
@@ -331,7 +340,7 @@ namespace Caspian.UI
                         Oldvalue = Value;
                         await ValueChanged.InvokeAsync(default(TValue));
                         if (OnChange.HasDelegate)
-                            await OnChange.InvokeAsync(default(TValue));
+                            await OnChange.InvokeAsync();
                         mustClear = true;
                     }
                     SearchState?.Grid?.SelectFirstPage();
@@ -456,7 +465,7 @@ namespace Caspian.UI
                     if (ValueChanged.HasDelegate)
                         await ValueChanged.InvokeAsync(Value);
                     if (OnChange.HasDelegate)
-                        await OnChange.InvokeAsync(Value);
+                        await OnChange.InvokeAsync();
                 }
             }
         }

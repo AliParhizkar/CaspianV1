@@ -75,9 +75,10 @@ namespace Caspian.Engine
 
         Time,
 
-        ComboBox,
-
-        Lookup
+        /// <summary>
+        /// Combobox and lookup
+        /// </summary>
+        List
     }
 
     public enum ConnectorPortType: byte

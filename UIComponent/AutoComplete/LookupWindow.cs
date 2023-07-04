@@ -24,7 +24,7 @@ namespace Caspian.UI
         }
 
         [CascadingParameter]
-        public AutoComplete<TValue, TEntity> AutoComplete { get; set; }
+        public AutoComplete<TEntity, TValue> AutoComplete { get; set; }
 
         [CascadingParameter(Name = "LookupStringSearchValue")]
         public string LookupStringSearchValue { get; set; }

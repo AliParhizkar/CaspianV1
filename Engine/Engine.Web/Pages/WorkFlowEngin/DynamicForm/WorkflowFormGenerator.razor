@@ -5,7 +5,7 @@
 @inherits BasePage
 @inject IHostEnvironment Environment 
 <div class="row">
-    <PropertyWindow @ref="propertyWindow" Id="@Id" FormName="@formName" OnChange="UpdateControlData" Control="selectedControl" />
+    <PropertyWindow @ref="propertyWindow" SubSystem="subSystemKind" Id="@Id" FormName="@formName" OnChange="UpdateControlData" Control="selectedControl" />
     <div class="c-form-designer">
         <div class="c-tools-bar">
             <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="info => AddControl(info)" OnDynamicParameterSelect="parameter => AddControl(parameter)" OnFieldSelect="field => AddControl(field)" />

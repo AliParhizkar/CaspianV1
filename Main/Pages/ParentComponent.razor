@@ -1,15 +1,31 @@
-﻿@typeparam TEntity
-@attribute [CascadingTypeParameter(nameof(TEntity))]
+﻿@typeparam TValue
+@inherits LookupWindow<Product, TValue>
+@namespace Demo.Web.Pages
+@using Caspian.UI;
+@using Demo.Model;
+<div class="c-lookup-page" style="width:380px;">
+    @if (Searchable)
+    {
+        <div style="padding:0 50px 5px 50px;">
+            <StringTextBox @bind-Value="SearchData.Title" placeholder="Title" />
+        </div>
+    }
+    <DataGrid @ref="Grid" TEntity="Product" Search="SearchData" TableHeight="200" HidePageSize>
+        <Columns>
+            <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
+            <GridColumn Field="t => t.Title" />
+        </Columns>
+    </DataGrid>
+</div>
 
-
-@code 
+@code
 {
-    [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.Title.Contains(LookupStringSearchValue) || t.Code.StartsWith(LookupStringSearchValue));
+        base.OnInitialized();
+    }
 
     [Parameter]
-    public TEntity Data { get; set; }
-
-    [Parameter]
-    public TEntity Search { get; set; }
+    public bool Searchable{ get; set; }
 }

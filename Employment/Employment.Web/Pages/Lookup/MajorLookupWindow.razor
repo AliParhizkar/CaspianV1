@@ -1,8 +1,6 @@
 ﻿@typeparam TValue
-@inherits LookupWindow<Product, TValue>
-@namespace Test.UI
-@using Caspian.UI;
-@using Demo.Model;
+@inherits LookupWindow<Major, TValue>
+@namespace Employment.Web.Pages
 <div class="c-lookup-page" style="width:380px;">
     @if (Searchable)
     {
@@ -10,9 +8,10 @@
             <StringTextBox @bind-Value="SearchData.Title" placeholder="Title" />
         </div>
     }
-    <DataGrid @ref="Grid" TEntity="Product" Search="SearchData" TableHeight="200" HidePageSize>
+    <DataGrid @ref="Grid" TEntity="Major" Search="SearchData" TableHeight="200" HidePageSize>
         <Columns>
-            <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
+            <GridColumn Field="t => t.EducationDegree.BaseStudy.EnumText()" Title="پایه تحصیلی" />
+            <GridColumn Field="t => t.EducationDegree.Title" Title="مدرک تحصیلی" />
             <GridColumn Field="t => t.Title" />
         </Columns>
     </DataGrid>
@@ -22,7 +21,7 @@
 {
     protected override void OnInitialized()
     {
-        InitialSearchExpression(t => LookupStringSearchValue == null || t.Title.Contains(LookupStringSearchValue) || t.Code.StartsWith(LookupStringSearchValue));
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.Title.Contains(LookupStringSearchValue));
         base.OnInitialized();
     }
 

@@ -33,12 +33,14 @@ namespace Caspian.Engine.WorkflowEngine
                     var service = new WorkflowFormService(scope.ServiceProvider);
                     form = await service.GetAll().Include("Rows").Include("WorkflowGroup").Include("Rows.Columns")
                         .Include("Rows.Columns.Component")
+                        .Include("Rows.Columns.Component.LookupType")
                         .Include("Rows.Columns.Component.DataModelField")
                         .Include("Rows.Columns.Component.DataModelField.EntityType")
                         .Include("Rows.Columns.Component.DynamicParameter")
                         .Include("Rows.Columns.Component.DynamicParameter.Options")
                         .Include("Rows.Columns.InnerRows").Include("Rows.Columns.InnerRows.HtmlColumns")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component")
+                        .Include("Rows.Columns.InnerRows.HtmlColumns.Component.LookupType")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField.EntityType")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DynamicParameter")
@@ -122,14 +124,15 @@ namespace Caspian.Engine.WorkflowEngine
             str.Append("using Caspian.UI;\n");
             str.Append("using System;\n");
             str.Append("using Caspian.Common.Attributes;\n");
-            str.Append("using " + form.WorkflowGroup.SubSystemKind.ToString() + ".Model;\n");
-            str.Append("using " + form.WorkflowGroup.SubSystemKind.ToString() + ".Service;\n");
+            str.Append($"using {form.WorkflowGroup.SubSystemKind}.Model;\n");
+            str.Append($"using {form.WorkflowGroup.SubSystemKind}.Service;\n");
+            str.Append($"using {form.WorkflowGroup.SubSystemKind}.Web.Pages;\n");
             str.Append("using Microsoft.AspNetCore.Components;\n");
             str.Append("using Caspian.Common;\n");
             str.Append("using System.Threading.Tasks;\n");
             str.Append("using Microsoft.AspNetCore.Components.Rendering;\n\n");
             str.Append("namespace Caspian.Engine.CodeGenerator\n{\n\t");
-            str.Append("public partial class " + form.Name + ": BasePage\n");
+            str.Append($"public partial class {form.Name}: BasePage\n");
             str.Append("\t{\n");
             str.Append("\n\t\t//Fields\n");
             foreach (var field in fields)
@@ -139,7 +142,7 @@ namespace Caspian.Engine.WorkflowEngine
                     typeName = field.EntityFullName;
                 else
                     typeName = DataModelFieldService.GetControlTypeName(field);
-                str.Append("\t\t" + typeName + ' ' + field.FieldName + ";\n");
+                str.Append($"\t\t{typeName} {field.FieldName};\n");
             }
             str.Append("\n\t\t//Form controls\n");
             var list = new List<DynamicParameter>();
@@ -169,10 +172,10 @@ namespace Caspian.Engine.WorkflowEngine
                         str.Append("decimal? ");
                         break;
                     case ControlType.DropdownList:
-                        str.Append(param.EnTitle + "? ");
+                        str.Append($"{param.EnTitle}? ");
                         break;
                 }
-                str.Append(param.EnTitle + ";\n");
+                str.Append($"{param.EnTitle};\n");
             }
 
             foreach (var row in form.Rows)
@@ -194,7 +197,7 @@ namespace Caspian.Engine.WorkflowEngine
             foreach(var field in fields)
             {
                 if (field.EntityFullName.HasValue())
-                    str.Append("\t\t\t" + field.FieldName + " = new " + field.EntityFullName + "();\n");
+                    str.Append($"\t\t\t{field.FieldName} = new {field.EntityFullName}();\n");
             }
             str.Append("\t\t\tbase.OnInitialized();\n");
             str.Append("\t\t}\n\n");
@@ -210,7 +213,7 @@ namespace Caspian.Engine.WorkflowEngine
                 foreach (var col in row.Columns)
                 {
                     str.Append("\t\t\tbuilder.OpenElement(1, \"div\");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"col-md-" + col.Span + "\");\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"class\", \"col-md-{col.Span}\");\n");
                     if (col.Component != null)
                         await CreateControl(col.Component, str, userCode);
                     else if (col.InnerRows != null)
@@ -222,7 +225,7 @@ namespace Caspian.Engine.WorkflowEngine
                             foreach(var col1 in row1.HtmlColumns)
                             {
                                 str.Append("\t\t\tbuilder.OpenElement(1, \"div\");\n");
-                                str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"col-md-" + col1.Span + "\");\n");
+                                str.Append($"\t\t\tbuilder.AddAttribute(3, \"class\", \"col-md-{col1.Span}\");\n");
                                 if (col1.Component != null)
                                     await CreateControl(col1.Component, str, userCode);
                                 str.Append("\t\t\tbuilder.CloseElement();\n");
@@ -243,10 +246,11 @@ namespace Caspian.Engine.WorkflowEngine
 
         void CreateParameterControl(BlazorControl control, StringBuilder str, string userCode)
         {
-            str.Append("\t\t\tbuilder.OpenElement(1, \"fieldset\");\n");
+            str.Append("\t\t\tbuilder.OpenElement(1, \"div\");\n");
             str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"c-dynamic-form-controls\");\n");
-            str.Append("\t\t\tbuilder.OpenElement(1, \"legend\");\n");
-            str.Append("\t\t\tbuilder.AddContent(1, \"" + control.Caption + "\");\n");
+            str.Append("\t\t\tbuilder.OpenElement(1, \"label\");\n");
+            str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"pe-3\");\n");
+            str.Append($"\t\t\tbuilder.AddContent(1, \"{control.Caption}\");\n");
             str.Append("\t\t\tbuilder.CloseElement();\n");
             bool? isAsync = null;
             if (control.OnChange.HasValue())
@@ -266,76 +270,81 @@ namespace Caspian.Engine.WorkflowEngine
                     else
                     {
                         strType = control.ControlType == ControlType.Integer ? "int?" : "decimal?";
-                        str.Append("\t\t\tbuilder.OpenComponent<NumericTextBox<" + strType + ">>(2);\n");
+                        str.Append($"\t\t\tbuilder.OpenComponent<NumericTextBox<{strType}>>(2);\n");
                     }
                     ///Value Binding
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + parameterName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => {\n" + parameterName + " = value;\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"Value\", {parameterName});\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<{strType}>(this,");
+                    if (isAsync == true)
+                        str.Append("async");
+                    str.Append($" value => {{\n{parameterName} = value;\n");;
                     if (control.OnChange.HasValue())
                     {
                         if (isAsync == true)
-                            str.Append("\t\t\t\tawait " + control.OnChange + "();\n");
+                            str.Append($"\t\t\t\tawait {control.OnChange}();\n");
                         else
-                            str.Append("\t\t\t\t" + control.OnChange + "();\n");
+                            str.Append($"\t\t\t\t{control.OnChange}();\n");
                     }
                     str.Append("}));\n");
                     ///Add Refrence to control
                     str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, txt =>\n");
                     str.Append("\t\t\t{\n");
                     if (control.ControlType == ControlType.String)
-                        str.Append("\t\t\t\ttxt" + parameterName + " = txt as StringTextBox;\n");
+                        str.Append($"\t\t\t\ttxt{parameterName} = txt as StringTextBox;\n");
                     else
-                        str.Append("\t\t\t\ttxt" + parameterName + " = txt as NumericTextBox<" + strType + ">;\n");
+                        str.Append($"\t\t\t\ttxt{parameterName} = txt as NumericTextBox<{strType}>;\n");
                     str.Append("\t\t\t});\n");
                     //-----------------------------------------
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
-                case ControlType.ComboBox:
+                case ControlType.List:
                     var typeName = control.DataModelField.EntityType.Name;
-                    str.Append("\t\t\tbuilder.OpenComponent<ComboBox<" + typeName + ", int?>>(2);\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + control.DataModelField.FieldName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<int?>(this, value => { " 
-                        + control.DataModelField.FieldName + " = value; }));\n");
+                    str.Append($"\t\t\tbuilder.OpenComponent<ComboBox<{typeName}, int?>>(2);\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"Value\", {control.DataModelField.FieldName});\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<int?>(this, value => {{{control.DataModelField.FieldName} = value; }}));\n");
                     if (control.OnChange.HasValue())
                     {
                         if (isAsync == true)
-                            str.Append("\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, async () => await " + control.OnChange + "()));\n");
+                            str.Append($"\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, async () => await {control.OnChange}()));\n");
                         else
-                            str.Append("\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, () => " + control.OnChange + "()));\n");
+                            str.Append($"\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, () => {control.OnChange}()));\n");
                     }
                     str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, cmb =>\n");
                     str.Append("\t\t\t{\n");
                     var strName = parameterName;
                     if (parameterName.EndsWith("Id"))
                         strName = parameterName.Substring(0, strName.Length - "Id".Length);
-                    strName = "cmb" + strName;
-                    str.Append("\t\t\t\t" + strName + " = cmb as ComboBox<" + typeName + ", int?>;\n");
+                    strName = $"cmb{strName}";
+                    str.Append($"\t\t\t\t{strName} = cmb as ComboBox<{typeName}, int?>;\n");
                     if (control.TextExpression.HasValue())
-                        str.Append("\t\t\t\t" + strName + ".TextExpression = " + control.TextExpression + ";\n");
+                        str.Append($"\t\t\t\t{strName}.TextExpression = {control.TextExpression};\n");
                     if (control.ConditionExpression.HasValue())
-                        str.Append("\t\t\t\t" + strName + ".ConditionExpression = " + control.ConditionExpression + ";\n");
+                        str.Append($"\t\t\t\t{strName}.ConditionExpression = {control.ConditionExpression};\n");
                     str.Append("\t\t\t});\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
-
                     break;
                 case ControlType.DropdownList:
                     strType = parameterName;
-                    str.Append("\t\t\tbuilder.OpenComponent<DropdownList<" + strType + ">>(2);\n");
+                    str.Append($"\t\t\tbuilder.OpenComponent<DropdownList<{strType}>>(2);\n");
                     ///Value Binding
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + parameterName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => {\n" + parameterName + " = value;\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"Value\", {parameterName});\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<{strType}>(this,");
+                    if (isAsync == true)
+                        str.Append("async");
+
+                    str.Append($" value => {{\n{parameterName} = value;\n");
                     if (control.OnChange.HasValue())
                     {
                         if (isAsync == true)
-                            str.Append("\t\t\t\tawait " + control.OnChange + "();\n");
+                            str.Append($"\t\t\t\tawait {control.OnChange}();\n");
                         else
-                            str.Append("\t\t\t\t" + control.OnChange + "();\n");
+                            str.Append($"\t\t\t\t{control.OnChange}();\n");
                     }
                     str.Append("}));\n");
                     ///Add Refrence to control
                     str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, ddl =>\n");
                     str.Append("\t\t\t{\n");
-                    str.Append("\t\t\t\tddl" + parameterName + " = ddl as DropdownList<" + strType + ">;\n");
+                    str.Append($"\t\t\t\tddl{parameterName} = ddl as DropdownList<{strType}>;\n");
                     str.Append("\t\t\t});\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
@@ -355,15 +364,16 @@ namespace Caspian.Engine.WorkflowEngine
             bool? isAsync = null;
             if (component.OnChange.HasValue())
                 isAsync = new CodeManager().MethodIsAsync(form.Name, component!.OnChange, userCode);
-            str.Append("\t\t\tbuilder.OpenElement(1, \"fieldset\");\n");
+            str.Append("\t\t\tbuilder.OpenElement(1, \"div\");\n");
             str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"c-dynamic-form-controls\");\n");
             if (component.MultiLine && component.Height > 1)
             {
-                var style = "height:" + ((component.Height - 1) * 80 + 61).ToString() + "px";
-                str.Append("\t\t\tbuilder.AddAttribute(3, \"style\", \"" + style + "\");");
+                var style = $"height:{(component.Height - 1) * 80 + 61}px";
+                str.Append($"\t\t\tbuilder.AddAttribute(3, \"style\", \"{style}\");");
             }
-            str.Append("\t\t\tbuilder.OpenElement(1, \"legend\");\n");
-            str.Append("\t\t\tbuilder.AddContent(1, \"" + component.Caption + "\");\n");
+            str.Append("\t\t\tbuilder.OpenElement(1, \"label\");\n");
+            str.Append("\t\t\tbuilder.AddAttribute(3, \"class\", \"pe-3\");\n");
+            str.Append($"\t\t\tbuilder.AddContent(1, \"{component.Caption}\");\n");
             str.Append("\t\t\tbuilder.CloseElement();\n");
             var type = new AssemblyInfo().GetModelType(form.WorkflowGroup.SubSystemKind, component.DataModelField.EntityFullName);
             var info = type.GetProperty(component.PropertyName);
@@ -379,54 +389,74 @@ namespace Caspian.Engine.WorkflowEngine
                     str.Append("\t\t\tbuilder.OpenComponent<StringTextBox>(2);\n");
                     if (component.MultiLine && component.Height > 1)
                     {
-                        var style = "height:" + ((component.Height - 1) * 80 + 30).ToString() + "px";
-                        str.Append("\t\t\tbuilder.AddAttribute(3, \"style\", \"" + style + "\");");
+                        var style = $"height:{(component.Height - 1) * 62 + 29}px";
+                        str.Append($"\t\t\tbuilder.AddAttribute(3, \"style\", \"{style}\");");
                         str.Append("\t\t\tbuilder.AddAttribute(3, \"MultiLine\", true);");
                     }
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.DataModelField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<string>(this, value => { " + component.DataModelField.FieldName + '.' + component.PropertyName + " = value; }));\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"Value\", {component.DataModelField.FieldName}.{component.PropertyName});\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<string>(this, value => {{{component.DataModelField.FieldName}.{component.PropertyName} = value; }}));\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
                 case ControlType.DropdownList:
-                    str.Append("\t\t\tbuilder.OpenComponent<DropdownList<" + strType + ">>(2);\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.DataModelField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this," + (isAsync == true ? "async" : "") + " value => \n\t\t\t{\n\t\t\t\t" + component.DataModelField.FieldName + '.' + component.PropertyName + " = value;\n");
+                    str.Append($"\t\t\tbuilder.OpenComponent<DropdownList<{strType}>>(2);\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"Value\", {component.DataModelField.FieldName}.{component.PropertyName});\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<{strType}>(this,");
+                    if (isAsync == true)
+                        str.Append("async");
+                    str.Append($" value => \n\t\t\t{{\n\t\t\t\t{component.DataModelField.FieldName}.{component.PropertyName} = value;\n");
                     if (component.OnChange.HasValue())
                     {
                         if (isAsync == true)
-                            str.Append("\t\t\t\tawait " + component.OnChange + "();\n");
+                            str.Append($"\t\t\t\tawait {component.OnChange}();\n");
                         else
-                            str.Append("\t\t\t\t" + component.OnChange + "();\n");
+                            str.Append($"\t\t\t\t{component.OnChange}();\n");
                     }
                         
                     str.Append("\t\t\t}));\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
                 case ControlType.Date:
-                    str.Append("\t\t\tbuilder.OpenComponent<DatePicker<" + strType + ">>(2);\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.DataModelField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.DataModelField.FieldName + '.' + component.PropertyName + " = value; }));\n");
+                    str.Append($"\t\t\tbuilder.OpenComponent<DatePicker<{strType}>>(2);\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"Value\",{component.DataModelField.FieldName}.{component.PropertyName});\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<{strType}>(this, value => {{{component.DataModelField.FieldName}.{component.PropertyName} = value; }}));\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
-                case ControlType.ComboBox:
+                case ControlType.List:
                     var typeName = info.GetForeignKey().PropertyType.Name;
-                    str.Append("\t\t\tbuilder.OpenComponent<ComboBox<" + typeName + ", " + strType + ">>(2);\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.DataModelField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.DataModelField.FieldName + '.' + component.PropertyName + " = value; }));\n");
+                    if (component.LookupTypeId.HasValue)
+                    {
+                        str.Append($"\t\t\tbuilder.OpenComponent<AutoComplete<{typeName}, {strType}>>(2);\n");
+                        str.Append($"\t\t\tRenderFragment render{component.LookupTypeId} = t =>\n");
+                        str.Append("\t\t\t{\n");
+                        str.Append($"\t\t\t\tt.OpenComponent(1, typeof({component.LookupType.LookupTypeName}<{strType}>));\n");
+                        str.Append("\t\t\t\tt.CloseComponent();");
+                        str.Append("\t\t\t};\n");
+                        str.Append($"\t\t\tbuilder.AddAttribute(3, \"ChildContent\", render{component.LookupTypeId});\n");
+                    }
+                    else
+                        str.Append($"\t\t\tbuilder.OpenComponent<ComboBox<{typeName}, {strType}>>(2);\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"Value\", {component.DataModelField.FieldName}.{component.PropertyName});\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<{strType}>(this, value => {{{component.DataModelField.FieldName}.{component.PropertyName} = value; }}));\n");
                     if (component.OnChange.HasValue())
                     {
                         if (isAsync == true)
-                            str.Append("\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, async () => await " + component.OnChange + "()));\n");
+                            str.Append($"\t\t\tbuilder.AddAttribute(3, \"OnChange\", EventCallback.Factory.Create(this, async () => await {component.OnChange}()));\n");
                         else
-                            str.Append("\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, () => " + component.OnChange + "()));\n");
+                            str.Append($"\t\t\tbuilder.AddAttribute(3, \"OnChange\", EventCallback.Factory.Create(this, () => {component.OnChange}()));\n");
                     }
-                    str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, cmb =>\n");
+                    if (component.LookupTypeId.HasValue)
+                        str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, lkp =>\n");
+                    else
+                        str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, cmb =>\n");
                     str.Append("\t\t\t{\n");
-                    str.Append("\t\t\t\t" + id + " = cmb as ComboBox<" + typeName + ", " + strType + ">;\n");
+                    if (component.LookupTypeId.HasValue)
+                        str.Append($"\t\t\t\t{id} = lkp as AutoComplete<{typeName}, {strType}>;\n");
+                    else
+                        str.Append($"\t\t\t\t{id} = cmb as ComboBox<{typeName}, {strType}>;\n");
                     if (component.TextExpression.HasValue())
-                        str.Append("\t\t\t\t" + id + ".TextExpression = " + component.TextExpression + ";\n");
-                    if (component.ConditionExpression.HasValue())
-                        str.Append("\t\t\t\t" + id + ".ConditionExpression = " + component.ConditionExpression + ";\n");
+                        str.Append($"\t\t\t\t{id}.TextExpression = {component.TextExpression};\n");
+                    if (component.ConditionExpression.HasValue() && component.LookupTypeId == null)
+                        str.Append($"\t\t\t\t{id}.ConditionExpression = {component.ConditionExpression};\n");
                     str.Append("\t\t\t});\n");
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
                     break;
@@ -435,13 +465,13 @@ namespace Caspian.Engine.WorkflowEngine
                     strType = info.PropertyType.GetUnderlyingType().Name;
                     if (info.PropertyType.IsNullableType())
                         strType += "?";
-                    str.Append("\t\t\tbuilder.OpenComponent<NumericTextBox<" + strType + ">>(2);\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"Value\", " + component.DataModelField.FieldName + '.' + component.PropertyName + ");\n");
-                    str.Append("\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<" + strType + ">(this, value => { " + component.DataModelField.FieldName + '.' + component.PropertyName + " = value; }));\n");
+                    str.Append($"\t\t\tbuilder.OpenComponent<NumericTextBox<{strType}>>(2);\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"Value\", {component.DataModelField.FieldName}.{component.PropertyName});\n");
+                    str.Append($"\t\t\tbuilder.AddAttribute(3, \"ValueChanged\", EventCallback.Factory.Create<{strType}>(this, value => {{ {component.DataModelField.FieldName}.{component.PropertyName} = value; }}));\n");
 
                     str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, txt =>\n");
                     str.Append("\t\t\t{\n");
-                    str.Append("\t\t\t\t" + id + " = txt as NumericTextBox<" + strType + ">;\n");
+                    str.Append($"\t\t\t\t{id} = txt as NumericTextBox<{strType}>;\n");
                     str.Append("\t\t\t});\n");
 
                     str.Append("\t\t\tbuilder.CloseComponent();\n");
@@ -458,6 +488,7 @@ namespace Caspian.Engine.WorkflowEngine
             string assemblyName = Path.GetRandomFileName();
             var modelPath = new AssemblyInfo().RelatedPath + "\\" + form.WorkflowGroup.SubSystemKind.ToString() + ".model.dll";
             var servicePath = new AssemblyInfo().RelatedPath + "\\" + form.WorkflowGroup.SubSystemKind.ToString() + ".service.dll";
+            var webPagePath = new AssemblyInfo().RelatedPath + "\\" + form.WorkflowGroup.SubSystemKind.ToString() + ".Web.dll";
             var refPaths = new[] {
                     typeof(System.Object).GetTypeInfo().Assembly.Location,
                     typeof(PersianDate).GetTypeInfo().Assembly.Location,
@@ -470,6 +501,7 @@ namespace Caspian.Engine.WorkflowEngine
                     typeof(Convert).GetTypeInfo().Assembly.Location,
                     modelPath,
                     servicePath,
+                    webPagePath,
                     Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll")
                 };
             MetadataReference[] references = refPaths.Select(r => MetadataReference.CreateFromFile(r)).ToArray();

@@ -3,10 +3,12 @@
 @{
     base.BuildRenderTree(__builder);
 }
-
-<EntityTypeComponent SubSystemKind="SubSystemKind.Employment" />
+<div style="border:1px solid red;width:350px;margin:10px auto ">
+    <AutoComplete TValue="int" TEntity="Major" />
+</div>
 
 @code 
 {
     DateTime? date;
+    
 }

@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Caspian.Common.Attributes;
 
 namespace Caspian.Common.Extension
 {
@@ -26,21 +27,8 @@ namespace Caspian.Common.Extension
         /// </summary>
         public static bool IsMultiSelectEnum(this Type type)
         {
-            if (type.IsEnumType())
-            {
-                var flag = true;
-                foreach(var field in type.GetFields().Where(t => !t.IsSpecialName))
-                {
-                    var value = (int)field.GetValue(null);
-                    if ((value & (value - 1)) != 0)
-                    {
-                        flag = false;
-                        break;
-                    }
-                }
-                return flag;
-            }
-            return false;
+            type = type.GetUnderlyingType();
+            return type.GetCustomAttribute<EnumTypeAttribute>() != null;
         }
 
         public static string GetMapPath(this Assembly assembly)

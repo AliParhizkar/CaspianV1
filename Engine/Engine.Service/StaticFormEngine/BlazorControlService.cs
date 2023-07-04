@@ -36,7 +36,7 @@ namespace Caspian.Engine.Service
                 case ControlType.CheckBox:
                 case ControlType.TreeStateCheckBox:
                     return "chb" + ctr.PropertyName;
-                case ControlType.ComboBox:
+                case ControlType.List:
                     if (ctr.DataModelField == null)
                         ctr.DataModelField = await new DataModelFieldService(ServiceProvider).SingleAsync(ctr.DataModelFieldId);
                     if (ctr.DataModelField.FieldType == DataModelFieldType.Relational)
@@ -44,12 +44,16 @@ namespace Caspian.Engine.Service
                         var name = ctr.DataModelField.FieldName;
                         if (name.EndsWith("Id"))
                             name = name.Substring(0, name.Length - "Id".Length);
+                        if (ctr.LookupTypeId.HasValue)
+                            return "lkp" + name;
                         return "cmb" + name;
                     }
                     var entityType = new AssemblyInfo().GetModelType(subSystemKind, ctr.DataModelField.EntityFullName);
                     var info = entityType.GetProperties().SingleOrDefault(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == ctr.PropertyName);
                     if (info == null)
                         throw new CaspianException($"خطا: In type {entityType.Name} property with name {ctr.PropertyName} not exist");
+                    if (ctr.LookupTypeId.HasValue)
+                        return "lkp" + info.Name;
                     return "cmb" + info.Name;
                 case ControlType.Date:
                     return "dte" + ctr.PropertyName;

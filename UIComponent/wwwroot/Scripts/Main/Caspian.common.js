@@ -542,10 +542,10 @@
 
                         let $animat = $(mutation.target).find('.t-animation-container');
                         let $window = $(mutation.target).find('.t-HelpWindow');
-                        let left = $(mutation.target).position().left - ($window.width() - $(mutation.target).width()) / 2;
+                        let left = $(mutation.target).position().left - ($window.width() - $(mutation.target).width()) / 2 - 20;
                         if (left + $window.width() > $('.c-content-main').outerWidth())
-                            left = $('.c-content-main').outerWidth() - $window.width() - 28;
-                        $animat.css('left', left).width($window.width() + 10);
+                            left = $('.c-content-main').outerWidth() - $window.width() - 35;
+                        $animat.css('left', left).width($window.width() + 10).css('right', 'auto');
                         let top = $(mutation.target).position().top;
                         let downToUp = top > $(window).height() / 2 - 20;
                         if (downToUp) {
@@ -937,7 +937,7 @@
             });
             $(ddl).mouseenter(e => {
                 $ddl = $(e.target).closest('.t-dropdown').find('.t-dropdown-wrap');
-                if (!$ddl.hasClass('t-state-error'))
+                if (!$ddl.hasClass('t-state-error') && !$ddl.hasClass('t-state-disabled'))
                     $ddl.removeClass('t-state-default').addClass('t-state-hover');
             });
             $(ddl).mouseleave(e => {

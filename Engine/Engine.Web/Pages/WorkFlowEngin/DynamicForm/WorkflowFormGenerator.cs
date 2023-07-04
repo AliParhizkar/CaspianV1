@@ -296,7 +296,7 @@ namespace Caspian.Engine.WorkflowEngine
                     controlType = ControlType.Integer;
                     break;
                 case DataModelFieldType.Relational:
-                    controlType = ControlType.ComboBox;
+                    controlType = ControlType.List;
                     break;
                 default:
                     throw new NotImplementedException("خطای عدم پیاده سازی");

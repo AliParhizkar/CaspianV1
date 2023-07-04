@@ -1277,15 +1277,16 @@ span, label, td, th {
     .c-up-from-state .t-content{
         height:100%!important;
     }
-    .t-animation-container {
-        position: absolute;
-        overflow: hidden;
-        z-index: 100000000;
-        left: -5px;
-        right: -5px;
-        padding-left: 5px;
-        border-radius: 8px;
-    }
+.t-animation-container {
+    position: absolute;
+    overflow: hidden;
+    z-index: 100000000;
+    left: -5px;
+    right:-5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 8px;
+}
 .c-animate-down {
     top: 31px;
 }

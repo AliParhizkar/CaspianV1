@@ -10,8 +10,8 @@
         @switch(Control.ControlType)
         {
             case ControlType.String:
-                var height = (Control.Height - 1) * 60 + 23;
-                var style = "height:" + height + "px";
+                var height = (Control.Height - 1) * 62 + 29;
+                var style = $"height:{height}px";
                 <StringTextBox Disabled MultiLine="Control.MultiLine" Style="@(style)" />
                 break;
             case ControlType.DropdownList:
@@ -20,8 +20,15 @@
             case ControlType.Date:
                 <DatePicker TValue="DateTime" Disabled />
                 break;
-            case ControlType.ComboBox:
-                <ComboBox TValue="int" TEntity="WorkflowForm" Disabled />
+            case ControlType.List:
+                if (Control.LookupTypeId.HasValue)
+                {
+                    <AutoComplete TValue="int" TEntity="WorkflowForm" Disabled />
+                }
+                else
+                {
+                    <ComboBox TValue="int" TEntity="WorkflowForm" Disabled />
+                }
                 break;
             case ControlType.Integer:
             case ControlType.Numeric:

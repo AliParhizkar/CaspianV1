@@ -5,6 +5,14 @@
     margin: 3px 0 3px 0;
     background-image: url('/_Content/Engine.Web/Content/Images/Toolsbox.png');
 }*/
+.c-dynamic-form-controls .t-dropdown-wrap {
+    background-color: transparent !important;
+    box-shadow:none!important;
+}
+
+    .c-dynamic-form-controls .t-dropdown-wrap .t-t-select {
+        border: none !important;
+    }
 .c-add-control .c-title{
     display:inline-block;
     width:180px;
@@ -422,3 +430,4 @@ legend {
     border:none!important;
     z-index:9!important;
 }
+

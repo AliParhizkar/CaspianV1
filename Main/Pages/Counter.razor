@@ -7,23 +7,16 @@
 @using Main.Data.Test
 @using Microsoft.Data.SqlClient
 @using Microsoft.EntityFrameworkCore
-
-<div style="width:90%;margin:0 auto">
-    <StringTextBox @bind-Value="sqlCommand" MultiLine Rows="10" />
+@using Caspian.Engine.CodeGenerator
+<div class="c-content-main">
+    <div style="width:500px;margin:100px auto">
+        <Husband />
+    </div>
 </div>
 
-<button @onclick="Execute">Execute</button>
+
 
 @code 
 {
-    string sqlCommand;
-    public void Execute()
-    {
-        using var con = new SqlConnection(CS.Con);
-        SqlCommand cmd = new SqlCommand(sqlCommand, con);
-        con.Open();
-        cmd.ExecuteNonQuery();
-    }
-
 
 }
