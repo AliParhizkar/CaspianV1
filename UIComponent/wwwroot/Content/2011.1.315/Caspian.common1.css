@@ -2321,13 +2321,19 @@ div.t-grid-footer {
 }
 
 .t-grid .t-grid-toolbar .t-icon {
-    width: 46px;
-    height: 46px;
+    width: 40px;
+    height: 40px;
     position: relative;
     top: 10px;
     left: -12px;
     border-radius: 20px;
     z-index: 10;
+    border: 2px solid #423d96;
+    background-color: white;
+    color: #423d96;
+    text-align: center;
+    padding-top: 8px;
+    font-size: 23px;
 }
 .t-grid .t-grid-toolbar .t-grid-add .t-icon {
     background-image: url('/_Content/UIComponent/Content/2011.1.315/Outlook/sprite.png');

@@ -1,21 +1,3 @@
-@font-face {
-    font-family: iranyekan;
-    font-style: normal;
-    font-weight: bold;
-    src: url('/_Content/UiComponent/Content/assets/fonts/woff2/iranyekanwebbold(fanum).woff2');
-}
-
-@font-face {
-    font-family: iranyekan;
-    font-style: normal;
-    font-weight: 300;
-    src: url('/_Content/UiComponent/Content/assets/fonts/woff2/iranyekanwebregular(fanum).woff2');
-}
-
-body {
-    font-family: 'iranyekan';
-    font-size:12px;
-}
 .c-picturebox {
     width: 50px;
     height: 50px;
