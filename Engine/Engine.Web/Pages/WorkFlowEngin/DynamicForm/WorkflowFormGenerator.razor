@@ -83,7 +83,6 @@
                                     else if (col.Component != null)
                                     {
                                         var ctr = col.Component;
-                                        ctr.DataModelField = null;
                                         <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
                                     }
                                 </div>

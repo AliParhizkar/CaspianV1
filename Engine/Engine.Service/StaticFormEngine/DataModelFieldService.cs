@@ -46,6 +46,8 @@ namespace Caspian.Engine.Service
                     return "DateTime?";
                 case DataModelFieldType.Relational:
                     return "int?";
+                case DataModelFieldType.MultiSelect:
+                    return field.FieldName;
                 default: throw new NotImplementedException("خطای عدم پیاده سازی");
             }
         }
@@ -66,6 +68,8 @@ namespace Caspian.Engine.Service
                     return "decimal?";
                 case DataModelFieldType.Date:
                     return "DateTime?";
+                case DataModelFieldType.MultiSelect:
+                    return field.FieldName;
                 default: throw new NotImplementedException("خطای عدم پیاده سازی");
             }
         }

@@ -33,20 +33,20 @@
 
     async Task ChangeDecade(int decade)
     {
-        if (CalendarType == CalendarType.Gregorian)
-            Date = new DateTime(decade * 10, Date.Month, Date.Day);
-        else
+        if (PersianCalendar)
         {
             var pDate = Date.ToPersianDate();
             pDate = new PersianDate(decade * 10, pDate.Month.Value, pDate.Day.Value);
             Date = pDate.GetMiladyDate().Value;
         }
+        else
+            Date = new DateTime(decade * 10, Date.Month, Date.Day);
         await DateChanged.InvokeAsync(Date);
     }
 
     protected override void OnParametersSet()
     {
-        selectedDecade = CalendarType == CalendarType.Gregorian ? Date.Year / 10 : Date.ToPersianDate().Year.Value / 10;
+        selectedDecade = PersianCalendar ? Date.ToPersianDate().Year.Value / 10 : Date.Year / 10;
 
         var decade = (selectedDecade / 10) * 10;
         Decades = new int?[3, 4];
@@ -54,17 +54,19 @@
         int? fromDecade = null, toDecade = null;
         if (FromDate.HasValue)
         {
-            if (CalendarType == CalendarType.Gregorian)
-                fromDecade = FromDate.Value.Year / 10;
-            else
+            if (PersianCalendar)
                 fromDecade = FromDate.ToPersianDate().Year.Value / 10;
+            else
+                fromDecade = FromDate.Value.Year / 10;
+
         }
         if (ToDate.HasValue)
         {
-            if (CalendarType == CalendarType.Gregorian)
-                toDecade = ToDate.Value.Year / 10;
-            else
+            if (PersianCalendar)
                 toDecade = ToDate.ToPersianDate().Year.Value / 10;
+            else
+                toDecade = ToDate.Value.Year / 10;
+
         }
         for (int i = 0; i < 3; i++)
         {
@@ -90,7 +92,7 @@
     public DateTime Date { get; set; }
 
     [Parameter]
-    public CalendarType CalendarType { get; set; }
+    public bool PersianCalendar { get; set; }
 
     [Parameter]
     public EventCallback<DateTime> DateChanged { get; set; }

@@ -273,32 +273,6 @@
                     return;
                 let index = $('#bond .bond').index($(this));
                 $.report.dotNetObjectReference.invokeMethodAsync('ShowColumnWindow', bondsData[index], minDataLevel);
-                //let win = $.telerik.getWindow();
-                //win.title('مشخصات ستونها');
-                //win.formContentUrl = columnFormUrl + "?minDataLevel=" + minDataLevel;
-                //win.selectedObject = bondsData[index];
-                //win.size(400, 120);
-                //win.center();
-                //win.open();
-                //var obj = { ColumnsCount: 1, ColumnsMargin: 2 }, id = $(this).attr('id'), datalevel = $(this).attr('datalevel');
-                //if (id === 'dataHeader' || id === 'dataFooter') {
-                //    obj.ColumnsCount = columnsCount;
-                //    obj.ColumnsMargin = columnsMargin;
-                //}
-                //else {
-                //    let win = $.telerik.getWindow();
-                //    win.title('مشخصات ستونها');
-                //    if ($(this).attr('datalevel') == minDataLevel) {
-                //        win.formContentUrl = columnFormUrl;
-                //        win.size(400, 120);
-                //    } else {
-                //        win.formContentUrl = null;
-                //        win.size(400, 158);
-                //        win.content('<div style="padding:7px 7px 0 0"><span style="font-weight:bold;color:red">در هر صفحه از گزارش تنها آخرین سطح داده می تواند چند ستون داشته باشد.</span><span style="display:block;font-weight:bold">در صورتی که می حواهید بیش از یک سطح از داده چند ستون داشته باشد از گزارش فرعی استفاده نمائید</span></div><input style="margin:10px 150px 0 0" type="button" class="t-button" value="تایید" onclick="$.telerik.getWindow().close()"/>');
-                //    }
-                //    win.center();
-                //    win.open();
-                //}
             });
             $element.find('.bond').first().append('<span class="squarebond"></span>');
             $element.find('.bond').first().append('<span class="squarebond"></span>');

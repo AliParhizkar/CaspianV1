@@ -85,10 +85,9 @@
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            using var scope = CreateScope();
-            var productService = new ProductService(scope.ServiceProvider);
-            await productService.UpdatePrice(productId, price);
-            await productService.SaveChangesAsync();
+            using var service = CreateScope().GetService<ProductService>();
+            await service.UpdatePrice(productId, price);
+            await service.SaveChangesAsync();
             selectedId = productId;
             colNumber = 2;
         }
@@ -98,10 +97,9 @@
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            using var scope = CreateScope();
-            var productService = new ProductService(scope.ServiceProvider);
-            await productService.UpdateTakeoutPrice(productId, takeoutPrice);
-            await productService.SaveChangesAsync();
+            using var service = CreateScope().GetService<ProductService>();
+            await service.UpdateTakeoutPrice(productId, takeoutPrice);
+            await service.SaveChangesAsync();
             await grid.SelectNextRow();
             if (grid.SelectedRowId.HasValue)
             {

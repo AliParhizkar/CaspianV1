@@ -22,29 +22,5 @@ namespace Caspian.Common
             optionsBuilder.UseLazyLoadingProxies(false);
             base.OnConfiguring(optionsBuilder);
         }
-
-        //[DbFunction("ConvertToInteger", Schema = "dbo")]
-        public static int? ConvertToInteger(string value)
-        {
-            throw new NotImplementedException("خطا:this method mapped to sql and no need to called");
-        }
-
-        //[DbFunction("ConvertToDecimal", Schema = "dbo")]
-        public static decimal? ConvertToDecimal(string value)
-        {
-            throw new NotImplementedException("خطا:this method mapped to sql and no need to called");
-        }
-
-        //[DbFunction("ConvertToString", Schema = "dbo")]
-        public static string ConvertToString(int value)
-        {
-            throw new NotImplementedException("خطا:this method mapped to sql and no need to called");
-        }
-
-        //[DbFunction("EnumFaName", Schema = "dbo")]
-        public string EnumFaName(string value)
-        {
-            throw new NotImplementedException("خطا:this method mapped to sql and no need to called");
-        }
     }
 }

@@ -1,10 +1,10 @@
 ﻿@namespace Caspian.UI
 <div class="@className">
     <div class="c-curent">
-        <CalendarControl Date="startDate" ViewType="ViewType" />
+        <CalendarControl PersianCalendar="PersianCalendar" Date="startDate" ViewType="ViewType" />
     </div>
     <div class="c-other">
-        <CalendarControl Date="endDate" ViewType="ViewType" />
+        <CalendarControl PersianCalendar="PersianCalendar" Date="endDate" ViewType="ViewType" />
     </div>
 </div>
 
@@ -22,6 +22,9 @@
 
     [Parameter]
     public ViewType ViewType { get; set; }
+
+    [Parameter]
+    public bool PersianCalendar { get; set; }
 
     protected override void OnParametersSet()
     {

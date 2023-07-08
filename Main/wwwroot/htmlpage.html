@@ -8,55 +8,14 @@
     <script src="jquery-1.8.2.js"></script>
     <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="/_content/UIComponent/Content/css/font-awesome.min.css" rel="stylesheet" />
-    <style type="text/css">
-        .active {
-            border: 1px solid red;
-            border-bottom: 0;
-            width: 180px;
-            height: 25px;
-            margin: 30px;
-            position: relative;
-            -moz-border-radius: 8px 8px 0 0;
-            -webkit-border-radius: 8px 8px 0 0;
-            border-radius: 8px 8px 0 0;
-            background-color: white;
+    <style>
+        .test div{
+            border:1px solid red;
+            width:50%
         }
-
-            .active:after,
-            .active:before {
-                content: '';
-                width: 40px;
-                height: 10px;
-                border: 1px solid red;
-                position: absolute;
-                bottom: -7px;
-                margin-right: 1px;
-                margin-left: 1px;
-                border-top: 0;
-                background-color: white;
-            }
-
-            .active:after {
-                border-left: 0;
-                -moz-border-radius: 0 0 8px 0;
-                -webkit-border-radius: 0 0 8px 0;
-                border-radius: 0 0 8px 0;
-                left: -41px;
-            }
-
-            .active:before {
-                border-right: 0;
-                -moz-border-radius: 0 0 0 8px;
-                -webkit-border-radius: 0 0 0 8px;
-                border-radius: 0 0 0 8px;
-                right: -41px;
-            }
     </style>
-
 </head>
 <body style="margin:0;padding:0">
-    <div style="text-align:center;background-color:darkgray;height:35px" >
-        <div class="active">Ali Parhizkar</div>
-    </div>
+    <input type="date" name="date" id="date" value="2023-05-15" pattern="\d{4}/\d{2}/\d{2}">
 </body>
 </html>

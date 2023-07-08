@@ -5,7 +5,7 @@
     if (minimized)
         windowClassName += " c-minimize";
     string typeName = "";
-    if(Control.DataModelField?.EntityFullName.HasValue() == true)
+    if (Control.ControlType == ControlType.List && Control.DataModelField?.EntityFullName.HasValue() == true)
     {
         var entityType = new AssemblyInfo().GetModelType(SubSystem, Control.DataModelField.EntityFullName);
         typeName = entityType.GetProperty(Control.PropertyName).GetForeignKey().PropertyType.Name;

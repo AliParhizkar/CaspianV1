@@ -2,16 +2,16 @@
 @switch (ViewType)
 {
     case ViewType.Month:
-        <MonthComponent Date="Date" />
+        <MonthComponent PersianCalendar="PersianCalendar" Date="Date" />
         break;
     case ViewType.Year:
-        <YearComponent Date="Date" />
+        <YearComponent PersianCalendar="PersianCalendar" Date="Date" />
         break;
     case ViewType.Decade:
-        <DecadeComponent Date="Date" />
+        <DecadeComponent PersianCalendar="PersianCalendar" Date="Date" />
         break;
     case ViewType.Century:
-        <CentuaryComponent Date="Date" />
+        <CentuaryComponent PersianCalendar="PersianCalendar" Date="Date" />
         break;
 }
 
@@ -22,4 +22,7 @@
 
     [Parameter]
     public ViewType ViewType { get; set; }
+
+    [Parameter]
+    public bool PersianCalendar { get; set; }
 }

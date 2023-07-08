@@ -55,8 +55,6 @@ namespace Caspian.UI
         [Parameter]
         public string Style { get; set; }
 
-        public bool Focused { get; private set; }
-
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
@@ -361,11 +359,6 @@ namespace Caspian.UI
         public async Task FocusAsync()
         {
             await input.FocusAsync();
-        }
-
-        public void Focus()
-        {
-            Focused = true;
         }
 
         protected override void OnParametersSet()

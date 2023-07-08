@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Engine.WorkflowEngine
 {
@@ -34,6 +35,7 @@ namespace Caspian.Engine.WorkflowEngine
                     form = await service.GetAll().Include("Rows").Include("WorkflowGroup").Include("Rows.Columns")
                         .Include("Rows.Columns.Component")
                         .Include("Rows.Columns.Component.LookupType")
+                        .Include("Rows.Columns.Component.DataModelField.DataModelOptions")
                         .Include("Rows.Columns.Component.DataModelField")
                         .Include("Rows.Columns.Component.DataModelField.EntityType")
                         .Include("Rows.Columns.Component.DynamicParameter")
@@ -42,6 +44,7 @@ namespace Caspian.Engine.WorkflowEngine
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.LookupType")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField")
+                        .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField.DataModelOptions")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField.EntityType")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DynamicParameter")
                         .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DynamicParameter.Options")
@@ -81,35 +84,53 @@ namespace Caspian.Engine.WorkflowEngine
         string CreateDynamicOptionCode()
         {
             StringBuilder str = new StringBuilder();
-            var list = new List<DynamicParameter>();
+            var controls = new List<BlazorControl>();
             foreach (var row in form.Rows)
                 foreach (var col in row.Columns)
                 {
-                    var param = col.Component?.DynamicParameter;
-                    if (param != null && param.ControlType == ControlType.DropdownList)
-                        list.Add(param);
+                    if (col.Component != null)
+                        controls.Add(col.Component);
                     foreach(var row1 in col.InnerRows)
                         foreach(var col1 in row1.HtmlColumns)
                         {
-                            var param1 = col1.Component?.DynamicParameter;
-                            if (param1 != null && param1.ControlType == ControlType.DropdownList)
-                                list.Add(param1);
+                            if (col1.Component != null)
+                                controls.Add(col1.Component);
                         }
                 }
-            foreach(var param in list)
+            foreach(var ctr in controls)
             {
-                str.Append("\tpublic enum " + param.EnTitle + "\n\t{\n");
-                var index = 1;
-                foreach (var option in param.Options)
+                var param = ctr.DynamicParameter;
+                if (param != null)
                 {
-                    str.Append("\t\t[EnumField(\"" + option.FaTitle + "\")]\n");
-                    str.Append("\t\t" + option.EnTitle + " = " + index);
-                    if (index != param.Options.Count)
-                        str.Append(",\n");
-                    str.Append("\n");
-                    index++;
+                    str.Append($"\tpublic enum {param.EnTitle}\n\t{{\n");
+                    var index = 1;
+                    foreach (var option in param.Options)
+                    {
+                        str.Append($"\t\t[Display(Name = \"{option.FaTitle}\")]\n");
+                        str.Append($"\t\t{option.EnTitle} = {index}");
+                        if (index != param.Options.Count)
+                            str.Append(",\n");
+                        str.Append("\n");
+                        index++;
+                    }
+                    str.Append("\t}");
                 }
-                str.Append("\t}");
+                var options = ctr.DataModelField.DataModelOptions;
+                if (options.Count > 0)
+                {
+                    var index = 1;
+                    str.Append("\tpublic enum " + ctr.DataModelField.FieldName + "\n\t{\n");
+                    foreach (var option in options)
+                    {
+                        str.Append($"\t\t[Display(Name = \"{option.Title}\")]\n");
+                        str.Append($"\t\t{option.Name} = {index}");
+                        if (index != options.Count)
+                            str.Append(",\n");
+                        str.Append("\n");
+                        index++;
+                    }
+                    str.Append("\t}");
+                }
             }
             return str.ToString();
         }
@@ -130,6 +151,7 @@ namespace Caspian.Engine.WorkflowEngine
             str.Append("using Microsoft.AspNetCore.Components;\n");
             str.Append("using Caspian.Common;\n");
             str.Append("using System.Threading.Tasks;\n");
+            str.Append("using System.ComponentModel.DataAnnotations;\n\n");
             str.Append("using Microsoft.AspNetCore.Components.Rendering;\n\n");
             str.Append("namespace Caspian.Engine.CodeGenerator\n{\n\t");
             str.Append($"public partial class {form.Name}: BasePage\n");
@@ -255,7 +277,11 @@ namespace Caspian.Engine.WorkflowEngine
             bool? isAsync = null;
             if (control.OnChange.HasValue())
                 isAsync = new CodeManager().MethodIsAsync(form.Name, control!.OnChange, userCode);
-            var parameterName = control.CustomeFieldName ?? control?.DynamicParameter?.EnTitle ?? control.DataModelField.FieldName;
+            var parameterName = "";
+            if (control.DataModelField?.FieldType == DataModelFieldType.MultiSelect)
+                parameterName = control.DataModelField.FieldName;
+            else
+                parameterName  = control.CustomeFieldName ?? control?.DynamicParameter?.EnTitle ?? control.DataModelField.FieldName;
             switch (control.ControlType)
             {
                 case ControlType.Integer:
@@ -305,9 +331,9 @@ namespace Caspian.Engine.WorkflowEngine
                     if (control.OnChange.HasValue())
                     {
                         if (isAsync == true)
-                            str.Append($"\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, async () => await {control.OnChange}()));\n");
+                            str.Append($"\t\t\tbuilder.AddAttribute(3, \"OnChanged\", EventCallback.Factory.Create(this, async () => await {control.OnChange}()));\n");
                         else
-                            str.Append($"\t\t\tbuilder.AddAttribute(3, \"OnValueChanged\", EventCallback.Factory.Create(this, () => {control.OnChange}()));\n");
+                            str.Append($"\t\t\tbuilder.AddAttribute(3, \"OnChanged\", EventCallback.Factory.Create(this, () => {control.OnChange}()));\n");
                     }
                     str.Append("\t\t\tbuilder.AddComponentReferenceCapture(1, cmb =>\n");
                     str.Append("\t\t\t{\n");
@@ -356,7 +382,8 @@ namespace Caspian.Engine.WorkflowEngine
 
         async Task CreateControl(Caspian.Engine.BlazorControl component, StringBuilder str, string userCode)
         {
-            if (component.DynamicParameterId.HasValue || component.CustomeFieldName.HasValue())
+            if (component.DynamicParameterId.HasValue || component.CustomeFieldName.HasValue() || 
+                component.DataModelField?.FieldType == DataModelFieldType.MultiSelect)
             {
                 CreateParameterControl(component, str, userCode);
                 return;
@@ -496,6 +523,7 @@ namespace Caspian.Engine.WorkflowEngine
                     typeof(StringTextBox).GetTypeInfo().Assembly.Location,
                     typeof(IServiceScope).GetTypeInfo().Assembly.Location,
                     typeof(AbstractValidator<>).GetTypeInfo().Assembly.Location,
+                    typeof(DisplayAttribute).GetTypeInfo().Assembly.Location,
                     typeof(Caspian.Common.AssemblyInfo).GetTypeInfo().Assembly.Location,
                     typeof(System.Linq.Expressions.BinaryExpression).Assembly.Location,
                     typeof(Convert).GetTypeInfo().Assembly.Location,

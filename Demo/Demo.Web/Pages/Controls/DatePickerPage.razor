@@ -1,5 +1,7 @@
 ﻿@page "/Demo/DatePicker"
 @namespace Demo.Web.Pages
+@using System.Globalization;
+
 <h2>Date Picker</h2>
 <h3>Binding</h3>
 <p>
@@ -18,14 +20,14 @@
                         <div class="row c-controls">
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
-                                    <DatePicker CalendarType="CalendarType.Persian" @bind-Value="date" />
+                                    <DatePicker @bind-Value="date" PersianCalendar="false" />
                                 </div>
                             </div>
                             <div class="ps-5 col-md-6">
-                                <label>Selected date</label>
+                                <label>Selected date12</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;direction:ltr">@(date.ToADDateString())</label>
+                                <label style="color:red;direction:ltr">@(date.ToShortDateString())</label>
                             </div>
                         </div>
                     </div>
@@ -46,7 +48,7 @@
                                 <label>Selected date</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;">@(nullableDate.HasValue ? nullableDate.Value.ToADDateString() : "---")</label>
+                                <label style="color:red;">@(nullableDate.HasValue ? nullableDate.Value.ToShortDateString() : "---")</label>
                             </div>
                         </div>
                     </div>
@@ -82,7 +84,7 @@
                                 <label>Selected date</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;">@(defauktModeDate.ToADDateString())</label>
+                                <label style="color:red;">@(defauktModeDate.ToShortDateString())</label>
                             </div>
                         </div>
                     </div>
@@ -175,7 +177,7 @@
                                 <DatePicker @bind-Value="toDate" />
                             </div>
                             <div class="col-md-12">
-                                <DatePicker @bind-Value="date" FromDate="fromDate" ToDate="toDate" />
+                                <DatePicker @bind-Value="rangeDate" FromDate="fromDate" ToDate="toDate" />
                             </div>
                         </div>
                     </div>
@@ -192,10 +194,11 @@
     DateTime date = DateTime.Now;
     DateTime? defauktModeDate = DateTime.Now;
     bool disable;
-    DateTime? nullableDate;
+    DateTime? nullableDate = DateTime.Now;
     ControlSize controlSize = ControlSize.Auto;
     DateTime? fromDate = DateTime.Now.AddDays(-50);
     DateTime? toDate = DateTime.Now.AddDays(50);
+    DateTime? rangeDate = DateTime.Now;
 
     string GetStyle()
     {

@@ -30,7 +30,7 @@
         </TreeNodeTemplate>
     </Template>
 </TreeView>
-<Window @bind-Status="status" Style="width:450px;" OnOpen="() => firstControl.Focus()" >
+<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" >
     <Content>
         <CaspianForm Model="organUnit" OnValidSubmit="async t => await UpsertOrganUnit()">
             <CaspianValidationValidator ValidatorType="typeof(OrganUnitService)" />

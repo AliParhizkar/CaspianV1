@@ -1,6 +1,6 @@
 ﻿@namespace Caspian.UI
 @{
-    var curentYear = CalendarType == CalendarType.Gregorian ? Date.Year : Date.ToPersianDate().Year;
+    var curentYear = PersianCalendar ? Date.ToPersianDate().Year : Date.Year;
 }
 <table class="t-content t-meta-view">
     @for (int i = 0; i < 3; i++)
@@ -34,29 +34,28 @@
 
     async Task ChangeYear(int year)
     {
-        if (CalendarType == CalendarType.Gregorian)
-            Date = new DateTime(year, Date.Month, Date.Day);
-        else
+        if (PersianCalendar)
         {
             var pDate = Date.ToPersianDate();
             pDate = new PersianDate(year, pDate.Month.Value, pDate.Day.Value);
             Date = pDate.GetMiladyDate().Value;
         }
-
+        else
+            Date = new DateTime(year, Date.Month, Date.Day);
         await DateChanged.InvokeAsync(Date);
     }
 
     [Parameter]
-    public CalendarType CalendarType { get; set; }
+    public bool PersianCalendar { get; set; }
 
     protected override void OnParametersSet()
     {
-        var year = CalendarType == CalendarType.Gregorian ? Date.Year : Date.ToPersianDate().Year.Value;
+        var year = PersianCalendar ? Date.ToPersianDate().Year.Value : Date.Year;
         year = (year / 10) * 10;
         years = new int?[3, 4];
         isActiveYears = new bool[3, 4];
-        int? fromYear = CalendarType == CalendarType.Gregorian ? FromDate?.Year : FromDate.ToPersianDate()?.Year, 
-            toYear = CalendarType == CalendarType.Gregorian ? ToDate?.Year : ToDate.ToPersianDate()?.Year;
+        int? fromYear = PersianCalendar ? FromDate.ToPersianDate()?.Year : FromDate?.Year,
+            toYear = PersianCalendar ? ToDate.ToPersianDate()?.Year : ToDate?.Year;
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 4; j++)

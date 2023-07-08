@@ -74,7 +74,7 @@ namespace Caspian.Common.Extension
             foreach(var info in type.GetProperties())
             {
                 var type1 = info.PropertyType;
-                if (!type1.IsValueType && !type1.IsGenericType && type != typeof(string) && type != typeof(byte[]))
+                if (!type1.IsValueType && !type1.IsGenericType && type1 != typeof(string) && type1 != typeof(byte[]))
                 {
                     if (info.GetCustomAttribute<ForeignKeyAttribute>() == null)
                         return info;

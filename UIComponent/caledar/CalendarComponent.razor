@@ -12,7 +12,7 @@
     </div>
     @if (vNavigation == null && hNavigation.HasValue)
     {
-        <HNavigationComponent Date="date" ViewType="viewType" HNavigation="hNavigation.Value" />
+        <HNavigationComponent PersianCalendar="PersianCalendar" Date="date" ViewType="viewType" HNavigation="hNavigation.Value" />
     }
     else
     {
@@ -21,82 +21,82 @@
             case ViewType.Month:
                 if (vNavigation == null)
                 {
-                    <MonthComponent CalendarType="CalendarType" Date="date" DateChanged="async d => await ChangeDate(d)" 
-                        FromDate="FromDate" ToDate="ToDate" />
+                    <MonthComponent PersianCalendar="PersianCalendar" Date="date" DateChanged="async d => await ChangeDate(d)"
+                    FromDate="FromDate" ToDate="ToDate" />
                 }
                 else if (vNavigation == VNavigation.Down)
                 {
                     <div class="c-down-from-state">
-                        <YearComponent Date="date" CalendarType="CalendarType" />
+                        <YearComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                     <div class="@navigateDownClassName">
-                        <MonthComponent Date="date" CalendarType="CalendarType" />
+                        <MonthComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                 }
                 break;
             case ViewType.Year:
                 if (vNavigation == null)
                 {
-                    <YearComponent Date="date" DateChanged="async d => await NavigateDown(d)" CalendarType="CalendarType"
+                    <YearComponent Date="date" DateChanged="async d => await NavigateDown(d)" PersianCalendar="PersianCalendar"
                         FromDate="FromDate" ToDate="ToDate"/>
                 }
                 else if (vNavigation == VNavigation.Up)
                 {
                     <div class="c-up-to-state">
-                        <YearComponent Date="date" CalendarType="CalendarType" />
+                        <YearComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                     <div class="c-up-from-state">
-                        <MonthComponent Date="date" CalendarType="CalendarType" />
+                        <MonthComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                 }
                 else //VNavigation.Down
                 {
                     <div class="c-down-from-state">
-                        <DecadeComponent Date="date" CalendarType="CalendarType" />
+                        <DecadeComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                     <div class="@navigateDownClassName">
-                        <YearComponent Date="date" CalendarType="CalendarType" />
+                        <YearComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                 }
                 break;
             case ViewType.Decade:
                 if (vNavigation == null)
                 {
-                    <DecadeComponent Date="date" DateChanged="async d => await NavigateDown(d)" CalendarType="CalendarType"
+                    <DecadeComponent Date="date" DateChanged="async d => await NavigateDown(d)" PersianCalendar="PersianCalendar"
                         FromDate="FromDate" ToDate="ToDate"/>
                 }
                 else if (vNavigation == VNavigation.Up)
                 {
                     <div class="c-up-from-state">
-                        <YearComponent Date="date" CalendarType="CalendarType" />
+                        <YearComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                     <div class="c-up-to-state">
-                        <DecadeComponent Date="date" CalendarType="CalendarType" />
+                        <DecadeComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                 }
                 else //VNavigation.Down
                 {
                     <div class="c-down-from-state">
-                        <CentuaryComponent Date="date" CalendarType="CalendarType" />
+                        <CentuaryComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                     <div class="@navigateDownClassName">
-                        <DecadeComponent Date="date" CalendarType="CalendarType" />
+                        <DecadeComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                 }
                 break;
             case ViewType.Century:
                 if (vNavigation == null)
                 {
-                    <CentuaryComponent Date="date" DateChanged="async d => await NavigateDown(d)" CalendarType="CalendarType"
+                    <CentuaryComponent Date="date" DateChanged="async d => await NavigateDown(d)" PersianCalendar="PersianCalendar"
                         FromDate="FromDate" ToDate="ToDate"/>
                 }
                 else if (vNavigation == VNavigation.Up)
                 {
                     <div class="c-up-from-state">
-                        <DecadeComponent Date="date" CalendarType="CalendarType" />
+                        <DecadeComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                     <div class="c-up-to-state">
-                        <CentuaryComponent Date="date" CalendarType="CalendarType" />
+                        <CentuaryComponent Date="date" PersianCalendar="PersianCalendar" />
                     </div>
                 }
                 break;

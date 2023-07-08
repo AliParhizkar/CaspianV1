@@ -7,6 +7,7 @@ using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Caspian.Common.Extension;
 
 namespace Caspian.Engine.WorkflowEngine
 {
@@ -95,9 +96,10 @@ namespace Caspian.Engine.WorkflowEngine
             using var scope = CreateScope();
             var service = scope.GetService<WorkflowFormService>();
             var rowService = scope.GetService<HtmlRowService>();
-            var colService = scope.GetService<HtmlColumnService>(); 
+            var colService = scope.GetService<HtmlColumnService>();
             var innerRowService = scope.GetService<InnerRowService>();
             var columns = new List<HtmlColumn>();
+            var columnsId = new List<int>();
             var transaction = await service.Context.Database.BeginTransactionAsync();
 
             foreach(var row in rows)
@@ -118,15 +120,11 @@ namespace Caspian.Engine.WorkflowEngine
             {
                 var colInnerRows = col.InnerRows;
                 if (col.Id == 0)
-                {
                     await colService.AddAsync(col);
-                    await colService.SaveChangesAsync();
-                }
                 else
-                {
                     await colService.UpdateAsync(col);
-                    await colService.SaveChangesAsync();
-                }
+                await colService.SaveChangesAsync();
+                columnsId.Add(col.Id);
                 foreach (var row in colInnerRows)
                 {
                     row.HtmlColumnId = col.Id;
@@ -148,14 +146,21 @@ namespace Caspian.Engine.WorkflowEngine
                     columns.Add(col);
                 }
             }
-            foreach(var col in columns)
+            foreach (var col in columns)
             {
                 if (col.Id == 0)
                     await colService.AddAsync(col);
                 else
                     await colService.UpdateAsync(col);
                 await colService.SaveChangesAsync();
+                columnsId.Add(col.Id);
             }
+            var deleteColumns = await colService.GetAll().Where(t => (t.Row.WorkflowFormId == WorkflowFormId 
+                || t.InnerRow.HtmlColumn.Row.WorkflowFormId == WorkflowFormId) && !columnsId.Contains(t.Id))
+                .Include(t => t.Component).Include(t => t.InnerRow).ToListAsync();
+            colService.RemoveRange(deleteColumns);
+            innerRowService.RemoveRange(deleteColumns.Where(t => t.InnerRow != null).Select(t => t.InnerRow));
+            await colService.SaveChangesAsync();
             await transaction.CommitAsync();
         }
 
@@ -194,13 +199,31 @@ namespace Caspian.Engine.WorkflowEngine
 
         void RemoveSelectedControl()
         {
-            if (selectedInnerRowIndex >= 0)
+            if (selectedControl != null)
             {
-                if (selectedColIndex >= 0 && selectedInnerColIndex >= 0)
-                    rows[selectedRowIndex].Columns[selectedColIndex].InnerRows[selectedInnerRowIndex].HtmlColumns[selectedInnerColIndex].Component = null;
+                foreach(var row in rows)
+                {
+                    foreach(var col in row.Columns)
+                    {
+                        if (col.Component == selectedControl)
+                        {
+                            col.Component = null;
+                            selectedControl = null;
+                            return;
+                        }
+                        foreach(var innerRow in col.InnerRows)
+                        {
+                            foreach (var innerCol in innerRow.HtmlColumns)
+                                if (innerCol.Component == selectedControl)
+                                {
+                                    innerCol.Component = null;
+                                    selectedControl = null;
+                                    return;
+                                }
+                        }
+                    }
+                }
             }
-            else if (selectedRowIndex >= 0 && selectedColIndex >= 0)
-                rows[selectedRowIndex].Columns[selectedColIndex].Component = null;
         }
 
         void AddRowToDown()
@@ -297,6 +320,9 @@ namespace Caspian.Engine.WorkflowEngine
                     break;
                 case DataModelFieldType.Relational:
                     controlType = ControlType.List;
+                    break;
+                case DataModelFieldType.MultiSelect:
+                    controlType = ControlType.DropdownList;
                     break;
                 default:
                     throw new NotImplementedException("خطای عدم پیاده سازی");

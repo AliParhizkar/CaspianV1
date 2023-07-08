@@ -207,7 +207,7 @@
             detail.Price = old.Price;
             if (detail.Quantity == 0)
                 detail.Quantity = 1;
-            txtQuantity.Focus();
+            await txtQuantity.FocusAsync();
         }
     }
 }

@@ -48,5 +48,7 @@ namespace Caspian.Engine.Model
         public DbSet<DataParameter> DataParameters { get; set; }
 
         public DbSet<DataParameterValue> DataParameterValues { get; set; }
+
+        public DbSet<HtmlColumn> HtmlColumns { get; set; }
     }
 }

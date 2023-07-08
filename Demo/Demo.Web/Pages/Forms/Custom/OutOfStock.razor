@@ -46,8 +46,7 @@
     DataGrid<Product> grid;
     async Task ToggleOutofStock(int productId)
     {
-        using var scope = CreateScope();
-        var service = new ProductService(scope.ServiceProvider);
+        using var service = CreateScope().GetService<ProductService>();
         await service.ToggleOutofstock(productId);
         await service.SaveChangesAsync();
         await grid.ReloadAsync();

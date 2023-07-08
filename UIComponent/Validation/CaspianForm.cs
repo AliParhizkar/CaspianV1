@@ -57,10 +57,10 @@ namespace Caspian.UI
 
         public CaspianValidationValidator ValidationValidator { get; set; }
 
-        public void FocusToFirstControl()
+        public async Task FocusToFirstControlAsync()
         {
             if (controls.Count > 0)
-                controls[0].Focus();
+                await controls[0].FocusAsync();
         }
 
         protected override void OnInitialized()

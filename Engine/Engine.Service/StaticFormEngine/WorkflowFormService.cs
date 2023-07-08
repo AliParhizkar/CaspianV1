@@ -40,19 +40,21 @@ namespace Caspian.Engine.Service
             switch (control.ControlType)
             {
                 case ControlType.Integer:
-                    return "\t\tNumericTextBox<int?> txt" + control.CustomeFieldName + ";\n";
+                    return $"\t\tNumericTextBox<int?> txt{control.CustomeFieldName};\n";
                 case ControlType.Numeric:
-                    return "\t\tNumericTextBox<decimal?> txt" + control.CustomeFieldName + ";\n";
+                    return $"\t\tNumericTextBox<decimal?> txt{control.CustomeFieldName};\n";
                 case ControlType.String:
-                    return "\t\tStringTextBox txt" + control.CustomeFieldName + ";\n";
+                    return $"\t\tStringTextBox txt{control.CustomeFieldName};\n";
                 case ControlType.List:
-                    var str = "\t\tComboBox<" + control.DataModelField.EntityType.Name;
+                    var str = $"\t\tComboBox<{control.DataModelField.EntityType.Name}";
                     var id = control.CustomeFieldName;
                     if (id.EndsWith("Id"))
                         id = id.Substring(0, id.Length - 2);
                     if (isServerSide)
                         str += ", int?";
-                    return str + "> cmb" + id + ";\n";
+                    return str + $"> cmb{id};\n";
+                case ControlType.DropdownList:
+                    return $"\t\tDropdownList<{control.DataModelField.FieldName}> ddl{control.DataModelField.FieldName};\n" ;
             }
             throw new NotImplementedException("خطای عدم پیاده سازی");
         }
@@ -133,9 +135,11 @@ namespace Caspian.Engine.Service
             var rows = await new HtmlRowService(ServiceProvider).GetAll().Where(t => t.WorkflowFormId == workflowFormId)
                 .Include("Columns").Include("Columns.Component").Include("Columns.Component.DynamicParameter")
                 .Include("Columns.Component.DynamicParameter.Options").Include("Columns.Component.DataModelField")
+                .Include("Columns.Component.DataModelField.DataModelOptions")
                 .Include("Columns.InnerRows").Include("Columns.InnerRows.HtmlColumns")
                 .Include("Columns.InnerRows.HtmlColumns.Component")
                 .Include("Columns.InnerRows.HtmlColumns.Component.DataModelField")
+                .Include("Columns.InnerRows.HtmlColumns.Component.DataModelField.DataModelOptions")
                 .Include("Columns.InnerRows.HtmlColumns.Component.DynamicParameter")
                 .Include("Columns.InnerRows.HtmlColumns.Component.DynamicParameter.Options").ToListAsync();
             var controls = new List<BlazorControl>();
@@ -143,14 +147,14 @@ namespace Caspian.Engine.Service
                 foreach(var col in row.Columns)
                 {
                     var ctr = col.Component;
-                    if (ctr != null && ctr.DynamicParameter != null)
+                    if (ctr != null)
                         controls.Add(ctr);
                     foreach(var row1 in col.InnerRows)
                     {
                         foreach(var col1 in row1.HtmlColumns)
                         {
                             var ctr1 = col1.Component;
-                            if (ctr1 != null && ctr1.DynamicParameter != null)
+                            if (ctr1 != null)
                                 controls.Add(ctr1);
                         }
                     }
@@ -159,17 +163,20 @@ namespace Caspian.Engine.Service
             {
                 str.Append("\t\t ");
                 var param = control!.DynamicParameter;
-                var enTitle = param!.EnTitle;
-                switch (control.ControlType)
+                if (param != null)
                 {
-                    case ControlType.Integer:
-                        str.Append($"int? {enTitle};\n");
-                        break;
-                    case ControlType.DropdownList:
-                        str.Append($"{enTitle}? {enTitle};\n");
-                        break;
-                    default:
-                        throw new NotImplementedException("خطای عدم پیاده سازی");
+                    var enTitle = param!.EnTitle;
+                    switch (control.ControlType)
+                    {
+                        case ControlType.Integer:
+                            str.Append($"int? {enTitle};\n");
+                            break;
+                        case ControlType.DropdownList:
+                            str.Append($"{enTitle}? {enTitle};\n");
+                            break;
+                        default:
+                            throw new NotImplementedException("خطای عدم پیاده سازی");
+                    }
                 }
             }
             str.Append("\n\t\t/// Controls of form\n");
@@ -193,17 +200,37 @@ namespace Caspian.Engine.Service
             foreach(var control in controls)
             {
                 var param = control.DynamicParameter;
-                if (param.ControlType == ControlType.DropdownList)
+                if (param != null)
                 {
-                    str.Append($"\n\tinternal enum {param.EnTitle}\n\t{{\n");
+                    if (param.ControlType == ControlType.DropdownList)
+                    {
+                        str.Append($"\n\tinternal enum {param.EnTitle}\n\t{{\n");
+                        var index = 1;
+                        foreach (var option in param.Options)
+                        {
+                            str.Append("\t\t/// <summary>\n");
+                            str.Append($"\t\t/// {option.FaTitle}\n");
+                            str.Append("\t\t/// </summary>\n");
+                            str.Append($"\t\t{option.EnTitle} = {index}");
+                            if (index < param.Options.Count)
+                                str.Append(",\n");
+                            str.Append("\n");
+                            index++;
+                        }
+                        str.Append("\t}\n");
+                    }
+                }
+                if (control.DataModelField.FieldType == DataModelFieldType.MultiSelect)
+                {
+                    str.Append($"\n\tinternal enum {control.DataModelField.FieldName}\n\t{{\n");
                     var index = 1;
-                    foreach(var option in param.Options)
+                    foreach (var option in control.DataModelField.DataModelOptions)
                     {
                         str.Append("\t\t/// <summary>\n");
-                        str.Append($"\t\t/// {option.FaTitle}\n");
+                        str.Append($"\t\t/// {option.Title}\n");
                         str.Append("\t\t/// </summary>\n");
-                        str.Append($"\t\t{option.EnTitle} = {index}");
-                        if (index < param.Options.Count)
+                        str.Append($"\t\t{option.Name} = {index}");
+                        if (index < control.DataModelField.DataModelOptions.Count)
                             str.Append(",\n");
                         str.Append("\n");
                         index++;

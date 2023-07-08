@@ -9,7 +9,6 @@
     string _FieldName;
     ValidationMessageStore _messageStore;
     bool valueIsChanged;
-    bool focused;
     bool reseting;
     EditContext oldContext;
 
@@ -152,8 +151,6 @@
             InputAttributes = new Dictionary<string, object>();
         if (TabIndex.HasValue)
             InputAttributes["tabindex"] = TabIndex;
-        if (Focused)
-            focused = true;
         if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
         {
             _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
@@ -171,12 +168,6 @@
     public async Task FocusAsync()
     {
         await htmlElement.FocusAsync();
-    }
-
-    public void Focus()
-    {
-        focused = true;
-        Focused = true;
     }
 
     public virtual async Task ResetAsync()
@@ -331,11 +322,11 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (focused)
-        {
-            await htmlElement.FocusAsync();
-            focused = false;
-        }
+        //if (focused)
+        //{
+        //    await htmlElement.FocusAsync();
+        //    focused = false;
+        //}
         await base.OnAfterRenderAsync(firstRender);
     }
 }

@@ -164,18 +164,20 @@
         this.keyIsOperate = false;
         $(element).unbind("keypress.input");
         $(element).bind("keypress.input", e => {
-            let isValid = false, total = options.total, digits = options.digits, selection = $(element).getSelection();
+            let isValid = false, total = this.total, digits = this.digits, selection = $(element).getSelection();
             let code = e.keyCode;
             let value = $(element).val();
-            if (code == 46) {
+
+            if (code == 46 && digits) {
                 let remain = value.length - selection.end;
                 if (remain <= digits && value.indexOf('.') == -1)
                     isValid = true;
-                console.log(isValid)
-
             }
             if (code >= 48 && code <= 57 || code == 13 || code == 45 && selection.start == 0 && value.substr(selection.end).indexOf('-') == -1)
                 isValid = true;
+            var pointIndex = value.indexOf('.'); 
+            if (pointIndex >= 0 && selection.start == selection.end && selection.end > pointIndex && value.split('.')[1].length == digits)
+                isValid = false;
             if (selection.start == 0 && selection.end == 0 && value.length > 0 && value[0] == '-' && code >= 48 && code <= 57)
                 isValid = false;
             let len = value.replace('-', '').replace('.', '').length;
@@ -248,9 +250,6 @@
         },
         updateState: function (options) {
             $.extend(this, options);
-            if (options.focused) 
-                this.focus();
-            this.errorMessage = options.errorMessage;
         },
         _update: function (val) {
             if (this.val != val) {

@@ -25,7 +25,7 @@ namespace Caspian.UI
         public EventCallback<DateTime> DateChanged { get; set; }
 
         [Parameter]
-        public CalendarType CalendarType { get; set; }
+        public bool PersianCalendar { get; set; }
 
         [Parameter]
         public DateTime? FromDate { get; set; }
@@ -37,7 +37,6 @@ namespace Caspian.UI
         {
             Date = dateTime;
             await DateChanged.InvokeAsync(dateTime);
-
         }
 
         async Task NavigateUp()
@@ -55,11 +54,11 @@ namespace Caspian.UI
         void CalendarTitleInit()
         {
             var pDate = date.ToPersianDate();
-            var year = CalendarType == CalendarType.Gregorian ? date.Year : pDate.Year.Value;
+            var year = PersianCalendar ? pDate.Year.Value : date.Year;
             switch (viewType)
             {
                 case ViewType.Month:
-                    var month = CalendarType == CalendarType.Gregorian ? date.Month : pDate.Month.ConvertToInt().Value;
+                    var month = PersianCalendar ? pDate.Month.ConvertToInt().Value : date.Month;
                     headerTitle = months[month - 1] + " " + year;
                     break;
                 case ViewType.Year:
@@ -82,8 +81,7 @@ namespace Caspian.UI
             switch (viewType)
             {
                 case ViewType.Month:
-                    index = CalendarType == CalendarType.Gregorian ? date.Month - 1 : 
-                        monthConvertor[date.ToPersianDate().Month.ConvertToInt().Value - 1] - 1;
+                    index = PersianCalendar ? monthConvertor[date.ToPersianDate().Month.ConvertToInt().Value - 1] - 1 : date.Month - 1;
                     break;
                 case ViewType.Year:
                     index = date.Year % 10 + 1;
@@ -108,10 +106,11 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (CalendarType == CalendarType.Gregorian)
-                months = new string[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-            else
+            if (PersianCalendar)
                 months = new string[] { "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند" };
+            else
+                months = new string[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+
             base.OnInitialized();
         }
 

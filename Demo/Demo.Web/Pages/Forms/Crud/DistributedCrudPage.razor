@@ -21,7 +21,7 @@
                             <label>Product Category</label>
                         </div>
                         <div class="col-md-9">
-                            <ComboBox TValue="int" TEntity="ProductCategory" @bind-Value="upsertProduct.ProductCategoryId" TextExpression="t => t.Title" OnValueChanged="() => productGrid.EnableLoading()" />
+                            <ComboBox TValue="int" TEntity="ProductCategory" @bind-Value="upsertProduct.ProductCategoryId" TextExpression="t => t.Title" OnChanged="() => productGrid.EnableLoading()" />
                         </div>
                     </div>
     <div class="c-body ps-3 pe-3">

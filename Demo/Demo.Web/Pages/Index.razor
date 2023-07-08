@@ -4,11 +4,12 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<span>@value</span>
-<NumericTextBox @bind-Value="value" Total="8" NumberDigit="2" />
+<NumericTextBox @bind-Value="total" />
+<NumericTextBox @bind-Value="value" Total="total" />
 
 @code
 {
-    decimal value;
+    int total = 8;
+    int value;
 }
 

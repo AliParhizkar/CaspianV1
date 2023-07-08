@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using Syncfusion.Blazor;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 var builder = WebApplication.CreateBuilder(args);
 //new RazorPageProceccor().Proccess();
@@ -18,6 +19,13 @@ builder.Services.AddTransient<CascadeService>();
 builder.Services.AddScoped<BatchService>();
 builder.Services.AddScoped<BasePageService>();
 builder.Services.AddSyncfusionBlazor();
+CultureInfo culture = new CultureInfo("en-US");
+culture.DateTimeFormat.ShortDatePattern = "yyyy/MM/dd";
+Thread.CurrentThread.CurrentCulture = culture;
+Thread.CurrentThread.CurrentUICulture = culture;
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
+var date = DateTime.Now.ToShortDateString();
 builder.Services.AddSingleton<SingletonMenuService>(t => 
 {
     using var context = new Caspian.Engine.Model.Context();

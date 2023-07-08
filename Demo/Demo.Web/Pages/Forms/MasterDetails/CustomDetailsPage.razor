@@ -182,8 +182,8 @@
 
     protected async override Task OnInitializedAsync()
     {
-        var scope = CreateScope();
-        products = await new ProductService(scope.ServiceProvider).GetAll().ToListAsync();
+        using var service = CreateScope().GetService<ProductService>();
+        products = await service.GetAll().ToListAsync();
         foreach (var product in products)
             product.Image = null;
         btnAttr = new Dictionary<string, object>();

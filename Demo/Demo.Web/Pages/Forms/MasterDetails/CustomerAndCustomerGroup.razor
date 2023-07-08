@@ -127,9 +127,8 @@
         if (customer.Id > 0)
         {
             ///In update we should fill groupsId field
-            using var scope = CreateScope();
-            groupsId = await new CustomerGroupMembershipService(scope.ServiceProvider).GetAll()
-                .Where(t => t.CustomerId == customer.Id).Select(t => t.CustomerGroupId).ToListAsync();
+            using var service = CreateScope().GetService<CustomerGroupMembershipService>();
+            groupsId = await service.GetAll().Where(t => t.CustomerId == customer.Id).Select(t => t.CustomerGroupId).ToListAsync();
         }
         else
             groupsId = new List<int>();
@@ -139,7 +138,7 @@
     {
         form.Cancel = true;
         using var scope = CreateScope();
-        var service = new CustomerService(scope.ServiceProvider);
+        var service = scope.GetService<CustomerService>();
         if (customer.Id == 0)
         {
             customer.CustomerGroupMemberships = groupsId.Select(t => new CustomerGroupMembership()
@@ -150,7 +149,7 @@
         }
         else
         {
-            var oldGroupsId = await new CustomerGroupMembershipService(scope.ServiceProvider).GetAll()
+            var oldGroupsId = await scope.GetService<CustomerGroupMembershipService>().GetAll()
                 .Where(t => t.CustomerId == customer.Id).Select(t => t.CustomerGroupId).ToListAsync();
             customer.CustomerGroupMemberships = groupsId.Where(t => !oldGroupsId.Contains(t)).Select(t => new CustomerGroupMembership()
             {
@@ -158,7 +157,7 @@
                 CustomerId = customer.Id
             }).ToList();
             ///The groups removed from list and exist in database, this groups should removed from database
-            var removedGroupsId = await new CustomerGroupMembershipService(scope.ServiceProvider).GetAll()
+            var removedGroupsId = await scope.GetService<CustomerGroupMembershipService>().GetAll()
                 .Where(t => t.CustomerId == customer.Id && !groupsId.Contains(t.CustomerGroupId)).Select(t => t.Id).ToListAsync();
             await service.UpdateAsync(customer, removedGroupsId);
         }

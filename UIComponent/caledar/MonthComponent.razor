@@ -1,9 +1,9 @@
 ﻿@namespace Caspian.UI
 @{
     var pDate = Date.ToPersianDate();
-    int curentMonth = CalendarType == CalendarType.Gregorian ? Date.Month : pDate.Month.ConvertToInt().Value;
-    int curentDay = CalendarType == CalendarType.Gregorian ? Date.Day : pDate.Day.Value;
-    string className = CalendarType == CalendarType.Gregorian ? "t-content" : "t-content c-dir-rtl";
+    int curentMonth = PersianCalendar ? pDate.Month.ConvertToInt().Value : Date.Month;
+    int curentDay = PersianCalendar ? pDate.Day.Value : Date.Day;
+    string className = PersianCalendar ? "t-content c-dir-rtl" : "t-content";
 }
 <table class="@className">
     <tr class="t-week-header">
@@ -56,20 +56,42 @@
     }
 
     [Parameter]
-    public CalendarType CalendarType { get; set; }
+    public bool PersianCalendar { get; set; }
 
     protected override void OnInitialized()
     {
-        if (CalendarType == CalendarType.Gregorian)
-            WeekDays = new string[7] { "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" };
-        else
+        if (PersianCalendar)
             WeekDays = new string[7] { "ش", "ی", "د", "س", "چ", "پ", "ج" };
+        else
+            WeekDays = new string[7] { "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" };
         base.OnInitialized();
     }
 
     protected override void OnParametersSet()
     {
-        if (CalendarType == CalendarType.Gregorian)
+        if (PersianCalendar)
+        {
+            MonthDays = new int[6, 7];
+            PersianMonthDates = new PersianDate[6, 7];
+            isActiveDate = new bool[6, 7];
+            var pdate = Date.ToPersianDate().FirstDayInCalendar();
+            var date = pdate.GetMiladyDate().Value;
+            for (int i = 0; i < 6; i++)
+                for (int j = 0; j < 7; j++)
+                {
+                    MonthDays[i, j] = pdate.Day.Value;
+                    PersianMonthDates[i, j] = pdate;
+                    var isActive = true;
+                    if (FromDate.HasValue && date < FromDate.Value)
+                        isActive = false;
+                    else if (ToDate.HasValue && date > ToDate.Value)
+                        isActive = false;
+                    isActiveDate[i, j] = isActive;
+                    pdate = pdate.AddDays(1);
+                    date = date.AddDays(1);
+                }
+        }
+        else
         {
             MonthDays = new int[6, 7];
             MonthDates = new DateTime[6, 7];
@@ -86,28 +108,6 @@
                     else if (ToDate.HasValue && date > ToDate.Value)
                         isActive = false;
                     isActiveDate[i, j] = isActive;
-                    date = date.AddDays(1);
-                }
-        }
-        else
-        {
-            MonthDays = new int[6, 7];
-            PersianMonthDates = new PersianDate[6, 7];
-            isActiveDate = new bool[6, 7];
-            var pdate = Date.ToPersianDate().FirstDayInCalendar();
-            var date = pdate.GetMiladyDate().Value;
-            for (int i = 0; i < 6; i++)
-                for(int j = 0; j < 7; j++)
-                {
-                    MonthDays[i, j] = pdate.Day.Value;
-                    PersianMonthDates[i, j] = pdate;
-                    var isActive = true;
-                    if (FromDate.HasValue && date < FromDate.Value)
-                        isActive = false;
-                    else if (ToDate.HasValue && date > ToDate.Value)
-                        isActive = false;
-                    isActiveDate[i, j] = isActive;
-                    pdate = pdate.AddDays(1);
                     date = date.AddDays(1);
                 }
         }

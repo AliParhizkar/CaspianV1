@@ -7,6 +7,8 @@ using Employment.Web.Pages;
 using Microsoft.AspNetCore.Components;
 using Caspian.Common;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace Caspian.Engine.CodeGenerator
@@ -18,10 +20,12 @@ namespace Caspian.Engine.CodeGenerator
         EmploymentOrder employmentOrder;
         int? BaseNumber;
         int? EducationDegreeId;
+        Checking Checking;
 
         //Form controls
         ComboBox<EmploymentOrderType, Int32> cmbEmploymentOrderType;
-        AutoComplete<Major, Int32> lkpMajor;
+        DropdownList<Checking> ddlChecking;
+        StringTextBox txtDescript;
 
         protected override void OnInitialized()
         {
@@ -49,7 +53,6 @@ namespace Caspian.Engine.CodeGenerator
             builder.OpenComponent<ComboBox<EmploymentOrderType, Int32>>(2);
             builder.AddAttribute(3, "Value", employmentOrder.EmploymentOrderTypeId);
             builder.AddAttribute(3, "ValueChanged", EventCallback.Factory.Create<Int32>(this, value => { employmentOrder.EmploymentOrderTypeId = value; }));
-            builder.AddAttribute(3, "OnChange", EventCallback.Factory.Create(this, async () => await EmploymentOrderType_OnChange()));
             builder.AddComponentReferenceCapture(1, cmb =>
             {
                 cmbEmploymentOrderType = cmb as ComboBox<EmploymentOrderType, Int32>;
@@ -60,6 +63,23 @@ namespace Caspian.Engine.CodeGenerator
             builder.CloseElement();
             builder.OpenElement(1, "div");
             builder.AddAttribute(3, "class", "col-md-4");
+            builder.OpenElement(1, "div");
+            builder.AddAttribute(3, "class", "c-dynamic-form-controls");
+            builder.OpenElement(1, "label");
+            builder.AddAttribute(3, "class", "pe-3");
+            builder.AddContent(1, "بررسی ");
+            builder.CloseElement();
+            builder.OpenComponent<DropdownList<Checking>>(2);
+            builder.AddAttribute(3, "Value", Checking);
+            builder.AddAttribute(3, "ValueChanged", EventCallback.Factory.Create<Checking>(this, value => {
+                Checking = value;
+            }));
+            builder.AddComponentReferenceCapture(1, ddl =>
+            {
+                ddlChecking = ddl as DropdownList<Checking>;
+            });
+            builder.CloseComponent();
+            builder.CloseElement();
             builder.CloseElement();
             builder.OpenElement(1, "div");
             builder.AddAttribute(3, "class", "col-md-4");
@@ -69,6 +89,17 @@ namespace Caspian.Engine.CodeGenerator
             builder.AddAttribute(3, "class", "row");
             builder.OpenElement(1, "div");
             builder.AddAttribute(3, "class", "col-md-4");
+            builder.OpenElement(1, "div");
+            builder.AddAttribute(3, "class", "c-dynamic-form-controls");
+            builder.AddAttribute(3, "style", "height:221px"); builder.OpenElement(1, "label");
+            builder.AddAttribute(3, "class", "pe-3");
+            builder.AddContent(1, "شرح");
+            builder.CloseElement();
+            builder.OpenComponent<StringTextBox>(2);
+            builder.AddAttribute(3, "style", "height:153px"); builder.AddAttribute(3, "MultiLine", true); builder.AddAttribute(3, "Value", employmentOrder.Descript);
+            builder.AddAttribute(3, "ValueChanged", EventCallback.Factory.Create<string>(this, value => { employmentOrder.Descript = value; }));
+            builder.CloseComponent();
+            builder.CloseElement();
             builder.CloseElement();
             builder.OpenElement(1, "div");
             builder.AddAttribute(3, "class", "col-md-4");
@@ -76,29 +107,6 @@ namespace Caspian.Engine.CodeGenerator
             builder.AddAttribute(3, "class", "row");
             builder.OpenElement(1, "div");
             builder.AddAttribute(3, "class", "col-md-12");
-            builder.OpenElement(1, "div");
-            builder.AddAttribute(3, "class", "c-dynamic-form-controls");
-            builder.OpenElement(1, "label");
-            builder.AddAttribute(3, "class", "pe-3");
-            builder.AddContent(1, "رشته تحصیلی");
-            builder.CloseElement();
-            builder.OpenComponent<AutoComplete<Major, Int32>>(2);
-            RenderFragment render1 = t =>
-            {
-                t.OpenComponent(1, typeof(MajorLookupWindow<Int32>));
-                t.CloseComponent();
-            };
-            builder.AddAttribute(3, "ChildContent", render1);
-            builder.AddAttribute(3, "Value", employmentOrder.MajorId);
-            builder.AddAttribute(3, "ValueChanged", EventCallback.Factory.Create<Int32>(this, value => { employmentOrder.MajorId = value; }));
-            builder.AddAttribute(3, "OnChange", EventCallback.Factory.Create(this, () => Major_OnChange()));
-            builder.AddComponentReferenceCapture(1, lkp =>
-            {
-                lkpMajor = lkp as AutoComplete<Major, Int32>;
-                lkpMajor.TextExpression = t => t.Title;
-            });
-            builder.CloseComponent();
-            builder.CloseElement();
             builder.CloseElement();
             builder.CloseElement();
             builder.OpenElement(1, "div");
@@ -125,9 +133,7 @@ namespace Caspian.Engine.CodeGenerator
     {
         public void Initialize()
         {
-            lkpMajor.TextExpression = t => t.Title;
             cmbEmploymentOrderType.TextExpression = t => t.Code + "- " + t.Title;
-
         }
 
         public async Task EmploymentOrderType_OnChange()
@@ -150,16 +156,23 @@ namespace Caspian.Engine.CodeGenerator
 
         public void EducationDegree_OnChange()
         {
-            if (EducationDegreeId == null)
-                lkpMajor.Disable();
-            else
-                lkpMajor.Enable();
+
         }
 
         public void Major_OnChange()
         {
-            ShowMessage(employmentOrder.MajorId.ToString());
+
         }
     }
+    public enum Checking
+    {
+        [Display(Name = "تایید")]
+        Ok = 1,
 
+        [Display(Name = "رد")]
+        Refuse = 2,
+
+        [Display(Name = "برسی بیشتر")]
+        MoreChecking = 3
+    }
 }

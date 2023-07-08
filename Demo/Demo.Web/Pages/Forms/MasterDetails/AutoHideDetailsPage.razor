@@ -194,8 +194,8 @@
     {
         if (materialId > 0)
         {
-            using var scope = CreateScope();
-            detail.Material = await new MaterialService(scope.ServiceProvider).GetAll().Where(t => t.Id == materialId)
+            using var service = CreateScope().GetService<MaterialService>();
+            detail.Material = await service.GetAll().Where(t => t.Id == materialId)
                 .Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync();
             await txtMainUnit.FocusAsync();
 

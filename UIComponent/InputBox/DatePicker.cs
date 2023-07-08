@@ -1,10 +1,11 @@
 ﻿using System;
 using Caspian.Common;
+using System.Threading;
 using Microsoft.JSInterop;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
-using System.Globalization;
 
 namespace Caspian.UI
 {
@@ -21,16 +22,17 @@ namespace Caspian.UI
                 Status = WindowStatus.Open;
         }
 
+        void UpdateValue()
+        {
+
+        }
+
         async Task ChangeDate(DateTime date)
         {
             if (!Disabled)
             {
-                if (typeof(TValue) == typeof(DateTime) || typeof(TValue) == typeof(DateTime?))
-                    Value = (TValue)Convert.ChangeType(date, typeof(DateTime));
-                else
-                    Value = (TValue)Convert.ChangeType(date.ToPersianDate(), typeof(PersianDate));
-                text = date.Date.ToADDateString();
-                DateTime epoch = new DateTime(1, 1, 1, new HijriCalendar());
+                Value = (TValue)Convert.ChangeType(date, typeof(DateTime));
+                text = date.ToShortDateString();
                 if (ValueChanged.HasDelegate)
                     await ValueChanged.InvokeAsync(Value);
                 await Task.Delay(400);
@@ -42,22 +44,18 @@ namespace Caspian.UI
         {
             if (!Disabled)
             {
-                TValue value = default;
-                if (CalendarType == CalendarType.Persian)
-                    value = (TValue)Convert.ChangeType(new PersianDate("01/01/01").GetMiladyDate().Value, typeof(DateTime));
+                Value = default;
                 var strValue = Convert.ToString(arg.Value);
-
-                if (strValue.Contains("-"))
-                    value = (TValue)Convert.ChangeType(strValue, typeof(DateTime));
-                else if (strValue.HasValue())
-                    value = (TValue)Convert.ChangeType(new PersianDate(strValue).GetMiladyDate().Value, typeof(DateTime));
-                Value = value;
-                await ValueChanged.InvokeAsync(value);
+                if (strValue.HasValue())
+                    Value = (TValue)Convert.ChangeType(strValue, typeof(DateTime));
+                if (DefaultMode)
+                    text = strValue;
+                await ValueChanged.InvokeAsync(Value);
             }
         }
 
         [Parameter]
-        public CalendarType CalendarType { get; set; } = CalendarType.Gregorian;
+        public bool PersianCalendar { get; set; }
 
         [Parameter]
         public bool OpenOnFocus { get; set; }
@@ -97,10 +95,12 @@ namespace Caspian.UI
                 text = "";
             else
             {
+                var date = Convert.ToDateTime(Value);
                 if (DefaultMode)
-                    text = Convert.ToDateTime(Value).Date.ToADDateString();
+                    text = date.ConvertToBrowserDate();
                 else
-                    text = Convert.ToDateTime(Value).Date.ToADDateString();
+                    text = date.ToShortDateString();
+
             }
             base.OnParametersSet();
         }

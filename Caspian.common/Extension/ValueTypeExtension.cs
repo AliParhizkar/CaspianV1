@@ -1,10 +1,7 @@
 ﻿using System.Reflection;
 using System.Globalization;
 using Caspian.Common.Extension;
-using Caspian.Common.Attributes;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace Caspian.Common
 {
@@ -32,6 +29,25 @@ namespace Caspian.Common
             if (value.HasValue)
                 return value.ToString();
             return "";
+        }
+
+        public static string ConvertToBrowserDate(this DateTime? date)
+        {
+            if (date == null)
+                return "";
+            return date.ConvertToBrowserDate();
+        }
+
+        public static string ConvertToBrowserDate(this DateTime date)
+        {
+            var str = date.Year.ToString() + '-';
+            if (date.Month < 10)
+                str += '0';
+            str += date.Month.ToString() + '-';
+            if (date.Day < 10)
+                str += "0";
+            str += date.Day.ToString();
+            return str;
         }
 
         public static string Seprate3Digit(this long? value)
@@ -119,25 +135,6 @@ namespace Caspian.Common
             if (date == null)
                 return null;
             return date.Value.ToPersianDate();
-        }
-
-        public static string ToADDateString(this DateTime? date)
-        {
-            if (date == null)
-                return "";
-            return date.Value.ToADDateString();
-        }
-
-        public static string ToADDateString(this DateTime date)
-        {
-            var str = date.Year + "/";
-            if (date.Month < 10)
-                str += "0";
-            str += date.Month + "/";
-            if (date.Day < 10)
-                str += "0";
-            str += date.Day;
-            return str;
         }
 
         public static string ToPersianDateString(this DateTime date)

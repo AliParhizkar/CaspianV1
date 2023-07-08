@@ -1,7 +1,9 @@
 ﻿@namespace Caspian.UI
+@using System.Globalization;
+@using System.Threading;
 @typeparam TValue 
 @inherits CBaseInput<TValue>
-@{ 
+@{
     var className = "t-picker-wrap";
     if (Disabled)
         className += " t-state-disabled";
@@ -12,12 +14,11 @@
     <div class="@(className)">
         @if (DefaultMode)
         {
-            var array = text.Split('/');
-            var str = array[1] + '/' + array[2] + '/' + array[0];
-            <input type="date" @attributes="@attrs" disabled="@Disabled" value="" class="t-input t-default-mode" autocomplete="off" @onchange="ChangeValue" />
+            <input type="date" value="@text" @attributes="@attrs" disabled="@Disabled" class="t-input t-default-mode" autocomplete="off" @onchange="ChangeValue" />
         }
         else
         {
+
             <input @attributes="@attrs" disabled="@Disabled" value="@text" @ref="htmlElement" class="t-input" autocomplete="off" @onchange="ChangeValue" />
             <span class="t-select" style="left:inherit" @onclick="OpenWindow">
                 <i class="t-icon t-icon-calendar fa fa-calendar" title="Calendar"></i>
@@ -28,7 +29,7 @@
     {
         DateTime date = Value == null ? DateTime.Today : Convert.ToDateTime(Value);
         <div class="t-animation-container">
-            <CalendarComponent CalendarType="CalendarType" Date="date" DateChanged="async d => await ChangeDate(d)" 
+            <CalendarComponent PersianCalendar="PersianCalendar" Date="date" DateChanged="async d => await ChangeDate(d)" 
                 FromDate="FromDate" ToDate="ToDate"/>
         </div>
     }

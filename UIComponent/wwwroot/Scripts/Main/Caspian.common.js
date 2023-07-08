@@ -554,14 +554,14 @@
                             $animat.height($window.height() + 10);
                         }
                         else {
-                            $animat.css('top', top + $('.c-content-main').scrollTop() + 35);
+                            $animat.css('top', top + $('.c-content-main').scrollTop() + 50);
                             $window.css('top', -$window.height());
                             $animat.height($window.height() + 10);
                         }
                         setTimeout(() => {
                             if (top > $(window).height() / 2) {
                                 $window.addClass('c-lookup-animate-up');
-                                $window.css('bottom', 0);
+                                $window.css('bottom', 12);
                             }
                             else {
                                 $window.addClass('c-lookup-animate-down');

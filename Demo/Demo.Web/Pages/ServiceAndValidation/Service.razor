@@ -27,7 +27,7 @@
 <p>
     Infrastructure automatically <b>injects all services</b> as <b>scoped service</b>, we can declare the scope by <b>IServiceScopeFactory</b> or use the <b>CreateScope method of BasePage</b>, this method in addition to creating the scope <b>set UserId</b> automatically.
 </p>
-<TabPanel Style="height:300px">
+<TabPanel Style="height:420px">
     <Tabs>
         <TabPanelItem Title="C# code">
             <div class="p-4">
@@ -36,6 +36,11 @@
                 <h5>Instead of the above code, we can write the following code.</h5>
                 <div>
                     <Document FolderName="Service" FileName="Service-Declaration-1" />
+                </div>
+                <hr />
+                <h5>Or in a simpler way</h5>
+                <div>
+                    <Document FolderName="Service" FileName="Service-Declaration-2" />
                 </div>
             </div>
         </TabPanelItem>
@@ -284,8 +289,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var scope = ServiceScopeFactory.CreateScope();
-        var service = new CityService(scope.ServiceProvider);
+        using var scope = ServiceScopeFactory.CreateScope();
+        var service = scope.GetService<CityService>();
         service.UserId = UserId;
         var city = await service.GetAll().FirstOrDefaultAsync();
         countryId = city?.CountryId;
@@ -303,8 +308,8 @@
 
     async Task CheckForeignKeyForUpsert()
     {
-        var scope = CreateScope();
-        var service = new CityService(scope.ServiceProvider);
+        using var scope = CreateScope();
+        var service = scope.GetService<CityService>();
         var city = new City()
             {
                 CountryId = upsertCountryId ?? 0,

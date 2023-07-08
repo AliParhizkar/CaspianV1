@@ -57,10 +57,7 @@ namespace Caspian.UI
                             info.SetValue(UpsertData, Grid.GetUpsertedEntities().AsEnumerable());
                     }
                 });
-                Form.OnInternalReset = EventCallback.Factory.Create(this, () =>
-                {
-                    Grid.ClearSource();
-                });
+                Form.OnInternalReset = EventCallback.Factory.Create(this, () => Grid.ClearSource());
                 Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context1) =>
                 {
                     if (MasterId == 0)

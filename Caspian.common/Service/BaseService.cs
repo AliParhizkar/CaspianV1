@@ -51,28 +51,40 @@ namespace Caspian.Common.Service
             if (Context.Entry(entity).State != EntityState.Modified)
             {
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-                object oneToOne = null;
                 var info = typeof(TEntity).GetOneToOnePropertyInfo();
+                var query = GetAll();
+                if (info != null)
+                    query = query.Include(info.Name);
+                var old = await query.SingleAsync(id);
                 if (info != null)
                 {
-                    oneToOne = info.GetValue(entity);
-                    if (oneToOne != null)
+                    var oldOneToOne = info.GetValue(old);
+                    var oneToOne = info.GetValue(entity);
+                    if (oldOneToOne == null)
+                        info.SetValue(old, oneToOne);
+                    else
                     {
-                        foreach(var info1 in oneToOne.GetType().GetProperties())
+                        if (oneToOne == null)
+                            info.SetValue(old, null);
+                        else
                         {
-                            var type = info1.PropertyType;
-                            if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]))
-                                info1.SetValue(oneToOne, null);
-
+                            foreach (var info1 in oneToOne.GetType().GetProperties())
+                            {
+                                var type = info1.PropertyType;
+                                if (info1.GetCustomAttribute<System.ComponentModel.DataAnnotations.KeyAttribute>() == null)
+                                {
+                                    if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
+                                    {
+                                        var value1 = info1.GetValue(oneToOne);
+                                        info1.SetValue(oldOneToOne, value1);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-                var old = await SingleOrDefaultAsync(id);
                 if (old != null)
-                {
                     old.CopySimpleProperty(entity);
-                    info.SetValue(old, oneToOne);
-                }
 
             }
         }

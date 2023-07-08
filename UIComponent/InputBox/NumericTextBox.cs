@@ -27,7 +27,7 @@ namespace Caspian.UI
         async Task onChangeValue(ChangeEventArgs arg)
         {
             var str = arg.Value.ToString().Replace(",", "");
-            if (str == "-")
+            if (str == "-" || str == ".-" || str == "-.")
                 str = "";
             if (str.HasValue())
             {
@@ -70,10 +70,14 @@ namespace Caspian.UI
                 type = Nullable.GetUnderlyingType(type);
             if (type == typeof(int) || type == typeof(long) || type == typeof(short))
                 NumberDigit = 0;
-            var json = this.ConvertToJson();
+            var obj = new
+            {
+                total = Total,
+                digits = NumberDigit
+            };
+            var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
             if (!json.Equals(oldJson))
             {
-                Focused = false;
                 oldJson = json;
                 await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, json, UiControlType.TextBox);
             }

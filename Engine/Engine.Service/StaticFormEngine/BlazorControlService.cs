@@ -35,7 +35,7 @@ namespace Caspian.Engine.Service
             {
                 case ControlType.CheckBox:
                 case ControlType.TreeStateCheckBox:
-                    return "chb" + ctr.PropertyName;
+                    return $"chb{ctr.PropertyName}";
                 case ControlType.List:
                     if (ctr.DataModelField == null)
                         ctr.DataModelField = await new DataModelFieldService(ServiceProvider).SingleAsync(ctr.DataModelFieldId);
@@ -45,24 +45,26 @@ namespace Caspian.Engine.Service
                         if (name.EndsWith("Id"))
                             name = name.Substring(0, name.Length - "Id".Length);
                         if (ctr.LookupTypeId.HasValue)
-                            return "lkp" + name;
-                        return "cmb" + name;
+                            return $"lkp{name}";
+                        return $"cmb{name}";
                     }
                     var entityType = new AssemblyInfo().GetModelType(subSystemKind, ctr.DataModelField.EntityFullName);
                     var info = entityType.GetProperties().SingleOrDefault(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == ctr.PropertyName);
                     if (info == null)
                         throw new CaspianException($"خطا: In type {entityType.Name} property with name {ctr.PropertyName} not exist");
                     if (ctr.LookupTypeId.HasValue)
-                        return "lkp" + info.Name;
-                    return "cmb" + info.Name;
+                        return $"lkp{info.Name}";
+                    return $"cmb{info.Name}";
                 case ControlType.Date:
-                    return "dte" + ctr.PropertyName;
+                    return $"dte{ctr.PropertyName}";
                 case ControlType.String:
                 case ControlType.Integer:
                 case ControlType.Numeric:
-                    return "txt" + (ctr.PropertyName ?? ctr.CustomeFieldName);
+                    return $"txt{ctr.PropertyName ?? ctr.CustomeFieldName}";
                 case ControlType.DropdownList:
-                    return "ddl" + ctr.PropertyName;
+                    if (ctr.DataModelField?.FieldType == DataModelFieldType.MultiSelect)
+                        return $"ddl{ctr.DataModelField.FieldName}";
+                    return $"ddl{ctr.PropertyName}";
                 default:
                     throw new NotImplementedException("خطای عدم پیاده سازی");
             }

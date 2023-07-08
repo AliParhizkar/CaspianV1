@@ -6,7 +6,7 @@ namespace Caspian.Engine
     [Table("BlazorControls", Schema = "cmn")]
     public class BlazorControl
     {
-        [Key]
+        [Key, ForeignKey(nameof(HtmlColumn))]
         public int Id { get; set; }
 
         public string Caption { get; set; }
@@ -45,8 +45,6 @@ namespace Caspian.Engine
         public byte? Height { get; set; }
 
         public string OnChange { get; set; }
-
-        public int? HtmlColumnId { get; set; }
 
         public virtual HtmlColumn HtmlColumn { get; set; }
 

@@ -9,9 +9,7 @@ namespace Caspian.Dynamic.WorkflowForm
 	{
 		public void Initialize()
 		{
-            lkpMajor.TextExpression = t => t.Title;
 			cmbEmploymentOrderType.TextExpression = t => t.Code + "- " + t.Title;
-			
 		}
 
 		public async Task EmploymentOrderType_OnChange()
@@ -34,10 +32,7 @@ namespace Caspian.Dynamic.WorkflowForm
 
 		public void EducationDegree_OnChange()
 		{
-            if (EducationDegreeId == null)
-                lkpMajor.Disable();
-            else
-                lkpMajor.Enable();
+
 		}
 
 		public void Major_OnChange()

@@ -2,6 +2,7 @@
 @namespace Demo.Web.Pages
 @inject IHostEnvironment host
 @inject FileUploadService service
+@inject FileUploadService appearanceService
 @inherits BasePage
 <h2>Fileupload</h2>
 <p>
@@ -242,7 +243,7 @@
                                 <label>File upload</label>
                             </div>
                             <div class="col-md-6">
-                                <Fileupload Service="service" MaxAllowedSize="10_000_000" RelatedPath="@relatedPath" />
+                                <Fileupload Service="appearanceService" MaxAllowedSize="10_000_000" RelatedPath="@relatedPath" />
                             </div>
                         </div>
                     </div>
@@ -250,7 +251,7 @@
                         <span class="fa fa-info"></span><span style="font-size:16px;font-weight:bold">Please upload a file to show the progressbar</span>
                     </div>
                     <div class="col-md-12 ps-5 pe-5 pt-3">
-                        <FileUploadProgress CustomAppearance="customAppearance" Service="service" Style="@GetStyle()" />
+                        <FileUploadProgress CustomAppearance="customAppearance" Service="appearanceService" Style="@GetStyle()" />
                     </div>
                 </div>
             </div>
