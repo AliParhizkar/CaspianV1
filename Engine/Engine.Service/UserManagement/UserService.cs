@@ -1,8 +1,8 @@
 ﻿using Caspian.Common;
 using Caspian.Engine.Model;
 using Caspian.Common.Service;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Service
 {
@@ -55,6 +55,11 @@ namespace Caspian.Engine.Service
             RuleFor(t => t.Email).UniqAsync("کاربری با این پست الکترونیکی در سیستم ثبت شده است");
 
             RuleFor(t => t.MobileNumber).UniqAsync("کاربری با این شماره همراه در سیستم ثبت شده است");
+        }
+
+        public async Task<User> GetGuest()
+        {
+            return await GetAll().SingleOrDefaultAsync(t => t.UserName == "Guest");
         }
 
         public async override Task<User> AddAsync(User entity)

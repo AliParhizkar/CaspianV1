@@ -8,16 +8,17 @@
     <span class="c-icon"></span>
     <div class="c-form">
         <div class="c-container">
-            <StringTextBox @bind-Value="@userName" placeholder="نام کاربری..." />
+            <StringTextBox @bind-Value="@userName" placeholder="Username..." />
         </div>
         <div class="c-container">
-            <StringTextBox @bind-Value="@password" type="password" placeholder="کلمه عبور..." />
+            <StringTextBox @bind-Value="@password" type="password" placeholder="Password..." />
         </div>
         <div>
             <span class="error-message">@message</span>
         </div>
         <div class="c-action">
-            <button @onclick="Login">ورود</button>
+            <button @onclick="Login">Login</button>
+            <span @onclick="LoginAsGuest" class="c-guest">Hint</span>
         </div>
     </div>
 </div>
@@ -30,21 +31,34 @@
     async Task Login()
     {
         if (!userName.HasValue() || !password.HasValue())
-            message = "نام کاربری یا کلمه ی عبور نامعتبر است";
+            message = "Username or password is invalid.";
         else
         {
-            using var scope = CreateScope();
-            var user = await new UserService(scope.ServiceProvider).UserIsvalidAsync(userName, password);
+            using var service = CreateScope().GetService<UserService>();
+            var user = await service.UserIsvalidAsync(userName, password);
             if (user == null)
-                message = "نام کاربری یا کلمه ی عبور نامعتبر است";
+                message = "Username or password is invalid.";
             else
             {
-                var result = await ((CustomAuthenticationStateProvider)stateProvider).Login(user.Id.ToString());
+                await ((CustomAuthenticationStateProvider)stateProvider).Login(user.Id.ToString());
                 var url = new Uri(navigationManager.Uri).LocalPath;
                 if (url.StartsWith("/login", StringComparison.OrdinalIgnoreCase))
                     navigationManager.NavigateTo("/Demo", true);
-                    
+
             }
+        }
+    }
+
+    async Task LoginAsGuest()
+    {
+        using var service = CreateScope().GetService<UserService>();
+        var user = await service.GetGuest();
+        if (user == null)
+            message = "Guest user not defind";
+        else
+        {
+            await ((CustomAuthenticationStateProvider)stateProvider).Login(user.Id.ToString());
+            navigationManager.NavigateTo("/Demo", true);
         }
     }
 }

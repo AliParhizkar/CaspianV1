@@ -752,6 +752,7 @@
                 $continer.css('height', height);
         },
         bindDatePicker(dotnetHelper, ctr) {
+            $c.bindtomask($(ctr).find('input')[0], '____/__/__');
             $(ctr).mouseenter(() => {
                 let $element = $(ctr).find('.t-picker-wrap');
                 if (!$element.hasClass('t-state-selected') && !$element.hasClass('t-state-disabled')) 
@@ -1151,6 +1152,92 @@
                 if (!$(e.target).closest('.auto-hide').hasClass('auto-hide'))
                     await dotnet.invokeMethodAsync('WindowClick')
             });
+        },
+        bindtomask: function (el, patern) {
+            const pattern = patern,
+            slots = new Set(el.dataset.slots || "_"),
+            prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0),
+            first = [...pattern].findIndex(c => slots.has(c)),
+            accept = new RegExp(el.dataset.accept || "\\d", "g"),
+            clean = input => {
+                input = input.match(accept) || [];
+                return Array.from(pattern, c =>
+                input[0] === c || slots.has(c) ? input.shift() || c : c
+                );
+                    },
+                    format = () => {
+                        const [i, j] = [el.selectionStart, el.selectionEnd].map(i => {
+                            i = clean(el.value.slice(0, i)).findIndex(c => slots.has(c));
+                            return i < 0 ? prev[prev.length - 1] : back ? prev[i - 1] || first : i;
+                        });
+                        el.value = clean(el.value).join``;
+                        el.setSelectionRange(i, j);
+                        back = false;
+                    };
+                let back = false;
+                el.addEventListener("keydown", (e) => back = e.key === "Backspace");
+                el.addEventListener("input", format);
+                el.addEventListener("focus", format);
+                el.addEventListener("blur", () => el.value === pattern && (el.value = ""));
         }
     }
+})(jQuery);
+(function ($) {
+    $.fn.getSelection = function () {
+        let id = $(this).attr('id');
+        let el = this[0];
+        if (id)
+            el = document.getElementById(id);
+        el.focus();
+        var start = 0, end = 0, normalizedValue, range, textInputRange, len, endRange;
+        if (typeof el.selectionStart === "number" && typeof el.selectionEnd === "number") {
+
+            start = el.selectionStart;
+            //$('#qwe').text(start + '++' + Date().toString());
+            end = el.selectionEnd;
+        }
+        else {
+            range = document.selection.createRange();
+            if (range && range.parentElement() === el) {
+                len = el.value.length;
+                normalizedValue = el.value.replace(/\r\n/g, "\n");
+                textInputRange = el.createTextRange();
+                textInputRange.moveToBookmark(range.getBookmark());
+                endRange = el.createTextRange();
+                endRange.collapse(false);
+                if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+                    start = end = len;
+                }
+                else {
+                    start = -textInputRange.moveStart("character", -len);
+                    start += normalizedValue.slice(0, start).split("\n").length - 1;
+                    if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+                        end = len;
+                    } else {
+                        end = -textInputRange.moveEnd("character", -len);
+                        end += normalizedValue.slice(0, end).split("\n").length - 1;
+                    }
+                }
+            }
+        }
+
+        return {
+            start: start,
+            end: end
+        };
+    };
+    $.fn.setCursorPosition = function (start, end) {
+        let input = this[0];
+        if (input.setSelectionRange) {
+            input.focus();
+            input.setSelectionRange(start, end);
+        } else
+            if (input.createTextRange) {
+                var range = input.createTextRange();
+                range.collapse(true);
+                range.moveEnd('character', selectionEnd);
+                range.moveStart('character', selectionStart);
+                range.select();
+            }
+    };
 })(jQuery);

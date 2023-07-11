@@ -84,7 +84,6 @@ namespace Caspian.UI
                         });
                     }
                 }
-
             }
             await base.OnAfterRenderAsync(firstRender);
         }

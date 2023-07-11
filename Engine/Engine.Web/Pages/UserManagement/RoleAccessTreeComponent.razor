@@ -21,9 +21,8 @@
 
     async Task SaveData()
     {
-        using var scope = CreateScope();
-        var ids = tree.GetSeletcedItems().Select(t => Convert.ToInt32(t.Value)).ToList();
-        var service = new MenuAccessibilityService(scope.ServiceProvider);
+        using var service = CreateScope().GetService<MenuAccessibilityService>();
+        var ids = tree.GetSeletcedItems().Where(t => t.Depth == 2).Select(t => Convert.ToInt32(t.Value)).ToList();
         ///منوهایی که در پایگاه داده به نقش تخصیص داده شده اند
         var oldMenusId = await service.GetAll().Where(t => t.RoleId == RoleId && t.Menu.MenuCategory.SubSystemKind == SubSystem).Select(t => t.MenuId).ToListAsync();
         ///منوهایی که در درخت انتخاب شده اند ولی در پایگاه داده وجود ندارند

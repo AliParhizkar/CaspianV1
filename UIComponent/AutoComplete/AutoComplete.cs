@@ -453,6 +453,7 @@ namespace Caspian.UI
                 var tempValue = Convert.ChangeType(id, type);
                 Value = (TValue)tempValue;
                 await SetText();
+                Value = (TValue)tempValue;
                 if (fireEvent)
                 {
                     if (ValueChanged.HasDelegate)

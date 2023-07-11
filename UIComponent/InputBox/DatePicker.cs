@@ -47,7 +47,10 @@ namespace Caspian.UI
                 Value = default;
                 var strValue = Convert.ToString(arg.Value);
                 if (strValue.HasValue())
-                    Value = (TValue)Convert.ChangeType(strValue, typeof(DateTime));
+                {
+                    if (DateTime.TryParse(strValue, out _))
+                        Value = (TValue)Convert.ChangeType(strValue, typeof(DateTime));
+                }
                 if (DefaultMode)
                     text = strValue;
                 await ValueChanged.InvokeAsync(Value);

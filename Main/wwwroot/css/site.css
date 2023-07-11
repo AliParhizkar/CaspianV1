@@ -1,3 +1,15 @@
+@font-face {
+    font-family: Icons;
+    src: url(../fonts/open-iconic.eot);
+    src: url(../fonts/open-iconic.eot?#iconic-sm) format('embedded-opentype'), url(../fonts/open-iconic.woff) format('woff'), url(../fonts/open-iconic.ttf) format('truetype'), url(../fonts/open-iconic.otf) format('opentype'), url(../fonts/open-iconic.svg#iconic-sm) format('svg');
+    font-weight: 400;
+    font-style: normal
+}
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif, Icons;
+}
+
 .formola-content {
     width: 450px;
     border: 1px solid #d5d5d5;
@@ -262,13 +274,7 @@
             font-weight:bold;
         }        
 
-    @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
-
-    html, body {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
-
-a, .btn-link {
+ a, .btn-link {
     color: #0366d6;
 }
 
@@ -334,7 +340,7 @@ a, .btn-link {
     }
     .c-login .error-message{
         color:red;
-        font-weight:bold;
+        font-size:12px;
     }
     .c-login input {
         border: none;

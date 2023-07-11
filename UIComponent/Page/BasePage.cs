@@ -14,7 +14,6 @@ namespace Caspian.UI
     public partial class BasePage: ComponentBase
     {
         string message;
-        bool? block;
         protected MessageBox MessageBox;
         bool sholdRender = true;
         BasePage child;
@@ -72,16 +71,6 @@ namespace Caspian.UI
         public void ShowMessage(string msg)
         {
             message = msg;
-        }
-
-        public void BlockUI()
-        {
-            block = true;
-        }
-
-        public void UnblockUI()
-        {
-            block = false;
         }
 
         public async Task Alert(string message)
@@ -175,15 +164,6 @@ namespace Caspian.UI
                 await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
                 message = null;
             }
-            if (block.HasValue)
-            {
-                var tempBlock = block.Value;
-                await jsRuntime.InvokeVoidAsync("$.caspian.blockManagement", tempBlock);
-            }
-            if (block == true)
-                block = false;
-            else if (block == false)
-                block = null;
             if (GlobalScope != null)
             {
                 GlobalScope.Dispose();
