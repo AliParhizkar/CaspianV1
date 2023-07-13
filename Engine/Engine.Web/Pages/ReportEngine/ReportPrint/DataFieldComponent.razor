@@ -45,9 +45,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        using var scope = CreateScope();
-        fields = await new DataModelFieldService(scope.ServiceProvider).GetAll()
-        .Where(t => t.DataModelId == DataModelId).Select(t => new SelectListItem() 
+        using var service = CreateScope().GetService<DataModelFieldService>();
+        fields = await service.GetAll().Where(t => t.DataModelId == DataModelId)
+        .Select(t => new SelectListItem() 
         {
             Value = t.ToString(),
             Text = t.Title

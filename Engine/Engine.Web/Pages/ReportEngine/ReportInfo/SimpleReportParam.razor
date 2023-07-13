@@ -49,11 +49,11 @@
             ShowMessage("لطفا یک پارامتر را انخاب نمایید");
         else
         {
-            using var scope = CreateScope();
-            await new ReportParamService(scope.ServiceProvider).AddAll(reportParams);
-            await new ReportParamService(scope.ServiceProvider).SaveChangesAsync();
+            using var service = CreateScope().GetService<ReportParamService>();
+            await service.AddAll(reportParams);
+            await service.SaveChangesAsync();
             await OnParameterSave.InvokeAsync();
-            ReportParams = await new ReportParamService(scope.ServiceProvider).GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
+            ReportParams = await service.GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
             Nodes = (await new ReportTree().CreateTreeForSelect(Type, null, ReportParams)).Select(t => new TreeViewItem()
                 {
                     Value = Newtonsoft.Json.JsonConvert.SerializeObject(t),
@@ -71,10 +71,9 @@
     protected async override Task OnInitializedAsync()
     {
         using var scope = CreateScope();
-        var report = await new ReportService(scope.ServiceProvider).SingleAsync(ReportId);
-        var reportGroup = await new ReportGroupService(scope.ServiceProvider).SingleAsync(report.ReportGroupId);
-        Type = new AssemblyInfo().GetReturnType(reportGroup);
-        ReportParams = await new ReportParamService(scope.ServiceProvider).GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
+        var report = await scope.GetService<ReportService>().GetAll().Include(t => t.ReportGroup).SingleAsync(ReportId);
+        Type = new AssemblyInfo().GetReturnType(report.ReportGroup);
+        ReportParams = await scope.GetService<ReportParamService>().GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
         var nodes = await new ReportTree().CreateTreeForSelect(Type, null, ReportParams);
         Nodes = nodes.Select(t => new TreeViewItem()
         {

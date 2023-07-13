@@ -31,10 +31,10 @@ namespace Caspian.Engine
         /// </summary>
         public string PropertyName { get; set; }
 
-        public int? DynamicParameterId { get; set; }
+        //public int? DynamicParameterId { get; set; }
 
-        [ForeignKey(nameof(DynamicParameterId))]
-        public virtual DynamicParameter DynamicParameter { get; set; }
+        //[ForeignKey(nameof(DynamicParameterId))]
+        //public virtual DynamicParameter DynamicParameter { get; set; }
 
         public string TextExpression { get; set; }
 

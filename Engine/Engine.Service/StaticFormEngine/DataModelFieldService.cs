@@ -18,7 +18,7 @@ namespace Caspian.Engine.Service
                 .Custom(t => !t.EntityFullName.HasValue() && t.FieldType == null, "نوع موجودیت و نوع فیلد یکی باید پر باشد")
                 .CustomAsync(async t => 
                 {
-                    if (t.FieldType != DataModelFieldType.MultiSelect && t.Id > 0)
+                    if (t.FieldType != DataModelFieldType.MultiOptions && t.Id > 0)
                         return await new DataModelOptionService(provider).GetAll().AnyAsync(u => u.FieldId == t.Id);
                     return false;
                 }, "فیلد دارای گزینه می باشد و امکان تغییر نوع آن وجود ندارد");
@@ -46,29 +46,7 @@ namespace Caspian.Engine.Service
                     return "DateTime?";
                 case DataModelFieldType.Relational:
                     return "int?";
-                case DataModelFieldType.MultiSelect:
-                    return field.FieldName;
-                default: throw new NotImplementedException("خطای عدم پیاده سازی");
-            }
-        }
-
-        public static string GetControlTypeName(DataModelField field)
-        {
-            if (field.EntityFullName.HasValue())
-                return field.EntityFullName;
-            if (field.FieldType == DataModelFieldType.Relational)
-                return "int?";
-            switch (field.FieldType.Value)
-            {
-                case DataModelFieldType.String:
-                    return "string";
-                case DataModelFieldType.Integer:
-                    return "int?";
-                case DataModelFieldType.Decimal:
-                    return "decimal?";
-                case DataModelFieldType.Date:
-                    return "DateTime?";
-                case DataModelFieldType.MultiSelect:
+                case DataModelFieldType.MultiOptions:
                     return field.FieldName;
                 default: throw new NotImplementedException("خطای عدم پیاده سازی");
             }

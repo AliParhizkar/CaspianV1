@@ -1,11 +1,8 @@
 ﻿using System.Text;
 using Caspian.Common;
-using System.Reflection;
 using Caspian.Common.Service;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine.Service
 {
@@ -20,247 +17,24 @@ namespace Caspian.Engine.Service
             RuleFor(t => t.Name).UniqAsync("فرمی با این نام در سیستم ثبت شده است").CustomValue(t => t.IsValidIdentifire(), "برای تعریف کلاس فقط از کاراکترهای لاتین و اعداد استفاده نمایید.");
         }
 
-        string GetDynamicParameterControl(BlazorControl control)
+        public async Task<WorkflowForm> GetWorkflowForm(int workflowFormId)
         {
-            var param = control.DynamicParameter;
-            switch (control.ControlType)
-            {
-                case ControlType.DropdownList:
-                    return "\t\tDropdownList<" + param.EnTitle + "> ddl" + param.EnTitle + ";\n";
-                case ControlType.Integer:
-                    return "\t\tNumericTextBox<int?> txt" + param.EnTitle + ";\n";
-                case ControlType.Numeric:
-                    return "\t\tNumericTextBox<decimal?> txt" + param.EnTitle + ";\n";
-            }
-            throw new NotImplementedException("خطای عدم پیاده سازی");
-        }
-
-        string GetCustomFieldControl(BlazorControl control, bool isServerSide)
-        {
-            switch (control.ControlType)
-            {
-                case ControlType.Integer:
-                    return $"\t\tNumericTextBox<int?> txt{control.CustomeFieldName};\n";
-                case ControlType.Numeric:
-                    return $"\t\tNumericTextBox<decimal?> txt{control.CustomeFieldName};\n";
-                case ControlType.String:
-                    return $"\t\tStringTextBox txt{control.CustomeFieldName};\n";
-                case ControlType.List:
-                    var str = $"\t\tComboBox<{control.DataModelField.EntityType.Name}";
-                    var id = control.CustomeFieldName;
-                    if (id.EndsWith("Id"))
-                        id = id.Substring(0, id.Length - 2);
-                    if (isServerSide)
-                        str += ", int?";
-                    return str + $"> cmb{id};\n";
-                case ControlType.DropdownList:
-                    return $"\t\tDropdownList<{control.DataModelField.FieldName}> ddl{control.DataModelField.FieldName};\n" ;
-            }
-            throw new NotImplementedException("خطای عدم پیاده سازی");
-        }
-
-        public string GetControlType(SubSystemKind subSystem, BlazorControl ctr, bool isServerSide)
-        {
-            if (ctr.DynamicParameterId.HasValue)
-                return GetDynamicParameterControl(ctr);
-            else if (ctr.CustomeFieldName.HasValue())
-                return GetCustomFieldControl(ctr, isServerSide);
-            var entityType = new AssemblyInfo().GetModelType(subSystem, ctr.DataModelField.EntityFullName);
-            var info = entityType.GetProperty(ctr.PropertyName);
-            switch (ctr.ControlType)
-            {
-                case ControlType.DropdownList:
-                    var enumType = entityType.GetProperty(ctr.PropertyName).PropertyType;
-                    var typeName = enumType.GetUnderlyingType().Name;
-                    if (enumType.IsNullableType())
-                        typeName += "?";
-                    return $"\t\tDropdownList<{typeName}> ddl{ctr.PropertyName};\n";
-                case ControlType.List:
-                    var fkInfo = entityType.GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == ctr.PropertyName);
-                    var str = "";
-                    if (ctr.LookupTypeId.HasValue)
-                        str = $"\t\tAutoComplete<{fkInfo.PropertyType.Name}";
-                    else
-                        str = $"\t\tComboBox<{fkInfo.PropertyType.Name}";
-                    if (isServerSide)
-                    {
-                        str += $", {info.PropertyType.GetUnderlyingType().Name}";
-                        if (info.PropertyType.IsNullableType())
-                            str += "?";
-                    }
-                    if (ctr.LookupTypeId.HasValue)
-                        return $"{str}> lkp{fkInfo.Name};\n";
-                    return $"{str}> cmb{fkInfo.Name};\n";
-                case ControlType.String:
-                    return $"\t\tStringTextBox txt{ctr.PropertyName};\n";
-                case ControlType.Date:
-                    str = "\t\tDatePicker";
-                    if (isServerSide)
-                    {
-                        str += "<DateTime";
-                        if (info.PropertyType.IsNullableType())
-                            str += "?";
-                        str += ">";
-                    }
-                    return $"{str} dpk{ctr.PropertyName};\n";
-                case ControlType.Integer:
-                case ControlType.Numeric:
-                    str = $"\t\tNumericTextBox<{info.PropertyType.GetUnderlyingType()}";
-                    if (info.PropertyType.IsNullableType())
-                        str += "?";
-                    return $"{str}> txt{ctr.PropertyName};\n";
-                default:
-                    throw new NotImplementedException("خطای عدم پیاده سازی");
-            }
-        }
-
-        public async Task<string> GetCodebehindAsync(int workflowFormId, int dataModelId)
-        {
-            var str = new StringBuilder();
-            var form = await GetAll().Include(t => t.WorkflowGroup).SingleAsync(workflowFormId);
-            str.Append("/// This code is generated by caspian generator and can not be changed\n\n");
-            str.Append("using System;\n");
-            str.Append($"using {form.WorkflowGroup.SubSystemKind}.Model;\n");
-            str.Append("using Capian.Dynamicform.Component;\n\n");
-            str.Append("namespace Caspian.Dynamic.WorkflowForm\n{\n");
-            str.Append($"\tpublic partial class {form.Name}: BasePage\n\t{{\n");
-            str.Append("\t\t/// Fields of form\n");
-            var fields = await new DataModelFieldService(ServiceProvider).GetAll().Where(t => t.DataModelId == dataModelId)
-                    .Include(t => t.EntityType).ToListAsync();
-            foreach(var field in fields)
-            {
-                string typeName = DataModelFieldService.GetFieldTypeName(field);
-                str.Append($"\t\t{typeName} {field.FieldName};\n");
-            }
-            var rows = await new HtmlRowService(ServiceProvider).GetAll().Where(t => t.WorkflowFormId == workflowFormId)
-                .Include("Columns").Include("Columns.Component").Include("Columns.Component.DynamicParameter")
-                .Include("Columns.Component.DynamicParameter.Options").Include("Columns.Component.DataModelField")
-                .Include("Columns.Component.DataModelField.DataModelOptions")
-                .Include("Columns.InnerRows").Include("Columns.InnerRows.HtmlColumns")
-                .Include("Columns.InnerRows.HtmlColumns.Component")
-                .Include("Columns.InnerRows.HtmlColumns.Component.DataModelField")
-                .Include("Columns.InnerRows.HtmlColumns.Component.DataModelField.DataModelOptions")
-                .Include("Columns.InnerRows.HtmlColumns.Component.DynamicParameter")
-                .Include("Columns.InnerRows.HtmlColumns.Component.DynamicParameter.Options").ToListAsync();
-            var controls = new List<BlazorControl>();
-            foreach (var row in rows)
-                foreach(var col in row.Columns)
-                {
-                    var ctr = col.Component;
-                    if (ctr != null)
-                        controls.Add(ctr);
-                    foreach(var row1 in col.InnerRows)
-                    {
-                        foreach(var col1 in row1.HtmlColumns)
-                        {
-                            var ctr1 = col1.Component;
-                            if (ctr1 != null)
-                                controls.Add(ctr1);
-                        }
-                    }
-                }
-            foreach (var control in controls)
-            {
-                str.Append("\t\t ");
-                var param = control!.DynamicParameter;
-                if (param != null)
-                {
-                    var enTitle = param!.EnTitle;
-                    switch (control.ControlType)
-                    {
-                        case ControlType.Integer:
-                            str.Append($"int? {enTitle};\n");
-                            break;
-                        case ControlType.DropdownList:
-                            str.Append($"{enTitle}? {enTitle};\n");
-                            break;
-                        default:
-                            throw new NotImplementedException("خطای عدم پیاده سازی");
-                    }
-                }
-            }
-            str.Append("\n\t\t/// Controls of form\n");
-            foreach(var row in rows)
-                foreach(var col in row.Columns)
-                {
-                    var ctr = col.Component;
-                    if (ctr != null)
-                        str.Append(GetControlType(form.WorkflowGroup.SubSystemKind, ctr, false));
-                    foreach(var row1 in col.InnerRows)
-                    {
-                        foreach (var col1 in row1.HtmlColumns)
-                        {
-                            var ctr1 = col1.Component;
-                            if (ctr1 != null)
-                                str.Append(GetControlType(form.WorkflowGroup.SubSystemKind, ctr1, false));
-                        }
-                    }
-                }
-            str.Append("\t}\n");
-            foreach(var control in controls)
-            {
-                var param = control.DynamicParameter;
-                if (param != null)
-                {
-                    if (param.ControlType == ControlType.DropdownList)
-                    {
-                        str.Append($"\n\tinternal enum {param.EnTitle}\n\t{{\n");
-                        var index = 1;
-                        foreach (var option in param.Options)
-                        {
-                            str.Append("\t\t/// <summary>\n");
-                            str.Append($"\t\t/// {option.FaTitle}\n");
-                            str.Append("\t\t/// </summary>\n");
-                            str.Append($"\t\t{option.EnTitle} = {index}");
-                            if (index < param.Options.Count)
-                                str.Append(",\n");
-                            str.Append("\n");
-                            index++;
-                        }
-                        str.Append("\t}\n");
-                    }
-                }
-                if (control.DataModelField.FieldType == DataModelFieldType.MultiSelect)
-                {
-                    str.Append($"\n\tinternal enum {control.DataModelField.FieldName}\n\t{{\n");
-                    var index = 1;
-                    foreach (var option in control.DataModelField.DataModelOptions)
-                    {
-                        str.Append("\t\t/// <summary>\n");
-                        str.Append($"\t\t/// {option.Title}\n");
-                        str.Append("\t\t/// </summary>\n");
-                        str.Append($"\t\t{option.Name} = {index}");
-                        if (index < control.DataModelField.DataModelOptions.Count)
-                            str.Append(",\n");
-                        str.Append("\n");
-                        index++;
-                    }
-                    str.Append("\t}\n");
-                }
-            }
-            str.Append("}");
-            return str.ToString();
-        }
-
-        public async Task<string> GetSourceCode(string basePath, int workflowFormId)
-        {
-            var form = await GetAll().Include(t => t.WorkflowGroup).SingleAsync(workflowFormId);
-            if (form.SourceFileName.HasValue())
-            {
-                var path = $"{basePath}\\Data\\Code\\{form.SourceFileName}.cs";
-                var result = await File.ReadAllTextAsync(path);
-                if (result.HasValue())
-                    return await File.ReadAllTextAsync(path);
-            }
-            var str = new StringBuilder();
-            str.Append($"using {form.WorkflowGroup.SubSystemKind}.Model;\n");
-            str.Append("using Capian.Dynamicform.Component;\n\n");
-            str.Append("namespace Caspian.Dynamic.WorkflowForm\n{\n");
-            str.Append($"\tpublic partial class {form.Name}\n\t{{\n");
-            str.Append("\t\tpublic void Initialize()\n\t\t{\n\n");
-            str.Append("\t\t}\n");
-            str.Append("\t}\n}");
-            return str.ToString();
+            var form = await GetAll().Include(t => t.Rows)
+                .Include(t => t.WorkflowGroup).Include("Rows.Columns")
+                .Include(t => t.DataModel).Include(t => t.DataModel.Fields)
+                .Include("Rows.Columns.Component")
+                .Include("Rows.Columns.Component.LookupType")
+                .Include("Rows.Columns.Component.DataModelField.DataModelOptions")
+                .Include("Rows.Columns.Component.DataModelField")
+                .Include("Rows.Columns.Component.DataModelField.EntityType")
+                .Include("Rows.Columns.InnerRows").Include("Rows.Columns.InnerRows.HtmlColumns")
+                .Include("Rows.Columns.InnerRows.HtmlColumns.Component")
+                .Include("Rows.Columns.InnerRows.HtmlColumns.Component.LookupType")
+                .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField")
+                .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField.DataModelOptions")
+                .Include("Rows.Columns.InnerRows.HtmlColumns.Component.DataModelField.EntityType")
+                .SingleAsync(workflowFormId);
+            return form;
         }
     }
 }

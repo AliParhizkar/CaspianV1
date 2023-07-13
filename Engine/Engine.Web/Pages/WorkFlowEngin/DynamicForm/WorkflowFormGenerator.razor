@@ -8,7 +8,7 @@
     <PropertyWindow @ref="propertyWindow" SubSystem="subSystemKind" Id="@Id" FormName="@formName" OnChange="UpdateControlData" Control="selectedControl" />
     <div class="c-form-designer">
         <div class="c-tools-bar">
-            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="info => AddControl(info)" OnDynamicParameterSelect="parameter => AddControl(parameter)" OnFieldSelect="field => AddControl(field)" />
+            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="info => AddControl(info)" OnFieldSelect="field => AddControl(field)" />
             <button @onclick="RemoveSelectedControl" class="w-button w-ctr-delete" title="حذف کنترل"></button>
             <div class="w-seprator"></div>
         <div>
@@ -72,7 +72,7 @@
                                                             if (ctr != null)
                                                             {
                                                                 //ctr.DataModelField = null;
-                                                                <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
+                                                                <BlazorComponentsPage OnSelect="() => SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
                                                             }
                                                         }
                                                     </div>
@@ -83,7 +83,7 @@
                                     else if (col.Component != null)
                                     {
                                         var ctr = col.Component;
-                                        <BlazorComponentsPage OnSelect="async () => await SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
+                                        <BlazorComponentsPage OnSelect="() => SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
                                     }
                                 </div>
                             }

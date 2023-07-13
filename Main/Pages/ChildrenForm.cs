@@ -36,8 +36,9 @@ namespace Caspian.Engine.CodeGenerator
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             builder.OpenComponent<MessageBox>(2);
-            builder.AddComponentReferenceCapture(1, msg => { MessageBox = msg as MessageBox; });
-            builder.CloseComponent(); builder.OpenElement(1, "div");
+            builder.AddComponentReferenceCapture(1, msg => MessageBox = msg as MessageBox);
+            builder.CloseComponent();
+            builder.OpenElement(1, "div");
             builder.AddAttribute(3, "class", "row");
             builder.CloseElement();
             builder.OpenElement(1, "div");
@@ -53,6 +54,7 @@ namespace Caspian.Engine.CodeGenerator
             builder.OpenComponent<ComboBox<EmploymentOrderType, Int32>>(2);
             builder.AddAttribute(3, "Value", employmentOrder.EmploymentOrderTypeId);
             builder.AddAttribute(3, "ValueChanged", EventCallback.Factory.Create<Int32>(this, value => { employmentOrder.EmploymentOrderTypeId = value; }));
+            builder.AddAttribute(3, "OnChange", EventCallback.Factory.Create(this, async () => await EmploymentOrderType_OnChange()));
             builder.AddComponentReferenceCapture(1, cmb =>
             {
                 cmbEmploymentOrderType = cmb as ComboBox<EmploymentOrderType, Int32>;
@@ -146,7 +148,6 @@ namespace Caspian.Engine.CodeGenerator
                 if (!employmentOrder.Descript.HasValue() || await Confirm("آیا با تغییر شرح حکم موافقید؟"))
                     employmentOrder.Descript = old.Description;
             }
-
         }
 
         public void OrganUnit_OnChange()

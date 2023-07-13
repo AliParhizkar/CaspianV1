@@ -6,12 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using Syncfusion.Blazor;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 var builder = WebApplication.CreateBuilder(args);
-//new RazorPageProceccor().Proccess();
-//typeof(Demo.Model.City).GetProperty("Title").PropertyType.GetCustomAttribute<NullableAttribute>
-// Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });//builder.Services.AddSingleton<FormAppState>();
 builder.Services.AddTransient<FileUploadService>();
@@ -25,7 +21,7 @@ Thread.CurrentThread.CurrentCulture = culture;
 Thread.CurrentThread.CurrentUICulture = culture;
 CultureInfo.DefaultThreadCurrentCulture = culture;
 CultureInfo.DefaultThreadCurrentUICulture = culture;
-var date = DateTime.Now.ToShortDateString();
+
 builder.Services.AddSingleton<SingletonMenuService>(t => 
 {
     using var context = new Caspian.Engine.Model.Context();
@@ -35,6 +31,8 @@ builder.Services.AddSingleton<SingletonMenuService>(t =>
         Menus = context.Menus.ToList()
     };
 });
+
+
 
 builder.Services.AddSingleton(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
 builder.Services.AddSingleton<FormAppState>();
@@ -55,6 +53,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthentication();

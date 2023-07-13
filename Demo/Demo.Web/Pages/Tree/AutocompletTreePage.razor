@@ -79,8 +79,8 @@
 
     async Task SetOrganTitle()
     {
-        using var scope = CreateScope();
-        var organ = await new OrganUnitService(scope.ServiceProvider).SingleAsync(value.Value);
+        using var service = CreateScope().GetService<OrganUnitService>();
+        var organ = await service.SingleAsync(value.Value);
         OrganTitle = organ.Title;
     }
 }

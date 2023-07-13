@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.UI
+@inject IJSRuntime jsRuntime
 <div @attributes="Attributes" class="c-picturebox">
     <span class="c-content" @ref="span">
         @(Data == null ? NoContentTitle : "")
@@ -7,9 +8,6 @@
 @code
 {
     ElementReference span;
-
-    [Inject]
-    IJSRuntime jsRuntime { get; set; }
 
     [Parameter]
     public string NoContentTitle { get; set; }

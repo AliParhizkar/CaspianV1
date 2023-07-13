@@ -102,8 +102,7 @@
 
     async Task IncOrdering(ProductCategory category)
     {
-        using var scope = CreateScope();
-        var service = new ProductCategoryService(scope.ServiceProvider);
+        using var service = CreateScope().GetService<ProductCategoryService>();
         await service.IncOrderingAsync(category);
         await service.SaveChangesAsync();
         await CrudGrid.ReloadAsync();
@@ -112,8 +111,7 @@
 
     async Task DecOrdering(ProductCategory category)
     {
-        using var scope = CreateScope();
-        var service = new ProductCategoryService(scope.ServiceProvider);
+        using var service = CreateScope().GetService<ProductCategoryService>();
         await service.DecOrderingAsync(category);
         await service.SaveChangesAsync();
         await CrudGrid.ReloadAsync();

@@ -47,6 +47,7 @@ namespace RoslynPadReplSample
                 typeof(Employment.Service.EmploymentOrderTypeService).Assembly,
                 typeof(Capian.Dynamicform.Component.InputControl).Assembly,
                 typeof(System.Linq.Expressions.BinaryExpression).Assembly,
+                typeof(System.ComponentModel.DataAnnotations.DisplayAttribute).Assembly,
             }));
         }
 

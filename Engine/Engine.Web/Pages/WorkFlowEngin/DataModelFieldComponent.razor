@@ -20,7 +20,7 @@
             <GridColumn Field="t => t.IsDetails" style="text-align:center" Title="بصورت جزئیات" />
             <GridColumn style="width:80px;" Title="گزینه ها">
                 <Template>
-                    <IconButton Disabled="context.Data.FieldType != DataModelFieldType.MultiSelect" Href='@($"/{Subsystem.ToString()}/WorkflowEngine/DataModelOption/{context.Data.Id}")' IconType="IconType.Wpforms"  />
+                    <IconButton Disabled="context.Data.FieldType != DataModelFieldType.MultiOptions" Href='@($"/{Subsystem.ToString()}/WorkflowEngine/DataModelOption/{context.Data.Id}")' IconType="IconType.Wpforms"  />
                 </Template>
             </GridColumn>
             <GridCommandColumns />

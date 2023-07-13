@@ -74,8 +74,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        using var scope = CreateScope();
-        source = await new CountryService(scope.ServiceProvider).GetAll().Select(t => new TreeViewItem()
+        using var service = CreateScope().GetService<CountryService>();
+        source = await service.GetAll().Select(t => new TreeViewItem()
             {
                 Collabsable = true,
                 Text = t.Title,
@@ -93,8 +93,7 @@
 
     async Task UpsertCity()
     {
-        using var scope = CreateScope();
-        var service = new CityService(scope.ServiceProvider);
+        using var service = CreateScope().GetService<CityService>();
         TreeViewItem tempNode = null;
         if (city.Id == 0)
         {
@@ -131,8 +130,8 @@
         {
             ///Edit mode
             var cityId = Convert.ToInt32(nodeView.Value);
-            using var scope = CreateScope();
-            var old = await new CityService(scope.ServiceProvider).SingleAsync(cityId);
+            using var service = CreateScope().GetService<CityService>();
+            var old = await service.SingleAsync(cityId);
             city.Id = cityId;
             city.CountryId = old.CountryId;
             city.Title = old.Title;
@@ -150,8 +149,7 @@
     async Task DeleteCity(TreeViewItem node)
     {
         var cityId = Convert.ToInt32(node.Value);
-        using var scope = CreateScope();
-        var service = new CityService(scope.ServiceProvider);
+        using var service = CreateScope().GetService<CityService>();
         var city = await service.SingleAsync(cityId);
         var result = await service.ValidateRemoveAsync(city);
         if (result.IsValid)

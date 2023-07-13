@@ -58,8 +58,8 @@
     protected override async Task OnInitializedAsync()
     {
         await SearchOnTree();
-        using var scope = CreateScope();
-        var query = new CountryService(scope.ServiceProvider).GetAll();
+        using var service = CreateScope().GetService<CountryService>();
+        var query = service.GetAll();
         selectionSource = await query.Select(t => new TreeViewItem()
         {
             Value = t.Id.ToString(),
@@ -103,8 +103,8 @@
     //-----Search Method ---
     async Task SearchOnTree()
     {
-        using var scope = CreateScope();
-        var query = new CountryService(scope.ServiceProvider).GetAll();
+        using var service = CreateScope().GetService<CountryService>();
+        var query = service.GetAll();
         if (strSearch.HasValue())
             query = query.Where(t => t.Cities.Any(u => u.Title.Contains(strSearch)));
         searchSource = await query.Select(t => new TreeViewItem()

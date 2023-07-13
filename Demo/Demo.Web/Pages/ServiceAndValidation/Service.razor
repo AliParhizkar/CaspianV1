@@ -308,8 +308,7 @@
 
     async Task CheckForeignKeyForUpsert()
     {
-        using var scope = CreateScope();
-        var service = scope.GetService<CityService>();
+        using var service = CreateScope().GetService<CityService>();
         var city = new City()
             {
                 CountryId = upsertCountryId ?? 0,
@@ -325,8 +324,7 @@
             ShowMessage("Please specify country to validate");
         else
         {
-            var scope = CreateScope();
-            var service = new CountryService(scope.ServiceProvider);
+            using var service = CreateScope().GetService<CountryService>();
             var country = await service.SingleAsync(deleteCountryId.Value);
             deleteResult = await service.ValidateRemoveAsync(country);
         }
@@ -335,8 +333,7 @@
 
     async Task CheckEnum()
     {
-        var scope = CreateScope();
-        var service = new EnumOrderService(scope.ServiceProvider);
+        var service = CreateScope().GetService<EnumOrderService>();
         var order = new Order()
         {
             OrderType = orderType,
@@ -346,8 +343,8 @@
 
     async Task CheckCountryTitleUnique()
     {
-        var scope = CreateScope();
-        countryResult = await new CountryService(scope.ServiceProvider).ValidateAsync(new Country()
+        using var service = CreateScope().GetService<CountryService>();
+        countryResult = await service.ValidateAsync(new Country()
         {
             Title = countryTitle,
             ActiveType = ActiveType.Enable
@@ -356,8 +353,8 @@
 
     async Task CheckCityTitleUnique()
     {
-        var scope = CreateScope();
-        cityResult = await new CityService(scope.ServiceProvider).ValidateAsync(new City()
+        using var service = CreateScope().GetService<CityService>();
+        cityResult = await service.ValidateAsync(new City()
         {
             CountryId = countryId.Value,
             Title = cityTitle,

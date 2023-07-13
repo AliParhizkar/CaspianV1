@@ -202,8 +202,8 @@
     {
         if (detail.ProductId > 0)
         {
-            using var scope = CreateScope();
-            var old = await new ProductService(scope.ServiceProvider).SingleAsync(detail.ProductId);
+            using var service = CreateScope().GetService<ProductService>();
+            var old = await service.SingleAsync(detail.ProductId);
             detail.Price = old.Price;
             if (detail.Quantity == 0)
                 detail.Quantity = 1;

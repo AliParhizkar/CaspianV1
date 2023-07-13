@@ -67,8 +67,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        using var scope = CreateScope();
-        var query = new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo);
+        using var service = CreateScope().GetService<MenuCategoryService>();
+        var query = service.GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo);
         /// load menus category and menus together
         loadOnFirstSource = await query.Select(t => new TreeViewItem()
         {
@@ -92,7 +92,7 @@
 
     async Task OnExpanded(TreeViewItem node)
     {
-        using var scope = CreateScope();
+        using var scope = CreateScope().GetService<MenuService>();
         var categoryId = Convert.ToInt32(node.Value);
         node.Items = await new MenuService(scope.ServiceProvider).GetAll()
             .Where(t => t.MenuCategoryId == categoryId).Select(t => new TreeViewItem()

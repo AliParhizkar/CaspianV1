@@ -186,10 +186,9 @@
 
     protected async override Task OnInitializedAsync()
     {
-        using var scope = CreateScope();
-        report = await new ReportService(scope.ServiceProvider).SingleAsync(ReportId.Value);
-        var reportGriup = await new ReportGroupService(scope.ServiceProvider).SingleAsync(report.ReportGroupId);
-        Type = new AssemblyInfo().GetReturnType(reportGriup);
+        using var service = CreateScope().GetService<ReportService>();
+        report = await service.GetAll().Include(t => t.ReportGroup).SingleAsync(ReportId.Value);
+        Type = new AssemblyInfo().GetReturnType(report.ReportGroup);
         await base.OnInitializedAsync();
     }
 

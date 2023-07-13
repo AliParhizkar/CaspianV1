@@ -38,11 +38,10 @@ namespace Caspian.Engine.WorkflowEngine
 
         }
         
-        async Task SelectControl(BlazorControl ctr)
+        void SelectControl(BlazorControl ctr)
         {
             selectedControl = ctr;
-            using var service = CreateScope().GetService<BlazorControlService>();
-            Id = await service.GetId(subSystemKind, ctr);
+            Id = ctr.GetId(subSystemKind);
         }
 
         void ToggleWindowStatus()
@@ -271,15 +270,6 @@ namespace Caspian.Engine.WorkflowEngine
             var innerRow = new InnerRow();
             innerRow.HtmlColumns = new List<HtmlColumn>();
             innerRow.Span = 1;
-            //var parentSpan = rows[selectedRowIndex].Columns[selectedColIndex].Span;
-            //var factor = 12 / columnsCount;
-            //var count = parentSpan / factor;
-            //for (var index = 0; index < count; index++)
-            //{
-            //    var innerCell = new HtmlColumn();
-            //    innerCell.Span = Convert.ToByte(12 / factor);
-            //    innerRow.HtmlColumns.Add(innerCell);
-            //}
             var innerCell = new HtmlColumn();
             innerCell.Span = 12;
             innerRow.HtmlColumns.Add(innerCell);
@@ -321,7 +311,7 @@ namespace Caspian.Engine.WorkflowEngine
                 case DataModelFieldType.Relational:
                     controlType = ControlType.List;
                     break;
-                case DataModelFieldType.MultiSelect:
+                case DataModelFieldType.MultiOptions:
                     controlType = ControlType.DropdownList;
                     break;
                 default:
@@ -333,25 +323,6 @@ namespace Caspian.Engine.WorkflowEngine
                 ControlType = controlType.Value,
                 DataModelFieldId = field.Id,
                 CustomeFieldName = field.FieldName
-            };
-            if (selectedInnerRowIndex >= 0)
-            {
-                if (selectedColIndex >= 0 && selectedInnerColIndex >= 0)
-                    rows[selectedRowIndex].Columns[selectedColIndex].InnerRows[selectedInnerRowIndex].HtmlColumns[selectedInnerColIndex].Component = component;
-            }
-            else if (selectedRowIndex >= 0 && selectedColIndex >= 0)
-                rows[selectedRowIndex].Columns[selectedColIndex].Component = component;
-        }
-
-        void AddControl(DynamicParameter parameter)
-        {
-            var component = new Caspian.Engine.BlazorControl()
-            {
-                Caption = parameter.Title,
-                ControlType = parameter.ControlType.Value,
-                DynamicParameterId = parameter.Id,
-                DataModelFieldId = propertySelector.GetSelectedDataModelFieldId()!.Value,
-                DynamicParameter = parameter
             };
             if (selectedInnerRowIndex >= 0)
             {
@@ -517,16 +488,18 @@ namespace Caspian.Engine.WorkflowEngine
         [JSInvokable]
         public async Task<string> GetCodebehindString()
         {
-            using var scope = CreateScope();
-            return await scope.GetService<WorkflowFormService>().GetCodebehindAsync(WorkflowFormId, dataModelId);
+            using var service = CreateScope().GetService<WorkflowFormService>();
+            var form = await service.GetWorkflowForm(WorkflowFormId);
+            return form.CreateCodebehind();
         }
 
         [JSInvokable]
         public async Task<string> GetSourceCodeString()
         {
-            using var scope = CreateScope();
+            using var service = CreateScope().GetService<WorkflowFormService>();
+            var form = await service.GetAll().Include(t => t.WorkflowGroup).SingleAsync(WorkflowFormId);
             var basePath = Environment.ContentRootPath;
-            return await scope.GetService<WorkflowFormService>().GetSourceCode(basePath, WorkflowFormId);
+            return await form.GetSourceCode(basePath);
         }
 
         [JSInvokable]
@@ -541,7 +514,7 @@ namespace Caspian.Engine.WorkflowEngine
                 var datas = new CodeManager().GetExpressionData(form.Name, code);
                 foreach ( var data in datas )
                 {
-                    var control = await GetControl(data.Id);
+                    var control = GetControl(data.Id);
                     if (control != null)
                     {
                         if (data.PropertyName == "TextExpression")
@@ -562,10 +535,8 @@ namespace Caspian.Engine.WorkflowEngine
             StateHasChanged();
         }
 
-        async Task<BlazorControl> GetControl(string id)
+        BlazorControl GetControl(string id)
         {
-            using var scope = CreateScope();
-            var service = scope.GetService<BlazorControlService>();
             foreach(var row in rows)
             {
                 foreach(var col in row.Columns)
@@ -579,7 +550,7 @@ namespace Caspian.Engine.WorkflowEngine
                             {
                                 if (col1.Component != null)
                                 {
-                                    var name = await service.GetId(subSystemKind, col1.Component);
+                                    var name = col1.Component.GetId(subSystemKind);
                                     if (name == id)
                                         return col1.Component;
                                 }
@@ -588,7 +559,7 @@ namespace Caspian.Engine.WorkflowEngine
                     } 
                     else 
                     {
-                        var name = await service.GetId(subSystemKind, ctr);
+                        var name = ctr.GetId(subSystemKind);
                         if (name == id)
                             return ctr;
                     }

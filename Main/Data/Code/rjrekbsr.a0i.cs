@@ -22,7 +22,6 @@ namespace Caspian.Dynamic.WorkflowForm
                 if (!employmentOrder.Descript.HasValue() || await Confirm("آیا با تغییر شرح حکم موافقید؟"))
                     employmentOrder.Descript = old.Description;
 			}
-		
 		}
 
 	 	public void OrganUnit_OnChange()
