@@ -60,10 +60,10 @@
                                 <span>@title</span>
                             </div>
                         </div>
-                        <div @ref="pageElement" class="c-content-main">
-                            <CascadingValue Value="pageElement" Name="PageElement">
+                        <div class="c-content-main">
+                            <CaspianExceptionComponent SystemKind="systemKind" @ref="exceptionComponent" UserId="userId">
                                 @ChildContent
-                            </CascadingValue>
+                            </CaspianExceptionComponent>
                         </div>
                     }
                     else
@@ -87,6 +87,7 @@
 </AuthorizeView>
 @code
 {
+    CaspianExceptionComponent exceptionComponent;
     bool hideMenu;
     string date;
     string userName;
@@ -97,7 +98,7 @@
     int menuId;
     bool userHasAccess;
     bool userIsAuthenticated;
-    ElementReference pageElement;
+    SubSystemKind systemKind;
 
     [CascadingParameter]
     public Task<AuthenticationState> authenticationStateTask { get; set; }
@@ -112,7 +113,14 @@
         date = DateTime.Now.Date.ToPersianDateString();
         time = DateTime.Now.TimeOfDay.ShortString();
         var uri = new Uri(navigationManager.Uri);
-        var url = "";
+        var url = uri.AbsolutePath;
+        if (url.StartsWith("/"))
+            url = url.Substring(1);
+        var strSubsystem = url.Split('/')[0];
+        var field = typeof(SubSystemKind).GetFields().Single(t => t.Name.Equals(strSubsystem, 
+            StringComparison.OrdinalIgnoreCase));
+        systemKind = (SubSystemKind)field.GetValue(null);
+        url = "";
         foreach (var segment in uri.Segments)
         {
             if (!Int64.TryParse(segment, out _))
@@ -128,6 +136,7 @@
             menuId = menu.Id;
             title = menu.Title;
         }
+        exceptionComponent?.Recover();
         base.OnParametersSet();
     }
 

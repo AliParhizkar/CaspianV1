@@ -63,5 +63,7 @@
       <HintPath>..\..\..\..\.nuget\packages\system.linq.dynamic.core\1.2.18\lib\net6.0\System.Linq.Dynamic.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
-
+	<ItemGroup>
+		<Content Include="Help\**" CopyToPublishDirectory="PreserveNewest" />
+	</ItemGroup>
 </Project>

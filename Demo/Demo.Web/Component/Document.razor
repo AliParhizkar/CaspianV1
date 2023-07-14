@@ -14,7 +14,7 @@
             FileName += ".htm";
         var path = host.ContentRootPath;
         if (host.IsDevelopment())
-            path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Help\\";
+            path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
         else
             path += "\\Help\\";
         if (FolderName.HasValue())

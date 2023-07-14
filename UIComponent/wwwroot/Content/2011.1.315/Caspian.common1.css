@@ -1,4 +1,78 @@
-﻿@keyframes navigateltr {
+﻿.c-error-develop .c-message {
+    font-size: 18px;
+    color: #7e1d1d;
+    border: 1px solid #7e1d1d;
+    padding: 3px 8px;
+    background-color: #fdffc0;
+    line-height: 45px
+}
+.c-file-detail {
+    background-color: #d6ffd6;
+    margin-top: 5px;
+    border: 1px solid #2E7D32;
+    
+}
+    .c-file-detail label{
+        font-size:14px;
+        font-weight:bold;
+        color:saddlebrown;
+    }
+    .c-file-detail span {
+        user-select: all;
+    }
+.c-error-develop .c-copy-clipboard {
+    user-select: none;
+    cursor: pointer;
+    color: blue;
+    font-size: 14px;
+}
+.c-error-develop .c-content {
+    margin-top: 5px;
+    border: 1px solid #2c3870;
+    padding: 5px;
+    background-color: #89b6ff08;
+    line-height: 35px;
+    text-align: justify;
+    padding: 3px 8px;
+}
+.c-error-status {
+    width: 300px;
+    height: 60px;
+    margin: 0 auto;
+}
+    .c-error-status .c-error-container {
+        background-color: #b32121;
+        padding: 7px 12px;
+    }
+    .c-error-handling {
+        border: 1px solid #b32121;
+        height: 40px;
+        background-color: #f0f9000f;
+        padding: 6px 10px;
+        display:flex;
+    }
+
+         .c-error-status .c-title {
+            color: white;
+        }
+    .c-error-status .fa{
+        color:yellow;
+        font-size:30px;
+        vertical-align:middle
+    }
+.c-error-handling > div {
+    display: inline-block;
+    width: 50%;
+    color: #0366d6;
+}
+.c-error-handling span{
+    cursor:pointer;
+}
+.c-error-details {
+    text-align: end;
+}
+
+@keyframes navigateltr {
     from {
         left: -242px
     }
@@ -1191,6 +1265,7 @@ span, label, td, th {
     height: 24px;
     display: inline-block;
     vertical-align: middle;
+    font-size:14px;
 }
 .t-radios .t-radio {
     white-space: nowrap;

@@ -1,0 +1,212 @@
+﻿@using System.Diagnostics;
+@using System.Xml.Linq;
+@namespace Caspian.Engine.Shared
+@inject IServiceScopeFactory factory 
+@inherits ErrorBoundary
+@inject IHostEnvironment host
+
+@{
+    base.BuildRenderTree(__builder);
+}
+@if (CurrentException != null)
+{
+    if (isDevelopment || showDetail)
+    {
+        <div class="c-error-develop">
+            <div class="c-message">
+                @errorMessage
+            </div>
+            <div class="c-file-detail row p-2">
+                <div class="col-md-1">
+                    <label>File name: </label>
+                </div>
+                <div class="col-md-4">
+                    <span>@fileName</span>
+                </div>
+                <div class="col-md-2">
+                    <label>Line number</label>
+                </div>
+                <div class="col-md-2">
+                    <span>@fileLineNumber</span>
+                </div>
+                <div class="col-md-3 ">
+                    <span @onclick="Recover" class="c-copy-clipboard">Recover</span>
+                </div>
+            </div>
+            <div class="c-content">
+                @((MarkupString)stackTraceMessage.Replace("at ", "<br>at "))
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="c-error-status">
+            <div class="c-error-container">
+                <span class="fa fa-exclamation-triangle"></span>
+                @if (saveErrorMessage.HasValue())
+                {
+                    <span class="c-title">@saveErrorMessage</span>
+                }
+                else
+                {
+                    <span class="c-title">An error has occurred</span>
+                }
+            </div>
+            <div class="c-error-handling">
+                <div class="c-error-recovery">
+                    <span @onclick="Recover">Recover</span>
+                </div>
+                <div class="c-error-details">
+                    @if (UserId == 1)
+                    {
+                        <span @onclick="ShowDetails">More details</span>
+                    }
+                    else
+                    {
+
+                        <span onclick="$.caspian.showMessage('In Implementation')">Take ticket</span>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@code 
+{
+    string fileName;
+    int fileLineNumber;
+    string errorMessage;
+    string stackTraceMessage;
+    bool isDevelopment;
+    bool showDetail;
+    string saveErrorMessage;
+
+    protected override void OnInitialized()
+    {
+        isDevelopment = host.IsDevelopment();
+
+        base.OnInitialized();
+    }
+
+    public new void Recover()
+    {
+        showDetail = false;
+        saveErrorMessage = null;
+        base.Recover();
+    }
+
+    void ShowDetails()
+    {
+        showDetail = true;
+    }
+
+    protected override async Task OnErrorAsync(Exception exception)
+    {
+        saveErrorMessage = null;
+        while(exception.InnerException != null)
+            exception = exception.InnerException;
+        try
+        {
+            errorMessage = exception.Message;
+            stackTraceMessage = exception.StackTrace;
+            if (isDevelopment)
+            {
+                var frame = GetFrame(exception);
+                fileName = Path.GetFileName(frame.GetFileName());
+                fileLineNumber = frame.GetFileLineNumber();
+            }
+            else
+                await SaveError(exception);
+        }
+        catch (Exception ex)
+        {
+            while (ex.InnerException != null)
+                ex = ex.InnerException;
+            saveErrorMessage = ex.Message;
+            StateHasChanged();
+        }
+        await base.OnErrorAsync(exception);
+    }
+
+    StackFrame GetFrame(Exception exception)
+    {
+        var st = new StackTrace(exception, true);
+        return st.GetFrames().FirstOrDefault(t => t.HasSource());
+    }
+
+    async Task SaveError(Exception exception)
+    {
+        var ex = exception;
+        while (ex.InnerException != null)
+            ex = ex.InnerException;
+        var frame = GetFrame(ex);
+        fileName = Path.GetFileName(frame.GetFileName());
+        fileLineNumber = frame.GetFileLineNumber();
+        using var scope = factory.CreateScope();
+        var service = scope.GetService<ExceptionDataService>();
+        var detailService = scope.GetService<ExceptionDetailService>();
+        var old = await service.GetAll().SingleOrDefaultAsync(t => t.SourceCodeFileName == fileName &&
+            t.LineNumber == fileLineNumber);
+        if (old == null)
+        {
+
+            old = new ExceptionData()
+            {
+                LineNumber = (short)fileLineNumber,
+                ErrorFileName = Path.GetRandomFileName(),
+                RepetitionTimes = 1,
+                SubSystemKind = SystemKind,
+                SourceCodeFileName = fileName,
+                Version = "1.1.1.1"
+            };
+            var transaction = await service.Context.Database.BeginTransactionAsync();
+            await service.AddAsync(old);
+            await service.SaveChangesAsync();
+            if (UserId.HasValue)
+            {
+                var detail = new ExceptionDetail()
+                    {
+                        ExceptionDataId = old.Id,
+                        UserId = UserId.Value
+                    };
+                await detailService.AddAsync(detail);
+                await service.SaveChangesAsync();
+            }
+            await transaction.CommitAsync();
+        }
+        else
+        {
+            old.RepetitionTimes = Convert.ToInt16(old.RepetitionTimes + 1);
+            if (UserId.HasValue)
+            {
+                var detail = new ExceptionDetail()
+                    {
+                        ExceptionDataId = old.Id,
+                        UserId = UserId.Value
+                    };
+                await detailService.AddAsync(detail);
+            }
+            await service.SaveChangesAsync();
+        }
+        var path = host.ContentRootPath + "\\Errors\\" + old.ErrorFileName + ".xml";
+        if (!File.Exists(path))
+        {
+            ex = exception;
+            var doc = new XElement("Errors");
+            while (ex != null)
+            {
+                var xElement = new XElement("Error").AddElement("Message", exception.Message).AddElement("StackTrace", exception.StackTrace);
+                doc.AddElement(xElement);
+                ex = ex.InnerException;
+            }
+            doc.Save(path);
+        }
+    }
+
+    [Parameter]
+    public SubSystemKind SystemKind { get; set; }
+
+    [Parameter]
+    public int? UserId { get; set; }
+}

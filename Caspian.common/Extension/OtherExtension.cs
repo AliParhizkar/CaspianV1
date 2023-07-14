@@ -1,55 +1,10 @@
-﻿using System;
-using System.Reflection;
-using System.Linq.Expressions;
-using Microsoft.Extensions.DependencyInjection;
-using Caspian.Common.Service;
-using Microsoft.VisualBasic;
+﻿using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("UIComponent")]
 namespace Caspian.Common.Extension
 {
     public static class OtherExtension
     {
-        public static void RegisterCommonServices(this IServiceCollection services)
-        {
-            var types = Assembly.GetExecutingAssembly().GetTypes(); 
-            foreach(var type in types)
-            {
-                if (type.IsClass && type.BaseType.IsGenericType && type.Name != "CaspianValidator`1")
-                {
-                    var type1 = type.BaseType.GetGenericArguments()[0];
-                    if (type.BaseType == typeof(BaseService<>).MakeGenericType(type1))
-                    {
-                        services.AddTransient(type);
-                        services.AddTransient(typeof(IBaseService<>).MakeGenericType(type1), type);
-                    }
-                }
-            }
-        }
-
-        static void CopySimpleProperty1(object obj, object newObj)
-        {
-            foreach(var info in obj.GetType().GetProperties())
-            {
-                var type = info.PropertyType;
-                if (type.IsValueType || type == typeof(string))
-                    info.SetValue(newObj, info.GetValue(obj));
-                else if (type.IsEnumerableType())
-                {
-                    var items = info.GetValue(obj) as IEnumerable<object>;
-                    if (items != null)
-                    {
-                        var genericType = typeof(List<>).MakeGenericType(type.GetGenericArguments()[0]);
-                        var list = Activator.CreateInstance(genericType) as System.Collections.IList;
-                        foreach (var item in items)
-                        {
-                            var newItem = Activator.CreateInstance(item.GetType());
-                            CopySimpleProperty1(item, newItem);
-                            list.Add(newItem);
-                        }
-                    }
-                }
-            }
-        }
 
         public static TEntity CreateNewEntity<TEntity>(this TEntity entity)
             where TEntity : class

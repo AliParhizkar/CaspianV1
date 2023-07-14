@@ -1,5 +1,4 @@
 ﻿using Caspian.Common;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,19 +12,20 @@ namespace Caspian.Engine.Model
 
         public SubSystemKind SubSystemKind { get; set; }
 
-        public string FileName { get; set; }
+        public string SourceCodeFileName { get; set; }
 
-        public string ClassName { get; set; }
-
-        public string MethodName { get; set; }
-
-        public string LineNumber { get; set; }
+        public short LineNumber { get; set; }
 
         public short RepetitionTimes { get; set; }
 
         public string Version { get; set; }
 
+        public string ErrorFileName { get; set; }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime RegisterDate { get; set; }
+
+        [CheckOnDelete(false)]
+        public virtual IList<ExceptionDetail> Details { get; set; }
     }
 }

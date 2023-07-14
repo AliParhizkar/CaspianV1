@@ -15,8 +15,9 @@ namespace Caspian.Engine.Model
         [ForeignKey(nameof(ExceptionDataId))]
         public virtual ExceptionData ExceptionData { get; set; }
 
+        public int UserId { get; set; }
 
-
+        [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]

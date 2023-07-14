@@ -34,5 +34,8 @@ namespace Caspian.Engine.Model
 
         [CheckOnDelete("کاربر دارای دستیابی می باشد و امکان حذف وی وجود ندارد")]
         public virtual ICollection<MenuAccessibility> Accessibilities { get; set; }
+
+        [CheckOnDelete("برای کاربر خطا ثبت شده و امکان حذف وی وجود ندارد")]
+        public virtual ICollection<ExceptionDetail> ExceptionDetails { get; set; }
     }
 }
