@@ -122,7 +122,7 @@
                         <span class="c-demo-description">In this example, we use the <b>DownloadFile method</b> for downloading. This method has <b>two parameters</b> the first parameter is the <b>name of the file after downloading</b>, and the second is the <b>content of the file (byte array or memory stream)</b>.</span>
                     </div>
                     <div class="col-md-6 text-center">
-                        <button class="c-btn c-outline-success" @onclick="async () => await DownloadFile()">Download</button>
+                        <button class="c-btn c-outline-success" @onclick="DownloadFile">Download</button>
                     </div>
                 </div>
             </div>
@@ -138,7 +138,7 @@
         <hr />
         <div style="display:flex;padding:5px 0">
             <div style="width:33.3%;text-align:center">
-                <button class="c-btn c-primary" @onclick="() => { status2 = WindowStatus.Open; }">Window 2</button>
+                <button class="c-btn c-primary" @onclick="() =>  status2 = WindowStatus.Open">Window 2</button>
             </div>
             <div style="width:33.3%;text-align:center">
                 <button class="c-btn c-info" @onclick='async () => await Alert("Alert on window1")'>Alert</button>
@@ -153,7 +153,7 @@
                 <hr />
                 <div style="display:flex;padding:5px 0">
                     <div style="width:33.3%;text-align:center">
-                        <button class="c-btn c-primary" @onclick="() => { status3 = WindowStatus.Open; }">Window 3</button>
+                        <button class="c-btn c-primary" @onclick="() => status3 = WindowStatus.Open">Window 3</button>
                     </div>
                     <div style="width:33.3%;text-align:center">
                         <button class="c-btn c-info" @onclick='async () => await Alert("Alert on window2")'>Alert</button>

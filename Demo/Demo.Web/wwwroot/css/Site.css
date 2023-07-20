@@ -1,4 +1,6 @@
-﻿
+﻿.d-container {
+    background-color:white;
+}
 
 .d-window-header {
     display: flex;
@@ -62,8 +64,9 @@
 .c-demo-description {
     font-size: 14px;
     color: #2c2c2c;
-    text-align:justify;
-    display:inline-block;
+    text-align: justify;
+    display: inline-block;
+    user-select: auto;
 }
 .c-demo-control {
     padding: 10px 3rem;
@@ -247,7 +250,7 @@
 
 .d-membership {
     text-align: center;
-    color: #974898;
+    color: #4f9995;
     font-weight: bold;
     font-size: 25px;
 }
@@ -279,21 +282,25 @@
 .d-document{
     background-color:white;
     padding:8px;
+    min-height:350px;
 }
-p:not(.d-document p) {
-    font-size: 1rem;
-    text-indent: 2em;
-    line-height: 1.75;
-    font-family: 'Segoe UI';
-    padding: 1.75rem;
-    border-radius: 0.25rem;
-    border: 0.0625rem solid #E0E3E7;
-    box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.13), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.11);
-    box-sizing: border-box;
-    background-clip: padding-box;
-    background-color: #FFFFFF;
-    text-align:justify;
-}
+    .d-document span{
+        user-select: auto;
+    }
+    p:not(.d-document p) {
+        font-size: 1rem;
+        text-indent: 2em;
+        line-height: 1.75;
+        font-family: 'Segoe UI';
+        padding: 1.75rem;
+        border-radius: 0.25rem;
+        border: 0.0625rem solid #E0E3E7;
+        box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.13), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.11);
+        box-sizing: border-box;
+        background-clip: padding-box;
+        background-color: #FFFFFF;
+        text-align: justify;
+    }
 
 .d-content {
     padding: 1.75rem;

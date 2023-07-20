@@ -98,11 +98,11 @@
                     <div class="row align-content-center h-100">
                         <CaspianForm @ref="UpsertForm" Model="UpsertData">
                             <div class="d-btn-container">
-                                <IconButton type="button" @onclick="async () => await base.DeleteAsync()"
-                                            IconType="IconType.AngleLeft" />
                                 <div>
                                     <IconButton IconType="IconType.AngleRight" />
                                 </div>
+                                <IconButton type="button" @onclick="async () => await base.DeleteAsync()"
+                                            IconType="IconType.AngleLeft" />
                             </div>
                         </CaspianForm>
                     </div>

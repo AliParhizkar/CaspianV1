@@ -11,13 +11,13 @@ namespace Caspian.Engine.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        [CheckOnDelete("نقش دارای عضو می باشد و امکان حذف آن وجود ندارد.")]
+        [CheckOnDelete("The role has members and it is not possible to delete it")]
         public virtual ICollection<UserMembership> Memberships { get; set; }
 
-        [CheckOnDelete("برای نقش دستابی به منو تعریف شده است و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("The role has menus and it is not possible to delete it")]
         public virtual ICollection<MenuAccessibility> MenuAccessibilities { get; set; }
     }
 }

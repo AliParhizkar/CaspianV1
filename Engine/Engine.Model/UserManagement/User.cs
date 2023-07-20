@@ -11,31 +11,31 @@ namespace Caspian.Engine.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("نام کاربری")]
+        [DisplayName("Username")]
         public string UserName { get; set; }
 
-        [DisplayName("نام")]
+        [DisplayName("First name")]
         public string FName { get; set; }
 
-        [DisplayName("نام خانوادگی")]
+        [DisplayName("Last name")]
         public string LName { get; set; }
 
-        [DisplayName("کلمه عبور")]
+        [DisplayName("Password")]
         public string Password { get; set; }
 
-        [DisplayName("پست الکترونیکی")]
+        [DisplayName("Email")]
         public string Email { get; set; }
 
-        [DisplayName("شماره همراه")]
+        [DisplayName("Mobile number")]
         public string MobileNumber { get; set; }
 
-        [CheckOnDelete("کاربر دارای عضویت می باشد و امکان حذف وی وجود ندارد")]
+        [CheckOnDelete("The user is member of role and can not be removed")]
         public virtual ICollection<UserMembership> Memberships { get; set; }
 
-        [CheckOnDelete("کاربر دارای دستیابی می باشد و امکان حذف وی وجود ندارد")]
+        [CheckOnDelete("Th user has access to menus and can not be removed")]
         public virtual ICollection<MenuAccessibility> Accessibilities { get; set; }
 
-        [CheckOnDelete("برای کاربر خطا ثبت شده و امکان حذف وی وجود ندارد")]
+        [CheckOnDelete("The user has some errors and can not be remoed")]
         public virtual ICollection<ExceptionDetail> ExceptionDetails { get; set; }
     }
 }

@@ -2,8 +2,9 @@
 @inherits SimplePage<Menu>
 @inject SingletonMenuService service
 
-<div class="row c-controls p-3">
-    <div class="col-md-2 ps-4">
+
+<div class="row c-controls">
+    <div class="col-md-2">
         <label>Main menu</label>
     </div>
     <div class="col-md-4 pe-4">
@@ -16,16 +17,25 @@
     <div class="col-md-4 pe-4">
         <StringTextBox @bind-Value="SearchData.Title" />
     </div>
-    <div class="col-md-4 text-center">
-        <CheckBox @bind-Value="OnlyUntitledMenus" Title="Only untitled menus" OnChange="() => CrudGrid.EnableLoading()" />
+    <div class="col-md-2">
+        <label>Only untitled menus</label>
     </div>
-    <div class="col-md-4 text-center">
-        <CheckBox @bind-Value="ShowInMenu" Title="Show in menu" OnChange="() => CrudGrid.EnableLoading()" />
+    <div class="col-md-2">
+        <CheckBox @bind-Value="OnlyUntitledMenus" OnChange="() => CrudGrid.EnableLoading()" />
     </div>
-    <div class="col-md-4 text-center">
-        <CheckBox @bind-Value="InvalidAddress" Title="Invalid address" OnChange="() => CrudGrid.EnableLoading()" />
+    <div class="col-md-2">
+        <label>Show in menu</label>
     </div>
-    <div class="col-md-2 ps-4">
+    <div class="col-md-2">
+        <CheckBox @bind-Value="ShowInMenu" OnChange="() => CrudGrid.EnableLoading()" />
+    </div>
+    <div class="col-md-2">
+        <label>Invalid address</label>
+    </div>
+    <div class="col-md-2">
+        <CheckBox @bind-Value="InvalidAddress" OnChange="() => CrudGrid.EnableLoading()" />
+    </div>
+    <div class="col-md-2">
         <label>Source</label>
     </div>
     <div class="col-md-4 pe-4">

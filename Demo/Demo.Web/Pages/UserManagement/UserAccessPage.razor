@@ -1,6 +1,19 @@
 ﻿@page "/Demo/UserManagement/UserAccess/{UserId:int}"
+<p>
 
-<UserAccessComponent MasterId="UserId"SubSystem="SubSystemKind.Demo" />
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="p-3">
+                <UserAccessComponent MasterId="UserId" SubSystem="SubSystemKind.Demo" />
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="UserManagement" FileName="UserAccess" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
 @code 
 {

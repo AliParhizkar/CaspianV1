@@ -10,39 +10,21 @@ namespace Caspian.Engine.Model
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// کد منو
-        /// </summary>
-        [DisplayName("منو")]
+        [DisplayName("Menu")]
         public int MenuId { get; set; }
 
-        /// <summary>
-        /// مشخصات منو
-        /// </summary>
         [ForeignKey(nameof(MenuId))]
         public virtual Menu Menu { get; set; }
 
-        /// <summary>
-        /// کد کاربر
-        /// </summary>
-        [DisplayName("کاربر")]
+        [DisplayName("User")]
         public int? UserId { get; set; }
 
-        /// <summary>
-        /// مشخصات کاربر
-        /// </summary>
         [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; }
 
-        /// <summary>
-        /// کد نقش
-        /// </summary>
-        [DisplayName("نقش")]
+        [DisplayName("Role")]
         public int? RoleId { get; set; }
 
-        /// <summary>
-        /// مشخصات نقش
-        /// </summary>
         [ForeignKey(nameof(RoleId))]
         public virtual Role Role { get; set; }
     }

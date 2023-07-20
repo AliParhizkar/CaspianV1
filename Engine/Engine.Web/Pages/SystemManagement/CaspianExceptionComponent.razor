@@ -75,7 +75,7 @@
 @code 
 {
     string fileName;
-    int fileLineNumber;
+    short? fileLineNumber;
     string errorMessage;
     string stackTraceMessage;
     bool isDevelopment;
@@ -113,8 +113,11 @@
             if (isDevelopment)
             {
                 var frame = GetFrame(exception);
-                fileName = Path.GetFileName(frame.GetFileName());
-                fileLineNumber = frame.GetFileLineNumber();
+                if (frame != null)
+                {
+                    fileName = Path.GetFileName(frame.GetFileName());
+                    fileLineNumber = (short)frame.GetFileLineNumber();
+                }
             }
             else
                 await SaveError(exception);
@@ -141,19 +144,22 @@
         while (ex.InnerException != null)
             ex = ex.InnerException;
         var frame = GetFrame(ex);
-        fileName = Path.GetFileName(frame.GetFileName());
-        fileLineNumber = frame.GetFileLineNumber();
         using var scope = factory.CreateScope();
         var service = scope.GetService<ExceptionDataService>();
         var detailService = scope.GetService<ExceptionDetailService>();
-        var old = await service.GetAll().SingleOrDefaultAsync(t => t.SourceCodeFileName == fileName &&
-            t.LineNumber == fileLineNumber);
+        ExceptionData old = null;
+        if (frame != null)
+        {
+            fileName = Path.GetFileName(frame.GetFileName());
+            fileLineNumber = (short)frame.GetFileLineNumber();
+            old = await service.GetAll().SingleOrDefaultAsync(t => t.SourceCodeFileName == fileName && 
+                t.LineNumber == fileLineNumber);
+        }
         if (old == null)
         {
-
             old = new ExceptionData()
             {
-                LineNumber = (short)fileLineNumber,
+                LineNumber = fileLineNumber,
                 ErrorFileName = Path.GetRandomFileName(),
                 RepetitionTimes = 1,
                 SubSystemKind = SystemKind,

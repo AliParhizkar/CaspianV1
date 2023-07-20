@@ -1,6 +1,18 @@
 ﻿@page "/Demo/UserManagement/UserMembership/{RoleId:int}"
-
-<UserMembershipComponent MasterId="RoleId"  />
+<p>
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="p-3">
+                <UserMembershipComponent MasterId="RoleId" />
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="UserManagement" FileName="UserMembership" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
 @code 
 {

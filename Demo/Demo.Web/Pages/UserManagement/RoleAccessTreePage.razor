@@ -1,6 +1,19 @@
 ﻿@page "/Demo/UserManagement/RoleAccessTree/{RoleId:int}"
+<p>
 
-<RoleAccessTreeComponent SubSystem="SubSystemKind.Demo" RoleId="RoleId" />
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="p-3">
+                <RoleAccessTreeComponent SubSystem="SubSystemKind.Demo" RoleId="RoleId" />
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="UserManagement" FileName="RoleAccessTree" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
 @code 
 {

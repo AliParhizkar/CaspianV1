@@ -133,7 +133,7 @@
                                     <EditTemplate>
                                         @if (con.Data?.Material?.SubunitId != null)
                                         {
-                                            <NumericTextBox @ref="txtSubunit" @onkeyup="async e =>  await SubUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantitySub" />
+                                            <NumericTextBox @ref="txtSubunit" Total="5" @onkeyup="async e =>  await SubUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantitySub" />
                                         }
                                     </EditTemplate>
                                 </GridColumn>

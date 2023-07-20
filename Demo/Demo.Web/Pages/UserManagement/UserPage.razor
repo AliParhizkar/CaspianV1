@@ -1,5 +1,20 @@
 ﻿@page "/Demo/UserManagement/User"
-<UserComponent SubSystemKind="SubSystemKind.Demo" />
+<p>
+
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="p-3">
+                <UserComponent SubSystemKind="SubSystemKind.Demo" />
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="UserManagement" FileName="User" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
 @code 
 {
 

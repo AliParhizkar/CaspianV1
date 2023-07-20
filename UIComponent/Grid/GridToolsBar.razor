@@ -1,12 +1,15 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity
+@if (!HideInsertIcon)
+{
+    <div class="t-toolbar t-grid-toolbar t-grid-top">
+        @if (!HideInsertIcon)
+        {
+                <span @onclick="OpenAddForm" class="t-grid-add" href="javascript:void(0)">
+                    <span class="t-icon fa fa-plus"></span>
+                </span>
+        }
+    </div>
+}
 
-<div class="t-toolbar t-grid-toolbar t-grid-top">
-    @if (!HideInsertIcon)
-    {
-        <span @onclick="OpenAddForm" class="t-grid-add" href="javascript:void(0)">
-            <span class="t-icon fa fa-plus"></span>
-        </span>
-    }
-</div>
 

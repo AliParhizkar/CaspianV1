@@ -14,7 +14,7 @@ namespace Caspian.Engine.Model
 
         public string SourceCodeFileName { get; set; }
 
-        public short LineNumber { get; set; }
+        public short? LineNumber { get; set; }
 
         public short RepetitionTimes { get; set; }
 

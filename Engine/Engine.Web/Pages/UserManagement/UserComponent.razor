@@ -3,120 +3,98 @@
 @{
     base.BuildRenderTree(__builder);
 }
-
-<div style="width:90%;margin:0 auto">
-    <table style="width:100%">
-        <tr>
-            <td>
-                <label>نام خانوادگی</label>
-            </td>
-            <td>
-                <StringTextBox @bind-Value="SearchData.LName" />
-            </td>
-            <td>
-                <label>نام کاربری</label>
-            </td>
-            <td>
-                <StringTextBox @bind-Value="SearchData.UserName" />
-            </td>
-        </tr>
-    </table>
-    <DataGrid @ref="CrudGrid" TEntity="User" TableHeight="400" >
-        <Columns>
-            <GridColumn Field="t => t.FName" />
-            <GridColumn Field="t => t.LName" />
-            <GridColumn Field="t => t.UserName" />
-            <GridColumn Field="t => t.Email" />
-            <GridColumn Field="t => t.MobileNumber" />
-            <GridColumn Title="منوها" style="width:80px">
-                <Template>
-                    <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccess/{context.Data.Id}")' IconType="IconType.Wpforms" />
-                </Template>
-            </GridColumn>
-            <GridColumn Title="منوها-درخت" style="width:80px">
-                <Template>
-                    <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccessTree/{context.Data.Id}")' IconType="IconType.Wpforms" />
-                </Template>
-            </GridColumn>
-            <GridCommandColumns />
-        </Columns>
-    </DataGrid>
-    <Window @ref="UpsertWindow" Title="مشخصات کاربر" Style="width:500px">
-        <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="SetPasswordForUpdate" OnValidSubmit="CheckConfirmPassword">
-                <CaspianValidationValidator ValidatorType="typeof(UserService)" />
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td>
-                            <label>نام</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.FName" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>نام خانوادگی</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.LName" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>نام کاربری</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.UserName" Style="direction:ltr" Disabled="UpsertData.Id > 0" />
-                        </td>
-                    </tr>
-                    @if (UpsertData.Id == 0)
-                    {
-                        <tr>
-                            <td>
-                                <label>کلمه عبور</label>
-                            </td>
-                            <td>
-                                <StringTextBox @bind-Value="UpsertData.Password" type="password" Style="direction:ltr" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>تکرار کلمه عبور</label>
-                            </td>
-                            <td>
-                                <StringTextBox @bind-Value="confirmPassword" type="password" Style="direction:ltr" />
-                            </td>
-                        </tr>
-                    }
-                    <tr>
-                        <td>
-                            <label>پست الکترونیکی</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.Email" Style="direction:ltr"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>شماره همراه</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="UpsertData.MobileNumber" Style="direction:ltr"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <FormCommandButton />
-                        </td>
-                    </tr>
-                </table>
-
-            </CaspianForm>
-        </Content>
-    </Window>
+<div class="row c-controls">
+    <div class="col-md-2">
+        <label>Last name</label>
+    </div>
+    <div class="col-md-4 pe-3">
+        <StringTextBox @bind-Value="SearchData.LName" />
+    </div>
+    <div class="col-md-2 ps-3">
+        <label>Username</label>
+    </div>
+    <div class="col-md-4">
+        <StringTextBox @bind-Value="SearchData.UserName" />
+    </div>
 </div>
+<DataGrid @ref="CrudGrid" TEntity="User" TableHeight="400">
+    <Columns>
+        <GridColumn Field="t => t.FName" />
+        <GridColumn Field="t => t.LName" />
+        <GridColumn Field="t => t.UserName" />
+        <GridColumn Field="t => t.Email" />
+        <GridColumn Field="t => t.MobileNumber" />
+        <GridColumn Title="Menus" style="width:80px">
+            <Template>
+                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccess/{context.Data.Id}")' IconType="IconType.Wpforms" />
+            </Template>
+        </GridColumn>
+        <GridColumn Title="Menus-Tree" style="width:90px">
+            <Template>
+                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccessTree/{context.Data.Id}")' IconType="IconType.Wpforms" />
+            </Template>
+        </GridColumn>
+        <GridCommandColumns />
+    </Columns>
+</DataGrid>
+<Window @ref="UpsertWindow" Title="User properties" Style="width:500px">
+    <Content>
+        <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="SetPasswordForUpdate" OnValidSubmit="CheckConfirmPassword">
+            <div class="row c-controls ps-3 pe-3">
+                <div class="col-md-4">
+                    <label>First name</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.FName" />
+                </div>
+                <div class="col-md-4">
+                    <label>Last name</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.LName" />
+                </div>
+                <div class="col-md-4">
+                    <label>User name</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.UserName" Disabled="UpsertData.Id > 0" />
+                </div>
+                @if (UpsertData.Id == 0)
+                {
+                    <div class="col-md-4">
+                        <label>Password</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="UpsertData.Password" type="password" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Confirm password</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="confirmPassword" type="password" />
+                    </div>
+                }
+                <div class="col-md-4">
+                    <label>Email</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.Email" type="password" />
+                </div>
+                <div class="col-md-4">
+                    <label>Mobile number</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="UpsertData.MobileNumber" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8 text">
+                    <FormCommandButton />
+                </div>
+            </div>
+        </CaspianForm>
+    </Content>
+</Window>
+
 
 @code
 {
@@ -145,7 +123,7 @@
     {
         if (confirmPassword != UpsertData.Password)
         {
-            ShowMessage("کلمه ی عبور و تکرار آن یکسان نیستند");
+            ShowMessage("Password and Confirm password is not equal");
             StateHasChanged();
             return Task.FromResult(false);
         }

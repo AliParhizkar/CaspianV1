@@ -1,9 +1,11 @@
 ﻿@namespace Caspian.Engine.Shared
 @using Caspian.Engine.Web
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 @using Microsoft.Data.SqlClient
 @inherits BasePage
 @inject AuthenticationStateProvider stateProvider
 @inject NavigationManager navigationManager
+@inject ProtectedSessionStorage Storege
 <div class="c-login">
     <span class="c-icon"></span>
     <div class="c-form">
@@ -40,6 +42,7 @@
                 message = "Username or password is invalid.";
             else
             {
+                await Storege.DeleteAsync("CurentShowUrl");
                 await ((CustomAuthenticationStateProvider)stateProvider).Login(user.Id.ToString());
                 var url = new Uri(navigationManager.Uri).LocalPath;
                 if (url.StartsWith("/login", StringComparison.OrdinalIgnoreCase))

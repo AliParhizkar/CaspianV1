@@ -175,6 +175,9 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
+                            <div class="col-md-12">
+                                <Timepicker @bind-Value="time" FromTime="fromTime" ToTime="toTime" />
+                            </div>
                             <div class="col-md-4">
                                 <label>From time</label>
                             </div>
@@ -186,9 +189,6 @@
                             </div>
                             <div class="col-md-8">
                                 <Timepicker @bind-Value="toTime" />
-                            </div>
-                            <div class="col-md-12">
-                                <Timepicker @bind-Value="time" FromTime="fromTime" ToTime="toTime" />
                             </div>
                         </div>
                     </div>

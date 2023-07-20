@@ -164,6 +164,9 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
+                            <div class="col-md-12">
+                                <DatePicker @bind-Value="rangeDate" FromDate="fromDate" ToDate="toDate" />
+                            </div>
                             <div class="col-md-4">
                                 <label>From Date</label>
                             </div>
@@ -175,9 +178,6 @@
                             </div>
                             <div class="col-md-8">
                                 <DatePicker @bind-Value="toDate" />
-                            </div>
-                            <div class="col-md-12">
-                                <DatePicker @bind-Value="rangeDate" FromDate="fromDate" ToDate="toDate" />
                             </div>
                         </div>
                     </div>

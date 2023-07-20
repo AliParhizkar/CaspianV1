@@ -82,7 +82,7 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>DropdownList</s
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> @</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple'>bind-Value</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>orderType</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>orderType</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot; /&gt;</span></p>
 
 <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
@@ -137,7 +137,9 @@ none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>    
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@(</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>orderType.ConvertToInt()<span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>orderType.</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#843C0C'>ConvertToInt</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()<span
 style='background:yellow'>)</span></span><span style='font-size:9.5pt;
 font-family:"Cascadia Mono";color:blue'>&lt;/</span><span style='font-size:
 9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
@@ -189,7 +191,9 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@(</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>orderType.EnumText()<span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>orderType.</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#843C0C'>EnumText</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()<span
 style='background:yellow'>)</span></span><span style='font-size:9.5pt;
 font-family:"Cascadia Mono";color:blue'>&lt;/</span><span style='font-size:
 9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
@@ -242,7 +246,9 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@(</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>orderType.ToString()<span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>orderType.</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#843C0C'>ToString</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()<span
 style='background:yellow'>)</span></span><span style='font-size:9.5pt;
 font-family:"Cascadia Mono";color:blue'>&lt;/</span><span style='font-size:
 9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
@@ -326,7 +332,7 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> <span
 style='background:yellow'>@</span></span><span style='font-size:9.5pt;
 font-family:"Cascadia Mono";color:purple'>bind-Value</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>nullableOrderType</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>nullableOrderType</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot; /&gt;</span></p>
 
 <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
@@ -382,8 +388,10 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><sp
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@(</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>nullableOrderType.HasValue
-? nullableOrderType.Value.ConvertToInt() : </span><span style='font-size:9.5pt;
-font-family:"Cascadia Mono";color:#A31515'>&quot;---&quot;</span><span
+? nullableOrderType.Value.</span><b><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:#843C0C'>ConvertToInt</span></b><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:black'>() : </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;---&quot;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>)</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
@@ -436,8 +444,10 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><sp
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@(</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>nullableOrderType.HasValue
-? nullableOrderType.Value.EnumText() : </span><span style='font-size:9.5pt;
-font-family:"Cascadia Mono";color:#A31515'>&quot;---&quot;</span><span
+? nullableOrderType.Value.</span><b><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:#843C0C'>EnumText</span></b><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:black'>() : </span><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;---&quot;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>)</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
@@ -481,8 +491,8 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;pe-5
-col-md-6 text-center&quot;&gt;</span></p>
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;pe-5 col-md-6
+text-center&quot;&gt;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>      
@@ -491,8 +501,10 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><sp
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@(</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>nullableOrderType.HasValue
-? nullableOrderType.Value.ToString() : </span><span style='font-size:9.5pt;
-font-family:"Cascadia Mono";color:#A31515'>&quot;---&quot;</span><span
+? nullableOrderType.Value.</span><b><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:#843C0C'>ToString</span></b><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:black'>() : </span><span style='font-size:
+9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;---&quot;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>)</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
@@ -580,7 +592,7 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> <span
 style='background:yellow'>@</span></span><span style='font-size:9.5pt;
 font-family:"Cascadia Mono";color:purple'>bind-Value</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>otherType</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>otherType</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&quot;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:purple;background:
@@ -633,8 +645,8 @@ none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>    
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>div</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:red'>class</span><span
-style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;pe-5
-col-md-6 text-center&quot;&gt;</span></p>
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>=&quot;pe-5 col-md-6
+text-center&quot;&gt;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>      
@@ -697,13 +709,17 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><sp
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow'>@(</span><span
 style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>otherType.HasValue
-? otherTypeItems.GetText(otherType.Value.ToString()<span style='background:
-yellow'>)</span> : </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
-color:#A31515'>&quot;---&quot;</span><span style='font-size:9.5pt;font-family:
-"Cascadia Mono";color:black'>)</span><span style='font-size:9.5pt;font-family:
-"Cascadia Mono";color:blue'>&lt;/</span><span style='font-size:9.5pt;
-font-family:"Cascadia Mono";color:maroon'>label</span><span style='font-size:
-9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
+? otherTypeItems.</span><b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#843C0C'>GetText</span></b><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:black'>(otherType.Value.</span><b><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:#843C0C'>ToString</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()<span
+style='background:yellow'>)</span> : </span><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:#A31515'>&quot;---&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>)</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&lt;/</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:maroon'>label</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>&gt;</span></p>
 
 <p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
 margin-left:19.85pt;text-indent:19.85pt;line-height:normal;text-autospace:none'><span
@@ -723,6 +739,56 @@ style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;background:yellow
 <p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
 white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black;
 background:yellow'>{</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>protected</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>override</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>void</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'> </span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#843C0C'>OnInitialized</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>()</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
+none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+   {</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       
+otherTypeItems = </span><span style='font-size:9.5pt;font-family:"Cascadia Mono";
+color:#2B91AF'>SelectListItem</span><span style='font-size:9.5pt;font-family:
+"Cascadia Mono";color:black'>.</span><b><span style='font-size:9.5pt;
+font-family:"Cascadia Mono";color:#843C0C'>CreateList</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>(</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;One&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>, </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;Two&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>, </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;Three&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>, </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;Four&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>, </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;Five&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>, </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;Six&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>, </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#A31515'>&quot;seven&quot;</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>);</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:19.85pt;line-height:normal;text-autospace:none'><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>        </span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:blue'>base</span><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>.</span><b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:#843C0C'>OnInitialized</span></b><span
+style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>();</span></p>
+
+<p class=MsoNormal style='margin-left:19.85pt;line-height:normal;background:
+white'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>   
+}</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal;text-autospace:
 none'><span style='font-size:9.5pt;font-family:"Cascadia Mono";color:black'>       

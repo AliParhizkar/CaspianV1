@@ -1,4 +1,17 @@
-﻿.c-error-develop .c-message {
+﻿.c-data-containner {
+    margin-bottom: 8px;
+    border: 1px solid darkgray;
+    border-radius: 8px;
+    padding: 10px;
+}
+    .c-data-containner span {
+        color: #4f9995;
+        font-size: 16px;
+    }
+.blazor-error-boundary span {
+    user-select: auto;
+}
+.c-error-develop .c-message {
     font-size: 18px;
     color: #7e1d1d;
     border: 1px solid #7e1d1d;
@@ -54,6 +67,7 @@
 
          .c-error-status .c-title {
             color: white;
+            user-select:auto;
         }
     .c-error-status .fa{
         color:yellow;
@@ -1573,9 +1587,9 @@ ul {
     border: 4px solid #63c7c7;
     border-radius: 20px;
     position: relative;
-    top: 8px;
+    top: 3px;
     cursor: pointer;
-    left: 20px;
+    left: calc(100% - 50px);
     background-color:white;
 }
 a.t-grid-add :visited {
@@ -2398,7 +2412,7 @@ div.t-grid-footer {
     color: #656565;
     background-color: #f6f6f6;
     height: 36px;
-    overflow: visible;
+    overflow: hidden;
 }
 .t-grid-pager .t-numeric a:hover {
     background-color: rgba(255,99,88,0.08);
@@ -2485,10 +2499,6 @@ div.t-grid-footer {
     font-size: 12px;
     color: #ff6358;
     padding-top: 2px;
-}
-
-.t-grid .t-pager {
-    width: calc(100% - 120px);
 }
 
 .t-grid .t-status-text {

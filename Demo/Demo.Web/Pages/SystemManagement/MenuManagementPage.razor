@@ -1,6 +1,18 @@
 ﻿@page "/Demo/SystemManagement/MenuManagement"
 
-<MenuManagementComponent Subsystem="SubSystemKind.Demo"/>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="p-3">
+                <MenuManagementComponent Subsystem="SubSystemKind.Demo" />
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="SystemManagement" FileName="MenuManagement" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
 
 @code
 {

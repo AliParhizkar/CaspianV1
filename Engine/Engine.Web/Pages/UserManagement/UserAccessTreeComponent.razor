@@ -1,27 +1,32 @@
-﻿
-@namespace Caspian.Engine.UserManagement
-
+﻿@namespace Caspian.Engine.UserManagement
 @inherits BasePage
+
 @if (user != null)
 {
-    <div style="display:flex;margin:8px;border:1px solid darkgray;border-radius:8px;padding:10px;">
-        <div style="flex-grow:2">
-            <label>نام</label>
+    <div class="c-data-containner row c-controls">
+        <div class="col-md-1">
+            <label>First name</label>
+        </div>
+        <div class="col-md-2">
             <span>@user.FName</span>
         </div>
-        <div style="flex-grow:2">
-            <label>نام خانوادگی</label>
+        <div class="col-md-1">
+            <label>Last name</label>
+        </div>
+        <div class="col-md-2">
             <span>@user.LName</span>
         </div>
-        <div style="flex-grow:2">
-            <label>نام کاربری</label>
+        <div class="col-md-1">
+            <label>Username</label>
+        </div>
+        <div class="col-md-2">
             <span>@user.UserName</span>
         </div>
-        <div style="width:100px;">
-            <button @onclick="async () => await SaveData()" class="c-btn c-primary">ثبت همه</button>
+        <div class="col-md-3 text-center">
+            <button @onclick="SaveData" class="c-btn c-primary">Save All</button>
         </div>
     </div>
-    <TreeView @ref="tree" TEntity="TreeViewItem" exp OnChange="Change" style="height:calc(100vh - 103px);margin-right:5px;" Source="source" />
+    <TreeView @ref="tree" TEntity="TreeViewItem" OnChange="Change" style="height:calc(100vh - 105px);margin-right:5px;" Source="source" />
 }
 @code
 {
@@ -48,7 +53,7 @@
         var query = service.GetAll().Where(t => menusShouldRemoved.Contains(t.MenuId) && t.UserId == AccessUserId);
         service.RemoveRange(query);
         await service.SaveChangesAsync();
-        ShowMessage("ثبت با موفقیت انجام شد");
+        ShowMessage("Registration was done successfully");
     }
 
     void Change(TreeViewItem item)

@@ -167,7 +167,7 @@
             let isValid = false, total = this.total, digits = this.digits, selection = $(element).getSelection();
             let code = e.keyCode;
             let value = $(element).val();
-
+            console.log(total);
             if (code == 46 && digits) {
                 let remain = value.length - selection.end;
                 if (remain <= digits && value.indexOf('.') == -1)

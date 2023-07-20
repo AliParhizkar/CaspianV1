@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using Caspian.Common;
+﻿using Caspian.Common;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Caspian.Engine.Web
@@ -7,17 +7,17 @@ namespace Caspian.Engine.Web
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         string UserId;
-        string time;
+        DateTime? dateTime;
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             ClaimsPrincipal user = null;
+            if (UserId.HasValue() && (DateTime.Now - dateTime.Value).TotalMinutes > 20)
+                UserId = null;
             if (UserId.HasValue())
             {
-                time = DateTime.Now.ToLongTimeString();
                 var identity = new ClaimsIdentity(new[]
                 {
                     new Claim("UserId", UserId ?? ""),
-                    new Claim("DateTime", time),
                 }, "Authentication type");
                 user = new ClaimsPrincipal(identity);
             }
@@ -30,6 +30,7 @@ namespace Caspian.Engine.Web
         public Task<AuthenticationState> Login(string userId)
         {
             UserId = userId;
+            dateTime = DateTime.Now;
             var task = this.GetAuthenticationStateAsync();
             this.NotifyAuthenticationStateChanged(task);
             return task;
