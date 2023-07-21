@@ -46,6 +46,6 @@ namespace Demo.Model
         public virtual ProductCategory ProductCategory { get; set; }
 
         [CheckOnDelete("This product is ordered and cannot be removed")]
-        public virtual IList<OrderDeatil> OrderDeatils { get; set; }
+        public virtual ICollection<OrderDeatil> OrderDeatils { get; set; }
     }
 }

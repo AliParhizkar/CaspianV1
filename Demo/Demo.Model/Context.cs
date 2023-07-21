@@ -33,5 +33,15 @@ namespace Demo.Model
         public DbSet<ReceiptDetail> ReceiptDetails { get; set; }
 
         public DbSet<OrganUnit> OrganUnits { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .HasMany(t => t.OrderDeatils)
+                .WithOne(t => t.Product)
+                .HasForeignKey(t => t.ProductId)
+                .HasPrincipalKey(t => t.Id);
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
