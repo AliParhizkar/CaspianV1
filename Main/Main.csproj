@@ -5,12 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
   </PropertyGroup>
-	<ItemGroup>
-    <Compile Remove="Data\Code\**" />
-    <Content Remove="Data\Code\**" />
-    <EmbeddedResource Remove="Data\Code\**" />
-    <None Remove="Data\Code\**" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Syncfusion.Blazor.Diagram" Version="21.1.35" />
   </ItemGroup>
@@ -64,5 +58,11 @@
   </ItemGroup>
 	<ItemGroup>
 		<Content Include="Help\**" CopyToPublishDirectory="PreserveNewest" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="Data\**" />
+	  <Content Remove="Data\**" />
+	  <EmbeddedResource Remove="Data\**" />
+	  <None Remove="Data\**" />
 	</ItemGroup>
 </Project>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Syncfusion.Blazor;
 using System.Globalization;
 using Main;
+using Caspian.common.JsonValue;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
@@ -54,6 +55,13 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+var context = new Demo.Model.Context();
+var date = DateTime.Now;
+var q = context.JsonTests.Where(t => (DateTime)(object)JsonExtensions.JsonValue(t.JsonValue, "$.Date") < date).Select(t => new
+{
+    Date = Convert.ToDateTime(JsonExtensions.JsonValue(t.JsonValue, "$.Date")),
+}).ToList();
+
 app.CreateFileAndFolder();
 app.UseHttpsRedirection();
 app.UseStaticFiles();

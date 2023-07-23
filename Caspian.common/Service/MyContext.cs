@@ -1,16 +1,12 @@
-﻿using Caspian.Common.RowNumber;
+﻿using Caspian.common.JsonValue;
+using Caspian.Common.RowNumber;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace Caspian.Common
 {
     public class MyContext : DbContext
     {
-        //public MyContext(DbContextOptions<MyContext> options = null)
-        //{
-        //
-        //}
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //string projectPath = AppDomain.CurrentDomain.BaseDirectory.Split(new String[] { @"bin\" }, StringSplitOptions.None)[0];
@@ -21,6 +17,13 @@ namespace Caspian.Common
             }).EnableSensitiveDataLogging();
             optionsBuilder.UseLazyLoadingProxies(false);
             base.OnConfiguring(optionsBuilder);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasDbFunction(typeof(JsonExtensions).GetMethod(nameof(JsonExtensions.JsonValue)))
+               .HasTranslation(e => new SqlFunctionExpression("JSON_VALUE", e, true, new[] { true, false }, typeof(String), null));
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
