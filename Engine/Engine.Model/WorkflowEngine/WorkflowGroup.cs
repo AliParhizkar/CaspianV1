@@ -8,11 +8,6 @@ namespace Caspian.Engine
     [Table("WorkflowGroups", Schema = "cmn")]
     public class WorkflowGroup
     {
-        public WorkflowGroup()
-        {
-
-        }
-
         [Key]
         public int Id { get; set; }
 
@@ -23,7 +18,7 @@ namespace Caspian.Engine
         public SubSystemKind SubSystemKind { get; set; }
 
         [DisplayName("توضیحات")]
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         [CheckOnDelete("گروه دارای مدل داده ای می باشد و امکان حذف آن وجود ندارد")]
         public virtual IList<DataModel> DataModels { get; set; }

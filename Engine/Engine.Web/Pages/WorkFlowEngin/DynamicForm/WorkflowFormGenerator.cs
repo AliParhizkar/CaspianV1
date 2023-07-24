@@ -333,7 +333,7 @@ namespace Caspian.Engine.WorkflowEngine
                 rows[selectedRowIndex].Columns[selectedColIndex].Component = component;
         }
 
-        void AddControl(PropertyInfo info)
+        async Task AddControl(PropertyInfo info)
         {
             var att = info.GetCustomAttribute<DisplayNameAttribute>();
             var component = new Caspian.Engine.BlazorControl()
@@ -343,6 +343,8 @@ namespace Caspian.Engine.WorkflowEngine
                 PropertyName = info.Name,
                 DataModelFieldId = propertySelector.GetSelectedDataModelFieldId().Value
             };
+            using var service = CreateScope().GetService<DataModelFieldService>();
+            component.DataModelField = await service.SingleAsync(component.DataModelFieldId);
             if (selectedInnerRowIndex >= 0)
             {
                 if (selectedColIndex >= 0 && selectedInnerColIndex >= 0)

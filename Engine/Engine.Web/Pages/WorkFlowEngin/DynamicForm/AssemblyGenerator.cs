@@ -17,11 +17,7 @@ namespace Caspian.Engine.WorkflowEngine
             form = await service.GetWorkflowForm(WorkflowFormId);
             try
             {
-                var userCode = await form.GetSourceFile(Environment.ContentRootPath);
-                userCode += form.CreateEnumesCode();
-
-                var strSource = form.WorkflowGroup.GetCode(form, userCode);
-                DynamicType = form.WorkflowGroup.CreateAssembly(form.Name, strSource);
+                DynamicType = await form.GetFormType(Environment.ContentRootPath);
                 errorMessage = null;
             }
             catch (CaspianException ex)

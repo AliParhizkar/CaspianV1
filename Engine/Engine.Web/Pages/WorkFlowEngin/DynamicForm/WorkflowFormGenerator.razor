@@ -8,7 +8,7 @@
     <PropertyWindow @ref="propertyWindow" SubSystem="subSystemKind" Id="@Id" FormName="@formName" OnChange="UpdateControlData" Control="selectedControl" />
     <div class="c-form-designer">
         <div class="c-tools-bar">
-            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="info => AddControl(info)" OnFieldSelect="field => AddControl(field)" />
+            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="async info => await AddControl(info)" OnFieldSelect="field => AddControl(field)" />
             <button @onclick="RemoveSelectedControl" class="w-button w-ctr-delete" title="حذف کنترل"></button>
             <div class="w-seprator"></div>
         <div>

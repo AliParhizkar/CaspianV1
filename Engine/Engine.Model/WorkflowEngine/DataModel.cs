@@ -31,5 +31,8 @@ namespace Caspian.Engine
 
         [CheckOnDelete("نوع داده ای دارای فیلد می باشد و امکان حذف آن وجود ندارد")]
         public virtual IList<DataModelField> Fields { get; set; }
+
+        [CheckOnDelete("مدل داده ای دارای فرم می باشد و امکان حذف آن وجود ندارد")]
+        public virtual IList<WorkflowForm> WorkflowForms { get;set; }
     }
 }

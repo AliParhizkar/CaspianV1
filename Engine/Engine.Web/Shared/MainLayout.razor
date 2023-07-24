@@ -1,25 +1,43 @@
 ﻿@inherits LayoutComponentBase
 @namespace Caspian.Engine.Shared
 @inject NavigationManager navigationManager
-<CascadingValue Value="this">
-    @if (showMenu)
-    {
-        <div class="sidebar">
-            <DataMenu />
+
+<AuthorizeView>
+    <Authorized>
+        <div class="main">
+            <div class="content">
+                <CaspianExceptionComponent SystemKind="SubSystemKind.Engine" UserId="userId">
+                    @Body
+                </CaspianExceptionComponent>
+            </div>
         </div>
-    }
-    <div class="main">
-        <div class="content">
-            @Body
-        </div>
-    </div>
-</CascadingValue>
-@code{
-    bool showMenu;
-    protected override void OnInitialized()
+    </Authorized>
+    <NotAuthorized>
+        <Caspian.Engine.Shared.LoginComponent />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+@code
+{
+    int userId;
+
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
     {
-        var url = new Uri(navigationManager.Uri).LocalPath;
-        showMenu = !url.StartsWith("/Engine/", StringComparison.OrdinalIgnoreCase);
-        base.OnInitialized();
+        if (authenticationStateTask != null)
+        {
+            var result = await authenticationStateTask;
+            if (result.User.Identity?.IsAuthenticated == true)
+            {
+                var claim = result.User.Claims.FirstOrDefault()?.Value;
+                if (claim.HasValue())
+                    userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+            }
+        }
+        await base.OnParametersSetAsync();
     }
 }

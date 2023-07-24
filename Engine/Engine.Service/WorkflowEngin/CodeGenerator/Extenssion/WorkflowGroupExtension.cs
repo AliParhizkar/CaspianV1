@@ -38,6 +38,14 @@ namespace Caspian.Engine.Service
             return str.ToString();
         }
 
+        public static async Task<Type> GetFormType (this WorkflowForm form, string rootPath)
+        {
+            var userCode = await form.GetSourceFile(rootPath);
+            userCode += form.CreateEnumesCode();
+            var strSource = form.WorkflowGroup.GetCode(form, userCode);
+            return form.WorkflowGroup.CreateAssembly(form.Name, strSource);
+        }
+
         public static Type CreateAssembly(this WorkflowGroup group, string formName, string codeToCompile)
         {
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(codeToCompile);

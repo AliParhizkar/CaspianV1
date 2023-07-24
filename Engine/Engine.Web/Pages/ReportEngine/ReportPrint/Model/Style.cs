@@ -256,10 +256,11 @@ namespace ReportUiModels
             var str = element.Value;
             var array = str.Split(',');
             var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
-            Left = Convert.ToDecimal(array[0].Replace('.', decimalDigits));
-            Top = Convert.ToDecimal(array[1].Replace('.', decimalDigits));
-            Width = Convert.ToDecimal(array[2].Replace('.', decimalDigits));
-            Height = Convert.ToDecimal(array[3].Replace('.', decimalDigits));
+            var oldDecimalDigits = decimalDigits == '.' ? '/' : '.';
+            Left = Convert.ToDecimal(array[0].Replace(oldDecimalDigits, decimalDigits));
+            Top = Convert.ToDecimal(array[1].Replace(oldDecimalDigits, decimalDigits));
+            Width = Convert.ToDecimal(array[2].Replace(oldDecimalDigits, decimalDigits));
+            Height = Convert.ToDecimal(array[3].Replace(oldDecimalDigits, decimalDigits));
         }
 
         public Position()

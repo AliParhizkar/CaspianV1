@@ -24,9 +24,9 @@ namespace Caspian.Engine
 
         public byte ColumnCount { get; set; }
 
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
-        public string? SourceFileName { get; set; }
+        public string SourceFileName { get; set; }
 
         /// <summary>
         /// Rows of form
