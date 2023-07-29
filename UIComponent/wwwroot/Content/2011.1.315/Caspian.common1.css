@@ -1589,7 +1589,6 @@ ul {
     position: relative;
     top: 3px;
     cursor: pointer;
-    left: calc(100% - 50px);
     background-color:white;
 }
 a.t-grid-add :visited {
@@ -2423,7 +2422,6 @@ div.t-grid-footer {
     height: 27px;
     position: relative;
     top: 2px;
-    left: 2px;
     border-radius: 18px;
     z-index: 10;
     background-color: #63c7c7;

@@ -39,7 +39,7 @@
     async Task SaveOnclick()
     {
         using var scope = CreateScope();
-        var service = new ActivityService(scope.ServiceProvider);
+        var service = scope.GetService<ActivityService>();
         var oldIds = await service.GetActivities(WorkflowId).Select(t => t.Id).ToListAsync();
         var transaction = await service.Context.Database.BeginTransactionAsync();
         foreach(var node in nodes)
@@ -74,7 +74,7 @@
             await service.RemoveAsync(old);
             await service.SaveChangesAsync();
         }
-        var connectorService = new ConnectorService(scope.ServiceProvider);
+        var connectorService = scope.GetService<ConnectorService>();
         oldIds = await connectorService.GetConnectors(WorkflowId).Select(t => t.Id).ToListAsync();
         foreach(var connector in connectors)
         {

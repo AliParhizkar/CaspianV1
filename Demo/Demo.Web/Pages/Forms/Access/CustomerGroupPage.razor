@@ -38,6 +38,30 @@
                                 </Columns>
                             </DataGrid>
                         </div>
+                        <Window Title="Customer Group" Style="width:400px">
+                            <Content>
+                                <CaspianForm Model="upsertGroup">
+                                    <div class="row c-controls ps-3 pe-3">
+                                        <div class="col-md-3">
+                                            <label>Title</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <StringTextBox @bind-Value="upsertGroup.Title" />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Status</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <DropdownList @bind-Value="upsertGroup.ActiveType" />
+                                        </div>
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-9">
+                                            <FormCommandButton />
+                                        </div>
+                                    </div>
+                                </CaspianForm>
+                            </Content>
+                        </Window>
                     </CrudComponent>
                 </div>
             </div>
@@ -47,30 +71,7 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
- <Window Title="Customer Group" Style="width:400px">
-        <Content>
-            <CaspianForm Model="upsertGroup">
-                <div class="row c-controls ps-3 pe-3">
-                    <div class="col-md-3"> 
-                        <label>Title</label>
-                    </div>
-                    <div class="col-md-9">
-                        <StringTextBox @bind-Value="upsertGroup.Title" />
-                    </div>
-                    <div class="col-md-3">
-                        <label>Status</label>
-                    </div>
-                    <div class="col-md-9">
-                        <DropdownList @bind-Value="upsertGroup.ActiveType" />
-                    </div>
-                    <div class="col-md-3"></div>
-                    <div class="col-md-9">
-                        <FormCommandButton />
-                    </div>
-                </div>
-            </CaspianForm>
-        </Content>
-    </Window>
+
 @code 
 {
     CustomerGroup upsertGroup = new CustomerGroup();

@@ -14,7 +14,7 @@
             <StringTextBox @bind-Value="nodeConnector.Title" OnChange="ConnectorUpdated" />
         }
     </div>
-    <div class="pt-2">
+    <div>
         <label class="pe-3">شرح</label>
         @if (nodeConnector == null)
         {
@@ -27,21 +27,27 @@
     </div>
     @if (activity.ActivityType == ActivityType.Task)
     {
-        <div class="pt-2">
+        <div>
             <label class="pe-3">نوع فعالیت</label>
             <DropdownList @bind-Value="activity.TaskType" OnChange="ActivityUpdated" />
+        </div>
+        <div>
+            <label class="pe-3">فرم</label>
+            <ComboBox TValue="int?"  TEntity="WorkflowForm" @bind-Value="activity.WorkflowFormId" 
+                TextExpression="t => t.Title" ConditionExpression="t => t.DataModel.WorkflowForms.Any()" 
+                OnChange="ActivityUpdated" />
         </div>
     }
     @if (activity.ActivityType == ActivityType.Gateway)
     {
-        <div class="pt-2">
+        <div>
             <label class="pe-3">نوع درگاه</label>
             <DropdownList @bind-Value="activity.GatewayType" OnChange="ActivityUpdated" />
         </div>
     }
     @if (activity.ActivityType == ActivityType.Event)
     {
-        <div class="pt-2">
+        <div>
             <label class="pe-3">محرک</label>
             <DropdownList @bind-Value="activity.EventTriggerType" OnChange="ActivityUpdated" />
         </div>
@@ -81,6 +87,7 @@
         var date = Node.Data as NodeData;
         date.Title = activity.Title;
         date.Description = activity.Description;
+        date.WorkflowFormId = activity.WorkflowFormId;
         if (activity.ActivityType == ActivityType.Task)
             (Node.Shape as BpmnActivity).TaskType = activity.TaskType.ConvertToBpmnTask();
         if (activity.ActivityType == ActivityType.Gateway)

@@ -4,6 +4,20 @@
     border-left: 1px solid #cdcdcd;
 }
 
+.t-rtl .t-grid-add {
+    left: calc(-100% + 50px);
+}
+
+    .t-rtl .t-grid-add .t-icon{
+        left:-2px;
+    }
+
+    .t-ltr .t-grid-add {
+        left: calc(100% - 50px);
+    }
+.t-ltr .t-grid-add .t-icon {
+    left: 2px;
+}
 .t-ltr .t-tabstrip.t-vertical .t-header {
     border-right: 1px solid #cdcdcd;
 }

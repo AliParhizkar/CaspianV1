@@ -79,7 +79,8 @@ namespace Engine.Web.Services
                 Data = new NodeData()
                 {
                     Title = activity.Title,
-                    Description = activity.Description
+                    Description = activity.Description,
+                    WorkflowFormId = activity.WorkflowFormId,
                 },
                 Ports = new DiagramObjectCollection<PointPort>
                 {
@@ -161,6 +162,7 @@ namespace Engine.Web.Services
                 Left = node.OffsetX,
                 Top = node.OffsetY,
                 Title = data.Title,
+                WorkflowFormId = data.WorkflowFormId,
                 Description = data.Description
             };
             return activity;

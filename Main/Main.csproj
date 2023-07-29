@@ -65,4 +65,7 @@
 	  <EmbeddedResource Remove="Data\**" />
 	  <None Remove="Data\**" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Errors\" />
+	</ItemGroup>
 </Project>

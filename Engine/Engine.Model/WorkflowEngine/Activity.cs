@@ -28,6 +28,11 @@ namespace Caspian.Engine
 
         public string SourceCodeFileName { get; set; }
 
+        public int? WorkflowFormId { get; set; }
+
+        [ForeignKey(nameof(WorkflowFormId))]
+        public virtual WorkflowForm WorkflowForm { get; set; }
+
         public double Left { get; set; }
 
         public double Top { get; set; }
@@ -48,10 +53,10 @@ namespace Caspian.Engine
         [ForeignKey(nameof(WorkflowId))]
         public virtual Workflow Workflow { get; set; }
 
-        [InverseProperty(nameof(Activity))]
+        [InverseProperty(nameof(NodeConnector.Activity))]
         public virtual IList<NodeConnector> OutConnectors { get; set; }
 
-        [InverseProperty("ToActivity")]
+        [InverseProperty(nameof(NodeConnector.ToActivity))]
         public virtual IList<NodeConnector> InConnectors { get; set; }
     }
 }

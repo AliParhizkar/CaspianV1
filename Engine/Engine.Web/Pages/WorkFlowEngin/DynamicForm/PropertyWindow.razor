@@ -17,17 +17,17 @@
             <label class="pe-3">Id</label>
             <StringTextBox readonly Style="direction:ltr;font-weight:bold;font-style:oblique" Value="@Id" />
         </div>
-        <div class="pt-2">
+        <div class="pt-1">
             <label class="pe-3">عنوان</label>
-            <StringTextBox @bind-Value="@(Control.Caption)" @onblur="async () => await StateChanged()" />
+            <StringTextBox @bind-Value="@(Control.Caption)" @onblur="StateChanged" />
         </div>
-        <div class="pt-2">
+        <div class="pt-1">
             <label class="pe-3">شرح</label>
-            <StringTextBox @bind-Value="Control.Description" Rows="4" MultiLine OnChange="async () => await StateChanged()" />
+            <StringTextBox @bind-Value="Control.Description" Rows="4" MultiLine OnChange="StateChanged" />
         </div>
         @if (Control.ControlType == ControlType.List)
         {
-            <div class="pt-2">
+            <div class="pt-1">
                 <label class="pe-3">Text Expression</label>
                 <StringTextBox Style="direction:ltr" @onclick="TextExpressionSelected" readonly @bind-Value="Control.TextExpression" />
             </div>
@@ -50,32 +50,23 @@
         }
         else if (Control.ControlType == ControlType.String)
         {
-            <div class="pt-2">
+            <div class="pt-1">
                 <label class="pe-3">Multiline</label>
-                <CheckBox Value="Control.MultiLine" ValueChanged="EventCallback.Factory.Create<bool>(this, async value =>
-                                {
-                                    Control.MultiLine = value;
-                                    if (!value)
-                                        Control.Height = 1;
-                                    await StateChanged();
-                                })" />
+                <CheckBox @bind-Value="Control.MultiLine" OnChange="ToggleMultiLine" />
             </div>
         }
         @if (Control.MultiLine)
         {
             Control.Height = Control.Height ?? 1;
-            <div class="pt-2">
+            <div class="pt-1">
                 <label class="pe-3">Height</label>
-                <DropdownList Value="Control.Height.Value" ValueChanged="EventCallback.Factory.Create<byte?>(this, async value =>
-                                {
-                                    Control.Height = value;
-                                    await StateChanged();
-                                })" Source="source" />
+                <DropdownList @bind-Value="Control.Height" OnChange="StateChanged" Source="source" />
             </div>
         }
-        <div class="pt-2">
+        <div class="pt-1">
             <label class="pe-3">Onchange</label>
-            <StringTextBox Style="direction:ltr" @bind-Value="Control.OnChange" @onclick="AddEventHandler" OnChange="async () => await StateChanged()" />
+            <StringTextBox @bind-Value="Control.OnChange" @onclick="AddEventHandler" 
+                Style="direction:ltr" OnChange="StateChanged" />
         </div>
     </EditForm>
 </div>
@@ -86,6 +77,18 @@
     string propertyName;
     string eventName;
     IList<SelectListItem> source;
+
+    async Task SetMultLine()
+    {
+        
+    }
+
+    async Task ToggleMultiLine()
+    {
+        if (!Control.MultiLine)
+            Control.Height = 1;
+        await StateChanged();
+    }
 
     [Parameter]
     public BlazorControl Control{ get; set; }

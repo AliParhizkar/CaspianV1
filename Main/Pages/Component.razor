@@ -1,31 +1,36 @@
-﻿@typeparam TValue
-@inherits LookupWindow<Product, TValue>
-@namespace Test.UI
+﻿@namespace Test.UI
+@using Caspian.Engine;
 @using Caspian.UI;
 @using Demo.Model;
-<div class="c-lookup-page" style="width:380px;">
-    @if (Searchable)
-    {
-        <div style="padding:0 50px 5px 50px;">
-            <StringTextBox @bind-Value="SearchData.Title" placeholder="Title" />
-        </div>
-    }
-    <DataGrid @ref="Grid" TEntity="Product" Search="SearchData" TableHeight="200" HidePageSize>
-        <Columns>
-            <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
-            <GridColumn Field="t => t.Title" />
-        </Columns>
-    </DataGrid>
+@using Main.Model;
+
+<div style="width:500px;margin:10px auto">
+    <CaspianForm Model="model">
+        <CaspianValidationValidator ValidatorType="typeof(TestModelService)" />
+        <StringTextBox @bind-Value="model.Country.Title" />
+        <StringTextBox @bind-Value="model.City.Title" />
+        <StringTextBox @bind-Value="model.Name" />
+        <button>Submit</button>
+    </CaspianForm>
 </div>
 
 @code
 {
-    protected override void OnInitialized()
-    {
-        InitialSearchExpression(t => LookupStringSearchValue == null || t.Title.Contains(LookupStringSearchValue) || t.Code.StartsWith(LookupStringSearchValue));
-        base.OnInitialized();
-    }
+    TestModel model = new TestModel()
+        {
+            Country = new Country()
+            {
+ActiveType = ActiveType.Enable
+            },
+            City = new City()
+            {
+                ActiveType = ActiveType.Enable,
+CountryId = 2
+            }
+        };
 
-    [Parameter]
-    public bool Searchable{ get; set; }
+    public class TempContext: Demo.Model.Context
+    {
+        
+    }
 }

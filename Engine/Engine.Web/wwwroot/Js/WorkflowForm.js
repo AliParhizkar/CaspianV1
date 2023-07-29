@@ -26,7 +26,10 @@
                     ClassName: formName
                 })
             };
-            window.chrome.webview.postMessage(data);
+            if (window.chrome.webview)
+                window.chrome.webview.postMessage(data);
+            else
+                $.caspian.showMessage('Using WPF for coding')
         },
 
         getSourceCodeString() {
