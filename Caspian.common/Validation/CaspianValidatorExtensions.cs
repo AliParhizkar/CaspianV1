@@ -83,7 +83,7 @@ namespace Caspian.Common
                     value = default(TProperty);
                 if ((value == null) && func?.Invoke((TModel)context.InstanceToValidate) != false)
                 {
-                    var attr = typeof(TModel).GetProperty(context.PropertyName).GetCustomAttribute<DisplayNameAttribute>();
+                    var attr = typeof(TModel).GetProperty(context.DisplayName).GetCustomAttribute<DisplayNameAttribute>();
                     var name = attr == null ? context.DisplayName : attr.DisplayName;
                     if (language == Language.Fa)
                         message = message ?? $"لطفا {name} را مشخص نمایید";

@@ -21,19 +21,21 @@ namespace WpfApp1
 
     public class MyRoslynHost: RoslynHost
     {
-        public MyRoslynHost(IEnumerable<Assembly>? additionalAssemblies = null, RoslynHostReferences? references = null, 
+        MyRoslynWorkSpace worlkpace;
+        public MyRoslynHost(IEnumerable<Assembly> additionalAssemblies = null, RoslynHostReferences references = null, 
             ImmutableArray<string>? disabledDiagnostics = null)
             :base(additionalAssemblies, references, disabledDiagnostics)
         {
 
         }
+
         protected override ParseOptions CreateDefaultParseOptions()
         {
             var parent = base.CreateDefaultParseOptions();
             parent = parent.WithKind(SourceCodeKind.Regular);
             return parent;
         }
-        MyRoslynWorkSpace worlkpace;
+        
         public override RoslynWorkspace CreateWorkspace()
         {
             worlkpace = new MyRoslynWorkSpace(HostServices, "Host", this);
