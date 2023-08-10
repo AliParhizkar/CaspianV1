@@ -1,4 +1,10 @@
-﻿.c-data-containner {
+﻿#caspianCodeGenerator {
+    height:500px;
+    border: 1px solid grey;
+    direction: ltr;
+    text-align: left;
+}
+.c-data-containner {
     margin-bottom: 8px;
     border: 1px solid darkgray;
     border-radius: 8px;

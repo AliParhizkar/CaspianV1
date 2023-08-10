@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Engin</title>
     <base href="~/" />
+    
     <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/site.css" rel="stylesheet" />
     <link href="/_content/UIComponent/Content/2011.1.315/Caspian.common1.css" rel="stylesheet" type="text/css" />
@@ -29,6 +30,8 @@
     <script src="/_content/UIComponent/Scripts/Main/caspian.textbox.js"></script>
     <script src="/_content/UIComponent/Scripts/Main/caspian.TextArea.js"></script>
     <script src="/_content/UIComponent/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="/_content/Engine.Web/CodeEditor/axios.min.js"></script>
+    <script src="/_content/Engine.Web/CodeEditor/csharpLanguageProvider.js"></script>
     <script src="/_content/Engine.Web/Js/WorkflowForm.js"></script>
     <script src="/_content/Engine.Web/Js/evol.colorpicker.min.js"></script>
     <script src="/_content/Engine.Web/js/jquery.jeegoocontext.js"></script>
@@ -46,21 +49,10 @@
     <script src="/_content/Engine.Web/js/ReportPrint/ToolsBox.js"></script>
     <script src="/_content/Engine.Web/js/ReportPrint/toolsBar.js"></script>
     <script src="/_content/Syncfusion.Blazor.Core/scripts/syncfusion-blazor.min.js"></script>
+    <script src="/node_modules/monaco-editor/min/vs/loader.js"></script>
 </head>
-<body class="t-rtl">
-    <div class="c-content-main" style="height:100vh">
-        <component type="typeof(Caspian.Engine.Shared.App)" render-mode="Server" />
-    </div>
-    <div id="blazor-error-ui">
-        <environment include="Staging,Production">
-            An error has occurred. This application may no longer respond until reloaded.
-        </environment>
-        <environment include="Development">
-            بعلت یک خطای ناشناخته امکان ادامه عملیات میسر نیست
-        </environment>
-        <a href="" class="reload">بارگداری</a>
-        <a class="dismiss">🗙</a>
-    </div>
+<body>
+    <component type="typeof(Caspian.Engine.Shared.App)" render-mode="ServerPrerendered" />
     <script src="_framework/blazor.server.js"></script>
 </body>
 </html>

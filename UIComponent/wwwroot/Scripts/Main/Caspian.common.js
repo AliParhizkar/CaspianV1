@@ -1,5 +1,30 @@
 ﻿(function($) {
     let $c = $.caspian = {
+        bindCodeEditor: function (code, dotnet, readonly) {
+            $.caspian.dotnet = dotnet;
+            require.config({ paths: { vs: '/node_modules/monaco-editor/min/vs' } });
+            require(['vs/editor/editor.main'], function () {
+                if (!$.caspian.editor)
+                    registerCsharpProvider();
+                $.caspian.editor = monaco.editor.create(document.getElementById('caspianCodeGenerator'), {
+                    value: code,
+                    language: 'csharp',
+                    readOnly: readonly
+                });
+            });
+        },
+        setEditorCode: function (element, code) {
+            //let editor = $.caspian.editor;
+            //editor.getModel().setValue(code);
+        },
+        setEditoPosition: function (element, lineNumber, column) {
+            //let editor = $.caspian.editor;
+            //editor.focus();
+            //editor.setPosition({
+            //    lineNumber: lineNumber,
+            //    column: column,
+            //});
+        },
         gridData: {
             resize: 0,
             gridStatus:0,

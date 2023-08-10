@@ -1,0 +1,59 @@
+﻿@using Engine.Service.CaspianCodeEditor;
+@namespace Engine.CaspianCodeEditor
+@inject IJSRuntime jSRuntime
+<div id="caspianCodeGenerator" @ref="element"></div>
+
+
+@code 
+{
+    ElementReference element;
+
+    [Parameter]
+    public string Source { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var dotnet = DotNetObjectReference.Create(this);
+            await jSRuntime.InvokeVoidAsync("$.caspian.bindCodeEditor", Source, dotnet, Readonly);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable]
+    public async Task<CodeCheckResult[]> CodeCheck(string source)
+    {
+        return await CompletitionRequestHandler.HandleCodeCheck(source, CodeBehind);
+    }
+
+    [JSInvokable]
+    public async Task<HoverInfoResult> Hover(string source, int position)
+    {
+        return await CompletitionRequestHandler.HandleHover(position, source, CodeBehind);
+    }
+
+    [JSInvokable]
+    public async Task<TabCompletionResult[]> Complete(string source, int position)
+    {
+        return await CompletitionRequestHandler.HandleCompletion(position, source, CodeBehind);
+    }
+
+    public async Task SetCode(string code)
+    {
+        await jSRuntime.InvokeVoidAsync("$.caspian.setEditorCode", element, code);
+    }
+
+    public async Task SetPosition(int lineNumber, int column)
+    {
+
+        await jSRuntime.InvokeVoidAsync("$.caspian.setEditoPosition", element, lineNumber, column);
+    }
+
+    [Parameter]
+    public string CodeBehind { get; set; }
+
+    [Parameter]
+    public bool Readonly { get; set; }
+
+}
