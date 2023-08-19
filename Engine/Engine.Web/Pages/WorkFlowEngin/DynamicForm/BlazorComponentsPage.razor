@@ -12,7 +12,7 @@
             case ControlType.String:
                 var height = (Control.Height - 1) * 62 + 29;
                 var style = $"height:{height}px";
-                <StringTextBox Disabled MultiLine="Control.MultiLine" Style="@(style)" />
+                <StringTextBox MultiLine="Control.MultiLine" Style="@(style)" />
                 break;
             case ControlType.DropdownList:
                 <DropdownList TValue="GeneratedKind" Disabled />

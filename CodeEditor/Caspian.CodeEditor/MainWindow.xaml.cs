@@ -146,15 +146,7 @@ namespace RoslynPadReplSample
         
         private async void tabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (tabControl.SelectedIndex == 1)
-            {
-                await webViewForm.CoreWebView2.ExecuteScriptAsync("$.workflowForm.getCodebehindString()");
-            }
-            else if (tabControl.SelectedIndex == 2)
-            {
-                if (codeEditor.Text == "")
-                    await webViewForm.CoreWebView2.ExecuteScriptAsync("$.workflowForm.getSourceCodeString()");
-            }
+
         }
 
         private async void webViewForm_WebMessageReceived(object sender, Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs e)
@@ -162,13 +154,6 @@ namespace RoslynPadReplSample
             var data = JsonSerializer.Deserialize<JsonObject>(e.WebMessageAsJson)!;
             switch(data.Action)
             {
-                case "setCodebehind":
-                    UpdateCodeBehinde(data.Content!);
-                    break;
-                case "setSourceCode":
-                    UpdateSourceCode(data.Content!);
-                    
-                    break;
                 case "findCode":
                     tabControl.Visibility = Visibility.Visible;
                     tabControl.SelectedIndex = 2;
@@ -181,15 +166,6 @@ namespace RoslynPadReplSample
                         var methodSyntax = _codeManager.GetInitializeMethod(className, codeEditor.Text);
                         
                     }
-                    break;
-                case "sendSourceCode":
-                    var sourceCode = codeEditor.Text.Replace("\'", "\\'");
-                    sourceCode = $"$.workflowForm.saveCodeFile(`{sourceCode}`)";
-                     await webViewForm.CoreWebView2.ExecuteScriptAsync(sourceCode);
-                    break;
-                case "loadForm":
-                    var formId = Newtonsoft.Json.JsonConvert.DeserializeObject<int>(data.Content);
-                    webViewForm.Source = new Uri("https://localhost:44374/Engine/WorkflowForm/" + formId);
                     break;
                 case "findEventHandler":
                     tabControl.SelectedIndex = 2;
@@ -229,18 +205,6 @@ namespace RoslynPadReplSample
                     }
                     break;
             }
-        }
-
-        void UpdateSourceCode(string code)
-        {
-            codeEditor.Text = code;
-
-        }
-
-        void UpdateCodeBehinde(string code)
-        {
-            if (codeBehindEditor.Text != code)
-                codeBehindEditor.Text = code;
         }
     }
 

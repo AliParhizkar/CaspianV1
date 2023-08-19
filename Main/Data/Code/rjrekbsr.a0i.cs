@@ -9,8 +9,7 @@ namespace Caspian.Dynamic.WorkflowForm
 	{
 		public void Initialize()
 		{
-			cmbEmploymentOrderType.TextExpression = t => t.Code + " " +  t.Title;
-			
+			cmbEmploymentOrderType.TextExpression = t => t.Code + " " + t.Title;
 		}
 
 		public async Task EmploymentOrderType_OnChange()
@@ -24,24 +23,10 @@ namespace Caspian.Dynamic.WorkflowForm
             }
 		}
 
-	 	public void OrganUnit_OnChange()
+		public void Descript_OnChange()
 		{
-			
-		}
-
-		public void EducationDegree_OnChange()
-		{
-
-		}
-
-		public void Major_OnChange()
-		{
-			
-		}
-
-		public void Checking_OnChange()
-		{
-			
+			var q = 125;
+			this.
 		}
     }
 }

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Completion;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Engine.Service.CaspianCodeEditor
 {

@@ -96,6 +96,18 @@
         base.OnInitialized();
     }
 
+    protected override void OnParametersSet()
+    {
+        var index = 1;
+        foreach(var tab in tabPanels)
+        {
+            if (index == TabIndex)
+                CurentTabpanel = tab;
+            index++;
+        }
+        base.OnParametersSet();
+    }
+
     public void ClearTabs()
     {
         tabPanels.Clear();

@@ -11,7 +11,7 @@ using Caspian.Common.Extension;
 
 namespace Caspian.Engine.WorkflowEngine
 {
-    public partial class WorkflowFormGenerator
+    public partial class FormGeneratorComponent
     {
         byte columnsCount;
         IList<HtmlRow> rows;
@@ -23,7 +23,6 @@ namespace Caspian.Engine.WorkflowEngine
         SubSystemKind subSystemKind;
         PropertySelector propertySelector;
         WindowStatus windowStatus;
-        bool saveFile;
         BlazorControl selectedControl;
         PropertyWindow propertyWindow;
         string formTitle;
@@ -37,7 +36,10 @@ namespace Caspian.Engine.WorkflowEngine
         {
 
         }
-        
+
+        [Parameter]
+        public EventCallback<string> OnEventHandlerCreated { get; set; }
+
         void SelectControl(BlazorControl ctr)
         {
             selectedControl = ctr;
@@ -90,7 +92,7 @@ namespace Caspian.Engine.WorkflowEngine
             selectedControl = null;
         }
 
-        async Task Save()
+        async Task SaveView()
         {
             using var scope = CreateScope();
             var service = scope.GetService<WorkflowFormService>();
@@ -161,11 +163,6 @@ namespace Caspian.Engine.WorkflowEngine
             innerRowService.RemoveRange(deleteColumns.Where(t => t.InnerRow != null).Select(t => t.InnerRow));
             await colService.SaveChangesAsync();
             await transaction.CommitAsync();
-        }
-
-        void SaveAll()
-        {
-            saveFile = true;
         }
 
         void AddColumn()
@@ -476,63 +473,39 @@ namespace Caspian.Engine.WorkflowEngine
         [Parameter]
         public int WorkflowFormId { get; set; }
 
+        [Parameter]
+        public string Source { get; set; }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await jsRuntime.InvokeVoidAsync("$.workflowForm.init", DotNetObjectReference.Create(this));
-            if (saveFile)
-            {
-                saveFile = false;
-                await jsRuntime.InvokeVoidAsync("$.workflowForm.sendSaveRequest");
-            }
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        [JSInvokable]
-        public async Task<string> GetCodebehindString()
+        public async Task SaveCodeAndView()
         {
+            var path = Environment.ContentRootPath + "\\Data\\Code\\";
             using var service = CreateScope().GetService<WorkflowFormService>();
-            var form = await service.GetWorkflowForm(WorkflowFormId);
-            return form.CreateCodebehind();
-        }
-
-        [JSInvokable]
-        public async Task<string> GetSourceCodeString()
-        {
-            using var service = CreateScope().GetService<WorkflowFormService>();
-            var form = await service.GetAll().Include(t => t.WorkflowGroup).SingleAsync(WorkflowFormId);
-            var basePath = Environment.ContentRootPath;
-            return await form.GetSourceCode(basePath);
-        }
-
-        [JSInvokable]
-        public async Task SaveCodeAndView(string code)
-        {
-            if (code.HasValue())
+            var form = await service.SingleAsync(WorkflowFormId);
+            var datas = new CodeManager().GetExpressionData(form.Name, Source);
+            foreach (var data in datas)
             {
-                var path = Environment.ContentRootPath + "\\Data\\Code\\";
-                using var scope = CreateScope();
-                var service = scope.GetService<WorkflowFormService>();
-                var form = await service.SingleAsync(WorkflowFormId);
-                var datas = new CodeManager().GetExpressionData(form.Name, code);
-                foreach ( var data in datas )
+                var control = GetControl(data.Id);
+                if (control != null)
                 {
-                    var control = GetControl(data.Id);
-                    if (control != null)
-                    {
-                        if (data.PropertyName == "TextExpression")
-                            control.TextExpression = data.Expression;
-                        else if (data.PropertyName == "ConditionExpression")
-                            control.ConditionExpression = data.Expression;
-                    }
+                    if (data.PropertyName == "TextExpression")
+                        control.TextExpression = data.Expression;
+                    else if (data.PropertyName == "ConditionExpression")
+                        control.ConditionExpression = data.Expression;
                 }
-                if (!form.SourceFileName.HasValue())
-                {
-                    form.SourceFileName = Path.GetRandomFileName();
-                    await service.SaveChangesAsync();
-                }
-                File.WriteAllText(path + form.SourceFileName + ".cs", code);
             }
-            await Save();
+            if (!form.SourceFileName.HasValue())
+            {
+                form.SourceFileName = Path.GetRandomFileName();
+                await service.SaveChangesAsync();
+            }
+            File.WriteAllText(path + form.SourceFileName + ".cs", Source);
+            await SaveView();
             ShowMessage("ثبت با موفقیت انجام شد");
             StateHasChanged();
         }

@@ -46,5 +46,7 @@
         Local = 30,
 
         Constant = 31,
+
+        ExtensionMethod = 1
     }
 }

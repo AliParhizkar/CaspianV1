@@ -1,21 +1,30 @@
 ﻿(function($) {
     let $c = $.caspian = {
-        bindCodeEditor: function (code, dotnet, readonly) {
+        bindCodeEditor: function (code, dotnet, readonly, lineNumber, column) {
             $.caspian.dotnet = dotnet;
             require.config({ paths: { vs: '/node_modules/monaco-editor/min/vs' } });
             require(['vs/editor/editor.main'], function () {
                 if (!$.caspian.editor)
                     registerCsharpProvider();
-                $.caspian.editor = monaco.editor.create(document.getElementById('caspianCodeGenerator'), {
+                var editor = $.caspian.editor = monaco.editor.create(document.getElementById('caspianCodeGenerator'), {
                     value: code,
                     language: 'csharp',
                     readOnly: readonly
                 });
+
+                editor.focus();
+                if (lineNumber && column) {
+                    editor.setPosition({
+                        lineNumber: lineNumber,
+                        column: column,
+                    });
+                    editor.revealLineInCenter(lineNumber);
+                }
             });
         },
-        setEditorCode: function (element, code) {
-            //let editor = $.caspian.editor;
-            //editor.getModel().setValue(code);
+        setEditorCode: function (code) {
+            if ($.caspian.editor)
+                $.caspian.editor.getModel().setValue(code);
         },
         setEditoPosition: function (element, lineNumber, column) {
             //let editor = $.caspian.editor;

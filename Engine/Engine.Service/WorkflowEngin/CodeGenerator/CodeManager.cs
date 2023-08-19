@@ -42,6 +42,20 @@ namespace Caspian.Engine.Service
             return null;
         }
 
+        public MethodDeclarationSyntax GetEventHandler(ClassDeclarationSyntax classOfForm, string eventHandler)
+        {
+            foreach (var member3 in classOfForm.Members)
+            {
+                if (member3.Kind() == SyntaxKind.MethodDeclaration)
+                {
+                    var method = member3 as MethodDeclarationSyntax;
+                    if (method!.Identifier.Text == eventHandler)
+                        return method;
+                }
+            }
+            return null;
+        }
+
         public MethodDeclarationSyntax GetInitializeMethod(string className, string sourceCode)
         {
             var classOfForm = GetClassOfForm(className, sourceCode);

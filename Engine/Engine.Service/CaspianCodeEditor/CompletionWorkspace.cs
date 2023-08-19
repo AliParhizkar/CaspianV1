@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Host.Mef;
+using System.ComponentModel.DataAnnotations;
 
 namespace Engine.Service.CaspianCodeEditor
 {
@@ -23,6 +24,7 @@ namespace Engine.Service.CaspianCodeEditor
                 MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(DataSet).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(XmlDocument).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(DisplayAttribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(INotifyPropertyChanged).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Linq.Expressions.Expression).Assembly.Location)
             };
@@ -48,7 +50,8 @@ namespace Engine.Service.CaspianCodeEditor
             {
                 for (int i = 0; i < assemblies.Length; i++)
                 {
-                    references.Add(MetadataReference.CreateFromFile(assemblies[i]));
+                    var path = Assembly.Load(assemblies[i]).Location;
+                    references.Add(MetadataReference.CreateFromFile(path));
                 }
             }
 
@@ -62,16 +65,13 @@ namespace Engine.Service.CaspianCodeEditor
 
         public async Task<CompletionDocument> CreateDocument(string source, string codeBehind)
         {
-            var document = _workspace.AddDocument(_project.Id, "SourceFile.cs", SourceText.From(source + codeBehind));
-            var st = await document.GetSyntaxTreeAsync();
-            var compilation =
-            CSharpCompilation
-                .Create("Temp",
-                    new[] { st },
-                    options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                    references: _metadataReferences
-                );
-
+            _workspace.AddDocument(_project.Id, "Codebehind.cs", SourceText.From(codeBehind));
+            var document = _workspace.AddDocument(_project.Id, "SourceFile.cs", SourceText.From(source));
+            _workspace.TryApplyChanges(document.Project.Solution);
+            var st = await document.WithText(SourceText.From(codeBehind)).GetSyntaxTreeAsync();
+            var compilation = CSharpCompilation.Create("Temp", new[] { st },
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                references: _metadataReferences);
             using var temp = new MemoryStream();
             var result = compilation.Emit(temp);
             var semanticModel = compilation.GetSemanticModel(st, true);

@@ -1,106 +1,95 @@
 ﻿@page "/Engine/FormGenerator/{WorkflowFormId:int}"
-
-@using Microsoft.EntityFrameworkCore
-@namespace Caspian.Engine.WorkflowEngine
 @inherits BasePage
-@inject IHostEnvironment Environment 
-<div class="row">
-    <PropertyWindow @ref="propertyWindow" SubSystem="subSystemKind" Id="@Id" FormName="@formName" OnChange="UpdateControlData" Control="selectedControl" />
-    <div class="c-form-designer">
-        <div class="c-tools-bar">
-            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="async info => await AddControl(info)" OnFieldSelect="field => AddControl(field)" />
-            <button @onclick="RemoveSelectedControl" class="w-button w-ctr-delete" title="حذف کنترل"></button>
-            <div class="w-seprator"></div>
-        <div>
-            <button @onclick="AddRowToDown" class="w-button w-row-down" title="افزودن یک ردیف در پایین"></button>
-            <button @onclick="AddRowToTop" class="w-button w-row-up" title="افزودن یک ردیف در بالا"></button>
-            <button @onclick="DeleteSelectedRow" class="w-button w-row-delete" title="حذف ردیف"></button>
-            <div class="w-seprator"></div>
-            <button @onclick="AddInnerRowToTop" class="w-button w-innerrow-up" title="افزودن یک ردیف داخلی در بالا"></button>
-            <button @onclick="AddInnerRowToDown" class="w-button w-innerrow-down" title="افزودن یک ردیف داخلی در پایین"></button>
-            <button @onclick="RemoveInnerRow" class="w-button w-innerrow-delete" title="حذف ردیف داخلی"></button>
-            <div class="w-seprator"></div>
-            <button @onclick="MergeSelectedColumns" class="w-button w-merge" title="ادغام سطرها"></button>
-            <button @onclick="UnmergeSelectedColumns" class="w-button w-split" title="ادغام ستونها"></button>
-            <div class="w-seprator"></div>
-            <button @onclick="AddColumn"  class="w-button w-col-right" title="افزودن یک ستون در راست"></button>
-            <button @onclick="AddColumn" class="w-button w-col-left" title="افزودن یک ستون در چپ"></button>
-            <button class="w-button w-col-delete" title="حذف ستون"></button>
-            <div class="w-seprator"></div>
-            <button @onclick="SaveAll" class="w-button" title="ثبت همه">ثبت</button>
-            <div class="w-seprator"></div>
-            <button class="w-button" @onclick="ToggleWindowStatus">Run</button>
-        </div>
-        </div>
-        @if (rows != null)
-        {
-            <div class="container static-form">
-                @foreach(var row in rows)
-                {
-                    row.WorkflowForm = null;
-                    var rowIndex = rows.IndexOf(row);
-                    <div class="row">
-                        @if (row.Columns != null)
-                        {
-                            foreach (var col in row.Columns)
-                            {
-                                var colIndex = row.Columns.IndexOf(col);
-                                var className = "c-item col-md-" + col.Span;
-                                if (col.Hidden)
-                                    className += " c-hidden";
-                                if (rowIndex == selectedRowIndex && selectedControl == null)
-                                {
-                                    if (selectedInnerRowIndex == -1 && (colIndex == selectedColIndex || selectedColsIndex.Contains(colIndex)))
-                                        className += " c-selected";
-                                }
-                                <div @onclick="e => {SelectRow(e, rowIndex, colIndex); }" class="@(className)">
-                                    @if (col.InnerRows != null && col.Component == null)
-                                    {
-                                        foreach (var innerRow in col.InnerRows)
-                                        {
-                                            var innerRowIndex = col.InnerRows.IndexOf(innerRow);
-                                            <div class="row">
-                                                @foreach (var col1 in innerRow.HtmlColumns)
-                                                {
-                                                    className = $"c-item c-row-{innerRow.Span} col-{12 / innerRow.HtmlColumns.Count}";
-                                                    var innerColIndex = innerRow.HtmlColumns.IndexOf(col1);
-                                                    if (selectedControl == null && rowIndex == selectedRowIndex && colIndex == selectedColIndex && innerRowIndex == selectedInnerRowIndex && innerColIndex == selectedInnerColIndex)
-                                                        className += " c-selected";
-                                                    <div @onclick:stopPropagation @onclick="() => {SelectInnerRow(rowIndex, colIndex, innerRowIndex, innerColIndex); }" class="@(className)">
-                                                        @{
-                                                            var ctr = col1.Component;
-                                                            if (ctr != null)
-                                                            {
-                                                                //ctr.DataModelField = null;
-                                                                <BlazorComponentsPage OnSelect="() => SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
-                                                            }
-                                                        }
-                                                    </div>
-                                                }
-                                            </div>
-                                        }
-                                    }
-                                    else if (col.Component != null)
-                                    {
-                                        var ctr = col.Component;
-                                        <BlazorComponentsPage OnSelect="() => SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
-                                    }
-                                </div>
-                            }
-                        }
-
-                    </div>
-                }
-            </div>
-        }
-    </div>
+@inject IHostEnvironment Host
+@namespace Caspian.Engine.WorkflowEngine
+@using Microsoft.CodeAnalysis.CSharp.Syntax;
+<div class="pt-1 pb-1 ps-2 pe-2" style="direction:ltr;text-align:left">
+    <TabPanel TabIndex="tabIndex" TabIndexChanged="TabIndexChanged">
+        <Tabs>
+            <TabPanelItem Title="Form generator">
+                <FormGeneratorComponent OnEventHandlerCreated="AddOrSelectEventHandler" WorkflowFormId="WorkflowFormId" Source="@source" />
+            </TabPanelItem>
+            <TabPanelItem Title="Code behind">
+                <Engine.CaspianCodeEditor.CodeEditorComponent Source="@codeBehind" Readonly />
+            </TabPanelItem>
+            <TabPanelItem Title="Code">
+                <Engine.CaspianCodeEditor.CodeEditorComponent Assemblies="assemblies" Source="@source" 
+                    CodeBehind="@codeBehind" SourceChanged="t => source = t" LineNumber="lineNumber" 
+                    Column="column" />
+            </TabPanelItem>
+        </Tabs>
+    </TabPanel>
 </div>
 
-<Window @bind-Status="windowStatus" Style="width:950px;height:550px;" Title="@($"پیش نمایش فرم {formTitle}")">
-    <Content>
-        @if (windowStatus == WindowStatus.Open)
+
+@code
+{
+    bool flag;
+    string source, codeBehind;
+    string[] assemblies;
+    int tabIndex = 1;
+    string className;
+    int lineNumber = 0;
+    int column = 0;
+
+    async Task AddOrSelectEventHandler(string eventHandlerName)
+    {
+        tabIndex = 3;
+        var manager = new CodeManager();
+        ClassDeclarationSyntax mainClass = manager.GetClassOfForm(className, source);
+        MethodDeclarationSyntax methodSyntax = manager.GetEventHandler(mainClass, eventHandlerName);
+        if (codeBehind == null)
         {
-            <AssemblyGenerator WorkflowFormId="WorkflowFormId" />
+            using var service = CreateScope().GetService<WorkflowFormService>();
+            var form = await service.GetWorkflowForm(WorkflowFormId);
+            codeBehind = form.CreateCodebehind();
         }
-    </Content>
-</Window>
+        if (methodSyntax == null)
+        {
+            var close = mainClass.GetLastToken();
+            var line = mainClass.SyntaxTree.GetLineSpan(close.FullSpan).StartLinePosition.Line;
+            var lineSpan = mainClass.SyntaxTree.GetText().Lines[line].Span;
+            var strStart = source.Substring(0, lineSpan.Start);
+            var strMethod = "\n\t\tpublic void " + eventHandlerName + "()\n\t\t{\n\t\t\t\n\t\t}\n";
+            var strEnd = source.Substring(lineSpan.Start);
+            source = strStart + strMethod + strEnd;
+            lineNumber = line + 4;
+            column = 4;
+            //codeEditor.Select(strStart.Length + strMethod.Length - 5, 1);
+        }
+        else
+        {
+            var close = methodSyntax.GetLastToken();
+            var line = methodSyntax.SyntaxTree.GetLineSpan(close.Span).StartLinePosition.Line;
+            lineNumber = line;
+            column = 4;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<WorkflowFormService>();
+        var form = await service.GetAll().Include(t => t.WorkflowGroup).SingleAsync(WorkflowFormId);
+        var systemName = form.WorkflowGroup.SubSystemKind.ToString();
+        className = form.Name;
+        assemblies = new string[] { $"{systemName}.Model", $"{systemName}.Service", "Caspian.common", "FluentValidation", "Engine.Model", "Microsoft.Extensions.DependencyInjection.Abstractions" };
+        var basePath = Host.ContentRootPath;
+        source = await form.GetSourceCode(basePath);
+        await base.OnInitializedAsync();
+    }
+
+    async Task TabIndexChanged(int tabIndex)
+    {
+        using var service = CreateScope().GetService<WorkflowFormService>();
+        if (tabIndex > 1)
+        {
+            var form = await service.GetWorkflowForm(WorkflowFormId);
+            codeBehind = form.CreateCodebehind();
+        }
+        this.tabIndex = tabIndex;
+        await Task.Delay(100);
+    }
+
+    [Parameter]
+    public int WorkflowFormId { get; set; }
+}

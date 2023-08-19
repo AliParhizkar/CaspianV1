@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Caspian.CodeEditor.Common\Caspian.CodeEditor.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Employment.Model">
       <HintPath>..\..\Main\bin\Debug\net7.0\Employment.Model.dll</HintPath>
     </Reference>

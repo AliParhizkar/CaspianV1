@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Caspian.common.JsonValue
+namespace Caspian.Common.JsonValue
 {
     public class JsonExpression : Expression
     {

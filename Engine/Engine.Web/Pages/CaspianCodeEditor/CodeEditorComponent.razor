@@ -7,16 +7,26 @@
 @code 
 {
     ElementReference element;
+    int oldSourceLength;
+    bool updatedFromClient;
 
     [Parameter]
     public string Source { get; set; }
+
+    [Parameter]
+    public EventCallback<string> SourceChanged{ get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             var dotnet = DotNetObjectReference.Create(this);
-            await jSRuntime.InvokeVoidAsync("$.caspian.bindCodeEditor", Source, dotnet, Readonly);
+            await jSRuntime.InvokeVoidAsync("$.caspian.bindCodeEditor", Source, dotnet, Readonly, LineNumber, Column);
+        }
+        else if (Source != null && Source.Length != oldSourceLength && !updatedFromClient)
+        {
+            oldSourceLength = Source.Length;
+            await jSRuntime.InvokeVoidAsync("$.caspian.setEditorCode", Source);
         }
         await base.OnAfterRenderAsync(firstRender);
     }
@@ -24,19 +34,26 @@
     [JSInvokable]
     public async Task<CodeCheckResult[]> CodeCheck(string source)
     {
-        return await CompletitionRequestHandler.HandleCodeCheck(source, CodeBehind);
+        if (!Readonly)
+        {
+            updatedFromClient = true;
+            Source = source;
+            if (SourceChanged.HasDelegate)
+                await SourceChanged.InvokeAsync(Source);
+        }
+        return await CompletitionRequestHandler.HandleCodeCheck(source, CodeBehind, Assemblies);
     }
 
     [JSInvokable]
     public async Task<HoverInfoResult> Hover(string source, int position)
     {
-        return await CompletitionRequestHandler.HandleHover(position, source, CodeBehind);
+        return await CompletitionRequestHandler.HandleHover(position, source, CodeBehind, Assemblies);
     }
 
     [JSInvokable]
     public async Task<TabCompletionResult[]> Complete(string source, int position)
     {
-        return await CompletitionRequestHandler.HandleCompletion(position, source, CodeBehind);
+        return await CompletitionRequestHandler.HandleCompletion(position, source, CodeBehind, Assemblies);
     }
 
     public async Task SetCode(string code)
@@ -46,7 +63,6 @@
 
     public async Task SetPosition(int lineNumber, int column)
     {
-
         await jSRuntime.InvokeVoidAsync("$.caspian.setEditoPosition", element, lineNumber, column);
     }
 
@@ -55,5 +71,14 @@
 
     [Parameter]
     public bool Readonly { get; set; }
+
+    [Parameter]
+    public string[] Assemblies { get; set; }
+
+    [Parameter]
+    public int LineNumber { get; set; }
+
+    [Parameter]
+    public int Column { get; set; }
 
 }

@@ -1,0 +1,105 @@
+﻿@using Microsoft.EntityFrameworkCore
+@namespace Caspian.Engine.WorkflowEngine
+@inherits BasePage
+@inject IHostEnvironment Environment
+<div class="row t-rtl">
+    <PropertyWindow @ref="propertyWindow" SubSystem="subSystemKind" Id="@Id" FormName="@formName" Control="selectedControl"
+        OnChange="UpdateControlData" OnEventHandlerCreated="async t => await OnEventHandlerCreated.InvokeAsync(t)"  />
+    <div class="c-form-designer">
+        <div class="c-tools-bar">
+            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="async info => await AddControl(info)" OnFieldSelect="field => AddControl(field)" />
+            <button @onclick="RemoveSelectedControl" class="w-button w-ctr-delete" title="حذف کنترل"></button>
+            <div class="w-seprator"></div>
+            <div>
+                <button @onclick="AddRowToDown" class="w-button w-row-down" title="افزودن یک ردیف در پایین"></button>
+                <button @onclick="AddRowToTop" class="w-button w-row-up" title="افزودن یک ردیف در بالا"></button>
+                <button @onclick="DeleteSelectedRow" class="w-button w-row-delete" title="حذف ردیف"></button>
+                <div class="w-seprator"></div>
+                <button @onclick="AddInnerRowToTop" class="w-button w-innerrow-up" title="افزودن یک ردیف داخلی در بالا"></button>
+                <button @onclick="AddInnerRowToDown" class="w-button w-innerrow-down" title="افزودن یک ردیف داخلی در پایین"></button>
+                <button @onclick="RemoveInnerRow" class="w-button w-innerrow-delete" title="حذف ردیف داخلی"></button>
+                <div class="w-seprator"></div>
+                <button @onclick="MergeSelectedColumns" class="w-button w-merge" title="ادغام سطرها"></button>
+                <button @onclick="UnmergeSelectedColumns" class="w-button w-split" title="ادغام ستونها"></button>
+                <div class="w-seprator"></div>
+                <button @onclick="AddColumn" class="w-button w-col-right" title="افزودن یک ستون در راست"></button>
+                <button @onclick="AddColumn" class="w-button w-col-left" title="افزودن یک ستون در چپ"></button>
+                <button class="w-button w-col-delete" title="حذف ستون"></button>
+                <div class="w-seprator"></div>
+                <button @onclick="SaveCodeAndView" class="w-button" title="ثبت همه">ثبت</button>
+                <div class="w-seprator"></div>
+                <button class="w-button" @onclick="ToggleWindowStatus">Run</button>
+            </div>
+        </div>
+        @if (rows != null)
+        {
+            <div class="container static-form">
+                @foreach (var row in rows)
+                {
+                    row.WorkflowForm = null;
+                    var rowIndex = rows.IndexOf(row);
+                    <div class="row">
+                        @if (row.Columns != null)
+                        {
+                            foreach (var col in row.Columns)
+                            {
+                                var colIndex = row.Columns.IndexOf(col);
+                                var className = "c-item col-md-" + col.Span;
+                                if (col.Hidden)
+                                    className += " c-hidden";
+                                if (rowIndex == selectedRowIndex && selectedControl == null)
+                                {
+                                    if (selectedInnerRowIndex == -1 && (colIndex == selectedColIndex || selectedColsIndex.Contains(colIndex)))
+                                        className += " c-selected";
+                                }
+                                <div @onclick="e => {SelectRow(e, rowIndex, colIndex); }" class="@(className)">
+                                    @if (col.InnerRows != null && col.Component == null)
+                                    {
+                                        foreach (var innerRow in col.InnerRows)
+                                        {
+                                            var innerRowIndex = col.InnerRows.IndexOf(innerRow);
+                                            <div class="row">
+                                                @foreach (var col1 in innerRow.HtmlColumns)
+                                                {
+                                                    className = $"c-item c-row-{innerRow.Span} col-{12 / innerRow.HtmlColumns.Count}";
+                                                    var innerColIndex = innerRow.HtmlColumns.IndexOf(col1);
+                                                    if (selectedControl == null && rowIndex == selectedRowIndex && colIndex == selectedColIndex && innerRowIndex == selectedInnerRowIndex && innerColIndex == selectedInnerColIndex)
+                                                        className += " c-selected";
+                                                    <div @onclick:stopPropagation @onclick="() => {SelectInnerRow(rowIndex, colIndex, innerRowIndex, innerColIndex); }" class="@(className)">
+                                                        @{
+                                                            var ctr = col1.Component;
+                                                            if (ctr != null)
+                                                            {
+                                                                //ctr.DataModelField = null;
+                                                                <BlazorComponentsPage OnSelect="() => SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
+                                                            }
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    }
+                                    else if (col.Component != null)
+                                    {
+                                        var ctr = col.Component;
+                                        <BlazorComponentsPage OnSelect="() => SelectControl(ctr)" Selected="@(selectedControl == ctr)" Control="ctr" />
+                                    }
+                                </div>
+                            }
+                        }
+
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<Window @bind-Status="windowStatus" Style="width:950px;height:550px;" Title="@($"پیش نمایش فرم {formTitle}")">
+    <Content>
+        @if (windowStatus == WindowStatus.Open)
+        {
+            <AssemblyGenerator WorkflowFormId="WorkflowFormId" />
+        }
+    </Content>
+</Window>

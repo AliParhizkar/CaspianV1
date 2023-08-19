@@ -75,13 +75,7 @@
 {
     bool minimized;
     string propertyName;
-    string eventName;
     IList<SelectListItem> source;
-
-    async Task SetMultLine()
-    {
-        
-    }
 
     async Task ToggleMultiLine()
     {
@@ -123,7 +117,7 @@
             await OnChange.InvokeAsync();
     }
 
-    async void AddEventHandler()
+    async Task AddEventHandler()
     {
         if (!Control.OnChange.HasValue())
         {
@@ -132,12 +126,15 @@
                 index++;
             Control.OnChange = Id.Substring(index) + "_OnChange";
             await StateChanged();
+            await OnEventHandlerCreated.InvokeAsync(Control.OnChange);
         }
-        eventName = Control.OnChange;
     }
 
     [Parameter]
     public EventCallback OnChange{ get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnEventHandlerCreated { get; set; }
 
     [Parameter]
     public SubSystemKind SubSystem { get; set; }
@@ -149,18 +146,18 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (propertyName.HasValue())
-        {
-            var name = propertyName;
-            propertyName = null;
-            await jsRuntime.InvokeVoidAsync("$.workflowForm.findCode", FormName, Id, name);
-        }
-        if (eventName.HasValue())
-        {
-            var name = eventName;
-            eventName = null;
-            await jsRuntime.InvokeVoidAsync("$.workflowForm.findEventHandler", FormName, Id, name);
-        }
+        //if (propertyName.HasValue())
+        //{
+        //    var name = propertyName;
+        //    propertyName = null;
+        //    await jsRuntime.InvokeVoidAsync("$.workflowForm.findCode", FormName, Id, name);
+        //}
+        //if (eventName.HasValue())
+        //{
+        //    var name = eventName;
+        //    eventName = null;
+        //    await jsRuntime.InvokeVoidAsync("$.workflowForm.findEventHandler", FormName, Id, name);
+        //}
         await base.OnAfterRenderAsync(firstRender);
     }
 }

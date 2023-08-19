@@ -53,8 +53,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeEditor", "CodeEditor", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caspian.CodeEditor", "CodeEditor\Caspian.CodeEditor\Caspian.CodeEditor.csproj", "{E13AE177-790F-4241-B662-4B0BB7748802}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caspian.CodeEditor.Common", "CodeEditor\Caspian.CodeEditor.Common\Caspian.CodeEditor.Common.csproj", "{B5022E8D-3B11-4954-AE38-3863DF878F11}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,10 +135,6 @@ Global
 		{E13AE177-790F-4241-B662-4B0BB7748802}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E13AE177-790F-4241-B662-4B0BB7748802}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E13AE177-790F-4241-B662-4B0BB7748802}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5022E8D-3B11-4954-AE38-3863DF878F11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5022E8D-3B11-4954-AE38-3863DF878F11}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5022E8D-3B11-4954-AE38-3863DF878F11}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5022E8D-3B11-4954-AE38-3863DF878F11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,7 +156,6 @@ Global
 		{BE357D6D-3EB0-4987-865B-FD7AAC2CDB49} = {3A50D5BE-747A-4117-AA8C-58E3FAE48682}
 		{972C3FA5-9CA0-427B-ACBF-38382FB92B0A} = {3A50D5BE-747A-4117-AA8C-58E3FAE48682}
 		{E13AE177-790F-4241-B662-4B0BB7748802} = {E8160A86-E9C9-4C39-B7B8-226B07B869AD}
-		{B5022E8D-3B11-4954-AE38-3863DF878F11} = {E8160A86-E9C9-4C39-B7B8-226B07B869AD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {02812EE1-F36A-451A-B0C6-DC5691FE5C75}
