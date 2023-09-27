@@ -1,11 +1,11 @@
 ﻿(function($) {
     let $c = $.caspian = {
-        bindCodeEditor: function (code, dotnet, readonly, lineNumber, column) {
+        bindCodeEditor: function (code, dotnet, readonly, lineNumber, column, tokensData) {
             $.caspian.dotnet = dotnet;
+            $.caspian.tokensData = tokensData;
             require.config({ paths: { vs: '/node_modules/monaco-editor/min/vs' } });
             require(['vs/editor/editor.main'], function () {
-                if (!$.caspian.editor)
-                    registerCsharpProvider();
+                registerCsharpProvider();
                 var editor = $.caspian.editor = monaco.editor.create(document.getElementById('caspianCodeGenerator'), {
                     value: code,
                     language: 'csharp',

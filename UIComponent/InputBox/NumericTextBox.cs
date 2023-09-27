@@ -1,12 +1,12 @@
 ﻿using System;
 using Caspian.Common;
-using Newtonsoft.Json;
 using System.Threading;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
 using Caspian.Common.Extension;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
+using System.Text.Json;
 
 namespace Caspian.UI
 {
@@ -15,13 +15,13 @@ namespace Caspian.UI
         string oldJson;
         int? maxLength = 8;
 
-        [Parameter, JsonProperty("total")]
-        public int Total { get; set; }
+        [Parameter]
+        public int Total { get; set; } = 8;
 
-        [Parameter, JsonProperty("digits")]
+        [Parameter]
         public int NumberDigit { get; set; } = 2;
 
-        [Parameter, JsonProperty("group")]
+        [Parameter]
         public bool DigitGrouping { get; set; } = true;
 
         async Task onChangeValue(ChangeEventArgs arg)
@@ -75,7 +75,7 @@ namespace Caspian.UI
                 total = Total,
                 digits = NumberDigit
             };
-            var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            var json = JsonSerializer.Serialize(obj);
             if (!json.Equals(oldJson))
             {
                 oldJson = json;

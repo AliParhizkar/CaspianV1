@@ -11,28 +11,28 @@ namespace Caspian.Engine
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("نام")]
+        [DisplayName("Name")]
         public string Name { get; set; }
 
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        [DisplayName("گروه گردش کار")]
+        [DisplayName("Workflow group")]
         public int WorkflowGroupId { get; set; }
 
         [ForeignKey(nameof(WorkflowGroupId))]
         public virtual WorkflowGroup WorkflowGroup { get; set; }
 
-        [DisplayName("شرح")]
+        [DisplayName("Description")]
         public string Description { get; set; }
 
-        [CheckOnDelete("مدل داده ای دارای گردش کار می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("Data model has Workflow(s) and can not removed")]
         public virtual IList<Workflow> Workflows { get; set; }
 
-        [CheckOnDelete("نوع داده ای دارای فیلد می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("Data model has field(s) and can not removed")]
         public virtual IList<DataModelField> Fields { get; set; }
 
-        [CheckOnDelete("مدل داده ای دارای فرم می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("Data model has forms(s) and can not removed")]
         public virtual IList<WorkflowForm> WorkflowForms { get;set; }
     }
 }

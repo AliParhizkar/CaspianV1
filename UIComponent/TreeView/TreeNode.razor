@@ -59,10 +59,10 @@
             else
                 Item.Depth = Convert.ToByte(Item.Parent.Depth.Value + 1);
         }
-        @if (Item.ShowTemplate && CascadeData?.Template != null)
+        @if (Item.ShowTemplate && CascadeData?.AfterNodeTemplate != null)
         {
             <CascadingValue Value="Item.Depth" Name="NodeDepthOnTree">
-                @CascadeData.Template(Item)
+                @CascadeData.AfterNodeTemplate(Item)
             </CascadingValue>
         }
     </div>

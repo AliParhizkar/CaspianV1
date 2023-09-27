@@ -1,7 +1,6 @@
-﻿using System;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using System.Globalization;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace ReportUiModels
 {
@@ -30,19 +29,14 @@ namespace ReportUiModels
 
         }
 
-        [JsonProperty("bold")]
         public bool Bold { get; set; }
 
-        [JsonProperty("italic")]
         public bool Italic { get; set; }
 
-        [JsonProperty("underLine")]
         public bool UnderLine { get; set; }
 
-        [JsonProperty("family")]
         public string Family { get; set; }
 
-        [JsonProperty("size")]
         public double Size { get; set; }
 
         public XElement GetXmlElement()
@@ -70,16 +64,7 @@ namespace ReportUiModels
 
         public string GetJson()
         {
-            return JsonConvert.SerializeObject(this);
-            //var str = new StringBuilder("{family:\"" + Family + "\"");
-            //if (Bold)
-            //    str.Append(",bold:true");
-            //if (Italic) 
-            //    str.Append(",italic:true");
-            //if (UnderLine)
-            //    str.Append(",underLine:true");
-            //str.Append(",size:" + Size + "}");
-            //return str.ToString();
+            return JsonSerializer.Serialize(this);
         }
     }
 
@@ -106,16 +91,12 @@ namespace ReportUiModels
                 Style = (BorderStyle)filed.GetValue(null);
         }
 
-        [JsonProperty("width")]
         public double Width { get; set; }
 
-        [JsonProperty("style")]
         public BorderStyle Style { get; set; }
 
-        [JsonProperty("color")]
         public Color Color { get; set; }
 
-        [JsonProperty("borderKind")]
         public BorderKind BorderKind { get; set; }
 
         public object GetXmlElement()
@@ -158,7 +139,7 @@ namespace ReportUiModels
 
         public string GetJson()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonSerializer.Serialize(this);
         }
     }
 
@@ -188,7 +169,6 @@ namespace ReportUiModels
             }
         }
 
-        [JsonProperty("colorString")]
         public string ColorString { get; set; }
 
         public Color()
@@ -244,8 +224,7 @@ namespace ReportUiModels
             var str = ColorString;
             if (ColorString == null || ColorString.ToLower() == "transparent")
                 ColorString = "Transparent";
-            return JsonConvert.SerializeObject(this);
-            //return "{colorString:\"" + str + "\"}";
+            return JsonSerializer.Serialize(this);
         }
     }
 
@@ -276,16 +255,12 @@ namespace ReportUiModels
             Height = height;
         }
 
-        [JsonProperty("left")]
         public decimal Left { get; set; }
 
-        [JsonProperty("top")]
         public decimal Top { get; set; }
 
-        [JsonProperty("width")]
         public decimal Width { get; set; }
 
-        [JsonProperty("height")]
         public decimal Height { get; set; }
 
         public XElement GetXmlElement()
@@ -297,8 +272,7 @@ namespace ReportUiModels
 
         public string GetJson()
         {
-            return JsonConvert.SerializeObject(this);
-            //return "{left:" + Left + ",top:" + Top + ",width:" + Width + ",height:" + Height + "}";
+            return JsonSerializer.Serialize(this);
         }
     }
 }

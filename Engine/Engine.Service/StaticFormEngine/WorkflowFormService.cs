@@ -14,7 +14,7 @@ namespace Caspian.Engine.Service
             RuleFor(t => t.Title).Required().UniqAsync("فرمی با این عنوان در سیستم ثبت شده است");
             RuleFor(t => t.ColumnCount).CustomValue(t => t < 1, "حداقل یک ستون باید وجود داشته باشد")
                 .CustomValue(t => t > 4, "جداکثر چهار ستون می تواند وجود داشته باشد");
-            RuleFor(t => t.Name).UniqAsync("فرمی با این نام در سیستم ثبت شده است").CustomValue(t => t.IsValidIdentifire(), "برای تعریف کلاس فقط از کاراکترهای لاتین و اعداد استفاده نمایید.");
+            RuleFor(t => t.Name).UniqAsync("فرمی با این نام در سیستم ثبت شده است").Required().CustomValue(t => t.IsValidIdentifire(), "برای تعریف کلاس فقط از کاراکترهای لاتین و اعداد استفاده نمایید.");
         }
 
         public async Task<WorkflowForm> GetWorkflowForm(int workflowFormId)

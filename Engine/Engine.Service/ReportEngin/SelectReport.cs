@@ -302,12 +302,6 @@ namespace Caspian.Engine
             listType = listType.MakeGenericType(new Type[] { type });
             IList list = (IList)Activator.CreateInstance(listType);
             var flag = reportParams.Any(t => t.RuleId.HasValue || t.DynamicParameterId.HasValue);
-            string dynamicFieldName = null;
-            //if (flag)
-            //{
-            //    var enTitle = reportParams.First(t => t.RuleId.HasValue || t.DynamicParameterId.HasValue).TitleEn;
-            //    dynamicFieldName = new DynamicFieldEngin().GetDynamicFieldForeignKey(paramExpr.Type, enTitle);
-            //}
             var result = values.ToDynamicList();
             foreach (var value in values.AsQueryable().ToIList())
             {

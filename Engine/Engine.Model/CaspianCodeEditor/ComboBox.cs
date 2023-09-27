@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Capian.Dynamicform.Component
+namespace Caspian.Dynamicform.Component
 {
     public class ComboBox<TEntity> : InputControl
     {

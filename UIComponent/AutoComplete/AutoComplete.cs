@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Newtonsoft.Json;
 using System.Reflection;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
@@ -98,7 +97,6 @@ namespace Caspian.UI
         [Parameter]
         public Expression<Func<TEntity, string>> TextExpression { get; set; }
 
-        [JsonIgnore]
         public string Id { get; set; }
 
         [Parameter]
@@ -109,16 +107,16 @@ namespace Caspian.UI
 
         public string ErrorMessage { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public bool Required { get; set; }
 
-        [Inject, JsonIgnore]
+        [Inject]
         public FormAppState FormAppState { get; set; }
 
-        [CascadingParameter, JsonIgnore]
+        [CascadingParameter]
         public CaspianContainer Container { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public EventCallback OnChange { get; set; }
 
         protected override void OnInitialized()

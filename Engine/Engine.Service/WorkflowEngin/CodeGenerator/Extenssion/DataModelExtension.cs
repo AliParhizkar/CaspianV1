@@ -74,7 +74,7 @@ namespace Caspian.Engine.Service
         public static string GetFieldsCode(this DataModel model)
         {
             var str = new StringBuilder();
-            str.Append("\n\t\t//Fields\n");
+            str.Append("\n\t\t/// Fields\n");
             foreach (var field in model.Fields)
             {
                 var typeName = field.GetFieldType();

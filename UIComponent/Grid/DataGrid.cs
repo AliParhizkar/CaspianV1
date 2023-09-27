@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Caspian.Common;
-using Newtonsoft.Json;
 using System.Reflection;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using static System.Formats.Asn1.AsnWriter;
+using System.Text.Json;
 
 namespace Caspian.UI
 {
@@ -36,16 +35,16 @@ namespace Caspian.UI
 
         public int? SelectedRowIndex { get; private set; }
 
-        [Inject, JsonIgnore]
+        [Inject]
         IServiceProvider ServiceProvider { get; set; }
 
-        [Inject, JsonIgnore]
+        [Inject]
         public FormAppState FormAppState { get; set; }
 
         [CascadingParameter]
         public CrudComponent<TEntity> CrudComponent { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public bool HidePageSize { get; set; }
 
         internal void AddColumnData(GridColumn<TEntity> column)
@@ -334,7 +333,7 @@ namespace Caspian.UI
 
         internal Expression InternalConditionExpr { get; set; }
 
-        [Inject, JsonIgnore]
+        [Inject]
         protected IJSRuntime jsRuntime { get; set; }
 
         [Parameter]
@@ -343,73 +342,64 @@ namespace Caspian.UI
         [CascadingParameter(Name = "AutoComplateState")]
         public SearchState SearchState { get; set; }
 
-        [JsonIgnore]
         public Window Control { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public Func<IQueryable<TEntity>, IQueryable<TEntity>> OnDataBinding { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public int TableHeight { get; set; } = 250;
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public int? TableWidth { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public EventCallback<TEntity> OnUpsert { get; set; }
 
-        [JsonIgnore]
         public EventCallback<TEntity> OnInternalUpsert { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public Func<TEntity, Task<bool>> OnDelete { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public EventCallback OnPageChanged { get; set; }
 
-        [JsonIgnore]
         internal EventCallback<TEntity> OnInternalDelete { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public EventCallback<TEntity> OnRowSelect { get; set; }
 
-        [JsonIgnore]
         public EventCallback<int> OnInternalRowSelect { get; set; }
 
-        [JsonIgnore]
         public IList<TEntity> Items { get; set; }
 
-        [JsonIgnore]
         public int Total { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public int PageNumber { get; set; } = 1;
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public int PageSize { get; set; } = 5;
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public TEntity Search { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public SelectType SelectType { get; set; } = SelectType.Single;
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public RenderFragment<RowData<TEntity>> Columns { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public string DeleteMessage { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public RenderFragment ToolsBar { get; set; }
 
-        //[JsonIgnore, Parameter]
-        //public bool Inline { get; set; }
-
-        [JsonIgnore, Parameter]
+        [Parameter]
         public RenderFragment SearchTemplate { get; set; }
 
-        [JsonIgnore, Parameter]
+        [Parameter]
         public bool HideInsertIcon { get; set; }
 
         async Task UpdateOrder()
@@ -562,16 +552,6 @@ namespace Caspian.UI
             return default(TEntity);
         }
 
-        protected string ConvertToJson()
-        {
-            var setting = new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore
-            };
-            return JsonConvert.SerializeObject(this, setting);
-        }
-
         protected override void OnInitialized()
         {
             if (CaspianDataService.Language == Language.Fa)
@@ -642,11 +622,7 @@ namespace Caspian.UI
 
         protected async override Task OnParametersSetAsync()
         {
-            var jsonSearch = Search == null ? "{}" : JsonConvert.SerializeObject(Search, new JsonSerializerSettings()
-            {
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                NullValueHandling = NullValueHandling.Ignore
-            });
+            var jsonSearch = Search == null ? "{}" : JsonSerializer.Serialize(Search, Search.GetType());
             if (jsonOldSearch != jsonSearch)
             {
                 SholdRendered = true;

@@ -23,7 +23,8 @@
     border: 1px solid #7e1d1d;
     padding: 3px 8px;
     background-color: #fdffc0;
-    line-height: 45px
+    line-height: 45px;
+    user-select:text;
 }
 .c-file-detail {
     background-color: #d6ffd6;
@@ -534,11 +535,9 @@ progress::-webkit-progress-value {
 }
 .sidebar .c-container {
     width: 25px;
-    height: 24px;
     border-radius: 12px;
     overflow: hidden;
     vertical-align: middle;
-    padding-top: 2px;
     border-width: 1px;
     border-style: solid;
     border-color: transparent;
@@ -1254,11 +1253,11 @@ span, label, td, th {
 }
 
 .main {
-    float: right;
+/*    float: right;
     width: calc(100% - 165px);
     box-sizing: border-box;
     height: 100vh;
-    overflow: auto;
+    overflow: auto;*/
 }
 
 

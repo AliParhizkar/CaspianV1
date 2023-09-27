@@ -121,12 +121,15 @@
     {
         if (!Control.OnChange.HasValue())
         {
-            var index = 0;
-            while (index < Id.Length && Id[index] == Id[index].ToString().ToLower()[0])
-                index++;
-            Control.OnChange = Id.Substring(index) + "_OnChange";
-            await StateChanged();
-            await OnEventHandlerCreated.InvokeAsync(Control.OnChange);
+            if (Id.HasValue())
+            {
+                var index = 0;
+                while (index < Id.Length && Id[index] == Id[index].ToString().ToLower()[0])
+                    index++;
+                Control.OnChange = Id.Substring(index) + "_OnChange";
+                await StateChanged();
+                await OnEventHandlerCreated.InvokeAsync(Control.OnChange);
+            }
         }
     }
 

@@ -6,7 +6,7 @@
 <div class="p-4">
     <div class="row c-controls ps-4 pe-4">
         <div class="col-md-4">
-            <label>عنوان</label>
+            <label>Title</label>
         </div>
         <div class="col-md-8">
             <StringTextBox @bind-Value="SearchData.Title" />
@@ -16,22 +16,22 @@
     <DataGrid @ref="CrudGrid" TEntity="WorkflowGroup" TableHeight="250" ConditionExpr="t => t.SubSystemKind == Subsystem">
         <Columns>
             <GridColumn Field="t => t.Title" />
-            <GridColumn Title="مدل داده ای" style="width:80px">
+            <GridColumn Title="Data model" style="width:90px">
                 <Template>
                     <IconButton Href='@($"/{Subsystem.ToString()}/WorkflowEngine/DataModel/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn Title="فرم" style="width:80px">
+            <GridColumn Title="Form" style="width:90px">
                 <Template>
                     <IconButton Href='@($"/{Subsystem.ToString()}/WorkflowEngine/WorkflowForm/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn Title="گردش کار" style="width:80px">
+            <GridColumn Title="Workflow" style="width:90px">
                 <Template>
                     <IconButton Href='@($"/{Subsystem.ToString()}/WorkflowEngine/Workflow/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn Title="نسخه چاپی" style="width:80px">
+            <GridColumn Title="Print" style="width:90px">
                 <Template>
                     <a href="@($"/Engine/WorkflowReport/{context.Data.Id}")" target="_blank">...</a>
                 </Template>
@@ -42,18 +42,18 @@
 
 </div>
 
-<Window @ref="UpsertWindow" Title="گروه گردش کار" Style="width:500px" OnOpen="() => {UpsertData.SubSystemKind = Subsystem;}">
+<Window @ref="UpsertWindow" Title="Workflow group" Style="width:500px" OnOpen="() => {UpsertData.SubSystemKind = Subsystem;}">
     <Content>
         <CaspianForm @ref="UpsertForm" Model="UpsertData">
             <div class="row c-controls ps-4 pe-4">
                 <div class="col-md-4">
-                    <label>عنوان</label>
+                    <label>Title</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Title" />
                 </div>
                 <div class="col-md-4">
-                    <label>شرح</label>
+                    <label>Description</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="3" />

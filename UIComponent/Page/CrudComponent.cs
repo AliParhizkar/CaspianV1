@@ -49,6 +49,8 @@ namespace Caspian.UI
             return scope;
         }
 
+
+
         protected override async Task OnInitializedAsync()
         {
             if (authenticationStateTask != null)

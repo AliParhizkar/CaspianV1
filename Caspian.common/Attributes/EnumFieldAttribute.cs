@@ -6,6 +6,6 @@ namespace Caspian.Common.Attributes
     {
         public string Title { get; set; }
 
-        public bool Isbitw { get; set; }
+        public bool IsBitwise { get; set; }
     }
 }

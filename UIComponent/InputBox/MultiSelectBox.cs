@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using Caspian.Common;
-using Newtonsoft.Json;
 using System.Reflection;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace Caspian.UI
 {
@@ -55,7 +55,7 @@ namespace Caspian.UI
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            var json = JsonConvert.SerializeObject(new
+            var json = JsonSerializer.Serialize(new
             {
                 errorMessage = ErrorMessage,
             });

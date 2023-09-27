@@ -10,16 +10,16 @@ namespace Caspian.Engine
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("فیلد")]
+        [DisplayName("Field")]
         public int FieldId { get; set; }
 
         [ForeignKey(nameof(FieldId))]
         public virtual DataModelField Field { get; set; }
 
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        [DisplayName("نام")]
+        [DisplayName("Name")]
         public string Name { get; set; }
     }
 }

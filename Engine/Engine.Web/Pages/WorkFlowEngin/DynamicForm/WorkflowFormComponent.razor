@@ -6,7 +6,7 @@
 <div class="p-4">
     <div class="row c-controls ps-4 pe-4">
         <div class="col-md-4">
-            <label>عنوان</label>
+            <label>Title</label>
         </div>
         <div class="col-md-8">
             <StringTextBox @bind-Value="SearchData.Title" />
@@ -14,11 +14,11 @@
     </div>
     <DataGrid @ref="CrudGrid" TEntity="WorkflowForm" Search="SearchData" TableHeight="300">
         <Columns>
-            <GridColumn Field="t => t.DataModel.Title" Title="مدل داده ای" />
-            <GridColumn Field="t => t.Title" Title="عنوان" />
-            <GridColumn Field="t => t.ColumnCount" Title="تعداد ستونها" style="width:100px" />
-            <GridColumn Field="t => t.Name" Title="نام فرم" />
-            <GridColumn Title="ایجاد فرم" style="width:80px;">
+            <GridColumn Field="t => t.DataModel.Title" Title="Data model" />
+            <GridColumn Field="t => t.Title" Title="Title" />
+            <GridColumn Field="t => t.ColumnCount" Title="Columns count" style="width:110px" />
+            <GridColumn Field="t => t.Name" Title="Name" />
+            <GridColumn Title="Form generator" style="width:120px;">
                 <Template>
                     <a href="/Engine/FormGenerator/@(context.Data.Id)" target="_blank">...</a>
                 </Template>
@@ -29,31 +29,31 @@
 
 </div>
 
-<Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:450px" OnOpen="FormOpen">
+<Window @ref="UpsertWindow" Title="Form " Style="width:500px" OnOpen="FormOpen">
     <Content>
         <CaspianForm @ref="UpsertForm" Model="UpsertData">
-            <div class="row reportSelect ps-4 pe-4 c-controls">
+            <div class="row reportSelect ps-2 pe-2 c-controls">
                 <div class="col-md-4">
-                    <label>مدل داده ای</label>
+                    <label>Data model</label>
                 </div>
                 <div class="col-md-8">
                     <ComboBox TValue="int" TEntity="DataModel" @bind-Value="UpsertData.DataModelId"
                         TextExpression="t => t.Title"/>
                 </div>
                 <div class="col-md-4">
-                    <label>عنوان</label>
+                    <label>Title</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Title" />
                 </div>
                 <div class="col-md-4">
-                    <label>تعداد ستونها</label>
+                    <label>Column count</label>
                 </div>
                 <div class="col-md-8">
                     <NumericTextBox @bind-Value="UpsertData.ColumnCount" />
                 </div>
                 <div class="col-md-4">
-                    <label>نام فرم</label>
+                    <label>Name</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Name" Style="text-align:left" />

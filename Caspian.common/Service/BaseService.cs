@@ -91,7 +91,12 @@ namespace Caspian.Common.Service
 
         public async virtual Task<ValidationResult> ValidateRemoveAsync(TEntity entity)
         {
-            return await ValidateAsync(new ValidationContext<TEntity>(entity, new PropertyChain(), new RulesetValidatorSelector("remove")));
+            var list = new List<string>()
+            {
+                "remove"
+            };
+            var result = await ValidateAsync(new ValidationContext<TEntity>(entity, new PropertyChain(), new RulesetValidatorSelector(list)));
+            return result;
         }
 
         public override Task<ValidationResult> ValidateAsync(ValidationContext<TEntity> context, CancellationToken cancellation = default)
@@ -118,10 +123,6 @@ namespace Caspian.Common.Service
             return result1.Entity;
         }
 
-        //public virtual void UpdateRange(IEnumerable<TEntity> entities)
-        //{
-        //    Context.Set<TEntity>().UpdateRange(entities);
-        //}
 
         public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
         {

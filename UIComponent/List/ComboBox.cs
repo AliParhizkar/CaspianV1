@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Caspian.Common;
-using Newtonsoft.Json;
 using System.Reflection;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
@@ -17,7 +16,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
-    public partial class ComboBox<TEntity, TValue>: ICascading, IControl, IInputValueInitializer, IListValueInitializer, IEnableLoadData where TEntity: class
+    public partial class ComboBox<TEntity, TValue>: ICascading, IControl, IInputValueInitializer, IListValueInitializer, 
+        IEnableLoadData where TEntity: class
     {
         bool LoadData;
         int pageNumber = 1;
@@ -37,82 +37,80 @@ namespace Caspian.UI
         bool focused;
         protected ElementReference input;
 
-        [Inject, JsonIgnore]
+        [Inject]
         protected IJSRuntime jsRuntime { get; set; }
 
-        [JsonIgnore]
         internal int SelectedIndex { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public IEnumerable<SelectListItem> Source { get; set; }
 
-        [CascadingParameter, JsonIgnore]
+        [CascadingParameter]
         public EditContext CurrentEditContext { get; set; }
 
-        [JsonProperty("errorMessage")]
         public string ErrorMessage { get; set; }
 
         [Parameter]
         public string Style { get; set; }
 
-        [Inject, JsonIgnore]
+        [Inject]
         public FormAppState FormAppState { get; set; }
 
-        [CascadingParameter(Name = "ParentForm"), JsonIgnore]
+        [CascadingParameter(Name = "ParentForm")]
         internal ICaspianForm CaspianForm { get; set; }
 
-        [CascadingParameter, JsonIgnore]
+        [CascadingParameter]
         public CaspianContainer Container { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public bool Pageable { get; set; } = true;
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public int PageSize { get; set; } = 30;
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public RenderFragment<TEntity> ChildContent { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public Func<IQueryable<TEntity>, string, IQueryable<TEntity>> OnDataBinding { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public EventCallback OnChanged { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public EnableLoadContiner EnableLoadContiner { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public CascadeService CascadeService { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public Expression<Func<TEntity, object>> OrderByExpression { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public Expression<Func<TEntity, string>> TextExpression { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public Expression<Func<TEntity, bool>> ConditionExpression { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public RenderFragment Template { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public TValue Value { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public EventCallback<TValue> ValueChanged { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public Expression<Func<TValue>> ValueExpression { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public string Id { get; set; }
 
-        [Parameter, JsonProperty("disabled")]
+        [Parameter]
         public bool Disabled { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public EventCallback OnChange { get; set; }
 
         async Task ToggelDropdownList()
@@ -452,7 +450,7 @@ namespace Caspian.UI
             }
         }
 
-        [Inject, JsonIgnore]
+        [Inject,]
         public IServiceProvider Provider { get; set; }
 
         async Task DataBinding()
@@ -571,17 +569,6 @@ namespace Caspian.UI
         public async Task FocusAsync()
         {
             await input.FocusAsync();
-        }
-
-        protected string ConvertToJson()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
-
-        protected override void OnAfterRender(bool firstRender)
-        {
-            //Cascade?.Cascade?.CascadTo(typeof(TEntity), Value);
-            base.OnAfterRender(firstRender);
         }
 
         public async Task IncPageNumber()

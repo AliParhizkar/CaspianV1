@@ -180,7 +180,7 @@
                 PrintParam.Member = PrintParam.TitleEn;
             }
             updateData = false;
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(PrintParam);
+            var json = System.Text.Json.JsonSerializer.Serialize(PrintParam);
             await jsRundTime.InvokeVoidAsync("$.report.updateTextWindowData", PrintParam);
             Status = WindowStatus.Close;
             await StatusChanged.InvokeAsync(Status);

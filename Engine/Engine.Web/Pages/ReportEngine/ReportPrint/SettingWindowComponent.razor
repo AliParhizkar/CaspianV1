@@ -145,7 +145,7 @@
         }
         if (updateSetting)
         {
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(Setting);
+            var json = System.Text.Json.JsonSerializer.Serialize(Setting);
             await jSRuntime.InvokeVoidAsync("$.report.addBonds", json);
         }
         updateSetting = false;

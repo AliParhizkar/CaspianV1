@@ -123,11 +123,6 @@
             await StatusChanged.InvokeAsync(WindowStatus.Close);
     }
 
-    protected string ConvertToJson()
-    {
-        return JsonConvert.SerializeObject(this);
-    }
-
     protected override void OnInitialized()
     {
         if (CrudComponent != null)

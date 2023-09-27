@@ -142,32 +142,13 @@
         this.id = $(element).attr('id');
         let thisObj = this;
         this.element = element;
-        let self = this;
-        let $element = this.$element = $(element)
-            .bind({
-                focus: function (e) {
-                    let input = e.target;
-                    setTimeout(function () {
-                        if ($.browser.msie)
-                            input.select();
-                        else {
-                            input.selectionStart = 0;
-                            input.selectionEnd = input.value.length;
-                        }
-                    }, 10);
-                    $(input).parent().removeClass('t-state-hover');
-                },
-                keyup: function (e) {
-                    thisObj.keyIsOperate = false;
-                }
-            }).bind("paste", $.proxy(this._paste, this));
+    
         this.keyIsOperate = false;
         $(element).unbind("keypress.input");
         $(element).bind("keypress.input", e => {
             let isValid = false, total = this.total, digits = this.digits, selection = $(element).getSelection();
             let code = e.keyCode;
             let value = $(element).val();
-            console.log(total);
             if (code == 46 && digits) {
                 let remain = value.length - selection.end;
                 if (remain <= digits && value.indexOf('.') == -1)

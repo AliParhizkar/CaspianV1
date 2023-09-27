@@ -5,8 +5,6 @@ namespace Caspian.UI
 {
     public class TreeViewCascadeData
     {
-        Action<Type , object > LoadData { get; set; }
-
-        public RenderFragment<TreeViewItem> Template { get; set; }
+        public RenderFragment<TreeViewItem> AfterNodeTemplate { get; set; }
     }
 }

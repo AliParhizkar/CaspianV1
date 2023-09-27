@@ -1,4 +1,6 @@
-﻿@using Engine.Service.CaspianCodeEditor;
+﻿@using Engine.Service.CodeTokenizer;
+@using Engine.Service.CaspianCodeEditor;
+
 @namespace Engine.CaspianCodeEditor
 @inject IJSRuntime jSRuntime
 <div id="caspianCodeGenerator" @ref="element"></div>
@@ -21,7 +23,8 @@
         if (firstRender)
         {
             var dotnet = DotNetObjectReference.Create(this);
-            await jSRuntime.InvokeVoidAsync("$.caspian.bindCodeEditor", Source, dotnet, Readonly, LineNumber, Column);
+            var data = new Tokenizer().GetTokenizeData(Source);
+            await jSRuntime.InvokeVoidAsync("$.caspian.bindCodeEditor", Source, dotnet, Readonly, LineNumber, Column, data);
         }
         else if (Source != null && Source.Length != oldSourceLength && !updatedFromClient)
         {
@@ -29,6 +32,13 @@
             await jSRuntime.InvokeVoidAsync("$.caspian.setEditorCode", Source);
         }
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable]
+    public TokenData[] GetTokensAsync(string source)
+    {
+        var data = new Tokenizer().GetTokenizeData(Source).ToArray();
+        return data;
     }
 
     [JSInvokable]

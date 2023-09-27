@@ -7,27 +7,38 @@
         OnChange="UpdateControlData" OnEventHandlerCreated="async t => await OnEventHandlerCreated.InvokeAsync(t)"  />
     <div class="c-form-designer">
         <div class="c-tools-bar">
-            <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="async info => await AddControl(info)" OnFieldSelect="field => AddControl(field)" />
-            <button @onclick="RemoveSelectedControl" class="w-button w-ctr-delete" title="حذف کنترل"></button>
-            <div class="w-seprator"></div>
+            <div class="flex-container">
+                <PropertySelector @ref="propertySelector" WorkflowFormId="WorkflowFormId" OnPropertySelect="async info => await AddControl(info)" OnFieldSelect="field => AddControl(field)" />
+                <div>
+                    <button @onclick="RemoveSelectedControl" class="w-button w-ctr-delete" title="حذف کنترل"></button>
+                </div>
+                <div class="w-seprator"></div>
+            </div>
             <div>
                 <button @onclick="AddRowToDown" class="w-button w-row-down" title="افزودن یک ردیف در پایین"></button>
                 <button @onclick="AddRowToTop" class="w-button w-row-up" title="افزودن یک ردیف در بالا"></button>
                 <button @onclick="DeleteSelectedRow" class="w-button w-row-delete" title="حذف ردیف"></button>
                 <div class="w-seprator"></div>
+            </div>
+            <div>
                 <button @onclick="AddInnerRowToTop" class="w-button w-innerrow-up" title="افزودن یک ردیف داخلی در بالا"></button>
                 <button @onclick="AddInnerRowToDown" class="w-button w-innerrow-down" title="افزودن یک ردیف داخلی در پایین"></button>
                 <button @onclick="RemoveInnerRow" class="w-button w-innerrow-delete" title="حذف ردیف داخلی"></button>
                 <div class="w-seprator"></div>
+            </div>
+            <div>
                 <button @onclick="MergeSelectedColumns" class="w-button w-merge" title="ادغام سطرها"></button>
                 <button @onclick="UnmergeSelectedColumns" class="w-button w-split" title="ادغام ستونها"></button>
                 <div class="w-seprator"></div>
+            </div>
+            <div>
                 <button @onclick="AddColumn" class="w-button w-col-right" title="افزودن یک ستون در راست"></button>
                 <button @onclick="AddColumn" class="w-button w-col-left" title="افزودن یک ستون در چپ"></button>
                 <button class="w-button w-col-delete" title="حذف ستون"></button>
                 <div class="w-seprator"></div>
+            </div>
+            <div>
                 <button @onclick="SaveCodeAndView" class="w-button" title="ثبت همه">ثبت</button>
-                <div class="w-seprator"></div>
                 <button class="w-button" @onclick="ToggleWindowStatus">Run</button>
             </div>
         </div>

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -7,13 +7,13 @@ namespace Caspian.UI
 {
     partial class DataGrid<TEntity> : ComponentBase
     {
-        [Inject, JsonIgnore]
+        [Inject]
         public ProtectedSessionStorage storage { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public bool PersistState { get; set; }
 
-        [Parameter, JsonIgnore]
+        [Parameter]
         public EventCallback<TEntity> SearchChanged { get; set; }
 
         protected override async Task OnInitializedAsync()
@@ -24,7 +24,7 @@ namespace Caspian.UI
                 var result = await storage.GetAsync<string>(name);
                 if (result.Success)
                 {
-                    var data = JsonConvert.DeserializeObject<GridSPersistStateData<TEntity>>(result.Value);
+                    var data = JsonSerializer.Deserialize<GridSPersistStateData<TEntity>>(result.Value);
                     PageNumber = data.PageNumber;
                     Search = data.Search;
                     SelectedRowIndex = data.SelectedRowIndex;
@@ -46,12 +46,7 @@ namespace Caspian.UI
                     Search = Search,
                     SelectedRowIndex = SelectedRowIndex
                 };
-                var setting = new JsonSerializerSettings()
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    DefaultValueHandling = DefaultValueHandling.Ignore
-                };
-                var json = JsonConvert.SerializeObject(data, setting);
+                var json = JsonSerializer.Serialize(data);
                 await storage.SetAsync(name, json);
             }
         }

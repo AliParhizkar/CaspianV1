@@ -139,13 +139,14 @@
     {
         if (isUpdate)
         {
-            ///در حالت ویرایش
+            ///Edit mode
             var organUnitId = Convert.ToInt32(nodeView.Value);
             using var service = CreateScope().GetService<OrganUnitService>();
             organUnit = await service.SingleAsync(organUnitId);
         }
         else
         {
+            ///Insert mode
             organUnit = new OrganUnit();
             organUnit.ActiveType = ActiveType.Enable;
             organUnit.ParentOrganId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);

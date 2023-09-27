@@ -33,9 +33,6 @@
     <Reference Include="Microsoft.EntityFrameworkCore.SqlServer">
       <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore.sqlserver\5.0.1\lib\netstandard2.1\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\.nuget\packages\newtonsoft.json\13.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Linq.Dynamic.Core">
       <HintPath>..\..\..\..\.nuget\packages\system.linq.dynamic.core\1.2.18\lib\net6.0\System.Linq.Dynamic.Core.dll</HintPath>
     </Reference>

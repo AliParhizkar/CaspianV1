@@ -212,13 +212,13 @@
 }
 
 .d-tree-icon {
-    vertical-align: -webkit-baseline-middle;
+    vertical-align: middle;
     cursor: pointer;
 }
 
     .d-tree-icon .fa-plus {
         color: #0dcaf0 !important;
-
+        vertical-align:middle;
     }
 
     .d-tree-icon .fa {
@@ -282,7 +282,6 @@
 .d-document{
     background-color:white;
     padding:8px;
-    min-height:350px;
 }
     .d-document span{
         user-select: auto;

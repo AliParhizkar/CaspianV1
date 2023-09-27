@@ -302,7 +302,7 @@
             Value = t.Id.ToString()
         }).ToListAsync();
         countries.Add(new SelectListItem("1256985", "Invalid Country"));
-        countryTitle = (await new CountryService(scope.ServiceProvider).GetAll().FirstOrDefaultAsync()).Title;
+        countryTitle = (await scope.GetService<CountryService>().GetAll().FirstOrDefaultAsync()).Title;
         await base.OnInitializedAsync();
     }
 

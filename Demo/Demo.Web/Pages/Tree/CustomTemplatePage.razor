@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-md-6">
                     <TreeView TEntity="TreeViewItem" style="height:500px" Source="source">
-                        <Template>
+                        <AfterNodeTemplate>
                             <TreeNodeTemplate Level="1">
                                 <span class=" d-tree-icon d-tree-add">
                                     <span @onclick="() => ShowEditForm(context, false)" class="fa fa-plus"></span>
@@ -33,7 +33,7 @@
                                     <span class="fa fa-trash"></span>
                                 </span>
                             </TreeNodeTemplate>
-                        </Template>
+                        </AfterNodeTemplate>
                     </TreeView>
                 </div>
             </div>

@@ -4,20 +4,19 @@ using System.ComponentModel;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
-using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Engine;
-using System.Runtime.CompilerServices;
-using System.Linq.Dynamic.Core;
-using FluentValidation.Validators;
-using System.Text.RegularExpressions;
+using Caspian.Common.Attributes;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Metrics;
 
 namespace Caspian.Common
 {
     public static class CaspianValidatorExtensions
     {
-        public static IRuleBuilderInitial<TModel, TProperty> Custom<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> Custom<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             Func<TModel, bool> func, string message)
         {
             return ruleBuilder.Custom((value, context) =>
@@ -27,7 +26,7 @@ namespace Caspian.Common
             });
         }
 
-        public static IRuleBuilderInitial<TModel, TProperty> CustomAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> CustomAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             Func<TModel, Task<bool>> func, string message)
         {
             return ruleBuilder.CustomAsync(async (value, context, token) =>
@@ -37,7 +36,7 @@ namespace Caspian.Common
             });
         }
 
-        public static IRuleBuilderInitial<TModel, TProperty> CustomValue<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> CustomValue<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             Func<TProperty, bool> func, string message)
         {
             return ruleBuilder.Custom((value, context) =>
@@ -47,32 +46,19 @@ namespace Caspian.Common
             });
         }
 
-        //public static IRuleBuilderInitial<TModel, TProperty> IgnoreForeignKey<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
-        //    Action<ForeignKeyValidationConfig<TModel, TProperty>> config) where TModel : class
-        //{
-            
-        //    return ruleBuilder.Custom((value, context) =>
-        //    {
-        //        var validatiorConfig = new ForeignKeyValidationConfig<TModel, TProperty>();
-        //        config.Invoke(validatiorConfig);
-        //        if (!context.ParentContext.RootContextData.ContainsKey("__IgnoreForeignKey"))
-        //            context.ParentContext.RootContextData.Add("__IgnoreForeignKey", validatiorConfig);
-        //    });
-        //}
-
-        public static Language GetLanguage(this CustomContext context)
+        public static Language GetLanguage<TModel>(this ValidationContext<TModel> context)
         {
-            Language language = Language.Fa;
-            if (context.ParentContext.RootContextData.ContainsKey("__ServiceScope"))
+            Language language = Language.En;
+            if (context.RootContextData.ContainsKey("__ServiceScope"))
             {
-                var provider = context.ParentContext.RootContextData["__ServiceScope"] as IServiceProvider;
+                var provider = context.RootContextData["__ServiceScope"] as IServiceProvider;
                 var service = provider.GetService<CaspianDataService>();
                 language = service.Language ?? Language.Fa;
             }
             return language;
         }
 
-        public static IRuleBuilderInitial<TModel, TProperty> Required<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, 
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> Required<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, 
             Func<TModel, bool> func = null, string message = null)
         {
             return ruleBuilder.Custom((value, context) =>
@@ -83,7 +69,7 @@ namespace Caspian.Common
                     value = default(TProperty);
                 if ((value == null) && func?.Invoke((TModel)context.InstanceToValidate) != false)
                 {
-                    var attr = typeof(TModel).GetProperty(context.DisplayName).GetCustomAttribute<DisplayNameAttribute>();
+                    var attr = typeof(TModel).GetMyProperty(context.PropertyPath).GetCustomAttribute<DisplayNameAttribute>();
                     var name = attr == null ? context.DisplayName : attr.DisplayName;
                     if (language == Language.Fa)
                         message = message ?? $"لطفا {name} را مشخص نمایید";
@@ -94,7 +80,7 @@ namespace Caspian.Common
             });
         }
 
-        public static IRuleBuilderInitial<TModel, TProperty> Range<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, TProperty min, TProperty max, string message = null) where TProperty : IComparable
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> Range<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, TProperty min, TProperty max, string message = null) where TProperty : IComparable
         {
             return ruleBuilder.Custom((value, context) =>
             {
@@ -110,7 +96,7 @@ namespace Caspian.Common
             });
         }
 
-        public static IRuleBuilderInitial<TModel, string> MobileNumber<TModel>(this IRuleBuilder<TModel, string> ruleBuilder)
+        public static IRuleBuilderOptionsConditions<TModel, string> MobileNumber<TModel>(this IRuleBuilder<TModel, string> ruleBuilder)
         {
             return ruleBuilder.Custom((mobileNumber, context) =>
             {
@@ -129,7 +115,7 @@ namespace Caspian.Common
             });
         }
 
-        public static IRuleBuilderInitial<TModel, string> TelNumber<TModel>(this IRuleBuilder<TModel, string> ruleBuilder)
+        public static IRuleBuilderOptionsConditions<TModel, string> TelNumber<TModel>(this IRuleBuilder<TModel, string> ruleBuilder)
         {
             return ruleBuilder.Custom((telNumber, context) =>
             {
@@ -144,7 +130,7 @@ namespace Caspian.Common
             });
         }
 
-        public static IRuleBuilderInitial<TModel, TProperty> ShortTelNumber<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder)
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> ShortTelNumber<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder)
         {
             return ruleBuilder.Custom((telNumber, context) =>
             {
@@ -155,24 +141,6 @@ namespace Caspian.Common
                         context.AddFailure("شماره تلفن باید 8 رقم باشد و با صفر شروع نشود.");
                 }
             });
-        }
-
-
-        static async Task<Expression> CreateExpression<TModel>(ParameterExpression param, TModel model, Expression expr, IServiceScope scope)
-        {
-            if (expr == null)
-                return null;
-            if (expr.NodeType == ExpressionType.Lambda)
-                expr = (expr as LambdaExpression).Body;
-            if (expr.NodeType == ExpressionType.Convert)
-                expr = (expr as UnaryExpression).Operand;
-            var info = (expr as MemberExpression).Member as PropertyInfo;
-            if (info.PropertyType.IsNullableType())
-                expr = Expression.Property(expr, "Value");
-            var value = await GetValue<TModel>(model, expr as MemberExpression, scope);
-            if (value != null)
-                return Expression.Equal(param.ReplaceParameter(expr), Expression.Constant(value));
-            return null;
         }
 
         static async Task<object> GetValue<TModel>(TModel model, MemberExpression expr, IServiceScope scope)
@@ -209,35 +177,55 @@ namespace Caspian.Common
             return result.FirstOrDefault();
         }
 
-        public static IRuleBuilderOptions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             string errorMessage) where TModel: class
         {
             return ruleBuilder.UniqAsync(null, null, null, errorMessage);
         }
 
-        public static IRuleBuilderOptions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             Expression<Func<TModel, object>> expr1, string errorMessage) where TModel: class
         {
             return ruleBuilder.UniqAsync(expr1, null, null, errorMessage);
         }
 
-        public static IRuleBuilderOptions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             Expression<Func<TModel, object>> expr1, Expression<Func<TModel, object>> expr2, string errorMessage) where TModel: class
         {
             return ruleBuilder.UniqAsync(expr1, expr2, null, errorMessage);
         }
 
-        public static IRuleBuilderOptions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, 
+        static async Task<Expression> CreateExpression<TModel>(ParameterExpression param, TModel model, Expression expr, IServiceScope scope)
+        {
+            if (expr == null)
+                return null;
+            if (expr.NodeType == ExpressionType.Lambda)
+                expr = (expr as LambdaExpression).Body;
+            if (expr.NodeType == ExpressionType.Convert)
+                expr = (expr as UnaryExpression).Operand;
+            var info = (expr as MemberExpression).Member as PropertyInfo;
+            if (info.PropertyType.IsNullableType())
+                expr = Expression.Property(expr, "Value");
+            var value = await GetValue<TModel>(model, expr as MemberExpression, scope);
+            if (value != null)
+                return Expression.Equal(param.ReplaceParameter(expr), Expression.Constant(value));
+            return null;
+        }
+
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, 
             Expression<Func<TModel, object>> expr1, Expression<Func<TModel, object>> expr2,
             Expression<Func<TModel, object>> expr3, string errorMessage) where TModel:class
         {
-            return ruleBuilder.MustAsync(async (model, pro, contex, token) =>
+            return ruleBuilder.CustomAsync(async (value, context, token) =>
             {
-                if (pro == null)
-                    return true;
-                var scope1 = (IServiceScope)contex.ParentContext.RootContextData["__ServiceScope"];
-                var param = contex.Rule.Expression.Parameters[0];
-                Expression left = await CreateExpression(param, model, contex.Rule.Expression.Body, scope1);
+                if (value == null)
+                    return;
+                var model = context.InstanceToValidate;
+                
+                var scope1 = (IServiceScope)context.RootContextData["__ServiceScope"];
+                var param = Expression.Parameter(typeof(TModel), "t");
+                Expression expr = param.CreateMemberExpresion(context.PropertyPath);
+                Expression left = await CreateExpression(param, model, expr, scope1);
                 var tempexpr = await CreateExpression(param, model, expr1, scope1);
                 if (tempexpr != null)
                 {
@@ -269,22 +257,112 @@ namespace Caspian.Common
                     keyExpr = Expression.NotEqual(keyExpr, Expression.Constant(pKey.GetValue(model)));
                     left = Expression.And(left, keyExpr);
                 }
+                var isValid = false;
                 Expression<Func<TModel, bool>> lambda = Expression.Lambda(left, param) as Expression<Func<TModel, bool>>;
-                if (contex.ParentContext.RootContextData.ContainsKey("__ServiceScopeFactory"))
+                if (context.RootContextData.ContainsKey("__ServiceScopeFactory"))
                 {
-                    using var scope = ((IServiceScopeFactory)contex.ParentContext.RootContextData["__ServiceScopeFactory"])
+                    using var scope = ((IServiceScopeFactory)context.RootContextData["__ServiceScopeFactory"])
                         .CreateScope();
-                    var service = new BaseService<TModel>(scope.ServiceProvider);
-                    return !await service.GetAll(default(TModel)).AnyAsync(lambda);
+                    var service = scope.GetService<BaseService<TModel>>();
+                    isValid = !await service.GetAll(default(TModel)).AnyAsync(lambda);
                 }
-                var service1 = new BaseService<TModel>(scope1.ServiceProvider);
-                return !await service1.GetAll(default(TModel)).AnyAsync(lambda);
-            }).WithMessage(errorMessage);
+                var service1 = scope1.GetService<BaseService<TModel>>();
+                isValid = !await service1.GetAll(default(TModel)).AnyAsync(lambda);
+                if (!isValid)
+                    context.AddFailure(errorMessage);
+            });
         }
 
-        public static IRuleBuilder<TModel, TProperty> CheckForeignKeyAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, PropertyInfo info, PropertyInfo infoId) where TModel : class
+        public static void CheckForeignKeyOnRemove<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder)
         {
-            return ruleBuilder.CustomAsync(async (value, context, token) => 
+            ruleBuilder.CustomAsync(async (value, context, token) =>
+            {
+                foreach (var info in typeof(TModel).GetProperties())
+                {
+                    if (info.PropertyType.IsEnumerableType() && info.PropertyType != typeof(string) && info.PropertyType != typeof(byte[]))
+                    {
+                        var attr = info.GetCustomAttribute<CheckOnDeleteAttribute>();
+                        if (attr == null)
+                            throw new CaspianException("خطا: On type " + info.DeclaringType.Name + " property " + info.Name + " must has CheckOnDelete Attribute", 5);
+                        if (!attr.Check)
+                            continue;
+                        var type = info.PropertyType.GetGenericArguments()[0];
+                        var pkey = type.GetPrimaryKey();
+                        var foreignKey = pkey.GetCustomAttribute<ForeignKeyAttribute>();
+                        if (foreignKey != null)
+                        {
+                            type = type.GetProperty(foreignKey.Name).PropertyType;
+                        }
+                        else
+                        {
+                            var serviceType = typeof(BaseService<>).MakeGenericType(type);
+                            var scope1 = (IServiceScope)context.RootContextData["__ServiceScope"];
+                            var service = Activator.CreateInstance(serviceType, scope1.ServiceProvider) as IBaseService;
+                            var hasDetails = await service.AnyAsync(Convert.ToInt32(value));
+                            if (hasDetails)
+                            {
+                                context.AddFailure(attr.ErrorMessage);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        public static void CheckEnum<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, PropertyInfo info)
+        {
+            ruleBuilder.Custom((value, context) =>
+            {
+                if (value != null)
+                {
+                    bool isValid = false, isBitwise = false; ; var tempValue = Convert.ToInt64(value);
+                    if (Enum.IsDefined(info.PropertyType, value))
+                        isValid = true;
+                    else
+                    {
+                        var attr = info.PropertyType.GetUnderlyingType().GetCustomAttribute<EnumTypeAttribute>();
+                        isBitwise = attr?.IsBitwise == true;
+                        if (isBitwise)
+                        {
+                            var fields = info.PropertyType.GetFields().Where(t => !t.IsSpecialName);
+                            var max = Convert.ToInt64(fields.Max(t => t.GetValue(null)));
+                            if (tempValue >= 0 && tempValue < 2 * max)
+                                isValid = true;
+                        }
+                    }
+                    if (!isValid)
+                    {
+                        var attr = info.GetCustomAttribute<DisplayNameAttribute>();
+                        var name = attr?.DisplayName ?? info.Name;
+                        string message = null;
+                        var language = context.GetLanguage();
+                        if (tempValue == 0)
+                        {
+                            if (!isBitwise)
+                            {
+                                if (language == Language.En)
+                                    message = attr == null ? $"Please specify the value of the field{name}" : $"Please specify {name}";
+                                else
+                                    message = attr == null ? "" : $"لطفا {name} را مشخص نمایید.";
+                            }
+                        }
+                        else
+                        {
+                            if (language == Language.Fa)
+                                message = $"مقدار {tempValue} برای نوع شمارشی {info.PropertyType.Name} نامعتبر است";
+                            else
+                                message = $"Value {tempValue} is invalid for {info.PropertyType.Name}";
+                        }
+                        context.AddFailure(message);
+                    }
+                }
+            });
+        }
+
+        public static void CheckForeignKeyAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, PropertyInfo info, PropertyInfo infoId) where TModel : class
+        {
+            ruleBuilder.CustomAsync(async (value, context, token) =>
             {
                 if (value != null)
                 {
@@ -294,10 +372,10 @@ namespace Caspian.Common
                     if (value.Equals(0))
                     {
                         var flag = false;
-                        if (context.ParentContext.RootContextData.ContainsKey("__IgnorePropertyInfo"))
+                        if (context.RootContextData.ContainsKey("__IgnorePropertyInfo"))
                         {
-                            var info = context.ParentContext.RootContextData["__IgnorePropertyInfo"] as PropertyInfo;
-                            var MastreId = Convert.ToInt32(context.ParentContext.RootContextData["__MasterId"]);
+                            var info = context.RootContextData["__IgnorePropertyInfo"] as PropertyInfo;
+                            var MastreId = Convert.ToInt32(context.RootContextData["__MasterId"]);
                             if (info == infoId && MastreId == 0)
                                 flag = true;
                         }
@@ -312,16 +390,16 @@ namespace Caspian.Common
                     else
                     {
                         bool result = false;
-                        if (context.ParentContext.RootContextData.ContainsKey("__ServiceScopeFactory"))
+                        if (context.RootContextData.ContainsKey("__ServiceScopeFactory"))
                         {
-                            using var scope = ((IServiceScopeFactory)context.ParentContext.RootContextData["__ServiceScopeFactory"]).CreateScope();
+                            using var scope = ((IServiceScopeFactory)context.RootContextData["__ServiceScopeFactory"]).CreateScope();
                             var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
                             var service = scope.ServiceProvider.GetService(serviceType) as IBaseService;
                             result = await service.AnyAsync(Convert.ToInt32(value));
                         }
                         else
                         {
-                            var scope = (IServiceScope)context.ParentContext.RootContextData["__ServiceScope"];
+                            var scope = (IServiceScope)context.RootContextData["__ServiceScope"];
                             var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
                             var service = scope.ServiceProvider.GetService(serviceType) as IBaseService;
                             result = await service.AnyAsync(Convert.ToInt32(value));
@@ -340,7 +418,7 @@ namespace Caspian.Common
             });
         }
 
-        public static IRuleBuilderInitial<TModel, string> CallNumber<TModel>(this IRuleBuilder<TModel, string> ruleBuilder)
+        public static IRuleBuilderOptionsConditions<TModel, string> CallNumber<TModel>(this IRuleBuilder<TModel, string> ruleBuilder)
         {
             return ruleBuilder.Custom((callNumber, context) =>
             {
@@ -353,7 +431,7 @@ namespace Caspian.Common
             });
         }
 
-        public static IRuleBuilderInitial<TModel, TProperty> Unless<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> Unless<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             Expression<Func<TModel, bool>> expression, string message)
         {
             return ruleBuilder.Custom((value, context) =>

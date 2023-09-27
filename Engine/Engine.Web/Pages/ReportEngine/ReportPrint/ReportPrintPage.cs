@@ -1,7 +1,6 @@
 ﻿using Caspian.UI;
 using Caspian.Common;
 using ReportUiModels;
-using Newtonsoft.Json;
 using System.Xml.Linq;
 using System.Reflection;
 using Microsoft.JSInterop;
@@ -9,6 +8,7 @@ using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
+using System.Text.Json;
 
 namespace Caspian.Engine.ReportPrint
 {
@@ -33,7 +33,7 @@ namespace Caspian.Engine.ReportPrint
             {
                 var path = Assembly.GetExecutingAssembly().GetMapPath() + "\\Data\\Report\\JsonFile\\" + GuId + ".json";
                 var json = File.ReadAllText(path);
-                Page = JsonConvert.DeserializeObject<ReportUiModels.ReportPrintPage>(json);
+                Page = JsonSerializer.Deserialize<ReportUiModels.ReportPrintPage>(json);
                 UnescapeDataString(Page);
             }
             using var scope = ServiceScopeFactory.CreateScope();

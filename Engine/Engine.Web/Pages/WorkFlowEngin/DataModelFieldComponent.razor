@@ -16,9 +16,9 @@
             <GridColumn Field="t => t.EntityFullName" />
             <GridColumn Field="t => t.FieldName" />
             <GridColumn Field="t => t.FieldType.EnumText()" />
-            <GridColumn Field="t => t.EntityType.Title" Title="نوع موجودیت" />
-            <GridColumn Field="t => t.IsDetails" style="text-align:center" Title="بصورت جزئیات" />
-            <GridColumn style="width:80px;" Title="گزینه ها">
+            <GridColumn Field="t => t.EntityType.Title" Title="Entity type" />
+            <GridColumn Field="t => t.IsDetails" style="text-align:center" Title="Collection" />
+            <GridColumn style="width:80px;" Title="Options">
                 <Template>
                     <IconButton Disabled="context.Data.FieldType != DataModelFieldType.MultiOptions" Href='@($"/{Subsystem.ToString()}/WorkflowEngine/DataModelOption/{context.Data.Id}")' IconType="IconType.Wpforms"  />
                 </Template>
@@ -28,44 +28,44 @@
     </DataGrid>
 </div>
 
-<Window @ref="UpsertWindow" Title="مشخصات فرم" Style="width:500px" OnOpen="FormOpen">
+<Window @ref="UpsertWindow" Title="Data model fields" Style="width:500px" OnOpen="FormOpen">
     <Content>
         <CaspianForm @ref="UpsertForm" Model="UpsertData">
             <div class="row ps-4 pe-4 c-controls">
                 <div class="col-md-4">
-                    <label>نام موجودیت</label>
+                    <label>Entity name</label>
                 </div>
                 <div class="col-md-8">
                     <ComboBox @bind-Value="UpsertData.EntityFullName" TValue="string" TEntity="SelectListItem" 
                         Source="workflowEntityTypes" Disabled="UpsertData.FieldType.HasValue" OnChanged="SetFieldData" />
                 </div>
                 <div class="col-md-4">
-                    <label>نوع فیلد</label>
+                    <label>Field type</label>
                 </div>
                 <div class="col-md-8">
                     <DropdownList @bind-Value="UpsertData.FieldType" Disabled="UpsertData.EntityFullName.HasValue()" />
                 </div>
                 <div class="col-md-4">
-                    <label>نام فارسی</label>
+                    <label>Title</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Title" />
                 </div>
                 <div class="col-md-4">
-                    <label>عنوان لاتین فیلد</label>
+                    <label>Field name</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.FieldName" />
                 </div>
                 <div class="col-md-4">
-                    <label>نوع موجودیت</label>
+                    <label>Entity type</label>
                 </div>
                 <div class="col-md-8">
                     <ComboBox TValue="int?" TEntity="Caspian.Engine.EntityType" @bind-Value="UpsertData.EntityTypeId"
                         TextExpression="t => t.Title" Disabled="UpsertData.FieldType != DataModelFieldType.Relational"/>
                 </div>
                 <div class="col-md-4">
-                    <label>بصورت لیست</label>
+                    <label>Collection</label>
                 </div>
                 <div class="col-md-8">
                     <CheckBox @bind-Value="UpsertData.IsDetails" />

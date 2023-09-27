@@ -12,6 +12,9 @@
 .ms-drop ul li label input[type=checkbox]{
     margin-top:-3px;
 }
+.flex-container{
+    display:flex;
+}
 /*************************************************************/
 .timePicker {
     width: 70px !important;

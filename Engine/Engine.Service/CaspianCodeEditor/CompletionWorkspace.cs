@@ -63,7 +63,23 @@ namespace Engine.Service.CaspianCodeEditor
             return new CompletionWorkspace() { _workspace = workspace, _project = project, _metadataReferences = references };
         }
 
-        public async Task<CompletionDocument> CreateDocument(string source, string codeBehind)
+        public async Task<CompletionDocument> CreateDocumentCodeCheck(string source, string codeBehind)
+        {
+            _workspace.AddDocument(_project.Id, "Codebehind.cs", SourceText.From(codeBehind));
+            var document = _workspace.AddDocument(_project.Id, "SourceFile.cs", SourceText.From(source));
+            _workspace.TryApplyChanges(document.Project.Solution);
+            var st = await document.WithText(SourceText.From(source)).GetSyntaxTreeAsync();
+            var compilation = CSharpCompilation.Create("Temp", new[] { st },
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                references: _metadataReferences);
+            using var temp = new MemoryStream();
+            var result = compilation.Emit(temp);
+            var semanticModel = compilation.GetSemanticModel(st, true);
+
+            return new CompletionDocument(document, semanticModel, result);
+        }
+
+        public async Task<CompletionDocument> CreateDocumentComplete(string source, string codeBehind)
         {
             _workspace.AddDocument(_project.Id, "Codebehind.cs", SourceText.From(codeBehind));
             var document = _workspace.AddDocument(_project.Id, "SourceFile.cs", SourceText.From(source));

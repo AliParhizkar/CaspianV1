@@ -29,8 +29,10 @@ namespace Caspian.UI
         [CascadingParameter]
         internal IAutoCompleteTree AutoComplete { get; set; }
 
+
+
         [Parameter]
-        public RenderFragment<TreeViewItem> Template { get; set; }
+        public RenderFragment<TreeViewItem> AfterNodeTemplate { get; set; }
 
         [Parameter]
         public IList<string> SelectedNodesValue { get; set; }
@@ -255,7 +257,7 @@ namespace Caspian.UI
         {
             if (CascadeData == null)
                 CascadeData = new TreeViewCascadeData();
-            CascadeData.Template = Template;
+            CascadeData.AfterNodeTemplate = AfterNodeTemplate;
             if (ParentNodeFilterFunc != null)
                 parentNodeFilterFunc = ParentNodeFilterFunc;
             base.OnParametersSet();

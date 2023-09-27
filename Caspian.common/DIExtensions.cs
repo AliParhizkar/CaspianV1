@@ -1,4 +1,5 @@
 ﻿using Caspian.Common.Service;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Common
@@ -7,7 +8,7 @@ namespace Caspian.Common
     {
         public static TService GetService<TService>(this IServiceScope scope) where TService : class
         {
-            var type = typeof(TService).BaseType;
+            var type = typeof(TService);
             while(type != typeof(object))
             {
                 if (type.IsGenericType)
@@ -28,6 +29,12 @@ namespace Caspian.Common
                         {
                             var interfaceType = typeof(IBaseService<>).MakeGenericType(genericType);
                             return scope.ServiceProvider.GetService(interfaceType) as TService;
+                        }
+                        if (type == typeof(AbstractValidator<>).MakeGenericType(genericType))
+                        {
+                            var interfaceType = typeof(IValidator<>).MakeGenericType(genericType);
+                            return scope.ServiceProvider.GetService(interfaceType) as TService;
+                            
                         }
                     }
 

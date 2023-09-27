@@ -6,6 +6,7 @@
 @inject AuthenticationStateProvider stateProvider
 @inject NavigationManager navigationManager
 @inject ProtectedSessionStorage Storege
+@inject IHostEnvironment host
 <div class="c-login">
     <span class="c-icon"></span>
     <div class="c-form">
@@ -32,6 +33,7 @@
 
     async Task Login()
     {
+
         if (!userName.HasValue() || !password.HasValue())
             message = "Username or password is invalid.";
         else

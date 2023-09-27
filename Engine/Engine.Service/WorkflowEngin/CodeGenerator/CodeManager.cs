@@ -156,4 +156,20 @@ namespace Caspian.Engine.Service
             return list;
         }
     }
+
+    //public class Token
+    //{
+    //    public int Line { get; set; }
+
+    //    public int StartIndex { get; set; }
+
+
+    //}
+
+    //public enum TokenType
+    //{
+    //    Simple, 
+
+    //    Keyword
+    //}
 }

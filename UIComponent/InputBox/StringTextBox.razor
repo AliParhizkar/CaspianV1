@@ -99,26 +99,29 @@
         return base.OnParametersSetAsync();
     }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public int? MaxLength { get; set; }
 
-    [Parameter, JsonProperty("multiLine")]
+    [Parameter]
     public bool MultiLine { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public int? Cols { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public int? Rows { get; set; }
 
-    [JsonProperty("type")]
     public string Type { get; set; } = "string";
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        var json = this.ConvertToJson();
-        Focused = false;
-        await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, json, UiControlType.TextBox);
+        var data = new
+        {
+            focused = Focused,
+            multiLine = MultiLine,
+            total = this.MaxLength
+        };
+        //await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, System.Text.Json.JsonSerializer.Serialize(data), UiControlType.TextBox);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

@@ -16,58 +16,56 @@
 
     //protected IDictionary<string, object> Attributes;
 
-    [Inject, JsonIgnore]
+    [Inject]
     public FormAppState FormAppState { get; set; }
 
-    [JsonProperty("errorMessage")]
     public string ErrorMessage { get; set; }
 
-    [Parameter, JsonProperty("bindingType")]
     public BindingType BindingType { get; set; } = BindingType.OnChange;
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public Type DynamicType { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public bool Required { get; set; }
 
-    [CascadingParameter, JsonIgnore]
+    [CascadingParameter]
     public EditContext CurrentEditContext { get; set; }
 
     [Parameter]
     public bool Focused { get; set; }
 
-    [Inject, JsonIgnore]
+    [Inject]
     protected IJSRuntime jsRuntime { get; set; }
 
-    [Parameter(CaptureUnmatchedValues = true), JsonIgnore]
+    [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> InputAttributes { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public string Id { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public string Style { get; set; }
 
-    [Parameter, JsonProperty("disabled")]
+    [Parameter]
     public bool Disabled { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public bool Search { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public TValue Value { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public EventCallback<TValue> ValueChanged { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public Expression<Func<TValue>> ValueExpression { get; set; }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public int? TabIndex { get; set; }
 
-    [CascadingParameter(Name = "ParentForm"), JsonIgnore]
+    [CascadingParameter(Name = "ParentForm")]
     internal ICaspianForm CaspianForm { get; set; }
 
     protected override void OnInitialized()
@@ -75,11 +73,6 @@
         if (Search)
             BindingType = BindingType.OnInput;
         base.OnInitialized();
-    }
-
-    protected string ConvertToJson()
-    {
-        return JsonConvert.SerializeObject(this);
     }
 
     public bool Validate()
@@ -137,7 +130,7 @@
         }
     }
 
-    [Parameter, JsonIgnore]
+    [Parameter]
     public EventCallback OnChange{ get; set; }
 
     [CascadingParameter(Name = "Container")]
@@ -317,16 +310,6 @@
         StateHasChanged();
     }
 
-    [CascadingParameter, JsonIgnore]
+    [CascadingParameter]
     public CaspianContainer CaspianContainer { get; set; }
-
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        //if (focused)
-        //{
-        //    await htmlElement.FocusAsync();
-        //    focused = false;
-        //}
-        await base.OnAfterRenderAsync(firstRender);
-    }
 }

@@ -68,6 +68,12 @@ namespace Caspian.UI
             return scope;
         }
 
+        protected TService GetService<TService>() where TService : class
+        {
+            var scope = CreateScope();
+            return scope.GetService<TService>();
+        }
+
         public void ShowMessage(string msg)
         {
             message = msg;

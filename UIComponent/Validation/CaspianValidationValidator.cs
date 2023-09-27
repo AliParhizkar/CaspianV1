@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Collections.Generic;
 
 namespace Caspian.UI
 {
@@ -57,7 +58,11 @@ namespace Caspian.UI
         async Task FieldChanged(object sender, FieldChangedEventArgs args)
         {
             ValidationMessageStore.Clear();
-            var context = new ValidationContext<object>(EditContext.Model, new PropertyChain(), new RulesetValidatorSelector("default"));
+            var list = new List<string>
+            {
+                "default"
+            };
+            var context = new ValidationContext<object>(EditContext.Model, new PropertyChain(), new RulesetValidatorSelector(list));
             var result = await Validator.ValidateAsync(context);
             AddValidationResult(EditContext.Model, result);
         }

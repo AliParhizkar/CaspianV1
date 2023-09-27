@@ -1,0 +1,10 @@
+﻿@page "/Demo/WorkflowEngine/DataModelOption/{FieldId:int}"
+<div style="background-color:white;">
+    <Caspian.Engine.WorkFlow.DataModelOptionComponent FieldId="FieldId"  />
+</div>
+
+@code 
+{
+    [Parameter]
+    public int FieldId { get; set; }
+}

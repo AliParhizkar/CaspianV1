@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Capian.Dynamicform.Component
+namespace Caspian.Dynamicform.Component
 {
     public class BasePage
     {
@@ -16,7 +16,7 @@ namespace Capian.Dynamicform.Component
 
         public void Alert(string message)
         {
-
+            
         }
 
         public async Task<bool> Confirm(string message)

@@ -5,6 +5,7 @@ using Caspian.Common.Extension;
 using System.ComponentModel.DataAnnotations.Schema;
 using Caspian.Common.Service;
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
 
 namespace Caspian.Engine.Service
 {
@@ -77,10 +78,20 @@ namespace Caspian.Engine.Service
                         if (baseType.GenericTypeArguments.Length == 1)
                         {
                             var genericType = baseType.GenericTypeArguments[0];
-                            if (baseType == typeof(BaseService<>).MakeGenericType(genericType))
+                            var serviceType = typeof(BaseService<>).MakeGenericType(genericType);
+                            if (baseType == serviceType)
                             {
                                 services.AddScoped(typeof(IBaseService<>).MakeGenericType(genericType), provider => Activator.CreateInstance(type, provider));
                                 break;
+                            }
+                            else
+                            {
+                                var validatoeType = typeof(AbstractValidator<>).MakeGenericType(genericType);
+                                if (baseType == validatoeType)
+                                {
+                                    services.AddScoped(typeof(IValidator<>).MakeGenericType(genericType), provider => Activator.CreateInstance(type, provider));
+                                    break;
+                                }
                             }
                         }
                     }

@@ -6,13 +6,13 @@
 <div class="p-4">
     <div class="row c-controls ps-4 pe-4">
         <div class="col-md-2">
-            <label>عنوان</label>
+            <label>Title</label>
         </div>
-        <div class="col-md-4 ps-3">
+        <div class="col-md-4 pe-3">
             <StringTextBox @bind-Value="SearchData.Title" />
         </div>
-        <div class="col-md-2 pe-3">
-            <label>نام</label>
+        <div class="col-md-2 ps-3">
+            <label>Name</label>
         </div>
         <div class="col-md-4">
             <StringTextBox @bind-Value="SearchData.Name" />
@@ -22,14 +22,14 @@
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Name" />
-            <GridColumn Title="نسخه چاپی" style="width:80px">
+            <GridColumn Title="Print version" style="width:100px">
                 <Template>
                     <a target="_blank" href="/WorkflowEngine/PrintVerson/@(context.Data.Id)">
                         ...
                     </a>
                 </Template>
             </GridColumn>
-            <GridColumn Title="فیلدها" style="width:80px">
+            <GridColumn Title="Fields" style="width:100px">
                 <Template>
                     <IconButton Href='@($"/{SubSystem.ToString()}/WorkflowEngine/DataModelField/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
@@ -39,24 +39,24 @@
     </DataGrid>
 </div>
 
-<Window @ref="UpsertWindow" Title="مدل داده ای" Style="width:500px" OnOpen="() => {UpsertData.WorkflowGroupId = GroupId;}">
+<Window @ref="UpsertWindow" Title="Data model" Style="width:500px" OnOpen="() => {UpsertData.WorkflowGroupId = GroupId;}">
     <Content>
         <CaspianForm @ref="UpsertForm" Model="UpsertData">
             <div class="ps-4 pe-4 row c-controls">
                 <div class="col-md-4">
-                    <label>نام</label>
+                    <label>Name</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Name" Style="direction:ltr" />
                 </div>
                 <div class="col-md-4">
-                    <label>عنوان</label>
+                    <label>Title</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Title" />
                 </div>
                 <div class="col-md-4">
-                    <label>شرح</label>
+                    <label>Description</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="3" />

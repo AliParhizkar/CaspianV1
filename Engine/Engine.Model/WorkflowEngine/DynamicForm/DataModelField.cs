@@ -23,26 +23,26 @@ namespace Caspian.Engine
         /// <summary>
         /// Entity type fulle name that bind in forms control 
         /// </summary>
-        [DisplayName("نام موجودیت")]
+        [DisplayName("Entity name")]
         public string EntityFullName { get; set; }
 
-        [DisplayName("نوع فیلد")]
+        [DisplayName("Field type")]
         public DataModelFieldType? FieldType { get; set; }
 
         /// <summary>
         /// Name of entity that show on form generator 
         /// </summary>
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
         /// <summary>
         /// The name of the field declare in the form
         /// This name must as variable name in C#
         /// </summary>
-        [DisplayName("نام فیلد")]
+        [DisplayName("Field name")]
         public string FieldName { get; set; }
 
-        [DisplayName("نوع موجودیت")]
+        [DisplayName("Entity type")]
         public int? EntityTypeId { get; set; }
 
         [ForeignKey(nameof(EntityTypeId))]
@@ -53,10 +53,10 @@ namespace Caspian.Engine
         /// </summary>
         public bool IsDetails { get; set; }
 
-        [CheckOnDelete("فیلد به کنترل تخصیص داده شده و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("The field set bind to control and can not be removed")]
         public virtual IList<BlazorControl> BlazorControls { get; set; }
 
-        [CheckOnDelete("فیلد داده ای دارای گزینه است و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("The field has option(s) and can not be removed")]
         public virtual IList<DataModelOption> DataModelOptions { get; set; } 
     }
 }
