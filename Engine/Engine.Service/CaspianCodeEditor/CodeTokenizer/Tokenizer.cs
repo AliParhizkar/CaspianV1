@@ -31,10 +31,6 @@ namespace Engine.Service.CodeTokenizer
                 var index = 0;
                 foreach (var token in Tokens.Where(t => t.Line == line).OrderBy(t => t.StartIndex))
                 {
-                    if (token.Line == 12)
-                    {
-
-                    }
                     if (index != token.StartIndex)
                         list.Add(new TokenData(line, index, token.StartIndex - index));
                     index = token.StartIndex + token.Length;
@@ -82,7 +78,6 @@ namespace Engine.Service.CodeTokenizer
                         if (node.Parent.IsKindOf(SyntaxKind.ClassDeclaration, SyntaxKind.EnumDeclaration, SyntaxKind.StructDeclaration, 
                             SyntaxKind.InterfaceDeclaration))
                         {
-                            var doc = node.Parent.GetTrailingTrivia();
                             Tokens.Add(node.GetNodeData(TokenKind.Type));
                         }
                         else if (node.Parent.IsKindOf(SyntaxKind.GenericName))
@@ -131,8 +126,8 @@ namespace Engine.Service.CodeTokenizer
                                 var isType = parent.IsKindOf(SyntaxKind.VariableDeclaration, SyntaxKind.PropertyDeclaration, SyntaxKind.Parameter, SyntaxKind.ObjectCreationExpression, SyntaxKind.SimpleBaseType);
                                 if (isType)
                                 {
-                                    var qualifiedNameSyntax = ((parent as VariableDeclarationSyntax)?.Type ?? (parent as ParameterSyntax)?.Type ?? 
-                                        (parent as PropertyDeclarationSyntax)?.Type);
+                                    var qualifiedNameSyntax = (parent as VariableDeclarationSyntax)?.Type ?? (parent as ParameterSyntax)?.Type ?? (parent as ObjectCreationExpressionSyntax)?.Type ??
+                                        (parent as PropertyDeclarationSyntax)?.Type ?? (parent as SimpleBaseTypeSyntax)?.Type;
                                     if (qualifiedNameSyntax.IsKind(SyntaxKind.IdentifierName))
                                         Tokens.Add(node.GetNodeData(TokenKind.Type));
                                     else
@@ -146,17 +141,20 @@ namespace Engine.Service.CodeTokenizer
                         }
                         break;
                     case SyntaxKind.IdentifierName:
+                        var tempNode = node.Parent;
+                        while(tempNode.IsKind(SyntaxKind.SimpleMemberAccessExpression))
+                            tempNode = tempNode.Parent;
                         if (node.Parent.IsKindOf(SyntaxKind.TypeOfExpression, SyntaxKind.TypeArgumentList))
                         {
                             Tokens.Add(node.GetNodeData(TokenKind.Type));
                         }
-                        if (node.Parent.IsKindOf(SyntaxKind.InvocationExpression))
+                        if (tempNode.IsKindOf(SyntaxKind.InvocationExpression))
                         {
-                            Tokens.Add(node.GetNodeData(TokenKind.Method));
-                        }
-                        if (node.Parent.IsKindOf(SyntaxKind.SimpleMemberAccessExpression) && !node.Parent.Parent.IsKindOf(SyntaxKind.SimpleMemberAccessExpression))
-                        {
-                            Tokens.Add(node.GetNodeData(TokenKind.Method));
+                            var children = tempNode.ChildNodesAndTokens()[0].ChildNodesAndTokens();
+                            if (children.Count == 1 && children[0].IsKind(SyntaxKind.IdentifierToken))
+                                Tokens.Add(node.GetNodeData(TokenKind.Method));
+                            if (children.Count == 3 && node == children[2])
+                                Tokens.Add(node.GetNodeData(TokenKind.Method));
                         }
                         break;
                     case SyntaxKind.GenericName:

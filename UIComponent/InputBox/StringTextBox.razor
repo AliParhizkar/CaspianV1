@@ -115,13 +115,8 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        var data = new
-        {
-            focused = Focused,
-            multiLine = MultiLine,
-            total = this.MaxLength
-        };
-        //await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", htmlElement, System.Text.Json.JsonSerializer.Serialize(data), UiControlType.TextBox);
+        if (firstRender)
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindStringbox", htmlElement);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

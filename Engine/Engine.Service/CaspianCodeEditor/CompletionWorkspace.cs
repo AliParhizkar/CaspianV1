@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Host.Mef;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Engine.Service.CaspianCodeEditor
 {
@@ -65,34 +66,26 @@ namespace Engine.Service.CaspianCodeEditor
 
         public async Task<CompletionDocument> CreateDocumentCodeCheck(string source, string codeBehind)
         {
-            _workspace.AddDocument(_project.Id, "Codebehind.cs", SourceText.From(codeBehind));
-            var document = _workspace.AddDocument(_project.Id, "SourceFile.cs", SourceText.From(source));
-            _workspace.TryApplyChanges(document.Project.Solution);
-            var st = await document.WithText(SourceText.From(source)).GetSyntaxTreeAsync();
-            var compilation = CSharpCompilation.Create("Temp", new[] { st },
+            var codeBehindDocument = _workspace.AddDocument(_project.Id, "Codebehind.cs", SourceText.From(codeBehind));
+            var sourceDocument = _workspace.AddDocument(_project.Id, "SourceFile.cs", SourceText.From(source));
+            var codeBehindSyntaxTree = await codeBehindDocument.GetSyntaxTreeAsync();
+            var sourceSyntaxTree = await sourceDocument.GetSyntaxTreeAsync();
+            var compilation = CSharpCompilation.Create("Temp", new[] { codeBehindSyntaxTree, sourceSyntaxTree },
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                 references: _metadataReferences);
             using var temp = new MemoryStream();
             var result = compilation.Emit(temp);
-            var semanticModel = compilation.GetSemanticModel(st, true);
+            var semanticModel = compilation.GetSemanticModel(codeBehindSyntaxTree, true);
 
-            return new CompletionDocument(document, semanticModel, result);
+            return new CompletionDocument(sourceDocument, semanticModel, result);
         }
 
-        public async Task<CompletionDocument> CreateDocumentComplete(string source, string codeBehind)
+        public CompletionDocument CreateDocumentComplete(string source, string codeBehind)
         {
-            _workspace.AddDocument(_project.Id, "Codebehind.cs", SourceText.From(codeBehind));
+            _workspace.AddDocument(_project.Id, "Codebehind.cs", SourceText.From(codeBehind));//SourceFile
             var document = _workspace.AddDocument(_project.Id, "SourceFile.cs", SourceText.From(source));
-            _workspace.TryApplyChanges(document.Project.Solution);
-            var st = await document.WithText(SourceText.From(codeBehind)).GetSyntaxTreeAsync();
-            var compilation = CSharpCompilation.Create("Temp", new[] { st },
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                references: _metadataReferences);
-            using var temp = new MemoryStream();
-            var result = compilation.Emit(temp);
-            var semanticModel = compilation.GetSemanticModel(st, true);
-
-            return new CompletionDocument(document, semanticModel, result);
+            _workspace.TryApplyChanges(_workspace.CurrentSolution);
+            return new CompletionDocument(document, null, null);
         }
     }
 }

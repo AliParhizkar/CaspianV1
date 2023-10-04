@@ -91,6 +91,17 @@ namespace Caspian.UI
         [Parameter]
         public int MasterId { get; set; }
 
+        protected async Task AddAll()
+        {
+            using var scope = CreateScope();
+            var query = MemberGrid.GetAllEntities(scope);
+            var count = query.Count();
+            if (await Confirm($"Do you add {count} records"))
+            {
+                
+            }
+        }
+
         void SetData(EditContext context)
         {
             var masterInfos = typeof(TAccess).GetProperties().Where(t => t.PropertyType == typeof(TMaster));

@@ -83,16 +83,6 @@ namespace Caspian.UI
             var key = typeof(TDetail).GetPrimaryKey();
             await service.UpdateAsync(UpsertData, Grid.GetDeletedEntities().Select(t => Convert.ToInt32(key.GetValue(t))));
             var detailsInfo = typeof(TMaster).GetProperties().Single(t => t.PropertyType.GetInterfaces().Contains(typeof(IEnumerable<TDetail>)));
-            //var detailService = provider.GetService(typeof(IBaseService<TDetail>)) as BaseService<TDetail>;
-            //var insertedEntities = Grid.GetInsertedEntities();
-            //if (insertedEntities.Count > 0)
-            //    await detailService.AddRangeAsync(insertedEntities);
-            //var updatedEntities = Grid.GetUpdatedEntities();
-            //if (updatedEntities.Count > 0)
-            //    detailService.UpdateRange(updatedEntities);
-            //var deletedEntities = Grid.GetDeletedEntities();
-            //if (deletedEntities.Count > 0)
-            //    detailService.RemoveRange(deletedEntities);
             service.SaveChanges();
             await Grid.ReloadAsync();
             ShowMessage("بروزرسانی با موفقیت انجام شد");

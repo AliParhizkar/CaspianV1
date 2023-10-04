@@ -30,7 +30,7 @@
                     <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" TableHeight="300"
                             ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
                         <Columns>
-                            <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />
+                            <GridColumn Field="t => t.Date.ToShortDateString()" Title="Order date" />
                             <GridColumn Field="t => t.OrderType.EnumText()" />
                             <GridColumn Field="t => t.OrderNo" Title="Order no" />
                             <GridColumn Field="t => t.Customer.FName + ' ' + t.Customer.LName" Title="Customer" />

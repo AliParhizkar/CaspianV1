@@ -1158,21 +1158,24 @@
                 });
             }
         },
-        bindControl: function (control, options, controlType) {
+        bindStringbox: function (element) {
+            $(element).bind('focus', () => {
+                setTimeout(() => {
+                    $(element).select();
+                }, 100);
+                $.caspian.showErrorMessage($(element).closest('.t-widget')[0]);
+            });
+
+            $(element).bind('blur', () => {
+                $.caspian.hideErrorMessage($(element).closest('.t-widget')[0]);
+            });
+        },
+
+        bindControl: function (control, options) {
             options = JSON.parse(options);
-            switch (controlType) {
-                case 1:
-                    if (options.multiLine) {
-                        if (!$(control).data('tTextArea'))
-                            $(control).tTextArea(options);
-                        $(control).data('tTextArea').updateState(options);
-                    } else {
-                        if (!$(control).data('tTextBox'))
-                            $(control).tTextBox(options);
-                        $(control).data('tTextBox').updateState(options);
-                    }
-                    break;
-            }
+            if (!$(control).data('tTextBox'))
+                $(control).tTextBox(options);
+            $(control).data('tTextBox').updateState(options);
         },
         blockUI: function () {
             $.blockUI({ message: '<img src="/Content/loading_big.gif" />', css: { backgroundColor: 'transparent', border: '1px none transparent' } });

@@ -7,7 +7,7 @@ namespace Engine.Service.CaspianCodeEditor
         public async static Task<TabCompletionResult[]> HandleCompletion(int position, string source, string codeBehind, string[] assemblies)
         {
             var workspace = CompletionWorkspace.Create(assemblies);
-            var document = await workspace.CreateDocumentComplete(source, codeBehind);
+            var document = workspace.CreateDocumentComplete(source, codeBehind);
             var list = (await document.GetTabCompletion(position, CancellationToken.None)).ToList();
             return list.ToArray();
         }
@@ -15,7 +15,7 @@ namespace Engine.Service.CaspianCodeEditor
         public async static Task<HoverInfoResult> HandleHover(int position, string source, string codeBehind, string[] assemblies)
         {
             var workspace = CompletionWorkspace.Create(assemblies);
-            var document = await workspace.CreateDocumentComplete(source, codeBehind);
+            var document = workspace.CreateDocumentComplete(source, codeBehind);
             return await document.GetHoverInformation(position, CancellationToken.None);
         }
 

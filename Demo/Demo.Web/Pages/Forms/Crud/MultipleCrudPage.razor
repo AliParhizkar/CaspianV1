@@ -23,7 +23,7 @@
                         <div class="col-md-3 ps-4">
                             <label>Title</label>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-9 pe-4">
                             <StringTextBox @bind-Value="SearchCategory.Title" Search />
                         </div>
                     </div>
@@ -87,6 +87,7 @@
                                 <GridColumn Field="t => t.Title" />
                                 <GridColumn Field="t => t.Price.Seprate3Digit()" />
                                 <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
+                                <GridColumn Field="t => t.Code" />
                                 <GridColumn Field="t => t.ActiveType.EnumText()" />
                                 <GridCommandColumns />
                             </Columns>
@@ -113,6 +114,12 @@
                                         <div class="col-md-8">
                                             <NumericTextBox @bind-Value="upsertProduct.TakeoutPrice" />
                                         </div>
+                                         <div class="col-md-4">
+                                             <label>Code</label>
+                                         </div>
+                                         <div class="col-md-8">
+                                             <NumericTextBox @bind-Value="upsertProduct.Code" />
+                                         </div>
                                         <div class="col-md-4">
                                             <label>Meal</label>
                                         </div>

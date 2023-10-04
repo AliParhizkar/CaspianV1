@@ -913,7 +913,7 @@ progress::-webkit-progress-value {
     padding-top:7px;
     font-size:20px;
 }
-form tr {
+form > tr {
     height: 40px;
 }
 .c-block-ui{

@@ -11,7 +11,7 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("Foعلی"), Display(Name = "Gsadkj")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
         [DisplayName("Status")]

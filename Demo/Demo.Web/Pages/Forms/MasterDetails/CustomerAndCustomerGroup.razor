@@ -92,7 +92,7 @@
                                         </TabPanelItem>
                                         <TabPanelItem Title="Groups">
                                             <div class="p-4" style="height:320px">
-                                                <CheckboxList TValue="int" TEntity="CustomerGroup" @bind-Values="groupsId"
+                                                <CheckboxList TValue="CustomerGroup" TEntity="CustomerGroup" @bind-Values="groups"
                                                                 TextExpression="t => t.Title" />
                                             </div>
                                         </TabPanelItem>
@@ -120,7 +120,7 @@
     DataGrid<Customer> grid;
     Customer customer = new Customer();
     Customer search = new Customer();
-    IList<int> groupsId;
+    IList<CustomerGroup> groups;
 
     async Task loadGroups()
     {

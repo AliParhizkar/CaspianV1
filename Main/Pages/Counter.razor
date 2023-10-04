@@ -9,21 +9,16 @@
 @using Microsoft.Data.SqlClient
 @using Microsoft.EntityFrameworkCore
 
-<Engine.CaspianCodeEditor.CodeEditorComponent Code="@code1" />
+<div @onmousedown="Click" @onmousedown:stopPropagation style="width:500px;height:500px;border:1px solid red;margin:0 auto">
 
+</div>
 
 
 
 @code 
 {
-    string code1;
-    string code2;
-
-    protected override void OnInitialized()
+    void Click(MouseEventArgs e)
     {
-        code1 = File.ReadAllText("F:\\MyClass.cs");
-        code2 = File.ReadAllText("F:\\MyClass1.cs");
-        base.OnInitialized();
+        
     }
-
 }
