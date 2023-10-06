@@ -112,7 +112,7 @@ namespace Caspian.UI
 
         IQueryable<TEntity> GetQuery(IServiceScope scope)
         {
-            var service = new BaseService<TEntity>(scope.ServiceProvider);
+            var service = scope.GetService<BaseService<TEntity>>();
             var query = service.GetAll(Search);
             Expression expr = null;
             var parameter = Expression.Parameter(typeof(TEntity), "t");
@@ -539,8 +539,7 @@ namespace Caspian.UI
             using var scope = ServiceScopeFactory.CreateScope();
             var query = GetQuery(scope);
             query = GetOrderByQuery(query);
-            var str = query.ToQueryString();
-            var rowId = await query.GetRowNumber(id);
+            var rowId = await query.GetRowNumber(scope.GetService<BaseService<TEntity>>().Context, id);
             if (rowId.HasValue)
             {
                 var pageNumber = (rowId.Value - 1) / PageSize + 1;

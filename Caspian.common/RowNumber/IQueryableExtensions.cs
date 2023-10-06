@@ -15,22 +15,16 @@ namespace Caspian.Common.RowNumber
             var properties = new List<DynamicProperty>
             {
                 new DynamicProperty("Id", typeof(int)),
-                new DynamicProperty("RowNumber", typeof(long))
+                new DynamicProperty("RowNumber", typeof(int))
             };
             return DynamicClassFactory.CreateType(properties);
         }
 
-        private static IQueryable CreateSelectManyExpr(this IQueryable source)
+        private static IQueryable CreateSelectExpr(this IQueryable source)
         {
             var t = Expression.Parameter(source.ElementType, "t");
-            var u = Expression.Parameter(source.ElementType, "u");
-            bool orderbyIsEmpty = false;
-            var rowNumberExpr = CreateRowNumberExpression(source, u, out orderbyIsEmpty);
-            Expression exprId = Expression.Property(u, source.ElementType.GetPrimaryKey());
-            if (orderbyIsEmpty)
-            {
-                source = source.OrderBy(Expression.Lambda(exprId, u));
-            }
+            var rowNumberExpr = CreateRowNumberExpression(source, t);
+            Expression exprId = Expression.Property(t, source.ElementType.GetPrimaryKey());
             var type = CreateType();
             var memberExprList = new List<MemberAssignment>
             {
@@ -38,26 +32,14 @@ namespace Caspian.Common.RowNumber
                 Expression.Bind(type.GetProperty("RowNumber"), rowNumberExpr)
             };
             var memberInit = Expression.MemberInit(Expression.New(type), memberExprList);
-            var innerLambda = Expression.Lambda(memberInit, u);
-            var body = source.Select(innerLambda).Expression;
-            Type inputType = source.Expression.Type.GetGenericArguments()[0];
-            Type enumerableType = typeof(IEnumerable<>).MakeGenericType(type);
-            Type delegateType = typeof(Func<,>).MakeGenericType(inputType, enumerableType);
-            var lambda = Expression.Lambda(delegateType, body, t);
-            var result = source.Provider.CreateQuery(
-                Expression.Call(typeof(Queryable), "SelectMany",
-                new Type[] { source.ElementType, type },
-                source.Expression,
-                Expression.Quote(lambda)));
-            return result;
+            return source.Select(Expression.Lambda(memberInit, t));   
         }
 
-        private static Expression CreateRowNumberExpression(this IQueryable query, ParameterExpression innerParameter, out bool orderbyIsEmpty)
+        private static Expression CreateRowNumberExpression(this IQueryable query, ParameterExpression innerParameter)
         {
             var OrderByExprlist = new List<Expression>();
             var desc = new List<bool>();
             GetOrderbyExpression(query.Expression, OrderByExprlist, desc);
-            orderbyIsEmpty = desc.Count == 0;
             if (desc.Count == 0)
             {
                 desc.Add(true);
@@ -84,17 +66,19 @@ namespace Caspian.Common.RowNumber
             return rowNumberExpr;
         }
 
-        public async static Task<int?> GetRowNumber(this IQueryable query, int id)
+        public async static Task<int?> GetRowNumber(this IQueryable query, MyContext context, int id)
         {
-            var selectManyQuery = CreateSelectManyExpr(query);
-            var param = Expression.Parameter(selectManyQuery.ElementType, "t");
-            Expression whereExpr = Expression.Property(param, "Id");
-            whereExpr = Expression.Equal(whereExpr, Expression.Constant(id));
-            whereExpr = Expression.Lambda(whereExpr, param);
-            dynamic rowNumber = (await selectManyQuery.Where_(whereExpr).Take(1).ToDynamicListAsync()).FirstOrDefault();
-            if (rowNumber == null)
+            var selectQuery = CreateSelectExpr(query).Take(10_000_1000).ToQueryString();
+            var index = selectQuery.LastIndexOf(";");
+            string str = "";
+            if (index > -1)
+                str = selectQuery.Substring(0, index + 1);
+            str += $"select RowNumber from({selectQuery.Substring(index + 1)}) Entity where Entity.Id = {id}";
+            var result = await context.Database.SqlQueryRaw<long?>(str).ToListAsync();
+            var item = result.FirstOrDefault();
+            if (item == null)
                 return null;
-            return Convert.ToInt32(rowNumber.RowNumber);
+            return Convert.ToInt32(item.Value);
         }
 
         private static void GetOrderbyExpression(Expression expr, IList<Expression> OrderByExprlist, IList<bool> desc)
@@ -148,6 +132,6 @@ namespace Caspian.Common.RowNumber
     {
         public int Id { get; set; }
 
-        public long RowNumber { get; set; }
+        public int RowNumber { get; set; }
     }
 }

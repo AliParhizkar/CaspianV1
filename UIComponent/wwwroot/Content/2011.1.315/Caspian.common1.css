@@ -17,6 +17,9 @@
 .blazor-error-boundary span {
     user-select: auto;
 }
+.t-checkbox-list {
+    overflow: auto;
+}
 .c-error-develop .c-message {
     font-size: 18px;
     color: #7e1d1d;
@@ -24,7 +27,7 @@
     padding: 3px 8px;
     background-color: #fdffc0;
     line-height: 45px;
-    user-select:text;
+    user-select: text;
 }
 .c-file-detail {
     background-color: #d6ffd6;

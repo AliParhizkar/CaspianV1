@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Linq;
+using Caspian.Common;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
 using Caspian.Common.Extension;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
@@ -18,6 +22,10 @@ namespace Caspian.UI
         protected CaspianForm<TMaster> Form { get; set; }
 
         protected DataGrid<TDetail> Grid { get; set; }
+
+        protected DataGrid<TMaster> MasterGrid { get; set; }
+
+        protected Window Window { get; set; }
 
         protected TMaster UpsertData { get; set; } = Activator.CreateInstance<TMaster>();
 
@@ -35,13 +43,68 @@ namespace Caspian.UI
         {
             if (MasterId > 0)
             {
-                using var scope = CreateScope();
-                var masterService = scope.ServiceProvider.GetService(typeof(IBaseService<TMaster>)) as BaseService<TMaster>;
+                using var masterService = CreateScope().GetService<BaseService<TMaster>>();
                 UpsertData = await masterService.SingleAsync(MasterId);
             }
+            else
+                UpsertData = Activator.CreateInstance<TMaster>();
+
             await OnMasterEntityCreatedAsync();
 
             await base.OnInitializedAsync();
+        }
+
+        async Task InsertMaster()
+        {
+            var pKey = typeof(TMaster).GetPrimaryKey();
+            var id = Convert.ToInt32(pKey.GetValue(UpsertData));
+            using var masterService = CreateScope().GetService<BaseService<TMaster>>();
+            if (id == 0)
+            {
+                var result = await masterService.AddAsync(UpsertData);
+                await masterService.SaveChangesAsync();
+                id = Convert.ToInt32(pKey.GetValue(result));
+                await Window.Close();
+                await MasterGrid.SelectRowById(id);
+            }
+            else
+            {
+                var detailsInfo = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+                var old = await masterService.GetAll().Include(detailsInfo.Name).SingleAsync(id);
+                var oldDetails = detailsInfo.GetValue(old) as IEnumerable<TDetail>;
+                var otherforeignKeyName = typeof(TDetail).GetProperties().Single(t => t.PropertyType != typeof(TMaster) && 
+                    t.GetCustomAttribute<ForeignKeyAttribute>() != null).GetCustomAttribute<ForeignKeyAttribute>().Name;
+                var otherforeignKey = typeof(TDetail).GetProperty(otherforeignKeyName);
+                var curentMembersId = new List<int>();
+                var curentDetails = detailsInfo.GetValue(UpsertData) as IEnumerable<TDetail>;
+                if (curentDetails != null)
+                {
+                    foreach (var member in curentDetails)
+                    {
+                        var value = otherforeignKey.GetValue(member);
+                        curentMembersId.Add(Convert.ToInt32(value));
+                    }
+                }
+                var oldMembersId = new List<int>();
+                var list = new List<TDetail>();
+                foreach(var member in oldDetails)
+                {
+                    var value = Convert.ToInt32(otherforeignKey.GetValue(member));
+                    if (curentMembersId.Contains(value))
+                        list.Add(member);
+                    oldMembersId.Add(value);
+                }
+                foreach(var member in curentDetails)
+                {
+                    var memberId = Convert.ToInt32(otherforeignKey.GetValue(member));
+                    if (!oldMembersId.Contains(memberId))
+                        list.Add(member);
+                }
+                detailsInfo.SetValue(old, list);
+                await masterService.SaveChangesAsync();
+                await Window.Close();
+                await MasterGrid.ReloadAsync();
+            }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -50,23 +113,52 @@ namespace Caspian.UI
             {
                 Form.OnInternalSubmit = EventCallback.Factory.Create<EditContext>(this, (EditContext context1) =>
                 {
-                    foreach (var info in typeof(TMaster).GetProperties())
+                    if (Grid != null)
                     {
-                        var type = info.PropertyType;
-                        if (type.IsCollectionType() && type.IsGenericType && type.GetGenericArguments()[0] == typeof(TDetail))
-                            info.SetValue(UpsertData, Grid.GetUpsertedEntities().AsEnumerable());
+                        foreach (var info in typeof(TMaster).GetProperties())
+                        {
+                            var type = info.PropertyType;
+                            if (type.IsCollectionType() && type.IsGenericType && type.GetGenericArguments()[0] == typeof(TDetail))
+                                info.SetValue(UpsertData, Grid.GetUpsertedEntities().AsEnumerable());
+                        }
                     }
-                });
-                Form.OnInternalReset = EventCallback.Factory.Create(this, () => Grid.ClearSource());
-                Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context1) =>
-                {
-                    if (MasterId == 0)
-                        await InsertMaster(context1);
-                    else
-                        await UpdateMaster(context1);
 
                 });
+                Form.OnInternalReset = EventCallback.Factory.Create(this, () => 
+                {
+                    Grid?.ClearSource();
+                    Window?.Close();
+                });
+                Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context1) =>
+                {
+                    if (MasterGrid == null)
+                    {
+                        if (MasterId == 0)
+                            await InsertMaster(context1);
+                        else
+                            await UpdateMaster(context1);
+                    }
+                    else
+                        await InsertMaster();
+                });
             }
+            if (MasterGrid != null)
+            {
+                MasterGrid.OnInternalUpsert = EventCallback.Factory.Create<TMaster>(this, async master => 
+                {
+                    var value = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
+                    if (value != 0)
+                    {
+                        var detailsName = typeof(TMaster).GetDetailsProperty(typeof(TDetail)).Name;
+                        using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
+                        UpsertData = await service.GetAll().Include(detailsName).SingleAsync(value);
+                    }
+                    else
+                        UpsertData = Activator.CreateInstance<TMaster>();
+                    await Window.Open();
+                });
+            }
+
             await base.OnAfterRenderAsync(firstRender);
         }
 
@@ -77,15 +169,13 @@ namespace Caspian.UI
 
         async Task UpdateMaster(EditContext context)
         {
-            using var scope = CreateScope();
-            var provider = scope.ServiceProvider;
-            var service = provider.GetService(typeof(IMasterDetailsService<TMaster, TDetail>)) as MasterDetailsService<TMaster, TDetail>;
+            using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
             var key = typeof(TDetail).GetPrimaryKey();
             await service.UpdateAsync(UpsertData, Grid.GetDeletedEntities().Select(t => Convert.ToInt32(key.GetValue(t))));
             var detailsInfo = typeof(TMaster).GetProperties().Single(t => t.PropertyType.GetInterfaces().Contains(typeof(IEnumerable<TDetail>)));
             service.SaveChanges();
             await Grid.ReloadAsync();
-            ShowMessage("بروزرسانی با موفقیت انجام شد");
+            ShowMessage("Updating was done successfully");
         }
 
         protected virtual async Task OnUpsertAsync(IServiceScope scope, IList<TDetail> insertedEntities2)
@@ -97,9 +187,7 @@ namespace Caspian.UI
         {
             var list = Grid.GetInsertedEntities();
             using var scope = CreateScope();
-            var provider = scope.ServiceProvider;
-            var service = provider.GetService(typeof(IMasterDetailsService<TMaster, TDetail>)) as MasterDetailsService<TMaster, TDetail>;
-            
+            var service = scope.GetService<MasterDetailsService<TMaster, TDetail>>();
             await service.AddAsync(UpsertData);
             service.SaveChanges();
             await OnUpsertAsync(scope, list);

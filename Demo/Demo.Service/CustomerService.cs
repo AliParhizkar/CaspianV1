@@ -4,6 +4,7 @@ using Caspian.Common;
 using Caspian.Engine;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
+using FluentValidation;
 
 namespace Demo.Service
 {
@@ -18,6 +19,8 @@ namespace Demo.Service
             RuleFor(t => t.LName).Required(t => t.CustomerType == CustomerType.Real);
             RuleFor(t => t.MobileNumber).Required().MobileNumber().UniqAsync("There is a customer with this mobile number");
             RuleFor(t => t.Tel).TelNumber();
+            RuleFor(t => t.CustomerGroupMemberships).Custom(t => t.CustomerGroupMemberships == null || t.CustomerGroupMemberships.Count == 0, "Customer should be member of a group");
+            RuleForEach(t => t.CustomerGroupMemberships).SetValidator(new CustomerGroupMembershipService(provider));
         }
 
         void UpdateCustomer(Customer entity)

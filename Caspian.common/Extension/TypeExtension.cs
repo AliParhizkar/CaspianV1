@@ -59,9 +59,16 @@ namespace Caspian.Common.Extension
             return info.DeclaringType.GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name);
         }
 
+        public static PropertyInfo GetDetailsProperty(this Type type, Type detailType)
+        {
+            return type.GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == detailType && t.PropertyType.IsCollectionType());
+        }
+
         public static PropertyInfo GetForeignKey(this Type type, Type foreignKeyType)
         {
-            var info = type.GetProperties().Single(t => t.PropertyType == foreignKeyType);
+            var info = type.GetProperties().SingleOrDefault(t => t.PropertyType == foreignKeyType);
+            if (info == null)
+                throw new CaspianException($"Type {type.Name} must a foreign key of type {foreignKeyType.Name}");
             if (info == null) return null; 
             var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
             if (attr == null) return null;

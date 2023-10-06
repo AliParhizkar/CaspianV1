@@ -3,6 +3,7 @@
 @typeparam TEntity
 @typeparam TValue
 @inject IServiceProvider Provider
+@inject BatchService BatchService
 <fieldset class="t-checkbox-list">
     <legend>@(Title)</legend>
     <div class="c-checkbox-list" style="@Style">
@@ -30,7 +31,31 @@
             {
                 foreach (var item in Items)
                 {
-                    var value = (TValue)Convert.ChangeType(item.Value, typeof(TValue).GetUnderlyingType());
+                    TValue value = default;
+                    if (complexValueType)
+                    {
+                        var info = typeof(TValue).GetForeignKey(typeof(TEntity));
+                        var foreigenKeyType = info.PropertyType.GetUnderlyingType();
+                        var foreigenKeyId = Convert.ChangeType(item.Value, foreigenKeyType);
+                        if (Values != null)
+                        {
+                            foreach (var val in Values)
+                            {
+                                if (Convert.ChangeType(info.GetValue(val), foreigenKeyType).Equals(foreigenKeyId))
+                                {
+                                    value = val;
+                                    break;
+                                }
+                            }
+                        }
+                        if (value == null)
+                        {
+                            value = Activator.CreateInstance<TValue>();
+                            info.SetValue(value, foreigenKeyId);
+                        }
+                    }
+                    else
+                        value = (TValue)Convert.ChangeType(item.Value, typeof(TValue).GetUnderlyingType());
                     var flag = Values != null && Values.Contains(value);
                     <div class="c-item">
                         <CheckBox TValue="bool" Value="flag" ValueChanged="async check => await UpdateValue(value, check)"
@@ -53,6 +78,7 @@
     bool LoadData;
     Dictionary<TValue, string> dic;
     IList<SelectListItem> Items;
+    bool complexValueType;
 
     async Task DataBinding()
     {
@@ -111,7 +137,6 @@
     {
         if (Values == null)
             Values = new List<TValue>();
-        if (value != )
         if (Values.Contains(value))
             Values.Remove(value);
         else
@@ -129,9 +154,12 @@
     protected override void OnInitialized()
     {
         LoadData = true;
+        var type = typeof(TValue).GetUnderlyingType();
+        complexValueType = type.IsClass && type != typeof(string);
+        if (complexValueType)
+            BatchService.OtherTypeInfo = type.GetProperties().Single(t => t.PropertyType == typeof(TEntity));
         if (CheckboxItems == null)
         {
-            var type = typeof(TValue).GetUnderlyingType();
 
             if (type.IsEnumType())
             {

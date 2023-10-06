@@ -1,6 +1,6 @@
 ﻿@page "/Demo/CustomerAndCustomerGroup"
 @namespace Demo.Web.Pages
-@inherits BasePage
+@inherits MasterDetailPage<Customer, CustomerGroupMembership>
 @{
     base.BuildRenderTree(__builder);
 }
@@ -26,85 +26,83 @@
                         <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
                     </li>
                 </ul>
-                <CrudComponent TEntity="Customer" UpsertData="customer" OnUpsert="async formData => await UpdateDatabaseAsync(formData)">
-                    <DataGrid @ref="grid" Search="search" TableHeight="400">
-                        <Columns>
-                            <GridColumn Field="t => t.CustomerType" />
-                            <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
-                            <GridColumn Field="t => t.MobileNumber.CallFormat(' ')" />
-                            <GridCommandColumns />
-                        </Columns>
-                    </DataGrid>
-                    <Window OnOpen="async () => await loadGroups()" @ref="window" Title="Customer & Groups" Style="width:450px;">
-                        <Content>
-                            <CaspianForm Model="customer">
-                                <TabPanel>
-                                    <Tabs>
-                                        <TabPanelItem Title="Customer">
-                                            <div class="row p-4 pt-2 pb-2 c-controls" style="height:320px">
-                                                <div class="col-md-4">
-                                                    <label>Customer Type</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <DropdownList @bind-Value="customer.CustomerType" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label>First Name</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <StringTextBox @bind-Value="customer.FName"
-                                                                    Disabled="customer.CustomerType == CustomerType.Legal" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label>Last Name</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <StringTextBox @bind-Value="customer.LName"
-                                                                    Disabled="customer.CustomerType == CustomerType.Legal" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label>Gender</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <DropdownList @bind-Value="customer.Gender"
-                                                                    Disabled="customer.CustomerType == CustomerType.Legal" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label>Company Name</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <StringTextBox @bind-Value="customer.CompanyName"
-                                                                    Disabled="customer.CustomerType == CustomerType.Real" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label>Mobile Number</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <StringTextBox @bind-Value="customer.MobileNumber" MaxLength="11" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label>Tel</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <StringTextBox @bind-Value="customer.Tel" />
-                                                </div>
+                <DataGrid @ref="MasterGrid" Search="search" TableHeight="400">
+                    <Columns>
+                        <GridColumn Field="t => t.CustomerType" />
+                        <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+                        <GridColumn Field="t => t.MobileNumber.CallFormat(' ')" />
+                        <GridCommandColumns />
+                    </Columns>
+                </DataGrid>
+                <Window OnOpen="async () => await loadGroups()" @ref="Window" Title="Customer & Groups" Style="width:450px;">
+                    <Content>
+                        <CaspianForm @ref="Form" Model="UpsertData">
+                            <TabPanel>
+                                <Tabs>
+                                    <TabPanelItem Title="Customer">
+                                        <div class="row p-4 pt-2 pb-2 c-controls" style="height:320px">
+                                            <div class="col-md-4">
+                                                <label>Customer Type</label>
                                             </div>
-                                        </TabPanelItem>
-                                        <TabPanelItem Title="Groups">
-                                            <div class="p-4" style="height:320px">
-                                                <CheckboxList TValue="CustomerGroup" TEntity="CustomerGroup" @bind-Values="groups"
-                                                                TextExpression="t => t.Title" />
+                                            <div class="col-md-8">
+                                                <DropdownList @bind-Value="UpsertData.CustomerType" />
                                             </div>
-                                        </TabPanelItem>
-                                    </Tabs>
-                                </TabPanel>
-                                <div class="pt-4 pt-0 pb-2">
-                                    <FormCommandButton />
-                                </div>
-                            </CaspianForm>
-                        </Content>
-                    </Window>
-                </CrudComponent>
+                                            <div class="col-md-4">
+                                                <label>First Name</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <StringTextBox @bind-Value="UpsertData.FName"
+                                                               Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Last Name</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <StringTextBox @bind-Value="UpsertData.LName"
+                                                               Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Gender</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <DropdownList @bind-Value="UpsertData.Gender"
+                                                              Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Company Name</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <StringTextBox @bind-Value="UpsertData.CompanyName"
+                                                               Disabled="UpsertData.CustomerType == CustomerType.Real" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Mobile Number</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <StringTextBox @bind-Value="UpsertData.MobileNumber" MaxLength="11" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Tel</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <StringTextBox @bind-Value="UpsertData.Tel" />
+                                            </div>
+                                        </div>
+                                    </TabPanelItem>
+                                    <TabPanelItem Title="Groups">
+                                        <div class="ps-4 pe-4 pt-2 pb-2" style="height:320px">
+                                            <CheckboxList TValue="CustomerGroupMembership" TEntity="CustomerGroup" 
+                                                @bind-Values="UpsertData.CustomerGroupMemberships" TextExpression="t => t.Title" Style="height:280px;" />
+                                        </div>
+                                    </TabPanelItem>
+                                </Tabs>
+                            </TabPanel>
+                            <div class="pt-4 pt-0 pb-2">
+                                <FormCommandButton />
+                            </div>
+                        </CaspianForm>
+                    </Content>
+                </Window>
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
@@ -116,53 +114,43 @@
 
 @code
 {
-    Window window;
-    DataGrid<Customer> grid;
-    Customer customer = new Customer();
     Customer search = new Customer();
-    IList<CustomerGroup> groups;
+
 
     async Task loadGroups()
     {
-        if (customer.Id > 0)
-        {
-            ///In update we should fill groupsId field
-            using var service = CreateScope().GetService<CustomerGroupMembershipService>();
-            groupsId = await service.GetAll().Where(t => t.CustomerId == customer.Id).Select(t => t.CustomerGroupId).ToListAsync();
-        }
-        else
-            groupsId = new List<int>();
+
     }
 
     async Task UpdateDatabaseAsync(FormData<Customer> form)
     {
-        form.Cancel = true;
-        using var scope = CreateScope();
-        var service = scope.GetService<CustomerService>();
-        if (customer.Id == 0)
-        {
-            customer.CustomerGroupMemberships = groupsId.Select(t => new CustomerGroupMembership()
-            {
-                CustomerGroupId = t
-            }).ToList();
-            customer = await service.AddAsync(customer);
-        }
-        else
-        {
-            var oldGroupsId = await scope.GetService<CustomerGroupMembershipService>().GetAll()
-                .Where(t => t.CustomerId == customer.Id).Select(t => t.CustomerGroupId).ToListAsync();
-            customer.CustomerGroupMemberships = groupsId.Where(t => !oldGroupsId.Contains(t)).Select(t => new CustomerGroupMembership()
-            {
-                CustomerGroupId = t,
-                CustomerId = customer.Id
-            }).ToList();
-            ///The groups removed from list and exist in database, this groups should removed from database
-            var removedGroupsId = await scope.GetService<CustomerGroupMembershipService>().GetAll()
-                .Where(t => t.CustomerId == customer.Id && !groupsId.Contains(t.CustomerGroupId)).Select(t => t.Id).ToListAsync();
-            await service.UpdateAsync(customer, removedGroupsId);
-        }
-        await service.SaveChangesAsync();
-        await grid.SelectRowById(customer.Id);
-        await window.Close();
+        // form.Cancel = true;
+        // using var scope = CreateScope();
+        // var service = scope.GetService<CustomerService>();
+        // if (customer.Id == 0)
+        // {
+        //     customer.CustomerGroupMemberships = groupsId.Select(t => new CustomerGroupMembership()
+        //     {
+        //         CustomerGroupId = t
+        //     }).ToList();
+        //     customer = await service.AddAsync(customer);
+        // }
+        // else
+        // {
+        //     var oldGroupsId = await scope.GetService<CustomerGroupMembershipService>().GetAll()
+        //         .Where(t => t.CustomerId == customer.Id).Select(t => t.CustomerGroupId).ToListAsync();
+        //     customer.CustomerGroupMemberships = groupsId.Where(t => !oldGroupsId.Contains(t)).Select(t => new CustomerGroupMembership()
+        //     {
+        //         CustomerGroupId = t,
+        //         CustomerId = customer.Id
+        //     }).ToList();
+        //     ///The groups removed from list and exist in database, this groups should removed from database
+        //     var removedGroupsId = await scope.GetService<CustomerGroupMembershipService>().GetAll()
+        //         .Where(t => t.CustomerId == customer.Id && !groupsId.Contains(t.CustomerGroupId)).Select(t => t.Id).ToListAsync();
+        //     await service.UpdateAsync(customer, removedGroupsId);
+        // }
+        // await service.SaveChangesAsync();
+        // await grid.SelectRowById(customer.Id);
+        // await window.Close();
     }
 }

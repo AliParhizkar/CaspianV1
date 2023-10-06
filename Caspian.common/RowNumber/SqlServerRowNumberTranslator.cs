@@ -13,8 +13,7 @@ namespace Caspian.Common.RowNumber
 {
     public class SqlServerRowNumberTranslator : IMethodCallTranslator
     {
-        private static readonly MethodInfo _rowNumberMethod
-             = typeof(DbFunctionsExtensions).GetMethod(
+        private static readonly MethodInfo _rowNumberMethod = typeof(DbFunctionsExtensions).GetMethod(
                        nameof(DbFunctionsExtensions.RowNumber),
                        new[] { typeof(DbFunctions), typeof(object), typeof(bool[]) });
         private static ReadOnlyCollection<Expression> ExtractParams(Expression parameter)

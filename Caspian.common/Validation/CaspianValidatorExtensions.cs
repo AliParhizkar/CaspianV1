@@ -224,7 +224,10 @@ namespace Caspian.Common
                 
                 var scope1 = (IServiceScope)context.RootContextData["__ServiceScope"];
                 var param = Expression.Parameter(typeof(TModel), "t");
-                Expression expr = param.CreateMemberExpresion(context.PropertyPath);
+                var path = context.PropertyPath;
+                if (context.PropertyChain.Count > 0)
+                    path = path.Substring(context.PropertyChain.ToString().Length + 1);
+                Expression expr = param.CreateMemberExpresion(path);
                 Expression left = await CreateExpression(param, model, expr, scope1);
                 var tempexpr = await CreateExpression(param, model, expr1, scope1);
                 if (tempexpr != null)

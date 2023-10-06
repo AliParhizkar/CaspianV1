@@ -114,10 +114,11 @@
 
     public async Task Close()
     {
-        if (Status == WindowStatus.Open && OnInternalClose.HasDelegate)
+        if (Status == WindowStatus.Open)
         {
             Status = WindowStatus.Close;
-            await OnInternalClose.InvokeAsync();
+            if (OnInternalClose.HasDelegate)
+                await OnInternalClose.InvokeAsync();
         }
         if (StatusChanged.HasDelegate)
             await StatusChanged.InvokeAsync(WindowStatus.Close);
