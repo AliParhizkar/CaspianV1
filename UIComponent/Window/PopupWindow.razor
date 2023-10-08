@@ -32,6 +32,18 @@
     public HorizontalAlign HorizontalAlign { get; set; } = HorizontalAlign.Center;
 
     [Parameter]
+    public VerticalAnchor VerticalAnchor { get; set; } = VerticalAnchor.Top;
+
+    [Parameter]
+    public HorizontalAnchor HorizontalAnchor { get; set; } = HorizontalAnchor.Center;
+
+    [Parameter]
+    public VerticalAnchor TargetVerticalAnchor { get; set; } = VerticalAnchor.Bottom;
+
+    [Parameter]
+    public HorizontalAnchor TargetHorizontalAnchor { get; set; } = HorizontalAnchor.Center;
+
+    [Parameter]
     public RenderFragment ChildContent{ get; set; }
 
     [Parameter]
@@ -83,24 +95,35 @@
     {
         if (Status == WindowStatus.Open)
         {
-            string json = "{}";
-            if (!Style.HasValue())
+            string json = JsonSerializer.Serialize(new
             {
-                json = JsonSerializer.Serialize(new
-                {
-                    left = Left,
-                    right = Right,
-                    top = Top,
-                    bottom = Bottom
-                });
-            }
-            await jSRuntime.InvokeVoidAsync("$.caspian.bindPopupWindow", DotNetObjectReference.Create(this), json);
+                left = Left,
+                right = Right,
+                top = Top,
+                bottom = Bottom,
+                targetHorizontalAnchor = TargetHorizontalAnchor,
+                targetVerticalAnchor = TargetVerticalAnchor,
+                horizontalAnchor = HorizontalAnchor,
+                verticalAnchor = VerticalAnchor,
+                offsetLeft = OffsetLeft,
+                offsetTop = OffsetTop
+            });
+            await jSRuntime.InvokeVoidAsync("$.caspian.bindPopupWindow", DotNetObjectReference.Create(this), json, TargetElement);
         }
         await base.OnAfterRenderAsync(firstRender);
     }
 
     [Parameter]
     public bool AutoHide { get; set; } = true;
+
+    [Parameter]
+    public int OffsetLeft { get; set; }
+
+    [Parameter]
+    public int OffsetTop { get; set; }
+
+    [Parameter]
+    public ElementReference? TargetElement { get; set; }
 
     [JSInvokable]
     public async Task HideForm()

@@ -2,11 +2,6 @@
 
 namespace Caspian.UI
 {
-    public interface IInputValueInitializer
-    {
-        Task SetValue(object value);
-    }
-
     public interface IListValueInitializer
     {
         Task IncPageNumber();

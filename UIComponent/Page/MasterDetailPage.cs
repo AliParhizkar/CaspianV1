@@ -54,7 +54,7 @@ namespace Caspian.UI
             await base.OnInitializedAsync();
         }
 
-        async Task InsertMaster()
+        async Task UpsertMaster()
         {
             var pKey = typeof(TMaster).GetPrimaryKey();
             var id = Convert.ToInt32(pKey.GetValue(UpsertData));
@@ -71,6 +71,7 @@ namespace Caspian.UI
             {
                 var detailsInfo = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
                 var old = await masterService.GetAll().Include(detailsInfo.Name).SingleAsync(id);
+                old.CopyEntity(UpsertData);
                 var oldDetails = detailsInfo.GetValue(old) as IEnumerable<TDetail>;
                 var otherforeignKeyName = typeof(TDetail).GetProperties().Single(t => t.PropertyType != typeof(TMaster) && 
                     t.GetCustomAttribute<ForeignKeyAttribute>() != null).GetCustomAttribute<ForeignKeyAttribute>().Name;
@@ -139,7 +140,7 @@ namespace Caspian.UI
                             await UpdateMaster(context1);
                     }
                     else
-                        await InsertMaster();
+                        await UpsertMaster();
                 });
             }
             if (MasterGrid != null)

@@ -55,4 +55,18 @@ namespace Caspian.UI
         Center,
         Right,
     }
+
+    public enum VerticalAnchor
+    {
+        Top = 1,
+        Middle,
+        Bottom,
+    }
+
+    public enum HorizontalAnchor
+    {
+        Left = 1,
+        Center,
+        Right,
+    }
 }

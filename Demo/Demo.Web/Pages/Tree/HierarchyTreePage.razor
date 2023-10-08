@@ -53,12 +53,12 @@
                             <span @onclick="async () => await ShowEditForm(null, false)" class="fa fa-plus"></span>
                         </div>
                         <div class="col-md-11 pb-1">
-                            <StringTextBox @bind-Value="@organSearch" OnChange="async () => await customTemplateTree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
+                            <StringTextBox @bind-Value="@organSearchCustomTemplate" OnChange="async () => await customTemplateTree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
                         </div>
                         <div>
                             <TreeView @ref="customTemplateTree" TEntity="OrganUnit" style="height:500px"
-                                       TextFunc="t => t.Title" FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType">
-                                <Template>
+                                      TextFunc="t => t.Title" FilterFunc="t => (!organSearchCustomTemplate.HasValue() || t.Title.StartsWith(organSearchCustomTemplate)) && t.ActiveType == activeType">
+                                <AfterNodeTemplate>
                                     <TreeNodeTemplate AllLevels>
                                         <span class="d-tree-icon">
                                             <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
@@ -70,7 +70,7 @@
                                             <span class="fa fa-trash"></span>
                                         </span>
                                     </TreeNodeTemplate>
-                                </Template>
+                                </AfterNodeTemplate>
                             </TreeView>
                         </div>
                     </div>
@@ -113,6 +113,7 @@
 {
     ActiveType activeType = ActiveType.Enable;
     string organSearch;
+    string organSearchCustomTemplate;
     WindowStatus status;
     OrganUnit organUnit;
     TreeView<OrganUnit> databindingTree;

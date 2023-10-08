@@ -62,7 +62,7 @@ namespace Caspian.Common.Extension
             {
                 var value = info.GetValue(newObject);
                 var type = info.PropertyType;
-                if (value != null && type.IsValueType || type == typeof(string)) 
+                if (value != null && type.IsValueType || type == typeof(string) || type == typeof(byte[])) 
                     info.SetValue(entity, value);
             }
         }

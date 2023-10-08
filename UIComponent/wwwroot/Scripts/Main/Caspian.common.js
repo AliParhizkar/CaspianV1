@@ -1071,24 +1071,79 @@
                 }
             });
         },
-        bindPopupWindow: function (dotnet, pos) {
-            pos = JSON.parse(pos);
+        bindPopupWindow: function (dotnet, data, target) {
+            let pos = JSON.parse(data);
             $('.c-popup-window').css('display', 'block');
-            var className = $('.c-popup-window').attr('class');
+            let className = $('.c-popup-window').attr('class');
             $('.c-popup-window').attr('class', 'auto-hide c-popup-window');
-            let width = $('.c-popup-window').width();
-            let height = $('.c-popup-window').height();
+            let width = $('.c-popup-window').outerWidth();
+            let height = $('.c-popup-window').outerHeight();
             let top = $('.c-main-head').height();
             let left = $('.sidebar').width();
-            $('.c-popup-window').width(width).height(height).attr('class', className);
-            if (pos.left != undefined) 
-                $('.c-popup-window').css({ left: pos.left + left, right: 'auto' });
-            else if (pos.right != undefined)
-                $('.c-popup-window').css({ left: 'auto', right: pos.right });
-            if (pos.top != undefined)
-                $('.c-popup-window').css({ top: pos.top + top, bottom: 'auto' });
-            else if (pos.bottom != undefined)
-                $('.c-popup-window').css({ top: 'auto', bottom: pos.bottom });
+            $('.c-popup-window').width($('.c-popup-window').width()).height($('.c-popup-window').height()).attr('class', className);
+            debugger
+            if (target) {
+                $('.c-popup-window').attr('class', 'auto-hide c-popup-window');
+                let $target = $(target);
+                var sum = 0;
+                while ($target[0]) {
+                    sum += $target.scrollTop();
+                    $target = $target.parent();
+                }
+                let widthT = $(target).outerWidth();
+                let heightT = $(target).outerHeight();
+                let topT = $(target).offset().top + sum - 26;
+                let leftT = $(target).offset().left - $('#mainmenu').outerWidth();
+                let offsetLeft = pos.offsetLeft, offsetTop = pos.offsetTop;
+                switch (pos.targetHorizontalAnchor) {
+                    case 1:
+                        leftT += pos.offsetLeft - 1;
+                        break;
+                    case 2:
+                        leftT += widthT / 2;
+                        offsetLeft = 0;
+                        break;
+                    case 3:
+                        leftT += widthT + pos.offsetLeft - 2;
+                        break;
+                }
+                switch (pos.targetVerticalAnchor) {
+                    case 1:
+                        topT += pos.offsetTop - 1;
+                        break;
+                    case 2:
+                        topT += heightT / 2;
+                        offsetTop = 0;
+                        break;
+                    case 3:
+                        topT += heightT + pos.offsetTop - 1;
+                        break;
+
+                }
+                if (pos.horizontalAnchor == 2)
+                    leftT -= width / 2 + pos.offsetLeft - offsetLeft;
+                else if (pos.horizontalAnchor == 3)
+                    leftT -= width - pos.offsetLeft - offsetLeft;
+                if (pos.verticalAnchor == 2)
+                    topT -= height / 2 + pos.offsetTop + offsetTop;
+                else if (pos.verticalAnchor == 3)
+                    topT -= height + pos.offsetTop + offsetTop - 1;
+                $('.c-popup-window').css({
+                    position: 'absolute',
+                    top: topT,
+                    left: leftT
+                });
+            }
+            else {
+                if (pos.left != undefined)
+                    $('.c-popup-window').css({ left: pos.left + left, right: 'auto' });
+                else if (pos.right != undefined)
+                    $('.c-popup-window').css({ left: 'auto', right: pos.right });
+                if (pos.top != undefined)
+                    $('.c-popup-window').css({ top: pos.top + top, bottom: 'auto' });
+                else if (pos.bottom != undefined)
+                    $('.c-popup-window').css({ top: 'auto', bottom: pos.bottom });
+            }
             $c.enableAutoHide(dotnet);
         },
         bindMultiSelect: function (element, json) {
@@ -1158,9 +1213,16 @@
                 });
             }
         },
-        bindStringbox: function (element) {
+        bindStringbox: function (element, focuced) {
+            if (focuced) {
+                $(element).focus()
+                setTimeout(() => {
+                    $(element).select();
+                }, 1);
+            }
             $(element).bind('focus', () => {
                 setTimeout(() => {
+                    
                     $(element).select();
                 }, 100);
                 $.caspian.showErrorMessage($(element).closest('.t-widget')[0]);

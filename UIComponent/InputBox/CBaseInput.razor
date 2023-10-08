@@ -1,7 +1,6 @@
 ﻿@namespace Caspian.UI
 @using System.Reflection 
 @typeparam TValue
-@implements IInputValueInitializer
 @implements IValidate
 @implements IControl
 @code
@@ -11,6 +10,7 @@
     bool valueIsChanged;
     bool reseting;
     EditContext oldContext;
+    protected bool focuced;
 
     protected ElementReference htmlElement;
 
@@ -21,6 +21,7 @@
 
     public string ErrorMessage { get; set; }
 
+    [Parameter]
     public BindingType BindingType { get; set; } = BindingType.OnChange;
 
     [Parameter]
@@ -160,6 +161,7 @@
 
     public async Task FocusAsync()
     {
+        focuced = true;
         await htmlElement.FocusAsync();
     }
 

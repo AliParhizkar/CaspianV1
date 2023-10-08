@@ -34,7 +34,7 @@
                         <GridCommandColumns />
                     </Columns>
                 </DataGrid>
-                <Window OnOpen="async () => await loadGroups()" @ref="Window" Title="Customer & Groups" Style="width:450px;">
+                <Window @ref="Window" Title="Customer & Groups" Style="width:450px;">
                     <Content>
                         <CaspianForm @ref="Form" Model="UpsertData">
                             <TabPanel>
@@ -52,28 +52,28 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <StringTextBox @bind-Value="UpsertData.FName"
-                                                               Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                                                Disabled="UpsertData.CustomerType == CustomerType.Legal" />
                                             </div>
                                             <div class="col-md-4">
                                                 <label>Last Name</label>
                                             </div>
                                             <div class="col-md-8">
                                                 <StringTextBox @bind-Value="UpsertData.LName"
-                                                               Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                                                Disabled="UpsertData.CustomerType == CustomerType.Legal" />
                                             </div>
                                             <div class="col-md-4">
                                                 <label>Gender</label>
                                             </div>
                                             <div class="col-md-8">
                                                 <DropdownList @bind-Value="UpsertData.Gender"
-                                                              Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                                                Disabled="UpsertData.CustomerType == CustomerType.Legal" />
                                             </div>
                                             <div class="col-md-4">
                                                 <label>Company Name</label>
                                             </div>
                                             <div class="col-md-8">
                                                 <StringTextBox @bind-Value="UpsertData.CompanyName"
-                                                               Disabled="UpsertData.CustomerType == CustomerType.Real" />
+                                                                Disabled="UpsertData.CustomerType == CustomerType.Real" />
                                             </div>
                                             <div class="col-md-4">
                                                 <label>Mobile Number</label>
@@ -115,42 +115,4 @@
 @code
 {
     Customer search = new Customer();
-
-
-    async Task loadGroups()
-    {
-
-    }
-
-    async Task UpdateDatabaseAsync(FormData<Customer> form)
-    {
-        // form.Cancel = true;
-        // using var scope = CreateScope();
-        // var service = scope.GetService<CustomerService>();
-        // if (customer.Id == 0)
-        // {
-        //     customer.CustomerGroupMemberships = groupsId.Select(t => new CustomerGroupMembership()
-        //     {
-        //         CustomerGroupId = t
-        //     }).ToList();
-        //     customer = await service.AddAsync(customer);
-        // }
-        // else
-        // {
-        //     var oldGroupsId = await scope.GetService<CustomerGroupMembershipService>().GetAll()
-        //         .Where(t => t.CustomerId == customer.Id).Select(t => t.CustomerGroupId).ToListAsync();
-        //     customer.CustomerGroupMemberships = groupsId.Where(t => !oldGroupsId.Contains(t)).Select(t => new CustomerGroupMembership()
-        //     {
-        //         CustomerGroupId = t,
-        //         CustomerId = customer.Id
-        //     }).ToList();
-        //     ///The groups removed from list and exist in database, this groups should removed from database
-        //     var removedGroupsId = await scope.GetService<CustomerGroupMembershipService>().GetAll()
-        //         .Where(t => t.CustomerId == customer.Id && !groupsId.Contains(t.CustomerGroupId)).Select(t => t.Id).ToListAsync();
-        //     await service.UpdateAsync(customer, removedGroupsId);
-        // }
-        // await service.SaveChangesAsync();
-        // await grid.SelectRowById(customer.Id);
-        // await window.Close();
-    }
 }

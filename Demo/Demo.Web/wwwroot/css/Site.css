@@ -1,7 +1,15 @@
 ﻿.d-container {
     background-color:white;
 }
-
+.d-target-element{
+    border:1px dashed gray;
+    width:150px;
+    height:100px;
+    text-align:center;
+    vertical-align:middle;
+    color:mediumvioletred;
+    padding-top:35px;
+}
 .d-window-header {
     display: flex;
 }

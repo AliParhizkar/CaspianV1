@@ -109,6 +109,65 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
+                        <h4>Target element</h4>
+                        <span class="c-demo-description">In this example, </span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="col-md-4">
+                                <label>Target Horizontal Anchor</label>
+                            </div>
+                            <div class="col-md-8">
+                                <RadioList @bind-Value="hAnchorTarget" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Target Vertical Anchor </label>
+                            </div>
+                            <div class="col-md-8">
+                                <RadioList @bind-Value="vAnchorTarget" />
+                            </div>
+                            <div class="row">
+                                <div @ref="targetElement" class="col-md-5 d-target-element">
+                                    Target Element
+                                </div>
+                                <div class="col-md-7 row">
+                                    <div class="col-md-6 ps-3">
+                                        <label>Offset Left</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <NumericTextBox @bind-Value="offsetLeft" />
+                                    </div>
+                                    <div class="col-md-6 ps-3">
+                                        <label>Offset top</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <NumericTextBox @bind-Value="offsetTop" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Horizontal Anchor</label>
+                            </div>
+                            <div class="col-md-8">
+                                <RadioList @bind-Value="hAnchor" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Vertical Anchor</label>
+                            </div>
+                            <div class="col-md-8">
+                                <RadioList @bind-Value="vAnchor" />
+                            </div>
+                            <div class="col-md-6 ps-5">
+                                <label>Popup window</label>
+                            </div>
+                            <div class="col-md-6 pe-6 text-center">
+                                <button class="c-btn c-success" @onclick="() => anchorStatus = WindowStatus.Open">Show Popup</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
                         <h4>Custom appearance</h4>
                         <span class="c-demo-description">In this example we use the <b>Style Parameter</b> to create a custom appearance</span>
                     </div>
@@ -150,13 +209,19 @@
 
 <PopupWindow @bind-Status="alignStatus" HorizontalAlign="hAlign" VerticalAlign="vAlign">
     <div style="width:500px;height:300px;text-align:center;padding-top:30px;">
-        <h3>Popup Window</h3>
+        <h3>Horizontal & Vertical Align</h3>
     </div>
 </PopupWindow>
 <PopupWindow @bind-Status="customPositionStatus" Left="left" Right="right" Top="top" Bottom="bottom"
              HorizontalAlign="customHorizontalAlign" VerticalAlign="customVerticalAlign">
     <div style="width:500px;height:300px;text-align:center;padding-top:30px;">
-        <h3>Popup Window</h3>
+        <h3>Custom Position</h3>
+    </div>
+</PopupWindow>
+<PopupWindow @bind-Status="anchorStatus" Style="border-radius:0" HorizontalAnchor="hAnchor" VerticalAnchor="vAnchor" TargetHorizontalAnchor="hAnchorTarget"
+             TargetVerticalAnchor="vAnchorTarget" OffsetLeft="offsetLeft" OffsetTop="offsetTop" TargetElement="targetElement">
+    <div style="width:250px;height:150px;text-align:center;">
+        <h3>Target Element</h3>
     </div>
 </PopupWindow>
 <PopupWindow @bind-Status="customAppearanceStatus" Style="width:450px;height:200px;border-radius:150px;top:35px;left:350px;">
@@ -179,20 +244,28 @@
 {
     bool enableCustomVerticalAlign = true;
     bool enableCustomHorizontalAlign = true;
+    ElementReference targetElement;
     int? top = 100;
     int? bottom;
     int? left = 200;
     int? right;
     bool autoHide;
+    int offsetLeft = 2;
+    int offsetTop = 2;
 
     WindowStatus alignStatus;
     WindowStatus customPositionStatus;
     WindowStatus customAppearanceStatus;
     WindowStatus preventClosingStatus;
+    WindowStatus anchorStatus;
     VerticalAlign vAlign = VerticalAlign.Middle;
     HorizontalAlign hAlign = HorizontalAlign.Center;
     VerticalAlign customVerticalAlign = VerticalAlign.Middle;
     HorizontalAlign customHorizontalAlign = HorizontalAlign.Center;
+    VerticalAnchor vAnchorTarget = VerticalAnchor.Top;
+    HorizontalAnchor hAnchorTarget = HorizontalAnchor.Left;
+    VerticalAnchor vAnchor = VerticalAnchor.Top;
+    HorizontalAnchor hAnchor = HorizontalAnchor.Left;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

@@ -1,5 +1,4 @@
 ﻿@namespace Caspian.UI
-@implements IInputValueInitializer
 @implements IWindow
 @inject BasePageService Service
 @inject IJSRuntime jsRuntime
@@ -165,6 +164,10 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender)
+        {
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindWindow", DotNetObjectReference.Create(this), window);
+        }
         if (isOpend)
         {
             isOpend = false;
@@ -173,10 +176,7 @@
             if (OnOpen.HasDelegate)
                 await OnOpen.InvokeAsync();
         }
-        if (firstRender)
-        {
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindWindow", DotNetObjectReference.Create(this), window);
-        }
+
         await base.OnAfterRenderAsync(firstRender);
     }
 }
