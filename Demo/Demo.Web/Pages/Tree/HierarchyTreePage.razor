@@ -120,7 +120,7 @@
     TreeView<OrganUnit> customTemplateTree;
     IControl firstControl;
 
-    async Task DeleteOrganUnit(TreeViewItem node)
+    async Task DeleteOrganUnit(NodeView node)
     {
         var organUnitId = Convert.ToInt32(node.Value);
         using var service = CreateScope().GetService<OrganUnitService>();
@@ -136,7 +136,7 @@
             ShowMessage(result.Errors.First().ErrorMessage);
     }
 
-    async Task ShowEditForm(TreeViewItem nodeView, bool isUpdate)
+    async Task ShowEditForm(NodeView nodeView, bool isUpdate)
     {
         if (isUpdate)
         {

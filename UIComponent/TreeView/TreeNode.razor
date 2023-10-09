@@ -66,10 +66,10 @@
             </CascadingValue>
         }
     </div>
-    @if (Item.Items != null && Item.Expanded)
+    @if (Item.Children != null && Item.Expanded)
     {
         <ul class="c-subtree">
-            @foreach (var item in Item.Items)
+            @foreach (var item in Item.Children)
             {
                 if (item.Parent == null)
                     item.Parent = Item;
@@ -114,23 +114,23 @@
     public EventCallback<bool?> SelectedChanged { get; set; }
 
     [Parameter]
-    public EventCallback<TreeViewItem> OnExpanded { get; set; }
+    public EventCallback<NodeView> OnExpanded { get; set; }
 
     [Parameter]
-    public EventCallback<TreeViewItem> OnClick{ get; set; }
+    public EventCallback<NodeView> OnClick { get; set; }
 
     [Parameter]
-    public EventCallback<TreeViewItem> OnCollapsed { get; set; }
+    public EventCallback<NodeView> OnCollapsed { get; set; }
 
     [CascadingParameter(Name = "TreeViewCascadeData")]
     public TreeViewCascadeData CascadeData { get; set; }
 
     [Parameter]
-    public EventCallback<TreeViewItem> OnSelected { get; set; }
+    public EventCallback<NodeView> OnSelected { get; set; }
 
     [Parameter]
-    public EventCallback<TreeViewItem> OnChanged { get; set; }
+    public EventCallback<NodeView> OnChanged { get; set; }
 
     [Parameter]
-    public TreeViewItem Item { get; set; }
+    public NodeView Item { get; set; }
 }

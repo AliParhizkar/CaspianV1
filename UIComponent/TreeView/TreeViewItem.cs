@@ -2,7 +2,7 @@
 
 namespace Caspian.UI
 {
-    public class TreeViewItem
+    public class NodeView
     {
         public string Text { get; set; }
 
@@ -24,8 +24,8 @@ namespace Caspian.UI
 
         public byte? Depth { get; set; }
 
-        public TreeViewItem Parent { get; set; }
+        public NodeView Parent { get; set; }
 
-        public IList<TreeViewItem> Items { get; set; }
+        public IList<NodeView> Children { get; set; }
     }
 }

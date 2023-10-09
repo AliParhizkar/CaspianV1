@@ -47,31 +47,12 @@
                 <ul class="c-subtree">
                     @foreach (var item in Source)
                     {
-                        <TreeNode OnCollapsed="async (localItem) =>
-                                            {
-                                                if (OnCollapsed.HasDelegate)
-                                                    await OnCollapsed.InvokeAsync(localItem);
-                                            }"
-                          OnExpanded="async (localItem) =>
-                                            {
-                                                
-                                                if (OnExpanded.HasDelegate)
-                                                    await OnExpanded.InvokeAsync(localItem);
-                                                StateHasChanged();
-                                            }"
-                          OnSelected="async (node) =>
-                                                {
-                                                    if (SingleSelectOnTree)
-                                                    {
-                                                        UnselectTree(Source);
-                                                        node.Selected = true;
-                                                    }
-                                                    await OnSelected.InvokeAsync(node);
-
-                                                }"
-                          OnChanged="async node => await OnNodeChanged(node)"
-                          OnClick="async node => await OnInternalClicked.InvokeAsync(node)"
-                          Item="item" />
+                    <TreeNode OnCollapsed="async node => await NodeCollapsed(node)"
+                            OnExpanded="async node => await NodeExpanded(node)"
+                            OnSelected="async (node) => await NodeSelected(node)"
+                            OnChanged="async node => await OnNodeChanged(node)"
+                            OnClick="async node => await OnInternalClicked.InvokeAsync(node)"
+                            Item="item" />
                     }
                 </ul>
             </CascadingValue>

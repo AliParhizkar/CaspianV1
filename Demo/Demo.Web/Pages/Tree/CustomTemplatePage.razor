@@ -18,7 +18,7 @@
                     </span>
                 </div>
                 <div class="col-md-6">
-                    <TreeView TEntity="TreeViewItem" style="height:500px" Source="source">
+                    <TreeView TEntity="NodeView" style="height:500px" Source="source">
                         <AfterNodeTemplate>
                             <TreeNodeTemplate Level="1">
                                 <span class=" d-tree-icon d-tree-add">
@@ -67,21 +67,21 @@
 @code
 {
     IControl firstControl;
-    IList<TreeViewItem> source;
-    TreeViewItem selectedNode;
+    IList<NodeView> source;
+    NodeView selectedNode;
     WindowStatus status;
     City city;
 
     protected override async Task OnInitializedAsync()
     {
         using var service = CreateScope().GetService<CountryService>();
-        source = await service.GetAll().Select(t => new TreeViewItem()
+        source = await service.GetAll().Select(t => new NodeView()
             {
                 Collabsable = true,
                 Text = t.Title,
                 Value = t.Id.ToString(),
                 ShowTemplate = true,
-                Items = t.Cities.Select(u => new TreeViewItem()
+                Children = t.Cities.Select(u => new NodeView()
                 {
                     Collabsable = false,
                     Text = u.Title,
@@ -94,7 +94,7 @@
     async Task UpsertCity()
     {
         using var service = CreateScope().GetService<CityService>();
-        TreeViewItem tempNode = null;
+        NodeView tempNode = null;
         if (city.Id == 0)
         {
             await service.AddAsync(city);
@@ -110,8 +110,8 @@
         }
         await service.SaveChangesAsync();
         status = WindowStatus.Close;
-        tempNode.Items = await service.GetAll().Where(t => t.CountryId == city.CountryId)
-            .Select(t => new TreeViewItem()
+        tempNode.Children = await service.GetAll().Where(t => t.CountryId == city.CountryId)
+            .Select(t => new NodeView()
                 {
                     Collabsable = false,
                     Expanded = false,
@@ -121,7 +121,7 @@
                 }).ToListAsync();
     }
 
-    async Task ShowEditForm(TreeViewItem nodeView, bool isUpdate)
+    async Task ShowEditForm(NodeView nodeView, bool isUpdate)
     {
         ///window opening
         city = new City();
@@ -146,7 +146,7 @@
         status = WindowStatus.Open;
     }
 
-    async Task DeleteCity(TreeViewItem node)
+    async Task DeleteCity(NodeView node)
     {
         var cityId = Convert.ToInt32(node.Value);
         using var service = CreateScope().GetService<CityService>();
@@ -157,8 +157,8 @@
             await service.RemoveAsync(city);
             await service.SaveChangesAsync();
             ///After removing the city, all the cities of the country (parent node) must be reloaded.
-            node.Parent.Items = await service.GetAll()
-            .Where(t => t.CountryId == city.CountryId).Select(t => new TreeViewItem()
+            node.Parent.Children = await service.GetAll()
+            .Where(t => t.CountryId == city.CountryId).Select(t => new NodeView()
                 {
                     Collabsable = false,
                     Expanded = false,

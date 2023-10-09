@@ -8,11 +8,11 @@ namespace Caspian.UI
     {
         Task ReloadAsync();
 
-        EventCallback<TreeViewItem> OnInternalCHanged { get; set; }
+        EventCallback<NodeView> OnInternalCHanged { get; set; }
 
-        EventCallback<TreeViewItem> OnInternalClicked { get; set; }
+        EventCallback<NodeView> OnInternalClicked { get; set; }
 
-        IList<TreeViewItem> GetSeletcedItems();
+        IList<NodeView> GetSeletcedItems();
 
         void SetSelectedNodesValue(IList<string> values);
 

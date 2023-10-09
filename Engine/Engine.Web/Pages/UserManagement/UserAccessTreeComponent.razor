@@ -26,12 +26,12 @@
             <button @onclick="SaveData" class="c-btn c-primary">Save All</button>
         </div>
     </div>
-    <TreeView @ref="tree" TEntity="TreeViewItem" OnChange="Change" style="height:calc(100vh - 105px);margin-right:5px;" Source="source" />
+    <TreeView @ref="tree" TEntity="NodeView" OnChange="Change" style="height:calc(100vh - 105px);margin-right:5px;" Source="source" />
 }
 @code
 {
-    TreeView<TreeViewItem> tree;
-    IList<TreeViewItem> source;
+    TreeView<NodeView> tree;
+    IList<NodeView> source;
     User user;
 
     async Task SaveData()
@@ -56,17 +56,17 @@
         ShowMessage("Registration was done successfully");
     }
 
-    void Change(TreeViewItem item)
+    void Change(NodeView node)
     {
-        if (item.Items != null)
+        if (node.Children != null)
         {
-            foreach (var child in item.Items)
-                child.Selected = item.Selected;
+            foreach (var child in node.Children)
+                child.Selected = node.Selected;
         }
-        var parent = item.Parent;
+        var parent = node.Parent;
         if (parent != null)
         {
-            var siblings = parent.Items;
+            var siblings = parent.Children;
             if (siblings.All(t => t.Selected == true))
                 parent.Selected = true;
             else if (siblings.All(t => t.Selected == false))
@@ -89,13 +89,13 @@
     {
         using var scope = CreateScope();
         source = await new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystem)
-            .Select(t => new TreeViewItem()
+            .Select(t => new NodeView()
                 {
                     Text = t.Title,
                     Expanded = true,
                     Selectable = true,
                     Value = t.Id.ToString(),
-                    Items = t.Menus.Select(u => new TreeViewItem()
+                    Children = t.Menus.Select(u => new NodeView()
                     {
                         Collabsable = false,
                         Text = u.Title,
@@ -107,7 +107,7 @@
                 }).ToListAsync();
         foreach (var item in source)
         {
-            var items = item.Items;
+            var items = item.Children;
             if (items != null)
             {
                 if (items.All(t => t.Selected == true))

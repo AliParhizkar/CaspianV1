@@ -29,7 +29,7 @@
                             </RadioItems>
                         </RadioList>
                     </div>
-                    <TreeView TEntity="TreeViewItem" style="height:500px;" Source="loadOnFirstSource" />
+                    <TreeView TEntity="NodeView" style="height:500px;" Source="loadOnFirstSource" />
                 </div>
                 <div class="col-md-6">
                     <hr />
@@ -48,8 +48,8 @@
                 </div>
                 <div class="col-md-6">
                     <hr />
-                    <TreeView TEntity="TreeViewItem" style="height:500px;" Source="loadOnExpandSource" 
-                            OnExpanded="async node => await OnExpanded(node)" />
+                    <TreeView TEntity="NodeView" style="height:500px;" Source="loadOnExpandSource"
+                              OnExpanded="async node => await OnExpanded(node)" />
                 </div>
             </div>
         </TabPanelItem>
@@ -62,26 +62,26 @@
 @code 
 {
     bool expanded = true;
-    IList<TreeViewItem> loadOnFirstSource;
-    IList<TreeViewItem> loadOnExpandSource;
+    IList<NodeView> loadOnFirstSource;
+    IList<NodeView> loadOnExpandSource;
 
     protected override async Task OnInitializedAsync()
     {
         using var service = CreateScope().GetService<MenuCategoryService>();
         var query = service.GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo);
         /// load menus category and menus together
-        loadOnFirstSource = await query.Select(t => new TreeViewItem()
+        loadOnFirstSource = await query.Select(t => new NodeView()
         {
             Text = t.Title,
             Expanded = expanded,
-            Items = t.Menus.Select(u => new TreeViewItem()
+            Children = t.Menus.Select(u => new NodeView()
             {
                 Text = u.Title,
                 Collabsable = false
             }).ToList()
         }).ToListAsync();
         /// load menus category and on node expand load menus
-        loadOnExpandSource = await query.Select(t => new TreeViewItem()
+        loadOnExpandSource = await query.Select(t => new NodeView()
         {
             Text = t.Title,
             Value = t.Id.ToString()
@@ -90,12 +90,12 @@
         await base.OnInitializedAsync();
     }
 
-    async Task OnExpanded(TreeViewItem node)
+    async Task OnExpanded(NodeView node)
     {
         using var scope = CreateScope().GetService<MenuService>();
         var categoryId = Convert.ToInt32(node.Value);
-        node.Items = await new MenuService(scope.ServiceProvider).GetAll()
-            .Where(t => t.MenuCategoryId == categoryId).Select(t => new TreeViewItem()
+        node.Children = await new MenuService(scope.ServiceProvider).GetAll()
+            .Where(t => t.MenuCategoryId == categoryId).Select(t => new NodeView()
                 { 
                     Text = t.Title,
                     Collabsable = false

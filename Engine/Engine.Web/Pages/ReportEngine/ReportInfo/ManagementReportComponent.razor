@@ -12,7 +12,7 @@
                                                 using var scope = ServiceScopeFactory.CreateScope();
                                                 var service = new ReportService(scope.ServiceProvider);
                                                 var report = await (service.Context as Context).Reports.Include(t => t.ReportGroup).SingleAsync(t => t.Id == ReportId);
-                                                item.Items = new ReportTree().CreateTreeForGroupBy(report, item.Value).Select(t => new TreeViewItem()
+                                                item.Children = new ReportTree().CreateTreeForGroupBy(report, item.Value).Select(t => new NodeView()
                                                 {
                                                     Value = t.TitleEn,
                                                     Selected = t.Selected,
@@ -21,7 +21,7 @@
                                                     Collabsable = t.Grouping,
                                                     Text = t.TitleFa,
                                                 }).ToList();
-                                            })" style="width: 500px; margin: 10px auto; height: calc(100vh - 170px); padding: 6px 12px 0 0" TEntity="TreeViewItem" Source="Nodes" />
+                                            })" style="width: 500px; margin: 10px auto; height: calc(100vh - 170px); padding: 6px 12px 0 0" TEntity="NodeView" Source="Nodes" />
         <div style="border:1px solid #9da09d;margin:8px 5px 15px 5px;padding:8px;border-radius:5px;height:50px">
             <div style="padding:0px 10px 0px 10px;float:left">
                 <button class="c-btn c-danger" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }">انصراف</button>
@@ -35,8 +35,8 @@
 
 @code
 {
-    IList<TreeViewItem> Nodes;
-    TreeView<TreeViewItem> Tree;
+    IList<NodeView> Nodes;
+    TreeView<NodeView> Tree;
 
     void PostParams()
     {
@@ -49,7 +49,7 @@
         using var scope = ServiceScopeFactory.CreateScope();
         var service = new ReportService(scope.ServiceProvider);
         var report = await (service.Context as Context).Reports.Include(t => t.ReportGroup).Include(t => t.ReportParams).SingleAsync(t => t.Id == ReportId);
-        Nodes = tree.CreateTreeForGroupBy(report, null).Select(t => new TreeViewItem()
+        Nodes = tree.CreateTreeForGroupBy(report, null).Select(t => new NodeView()
         {
             Value = t.TitleEn,
             Selected = t.Selected,

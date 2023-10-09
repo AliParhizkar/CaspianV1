@@ -4,7 +4,7 @@
                         {
                             var data = System.Text.Json.JsonSerializer.Deserialize<ReportNode>(item.Value);
                             var tempItems = (await new ReportTree().CreateTreeForSelect(Type, data, ReportParams));
-                            item.Items = tempItems.Select(t => new TreeViewItem()
+                            item.Children = tempItems.Select(t => new NodeView()
                             {
                                 Value = System.Text.Json.JsonSerializer.Serialize(t),
                                 Selected = t.Selected,
@@ -14,7 +14,7 @@
                                 Text = t.TitleFa,
                                 Disabled = t.Selected
                             }).ToList();
-                        })" style="width:500px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="TreeViewItem" Source="Nodes" />
+                        })" style="width:500px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="NodeView" Source="Nodes" />
 <div style="text-align:left;padding-left:75px;padding-top:10px;">
     <button style="width:60px" class="c-btn c-primary" @onclick="PostParams">ثبت</button>
     <button class="c-btn c-danger"
@@ -29,9 +29,9 @@
 @code
 {
     Type Type;
-    IList<TreeViewItem> Nodes;
+    IList<NodeView> Nodes;
     IList<ReportParam> ReportParams;
-    TreeView<TreeViewItem> Tree;
+    TreeView<NodeView> Tree;
 
     async Task PostParams()
     {
@@ -54,7 +54,7 @@
             await service.SaveChangesAsync();
             await OnParameterSave.InvokeAsync();
             ReportParams = await service.GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
-            Nodes = (await new ReportTree().CreateTreeForSelect(Type, null, ReportParams)).Select(t => new TreeViewItem()
+            Nodes = (await new ReportTree().CreateTreeForSelect(Type, null, ReportParams)).Select(t => new NodeView()
                 {
                     Value = System.Text.Json.JsonSerializer.Serialize(t),
                     Selected = t.Selected,
@@ -75,7 +75,7 @@
         Type = new AssemblyInfo().GetReturnType(report.ReportGroup);
         ReportParams = await scope.GetService<ReportParamService>().GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
         var nodes = await new ReportTree().CreateTreeForSelect(Type, null, ReportParams);
-        Nodes = nodes.Select(t => new TreeViewItem()
+        Nodes = nodes.Select(t => new NodeView()
         {
             Value = System.Text.Json.JsonSerializer.Serialize(t),
             Selected = t.Selected,

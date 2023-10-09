@@ -30,7 +30,7 @@
                         <div class="d-tree-result">
                             <span>Selected menus count:@(expandedSeletedNodesCount) </span>
                         </div>
-                        <TreeView @ref="expandedTree" TEntity="TreeViewItem" OnChange="ExpandedNodeChange" style="height:calc(100vh - 218px);margin-right:5px;" Source="expandedSource" />
+                        <TreeView TEntity="NodeView" @ref="expandedTree" OnChange="ExpandedNodeChange" style="height:calc(100vh - 218px);margin-right:5px;" Source="expandedSource" />
                     </div>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                         <div class="d-tree-result">
                             <span>SelectedMenus Count: @(collapsedSeletedNodesCount)</span>
                         </div>
-                        <TreeView @ref="tree1" OnChange="CollapsedNodeChange" OnCollapsed="OnCollapsed" TEntity="TreeViewItem" style="height:calc(100vh - 196px);margin-right:5px;" Source="collapsedSource" OnExpanded="async node => await OnExpanded(node)" />
+                        <TreeView TEntity="NodeView" @ref="tree1" OnChange="CollapsedNodeChange" OnCollapsed="OnCollapsed" style="height:calc(100vh - 196px);margin-right:5px;" Source="collapsedSource" OnExpanded="async node => await OnExpanded(node)" />
                     </div>
                 </div>
             </div>
@@ -58,29 +58,29 @@
     WindowStatus status;
     int expandedSeletedNodesCount;
     int collapsedSeletedNodesCount;
-    IList<TreeViewItem> expandedSource;
-    IList<TreeViewItem> collapsedSource;
-    TreeView<TreeViewItem> expandedTree;
-    TreeView<TreeViewItem> tree1;
+    IList<NodeView> expandedSource;
+    IList<NodeView> collapsedSource;
+    TreeView<NodeView> expandedTree;
+    TreeView<NodeView> tree1;
 
-    void OnCollapsed(TreeViewItem node)
+    void OnCollapsed(NodeView node)
     {
-        node.Items = null;
+        node.Children = null;
         node.Selected = false;
     }
 
-    void ExpandedNodeChange(TreeViewItem item)
+    void ExpandedNodeChange(NodeView node)
     {
         // This is for tow level tree
-        if (item.Items != null)
+        if (node.Children != null)
         {
-            foreach (var child in item.Items)
-                child.Selected = item.Selected;
+            foreach (var child in node.Children)
+                child.Selected = node.Selected;
         }
-        var parent = item.Parent;
+        var parent = node.Parent;
         if (parent != null)
         {
-            var siblings = parent.Items;
+            var siblings = parent.Children;
             if (siblings.All(t => t.Selected == true))
                 parent.Selected = true;
             else if (siblings.All(t => t.Selected == false))
@@ -92,22 +92,22 @@
         expandedSeletedNodesCount = expandedTree.GetSeletcedItems().Count(t => t.Depth == 2);
     }
 
-    void CollapsedNodeChange(TreeViewItem node)
+    void CollapsedNodeChange(NodeView node)
     {
         if (node.Depth == 1)
         {
-            if (node.Items == null)
+            if (node.Children == null)
                 node.Selected = false;
             else
             {
-                foreach (var item in node.Items)
+                foreach (var item in node.Children)
                     item.Selected = node.Selected;
             }
         }
         if (node.Depth == 2)
         {
             var parent = node.Parent;
-            var items = parent.Items;
+            var items = parent.Children;
             if (items.All(t => t.Selected == true))
                 parent.Selected = true;
             else if (items.All(t => t.Selected == false))
@@ -118,12 +118,12 @@
         collapsedSeletedNodesCount = tree1.GetSeletcedItems().Count(t => t.Depth == 2);
     }
 
-    async Task OnExpanded(TreeViewItem node)
+    async Task OnExpanded(NodeView node)
     {
         using var service = CreateScope().GetService<MenuService>();
         var categoryId = Convert.ToInt32(node.Value);
-        node.Items = await service.GetAll()
-            .Where(t => t.MenuCategoryId == categoryId).Select(t => new TreeViewItem()
+        node.Children = await service.GetAll()
+            .Where(t => t.MenuCategoryId == categoryId).Select(t => new NodeView()
                 {
                     Collabsable = false,
                     Expanded = false,
@@ -143,13 +143,13 @@
     {
         using var service = CreateScope().GetService<MenuCategoryService>();
         expandedSource = await service.GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo)
-            .Select(t => new TreeViewItem()
+            .Select(t => new NodeView()
                 {
                     Text = t.Title,
                     Expanded = false,
                     Selectable = true,
                     Value = t.Id.ToString(),
-                    Items = t.Menus.Select(u => new TreeViewItem()
+                    Children = t.Menus.Select(u => new NodeView()
                     {
                         Collabsable = false,
                         Text = u.Title,
@@ -157,7 +157,7 @@
                         Selectable = true
                     }).ToList()
                 }).ToListAsync();
-        collapsedSource = expandedSource.Select(t => new TreeViewItem()
+        collapsedSource = expandedSource.Select(t => new NodeView()
             {
                 Expanded = false,
                 Collabsable = true,

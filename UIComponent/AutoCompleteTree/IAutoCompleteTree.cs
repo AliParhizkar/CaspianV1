@@ -6,7 +6,7 @@ namespace Caspian.UI
 {
     internal interface IAutoCompleteTree
     {
-        Task SetValueAsync(TreeViewItem node);
+        Task SetValueAsync(NodeView node);
 
         bool MultiSelecable();
 

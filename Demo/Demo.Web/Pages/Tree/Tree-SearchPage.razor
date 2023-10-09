@@ -20,7 +20,7 @@
                             OnChange="SearchOnTree" />
                     </div>
                     <div>
-                        <TreeView TEntity="TreeViewItem" style="height:500px;" Source="searchSource" />
+                        <TreeView TEntity="NodeView" style="height:500px;" Source="searchSource" />
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -32,10 +32,10 @@
                 </div>
                 <div class="col-md-6">
                     <hr />
-    <div class="c-controls ps-4 pe-4 pb-2">
-        <label style="color:red;">You selected @(selecteCitiesCount) city</label>
-    </div>
-    <TreeView @ref="tree" TEntity="TreeViewItem" style="height:500px;" Source="selectionSource" OnChange="UpdateSelecting" />
+                    <div class="c-controls ps-4 pe-4 pb-2">
+                        <label style="color:red;">You selected @(selecteCitiesCount) city</label>
+                    </div>
+                    <TreeView @ref="tree" TEntity="NodeView" style="height:500px;" OnChange="UpdateSelecting" Source="selectionSource" AutoSelectable />
                 </div>
             </div>
         </TabPanelItem>
@@ -50,23 +50,23 @@
 {
     string strSearch;
     int selecteCitiesCount;
-    TreeView<TreeViewItem> tree;
+    TreeView<NodeView> tree;
 
-    IList<TreeViewItem> searchSource;
-    IList<TreeViewItem> selectionSource;
+    IList<NodeView> searchSource;
+    IList<NodeView> selectionSource;
 
     protected override async Task OnInitializedAsync()
     {
         await SearchOnTree();
         using var service = CreateScope().GetService<CountryService>();
         var query = service.GetAll();
-        selectionSource = await query.Select(t => new TreeViewItem()
+        selectionSource = await query.Select(t => new NodeView()
         {
             Value = t.Id.ToString(),
             Text = t.Title,
             Expanded = true,
             Selectable = true,
-            Items = t.Cities.Select(u => new TreeViewItem()
+                Children = t.Cities.Select(u => new NodeView()
             {
                 Value = u.Id.ToString(),
                 Text = u.Title,
@@ -77,28 +77,11 @@
         await base.OnInitializedAsync();
     }
 
-    void UpdateSelecting(TreeViewItem node)
+    void UpdateSelecting()
     {
-        ///For a two-level tree
-        ///first level
-        if (node.Depth == 1)
-        {
-            foreach (var child in node.Items)
-                child.Selected = node.Selected;
-        }
-        ///second level
-        if (node.Depth == 2)
-        {
-            var siblingNodes = node.Parent.Items;
-            if (siblingNodes.All(t => t.Selected == true))
-                node.Parent.Selected = true;
-            else if (siblingNodes.All(t => t.Selected == false))
-                node.Parent.Selected = false;
-            else
-                node.Parent.Selected = null;
-        }
         selecteCitiesCount = tree.GetSeletcedItems().Count(t => t.Depth == 2);
     }
+
 
     //-----Search Method ---
     async Task SearchOnTree()
@@ -107,13 +90,13 @@
         var query = service.GetAll();
         if (strSearch.HasValue())
             query = query.Where(t => t.Cities.Any(u => u.Title.Contains(strSearch)));
-        searchSource = await query.Select(t => new TreeViewItem()
+        searchSource = await query.Select(t => new NodeView()
             {
                 Collabsable = true,
                 Expanded = true,
                 Text = t.Title,
                 Value = t.Id.ToString(),
-                Items = t.Cities.Where(t => strSearch == null || t.Title.Contains(strSearch)).Select(u => new TreeViewItem()
+                Children = t.Cities.Where(t => strSearch == null || t.Title.Contains(strSearch)).Select(u => new NodeView()
                 {
                     Collabsable = false,
                     Text = u.Title,

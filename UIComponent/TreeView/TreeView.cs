@@ -16,12 +16,12 @@ namespace Caspian.UI
     public partial class TreeView<TEntity>: ComponentBase, ITreeView where TEntity: class
     {
         ElementReference tree;
-        IList<TreeViewItem> treeNodes;
+        IList<NodeView> treeNodes;
         Func<TEntity, bool> parentNodeFilterFunc;
 
-        public EventCallback<TreeViewItem> OnInternalCHanged { get; set; }
+        public EventCallback<NodeView> OnInternalCHanged { get; set; }
 
-        public EventCallback<TreeViewItem> OnInternalClicked { get; set; }
+        public EventCallback<NodeView> OnInternalClicked { get; set; }
 
         [CascadingParameter(Name = "TreeViewCascadeData")]
         public TreeViewCascadeData CascadeData { get; set; }
@@ -29,16 +29,14 @@ namespace Caspian.UI
         [CascadingParameter]
         internal IAutoCompleteTree AutoComplete { get; set; }
 
-
-
         [Parameter]
-        public RenderFragment<TreeViewItem> AfterNodeTemplate { get; set; }
+        public RenderFragment<NodeView> AfterNodeTemplate { get; set; }
 
         [Parameter]
         public IList<string> SelectedNodesValue { get; set; }
 
         [Parameter]
-        public RenderFragment<TreeViewItem> ChildContent { get; set; }
+        public RenderFragment<NodeView> ChildContent { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
         public IDictionary<string, object> Attrs { get; set; }
@@ -59,19 +57,19 @@ namespace Caspian.UI
         public bool Selectable { get; set; }
 
         [Parameter]
-        public IList<TreeViewItem> Source { get; set; }
+        public IList<NodeView> Source { get; set; }
 
         [Parameter]
-        public EventCallback<TreeViewItem> OnExpanded { get; set; }
+        public EventCallback<NodeView> OnExpanded { get; set; }
 
         [Parameter]
-        public EventCallback<TreeViewItem> OnCollapsed { get; set; }
+        public EventCallback<NodeView> OnCollapsed { get; set; }
 
         [Parameter]
-        public EventCallback<TreeViewItem> OnSelected { get; set; }
+        public EventCallback<NodeView> OnSelected { get; set; }
 
         [Parameter]
-        public EventCallback<TreeViewItem> OnChange { get; set; }
+        public EventCallback<NodeView> OnChange { get; set; }
 
         [Parameter]
         public bool SingleSelectOnTree { get; set; }
@@ -79,19 +77,72 @@ namespace Caspian.UI
         [Parameter]
         public Func<TEntity, bool> ParentNodeFilterFunc { get; set; }
 
-        void UnselectTree(IEnumerable<TreeViewItem> nodes)
+        [Parameter]
+        public bool AutoSelectable { get; set; }
+
+        void UpdateSelectionForChilren(NodeView node)
+        {
+            if (node.Children != null)
+            {
+                foreach(var child in node.Children)
+                {
+                    child.Selected = node.Selected;
+                    UpdateSelectionForChilren(child);
+                }
+            }
+        }
+
+        void UpdateSelectionForParent(NodeView node)
+        {
+            var parent = node.Parent;
+            if (parent != null)
+            {
+                var siblings = parent.Children;
+                if (siblings.All(t => t.Selected == true))
+                    parent.Selected = true;
+                else if (siblings.All(t => t.Selected == false))
+                    parent.Selected = false;
+                else
+                    parent.Selected = null;
+            }
+        }
+
+        void UnselectTree(IEnumerable<NodeView> nodes)
         {
             foreach (var node in nodes)
             {
                 node.Selected = false;
-                if (node.Items != null)
-                    UnselectTree(node.Items);
+                if (node.Children != null)
+                    UnselectTree(node.Children);
             }
+        }
+
+        async Task NodeCollapsed(NodeView node)
+        {
+            if (OnCollapsed.HasDelegate)
+                await OnCollapsed.InvokeAsync(node);
+        }
+
+        async Task NodeExpanded(NodeView node)
+        {
+            if (OnExpanded.HasDelegate)
+                await OnExpanded.InvokeAsync(node);
+            StateHasChanged();
+        }
+
+        async Task NodeSelected(NodeView node)
+        {
+            if (SingleSelectOnTree)
+            {
+                UnselectTree(Source);
+                node.Selected = true;
+            } 
+            await OnSelected.InvokeAsync(node);
         }
 
         async Task DataBindingAsync()
         {
-            if (Source == null && typeof(TEntity) != typeof(TreeViewItem))
+            if (Source == null && typeof(TEntity) != typeof(NodeView))
             {
                 using var scope = ServiceScopeFactory.CreateScope();
                 var service = new BaseService<TEntity>(scope.ServiceProvider);
@@ -124,26 +175,31 @@ namespace Caspian.UI
             set { Selectable = value; }
         }
 
-        async Task OnNodeChanged(TreeViewItem node)
+        async Task OnNodeChanged(NodeView node)
         {
-            if (node.Items != null)
+            if (node.Children != null)
             {
-                foreach(var item in node.Items)
+                foreach(var item in node.Children)
                 {
                     if (item.Depth == null)
                         item.Depth = (byte)(node.Depth.Value + 1);
                 }
             }
+            if (AutoSelectable) 
+            {
+                UpdateSelectionForChilren(node);
+                UpdateSelectionForParent(node);
+            }
             await OnChange.InvokeAsync(node);
             await OnInternalCHanged.InvokeAsync(node);
         }
 
-        async Task SelectStateChanged(TreeViewItem node)
+        async Task SelectStateChanged(NodeView node)
         {
             await OnInternalCHanged.InvokeAsync(node);
         }
 
-        async Task NodeClicked(TreeViewItem node)
+        async Task NodeClicked(NodeView node)
         {
             await OnInternalClicked.InvokeAsync(node);
         }
@@ -172,7 +228,7 @@ namespace Caspian.UI
                 if (node.Parent == null)
                     treeNodes.Remove(node);
                 else
-                    node.Parent.Items.Remove(node);
+                    node.Parent.Children.Remove(node);
             }
         }
 
@@ -191,7 +247,7 @@ namespace Caspian.UI
                 var info = typeof(TEntity).GetForeignKey(typeof(TEntity));
                 var parentValue = Convert.ToString(info.GetValue(entity));
                 var parentNode = tree.FindNodeByValue(parentValue, treeNodes);
-                node = new TreeViewItem()
+                node = new NodeView()
                 {
                     Collabsable = true,
                     Depth = parentNode?.Depth == null ? (byte)1 : (byte)(parentNode.Depth + 1),
@@ -206,9 +262,9 @@ namespace Caspian.UI
                 else
                 {
                     parentNode.Expanded = true;
-                    if (parentNode.Items == null)
-                        parentNode.Items = new List<TreeViewItem>();
-                    parentNode.Items.Add(node);
+                    if (parentNode.Children == null)
+                        parentNode.Children = new List<NodeView>();
+                    parentNode.Children.Add(node);
                 }
             }
             else
@@ -220,31 +276,31 @@ namespace Caspian.UI
             await DataBindingAsync();
         }
 
-        void GetSeletcedItems(TreeViewItem item, IList<TreeViewItem> list)
+        void GetSeletcedItems(NodeView node, IList<NodeView> list)
         {
-            if (item.Selected == true)
-                list.Add(item);
-            if (item.Items != null)
+            if (node.Selected == true)
+                list.Add(node);
+            if (node.Children != null)
             {
-                foreach (var item1 in item.Items)
-                    GetSeletcedItems(item1, list);
+                foreach (var child in node.Children)
+                    GetSeletcedItems(child, list);
             }
         }
 
-        public IList<TreeViewItem> GetSeletcedItems()
+        public IList<NodeView> GetSeletcedItems()
         {
-            var list = new List<TreeViewItem>();
+            var nodes = new List<NodeView>();
             if (Source != null)
             {
                 foreach (var item in Source)
-                    GetSeletcedItems(item, list);
+                    GetSeletcedItems(item, nodes);
             }
             else if (treeNodes != null)
             {
                 foreach (var item in treeNodes)
-                    GetSeletcedItems(item, list);
+                    GetSeletcedItems(item, nodes);
             }
-            return list;
+            return nodes;
         }
 
         protected override async Task OnInitializedAsync()

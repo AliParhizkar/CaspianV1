@@ -91,18 +91,18 @@ namespace Caspian.UI
                     treeView.SetSelectedNodesValue(selectedNodesValue);
                 StateHasChanged();
             }
-            treeView.OnInternalCHanged = EventCallback.Factory.Create<TreeViewItem>(this, node =>
+            treeView.OnInternalCHanged = EventCallback.Factory.Create<NodeView>(this, node =>
             {
                 SetSelectedNodesValue(node);
             });
 
-            treeView.OnInternalClicked = EventCallback.Factory.Create<TreeViewItem>(this, async node =>
+            treeView.OnInternalClicked = EventCallback.Factory.Create<NodeView>(this, async node =>
             {
                 await SetValueAsync(node);
             });
         }
 
-        public async Task SetValueAsync(TreeViewItem node)
+        public async Task SetValueAsync(NodeView node)
         {
             if (!multiSelectable)
             {
@@ -119,7 +119,7 @@ namespace Caspian.UI
             }
         }
 
-        public void SetSelectedNodesValue(TreeViewItem node)
+        public void SetSelectedNodesValue(NodeView node)
         {
             if (node.Selected == true)
                 selectedNodesValue.Add(node.Value);

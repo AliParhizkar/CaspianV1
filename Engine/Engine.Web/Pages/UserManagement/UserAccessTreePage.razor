@@ -20,12 +20,12 @@
             <button @onclick="async () => await SaveData()" class="c-btn c-primary">ثبت همه</button>
         </div>
     </div>
-    <TreeView @ref="tree" TEntity="TreeViewItem" exp OnChange="Change" style="height:calc(100vh - 75px);margin-right:5px;" Source="source" />
+    <TreeView @ref="tree" TEntity="NodeView" exp OnChange="Change" style="height:calc(100vh - 75px);margin-right:5px;" Source="source" />
 }
 @code 
 {
-    TreeView<TreeViewItem> tree;
-    IList<TreeViewItem> source;
+    TreeView<NodeView> tree;
+    IList<NodeView> source;
     User user;
 
     async Task SaveData()
@@ -50,17 +50,17 @@
         ShowMessage("ثبت با موفقیت انجام شد");
     }
 
-    void Change(TreeViewItem item)
+    void Change(NodeView item)
     {
-        if (item.Items != null)
+        if (item.Children != null)
         {
-            foreach (var child in item.Items)
+            foreach (var child in item.Children)
                 child.Selected = item.Selected;
         }
         var parent = item.Parent;
         if (parent != null)
         {
-            var siblings = parent.Items;
+            var siblings = parent.Children;
             if (siblings.All(t => t.Selected == true))
                 parent.Selected = true;
             else if (siblings.All(t => t.Selected == false))
@@ -83,13 +83,13 @@
     {
         using var scope = CreateScope();
         source = await new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystem)
-            .Select(t => new TreeViewItem()
+            .Select(t => new NodeView()
         {
             Text = t.Title,
             Expanded = true,
             Selectable = true,
             Value = t.Id.ToString(),
-            Items = t.Menus.Select(u => new TreeViewItem()
+            Children = t.Menus.Select(u => new NodeView()
             {
                 Collabsable = false,
                 Text = u.Title,
@@ -99,17 +99,17 @@
                 Expanded = true
             }).ToList()
         }).ToListAsync();
-        foreach (var item in source)
+        foreach (var node in source)
         {
-            var items = item.Items;
-            if (items != null)
+            var children = node.Children;
+            if (children != null)
             {
-                if (items.All(t => t.Selected == true))
-                    item.Selected = true;
-                else if (items.All(t => t.Selected == false))
-                    item.Selected = false;
+                if (children.All(t => t.Selected == true))
+                    node.Selected = true;
+                else if (children.All(t => t.Selected == false))
+                    node.Selected = false;
                 else
-                    item.Selected = null;
+                    node.Selected = null;
             }
         }
     }

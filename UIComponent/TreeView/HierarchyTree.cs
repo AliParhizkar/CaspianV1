@@ -8,9 +8,9 @@ namespace Caspian.UI
 {
     public class HierarchyTree<TEntity>
     {
-        public IList<TreeViewItem> CreateTree(IList<TEntity> entities, bool selectable)
+        public IList<NodeView> CreateTree(IList<TEntity> entities, bool selectable)
         {
-            var nodes = new List<TreeViewItem>();
+            var nodes = new List<NodeView>();
             var info = typeof(TEntity).GetProperties().SingleOrDefault(t => t.PropertyType.IsCollectionType() && t.PropertyType.GenericTypeArguments.Any() && t.PropertyType.GenericTypeArguments[0] == typeof(TEntity));
             var key = typeof(TEntity).GetPrimaryKey();
             foreach (var entity in entities)
@@ -18,7 +18,7 @@ namespace Caspian.UI
             return nodes;
         }
 
-        public TreeViewItem FindNodeByValue(string value, IList<TreeViewItem> nodes)
+        public NodeView FindNodeByValue(string value, IList<NodeView> nodes)
         {
             foreach (var node in nodes)
             {
@@ -29,7 +29,7 @@ namespace Caspian.UI
             return null;
         }
 
-        public void UpdateSelectedState(IList<TreeViewItem> nodes, IList<string> selectedNodesvalue)
+        public void UpdateSelectedState(IList<NodeView> nodes, IList<string> selectedNodesvalue)
         {
             foreach (var node in nodes)
             {
@@ -37,25 +37,25 @@ namespace Caspian.UI
             }
         }
 
-        void UpdateSelectedState(TreeViewItem node, IList<string> selectedNodesvalue)
+        void UpdateSelectedState(NodeView node, IList<string> selectedNodesvalue)
         {
             node.Selected = selectedNodesvalue.Contains(node.Value);
-            if (node.Items != null)
+            if (node.Children != null)
             {
-                foreach(var item in node.Items)
-                    UpdateSelectedState(item, selectedNodesvalue);
+                foreach(var child in node.Children)
+                    UpdateSelectedState(child, selectedNodesvalue);
             }
         }
 
-        TreeViewItem FindNodeByValue(string value, TreeViewItem node)
+        NodeView FindNodeByValue(string value, NodeView node)
         {
             if (node.Value == value)
                 return node;
-            if (node.Items != null)
+            if (node.Children != null)
             {
-                foreach(var item in node.Items)
+                foreach(var child in node.Children)
                 {
-                    var targetNode = FindNodeByValue(value, item);
+                    var targetNode = FindNodeByValue(value, child);
                     if (targetNode != null)
                         return targetNode;
                 }
@@ -65,9 +65,9 @@ namespace Caspian.UI
 
         public Func<TEntity, bool> FilterFunc { get; set; }
 
-        public IList<TreeViewItem> FilterTree(IList<TEntity> entities, bool selectable)
+        public IList<NodeView> FilterTree(IList<TEntity> entities, bool selectable)
         {
-            var list = new List<TreeViewItem>();
+            var list = new List<NodeView>();
             var type = typeof(TEntity);
             var info = typeof(TEntity).GetProperties().SingleOrDefault(t => t.PropertyType.IsCollectionType() && t.PropertyType.GenericTypeArguments.Any() && t.PropertyType.GenericTypeArguments[0] == typeof(TEntity));
             var key = type.GetPrimaryKey();
@@ -80,14 +80,14 @@ namespace Caspian.UI
             return list;
         }
 
-        TreeViewItem CreateFilterNode(TEntity entity, PropertyInfo info, PropertyInfo key, bool selectable)
+        NodeView CreateFilterNode(TEntity entity, PropertyInfo info, PropertyInfo key, bool selectable)
         {
             var items = info.GetValue(entity) as IEnumerable<TEntity>;
             if ((items == null || items.Count() == 0))
             {
                 if (FilterFunc(entity))
                 {
-                    var node = new TreeViewItem();
+                    var node = new NodeView();
                     node.Collabsable = true;
                     node.ShowTemplate = true;
                     node.Selectable = selectable;
@@ -97,7 +97,7 @@ namespace Caspian.UI
                 }
                 return null;
             }
-            var children = new List<TreeViewItem>();
+            var children = new List<NodeView>();
             foreach (var item in items)
             {
                 var child = CreateFilterNode(item, info, key, selectable);
@@ -106,14 +106,14 @@ namespace Caspian.UI
             }
             if (children.Count > 0 || FilterFunc(entity))
             {
-                var node = new TreeViewItem();
+                var node = new NodeView();
                 node.Expanded = children.Count > 0;
                 node.Collabsable = true;
                 node.Text = TextFunc.Invoke(entity);
                 node.Value = key.GetValue(entity).ToString();
                 node.ShowTemplate = true;
                 node.Selectable = selectable;
-                node.Items = children;
+                node.Children = children;
                 return node;
             }
             return null;
@@ -121,9 +121,9 @@ namespace Caspian.UI
 
         public Func<TEntity, string> TextFunc { get; set; }
 
-        TreeViewItem CreateNode(TEntity entity, PropertyInfo info, PropertyInfo key, bool selectable)
+        NodeView CreateNode(TEntity entity, PropertyInfo info, PropertyInfo key, bool selectable)
         {
-            var node = new TreeViewItem();
+            var node = new NodeView();
             node.Expanded = true;
             node.ShowTemplate = true;
             node.Selectable = selectable;
@@ -132,9 +132,9 @@ namespace Caspian.UI
             var items = info.GetValue(entity) as IEnumerable<TEntity>;
             if (items != null)
             {
-                node.Items = new List<TreeViewItem>();
-                foreach (var item in items)
-                    node.Items.Add(CreateNode(item, info, key, selectable));
+                node.Children = new List<NodeView>();
+                foreach (var child in items)
+                    node.Children.Add(CreateNode(child, info, key, selectable));
             }
             return node;
         }
