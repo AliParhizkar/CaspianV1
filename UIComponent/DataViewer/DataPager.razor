@@ -9,51 +9,51 @@
 }
 <div class="t-grid-pager t-grid-bottom">
     <div class="t-pager t-reset">
-        <a @onclick="GoToFirstPage" tabindex="-1" class="t-link @(PageNumber == 1 ? "t-state-disabled" : "")">
-            <i class="t-icon t-arrow-first fa fa-step-backward"></i>
-        </a>
-        <a @onclick="GoToPrePage" tabindex="-1" class="t-link @(PageNumber == 1 ? "t-state-disabled" : "")">
-            <i class="t-icon t-arrow-next fa fa-caret-left"></i>
-        </a>
+        <span @onclick="GoToFirstPage" tabindex="-1" class="t-icon @(PageNumber == 1 ? "t-state-disabled" : "")">
+            <i class="fa fa-step-backward"></i>
+        </span>
+        <span @onclick="GoToPrePage" tabindex="-1" class="t-icon  @(PageNumber == 1 ? "t-state-disabled" : "")">
+            <i class="fa fa-caret-left"></i>
+        </span>
         <div class="t-numeric">
             @if (startPageNumber > 1)
             {
-                <a class="t-link"
+                <span class="t-link"
                    @onclick="async () =>
                              {
                                 await ChangePageNumber(startPageNumber - 1);
-                             }">...</a>
+                             }">...</span>
             }
             @for (var index = startPageNumber; index < endPageNumber; index++)
             {
                 var pageNumber = index;
                 if (index == PageNumber)
                 {
-                    <span class="t-state-active">@(index)</span>
+                    <span class="t-link t-state-active">@(index)</span>
                 }
                 else
                 {
-                    <a class="t-link" @onmousedown="async () =>
+                    <span class="t-link" @onmousedown="async () =>
                                                 {
                                                     await ChangePageNumber(pageNumber);
-                                                }">@(index)</a>
+                                                }">@(index)</span>
                 }
             }
             @if (endPageNumber <= PageCount)
             {
-                <a class="t-link"
+                <span class="t-link"
                    @onclick="async () =>
                              {
                                 await ChangePageNumber(endPageNumber);
-                             }">...</a>
+                             }">...</span>
             }
         </div>
-        <a @onclick="GoToNextPage" tabindex="-1" class="t-link @(PageNumber == PageCount ? "t-state-disabled" : "")">
-            <i class="t-icon t-arrow-prev fa fa-caret-right"></i>
-        </a>
-        <a @onclick="GoToLastPage" tabindex="-1" class="t-link @(PageNumber == PageCount ? "t-state-disabled" : "")">
-            <i class="t-icon t-arrow-last fa fa-step-forward"></i>
-        </a>
+        <span @onclick="GoToNextPage" tabindex="-1" class="t-icon @(PageNumber == PageCount ? "t-state-disabled" : "")">
+            <i class="fa fa-caret-right"></i>
+        </span>
+        <span @onclick="GoToLastPage" tabindex="-1" class="t-icon @(PageNumber == PageCount ? "t-state-disabled" : "")">
+            <i class="fa fa-step-forward"></i>
+        </span>
     </div>
     <div class="t-status-text">
         @(str)
@@ -88,12 +88,12 @@
     int startPageNumber;
     int pageNumberCount = 7;
 
-    async Task PageSizeChanged(int size)
+    async Task ChangedPageSize(int size)
     {
         if (size > 100)
             size = 100;
-        if (OnPageSizeChanged.HasDelegate)
-            await OnPageSizeChanged.InvokeAsync(size);
+        if (PageSizeChanged.HasDelegate)
+            await PageSizeChanged.InvokeAsync(size);
     }
 
     [Parameter]
@@ -103,7 +103,7 @@
     public int PageSize { get; set; }
 
     [Parameter]
-    public EventCallback<int> OnPageSizeChanged { get; set; }
+    public EventCallback<int> PageSizeChanged { get; set; }
 
     [Parameter]
     public bool HidePageSize { get; set; }
@@ -112,7 +112,7 @@
     public int PageNumber { get; set; }
 
     [Parameter]
-    public EventCallback<int> OnPageNumberChanged { get; set; }
+    public EventCallback<int> PageNumberChanged { get; set; }
 
     public int PageCount
     {
@@ -149,8 +149,8 @@
     async Task ChangePageNumber(int pageNumber)
     {
         PageNumber = pageNumber;
-        if (OnPageNumberChanged.HasDelegate)
-            await OnPageNumberChanged.InvokeAsync(PageNumber);
+        if (PageNumberChanged.HasDelegate)
+            await PageNumberChanged.InvokeAsync(PageNumber);
     }
 
     protected override void OnParametersSet()

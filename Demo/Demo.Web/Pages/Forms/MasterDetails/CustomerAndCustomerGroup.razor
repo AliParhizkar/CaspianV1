@@ -26,7 +26,7 @@
                         <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
                     </li>
                 </ul>
-                <DataGrid @ref="MasterGrid" Search="search" TableHeight="400">
+                <DataGrid @ref="MasterGrid" Search="search" ContentHeight="400">
                     <Columns>
                         <GridColumn Field="t => t.CustomerType" />
                         <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />

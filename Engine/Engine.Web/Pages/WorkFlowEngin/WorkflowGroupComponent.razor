@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <DataGrid @ref="CrudGrid" TEntity="WorkflowGroup" TableHeight="250" ConditionExpr="t => t.SubSystemKind == Subsystem">
+    <DataGrid @ref="CrudGrid" TEntity="WorkflowGroup" ContentHeight="250" ConditionExpr="t => t.SubSystemKind == Subsystem">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Title="Data model" style="width:90px">

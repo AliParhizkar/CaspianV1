@@ -22,7 +22,7 @@ namespace Caspian.UI
 
         public string Width { get; private set; }
 
-        [CascadingParameter(Name = "Grid")]
+        [CascadingParameter(Name = "DataView")]
         public DataGrid<TEntity> Grid { get; set; }
 
         [Parameter]
@@ -63,9 +63,6 @@ namespace Caspian.UI
 
         [Parameter]
         public SortType? SortType { get; set; }
-
-        [Parameter]
-        public bool ForTest { get; set; }
 
         [CascadingParameter(Name = "GridRowData")]
         public RowData<TEntity> RowData { get; set; }

@@ -12,7 +12,7 @@
                 </div>
                 <div class="col-md-7">
                     <CrudComponent UpsertData="upsertProduct">
-                        <DataGrid ConditionExpr="@(t => t.ProductCategoryId == CategoryId)" Search="searchProduct" TableHeight="300">
+                        <DataGrid ConditionExpr="@(t => t.ProductCategoryId == CategoryId)" Search="searchProduct" ContentHeight="300">
                             <Columns>
                                 <GridColumn Field="t => t.Title" />
                                 <GridColumn Field="t => t.Price.Seprate3Digit()" />

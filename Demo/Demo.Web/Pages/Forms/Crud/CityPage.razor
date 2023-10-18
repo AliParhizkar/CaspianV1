@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="p-4 pt-1">
-                    <DataGrid Search="searchCity" ConditionExpr="t => CountryId == 0 || t.CountryId == CountryId" TableHeight="350">
+                    <DataGrid Search="searchCity" ConditionExpr="t => CountryId == 0 || t.CountryId == CountryId" ContentHeight="350">
                         <Columns>
                             <GridColumn Field="t => t.Title" />
                             <GridColumn Field="t => t.ActiveType.EnumText()" />

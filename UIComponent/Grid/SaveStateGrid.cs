@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace Caspian.UI
 {
-    partial class DataGrid<TEntity> : ComponentBase
+    partial class DataGrid<TEntity> : DataView<TEntity> where TEntity : class
     {
         [Inject]
         public ProtectedSessionStorage storage { get; set; }
@@ -25,7 +25,7 @@ namespace Caspian.UI
                 if (result.Success)
                 {
                     var data = JsonSerializer.Deserialize<GridSPersistStateData<TEntity>>(result.Value);
-                    PageNumber = data.PageNumber;
+                    pageNumber = data.PageNumber;
                     Search = data.Search;
                     SelectedRowIndex = data.SelectedRowIndex;
                     if (SearchChanged.HasDelegate)
@@ -42,7 +42,7 @@ namespace Caspian.UI
                 var name = typeof(TEntity).Name;
                 var data = new GridSPersistStateData<TEntity>
                 {
-                    PageNumber = PageNumber,
+                    PageNumber = pageNumber,
                     Search = Search,
                     SelectedRowIndex = SelectedRowIndex
                 };

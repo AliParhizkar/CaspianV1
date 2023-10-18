@@ -27,7 +27,7 @@
                             <StringTextBox @bind-Value="SearchCategory.Title" Search />
                         </div>
                     </div>
-                    <DataGrid TEntity="ProductCategory" Search="SearchCategory" TableHeight="208" OnRowSelect="ShowProductGrid">
+                     <DataGrid TEntity="ProductCategory" Search="SearchCategory" ContentHeight="208" OnRowSelect="ShowProductGrid">
                         <Columns>
                             <GridColumn Field="t => t.Title" />
                             <GridColumn Field="t => t.ActiveType.EnumText()" />
@@ -82,7 +82,7 @@
                                 <StringTextBox @bind-Value="SearchProduct.Title" Search />
                             </div>
                         </div>
-                        <DataGrid @ref="productGrid" TEntity="Product" Search="SearchProduct" TableHeight="206" ConditionExpr="t => t.ProductCategoryId == productcategoryId">
+                         <DataGrid @ref="productGrid" TEntity="Product" Search="SearchProduct" ContentHeight="206" ConditionExpr="t => t.ProductCategoryId == productcategoryId">
                             <Columns>
                                 <GridColumn Field="t => t.Title" />
                                 <GridColumn Field="t => t.Price.Seprate3Digit()" />

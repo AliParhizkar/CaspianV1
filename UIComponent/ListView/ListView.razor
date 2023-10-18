@@ -1,0 +1,53 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@attribute [CascadingTypeParameter(nameof(TEntity))]
+@inherits DataView<TEntity>
+
+<CascadingValue Value="this" Name="ListView">
+    @if (fieldsExpression == null)
+    {
+        fieldsExpression = new List<Expression>();
+        @Fields(default)
+    }
+    else
+    {
+        var style = ContentHeight == null ? null : $"height:{ContentHeight}";
+        <div class="c-widget c-data-view">
+            <div class="c-data-view-content" style="@style">
+                @if (items != null && items.Count() > 0)
+                {
+                    var index = 0;
+                    <CascadingValue Value="this" Name="DataView">
+                        @foreach (var item in items)
+                        {
+                            index++;
+                            var rowIndex = index;
+                            var rowData = new RowData<TEntity>()
+                            {
+                                Data = item,
+                                RowIndex = rowIndex,
+                                UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
+                            };
+                            <CascadingValue Value="rowData" Name="RowData">
+                                @if (item == selectedEntity)
+                                {
+                                    <CascadingValue Value="EditContext">
+                                        <CaspianValidationValidator @ref="validator" Source="source" ValidatorType="serviceType" />
+                                        <CaspianContainer @ref="updateContiner">
+                                            @Fields(item)
+                                        </CaspianContainer>
+                                    </CascadingValue>
+                                }
+                                else
+                                {
+                                    @Fields(item)
+                                }
+                            </CascadingValue>
+                        }
+                    </CascadingValue>
+                }
+            </div>
+            <DataPager PageNumber="pageNumber" PageNumberChanged="async t => await ChangePageNumber(t)" TotalRecord="total" PageSize="PageSize" />
+        </div>
+    }
+</CascadingValue>

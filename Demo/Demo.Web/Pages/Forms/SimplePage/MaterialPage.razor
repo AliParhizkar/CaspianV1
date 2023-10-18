@@ -15,7 +15,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="Material" Search="SearchData" TableHeight="300">
+    <DataGrid @ref="CrudGrid" TEntity="Material" Search="SearchData" ContentHeight="300">
         <Columns Context="con">
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.MainUnit.Title" Title="واحد اصلی" />
@@ -47,7 +47,7 @@
                             <label>واحد اصلی</label>
                         </td>
                         <td>
-                            <ComboBox TValue="int" TEntity="MainUnit" @bind-Value="UpsertData.MainUnitId" TextExpression="t => t.Title" OnChange="() => cmb.EnableLoading()" />
+                            <ComboBox TEntity="MainUnit" TValue="int" @bind-Value="UpsertData.MainUnitId" TextExpression="t => t.Title" OnChange="() => cmb.EnableLoading()" />
                         </td>
                     </tr>
                     <tr>
@@ -55,7 +55,7 @@
                             <label>واحد فرعی</label>
                         </td>
                         <td>
-                            <ComboBox @ref="cmb" Disabled="UpsertData.MainUnitId == 0" TValue="int?" TEntity="Subunit" @bind-Value="UpsertData.SubunitId" TextExpression="t => t.Title" ConditionExpression="t => t.MainUnitId == UpsertData.MainUnitId" />
+                            <ComboBox TEntity="Subunit" TValue="int?" @ref="cmb" Disabled="UpsertData.MainUnitId == 0" @bind-Value="UpsertData.SubunitId" TextExpression="t => t.Title" ConditionExpression="t => t.MainUnitId == UpsertData.MainUnitId" />
                         </td>
                     </tr>
                     <tr>

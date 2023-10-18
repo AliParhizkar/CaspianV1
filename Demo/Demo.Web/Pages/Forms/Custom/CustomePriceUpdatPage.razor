@@ -38,8 +38,8 @@
                     <label>Product category</label>
                 </div>
                 <div class="col-md-4 pe-4">
-                    <ComboBox @bind-Value="searchProduct.ProductCategoryId" TValue="int" TEntity="ProductCategory"
-                        TextExpression="t => t.Title" />
+                    <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="searchProduct.ProductCategoryId"
+                              TextExpression="t => t.Title" />
                 </div>
                 <div class="col-md-2 ps-4">
                     <label>Status</label>
@@ -48,7 +48,7 @@
                     <DropdownList @bind-Value="searchProduct.ActiveType" />
                 </div>
                 <div class="col-md-12 pt-4">
-                    <DataGrid @ref="grid" TEntity="Product" Search="searchProduct" TableHeight="400" HideInsertIcon>
+                    <DataGrid @ref="grid" TEntity="Product" Search="searchProduct" ContentHeight="400" HideInsertIcon>
                         <Columns>
                             <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                             <GridColumn Field="t => t.Title" />

@@ -10,7 +10,7 @@
 }
 
 <div class="p-4">
-    <DataGrid @ref="CrudGrid" TEntity="DataModelField" TableHeight="300" ConditionExpr="t => t.DataModelId == DataModelId">
+    <DataGrid @ref="CrudGrid" TEntity="DataModelField" ContentHeight="300" ConditionExpr="t => t.DataModelId == DataModelId">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.EntityFullName" />
@@ -36,8 +36,8 @@
                     <label>Entity name</label>
                 </div>
                 <div class="col-md-8">
-                    <ComboBox @bind-Value="UpsertData.EntityFullName" TValue="string" TEntity="SelectListItem" 
-                        Source="workflowEntityTypes" Disabled="UpsertData.FieldType.HasValue" OnChanged="SetFieldData" />
+                    <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="UpsertData.EntityFullName"
+                              Source="workflowEntityTypes" Disabled="UpsertData.FieldType.HasValue" OnChanged="SetFieldData" />
                 </div>
                 <div class="col-md-4">
                     <label>Field type</label>
@@ -61,7 +61,7 @@
                     <label>Entity type</label>
                 </div>
                 <div class="col-md-8">
-                    <ComboBox TValue="int?" TEntity="Caspian.Engine.EntityType" @bind-Value="UpsertData.EntityTypeId"
+                    <ComboBox TEntity="Caspian.Engine.EntityType" TValue="int?" @bind-Value="UpsertData.EntityTypeId"
                         TextExpression="t => t.Title" Disabled="UpsertData.FieldType != DataModelFieldType.Relational"/>
                 </div>
                 <div class="col-md-4">

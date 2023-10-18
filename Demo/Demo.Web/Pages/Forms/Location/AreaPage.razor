@@ -14,7 +14,7 @@
                     <label>شهر</label>
                 </td>
                 <td>
-                    <ComboBox TValue="int" TEntity="City" @bind-Value="SearchData.CityId"
+                    <ComboBox TEntity="City" TValue="int" @bind-Value="SearchData.CityId"
                               TextExpression="t => t.Title" />
                 </td>
             }
@@ -56,7 +56,7 @@
                                 <label>شهر</label>
                             </td>
                             <td>
-                                <ComboBox TValue="int" TEntity="City" @bind-Value="UpsertData.CityId"
+                                <ComboBox TEntity="City" TValue="int" @bind-Value="UpsertData.CityId"
                                     OnChange="() => 
                                         {
                                             var q = 5;

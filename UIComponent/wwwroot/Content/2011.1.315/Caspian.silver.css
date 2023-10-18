@@ -393,21 +393,20 @@ html input[disabled], textarea[disabled] {
 .t-grid .t-state-selected {
     background-color: #5e8f8f50 !important;
 }
-.t-pager .t-numeric .t-state-active {
-    background-color: #cecece;
-    border: 1px solid rgba(0,0,0,0.2);
-    color: #ff6358;
-}
+
 .t-grid .t-selectable tr{
     cursor:pointer;
 }
 
 .t-pager > .t-link {
     text-align:center;
+    width:25px;
+    height:25px;
+    border-radius:50%;
 }
-.t-pager .t-link .t-icon{
-    width:16px;
-    height:16px;
+.t-pager .t-link .t-icon {
+    width: 23px;
+    height: 23px;
 }
 .fa-caret-right, .fa-caret-left{
     font-size:20px!important;

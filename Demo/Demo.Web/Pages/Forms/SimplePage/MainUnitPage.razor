@@ -16,7 +16,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="MainUnit" Search="SearchData" TableHeight="300">
+    <DataGrid @ref="CrudGrid" TEntity="MainUnit" Search="SearchData" ContentHeight="300">
         <Columns Context="con">
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.ActiveType.EnumText()" />

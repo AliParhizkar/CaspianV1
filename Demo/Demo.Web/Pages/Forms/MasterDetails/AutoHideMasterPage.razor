@@ -23,7 +23,7 @@
                     <div class="p-3">
                         <CheckBox @bind-Value="onlyThisDay" Title="Only show today orders " OnChange="() => Grid.EnableLoading()" />
                     </div>
-                    <DataGrid @ref="Grid" TEntity="WarehouseReceipt" OnUpsert="t => UpsertOrder(t)" TableHeight="300"
+                    <DataGrid @ref="Grid" TEntity="WarehouseReceipt" OnUpsert="t => UpsertOrder(t)" ContentHeight="300"
                             ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
                         <Columns>
                             <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />

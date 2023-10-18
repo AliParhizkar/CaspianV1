@@ -8,7 +8,7 @@
         <label>Main menu</label>
     </div>
     <div class="col-md-4 pe-4">
-        <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="SearchData.MenuCategoryId"
+        <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="SearchData.MenuCategoryId"
                   TextExpression="t => t.Title" ConditionExpression="t => t.SubSystemKind == Subsystem" />
     </div>
     <div class="col-md-2 ps-4">
@@ -48,7 +48,7 @@
         <IconButton @onclick="async () => await LoadMenus()" IconType="IconType.Refresh" title="Load menus" />
     </div>
     <div class="pt-4">
-        <DataGrid @ref="CrudGrid" TEntity="Menu" TableHeight="300" HideInsertIcon ConditionExpr='t => (InvalidAddress == null || t.InvalidAddress == InvalidAddress) && (ShowInMenu == null || t.ShowonMenu == ShowInMenu.Value) && (!OnlyUntitledMenus || t.Title == null) && t.SubSystemKind == Subsystem'>
+        <DataGrid @ref="CrudGrid" TEntity="Menu" ContentHeight="300" HideInsertIcon ConditionExpr='t => (InvalidAddress == null || t.InvalidAddress == InvalidAddress) && (ShowInMenu == null || t.ShowonMenu == ShowInMenu.Value) && (!OnlyUntitledMenus || t.Title == null) && t.SubSystemKind == Subsystem'>
             <Columns>
                 <GridColumn Field="t => t.Id" Title="Id" />
                 <GridColumn Field="t => t.MenuCategory.Title" Title="main menu" />
@@ -79,7 +79,7 @@
                         <label>Menu category</label>
                     </div>
                     <div class="col-md-8">
-                        <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="UpsertData.MenuCategoryId"
+                        <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="UpsertData.MenuCategoryId"
                                   TextExpression="t => t.Title" Disabled="disable"
                                   ConditionExpression='t => t.SubSystemKind == Subsystem && t.Title != "Engin"' />
                     </div>

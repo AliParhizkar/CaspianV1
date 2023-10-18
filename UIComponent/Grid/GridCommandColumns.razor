@@ -1,16 +1,17 @@
 ﻿@namespace Caspian.UI
 @inject CaspianDataService service
-@typeparam TEntity
+@typeparam TEntity where TEntity : class
+@inherits DataCommand<TEntity> 
 @{
-    Grid.AddCommandColumn(HeaderTitle, HeaderWidth);
+    (DataView as DataGrid<TEntity>).AddCommandColumn(HeaderTitle, HeaderWidth);
 }
 <td class="c-grid-command" @attributes="attrs">
     @if (RowData?.UpsertMode != null)
     {
         <span class="c-check">
-            <span class="t-icon fa fa-check" @onclick="@(async () => await Grid.ValidateAndUpsert(RowData.UpsertMode.Value))"></span>
+            <span class="t-icon fa fa-check" @onclick="@(async () => await DataView.ValidateAndUpsert(RowData.UpsertMode.Value))"></span>
         </span>
-        <span class="c-bar" @onclick="@(async () => await Grid.CalcelEdit(RowData.UpsertMode.Value))">
+        <span class="c-bar" @onclick="@(async () => await DataView.CalcelEdit(RowData.UpsertMode.Value))">
             <span class="t-icon fa fa-ban"></span>
         </span>
     }
@@ -18,15 +19,46 @@
     {
         if (!HideEdit)
         {
-            <span @onclick="@(async () => { await OpenForm(); })" class="@editButtonClassName">
+            <span @onclick="OpenForm" class="@editButtonClassName">
                 <span class="t-icon t-edit fa fa-pencil"></span>
             </span>
         }
         if (!HideDelete)
         {
-            <span @onclick="@(async () => { await DeleteAsync(); })" class="@deleteButtonClassName">
+            <span @onclick="DeleteAsync" class="@deleteButtonClassName">
                 <span class="t-icon t-delete fa fa-trash"></span>
             </span>
         }
     }
 </td>
+@code
+{
+    [Parameter]
+    public string HeaderTitle { get; set; }
+
+    [Parameter]
+    public string HeaderWidth { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!HeaderTitle.HasValue())
+        {
+            if (!HideEdit)
+            {
+                HeaderTitle = service.Language == Language.Fa ? "ویرایش" : "Edit";
+                if (!HideDelete)
+                    HeaderTitle += "-";
+            }
+            if (!HideDelete)
+                HeaderTitle += service.Language == Language.Fa ? "حذف" : "Delete";
+        }
+                    if (!HeaderWidth.HasValue())
+            {
+                if (HideEdit || HideDelete)
+                    HeaderWidth = "width:55px;";
+                else
+                    HeaderWidth = "width:90px;";
+            }
+        base.OnParametersSet();
+    }
+}

@@ -10,36 +10,26 @@ using Caspian.Common.Extension;
 using Caspian.Common.RowNumber;
 using System.Linq.Dynamic.Core;
 using System.Collections.Generic;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
 
 namespace Caspian.UI
 {
-    public partial class DataGrid<TEntity>: ComponentBase, IEnableLoadData, IGridRowSelect where TEntity: class
+    public partial class DataGrid<TEntity>: DataView<TEntity>, IEnableLoadData, IGridRowSelect where TEntity: class
     {
         string jsonOldSearch;
         bool mustRender = true;
         bool commandColumnAdded;
         ElementReference mainDiv;
         int aggregateColumnIndex;
-        bool SholdRendered = true;
         IList<int> selectedIds;
         IList<object> DynamicData;
         IList<ColumnData> columnsData;
         IList<ColumnData> RangeFilterColumnsData;
         IDictionary<string, object> tableAttrs;
         IList<MemberExpression> SelectExpressions;
-
-
-        public int? SelectedRowIndex { get; private set; }
-
-        [Inject]
-        IServiceProvider ServiceProvider { get; set; }
-
-        [Inject]
-        public FormAppState FormAppState { get; set; }
 
         [CascadingParameter]
         public CrudComponent<TEntity> CrudComponent { get; set; }
@@ -67,10 +57,80 @@ namespace Caspian.UI
             StateHasChanged();
         }
 
+        public override async Task DataBind()
+        {
+            if (columnsData.Count > 0 && shouldFetchData)
+            {
+                shouldFetchData = false;
+                using var scope = ServiceScopeFactory.CreateScope();
+                var query = GetQuery(scope);
+                var exprList = new List<MemberExpression>();
+                if (columnsData.Any(t => t.AggregateExpression != null))
+                {
+                    var aggregateExprList = columnsData.Where(t => t.AggregateExpression != null).Select(t => t.AggregateExpression).ToList();
+                    Total = await query.CreateAggregateQuery(aggregateExprList).OfType<object>().CountAsync();
+                    var tuple = await query.AggregateValuesAsync(aggregateExprList, pageNumber, PageSize);
+                    Items = tuple.Item1;
+                    DynamicData = tuple.Item2;
+                }
+                else
+                {
+                    Total = await query.CountAsync();
+                    query = GetOrderByQuery(query);
+                    if (pageNumber > 1 && !Batch)
+                    {
+                        var skip = (pageNumber - 1) * PageSize;
+                        query = query.Skip(skip);
+                    }
+                    foreach (var item in columnsData.Where(t => t.Expression != null))
+                    {
+                        var tempList = new ExpressionSurvey().Survey(item.Expression);
+                        foreach (var expr2 in tempList)
+                            if (!exprList.Any(t => t.ToString() == expr2.ToString()))
+                                exprList.Add(expr2);
+                    }
+                    var parameterExpr = Expression.Parameter(typeof(TEntity), "t");
+                    var pKey = typeof(TEntity).GetPrimaryKey();
+                    if (Batch)
+                    {
+                        foreach (var info in typeof(TEntity).GetProperties())
+                        {
+                            if (info.PropertyType.IsValueType || info.PropertyType.IsNullableType())
+                            {
+                                var str = parameterExpr.Name + "." + info.Name;
+                                if (!exprList.Any(t => t.ToString() == str))
+                                    exprList.Add(Expression.Property(parameterExpr, info));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var expr1 = Expression.Property(parameterExpr, pKey);
+                        if (!exprList.Any(t => t.ToString() == expr1.ToString()))
+                            exprList.Add(expr1);
+                    }
+                    if (Batch)
+                    {
+                        source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
+                        if (pageNumber == 1)
+                            Items = source.Take(PageSize).ToList();
+                        else
+                        {
+                            var skip = (pageNumber - 1) * PageSize;
+                            Items = source.Skip(skip).Take(PageSize).ToList();
+                        }
+                        ManageExpressionForUpsert(exprList);
+                    }
+                    else
+                        Items = await query.Take(PageSize).GetValuesAsync<TEntity>(exprList);
+                }
+                await SetStateGridData();
+            }
+        }
+
+
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            await OnAfterRenderOperation();
-            
             if (firstRender)
             {
                 await DataBind();
@@ -229,77 +289,6 @@ namespace Caspian.UI
             return query;
         }
 
-        public async Task DataBind()
-        {
-            if (columnsData.Count > 0 && SholdRendered)
-            {
-                SholdRendered = false;
-                using var scope = ServiceScopeFactory.CreateScope();
-                var query = GetQuery(scope);
-                var exprList = new List<MemberExpression>();
-                if (columnsData.Any(t => t.AggregateExpression != null))
-                {
-                    var aggregateExprList = columnsData.Where(t => t.AggregateExpression != null).Select(t => t.AggregateExpression).ToList();
-                    Total = await query.CreateAggregateQuery(aggregateExprList).OfType<object>().CountAsync();
-                    var tuple = await query.AggregateValuesAsync(aggregateExprList, PageNumber, PageSize);
-                    Items = tuple.Item1;
-                    DynamicData = tuple.Item2;
-                }
-                else
-                {
-                    Total = await query.CountAsync();
-                    query = GetOrderByQuery(query);
-                    if (PageNumber > 1 && !Batch)
-                    {
-                        var skip = (PageNumber - 1) * PageSize;
-                        query = query.Skip(skip);
-                    }
-                    foreach (var item in columnsData.Where(t => t.Expression != null))
-                    {
-                        var tempList = new ExpressionSurvey().Survey(item.Expression);
-                        foreach (var expr2 in tempList)
-                            if (!exprList.Any(t => t.ToString() == expr2.ToString()))
-                                exprList.Add(expr2);
-                    }
-                    var parameterExpr = Expression.Parameter(typeof(TEntity), "t");
-                    var pKey = typeof(TEntity).GetPrimaryKey();
-                    if (Batch)
-                    {
-                        foreach (var info in typeof(TEntity).GetProperties())
-                        {
-                            if (info.PropertyType.IsValueType || info.PropertyType.IsNullableType())
-                            {
-                                var str = parameterExpr.Name + "." + info.Name;
-                                if (!exprList.Any(t => t.ToString() == str))
-                                    exprList.Add(Expression.Property(parameterExpr, info));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var expr1 = Expression.Property(parameterExpr, pKey);
-                        if (!exprList.Any(t => t.ToString() == expr1.ToString()))
-                            exprList.Add(expr1);
-                    }
-                    if (Batch)
-                    {
-                        source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
-                        if (PageNumber == 1)
-                            Items = source.Take(PageSize).ToList();
-                        else
-                        {
-                            var skip = (PageNumber - 1) * PageSize;
-                            Items = source.Skip(skip).Take(PageSize).ToList();
-                        }
-                        ManageExpressionForUpsert(exprList);
-                    }
-                    else
-                        Items = await query.Take(PageSize).GetValuesAsync<TEntity>(exprList);
-                }
-                await SetStateGridData();
-            }
-        }
-
         IList<Expression> ConvertExpressionForGroupBy(IList<Expression> list, ParameterExpression parameter)
         {
             var exprList = new List<Expression>();
@@ -333,9 +322,6 @@ namespace Caspian.UI
 
         internal Expression InternalConditionExpr { get; set; }
 
-        [Inject]
-        protected IJSRuntime jsRuntime { get; set; }
-
         [Parameter]
         public Expression<Func<TEntity, bool>> ConditionExpr { get; set; }
 
@@ -348,38 +334,12 @@ namespace Caspian.UI
         public Func<IQueryable<TEntity>, IQueryable<TEntity>> OnDataBinding { get; set; }
 
         [Parameter]
-        public int TableHeight { get; set; } = 250;
-
-        [Parameter]
         public int? TableWidth { get; set; }
-
-        [Parameter]
-        public EventCallback<TEntity> OnUpsert { get; set; }
-
-        public EventCallback<TEntity> OnInternalUpsert { get; set; }
-
-        [Parameter]
-        public Func<TEntity, Task<bool>> OnDelete { get; set; }
-
-        [Parameter]
-        public EventCallback OnPageChanged { get; set; }
-
-        internal EventCallback<TEntity> OnInternalDelete { get; set; }
 
         [Parameter]
         public EventCallback<TEntity> OnRowSelect { get; set; }
 
         public EventCallback<int> OnInternalRowSelect { get; set; }
-
-        public IList<TEntity> Items { get; set; }
-
-        public int Total { get; set; }
-
-        [Parameter]
-        public int PageNumber { get; set; } = 1;
-
-        [Parameter]
-        public int PageSize { get; set; } = 5;
 
         [Parameter]
         public TEntity Search { get; set; }
@@ -404,7 +364,7 @@ namespace Caspian.UI
 
         async Task UpdateOrder()
         {
-            SholdRendered = true;
+            shouldFetchData = true;
             await OnParametersSetAsync();
             StateHasChanged();
         }
@@ -416,31 +376,10 @@ namespace Caspian.UI
             return Items.ElementAt(SelectedRowIndex.Value);
         }
 
-        public void EnableLoading()
-        {
-            SholdRendered = true;
-        }
-
-        public async Task ReloadAsync()
-        {
-            EnableLoading();
-
-            await OnParametersSetAsync();
-            var pageCount = (Total - 1) / PageSize + 1;
-            if (pageCount < PageNumber)
-            {
-                await ChangePageNumber(pageCount);
-                SelectedRowIndex = Items.Count - 1;
-            }
-            else if (SelectedRowIndex != null && SelectedRowIndex.Value >= Items.Count)
-                SelectedRowIndex = Items.Count - 1;
-            StateHasChanged();
-        }
-
         public async Task ResetGrid()
         {
             SelectedRowIndex = 0;
-            SholdRendered = true;
+            shouldFetchData = true;
             await ChangePageNumber(1);
         }
 
@@ -451,35 +390,23 @@ namespace Caspian.UI
 
         public async Task SelectFirstPage()
         {
-            if (this.PageNumber != 1)
+            if (this.pageNumber != 1)
                 await ChangePageNumber(1);
         }
 
-        async Task ChangePageNumber(int pageNumber)
-        {
-            PageNumber = pageNumber;
-            if (Batch)
-                ShowItemsForBatch();
-            else
-            {
-                SholdRendered = true;
-                await DataBind();
-            }
-            if (OnPageChanged.HasDelegate)
-                await OnPageChanged.InvokeAsync();
-        }
+        
 
         async Task ChangePageSize(int pageSize)
         {
             if (pageSize != PageSize)
             {
-                PageNumber = 1;
+                pageNumber = 1;
                 PageSize = pageSize;
                 if (Batch)
                     ShowItemsForBatch();
                 else
                 {
-                    SholdRendered = true;
+                    shouldFetchData = true;
                     await DataBind();
                 }
             }
@@ -499,10 +426,10 @@ namespace Caspian.UI
                     SelectRow(SelectedRowIndex.Value + 1);
                 else
                 {
-                    if (PageNumber < PageCount)
+                    if (pageNumber < PageCount)
                     {
                         SelectRow(0);
-                        await ChangePageNumber(PageNumber + 1);
+                        await ChangePageNumber(pageNumber + 1);
                         StateHasChanged();
                     }
                 }
@@ -517,9 +444,9 @@ namespace Caspian.UI
                     SelectRow(SelectedRowIndex.Value - 1);
                 else
                 {
-                    if (PageNumber < 1)
+                    if (pageNumber < 1)
                     {
-                        await ChangePageNumber(PageNumber - 1);
+                        await ChangePageNumber(pageNumber - 1);
                         SelectRow(PageSize - 1);
                     }
                 }
@@ -624,12 +551,12 @@ namespace Caspian.UI
             var jsonSearch = Search == null ? "{}" : JsonSerializer.Serialize(Search, Search.GetType());
             if (jsonOldSearch != jsonSearch)
             {
-                SholdRendered = true;
+                shouldFetchData = true;
                 jsonOldSearch = jsonSearch;
                 if (columnsData != null && !Batch)
                     await DataBind();
             }
-            else if (SholdRendered && columnsData != null)
+            else if (shouldFetchData && columnsData != null)
                 await DataBind();
             await base.OnParametersSetAsync();
         }

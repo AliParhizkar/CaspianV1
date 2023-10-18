@@ -17,7 +17,7 @@
                     <label>پارامتر اصلی</label>
                 </td>
                 <td>
-                    <ComboBox @bind-Value="tokenId" TEntity="SelectListItem" TValue="int?" Disabled="parameterType != ParameterType.MainParameter"
+                    <ComboBox TEntity="SelectListItem" TValue="int?" @bind-Value="tokenId" Disabled="parameterType != ParameterType.MainParameter"
                       Source="Params.Select(t => new SelectListItem(t.Id.ToString(), t.FaTitle))" />
                 </td>
             </tr>
@@ -28,7 +28,7 @@
                     <label>پارامتر پویا</label>
                 </td>
                 <td>
-                    <ComboBox @bind-Value="dynamicParameterId" TEntity="DynamicParameter" TValue="int?" TextExpression="t => t.Title" />
+                    <ComboBox TEntity="DynamicParameter" TValue="int?" @bind-Value="dynamicParameterId" TextExpression="t => t.Title" />
                 </td>
             </tr>
             break;
@@ -38,7 +38,7 @@
                     <label>قانون</label>
                 </td>
                 <td>
-                    <ComboBox @bind-Value="ruleIdValue" TEntity="Rule" TValue="int?" TextExpression="t => t.Title" />
+                    <ComboBox TEntity="Rule" TValue="int?" @bind-Value="ruleIdValue" TextExpression="t => t.Title" />
                 </td>
             </tr>
             break;

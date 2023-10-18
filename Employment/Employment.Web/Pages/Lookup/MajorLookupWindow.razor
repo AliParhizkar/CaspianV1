@@ -8,7 +8,7 @@
             <StringTextBox @bind-Value="SearchData.Title" placeholder="Title" />
         </div>
     }
-    <DataGrid @ref="Grid" TEntity="Major" Search="SearchData" TableHeight="200" HidePageSize>
+    <DataGrid @ref="Grid" TEntity="Major" Search="SearchData" ContentHeight="200" HidePageSize>
         <Columns>
             <GridColumn Field="t => t.EducationDegree.BaseStudy.EnumText()" Title="پایه تحصیلی" />
             <GridColumn Field="t => t.EducationDegree.Title" Title="مدرک تحصیلی" />

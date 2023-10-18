@@ -24,7 +24,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="OrganPost" Search="SearchData" TableHeight="400">
+    <DataGrid @ref="CrudGrid" TEntity="OrganPost" Search="SearchData" ContentHeight="400">
         <Columns>
             <GridColumn Field="t => t.CareerField.Occupation.Title" Title="رسته شغلی" />
             <GridColumn Field="t => t.CareerField.Title" Title="رشته شغلی" />
@@ -52,7 +52,7 @@
                             <label>رشته شغلی</label>
                         </td>
                         <td>
-                            <ComboBox @ref="service.Cascade" TEntity="CareerField" TValue="int" @bind-Value="UpsertData.CareerFieldId" TextExpression="t => t.Title" />
+                            <ComboBox TEntity="CareerField" TValue="int" @ref="service.Cascade" @bind-Value="UpsertData.CareerFieldId" TextExpression="t => t.Title" />
                         </td>
                     </tr>
                     <tr>

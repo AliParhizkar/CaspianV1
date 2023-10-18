@@ -15,7 +15,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="Occupation" PersistState @bind-Search="SearchData" TableHeight="400">
+    <DataGrid @ref="CrudGrid" TEntity="Occupation" PersistState @bind-Search="SearchData" ContentHeight="400">
         <Columns>
             <GridColumn Field="t => t.Title"  />
             <GridColumn Title="رشته های شغلی" style="width:110px"  >

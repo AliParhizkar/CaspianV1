@@ -21,7 +21,7 @@
                                         <label>Product category</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <ComboBox @bind-Value="upsertData.ProductCategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Title"
+                                        <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="upsertData.ProductCategoryId" TextExpression="t => t.Title"
                                                     OrderByExpression="t => t.Title" />
                                     </div>
                                     <div class="col-md-4">
@@ -76,7 +76,7 @@
                             </div>
                         </div>
                     </CaspianForm>
-                    <DataGrid TEntity="Product" TableHeight="250">
+                    <DataGrid TEntity="Product" ContentHeight="250">
                         <Columns>
                             <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                             <GridColumn Field="t => t.Title" />

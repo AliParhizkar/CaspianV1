@@ -1,6 +1,18 @@
-﻿.d-container {
-    background-color:white;
+﻿.c-data-fields {
+    padding: 5px;
+    border: 1px solid whitesmoke;
+    display: flex;
+    overflow: hidden;
+    min-width: 450px;
 }
+    .c-data-fields{
+        line-height:30px;
+
+    }
+
+    .d-container {
+        background-color: white;
+    }
 .d-target-element{
     border:1px dashed gray;
     width:150px;

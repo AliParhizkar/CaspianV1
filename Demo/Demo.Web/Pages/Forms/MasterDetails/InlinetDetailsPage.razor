@@ -123,7 +123,7 @@
                                     <label>Delivery</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <ComboBox TValue="int?" TEntity="Delivery" @bind-Value="UpsertData.DeliveryId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
+                                    <ComboBox TEntity="Delivery" TValue="int?" @bind-Value="UpsertData.DeliveryId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Description</label>
@@ -138,11 +138,11 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-7 ps-3">
-                        <DataGrid @ref="Grid" TEntity="OrderDeatil" TableHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
+                         <DataGrid @ref="DataView" TEntity="OrderDeatil" ContentHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Product.Title" Title="Product">
                                     <EditTemplate>
-                                        <AutoComplete TValue="int" TEntity="Product" @bind-Value="con.Data.ProductId"
+                                         <AutoComplete TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId"
                                                         HideHeader AutoHide TextExpression="t => t.Title"
                                                         OnChange="async () => await SetPrice(con.Data)">
                                             <ProductLookupWindow />
@@ -194,7 +194,7 @@
     async Task UpsertOnEnter(KeyboardEventArgs e, UpsertMode mode)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
-            await Grid.ValidateAndUpsert(mode);
+            await DataView.ValidateAndUpsert(mode);
     }
 
 

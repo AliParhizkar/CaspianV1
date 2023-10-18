@@ -45,7 +45,7 @@
                                 <label>فیلد داده</label>
                             </td>
                             <td>
-                                <ComboBox TEntity="SelectListItem" Source="Params" TValue="string" @bind-Value="PrintParam.TitleEn"
+                                <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" @bind-Value="PrintParam.TitleEn"
                                           Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TotalFuncType == null || PrintParam.SystemFiledType.HasValue || PrintParam.TotalFuncType == null" />
                             </td>
                         </tr>
@@ -58,7 +58,7 @@
                             <label>فیلد داده</label>
                         </td>
                         <td>
-                            <ComboBox TEntity="SelectListItem" Source="Params" TValue="string" Value="PrintParam.TitleEn" 
+                            <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" Value="PrintParam.TitleEn"
                                       Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TitleEn == null || PrintParam.SystemFiledType.HasValue || PrintParam.TotalFuncType.HasValue"
                                       ValueChanged="value => 
                                                     {

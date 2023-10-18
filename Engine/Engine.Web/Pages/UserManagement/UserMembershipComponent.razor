@@ -23,7 +23,7 @@
                 <span class="d-membership">Other users</span>
             </div>
         </div>
-        <DataGrid @ref="MemberGrid" TEntity="User" HideInsertIcon Search="MemberSearch" TableHeight="335">
+         <DataGrid @ref="MemberGrid" TEntity="User" HideInsertIcon Search="MemberSearch" ContentHeight="335">
             <Columns>
                 <GridColumn Field="@(t => t.FName + " " + t.LName )" Title="User" />
                 <GridColumn Field="t => t.UserName" style="width:100px" />
@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        <DataGrid @ref="CrudGrid" TEntity="UserMembership" HideInsertIcon Search="SearchData" TableHeight="335">
+         <DataGrid @ref="CrudGrid" TEntity="UserMembership" HideInsertIcon Search="SearchData" ContentHeight="335">
             <Columns>
                 <GridColumn Field="@(t => t.User.FName + " " + t.User.LName)" Title="User" />
                 <GridColumn Field="t => t.User.UserName" style="width:100px" />

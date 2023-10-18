@@ -5,9 +5,83 @@
     base.BuildRenderTree(__builder);
 }
 <h4>No Infrastructure, No Sustainable Development</h4>
-<p>
-    Robert Cecil Martin 
-</p>
+<ListView TEntity="Product">
+    <Fields Context="product">
+        <div class="col-md-6 c-data-fields c-controls">
+            <table style="width:95%;margin:0 auto">
+                <tr>
+                    <td>
+                        <label>Title</label>
+                    </td>
+                    <td>
+                        <StringField Field="t => t.Title">
+                            <EditTemplate>
+                                <StringTextBox @bind-Value="product.Title" />
+                            </EditTemplate>
+                        </StringField>
+                    </td>
+                    <td rowspan="6">
+                        <ImageField Field="t => t.Image" Style="width:165px;height:165px;background-position: center center" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Price</label>
+                    </td>
+                    <td>
+                        <StringField Field="t => t.Price.Seprate3Digit()">
+                            <EditTemplate>
+                                <NumericTextBox @bind-Value="product.Price" />
+                            </EditTemplate>
+                        </StringField>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Takeout Price</label>
+                    </td>
+                    <td>
+                        <StringField Field="t => t.TakeoutPrice.Seprate3Digit()">
+                            <EditTemplate>
+                                <NumericTextBox @bind-Value="product.TakeoutPrice" />
+                            </EditTemplate>
+                        </StringField>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Code</label>
+                    </td>
+                    <td>
+                        <StringField Field="t => t.Code" >
+                            <EditTemplate>
+                                <StringTextBox @bind-Value="product.Code" />
+                            </EditTemplate>
+                        </StringField>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Status</label>
+                    </td>
+                    <td>
+                        <StringField Field="t => t.ActiveType.EnumText()" >
+                            <EditTemplate>
+                                <DropdownList @bind-Value="product.ActiveType" />
+                            </EditTemplate>
+                        </StringField>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <ListCommandButton />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </Fields>
+</ListView>
+
 @code
 {
 

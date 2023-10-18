@@ -25,7 +25,7 @@
                             <div class="col-md-8 pe-3">
                                 <StringTextBox @bind-Value="searchGroup.Title" />
                             </div>
-                            <DataGrid TEntity="CustomerGroup" Search="searchGroup" TableHeight="300">
+                            <DataGrid TEntity="CustomerGroup" Search="searchGroup" ContentHeight="300">
                                 <Columns>
                                     <GridColumn Field="t => t.Title" />
                                     <GridColumn Field="t => t.ActiveType.EnumText()" />

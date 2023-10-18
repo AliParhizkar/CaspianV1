@@ -1,5 +1,43 @@
-﻿#caspianCodeGenerator {
-    height:500px;
+﻿.t-pager .fa-step-backward {
+    width: 10px !important;
+    height: 19px !important;
+    text-align: left;
+}
+.t-pager .fa-step-forward {
+    width: 10px !important;
+    height: 14px !important;
+}
+.t-pager .fa-caret-left {
+    width: 9px !important;
+    height: 24px !important;
+}
+.t-pager .fa-caret-right {
+    width: 10px !important;
+    height: 22px !important;
+    text-align: right;
+}
+.c-data-view {
+
+}
+.c-data-view-content {
+    border-width: 1px;
+    border-bottom-width:0;
+    height:300px;
+    overflow:auto;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, .2);
+    background-color: white;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-between;
+}
+.c-data-view-footer {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-between;
+}
+#caspianCodeGenerator {
+    height: 500px;
     border: 1px solid grey;
     direction: ltr;
     text-align: left;
@@ -2422,6 +2460,8 @@ div.t-grid-footer {
     background-color: #f6f6f6;
     height: 36px;
     overflow: hidden;
+    display:flex;
+    justify-content:space-between;
 }
 .t-grid-pager .t-numeric a:hover {
     background-color: rgba(255,99,88,0.08);
@@ -2503,7 +2543,7 @@ div.t-grid-footer {
     border-right-style: solid;
 }
 
-.t-grid .t-status-text {
+.t-grid-pager .t-status-text {
     font-size: 12px;
     color: #ff6358;
     padding-top: 2px;
@@ -2513,63 +2553,49 @@ div.t-grid-footer {
     margin-right: .2em;
 }
 
-.t-pager .t-link {
-    text-decoration: none;
-    line-height: 23px;
+.t-pager .t-state-active {
+    border: 1px solid #bebebe!important;
+    background-color: #dadada;
+}
+
+.t-pager .t-icon {
+    width: 25px;
     height: 25px;
-    width: 15px;
-    box-sizing: border-box;
-    border-width: 0;
-    margin-left: 2px;
-    outline: none;
+    border:1px solid transparent;
+    border-radius:50%;
+    text-align:center;
 }
-
-.t-pager .t-state-hover {
-    padding: 0;
-    padding-top: -1px !important;
-    /*background-image: none, linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0px, rgba(255, 255, 255, 0) 100%);*/
-}
-
-.t-pager .t-state-active,
-.t-pager .t-state-hover {
-    padding: 0;
-    border-width: 1px;
-    border-style: solid;
-    /*border-radius: 5px;*/
-    background-color: grey;
-}
-
-.t-pager span,
-.t-pager .t-link {
+    .t-pager .t-icon:not(.t-state-disabled):hover {
+        background-color: #ffebeb;
+        border: 1px solid #ffafaf;
+        cursor:pointer;
+    }
+.t-pager .t-icon .fa {
     vertical-align: top;
+    height: 25px !important;
+    line-height: 25px;
 }
+    .t-pager .t-numeric{
+        vertical-align: top;
+    }
 
-.t-pager .t-numeric,
-.t-pager .t-page-i-of-n {
-    margin: 0 7px;
-    vertical-align: top;
-}
-
-.t-numeric .t-link,
-.t-numeric .t-state-active {
-    margin-top: 0;
-    padding: 0;
-    line-height: 24px;
+.t-numeric .t-link {
+    line-height: 25px;
+    height:25px;
     vertical-align: middle;
-    width: 24px;
+    width: 25px;
     text-align: center;
     border-radius: 1.3em;
-    margin-left: 1px;
-    border-color: transparent;
     color: #ff6358;
+    box-sizing: border-box;
+    margin-right:2px;
+    border:1px solid transparent;
 }
+    .t-numeric .t-link:not(.t-state-active):hover {
+        background-color: #ffebeb;
+        border: 1px solid #ffafaf;
+    }
 
-.t-numeric .t-state-active,
-.t-numeric .t-state-hover {
-    padding: 0;
-    line-height: 24px;
-    width: 26px;
-}
 .c-page-size input{
     padding-left:32px!important;
 }

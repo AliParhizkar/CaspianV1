@@ -31,7 +31,7 @@
         </table>
 
         <div style="width:90%;margin:5px auto">
-            <DataGrid @ref="CrudGrid" TEntity="DataParameterValue" Search="SearchData" ConditionExpr="t => t.Parameter1.ResultParameterId == ParameterId" TableHeight="300">
+        <DataGrid @ref="CrudGrid" TEntity="DataParameterValue" Search="SearchData" ConditionExpr="t => t.Parameter1.ResultParameterId == ParameterId" ContentHeight="300">
                 <Columns>
                     <GridColumn Field="t => t.Value1" Title="@titleArray[0]">
                         <Template>

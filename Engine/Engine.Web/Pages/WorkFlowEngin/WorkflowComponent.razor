@@ -13,7 +13,7 @@
             <StringTextBox @bind-Value="SearchData.Title" />
         </div>
     </div>
-    <DataGrid @ref="CrudGrid" TEntity="Workflow" TableHeight="300" ConditionExpr="t => t.WorkflowGroupId == GroupId">
+    <DataGrid @ref="CrudGrid" TEntity="Workflow" ContentHeight="300" ConditionExpr="t => t.WorkflowGroupId == GroupId">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.DataModel.Title" Title="عنوان مدل داده ای" />
@@ -36,7 +36,7 @@
                     <label>مدل داده ای</label>
                 </div>
                 <div class="col-md-8">
-                    <ComboBox TValue="int" TEntity="DataModel" @bind-Value="UpsertData.DataModelId"
+                    <ComboBox TEntity="DataModel" TValue="int" @bind-Value="UpsertData.DataModelId"
                               TextExpression="t => t.Title" ConditionExpression="t => t.WorkflowGroupId == GroupId" />
                 </div>
                 <div class="col-md-4">

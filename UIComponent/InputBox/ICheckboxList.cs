@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Caspian.UI
 {

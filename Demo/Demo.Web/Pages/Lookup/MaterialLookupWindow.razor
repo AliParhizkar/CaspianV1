@@ -2,7 +2,7 @@
 @inherits LookupWindow<Material, TValue>
 @namespace Demo.Web.Pages
 <div class="c-lookup-page" style="width:380px;">
-    <DataGrid @ref="Grid" TEntity="Material" TableHeight="200" HidePageSize>
+    <DataGrid @ref="Grid" TEntity="Material" ContentHeight="200" HidePageSize>
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.MainUnit.Title" Title="واحد اصلی" />

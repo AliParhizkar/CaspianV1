@@ -25,7 +25,7 @@
                                 <label>Country</label>
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox @bind-Value="CountryId" TValue="string" TEntity="SelectListItem" Source="countries" />
+                                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="CountryId" Source="countries" />
                             </div>
                             <div class="ps-5 col-md-4">
                                 <label>Country id</label>
@@ -76,7 +76,7 @@
                                 <label>Country</label>
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox @bind-Value="countryId" TValue="int?" TEntity="Country" TextExpression="t => t.Title" />
+                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" />
                             </div>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                                 <label>Country city</label>
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox @bind-Value="cityId" TValue="int?" TEntity="City" TextExpression="t => t.Country.Title + ' ' + t.Title" />
+                                <ComboBox TEntity="City" TValue="int?" @bind-Value="cityId" TextExpression="t => t.Country.Title + ' ' + t.Title" />
                             </div>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                                 <label>Customer</label>
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox @bind-Value="customerId" TValue="int?" TEntity="Customer" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' />
+                                <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' />
                             </div>
                         </div>
                     </div>
@@ -145,13 +145,13 @@
                                 <label>Real customer</label>
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox @bind-Value="customerId" TValue="int?" TEntity="Customer" TextExpression='t => t.FName + " " + t.LName' ConditionExpression="t => t.CustomerType == CustomerType.Real" />
+                                <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" TextExpression='t => t.FName + " " + t.LName' ConditionExpression="t => t.CustomerType == CustomerType.Real" />
                             </div>
                             <div class="ps-5 col-md-4">
                                 <label>legal customer</label>
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox @bind-Value="customerId" TValue="int?" TEntity="Customer" TextExpression="t => t.CompanyName" ConditionExpression="t => t.CustomerType == CustomerType.Legal" />
+                                <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" TextExpression="t => t.CompanyName" ConditionExpression="t => t.CustomerType == CustomerType.Legal" />
                             </div>
                         </div>
                     </div>
@@ -169,13 +169,13 @@
                                 <label>Ascending sort</label>
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox @bind-Value="countryId" TValue="int?" TEntity="Country" TextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" OrderByExpression="t => t.Title" />
                             </div>
                             <div class="ps-5 col-md-4">
                                 <label>Descending sort</label>
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox @bind-Value="countryId" TValue="int?" TEntity="Country" TextExpression="t => t.Title" OrderByExpression="t => t.Title" SortType="SortType.Decs" />
+                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" OrderByExpression="t => t.Title" SortType="SortType.Decs" />
                             </div>
                         </div>
                     </div>
@@ -210,7 +210,7 @@
                                 <DropdownList @bind-Value="controlSize" />
                             </div>
                             <div class="col-md-12">
-                                <ComboBox TValue="int?" TEntity="Country" @bind-Value="countryId" TextExpression="t => t.Title" Style="@GetStyle()"  />
+                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" Style="@GetStyle()" />
                             </div>
                         </div>
                     </div>
@@ -235,7 +235,7 @@
                                 <button class="c-btn c-primary" @onclick="async () => await cmbCountry.FocusAsync()">Focus</button>
                             </div>
                             <div class="col-md-12">
-                                <ComboBox @ref="cmbCountry" TValue="int?" TEntity="Country" @bind-Value="countryId" Disabled="disable" TextExpression="t => t.Title"  />
+                                <ComboBox TEntity="Country" TValue="int?" @ref="cmbCountry" @bind-Value="countryId" Disabled="disable" TextExpression="t => t.Title" />
                             </div>
                         </div>
                     </div>
@@ -266,13 +266,13 @@
                                 <label>Country</label>
                             </div>
                             <div class="col-md-8">
-                                <ComboBox TValue="int?" TEntity="Country" @bind-Value="countryId" TextExpression="t => t.Title" CascadeService="service" />
+                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" CascadeService="service" />
                             </div>
                             <div class="col-md-4">
                                 <label>City</label>
                             </div>
                             <div class="col-md-8">
-                                <ComboBox @ref="service.Cascade" TValue="int?" TEntity="City" @bind-Value="cityId" TextExpression="t => t.Title" />
+                                <ComboBox TEntity="City" TValue="int?" @ref="service.Cascade" @bind-Value="cityId" TextExpression="t => t.Title" />
                             </div>
                         </div>
                     </div>
@@ -310,7 +310,7 @@
                                 <label>Customer</label>
                             </div>
                             <div class="col-md-8">
-                                <ComboBox @ref="cmbCustomer" TValue="int?" TEntity="Customer" @bind-Value="customerId" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' ConditionExpression="t => t.CustomerType == customerType" />
+                                <ComboBox TEntity="Customer" TValue="int?" @ref="cmbCustomer" @bind-Value="customerId" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' ConditionExpression="t => t.CustomerType == customerType" />
                             </div>
                         </div>
                     </div>

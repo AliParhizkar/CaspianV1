@@ -95,7 +95,7 @@
                                 <label>Country id</label>
                             </div>
                             <div class="col-md-8">
-                                <ComboBox TValue="int" TEntity="Country" @bind-Value="citySearch.CountryId" TextExpression="t => t.Title" />
+                                 <ComboBox TEntity="Country" TValue="int" @bind-Value="citySearch.CountryId" TextExpression="t => t.Title" />
                             </div>
                         </div>
                         <DataGrid TEntity="City" HideInsertIcon Search="citySearch">

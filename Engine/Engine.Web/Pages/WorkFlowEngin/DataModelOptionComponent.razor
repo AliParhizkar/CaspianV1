@@ -4,7 +4,7 @@
     base.BuildRenderTree(__builder);
 }
 <div class="p-4">
-    <DataGrid @ref="CrudGrid" TEntity="DataModelOption" TableHeight="300" ConditionExpr="t => t.FieldId == FieldId">
+    <DataGrid @ref="CrudGrid" TEntity="DataModelOption" ContentHeight="300" ConditionExpr="t => t.FieldId == FieldId">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Name" />

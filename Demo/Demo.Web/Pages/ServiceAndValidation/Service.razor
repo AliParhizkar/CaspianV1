@@ -81,7 +81,7 @@
                                 <label>Country</label>
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox @bind-Value="upsertCountryId" TValue="int?" TEntity="SelectListItem" Source="countries" OnChange="() => upsertResult = null" />
+                                <ComboBox TEntity="SelectListItem" TValue="int?" @bind-Value="upsertCountryId" Source="countries" OnChange="() => upsertResult = null" />
                             </div>
                             <div class="ps-5 col-md-4">
                                 <label>Country id</label>
@@ -118,7 +118,7 @@
                                 <label>Country</label>
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox @bind-Value="deleteCountryId" TValue="int?" TEntity="Country" TextExpression="t => t.Title + '(' + t.Cities.Count() + ')'" OnChange="() => deleteResult = null" />
+                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="deleteCountryId" TextExpression="t => t.Title + '(' + t.Cities.Count() + ')'" OnChange="() => deleteResult = null" />
                             </div>
                             <div class="ps-5 col-md-4">
                                 <label>Country id</label>

@@ -21,14 +21,15 @@
                             <label>Product Category</label>
                         </div>
                         <div class="col-md-9">
-                            <ComboBox TValue="int" TEntity="ProductCategory" @bind-Value="upsertProduct.ProductCategoryId" TextExpression="t => t.Title" OnChanged="() => productGrid.EnableLoading()" />
+                            <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="upsertProduct.ProductCategoryId" TextExpression="t => t.Title" OnChanged="() => productGrid.EnableLoading()" />
                         </div>
                     </div>
     <div class="c-body ps-3 pe-3">
         @if (upsertProduct.ProductCategoryId > 0)
         {
             <CrudComponent UpsertData="upsertProduct">
-                <DataGrid @ref="productGrid" TEntity="Product" ConditionExpr="@(t => t.ProductCategoryId == upsertProduct.ProductCategoryId)" Search="searcProduct" TableHeight="350">
+                <DataGrid @ref="productGrid" TEntity="Product" Search="searcProduct" ContentHeight="350"
+                                          ConditionExpr="@(t => t.ProductCategoryId == upsertProduct.ProductCategoryId)">
                     <Columns>
                         <GridColumn Field="t => t.Title" />
                         <GridColumn Field="t => t.ActiveType.EnumText()" />

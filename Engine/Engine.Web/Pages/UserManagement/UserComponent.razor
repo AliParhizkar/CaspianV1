@@ -17,7 +17,7 @@
         <StringTextBox @bind-Value="SearchData.UserName" />
     </div>
 </div>
-<DataGrid @ref="CrudGrid" TEntity="User" TableHeight="400">
+<DataGrid @ref="CrudGrid" TEntity="User" ContentHeight="400">
     <Columns>
         <GridColumn Field="t => t.FName" />
         <GridColumn Field="t => t.LName" />

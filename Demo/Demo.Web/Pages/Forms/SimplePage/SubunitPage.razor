@@ -15,7 +15,7 @@
             </td>
         </tr>
     </table>
-    <DataGrid @ref="CrudGrid" TEntity="Subunit" Search="SearchData" ConditionExpr="t => t.MainUnitId == MainUnitId" TableHeight="350">
+    <DataGrid @ref="CrudGrid" TEntity="Subunit" Search="SearchData" ConditionExpr="t => t.MainUnitId == MainUnitId" ContentHeight="350">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Factor.Seprate3Digit()" />

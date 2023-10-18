@@ -1,0 +1,17 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@{
+    if (RowData == null)
+        ListView.AddDataField(Field.Body);
+}
+@if (RowData != null)
+{
+    if (Template == null)
+    {
+        <PictureBox Data="Field.Compile().Invoke(RowData.Data)" style="@Style" />
+    }
+    else
+    {
+        @Template
+    }
+}

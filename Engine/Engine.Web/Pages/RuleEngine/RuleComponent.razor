@@ -13,7 +13,7 @@
             <StringTextBox @bind-Value="SearchData.Title" />
         </div>
     </div>
-    <DataGrid @ref="CrudGrid" TEntity="Rule" ConditionExpr="t => t.SystemKind == Subsystem" Search="SearchData" TableHeight="300">
+    <DataGrid @ref="CrudGrid" TEntity="Rule" ConditionExpr="t => t.SystemKind == Subsystem" Search="SearchData" ContentHeight="300">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.ResultType.EnumText()" Title="نوع خروجی" />
@@ -48,8 +48,8 @@
                     <label>نوع فرمول</label>
                 </div>
                 <div class="col-md-8">
-                    <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="UpsertData.TypeName" 
-                            Disabled="disable" Source="RuleTypes" />
+                    <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="UpsertData.TypeName"
+                              Disabled="disable" Source="RuleTypes" />
                 </div>
                 <div class="col-md-4">
                     <label>نوع خروجی</label>

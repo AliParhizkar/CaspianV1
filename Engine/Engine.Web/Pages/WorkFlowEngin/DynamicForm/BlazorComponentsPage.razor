@@ -23,11 +23,11 @@
             case ControlType.List:
                 if (Control.LookupTypeId.HasValue)
                 {
-                    <AutoComplete TValue="int" TEntity="WorkflowForm" Disabled />
+                    <AutoComplete TEntity="WorkflowForm" TValue="int" Disabled />
                 }
                 else
                 {
-                    <ComboBox TValue="int" TEntity="WorkflowForm" Disabled />
+                    <ComboBox TEntity="WorkflowForm" TValue="int" Disabled />
                 }
                 break;
             case ControlType.Integer:

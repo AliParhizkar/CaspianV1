@@ -93,7 +93,7 @@
                                     <label>Warehouse</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <ComboBox TValue="int" TEntity="Warehouse" @bind-Value="UpsertData.WarehouseId" TextExpression="t => t.Title" />
+                                    <ComboBox TEntity="Warehouse" TValue="int" @bind-Value="UpsertData.WarehouseId" TextExpression="t => t.Title" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Description</label>
@@ -108,11 +108,11 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                        <DataGrid @ref="Grid" TEntity="ReceiptDetail" TableHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
+                        <DataGrid @ref="DataView" TEntity="ReceiptDetail" ContentHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material">
                                     <EditTemplate>
-                                        <AutoComplete TValue="int" TEntity="Material" @bind-Value="con.Data.MaterialId"
+                                         <AutoComplete TEntity="Material" TValue="int" @bind-Value="con.Data.MaterialId"
                                                         HideHeader AutoHide Title="Material" TextExpression="t => t.Title"
                                                         OnChange="async () => await UpdateMaterialReceipt(con.Data.MaterialId, con.Data)">
                                             <MaterialLookupWindow />
@@ -180,14 +180,14 @@
             if (detail?.Material.SubunitId != null)
                 await txtSubunit.FocusAsync();
             else
-                await Grid.ValidateAndUpsert(mode);
+                await DataView.ValidateAndUpsert(mode);
         }
     }
 
     async Task SubUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")
-            await Grid.ValidateAndUpsert(mode);
+            await DataView.ValidateAndUpsert(mode);
     }
 
     async Task UpdateMaterialReceipt(int materialId, ReceiptDetail detail)

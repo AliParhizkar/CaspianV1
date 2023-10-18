@@ -10,7 +10,7 @@
                 <label>Menu category</label>
             </div>
             <div class="col-md-8">
-                <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="MemberSearch.MenuCategoryId"
+                <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="MemberSearch.MenuCategoryId"
                             ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title"
                             OnChange="() => MemberGrid.EnableLoading()" />
             </div>
@@ -26,7 +26,7 @@
             </div>
         </div>
         <DataGrid @ref="MemberGrid" TEntity="Menu" HideInsertIcon Search="MemberSearch" 
-                    ConditionExpr="t => t.SubSystemKind == SubSystem" TableHeight="330">
+                    ConditionExpr="t => t.SubSystemKind == SubSystem" ContentHeight="330">
             <Columns>
                 <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
                 <GridColumn Field="t => t.Title" style="width:150px" />
@@ -52,7 +52,7 @@
                 <label>Menu category</label>
             </div>
             <div class="col-md-8">
-                <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="SearchData.Menu.MenuCategoryId"
+                <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="SearchData.Menu.MenuCategoryId"
                           ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title"
                           OnChange="() => MemberGrid.EnableLoading()" />
             </div>
@@ -67,7 +67,7 @@
                 <span class="d-membership">Accessible menus</span>
             </div>
         </div>
-        <DataGrid @ref="CrudGrid" TEntity="MenuAccessibility" HideInsertIcon Search="SearchData" TableHeight="330"
+        <DataGrid @ref="CrudGrid" TEntity="MenuAccessibility" HideInsertIcon Search="SearchData" ContentHeight="330"
                   ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" >
             <Columns>
                 <GridColumn Field="t => t.Menu.MenuCategory.Title" Title="Menu category" />

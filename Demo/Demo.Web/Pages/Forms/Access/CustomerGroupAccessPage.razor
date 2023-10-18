@@ -85,7 +85,7 @@
                             </div>
                         </div>
                     </fieldset>
-                    <DataGrid @ref="MemberGrid" TEntity="Customer" HideInsertIcon Search="MemberSearch" TableHeight="250"
+                     <DataGrid @ref="MemberGrid" TEntity="Customer" HideInsertIcon Search="MemberSearch" ContentHeight="250"
                                 ConditionExpr="t => name1 == null || t.FName.Contains(name1) || t.LName.Contains(name1) || t.CompanyName.Contains(name1)">
                         <Columns>
                             <GridColumn Field="@(t => t.CustomerType == CustomerType.Real ?  t.FName + " " + t.LName : t.CompanyName)" Title="Customer" />
@@ -130,7 +130,7 @@
                             </div>
                         </div>
                     </fieldset>
-                    <DataGrid @ref="CrudGrid" TEntity="CustomerGroupMembership" HideInsertIcon Search="SearchData" TableHeight="250"
+                     <DataGrid @ref="CrudGrid" TEntity="CustomerGroupMembership" HideInsertIcon Search="SearchData" ContentHeight="250"
                                 ConditionExpr="t => name2 == null || t.Customer.FName.Contains(name2) || t.Customer.LName.Contains(name2) || t.Customer.CompanyName.Contains(name2)">
                         <Columns>
                             <GridColumn Field="@(t => t.Customer.CustomerType == CustomerType.Real ?  t.Customer.FName + " " + t.Customer.LName : t.Customer.CompanyName)" Title="Customer" />

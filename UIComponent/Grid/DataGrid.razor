@@ -1,9 +1,9 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity
+@inherits DataView<TEntity>
 @attribute [CascadingTypeParameter(nameof(TEntity))]
-@inject IServiceScopeFactory ServiceScopeFactory
     
-<CascadingValue Value="this" Name="Grid">
+<CascadingValue Value="this" Name="DataView">
     @if (columnsData == null)
     {
         columnsData = new List<ColumnData>();
@@ -16,17 +16,17 @@
         {
             @if (ToolsBar == null)
             {
-                <GridToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" />
+                <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" />
             }
         }
         else
             @ToolsBar
         <GridHeader TableWidth="TableWidth" ColumnsData="columnsData" OnOrderingChanged="async () =>
                                                 {
-                                                    await ChangePageNumber(PageNumber);
+                                                    await ChangePageNumber(pageNumber);
                                                 }" />
 
-        <div class="t-grid-content" style="height:@(TableHeight)px">
+        <div class="t-grid-content" style="height:@(ContentHeight)px">
             @if (insertedEntity?.UpsertMode != null && Inline)
             {
                 <table @attributes="tableAttrs" class="c-grid-insert">
@@ -118,8 +118,8 @@
                 <span class="t-loading"></span>
             }
         </div>
-        <GridPager HidePageSize="HidePageSize" PageSize="PageSize" PageNumber="PageNumber" TotalRecord="Total" OnPageSizeChanged="ChangePageSize"
-                   OnPageNumberChanged="ChangePageNumber" />
+        <DataPager HidePageSize="HidePageSize" PageSize="PageSize" PageNumber="pageNumber" TotalRecord="Total" PageSizeChanged="ChangePageSize"
+                   PageNumberChanged="ChangePageNumber" />
     </div>
     }
 </CascadingValue>

@@ -16,11 +16,11 @@
             <label>گروه </label>
         </div>
         <div class="col-md-4">
-            <ComboBox TValue="int" @bind-Value="SearchData.ReportGroupId" TEntity="ReportGroup" TextExpression="t => t.Title"
+            <ComboBox TEntity="ReportGroup" TValue="int" @bind-Value="SearchData.ReportGroupId" TextExpression="t => t.Title"
                       ConditionExpression="t => t.SubSystem == Subsystem" />
         </div>
     </div>
-    <DataGrid @ref="CrudGrid" TEntity="Report" ConditionExpr="t => t.ReportGroup.SubSystem == Subsystem" Search="SearchData" TableHeight="300">
+    <DataGrid @ref="CrudGrid" TEntity="Report" ConditionExpr="t => t.ReportGroup.SubSystem == Subsystem" Search="SearchData" ContentHeight="300">
         <Columns>
             <GridColumn Field="t => t.ReportGroup.Title" Title="گروه گزارش" />
             <GridColumn Field="t => t.Title" />
@@ -47,7 +47,7 @@
                     <label>گروه گزارش</label>
                 </div>
                 <div class="col-md-8">
-                    <ComboBox TValue="int" @bind-Value="UpsertData.ReportGroupId" TEntity="ReportGroup" TextExpression="t => t.Title"
+                    <ComboBox TEntity="ReportGroup" TValue="int" @bind-Value="UpsertData.ReportGroupId" TextExpression="t => t.Title"
                               ConditionExpression="t => t.SubSystem == Subsystem" />
                 </div>
                 <div class="col-md-4">

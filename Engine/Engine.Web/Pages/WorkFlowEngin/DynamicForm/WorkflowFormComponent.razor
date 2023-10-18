@@ -12,7 +12,7 @@
             <StringTextBox @bind-Value="SearchData.Title" />
         </div>
     </div>
-    <DataGrid @ref="CrudGrid" TEntity="WorkflowForm" Search="SearchData" TableHeight="300">
+    <DataGrid @ref="CrudGrid" TEntity="WorkflowForm" Search="SearchData" ContentHeight="300">
         <Columns>
             <GridColumn Field="t => t.DataModel.Title" Title="Data model" />
             <GridColumn Field="t => t.Title" Title="Title" />
@@ -37,7 +37,7 @@
                     <label>Data model</label>
                 </div>
                 <div class="col-md-8">
-                    <ComboBox TValue="int" TEntity="DataModel" @bind-Value="UpsertData.DataModelId"
+                    <ComboBox TEntity="DataModel" TValue="int" @bind-Value="UpsertData.DataModelId"
                         TextExpression="t => t.Title"/>
                 </div>
                 <div class="col-md-4">

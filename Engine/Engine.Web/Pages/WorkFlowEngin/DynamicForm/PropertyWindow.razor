@@ -35,7 +35,7 @@
             {
                 <div class="pt-2">
                     <label class="pe-3">Lookup</label>
-                    <ComboBox TValue="int?" TEntity="LookupType" @bind-Value="Control.LookupTypeId" TextExpression="t => t.Title"
+                    <ComboBox TEntity="LookupType" TValue="int?" @bind-Value="Control.LookupTypeId" TextExpression="t => t.Title"
                             ConditionExpression="t => t.EntityTypeName == typeName" />
                 </div>
             }

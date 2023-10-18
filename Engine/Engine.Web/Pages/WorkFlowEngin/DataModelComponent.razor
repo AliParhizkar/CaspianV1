@@ -18,7 +18,7 @@
             <StringTextBox @bind-Value="SearchData.Name" />
         </div>
     </div>
-    <DataGrid @ref="CrudGrid" TEntity="DataModel" TableHeight="300" ConditionExpr="t => t.WorkflowGroupId == GroupId">
+    <DataGrid @ref="CrudGrid" TEntity="DataModel" ContentHeight="300" ConditionExpr="t => t.WorkflowGroupId == GroupId">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Name" />

@@ -1,0 +1,37 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity where TEntity : class
+@inherits DataCommand<TEntity> 
+@{
+    @if (RowData != null)
+    {
+        if (RowData.UpsertMode.HasValue)
+        {
+            <FormCommandButton />
+        }
+        else
+        {
+            <span>
+                <button @onclick="OpenForm">
+                    <span>Edit</span>
+                    <span class="t-icon t-edit fa fa-pencil"></span>
+                </button>
+                <button>
+                    <span>Delete</span>
+                    <span class="t-icon t-delete fa fa-trash"></span>
+                </button>
+            </span>
+        }
+    }
+}
+
+@code 
+{
+    protected override async Task OpenForm()
+    {
+        if (DataView != null)
+        {
+            DataView.Inline = true;
+            await base.OpenForm();
+        }
+    }
+}

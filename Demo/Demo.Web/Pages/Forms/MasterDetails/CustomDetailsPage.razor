@@ -144,7 +144,7 @@
                             </div>
                         }
                         <div class="pt-4">
-                            <DataGrid @ref="Grid" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == MasterId" TableHeight="250" HideInsertIcon>
+                            <DataGrid @ref="DataView" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == MasterId" ContentHeight="250" HideInsertIcon>
                                 <Columns>
                                     <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                                     <GridColumn Field="t => t.Product.Title" Title="Product" />
@@ -194,7 +194,7 @@
 
     async Task UpdatedProducts()
     {
-        var products = Grid.GetUpdatedEntities();
+        var products = DataView.GetUpdatedEntities();
         if (products.Count == 0)
             await Alert("No products have been updated");
         else
@@ -214,7 +214,7 @@
 
     async Task DeletedProducts()
     {
-        var products = Grid.GetDeletedEntities();
+        var products = DataView.GetDeletedEntities();
         if (products.Count == 0)
             await Alert("No products have been deleted");
         else
@@ -234,7 +234,7 @@
 
     async Task InsertedProducts()
     {
-        var products = Grid.GetInsertedEntities();
+        var products = DataView.GetInsertedEntities();
         if (products.Count == 0)
             await Alert("No products have been added");
         else
@@ -254,10 +254,10 @@
 
     async Task AddUpsertProduct(Product product)
     {
-        var old = Grid.GetAllRecords().SingleOrDefault(t => t.ProductId == product.Id);
+        var old = DataView.GetAllRecords().SingleOrDefault(t => t.ProductId == product.Id);
         if (old == null)
         {
-            await Grid.InsertAsync(new OrderDeatil()
+            await DataView.InsertAsync(new OrderDeatil()
                 {
                     Quantity = 1,
                     Price = product.Price,
@@ -268,22 +268,22 @@
         else
         {
             old.Quantity = old.Quantity + 1;
-            await Grid.UpdateAsync(old);
+            await DataView.UpdateAsync(old);
         }
     }
 
     async Task IncQuantity(OrderDeatil detail)
     {
         detail.Quantity++;
-        await Grid.UpdateAsync(detail);
+        await DataView.UpdateAsync(detail);
     }
 
     async Task DecQuantity(OrderDeatil detail)
     {
         detail.Quantity--;
         if (detail.Quantity == 0)
-            await Grid.RemoveAsync(detail);
+            await DataView.RemoveAsync(detail);
         else
-            await Grid.UpdateAsync(detail);
+            await DataView.UpdateAsync(detail);
     }
 }

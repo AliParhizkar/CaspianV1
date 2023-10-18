@@ -17,7 +17,7 @@
                 </span>
             </div>
             <div class="ps-4 pe-4 pb-4">
-                <DataGrid @ref="grid" TEntity="Product" TableHeight="300" HideInsertIcon>
+                <DataGrid @ref="grid" TEntity="Product" ContentHeight="300" HideInsertIcon>
                     <Columns>
                         <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                         <GridColumn Field="t => t.Title" />

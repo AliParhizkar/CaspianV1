@@ -33,8 +33,8 @@
         </div>
         <div>
             <label class="pe-3">فرم</label>
-            <ComboBox TValue="int?"  TEntity="WorkflowForm" @bind-Value="activity.WorkflowFormId" 
-                TextExpression="t => t.Title" ConditionExpression="t => t.DataModel.WorkflowForms.Any()" 
+            <ComboBox TEntity="WorkflowForm" TValue="int?" @bind-Value="activity.WorkflowFormId"
+                      TextExpression="t => t.Title" ConditionExpression="t => t.DataModel.WorkflowForms.Any()" 
                 OnChange="ActivityUpdated" />
         </div>
     }
