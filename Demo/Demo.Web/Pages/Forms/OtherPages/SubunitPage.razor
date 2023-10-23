@@ -1,46 +1,53 @@
-﻿@page "/Demo/Courier"
-@inherits SimplePage<Courier>
+﻿@page "/Demo/Subunit"
+@inherits SimplePage<Subunit>
 @{
     base.BuildRenderTree(__builder);
 }
 <div style="background-color:white" class="row ps-5 pe-5 pt-4 pb-4 ms-4 me-4">
     <div class="row c-controls">
         <div class="col-md-4 ps-4">
-            <label>Last name</label>
+            <label>Title</label>
         </div>
         <div class="col-md-8 pe-4">
-            <StringTextBox @bind-Value="SearchData.LName" Search />
+            <StringTextBox @bind-Value="SearchData.Title" Search />
          </div>
      </div>
-     <DataGrid @ref="CrudGrid" TEntity="Courier" Search="SearchData" ContentHeight="300">
+     <DataGrid @ref="CrudGrid" TEntity="Subunit" Search="SearchData" ContentHeight="300">
          <Columns>
-             <GridColumn Field="t => t.FName" />
-             <GridColumn Field="t => t.LName" />
-             <GridColumn Field="t => t.Code" />
+             <GridColumn Field="t => t.MainUnit.Title" Title="Mainunit" />
+             <GridColumn Field="t => t.Title" />
+             <GridColumn Field="t => t.Factor.Seprate3Digit()" />
+             <GridColumn Field="t => t.ActiveType.EnumText()" />
              <GridCommandColumns />
          </Columns>
      </DataGrid>
-     <Window @ref="UpsertWindow" Title="Courier" Style="width:450px">
+     <Window @ref="UpsertWindow" Title="MainUnit" Style="width:450px">
          <Content>
              <CaspianForm @ref="UpsertForm" Model="UpsertData">
                  <div class="row c-controls ps-3 pe-3">
                      <div class="col-md-3">
-                         <label>First name</label>
+                         <label>Mainunit</label>
                      </div>
                      <div class="col-md-9">
-                         <StringTextBox @bind-Value="UpsertData.FName" />
+                         <ComboBox TEntity="MainUnit" TValue="int" @bind-Value="UpsertData.MainUnitId" TextExpression="t => t.Title" />
                      </div>
                      <div class="col-md-3">
                          <label>Title</label>
                      </div>
                      <div class="col-md-9">
-                         <StringTextBox @bind-Value="UpsertData.LName" />
+                         <StringTextBox @bind-Value="UpsertData.Title" />
                      </div>
                      <div class="col-md-3">
                          <label>Factor</label>
                      </div>
                      <div class="col-md-9">
-                         <StringTextBox @bind-Value="UpsertData.Code" />
+                         <NumericTextBox @bind-Value="UpsertData.Factor" />
+                     </div>
+                     <div class="col-md-3">
+                         <label>Status</label>
+                     </div>
+                     <div class="col-md-9">
+                         <DropdownList @bind-Value="UpsertData.ActiveType" />
                      </div>
                      <div class="col-md-3"></div>
                      <div class="col-md-9 text-center">

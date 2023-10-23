@@ -4,7 +4,7 @@
     {
         public TEntity Data { get; set; }
 
-        public int RowIndex { get; set; } 
+        public int? RowIndex { get; set; } 
 
         public object DynamicData { get; set; }
 

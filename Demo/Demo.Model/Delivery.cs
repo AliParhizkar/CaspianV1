@@ -5,34 +5,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("Deliveries", Schema = "demo")]
-    public class Delivery
+    [Table("couriers", Schema = "demo")]
+    public class Courier
     {
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// نام
-        /// </summary>
-        [DisplayName("نام")]
+        [DisplayName("First name")]
         public string FName { get; set; }
 
-        /// <summary>
-        /// نام خانوادگی
-        /// </summary>
-        [DisplayName("نام خانوادگی")]
+        [DisplayName("Last name")]
         public string LName { get; set; }
 
-        /// <summary>
-        /// کد پرسنلی
-        /// </summary>
-        [DisplayName("کد پرسنلی")]
+        [DisplayName("Code")]
         public string Code { get; set; }
 
-        /// <summary>
-        /// سفارشهای پیک
-        /// </summary>
-        [CheckOnDelete("پیک دارای سفارش می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("courier has Orders and can not removed")]
         public virtual IList<Order> Orders { get; set; }    
     }
 }

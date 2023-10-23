@@ -1,0 +1,184 @@
+﻿@page "/Demo/Batch/Inline/Listview/Details" 
+@page "/Demo/Batch/Inline/Listview/Details/{MasterId:int}"
+@namespace Demo.Web.Pages
+@inherits MasterDetailPage<Order, OrderDeatil>
+<div class="d-content">
+    <div class="row pt-4">
+        <div class="col-md-4 row pe-3">
+            <div class="col-md-2 text-start c-arrow-back">
+                <a href="/Demo/Batch/Inline/Master">
+                    <span class="fa fa-arrow-left"></span>
+                </a>
+            </div>
+            <div class="col-md-10 text-center">
+                <span class="d-membership">Order</span>
+            </div>
+            <hr class="mt-2" />
+        </div>
+        <div class="col-md-8 row ps-3 ">
+            <div class="col-md-12 text-center">
+                <span class="d-membership">Orderdetails</span>
+                <hr class="mt-2" />
+            </div>
+        </div>
+        <div class="col-md-4 row pe-3">
+            <CaspianForm @ref="Form" Model="UpsertData">
+                <div class="row c-controls">
+                    <div class="col-md-4">
+                        <label>Order date</label>
+                    </div>
+                    <div class="col-md-8">
+                        <DatePicker @bind-Value="UpsertData.Date" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Order type</label>
+                    </div>
+                    <div class="col-md-8">
+                        <DropdownList @bind-Value="UpsertData.OrderType" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Customer</label>
+                    </div>
+                    <div class="col-md-8">
+                        <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId"
+                                  TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Courier</label>
+                    </div>
+                    <div class="col-md-8">
+                        <ComboBox TEntity="Courier" TValue="int?" @bind-Value="UpsertData.CourierId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Description</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="4" />
+                     </div>
+                     <div class="col-md-12">
+                         <FormCommandButton />
+                     </div>
+                 </div>
+             </CaspianForm>
+         </div>
+         <div class="col-md-8 ps-3">
+             <ListView @ref="DataView" TEntity="OrderDeatil" ContentHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId"
+                       OnCancel="HideDescription" OnUpsert="HideDescription" OnSave="HideDescription">
+                 <HeaderTempalte>
+                     <div class="d-listview-col-1">Product</div>
+                     <div class="d-listview-col-2">Price</div>
+                     <div class="d-listview-col-3">Quantity</div>
+                     <div class="d-listview-col-4">Description</div>
+                     <div class="d-listview-col-5">Edit-Delete</div>
+                 </HeaderTempalte>
+                 <Fields Context="detail">
+                     @{
+                        var name = "d-listview-row";
+                        if (detail?.RowIndex % 2 == 0)
+                            name += " d-row-odd";
+                     }
+                     <div class="@name">
+                         <div class="d-listview-col-1">
+                             <StringField Field="t => t.Product.Title" >
+                                <EditTemplate >
+                                    <AutoComplete TEntity="Product" TValue="int" @bind-Value="detail.Data.ProductId"
+                                            HideHeader AutoHide TextExpression="t => t.Title"
+                                            OnChange="async () => await SetPrice(detail.Data)">
+                                        <ProductLookupWindow />
+                                     </AutoComplete>
+                                </EditTemplate>
+                             </StringField>
+                         </div>
+                         <div class="d-listview-col-2">
+                             <StringField Field="t => t.Price.Seprate3Digit()" >
+                                <Template>
+                                     <span>@(detail.Data.Price.Seprate3Digit())</span>
+                                </Template>
+                             </StringField>
+                         </div>
+                         <div class="d-listview-col-3">
+                             <StringField Field="t => t.Quantity.ToString()">
+                                <EditTemplate>
+                                    <NumericTextBox @ref="txtQuantity" @bind-Value="detail.Data.Quantity"
+                                    @onkeyup="@(async e => await UpsertOnEnter(e, detail.UpsertMode.Value))" />
+                                </EditTemplate>
+                             </StringField>
+                         </div>
+                         <div class="d-listview-col-4">
+                            <button disabled="@(detail?.UpsertMode == null)" @onclick="async () => await ShowDescription(detail)">...</button>
+                         </div>
+                         <div class="d-listview-col-5">
+                             <ListCommandButton ButtonType="CommandButtonType.Simple" />
+                         </div>
+                        @if (ShowDescriptionStatuse && selectedDeatil == detail.Data)
+                        {
+                            <div class="d-listview-col-7">
+                                <label>Description</label>
+                            </div>
+                            <div class="d-listview-col-6">
+                                <StringTextBox @ref="txtDescription" @bind-Value="detail.Data.Descript" MultiLine Cols="5" />
+                            </div>
+
+                        }
+                    </div>
+                 </Fields>
+            </ListView>
+        </div>
+    </div>
+</div>
+
+
+@code
+{
+    StringTextBox txtDescription;
+    NumericTextBox<int> txtQuantity;
+    bool ShowDescriptionStatuse;
+    OrderDeatil selectedDeatil;
+    UpsertMode upsertMode;
+
+    void HideDescription()
+    {
+        ShowDescriptionStatuse = false;
+        selectedDeatil = null;
+    }
+
+    async Task ShowDescription(RowData<OrderDeatil> rowData)
+    {
+        var detail = rowData.Data;
+        if (rowData.UpsertMode.HasValue)
+        {
+            selectedDeatil = detail;
+            ShowDescriptionStatuse = !ShowDescriptionStatuse;
+            if (ShowDescriptionStatuse)
+            {
+                if (detail.Id > 0 && !detail.Descript.HasValue())
+                {
+                    using var service = CreateScope().GetService<OrderDeatilService>();
+                    var old = await service.SingleAsync(detail.Id);
+                    detail.Descript = old.Descript;
+                }
+                await Task.Delay(10);
+                await txtDescription.FocusAsync();
+            }
+        }
+    }
+
+    async Task SetPrice(OrderDeatil detail)
+    {
+        if (detail.ProductId > 0)
+        {
+            using var service = CreateScope().GetService<ProductService>();
+            var old = await service.SingleAsync(detail.ProductId);
+            detail.Price = old.Price;
+            if (detail.Quantity == 0)
+                detail.Quantity = 1;
+            await txtQuantity.FocusAsync();
+        }
+    }
+
+    async Task UpsertOnEnter(KeyboardEventArgs e, UpsertMode mode)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+            await DataView.ValidateAndUpsert(mode);
+    }
+}

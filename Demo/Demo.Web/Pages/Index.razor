@@ -5,79 +5,80 @@
     base.BuildRenderTree(__builder);
 }
 <h4>No Infrastructure, No Sustainable Development</h4>
-<ListView TEntity="Product">
-    <Fields Context="product">
-        <div class="col-md-6 c-data-fields c-controls">
-            <table style="width:95%;margin:0 auto">
-                <tr>
-                    <td>
-                        <label>Title</label>
-                    </td>
-                    <td>
-                        <StringField Field="t => t.Title">
-                            <EditTemplate>
-                                <StringTextBox @bind-Value="product.Title" />
-                            </EditTemplate>
-                        </StringField>
-                    </td>
-                    <td rowspan="6">
-                        <ImageField Field="t => t.Image" Style="width:165px;height:165px;background-position: center center" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>Price</label>
-                    </td>
-                    <td>
-                        <StringField Field="t => t.Price.Seprate3Digit()">
-                            <EditTemplate>
-                                <NumericTextBox @bind-Value="product.Price" />
-                            </EditTemplate>
-                        </StringField>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>Takeout Price</label>
-                    </td>
-                    <td>
-                        <StringField Field="t => t.TakeoutPrice.Seprate3Digit()">
-                            <EditTemplate>
-                                <NumericTextBox @bind-Value="product.TakeoutPrice" />
-                            </EditTemplate>
-                        </StringField>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>Code</label>
-                    </td>
-                    <td>
-                        <StringField Field="t => t.Code" >
-                            <EditTemplate>
-                                <StringTextBox @bind-Value="product.Code" />
-                            </EditTemplate>
-                        </StringField>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>Status</label>
-                    </td>
-                    <td>
-                        <StringField Field="t => t.ActiveType.EnumText()" >
-                            <EditTemplate>
-                                <DropdownList @bind-Value="product.ActiveType" />
-                            </EditTemplate>
-                        </StringField>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <ListCommandButton />
-                    </td>
-                </tr>
-            </table>
+<ListView TEntity="Product" Batch Inline>
+    <Fields Context="item">
+        @{
+            var product = item?.Data;
+        }
+        <div class="col-md-6 ps-2 row">
+            <div class="col-md-8 row c-controls pe-2">
+                <div class="col-md-4">
+                    <label>Product Category</label>
+                </div>
+                <div class="col-md-8">
+                    <StringField Field="t => t.ProductCategory.Title">
+                        <EditTemplate>
+                            <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="product.ProductCategoryId" TextExpression="t => t.Title" />
+                        </EditTemplate>
+                    </StringField>
+                </div>
+                <div class="col-md-4">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-8">
+                    <StringField Field="t => t.Title">
+                        <EditTemplate>
+                            <StringTextBox @bind-Value="product.Title" />
+                        </EditTemplate>
+                    </StringField>
+                </div>
+                <div class="col-md-4">
+                    <label>Price</label>
+                </div>
+                <div class="col-md-8">
+                    <StringField Field="t => t.Price.Seprate3Digit()">
+                        <EditTemplate>
+                            <NumericTextBox @bind-Value="product.Price" />
+                        </EditTemplate>
+                    </StringField>
+                </div>
+                <div class="col-md-4">
+                    <label>Takeout Price</label>
+                </div>
+                <div class="col-md-8">
+                    <StringField Field="t => t.TakeoutPrice.Seprate3Digit()">
+                        <EditTemplate>
+                            <NumericTextBox @bind-Value="product.TakeoutPrice" />
+                        </EditTemplate>
+                    </StringField>
+                </div>
+                <div class="col-md-4">
+                    <label>Code</label>
+                </div>
+                <div class="col-md-8">
+                    <StringField Field="t => t.Code">
+                        <EditTemplate>
+                            <StringTextBox @bind-Value="product.Code" />
+                        </EditTemplate>
+                    </StringField>
+                </div>
+                <div class="col-md-4">
+                    <label>Status</label>
+                </div>
+                <div class="col-md-8">
+                    <StringField Field="t => t.ActiveType.EnumText()">
+                        <EditTemplate>
+                            <DropdownList @bind-Value="product.ActiveType" />
+                        </EditTemplate>
+                    </StringField>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ImageField Field="t => t.Image" Style="width:165px;height:165px;background-position: center center" />
+            </div>
+            <div class="p-3">
+                <ListCommandButton />
+            </div>
         </div>
     </Fields>
 </ListView>

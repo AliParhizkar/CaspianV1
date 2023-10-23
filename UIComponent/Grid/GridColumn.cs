@@ -64,7 +64,7 @@ namespace Caspian.UI
         [Parameter]
         public SortType? SortType { get; set; }
 
-        [CascadingParameter(Name = "GridRowData")]
+        [CascadingParameter(Name = "RowData")]
         public RowData<TEntity> RowData { get; set; }
 
         protected override void OnInitialized()

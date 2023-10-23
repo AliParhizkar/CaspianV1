@@ -6,26 +6,51 @@
     {
         if (RowData.UpsertMode.HasValue)
         {
-            <FormCommandButton />
+            <span class="c-dataview-button">
+                <span class="c-check">
+                    <span @onclick="@(async () => await DataView.ValidateAndUpsert(RowData.UpsertMode.Value))" class="t-icon fa fa fa-check"></span>
+                </span>
+                <span class="c-bar">
+                    <span @onclick="@(async () => await DataView.CalcelEdit(RowData.UpsertMode.Value))" class="t-icon fa fa fa-ban"></span>
+                </span>
+            </span>
         }
         else
         {
-            <span>
-                <button @onclick="OpenForm">
-                    <span>Edit</span>
-                    <span class="t-icon t-edit fa fa-pencil"></span>
-                </button>
-                <button>
-                    <span>Delete</span>
-                    <span class="t-icon t-delete fa fa-trash"></span>
-                </button>
-            </span>
+            if (ButtonType == CommandButtonType.Default && ButtonType == null)
+            {
+                <span class="c-dataview-button">
+                    <button class="c-btn c-primary" @onclick="OpenForm">
+                        <span>Edit</span>
+                        <span class="t-icon fa fa-pencil"></span>
+                    </button>
+                    <button class="c-btn c-danger">
+                        <span>Delete</span>
+                        <span class="t-icon fa fa-trash"></span>
+                    </button>
+                </span>
+            }
+            else if(ButtonType == CommandButtonType.Simple)
+            {
+                <span class="c-grid-command">
+                    <span class="t-grid-edit">
+                        <span class="t-icon t-edit fa fa-pencil" @onclick="OpenForm"></span>
+                    </span>
+                    <span class="t-grid-delete">
+                        <span class="t-icon t-delete fa fa-trash" @onclick="DeleteAsync"></span>
+                    </span>
+                </span>
+            }
+
         }
     }
 }
 
 @code 
 {
+    [Parameter]
+    public CommandButtonType? ButtonType { get; set; }
+
     protected override async Task OpenForm()
     {
         if (DataView != null)

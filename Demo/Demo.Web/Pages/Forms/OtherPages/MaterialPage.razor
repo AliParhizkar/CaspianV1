@@ -1,0 +1,73 @@
+﻿@page "/Demo/Material"
+@namespace Demo.Web.Pages
+@inherits SimplePage<Material>
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div style="background-color:white" class="row ps-5 pe-5 pt-4 pb-4 ms-4 me-4">
+    <div class="row c-controls">
+        <div class="col-md-4 ps-4">
+            <label>Last name</label>
+        </div>
+        <div class="col-md-8 pe-4">
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+         </div>
+     </div>
+     <DataGrid @ref="CrudGrid" TEntity="Material" Search="SearchData" ContentHeight="300">
+         <Columns Context="con">
+             <GridColumn Field="t => t.Title" />
+             <GridColumn Field="t => t.MainUnit.Title" Title="Mainunit" />
+             <GridColumn Field="t => t.Subunit.Title" Title="subUnit" />
+             <GridColumn Field="t => t.ActiveType.EnumText()" />
+             <GridCommandColumns />
+         </Columns>
+     </DataGrid>
+     <Window @ref="UpsertWindow" Title="Courier" Style="width:450px" 
+             OnOpen="() =>
+                    {
+                        if (UpsertData.Id == 0)
+                            UpsertData.ActiveType = ActiveType.Enable;
+                    }">
+         <Content>
+             <CaspianForm @ref="UpsertForm" Model="UpsertData">
+                 <div class="row c-controls ps-3 pe-3">
+                     <div class="col-md-3">
+                         <label>Mainunit</label>
+                     </div>
+                     <div class="col-md-9">
+                         <ComboBox TEntity="MainUnit" TValue="int" @bind-Value="UpsertData.MainUnitId" TextExpression="t => t.Title" OnChange="() => cmb.EnableLoading()" />
+                     </div>
+                     <div class="col-md-3">
+                         <label>Subunit</label>
+                     </div>
+                     <div class="col-md-9">
+                         <ComboBox TEntity="Subunit" TValue="int?" @ref="cmb" Disabled="UpsertData.MainUnitId == 0" @bind-Value="UpsertData.SubunitId" TextExpression="t => t.Title" ConditionExpression="t => t.MainUnitId == UpsertData.MainUnitId" />
+                     </div>
+                     <div class="col-md-3">
+                         <label>Title</label>
+                     </div>
+                     <div class="col-md-9">
+                         <StringTextBox @bind-Value="UpsertData.Title" />
+                     </div>
+                     <div class="col-md-3">
+                         <label>Status</label>
+                     </div>
+                     <div class="col-md-9">
+                         <DropdownList @bind-Value="UpsertData.ActiveType" />
+                     </div>
+                     <div class="col-md-3"></div>
+                     <div class="col-md-9 text-center">
+                         <WindowCommandButtons />
+                     </div>
+                 </div>
+             </CaspianForm>
+         </Content>
+     </Window>
+ </div>
+
+
+@code
+{
+    ComboBox<Subunit, int?> cmb;
+}

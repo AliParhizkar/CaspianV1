@@ -22,8 +22,5 @@ namespace Demo.Model
 
         [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
-
-        [CheckOnDelete("شهر داری منطقه می باشد و امکان حذف آن وجود ندارد.")]
-        public virtual IList<Area> Areas { get; set; }
     }
 }

@@ -11,30 +11,18 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        /// <summary>
-        /// کد واحد اصلی
-        /// </summary>
-        [DisplayName("واحد اصلی")]
+        [DisplayName("Main unit")]
         public int MainUnitId { get; set; }
 
-        /// <summary>
-        /// مشخصات واحد اصلی
-        /// </summary>
         [ForeignKey(nameof(MainUnitId))]
         public virtual MainUnit MainUnit { get; set; }
 
-        /// <summary>
-        /// کد واحد فرعی
-        /// </summary>
-        [DisplayName("واحد فرعی")]
+        [DisplayName("Sub unit")]
         public int? SubunitId { get; set; }
 
-        /// <summary>
-        /// واحد فرعی
-        /// </summary>
         [ForeignKey(nameof(SubunitId))]
         public virtual Subunit Subunit { get; set; }
 

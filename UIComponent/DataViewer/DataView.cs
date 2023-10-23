@@ -37,14 +37,13 @@ namespace Caspian.UI
         protected int pageNumber = 1;
         protected Type serviceType;
         protected CaspianValidationValidator validator;
+        protected IList<TEntity> items;
 
         public EventCallback<TEntity> OnInternalUpsert { get; set; }
 
         public int Total { get; set; }
 
         public int? SelectedRowIndex { get; protected set; }
-
-        public IList<TEntity> Items { get; protected set; }
 
         [Inject]
         public FormAppState FormAppState { get; set; }
@@ -56,10 +55,19 @@ namespace Caspian.UI
         public CaspianDataService CaspianDataService { get; set; }
 
         [Parameter]
+        public EventCallback<UpsertMode> OnCancel { get; set; }
+
+        [Parameter]
         public int? ContentHeight { get; set; }
 
         [Parameter]
+        public Expression<Func<TEntity, bool>> ConditionExpr { get; set; }
+
+        [Parameter]
         public EventCallback<TEntity> OnUpsert { get; set; }
+
+        [Parameter]
+        public EventCallback OnSave { get; set; }
 
         [Parameter]
         public bool Inline { get; set; }
@@ -96,7 +104,8 @@ namespace Caspian.UI
             var dataService = scope.ServiceProvider.GetService(typeof(CaspianDataService)) as CaspianDataService;
             dataService.UserId = CaspianDataService.UserId;
             serviceType = scope.ServiceProvider.GetService(type).GetType();
-
+            if (!AutoHide && Inline)
+                CreateInsert();
             base.OnInitialized();
         }
 
@@ -153,7 +162,6 @@ namespace Caspian.UI
                 }
                 var lambda = param.CreateLambdaExpresion(exprList);
                 expressionList.Add(item.Key, lambda);
-
             }
         }
 
@@ -168,8 +176,18 @@ namespace Caspian.UI
                 var result = await (Task<ValidationResult>)asyncValidationTask;
                 if (result.IsValid)
                 {
+                    if (source == null)
+                    {
+                        using var scope = ServiceScopeFactory.CreateScope();
+                        var service =  scope.GetService<BaseService<TEntity>>();
+                        await service.UpdateAsync(selectedEntity);
+                        await service.SaveChangesAsync();
+                    }
+                    else
+                        await UpdateAsync(EditContext.Model as TEntity);
                     selectedEntity = null;
-                    await UpdateAsync(EditContext.Model as TEntity);
+                    if (OnSave.HasDelegate)
+                        await OnSave.InvokeAsync();
                 }
                 else
                 {
@@ -195,6 +213,8 @@ namespace Caspian.UI
                     }
                     await InsertAsync(newEntity);
                     await ReadyToInsert();
+                    if (OnSave.HasDelegate)
+                        await OnSave.InvokeAsync();
                 }
                 else
                 {
@@ -240,6 +260,8 @@ namespace Caspian.UI
             }
             else
                 await ReadyToInsert();
+            if (OnCancel.HasDelegate)
+                await OnCancel.InvokeAsync(upsertMode);
             StateHasChanged();
         }
 
@@ -418,7 +440,7 @@ namespace Caspian.UI
         {
             source = new List<TEntity>();
             Total = 0;
-            Items = new List<TEntity>();
+            items = new List<TEntity>();
         }
 
         public IList<TEntity> GetUpsertedEntities()
@@ -437,10 +459,10 @@ namespace Caspian.UI
             if (pageCount < pageNumber)
             {
                 await ChangePageNumber(pageCount);
-                SelectedRowIndex = Items.Count - 1;
+                SelectedRowIndex = items.Count - 1;
             }
-            else if (SelectedRowIndex != null && SelectedRowIndex.Value >= Items.Count)
-                SelectedRowIndex = Items.Count - 1;
+            else if (SelectedRowIndex != null && SelectedRowIndex.Value >= items.Count)
+                SelectedRowIndex = items.Count - 1;
             StateHasChanged();
         }
 
@@ -449,10 +471,10 @@ namespace Caspian.UI
             if (pageNumber > 1)
             {
                 var skip = (pageNumber - 1) * PageSize;
-                Items = source.Skip(skip).Take(PageSize).ToList();
+                items = source.Skip(skip).Take(PageSize).ToList();
             }
             else
-                Items = source.Take(PageSize).ToList();
+                items = source.Take(PageSize).ToList();
         }
 
         protected void RollBackEntity()

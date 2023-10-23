@@ -1,8 +1,7 @@
-﻿using Demo.Model;
+﻿using System;
+using Demo.Model;
 using Caspian.Common;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Demo.Service
 {
@@ -11,7 +10,7 @@ namespace Demo.Service
         public WareHouseService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("انباری با این عنوان در سیستم تعریف شده است.");
+            RuleFor(t => t.Title).Required().UniqAsync("A warehouse with this title is defined in the system.");
         }
     }
 }

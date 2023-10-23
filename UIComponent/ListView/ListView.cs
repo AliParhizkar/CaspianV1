@@ -15,7 +15,6 @@ namespace Caspian.UI
 {
     public partial class ListView<TEntity>: DataView<TEntity> where TEntity : class
     {
-        IList<TEntity> items;
         IList<Expression> fieldsExpression;
         int total;
 
@@ -35,6 +34,8 @@ namespace Caspian.UI
                 var query = service.GetAll();
                 if (ExpressionCondition !=  null)
                     query = query.Where(ExpressionCondition);
+                if (ConditionExpr != null)
+                    query = query.Where(ConditionExpr);
                 total = await query.CountAsync();
                 var exprList = new List<MemberExpression>();
                 foreach(var expr in fieldsExpression)
@@ -49,33 +50,48 @@ namespace Caspian.UI
                 var primaryKeyExpr = Expression.Property(parameterExpr, pKey);
                 if (!exprList.Any(t => t.ToString() == primaryKeyExpr.ToString()))
                     exprList.Add(primaryKeyExpr);
-                items = await query.Skip((pageNumber - 1) * PageSize).Take(PageSize).GetValuesAsync(exprList);
+                foreach (var info in typeof(TEntity).GetProperties())
+                {
+                    if (info.PropertyType.IsValueType || info.PropertyType.IsNullableType())
+                    {
+                        var str = parameterExpr.Name + "." + info.Name;
+                        if (!exprList.Any(t => t.ToString() == str))
+                            exprList.Add(Expression.Property(parameterExpr, info));
+                    }
+                }
+                if (Batch)
+                {
+                    source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
+                    if (pageNumber == 1)
+                        items = source.Take(PageSize).ToList();
+                    else
+                    {
+                        var skip = (pageNumber - 1) * PageSize;
+                        items = source.Skip(skip).Take(PageSize).ToList();
+                    }
+                    ManageExpressionForUpsert(exprList);
+                }
+                else
+                    items = await query.Skip((pageNumber - 1) * PageSize).Take(PageSize).GetValuesAsync(exprList);
             }
         }
-
-        //async Task ChangePageNumber(int pageNum)
-        //{
-        //    if (pageNumber != pageNum)
-        //    {
-        //        pageNumber = pageNum;
-        //        shouldFetchData = true;
-        //        await DataBind();
-        //    }
-        //}
 
         internal void AddDataField(Expression expression)
         {
             fieldsExpression.Add(expression);
         }
 
-        //[Parameter]
-        //public RenderFragment<TEntity> EditTemplate { get; set; }
-
         [Parameter]
         public Expression<Func<TEntity, bool>> ExpressionCondition { get; set; }
 
         [Parameter]
-        public RenderFragment<TEntity> Fields { get; set; }
+        public RenderFragment<RowData<TEntity>> Fields { get; set; }
+
+        [Parameter]
+        public UpsertType UpsertType { get; set; }
+
+        [Parameter]
+        public RenderFragment HeaderTempalte { get; set; }
 
         protected override async Task OnParametersSetAsync()
         {

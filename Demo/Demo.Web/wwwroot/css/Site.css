@@ -1,10 +1,67 @@
-﻿.c-data-fields {
-    padding: 5px;
-    border: 1px solid whitesmoke;
-    display: flex;
-    overflow: hidden;
-    min-width: 450px;
+﻿.c-dataview-header >div{
+    height:36px;
+    text-overflow:clip;
+    padding:6px 2px;
+    overflow:hidden;
+    user-select:none;
 }
+.d-list-head {
+    display: flex;
+}
+.d-listview-row {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    flex-wrap:wrap;
+}
+.d-row-odd {
+    background-color: #f5f5f5;
+}
+.d-listview-col-1 {
+    border-right: 1px solid rgba(0,0,0,0.08);
+    text-align: center;
+    width: calc(100% - 385px)
+}
+.d-listview-col-2 {
+    border-right: 1px solid rgba(0,0,0,0.08);
+    text-align: center;
+    width: 120px;
+}
+.d-listview-col-3 {
+    border-right: 1px solid rgba(0,0,0,0.08);
+    width: 100px;
+    text-align: center;
+}
+.d-listview-col-4 {
+    width: 85px;
+    border-right: 1px solid rgba(0,0,0,0.08);
+    text-align: center;
+}
+.d-listview-col-5 {
+    width: 80px;
+    overflow: hidden;
+    text-align: center;
+}
+.d-listview-col-6 {
+    padding-left: 5px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding-top:5px;
+    width:calc(100% - 100px);
+}
+.d-listview-col-7 {
+    width: 100px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding:20px 0 0 5px;
+    font-weight:bold;
+    color:darkslategray;
+}
+    .c-data-fields {
+        padding: 5px;
+        border: 1px solid whitesmoke;
+        display: flex;
+        overflow: hidden;
+        min-width: 450px;
+    }
     .c-data-fields{
         line-height:30px;
 

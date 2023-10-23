@@ -11,22 +11,22 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        [DisplayName("وضعیت")]
+        [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
         /// <summary>
-        /// لیست واحدهای فرعی این واحد
+        /// Subunits of unit
         /// </summary>
-        [CheckOnDelete("واحد اصلی دارای واحد فرعی می باشد و امکان حذف آن وجود ندارد.")]
+        [CheckOnDelete("Unit has subunit and can not removed")]
         public virtual IList<Subunit> Subunits { get; set; }
 
         /// <summary>
-        /// محصولاتی که که دارای این واحد شمارش می باشند
+        /// Materials of unit
         /// </summary>
-        [CheckOnDelete("محصولی با این واحد اصلی ثبت شده و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("Unit has materials and can not removed")]
         public virtual IList<Material> Materials { get; set; }
     }
 }

@@ -6,19 +6,20 @@
 }
 @if (RowData != null)
 {
-    if (RowData.UpsertMode.HasValue)
+    if (Template == null)
     {
-        @EditTemplate
-    }
-    else
-    {
-        if (Template == null)
+        if (RowData.UpsertMode.HasValue)
         {
-            <span @attributes="Attributs">@Field.Compile().Invoke(RowData.Data)</span>
+            @EditTemplate
         }
         else
         {
-            @Template
+            <span class="c-dataview-field" @attributes="Attributs">@Field.Compile().Invoke(RowData.Data)</span>
         }
     }
+    else
+    {
+        @Template
+    }
 }
+

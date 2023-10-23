@@ -51,6 +51,10 @@
             <HintPath>..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\5.0.10\lib\netstandard2.1\Microsoft.EntityFrameworkCore.dll</HintPath>
         </Reference>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Pages\Forms\SimplePage\" />
+    </ItemGroup>
 	<Target Name="CreateDataFolder" AfterTargets="AfterPublish">
 		<MakeDir Directories="$(PublishUrl)Data" Condition="!Exists('$(PublishUrl)Data')" />
 	</Target>

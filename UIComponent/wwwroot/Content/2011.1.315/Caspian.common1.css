@@ -1,4 +1,32 @@
-﻿.t-pager .fa-step-backward {
+﻿.c-dataview-header {
+    background-color: #f0f0f0;
+    height: 36px;
+    font-weight: bold;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    color: #656565;
+}
+.c-listview-insert {
+    width: 100%;
+    background-color: #dae2f9;
+}
+
+.c-dataview-field {
+    line-height: 34px;
+}
+.c-controls tr {
+    height: 38px;
+}
+.c-dataview-button .fa {
+    color: white;
+    font-size: 17px;
+}
+.t-pager .fa-step-backward {
     width: 10px !important;
     height: 19px !important;
     text-align: left;
@@ -16,10 +44,7 @@
     height: 22px !important;
     text-align: right;
 }
-.c-data-view {
-
-}
-.c-data-view-content {
+.c-dataview-content {
     border-width: 1px;
     border-bottom-width:0;
     height:300px;
@@ -30,12 +55,16 @@
     display: flex;
     flex-flow: wrap;
     justify-content: space-between;
+    align-content:flex-start;
 }
-.c-data-view-footer {
-    display: flex;
-    flex-flow: wrap;
-    justify-content: space-between;
-}
+    .c-dataview-content form{
+        width:min-content;
+    }
+    .c-data-view-footer {
+        display: flex;
+        flex-flow: wrap;
+        justify-content: space-between;
+    }
 #caspianCodeGenerator {
     height: 500px;
     border: 1px solid grey;
@@ -532,7 +561,7 @@ input[type=time]{
     color:transparent;
 }
 .c-grid-insert {
-    background-color: #e2edf7;
+    background-color: #dae2f9;
 }
 .c-progress-bar {
     width: 350px;
@@ -675,7 +704,8 @@ progress::-webkit-progress-value {
 .c-controls .col-md-4, .c-controls .col-md-5, .c-controls .col-md-6,
 .c-controls .col-md-7, .c-controls .col-md-8, .c-controls .col-md-9,
 .c-controls .col-md-10, .c-controls .col-md-11, .c-controls .col-md-12 {
-    padding: 4px 0;
+    place-items:center;
+    vertical-align:central
 }
 
 .c-tree-content .c-title {
@@ -1055,10 +1085,10 @@ form > tr {
         margin:2px;
     }
 .c-grid-command {
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    overflow:hidden;
-
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    vertical-align: -webkit-baseline-middle;
 }
 .c-multi-select {
     display:flex;
@@ -2949,7 +2979,7 @@ html body .t-grid tbody .t-button-icon {
 
     .t-combobox > .t-dropdown-wrap {
         border-radius: 8px;
-        margin: 1px;
+        margin: 2px;
     }
 
 * html .t-combobox .t-dropdown-wrap {
@@ -3079,16 +3109,18 @@ html body .t-grid tbody .t-button-icon {
     font-size:14px;
 }
 .c-controls label {
-    display: block;
     background-color: #efefef;
     border-radius: 8px;
     font-weight: bold;
     line-height: 30px;
-    padding: 0 8px;
+    height: 30px;
     width: calc(100% - 4px);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    box-sizing: border-box;
+    margin: 2px 0;
+    padding-left:5px;
 }
 .c-action .c-primary{
     min-width:70px;

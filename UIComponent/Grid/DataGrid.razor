@@ -35,7 +35,7 @@
                             <CaspianContainer @ref="insertContiner">
                                 <CascadingValue Value="InsertContext">
                                     <CaspianValidationValidator Source="source" ValidatorType="serviceType" />
-                                    <CascadingValue Value="insertedEntity" Name="GridRowData">
+                                    <CascadingValue Value="insertedEntity" Name="RowData">
                                         @Columns(insertedEntity)
                                     </CascadingValue>
                                 </CascadingValue>
@@ -44,14 +44,14 @@
                     </tbody>
                 </table>
             }
-            @if (Items != null)
+            @if (items != null)
             {
                 <table @attributes="tableAttrs" class="c-grid-items">
                     <tbody>
                             @{
                                 int index = 0;
                                 var pkey = typeof(TEntity).GetPrimaryKey();
-                                foreach (var item in Items)
+                                foreach (var item in items)
                                 {
                                     var id = Convert.ToInt32(pkey.GetValue(item));
                                     var attrs = new Dictionary<string, object>();
@@ -92,7 +92,7 @@
                                     UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
                                 };
                                 <tr @attributes="attrs">
-                                    <CascadingValue Name="GridRowData" Value="rowData">
+                                    <CascadingValue Name="RowData" Value="rowData">
                                         @if (item == selectedEntity)
                                         {
                                             <CascadingValue Value="EditContext">

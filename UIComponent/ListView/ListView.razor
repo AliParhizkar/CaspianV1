@@ -13,39 +13,56 @@
     {
         var style = ContentHeight == null ? null : $"height:{ContentHeight}";
         <div class="c-widget c-data-view">
-            <div class="c-data-view-content" style="@style">
-                @if (items != null && items.Count() > 0)
+            <div class="c-dataview-header">
+                @HeaderTempalte
+            </div>
+            <div class="c-dataview-content" style="@(style)">
+                <CascadingValue Value="this" Name="DataView">
+                @if (insertedEntity?.UpsertMode != null && Inline)
+                {
+                    <div class="c-listview-insert">
+                        <CaspianContainer @ref="insertContiner">
+                            <CascadingValue Value="InsertContext">
+                                <CaspianValidationValidator Source="source" ValidatorType="serviceType" />
+                                <CascadingValue Value="insertedEntity" Name="RowData">
+                                    @Fields(insertedEntity)
+                                </CascadingValue>
+                            </CascadingValue>
+                        </CaspianContainer>
+                    </div>
+                }
+                @if (items != null)
                 {
                     var index = 0;
-                    <CascadingValue Value="this" Name="DataView">
-                        @foreach (var item in items)
+                    foreach (var item in items)
+                    {
+                        index++;
+                        var rowIndex = index;
+                        var rowData = new RowData<TEntity>()
                         {
-                            index++;
-                            var rowIndex = index;
-                            var rowData = new RowData<TEntity>()
+                            Data = item,
+                            RowIndex = rowIndex,
+                            UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
+                        };
+                        <CascadingValue Value="rowData" Name="RowData">
+                            @if (item == selectedEntity)
                             {
-                                Data = item,
-                                RowIndex = rowIndex,
-                                UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
-                            };
-                            <CascadingValue Value="rowData" Name="RowData">
-                                @if (item == selectedEntity)
-                                {
-                                    <CascadingValue Value="EditContext">
-                                        <CaspianValidationValidator @ref="validator" Source="source" ValidatorType="serviceType" />
-                                        <CaspianContainer @ref="updateContiner">
-                                            @Fields(item)
-                                        </CaspianContainer>
-                                    </CascadingValue>
-                                }
-                                else
-                                {
-                                    @Fields(item)
-                                }
+                            <CascadingValue Value="EditContext">
+                                <CaspianValidationValidator @ref="validator" Source="source" ValidatorType="serviceType" />
+                                <CaspianContainer @ref="updateContiner">
+                                    @Fields(rowData)
+                                </CaspianContainer>
                             </CascadingValue>
-                        }
-                    </CascadingValue>
+
+                            }
+                            else
+                            {
+                                @Fields(rowData)
+                            }
+                        </CascadingValue>
+                    }
                 }
+                </CascadingValue>
             </div>
             <DataPager PageNumber="pageNumber" PageNumberChanged="async t => await ChangePageNumber(t)" TotalRecord="total" PageSize="PageSize" />
         </div>

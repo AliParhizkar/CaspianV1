@@ -20,6 +20,17 @@ namespace Caspian.UI
         Minus,
     }
 
+    public enum CommandButtonType
+    {
+        Default,
+        
+        Simple,
+
+        WithoutIcon,
+
+        WidthoutTitle
+    }
+
     public enum DefaultLayout
     {
         [Display(Name = "Center")]
@@ -68,5 +79,12 @@ namespace Caspian.UI
         Left = 1,
         Center,
         Right,
+    }
+
+    public enum UpsertType
+    {
+        Inline,
+        Popup,
+        InlinPopup
     }
 }

@@ -70,7 +70,7 @@ namespace Caspian.UI
                     var aggregateExprList = columnsData.Where(t => t.AggregateExpression != null).Select(t => t.AggregateExpression).ToList();
                     Total = await query.CreateAggregateQuery(aggregateExprList).OfType<object>().CountAsync();
                     var tuple = await query.AggregateValuesAsync(aggregateExprList, pageNumber, PageSize);
-                    Items = tuple.Item1;
+                    items = tuple.Item1;
                     DynamicData = tuple.Item2;
                 }
                 else
@@ -113,16 +113,16 @@ namespace Caspian.UI
                     {
                         source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
                         if (pageNumber == 1)
-                            Items = source.Take(PageSize).ToList();
+                            items = source.Take(PageSize).ToList();
                         else
                         {
                             var skip = (pageNumber - 1) * PageSize;
-                            Items = source.Skip(skip).Take(PageSize).ToList();
+                            items = source.Skip(skip).Take(PageSize).ToList();
                         }
                         ManageExpressionForUpsert(exprList);
                     }
                     else
-                        Items = await query.Take(PageSize).GetValuesAsync<TEntity>(exprList);
+                        items = await query.Take(PageSize).GetValuesAsync<TEntity>(exprList);
                 }
                 await SetStateGridData();
             }
@@ -311,9 +311,9 @@ namespace Caspian.UI
         {
             get
             {
-                if (Items != null && SelectedRowIndex.HasValue && SelectedRowIndex >= 0 && SelectedRowIndex < Items.Count)
+                if (items != null && SelectedRowIndex.HasValue && SelectedRowIndex >= 0 && SelectedRowIndex < items.Count)
                 {
-                    var value = typeof(TEntity).GetPrimaryKey().GetValue(Items[SelectedRowIndex.Value]);
+                    var value = typeof(TEntity).GetPrimaryKey().GetValue(items[SelectedRowIndex.Value]);
                     return Convert.ToInt32(value);
                 }
                 return null;
@@ -321,9 +321,6 @@ namespace Caspian.UI
         }
 
         internal Expression InternalConditionExpr { get; set; }
-
-        [Parameter]
-        public Expression<Func<TEntity, bool>> ConditionExpr { get; set; }
 
         [CascadingParameter(Name = "AutoComplateState")]
         public SearchState SearchState { get; set; }
@@ -371,9 +368,9 @@ namespace Caspian.UI
 
         public TEntity GetSelectedData()
         {
-            if (SelectedRowIndex == null || Items == null || Items.Count < SelectedRowIndex.Value || SelectedRowIndex == -1)
+            if (SelectedRowIndex == null || items == null || items.Count < SelectedRowIndex.Value || SelectedRowIndex == -1)
                 return null;
-            return Items.ElementAt(SelectedRowIndex.Value);
+            return items.ElementAt(SelectedRowIndex.Value);
         }
 
         public async Task ResetGrid()
@@ -473,7 +470,7 @@ namespace Caspian.UI
                 await this.ChangePageNumber(pageNumber);
                 var rowIndex = (rowId.Value - 1) % PageSize;
                 SelectRow(rowIndex);
-                return Items[rowIndex];
+                return items[rowIndex];
             }
             return default(TEntity);
         }
@@ -491,7 +488,7 @@ namespace Caspian.UI
             if (CrudComponent != null)
                 CrudComponent.CrudGrid = this;
             RangeFilterColumnsData = new List<ColumnData>();
-            OnInitializedOperation();
+            ContentHeight = 250;
             base.OnInitialized();
         }
 

@@ -11,34 +11,22 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        /// <summary>
-        /// کد واحد اصلی
-        /// </summary>
-        [DisplayName("واحد اصلی")]
+        [DisplayName("Main Unit")]
         public int MainUnitId { get; set; }
 
-        /// <summary>
-        /// ضریب
-        /// </summary>
-        [DisplayName("ضریب")]
+        [DisplayName("Factor")]
         public int Factor { get; set; }
 
-        /// <summary>
-        /// مشخصات واحد اصلی
-        /// </summary>
         [ForeignKey(nameof(MainUnitId))]
         public virtual MainUnit MainUnit { get; set; }
 
-        [DisplayName("وضعیت")]
+        [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        [CheckOnDelete("محصولاتی از نوع این واحد می باشند و امکان حذف آنها وجود ندارد.")]
+        [CheckOnDelete("Sub unit has material")]
         public virtual IList<Material> Materials { get; set; }
     }
 }

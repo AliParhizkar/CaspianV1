@@ -120,10 +120,10 @@
                                                 TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
                                 </div>
                                 <div class="col-md-4">
-                                    <label>Delivery</label>
+                                    <label>Courier</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <ComboBox TEntity="Delivery" TValue="int?" @bind-Value="UpsertData.DeliveryId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
+                                    <ComboBox TEntity="Courier" TValue="int?" @bind-Value="UpsertData.CourierId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Description</label>

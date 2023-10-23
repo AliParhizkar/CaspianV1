@@ -52,13 +52,13 @@
             if (!HideDelete)
                 HeaderTitle += service.Language == Language.Fa ? "حذف" : "Delete";
         }
-                    if (!HeaderWidth.HasValue())
-            {
-                if (HideEdit || HideDelete)
-                    HeaderWidth = "width:55px;";
-                else
-                    HeaderWidth = "width:90px;";
-            }
+        if (!HeaderWidth.HasValue())
+        {
+            if (HideEdit || HideDelete)
+                HeaderWidth = "width:55px;";
+            else
+                HeaderWidth = "width:90px;";
+        }
         base.OnParametersSet();
     }
 }

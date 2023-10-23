@@ -3,6 +3,7 @@ using Caspian.Common;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Metrics;
 
 namespace Demo.Model
 {
@@ -24,10 +25,10 @@ namespace Demo.Model
         [ForeignKey(nameof(CustomerId)),ReportField("مشخصات مشتری")]
         public virtual Customer Customer { get; set; }
 
-        public int? DeliveryId { get; set; }
+        public int? CourierId { get; set; }
 
-        [ForeignKey(nameof(DeliveryId))]
-        public virtual Delivery Delivery { get; set; }
+        [ForeignKey(nameof(CourierId))]
+        public virtual Courier Courier { get; set; }
 
         [DisplayName("Order type"), ReportField("نوع سفارش")]
         public OrderType OrderType { get; set; }
