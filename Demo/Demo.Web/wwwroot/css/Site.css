@@ -1,4 +1,7 @@
-﻿.c-dataview-header >div{
+﻿html {
+  scroll-behavior: smooth;
+}
+.c-dataview-header >div{
     height:36px;
     text-overflow:clip;
     padding:6px 2px;

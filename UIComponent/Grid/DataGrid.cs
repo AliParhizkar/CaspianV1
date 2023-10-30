@@ -356,9 +356,6 @@ namespace Caspian.UI
         [Parameter]
         public RenderFragment SearchTemplate { get; set; }
 
-        [Parameter]
-        public bool HideInsertIcon { get; set; }
-
         async Task UpdateOrder()
         {
             shouldFetchData = true;

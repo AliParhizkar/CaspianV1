@@ -1,4 +1,7 @@
-﻿.c-dataview-header {
+﻿.c-dataview-button {
+    vertical-align:middle;
+}
+.c-dataview-header {
     background-color: #f0f0f0;
     height: 36px;
     font-weight: bold;
@@ -1088,7 +1091,7 @@ form > tr {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    vertical-align: -webkit-baseline-middle;
+    vertical-align: middle;
 }
 .c-multi-select {
     display:flex;
@@ -2497,7 +2500,7 @@ div.t-grid-footer {
     background-color: rgba(255,99,88,0.08);
 }
 
-.t-grid .t-grid-toolbar .t-icon {
+.t-grid-toolbar .t-icon {
     width: 27px;
     height: 27px;
     position: relative;
@@ -2510,7 +2513,7 @@ div.t-grid-footer {
     padding-top: 5px;
     font-size: 18px;
 }
-.t-grid .t-grid-toolbar .t-grid-add .t-icon {
+.t-grid-toolbar .t-grid-add .t-icon {
     display: inline-block;
 }
 

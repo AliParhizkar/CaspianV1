@@ -3,7 +3,7 @@
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 @inherits DataView<TEntity>
 
-<CascadingValue Value="this" Name="ListView">
+<CascadingValue Value="this" Name="DataView">
     @if (fieldsExpression == null)
     {
         fieldsExpression = new List<Expression>();
@@ -13,12 +13,12 @@
     {
         var style = ContentHeight == null ? null : $"height:{ContentHeight}";
         <div class="c-widget c-data-view">
+            <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" />
             <div class="c-dataview-header">
                 @HeaderTempalte
             </div>
             <div class="c-dataview-content" style="@(style)">
-                <CascadingValue Value="this" Name="DataView">
-                @if (insertedEntity?.UpsertMode != null && Inline)
+                @if (insertedEntity?.UpsertMode != null && Inline && UpsertType == UpsertType.Inline)
                 {
                     <div class="c-listview-insert">
                         <CaspianContainer @ref="insertContiner">
@@ -62,9 +62,26 @@
                         </CascadingValue>
                     }
                 }
-                </CascadingValue>
             </div>
             <DataPager PageNumber="pageNumber" PageNumberChanged="async t => await ChangePageNumber(t)" TotalRecord="total" PageSize="PageSize" />
         </div>
     }
 </CascadingValue>
+@if (UpsertType != UpsertType.Inline)
+{
+    <Window @bind-Status="status" Style="width:800px;">
+        <Content>
+            @if (status == WindowStatus.Open)
+            {
+                <CaspianForm Model="insertedEntity">
+                    <CaspianValidationValidator ValidatorType="serviceType" />
+                    <CascadingValue Value="this" Name="DataView">
+                        <CascadingValue Value="insertedEntity" Name="RowData">
+                            @Fields(insertedEntity)
+                        </CascadingValue>
+                    </CascadingValue>
+                </CaspianForm>
+            }
+        </Content>
+    </Window>
+}

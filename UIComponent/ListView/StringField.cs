@@ -10,8 +10,8 @@ namespace Caspian.UI
         [Parameter]
         public Expression<Func<TEntity, string>> Field { get; set; }
 
-        [CascadingParameter(Name = "ListView")]
-        public ListView<TEntity> ListView { get; set; }
+        [CascadingParameter(Name = "DataView")]
+        public DataView<TEntity> DataView { get; set; }
 
         [CascadingParameter(Name = "RowData")]
         public RowData<TEntity> RowData { get; set; }

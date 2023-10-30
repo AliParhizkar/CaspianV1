@@ -12,7 +12,7 @@ namespace Caspian.UI
         [CascadingParameter(Name = "DataView")]
         public DataView<TEntity> DataView { get; set; }
 
-        async Task OpenAddForm()
+        protected virtual async Task OpenAddForm()
         {
             var entity = Activator.CreateInstance<TEntity>();
             if (DataView.OnInternalUpsert.HasDelegate)
@@ -21,6 +21,9 @@ namespace Caspian.UI
                 await DataView.OnUpsert.InvokeAsync(entity);
             if (DataView.Inline)
                 DataView.CreateInsert();
+            if (DataView is ListView<TEntity> listView && listView.UpsertType != UpsertType.Inline)
+                listView.OpenPopupWindow();
+                
         }
     }
 }

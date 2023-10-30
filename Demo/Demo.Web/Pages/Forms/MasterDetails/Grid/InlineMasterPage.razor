@@ -23,9 +23,20 @@
                         In this example, we set <b>OnUpsert</b> parameter to redirect to a new page. All operations on the <b>Order</b> and <b>Orderdetails</b> are done on that page.
                     </span>
                 </div>
-                <div class="col-md-8 pe-3">
-                    <div class="p-3">
+                <div class="col-md-8 pe-3 row d-control">
+                    <div class="p-3 col-md-5">
                         <CheckBox @bind-Value="onlyThisDay" Title="Only show today orders " OnChange="() => Grid.EnableLoading()" />
+                    </div>
+                    <div class="col-md-3 pt-2">
+                        <label>Details kind</label>
+                    </div>
+                    <div class="col-md-4 pe-3 pt-2">
+                        <RadioList @bind-Value="useListView">
+                            <RadioItems>
+                                <RadioItem Value="false" Title="Grid" />
+                                <RadioItem Value="true" Title="Listview" />
+                            </RadioItems>
+                        </RadioList>
                     </div>
                     <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" ContentHeight="300"
                             ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
@@ -50,10 +61,14 @@
     bool onlyThisDay = true;
     DateTime date = DateTime.Now.Date;
     DataGrid<Order> Grid;
+    bool useListView;
 
     void UpsertOrder(Order order)
     {
-        string url = "Demo/Batch/Inline/Details" + (order.Id > 0 ? "/" + order.Id : "");
+        var url = "Demo/Batch/Inline/";
+        if (useListView)
+            url += "Listview/";
+        url += "Details" + (order.Id > 0 ? "/" + order.Id : "") + "#orderGrid";
         navigationManager.NavigateTo(url);
     }
 }

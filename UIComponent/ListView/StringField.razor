@@ -2,7 +2,7 @@
 @typeparam TEntity
 @{
     if (RowData == null)
-        ListView.AddDataField(Field.Body);
+        (DataView as ListView<TEntity>).AddDataField(Field.Body);
 }
 @if (RowData != null)
 {

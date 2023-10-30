@@ -17,12 +17,19 @@ namespace Caspian.UI
     {
         IList<Expression> fieldsExpression;
         int total;
+        WindowStatus status;
 
         protected override void OnInitialized()
         {
             ContentHeight = 400;
             PageSize = 4;
             base.OnInitialized();
+        }
+
+        public void OpenPopupWindow()
+        {
+            status = WindowStatus.Open;
+            CreateInsert();
         }
 
         public override async Task DataBind()
@@ -32,8 +39,6 @@ namespace Caspian.UI
                 shouldFetchData = false;
                 using var service = ServiceScopeFactory.CreateScope().GetService<BaseService<TEntity>>();
                 var query = service.GetAll();
-                if (ExpressionCondition !=  null)
-                    query = query.Where(ExpressionCondition);
                 if (ConditionExpr != null)
                     query = query.Where(ConditionExpr);
                 total = await query.CountAsync();
@@ -82,9 +87,6 @@ namespace Caspian.UI
         }
 
         [Parameter]
-        public Expression<Func<TEntity, bool>> ExpressionCondition { get; set; }
-
-        [Parameter]
         public RenderFragment<RowData<TEntity>> Fields { get; set; }
 
         [Parameter]
@@ -128,5 +130,7 @@ namespace Caspian.UI
             }
             await base.OnAfterRenderAsync(firstRender);
         }
+
+
     }
 }

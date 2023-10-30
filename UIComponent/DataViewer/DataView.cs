@@ -61,6 +61,9 @@ namespace Caspian.UI
         public int? ContentHeight { get; set; }
 
         [Parameter]
+        public bool HideInsertIcon { get; set; }
+
+        [Parameter]
         public Expression<Func<TEntity, bool>> ConditionExpr { get; set; }
 
         [Parameter]

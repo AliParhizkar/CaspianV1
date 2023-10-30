@@ -63,7 +63,7 @@
          </div>
          <div class="col-md-8 ps-3">
              <ListView @ref="DataView" TEntity="OrderDeatil" ContentHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId"
-                       OnCancel="HideDescription" OnUpsert="HideDescription" OnSave="HideDescription">
+                       OnCancel="HideDescription" OnUpsert="HideDescription" OnSave="HideDescription" HideInsertIcon>
                  <HeaderTempalte>
                      <div class="d-listview-col-1">Product</div>
                      <div class="d-listview-col-2">Price</div>
