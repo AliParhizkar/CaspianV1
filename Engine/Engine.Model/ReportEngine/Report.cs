@@ -5,53 +5,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine.Model
 {
-    /// <summary>
-    /// مشخصات گزارش
-    /// </summary>
     [Table("Reports", Schema = "cmn")]
     public class Report
     {
-        /// <summary>
-        /// شماره گزارش
-        /// </summary>
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// عنوان گزارش
-        /// </summary>
-        [DisplayName("عنوان گزارش")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
-        [DisplayName("گروه گزارش")]
+        [DisplayName("Report group")]
         public int ReportGroupId { get; set; }
 
         [ForeignKey(nameof(ReportGroupId))]
         public virtual ReportGroup ReportGroup { get; set; }
 
         /// <summary>
-        /// عنوان فایلی که برای طراحی گزارش تعیین شده است.
+        /// The name of report design file
         /// </summary>
         public string PrintFileName { get; set; }
 
         public string FilteringFileName { get; set; }
 
         /// <summary>
-        /// اولین سطح داده ای زیرگزارش را مشخص می کند
+        /// The first level of subreport
         /// </summary>
-        [DisplayName("سطح زیرگزارش")]
+        [DisplayName("Subreport level")]
         public SubReportLevel? SubReportLevel { get; set; }
 
-        /// <summary>
-        /// شرح گزارش
-        /// </summary>
-        [DisplayName("شرح")]
+        [DisplayName("Description")]
         public string Descript { get; set; }
 
-        /// <summary>
-        /// پارامترهای گزارش
-        /// </summary>
-        [CheckOnDelete("گزارش دارای پارامتر می باشد و امکان حذف آن وجود ندارد.")]
+        [CheckOnDelete("The report has parameter(s) and can not be removed")]
         public virtual ICollection<ReportParam> ReportParams { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿@page "/Demo/Warehouse"
-@inherits SimplePage<Warehouse>
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
@@ -9,30 +9,30 @@
             <label>Title</label>
         </div>
         <div class="col-md-8 pe-4">
-            <StringTextBox @bind-Value="SearchData.Title" Search />
+            <StringTextBox @bind-Value="warehouse.Title" Search />
          </div>
      </div>
-    <DataGrid @ref="CrudGrid" TEntity="Warehouse" Search="SearchData" ContentHeight="300" >
+     <DataGrid TEntity="Warehouse" Search="warehouse" ContentHeight="300">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window @ref="UpsertWindow" Title="Warehouse" Style="width:450px">
+    <Window Title="Warehouse" Style="width:450px">
         <Content>
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+             <CaspianForm Model="warehouse">
                  <div class="row c-controls ps-3 pe-3">
                      <div class="col-md-3">
                          <label>Title</label>
                      </div>
                      <div class="col-md-9">
-                         <StringTextBox @bind-Value="UpsertData.Title" />
+                         <StringTextBox @bind-Value="warehouse.Title" />
                      </div>
                      <div class="col-md-3">
                          <label>Status</label>
                      </div>
                      <div class="col-md-9">
-                         <DropdownList @bind-Value="UpsertData.ActiveType" />
+                         <DropdownList @bind-Value="warehouse.ActiveType" />
                      </div>
                      <div class="col-md-3"></div>
                      <div class="col-md-9 text-center">
@@ -44,6 +44,7 @@
     </Window>
 </div>
 @code
-{
-
+ {
+    Warehouse search = new Warehouse();
+    Warehouse warehouse = new Warehouse();
 }

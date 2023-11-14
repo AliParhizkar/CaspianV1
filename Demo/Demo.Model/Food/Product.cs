@@ -12,7 +12,7 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("Title"), ReportField("عنوان محصول")]
+        [DisplayName("Title"), ReportField]
         public string Title { get; set; }
 
         [DisplayName("Code")]
@@ -42,7 +42,7 @@ namespace Demo.Model
         [DisplayName("Image")]
         public byte[] Image { get; set; }
 
-        [ForeignKey(nameof(ProductCategoryId)), ReportField("گروه محصول")]
+        [ForeignKey(nameof(ProductCategoryId)), ReportField("Product category")]
         public virtual ProductCategory ProductCategory { get; set; }
 
         [CheckOnDelete("This product is ordered and cannot be removed")]

@@ -4,16 +4,16 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div class="p-4 pt-2">
+<div style="background-color:white" class="p-4 pt-2">
     <div class="row c-controls">
         <div class="col-md-2">
-            <label>عنوان</label>
+            <label>Title</label>
         </div>
-        <div class="col-md-4 ps-4">
+        <div class="col-md-4 pe-4">
             <StringTextBox @bind-Value="SearchData.Title" />
         </div>
-        <div class="col-md-2 pe-4">
-            <label>گروه </label>
+        <div class="col-md-2 ps-4">
+            <label>Report group </label>
         </div>
         <div class="col-md-4">
             <ComboBox TEntity="ReportGroup" TValue="int" @bind-Value="SearchData.ReportGroupId" TextExpression="t => t.Title"
@@ -22,14 +22,14 @@
     </div>
     <DataGrid @ref="CrudGrid" TEntity="Report" ConditionExpr="t => t.ReportGroup.SubSystem == Subsystem" Search="SearchData" ContentHeight="300">
         <Columns>
-            <GridColumn Field="t => t.ReportGroup.Title" Title="گروه گزارش" />
+            <GridColumn Field="t => t.ReportGroup.Title" Title="Report group" />
             <GridColumn Field="t => t.Title" />
-            <GridColumn Title="پارامترها" style="width:80px">
+            <GridColumn Title="Parameters" style="width:80px">
                 <Template>
                     <IconButton Href='@($"{Subsystem}/ReportEngine/ReportParam/{context.Data.Id}")' IconType="IconType.Wpforms" />
                 </Template>
             </GridColumn>
-            <GridColumn Title="گزارش" style="width:80px">
+            <GridColumn Title="Report" style="width:80px">
                 <Template>
                     <a target="_blank" href="/Engine/ReportPrintPage/@(context.Data.Id)">...</a>
                 </Template>
@@ -39,25 +39,25 @@
     </DataGrid>
 </div>
 
-<Window @ref="UpsertWindow" Style="width:450px" Title="گزارش">
+<Window @ref="UpsertWindow" Style="width:450px" Title="Report">
     <Content>
         <CaspianForm @ref="UpsertForm" Model="UpsertData">
             <div class="row ps-4 pe-4 c-controls">
                 <div class="col-md-4">
-                    <label>گروه گزارش</label>
+                    <label>Report group</label>
                 </div>
                 <div class="col-md-8">
                     <ComboBox TEntity="ReportGroup" TValue="int" @bind-Value="UpsertData.ReportGroupId" TextExpression="t => t.Title"
                               ConditionExpression="t => t.SubSystem == Subsystem" />
                 </div>
                 <div class="col-md-4">
-                    <label>عنوان</label>
+                    <label>Title</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Title" />
                 </div>
                 <div class="col-md-4">
-                    <label>شرح</label>
+                    <label>Description</label>
                 </div>
                 <div class="col-md-8">
                     <StringTextBox @bind-Value="UpsertData.Descript" MultiLine Rows="3" />

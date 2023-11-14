@@ -1084,8 +1084,9 @@ form > tr {
 
     .t-checkbox {
         white-space: nowrap;
-        display:inline-block;
+        display:flex;
         margin:2px;
+        height:20px;
     }
 .c-grid-command {
     white-space: nowrap;
@@ -1126,9 +1127,8 @@ span, label, td, th {
 
 .t-checkbox .t-title {
     font-size: 14px;
-    padding: 5px;
+    padding-left: 5px;
     color: #5d5f60;
-    vertical-align: middle;
 }
 .t-checkbox.t-disabled .t-title {
     color: #b9b9b9;
@@ -3122,8 +3122,9 @@ html body .t-grid tbody .t-button-icon {
     text-overflow: ellipsis;
     overflow: hidden;
     box-sizing: border-box;
-    margin: 2px 0;
+    margin: 5px 0;
     padding-left:5px;
+    display:inline-flex;
 }
 .c-action .c-primary{
     min-width:70px;
@@ -3517,13 +3518,12 @@ div.t-numerictextbox {
     color: #cccccc;
 }
 .t-checkbox .t-icon {
-    display: inline-block;
+    display: inline-flex;
     border: 1px solid rgba(0,0,0,0.4);
     border-radius: 3px;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     box-sizing: border-box;
-    vertical-align: middle;
     text-align:center;
 }
     .t-checkbox .t-icon i {

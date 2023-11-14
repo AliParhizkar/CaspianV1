@@ -3,7 +3,7 @@
     var $r = $.report, addedToForm, creatingControlId;
 
     function getTable(id) {
-        var str = '<table dir="rtl" cellpadding="0" cellspacing="0" id="' + id + '" class="reportcontrol tablecontrol" style="position:absolute;">';
+        var str = '<table cellpadding="0" cellspacing="0" id="' + id + '" class="reportcontrol tablecontrol" style="position:absolute;">';
         str += '<thead>';
         for (var col = 0; col < 4; col++) {
             str += '<th style="width:';

@@ -1,4 +1,46 @@
-﻿input:focus, input:active, input:visited, button:focus, button:active, button:visited {
+﻿#page {
+    background-color: rgb(204, 207, 212);
+}
+.tools-bar {
+    display:flex;
+    height:29px;
+}
+#toolsBar1, #toolsBar2, #toolsBar3 {
+    display: flex;
+    margin:2px 0 0 2px; 
+}
+.report-content {
+    display: flex;
+    width: 100%;
+}
+#toolsBox {
+    width: 28px;
+    background-image: url(/_Content/Engine.Web/Content/Images/left1.png);
+    height:calc(100vh - 35px);
+    padding:3px 0 0 3px;
+}
+#bindConfig {
+    height: 24px;
+    width: 154px;
+}
+#ruler {
+    height: 24px;
+    width: calc(100% - 187px);
+    background-color: white;
+    border-bottom: 1px solid #ccc;
+}
+#cnvRuler{
+}
+.report-panel {
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(100% - 28px);
+    align-content:flex-start;
+}
+
+
+
+input:focus, input:active, input:visited, button:focus, button:active, button:visited {
     outline: none;
 }
 
@@ -389,7 +431,6 @@
     margin-right: 5px;
     text-align: right;
     min-width: 167px;
-    float: right;
     margin-left: 2px;
     margin-bottom: 5px;
 }
@@ -661,15 +702,8 @@ span:empty {
 
 
 
-
-#toolsBox {
-    width: 28px;
-    background-image: url(/_content/Engine.Web/Content/Images/left1.png);
-    vertical-align: top;
-}
-
 .toolsbar {
-    float: right;
+    display:inline-flex;
     background-image: url(/_content/Engine.Web/Content/Images/toolsbar.png);
     height: 26px;
 }
@@ -726,15 +760,13 @@ table {
     background-image: url(/_content/Engine.Web/Content/Images/input.png);
     background-repeat: repeat-x;
     height: 26px;
-    float: right;
+    display:flex;
 }
 
 .toolsbar-list-input {
-    float: right;
     margin: 3px 0px 3px 0px;
     height: 20px;
     padding: 0px 0px 0px 0px;
-    /*border:1px solid #b7b7b7;*/
     border: 1px solid #898989;
 }
 
@@ -1459,15 +1491,15 @@ td {
 .tools {
     background-image: url(/_content/Engine.Web/Content/Images/ToolsBox.png);
     width: 16px;
-    height: 16px;
+    height: 28px;
     display: block;
-    margin-top: 8px;
-    margin-right: 6px;
+    background-repeat: no-repeat;
+    margin:0
 }
 
-    .tools.textbox {
-        background-position: -17px 0px;
-    }
+.tools.textbox {
+    background-position: -17px 0px;
+}
 
     .tools.picture {
         background-position: -51px 0px;
@@ -1597,7 +1629,6 @@ td {
 }
 
     .reportcontrol.tablecontrol {
-        direction: rtl;
         border-collapse:separate;
     }
 

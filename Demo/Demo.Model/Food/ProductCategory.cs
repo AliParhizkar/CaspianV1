@@ -12,7 +12,7 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("Title"), ReportField("عنوان گروه محصول")]
+        [DisplayName("Title"), ReportField]
         public string Title { get; set; }
 
         [DisplayName("Ordering")]

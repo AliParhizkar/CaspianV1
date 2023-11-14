@@ -48,7 +48,7 @@ namespace Caspian.Engine.ReportPrint
                 }
                 if (report.PrintFileName.HasValue())
                 {
-                    var path = Assembly.GetExecutingAssembly().GetMapPath() + "\\Data\\Report\\View\\" + report.PrintFileName + ".mrt";
+                    var path = Host.ContentRootPath + "\\Data\\Report\\View\\" + report.PrintFileName + ".mrt";
                     var doc = XDocument.Load(path);
                     var pagesElement = doc.Element("StiSerializer").Element("Pages").Elements();
                     Page = new ReportUiModels.ReportPrintPage(pagesElement.First());
@@ -195,7 +195,7 @@ namespace Caspian.Engine.ReportPrint
             status = WindowStatus.Open;
             windowType = ReportWindowType.Subreport;
             var fileName = Path.GetRandomFileName().Replace(".", "");
-            var path = Assembly.GetExecutingAssembly().GetMapPath() + "\\App_Data\\Report\\JsonFile\\" + fileName + ".json";
+            var path = Host.ContentRootPath + "\\App_Data\\Report\\JsonFile\\" + fileName + ".json";
             GuId = fileName;
             var json = page.GetJson();
             await File.WriteAllTextAsync(path, json);
@@ -239,7 +239,7 @@ namespace Caspian.Engine.ReportPrint
                 type = new ReportPrintEngine(scope.ServiceProvider).GetTypeOf(reportParams, type, mainType.Name);
                 var reportPrint = new ReportUiModels.ReportPrint(type);
                 reportPrint.Pages.Add(page);
-                var path = Assembly.GetExecutingAssembly().GetMapPath();
+                var path = Host.ContentRootPath;
                 foreach (var bond in page.Bonds)
                 {
                     if (bond.Table != null)
@@ -290,7 +290,7 @@ namespace Caspian.Engine.ReportPrint
             }
             catch(Exception ex)
             {
-                Alert(ex.Message);
+                await Alert(ex.Message);
             }
         }
 

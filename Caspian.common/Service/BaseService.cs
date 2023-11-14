@@ -136,7 +136,7 @@ namespace Caspian.Common.Service
             }
             foreach (var info in typeof(TEntity).GetProperties())
             {
-                if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || info.PropertyType.IsCollectionType())
+                if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || (info.PropertyType.IsCollectionType() && info.PropertyType != typeof(string)))
                 {
                     foreach(var entity in entities)
                         info.SetValue(entity, default);

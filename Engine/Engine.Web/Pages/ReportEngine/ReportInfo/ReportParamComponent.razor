@@ -1,50 +1,60 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
 @inherits SimplePage<ReportParam>
 @inject IJSRuntime runTime
-@inject NavigationManager NavigationManager
 @{
     base.BuildRenderTree(__builder);
 }
 
 <div class="ps-4 pe-4 pt-2">
     <div class="row r-level-head">
-        <div class="col-md-8 c-title ps-5">
-            <label>عنوان: </label>
-            <span> @report?.Title</span>
-        </div>
-        <div class="col-md-1 c-operator">
+        <div class="col-md-2 c-operator">
             <button class="r-button" @onclick='() =>
                                   {
                                       NavigationManager.NavigateTo($"/{Subsystem.ToString()}/ReportEngine/Report");
                                   }'>
-                <span class="fa fa-pie-chart"></span><span>گزارش ها</span>
+                <span>Reports</span><span class="fa fa-pie-chart"></span>
             </button>
         </div>
-        <div class="col-md-1 c-operator">
-            <button class="r-button" title="پارامترهای گزارش" @onclick="() =>
+        <div class="col-md-2 c-operator">
+            <button class="r-button" title="Report parameters" @onclick="() =>
                                   {
                                       Status = WindowStatus.Open;
                                       reportParamShowType = ReportParamShowType.Simple;
                                     }">
-                    <span class="fa fa-pie-chart"></span><span>پارامترها</span>
+                <span>Parameters</span>
+                <span class="fa fa-pie-chart"></span>
             </button>
         </div>
-        <div class="col-md-1 c-operator">
-            <button class="r-button" title="گزارش های مدیریتی" @onclick="() =>
+        <div class="col-md-2 c-operator">
+            <button class="r-button" title="Aggregate report parameters" @onclick="() =>
                                   {
                                       Status = WindowStatus.Open;
                                       reportParamShowType = ReportParamShowType.Manager;
                                   }">
-                <span class="fa fa-pie-chart"></span><span>مدیریتی</span>
+                <span>Aggregate</span>
+                <span class="fa fa-pie-chart"></span>
             </button>
-
         </div>
+        <div class="col-md-2 c-operator">
+            <button class="r-button" title="Aggregate report parameters" @onclick="() =>
+                                  {
+                                      Status = WindowStatus.Open;
+                                      reportParamShowType = ReportParamShowType.Alias;
+                                  }">
+                <span>Alias</span>
+                <span class="fa fa-pie-chart"></span>
+            </button>
+        </div>
+        <div class="col-md-4 c-title">
+            <span> @report?.Title</span>
+        </div>
+
     </div>
-    <hr class="mb-5"/>
+    <hr />
     <div class="r-level row align-items-center">
         <div class="col-md-4">
             <div class="r-title">
-                <span>فیلدهای سطح اول</span>
+                <span>First level fields</span>
             </div>
             <DataGrid @ref="CrudGrid" TEntity="ReportParam" HidePageSize Search="SearchData" HideInsertIcon OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 1); }">
                 <Columns>
@@ -54,13 +64,13 @@
             </DataGrid>
         </div>
         <div class="col-md-1 text-center" style="width:70px">
-            <IconButton IconType="IconType.AngleLeft"
+            <IconButton IconType="IconType.AngleRight"
                         @onclick="async () =>
                                {
                                    await ChangeParameterLevel(CrudGrid.SelectedRowId, 1);
                                }" />
             <div style="padding-top:10px">
-                <IconButton IconType="IconType.AngleRight" @onclick="async () =>
+                <IconButton IconType="IconType.AngleLeft" @onclick="async () =>
                                {
                                    await ChangeParameterLevel(grid2.SelectedRowId, 1, true);
                                }" />
@@ -68,7 +78,7 @@
         </div>
         <div class="col-md-3">
             <div class="r-title">
-                <span>فیلدهای سطح دوم</span>
+                <span>Second level fields</span>
             </div>
             <DataGrid @ref="grid2" TEntity="ReportParam" Search="SearchData" HideInsertIcon HidePageSize
                   OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 2); }">
@@ -86,7 +96,7 @@
                             await ChangeParameterLevel(grid2.SelectedRowId, 2);
                         }" />
             <div class="pt-2">
-                <IconButton IconType="IconType.AngleRight"
+                <IconButton IconType="IconType.AngleLeft"
                             @onclick="async () =>
                         {
                             await ChangeParameterLevel(grid3.SelectedRowId, 2, true);
@@ -95,7 +105,7 @@
         </div>
         <div class="col-md-3">
             <div class="r-title">
-                <span>فیلدهای سطح سوم</span>
+                <span>Thired </span>
             </div>
             <DataGrid  @ref="grid3" TEntity="ReportParam" Search="SearchData" HideInsertIcon HidePageSize
                   OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 3); }">
@@ -109,7 +119,7 @@
     </div>
 </div>
 
-<Window @bind-Status="Status" Title="پارامترهای گزارش">
+<Window @bind-Status="Status" Title="Report parameters">
     <Content>
         @switch(reportParamShowType)
         {
@@ -121,10 +131,12 @@
                         }" />
                 break;
             case ReportParamShowType.Manager:
-                <ManagementReportComponent ReportId="ReportId.Value" @bind-Status="Status" />
+                <ManagementReportComponent ReportId="ReportId.Value" />
+                break;
+            case ReportParamShowType.Alias:
+                <ReportParamAlias ReportId="ReportId.Value" />
                 break;
         }
-
     </Content>
 </Window>
 
@@ -210,6 +222,8 @@
     {
         Simple,
 
-        Manager
+        Manager,
+
+        Alias
     }
 }

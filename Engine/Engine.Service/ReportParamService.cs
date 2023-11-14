@@ -58,7 +58,7 @@ namespace Caspian.Engine.Service
         public async Task AddAll(IEnumerable<ReportParam> list)
         {
             var reportId = list.First().ReportId;
-            var oldParams = GetAll(reportId).ToList();
+            var oldParams = await GetAll(reportId).ToListAsync();
             list = list.Where(p => !oldParams.Any(t => t.TitleEn != null && t.TitleEn == p.TitleEn || t.RuleId.HasValue && t.RuleId == p.RuleId));
             var a = new ReportParamService(ServiceProvider);
             await a.AddRangeAsync(list);
@@ -122,7 +122,7 @@ namespace Caspian.Engine.Service
 
         async public Task<ReportParam> DecDataLevel(int id)
         {
-            var temp = await SingleAsync(id);
+            var temp = await GetAll().Include(t => t.Report).SingleAsync(id);
             if (temp.DataLevel.GetValueOrDefault(1) <= 1)
                 throw new CaspianException("امکان کاهش سطح وجود ندارد.", null);
             if (temp.Report.PrintFileName.HasValue())

@@ -11,13 +11,13 @@ namespace Caspian.Engine
         /// <summary>
         /// سطح1
         /// </summary>
-        [Display(Name = "سطح1")]
+        [Display(Name = "Level 1")]
         Level1 = 1,
 
         /// <summary>
         /// سطح1و2
         /// </summary>
-        [Display(Name = "سطح1و2")]
+        [Display(Name = "Level1,2")]
         Level1_2
     }
 

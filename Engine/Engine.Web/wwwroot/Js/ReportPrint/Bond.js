@@ -57,13 +57,13 @@
               });
             if (headers.length > 0)
                 headerHeight = $r.getPixelHeight(headers[0].height);
-            str += '<td class="dataBond">سرداده</td><td id="dataHeader" style="height:' + headerHeight + 'px" BondType = "3" class="bond"></td></tr><tr style="height:3px"><td class="dataBond">'
+            str += '<td class="dataBond">Data head</td><td id="dataHeader" style="height:' + headerHeight + 'px" BondType = "3" class="bond"></td></tr><tr style="height:3px"><td class="dataBond">'
             str += '<hr style="width:130px;margin:1px auto 0px auto" /></td><td class="spliter"></td></tr><tr style="height:20px">';
         }
         str += '<td class="dataBond"';
         if (!hasDataFooter)
             str += 'style="border-bottom:1px solid #a0a0a0" rowspan="2"';
-        str += '>داده</td><td style="height:' + height + 'px;width:' + bondWidth + 'px" DataLevel="' + dataBond.dataLevel + '" class="bond"></td></tr>';
+        str += '>Data</td><td style="height:' + height + 'px;width:' + bondWidth + 'px" DataLevel="' + dataBond.dataLevel + '" class="bond"></td></tr>';
         if (!hasDataFooter)
             str += '<tr style="height:3px"><td class="spliter"></td></tr>';
         if (hasDataFooter) {
@@ -72,7 +72,7 @@
                     return item;
             })[0].height);
             str += '<tr style="height:3px"><td class="dataBond"><hr style="width:130px;margin:1px auto 0px auto"/></td><td class="spliter"></td></tr>';
-            str += '<tr style="height:20px"><td rowspan="2" class="dataBond">ته داده</td><td id="dataFooter" style="height:' + footerHeight + 'px;width:' + bondWidth + 'px" BondType="5" class="bond"></td></tr><tr style="height:3px"><td class="spliter"></td></tr>';
+            str += '<tr style="height:20px"><td rowspan="2" class="dataBond">Dada footer</td><td id="dataFooter" style="height:' + footerHeight + 'px;width:' + bondWidth + 'px" BondType="5" class="bond"></td></tr><tr style="height:3px"><td class="spliter"></td></tr>';
         }
         return str;
     }
@@ -86,13 +86,13 @@
             return getDataBond(bonds[0]);
         var row = getMasterRow() + (detailCount - 1) * 2;
         var str = '<tr style="height:20px"><td class="dataBond" rowspan="2" colspan="' + (detailCount + 1);
-        str += '">داده</td><td style="height:' + $r.getPixelHeight(bonds[0].height) + 'px" DataLevel="' + bonds[0].dataLevel + '" class="bond"></td></tr><tr><td class="spliter"></td></tr>';
+        str += '">Data</td><td style="height:' + $r.getPixelHeight(bonds[0].height) + 'px" DataLevel="' + bonds[0].dataLevel + '" class="bond"></td></tr><tr><td class="spliter"></td></tr>';
         for (var i = 1; i <= detailCount; i++) {
             str += '<tr style="height:20px"><td class="dataBond" style="width:8px;border-left:1px solid black;" rowspan="' + (row - (i - 1) * 2) + '">&emsp;</td>';
             if (i != detailCount) {
                 var height = bonds.length > i ? bonds[i].height : 1.5;
                 str += '<td class="dataBond" rowspan="2" colspan="' + (detailCount + 1 - i);
-                str += '">داده</td><td style="width:' + bondWidth + 'px;height:' + $r.getPixelHeight(height) + 'px" DataLevel="' + bonds[i].dataLevel + '" class="bond"></td></tr><tr><td class="spliter"></td></tr>';
+                str += '">Data</td><td style="width:' + bondWidth + 'px;height:' + $r.getPixelHeight(height) + 'px" DataLevel="' + bonds[i].dataLevel + '" class="bond"></td></tr><tr><td class="spliter"></td></tr>';
             }
             else
                 str += getDataBond(bonds[i]);
@@ -245,10 +245,10 @@
                 let bond = bondsData[i];
                 var height = $r.getPixelHeight(bond.height);
                 if (parseInt(bond.bondType) === 1)
-                    str += getReportBond('reportTitle', 'عنوان گزارش', height, 1);
+                    str += getReportBond('reportTitle', 'Report title', height, 1);
                 if (parseInt(bond.bondType) === 2 && !onlyHeaderBond) {
                     this.printOn = bond.printOn;
-                    str += getReportBond('pageHeader', 'سرصفحه', height, 2);
+                    str += getReportBond('pageHeader', 'Page head', height, 2);
                 }
             }
             if (!onlyHeaderBond)
@@ -256,7 +256,7 @@
             for (let i = 0; i < bondsData.length; i++) {
                 let bond = bondsData[i];
                 if (bond.bondType === 6)
-                    str += getReportBond('pageFooter', 'ته برگ', height, 6);
+                    str += getReportBond('pageFooter', 'Page footer', height, 6);
             }
             $element.append(str);
             let isSubReport = $('body').data('rPage').isSubReport;
@@ -317,7 +317,7 @@
                 }
                 var table = bond.table;
                 if (table) {
-                    $bond.append('<table dir="ltr" cellpadding="0" cellspacing="0" id="id' + id + '" class="reportcontrol tablecontrol" style="position:absolute;">' +
+                    $bond.append('<table cellpadding="0" cellspacing="0" id="id' + id + '" class="reportcontrol tablecontrol" style="position:absolute;">' +
                         '</table>');
                     var tbl = $('#id' + id).rTable();
                     tbl.init(table);

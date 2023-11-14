@@ -400,7 +400,7 @@
                         break;
                     case 22:
                         if (curentControl && curentControl.format) {
-                            var data = curentControl.format() || {};
+                            let data = curentControl.format() || {};
                             $.report.dotNetObjectReference.invokeMethodAsync('ShowDigitsFormatWindow', data);
                         }
                         break;
@@ -485,10 +485,8 @@
                                 var parentPage = parent.$('body').data('rPage').getCurentControl().setData(data);
                                 parent.$.telerik.getWindow().close();
                             } else {
-                                $.telerik.blockUI();
                                 await $.report.dotNetObjectReference.invokeMethodAsync('SaveData', data);
-                                $.telerik.showMessage("ثبت با موفقیت انجام شد.");
-                                $.telerik.unblockUI();
+                                $.caspian.showMessage("ثبت با موفقیت انجام شد.");
                             }
                         }
                         break;
@@ -527,26 +525,26 @@
             }
         },
         createDropDownList: function (element, data) {
-            var left = $(element).offset().left - 16, top = $(element).offset().top + $(element).height() + 3, width = $(element).width() + 15;
-            var str = '<div dir="ltr" class="toolsbar-dropdowndiv" style="display:none;width:' + width + 'px;left:' + left + 'px;top:' + top + 'px">';
-            for (var key in data)
+            let left = $(element).offset().left - 16, top = $(element).offset().top + $(element).height() + 3, width = $(element).width() + 15;
+            let str = '<div dir="ltr" class="toolsbar-dropdowndiv" style="display:none;width:' + width + 'px;left:' + left + 'px;top:' + top + 'px">';
+            for (let key in data)
                 str += '<span class="toolsbar-dropdownspan">' + data[key] + '</span>';
             str += '</div>';
             $('body').append(str);
-            var obj = this;
+            let obj = this;
             var id = $(element).parent().find('.toolsbar').attr('id');
             $('.toolsbar-dropdowndiv').last().find('span').click(function () {
                 if (id == '_14') {
-                    var ctr = $('body').data('rPage').getCurentControl();
+                    let ctr = $('body').data('rPage').getCurentControl();
                     if (ctr){
-                        var font = ctr.font();
+                        let font = ctr.font();
                         font.size = $(this).text();
                         ctr.font(font);
                         $('.toolsbar-list-input').first().val($(this).text());
                     }
                 }
                 if (id == '_15') {
-                    var ctr = $('body').data('rPage').getCurentControl();
+                    let ctr = $('body').data('rPage').getCurentControl();
                     if (ctr) {
                         var font = ctr.font();
                         font.family = $(this).text();

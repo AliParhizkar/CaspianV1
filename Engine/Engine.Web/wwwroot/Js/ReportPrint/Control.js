@@ -120,12 +120,13 @@ var rControl = function (element) {
         return obj;
     }
     function move(difX, difY, element, obj) {
+        let $element = $(element), id = $element.attr('id');
         obj.top = topStart + difY;
         obj.left = leftStart + difX;
-        var $element = $(element), id = $element.attr('id');
         $element.closest('#bond').find('.reportcontrol').each(function () {
             if ($(this).hasClass('tablecontrol')) {
                 $(this).find('th').each(function () {
+                    debugger;
                     if (Math.abs($(this).offset().left - leftStart - difX) < 5) {
                         obj.leftItem = this
                         obj.left = $(this).offset().left;
@@ -143,9 +144,8 @@ var rControl = function (element) {
                         obj.top = $(this).offset().top + $(this).height() - $element.height();
                     }
                 });
-            }else
-                if (id != $(this).attr('id')) {
-
+            } else if (id != $(this).attr('id')) {
+                debugger
                     if (Math.abs($(this).offset().left - leftStart - difX) < 5) {
                         obj.leftItem = this
                         obj.left = $(this).offset().left;
@@ -203,10 +203,13 @@ var rControl = function (element) {
                 $('.bond').first().width();
             if (status != statusType.changeHeightFromBottom && topStart + difY < topBond)
                 difY = topBond - topStart;
-            if (status != statusType.changeWidthFromRight && leftStart + difX < leftBond)
-                difX = leftBond - leftStart;
-            if (status != statusType.changeWidthFromLeft && leftStart + difX + widthStart > rightBond)
-                difX = rightBond - leftStart - widthStart;
+            let configWidth = $('#bond tr td').first().width();
+            if (status != statusType.changeWidthFromRight && leftStart + difX < leftBond + configWidth)
+                difX = leftBond - leftStart + configWidth;
+            let toolsboxWidth = $('#toolsBox').width();
+            if (status != statusType.changeWidthFromLeft && leftStart + difX + toolsboxWidth > rightBond)
+                difX = rightBond - leftStart - toolsboxWidth;
+            
             var obj = new Object();
             obj.left = leftStart;
             obj.top = topStart;
@@ -231,6 +234,9 @@ var rControl = function (element) {
                 $(this.element).width(obj.width);
                 $(this.element).find('.text').width(obj.width);
                 $(this.element).css('height', obj.height);
+                let ruler = $('#cnvRuler').data('rRuler')
+                ruler.hideStatus();
+                ruler.showStatus(obj.left, $(this.element).width() + $(this.element).offset().left);
                 if (obj.leftItem) 
                     $r.showLeftRuler(this.element, obj.leftItem);
                 else
@@ -270,6 +276,7 @@ var rControl = function (element) {
                     $('#page').css('cursor', 'e-resize');
                 }
                 else {
+                    
                     if (x > left && x < right) {
                         status = statusType.move;
                         $('#page').css('cursor', 'move');
@@ -298,8 +305,9 @@ var rControl = function (element) {
         focus: function () {
             focused = true;
             status = statusType.move;
+            let left = $(this.element).offset().left;
+            $('#cnvRuler').data('rRuler').showStatus(left, left + $(this.element).width());
             $(this.element).find('.square').css('display', '');
-            var width = $(this.element).width(), height = $(this.element).height();
         },
         dragStart: function (xStart, yStart) {
             var $element = $(this.element);
@@ -315,8 +323,11 @@ var rControl = function (element) {
                 right = left + $bond.outerWidth(), top = $bond.offset().top;
             hMovement = offset.left + hMovement;
             vMovement = offset.top + vMovement;
-            if (hMovement >= left && hMovement <= right - $(this.element).outerWidth())
+            let ruler = $('#cnvRuler').data('rRuler');
+            if (hMovement >= left && hMovement <= right - $(this.element).outerWidth()) {
                 $(this.element).css('left', hMovement);
+                ruler.showStatus(hMovement, hMovement + $(this.element).outerWidth());
+            }
             if (vMovement >= top)
                 $(this.element).css('top', vMovement);
         },
@@ -328,6 +339,7 @@ var rControl = function (element) {
         },
         blur: function () {
             focused = false;
+            $('#cnvRuler').data('rRuler').hideStatus();
             $(this.element).find('.square').css('display', 'none');
         },
         getData: function () {
@@ -377,7 +389,7 @@ var rControl = function (element) {
 
     rControl.prototype.constructor = function () {
         widthStart = $(this.element).width();
-        leftStart = -widthStart;
+        leftStart = 0;
         topStart = 0;
         heightStart = $(this.element).outerHeight();
         status = statusType.move;

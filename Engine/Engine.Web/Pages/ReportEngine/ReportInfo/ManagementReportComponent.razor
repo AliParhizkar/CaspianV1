@@ -1,42 +1,28 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
 @inherits BasePage
 
-<Window Status="Status" Title="گزارش های مدیریتی"
-        StatusChanged="async t => 
-                       { 
-                           await StatusChanged.InvokeAsync(t); 
-                       }">
-    <Content>
-        <TreeView @ref="Tree" OnExpanded="@(async (item) =>
-                                            {
-                                                using var scope = ServiceScopeFactory.CreateScope();
-                                                var service = new ReportService(scope.ServiceProvider);
-                                                var report = await (service.Context as Context).Reports.Include(t => t.ReportGroup).SingleAsync(t => t.Id == ReportId);
-                                                item.Children = new ReportTree().CreateTreeForGroupBy(report, item.Value).Select(t => new NodeView()
-                                                {
-                                                    Value = t.TitleEn,
-                                                    Selected = t.Selected,
-                                                    Selectable = !t.Grouping,
-                                                    Expanded = false,
-                                                    Collabsable = t.Grouping,
-                                                    Text = t.TitleFa,
-                                                }).ToList();
-                                            })" style="width: 500px; margin: 10px auto; height: calc(100vh - 170px); padding: 6px 12px 0 0" TEntity="NodeView" Source="Nodes" />
-        <div style="border:1px solid #9da09d;margin:8px 5px 15px 5px;padding:8px;border-radius:5px;height:50px">
-            <div style="padding:0px 10px 0px 10px;float:left">
-                <button class="c-btn c-danger" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }">انصراف</button>
-            </div>
-            <div style="padding:0px 10px 0px 10px;float:left">
-                <button class="c-btn c-primary" @onclick="PostParams">ثبت</button>
-            </div>
-        </div>
-    </Content>
-</Window>
+<TreeView @ref="Tree" OnExpanded="@(async item => await OnExpand(item))" style="width: 500px; margin: 10px auto; height: calc(100vh - 170px); padding: 6px 12px 0 0" TEntity="NodeView" Source="Nodes" />
 
 @code
 {
     IList<NodeView> Nodes;
     TreeView<NodeView> Tree;
+
+    async Task OnExpand(NodeView node)
+    {
+        using var service = ServiceScopeFactory.CreateScope().GetService<ReportService>();
+        var report = await service.GetAll().Include(t => t.ReportGroup).Include(t => t.ReportParams)
+            .SingleAsync(ReportId);
+        node.Children = new ReportTree().CreateTreeForGroupBy(report, node.Value).Select(t => new NodeView()
+            {
+                Value = t.TitleEn,
+                Selected = t.Selected,
+                Selectable = !t.Grouping,
+                Expanded = false,
+                Collabsable = t.Grouping,
+                Text = t.TitleFa,
+            }).ToList();
+    }
 
     void PostParams()
     {
@@ -46,9 +32,9 @@
     protected async override Task OnInitializedAsync()
     {
         var tree = new ReportTree();
-        using var scope = ServiceScopeFactory.CreateScope();
-        var service = new ReportService(scope.ServiceProvider);
-        var report = await (service.Context as Context).Reports.Include(t => t.ReportGroup).Include(t => t.ReportParams).SingleAsync(t => t.Id == ReportId);
+        using var service = ServiceScopeFactory.CreateScope().GetService<ReportService>();
+        var report = await service.GetAll().Include(t => t.ReportGroup).Include(t => t.ReportParams)
+            .SingleAsync(ReportId);
         Nodes = tree.CreateTreeForGroupBy(report, null).Select(t => new NodeView()
         {
             Value = t.TitleEn,
@@ -63,10 +49,4 @@
 
     [Parameter]
     public int ReportId { get; set; }
-
-    [Parameter]
-    public WindowStatus Status { get; set; }
-
-    [Parameter]
-    public EventCallback<WindowStatus> StatusChanged { get; set; }
 }

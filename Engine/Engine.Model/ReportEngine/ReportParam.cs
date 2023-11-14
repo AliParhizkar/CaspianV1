@@ -46,6 +46,9 @@ namespace Caspian.Engine.Model
         [DisplayName("ترتیب")]
         public SortType? SortType { get; set; }
 
+        [DisplayName("Alias")]
+        public string Alias { get; set; }
+
         /// <summary>
         /// نوع متد در گروهبندی پایگاه داده ای
         /// </summary>

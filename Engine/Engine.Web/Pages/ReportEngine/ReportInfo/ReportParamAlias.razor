@@ -1,0 +1,44 @@
+﻿@namespace Caspian.Engine.ReportGenerator
+@inject IServiceScopeFactory serviceFactory
+<table>
+    <thead>
+        <tr>
+            <th>Parameter</th>
+            <th>Alias</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (reportParams != null)
+        {
+            @foreach (var param in reportParams)
+            {
+                <tr>
+                    <td>@param.TitleEn</td>
+                    <td>
+                        <StringTextBox @bind-Value="param.Alias" />
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<button @onclick="save">Save</button>
+
+@code 
+{
+    IList<ReportParam> reportParams;
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = serviceFactory.CreateScope().GetService<ReportParamService>();
+        reportParams = await service.GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
+        await base.OnInitializedAsync();
+    }
+
+    async Task save()
+    {
+        
+    }
+
+    [Parameter]
+    public int ReportId { get; set; }
+}

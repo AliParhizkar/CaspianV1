@@ -16,13 +16,13 @@
                             }).ToList();
                         })" style="width:500px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="NodeView" Source="Nodes" />
 <div style="text-align:left;padding-left:75px;padding-top:10px;">
-    <button style="width:60px" class="c-btn c-primary" @onclick="PostParams">ثبت</button>
+    <button style="width:60px" class="c-btn c-primary" @onclick="PostParams">Save</button>
     <button class="c-btn c-danger"
             @onclick="async () =>
                                   {
                                       await StatusChanged.InvokeAsync( WindowStatus.Close);
                                   }">
-        انصراف
+        Cancel
     </button>
 </div>
 

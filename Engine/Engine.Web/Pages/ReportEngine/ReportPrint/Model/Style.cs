@@ -11,7 +11,7 @@ namespace ReportUiModels
             var value = element.Value;
             var array = value.Split(',');
             Family = array[0];
-            Size = Convert.ToDouble(array[1]);
+            Size = Convert.ToDouble(array[array.Length - 1]);
             if (array.Length > 2)
             {
                 var str = array[2];
@@ -64,7 +64,10 @@ namespace ReportUiModels
 
         public string GetJson()
         {
-            return JsonSerializer.Serialize(this);
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            });
         }
     }
 
@@ -139,7 +142,10 @@ namespace ReportUiModels
 
         public string GetJson()
         {
-            return JsonSerializer.Serialize(this);
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            });
         }
     }
 
@@ -224,7 +230,10 @@ namespace ReportUiModels
             var str = ColorString;
             if (ColorString == null || ColorString.ToLower() == "transparent")
                 ColorString = "Transparent";
-            return JsonSerializer.Serialize(this);
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            });
         }
     }
 
@@ -272,7 +281,10 @@ namespace ReportUiModels
 
         public string GetJson()
         {
-            return JsonSerializer.Serialize(this);
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions() 
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            });
         }
     }
 }

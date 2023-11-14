@@ -56,4 +56,8 @@
     <TypeScriptCompile Include="wwwroot\CodeEditor\file.ts" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\NewFolder\" />
+  </ItemGroup>
+
 </Project>

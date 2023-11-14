@@ -57,16 +57,17 @@ namespace Caspian.Common
 
         protected IRuleBuilderInitial<TModel, object> RuleForRemove()
         {
-            throw new NotImplementedException();
-            //var pkey = typeof(TModel).GetPrimaryKey();
-            //var param = Expression.Parameter(typeof(TModel), "t");
-            //Expression expr = Expression.Property(param, pkey);
-            //expr = Expression.Convert(expr, typeof(object));
-            //var lambda = Expression.Lambda(expr, param) as Expression<Func<TModel, object>>;
-            //var rule = PropertyRule.Create(lambda);
-            //rule.RuleSets = new string[] { "remove" };
-            //AddRule(rule);
-            //return new RuleBuilder<TModel, object>(rule, this);
+            var pkey = typeof(TModel).GetPrimaryKey();
+            var param = Expression.Parameter(typeof(TModel), "t");
+            Expression expr = Expression.Property(param, pkey);
+            expr = Expression.Convert(expr, typeof(object));
+            var lambda = Expression.Lambda(expr, param) as Expression<Func<TModel, object>>;
+            IRuleBuilderInitial<TModel, object> rule = null;
+            RuleSet("remove", () =>
+            {
+                rule = RuleFor(lambda);
+            });
+            return rule;
         }
 
         public Language Language { get; private set; }

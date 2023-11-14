@@ -1,9 +1,9 @@
 ﻿(function ($) {
-    var factor = 1000;
-    var $r = $.report = {
+    let factor = 1000;
+    let $r = $.report = {
         mouseDown: false,
         print: function (a1, a2, a3, a4, a5) {
-            var str = a1;
+            let str = a1;
             if (arguments.length > 1)
                 str += ',' + a2;
             if (arguments.length > 2)
@@ -15,7 +15,7 @@
             $('#lbl').text(str);
         },
         printf: function (txt) {
-            var temp = $('#fortest1').text() + ',' + txt;
+            let temp = $('#fortest1').text() + ',' + txt;
             if (temp.length > 150)
                 temp = txt
             $('#fortest1').text(temp);
@@ -30,9 +30,9 @@
             $('body').data('rPage').getCurentControl().setColumnProperty(count, margin, newPageAfter, newPageBefore);
         },
         showLeftRuler: function (item1, item2) {
-            var $body = $('body');
-            var $item1 = $(item1), $item2 = $(item2);
-            var left1 = Math.floor($item1.offset().left), left2 = Math.floor($item2.offset().left);
+            let $body = $('body');
+            let $item1 = $(item1), $item2 = $(item2);
+            let left1 = Math.floor($item1.offset().left), left2 = Math.floor($item2.offset().left);
             if (left1 == left2) {
                 if (!$body.find('#leftRuler').hasClass('ruler'))
                     $body.append('<span id="leftRuler" class="ruler"></span>');
@@ -42,14 +42,16 @@
             else
                 $('#leftRuler').css('display', 'none');
         },
+        
         reportBind: function (dotNetObjectReference, data) {
+            $('#cnvRuler').rRuler();
             $.report.dotNetObjectReference = dotNetObjectReference;
-            var page = $('body').rPage(data);
-            var toolBar = $(document).rToolsBar();
-            var setting1 = {
+            let page = $('body').rPage(data);
+            let toolBar = $(document).rToolsBar();
+            let setting1 = {
                 submenuLeftOffset: -1,
                 onShow: function (e) {
-                    var ctr = page.getCurentControl();
+                    let ctr = page.getCurentControl();
                     if (ctr && ctr.getContextMenu && ctr.getContextMenu() == 1) {
                         $('#page').css('cursor', 'default');
                         $('.bottomarrow').css('display', 'none');
@@ -59,8 +61,8 @@
                 },
                 autoHide: true,
                 onSelect: function (e, context) {
-                    var flag = $(this).attr('id');
-                    var ctr = page.getCurentControl();
+                    let flag = $(this).attr('id');
+                    let ctr = page.getCurentControl();
                     switch (flag) {
                         case '_1':
                             ctr.addColumnOnLeft();
@@ -74,11 +76,12 @@
                     }
                 }
             };
-            var setting2 = {
+            let setting2 = {
                 submenuLeftOffset: -1,
                 onShow: function (e) {
-                    var ctr = page.getCurentControl();
+                    let ctr = page.getCurentControl();
                     if (ctr && ctr.getContextMenu && ctr.getContextMenu() == 2) {
+                        alert('amir')
                         $('#page').css('cursor', 'default');
                         $('.leftArrow').css('display', 'none');
                     }
@@ -87,8 +90,8 @@
                 },
                 autoHide: true,
                 onSelect: function (e, context) {
-                    var flag = $(this).attr('id');
-                    var ctr = page.getCurentControl();
+                    let flag = $(this).attr('id');
+                    let ctr = page.getCurentControl();
                     switch (flag) {
                         case '_1':
                             ctr.addRowOnTop();
@@ -104,8 +107,8 @@
             };
             $('#page').jeegoocontext("columnOperation", setting1);
             $('#page').jeegoocontext("rowOperation", setting2);
-            var colorSetting = {
-                strings: 'رنگهای زمینه,رنگهای استاندارد,رنگهای وب,رنگهای زمینه',
+            let colorSetting = {
+                strings: 'Context colors,Standard colors,Web colors,Context colors',
                 showOn: 'none',
                 hideButton: true,
                 color: '#000000',
@@ -115,9 +118,9 @@
                 toolBar.updateCurentControlCSS('color', color);
             });
             $('#borderColorpicker').colorpicker(colorSetting).on('change.color', function (evt, color) {
-                var ctr = $('body').data('rPage').getCurentControl();
+                let ctr = $('body').data('rPage').getCurentControl();
                 if (ctr) {
-                    var border = ctr.border();
+                    let border = ctr.border();
                     if (border && border.color) {
                         border.color.colorString = color;
                         ctr.border(border);
@@ -127,14 +130,14 @@
             colorSetting.color = '#FFFFFF';
             colorSetting.transparentColor = true;
             $('#contentColorpicker').colorpicker(colorSetting).on('change.color', function (evt, color) {
-                var ctr = $('body').data('rPage').getCurentControl();
+                let ctr = $('body').data('rPage').getCurentControl();
                 if (ctr)
                     ctr.backGroundColor(color);
             });
             $('.borderwidthdiv').rDropDownList();
             $('.borderstylediv').rDropDownList();
             $('body').click(function (e) {
-                var id = $(e.target).attr('id');
+                let id = $(e.target).attr('id');
                 if (id != '_14')
                     $('.toolsbar-dropdowndiv').first().fadeOut(500);
                 if (id != '_15')
@@ -144,60 +147,60 @@
                 if (id != '_17' && $('.borderwidthdiv').data('rDropDownList'))
                     $('.borderwidthdiv').data('rDropDownList').hide();
             });
-            var data1 = [7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 28, 36, 42, 72];
-            var data2 = ['sans-serif', 'B Nazanin', 'Tahoma', 'Times New Roman'];
+            let data1 = [7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 28, 36, 42, 72];
+            let data2 = ['sans-serif', 'B Nazanin', 'Tahoma', 'Times New Roman'];
             toolBar.createDropDownList($('.toolsbar-list-input')[0], data1);
             toolBar.createDropDownList($('.toolsbar-list-input')[1], data2);
         },
         addBonds(json) {
             json = JSON.parse(json);
-            var page = $('body').data('rPage');
+            let page = $('body').data('rPage');
             page.size($.report.getPixelWidth(json.PageWidth), json.PageHeight);
             page.pageType = json.PageType;
             page.printOn = json.PrintOn;
-            var bond = $('#bond').data('rBond');
-            var data = bond.getData();
+            let bond = $('#bond').data('rBond');
+            let data = bond.getData();
             if (json.ReportTitle) {
                 if (!$('#bond #reportTitle').is('#reportTitle')) {
-                    var bondValue = new Object();
+                    let bondValue = new Object();
                     bondValue.bondType = 1;
                     bondValue.height = 1;
                     data = bond.addBond(data, bondValue);
                 }
             } else {
                 if ($('#bond #reportTitle').is('#reportTitle')) {
-                    var count = $('#bond #reportTitle').find('.reportcontrol').length;
-                    var str = count == 0 ? "آیا با حذف سرگزارش موافید؟" : "با حذف عنوان گزارش کنترلهای آن نیز حذف می شود آیا با حذف موافقید؟";
+                    let count = $('#bond #reportTitle').find('.reportcontrol').length;
+                    let str = count == 0 ? "آیا با حذف سرگزارش موافید؟" : "با حذف عنوان گزارش کنترلهای آن نیز حذف می شود آیا با حذف موافقید؟";
                     if (confirm(str))
                         data = bond.removeBond(data, 1);
                 }
             }
             if (json.PageHeader) {
                 if (!$('#bond #pageHeader').is('#pageHeader')) {
-                    var bondValue = new Object();
+                    let bondValue = new Object();
                     bondValue.bondType = 2;
                     bondValue.height = 1;
                     data = bond.addBond(data, bondValue);
                 }
             } else {
                 if ($('#bond #pageHeader').is('#pageHeader')) {
-                    var count = $('#bond #pageHeader .reportcontrol').length;
-                    var str = count == 0 ? "آیا با حدف سرصفحه موافقید؟" : "با حذف سربرگ کنترلهای آن نیز حذف می شود آیا با حذف موافقید؟";
+                    let count = $('#bond #pageHeader .reportcontrol').length;
+                    let str = count == 0 ? "آیا با حدف سرصفحه موافقید؟" : "با حذف سربرگ کنترلهای آن نیز حذف می شود آیا با حذف موافقید؟";
                     if (confirm(str))
                         data = bond.removeBond(data, 2);
                 }
             }
             if (json.DataHeader) {
                 if (!$('#bond #dataHeader').is('#dataHeader')) {
-                    var bondValue = new Object();
+                    let bondValue = new Object();
                     bondValue.bondType = 3;
                     bondValue.height = 1;
                     data = bond.addBond(data, bondValue);
                 }
             } else {
                 if ($('#bond #dataHeader').is('#dataHeader')) {
-                    var count = $('#bond #dataHeader .reportcontrol').length;
-                    var str = count == 0 ? "آیا با حدف سرداده موافقید؟" : "با حذف سرداده کنترلهای آن نیز حذف می شود آیا با حذف موافقید؟";
+                    let count = $('#bond #dataHeader .reportcontrol').length;
+                    let str = count == 0 ? "آیا با حدف سرداده موافقید؟" : "با حذف سرداده کنترلهای آن نیز حذف می شود آیا با حذف موافقید؟";
                     if (confirm(str))
                         data = bond.removeBond(data, 3);
                 }
@@ -205,35 +208,35 @@
 
             if (json.DataFooter) {
                 if (!$('#bond #dataFooter').is('#dataFooter')) {
-                    var bondValue = new Object();
+                    let bondValue = new Object();
                     bondValue.bondType = 5;
                     bondValue.height = 1;
                     data = bond.addBond(data, bondValue);
                 }
             } else {
                 if ($('#bond #dataFooter').is('#dataFooter')) {
-                    var count = $('#bond #dataFooter .reportcontrol').length;
-                    var str = count == 0 ? "آیا با حذف ته داده موافقید؟" : "با حذف ته داده کنترلهای آن نیز حذف می شود آیا با حذف موافقید؟";
+                    let count = $('#bond #dataFooter .reportcontrol').length;
+                    let str = count == 0 ? "آیا با حذف ته داده موافقید؟" : "با حذف ته داده کنترلهای آن نیز حذف می شود آیا با حذف موافقید؟";
                     if (confirm(str))
                         data = bond.removeBond(data, 5);
                 }
             }
             if (json.PageFooter) {
                 if (!$('#bond #pageFooter').is('#pageFooter')) {
-                    var bondValue = new Object();
+                    let bondValue = new Object();
                     bondValue.bondType = 6;
                     bondValue.height = 1;
                     data = bond.addBond(data, bondValue);
                 }
             } else {
                 if ($('#bond #pageFooter').is('#pageFooter')) {
-                    var count = $('#bond #pageFooter .reportcontrol').length;
-                    var str = count == 0 ? "آیا با حذف ته صفحه موافقید؟" : "با حذف ته برگ کنترلهای آن نیز حذف می شود آیا با حذف موافقید؟";
+                    let count = $('#bond #pageFooter .reportcontrol').length;
+                    let str = count == 0 ? "آیا با حذف ته صفحه موافقید؟" : "با حذف ته برگ کنترلهای آن نیز حذف می شود آیا با حذف موافقید؟";
                     if (confirm(str))
                         data = bond.removeBond(data, 6);
                 }
             }
-            var width = $.report.getPixelWidth(json.PageWidth) - $('#bond .bond').first().width();
+            let width = $.report.getPixelWidth(json.PageWidth) - $('#bond .bond').first().width();
             data.forEach(function (bond, index) {
                 if (bond.controls) {
                     bond.controls.forEach(function (control) {
@@ -257,10 +260,10 @@
             curentControl.text(json.titleFa);
         },
         showRightRuler: function (item1, item2) {
-            var $body = $('body');
-            var $item1 = $(item1), $item2 = $(item2);
-            var right1 = Math.floor($item1.offset().left) + Math.floor($item1.width());
-            var right2 = Math.floor($item2.offset().left) + Math.floor($item2.width());
+            let $body = $('body');
+            let $item1 = $(item1), $item2 = $(item2);
+            let right1 = Math.floor($item1.offset().left) + Math.floor($item1.width());
+            let right2 = Math.floor($item2.offset().left) + Math.floor($item2.width());
             if (right1 == right2) {
                 if (!$body.find('#rightRuler').hasClass('ruler'))
                     $body.append('<span id="rightRuler" class="ruler"></span>');
@@ -271,13 +274,13 @@
                 $('#rightRuler').css('display', 'none');
         },
         showTopRuler: function (item1, item2) {
-            var $body = $('body');
-            var $item1 = $(item1), $item2 = $(item2);
-            var top1 = Math.floor($item1.offset().top), top2 = Math.floor($item2.offset().top);
+            let $body = $('body');
+            let $item1 = $(item1), $item2 = $(item2);
+            let top1 = Math.floor($item1.offset().top), top2 = Math.floor($item2.offset().top);
             if (top1 == top2) {
                 if (!$body.find('#topRuler').hasClass('ruler'))
                     $body.append('<span id="topRuler" class="ruler"></span>');
-                var $Ruler = $('#topRuler'), $bond = $('.bond').first();
+                let $Ruler = $('#topRuler'), $bond = $('.bond').first();
                 $Ruler.width($bond.width() - 20);
                 $Ruler.height(0);
                 $Ruler.css('display', '');
@@ -292,14 +295,14 @@
             return parseInt(len);
         },
         showBottomRuler: function (item1, item2) {
-            var $body = $('body');
-            var $item1 = $(item1), $item2 = $(item2);
-            var bottom1 = Math.floor($item1.offset().top) + Math.floor($item1.height());
-            var bottom2 = Math.floor($item2.offset().top) + Math.floor($item2.height());
+            let $body = $('body');
+            let $item1 = $(item1), $item2 = $(item2);
+            let bottom1 = Math.floor($item1.offset().top) + Math.floor($item1.height());
+            let bottom2 = Math.floor($item2.offset().top) + Math.floor($item2.height());
             if (bottom1 == bottom2) {
                 if (!$body.find('#bottomRuler').hasClass('ruler'))
                     $body.append('<span id="bottomRuler" class="ruler"></span>');
-                var $Ruler = $('#bottomRuler'), $bond = $('.bond').first();
+                let $Ruler = $('#bottomRuler'), $bond = $('.bond').first();
                 $Ruler.width($bond.width() - 20);
                 $Ruler.height(0);
                 $Ruler.css('left', $bond.offset().left + 10);
@@ -356,7 +359,7 @@
         }
     }
 })(jQuery);
-var report = {
+let report = {
     controlKind: {
         none: 0,
         textBox: 1,
@@ -375,7 +378,7 @@ borderStyleKind = {
     dotted: 3,
     double: 4
 }
-var rPosition = function () {
+let rPosition = function () {
 
 }
 rPosition.prototype = {
@@ -384,8 +387,8 @@ rPosition.prototype = {
     width: null,
     height: null,
     getPosition: function (element) {
-        var pos = new rPosition();
-        var $element = $(element), $bond = $element.closest('.bond');
+        let pos = new rPosition();
+        let $element = $(element), $bond = $element.closest('.bond');
         pos.left = $.report.getWidth($element.offset().left - $bond.offset().left);
         pos.top = $.report.getHeight($element.offset().top - $bond.offset().top);
         pos.width = $.report.getWidth($element.width());
@@ -393,7 +396,7 @@ rPosition.prototype = {
         return pos;
     },
     initElement: function (element, data) {
-        var $element = $(element), $bond = $element.closest('.bond');
+        let $element = $(element), $bond = $element.closest('.bond');
         $element.css('left', $.report.getPixelWidth(data.position.left) + $bond.offset().left);
         $element.css('top', $.report.getPixelHeight(data.position.top) + $bond.offset().top);
         $element.width($.report.getPixelWidth(data.position.width));
@@ -402,7 +405,7 @@ rPosition.prototype = {
 }
 
 //مشخصات Border
-var rBorder = function(element) {
+let rBorder = function(element) {
     
 };
 rBorder.prototype = {
@@ -415,8 +418,8 @@ rBorder.prototype = {
     /// <field name="color" type="rColor">رنگ بردر</field>
     color: null,
     getBorder: function (element) {
-        var borderStyle = 'solid';
-        var borderWidth = '1px', color = '#000000', borderKind = 0;
+        let borderStyle = 'solid';
+        let borderWidth = '1px', color = '#000000', borderKind = 0;
         if ($(element).css('border-top-style') && $(element).css('border-top-style') != 'none' && $(element).css('border-top-width') != '0px') {
             borderStyle = $(element).css('border-top-style');
             borderWidth = $(element).css('border-top-width');
@@ -444,7 +447,7 @@ rBorder.prototype = {
         }
         if (borderKind == 0)
             return null;
-        var border = new rBorder();
+        let border = new rBorder();
         switch (borderStyle) {
             case 'solid':
                 border.style = borderStyleKind.solid; break;
@@ -467,7 +470,7 @@ rBorder.prototype = {
         ///   <summary>المان ورودی را با مشخصات کلاس مقدرادهی می کند</summary>
         ///   <param name="element" type="Element">المان ورودی</param>
         if (this.borderKind != 0) {
-            var border = this.width + 'px' + ' ';
+            let border = this.width + 'px' + ' ';
             switch (this.style) {
                 case borderStyleKind.solid: border += 'solid'; break;
                 case borderStyleKind.dashed: border += 'dashed'; break;
@@ -568,13 +571,13 @@ rFont.prototype = {
         ///   <summary>مشخصات فونت المان ورودی را یرمی گرداند</summary>
         ///   <param name="element" type="Element">المان ورودی</param>
         ///   <returns type="rFont" />
-        var font = new rFont();
+        let font = new rFont();
         font.bold = $(element).css('font-weight') == 700 || $(element).css('font-weight') == 'bold';
         font.family = $(element).css('font-family');
         if (font.family && (font.family.charAt(0) == "'" || font.family.charAt(0) == "\""))
             font.family = font.family.substr(1, font.family.length - 2);
         font.italic = $(element).css('font-style') == 'italic';
-        var size = $(element).css('font-size');
+        let size = $(element).css('font-size');
         if (size)
             font.size = $.report.convertPxToPt(parseFloat(size.substr(0, size.length - 2)));
         font.underLine = $(element).css('text-decoration-line') == 'underline';
@@ -591,14 +594,14 @@ rFont.prototype = {
     }
 }
 //----------------------------rColor---------------------------
-var rColor = function () {
+let rColor = function () {
 
 }
 rColor.prototype = {
     colorString: '#000000'
 }
 //--------------------------
-var rAlign = function () {
+let rAlign = function () {
     
 }
 rAlign.prototype = {
@@ -611,10 +614,10 @@ rAlign.prototype = {
         ///   <param name="element" type="Element">المان ورودی</param>
         ///   <param name="controlType" type="controlKind">نوع کنترل</param>
         ///   <returns type="rAlign" />
-        var align = new rAlign();
+        let align = new rAlign();
         switch (controlType) {
             case report.controlKind.pictureBox:
-                var array = $(element).css('background-position').split(' ');
+                let array = $(element).css('background-position').split(' ');
                 switch (array[0]) {
                     case '0%': align.horizontalAlign = horizontalAlignKind.left; break;
                     case '50%': align.horizontalAlign = horizontalAlignKind.center; break;
@@ -628,7 +631,7 @@ rAlign.prototype = {
                 break;
             case report.controlKind.textBox:
             case report.controlKind.table:
-                var str = $(element).css('text-align');
+                let str = $(element).css('text-align');
                 if (!str)
                     str = 'right';
                 switch (str) {
@@ -669,7 +672,7 @@ rAlign.prototype = {
                 }
                 break;
             case report.controlKind.pictureBox:
-                var str = ""
+                let str = ""
                 switch (this.horizontalAlign) {
                     case horizontalAlignKind.left: str = '0%'; break;
                     case horizontalAlignKind.center: str = '50%'; break;
@@ -706,9 +709,9 @@ cellKind = {
 $.myExtend = function (target, other) {
     if (target == null || target == undefined)
         target = new Object();
-    for (var key in other) {
+    for (let key in other) {
         if (other[key] != null && (typeof other[key]) == 'object') {
-            var temp = new Object();
+            let temp = new Object();
             $.myExtend(temp, other[key]);
             target[key] = temp;
         }
