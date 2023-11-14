@@ -441,17 +441,18 @@
             $element.find('th').each(function () {
                 let $cell = $(this);
                 if ($element.find('th').index($cell) > 0) {
+                    let width = $(this).width();
                     if (Math.abs($(this).offset().left - xStart) <= 5) {
                         cell = new Object();
                         cell.$cell = $cell;
                         cell.left = $(this).offset().left;
-                        cell.width = $(this).width();
+                        cell.width = width;
                     }
-                    if (Math.abs($(this).offset().left + $(this).outerWidth() - xStart) <= 5) {
+                    if (Math.abs($(this).offset().left + width - xStart) <= 5) {
                         otherCell = new Object();
                         otherCell.$cell = $cell;
                         otherCell.left = $(this).offset().left;
-                        otherCell.width = $(this).width();
+                        otherCell.width = width;
                     }
                 } 
             });
@@ -551,25 +552,33 @@
             {
                 case statusType.changeCellWidth:
                     let item1, item2;
-                    if (cell && otherCell) {
-                        let width = cell.width - difX, otherWidth = otherCell.width + difX;
+                    if (cell || otherCell) {
+                        let width, otherWidth;
+                        if (cell)
+                            width = cell.width - difX;
+                        if (otherCell)
+                            otherWidth = otherCell.width + difX;
                         otherTable.find('th').each(function () {
                             if (Math.abs(xStart + difX - $(this).offset().left) < 6) {
                                 item1 = this;
                                 if (cell != null) {
                                     item2 = cell.$cell[0];
-                                    width = cell.width - ($(this).offset().left - cell.left);
+                                    width = cell.width - Math.floor($(this).offset().left - cell.left);
                                 }
-                                if (otherCell)
+                                if (cell && otherCell)
                                     otherWidth = otherCell.width + $(this).offset().left - cell.left;
                             }
                         });
-                        cell.$cell.width(width);
-                        otherWidth = otherCell.width - (cell.$cell.width() - cell.width);
-                        otherCell.$cell.width(otherWidth);
+                        if (cell) {
+                            cell.$cell.width(width);
+                            if (otherCell) {
+                                otherWidth = otherCell.width - (cell.$cell.width() - cell.width) - 1;
+                                otherCell.$cell.width(otherWidth);
+                            }
+                        }
                     }
                     if (otherCell && cell == null) {
-                        let width = otherCell.width + 2 * difX
+                        let width = otherCell.width + 2 * difX;
                         otherCell.$cell.width(width);
                     }
                     if (cell && otherCell == null) {
@@ -578,7 +587,7 @@
                     }
                     if (item1) {
                         $r.showLeftRuler(item1, item2);
-                        if (factor == 2)
+                        if (cell == null || otherCell == null)
                             $r.showRightRuler(otherTable, item2);
                     }
                     else
@@ -731,7 +740,6 @@
         },
         init: function (data) {
             $(this.element).append("<thead><tr></tr></thead><tbody></tbody>");
-            console.log(data);
             for (let col = 0; col < data.columnsCount; col++) {
                 let cell = data.cells[col];
                 let $headerRow = $(this.element).find('thead tr').first();

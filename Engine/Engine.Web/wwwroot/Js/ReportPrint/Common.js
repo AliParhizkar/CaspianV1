@@ -33,7 +33,7 @@
             let $body = $('body');
             let $item1 = $(item1), $item2 = $(item2);
             let left1 = Math.floor($item1.offset().left), left2 = Math.floor($item2.offset().left);
-            if (left1 == left2) {
+            if (Math.abs(left1 - left2) <= 1) {
                 if (!$body.find('#leftRuler').hasClass('ruler'))
                     $body.append('<span id="leftRuler" class="ruler"></span>');
                 $('#leftRuler').width(0).css('display', '').height($('#bond').height() + 40).css('left', left1)
@@ -59,16 +59,16 @@
                     else
                         return false;
                 },
-                autoHide: true,
+                autoHide: false,
                 onSelect: function (e, context) {
                     let flag = $(this).attr('id');
                     let ctr = page.getCurentControl();
                     switch (flag) {
                         case '_1':
-                            ctr.addColumnOnLeft();
+                            ctr.addColumnOnRight(); 
                             break;
                         case '_2':
-                            ctr.addColumnOnRight();
+                            ctr.addColumnOnLeft();
                             break;
                         case '_3':
                             ctr.removeColumn();
@@ -81,14 +81,13 @@
                 onShow: function (e) {
                     let ctr = page.getCurentControl();
                     if (ctr && ctr.getContextMenu && ctr.getContextMenu() == 2) {
-                        alert('amir')
                         $('#page').css('cursor', 'default');
                         $('.leftArrow').css('display', 'none');
                     }
                     else
                         return false;
                 },
-                autoHide: true,
+                autoHide: false,
                 onSelect: function (e, context) {
                     let flag = $(this).attr('id');
                     let ctr = page.getCurentControl();

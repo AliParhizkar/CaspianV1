@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <StiSerializer version="1.02" type="Flex" application="StiReport">
-  <Dictionary Ref="102" type="Dictionary" isKey="true">
+  <Dictionary Ref="142" type="Dictionary" isKey="true">
     <BusinessObjects isList="true" count="1">
-      <list Ref="103" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+      <list Ref="143" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
         <Alias>list</Alias>
         <BusinessObjects isList="true" count="0" />
         <Category />
@@ -12,8 +12,8 @@
           <value>Quantity,System.Int32</value>
           <value>Item,System.Object</value>
         </Columns>
-        <Dictionary isRef="102" />
-        <Guid>3e161c157c60427795e142ddcb6657a4</Guid>
+        <Dictionary isRef="142" />
+        <Guid>16c0f3ce1ff5460f88873fd50e161d56</Guid>
         <Name>list</Name>
       </list>
     </BusinessObjects>
@@ -34,27 +34,79 @@
   <GlobalizationStrings isList="true" count="0" />
   <MetaTags isList="true" count="0" />
   <Pages isList="true" count="1">
-    <Page2 Ref="90" type="Page" isKey="true">
+    <Page1 Ref="121" type="Page" isKey="true">
       <Border>None;[0:0:0];0;Solid;False;4;[0:0:0]</Border>
       <Brush>Transparent</Brush>
       <Components isList="true" count="2">
-        <HeaderBand1 Ref="91" type="HeaderBand" isKey="true">
+        <HeaderBand1 Ref="122" type="HeaderBand" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>0,0,21.005,2.518</ClientRectangle>
-          <Components isList="true" count="0" />
+          <ClientRectangle>0,0,21.005,1.966</ClientRectangle>
+          <Components isList="true" count="3">
+            <Text144 Ref="144" type="Text" isKey="true">
+              <Font>Helvetica Neue", Helvetica, Arial, sans-serif, Icon,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>3.545,0.000,9.868,0.608</ClientRectangle>
+              <Page isRef="121" />
+              <Parent isRef="122" />
+              <Name>Text144</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text144>
+            <Text145 Ref="145" type="Text" isKey="true">
+              <Font>Helvetica Neue", Helvetica, Arial, sans-serif, Icon,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>13.413,0.000,2.09,0.608</ClientRectangle>
+              <Page isRef="121" />
+              <Parent isRef="122" />
+              <Name>Text145</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text145>
+            <Text146 Ref="146" type="Text" isKey="true">
+              <Font>Helvetica Neue", Helvetica, Arial, sans-serif, Icon,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>15.503,0.000,2.011,0.608</ClientRectangle>
+              <Page isRef="121" />
+              <Parent isRef="122" />
+              <Name>Text146</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text146>
+          </Components>
           <Conditions isList="true" count="0" />
           <Name>HeaderBand1</Name>
-          <Page isRef="90" />
-          <Parent isRef="90" />
+          <Page isRef="121" />
+          <Parent isRef="121" />
         </HeaderBand1>
-        <DataBand1 Ref="92" type="DataBand" isKey="true">
+        <DataBand1 Ref="132" type="DataBand" isKey="true">
           <NewPageBefore>false</NewPageBefore>
           <NewPageAfter>false</NewPageAfter>
           <Brush>Transparent</Brush>
-          <BusinessObjectGuid>3e161c157c60427795e142ddcb6657a4</BusinessObjectGuid>
+          <BusinessObjectGuid>16c0f3ce1ff5460f88873fd50e161d56</BusinessObjectGuid>
           <ClientRectangle>0,0,21.005,0</ClientRectangle>
           <Components isList="true" count="3">
-            <Text104 Ref="104" type="Text" isKey="true">
+            <Text147 Ref="147" type="Text" isKey="true">
               <Font>Helvetica Neue", Helvetica, Arial, sans-serif, Icon,12</Font>
               <Brush>Transparent</Brush>
               <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
@@ -63,15 +115,15 @@
               <HorAlignment>Left</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
-              <ClientRectangle>7.063,0.000,2.646,0.608</ClientRectangle>
-              <Page isRef="90" />
-              <Parent isRef="92" />
-              <Name>Text104</Name>
-              <Text />
+              <ClientRectangle>2.937,0.000,9.947,0.714</ClientRectangle>
+              <Page isRef="121" />
+              <Parent isRef="132" />
+              <Name>Text147</Name>
+              <Text>1</Text>
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text104>
-            <Text105 Ref="105" type="Text" isKey="true">
+            </Text147>
+            <Text148 Ref="148" type="Text" isKey="true">
               <Font>Helvetica Neue", Helvetica, Arial, sans-serif, Icon,12</Font>
               <Brush>Transparent</Brush>
               <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
@@ -80,15 +132,15 @@
               <HorAlignment>Left</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
-              <ClientRectangle>9.709,0.000,2.646,0.608</ClientRectangle>
-              <Page isRef="90" />
-              <Parent isRef="92" />
-              <Name>Text105</Name>
+              <ClientRectangle>12.873,0.000,2.646,0.714</ClientRectangle>
+              <Page isRef="121" />
+              <Parent isRef="132" />
+              <Name>Text148</Name>
               <Text />
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text105>
-            <Text106 Ref="106" type="Text" isKey="true">
+            </Text148>
+            <Text149 Ref="149" type="Text" isKey="true">
               <Font>Helvetica Neue", Helvetica, Arial, sans-serif, Icon,12</Font>
               <Brush>Transparent</Brush>
               <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
@@ -97,25 +149,25 @@
               <HorAlignment>Left</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Margins>0,0,0,0</Margins>
-              <ClientRectangle>12.354,0.000,2.646,0.608</ClientRectangle>
-              <Page isRef="90" />
-              <Parent isRef="92" />
-              <Name>Text106</Name>
+              <ClientRectangle>15.508,0.000,2.646,0.714</ClientRectangle>
+              <Page isRef="121" />
+              <Parent isRef="132" />
+              <Name>Text149</Name>
               <Text />
               <TextBrush>[33:37:41]</TextBrush>
               <Type>Expression</Type>
-            </Text106>
+            </Text149>
           </Components>
           <Conditions isList="true" count="0" />
           <Name>DataBand1</Name>
-          <Page isRef="90" />
-          <Parent isRef="90" />
+          <Page isRef="121" />
+          <Parent isRef="121" />
         </DataBand1>
       </Components>
       <Conditions isList="true" count="0" />
       <Guid>3f7f0c9730b145ee9132cfdedc3c8ccd</Guid>
       <Margins>0,0,0,0</Margins>
-      <Name>Page2</Name>
+      <Name>Page1</Name>
       <PageType>0</PageType>
       <PageWidth>21.005</PageWidth>
       <PageHeight>29.7</PageHeight>
@@ -124,7 +176,7 @@
         <Font>Arial,100</Font>
         <TextBrush>[50:0:0:0]</TextBrush>
       </Watermark>
-    </Page2>
+    </Page1>
   </Pages>
   <PrinterSettings Ref="9999" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
   <ReportAlias>Report</ReportAlias>
