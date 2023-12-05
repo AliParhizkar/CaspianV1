@@ -1,9 +1,9 @@
 ﻿(function ($) {
-    var rDropDownList = function (element) {
+    let rDropDownList = function (element) {
         this.element = element;
 
         $element = $(element);
-        var obj = this;
+        let obj = this;
         this.selectedValue = 0;
         $(element).find('span').click(function () {
             obj.hide();
@@ -15,12 +15,12 @@
 
     rDropDownList.prototype = {
         show: function (left, top) {
-            var className, length = $(this.element).find('span').length;
+            let className, length = $(this.element).find('span').length;
             if ($(this.element).hasClass('borderwidthdiv'))
                 className = 'borderwidth';
             else
                 className = 'borderstyle';
-            for (var i = 1; i <= length; i++) {
+            for (let i = 1; i <= length; i++) {
                 $(this.element).find('span').eq(i - 1).removeClass(className + 'selected' + i);
                 $(this.element).find('span').eq(i - 1).addClass(className + i);
             }
@@ -41,7 +41,7 @@
         }
     };
     $.fn.rDropDownList = function () {
-        var item = new rDropDownList(this);
+        let item = new rDropDownList(this);
         $(this).data('rDropDownList', item);
         return item;
     }

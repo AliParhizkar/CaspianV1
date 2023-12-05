@@ -1,66 +1,55 @@
 ﻿@namespace Caspian.Engine.ReportPrint
 @inject IJSRuntime jsRundTime
 @inherits BasePage
-<Window @bind-Status="Status" Style="width:400px;" Id="newEditForm" Title="متن کنترل">
-    <Content>
-        <div style="width:100%">
-            <table style="width:95%;margin:5px auto">
-                <tr>
-                    <td style="width:105px">
-                        <label>متن کنترل</label>
-                    </td>
-                    <td>
-                        <StringTextBox @bind-Value="PrintParam.TitleFa"
-                                       Disabled="PrintParam.TotalFuncType.HasValue || PrintParam.TitleEn.HasValue() || PrintParam.SystemVariable.HasValue || PrintParam.SystemFiledType.HasValue" />
-                    </td>
-                </tr>
-                @if (PrintParam.BondType == BondType.DataFooter)
-                {
-                    <tr>
-                        <td>
-                            <label>عنوان متد</label>
-                        </td>
-                        <td>
-                            <DropdownList TValue="Nullable<TotalFuncType>" Value="PrintParam.TotalFuncType"
-                                           Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TotalFuncType == null || PrintParam.SystemFiledType.HasValue"
-                                          ValueChanged="@(value =>
+<Window @bind-Status="Status" Style="width:400px;" Id="newEditForm" Title="Textbox Control">
+    <div class="row c-controls p-2">
+        <div class="col-md-4">
+            <label>Textbox text</label>
+        </div>
+        <div class="col-md-8">
+            <StringTextBox @bind-Value="PrintParam.TitleFa"
+                           Disabled="PrintParam.TotalFuncType.HasValue || PrintParam.TitleEn.HasValue() || PrintParam.SystemVariable.HasValue || PrintParam.SystemFiledType.HasValue" />
+        </div>
+        @if (PrintParam.BondType == BondType.DataFooter)
+        {
+            <div class="col-md-4">
+                <label>Method name</label>
+            </div>
+            <div class="col-md-8">
+                <DropdownList TValue="TotalFuncType?" Value="PrintParam.TotalFuncType"
+                              Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TotalFuncType == null || PrintParam.SystemFiledType.HasValue"
+                              ValueChanged="@(value =>
                                                           {
                                                               PrintParam.TotalFuncType = value;
                                                               PrintParam.TitleFa = '{' + PrintParam.TotalFuncType.EnumText() + '}';
                                                           })" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>اسم مستعار</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="PrintParam.EqualName" Disabled="PrintParam.TotalFuncType == null" />
-                        </td>
-                    </tr>
-                    @if (Params != null)
-                    {
-                        <tr>
-                            <td>
-                                <label>فیلد داده</label>
-                            </td>
-                            <td>
-                                <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" @bind-Value="PrintParam.TitleEn"
-                                          Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TotalFuncType == null || PrintParam.SystemFiledType.HasValue || PrintParam.TotalFuncType == null" />
-                            </td>
-                        </tr>
-                    }
-                }
-                else if (Params != null)
-                {
-                    <tr>
-                        <td>
-                            <label>فیلد داده</label>
-                        </td>
-                        <td>
-                            <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" Value="PrintParam.TitleEn"
-                                      Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TitleEn == null || PrintParam.SystemFiledType.HasValue || PrintParam.TotalFuncType.HasValue"
-                                      ValueChanged="value => 
+            </div>
+            <div class="col-md-4">
+                <label>Alias</label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox @bind-Value="PrintParam.EqualName" Disabled="PrintParam.TotalFuncType == null" />
+            </div>
+            @if (Params != null)
+            {
+                <div class="col-md-4">
+                    <label>Data field</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" @bind-Value="PrintParam.TitleEn"
+                              Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TotalFuncType == null || PrintParam.SystemFiledType.HasValue || PrintParam.TotalFuncType == null" />
+                </div>
+            }
+        }
+        else if (Params != null)
+        {
+            <div class="col-md-4">
+                <label>Data field</label>
+            </div>
+            <div class="col-md-8">
+                <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" Value="PrintParam.TitleEn"
+                          Disabled="PrintParam.TitleFa.HasValue() && PrintParam.TitleEn == null || PrintParam.SystemFiledType.HasValue || PrintParam.TotalFuncType.HasValue"
+                          ValueChanged="value =>
                                                     {
                                                         PrintParam.TitleEn =  value;
                                                         if (PrintParam.TitleEn.HasValue())
@@ -68,52 +57,45 @@
                                                          else
                                                             PrintParam.TitleFa = null;
                                                     }" />
-                        </td>
-                    </tr>
-                }
-                @if (PrintParam.BondType == BondType.ReportTitle)
-                {
-                    <tr>
-                        <td>
-                            <label>متغیرهای سیستمی</label>
-                        </td>
-                        <td>
-                            <DropdownList TValue="Nullable<SystemVariable>" Value="PrintParam.SystemVariable"
-                                          Disabled="PrintParam.TitleFa.HasValue() && PrintParam.SystemVariable == null"
-                                          ValueChanged="value => 
+            </div>
+        }
+        @if (PrintParam.BondType == BondType.ReportTitle)
+        {
+            <div class="col-md-4">
+                <label>System variable</label>
+            </div>
+            <div class="col-md-8">
+                <DropdownList TValue="SystemVariable?" Value="PrintParam.SystemVariable"
+                              Disabled="PrintParam.TitleFa.HasValue() && PrintParam.SystemVariable == null"
+                              ValueChanged="value =>
                                                         {
                                                             PrintParam.SystemVariable = value;
                                                             PrintParam.TitleFa =  PrintParam.SystemVariable.HasValue ? ('{' + PrintParam.SystemVariable.EnumText() + '}') : null;
                                                         }" />
-                        </td>
-                    </tr>
-                }
-                else if (PrintParam.BondType != BondType.DataHeader)
-                {
-                    <tr>
-                        <td>
-                            <label>فیلد سیستمی</label>
-                        </td>
-                        <td>
-                            <DropdownList TValue="Nullable<SystemFiledType>" Value="PrintParam.SystemFiledType"
-                                          Disabled="PrintParam.TitleFa.HasValue() && PrintParam.SystemFiledType == null || PrintParam.TotalFuncType.HasValue"
-                                          ValueChanged="value => 
+            </div>
+        }
+        else if (PrintParam.BondType != BondType.DataHeader)
+        {
+            <div class="col-md-4">
+                <label>System filed</label>
+            </div>
+            <div class="col-md-8">
+                <DropdownList TValue="SystemFiledType?" Value="PrintParam.SystemFiledType"
+                              Disabled="PrintParam.TitleFa.HasValue() && PrintParam.SystemFiledType == null || PrintParam.TotalFuncType.HasValue"
+                              ValueChanged="value =>
                                                         {
                                                             PrintParam.SystemFiledType = value;
                                                             PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.EnumText() + '}';
                                                              StateHasChanged();
                                                         }" />
-                        </td>
-                    </tr>
-                }
-            </table>
-            <div style="padding: 10px 150px 10px 0">
-                <button style="width:70px;" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-btn c-danger">انصراف</button>
-                <button style="width:70px;" @onclick="() => { updateData = true; }" class="c-btn c-primary">ثبت</button>
             </div>
+        }
+        <div class="col-md-4"></div>
+        <div class="col-md-8 justify-content-center d-flex pt-3 pb-2">
+            <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
+            <button style="width:70px;" @onclick="() => updateData = true" class="c-btn c-primary">Save</button>
         </div>
-
-    </Content>
+    </div>
 </Window>
 
 @code
@@ -151,9 +133,9 @@
         if (!PrintParam.TitleFa.HasValue())
         {
             if (PrintParam.SystemFiledType.HasValue)
-                PrintParam.TitleFa = '{' + PrintParam.SystemFiledType.EnumText() + '}';
+                PrintParam.TitleFa = $"{{{PrintParam.SystemFiledType.EnumText()}}}";
             if (PrintParam.SystemVariable.HasValue)
-                PrintParam.TitleFa = '{' + PrintParam.SystemVariable.EnumText() + '}';
+                PrintParam.TitleFa = $"{{{PrintParam.SystemVariable.EnumText()}}}";
         }
         if (PrintParam.TitleFa == "{}")
             PrintParam.TitleFa = "";

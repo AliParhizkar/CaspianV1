@@ -14,7 +14,7 @@ namespace Demo.Service
             :base(provider)
         {
             RuleFor(t => t.Price).CustomValue(t => t < 0, "The price cannot be negative");
-            RuleFor(t => t.Quantity).CustomValue(t => t <= 0, "The unit must be greater than zero");
+            RuleFor(t => t.Quantity).CustomValue(t => t <= 0, "This must be greater than 0");
             RuleFor(t => t.ProductId).Custom(t => Source != null && Source.Any(u => u.ProductId == t.ProductId && t != u), "This product has been added to the invoice");
         }
 

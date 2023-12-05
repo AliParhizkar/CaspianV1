@@ -1,39 +1,35 @@
 ﻿/// <reference path="Common.js" />
 (function ($) {
-    var $r = $.report, $bondForResize, controlls, startHeight, $element, bondsData, hasDataHeader, hasDataFooter, detailCount,
+    let $r = $.report, $bondForResize, controlls, startHeight, $element, bondsData, hasDataHeader, hasDataFooter, detailCount,
         onlyHeaderBond, bondWidth = 600, hasFocuse, columnsCount = 1, columnsMargin = 2, minDataLevel = 100;
     function getReportBond(id, title, height, bondType) {
-        var str = ''; 
+        let str = ''; 
         if ($element.find('#' + id).attr('id') != id) {
-            str = '<tr><td ';
-            if (detailCount > 0)
-                str += 'colspan="' + (detailCount + 1) + '"';
-            str += 'rowspan="2" class="reportheader">' + title + '</td><td id="' + id + '" BondType="' + bondType + '" style="height:' + height +
-                'px;width:' + bondWidth + 'px" class="bond"></td></tr><tr><td class="spliter"></td></tr>';
+            str = '<tr><td colspan="' + (detailCount + 1) + '" class="reportheader">' + title + '</td><td id="' + id + '" BondType="' + bondType + '" style="height:' + height +
+                'px;width:' + bondWidth + 'px" class="bond"></td></tr><tr><td colspan="' + (detailCount + 1) + '" class="spliter-first" ><hr/></td><td class="spliter"></td></tr>';
         }
         return str;
     }
     function addColumn(item) {
         str = '';
         width = parseInt((bondWidth - (columnsCount - 1) * columnsMargin) / columnsCount);
-        for (var index = 0; index < columnsCount; index++) {
+        for (let index = 0; index < columnsCount; index++) {
             str += '<div class="column '
             if (index == 0)
-                str += 'right';
-            else
-                if (index + 1 == columnsCount)
-                    str += 'left';
+                str += 'left';
+            else if (index + 1 == columnsCount)
+                    str += 'right';
                 else
-                    str += 'middel';
-            str += '" style="width:' + width + 'px;'
+                str += 'middel';
+            str += '" style="width:' + (width - columnsMargin / 2) + 'px;'
             if (index + 1 != columnsCount && columnsMargin > 0)
-                str += 'margin-left:' + columnsMargin + 'px;'
+                str += 'margin-right:' + columnsMargin + 'px;'
             str += '"></div>';
         }
         $(item).append(str);
     }
     function getMasterRow() {
-        var i = 2;
+        let i = 2;
         if (hasDataHeader)
             i += 2;
         if (hasDataFooter)
@@ -45,54 +41,64 @@
         if (dataBond)
             height = dataBond.height;
         height = $r.getPixelHeight(height);
-        var row = getMasterRow();
-        var str = '';
+        let str = '';
         if (detailCount == 0)
             str += '<tr style="height:20px">';
+        let className = "dataBond data-bond-second" + (detailCount == 2 ? '-2' : ''); 
         if (hasDataHeader) {
-            var headerHeight = 50,
+            let headerHeight = 50,
               headers  = $.grep(bondsData, function (item) {
                 if (item.bondType == 3)
                     return item;
               });
             if (headers.length > 0)
                 headerHeight = $r.getPixelHeight(headers[0].height);
-            str += '<td class="dataBond">Data head</td><td id="dataHeader" style="height:' + headerHeight + 'px" BondType = "3" class="bond"></td></tr><tr style="height:3px"><td class="dataBond">'
+            for (let i = 0; i < detailCount; i++) {
+                str += '<td class="dataBond data-bond-first">&emsp;</td>';
+            }
+            
+            str += '<td class="' + className + '">Data head</td><td id="dataHeader" style="height:' + headerHeight + 'px" BondType = "3" class="bond"></td></tr><tr style="height:3px"><td colspan="' + (detailCount + 1) + '" class="dataBond">'
             str += '<hr style="width:130px;margin:1px auto 0px auto" /></td><td class="spliter"></td></tr><tr style="height:20px">';
         }
-        str += '<td class="dataBond"';
+        for (let i = 0; i < detailCount; i++) {
+            str += '<td class="dataBond data-bond-first">&emsp;</td>';
+        }
+        str += '<td class="' + className + '">Data</td><td style="height:' + height + 'px;width:' + bondWidth + 'px" DataLevel="' + dataBond.dataLevel + '" class="bond"></td></tr>';
         if (!hasDataFooter)
-            str += 'style="border-bottom:1px solid #a0a0a0" rowspan="2"';
-        str += '>Data</td><td style="height:' + height + 'px;width:' + bondWidth + 'px" DataLevel="' + dataBond.dataLevel + '" class="bond"></td></tr>';
-        if (!hasDataFooter)
-            str += '<tr style="height:3px"><td class="spliter"></td></tr>';
+            str += '<tr style="height:3px"><td class="spliter-first" colspan="' + (detailCount + 1) + '"><hr/></td><td class="spliter"></td></tr>';
         if (hasDataFooter) {
-            var footerHeight = $r.getPixelHeight($.grep(bondsData, function (item) {
+            let footerHeight = $r.getPixelHeight($.grep(bondsData, function (item) {
                 if (item.bondType == 5)
                     return item;
             })[0].height);
-            str += '<tr style="height:3px"><td class="dataBond"><hr style="width:130px;margin:1px auto 0px auto"/></td><td class="spliter"></td></tr>';
-            str += '<tr style="height:20px"><td rowspan="2" class="dataBond">Dada footer</td><td id="dataFooter" style="height:' + footerHeight + 'px;width:' + bondWidth + 'px" BondType="5" class="bond"></td></tr><tr style="height:3px"><td class="spliter"></td></tr>';
+            str += '<tr style="height:3px"><td colspan="' + (detailCount + 1) + '" class="dataBond"><hr style="width:130px;margin:1px auto 0px auto"/></td><td class="spliter"></td></tr>';
+            str += '<tr style="height:20px">';
+            for (let i = 0; i < detailCount; i++) {
+                str += '<td class="dataBond data-bond-first">&emsp;</td>';
+            }
+            str += '<td class="' + className + '">Dada footer</td><td id="dataFooter" style="height:' + footerHeight + 'px;width:' + bondWidth + 'px" BondType="5" class="bond"></td></tr><tr style="height:3px"><td colspan="' + (detailCount + 1) + '" class="spliter-first"><hr/></td><td class="spliter"></td></tr>';
         }
         return str;
     }
     function getDetailDataBond() {
-        var bonds = $.grep(bondsData, function (item) {
+        let bonds = $.grep(bondsData, function (item) {
             if (item.bondType == 4 && checkBondAdd(item.dataLevel))
                 return item;
         });
-        
         if (detailCount === 0)
             return getDataBond(bonds[0]);
-        var row = getMasterRow() + (detailCount - 1) * 2;
-        var str = '<tr style="height:20px"><td class="dataBond" rowspan="2" colspan="' + (detailCount + 1);
-        str += '">Data</td><td style="height:' + $r.getPixelHeight(bonds[0].height) + 'px" DataLevel="' + bonds[0].dataLevel + '" class="bond"></td></tr><tr><td class="spliter"></td></tr>';
-        for (var i = 1; i <= detailCount; i++) {
-            str += '<tr style="height:20px"><td class="dataBond" style="width:8px;border-left:1px solid black;" rowspan="' + (row - (i - 1) * 2) + '">&emsp;</td>';
+        
+        let str = '<tr style="height:20px"><td class="dataBond"';
+        if (detailCount > 0)
+            str += ' colspan="' + (detailCount + 1) + '"';
+        str += '>Data</td><td style="height:' + $r.getPixelHeight(bonds[0].height) + 'px" DataLevel="' + bonds[0].dataLevel + '" class="bond"></td></tr><tr><td class="spliter-first" colspan="' + (detailCount + 1) + '" ><hr/></td><td class="spliter"></td></tr>';
+        for (let i = 1; i <= detailCount; i++) {
+            str += '<tr style="height:20px">';
             if (i != detailCount) {
-                var height = bonds.length > i ? bonds[i].height : 1.5;
-                str += '<td class="dataBond" rowspan="2" colspan="' + (detailCount + 1 - i);
-                str += '">Data</td><td style="width:' + bondWidth + 'px;height:' + $r.getPixelHeight(height) + 'px" DataLevel="' + bonds[i].dataLevel + '" class="bond"></td></tr><tr><td class="spliter"></td></tr>';
+                let height = bonds.length > i ? bonds[i].height : 1.5;
+                str += '<td class="dataBond data-bond-first">&emsp;</td>';
+                str += '<td colspan="2" class="dataBond data-bond-second">Data</td><td style="width:' + bondWidth + 'px;height:' + $r.getPixelHeight(height) + 'px" DataLevel="' + bonds[i].dataLevel +
+                    '" class="bond"></td></tr><tr><td class="spliter-first" colspan="' + (detailCount + 1) + '"><hr/></td><td class="spliter"></td></tr>';
             }
             else
                 str += getDataBond(bonds[i]);
@@ -101,9 +107,9 @@
     }
     function updateBondOnFocuse(bond) {
         if (hasFocuse) {
-            var $square = $element.find('.squarebond');
+            let $square = $element.find('.squarebond');
             $square.css('display', 'inline-block');
-            var left = $(bond).offset().left, top = $(bond).offset().top, width = $(bond).outerWidth(), height = $(bond).height();
+            let left = $(bond).offset().left, top = $(bond).offset().top, width = $(bond).outerWidth(), height = $(bond).height();
             $square.eq(0).css('left', left - 3);
             $square.eq(0).css('top', top - 3);
             $square.eq(1).css('left', left + width - 3);
@@ -121,7 +127,7 @@
         }
     }
     function checkBondAdd(dataLevel) {
-        var page = $('body').data('rPage');
+        let page = $('body').data('rPage');
         if (page.isSubReport) {
             if (parseInt(dataLevel) === 1)
                 return true;
@@ -135,7 +141,7 @@
         }
     }
 
-    var rBond = function (element, data) {
+    let rBond = function (element, data) {
         bondsData = data;
         this.controlType = report.controlKind.bond;
         hasFocuse = true;
@@ -152,7 +158,7 @@
                 return $(this.element).find('.bond').first().width();
         },
         getBondProperty: function(){
-            var obj = new Object(), $element = $(this.element);
+            let obj = new Object(), $element = $(this.element);
             obj.ReportTitle = $element.find('#reportTitle').is('#reportTitle');
             obj.PageHeader = $element.find('#pageHeader').is('#pageHeader');
             obj.DataHeader = $element.find('#dataHeader').is('#dataHeader');
@@ -176,7 +182,7 @@
             $bond.css('background-color', color);
         },
         border: function (border) {
-            var $bond = $element.find('.bond[selected="selected"]');
+            let $bond = $element.find('.bond[selected="selected"]');
             if (arguments.length == 0)
                 return new rBorder().getBorder($bond);
             else {
@@ -184,17 +190,17 @@
             }
         },
         removeBond: function(data, bondType){
-            var list = [];
-            for (var i in data) {
-                var index = parseInt(i), item = data[index];
+            let list = [];
+            for (let i in data) {
+                let index = parseInt(i), item = data[index];
                 if (item.bondType != bondType)
                     list.push(item);
             }
             return list;
         },
         addBond: function(data, bond){
-            var list = [];
-            for (var i in data) {
+            let list = [];
+            for (let i in data) {
                 let index = parseInt(i), item = data[index];
                 if (bond.bondType === 3 && item.bondType === 4) {
                     if (index + 1 < data.length && data[index + 1].bondType === 4)
@@ -227,23 +233,23 @@
             hasDataFooter = $.grep(bondsData, function (bond) {
                 return bond.bondType === 5;
             }).length > 0;
-            var count = 0;
-            for (var i = 0; i < bondsData.length; i++) {
+            let count = 0;
+            for (let i = 0; i < bondsData.length; i++) {
                 let bond = bondsData[i];
                 if (bond.bondType === 4 && checkBondAdd(bond.dataLevel)) {
                     if (bond.columnsCount)
                         columnsCount = bond.columnsCount;
-                    var dataLevel = bond.dataLevel;
+                    let dataLevel = bond.dataLevel;
                     if (dataLevel < minDataLevel)
                         minDataLevel = dataLevel;
                     count++;
                 }
             }
             detailCount = count - 1;
-            var str = "";
+            let str = "", height = 0;
             for (let i = 0; i < bondsData.length; i++) {
                 let bond = bondsData[i];
-                var height = $r.getPixelHeight(bond.height);
+                let height = $r.getPixelHeight(bond.height);
                 if (parseInt(bond.bondType) === 1)
                     str += getReportBond('reportTitle', 'Report title', height, 1);
                 if (parseInt(bond.bondType) === 2 && !onlyHeaderBond) {
@@ -283,8 +289,8 @@
             });
             let id = 1;
             for (let i in bondsData) {
-                var bond = bondsData[i];
-                var $bond = $('.bond').eq(i);
+                let bond = bondsData[i];
+                let $bond = $('.bond').eq(i);
                 if ($bond.find('.column.right').hasClass('column right'))
                     $bond = $bond.find('.column.right');
                 for (let j in bond.controls) {
@@ -300,7 +306,7 @@
                         case 5:
                             $bond.append($r.getSubReport("id" + id, width, height));
                     }
-                    var ctr = null;
+                    let ctr = null;
                     switch (control.type) {
                         case 3:
                             ctr = $('#id' + id).rTextBox();
@@ -315,11 +321,11 @@
                     ctr.init(control);
                     id++;
                 }
-                var table = bond.table;
+                let table = bond.table;
                 if (table) {
                     $bond.append('<table cellpadding="0" cellspacing="0" id="id' + id + '" class="reportcontrol tablecontrol" style="position:absolute;">' +
                         '</table>');
-                    var tbl = $('#id' + id).rTable();
+                    let tbl = $('#id' + id).rTable();
                     tbl.init(table);
                     id++;
                 }
@@ -327,9 +333,9 @@
             hasFocuse = true;
         },
         updateCursor: function (x, y) {
-            var flag = false;
+            let flag = false;
             $element.find('.spliter[selected="selected"]').each(function () {
-                var offset = $(this).offset(), top = offset.top - $(window).scrollTop();
+                let offset = $(this).offset(), top = offset.top - $(window).scrollTop();
                 if (Math.abs(y - top) < 3 && x > offset.left && x < offset.left + $(this).width()) {
                     flag = true;
                     return false;
@@ -342,20 +348,20 @@
         },
         blur: function(){
             hasFocuse = false;
-            var $square = $element.find('.squarebond');
+            let $square = $element.find('.squarebond');
             $square.css('display', 'none');
         },
         dragStart: function (x, y) {
-            var index = -1;
+            let index = -1;
             $element.find('.spliter').each(function (i) {
-                var top = $(this).offset().top - $(window).scrollTop()
+                let top = $(this).offset().top - $(window).scrollTop()
                 if (Math.abs(y - top) <= 2) {
                     $bondForResize = $(this).parent().prev();
                     index = i;
                     return false;
                 }
             });
-            var $square = $element.find('.squarebond');
+            let $square = $element.find('.squarebond');
             $square.css('display', 'none');
             if ($bondForResize) {
                 startHeight = $bondForResize.height();
@@ -363,7 +369,7 @@
                 $('#bond').find('.bond').each(function (i) {
                     if (i > index) {
                         $(this).find('.reportcontrol').each(function () {
-                            var ctr = { top: $(this).offset().top, control: this };
+                            let ctr = { top: $(this).offset().top, control: this };
                             controlls.push(ctr);
                         });
                     }
@@ -374,9 +380,9 @@
             this.updateCursor(e.clientX, y = e.clientY);
         },
         updateBondHeight: function (element) {
-            var $bond = $(element).closest('.bond');
-            var index = $('#bond').find('.bond').index($bond);
-            var difHeight =  $(element).offset().top + $(element).height() - $bond.offset().top - $bond.height();
+            let $bond = $(element).closest('.bond');
+            let index = $('#bond').find('.bond').index($bond);
+            let difHeight =  $(element).offset().top + $(element).height() - $bond.offset().top - $bond.height();
             if ($(element).hasClass('tablecontrol'))
                 $(element).css('top', $bond.offset().top);
             if (difHeight > 0) {
@@ -392,9 +398,9 @@
             
         },
         addControlToBond: function(ctr){
-            var $ctr = $(ctr), rightCtr = $ctr.offset().left + $ctr.width(), topCtr = $ctr.offset().top;
+            let $ctr = $(ctr), rightCtr = $ctr.offset().left + $ctr.width(), topCtr = $ctr.offset().top;
             $('#bond').find('.bond').each(function () {
-                var left = $(this).offset().left, right = left + $(this).width(), top = $(this).offset().top,
+                let left = $(this).offset().left, right = left + $(this).width(), top = $(this).offset().top,
                     bottom = top + $(this).height();
                 if (rightCtr > left && rightCtr <= right && topCtr >= top && topCtr < bottom) {
                     if ($ctr.closest('.bond').attr('id') != $(this).attr('id')) {
@@ -419,9 +425,9 @@
                         $bondForResize.find('.bond').height(startHeight + difY);
                 }
                 else {
-                    var maxBottom = 0;
+                    let maxBottom = 0;
                     $bondForResize.find('.reportcontrol').each(function () {
-                        var bottom = $(this).offset().top + $(this).height() - 1;
+                        let bottom = $(this).offset().top + $(this).height() - 1;
                         if (bottom > maxBottom)
                             maxBottom = bottom;
                     });
@@ -429,7 +435,7 @@
                         $bondForResize.find('.bond').height(startHeight + difY);
                     }
                 }
-                for (var i = 0; i < controlls.length; i++) 
+                for (let i = 0; i < controlls.length; i++) 
                     $(controlls[i].control).css('top', controlls[i].top + $bondForResize.find('.bond').height() - startHeight);
             }
         },
@@ -441,7 +447,7 @@
                 columnsCount = colsCount;
             if (ColsMargin)
                 ColsMargin = ColsMargin;
-            var index = null;
+            let index = null;
             $('#bond .bond').each(function (i) {
                 if ($(this).attr('selected') === 'selected')
                     index = i;
@@ -450,19 +456,19 @@
                 bondsData[index].newPageAfter = newPageAfter;
                 bondsData[index].newPageBefore = newPageBefore;
             }
-            var data = this.getData();
+            let data = this.getData();
             this.createBond(data);
         },
         getData: function () {
-            var bonds = [];
-            var self = this;
+            let bonds = [];
+            let self = this;
             $(this.element).find('.bond').each(function (index) {
-                var bond = new Object();
+                let bond = new Object();
                 bond.newPageAfter = bondsData[index].newPageAfter;
                 bond.newPageBefore = bondsData[index].newPageBefore;
                 bond.backGroundColor = new Object();
                 bond.backGroundColor.colorString = $(this).css('background-color');
-                var border = new Object();
+                let border = new Object();
                 $.myExtend(border, new rBorder().getBorder($(this)));
                 bond.border = border;
                 bond.height = $r.getHeight($(this).height());
@@ -478,14 +484,14 @@
                     bond.columnsMargin = columnsMargin;
                 }
                 bond.controls = [];
-                var controlTypes = ['rPictureBox', 'rTextBox', 'rSubReport']
+                let controlTypes = ['rPictureBox', 'rTextBox', 'rSubReport']
                 $(this).find('.reportcontrol').each(function () {
-                    var table = $(this).data('rTable');
+                    let table = $(this).data('rTable');
                     if (table)
                         bond.table = table.getData();
                     else {
-                        var ctr = null;
-                        for (var i = 0; i < controlTypes.length; i++)
+                        let ctr = null;
+                        for (let i = 0; i < controlTypes.length; i++)
                             if ($(this).data(controlTypes[i])) {
                                 ctr = $(this).data(controlTypes[i]);
                                 break;
@@ -501,7 +507,7 @@
 
     };
     $.fn.rBond = function (data) {
-        var item = new rBond(this, data);
+        let item = new rBond(this, data);
         $(this).data('rBond', item);
         return item;
     }

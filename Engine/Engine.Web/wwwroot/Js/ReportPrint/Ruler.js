@@ -1,6 +1,6 @@
 ﻿/// <reference path="Common.js" />
 (function ($) {
-    var $r = $.report, $, canvas;
+    let $r = $.report, canvas;
     function createRuler () {
         canvas = document.getElementById('cnvRuler').getContext('2d');
         const width = document.getElementById('ruler').offsetWidth - 12;
@@ -10,7 +10,7 @@
         canvas.shadowColor = "#f00"
         canvas.lineWidth = 100;
         const space = 3.77;
-        for (var counter = 1; counter < (width / space); counter++) {
+        for (let counter = 1; counter < (width / space); counter++) {
             let height = 8;
             if (counter % 10 == 0) {
                 height = 18;
@@ -21,7 +21,7 @@
             canvas.fillRect(counter * space, 0, 1, height);
         }
     };
-    var rRuler = function (element) {
+    let rRuler = function (element) {
         createRuler();
     };
     rRuler.prototype = {
@@ -37,7 +37,7 @@
 
     };
     $.fn.rRuler = function () {
-        var item = new rRuler(this);
+        let item = new rRuler(this);
         $(this).data('rRuler', item);
         return item;
     }

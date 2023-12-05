@@ -103,7 +103,8 @@ namespace ReportUiModels
 
         public XElement GetXmlElement(ReportType reportType)
         {
-            var element = new XElement("StiSerializer").AddAttribute("version", 1.02).AddAttribute("type", "Flex").AddAttribute("application", "StiReport");
+            var element = new XElement("StiSerializer").AddAttribute("version", 1.02).AddAttribute("type", "Net").AddAttribute("application", "StiReport");
+            element.AddElement("CalculationMode").AddContent("Interpretation");
             element.Add(Dictionary.GetXmlElement(reportType));
             element.AddElement("EngineVersion").AddContent("EngineV2");
             element.AddElement("GlobalizationStrings").AddAttribute("isList", true).AddAttribute("count", 0);

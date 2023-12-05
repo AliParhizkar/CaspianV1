@@ -1,16 +1,16 @@
 ﻿/// <reference path="Common.js" />
 (function ($) {
-    var $r = $.report;
-    var page = null;
+    let $r = $.report;
+    let page = null;
     function getCurentElement() {
         page = $('body').data('rPage');
-        var ctr = page.getCurentControl();
+        let ctr = page.getCurentControl();
         if (ctr && ctr.getElement)
             return ctr.getElement();
         return null;
     }
     function getBorder() {
-        var index = $('.borderwidthdiv').data('rDropDownList').getSelectedIndex(), border = new rBorder();
+        let index = $('.borderwidthdiv').data('rDropDownList').getSelectedIndex(), border = new rBorder();
         border.borderKind = 0;
         if (page.getCurentControl().border() != null)
             border.borderKind = page.getCurentControl().border().borderKind;
@@ -36,17 +36,17 @@
         return border;
     }
     function enable(controlsId) {
-        for (var i = 1; i < 32; i++) {
-            var $ctr = $('.toolsbar#_' + i);
-            var str = $ctr.css('background-position').split(' ')[0] + ' 0px';
+        for (let i = 1; i < 32; i++) {
+            let $ctr = $('.toolsbar#_' + i);
+            let str = $ctr.css('background-position').split(' ')[0] + ' 0px';
             $ctr.css('background-position', str);
         }
-        for (var i = 0; i < controlsId.length; i++) {
-            var $ctr = $('.toolsbar#' + controlsId[i]);
-            var str = $ctr.css('background-position').split(' ')[0] + ' -27px';
+        for (let i = 0; i < controlsId.length; i++) {
+            let $ctr = $('.toolsbar#' + controlsId[i]);
+            let str = $ctr.css('background-position').split(' ')[0] + ' -27px';
             $ctr.css('background-position', str);
             if (controlsId[i] == '_14') {
-                var size = $(getCurentElement()).first().css('font-size');
+                let size = $(getCurentElement()).first().css('font-size');
                 $(getCurentElement()).each(function () {
                     if ($(this).css('font-size') != size)
                         size = null;
@@ -59,28 +59,28 @@
                     $ctr.parent().find('input').val('');
             }
             if (controlsId[i] == '_15') {
-                var ctr = page.getCurentControl();
+                let ctr = page.getCurentControl();
                 if (ctr && ctr.font) {
-                    var family = ctr.font().family;
+                    let family = ctr.font().family;
                     $ctr.parent().find('input').val(family);
                 }
             }
         }
     }
     function selecte(controlsId) {
-        for (var i = 0; i < controlsId.length; i++) {
-            var $ctr = $('.toolsbar#' + controlsId[i]);
-            var str = $ctr.css('background-position').split(' ')[0] + ' -81px';
+        for (let i = 0; i < controlsId.length; i++) {
+            let $ctr = $('.toolsbar#' + controlsId[i]);
+            let str = $ctr.css('background-position').split(' ')[0] + ' -81px';
             $ctr.css('background-position', str);
         }
     }
     function updateToolsBar() {
-        var data = [];
+        let data = [];
         data.push('_34');
         data.push('_35');
         data.push('_36');
         data.push('_38');
-        var ctr = page.getCurentControl();
+        let ctr = page.getCurentControl();
         if (!ctr) {
             enable(data);
             return data;
@@ -92,7 +92,7 @@
                     data.push('_' + i);
                 break;
             case report.controlKind.pictureBox:
-                var stretch = ctr.stretch();
+                let stretch = ctr.stretch();
                 for (let i = 4; i < 11; i++) {
                     if (i !== 7 && !stretch)
                         data.push('_' + i);
@@ -118,14 +118,14 @@
         enable(data);
         data = [];
         if (ctr.controlType === report.controlKind.textBox || ctr.controlType === report.controlKind.table) {
-            var alignment = ctr.align();
+            let alignment = ctr.align();
             if (alignment) {
                 if (alignment.horizontalAlign)
                     data.push('_' + (alignment.horizontalAlign + 6));
                 if (alignment.verticalAlign)
                     data.push('_' + (alignment.verticalAlign + 3));
             }
-            var font = ctr.font();
+            let font = ctr.font();
             if (font) {
                 if (font.underLine)
                     data.push('_11');
@@ -136,7 +136,7 @@
             }
         }
         if (ctr.controlType === report.controlKind.textBox || ctr.controlType === report.controlKind.pictureBox || ctr.controlType === report.controlKind.bond || ctr.controlType == report.controlKind.table) {
-            var border = ctr.border();
+            let border = ctr.border();
             if (!border)
                 data.push('_23');
             else {
@@ -153,9 +153,9 @@
             }
         }
         if (ctr.controlType == report.controlKind.pictureBox) {
-            var stretch = ctr.stretch();
+            let stretch = ctr.stretch();
             if (!stretch) {
-                var alignment = ctr.align();
+                let alignment = ctr.align();
                 if (alignment) {
                     if (alignment.verticalAlign)
                         data.push('_' + (alignment.verticalAlign + 3));
@@ -167,7 +167,7 @@
         selecte(data);
     }
 
-    var rToolsBarIcon = function (element) {
+    let rToolsBarIcon = function (element) {
 
     };
     rToolsBarIcon.prototype = {
@@ -182,54 +182,54 @@
         }
     }
 
-    var rToolsBar = function (element) {
+    let rToolsBar = function (element) {
         this.element = element;
         page = $('body').data('rPage');
         $('.toolsbar-list-input').mouseover(function () {
-            var ctr = $(this).parent().find('.toolsbar');
+            let ctr = $(this).parent().find('.toolsbar');
             ctr.css('background-position', ctr.css('background-position').split(' ')[0] + ' -27px');
         });
         $('.toolsbar-list-input').mouseout(function () {
-            var ctr = $(this).parent().find('.toolsbar');
+            let ctr = $(this).parent().find('.toolsbar');
             
             ctr.css('background-position', ctr.css('background-position').split(' ')[0] + ' -0px');
         });
         $('.toolsbar-list-input').mousedown(function () {
-            var ctr = $(this).parent().find('.toolsbar');
+            let ctr = $(this).parent().find('.toolsbar');
             ctr.css('background-position', ctr.css('background-position').split(' ')[0] + ' -54px');
         });
         $('.toolsbar-list-input').click(function () {
-            var ctr = $(this).parent().find('.toolsbar');
+            let ctr = $(this).parent().find('.toolsbar');
             ctr.css('background-position', ctr.css('background-position').split(' ')[0] + ' -27px');
         });
         $('.toolsbar').mouseover(function () {
-            var str = $(this).css('background-position').split(' ')[1];
+            let str = $(this).css('background-position').split(' ')[1];
             if (str != '0px' && str != '0%') {
-                var str = $(this).css('background-position').split(' ')[0] + ' -54px';
+                let str = $(this).css('background-position').split(' ')[0] + ' -54px';
                 $(this).css('background-position', str);
-                var id = $(this).attr('id');
+                let id = $(this).attr('id');
                 if (id)
                     id = parseInt(id.substr(1));
                 if (id == 14 || id == 15)
                     $(this).parent().find('input').css('border-color', '#dbce99');
                 if (id == 2 || id == 18 || id == 20) {
-                    var $next = $('#_' + (id + 1));
+                    let $next = $('#_' + (id + 1));
                     str = $next.css('background-position').split(' ')[0] + ' -54px';
                     $next.css('background-position', str);
                 }
                 if (id == 3 || id == 19 || id == 21) {
-                    var $prev = $('#_' + (id - 1));
+                    let $prev = $('#_' + (id - 1));
                     str = $prev.css('background-position').split(' ')[0] + ' -54px';
                     $prev.css('background-position', str);
                 }
             }
         });
         $('.toolsbar').mouseout(function () {
-            var str = $(this).css('background-position').split(' ')[1];
+            let str = $(this).css('background-position').split(' ')[1];
             if (str != '0px' && str != '0%') {
                 str = $(this).css('background-position').split(' ')[0] + ' -27px';
                 $(this).css('background-position', str);
-                var id = $(this).attr('id');
+                let id = $(this).attr('id');
                 if (id == '_14' || id == '_15')
                     $(this).parent().find('input').css('border-color', '#B7B7B7');
                 if (id == '_2' || id == '_18' || id == '_20') {
@@ -245,23 +245,23 @@
         });
         $('.toolsbar').mousedown(function () {
             if ($(this).css('background-position').split(' ')[1] != '0px') {
-                var str = $(this).css('background-position').split(' ')[0] + ' -108px';
+                let str = $(this).css('background-position').split(' ')[0] + ' -108px';
                 $(this).css('background-position', str);
                 if ($(this).attr('id') == '_14' || $(this).attr('id') == '_15')
                     $(this).parent().find('input').css('border-color', '#9a8f63');
             }
         });
-        var obj = this;
-        var data = ['_34', '_35', '_36', '_37', '_38'];
+        let obj = this;
+        let data = ['_34', '_35', '_36', '_37', '_38'];
         enable(data);
         $('.toolsbar').click(async function (evt) {
             if ($(this).css('background-position').split(' ')[1] == '0px')
                 return;
-            var str = $(this).css('background-position').split(' ')[0] + ' -27px ';
+            let str = $(this).css('background-position').split(' ')[0] + ' -27px ';
             $(this).css('background-position', str);
             if ($(this).attr('id') == '_14' || $(this).attr('id') == '_15')
                 $(this).parent().find('input').css('border-color', '#dbce99');
-            var id = $(this).attr('id'), curentControl = page.getCurentControl();
+            let id = $(this).attr('id'), curentControl = page.getCurentControl();
             if (curentControl && id || id == '_34') {
                 id = parseInt(id.substr(1)), ctr = getCurentElement();
                 if (curentControl)
@@ -357,7 +357,7 @@
                         break;
                     case 16:
                         t = $(this).offset();
-                        var borderStyle = $('.borderstylediv').data('rDropDownList');
+                        let borderStyle = $('.borderstylediv').data('rDropDownList');
                         border = curentControl.border();
                         if (border)
                             borderStyle.selectedValue = curentControl.border().style - 1;
@@ -371,7 +371,7 @@
                         break;
                     case 17:
                         t = $(this).offset();
-                        var borderWidth = $('.borderwidthdiv').data('rDropDownList');
+                        let borderWidth = $('.borderwidthdiv').data('rDropDownList');
                         border = curentControl.border();
                         if (border)
                             borderWidth.selectedValue = curentControl.border().width - 1;
@@ -454,12 +454,12 @@
                         break;
                     case 31:
                         if (confirm("آیا با حذف موافقید؟")) {
-                            var ctrType = curentControl.controlType;
+                            let ctrType = curentControl.controlType;
                             if (ctrType === 1 || ctrType === 2 || ctrType === 3) {
                                 id = $(curentControl.element).attr('id');
                                 $(curentControl.element).remove();
                             }else{
-                                var tbl = $(curentControl.element).data('rTable');
+                                let tbl = $(curentControl.element).data('rTable');
                                 if (tbl) 
                                     $(curentControl.element).remove();
                             }
@@ -468,11 +468,11 @@
                         break;
                     case 34:
                         page.resetCurentControl();
-                        var data = page.getPageProperty();
+                        let data = page.getPageProperty();
                         $.report.dotNetObjectReference.invokeMethodAsync('ShowSettingWindow', data);
                         break;
                     case 35:
-                        var reportId = $('#ReportId').val();
+                        let reportId = $('#ReportId').val();
                         open(preViewUrl + '?reportid=' + reportId);
                         break;
                     case 36:
@@ -480,9 +480,9 @@
                         break;
                     case 38:
                         if (confirm("آیا با ثبت موافقید؟")) {
-                            var data = page.getPageData();
+                            let data = page.getPageData();
                             if (page.isSubReport) {
-                                var parentPage = parent.$('body').data('rPage').getCurentControl().setData(data);
+                                let parentPage = parent.$('body').data('rPage').getCurentControl().setData(data);
                                 parent.$.telerik.getWindow().close();
                             } else {
                                 await $.report.dotNetObjectReference.invokeMethodAsync('SaveData', data);
@@ -495,7 +495,7 @@
             }
         });
         page.chageControl = function () {
-            var border = page.getCurentControl().border();
+            let border = page.getCurentControl().border();
             if (border) {
                 if (border.color)
                     $('#borderColorpicker').colorpicker("val", border.color.colorString);
@@ -507,16 +507,16 @@
     };
     rToolsBar.prototype = {
         update: function () {
-            var data = updateToolsBar();
+            let data = updateToolsBar();
             //enable(data);
         },
         updateCurentControlCSS: function(key, value){
-            var ctr = getCurentElement();
+            let ctr = getCurentElement();
             if (ctr)
                 $(ctr).css(key, value);
         },
         toggleCurentControlCSS: function (key, val1, val2) {
-            var ctr = getCurentElement();
+            let ctr = getCurentElement();
             if (ctr) {
                 if ($(ctr).css(key) == val1)
                     $(ctr).css(key, val2);
@@ -532,7 +532,7 @@
             str += '</div>';
             $('body').append(str);
             let obj = this;
-            var id = $(element).parent().find('.toolsbar').attr('id');
+            let id = $(element).parent().find('.toolsbar').attr('id');
             $('.toolsbar-dropdowndiv').last().find('span').click(function () {
                 if (id == '_14') {
                     let ctr = $('body').data('rPage').getCurentControl();
@@ -546,7 +546,7 @@
                 if (id == '_15') {
                     let ctr = $('body').data('rPage').getCurentControl();
                     if (ctr) {
-                        var font = ctr.font();
+                        let font = ctr.font();
                         font.family = $(this).text();
                         ctr.font(font);
                         $('.toolsbar-list-input').last().val($(this).text());
@@ -556,7 +556,7 @@
         }
     };
     $.fn.rToolsBar = function () {
-        var item = new rToolsBar(this);
+        let item = new rToolsBar(this);
         $(this).data('rToolsBar', item);
         return item;
     }

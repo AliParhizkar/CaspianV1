@@ -1,11 +1,11 @@
 ﻿    /// <reference path="Common.js" />
 (function ($) {
-    var $r = $.report, focused, stretch;
+    let $r = $.report, focused, stretch;
     function initPictureBox(element) {
-        var $img = $(element).find('.imageBoxDiv');
+        let $img = $(element).find('.imageBoxDiv');
         if ($img.hasClass('imageBoxDiv')) {
-            var border = new rBorder().getBorder($img[0]);
-            var borderWidth = 0;
+            let border = new rBorder().getBorder($img[0]);
+            let borderWidth = 0;
             ///بردر راست
             if (border && (border.borderKind & 4) == 4)
                 borderWidth += border.width;
@@ -24,7 +24,7 @@
         }
     }
     
-    var rPictureBox = function (element) {
+    let rPictureBox = function (element) {
         this.element = element;
         rControl.prototype.constructor.call(this);
         $(element).find('td').first().append('<span class="imageboxicon"></span>');
@@ -74,7 +74,7 @@
         initPictureBox(this.element);
     }
     rPictureBox.prototype.setImage = function (img, data) {
-        var $element = $(this.element).find('.imageBoxDiv');
+        let $element = $(this.element).find('.imageBoxDiv');
         $element.css('background-image', 'url(data:image/png;base64,' + img + ')');
         if (data.stretch)
             $element.css('background-size', '100% 100%');
@@ -84,7 +84,7 @@
     }
     rPictureBox.prototype.imageUrl = function (url) {
         if (arguments.length == 0) {
-            var url = $(this.element).find('.imageBoxDiv').css('background-image');
+            let url = $(this.element).find('.imageBoxDiv').css('background-image');
             if (url == 'none')
                 return null;
             return url;
@@ -93,10 +93,10 @@
         initPictureBox(this.element);
     }
     rPictureBox.prototype.stretch = function (flag) {
-        var $imageBox = $(this.element).find('.imageBoxDiv');
+        let $imageBox = $(this.element).find('.imageBoxDiv');
         if (arguments.length == 0) {
             if ($.browser.msie) {
-                var str = $imageBox.width() + 'px ' + $imageBox.height() + 'px';
+                let str = $imageBox.width() + 'px ' + $imageBox.height() + 'px';
                 return $imageBox.css('background-size') == str;
             }
             return $imageBox.css('background-size') == '100% 100%';
@@ -113,9 +113,9 @@
         initPictureBox(this.element);
     }
     rPictureBox.prototype.getData = function () {
-        var data = rControl.prototype.getData.call(this), $element = $(this.getElement());
+        let data = rControl.prototype.getData.call(this), $element = $(this.getElement());
         data.type = 4;
-        var border = new Object();
+        let border = new Object();
         $.myExtend(border, this.border());
         data.border = border;
         data.backGroundColor = new Object();
@@ -130,17 +130,17 @@
         return data;
     }
     rPictureBox.prototype.init = function (data) {
-        var $element = $(this.getElement());
+        let $element = $(this.getElement());
         rControl.prototype.init.call(this, data);
         if (data.uri)
             $(this.element).find('.imageBoxDiv').css('background-image', 'url(data:image/png;base64,' + data.uri + ')');
         if (data.text)
             this.text(decodeURIComponent(data.text));
-        var align = new rAlign();
+        let align = new rAlign();
         $.extend(align, data);
         align.initElement($element[0], report.controlKind.pictureBox);
         if (data.border) {
-            var border = new rBorder();
+            let border = new rBorder();
             $.myExtend(border, data.border);
             border.initElement(this.getElement());
         }
@@ -151,12 +151,12 @@
         initPictureBox(this.element);
     }
     $.fn.rPictureBox = function () {
-        var item = new rPictureBox(this);
+        let item = new rPictureBox(this);
         item.controlType = report.controlKind.pictureBox;
         $(this).data('rPictureBox', item);
         return item;
     }
-    var statusType = {
+    let statusType = {
         none: 0,
         changeWidthFromLeft: 1,
         changeWidthFromRight: 2,

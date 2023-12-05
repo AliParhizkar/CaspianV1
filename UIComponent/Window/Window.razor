@@ -8,7 +8,7 @@
 }
 <CascadingValue TValue="IWindow" Value="this" Name="ParentWindow">
     <div @attributes="attrs" class="t-widget t-window">
-        @if (HeaderTemplate == null || !ShowCustomHeader)
+        @if (HeaderTemplate == null || !ShowCustomHeader || ChildContent != null)
         {
             <div class="t-window-titlebar t-header">
                 <span class="t-window-title">@Title</span>
@@ -32,7 +32,14 @@
             @if (Status == WindowStatus.Open)
             {
                 <MessageBox @ref="messageBox" />
-                @Content
+                @if (ChildContent == null)
+                {
+                    @Content
+                }
+                else
+                {
+                    @ChildContent
+                }
             }
         </div>
     </div>
@@ -76,6 +83,9 @@
 
     [Parameter]
     public Expression<Func<WindowStatus>> StatusExpression { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
 
     [Parameter]
     public EventCallback OnOpen { get; set; }

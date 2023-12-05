@@ -6,6 +6,7 @@ using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
@@ -16,9 +17,11 @@ namespace Caspian.Engine.Service
         {
             RuleForRemove().CustomAsync(async t => 
             {
-                var param = await new ReportParamService(provider).GetAll().Include(t => t.Report).SingleAsync(t.Id);
+                
+                var param = await provider.GetService<ReportParamService>().GetAll().Include(t => t.Report)
+                    .SingleAsync(t.Id);
                 return param.Report.PrintFileName.HasValue();
-            }, "بعد از ایجاد گزارش امکان حذف پارامترهای گزارش وجود ندارد");
+            }, "After creating the report, it is not possible to delete the report parameters");
         }
 
         public IQueryable<ReportParam> GetAll(int reportId)
@@ -40,17 +43,17 @@ namespace Caspian.Engine.Service
         async public Task AddAllForGroupBy(IEnumerable<ReportParam> list)
         {
             var reportId = list.First().ReportId;
-            var oldParams = GetAll(reportId).ToList();
+            var oldParams = await GetAll(reportId).ToListAsync();
             if (!oldParams.Any(t => !t.CompositionMethodType.HasValue))
-                throw new Exception("لطفا ابتدا پارامترهای اصلی را انتخاب نموده وسپس پارامترهای مدیریتی را انتخاب نمائید.", null);
+                throw new Exception("Please select the main parameters first and then select the management parameters", null);
             
             foreach (var param in list)
             {
                 if (!oldParams.Any(t => t.TitleEn == param.TitleEn))
                 {
-                    var a = new ReportParamService(ServiceProvider);
-                    await a.AddAsync(param);
-                    await a.SaveChangesAsync();
+                    var service = ServiceProvider.GetService<ReportParamService>();
+                    await service.AddAsync(param);
+                    await service.SaveChangesAsync();
                 }
             }
         }
@@ -91,14 +94,14 @@ namespace Caspian.Engine.Service
         {
             var temp = await SingleAsync(id);
             if (temp.DataLevel.GetValueOrDefault(1) > 2)
-                throw new CaspianException("امکان افزایش سطح وجود ندارد.");
+                throw new CaspianException("It is not possible to increase the level");
             var report = await new ReportService(ServiceProvider).GetAll().Where(t => t.Id == temp.ReportId).Include(t => t.ReportGroup).SingleAsync();
             if (report.PrintFileName.HasValue())
-                throw new CaspianException("بعد از ساختن گزارش امکان افزایش سطح فیلد وجود ندارد");
+                throw new CaspianException("After creating the report, it is not possible to increase the field level");
             var type = new AssemblyInfo().GetReturnType(report.ReportGroup);
             var maxDataLevel = MaxDataLevel(temp.TitleEn, type, temp.CompositionMethodType);
             if (temp.DataLevel + 1 > maxDataLevel)
-                throw new CaspianException("امکان افزایش سطح برای این فیلد وجود ندارد.", null);
+                throw new CaspianException("It is not possible to increase the level for this field", null);
             temp.DataLevel++;
             return temp;
         }
@@ -124,9 +127,9 @@ namespace Caspian.Engine.Service
         {
             var temp = await GetAll().Include(t => t.Report).SingleAsync(id);
             if (temp.DataLevel.GetValueOrDefault(1) <= 1)
-                throw new CaspianException("امکان کاهش سطح وجود ندارد.", null);
+                throw new CaspianException("It is not possible to reduce the level", null);
             if (temp.Report.PrintFileName.HasValue())
-                throw new CaspianException("بعد از ساختن گزارش امکان کاهش سطح فیلد وجود ندارد", null);
+                throw new CaspianException("After creating the report, it is not possible to reduce the field level", null);
             temp.DataLevel--;
             return temp;
         }
@@ -165,7 +168,7 @@ namespace Caspian.Engine.Service
                     enTitle += '.';
                 var foreignKeyAttribute = peropertyInfo.GetCustomAttribute<ForeignKeyAttribute>();
                 if (foreignKeyAttribute == null)
-                    throw new Exception("امکان افزایش سطح برای این فیلد وجود ندارد.", null);
+                    throw new Exception("It is not possible to increase the level for this field", null);
                 enTitle += foreignKeyAttribute.Name;
                 var keyParam = new ReportParam()
                 {

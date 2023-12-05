@@ -1,59 +1,51 @@
 ﻿@namespace Caspian.Engine.ReportPrint
 @inject IJSRuntime jsRundTime
 
-<Window Status="Status" Style="width:400px" Title="مضخصات ستونها">
-    <Content>
-        <table style="width:95%;margin: 5px auto">
-            <tr>
-                <td><label>صفحه جدید قبل از باند</label></td>
-                <td>
-                    <CheckBox @bind-Value="Bond.NewPageAfter" />
-                </td>
-            </tr>
-            <tr>
-                <td><label>صفحه جدید بعد از باند</label></td>
-                <td>
-                    <CheckBox @bind-Value="Bond.NewPageBefore" />
-                </td>
-            </tr>
+<Window Status="Status" Style="width:400px" Title="Columns properties">
+    <div class="row p-2 c-controls">
+        <div class="col-md-5">
+            <label>New page before Bond</label>
+        </div>
+        <div class="col-md-7">
+            <CheckBox @bind-Value="Bond.NewPageAfter" />
+        </div>
+        <div class="col-md-5">
+            <label>New page after Bond</label>
+        </div>
+        <div class="col-md-7 ">
+            <CheckBox @bind-Value="Bond.NewPageBefore" />
+        </div>
         @if (MinDataLevel.HasValue && Bond.BondType == BondType.DataBond)
         {
             if (MinDataLevel == Bond.DataLevel)
             {
-            <tr>
-                <td><label>تعداد ستون</label></td>
-                <td>
+                <div class="col-md-5">
+                    <label>Columns count</label>
+                </div>
+                <div class="col-md-7">
                     <DropdownList @bind-Value="Bond.ColumnsCount" />
-                </td>
-            </tr>
-            <tr>
-                <td><label>فاصله بین ستون ها</label></td>
-                <td>
+                </div>
+                <div class="col-md-5">
+                    <label>Columns margin</label>
+                </div>
+                <div class="col-md-7">
                     <NumericTextBox @bind-Value="Bond.ColumnsMargin" />
-                </td>
-            </tr>
+                </div>
             }
             else
             {
-            <tr>
-                <td colspan="2">
-                    <div style="padding:7px 7px 0 0">
-                        <span style="font-weight:bold;color:red">در هر صفحه از گزارش تنها آخرین سطح داده می تواند چند ستون داشته باشد.</span>
-                        <span style="display:block;font-weight:bold">در صورتی که می حواهید بیش از یک سطح از داده چند ستون داشته باشد از گزارش فرعی استفاده نمائید</span>
-                    </div>
-                </td>
-            </tr>
+                <div class="d-flex justify-content-center d-flex pt-3 pb-3">
+                    <span style="font-weight:bold;color:red">In each page of the report, only the last level of data can have multiple columns.</span>
+                    <span style="display:block;font-weight:bold">If you want more than one level of data to have several columns, use the sub-report</span>
+                </div>
             }
         }
-            <tr>
-                <td></td>
-                <td style="padding-top:5px;height:5px;text-align:center;">
-                    <button @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }" class="c-btn c-danger">انصراف</button>
-                    <button @onclick="UpdateData" class="c-btn c-primary">ثبت</button>
-                </td>
-            </tr>
-        </table>
-    </Content>
+        <div class="col-md-5"></div>
+        <div class="col-md-7 justify-content-center d-flex pt-3 pb-2">
+            <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
+            <button style="width:70px;" @onclick="UpdateData" class="c-btn c-primary">Save</button>
+        </div>
+    </div>
 </Window>
 @code
 {

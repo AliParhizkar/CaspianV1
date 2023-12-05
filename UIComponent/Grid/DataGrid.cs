@@ -137,6 +137,17 @@ namespace Caspian.UI
                 StateHasChanged();
                 await jsRuntime.InvokeVoidAsync("$.caspian.dadaGridBind", mainDiv);
             }
+
+            if (FormAppState.Element.HasValue)
+            {
+                await jsRuntime.InvokeVoidAsync("$.caspian.focusAndShowErrorMessage", FormAppState.Element);
+                FormAppState.Element = null;
+            }
+            else if (errorMessage.HasValue())
+            {
+                await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
+                errorMessage = null;
+            }
             await base.OnAfterRenderAsync(firstRender);
         }
 

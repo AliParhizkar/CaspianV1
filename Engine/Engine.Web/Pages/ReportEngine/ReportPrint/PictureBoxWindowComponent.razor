@@ -8,54 +8,44 @@
     else
         style += "auto";
 }
-<Window @bind-Status="Status" Title="درج/حذف تصویر">
-    <Content>
+<Window @bind-Status="Status" Title="Add/Remove image" Style="width:335px">
+    <div class="row p-2 c-controls">
         @if (Params == null)
         {
-            <table style="width:95%;margin:0 auto">
-                <tr>
-                    <td colspan="2">
-                        <Fileupload Style="width:300px;height:360px;" OnChange="ViewFile">
-                            <PictureBox style="@style" class="c-image-frame" NoContentTitle="برای بارگذاری عکس کلیک کنید" Data="fileContent" />
-                        </Fileupload>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width:35px;">
-                        <CheckBox @bind-Value="PrintParam.Stretch" />
-                    </td>
-                    <td>
-                        <label>همسانی عکس و فریم</label>
-                    </td>
-                </tr>
-            </table>
+            <div class="ustify-content-center d-flex pt-2 pb-2">
+                <Fileupload Style="width:300px;height:360px;" OnChange="ViewFile">
+                    <PictureBox style="@style" class="c-image-frame" NoContentTitle="Click to upload" Data="fileContent" />
+                </Fileupload>
+            </div>
+            <div class="col-md-5">
+                <label>Stretch</label>
+            </div>
+            <div class="col-md-7">
+                <CheckBox @bind-Value="PrintParam.Stretch" />
+            </div>
         }
         else
         {
-            <table style="width:95%;margin:0 auto">
-                <tr>
-                    <td>
-                        <label>فیلد داده</label>
-                    </td>
-                    <td>
-                        <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="PrintParam.TitleEn" Source="Params" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>همسانی عکس و فریم</label>
-                    </td>
-                    <td>
-                        <CheckBox @bind-Value="PrintParam.Stretch" />
-                    </td>
-                </tr>
-            </table>
+            <div class="col-md-5">
+                <label>Data field</label>
+            </div>
+            <div class="col-md-7">
+                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="PrintParam.TitleEn" Source="Params" />
+            </div>
+            <div class="col-md-5">
+                <label>Stretch</label>
+            </div>
+            <div class="col-md-7">
+                <CheckBox @bind-Value="PrintParam.Stretch" />
+            </div>
         }
-        <div style="padding:5px;text-align:center;padding-right:30%">
-            <button @onclick="() => { Status = WindowStatus.Close; }" class="c-btn c-danger">انصراف</button>
-            <button @onclick="SaveFile" class="c-btn c-primary">ثبت</button>
+        <div class="col-md-5"></div>
+        <div class="justify-content-center col-md-7 d-flex pt-3 pb-2">
+            <button @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
+            <button @onclick="SaveFile" class="c-btn c-primary">Save</button>
         </div>
-    </Content>
+    </div>
+
 </Window>
 @code
 {

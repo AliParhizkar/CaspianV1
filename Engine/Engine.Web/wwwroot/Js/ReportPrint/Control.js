@@ -1,20 +1,20 @@
 ﻿/// <reference path="Common.js" />
-var rControl = function (element) {
+let rControl = function (element) {
 
 };
 
 (function ($) {
-    var $r = $.report, status, focused, widthStart, heightStart, leftStart, topStart;
+    let $r = $.report, status, focused, widthStart, heightStart, leftStart, topStart;
     function getCurentBond(x, y) {
         ///  <summary>Report Bond ی که در مختصات x  و y قرار دارد را برمی گرداند</summary>
         ///  <param name="x" type="Number">مختصات x</param>
         ///  <param name="y" type="Number">مختصات y</param>
         ///  <type='Element' /returns>
-        var bond = null;
+        let bond = null;
         ///تمامی Report bondها دارای کلاس 
         ///bond هستند
         $('.bond').each(function () {
-            var top = $(this).offset().top, left = $(this).offset().left, width = $(this).width(), height = $(this).height();
+            let top = $(this).offset().top, left = $(this).offset().left, width = $(this).width(), height = $(this).height();
             if (y >= top && y <= top + height && x >= left && x <= left + width) {
                 bond = this;
                 return false;
@@ -24,7 +24,7 @@ var rControl = function (element) {
     }
     function initControl(element) {
         $(element).find('.square').css('display', '');
-        var width = $(element).width(), height = $(element).height();
+        let width = $(element).width(), height = $(element).height();
         $(element).find('.square').each(function (index) {
             if (index == 0 || index == 1)
                 $(this).css('left', (width - 6) / 2);
@@ -41,7 +41,7 @@ var rControl = function (element) {
         });
     }
     function changeWidth(difX, difY, element, obj) {
-        var $element = $(element), id = $element.attr('id');
+        let $element = $(element), id = $element.attr('id');
         if (status == statusType.changeWidthFromRight) {
             if (widthStart + difX > 23) 
                 obj.width = widthStart + difX;
@@ -50,7 +50,7 @@ var rControl = function (element) {
             $('#page').find('.reportcontrol').each(function () {
                 if ($(this).hasClass('tablecontrol')) {
                     $(this).find('th').each(function () {
-                        var right = $(this).offset().left + $(this).width();
+                        let right = $(this).offset().left + $(this).width();
                         if (Math.abs(right - widthStart - difX - leftStart) < 5) {
                             obj.rightItem = this;
                             obj.width = right - $element.offset().left;
@@ -93,7 +93,7 @@ var rControl = function (element) {
         return obj;
     }
     function changeHeight(difX, difY, element, obj) {
-        var $element = $(element), id = $element.attr('id');
+        let $element = $(element), id = $element.attr('id');
         if (status == statusType.changeHeightFromTop) {
             obj.height = heightStart - difY;
             obj.top = topStart + difY;
@@ -168,7 +168,7 @@ var rControl = function (element) {
     }
     rControl.prototype = {
         getSystemVariable: function () {
-            var member = this.member();
+            let member = this.member();
             switch (member) {
                 case '{Date}': return 1;
                 case '{FName}': return 2;
@@ -180,7 +180,7 @@ var rControl = function (element) {
             return null;
         },
         getsystemFiledType: function () {
-            var member = this.member();
+            let member = this.member();
             switch (member) {
                 case '{Line}': return 1;
                 case '{PageNumber}': return 2;
@@ -199,7 +199,7 @@ var rControl = function (element) {
             return status;
         },
         drag: function (difX, difY) {
-            var topBond = $('#bond').offset().top, leftBond = $('#bond').offset().left, bottomBond = topBond + $('#bond').height(), rightBond = $('#bond').offset().left + 
+            let topBond = $('#bond').offset().top, leftBond = $('#bond').offset().left, bottomBond = topBond + $('#bond').height(), rightBond = $('#bond').offset().left + 
                 $('.bond').first().width();
             if (status != statusType.changeHeightFromBottom && topStart + difY < topBond)
                 difY = topBond - topStart;
@@ -210,7 +210,7 @@ var rControl = function (element) {
             if (status != statusType.changeWidthFromLeft && leftStart + difX + toolsboxWidth > rightBond)
                 difX = rightBond - leftStart - toolsboxWidth;
             
-            var obj = new Object();
+            let obj = new Object();
             obj.left = leftStart;
             obj.top = topStart;
             obj.width = widthStart;
@@ -256,15 +256,15 @@ var rControl = function (element) {
             }
         },
         drop: function (x, y) {
-            var bond = $('#bond').data('rBond');
+            let bond = $('#bond').data('rBond');
             bond.addControlToBond(this.element);
             bond.updateBondHeight(this.element);
             $r.hideRuler();
             initControl(this.element);
         },
         updateCursor: function (x, y) { 
-            var $element = $(this.element);
-            var top = $element.offset().top - $(window).scrollTop(), left = $element.offset().left, width = $element.width(), height = $element.height(), bottom = top + height, right = left + width;
+            let $element = $(this.element);
+            let top = $element.offset().top - $(window).scrollTop(), left = $element.offset().left, width = $element.width(), height = $element.height(), bottom = top + height, right = left + width;
             
             status = statusType.none;
             if (y > top && y < bottom) {
@@ -310,7 +310,7 @@ var rControl = function (element) {
             $(this.element).find('.square').css('display', '');
         },
         dragStart: function (xStart, yStart) {
-            var $element = $(this.element);
+            let $element = $(this.element);
             widthStart = $element.outerWidth();
             heightStart = $element.outerHeight();
             leftStart = $element.offset().left;
@@ -318,8 +318,8 @@ var rControl = function (element) {
             $(this.element).find('.square').css('display', 'none');
         },
         move: function (hMovement, vMovement) {
-            var offset = $(this.element).offset();
-            var $bond = $(this.element).closest('.bond'), left = $bond.offset().left, 
+            let offset = $(this.element).offset();
+            let $bond = $(this.element).closest('.bond'), left = $bond.offset().left, 
                 right = left + $bond.outerWidth(), top = $bond.offset().top;
             hMovement = offset.left + hMovement;
             vMovement = offset.top + vMovement;
@@ -332,7 +332,7 @@ var rControl = function (element) {
                 $(this.element).css('top', vMovement);
         },
         change: function (width, height) {
-            var $element = $(this.element);
+            let $element = $(this.element);
             $element.width($element.width() + width);
             $element.height($element.height() + height);
             initControl(this.element);
@@ -343,11 +343,11 @@ var rControl = function (element) {
             $(this.element).find('.square').css('display', 'none');
         },
         getData: function () {
-            var $ctr = $(this.element);
-            var control = new Object();
-            var $bond = $ctr.closest('.bond');
+            let $ctr = $(this.element);
+            let control = new Object();
+            let $bond = $ctr.closest('.bond');
             control.position = new Object();
-            var $firstColumn = $bond.find('.column.right');
+            let $firstColumn = $bond.find('.column.right');
             if ($firstColumn.get(0) != null)
                 control.position.left = $r.getWidth($ctr.offset().left - $firstColumn.offset().left);
             else
@@ -355,14 +355,14 @@ var rControl = function (element) {
             control.position.top = $r.getHeight($ctr.offset().top - $bond.offset().top);
             control.position.width = $r.getWidth($ctr.width());
             control.position.height = $r.getHeight($ctr.height());
-            var member = this.member();
+            let member = this.member();
             if (member != undefined)
                 control.member = member;
             return control;
         },
         init: function (data) {
-            var $element = $(this.element);
-            var $parent = $element.closest('.bond');
+            let $element = $(this.element);
+            let $parent = $element.closest('.bond');
             if ($element.closest('.column').hasClass('column'))
                 $parent = $element.closest('.column');
             $element.css('left', $r.getPixelWidth(data.position.left) + $parent.offset().left);
@@ -380,7 +380,7 @@ var rControl = function (element) {
             }
         },
         getDataLevel: function () {
-            var dataLevel = $(this.element).closest('.bond').attr('DataLevel');
+            let dataLevel = $(this.element).closest('.bond').attr('DataLevel');
             if (dataLevel)
                 return dataLevel;
             return null;
@@ -401,7 +401,7 @@ var rControl = function (element) {
     $.fn.control = function () {
         return new rControl(this);
     }
-    var statusType = {
+    let statusType = {
         none: 0,
         changeWidthFromLeft: 1,
         changeWidthFromRight: 2,

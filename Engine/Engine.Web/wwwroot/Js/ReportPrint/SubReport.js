@@ -1,22 +1,22 @@
 ﻿(function ($) {
-    var $r = $.report, guid, hasFocuse;
-    var rSubReport = function (element) {
+    let $r = $.report, guid, hasFocuse;
+    let rSubReport = function (element) {
         this.element = element;
         rControl.prototype.constructor.call(this);
         $(element).find('td').first().append('<span class="subreporticon"></span>');
         $(element).css('background-color', 'wheat');
-        var obj = this;
+        let obj = this;
         $(element).dblclick(function () {
-            if (!hasFocuse)
-                return;
-            var width = $(obj.element).width();
-            var data = $(this).data('pageData');
-            if (!data)
-                data = new Object();
-            data.reportId = $('#ReportId').val();
-            data.guid = guid;
+            //if (!hasFocuse)
+            //    return;
+            //let width = $(obj.element).width();
+            //let data = $(this).data('pageData');
+            //if (!data)
+            //    data = new Object();
+            //data.reportId = $('#ReportId').val();
+            //data.guid = guid;
             //data.width = $r.getWidth(width);
-
+            
             //width += 350;
             //var url = '/learning/ReportEngin/ReportPrint/SubReportWindow';
             //var win = $.telerik.getWindow();
@@ -38,7 +38,7 @@
     }
     rSubReport.prototype.drop = function (x, y) {
         rControl.prototype.drop.call(this, x, y);
-        var obj = this;
+        let obj = this;
         //if (!guid)
         //    $.telerik.post('/Learning/ReportEngin/ReportPrint/GetGuid', null, function (result) {
         //        guid = result
@@ -53,7 +53,7 @@
         return null;
     }
     rSubReport.prototype.getData = function () {
-        var data = rControl.prototype.getData.call(this);
+        let data = rControl.prototype.getData.call(this);
         data.type = 5;
         data.subReportPage = $(this.element).data('pageData');
         data.guid = guid;
@@ -76,7 +76,7 @@
     }
 
     $.fn.rSubReport = function () {
-        var item = new rSubReport(this);
+        let item = new rSubReport(this);
         item.controlType = report.controlKind.subReport;
         $(this).data('rSubReport', item);
         return item;

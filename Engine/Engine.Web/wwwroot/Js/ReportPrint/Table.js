@@ -1,6 +1,6 @@
 ﻿/// <reference path="Common.js" />
 (function ($) {
-    var cell, otherCell, status, contextMenu, focused, xStart, yStart, tableSelectType, tableWidth, tableHeight, tableLeft, tableTop, $r = $.report;
+    let cell, otherCell, status, contextMenu, focused, xStart, yStart, tableSelectType, tableWidth, tableHeight, tableLeft, tableTop, $r = $.report;
     function checkForAddRemove(element) {
         let flag = true;
         $(element).find('td').each(function () {

@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StiSerializer version="1.02" type="Flex" application="StiReport">
+  <Dictionary Ref="91" type="Dictionary" isKey="true">
+    <BusinessObjects isList="true" count="1">
+      <list Ref="92" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+        <Alias>list</Alias>
+        <BusinessObjects isList="true" count="1">
+          <Orders Ref="93" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+            <Alias>Orders</Alias>
+            <BusinessObjects isList="true" count="1">
+              <OrderDeatils Ref="94" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+                <Alias>OrderDeatils</Alias>
+                <BusinessObjects isList="true" count="0" />
+                <Category />
+                <Columns isList="true" count="4">
+                  <value>Product_Title,System.String</value>
+                  <value>Price,System.Int32</value>
+                  <value>Quantity,System.Int32</value>
+                  <value>Item,System.Object</value>
+                </Columns>
+                <Dictionary isRef="91" />
+                <Guid>6c813a8f758442a392fa9ab9556d282b</Guid>
+                <Name>OrderDeatils</Name>
+              </OrderDeatils>
+            </BusinessObjects>
+            <Category />
+            <Columns isList="true" count="3">
+              <value>Date,System.String</value>
+              <value>OrderType,System.String</value>
+              <value>Item,System.Object</value>
+            </Columns>
+            <Dictionary isRef="91" />
+            <Guid>41e396cc3c694097b571795fd0eaffce</Guid>
+            <Name>Orders</Name>
+          </Orders>
+        </BusinessObjects>
+        <Category />
+        <Columns isList="true" count="7">
+          <value>CustomerType,System.String</value>
+          <value>FName,System.String</value>
+          <value>LName,System.String</value>
+          <value>Gender,System.String</value>
+          <value>CompanyName,System.String</value>
+          <value>MobileNumber,System.String</value>
+          <value>Item,System.Object</value>
+        </Columns>
+        <Dictionary isRef="91" />
+        <Guid>7c4ba50b120e47c7b2828939e894716b</Guid>
+        <Name>list</Name>
+      </list>
+    </BusinessObjects>
+    <Databases isList="true" count="0" />
+    <DataSources isList="true" count="0" />
+    <Relations isList="true" count="0" />
+    <Report isRef="0" />
+    <Variables isList="true" count="6">
+      <value>,Date,Date,System.String,,False,False</value>
+      <value>,FName,FName,System.String,,False,False</value>
+      <value>,LName,LName,System.String,,False,False</value>
+      <value>,FLName,FLName,System.String,,False,False</value>
+      <value>,UserId,UserId,System.String,,False,False</value>
+      <value>,NatinalCode,NatinalCode,System.String,,False,False</value>
+    </Variables>
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings isList="true" count="0" />
+  <MetaTags isList="true" count="0" />
+  <Pages isList="true" count="1">
+    <Page1 Ref="83" type="Page" isKey="true">
+      <Border>None;[0:0:0];0;Solid;False;4;[0:0:0]</Border>
+      <Brush>Transparent</Brush>
+      <Components isList="true" count="4">
+        <DataBand3 Ref="84" type="DataBand" isKey="true">
+          <NewPageBefore>false</NewPageBefore>
+          <NewPageAfter>false</NewPageAfter>
+          <Brush>Transparent</Brush>
+          <BusinessObjectGuid>7c4ba50b120e47c7b2828939e894716b</BusinessObjectGuid>
+          <ClientRectangle>0,0,21.005,2.571</ClientRectangle>
+          <Components isList="true" count="3">
+            <Text85 Ref="85" type="Text" isKey="true">
+              <Font>Helvetica Neue", Helvetica, Arial, sans-serif, Icon,12</Font>
+              <Brush>Transparent</Brush>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Right</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>0.265,0.185,3.413,0.476</ClientRectangle>
+              <Page isRef="83" />
+              <Parent isRef="84" />
+              <Name>Text85</Name>
+              <Text>Name</Text>
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text85>
+            <Text86 Ref="86" type="Text" isKey="true">
+              <Font>Helvetica Neue", Helvetica, Arial, sans-serif, Icon,12</Font>
+              <Brush>Transparent</Brush>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Right</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>0.265,0.635,3.413,0.476</ClientRectangle>
+              <Page isRef="83" />
+              <Parent isRef="84" />
+              <Name>Text86</Name>
+              <Text>Family</Text>
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text86>
+            <Text87 Ref="87" type="Text" isKey="true">
+              <Font>Helvetica Neue", Helvetica, Arial, sans-serif, Icon,12</Font>
+              <Brush>Transparent</Brush>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Right</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>3.677,0.185,4.762,0.476</ClientRectangle>
+              <Page isRef="83" />
+              <Parent isRef="84" />
+              <Name>Text87</Name>
+              <Text>{list.FName}</Text>
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text87>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Name>DataBand3</Name>
+          <Page isRef="83" />
+          <Parent isRef="83" />
+        </DataBand3>
+        <DataBand2 Ref="88" type="DataBand" isKey="true">
+          <NewPageBefore>false</NewPageBefore>
+          <NewPageAfter>false</NewPageAfter>
+          <Brush>Transparent</Brush>
+          <BusinessObjectGuid>41e396cc3c694097b571795fd0eaffce</BusinessObjectGuid>
+          <MasterComponent isRef="84" />
+          <ClientRectangle>0,0,21.005,0.587</ClientRectangle>
+          <Components isList="true" count="0" />
+          <Conditions isList="true" count="0" />
+          <Name>DataBand2</Name>
+          <Page isRef="83" />
+          <Parent isRef="83" />
+        </DataBand2>
+        <ColumnHeaderBand1 Ref="89" type="Stimulsoft.Report.Components.StiColumnHeaderBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21.005,2.994</ClientRectangle>
+          <Components isList="true" count="0" />
+          <Conditions isList="true" count="0" />
+          <Name>ColumnHeaderBand1</Name>
+          <Page isRef="83" />
+          <Parent isRef="83" />
+        </ColumnHeaderBand1>
+        <DataBand1 Ref="90" type="DataBand" isKey="true">
+          <NewPageBefore>false</NewPageBefore>
+          <NewPageAfter>false</NewPageAfter>
+          <Brush>Transparent</Brush>
+          <BusinessObjectGuid>6c813a8f758442a392fa9ab9556d282b</BusinessObjectGuid>
+          <Columns>2</Columns>
+          <ClientRectangle>0,0,21.005,3.074</ClientRectangle>
+          <Components isList="true" count="0" />
+          <Conditions isList="true" count="0" />
+          <Name>DataBand1</Name>
+          <Page isRef="83" />
+          <Parent isRef="83" />
+        </DataBand1>
+      </Components>
+      <Conditions isList="true" count="0" />
+      <Guid>3f7f0c9730b145ee9132cfdedc3c8ccd</Guid>
+      <Margins>0,0,0,0</Margins>
+      <Name>Page1</Name>
+      <PageType>0</PageType>
+      <PageWidth>21.005</PageWidth>
+      <PageHeight>29.7</PageHeight>
+      <Report isRef="0" />
+      <Watermark Ref="9998" type="Stimulsoft.Report.Components.StiWatermark" isKey="true">
+        <Font>Arial,100</Font>
+        <TextBrush>[50:0:0:0]</TextBrush>
+      </Watermark>
+    </Page1>
+  </Pages>
+  <PrinterSettings Ref="9999" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
+  <ReportAlias>Report</ReportAlias>
+  <ReportChanged>5/3/2015 4:05:02 PM</ReportChanged>
+  <ReportCreated>5/1/2015 7:31:06 PM</ReportCreated>
+  <ReportFile>D:\e.mrt</ReportFile>
+  <ReportGuid>7a59e6f3323042d4848703beddfe3e7b</ReportGuid>
+  <ReportName>ReportName</ReportName>
+  <ReportUnit>Centimeters</ReportUnit>
+  <ReportVersion>2012.1.1300</ReportVersion>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles isList="true" count="0" />
+</StiSerializer>

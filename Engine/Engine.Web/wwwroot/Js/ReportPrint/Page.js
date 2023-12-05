@@ -1,5 +1,5 @@
 ﻿(function ($) {
-    var $r = $.report, xStart, yStart, curentControl, mousePosition, ctrForCopy, pageHeight;
+    let $r = $.report, xStart, yStart, curentControl, mousePosition, ctrForCopy, pageHeight;
     function copyCtr() {
         ctrForCopy = curentControl;
     }
@@ -9,27 +9,27 @@
             return
         }
         if (ctrForCopy.controlType == report.controlKind.textBox) {
-            var max = 0;
+            let max = 0;
             $('#page .reportcontrol').each(function () {
-                var id = $(this).attr('id');
+                let id = $(this).attr('id');
                 id = parseInt(id.substring(2, id.length));
                 if (id > max)
                     max = id;
             });
-            var $element = $(ctrForCopy.element), $bond = $element.closest('.bond'), width = $element.width(),
+            let $element = $(ctrForCopy.element), $bond = $element.closest('.bond'), width = $element.width(),
                 height = $element.height(), id = 'id' + (max + 1), str;
-            var bondOffset = $bond.offset();
+            let bondOffset = $bond.offset();
             if (mousePosition.x <= bondOffset.left || mousePosition.y <= bondOffset.top || mousePosition.x >= bondOffset.left + $bond.width() ||
                 mousePosition.y >= bondOffset.top + $bond.height()) {
                 alert('لطفا موس را در موقعیت مناسب قرار دهید تا کنترل در آن موقعیت کپی شود')
             } else {
-                var x = mousePosition.x - $bond.offset().left - width, y = mousePosition.y - $bond.offset().top;
+                let x = mousePosition.x - $bond.offset().left - width, y = mousePosition.y - $bond.offset().top;
                 if (x < 1)
                     x = 1;
                 $bond.append($r.getTextBox(id, width, height));
                 ///////////////////////
-                var ctr = $('#' + id).rTextBox();
-                var data = ctrForCopy.getData();
+                let ctr = $('#' + id).rTextBox();
+                let data = ctrForCopy.getData();
                 if (data.text)
                     data.text = decodeURIComponent(data.text);
                 data.position.left = $r.getWidth(x);
@@ -44,39 +44,39 @@
         }
     }
     function getControlForFocuse(x, y) {
-        var controls = [];
+        let controls = [];
         $('#page').find('.reportcontrol').each(function () {
-            var left = $(this).offset().left, top = $(this).offset().top, width = $(this).width(),
+            let left = $(this).offset().left, top = $(this).offset().top, width = $(this).width(),
                 height = $(this).height();
-            var bottom = top + height, right = left + width;
-            var ctr = $(this).data('rTable'), margin = 5;
+            let bottom = top + height, right = left + width;
+            let ctr = $(this).data('rTable'), margin = 5;
             if (ctr)
                 margin = 0;
             if (x > left - margin && x < right + margin && y > top - margin && y < bottom + margin)
                 controls.push({width: width, height:height, id: $(this).attr('id')});
         });
-        var $bond = $('#bond');
+        let $bond = $('#bond');
         
         if (controls.length == 0) {
-            var left = $bond.offset().left, top = $bond.offset().top;
+            let left = $bond.offset().left, top = $bond.offset().top;
             if (x > left && x < left + $bond.width() && y > top && y < top + $bond.height())
                 return $('#bond').data('rBond');
             return null;
         }
         
-        var ctr = controls[0];
-        for (var i = 1; i < controls.length; i++)
+        let ctr = controls[0];
+        for (let i = 1; i < controls.length; i++)
             if (controls[i].width <= ctr.width && controls[i].height <= ctr.height)
                 ctr = controls[i];
-        var $temp = $('#' + ctr.id);
-        var controlTypes = ['rCheckBox', 'rPictureBox', 'rSubReport', 'rTable', 'rTextBox', 'rChart'];
-        var temp = null;
-        for (var i = 0; i < controlTypes.length; i++) {
+        let $temp = $('#' + ctr.id);
+        let controlTypes = ['rCheckBox', 'rPictureBox', 'rSubReport', 'rTable', 'rTextBox', 'rChart'];
+        let temp = null;
+        for (let i = 0; i < controlTypes.length; i++) {
             temp = $temp.data(controlTypes[i]);
             if (temp)
                 break;
         }
-        var table = $('#' + ctr.id).data('rTable');
+        let table = $('#' + ctr.id).data('rTable');
         if (table)
             return table;
         if (temp == null)
@@ -100,10 +100,10 @@
         curentControl = self.bond;
     }
 
-    var rPage = function (element, data) {
+    let rPage = function (element, data) {
         this.element = element;
         mousePosition = new Object();
-        var thisObj = this;
+        let thisObj = this;
         $(element).bind('keydown', function (e) { thisObj.keyDown(e); });
         $(element).bind('mousedown', function (e) { thisObj.mouseDown(e); });
         $(element).bind('mouseup', function (e) { thisObj.mouseUp(e); });
@@ -127,7 +127,7 @@
                 $('#bond').data('rBond').width(width);
                 pageHeight = height;
             } else {
-                var size = new Object();
+                let size = new Object();
                 size.width = $('#bond').data('rBond').width();
                 size.height = pageHeight;
                 return size;
@@ -141,8 +141,8 @@
             yStart = e.clientY;
             if (isReportContrl(e.target)) {
                 
-                var newControl = getControlForFocuse(e.clientX, e.clientY);
-                var flag = false;
+                let newControl = getControlForFocuse(e.clientX, e.clientY);
+                let flag = false;
                 
                 if (curentControl) {
                     if (curentControl == newControl)
@@ -168,7 +168,7 @@
             }
         },
         keyDown: function (e) {
-            var key = e.keyCode | e.which, type = 1, hChange, vChange;
+            let key = e.keyCode | e.which, type = 1, hChange, vChange;
             if (e.ctrlKey) 
                 type = 2;
             switch (key) {
@@ -181,11 +181,11 @@
                 if (type == 1) {
                     if (key == 46){
                         if (confirm("آیا با حذف موافقید؟")) {
-                            var ctrType = curentControl.controlType;
+                            let ctrType = curentControl.controlType;
                             if (ctrType == 1 || ctrType == 2 || ctrType == 3) {
                                 $(curentControl.element).remove();
                             } else {
-                                var tbl = $(curentControl.element).data('rTable');
+                                let tbl = $(curentControl.element).data('rTable');
                                 if (tbl)
                                     $(curentControl.element).remove();
                             }
@@ -214,13 +214,13 @@
             }
         },
         mouseMove: function (e) {
-            var x = e.clientX, y = e.clientY;
+            let x = e.clientX, y = e.clientY;
             mousePosition.x = x;
             mousePosition.y = y;
             if (this.toolsBox.controlType != report.controlKind.none) {
                 xStart = 0;
                 yStart = 0;
-                var temp = this.toolsBox.createAndDrag(x, y);
+                let temp = this.toolsBox.createAndDrag(x, y);
                 if (temp != null) 
                     curentControl = temp;
             }
@@ -261,8 +261,8 @@
          
         },
         getPageProperty: function(){
-            var obj = new Object();
-            var size = this.size();
+            let obj = new Object();
+            let size = this.size();
             obj.PageWidth = $.report.getWidth(size.width);
             obj.PageHeight = size.height;
             obj.PrintOn = this.printOn;
@@ -271,7 +271,7 @@
             return obj;
         },
         getPageData: function () {
-            var obj = new Object();
+            let obj = new Object();
             obj.width = $r.getWidth($('.bond').first().width());
             obj.height = pageHeight;
             obj.leftMargin = $r.getWidth(this.LeftMargin);
@@ -292,7 +292,7 @@
     };
     $.fn.rPage = function (data) {
         data = eval('(' + data + ')');
-        var item = new rPage(this, data);
+        let item = new rPage(this, data);
         item.isSubReport = data.isSubReport;
         $(this).data('rPage', item);
         initDataBind(item, data);

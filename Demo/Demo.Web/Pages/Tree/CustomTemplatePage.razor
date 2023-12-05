@@ -45,18 +45,18 @@
 </TabPanel>
 
 
-<Window Title="City" @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()">
+<Window Title="City" @bind-Status="status" Style="width:400px;" OnOpen="async () => await firstControl.FocusAsync()">
     <Content>
         <CaspianForm Model="city" OnValidSubmit="async t => await UpsertCity()">
-            <div class="row ps-4 pe-4 c-controls">
-                <div class="col-md-3">
+            <div class="row ps-3 pe-3 c-controls">
+                <div class="col-md-4">
                     <label>Title</label>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <StringTextBox @ref="firstControl" @bind-Value="city.Title" />
                 </div>
-                <div class="col-md-3"></div>
-                <div class="text-center col-md-9">
+                <div class="col-md-4"></div>
+                <div class="text-center col-md-8">
                     <WindowCommandButtons />
                 </div>
             </div>

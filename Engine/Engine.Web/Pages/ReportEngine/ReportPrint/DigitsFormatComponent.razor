@@ -9,42 +9,38 @@
         Param.NumberDigits = null;
 }
 
-<Window Status="Status" Style="width:400px" Title="فرمت بندی اعداد">
-    <Content>
-        <table style="width:95%;margin:0 auto">
-            <tr>
-                <td style="width:100px;"><label>گروهبندی ارقام</label></td>
-                <td>
-                    <CheckBox @bind-Value="Param.DigitGroup" />
-                </td>
-            </tr>
-            <tr>
-                <td><label>کاراکتر گروهبندی</label></td>
-                <td>
-                    <DropdownList @bind-Value="Param.GroupNumberChar" Disabled="!Param.DigitGroup" />
-                </td>
-            </tr>
-            <tr>
-                <td><label>کاراکتر ممیز شناور</label></td>
-                <td>
-                    <DropdownList @bind-Value="Param.DecimalChar" />
-                </td>
-            </tr>
-            <tr>
-                <td><label>تعداد ارقام اعشار</label></td>
-                <td>
-                    <NumericTextBox @bind-Value="Param.NumberDigits" Disabled="Param.DecimalChar == null" />
-                </td>
-            </tr>
-            <tr style="height:50px;padding-top:5px;text-align:center">
-                <td></td>
-                <td>
-                    <button class="c-btn c-danger" @onclick="async () => { await StatusChanged.InvokeAsync(WindowStatus.Close); }">انصراف</button>
-                    <button class="c-btn c-primary" @onclick="SetFormat">ثبت</button>
-                </td>
-            </tr>
-        </table>
-    </Content>
+<Window Status="Status" Style="width:400px" Title="Digit formats">
+    <div class="row p-2 c-controls">
+        <div class="col-md-5">
+            <label>Digit grouping</label>
+        </div>
+        <div class="col-md-7">
+            <CheckBox @bind-Value="Param.DigitGroup" />
+        </div>
+        <div class="col-md-5">
+            <label>Grouping character</label>
+        </div>
+        <div class="col-md-7">
+            <DropdownList @bind-Value="Param.GroupNumberChar" Disabled="!Param.DigitGroup" />
+        </div>
+        <div class="col-md-5">
+            <label>Point character</label>
+        </div>
+        <div class="col-md-7">
+            <DropdownList @bind-Value="Param.DecimalChar" />
+        </div>
+        <div class="col-md-5">
+            <label>Number of decimal</label>
+        </div>
+        <div class="col-md-7">
+            <NumericTextBox @bind-Value="Param.NumberDigits" Disabled="Param.DecimalChar == null" />
+        </div>
+        <div class="col-md-5"></div>
+        <div class="col-md-7 justify-content-center d-flex pt-3 pb-2">
+            <button class="c-btn c-danger" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)">Cancel</button>
+            <button class="c-btn c-primary" @onclick="SetFormat">Save</button>
+        </div>
+    </div>
 </Window>
 
 
@@ -56,9 +52,9 @@
     async void SetFormat()
     {
         if (Param.DigitGroup && Param.GroupNumberChar == null)
-            message = "لطفا کاراکتر جداساز را مشخص نماییید";
+            message = "Please specify the separator character";
         if (Param.DecimalChar.HasValue && Param.NumberDigits == null)
-            message = "لطفا تعداد ارقام اعشاری را مشخص نمایید";
+            message = "Please specify the number of decimal places";
         if (!message.HasValue())
         {
             isUpdated = true;

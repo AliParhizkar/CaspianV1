@@ -1,15 +1,15 @@
 ﻿(function ($) {
-    var $r = $.report, hasFocuse;
-    var rChart = function (element) {
+    let $r = $.report, hasFocuse;
+    let rChart = function (element) {
         this.element = element;
         rControl.prototype.constructor.call(this);
         $(element).find('td').first().append('<span class="charticon"></span>');
         $(element).css('background-color', 'wheat');
-        var obj = this;
+        let obj = this;
         $(element).dblclick(function () {
             if (!hasFocuse)
                 return;
-            var url = '/ReportEngin/ReportPrint/ChartWindow';
+            let url = '/ReportEngin/ReportPrint/ChartWindow';
 
         });
     };
@@ -26,7 +26,7 @@
         ///باز کردن فرم برای انتخاب چارت
     }
     rChart.prototype.getData = function () {
-        var data = rControl.prototype.getData.call(this);
+        let data = rControl.prototype.getData.call(this);
         data.type = 5;
         data.subReportPage = $(this.element).data('pageData');
         data.guid = guid;
@@ -49,7 +49,7 @@
     }
 
     $.fn.rChart = function () {
-        var item = new rChart(this);
+        let item = new rChart(this);
         item.controlType = report.controlKind.chart;
         $(this).data('rChart', item);
         return item;

@@ -11,10 +11,10 @@
     <span class="c-icon"></span>
     <div class="c-form">
         <div class="c-container">
-            <StringTextBox @bind-Value="@userName" placeholder="Username..." />
+            <InputText @bind-Value="@userName" placeholder="Username..." />
         </div>
         <div class="c-container">
-            <StringTextBox @bind-Value="@password" type="password" placeholder="Password..." />
+            <InputText @bind-Value="@password" type="password" placeholder="Password..." />
         </div>
         <div>
             <span class="error-message">@message</span>

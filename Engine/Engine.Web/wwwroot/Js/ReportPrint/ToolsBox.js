@@ -1,11 +1,11 @@
 ﻿/// <reference path="Common.js" />
 (function ($) {
-    var $r = $.report, addedToForm, creatingControlId;
+    let $r = $.report, addedToForm, creatingControlId;
 
     function getTable(id) {
-        var str = '<table cellpadding="0" cellspacing="0" id="' + id + '" class="reportcontrol tablecontrol" style="position:absolute;">';
+        let str = '<table cellpadding="0" cellspacing="0" id="' + id + '" class="reportcontrol tablecontrol" style="position:absolute;">';
         str += '<thead>';
-        for (var col = 0; col < 4; col++) {
+        for (let col = 0; col < 4; col++) {
             str += '<th style="width:';
             if (col == 0)
                 str += '10';
@@ -14,10 +14,10 @@
             str += 'px"></th>';
         }
         str += '</thead>';
-        for (var row = 0; row < 1; row++) {
+        for (let row = 0; row < 1; row++) {
             str += '<tr>';
             str += '<td class="rowHeader" style="height:23px;" ></td>';
-            for (var col = 0; col < 3; col++) {
+            for (let col = 0; col < 3; col++) {
                 str += '<td style="border-style:solid;border-color:#000;border-left-width:1px;border-right-width:1px;border-top-width:1px;border-bottom-width:1px;"></td>';
             }
             str += '</tr>'
@@ -33,9 +33,9 @@
         return null;
     }
     function getCurentBond(x, y) {
-        var bond = null;
+        let bond = null;
         $('.bond').each(function () {
-            var top = $(this).offset().top, left = $(this).offset().left, width = $(this).width(), height = $(this).height();
+            let top = $(this).offset().top, left = $(this).offset().left, width = $(this).width(), height = $(this).height();
             if (y > top && y < top + height && x > left && x < left + width) {
                 bond = this;
                 return false;
@@ -45,9 +45,9 @@
     }
 
     function getId() {
-        var max = 0;
+        let max = 0;
         $('#page .reportcontrol').each(function () {
-            var id = parseInt($(this).attr('id').substr(2));
+            let id = parseInt($(this).attr('id').substr(2));
             if (id > max)
                 max = id;
         });
@@ -71,7 +71,7 @@
     }
     function appentControl(controlType, bond) {
         creatingControlId = getId();
-        var str = null;
+        let str = null;
         switch (controlType) {
             case report.controlKind.textBox:
                 str  = $r.getTextBox(creatingControlId, 180, 35);
@@ -102,9 +102,9 @@
         else
             creatingControlId = null;
     }
-    var rToolsBox = function (element) {
+    let rToolsBox = function (element) {
         this.element = element;
-        var obj = this;
+        let obj = this;
         this.controlType = report.controlKind.none;
         
         $(this.element).mousedown(function (e) {
@@ -129,13 +129,13 @@
         createAndDrag: function (x, y) {
             if (this.controlType != report.controlKind.none) {
                 if (addedToForm) {
-                    var control = $('#' + creatingControlId).data('rControl');
+                    let control = $('#' + creatingControlId).data('rControl');
                     if (control)
                         control.drag(x, y);
                     this.controlType = report.controlKind.none;
                 }
                 else {
-                    var bond = getCurentBond(x, y);
+                    let bond = getCurentBond(x, y);
                     $('body').data('rPage').resetCurentControl();
                     if (bond) {
                         appentControl(this.controlType, bond);
@@ -159,7 +159,7 @@
         }
     };
     $.fn.rToolsBox = function () {
-        var item = new rToolsBox(this);
+        let item = new rToolsBox(this);
         $(this).data('rToolsBox', item);
         return item;
     }

@@ -1,71 +1,70 @@
 ﻿@namespace Caspian.Engine.ReportPrint
 @inject IJSRuntime jSRuntime
 <Window @bind-Status="Status" Style="width:400px;" Title="Page setting">
-    <Content>
-        <div class="p-2 row c-controls">
-            <div class="col-md-4">
-                <label>Page size</label>
-            </div>
-            <div class="col-md-8">
-                <DropdownList @bind-Value="Setting.PageType" OnChange="SetPageSize" />
-            </div>
-            <div class="col-md-4">
-                <label>Page width</label>
-            </div>
-            <div class="col-md-8">
-                <NumericTextBox @bind-Value="Setting.PageWidth" Disabled="Setting.PageType != ReportPageType.Custome" />
-            </div>
-            <div class="col-md-4">
-                <label>Page height</label>
-            </div>
-            <div class="col-md-8">
-                <NumericTextBox @bind-Value="Setting.PageHeight" Disabled="Setting.PageType != ReportPageType.Custome" />
-            </div>
-            @if (!IsWorkflowReport)
-            {
-                <div class="col-md-4">
-                    <label>Print type</label>
-                </div>
-                <div class="col-md-8">
-                    <DropdownList @bind-Value="Setting.PrintOn" />
-                </div>
-                <div class="col-md-4">
-                    <label>Report title</label>
-                </div>
-                <div class="col-md-8">
-                    <CheckBox @bind-Value="Setting.ReportTitle" />
-                </div>
-                <div class="col-md-4">
-                    <label>Page header</label>
-                </div>
-                <div class="col-md-8">
-                    <CheckBox @bind-Value="Setting.PageHeader" />
-                </div>
-                <div class="col-md-4">
-                    <label>Data header</label>
-                </div>
-                <div class="col-md-8">
-                    <CheckBox @bind-Value="Setting.DataHeader" />
-                </div>
-                <div class="col-md-4">
-                    <label>Data footer</label>
-                </div>
-                <div class="col-md-8">
-                    <CheckBox @bind-Value="Setting.DataFooter" />
-                </div>
-                <div class="col-md-4">
-                    <label>Page footer</label>
-                </div>
-                <div class="col-md-8">
-                    <CheckBox @bind-Value="Setting.PageFooter" />
-                </div>
-                <div class="pt-2 ">
-                    <button @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
-                    <button @onclick="SetPageSetting" class="c-btn c-primary">Save</button>
-                </div>
-            }
+    <div class="p-2 row c-controls">
+        <div class="col-md-4">
+            <label>Page size</label>
         </div>
-    </Content>
+        <div class="col-md-8">
+            <DropdownList @bind-Value="Setting.PageType" OnChange="SetPageSize" />
+        </div>
+        <div class="col-md-4">
+            <label>Page width</label>
+        </div>
+        <div class="col-md-8">
+            <NumericTextBox @bind-Value="Setting.PageWidth" Disabled="Setting.PageType != ReportPageType.Custome" />
+        </div>
+        <div class="col-md-4">
+            <label>Page height</label>
+        </div>
+        <div class="col-md-8">
+            <NumericTextBox @bind-Value="Setting.PageHeight" Disabled="Setting.PageType != ReportPageType.Custome" />
+        </div>
+        @if (!IsWorkflowReport)
+        {
+            <div class="col-md-4">
+                <label>Print type</label>
+            </div>
+            <div class="col-md-8">
+                <DropdownList @bind-Value="Setting.PrintOn" />
+            </div>
+            <div class="col-md-4">
+                <label>Report title</label>
+            </div>
+            <div class="col-md-8">
+                <CheckBox @bind-Value="Setting.ReportTitle" />
+            </div>
+            <div class="col-md-4">
+                <label>Page header</label>
+            </div>
+            <div class="col-md-8">
+                <CheckBox @bind-Value="Setting.PageHeader" />
+            </div>
+            <div class="col-md-4">
+                <label>Data header</label>
+            </div>
+            <div class="col-md-8">
+                <CheckBox @bind-Value="Setting.DataHeader" />
+            </div>
+            <div class="col-md-4">
+                <label>Data footer</label>
+            </div>
+            <div class="col-md-8">
+                <CheckBox @bind-Value="Setting.DataFooter" />
+            </div>
+            <div class="col-md-4">
+                <label>Page footer</label>
+            </div>
+            <div class="col-md-8">
+                <CheckBox @bind-Value="Setting.PageFooter" />
+            </div>
+        }
+        <div class="col-md-4"></div>
+        <div class="col-md-8 justify-content-center d-flex pt-3 pb-2">
+            <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
+            <button style="width:70px;" @onclick="SetPageSetting" class="c-btn c-primary">Save</button>
+        </div>
+    </div>
 </Window>
 @code
 {
@@ -117,7 +116,7 @@
         }
         if (updateSetting)
         {
-            var json = System.Text.Json.JsonSerializer.Serialize(this, new System.Text.Json.JsonSerializerOptions()
+            var json = System.Text.Json.JsonSerializer.Serialize(this.Setting, new System.Text.Json.JsonSerializerOptions()
                 {
                     PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
                 }); ;

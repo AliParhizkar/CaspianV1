@@ -154,12 +154,12 @@
         addBonds(json) {
             json = JSON.parse(json);
             let page = $('body').data('rPage');
-            page.size($.report.getPixelWidth(json.PageWidth), json.PageHeight);
-            page.pageType = json.PageType;
-            page.printOn = json.PrintOn;
+            page.size($.report.getPixelWidth(json.pageWidth), json.pageHeight);
+            page.pageType = json.pageType;
+            page.printOn = json.printOn;
             let bond = $('#bond').data('rBond');
             let data = bond.getData();
-            if (json.ReportTitle) {
+            if (json.reportTitle) {
                 if (!$('#bond #reportTitle').is('#reportTitle')) {
                     let bondValue = new Object();
                     bondValue.bondType = 1;
@@ -174,7 +174,7 @@
                         data = bond.removeBond(data, 1);
                 }
             }
-            if (json.PageHeader) {
+            if (json.pageHeader) {
                 if (!$('#bond #pageHeader').is('#pageHeader')) {
                     let bondValue = new Object();
                     bondValue.bondType = 2;
@@ -189,7 +189,7 @@
                         data = bond.removeBond(data, 2);
                 }
             }
-            if (json.DataHeader) {
+            if (json.dataHeader) {
                 if (!$('#bond #dataHeader').is('#dataHeader')) {
                     let bondValue = new Object();
                     bondValue.bondType = 3;
@@ -205,7 +205,7 @@
                 }
             }
 
-            if (json.DataFooter) {
+            if (json.dataFooter) {
                 if (!$('#bond #dataFooter').is('#dataFooter')) {
                     let bondValue = new Object();
                     bondValue.bondType = 5;
@@ -220,7 +220,7 @@
                         data = bond.removeBond(data, 5);
                 }
             }
-            if (json.PageFooter) {
+            if (json.pageFooter) {
                 if (!$('#bond #pageFooter').is('#pageFooter')) {
                     let bondValue = new Object();
                     bondValue.bondType = 6;
@@ -235,7 +235,7 @@
                         data = bond.removeBond(data, 6);
                 }
             }
-            let width = $.report.getPixelWidth(json.PageWidth) - $('#bond .bond').first().width();
+            let width = $.report.getPixelWidth(json.pageWidth) - $('#bond .bond').first().width();
             data.forEach(function (bond, index) {
                 if (bond.controls) {
                     bond.controls.forEach(function (control) {

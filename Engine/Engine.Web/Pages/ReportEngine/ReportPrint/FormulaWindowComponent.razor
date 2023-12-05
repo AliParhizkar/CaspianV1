@@ -12,126 +12,118 @@
     CloseBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.CloseBracket);
     OperandButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Parameter);
 }
-<Window @bind-Status="Status" Title="فرمولساز" style="width:700px">
-    <Content>
-        <table style="width:100%">
-            @if (PrintParam.BondType == BondType.DataFooter)
-            {
-                <tr>
-                    <td>
-                        <label>نوع متد</label>
-                    </td>
-                    <td>
-                        <DropdownList @bind-Value="PrintParam.TotalFuncType" />
-                    </td>
-                </tr>
-            }
-            <tr>
-                <td style="width:100px;vertical-align:top">
-                    <div class="f-operator">
-                        <table>
-                            <tr>
-                                <td>
-                                    <button type="button" class="operand-input @(className[0])" @attributes="MathButtonAttrs"
-                                            @onclick='() => AddOperator("+", 0)' @onmousedown="() => MouseDown(0)">
-                                        +
-                                    </button>
-                                </td>
-                                <td>
-                                    <button type="button" class="operand-input @(className[1])" @attributes="MathButtonAttrs"
-                                            @onclick='() => AddOperator("-", 1)' @onmousedown="() => MouseDown(1)">
-                                        -
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <button type="button" class="operand-input @(className[2])" @attributes="MathButtonAttrs"
-                                            @onclick='() => AddOperator("*", 2)' @onmousedown="() => MouseDown(2)">
-                                        ×
-                                    </button>
-                                </td>
-                                <td>
-                                    <button type="button" class="operand-input @(className[3])" @attributes="MathButtonAttrs"
-                                            @onclick='() => AddOperator("/", 3)' @onmousedown="() => MouseDown(3)">
-                                        ÷
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <button type="button" class="operand-input @(className[4])" @attributes="OpenBracketButtonAttrs"
-                                            @onclick='() => AddOperator("(", 4)' @onmousedown="() => MouseDown(4)">
-                                        (
-                                    </button>
-                                </td>
-                                <td colspan="2">
-                                    <button type="button" class="operand-input @(className[5])" @attributes="CloseBracketButtonAttrs"
-                                            @onclick='() => AddOperator(")", 5)' @onmousedown="() => MouseDown(5)">
-                                        )
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <div class="f-operand">
-                                        <button @attributes="OperandButtonAttrs" @onclick="() => OpenOperandForm(TokenType.ConstValue)">
-                                            <span class="fa fa-cog"></span>
-                                            <span>عملوند</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
+<Window @bind-Status="Status" Title="Formula maker" style="width:700px">
+    <div class="row">
 
+    </div>
+    <table style="width:100%">
+        @if (PrintParam.BondType == BondType.DataFooter)
+        {
+            <tr>
+                <td>
+                    <label>نوع متد</label>
                 </td>
-                <td style="vertical-align:top">
-                    <div style="height:215px" class="formola-content">
-                        @foreach (var item in Tokens)
-                        {
-                            var className = item.TokenType == TokenType.Oprator ? "f-operator" : "f-operand";
-                            <span class="@className">@item.FaTitle</span>
-                        }
-                    </div>
-                    <div class="c-formula-action">
-                        <button @onclick="AddFormula" class="c-btn c-primary">ثبت</button>
-                        <button @onclick="() => { Status = WindowStatus.Close; }" class="c-btn c-danger">انصراف</button>
-                    </div>
+                <td>
+                    <DropdownList @bind-Value="PrintParam.TotalFuncType" />
                 </td>
             </tr>
-        </table>
-        <Window @bind-Status="newStatus" Title="افزودن عملوند" Style="width:350px">
-            <Content>
-                <table style="width:90%;margin:0 auto">
-                    <tr>
-                        <td style="width:80px;">
-                            <label>مقدار ثابت</label>
-                        </td>
-                        <td>
-                            <StringTextBox @bind-Value="ConstantValue" Disabled="TitleEn.HasValue()" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>پارامتر</label>
-                        </td>
-                        <td>
-                            <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="TitleEn" Source="Params"
-                                      Disabled="ConstantValue.HasValue()" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td style="text-align:center;padding-top:10px;">
-                            <button @onclick="AddOperand" class="c-btn c-primary">ثبت</button>
-                            <button @onclick="() => { newStatus = WindowStatus.Close; }" class="c-btn c-danger">انصراف</button>
-                        </td>
-                    </tr>
-                </table>
-            </Content>
-        </Window>
-    </Content>
+        }
+        <tr>
+            <td style="width:100px;vertical-align:top">
+                <div class="f-operator">
+                    <table>
+                        <tr>
+                            <td>
+                                <button type="button" class="operand-input @(className[0])" @attributes="MathButtonAttrs"
+                                @onclick='() => AddOperator("+", 0)' @onmousedown="() => MouseDown(0)">
+                                    +
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="operand-input @(className[1])" @attributes="MathButtonAttrs"
+                                @onclick='() => AddOperator("-", 1)' @onmousedown="() => MouseDown(1)">
+                                    -
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="button" class="operand-input @(className[2])" @attributes="MathButtonAttrs"
+                                @onclick='() => AddOperator("*", 2)' @onmousedown="() => MouseDown(2)">
+                                    ×
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="operand-input @(className[3])" @attributes="MathButtonAttrs"
+                                @onclick='() => AddOperator("/", 3)' @onmousedown="() => MouseDown(3)">
+                                    ÷
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="button" class="operand-input @(className[4])" @attributes="OpenBracketButtonAttrs"
+                                @onclick='() => AddOperator("(", 4)' @onmousedown="() => MouseDown(4)">
+                                    (
+                                </button>
+                            </td>
+                            <td colspan="2">
+                                <button type="button" class="operand-input @(className[5])" @attributes="CloseBracketButtonAttrs"
+                                @onclick='() => AddOperator(")", 5)' @onmousedown="() => MouseDown(5)">
+                                    )
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div class="f-operand">
+                                    <button @attributes="OperandButtonAttrs" @onclick="() => OpenOperandForm(TokenType.ConstValue)">
+                                        <span class="fa fa-cog"></span>
+                                        <span>عملوند</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+            <td style="vertical-align:top">
+                <div style="height:215px" class="formola-content">
+                    @foreach (var item in Tokens)
+                    {
+                        var className = item.TokenType == TokenType.Oprator ? "f-operator" : "f-operand";
+                        <span class="@className">@item.FaTitle</span>
+                    }
+                </div>
+                <div class="c-formula-action">
+                    <button @onclick="AddFormula" class="c-btn c-primary">ثبت</button>
+                    <button @onclick="() => { Status = WindowStatus.Close; }" class="c-btn c-danger">انصراف</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <Window @bind-Status="newStatus" Title="Add operand" Style="width:380px">
+        <div class="row p-2 c-controls">
+            <div class="col-md-4">
+                <label>Const value</label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox @bind-Value="ConstantValue" Disabled="TitleEn.HasValue()" />
+            </div>
+            <div class="col-md-4">
+                <label>Parameter</label>
+            </div>
+            <div class="col-md-8">
+                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="TitleEn" Source="Params"
+                          Disabled="ConstantValue.HasValue()" />
+            </div>
+            <div class="col-md-4"></div>
+            <div class="justify-content-center col-md-8 d-flex pt-3 pb-2">
+                <button @onclick="AddOperand" class="c-btn c-primary">Save</button>
+                <button @onclick="() => newStatus = WindowStatus.Close" class="c-btn c-danger">Cancel</button>
+            </div>
+        </div>
+    </Window>
 </Window>
 @code
 {

@@ -36,9 +36,9 @@ namespace Caspian.UI
                     CrudGrid.SetDeleteMessage(null);
                     var masterInfos = typeof(TAccess).GetProperties().Where(t => t.PropertyType == typeof(TMaster));
                     if (masterInfos.Count() > 1)
-                        throw new CaspianException("خطا: More than a property of type " + typeof(TMaster).Name + " in type " + typeof(TAccess).Name + " is Exist");
+                        throw new CaspianException("Error: More than a property of type " + typeof(TMaster).Name + " in type " + typeof(TAccess).Name + " is Exist");
                     if (masterInfos.Count() == 0)
-                        throw new CaspianException("خطا: No property of type " + typeof(TMaster).Name + " in type " + typeof(TAccess).Name + " is Exist");
+                        throw new CaspianException("Error: No property of type " + typeof(TMaster).Name + " in type " + typeof(TAccess).Name + " is Exist");
                     var masterInfo = masterInfos.Single();
                     var foreignKeyAttr = masterInfo.GetCustomAttribute<ForeignKeyAttribute>();
                     if (foreignKeyAttr == null)
@@ -60,7 +60,7 @@ namespace Caspian.UI
                     innerExpr = Expression.Lambda(innerExpr, u);
                     var accessListInf = typeof(TMember).GetProperties().Where(t => typeof(IEnumerable<TAccess>).IsAssignableFrom(t.PropertyType));
                     if (accessListInf.Count() != 1)
-                        throw new CaspianException("خطا: Type " + typeof(TMember).Name + " Must has a Property of Type IEnumerable<" + typeof(TAccess).Name + ">");
+                        throw new CaspianException("Error: Type " + typeof(TMember).Name + " Must has a Property of Type IEnumerable<" + typeof(TAccess).Name + ">");
                     Expression expression = Expression.Property(Expression.Parameter(typeof(TMember)), accessListInf.Single());
                     var method = typeof(Enumerable).GetMethods().Where(t => t.Name == "Any").LastOrDefault().MakeGenericMethod(typeof(TAccess));
                     expression = Expression.Call(method, expression, innerExpr);
@@ -159,14 +159,14 @@ namespace Caspian.UI
             var old = await service.SingleOrDefaultAsync(id);
             if (old == null)
             {
-                ShowMessage("آیتم از سیستم حذف شده است");
+                ShowMessage("The item has been removed from the system");
                 return;
             }
             var memberInfos = typeof(TAccess).GetProperties().Where(t => t.PropertyType == typeof(TMember));
             if (memberInfos.Count() > 1)
-                throw new CaspianException("خطا: More than a property of type " + typeof(TMember).Name + " in type " + typeof(TAccess).Name + " is Exist");
+                throw new CaspianException("Error: More than a property of type " + typeof(TMember).Name + " in type " + typeof(TAccess).Name + " is Exist");
             if (memberInfos.Count() == 0)
-                throw new CaspianException("خطا: No property of type " + typeof(TMember).Name + " in type " + typeof(TAccess).Name + " is Exist");
+                throw new CaspianException("Error: No property of type " + typeof(TMember).Name + " in type " + typeof(TAccess).Name + " is Exist");
             var memberInfo = memberInfos.Single();
             var foreignKeyAttrMember = memberInfo.GetCustomAttribute<ForeignKeyAttribute>();
             if (foreignKeyAttrMember == null)

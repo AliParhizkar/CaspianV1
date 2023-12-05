@@ -1,18 +1,18 @@
 ﻿/// <reference path="Common.js" />
 (function ($) {
-    var $r = $.report, status, focused, widthStart, heightStart, leftStart, topStart;
+    let $r = $.report, status, focused, widthStart, heightStart, leftStart, topStart;
     function initTextBox(element) {
-        var height = $(element).height() - 2;
-        var $cell = $(element).find('.text td');
+        let height = $(element).height() - 2;
+        let $cell = $(element).find('.text td');
         $cell.css('line-height', '');
-        var lineHeight = $cell.css('line-height');
+        let lineHeight = $cell.css('line-height');
         if (lineHeight === 'normal')
             lineHeight = $cell.innerHeight();
         else {
             lineHeight = lineHeight.substr(0, lineHeight.length);
             lineHeight = parseInt(lineHeight);
         }
-        var border = new rBorder().getBorder($cell[0]), borderWidth = 0;
+        let border = new rBorder().getBorder($cell[0]), borderWidth = 0;
         if (border) {
             ///بردر بالا
             if ((border.borderKind & 1) == 1)
@@ -27,16 +27,16 @@
         else
             $cell.css('line-height', 'normal');
     }
-    var rTextBox = function (element) {
+    let rTextBox = function (element) {
         this.element = element;
         rControl.prototype.constructor.call(this);
         $(element).find('td').last().append('<table cellpadding="0" cellspacing="0" style="width:' + $(element).outerWidth() + 'px" class="text"><tr><td></td></tr></table>');
         initTextBox(element);
-        var self_ = this;
+        let self_ = this;
         $(this.element).find('.text').dblclick(function (e) {
-            //var win = $.telerik.getWindow();
+            //let win = $.telerik.getWindow();
             //win.control = this;
-            var data = {};
+            let data = {};
             data.DataLevel = $(this).closest('.bond').attr('DataLevel');
             if (data.DataLevel) {
                 data.DataLevel = parseInt(data.DataLevel);
@@ -44,7 +44,7 @@
             }
             data.ReportId = $('#ReportId').val();
             data.isSubReport = $('body').data('rPage').isSubReport;
-            var id = $(element).closest('.bond').attr('id');
+            let id = $(element).closest('.bond').attr('id');
             switch (id) {
                 case 'reportTitle':
                     data.bondType = 1;
@@ -63,7 +63,7 @@
             data.SystemVariable = self_.getSystemVariable();
             data.systemFiledType = self_.getsystemFiledType();
             if (!data.SystemVariable && !data.systemFiledType && data.DataLevel) {
-                var member = self_.member();
+                let member = self_.member();
                 if (member) {
                     member = member.replace('{', '').replace('}', '');
                     data.titleEn = member;
@@ -109,7 +109,7 @@
     }
     rTextBox.prototype.change = function (width, height) {
         rControl.prototype.change.call(this, width, height);
-        var $element = $(this.element).find('.text')
+        let $element = $(this.element).find('.text')
         $element.width($element.width() + width);
         $element = $element.find('td');
         $element.width($element.width() + width);
@@ -135,7 +135,7 @@
         $(this.element).find('.text td').css('color', color);
     }
     rTextBox.prototype.backGroundColor = function (color) {
-        var $item = $(this.element).find('.text td');
+        let $item = $(this.element).find('.text td');
         if (arguments.length == 0)
             return $item.css('background-color');
         if (color == '#0000ffff')
@@ -159,9 +159,9 @@
         font.initElement(this.getElement());
     }
     rTextBox.prototype.getData = function () {
-        var data = rControl.prototype.getData.call(this), $element = $(this.getElement());
+        let data = rControl.prototype.getData.call(this), $element = $(this.getElement());
         data.type = 3;
-        var border = new Object()
+        let border = new Object()
         $.myExtend(border, this.border());
         data.border = border;
         data.backGroundColor = new Object();
@@ -170,7 +170,7 @@
         ////------Font&ForeGround Color
         data.color = new Object();
         data.color.colorString = $element.css('color');
-        var font = new Object();
+        let font = new Object();
         $.myExtend(font, this.font());
         data.font = font;
         //----------------------------------------------------
@@ -180,20 +180,20 @@
         return data;
     }
     rTextBox.prototype.init = function (data) {
-        var $element = $(this.getElement());
+        let $element = $(this.getElement());
         rControl.prototype.init.call(this, data);
         if (data.text)
             $element.text(decodeURIComponent(data.text));
-        var align = new rAlign();
+        let align = new rAlign();
         $.extend(align, data);
         align.initElement($element[0], report.controlKind.textBox);
         ///Font&ForeGround Color
         $element.css('color', data.color.colorString);
-        var font = new rFont();
+        let font = new rFont();
         $.extend(font, data.font);
         font.initElement($element[0]);
         ///Border
-        var border = new rBorder();
+        let border = new rBorder();
         $.myExtend(border, data.border);
         border.initElement($element[0]);
         ///BackGroundColor
@@ -202,14 +202,14 @@
         initTextBox(this.element);
     }
     $.fn.rTextBox = function () {
-        var item = new rTextBox(this);
+        let item = new rTextBox(this);
         item.controlType = report.controlKind.textBox;
         $(this).data('rTextBox', item); 
         return item;
     }
 })(jQuery);
 
-var statusType = {
+let statusType = {
     none: 0,
     changeWidthFromLeft: 1,
     changeWidthFromRight: 2,

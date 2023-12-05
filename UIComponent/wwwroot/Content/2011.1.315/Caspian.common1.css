@@ -554,10 +554,8 @@ input[type=time]{
     .c-menu-icon {
         height: 25px;
         background-color: #e5e5e5;
-        padding: 1px 1px 0 0;
         overflow: hidden;
         display: flex;
-        flex-basis: content;
     }
 .c-hidden {
     visibility:hidden;
@@ -607,19 +605,17 @@ progress::-webkit-progress-value {
     border-radius: 0 8px 8px 0;
 }
 .sidebar .c-container {
-    width: 25px;
+    width: 24px;
     border-radius: 12px;
-    overflow: hidden;
     vertical-align: middle;
-    border-width: 1px;
-    border-style: solid;
-    border-color: transparent;
+    box-sizing:border-box;
+    padding-top:1px;
+    height: 24px;
+    margin-top: -2px;
 }
     .sidebar .c-container:hover {
-        width: 25px;
-        height: 24px;
-        vertical-align: middle;
-        border-color: #898989;
+        padding-top:0;
+        border:1px solid #898989;
         background-color: #d1d1d1;
     }
 .c-custome progress[value] {
@@ -628,7 +624,7 @@ progress::-webkit-progress-value {
 }
         .c-menu-icon .fa {
             color: #423d96;
-            font-size: 19px;
+            font-size: 18px;
             cursor: pointer;
         }
     .c-menu-icon div {
@@ -1577,6 +1573,7 @@ span, label, td, th {
 }
 .c-node-template {
     height:27px;
+    display:flex;
 }
 ul {
     padding: 0;
@@ -1608,7 +1605,7 @@ ul {
     transform: rotate(0);
 }
 .errorMessage .c-pointer {
-    border-radius: 0 0 5px 0;
+    border-radius: 0 0 7px 0;
     left: 20px;
     top: -6px;
     border-style: solid;
@@ -3291,7 +3288,7 @@ html body .t-grid tbody .t-button-icon {
 .errorMessage .c-icon {
     width: 30px;
     height: 30px;
-    line-height: 35px;
+    line-height: 31px;
     background-color: #FFA300;
     vertical-align: middle;
     border-radius: 4px;
@@ -3300,9 +3297,11 @@ html body .t-grid tbody .t-button-icon {
     margin-right:6px;
 }
 .errorMessage .fa-info {
-    color:white;
-    font-size:16px;
-    vertical-align:text-top;
+    color: white;
+    font-size: 16px;
+    vertical-align: text-top;
+    font-weight: normal;
+    padding: 0;
 }
 
 .t-datetimepicker {
@@ -3525,12 +3524,15 @@ div.t-numerictextbox {
     height: 20px;
     box-sizing: border-box;
     text-align:center;
+    justify-content:center;
 }
     .t-checkbox .t-icon i {
         color: #ff6358;
         vertical-align: top;
-        line-height: 17px;
+        line-height: 19px;
+        width: 16px;
     }
+    
     .t-checkbox .t-icon .fa-square {
         font-size: 11px !important;
     }
