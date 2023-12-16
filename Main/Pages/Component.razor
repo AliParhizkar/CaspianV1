@@ -1,36 +1,24 @@
-﻿@namespace Test.UI
+﻿@page "/Test"
+@inherits BasePage
+@namespace Test.UI
 @using Caspian.Engine;
 @using Caspian.UI;
 @using Demo.Model;
+@using Demo.Service
 @using Main.Model;
-
-<div style="width:500px;margin:10px auto">
-    <CaspianForm Model="model">
-        <CaspianValidationValidator ValidatorType="typeof(TestModelService)" />
-        <StringTextBox @bind-Value="model.Country.Title" />
-        <StringTextBox @bind-Value="model.City.Title" />
-        <StringTextBox @bind-Value="model.Name" />
-        <button>Submit</button>
-    </CaspianForm>
+@using Stimulsoft.Report
+@inject IHostEnvironment host
+<button @onclick="TestReport">Report</button>
+<InputFile />
+<div>
+    @message
 </div>
-
 @code
 {
-    TestModel model = new TestModel()
-        {
-            Country = new Country()
-            {
-ActiveType = ActiveType.Enable
-            },
-            City = new City()
-            {
-                ActiveType = ActiveType.Enable,
-CountryId = 2
-            }
-        };
-
-    public class TempContext: Demo.Model.Context
+    MarkupString message;
+    async Task TestReport()
     {
-        
+        await Task.Delay(1); 
+        throw new NotImplementedException("dsaasdas");
     }
 }

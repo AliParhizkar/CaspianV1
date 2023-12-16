@@ -3,7 +3,7 @@
 @inject IJSRuntime jSRuntime
 @inject CaspianDataService dataService
 <div  class="t-widget t-upload">
-    <Microsoft.AspNetCore.Components.Forms.InputFile @attributes="attrs" OnChange="ViewFile" />
+    <Microsoft.AspNetCore.Components.Forms.InputFile @attributes="attrs" OnChange="Test" />
     <div class="t-content">
         @if (ChildContent == null)
         {
@@ -75,8 +75,15 @@
         base.OnParametersSet();
     }
 
+    void Test(InputFileChangeEventArgs arg)
+    {
+        var q = 0;
+        var qq = 5 / q;
+    }
+
     async Task ViewFile(InputFileChangeEventArgs arg)
     {
+
         if (Service == null && OnChange.HasDelegate)
         {
             if (arg.File.Size > MaxAllowedSize)
@@ -237,6 +244,10 @@
         await using var timer = Service.Progress.Inintialze(file.Name, (int)file.Size);
         var fileData = new FileUploadData();
         FileUploadFaild = false;
+        if (!RelatedPath.EndsWith("/") && !RelatedPath.EndsWith("\\"))
+            RelatedPath += '/';
+        if (!Directory.Exists(RelatedPath))
+            throw new DirectoryNotFoundException($"Path not exist path{RelatedPath}");
         var uploadedBytes = 0;
         try
         {
@@ -247,10 +258,9 @@
             fileData.Status = FileUploadStatus.InProgress;
             FileLength = (int)file.Size;
             using var stream = file.OpenReadStream(100 * 1024 * 1024);
-            if (!RelatedPath.EndsWith("/") && !RelatedPath.EndsWith("\\"))
-                RelatedPath += '/';
-            var path = RelatedPath + fileName;
 
+            var path = RelatedPath + fileName;
+            
             while (await stream.ReadAsync(buffer) is int read && read > 0)
             {
                 uploadedBytes += read;

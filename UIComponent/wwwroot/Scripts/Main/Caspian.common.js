@@ -1081,7 +1081,6 @@
             let top = $('.c-main-head').height();
             let left = $('.sidebar').width();
             $('.c-popup-window').width($('.c-popup-window').width()).height($('.c-popup-window').height()).attr('class', className);
-            debugger
             if (target) {
                 $('.c-popup-window').attr('class', 'auto-hide c-popup-window');
                 let $target = $(target);

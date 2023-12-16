@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StiSerializer version="1.02" type="Net" application="StiReport">
+  <CalculationMode>Interpretation</CalculationMode>
+  <Dictionary Ref="16452" type="Dictionary" isKey="true">
+    <BusinessObjects isList="true" count="1">
+      <List Ref="16453" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+        <Alias>List</Alias>
+        <BusinessObjects isList="true" count="0" />
+        <Category />
+        <Columns isList="true" count="3">
+          <value>FName,System.String</value>
+          <value>LName,System.String</value>
+          <value>Item,System.Object</value>
+        </Columns>
+        <Dictionary isRef="16452" />
+        <Guid>8fce022abe8e4a22af4264f79392f9d7</Guid>
+        <Name>List</Name>
+      </List>
+    </BusinessObjects>
+    <Databases isList="true" count="0" />
+    <DataSources isList="true" count="0" />
+    <Relations isList="true" count="0" />
+    <Report isRef="0" />
+    <Variables isList="true" count="6">
+      <value>,Date,Date,System.String,,False,False</value>
+      <value>,FName,FName,System.String,,False,False</value>
+      <value>,LName,LName,System.String,,False,False</value>
+      <value>,FLName,FLName,System.String,,False,False</value>
+      <value>,UserId,UserId,System.String,,False,False</value>
+      <value>,NatinalCode,NatinalCode,System.String,,False,False</value>
+    </Variables>
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings isList="true" count="0" />
+  <MetaTags isList="true" count="0" />
+  <Pages isList="true" count="1">
+    <Page20 Ref="16427" type="Page" isKey="true">
+      <Border>None;[0:0:0];0;Solid;False;4;[0:0:0]</Border>
+      <Brush>Transparent</Brush>
+      <Components isList="true" count="2">
+        <HeaderBand1 Ref="16428" type="HeaderBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21.005,0.167</ClientRectangle>
+          <Components isList="true" count="4">
+            <Text16454 Ref="16454" type="Text" isKey="true">
+              <Font>Arial,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>0.794,0.000,13.598,0.714</ClientRectangle>
+              <Page isRef="16427" />
+              <Parent isRef="16428" />
+              <Name>Text16454</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text16454>
+            <Text16455 Ref="16455" type="Text" isKey="true">
+              <Font>Arial,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>14.381,0.000,1.984,0.714</ClientRectangle>
+              <Page isRef="16427" />
+              <Parent isRef="16428" />
+              <Name>Text16455</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text16455>
+            <Text16456 Ref="16456" type="Text" isKey="true">
+              <Font>Arial,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>16.354,0.000,1.852,0.714</ClientRectangle>
+              <Page isRef="16427" />
+              <Parent isRef="16428" />
+              <Name>Text16456</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text16456>
+            <Text16457 Ref="16457" type="Text" isKey="true">
+              <Font>Arial,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>18.206,0.000,2.09,0.714</ClientRectangle>
+              <Page isRef="16427" />
+              <Parent isRef="16428" />
+              <Name>Text16457</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text16457>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Name>HeaderBand1</Name>
+          <Page isRef="16427" />
+          <Parent isRef="16427" />
+        </HeaderBand1>
+        <DataBand1 Ref="16440" type="DataBand" isKey="true">
+          <NewPageBefore>false</NewPageBefore>
+          <NewPageAfter>false</NewPageAfter>
+          <Brush>Transparent</Brush>
+          <BusinessObjectGuid>8fce022abe8e4a22af4264f79392f9d7</BusinessObjectGuid>
+          <ClientRectangle>0,0,21.005,0</ClientRectangle>
+          <Components isList="true" count="4">
+            <Text16458 Ref="16458" type="Text" isKey="true">
+              <Font>Arial,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>0.794,0.000,13.598,0.714</ClientRectangle>
+              <Page isRef="16427" />
+              <Parent isRef="16440" />
+              <Name>Text16458</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text16458>
+            <Text16459 Ref="16459" type="Text" isKey="true">
+              <Font>Arial,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>14.381,0.000,1.984,0.714</ClientRectangle>
+              <Page isRef="16427" />
+              <Parent isRef="16440" />
+              <Name>Text16459</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text16459>
+            <Text16460 Ref="16460" type="Text" isKey="true">
+              <Font>Arial,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>16.354,0.000,1.852,0.714</ClientRectangle>
+              <Page isRef="16427" />
+              <Parent isRef="16440" />
+              <Name>Text16460</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text16460>
+            <Text16461 Ref="16461" type="Text" isKey="true">
+              <Font>Arial,12</Font>
+              <Brush>Transparent</Brush>
+              <Border>All;[0:0:0];0.8;Solid;False;4;[0:0:0]</Border>
+              <Conditions isList="true" count="0" />
+              <TextOptions>HotkeyPrefix=None, LineLimit=False, RightToLeft=True, Trimming=None, WordWrap=True, Angle=0, FirstTabOffset=40, DistanceBetweenTabs=20</TextOptions>
+              <HorAlignment>Left</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Margins>0,0,0,0</Margins>
+              <ClientRectangle>18.206,0.000,2.09,0.714</ClientRectangle>
+              <Page isRef="16427" />
+              <Parent isRef="16440" />
+              <Name>Text16461</Name>
+              <Text />
+              <TextBrush>[33:37:41]</TextBrush>
+              <Type>Expression</Type>
+            </Text16461>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Name>DataBand1</Name>
+          <Page isRef="16427" />
+          <Parent isRef="16427" />
+        </DataBand1>
+      </Components>
+      <Conditions isList="true" count="0" />
+      <Guid>3f7f0c9730b145ee9132cfdedc3c8ccd</Guid>
+      <Margins>0,0,0,0</Margins>
+      <Name>Page20</Name>
+      <PageType>0</PageType>
+      <PageWidth>21.005</PageWidth>
+      <PageHeight>29.7</PageHeight>
+      <Report isRef="0" />
+      <Watermark Ref="9998" type="Stimulsoft.Report.Components.StiWatermark" isKey="true">
+        <Font>Arial,100</Font>
+        <TextBrush>[50:0:0:0]</TextBrush>
+      </Watermark>
+    </Page20>
+  </Pages>
+  <PrinterSettings Ref="9999" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
+  <ReportAlias>Report</ReportAlias>
+  <ReportChanged>5/3/2015 4:05:02 PM</ReportChanged>
+  <ReportCreated>5/1/2015 7:31:06 PM</ReportCreated>
+  <ReportFile>D:\e.mrt</ReportFile>
+  <ReportGuid>7a59e6f3323042d4848703beddfe3e7b</ReportGuid>
+  <ReportName>ReportName</ReportName>
+  <ReportUnit>Centimeters</ReportUnit>
+  <ReportVersion>2012.1.1300</ReportVersion>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles isList="true" count="0" />
+</StiSerializer>

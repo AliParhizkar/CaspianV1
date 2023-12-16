@@ -471,7 +471,10 @@
                 let border = new Object();
                 $.myExtend(border, new rBorder().getBorder($(this)));
                 bond.border = border;
-                bond.height = $r.getHeight($(this).height());
+                if ($(this).find('.tablecontrol').hasClass('tablecontrol')) 
+                    bond.height = $r.getHeight($(this).find('.tablecontrol tbody').height());
+                else
+                    bond.height = $r.getHeight($(this).height());
                 bond.bondType = parseInt($(this).attr('BondType'));
                 if (bond.bondType == 2)
                     bond.printOn = self.printOn;

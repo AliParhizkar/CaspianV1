@@ -11,7 +11,7 @@ namespace ReportUiModels
         public Dictionary(Type type)
         {
             BusinessObject = new BusinessObject();
-            InitBusinessObject(type, this.BusinessObject, "list");
+            InitBusinessObject(type, this.BusinessObject, "List");
         }
 
         public string GetGuId(int level)

@@ -1,6 +1,6 @@
 ﻿/// <reference path="Common.js" />
 (function ($) {
-    let cell, otherCell, status, contextMenu, focused, xStart, yStart, tableSelectType, tableWidth, tableHeight, tableLeft, tableTop, $r = $.report;
+    let cell, otherCell, status, contextMenu, xStart,  yStart, tableLeft, tableTop, $r = $.report;
     function checkForAddRemove(element) {
         let flag = true;
         $(element).find('td').each(function () {
@@ -25,7 +25,6 @@
             $(element).css('left', left);
         }
     }
-
     function getBorder() {
         let border = ':1px solid #000;';
         return 'border-left' + border + 'border-right' + border + 'border-top' + border + 'border-bottom' + border;
@@ -209,6 +208,114 @@
         });
     };
     rTable.prototype = {
+        dragStart: function (x, y) {
+            $element = $(this.element);
+            tableWidth = $element.width();
+            tableHeight = $element.height();
+            tableLeft = $element.offset().left;
+            tableTop = $element.offset().top;
+            cell = null, otherCell = null;
+            $element.find('th').each(function () {
+                let $cell = $(this);
+                if ($element.find('th').index($cell) > 0) {
+                    let width = $(this).width();
+                    if (Math.abs($(this).offset().left - xStart) <= 5) {
+                        cell = new Object();
+                        cell.$cell = $cell;
+                        cell.left = $(this).offset().left;
+                        cell.width = width;
+                    }
+                    if (Math.abs($(this).offset().left + width - xStart) <= 5) {
+                        otherCell = new Object();
+                        otherCell.$cell = $cell;
+                        otherCell.left = $(this).offset().left;
+                        otherCell.width = width;
+                    }
+                }
+            });
+            $element.find('.rowHeader').each(function () {
+                if (Math.abs($(this).offset().top + $(this).height() - yStart) <= 5) {
+                    cell = new Object();
+                    cell.$cell = $(this);
+                    cell.top = $(this).offset().top;
+                    cell.height = $(this).height();
+                }
+            });
+            this.colSelect(x);
+            this.rowSelect(y);
+        },
+        drag: function (difX, difY) {
+            let $element = $(this.element);
+            let otherTable = $('#bond').find('.tablecontrol').filter(function () {
+                if ($(this).attr('id') != $element.attr('id'))
+                    return this;
+            });
+            
+            switch (status) {
+                case statusType.changeCellWidth:
+                    let otherTableCell, tableCell;
+                    if (cell || otherCell) {
+                        let width, otherWidth;
+                        if (cell)
+                            width = cell.width - difX;
+                        if (otherCell)
+                            otherWidth = otherCell.width + difX;
+                        
+                        otherTable.find('th').each(function () {
+                            if (Math.abs(xStart + difX - $(this).offset().left) < 6) {
+                                otherTableCell = this;
+                                if (cell != null) {
+                                    tableCell = cell.$cell[0];
+                                    width = cell.width - Math.floor($(this).offset().left - cell.left);
+                                }
+                                if (cell && otherCell)
+                                    otherWidth = otherCell.width + $(this).offset().left - cell.left;
+                            }
+                        });
+                        if (cell) {
+                            cell.$cell.width(width);
+                            if (otherCell) {
+                                otherWidth = otherCell.width - (cell.$cell.width() - cell.width);
+                                otherCell.$cell.width(otherWidth);
+                                let difrent = tableWidth - $element.width();
+                                if (difrent > 0)
+                                    alert('Yes')
+                                otherCell.$cell.width(otherWidth + difrent);
+                                console.log(difrent);
+                            }
+                        }
+                    }
+                    if (otherCell && cell == null) {
+                        let width = otherCell.width + 2 * difX;
+                        otherCell.$cell.width(width);
+                    }
+                    if (cell && otherCell == null) {
+                        let width = cell.width - 2 * difX;
+                        cell.$cell.width(width);
+                    }
+                    if (otherTableCell) {
+                        $r.showLeftRuler(otherTableCell, tableCell);
+                        if (cell == null || otherCell == null)
+                            $r.showRightRuler(otherTable, tableCell);
+                    }
+                    else
+                        $r.hideRuler();
+                    centerAlign(this.element);
+                    break;
+                case statusType.changeCellHeight:
+                    if (cell) {
+                        if (cell.$cell.attr('rowspan') == 1 || !cell.$cell.attr('rowspan'))
+                            cell.$cell.height(cell.height + difY);
+                    }
+                    centerAlign(this.element);
+                    break;
+                case statusType.move:
+                    $element.css('left', tableLeft + difX + $element.width());
+                    $element.css('top', tableTop + difY);
+                    break;
+            }
+
+        },
         text: function (text) {
             let $element = $(this.element).find('.cellselected').first();
             if (arguments.length == 0)
@@ -431,42 +538,7 @@
             this.focused = false;
             $(this.element).find('td').removeClass('cellselected');
         },
-        dragStart: function (x, y) {
-            $element = $(this.element);
-            tableWidth = $element.width();
-            tableHeight = $element.height();
-            tableLeft = $element.offset().left;
-            tableTop = $element.offset().top;
-            cell = null, otherCell = null;
-            $element.find('th').each(function () {
-                let $cell = $(this);
-                if ($element.find('th').index($cell) > 0) {
-                    let width = $(this).width();
-                    if (Math.abs($(this).offset().left - xStart) <= 5) {
-                        cell = new Object();
-                        cell.$cell = $cell;
-                        cell.left = $(this).offset().left;
-                        cell.width = width;
-                    }
-                    if (Math.abs($(this).offset().left + width - xStart) <= 5) {
-                        otherCell = new Object();
-                        otherCell.$cell = $cell;
-                        otherCell.left = $(this).offset().left;
-                        otherCell.width = width;
-                    }
-                } 
-            });
-            $element.find('.rowHeader').each(function () {
-                if (Math.abs($(this).offset().top + $(this).height() - yStart) <= 5) {
-                    cell = new Object();
-                    cell.$cell = $(this);
-                    cell.top = $(this).offset().top;
-                    cell.height = $(this).height();
-                }
-            });
-            this.colSelect(x);
-            this.rowSelect(y);
-        },
+
         updateCursor: function (x, y) {
             status = statusType.none;
             xStart = x; yStart = y;
@@ -542,72 +614,7 @@
 
             return status;
         },
-        drag: function (difX, difY) {
-            let $element = $(this.element);
-            let otherTable = $('#bond').find('.tablecontrol').filter(function () {
-                if ($(this).attr('id') != $element.attr('id'))
-                    return this;
-            });
-            switch (status)
-            {
-                case statusType.changeCellWidth:
-                    let item1, item2;
-                    if (cell || otherCell) {
-                        let width, otherWidth;
-                        if (cell)
-                            width = cell.width - difX;
-                        if (otherCell)
-                            otherWidth = otherCell.width + difX;
-                        otherTable.find('th').each(function () {
-                            if (Math.abs(xStart + difX - $(this).offset().left) < 6) {
-                                item1 = this;
-                                if (cell != null) {
-                                    item2 = cell.$cell[0];
-                                    width = cell.width - Math.floor($(this).offset().left - cell.left);
-                                }
-                                if (cell && otherCell)
-                                    otherWidth = otherCell.width + $(this).offset().left - cell.left;
-                            }
-                        });
-                        if (cell) {
-                            cell.$cell.width(width);
-                            if (otherCell) {
-                                otherWidth = otherCell.width - (cell.$cell.width() - cell.width) - 1;
-                                otherCell.$cell.width(otherWidth);
-                            }
-                        }
-                    }
-                    if (otherCell && cell == null) {
-                        let width = otherCell.width + 2 * difX;
-                        otherCell.$cell.width(width);
-                    }
-                    if (cell && otherCell == null) {
-                        let width = cell.width - 2 * difX
-                        cell.$cell.width(width);
-                    }
-                    if (item1) {
-                        $r.showLeftRuler(item1, item2);
-                        if (cell == null || otherCell == null)
-                            $r.showRightRuler(otherTable, item2);
-                    }
-                    else
-                        $r.hideRuler();
-                    centerAlign(this.element);
-                    break;
-                case statusType.changeCellHeight:
-                    if (cell) {
-                        if (cell.$cell.attr('rowspan') == 1 || !cell.$cell.attr('rowspan')) 
-                            cell.$cell.height(cell.height + difY);
-                    }
-                    centerAlign(this.element);
-                    break;
-                case statusType.move:
-                    $element.css('left', tableLeft + difX + $element.width());
-                    $element.css('top', tableTop + difY);
-                    break;
-            }
-            
-        },
+
         getContextMenu: function () {
             if (contextMenu == 2 && rowIsSelected(this.element))
                 return 2;

@@ -7,6 +7,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Npm" Version="3.5.2" />
+    <PackageReference Include="Stimulsoft.Reports.Blazor" Version="2023.4.4" />
+    <PackageReference Include="Stimulsoft.Reports.Engine.Blazor" Version="2023.4.4" />
     <PackageReference Include="Syncfusion.Blazor.Diagram" Version="21.1.35" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +53,33 @@
     </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore">
       <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\6.0.5\lib\net6.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Base">
+      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Blockly">
+      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Blockly.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Data">
+      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Drawing">
+      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Map">
+      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Map.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Report">
+      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Report.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Report.Check">
+      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Report.Check.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.Report.Helper">
+      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Report.Helper.dll</HintPath>
+    </Reference>
+    <Reference Include="Stimulsoft.System">
+      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.System.dll</HintPath>
     </Reference>
     <Reference Include="System.Linq.Dynamic.Core">
       <HintPath>..\..\..\..\.nuget\packages\system.linq.dynamic.core\1.2.18\lib\net6.0\System.Linq.Dynamic.Core.dll</HintPath>

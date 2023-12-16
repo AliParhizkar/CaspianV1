@@ -1672,6 +1672,7 @@ td {
         text-overflow: ellipsis;
         white-space: nowrap;
         max-width: 30px;
+        box-sizing:border-box;
     }
 
     .reportcontrol.tablecontrol th {

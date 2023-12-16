@@ -22,7 +22,7 @@
 .c-dataview-field {
     line-height: 34px;
 }
-.c-controls tr {
+.c-controls >table tr {
     height: 38px;
 }
 .c-dataview-button .fa {

@@ -11,7 +11,7 @@ namespace ReportUiModels
             var value = element.Value;
             var array = value.Split(',');
             Family = array[0];
-            Size = Convert.ToDouble(array[array.Length - 1]);
+            Size = Convert.ToDouble(array[1]);
             if (array.Length > 2)
             {
                 var str = array[2];
@@ -41,6 +41,7 @@ namespace ReportUiModels
 
         public XElement GetXmlElement()
         {
+            Family = "Arial"; //******************************************
             var temp = "";
             if (Bold)
                 temp = "Bold";

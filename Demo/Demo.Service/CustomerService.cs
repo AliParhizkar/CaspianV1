@@ -5,6 +5,7 @@ using Caspian.Engine;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
 using FluentValidation;
+using System.Linq;
 
 namespace Demo.Service
 {
@@ -33,6 +34,12 @@ namespace Demo.Service
                 entity.LName = null;
                 entity.Gender = null;
             }
+        }
+
+
+        public IQueryable<Customer> GetCustomer(Customer customer)
+        {
+            return GetAll();
         }
 
         public override Task<Customer> AddAsync(Customer entity)
