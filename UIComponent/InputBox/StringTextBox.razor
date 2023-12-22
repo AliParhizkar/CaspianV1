@@ -29,11 +29,17 @@
 
     async Task ChangeValue(ChangeEventArgs arg)
     {
-        Value = arg.Value.ToString();
-        if (ValueChanged.HasDelegate)
-            await ValueChanged.InvokeAsync(Value);
-        if (OnChange.HasDelegate)
-            await OnChange.InvokeAsync();
+        var readOnly = false;
+        if (InputAttributes.ContainsKey("readonly"))
+            readOnly = Convert.ToBoolean(InputAttributes["readonly"]);
+        if (!readOnly && !Disabled)
+        {
+            Value = arg.Value.ToString();
+            if (ValueChanged.HasDelegate)
+                await ValueChanged.InvokeAsync(Value);
+            if (OnChange.HasDelegate)
+                await OnChange.InvokeAsync();
+        }
     }
 
     protected override void OnInitialized()

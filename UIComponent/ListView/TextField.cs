@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class StringField<TEntity> where TEntity : class
+    public partial class TextField<TEntity> where TEntity : class
     {
         [Parameter]
         public Expression<Func<TEntity, string>> Field { get; set; }

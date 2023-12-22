@@ -1,0 +1,57 @@
+﻿@namespace Demo.Web
+@page "/Demo/ListView"
+<h2>List view</h2>
+<p>
+    We use this control to <b>display a list</b> with a <b>custom template</b>, unlike Grid, the programmer can set the <b>Header</b> and <b>Content Template</b>.
+</p>
+
+<div class="d-listview-product">
+    <ListView TEntity="Product" HideInsertIcon>
+        <HeaderTempalte>
+            <div class="d-col-ph-1 col-md-7 justify-content-center d-flex">
+                Product
+            </div>
+            <div class="col-md-5 justify-content-center d-flex">
+                Image
+            </div>
+        </HeaderTempalte>
+        <Fields>
+            <div class="d-product-content d-flex">
+                <div class="col-md-7 c-controls row p-2">
+                    <div class="col-md-4">
+                        <label>Product Category</label>
+                    </div>
+                    <div class="col-md-8">
+                        <TextField Field="t => t.ProductCategory.Title" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Title</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringField Field="t => ActiveType" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Price</label>
+                    </div>
+                    <div class="col-md-8">
+                        
+                    </div>
+                    <div class="col-md-4">
+                        <label>Takeout Price</label>
+                    </div>
+                    <div class="col-md-8">
+                        
+                    </div>
+                </div>
+                <div class="col-md-5 justify-content-center d-flex p-2">
+                    <ImageField Field="t => t.Image" Style="width:250px;height:200px;" />
+                </div>
+            </div>
+        </Fields>
+    </ListView>
+</div>
+
+
+@code {
+    
+}

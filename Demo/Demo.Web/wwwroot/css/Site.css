@@ -1,12 +1,30 @@
 ﻿html {
   scroll-behavior: smooth;
 }
-.c-dataview-header >div{
-    height:36px;
-    text-overflow:clip;
-    padding:6px 2px;
-    overflow:hidden;
-    user-select:none;
+.d-listview-product{
+    width:750px;
+    margin:0 auto;
+}
+.d-col-ph-1 {
+    border-right: 1px solid rgba(0, 0, 0, .2);
+}
+.d-listview-product .c-dataview-field {
+    line-height: 34px;
+    display: inline-block;
+    width: 100%;
+    background-color: #eaefff;
+    border-radius:8px;
+    padding:0 5px;
+}
+.d-listview-product .d-product-content:nth-child(2n) {
+    background-color: #d0d0d0;
+}
+.c-dataview-header > div {
+    height: 36px;
+    text-overflow: clip;
+    padding: 6px 2px;
+    overflow: hidden;
+    user-select: none;
 }
 .d-list-head {
     display: flex;

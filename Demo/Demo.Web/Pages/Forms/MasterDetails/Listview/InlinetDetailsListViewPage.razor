@@ -105,7 +105,7 @@
                              </StringField>
                          </div>
                          <div class="d-listview-col-4">
-                            <button disabled="@(detail?.UpsertMode == null)" @onclick="async () => await ShowDescription(detail)">...</button>
+                             <button class="c-btn c-info" disabled="@(detail?.UpsertMode == null)" @onclick="async () => await ShowDescription(detail)">...</button>
                          </div>
                          <div class="d-listview-col-5">
                              <ListCommandButton ButtonType="CommandButtonType.Simple" />

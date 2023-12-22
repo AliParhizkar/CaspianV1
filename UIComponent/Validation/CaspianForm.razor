@@ -8,7 +8,7 @@
     var serviceType = typeof(IBaseService<>).MakeGenericType(modelType);
     serviceType = provider.GetService(serviceType)?.GetType();
 }
-<EditForm EditContext="EditContext"
+<EditForm EditContext="EditContext" 
           OnSubmit="@(async context => await OnFormSubmitHandler(context))"
 
         @onreset="@(async (e) =>

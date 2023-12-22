@@ -14,6 +14,9 @@
     align-items: center;
     color: #656565;
 }
+.c-checkbox-list .c-item{
+    padding:2px 0;
+}
 .c-listview-insert {
     width: 100%;
     background-color: #dae2f9;

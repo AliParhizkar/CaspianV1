@@ -88,7 +88,10 @@
 
     public virtual async Task SetValue(object obj)
     {
-        if (!Disabled)
+        var readOnly = false;
+        if (InputAttributes.ContainsKey("readonly"))
+            readOnly = Convert.ToBoolean(InputAttributes["readonly"]);
+        if (!Disabled && readOnly)
         {
             var type = DynamicType ?? typeof(TValue);
             if (type.IsNullableType() && obj != null)

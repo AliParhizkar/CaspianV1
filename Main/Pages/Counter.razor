@@ -9,16 +9,50 @@
 @using Microsoft.Data.SqlClient
 @using Microsoft.EntityFrameworkCore
 
-<div @onmousedown="Click" @onmousedown:stopPropagation style="width:500px;height:500px;border:1px solid red;margin:0 auto">
+<form onSubmit="e => e.preventDefault()">
 
-</div>
+</form>
+
 
 
 
 @code 
 {
-    void Click(MouseEventArgs e)
+    Person person = new Person();
+    public class Person
+    {
+        public string Name { get; set; }
+
+        public int Age { get; set; }
+    }
+
+    bool cancelSubmit;
+    City city = new City();
+    EditContext context;
+
+    protected override void OnInitialized()
+    {
+        context = new EditContext(city);
+        base.OnInitialized();
+    }
+
+    void FormSubmited()
     {
         
+    }
+
+    void keyhandler(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            return;
+        }
+
+
+    }
+
+    void KeyPress(KeyboardEventArgs e)
+    {
+        cancelSubmit = true;
     }
 }

@@ -42,9 +42,7 @@ namespace Main
             builder.Services.AddScoped<CaspianDataService>();
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
-            builder.Services.AddScoped<Employment.Model.Context>();
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
-            typeof(Employment.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ActivityService).Assembly.InjectServices(builder.Services);
             builder.Services.AddAuthentication("Cookies").AddCookie();
             var app = builder.Build();

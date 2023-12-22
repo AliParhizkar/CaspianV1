@@ -3,7 +3,7 @@
 @inject IJSRuntime jSRuntime
 @inject CaspianDataService dataService
 <div  class="t-widget t-upload">
-    <Microsoft.AspNetCore.Components.Forms.InputFile @attributes="attrs" OnChange="Test" />
+    <Microsoft.AspNetCore.Components.Forms.InputFile @attributes="attrs" OnChange="ViewFile" />
     <div class="t-content">
         @if (ChildContent == null)
         {
@@ -73,12 +73,6 @@
                 MaxAllowedSize = 512_000;
         }
         base.OnParametersSet();
-    }
-
-    void Test(InputFileChangeEventArgs arg)
-    {
-        var q = 0;
-        var qq = 5 / q;
     }
 
     async Task ViewFile(InputFileChangeEventArgs arg)
@@ -247,7 +241,7 @@
         if (!RelatedPath.EndsWith("/") && !RelatedPath.EndsWith("\\"))
             RelatedPath += '/';
         if (!Directory.Exists(RelatedPath))
-            throw new DirectoryNotFoundException($"Path not exist path{RelatedPath}");
+            throw new DirectoryNotFoundException($"Path not exist path: {RelatedPath}");
         var uploadedBytes = 0;
         try
         {
