@@ -1,5 +1,7 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity where TEntity : class
+@inject IServiceScopeFactory Factory
+@inject IJSRuntime jsRuntime
 @inherits DataCommand<TEntity> 
 @{
     @if (RowData != null)
@@ -17,14 +19,15 @@
         }
         else
         {
-            if (ButtonType == CommandButtonType.Default && ButtonType == null)
+            if (ButtonType == CommandButtonType.Default || ButtonType == null)
             {
+                <MessageBox @ref="MessageBox" />
                 <span class="c-dataview-button">
                     <button class="c-btn c-primary" @onclick="OpenForm">
                         <span>Edit</span>
                         <span class="t-icon fa fa-pencil"></span>
                     </button>
-                    <button class="c-btn c-danger">
+                    <button class="c-btn c-danger" @onclick="RemoveAsync">
                         <span>Delete</span>
                         <span class="t-icon fa fa-trash"></span>
                     </button>
@@ -48,6 +51,9 @@
 
 @code 
 {
+    string errorMessage;
+    MessageBox MessageBox;
+
     [Parameter]
     public CommandButtonType? ButtonType { get; set; }
 
@@ -59,4 +65,42 @@
             await base.OpenForm();
         }
     }
+
+    async Task RemoveAsync()
+    {
+        using var scope = Factory.CreateScope();
+        var service = scope.ServiceProvider.GetService<IBaseService<TEntity>>();
+        var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(RowData.Data));
+        var old = await service.SingleAsync(id);
+        var result = await service.ValidateAsync(old, t => t.IncludeRuleSets("Remove"));
+        if (result.IsValid)
+        {
+            if (await MessageBox.Confirm(DataView.DeleteMessage))
+            {
+                await service.RemoveAsync(old);
+                try
+                {
+                    await service.SaveChangesAsync();
+                    await DataView.ReloadAsync();
+                }
+                catch (DbUpdateConcurrencyException exp)
+                {
+                    errorMessage = "این آیتم قبلا حذف شده است";
+                }
+            }
+        }
+        else
+            errorMessage = result.Errors.First().ErrorMessage;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (errorMessage != null)
+        {
+            await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
+            errorMessage = null;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
 }

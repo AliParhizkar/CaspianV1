@@ -110,7 +110,7 @@
 
     protected override void OnParametersSet()
     {
-        date = DateTime.Now.Date.ToPersianDateString();
+        date = DateTime.Now.Date.ToShortDateString();
         time = DateTime.Now.TimeOfDay.ShortString();
         var uri = new Uri(navigationManager.Uri);
         var url = uri.AbsolutePath;

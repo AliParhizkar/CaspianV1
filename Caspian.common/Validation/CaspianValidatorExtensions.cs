@@ -298,10 +298,15 @@ namespace Caspian.Common
                         }
                         else
                         {
+                            var info1 = type.GetForeignKey(typeof(TModel));
+                            var paramExpr = Expression.Parameter(type);
+                            Expression expr = Expression.Property(paramExpr, info1);
+                            expr = Expression.Equal(expr, Expression.Constant(value));
+                            var lambda = Expression.Lambda(expr, paramExpr);
                             var serviceType = typeof(BaseService<>).MakeGenericType(type);
                             var scope1 = (IServiceScope)context.RootContextData["__ServiceScope"];
                             var service = Activator.CreateInstance(serviceType, scope1.ServiceProvider) as IBaseService;
-                            var hasDetails = await service.AnyAsync(Convert.ToInt32(value));
+                            var hasDetails = await service.GetAllRecords().Where(lambda).OfType<object>().AnyAsync();
                             if (hasDetails)
                             {
                                 context.AddFailure(attr.ErrorMessage);

@@ -37,7 +37,7 @@
                     <Window Title="Product Category" Style="width:500px">
                         <Content>
                             <CaspianForm Model="upsertCategory">
-                                <div class="row c-controls ps-4 pe-4 pt-2 pb-2">
+                                <div class="row c-controls ps-4 pe-4 pt-3 pb-2">
                                     <div class="col-md-4">
                                         <label>Title</label>
                                     </div>
@@ -92,56 +92,67 @@
                                 <GridCommandColumns />
                             </Columns>
                         </DataGrid>
-                        <Window Title="Product" Style="width:500px">
+                        <Window Title="Product" Style="width:650px">
                             <Content>
                                 <CaspianForm Model="upsertProduct" OnSubmit="SetCategory">
-                                    <div class="row c-controls">
-                                        <div class="col-md-4">
-                                            <label>Title</label>
+                                    <div class="row c-controls pb-3">
+                                        <div class="col-md-7">
+                                            <div class="row">
+                                                 <div class="col-md-4">
+                                                     <label>Title</label>
+                                                 </div>
+                                                 <div class="col-md-8">
+                                                     <StringTextBox @bind-Value="upsertProduct.Title" />
+                                                 </div>
+                                                 <div class="col-md-4">
+                                                     <label>Price</label>
+                                                 </div>
+                                                 <div class="col-md-8">
+                                                     <NumericTextBox @bind-Value="upsertProduct.Price" />
+                                                 </div>
+                                                 <div class="col-md-4">
+                                                     <label>Take out Price</label>
+                                                 </div>
+                                                 <div class="col-md-8">
+                                                     <NumericTextBox @bind-Value="upsertProduct.TakeoutPrice" />
+                                                 </div>
+                                                 <div class="col-md-4">
+                                                     <label>Meal</label>
+                                                 </div>
+                                                 <div class="col-md-8">
+                                                     <MultiSelectBox @bind-Value="upsertProduct.Meal" />
+                                                 </div>
+                                                 <div class="col-md-4">
+                                                     <label>Code</label>
+                                                 </div>
+                                                 <div class="col-md-8">
+                                                     <NumericTextBox @bind-Value="upsertProduct.Code" />
+                                                 </div>
+                                                 <div class="col-md-4">
+                                                     <label>Status</label>
+                                                 </div>
+                                                 <div class="col-md-8">
+                                                     <DropdownList @bind-Value="upsertProduct.ActiveType" />
+                                                 </div>
+                                                 <div class="col-md-4">
+                                                     <label>Discountable</label>
+                                                 </div>
+                                                 <div class="col-md-8">
+                                                     <CheckBox @bind-Value="upsertProduct.Discountable" />
+                                                 </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-8">
-                                            <StringTextBox @bind-Value="upsertProduct.Title" />
+                                        <div class="col-md-5 ps-4">
+                                             <div class="col-md-12 justify-content-center d-flex">
+                                                 <Fileupload OnChange="SetImage">
+                                                     <PictureBox Data="upsertProduct.Image" style="width:200px;height:200px" />
+                                                 </Fileupload>
+                                            </div>
+                                             <div class="justify-content-center d-flex pt-2">
+                                                 <WindowCommandButtons />
+                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <label>Price</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <NumericTextBox @bind-Value="upsertProduct.Price" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Take out Price</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <NumericTextBox @bind-Value="upsertProduct.TakeoutPrice" />
-                                        </div>
-                                         <div class="col-md-4">
-                                             <label>Code</label>
-                                         </div>
-                                         <div class="col-md-8">
-                                             <NumericTextBox @bind-Value="upsertProduct.Code" />
-                                         </div>
-                                        <div class="col-md-4">
-                                            <label>Meal</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <MultiSelectBox @bind-Value="upsertProduct.Meal" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Status</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <DropdownList @bind-Value="upsertProduct.ActiveType" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Discountable</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <CheckBox @bind-Value="upsertProduct.Discountable" />
-                                        </div>
-                                        <div class="col-md-4"></div>
-                                        <div class="col-md-8 align-content-center">
-                                            <WindowCommandButtons />
-                                        </div>
+
                                     </div>
                                 </CaspianForm>
                             </Content>
@@ -179,6 +190,11 @@
     void SetCategory()
     {
         upsertProduct.ProductCategoryId = productcategoryId.Value;
+    }
+
+    async Task SetImage(InputFileChangeEventArgs e)
+    {
+        upsertProduct.Image = await e.File.GetByteArrayAsync();
     }
 
     async void ShowProductGrid(ProductCategory category)

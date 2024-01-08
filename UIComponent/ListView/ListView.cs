@@ -16,7 +16,6 @@ namespace Caspian.UI
     public partial class ListView<TEntity>: DataView<TEntity> where TEntity : class
     {
         IList<Expression> fieldsExpression;
-        int total;
         WindowStatus status;
 
         protected override void OnInitialized()
@@ -41,7 +40,7 @@ namespace Caspian.UI
                 var query = service.GetAll();
                 if (ConditionExpr != null)
                     query = query.Where(ConditionExpr);
-                total = await query.CountAsync();
+                Total = await query.CountAsync();
                 var exprList = new List<MemberExpression>();
                 foreach(var expr in fieldsExpression)
                 {

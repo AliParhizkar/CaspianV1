@@ -154,41 +154,20 @@ namespace ReportUiModels
     /// </summary>
     public enum SystemVariable
     {
-        /// <summary>
-        /// تاریخ جاری سیستم
-        /// </summary>
-        [Display(Name = "تاریخ جاری")]
+        [Display(Name = "ِDate")]
         Date = 1,
 
-        /// <summary>
-        /// نام کاربرجاری
-        /// </summary>
-        [Display(Name = "نام کاربر")]
+        [Display(Name = "First Name")]
         FName,
 
-        /// <summary>
-        /// نام خانوادگی کاربرجاری
-        /// </summary>
-        [Display(Name = "نام خانوادگی کاربر")]
+        [Display(Name = "Last Name")]
         LName,
 
-        /// <summary>
-        /// نام نام خانوادگی کاربر جاری
-        /// </summary>
-        [Display(Name = "نام و نام خانوادگی کاربر")]
+        [Display(Name = "Name")]
         FLName,
 
-        /// <summary>
-        /// کد کاربری/پرسنلی کاربر جاری
-        /// </summary>
-        [Display(Name = "کد کاربری/پرسنلی کاربر")]
-        UserId,
-
-        /// <summary>
-        /// کد ملی کاربر جاری
-        /// </summary>
-        [Display(Name = "کد ملی کاربر")]
-        NatinalCode
+        [Display(Name = "Personnel Code")]
+        UserId
     }
 
     public enum HorizontalAlign

@@ -80,7 +80,7 @@
                      }
                      <div class="@name">
                          <div class="d-listview-col-1">
-                             <StringField Field="t => t.Product.Title" >
+                             <TextField Field="t => t.Product.Title" >
                                 <EditTemplate >
                                     <AutoComplete TEntity="Product" TValue="int" @bind-Value="detail.Data.ProductId"
                                             HideHeader AutoHide TextExpression="t => t.Title"
@@ -88,22 +88,22 @@
                                         <ProductLookupWindow />
                                      </AutoComplete>
                                 </EditTemplate>
-                             </StringField>
+                             </TextField>
                          </div>
                          <div class="d-listview-col-2">
-                             <StringField Field="t => t.Price.Seprate3Digit()" >
+                             <TextField Field="t => t.Price.Seprate3Digit()" >
                                 <Template>
                                      <span>@(detail.Data.Price.Seprate3Digit())</span>
                                 </Template>
-                             </StringField>
+                             </TextField>
                          </div>
                          <div class="d-listview-col-3">
-                             <StringField Field="t => t.Quantity.ToString()">
+                             <TextField Field="t => t.Quantity.ToString()">
                                 <EditTemplate>
                                     <NumericTextBox @ref="txtQuantity" @bind-Value="detail.Data.Quantity"
                                     @onkeyup="@(async e => await UpsertOnEnter(e, detail.UpsertMode.Value))" />
                                 </EditTemplate>
-                             </StringField>
+                             </TextField>
                          </div>
                          <div class="d-listview-col-4">
                             <button disabled="@(detail?.UpsertMode == null)" @onclick="async () => await ShowDescription(detail)">...</button>

@@ -2085,9 +2085,10 @@ div.t-window {
     border-radius: 8px 8px 0 0;
 }
 .t-window >.t-header {
-    padding: 2px 8px;
+    padding: 3px 8px;
     background-color: #e6e7e8;
     border-radius:8px 8px 0 0;
+    height:30px;
 }
 .t-window .fa-close{
     vertical-align:super;
@@ -3574,6 +3575,9 @@ label{
 .t-stringtextbox .t-input:focus {
     box-shadow: 0 0 3px 0 grey;
 }
+.t-stringtextbox.t-state-error .t-input:focus {
+    box-shadow: 0 0 3px 0 #ff8d8d !important;
+}
 
 .t-datepicker .t-input {
     border-radius: 0 8px 8px 0;
@@ -3581,7 +3585,7 @@ label{
     border-style: solid;
     box-sizing: border-box;
     height: 30px;
-    font-size:15px;
+    font-size: 15px;
     padding-left: 5px;
     border-color: rgba(0, 0, 0, 0.12);
 }

@@ -126,7 +126,6 @@ let rControl = function (element) {
         $element.closest('#bond').find('.reportcontrol').each(function () {
             if ($(this).hasClass('tablecontrol')) {
                 $(this).find('th').each(function () {
-                    debugger;
                     if (Math.abs($(this).offset().left - leftStart - difX) < 5) {
                         obj.leftItem = this
                         obj.left = $(this).offset().left;
@@ -145,7 +144,6 @@ let rControl = function (element) {
                     }
                 });
             } else if (id != $(this).attr('id')) {
-                debugger
                     if (Math.abs($(this).offset().left - leftStart - difX) < 5) {
                         obj.leftItem = this
                         obj.left = $(this).offset().left;

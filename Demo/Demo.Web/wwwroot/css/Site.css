@@ -2,9 +2,12 @@
   scroll-behavior: smooth;
 }
 .d-listview-product{
-    width:750px;
     margin:0 auto;
 }
+.d-product-content{
+    width:100%;
+}
+
 .d-col-ph-1 {
     border-right: 1px solid rgba(0, 0, 0, .2);
 }
@@ -17,7 +20,7 @@
     padding:0 5px;
 }
 .d-listview-product .d-product-content:nth-child(2n) {
-    background-color: #d0d0d0;
+    background-color: #889698;
 }
 .c-dataview-header > div {
     height: 36px;

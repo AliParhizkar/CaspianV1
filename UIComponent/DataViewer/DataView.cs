@@ -61,6 +61,9 @@ namespace Caspian.UI
         public int? ContentHeight { get; set; }
 
         [Parameter]
+        public string DeleteMessage { get; set; }
+
+        [Parameter]
         public bool HideInsertIcon { get; set; }
 
         [Parameter]
@@ -109,6 +112,10 @@ namespace Caspian.UI
             serviceType = scope.ServiceProvider.GetService(type).GetType();
             if (!AutoHide && Inline)
                 CreateInsert();
+            if (CaspianDataService.Language == Language.Fa)
+                DeleteMessage = "آیا با حذف موافقید؟";
+            else
+                DeleteMessage = "Do you agree to delete?";
             base.OnInitialized();
         }
 
@@ -185,6 +192,7 @@ namespace Caspian.UI
                         var service =  scope.GetService<BaseService<TEntity>>();
                         await service.UpdateAsync(selectedEntity);
                         await service.SaveChangesAsync();
+                        await ReloadAsync();
                     }
                     else
                         await UpdateAsync(EditContext.Model as TEntity);

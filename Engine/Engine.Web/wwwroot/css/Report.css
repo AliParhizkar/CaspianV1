@@ -35,6 +35,7 @@
 #bindConfig {
     height: 24px;
     width: 154px;
+    padding-left:5px;
 }
 #ruler {
     height: 24px;

@@ -47,14 +47,17 @@
             border-top: none;
         }
     </style>
+    <script type="text/javascript">
+        function validateMyForm(e) {
+            debugger
+            console.log(e.target)
+        }
+    </script>
 </head>
 <body style="margin:0;padding:0">
-    <div class="c-controls">
-        <span class="c-angle c-top-left"></span>
-        <span class="c-angle c-top-right"></span>
-        <span class="c-angle c-bottom-left"></span>
-        <span class="c-angle c-bottom-right"></span>
-        <div class="c-content"></div>
-    </div>
+    <form>
+        <input onkeydown="return event.key != 'Enter';" />
+        <button>1111</button>
+    </form>
 </body>
 </html>

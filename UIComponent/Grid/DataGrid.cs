@@ -359,9 +359,6 @@ namespace Caspian.UI
         public RenderFragment<RowData<TEntity>> Columns { get; set; }
 
         [Parameter]
-        public string DeleteMessage { get; set; }
-
-        [Parameter]
         public RenderFragment ToolsBar { get; set; }
 
         [Parameter]
@@ -485,10 +482,6 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (CaspianDataService.Language == Language.Fa)
-                DeleteMessage = "آیا با حذف موافقید؟";
-            else
-                DeleteMessage = "Do you agree to delete?";
             if (SelectType == SelectType.Multi)
                 selectedIds = new List<int>();
             tableAttrs = new Dictionary<string, object>();

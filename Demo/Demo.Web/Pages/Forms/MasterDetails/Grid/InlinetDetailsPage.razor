@@ -97,7 +97,7 @@
                             <hr class="mt-2" />
                         </div>
                     </div>
-                    <div class="col-md-5 row pe-3">
+                    <div class="col-md-4 row pe-3">
                         <CaspianForm @ref="Form" Model="UpsertData">
                             <div class="row c-controls">
                                 <div class="col-md-4">
@@ -137,8 +137,8 @@
                             </div>
                         </CaspianForm>
                     </div>
-                    <div class="col-md-7 ps-3">
-                         <DataGrid @ref="DataView" TEntity="OrderDeatil" ContentHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
+                    <div class="col-md-8 ps-3">
+                         <DataGrid @ref="DataView" TEntity="OrderDeatil" ContentHeight="250" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Product.Title" Title="Product">
                                     <EditTemplate>
@@ -178,7 +178,9 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
+<div style="height:110px">
 
+</div>
 @code
 {
     NumericTextBox<int> txtQuantity;
