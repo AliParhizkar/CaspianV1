@@ -1,0 +1,95 @@
+﻿@namespace Caspian.Report
+
+<div class="tools-bar">
+    <div id="toolsBar1">
+        <span class="toolsbar" style="width:7px;"></span>
+        <ToolsbarIcon XPosition="319" />
+        <CollorPicker XPosition="281" />
+        <span class="toolsbar" style="width:2px;background-position:-279px 0px"></span>
+        <SelectableIcon XPosition="254" />
+        <SelectableIcon XPosition="229" />
+        <SelectableIcon XPosition="204" />
+        <span class="toolsbar toolsbar" style="width:2px;background-position:-202px 0px"></span>
+        <SelectableIcon XPosition="177" />
+        <SelectableIcon XPosition="102" />
+        <SelectableIcon XPosition="127" />
+        <SelectableIcon XPosition="152" />
+        <span class="toolsbar toolsbar" style="width:2px;background-position:-100px 0px"></span>
+        <SelectableIcon XPosition="75" />
+        <SelectableIcon XPosition="50" />
+        <SelectableIcon XPosition="25" />
+        <span class="toolsbar-list" style="width:62px;">
+            <input disabled="disabled" class="toolsbar-list-input" value="12" style="width:40px" />
+            <span id="_14" class="toolsbar" style="width:17px;background-position:-8px 0px;"></span>
+        </span>
+        <span class="toolsbar-list" style="width:142px;">
+            <input disabled="disabled" class="toolsbar-list-input" value="B1Nazanin" style="width:120px" />
+            <span id="_15" class="toolsbar" style="width:17px;background-position:-8px 0px;"></span>
+        </span>
+        <span class="toolsbar" style="width:13px;background-position:-344px 0px"></span>
+    </div>
+    <div id="toolsBar2">
+        <span class="toolsbar" style="width:7px;background-position:-358px 0px"></span>
+        <DropdownIcon @ref="borderKind" BorderKind />
+        <DropdownIcon @ref="borderWidth" />
+        <CollorPicker XPosition="582" />
+        <CollorPicker XPosition="544" />
+        <span class="toolsbar" style="width:2px;background-position:-542px 0px"></span>
+        <SelectableIcon XPosition="517" />
+        <SelectableIcon XPosition="492" />
+        <SelectableIcon XPosition="467" />
+        <span class="toolsbar" style="width:2px;background-position:-465px 0px"></span>
+        <SelectableIcon XPosition="440" />
+        <SelectableIcon XPosition="415" />
+        <SelectableIcon XPosition="390" />
+        <SelectableIcon XPosition="365" />
+        <span class="toolsbar " style="width:13px;background-position:-696px 0px"></span>
+    </div>
+    <div id="toolsBar3">
+        <span class="toolsbar" style="width:7px;background-position:-710px 0px"></span>
+        <ToolsbarIcon XPosition="947" />
+        <ToolsbarIcon XPosition="922" />
+        <span class="toolsbar" style="width:2px;background-position:-895px 0px"></span>
+        <ToolsbarIcon XPosition="897" />
+        <ToolsbarIcon XPosition="871" />
+        <ToolsbarIcon XPosition="846" />
+        <span class="toolsbar" style="width:2px;background-position:-844px 0px"></span>
+        <ToolsbarIcon XPosition="819" OnIconClick="() => status = WindowStatus.Open" />
+        <a target="_blank" href="/report/GetReport?reportid=@(ReportId)">
+            <span class="toolsbar" style="width:25px;background-position:-794px 0px"></span>
+        </a>
+        <span class="toolsbar" style="width:2px;background-position:-792px 0px"></span>
+        <ToolsbarIcon XPosition="767" />
+        <ToolsbarIcon XPosition="742" />
+        <ToolsbarIcon XPosition="717" />
+        <span class="toolsbar" style="width:13px;background-position:-972px 0px"></span>
+        <div style="position:absolute;right:67px">
+            <input style="display:none" id="fontColorpicker" />
+        </div>
+        <div style="position: absolute; left: 550px;top:30px;">
+            <input style="display:none" id="borderColorpicker" />
+        </div>
+        <div style="position:absolute;left:575px;top:30px">
+            <input style="display:none" id="contentColorpicker" />
+        </div>
+    </div>
+</div
+
+<SettingWindowComponent @bind-Status="status" Setting="setting" />
+@code 
+ {
+    WindowStatus status;
+    ReportSetting setting = new ReportSetting();
+
+    DropdownIcon borderKind, borderWidth;
+
+    [Parameter]
+    public int ReportId { get; set; }
+
+    public void CloseDropdown()
+    {
+        borderKind.Close();
+        borderWidth.Close();
+    }
+
+}

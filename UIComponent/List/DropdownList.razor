@@ -1,7 +1,6 @@
 ﻿@namespace Caspian.UI
 @using System.ComponentModel.DataAnnotations
 @typeparam TValue
-@inject CaspianDataService service
 @inherits CBaseInput<TValue>
 @{
     var className = "t-dropdown-wrap";
@@ -128,7 +127,8 @@
     {
         if (Source == null)
         {
-            string str = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
+            //string str = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
+            string str = "Please select ...";
             Items = new List<SelectListItem>();
             if (typeof(TValue).IsNullableType())
                 Items.Add(new SelectListItem(null, str));
@@ -151,7 +151,8 @@
         }
         else
             Items = Source.ToList();
-        text = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
+        //text = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
+        text = "Please select ...";
         if (Value != null && !Value.Equals(default(TValue)))
         {
             if (Source == null)

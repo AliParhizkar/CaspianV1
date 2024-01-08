@@ -1,0 +1,154 @@
+﻿@page "/counter"
+@namespace Caspian.Report
+@inject IJSRuntime JSRuntime
+<div tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
+     @onclick="MouseClick">
+    <ToolsBar @ref="toolsBar" ReportId="1" />
+    <div class="report-content">
+        <ToolsBox Page="this" />
+        <div class="report-panel">
+            <div id="bindConfig">
+                <span>@(Text)</span>
+            </div>
+            <div id="ruler">
+
+            </div>
+            <Bound @ref=Bound Page="this" Width=800 DataLevel=1 />
+        </div>
+    </div>
+    @if (controlAdding)
+    {
+        <ReportControl @ref="creatingControl" Left="left" Top="top" Page="this" OnChange="CreatingControlChanged" />
+    }
+</div>
+
+@code 
+{
+    ToolsBar toolsBar;
+    ElementReference element;
+    bool controlAdding;
+    double left, top;
+    ReportControl creatingControl;
+
+    BasePage page;
+
+    string cursor = "default";
+
+    public object Text { get; set; }
+
+    public Bound Bound { get; private set; }
+
+    public ReportControl SelectedControl { get; private set; }
+
+    public bool IsMouseDown { get; private set; }
+
+    async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (SelectedControl != null)
+        {
+            var ctrKey = e.CtrlKey;
+            switch(e.Code)
+            {
+                case "ArrowUp":
+                    if (ctrKey)
+                        SelectedControl.Resize(0, -1);
+                    else
+                        await SelectedControl.Move(0, -1);
+                    break;
+                case "ArrowDown":
+                    if (ctrKey)
+                        SelectedControl.Resize(0, 1);
+                    else
+                        await SelectedControl.Move(0, 1);
+                    break;
+                case "ArrowRight":
+                    if (ctrKey)
+                        SelectedControl.Resize(1, 0);
+                    else
+                        await SelectedControl.Move(1, 0);
+                    break;
+                case "ArrowLeft":
+                    if (ctrKey)
+                        SelectedControl.Resize(-1, 0);
+                    else
+                        await SelectedControl.Move(-1, 0);
+                    break;
+            }
+        }
+    }
+
+    public async Task AddControl(double x, double y)
+    {
+        left = x;
+        top = y;
+        controlAdding = true;
+        await Task.Delay(100);
+        creatingControl.InitializeBeforAddedToPage();
+        SelectedControl = null;
+        Bound.ResetBond();
+    }
+
+    void CreatingControlChanged(ControlData data)
+    {
+        left = data.Left;
+        top = data.Top;
+    }
+
+    async Task MouseClick(MouseEventArgs e)
+    {
+        if (controlAdding)
+        {
+            await Bound.AddControlToBound(new ControlData(left, top));
+            controlAdding = false;
+        }
+    }
+
+    async Task MouseUp(MouseEventArgs e)
+    {
+        if (IsMouseDown)
+        {
+            await Bound.Drop(e.ClientX, e.ClientY);
+            IsMouseDown = false;
+        }
+    }
+
+    public void MouseDown(MouseEventArgs e)
+    {
+        toolsBar.CloseDropdown();
+        IsMouseDown = true;
+        Bound.DragStart(e.ClientX, e.ClientY);
+        SelectedControl?.DragStart(e.ClientX, e.ClientY);
+    }
+
+    public async Task MouseMove(MouseEventArgs e)
+    {
+        if (controlAdding)
+        {
+            left = e.ClientX;
+            top = e.ClientY;
+            if (creatingControl != null)
+                await creatingControl.Drag(e.ClientX, e.ClientY);
+        }
+        cursor = Bound.GetCursor(e.ClientX, e.ClientY);
+        if (IsMouseDown)
+            Bound.Drag(e.ClientX, e.ClientY);
+        if (SelectedControl != null)
+        {
+            cursor = SelectedControl.GetCursor(e.ClientX, e.ClientY);
+            if (IsMouseDown)
+                await SelectedControl.Drag(e.ClientX, e.ClientY);
+        }
+    }
+
+    public void SelectControl(ReportControl control)
+    {
+        SelectedControl = control;
+        StateHasChanged();
+    }
+
+    public void ResetControl()
+    {
+        SelectedControl = null;
+        StateHasChanged();
+    }
+}

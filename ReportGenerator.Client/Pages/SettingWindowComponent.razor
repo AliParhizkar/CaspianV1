@@ -1,0 +1,62 @@
+﻿@namespace Caspian.Report
+@inject IJSRuntime jSRuntime
+<Window @bind-Status="Status" Style="width:400px;" Title="Page setting">
+    <div class="p-2 row c-controls">
+        <div class="col-md-4">
+            <label>Page size</label>
+        </div>
+        <div class="col-md-8">
+           <DropdownList @bind-Value="Setting.PageType" /> 
+        </div>
+    </div>
+</Window>
+@code
+{
+    string message;
+
+    [Parameter]
+    public ReportSetting Setting { get; set; }
+
+    [Parameter]
+    public bool IsWorkflowReport{ get; set; }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    void SetPageSetting()
+    {
+        if (Setting.PageType.GetValueOrDefault() == 0 || Setting.PageType.Value == ReportPageType.Custome && (Setting.PageWidth <= 0 || Setting.PageHeight <= 0))
+        {
+            message = "لطفا اندازه صفحه را مشخص نمایید";
+        }
+        else
+        {
+            Status = WindowStatus.Close;
+        }
+
+    }
+
+    void SetPageSize()
+    {
+        if (Setting.PageType.HasValue)
+        {
+            var size = Setting.PageSetting(Setting.PageType.Value);
+            Setting.PageWidth = size.PageWidth;
+            Setting.PageHeight = size.PageHeight;
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message.HasValue())
+        {
+            await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+            message = null;
+        }
+        await base.OnInitializedAsync();
+    }
+
+}

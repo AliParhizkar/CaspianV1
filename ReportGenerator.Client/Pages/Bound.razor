@@ -1,0 +1,145 @@
+﻿@namespace Caspian.Report
+@inject IJSRuntime JSRuntime
+<div class="bound-content">
+    <table cellpadding="0" cellspacing="0" id="bond">
+        @if (reportTitleHeight > 0)
+        {
+            CreateBound(__builder, BondType.ReportTitle, reportTitleHeight, "Report Title");
+        }
+        @if (pageHeaderHeight > 0)
+        {
+            CreateBound(__builder, BondType.PageHeader, pageHeaderHeight, "Page Header");
+        }
+        @for (var level = 1; level <= DataLevel; level++)
+        {
+            if (level == DataLevel && dataHeaderHeight > 0)
+            {
+                CreateDataBond(__builder, level, 1, dataHeaderHeight, "Data Header", BondType.DataHeader);
+            }
+            var height = level == 1 ? firstDLHeight : level == 2 ? secondDLHeight : thirdDLHeight;
+            CreateDataBond(__builder, level, DataLevel - level + 1, height, "Data", null);
+            @if (level == DataLevel && dataFooterHeight > 0)
+            {
+                CreateDataBond(__builder, level, 1, dataFooterHeight, "Data Footer", BondType.DataFooter);
+            }
+        }
+        @if (pageFooterHeight > 0)
+        {
+            CreateBound(__builder, BondType.PageFooter, pageFooterHeight, "Page Footer");
+        }
+    </table>
+</div>
+@if (verticalRulerLeft.HasValue)
+{
+    var style = $"left:{verticalRulerLeft}px";
+    <div style="@style" class="r-v-ruler"></div>
+}
+@if(verticalRulerRight.HasValue)
+{
+    var style = $"left:{verticalRulerRight}px";
+    <div style="@style" class="r-v-ruler"></div>
+}
+@if (horizontalRulerTop.HasValue)
+{
+    var style = $"top:{horizontalRulerTop}px";
+    <div style="@style" class="r-h-ruler"></div>
+}
+@if (horizontalRulerBottom.HasValue)
+{
+    var style = $"top:{horizontalRulerBottom}px";
+    <div style="@style" class="r-h-ruler"></div>
+}
+@code 
+{
+    void CreateBound(RenderTreeBuilder __builder, BondType bondType, double height, string title)
+    {
+        string id = bondType.ToString();
+        id = id.Substring(0, 1).ToLower() + id.Substring(1);
+        <tr>
+            <td colspan="@(DataLevel)" class="reportheader">@(title)</td>
+            <td id="reportTitle" style="@($"height:{height}px")" @onmouseup="async () => await SelectBond(bondType, id)">
+                @foreach(var control in bondControls.Where(t => t.BondType == bondType))
+                {
+                    <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"  
+                        BondType="bondType" Page="Page" OnChange="c => ControlChanged(control, c)" />
+                }
+                @{
+                    CreateSqures(__builder, bondType, id);
+                }
+            </td>
+        </tr>
+        <tr>
+            <td colspan="@DataLevel" class="spliter-first">
+                <hr />
+            </td>
+            <td class="spliter"></td>
+        </tr>
+    }
+
+    void ControlChanged(ControlData oldControl, ControlData newControl)
+    {
+        oldControl.Left = newControl.Left;
+        oldControl.Top = newControl.Top;
+    }
+
+    void CreateDataBond(RenderTreeBuilder __builder, int level, int colSpan, double height, string title, BondType? bondType)
+    {
+        string className = "dataBond", id = bondType == BondType.DataHeader ? "dataHeader" : "dataFooter";
+        if (DataLevel > 1)
+            className += " data-bond-second";
+        if (level == 3)
+            className += "-2";
+        if (bondType == null)
+        {
+            id = $"databond{level}";
+            if (level == 1)
+                bondType = BondType.FirstDataLevel;
+            else if (level == 2)
+                bondType = BondType.SecondDataLevel;
+            else
+                bondType = BondType.ThirdDataLevel;
+        }
+        <tr>
+            @for (var index = 2; index <= level; index++)
+            {
+                <td class="dataBond data-bond-first"></td>
+            }
+            <td colspan="@(colSpan)" class="@className">@(title)</td>
+            <td id="@(id)" style="@($"height:{height}px;width:{Width}px")" class="bond"
+                @onmouseup="async () => await SelectBond(bondType, id)">
+                @foreach (var control in bondControls.Where(t => t.BondType == bondType))
+                {
+                    <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"
+                                   BondType="bondType" Page="Page" OnChange="c => ControlChanged(control, c)" />
+                }
+                @if (bondType == selectedBond)
+                {
+                    CreateSqures(__builder, bondType.Value, id);
+                }
+            </td>
+        </tr>
+        <tr style="height:3px">
+            <td colspan="@(DataLevel)" class="dataBond">
+                <hr style="width:130px;margin:1px auto 0 auto">
+            </td>
+            <td class="spliter"></td>
+        </tr>
+    }
+
+    void CreateSqures(RenderTreeBuilder __builder, BondType bondType, string id)
+    {
+        if (bondType == selectedBond && selectedBondRecData != null)
+        {
+            var bottom = selectedBondRecData.Top + GetSelectedBoundHeight().Value - 2;
+            string topLeft = $"left:{selectedBondRecData.Left - 3}px;top:{selectedBondRecData.Top - 3}px",
+                topRight = $"left:{selectedBondRecData.Right - 3}px;top:{selectedBondRecData.Top - 3}px",
+                bottomLeft = $"left:{selectedBondRecData.Left - 3}px;top:{bottom}px",
+                bottomRight = $"left:{selectedBondRecData.Right - 3}px;top:{bottom}px";
+            <span style="@(topLeft)" class="squarebond"></span>
+            <span style="@(topRight)" class="squarebond"></span>
+            <span style="@(bottomLeft)" class="squarebond"></span>
+            <span style="@(bottomRight)" class="squarebond"></span>
+        }
+    }
+
+}

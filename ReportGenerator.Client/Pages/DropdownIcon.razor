@@ -1,0 +1,79 @@
+﻿@namespace Caspian.Report
+@{
+    int yPosition, xPosition = BorderKind ? -658 : -620;
+    if (Enabled)
+    {
+        yPosition = -27;
+        if (mouseEnter)
+            yPosition = -54;
+        if (buttonClicked)
+            yPosition = -108;
+    }
+    else
+    {
+        yPosition = 0;
+    }
+}
+<span class="toolsbar r-dropdown-icon" style="width:38px;background-position:@(xPosition)px @(yPosition)px"
+      @onmouseenter="() => mouseEnter = true" @onmouseout="() => mouseEnter = false"
+      @onmousedown="() => buttonClicked= true" @onmouseup="OpenItem">
+    @if (BorderKind && showItem )
+    {
+        string solid = value == 1 ? "r-selected" : "", dashed = value == 2 ? "r-selected" : "",
+        dotted = value == 3 ? "r-selected" : "", doublee = value == 4 ? "r-selected" : "";
+        <span @onmousedown:stopPropagation class="r-border-kind">
+            <span class="r-solid @(solid)" @onmousedown="async () => await SelectItem(1)"></span>
+            <span class="r-dashed @(dashed)" @onmousedown="async () => await SelectItem(2)"></span>
+            <span class="r-dotted @(dotted)" @onmousedown="async () => await SelectItem(3)"></span>
+            <span class="r-double @(doublee)" @onmousedown="async () => await SelectItem(4)"></span>
+        </span>
+    }
+    @if (!BorderKind && showItem)
+    {
+        string first = value == 1 ? "r-selected" : "", second = value == 2 ? "r-selected" : "",
+        third = value == 3 ? "r-selected" : "", forth = value == 4 ? "r-selected" : "",
+        fifth = value == 5 ? "r-selected" : "", sexth = value == 6 ? "r-selected" : "";
+        <span @onmousedown:stopPropagation class="r-border-width">
+            <span class="r-first @(first)" @onmousedown="async () => await SelectItem(1)"></span>
+            <span class="r-second @(second)" @onmousedown="async () => await SelectItem(2)"></span>
+            <span class="r-third @(third)" @onmousedown="async () => await SelectItem(3)"></span>
+            <span class="r-fourth @(forth)" @onmousedown="async () => await SelectItem(4)"></span>
+            <span class="r-fifth @(fifth)" @onmousedown="async () => await SelectItem(5)"></span>
+        </span>
+    }
+</span>
+
+@code 
+{
+    bool showItem;
+    int value = 6;
+    bool mouseEnter, buttonClicked;
+
+    void OpenItem()
+    {
+        showItem = true;
+        buttonClicked = false;
+    }
+
+    public void Close()
+    {
+        if (showItem)
+        {
+            showItem = false;
+            buttonClicked = false;
+            mouseEnter = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task SelectItem(int value)
+    {
+        showItem = false;
+    }
+
+    [Parameter]
+    public bool BorderKind { get; set; }
+
+    [Parameter]
+    public bool Enabled { get; set; } = true;
+}

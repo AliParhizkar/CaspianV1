@@ -1,0 +1,37 @@
+﻿@namespace Caspian.Report
+@{
+    if (Enabled)
+    {
+        yPosition = -27;
+        if (Selected)
+            yPosition = -81;
+        if (mouseEnter)
+            yPosition = -54;
+        if (buttonClicked)
+            yPosition = -108;
+    }
+    else
+    {
+        yPosition = 0;
+    }
+}
+
+<span class="toolsbar" style="width:25px;background-position:@(-XPosition)px @(yPosition)px"
+      @onmouseenter="() => mouseEnter = true" @onmouseout="() => mouseEnter = false"
+      @onmousedown="() => buttonClicked= true" @onmouseup="() => buttonClicked = false"></span>
+
+
+@code 
+{
+    int yPosition;
+
+    bool mouseEnter, buttonClicked;
+
+    [Parameter]
+    public bool Enabled { get; set; } = true;
+
+    public bool Selected { get; set; } = false;
+
+    [Parameter]
+    public int XPosition { get; set; }
+}

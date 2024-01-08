@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caspian.common", "Caspian.c
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponent", "UIComponent\UIComponent.csproj", "{269C0CD5-CB56-421C-B88D-C4B2368AB838}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator.Client", "ReportGenerator.Client\ReportGenerator.Client.csproj", "{6CAF95F3-65CC-48B3-92EA-05FDCC295891}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{269C0CD5-CB56-421C-B88D-C4B2368AB838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{269C0CD5-CB56-421C-B88D-C4B2368AB838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{269C0CD5-CB56-421C-B88D-C4B2368AB838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CAF95F3-65CC-48B3-92EA-05FDCC295891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CAF95F3-65CC-48B3-92EA-05FDCC295891}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CAF95F3-65CC-48B3-92EA-05FDCC295891}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CAF95F3-65CC-48B3-92EA-05FDCC295891}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,20 @@
+﻿@namespace Caspian.Report
+<div class="r-toolsbox">
+    <span @onmousedown="AddControl" class="tools textbox" title="متن"></span>
+    <span class="tools picture" title="تصویر"></span>
+    <span class="tools subreport" title="گزارش فرعی"></span>
+    <span class="tools table" title="جدول"></span>
+    <span class="tools checkbox" title="check box"></span>
+    <span class="tools chart" title="نمودار"></span>
+</div>
+
+@code 
+{
+    async Task AddControl(MouseEventArgs e)
+    {
+        await Page.AddControl(e.ClientX, e.ClientY);
+    }
+
+    [Parameter]
+    public Page Page { get; set; }
+}

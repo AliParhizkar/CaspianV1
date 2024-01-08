@@ -1,0 +1,68 @@
+﻿@namespace Caspian.Report
+
+@{
+    if (Enabled)
+    {
+        yPositionFirst = yPositionSecond = -27;
+        if (mouseEnterFirst || mouseEnterSecond)
+            yPositionFirst = -54;
+        if (mouseEnterSecond)
+            yPositionSecond = -54;
+        if (firstButtonClicked)
+            yPositionFirst = -108;
+        if (secondButtonClicked)
+            yPositionSecond = -108;
+    }
+    else
+    {
+        yPositionFirst = 0;
+        yPositionSecond = 0;
+        Color = "";
+    }
+}
+<span class="r-color-picker" >
+    <span class="toolsbar" style="width: 25px; background-position: @(-XPosition)px @(yPositionFirst)px;"
+          @onmousedown="() => firstButtonClicked = true" @onclick="() => firstButtonClicked = false"
+          @onmouseenter="() => mouseEnterFirst = true" @onmouseout="() => mouseEnterFirst = false">
+        @if (Enabled)
+        {
+            <span style="background-color:@(Color)" class="r-color-display"></span>
+        }
+    </span>
+    <span class="toolsbar" style="width: 13px; background-position: -569px @(yPositionSecond)px;"
+            @onmousedown="() => secondButtonClicked = true" @onclick="() => secondButtonClicked = false"
+          @onmouseenter="() => mouseEnterSecond = true" @onmouseout="() => mouseEnterSecond = false">
+        <input disabled="@(Enabled == false)" type="color" @onchange="Change" @oninput="Input" />
+    </span>
+</span>
+
+
+@code 
+{
+    int yPositionFirst, yPositionSecond;
+    bool mouseEnterFirst, mouseEnterSecond, firstButtonClicked, secondButtonClicked;
+
+    [Parameter]
+    public bool Enabled { get; set; }
+
+    void Input(ChangeEventArgs e)
+    {
+        Color = e.Value?.ToString();
+    }
+
+    async Task Change(ChangeEventArgs e)
+    {
+        Color = e.Value?.ToString();
+        if (ColorChanged.HasDelegate)
+            await ColorChanged.InvokeAsync(Color);
+    }
+
+    [Parameter]
+    public int XPosition { get; set; }
+
+    [Parameter]
+    public string Color { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ColorChanged { get; set; }
+}
