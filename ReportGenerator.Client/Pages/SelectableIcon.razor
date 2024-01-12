@@ -5,10 +5,13 @@
         yPosition = -27;
         if (Selected)
             yPosition = -81;
-        if (mouseEnter)
-            yPosition = -54;
-        if (buttonClicked)
-            yPosition = -108;
+        else 
+        {
+            if (mouseEnter)
+                yPosition = -54;
+            if (buttonClicked)
+                yPosition = -108;
+        }
     }
     else
     {
@@ -18,7 +21,7 @@
 
 <span class="toolsbar" style="width:25px;background-position:@(-XPosition)px @(yPosition)px"
       @onmouseenter="() => mouseEnter = true" @onmouseout="() => mouseEnter = false"
-      @onmousedown="() => buttonClicked= true" @onmouseup="() => buttonClicked = false"></span>
+      @onmousedown="() => buttonClicked = true" @onmouseup="MouseUp"></span>
 
 
 @code 
@@ -27,10 +30,21 @@
 
     bool mouseEnter, buttonClicked;
 
-    [Parameter]
-    public bool Enabled { get; set; } = true;
+    async Task MouseUp()
+    {
+        buttonClicked = false;
+        if (OnMouseDown.HasDelegate)
+            await OnMouseDown.InvokeAsync();
+    }
 
-    public bool Selected { get; set; } = false;
+    [Parameter]
+    public EventCallback OnMouseDown { get; set; }
+
+    [Parameter]
+    public bool Enabled { get; set; }
+
+    [Parameter]
+    public bool Selected { get; set; }
 
     [Parameter]
     public int XPosition { get; set; }

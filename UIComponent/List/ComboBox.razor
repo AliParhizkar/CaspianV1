@@ -1,6 +1,8 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity
 @typeparam TValue
+@inject IJSRuntime jsRuntime
+@inject FormAppState FormAppState
 @inject IServiceScopeFactory ServiceScopeFactory
 <div style="@Style" class="t-widget t-combobox" error-message="@ErrorMessage">
     <div class="@className">

@@ -82,6 +82,7 @@
     width: 98px;
     font-size: 0;
     left: -35px;
+    z-index:150;
 }
     .r-border-kind span, .r-border-width span {
         height: 28px;
@@ -89,6 +90,7 @@
         width: 95px;
         border-bottom: 1px solid #dee2e6;
         background-image: url(/Content/Images/report1.png);
+        cursor:default;
     }
         .r-solid {
             background-position: 0 -227px;

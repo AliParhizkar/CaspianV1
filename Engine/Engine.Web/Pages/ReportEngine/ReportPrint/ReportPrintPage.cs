@@ -39,11 +39,11 @@ namespace Caspian.Engine.ReportPrint
             using var scope = ServiceScopeFactory.CreateScope();
             if (ReportId > 0)
             {
-                var report = await new ReportService(scope.ServiceProvider).SingleAsync(ReportId);
-                var reportParams = new ReportParamService(scope.ServiceProvider).GetAll().Where(t => t.ReportId == ReportId);
-                if (!reportParams.Any())
+                var report = await scope.GetService<ReportService>().SingleAsync(ReportId);
+                var reportParams = scope.GetService<ReportParamService>().GetAll().Where(t => t.ReportId == ReportId);
+                if (! await reportParams.AnyAsync())
                 {
-                    message = "لطفا ابتدا پارامترهای گزارش را ثبت نموده و سپس فایل گزارش را ایجاد نمائید";
+                    message = "Please specify the report parameters first and then create the report file";
                     await base.OnInitializedAsync();
                 }
                 if (report.PrintFileName.HasValue())

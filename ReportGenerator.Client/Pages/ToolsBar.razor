@@ -1,23 +1,45 @@
 ﻿@namespace Caspian.Report
+@{
+    bool alignmentEnabled = Alignment != null;
+    var verticalAlign = Alignment?.VerticalAlign;
+    var horizontalAlign = Alignment?.HorizontalAlign;
+    var fontEnabled = Font != null;
+    var borderEnabled = Border != null;
+    var leftBorder = Border != null && (Border.BorderType & BorderType.Left) == BorderType.Left;
+    var rightBorder = Border != null && (Border.BorderType & BorderType.Right) == BorderType.Right;
+    var topBorder = Border != null && (Border.BorderType & BorderType.Top) == BorderType.Top;
+    var bottomBorder = Border != null && (Border.BorderType & BorderType.Bottom) == BorderType.Bottom;
 
+}
 <div class="tools-bar">
     <div id="toolsBar1">
         <span class="toolsbar" style="width:7px;"></span>
         <ToolsbarIcon XPosition="319" />
-        <CollorPicker XPosition="281" />
         <span class="toolsbar" style="width:2px;background-position:-279px 0px"></span>
-        <SelectableIcon XPosition="254" />
-        <SelectableIcon XPosition="229" />
-        <SelectableIcon XPosition="204" />
+        <SelectableIcon Enabled="alignmentEnabled" Selected="verticalAlign == VerticalAlign.Bottom" XPosition="254" 
+            OnMouseDown="async () => await ChangeVerticalAlignment(VerticalAlign.Bottom)"/>
+        <SelectableIcon Enabled="alignmentEnabled" Selected="verticalAlign == VerticalAlign.Middle" XPosition="229"
+            OnMouseDown="async () => await ChangeVerticalAlignment(VerticalAlign.Middle)"/>
+        <SelectableIcon Enabled="alignmentEnabled" Selected="verticalAlign == VerticalAlign.Top" XPosition="204"
+            OnMouseDown="async () => await ChangeVerticalAlignment(VerticalAlign.Top)"/>
         <span class="toolsbar toolsbar" style="width:2px;background-position:-202px 0px"></span>
-        <SelectableIcon XPosition="177" />
-        <SelectableIcon XPosition="102" />
-        <SelectableIcon XPosition="127" />
-        <SelectableIcon XPosition="152" />
+        <SelectableIcon Enabled="alignmentEnabled" Selected="horizontalAlign == HorizontalAlign.Justify"  XPosition="177" 
+            OnMouseDown="async () => await ChangeHorizontalAlignment(HorizontalAlign.Justify)"/>
+        <SelectableIcon Enabled="alignmentEnabled" Selected="horizontalAlign == HorizontalAlign.Left" XPosition="102"
+            OnMouseDown="async () => await ChangeHorizontalAlignment(HorizontalAlign.Left)"/>
+        <SelectableIcon Enabled="alignmentEnabled" Selected="horizontalAlign == HorizontalAlign.Center" XPosition="127"
+            OnMouseDown="async () => await ChangeHorizontalAlignment(HorizontalAlign.Center)"/>
+        <SelectableIcon Enabled="alignmentEnabled" Selected="horizontalAlign == HorizontalAlign.Right" XPosition="152"
+            OnMouseDown="async () => await ChangeHorizontalAlignment(HorizontalAlign.Right)"/>
         <span class="toolsbar toolsbar" style="width:2px;background-position:-100px 0px"></span>
-        <SelectableIcon XPosition="75" />
-        <SelectableIcon XPosition="50" />
-        <SelectableIcon XPosition="25" />
+        <SelectableIcon Enabled="fontEnabled" Selected="Font?.Underline == true" XPosition="75" 
+            OnMouseDown="async () => await ChangeFont(!Font.Underline, null, null)" />
+        <SelectableIcon Enabled="fontEnabled" Selected="Font?.Italic == true" XPosition="50" 
+            OnMouseDown="async () => await ChangeFont(null, null, !Font.Italic)"/>
+        <SelectableIcon Enabled="fontEnabled" Selected="Font?.Bold == true" XPosition="25" 
+            OnMouseDown="async () => await ChangeFont(null, !Font.Bold, null)"/>
+        <CollorPicker Enabled="fontEnabled" Color="@Font?.Color" XPosition="281" 
+            ColorChanged="async color => await ChangeFont(null, null, color)"/>
         <span class="toolsbar-list" style="width:62px;">
             <input disabled="disabled" class="toolsbar-list-input" value="12" style="width:40px" />
             <span id="_14" class="toolsbar" style="width:17px;background-position:-8px 0px;"></span>
@@ -30,19 +52,28 @@
     </div>
     <div id="toolsBar2">
         <span class="toolsbar" style="width:7px;background-position:-358px 0px"></span>
-        <DropdownIcon @ref="borderKind" BorderKind />
-        <DropdownIcon @ref="borderWidth" />
-        <CollorPicker XPosition="582" />
-        <CollorPicker XPosition="544" />
+        <DropdownIcon @ref="borderStyle" BorderStyle Enabled="borderEnabled" Value="(int?)Border?.BorderStyle"
+            OnChange="async style => await ChangeBorder((BorderStyle)style)" />
+        <DropdownIcon @ref="borderWidth" Enabled="borderEnabled" Value="Border?.BorderWidth"
+            OnChange="async width => await ChangeBorder(width)"/>
+        <CollorPicker XPosition="582" Enabled="borderEnabled" 
+            ColorChanged="async color => await ChangeBorder(color)"/>
+        <CollorPicker XPosition="544" Enabled />
         <span class="toolsbar" style="width:2px;background-position:-542px 0px"></span>
-        <SelectableIcon XPosition="517" />
-        <SelectableIcon XPosition="492" />
-        <SelectableIcon XPosition="467" />
+        <SelectableIcon XPosition="517"  />
+        <SelectableIcon XPosition="492" Enabled="borderEnabled" Selected="Border?.BorderType == 0"
+            OnMouseDown="async () => await ChangeBorder((BorderType)0)"/>
+        <SelectableIcon XPosition="467" Enabled="borderEnabled" Selected="Border?.BorderType == (BorderType)15"
+            OnMouseDown="async () => await ChangeBorder((BorderType)15)"/>
         <span class="toolsbar" style="width:2px;background-position:-465px 0px"></span>
-        <SelectableIcon XPosition="440" />
-        <SelectableIcon XPosition="415" />
-        <SelectableIcon XPosition="390" />
-        <SelectableIcon XPosition="365" />
+        <SelectableIcon XPosition="440" Enabled="borderEnabled" Selected="rightBorder" 
+            OnMouseDown="async () => await ChangeBorder(BorderType.Right)" />
+        <SelectableIcon XPosition="415" Enabled="borderEnabled" Selected="leftBorder"
+            OnMouseDown="async () => await ChangeBorder(BorderType.Left)"/>
+        <SelectableIcon XPosition="390" Enabled="borderEnabled" Selected="bottomBorder" 
+            OnMouseDown="async () => await ChangeBorder(BorderType.Bottom)"/>
+        <SelectableIcon XPosition="365" Enabled="borderEnabled" Selected="topBorder" 
+            OnMouseDown="async () => await ChangeBorder(BorderType.Top)"/>
         <span class="toolsbar " style="width:13px;background-position:-696px 0px"></span>
     </div>
     <div id="toolsBar3">
@@ -81,14 +112,95 @@
     WindowStatus status;
     ReportSetting setting = new ReportSetting();
 
-    DropdownIcon borderKind, borderWidth;
+    DropdownIcon borderStyle, borderWidth;
 
     [Parameter]
     public int ReportId { get; set; }
 
+    [Parameter]
+    public Alignment Alignment  { get; set; }
+
+    [Parameter]
+    public Font Font { get; set; }
+
+    [Parameter]
+    public Border Border { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnChange { get; set; }
+
+    async Task ChangeStyle()
+    {
+        if (OnChange.HasDelegate)
+            await OnChange.InvokeAsync(Alignment.Style);
+    }
+
+    async Task ChangeFont(bool? underline, bool? bold, bool? italic)
+    {
+        if (underline.HasValue)
+            Font.Underline = underline.Value;
+        if (bold.HasValue)
+            Font.Bold = bold.Value;
+        if (italic.HasValue)
+            Font.Italic = italic.Value;
+        await ChangeStyle();
+    }
+
+    async Task ChangeFont(int? size, string family, string color)
+    {
+        if (size.HasValue)
+            Font.FontSize = size.Value;
+        if (family.HasValue())
+            Font.FontFamily = family;
+        if (color.HasValue())
+            Font.Color = color;
+        await ChangeStyle();
+    }
+
+    async Task ChangeVerticalAlignment(VerticalAlign align)
+    {
+        Alignment.VerticalAlign = align;
+        await ChangeStyle();
+    }
+
+    async Task ChangeBorder(BorderStyle style)
+    {
+        Border.BorderStyle = style;
+        await ChangeStyle();
+    }
+
+    async Task ChangeBorder(int width)
+    {
+        Border.BorderWidth = width;
+        await ChangeStyle();
+    }
+
+    async Task ChangeBorder(string color)
+    {
+        Border.BorderColor = color;
+        await ChangeStyle();
+    }
+
+    async Task ChangeBorder(BorderType type)
+    {
+        if (type == 0 || type.ConvertToInt() == 15)
+            Border.BorderType = type;
+        else if ((Border.BorderType & type) == type)
+            Border.BorderType = (BorderType)(Border.BorderType - type);
+        else
+            Border.BorderType |=  type;
+        await ChangeStyle();
+    }
+
+    async Task ChangeHorizontalAlignment(HorizontalAlign align)
+    {
+        Alignment.HorizontalAlign = align;
+        await ChangeStyle();
+    }
+
     public void CloseDropdown()
     {
-        borderKind.Close();
+        borderStyle.Close();
         borderWidth.Close();
     }
 

@@ -44,6 +44,7 @@
         },
         
         reportBind: function (dotNetObjectReference, data) {
+            console.log(data);
             $('#cnvRuler').rRuler();
             $.report.dotNetObjectReference = dotNetObjectReference;
             let page = $('body').rPage(data);

@@ -24,6 +24,9 @@
 
     protected override void OnInitialized()
     {
+        Alignment = new Alignment();
+        Font = new Font();
+        Border = new Border();
         if (BondType.HasValue)
         {
             Page.SelectControl(this);
@@ -45,6 +48,11 @@
     [Parameter]
     public double Top { get; set; }
 
+    public Alignment Alignment { get; private set; }
+
+    public Font Font { get; private set; }
+
+    public Border Border { get; private set; }
 
     [Parameter]
     public Page Page { get; set; }

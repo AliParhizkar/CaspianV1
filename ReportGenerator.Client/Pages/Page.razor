@@ -1,9 +1,14 @@
 ﻿@page "/counter"
 @namespace Caspian.Report
 @inject IJSRuntime JSRuntime
+@{
+    var alignment = SelectedControl?.Alignment;
+    var font = SelectedControl?.Font;
+    var border = SelectedControl?.Border;
+}
 <div tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
      @onclick="MouseClick">
-    <ToolsBar @ref="toolsBar" ReportId="1" />
+    <ToolsBar @ref="toolsBar" Alignment="alignment" Font="font" Border="border" ReportId="1" />
     <div class="report-content">
         <ToolsBox Page="this" />
         <div class="report-panel">
@@ -29,8 +34,6 @@
     bool controlAdding;
     double left, top;
     ReportControl creatingControl;
-
-    BasePage page;
 
     string cursor = "default";
 

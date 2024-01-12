@@ -27,6 +27,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponent", "UIComponent\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator.Client", "ReportGenerator.Client\ReportGenerator.Client.csproj", "{6CAF95F3-65CC-48B3-92EA-05FDCC295891}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportGenerator.Common", "ReportGenerator.Common\ReportGenerator.Common.csproj", "{B66B7F6E-D46F-4A33-9046-99655B9603C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reportgenerator.Server", "Reportgenerator.Server\Reportgenerator.Server.csproj", "{BE6ECAEE-C4D7-4181-8716-8D02629F3E29}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +77,14 @@ Global
 		{6CAF95F3-65CC-48B3-92EA-05FDCC295891}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CAF95F3-65CC-48B3-92EA-05FDCC295891}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CAF95F3-65CC-48B3-92EA-05FDCC295891}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B66B7F6E-D46F-4A33-9046-99655B9603C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B66B7F6E-D46F-4A33-9046-99655B9603C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B66B7F6E-D46F-4A33-9046-99655B9603C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B66B7F6E-D46F-4A33-9046-99655B9603C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE6ECAEE-C4D7-4181-8716-8D02629F3E29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE6ECAEE-C4D7-4181-8716-8D02629F3E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE6ECAEE-C4D7-4181-8716-8D02629F3E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE6ECAEE-C4D7-4181-8716-8D02629F3E29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

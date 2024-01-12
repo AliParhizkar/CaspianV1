@@ -37,9 +37,6 @@ namespace Caspian.UI
         bool focused;
         protected ElementReference input;
 
-        [Inject]
-        protected IJSRuntime jsRuntime { get; set; }
-
         internal int SelectedIndex { get; set; }
 
         [Parameter]
@@ -52,9 +49,6 @@ namespace Caspian.UI
 
         [Parameter]
         public string Style { get; set; }
-
-        [Inject]
-        public FormAppState FormAppState { get; set; }
 
         [CascadingParameter(Name = "ParentForm")]
         internal ICaspianForm CaspianForm { get; set; }
@@ -450,9 +444,6 @@ namespace Caspian.UI
             }
         }
 
-        [Inject,]
-        public IServiceProvider Provider { get; set; }
-
         async Task DataBinding()
         {
             if (LoadData)
@@ -600,7 +591,6 @@ namespace Caspian.UI
                 focused = false;
                 await input.FocusAsync();
             }
-            //await jsRuntime.InvokeVoidAsync("$.caspian.serversideCombobox", input, ErrorMessage, Disabled, Status);
             if (valueChanged)
             {
                 valueChanged = false;

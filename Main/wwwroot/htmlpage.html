@@ -3,61 +3,36 @@
 <html>
 <head>
     <style type="text/css">
-        .c-content {
-            border: 1px solid red;
-            border-width: 5px;
-            box-sizing: border-box;
-            height: 100%;
-            width: 100%;
+        table  {
+            border-left: 1px solid red;
+            border-bottom: 1px solid red;
+            margin:20px auto;
+            text-align:center;
+        }
+        td{
+            border:1px solid red;
+            width:181px;
+            border-left:none;
+            border-bottom:none;
+            box-sizing:border-box;
+            height:20px;
+        }
+        .merge{
 
         }
-        .c-controls {
-            width: 250px;
-            height: 45px;
-            position: absolute;
-            left: 150px;
-            top: 120px;
-        }
-        .c-angle{
-            border:5px solid black;
-            width:10px;
-            height:10px;
-            position:absolute;
-            display:inline-block;
-            box-sizing:border-box;
-        }
-        .c-top-left {
-            border-right:none;
-            border-bottom:none;
-        }
-        .c-top-right {
-            left: calc(100% - 9px);
-            border-left: none;
-            border-bottom: none;
-        }
-        .c-bottom-left {
-            top: calc(100% - 9px);
-            border-right: none;
-            border-top: none;
-        }
-        .c-bottom-right {
-            left: calc(100% - 9px);
-            top: calc(100% - 9px);
-            border-left: none;
-            border-top: none;
-        }
     </style>
-    <script type="text/javascript">
-        function validateMyForm(e) {
-            debugger
-            console.log(e.target)
-        }
-    </script>
 </head>
 <body style="margin:0;padding:0">
-    <form>
-        <input onkeydown="return event.key != 'Enter';" />
-        <button>1111</button>
-    </form>
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+            <td>1</td>
+            <td style="width:90px">2-1</td>
+            <td style="width:91px">2-2</td>
+            <td>3</td>
+            <td>4</td>
+        </tr>
+    </table>
+
+
 </body>
 </html>
