@@ -1,0 +1,273 @@
+﻿@namespace Caspian.Report
+
+@using Caspian.Common
+<table style="left:@(left)px" class="reportcontrol tablecontrol" cellpadding="0" cellspacing="0">
+    <thead>
+        <tr>
+            <th style="width:15px;"></th>
+            @foreach (var cell in headerCells)
+            {
+                <th style="width:@(cell.Width)px;"></th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var rowIndex = 1;
+        }
+        @foreach(var row in rows)
+        {
+            var tempRowIndex = rowIndex;
+            <tr style="line-height:@(row.Height)px">
+                @{
+                    var colIndex = 1;
+                }
+                <td class="rowHeader" style="height:@(row.Height)px"></td>
+                @foreach(var cell in row.Cells)
+                {
+                    var tempColIndex = colIndex;
+                    var className = "";
+                    if (Bound.Page.SelectedTable == this && tempRowIndex == selectedRowIndex && tempColIndex == selectedColIndex)
+                        className = "cellselected";
+                    <td class="@(className)" @onclick="() => SelectTableCell(tempRowIndex, tempColIndex)">@(cell.Text)</td>
+                    colIndex++;
+                }
+            </tr>
+            rowIndex++;
+        }
+    </tbody>
+</table>
+
+@code 
+{
+    int left, top, selectedRowIndex, selectedColIndex;
+    IList<HeaderCell> headerCells;
+    IList<TableRow> rows;
+    ChangeKind? changeKind;
+    int? changeColIndex, leftCellStartWidth, rightCellStartWidth, xStart, leftStart;
+
+    int? changeRowIndex, heightStart, yStart;
+
+    protected override void OnInitialized()
+    {
+        headerCells = new List<HeaderCell>()
+        {
+            new HeaderCell(){Width = 140},
+            new HeaderCell(){Width = 140},
+            new HeaderCell(){Width = 140},
+            new HeaderCell(){Width = 140}
+        };
+        rows = new List<TableRow>()
+        {
+            new TableRow()
+            {
+                Height = 30,
+                Cells = new List<TableCell>()
+                {
+                    new TableCell(){Text = "1-1"},
+                    new TableCell(){Text = "1-2"},
+                    new TableCell(){Text = "1-3"},
+                    new TableCell(){Text = "1-4"},
+                }
+            },
+            new TableRow()
+            {
+                Height = 30,
+                Cells = new List<TableCell>()
+                {
+                    new TableCell(){Text = "2-1"},
+                    new TableCell(){Text = "2-2"},
+                    new TableCell(){Text = "2-3"},
+                    new TableCell(){Text = "2-4"},
+                }
+            }
+        };
+        base.OnInitialized();
+    }
+
+    void SelectTableCell(int rowIndex, int colIndex)
+    {
+        selectedRowIndex = rowIndex;
+        selectedColIndex = colIndex;
+        Bound.ResetBond();
+        Bound.Page.SelectTable(this);
+    }
+
+    public string GetCursor(double x, double y)
+    {
+        if (Bound.Page.SelectedTable == this)
+        {
+            if (y > top && y < top + 20)
+            {
+                var leftColl = left + 15;
+                if (Math.Abs(leftColl - x) < 6)
+                    return "col-resize";
+                foreach (var cel in headerCells)
+                {
+                    leftColl += cel.Width;
+                    if (Math.Abs(leftColl - x) < 6)
+                        return "col-resize";
+                }
+            }
+            if (x > left && x < left + 15)
+            {
+                var topRow = top + 20;
+                foreach(var row in rows)
+                {
+                    topRow += row.Height;
+                    if (Math.Abs(topRow - y) < 5)
+                        return "row-resize";
+                }
+            }
+        }
+        return "default";
+    }
+
+    public void DragStart(double x, double y)
+    {
+        if (Bound.Page.SelectedTable == this)
+        {
+            changeKind = null;
+            ///Column resize
+            if (y > top && y < top + 20)
+            {
+                var leftCell = left + 15;
+                if (Math.Abs(leftCell - x) < 6)
+                {
+                    changeKind = ChangeKind.ColumnResize;
+                    changeColIndex = 1;
+                }
+                var index = 2;
+                foreach (var cel in headerCells)
+                {
+                    leftCell += cel.Width;
+                    if (Math.Abs(leftCell - x) < 6)
+                    {
+                        changeKind = ChangeKind.ColumnResize;
+                        changeColIndex = index;
+                    }
+                    index++;
+                }
+            }
+            ///row resize
+            if (x > left && x < left + 15)
+            {
+                var topRow = top + 20;
+                var index = 1;
+                foreach (var row in rows)
+                {
+                    topRow += row.Height;
+                    if (Math.Abs(topRow - y) < 5)
+                    {
+                        changeKind = ChangeKind.RowResize;
+                        changeRowIndex = index;
+                    }
+                    index++;
+                }
+            }
+        }
+        else
+            changeKind = null;
+        /// column resize
+        if (changeKind == ChangeKind.ColumnResize)
+        {
+            xStart = (int)x;
+            leftStart = left;
+            if (changeColIndex.Value == 1) // first column
+                rightCellStartWidth = headerCells.ElementAt(changeColIndex.Value - 1).Width;
+            else if (changeColIndex.Value == headerCells.Count + 1)
+            {
+                //last column
+                leftCellStartWidth = headerCells.ElementAt(changeColIndex.Value - 2).Width;
+            }
+            else
+            {
+                //others columns
+                leftCellStartWidth = headerCells.ElementAt(changeColIndex.Value - 2).Width;
+                rightCellStartWidth = headerCells.ElementAt(changeColIndex.Value - 1).Width;
+            }
+            Bound.DisableSelection();
+        }
+        else if (changeKind == ChangeKind.RowResize)
+        {
+            yStart = (int)y;
+            heightStart = rows.ElementAt(changeRowIndex.Value - 1).Height;
+            Bound.DisableSelection();
+
+        }
+    }
+
+    public async Task Drag(double x, double y)
+    {
+        if (changeKind == null)
+            return;
+        if (changeKind == ChangeKind.ColumnResize)
+        {
+            var dif = xStart.Value - (int)x;
+            if (changeColIndex.Value == 1)
+            {
+                headerCells.ElementAt(changeColIndex.Value - 1).Width = rightCellStartWidth.Value + 2 * dif;
+                left = leftStart.Value - dif;
+            }
+            else if (changeColIndex.Value == headerCells.Count + 1)
+            {
+                headerCells.ElementAt(changeColIndex.Value - 2).Width = leftCellStartWidth.Value - 2 * dif;
+                left = leftStart.Value + dif;
+            }
+            else
+            {
+                headerCells.ElementAt(changeColIndex.Value - 1).Width = rightCellStartWidth.Value + dif;
+                headerCells.ElementAt(changeColIndex.Value - 2).Width = leftCellStartWidth.Value - dif;
+            }
+        }
+        else
+        {
+            var dif = yStart.Value - (int)y;
+            rows.ElementAt(changeRowIndex.Value - 1).Height = heightStart.Value - dif;
+        }
+        await OnChange.InvokeAsync();
+    }
+
+    [Parameter]
+    public EventCallback OnChange { get; set; }
+
+    [Parameter]
+    public int Top { get; set; }
+
+    [Parameter]
+    public BondType? BondType { get; set; }
+
+    [Parameter]
+    public Bound Bound { get; set; }
+
+    async Task UpdateTableLocation()
+    {
+        if (BondType.HasValue)
+        {
+            var data = await Bound.GetBondDataAsync(BondType.Value);
+            left = Convert.ToInt32(data.Left + (data.Width - TableWidth - 15) / 2);
+            top = Convert.ToInt32(data.Top);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await UpdateTableLocation();
+            StateHasChanged();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    int TableWidth
+    {
+        get
+        {
+            var total = 15;
+            foreach (var cell in headerCells)
+                total += cell.Width;
+            return total;
+        }
+    }
+}

@@ -15,6 +15,8 @@ namespace Caspian.Common
             JoinCells = new List<int>();
         }
 
+        public int Width { get; set; }
+
         public TableControl Table { get; set; }
 
         public int? RowSpan { get; set; }

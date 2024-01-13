@@ -27,10 +27,9 @@
 {
     double xStart, yStart, widthStart, heightStart, leftStart, topStart;
     ChangeType? changeType;
-
     protected override void OnInitialized()
     {
-        Alignment = new Alignment();
+        Alignment = new AlignmentBase();
         Font = new Font();
         Border = new Border();
         if (BondType.HasValue)
@@ -56,7 +55,7 @@
     [Parameter]
     public double Top { get; set; }
 
-    public Alignment Alignment { get; private set; }
+    public AlignmentBase Alignment { get; private set; }
 
     public Font Font { get; private set; }
 
@@ -143,7 +142,7 @@
         var controlData = new ControlData(Left, Top);
         RecData bondData = null;
         if (BondType.HasValue)
-            bondData = Page.Bound.GetBonddata(BondType.Value);
+            bondData = Page.Bound.GetBondData(BondType.Value);
         switch (changeType)
         {
             case ChangeType.Move:

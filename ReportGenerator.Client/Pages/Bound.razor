@@ -112,6 +112,7 @@
                     <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"
                                    BondType="bondType" Page="Page" OnChange="c => ControlChanged(control, c)" />
                 }
+                <Table Bound="this" BondType="BondType.FirstDataLevel" OnChange="() => {}"/>
                 @if (bondType == selectedBond)
                 {
                     CreateSqures(__builder, bondType.Value, id);

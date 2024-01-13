@@ -1,4 +1,4 @@
-﻿@page "/ReportGenerator"
+﻿@page "/"
 @namespace Caspian.Report
 @inject IJSRuntime JSRuntime
 @{
@@ -44,6 +44,8 @@
     public Bound Bound { get; private set; }
 
     public ReportControl SelectedControl { get; private set; }
+
+    public Table SelectedTable { get; private set; }
 
     public bool IsMouseDown { get; private set; }
 
@@ -123,6 +125,7 @@
         IsMouseDown = true;
         Bound.DragStart(e.ClientX, e.ClientY);
         SelectedControl?.DragStart(e.ClientX, e.ClientY);
+        SelectedTable?.DragStart(e.ClientX, e.ClientY);
     }
 
     public async Task MouseMove(MouseEventArgs e)
@@ -143,11 +146,25 @@
             if (IsMouseDown)
                 await SelectedControl.Drag(e.ClientX, e.ClientY);
         }
+        if (SelectedTable != null)
+        {
+            cursor = SelectedTable.GetCursor(e.ClientX, e.ClientY);
+            if (IsMouseDown)
+                await SelectedTable.Drag(e.ClientX, e.ClientY);
+        }
     }
 
     public void SelectControl(ReportControl control)
     {
         SelectedControl = control;
+        SelectedTable = null;
+        StateHasChanged();
+    }
+
+    public void SelectTable(Table table)
+    {
+        SelectedTable = table;
+        SelectedControl = null;
         StateHasChanged();
     }
 
@@ -155,5 +172,16 @@
     {
         SelectedControl = null;
         StateHasChanged();
+    }
+
+    public void ResetTable()
+    {
+        SelectedTable = null;
+        StateHasChanged();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
     }
 }

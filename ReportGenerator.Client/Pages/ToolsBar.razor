@@ -106,7 +106,6 @@
     </div>
 </div
 
-<SettingWindowComponent @bind-Status="status" Setting="setting" />
 @code 
  {
     Caspian.UI.WindowStatus status;
@@ -118,7 +117,7 @@
     public int ReportId { get; set; }
 
     [Parameter]
-    public Alignment Alignment  { get; set; }
+    public AlignmentBase Alignment  { get; set; }
 
     [Parameter]
     public Font Font { get; set; }
@@ -152,7 +151,6 @@
             Font.Size = size.Value;
         if (family.HasValue())
             Font.Family = family;
-        Page.Title = color;
         if (color.HasValue())
             Font.Color = new Color(color);
         await ChangeStyle();

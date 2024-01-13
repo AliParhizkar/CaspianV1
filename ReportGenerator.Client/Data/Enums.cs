@@ -94,4 +94,11 @@ namespace Caspian.Report
 
         RightResize,
     }
+
+    public enum ChangeKind
+    {
+        ColumnResize,
+
+        RowResize
+    }
 }

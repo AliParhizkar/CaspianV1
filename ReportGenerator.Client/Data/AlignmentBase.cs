@@ -2,9 +2,9 @@
 
 namespace Caspian.Report
 {
-    public class Alignment
+    public class AlignmentBase
     {
-        public Alignment() 
+        public AlignmentBase() 
         {
             VerticalAlign = VerticalAlign.Middle;
             HorizontalAlign = HorizontalAlign.Center;

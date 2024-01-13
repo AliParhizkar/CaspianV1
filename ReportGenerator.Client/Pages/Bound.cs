@@ -4,7 +4,7 @@ namespace Caspian.Report
 {
     public partial class Bound: ComponentBase
     {
-        double reportTitleHeight = 80, pageHeaderHeight, dataHeaderHeight, firstDLHeight = 28, secondDLHeight, thirdDLHeight,
+        double reportTitleHeight = 80, pageHeaderHeight, dataHeaderHeight, firstDLHeight = 100, secondDLHeight, thirdDLHeight,
             dataFooterHeight, pageFooterHeight;
         bool selectionIsDisabled;
         BondType? selectedBond;
@@ -182,7 +182,15 @@ namespace Caspian.Report
             selectedBond = null;
         }
 
-        public RecData GetBonddata(BondType bondType)
+        public async Task<RecData> GetBondDataAsync(BondType bondType)
+        {
+            var id = GetBondId(bondType);
+            if (bondsData == null)
+                await UpdateBoundsData();
+            return bondsData[id];
+        }
+
+        public RecData GetBondData(BondType bondType)
         {
             var id = GetBondId(bondType);
             return bondsData[id];
@@ -221,6 +229,7 @@ namespace Caspian.Report
             {
                 selectedBond = bondType;
                 Page.ResetControl();
+                Page.ResetTable();
                 selectedBondRecData = await JSRuntime.GetClientRecById(id);
                 Page.Text = selectedBondRecData == null;
             }
