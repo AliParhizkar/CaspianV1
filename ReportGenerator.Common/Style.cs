@@ -1,11 +1,15 @@
 ﻿using System.Text.Json;
-using System.Xml.Linq;
 using System.Globalization;
 
 namespace Caspian.Common
 {
     public class Font
     {
+        public Font() 
+        {
+            Color = new Color();
+        }
+
         public bool Bold { get; set; }
 
         public bool Italic { get; set; }
@@ -16,6 +20,23 @@ namespace Caspian.Common
 
         public double Size { get; set; }
 
+        public Color Color { get; set; }
+
+        public string Style
+        {
+            get
+            {
+                var str = "";
+                if (Bold)
+                    str += "font-weight: bold;";
+                if (Italic)
+                    str += "font-style: italic;";
+                if (UnderLine)
+                    str += "text-decoration: underline;";
+                str += $"color:{Color.ColorString};";
+                return str;
+            }
+        }
 
         public string GetJson()
         {
@@ -28,20 +49,47 @@ namespace Caspian.Common
 
     public class Border
     {
-        public double Width { get; set; }
+        public Border()
+        {
+            Width = 1;
+            BorderStyle = BorderStyle.Solid;
+            Color = new Color();
+        }
 
-        public BorderStyle Style { get; set; }
+        public int Width { get; set; }
+
+        public BorderStyle BorderStyle { get; set; }
 
         public Color Color { get; set; }
 
         public BorderKind BorderKind { get; set; }
 
-        public string GetJson()
+        public string Style
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions()
+            get
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            });
+                if (BorderKind == 0)
+                    return "";
+                string border = $"{Width}px {BorderStyle.ToString().ToLower()} {Color.ColorString};";
+                if (BorderKind == BorderKind.Top)
+                    return $"border-top:{border}";
+                if (BorderKind == BorderKind.Bottom)
+                    return $"border-bottom:{border}";
+                if (BorderKind == BorderKind.Left)
+                    return $"border-left:{border}";
+                if (BorderKind == BorderKind.Right)
+                    return $"border-right:{border}";
+                var str = $"border:{border}";
+                if ((BorderKind & BorderKind.Left) == 0)
+                    str += "border-left:none;";
+                if ((BorderKind & BorderKind.Right) == 0)
+                    str += "border-right:none;";
+                if ((BorderKind & BorderKind.Top) == 0)
+                    str += "border-top:none;";
+                if ((BorderKind & BorderKind.Bottom) == 0)
+                    str += "border-bottom:none;";
+                return str;
+            }
         }
     }
 
@@ -53,21 +101,7 @@ namespace Caspian.Common
                 ColorString = "Transparent";
             else
             {
-                color = color.Substring(1, color.Length - 2);
-                var array = color.Split(':');
-                ColorString = String.Format("{0:X}", Convert.ToInt32(array[0]));
-                if (ColorString.Length == 1)
-                    ColorString = '0' + ColorString;
-
-                var str = String.Format("{0:X}", Convert.ToInt32(array[1]));
-                if (str.Length == 1)
-                    str = '0' + str;
-                ColorString += str;
-                str = String.Format("{0:X}", Convert.ToInt32(array[2]));
-                if (str.Length == 1)
-                    str = '0' + str;
-                ColorString += str;
-                ColorString = '#' + ColorString;
+                ColorString = color;
             }
         }
 

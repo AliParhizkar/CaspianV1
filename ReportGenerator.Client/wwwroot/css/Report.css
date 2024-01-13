@@ -209,6 +209,7 @@
     border: 1px solid black;
     position: absolute;
     display: inline-block;
+    z-index:10;
 }
 
     .r-angle.r-top-left{
@@ -1528,6 +1529,7 @@ td {
     height:5px;
     border:1px solid black;
     position:absolute;
+    z-index:10;
 }
 .r-top-center{
     left: calc(50% - 3px);
@@ -1792,4 +1794,9 @@ legend {
 }
 div{
     box-sizing:border-box!important;
+}
+.r-controls-flex{
+    display:flex;
+    height:100%;
+    overflow:hidden;
 }

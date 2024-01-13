@@ -150,6 +150,7 @@ namespace Caspian.Report
             {
                 var difHeight = y - yStart;
                 UpdateSelectedBoundHeight(heightStart + difHeight);
+                selectionIsDisabled = true;
             }
         }
 

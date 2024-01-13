@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.Report
+@using Caspian.UI
 @inject IJSRuntime jSRuntime
 <Window @bind-Status="Status" Style="width:400px;" Title="Page setting">
     <div class="p-2 row c-controls">
@@ -51,7 +52,7 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (message.HasValue())
+        if (message != null)
         {
             await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
             message = null;

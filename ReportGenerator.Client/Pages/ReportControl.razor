@@ -1,7 +1,9 @@
 ﻿@namespace Caspian.Report
+@using Caspian.Common
 
 @{
-    var style = $"left:{Left}px;top:{Top}px;width:{Width}px;height:{Height}px";
+    var style = $"left:{Left}px;top:{Top}px;width:{Width}px;height:{Height}px;";
+    var textStyle = $"{Alignment.TextStyle + Font.Style}";
 }
 <div class="r-controls" style="@style" @onmousedown="SelectControl">
     @if (Page.SelectedControl == this)
@@ -15,6 +17,10 @@
     <span class="r-angle r-top-right"></span>
     <span class="r-angle r-bottom-left"></span>
     <span class="r-angle r-bottom-right"></span>
+    <div style="@(Alignment.Style + Border.Style)" class="r-controls-flex">
+        <span style="@textStyle">@Text</span>
+    </div>
+
 </div>
 
 @code 
@@ -38,6 +44,8 @@
     public double Width { get; private set; } = 180;
 
     public double Height { get; private set; } = 30;
+
+    public string Text { get; private set; } = "ّThis is a real test";
 
     [Parameter]
     public double Left { get; set; }

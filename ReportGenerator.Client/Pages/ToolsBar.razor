@@ -1,15 +1,15 @@
 ﻿@namespace Caspian.Report
+@using Caspian.Common
 @{
     bool alignmentEnabled = Alignment != null;
     var verticalAlign = Alignment?.VerticalAlign;
     var horizontalAlign = Alignment?.HorizontalAlign;
     var fontEnabled = Font != null;
     var borderEnabled = Border != null;
-    var leftBorder = Border != null && (Border.BorderType & BorderType.Left) == BorderType.Left;
-    var rightBorder = Border != null && (Border.BorderType & BorderType.Right) == BorderType.Right;
-    var topBorder = Border != null && (Border.BorderType & BorderType.Top) == BorderType.Top;
-    var bottomBorder = Border != null && (Border.BorderType & BorderType.Bottom) == BorderType.Bottom;
-
+    var leftBorder = Border != null && (Border.BorderKind & BorderKind.Left) == BorderKind.Left;
+    var rightBorder = Border != null && (Border.BorderKind & BorderKind.Right) == BorderKind.Right;
+    var topBorder = Border != null && (Border.BorderKind & BorderKind.Top) == BorderKind.Top;
+    var bottomBorder = Border != null && (Border.BorderKind & BorderKind.Bottom) == BorderKind.Bottom;
 }
 <div class="tools-bar">
     <div id="toolsBar1">
@@ -32,13 +32,13 @@
         <SelectableIcon Enabled="alignmentEnabled" Selected="horizontalAlign == HorizontalAlign.Right" XPosition="152"
             OnMouseDown="async () => await ChangeHorizontalAlignment(HorizontalAlign.Right)"/>
         <span class="toolsbar toolsbar" style="width:2px;background-position:-100px 0px"></span>
-        <SelectableIcon Enabled="fontEnabled" Selected="Font?.Underline == true" XPosition="75" 
-            OnMouseDown="async () => await ChangeFont(!Font.Underline, null, null)" />
+        <SelectableIcon Enabled="fontEnabled" Selected="Font?.UnderLine == true" XPosition="75" 
+            OnMouseDown="async () => await ChangeFont(!Font.UnderLine, null, null)" />
         <SelectableIcon Enabled="fontEnabled" Selected="Font?.Italic == true" XPosition="50" 
             OnMouseDown="async () => await ChangeFont(null, null, !Font.Italic)"/>
         <SelectableIcon Enabled="fontEnabled" Selected="Font?.Bold == true" XPosition="25" 
             OnMouseDown="async () => await ChangeFont(null, !Font.Bold, null)"/>
-        <CollorPicker Enabled="fontEnabled" Color="@Font?.Color" XPosition="281" 
+        <CollorPicker Enabled="fontEnabled" Color="@Font?.Color?.ColorString" XPosition="281" 
             ColorChanged="async color => await ChangeFont(null, null, color)"/>
         <span class="toolsbar-list" style="width:62px;">
             <input disabled="disabled" class="toolsbar-list-input" value="12" style="width:40px" />
@@ -54,26 +54,26 @@
         <span class="toolsbar" style="width:7px;background-position:-358px 0px"></span>
         <DropdownIcon @ref="borderStyle" BorderStyle Enabled="borderEnabled" Value="(int?)Border?.BorderStyle"
             OnChange="async style => await ChangeBorder((BorderStyle)style)" />
-        <DropdownIcon @ref="borderWidth" Enabled="borderEnabled" Value="Border?.BorderWidth"
+        <DropdownIcon @ref="borderWidth" Enabled="borderEnabled" Value="Border?.Width"
             OnChange="async width => await ChangeBorder(width)"/>
         <CollorPicker XPosition="582" Enabled="borderEnabled" 
             ColorChanged="async color => await ChangeBorder(color)"/>
         <CollorPicker XPosition="544" Enabled />
         <span class="toolsbar" style="width:2px;background-position:-542px 0px"></span>
         <SelectableIcon XPosition="517"  />
-        <SelectableIcon XPosition="492" Enabled="borderEnabled" Selected="Border?.BorderType == 0"
-            OnMouseDown="async () => await ChangeBorder((BorderType)0)"/>
-        <SelectableIcon XPosition="467" Enabled="borderEnabled" Selected="Border?.BorderType == (BorderType)15"
-            OnMouseDown="async () => await ChangeBorder((BorderType)15)"/>
+        <SelectableIcon XPosition="492" Enabled="borderEnabled" Selected="Border?.BorderKind == 0"
+            OnMouseDown="async () => await ChangeBorder((BorderKind)0)"/>
+        <SelectableIcon XPosition="467" Enabled="borderEnabled" Selected="Border?.BorderKind == (BorderKind)15"
+            OnMouseDown="async () => await ChangeBorder((BorderKind)15)"/>
         <span class="toolsbar" style="width:2px;background-position:-465px 0px"></span>
         <SelectableIcon XPosition="440" Enabled="borderEnabled" Selected="rightBorder" 
-            OnMouseDown="async () => await ChangeBorder(BorderType.Right)" />
+            OnMouseDown="async () => await ChangeBorder(BorderKind.Right)" />
         <SelectableIcon XPosition="415" Enabled="borderEnabled" Selected="leftBorder"
-            OnMouseDown="async () => await ChangeBorder(BorderType.Left)"/>
+            OnMouseDown="async () => await ChangeBorder(BorderKind.Left)"/>
         <SelectableIcon XPosition="390" Enabled="borderEnabled" Selected="bottomBorder" 
-            OnMouseDown="async () => await ChangeBorder(BorderType.Bottom)"/>
+            OnMouseDown="async () => await ChangeBorder(BorderKind.Bottom)"/>
         <SelectableIcon XPosition="365" Enabled="borderEnabled" Selected="topBorder" 
-            OnMouseDown="async () => await ChangeBorder(BorderType.Top)"/>
+            OnMouseDown="async () => await ChangeBorder(BorderKind.Top)"/>
         <span class="toolsbar " style="width:13px;background-position:-696px 0px"></span>
     </div>
     <div id="toolsBar3">
@@ -85,7 +85,7 @@
         <ToolsbarIcon XPosition="871" />
         <ToolsbarIcon XPosition="846" />
         <span class="toolsbar" style="width:2px;background-position:-844px 0px"></span>
-        <ToolsbarIcon XPosition="819" OnIconClick="() => status = WindowStatus.Open" />
+        <ToolsbarIcon XPosition="819" OnIconClick="() => status = Caspian.UI.WindowStatus.Open" />
         <a target="_blank" href="/report/GetReport?reportid=@(ReportId)">
             <span class="toolsbar" style="width:25px;background-position:-794px 0px"></span>
         </a>
@@ -109,7 +109,7 @@
 <SettingWindowComponent @bind-Status="status" Setting="setting" />
 @code 
  {
-    WindowStatus status;
+    Caspian.UI.WindowStatus status;
     ReportSetting setting = new ReportSetting();
 
     DropdownIcon borderStyle, borderWidth;
@@ -138,7 +138,7 @@
     async Task ChangeFont(bool? underline, bool? bold, bool? italic)
     {
         if (underline.HasValue)
-            Font.Underline = underline.Value;
+            Font.UnderLine = underline.Value;
         if (bold.HasValue)
             Font.Bold = bold.Value;
         if (italic.HasValue)
@@ -149,11 +149,12 @@
     async Task ChangeFont(int? size, string family, string color)
     {
         if (size.HasValue)
-            Font.FontSize = size.Value;
+            Font.Size = size.Value;
         if (family.HasValue())
-            Font.FontFamily = family;
+            Font.Family = family;
+        Page.Title = color;
         if (color.HasValue())
-            Font.Color = color;
+            Font.Color = new Color(color);
         await ChangeStyle();
     }
 
@@ -171,24 +172,24 @@
 
     async Task ChangeBorder(int width)
     {
-        Border.BorderWidth = width;
+        Border.Width = width;
         await ChangeStyle();
     }
 
     async Task ChangeBorder(string color)
     {
-        Border.BorderColor = color;
+        Border.Color = new Color(color);
         await ChangeStyle();
     }
 
-    async Task ChangeBorder(BorderType type)
+    async Task ChangeBorder(BorderKind type)
     {
         if (type == 0 || type.ConvertToInt() == 15)
-            Border.BorderType = type;
-        else if ((Border.BorderType & type) == type)
-            Border.BorderType = (BorderType)(Border.BorderType - type);
+            Border.BorderKind = type;
+        else if ((Border.BorderKind & type) == type)
+            Border.BorderKind = (BorderKind)(Border.BorderKind - type);
         else
-            Border.BorderType |=  type;
+            Border.BorderKind |=  type;
         await ChangeStyle();
     }
 

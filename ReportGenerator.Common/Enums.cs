@@ -187,8 +187,8 @@ namespace Caspian.Common
     public enum BorderStyle
     {
         Solid = 1,
-        Dash,
-        Dot,
+        Dashed,
+        Dotted,
         Double
     }
 

@@ -1,4 +1,4 @@
-﻿@page "/counter"
+﻿@page "/ReportGenerator"
 @namespace Caspian.Report
 @inject IJSRuntime JSRuntime
 @{
@@ -13,7 +13,7 @@
         <ToolsBox Page="this" />
         <div class="report-panel">
             <div id="bindConfig">
-                <span>@(Text)</span>
+                <span>@(Title)</span>
             </div>
             <div id="ruler">
 
@@ -36,6 +36,8 @@
     ReportControl creatingControl;
 
     string cursor = "default";
+
+    public static object Title;
 
     public object Text { get; set; }
 

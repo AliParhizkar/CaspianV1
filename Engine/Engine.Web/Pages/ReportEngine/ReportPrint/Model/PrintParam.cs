@@ -1,7 +1,6 @@
-﻿using System.ComponentModel;
-using System.Collections.Generic;
+﻿using Caspian.Engine;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Caspian.Engine;
 
 namespace ReportUiModels
 {
