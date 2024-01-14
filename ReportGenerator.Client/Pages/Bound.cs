@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Data;
 
 namespace Caspian.Report
 {
     public partial class Bound: ComponentBase
     {
-        double reportTitleHeight = 80, pageHeaderHeight, dataHeaderHeight, firstDLHeight = 100, secondDLHeight, thirdDLHeight,
+        double reportTitleHeight = 80, pageHeaderHeight, dataHeaderHeight = 100, firstDLHeight = 100, secondDLHeight, thirdDLHeight,
             dataFooterHeight, pageFooterHeight;
         bool selectionIsDisabled;
         BondType? selectedBond;
@@ -18,6 +19,8 @@ namespace Caspian.Report
         IList<ControlData> bondControls;
         IDictionary<string, RecData> bondsData;
 
+        TableData DataHeaderBoundTable;
+        TableData DataBoundTable;
         [Parameter]
         public byte DataLevel { get; set; }
 
@@ -59,6 +62,33 @@ namespace Caspian.Report
                 {
                     control.BondType = GetBondType(bondData.Key);
                     bondControls.Add(control);
+                    break;
+                }
+            }
+        }
+
+        public async Task AddTableToBound(int tableLeft, int tableTop, TableData data)
+        {
+            await UpdateBoundsData();
+            var dataBindName = $"databond{DataLevel}";
+            //Last data boun or data header bound can be table
+            foreach(var bondData in bondsData.Where(t => t.Key == dataBindName || t.Key == "dataHeader") )
+            {
+                double left = bondData.Value.Left, right = bondData.Value.Right, top = bondData.Value.Top,
+                    bottom = bondData.Value.Bottom;
+                if (tableLeft > left && tableLeft < right && tableTop > top && tableTop < bottom)
+                {
+                    var bondType = GetBondType(bondData.Key);
+                    if (bondType == BondType.DataHeader)
+                    {
+                        if (DataHeaderBoundTable == null)
+                            DataHeaderBoundTable = data;
+                    }
+                    else
+                    {
+                        if (DataBoundTable == null)
+                            DataBoundTable = ToolsBox.GetTableData(2);
+                    }
                     break;
                 }
             }
@@ -152,6 +182,8 @@ namespace Caspian.Report
                 UpdateSelectedBoundHeight(heightStart + difHeight);
                 selectionIsDisabled = true;
             }
+            if (DataBoundTable != null && DataHeaderBoundTable != null)
+                Page.Title = $"{DataBoundTable.HeaderCells[0].Width} == {DataHeaderBoundTable.HeaderCells[0].Width}";
         }
 
         public void DragStart(double x, double y)
@@ -231,7 +263,6 @@ namespace Caspian.Report
                 Page.ResetControl();
                 Page.ResetTable();
                 selectedBondRecData = await JSRuntime.GetClientRecById(id);
-                Page.Text = selectedBondRecData == null;
             }
         }
 

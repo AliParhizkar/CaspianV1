@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.Report
+@using Caspian.Common
 @inject IJSRuntime JSRuntime
 <div class="bound-content">
     <table cellpadding="0" cellspacing="0" id="bond">
@@ -112,7 +113,15 @@
                     <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"
                                    BondType="bondType" Page="Page" OnChange="c => ControlChanged(control, c)" />
                 }
-                <Table Bound="this" BondType="BondType.FirstDataLevel" OnChange="() => {}"/>
+                @if (bondType == BondType.DataHeader && DataHeaderBoundTable != null)
+                {
+                    <Table Bound="this" BondType="bondType" TableData="DataHeaderBoundTable" OnChange="data => DataHeaderBoundTable = data" />
+                }
+                
+                @if (bondType.ConvertToInt() - 2 == DataLevel && DataBoundTable != null)
+                {
+                    <Table Bound="this" BondType="bondType" TableData="DataBoundTable" OnChange="data => DataBoundTable = data" />
+                }
                 @if (bondType == selectedBond)
                 {
                     CreateSqures(__builder, bondType.Value, id);

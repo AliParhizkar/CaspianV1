@@ -8,9 +8,9 @@
 }
 <div tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
      @onclick="MouseClick">
-    <ToolsBar @ref="toolsBar" Alignment="alignment" Font="font" Border="border" ReportId="1" />
+    <ToolsBar @ref="toolsBar" Alignment="alignment" Font="font" Border="border" ReportId="1" SelectedTable="SelectedTable" />
     <div class="report-content">
-        <ToolsBox Page="this" />
+        <ToolsBox @ref="toolsBox" Page="this" />
         <div class="report-panel">
             <div id="bindConfig">
                 <span>@(Title)</span>
@@ -25,15 +25,22 @@
     {
         <ReportControl @ref="creatingControl" Left="left" Top="top" Page="this" OnChange="CreatingControlChanged" />
     }
+    @if (tableAdding)
+    {
+        <Table @ref="creatingTable" TableData="tableData" Left="(int)left" Top="(int)top" OnChange="UpdateTableData" />
+    }
 </div>
 
 @code 
 {
     ToolsBar toolsBar;
     ElementReference element;
-    bool controlAdding;
+    bool controlAdding, tableAdding;
     double left, top;
     ReportControl creatingControl;
+    Table creatingTable;
+    TableData tableData;
+    ToolsBox toolsBox;
 
     string cursor = "default";
 
@@ -84,6 +91,12 @@
         }
     }
 
+    void UpdateTableData()
+    {
+        left = creatingTable.Left;
+        top = creatingTable.Top;
+    }
+
     public async Task AddControl(double x, double y)
     {
         left = x;
@@ -91,7 +104,20 @@
         controlAdding = true;
         await Task.Delay(100);
         creatingControl.InitializeBeforAddedToPage();
-        SelectedControl = null;
+        ResetControl();
+        ResetTable();
+        Bound.ResetBond();
+    }
+
+    public async Task AddTable(double x, double y, TableData table)
+    {
+        left = x;
+        top = y;
+        tableAdding = true;
+        tableData = table;
+        await Task.Delay(100);
+        ResetControl();
+        ResetTable();
         Bound.ResetBond();
     }
 
@@ -107,6 +133,11 @@
         {
             await Bound.AddControlToBound(new ControlData(left, top));
             controlAdding = false;
+        }
+        if (tableAdding)
+        {
+            await Bound.AddTableToBound((int)left, (int)top, ToolsBox.GetTableData(1));
+            tableAdding = false;
         }
     }
 
@@ -130,12 +161,13 @@
 
     public async Task MouseMove(MouseEventArgs e)
     {
-        if (controlAdding)
+        if (controlAdding || tableAdding)
         {
             left = e.ClientX;
             top = e.ClientY;
-            if (creatingControl != null)
+            if (controlAdding && creatingControl != null)
                 await creatingControl.Drag(e.ClientX, e.ClientY);
+            
         }
         cursor = Bound.GetCursor(e.ClientX, e.ClientY);
         if (IsMouseDown)
@@ -178,10 +210,5 @@
     {
         SelectedTable = null;
         StateHasChanged();
-    }
-
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        return base.OnAfterRenderAsync(firstRender);
     }
 }

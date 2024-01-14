@@ -1517,10 +1517,14 @@ td {
     height: 3px;
 }
 
+.hidden-cell {
+    display: none;
+}
+
 .bond {
     vertical-align: top;
     box-sizing: border-box;
-    border:none;
+    border: none;
 }
 .r-square{
     background-color:white;

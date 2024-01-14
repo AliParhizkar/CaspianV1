@@ -78,8 +78,8 @@
     </div>
     <div id="toolsBar3">
         <span class="toolsbar" style="width:7px;background-position:-710px 0px"></span>
-        <ToolsbarIcon XPosition="947" />
-        <ToolsbarIcon XPosition="922" />
+        <ToolsbarIcon XPosition="947" Enabled="SelectedTable?.CanMerge(out _, out _) == true" OnIconClick="() => SelectedTable?.MergeSelectedCells()" />
+        <ToolsbarIcon XPosition="922" Enabled="SelectedTable?.CanUnmerge() == true" OnIconClick="() => SelectedTable?.UnmergeSelectedCell()" />
         <span class="toolsbar" style="width:2px;background-position:-895px 0px"></span>
         <ToolsbarIcon XPosition="897" />
         <ToolsbarIcon XPosition="871" />
@@ -104,7 +104,7 @@
             <input style="display:none" id="contentColorpicker" />
         </div>
     </div>
-</div
+</div>
 
 @code 
  {
@@ -124,6 +124,9 @@
 
     [Parameter]
     public Border Border { get; set; }
+
+    [Parameter]
+    public Table SelectedTable { get; set; }
 
     [Parameter]
     public EventCallback<string> OnChange { get; set; }
