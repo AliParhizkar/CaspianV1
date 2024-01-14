@@ -1,40 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>disable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.9.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.13" PrivateAssets="all" />
-	  <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.9" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.9" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
-    <ProjectReference Include="..\ReportGenerator.Common\ReportGenerator.Common.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
 	<ItemGroup>
-		<Reference Include="Microsoft.EntityFrameworkCore">
-			<HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\5.0.10\lib\netstandard2.1\Microsoft.EntityFrameworkCore.dll</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.EntityFrameworkCore.SqlServer">
-			<HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore.sqlserver\5.0.1\lib\netstandard2.1\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
-		</Reference>
-		<Reference Include="System.Linq.Dynamic.Core">
-			<HintPath>..\..\..\..\.nuget\packages\system.linq.dynamic.core\1.2.18\lib\net6.0\System.Linq.Dynamic.Core.dll</HintPath>
-		</Reference>
-		<Reference Include="UIComponent">
-		  <HintPath>..\Main\bin\Debug\net7.0\UIComponent.dll</HintPath>
-		</Reference>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
 	</ItemGroup>
-	
-	
+
+	<ItemGroup>
+		<ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
+		<ProjectReference Include="..\ReportGenerator.Common\ReportGenerator.Common.csproj" />
+		<ProjectReference Include="..\UIComponent\UIComponent.csproj" />
+	</ItemGroup>
+
+
 </Project>

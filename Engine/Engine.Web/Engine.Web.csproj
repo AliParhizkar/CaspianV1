@@ -1,56 +1,47 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>disable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<OutputType>Library</OutputType>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="wwwroot\css\bootstrap\**" />
-    <Compile Remove="wwwroot\css\open-iconic\**" />
-    <Content Remove="wwwroot\css\bootstrap\**" />
-    <Content Remove="wwwroot\css\open-iconic\**" />
-    <EmbeddedResource Remove="wwwroot\css\bootstrap\**" />
-    <EmbeddedResource Remove="wwwroot\css\open-iconic\**" />
-    <None Remove="wwwroot\css\bootstrap\**" />
-    <None Remove="wwwroot\css\open-iconic\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="wwwroot\css\bootstrap\**" />
+		<Compile Remove="wwwroot\css\open-iconic\**" />
+		<Content Remove="wwwroot\css\bootstrap\**" />
+		<Content Remove="wwwroot\css\open-iconic\**" />
+		<EmbeddedResource Remove="wwwroot\css\bootstrap\**" />
+		<EmbeddedResource Remove="wwwroot\css\open-iconic\**" />
+		<None Remove="wwwroot\css\bootstrap\**" />
+		<None Remove="wwwroot\css\open-iconic\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Remove="wwwroot\CodeEditor\file.ts" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Remove="wwwroot\CodeEditor\file.ts" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.6.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.9" />
-  </ItemGroup>
-  <ItemGroup>
-	<PackageReference Include="Syncfusion.Blazor.Diagram" Version="21.1.35" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
-    <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
-    <ProjectReference Include="..\Engine.Model\Engine.Model.csproj" />
-    <ProjectReference Include="..\Engine.Service\Engine.Service.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Syncfusion.Blazor.Diagram" Version="21.1.35" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
+		<ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
+		<ProjectReference Include="..\Engine.Model\Engine.Model.csproj" />
+		<ProjectReference Include="..\Engine.Service\Engine.Service.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="FluentValidation">
-      <HintPath>..\..\..\..\..\.nuget\packages\fluentvalidation\9.4.0\lib\net5.0\FluentValidation.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.EntityFrameworkCore">
-      <HintPath>..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\5.0.10\lib\netstandard2.1\Microsoft.EntityFrameworkCore.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\CodeEditor\file.ts" />
-  </ItemGroup>
+	<ItemGroup>
+		<TypeScriptCompile Include="wwwroot\CodeEditor\file.ts" />
+	</ItemGroup>
 
 </Project>
