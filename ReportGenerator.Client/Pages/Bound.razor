@@ -113,14 +113,14 @@
                     <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"
                                    BondType="bondType" Page="Page" OnChange="c => ControlChanged(control, c)" />
                 }
-                @if (bondType == BondType.DataHeader && DataHeaderBoundTable != null)
+                @if (bondType == BondType.DataHeader && dataHeaderBoundTable != null)
                 {
-                    <Table Bound="this" BondType="bondType" TableData="DataHeaderBoundTable" OnChange="data => DataHeaderBoundTable = data" />
+                    <Table @ref="HeaderBoundTable" Top="dataHeaderBoundTable.Top" Bound="this" BondType="bondType" TableData="dataHeaderBoundTable" OnChange="data => dataHeaderBoundTable = data" />
                 }
                 
-                @if (bondType.ConvertToInt() - 2 == DataLevel && DataBoundTable != null)
+                @if (bondType.ConvertToInt() - 2 == DataLevel && dataBoundTable != null)
                 {
-                    <Table Bound="this" BondType="bondType" TableData="DataBoundTable" OnChange="data => DataBoundTable = data" />
+                    <Table @ref="BoundTable" Bound="this" Top="dataBoundTable.Top" BondType="bondType" TableData="dataBoundTable" OnChange="data => dataBoundTable = data" />
                 }
                 @if (bondType == selectedBond)
                 {

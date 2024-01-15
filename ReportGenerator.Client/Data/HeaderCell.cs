@@ -5,6 +5,10 @@
         public IList<HeaderCell> HeaderCells { get; set; }
 
         public IList<TableRow> Rows { get; set; }
+
+        public int Top { get; set; }
+
+        public int TopStart { get; set; }
     }
 
     public class HeaderCell

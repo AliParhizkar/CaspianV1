@@ -52,7 +52,7 @@
 {
     IList<TableCell> selectedCells;
     ChangeKind? changeKind;
-    int? changeColIndex, leftCellStartWidth, rightCellStartWidth, xStart, leftStart;
+    int? changeColIndex, leftCellStartWidth, rightCellStartWidth, xStart, leftStart, difrentCurcer;
 
     int? changeRowIndex, heightStart, yStart;
 
@@ -237,6 +237,15 @@
         base.OnInitialized();
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        if (BondType.HasValue)
+        {
+            
+        }
+        await base.OnInitializedAsync();
+    }
+
     void SelectTableCell(bool ctrKey, TableCell cell)
     {
         if (ctrKey)
@@ -295,22 +304,25 @@
             if (y > Top && y < Top + 20)
             {
                 var leftCell = Left + 15;
-                if (Math.Abs(leftCell - x) < 6)
+                if (Math.Abs(leftCell - (int)x) < 6)
                 {
                     changeKind = ChangeKind.ColumnResize;
                     changeColIndex = 1;
+                    difrentCurcer = leftCell - (int)x;
                 }
                 var index = 2;
                 foreach (var cel in TableData.HeaderCells)
                 {
                     leftCell += cel.Width;
-                    if (Math.Abs(leftCell - x) < 6)
+                    if (Math.Abs(leftCell - (int)x) < 6)
                     {
                         changeKind = ChangeKind.ColumnResize;
                         changeColIndex = index;
+                        difrentCurcer = leftCell - (int)x;
                     }
                     index++;
                 }
+                
             }
             ///row resize
             if (x > Left && x < Left + 15)
@@ -364,9 +376,14 @@
     {
         if (changeKind == null)
             return;
+
         if (changeKind == ChangeKind.ColumnResize)
         {
-            var dif = xStart.Value - (int)x;
+            var actualLeft = GetCellLeftLocation();
+            int left;
+            Bound.ShowRuler(this, (int)x, out left);
+            var dif = xStart.Value - left;
+            dif += difrentCurcer.Value;
             if (changeColIndex.Value == 1)
             {
                 TableData.HeaderCells.ElementAt(changeColIndex.Value - 1).Width = rightCellStartWidth.Value + 2 * dif;
@@ -388,6 +405,7 @@
             var dif = yStart.Value - (int)y;
             TableData.Rows.ElementAt(changeRowIndex.Value - 1).Height = heightStart.Value - dif;
         }
+
         await OnChange.InvokeAsync(TableData);
     }
 
@@ -409,9 +427,22 @@
         {
             var data = await Bound.GetBondDataAsync(BondType.Value);
             Left = Convert.ToInt32(data.Left + (data.Width - TableWidth - 15) / 2);
-            Top = Convert.ToInt32(data.Top);
+            TableData.Top = Convert.ToInt32(data.Top);
             await OnChange.InvokeAsync(TableData);
         }
+    }
+
+    int GetCellLeftLocation()
+    {
+        var total = Left + 15;
+        var index = 1;
+        foreach(var cel in TableData.HeaderCells)
+        {
+            if (index < changeColIndex)
+                total += cel.Width;
+            index++;
+        }
+        return total;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

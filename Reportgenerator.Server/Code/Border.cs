@@ -5,7 +5,7 @@ namespace Caspian.Server
 {
     public class Border: Common.Border
     {
-        public Border(XElement element) 
+        public Border(XElement element)
         {
             var array = element.Value.Split(';');
             var borderKindArray = array[0].Split(',');

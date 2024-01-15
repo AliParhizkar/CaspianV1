@@ -37,7 +37,7 @@ namespace Main
                     Menus = context.Menus.ToList()
                 };
             });
-            builder.Services.AddSingleton(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
+            builder.Services.AddScoped(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
             builder.Services.AddSingleton<FormAppState>();
             builder.Services.AddScoped<CaspianDataService>();
             builder.Services.AddScoped<Demo.Model.Context>();

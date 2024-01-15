@@ -3,28 +3,28 @@
 <html>
 <head>
     <style type="text/css">
-        .test{
+        #parent {
             border:1px solid red;
-            position:absolute;
-            left:50px;
-            top:50px;
-            height:100px;
-            width:50px;
-            display:flex;
-            font-size:30px;
-            overflow:hidden;
-            justify-content:center
+            height:200px;
+            position:relative;
+            top:100px;
+            left:200px;
+            width:500px;
         }
-        .test span{
-            white-space:nowrap;
+        #child{
+            position:absolute;
+            border:1px solid red;
+            width:100px;
+            height:100px;
+            top:20px;
+            left:20px;
         }
     </style>
 </head>
 <body style="margin:0;padding:0">
-    <div class="test">
-        <span>Hello How are you</span>
-    </div>
-
+<div id="parent">
+    <div id="child"></div>
+</div>    
 
 </body>
 </html>
