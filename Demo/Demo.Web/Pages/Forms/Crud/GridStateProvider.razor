@@ -1,0 +1,43 @@
+﻿@implements IDisposable
+
+@using UIComponent.Grid
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using System.Text.Json;
+
+<CascadingValue Value=this.data>
+    @ChildContent
+</CascadingValue>
+
+@code {
+    private readonly GridStateContext data = new GridStateContext();
+
+    [Inject]
+    public ProtectedSessionStorage storage { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        data.SaveGridStateAsync += SaveGridStateAsync;
+        data.GetGridStateAsync += GetGridStateAsync;
+    }
+
+    public async Task SaveGridStateAsync(string key, string data)
+    {
+        await storage.SetAsync(key, data);
+    }
+
+    public async Task<string> GetGridStateAsync(string key)
+    {
+        var result = await storage.GetAsync<string>(key);
+        if(result.Success)
+            return result.Value;
+        return string.Empty;
+    }
+
+    public void Dispose()
+    {
+        data.SaveGridStateAsync -= SaveGridStateAsync;
+        data.GetGridStateAsync -= GetGridStateAsync;
+    }
+}

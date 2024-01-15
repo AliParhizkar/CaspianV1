@@ -1,14 +1,15 @@
 ﻿using System.Text.Json;
 using System.Threading.Tasks;
+using Caspian.Common;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using UIComponent.Grid;
 
 namespace Caspian.UI
 {
     partial class DataGrid<TEntity> : DataView<TEntity> where TEntity : class
     {
-        [Inject]
-        public ProtectedSessionStorage storage { get; set; }
+        [CascadingParameter]
+        public GridStateContext GridStateContext { get; set; }
 
         [Parameter]
         public bool PersistState { get; set; }
@@ -20,11 +21,16 @@ namespace Caspian.UI
         {
             if (PersistState)
             {
+                if (GridStateContext is null)
+                    throw new Exception(@"GridStateContext CascadingParameter can not be null 
+                                        when PersistState is true for a grid. you must provide 
+                                        a persistance mechanism for GridStateContext persistence methods");
+
                 var name = typeof(TEntity).Name;
-                var result = await storage.GetAsync<string>(name);
-                if (result.Success)
+                var result = await GridStateContext.GetGridStateAsync(name);
+                if (!string.IsNullOrEmpty(result))
                 {
-                    var data = JsonSerializer.Deserialize<GridSPersistStateData<TEntity>>(result.Value);
+                    var data = JsonSerializer.Deserialize<GridSPersistStateData<TEntity>>(result);
                     pageNumber = data.PageNumber;
                     Search = data.Search;
                     SelectedRowIndex = data.SelectedRowIndex;
@@ -47,7 +53,7 @@ namespace Caspian.UI
                     SelectedRowIndex = SelectedRowIndex
                 };
                 var json = JsonSerializer.Serialize(data);
-                await storage.SetAsync(name, json);
+                await GridStateContext.SaveGridStateAsync(name, json);
             }
         }
     }

@@ -13,14 +13,14 @@
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="p-4 row">
                 <div class="col-md-5 d-content pe-3">
-                    <div >
+                    <div>
                         <span class="c-demo-description">
                             In this example, we use <b>IconButton</b>, if we set it's <b>Href</b> parameter, it will be rendered as a <b>link</b>.
                         </span>
                     </div>
                     <h3 class="pt-3">Persist state:</h3>
                     <div>
-                        <span class="fa fa-info"> Note:</span> 
+                        <span class="fa fa-info"> Note:</span>
                         <span class="c-demo-description">
                             In this example, we have used the <b>PersistState</b> grid parameter, so when returning from the city page, the grid will retain its state (page number, selected row and search parameters),
                             In other words, if you click on a country's cities icon, that country will be selected in the return.
@@ -38,18 +38,20 @@
                             </div>
                         </div>
                         <div class="ps-1 pe-1 pb-4">
-                            <DataGrid PersistState @bind-Search="searchCountry">
-                                <Columns>
-                                    <GridColumn Field="t => t.Title" />
-                                    <GridColumn Field="t => t.ActiveType.EnumText()" />
-                                    <GridColumn Title="Cities" style="width:50px">
-                                        <Template>
-                                            <IconButton Href='@($"/Demo/City/{context.Data.Id}")' IconType="IconType.Wpforms" />
-                                        </Template>
-                                    </GridColumn>
-                                    <GridCommandColumns />
-                                </Columns>
-                            </DataGrid>
+                            <GridStateProvider>
+                                <DataGrid PersistState @bind-Search="searchCountry">
+                                    <Columns>
+                                        <GridColumn Field="t => t.Title" />
+                                        <GridColumn Field="t => t.ActiveType.EnumText()" />
+                                        <GridColumn Title="Cities" style="width:50px">
+                                            <Template>
+                                                <IconButton Href='@($"/Demo/City/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                                            </Template>
+                                        </GridColumn>
+                                        <GridCommandColumns />
+                                    </Columns>
+                                </DataGrid>
+                            </GridStateProvider>
                         </div>
                         <Window Title="Country" Style="width:450px">
                             <Content>

@@ -1,91 +1,52 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>disable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Npm" Version="3.5.2" />
-    <PackageReference Include="Stimulsoft.Reports.Blazor" Version="2023.4.4" />
-    <PackageReference Include="Stimulsoft.Reports.Engine.Blazor" Version="2023.4.4" />
-    <PackageReference Include="Syncfusion.Blazor.Diagram" Version="21.1.35" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="wwwroot\open-iconic\FONT-LICENSE" />
-    <None Include="wwwroot\open-iconic\font\fonts\open-iconic.svg" />
-    <None Include="wwwroot\open-iconic\ICON-LICENSE" />
-    <None Include="wwwroot\open-iconic\README.md" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Npm" Version="3.5.2" />
+		<PackageReference Include="Stimulsoft.Reports.Blazor" Version="2023.4.4" />
+		<PackageReference Include="Stimulsoft.Reports.Engine.Blazor" Version="2023.4.4" />
+		<PackageReference Include="Syncfusion.Blazor.Diagram" Version="21.1.35" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="wwwroot\open-iconic\FONT-LICENSE" />
+		<None Include="wwwroot\open-iconic\font\fonts\open-iconic.svg" />
+		<None Include="wwwroot\open-iconic\ICON-LICENSE" />
+		<None Include="wwwroot\open-iconic\README.md" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.9" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Serialize.Linq" Version="2.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Serialize.Linq" Version="2.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
-    <ProjectReference Include="..\Demo\Demo.Model\Demo.Model.csproj" />
-    <ProjectReference Include="..\Demo\Demo.Service\Demo.Service.csproj" />
-    <ProjectReference Include="..\Demo\Demo.Web\Demo.Web.csproj" />
-    <ProjectReference Include="..\Engine\Engine.Model\Engine.Model.csproj" />
-    <ProjectReference Include="..\Engine\Engine.Service\Engine.Service.csproj" />
-    <ProjectReference Include="..\Engine\Engine.Web\Engine.Web.csproj" />
-    <ProjectReference Include="..\UIComponent\UIComponent.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="FluentValidation">
-      <HintPath>..\..\..\..\.nuget\packages\fluentvalidation\9.4.0\lib\net5.0\FluentValidation.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.EntityFrameworkCore">
-      <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\6.0.5\lib\net6.0\Microsoft.EntityFrameworkCore.dll</HintPath>
-    </Reference>
-    <Reference Include="Stimulsoft.Base">
-      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Stimulsoft.Blockly">
-      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Blockly.dll</HintPath>
-    </Reference>
-    <Reference Include="Stimulsoft.Data">
-      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Stimulsoft.Drawing">
-      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Drawing.dll</HintPath>
-    </Reference>
-    <Reference Include="Stimulsoft.Map">
-      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Map.dll</HintPath>
-    </Reference>
-    <Reference Include="Stimulsoft.Report">
-      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Report.dll</HintPath>
-    </Reference>
-    <Reference Include="Stimulsoft.Report.Check">
-      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Report.Check.dll</HintPath>
-    </Reference>
-    <Reference Include="Stimulsoft.Report.Helper">
-      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Report.Helper.dll</HintPath>
-    </Reference>
-    <Reference Include="Stimulsoft.System">
-      <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.System.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Linq.Dynamic.Core">
-      <HintPath>..\..\..\..\.nuget\packages\system.linq.dynamic.core\1.2.18\lib\net6.0\System.Linq.Dynamic.Core.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
+		<ProjectReference Include="..\Demo\Demo.Model\Demo.Model.csproj" />
+		<ProjectReference Include="..\Demo\Demo.Service\Demo.Service.csproj" />
+		<ProjectReference Include="..\Demo\Demo.Web\Demo.Web.csproj" />
+		<ProjectReference Include="..\Engine\Engine.Model\Engine.Model.csproj" />
+		<ProjectReference Include="..\Engine\Engine.Service\Engine.Service.csproj" />
+		<ProjectReference Include="..\Engine\Engine.Web\Engine.Web.csproj" />
+		<ProjectReference Include="..\UIComponent\UIComponent.csproj" />
+	</ItemGroup>
 	<ItemGroup>
 		<Content Include="Help\**" CopyToPublishDirectory="PreserveNewest" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Compile Remove="Data\**" />
-	  <Content Remove="Data\**" />
-	  <EmbeddedResource Remove="Data\**" />
-	  <None Remove="Data\**" />
+		<Compile Remove="Data\**" />
+		<Content Remove="Data\**" />
+		<EmbeddedResource Remove="Data\**" />
+		<None Remove="Data\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Errors\" />
+		<Folder Include="Errors\" />
 	</ItemGroup>
 </Project>
