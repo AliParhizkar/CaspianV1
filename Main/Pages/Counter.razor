@@ -1,17 +1,6 @@
 ﻿@page "/counter"
-@inherits BasePage
 @namespace Test.UI
-@using Caspian.Common
-@using Caspian.Engine;
-@using Caspian.UI
-@using Demo.Model
-@using Demo.Service
-@using Microsoft.Data.SqlClient
-@using Microsoft.EntityFrameworkCore
 
-<form onSubmit="e => e.preventDefault()">
-
-</form>
 
 
 
@@ -27,12 +16,11 @@
     }
 
     bool cancelSubmit;
-    City city = new City();
     EditContext context;
 
     protected override void OnInitialized()
     {
-        context = new EditContext(city);
+        
         base.OnInitialized();
     }
 

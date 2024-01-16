@@ -8,17 +8,12 @@
 @using Main.Model;
 @using Stimulsoft.Report
 @inject IHostEnvironment host
-<button @onclick="TestReport">Report</button>
-<InputFile />
-<div>
-    @message
-</div>
+
+
+
+
 @code
 {
-    MarkupString message;
-    async Task TestReport()
-    {
-        await Task.Delay(1); 
-        throw new NotImplementedException("dsaasdas");
-    }
+    [Parameter]
+    public int Id { get; set; }
 }
