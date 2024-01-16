@@ -8,30 +8,25 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-        CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
-        builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-        builder.Services.AddScoped<CaspianDataService>();
-        builder.Services.AddScoped<Context>();
-        builder.Services.AddScoped<ReportService, ReportService>();
+        builder.Services.AddControllersWithViews();
+        builder.Services.AddRazorPages();
+
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+            app.UseWebAssemblyDebugging();
+        else
+            app.UseHsts();
 
         app.UseHttpsRedirection();
+        app.UseBlazorFrameworkFiles();
+        app.UseStaticFiles();
 
-        app.UseAuthorization();
+        app.UseRouting();
 
-
+        app.MapRazorPages();
         app.MapControllers();
+        app.MapFallbackToFile("index.html");
 
         app.Run();
     }
