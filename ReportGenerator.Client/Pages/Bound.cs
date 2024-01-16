@@ -1,12 +1,13 @@
 ﻿using System.Data;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.Report
 {
-    public partial class Bound: ComponentBase
+    public partial class Bound: Caspian.UI.BasePage
     {
-        double reportTitleHeight = 80, pageHeaderHeight, dataHeaderHeight = 100, firstDLHeight = 100, secondDLHeight, thirdDLHeight,
-            dataFooterHeight = 80, pageFooterHeight;
+        double reportTitleHeight, pageHeaderHeight, dataHeaderHeight, dataFooterHeight, pageFooterHeight;
+        double firstDLHeight = 50, secondDLHeight, thirdDLHeight;
         bool selectionIsDisabled;
         BondType? selectedBond;
         
@@ -136,6 +137,19 @@ namespace Caspian.Report
                     break;
                 }
             }
+        }
+
+        public ReportSetting GetReportSetting()
+        {
+            return new ReportSetting()
+            {
+                ReportTitle = reportTitleHeight > 0,
+                PageHeader = pageHeaderHeight > 0,
+                DataHeader = dataHeaderHeight > 0,
+                DataFooter = dataFooterHeight > 0,
+                PageFooter = pageFooterHeight > 0,
+                PageType = ReportPageType.B4
+            };
         }
 
         void ShowRuler(IList<RecData> recDatas, ControlData controlData, ref double width, ref double height, ChangeType change)
@@ -404,6 +418,33 @@ namespace Caspian.Report
                 var data = await JSRuntime.GetClientRecById(id);
                 bondsData[id] = data;
             }
+        }
+
+        public async Task UpdateBondSetting(ReportSetting setting)
+        {
+            /// Adding Bounds to page
+            if (setting.ReportTitle && reportTitleHeight == 0)
+                reportTitleHeight = 120;
+            if (setting.PageHeader && pageHeaderHeight == 0)
+                pageHeaderHeight = 50;
+            if (setting.DataHeader && dataHeaderHeight == 0)
+                dataHeaderHeight = 50;
+            if (setting.DataFooter && dataFooterHeight == 0)
+                dataFooterHeight = 50;
+            if (setting.PageFooter && pageFooterHeight == 0)
+                pageFooterHeight = 50;
+            /// Remove Bounds from page
+            if (!setting.ReportTitle && reportTitleHeight > 0 && await Confirm("1111"))
+                reportTitleHeight = 0;
+            if (!setting.PageHeader && pageHeaderHeight > 0 && await Confirm("2222"))
+                pageHeaderHeight = 0;
+            if (!setting.DataHeader && dataHeaderHeight > 0 && await Confirm("3333"))
+                dataHeaderHeight = 0;
+            if (!setting.DataFooter && dataFooterHeight > 0 && await Confirm("444444"))
+                dataFooterHeight = 0;
+            if (!setting.PageFooter && pageFooterHeight > 0 && await Confirm("555555"))
+                pageFooterHeight = 0;
+            StateHasChanged();
         }
 
         BondType GetBondType(string id)

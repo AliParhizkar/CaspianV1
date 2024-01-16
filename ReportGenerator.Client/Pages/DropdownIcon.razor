@@ -87,10 +87,9 @@
     async Task SelectItem(int value)
     {
         top = "-100%";
-        await Task.Delay(250);
-        showItem = false;
         if (OnChange.HasDelegate)
-            await OnChange.InvokeAsync(value);
+            await OnChange.InvokeAsync(value); await Task.Delay(250);
+        showItem = false;
     }
 
     [Parameter]

@@ -1,7 +1,7 @@
 ﻿@namespace Caspian.Report
 @using Caspian.UI
 @inject IJSRuntime jSRuntime
-
+@inherits BasePage
 <div class="p-2 row c-controls">
     <div class="col-md-4">
         <label>Page size</label>
@@ -21,45 +21,42 @@
     <div class="col-md-8">
         <NumericTextBox @bind-Value="Setting.PageHeight" Disabled="Setting.PageType != ReportPageType.Custome" />
     </div>
-    @if (!IsWorkflowReport)
-    {
-        <div class="col-md-4">
-            <label>Print type</label>
-        </div>
-        <div class="col-md-8">
-            <DropdownList @bind-Value="Setting.PrintOn" />
-        </div>
-        <div class="col-md-4">
-            <label>Report title</label>
-        </div>
-        <div class="col-md-8">
-            <CheckBox @bind-Value="Setting.ReportTitle" />
-        </div>
-        <div class="col-md-4">
-            <label>Page header</label>
-        </div>
-        <div class="col-md-8">
-            <CheckBox @bind-Value="Setting.PageHeader" />
-        </div>
-        <div class="col-md-4">
-            <label>Data header</label>
-        </div>
-        <div class="col-md-8">
-            <CheckBox @bind-Value="Setting.DataHeader" />
-        </div>
-        <div class="col-md-4">
-            <label>Data footer</label>
-        </div>
-        <div class="col-md-8">
-            <CheckBox @bind-Value="Setting.DataFooter" />
-        </div>
-        <div class="col-md-4">
-            <label>Page footer</label>
-        </div>
-        <div class="col-md-8">
-            <CheckBox @bind-Value="Setting.PageFooter" />
-        </div>
-    }
+    <div class="col-md-4">
+        <label>Report title</label>
+    </div>
+    <div class="col-md-8">
+        <CheckBox @bind-Value="Setting.ReportTitle" />
+    </div> 
+    <div class="col-md-4">
+        <label>Page header</label>
+    </div>
+    <div class="col-md-8">
+        <CheckBox @bind-Value="Setting.PageHeader" />
+    </div>
+    <div class="col-md-5 ps-5">
+        <label>Print type</label>
+    </div>
+    <div class="col-md-7">
+        <DropdownList Disabled="!Setting.PageHeader" @bind-Value="Setting.PrintOn" />
+    </div>
+    <div class="col-md-4">
+        <label>Data header</label>
+    </div>
+    <div class="col-md-8">
+        <CheckBox @bind-Value="Setting.DataHeader" />
+    </div>
+    <div class="col-md-4">
+        <label>Data footer</label>
+    </div>
+    <div class="col-md-8">
+        <CheckBox @bind-Value="Setting.DataFooter" />
+    </div>
+    <div class="col-md-4">
+        <label>Page footer</label>
+    </div>
+    <div class="col-md-8">
+        <CheckBox @bind-Value="Setting.PageFooter" />
+    </div>
     <div class="col-md-4"></div>
     <div class="col-md-8 justify-content-center d-flex pt-3 pb-2">
         <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
@@ -70,12 +67,13 @@
 @code
 {
     string message;
+    ReportSetting Setting;
 
-    [Parameter]
-    public ReportSetting Setting { get; set; }
-
-    [Parameter]
-    public bool IsWorkflowReport{ get; set; }
+    protected override void OnInitialized()
+    {
+        Setting = Page.Bound.GetReportSetting();
+        base.OnInitialized();
+    }
 
     [Parameter]
     public WindowStatus Status { get; set; }
@@ -88,7 +86,10 @@
         if (Setting.PageType.GetValueOrDefault() == 0 || Setting.PageType.Value == ReportPageType.Custome && (Setting.PageWidth <= 0 || Setting.PageHeight <= 0))
             message = "لطفا اندازه صفحه را مشخص نمایید";
         else
+        {
+            await Page.Bound.UpdateBondSetting(Setting);
             await StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
     }
 
     void SetPageSize()
@@ -100,6 +101,9 @@
             Setting.PageHeight = size.PageHeight;
         }
     }
+
+    [Parameter]
+    public Page Page { get; set; }
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {

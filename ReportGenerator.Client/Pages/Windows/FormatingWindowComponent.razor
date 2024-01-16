@@ -1,0 +1,94 @@
+﻿@using Caspian.Common
+@using Caspian.UI
+@namespace Caspian.Report
+
+@inject IJSRuntime jsRundTime
+@{
+    if (!formating.DigitGroup)
+        formating.GroupNumberChar = null;
+    if (formating.DecimalChar == null)
+        formating.NumberDigits = null;
+}
+<div class="row p-2 c-controls">
+    <div class="col-md-5">
+        <label>Digit grouping</label>
+    </div>
+    <div class="col-md-7">
+        <CheckBox @bind-Value="formating.DigitGroup" />
+    </div>
+    <div class="col-md-5">
+        <label>Grouping character</label>
+    </div>
+    <div class="col-md-7">
+        <DropdownList @bind-Value="formating.GroupNumberChar" Disabled="!formating.DigitGroup" />
+    </div>
+    <div class="col-md-5">
+        <label>Point character</label>
+    </div>
+    <div class="col-md-7">
+        <DropdownList @bind-Value="formating.DecimalChar" />
+    </div>
+    <div class="col-md-5">
+        <label>Number of decimal</label>
+    </div>
+    <div class="col-md-7">
+        <NumericTextBox @bind-Value="formating.NumberDigits" Disabled="formating.DecimalChar == null" />
+    </div>
+    <div class="col-md-5"></div>
+        <div class="col-md-7 justify-content-center d-flex pt-3 pb-2">
+            <button class="c-btn c-danger" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)">Cancel</button>
+            <button class="c-btn c-primary" @onclick="SetFormat">Save</button>
+        </div>
+    </div>
+
+
+@code 
+{
+    string message;
+    NumberFormating formating;
+
+    protected override void OnInitialized()
+    {
+        if (Page.SelectedControl == null)
+            formating = Page.SelectedTable.GetNumberFormating();
+        else
+            formating = Page.SelectedControl.NumberFormating;
+        formating = formating ?? new NumberFormating();
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public Page Page { get; set; }
+
+    async void SetFormat()
+    {
+        if (formating.DigitGroup && formating.GroupNumberChar == null)
+            message = "Please specify the separator character";
+        if (formating.DecimalChar.HasValue && formating.NumberDigits == null)
+            message = "Please specify the number of decimal places";
+        if (!message.HasValue())
+        {
+            if (Page.SelectedControl == null)
+                Page.SelectedTable.SetFormating(formating);
+            else
+                Page.SelectedControl.NumberFormating = formating;
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message.HasValue())
+        {
+            await jsRundTime.InvokeVoidAsync("$.caspian.showMessage", message);
+            message = null;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

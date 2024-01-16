@@ -46,6 +46,8 @@
 
         public string Text { get; set; }
 
+        public NumberFormating NumberFormating { get; set; }
+
         public int RowSpan { get; set; }
 
         public int ColSpan { get; set; }

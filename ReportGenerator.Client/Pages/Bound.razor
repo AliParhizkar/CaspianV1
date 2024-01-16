@@ -1,5 +1,7 @@
 ﻿@namespace Caspian.Report
 @using Caspian.Common
+@inherits Caspian.UI.BasePage
+
 @inject IJSRuntime JSRuntime
 <div class="bound-content">
     <table cellpadding="0" cellspacing="0" id="bond">
@@ -58,7 +60,7 @@
         id = id.Substring(0, 1).ToLower() + id.Substring(1);
         <tr>
             <td colspan="@(DataLevel)" class="reportheader">@(title)</td>
-            <td id="reportTitle" style="@($"height:{height}px")" @onmouseup="async () => await SelectBond(bondType, id)">
+            <td id="@(id)" style="@($"height:{height}px")" @onmouseup="async () => await SelectBond(bondType, id)">
                 @foreach(var control in bondControls.Where(t => t.BondType == bondType))
                 {
                     <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"  

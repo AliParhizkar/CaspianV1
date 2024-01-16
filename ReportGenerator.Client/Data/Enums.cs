@@ -3,33 +3,20 @@
 namespace Caspian.Report
 {
     /// <summary>
-    /// نوع چاپ سرصفحه در گزارش
+    /// Page header print type
     /// </summary>
     public enum PrintOnType
     {
-        /// <summary>
-        /// همه ی صفحات
-        /// </summary>
-        [Display(Name = "همه ی صفحات")]
+        [Display(Name = "All Pages")]
         AllPages = 1,
 
-        /// <summary>
-        /// بجز صفحه ی اول
-        /// </summary>
-        [Display(Name = "بجز صفحه ی اول")]
+        [Display(Name = "Except First Page")]
         ExceptFirstPage,
 
-        /// <summary>
-        /// بجز صفحه ی آخر
-        /// </summary>
-
-        [Display(Name = "بجز صفحه ی آخر")]
+        [Display(Name = "Except Last Page")]
         ExceptLastPage,
 
-        /// <summary>
-        /// بجز صفحه ی اول و آخر
-        /// </summary>
-        [Display(Name = "بجز صفحه ی اول و آخر")]
+        [Display(Name = "Except First & LastPage")]
         ExceptFirstAndLastPage
     }
 

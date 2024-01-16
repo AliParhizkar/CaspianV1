@@ -10,6 +10,7 @@
     var rightBorder = Border != null && (Border.BorderKind & BorderKind.Right) == BorderKind.Right;
     var topBorder = Border != null && (Border.BorderKind & BorderKind.Top) == BorderKind.Top;
     var bottomBorder = Border != null && (Border.BorderKind & BorderKind.Bottom) == BorderKind.Bottom;
+    var foramtingEnabled = Page.SelectedControl != null || Page.SelectedTable != null;
 }
 <div class="tools-bar">
     <div id="toolsBar1">
@@ -60,7 +61,7 @@
             ColorChanged="async color => await ChangeBorder(color)"/>
         <CollorPicker XPosition="544" Enabled />
         <span class="toolsbar" style="width:2px;background-position:-542px 0px"></span>
-        <SelectableIcon XPosition="517"  />
+         <ToolsbarIcon XPosition="517" Enabled="foramtingEnabled" OnIconClick="OpenFormatingWindow" />
         <SelectableIcon XPosition="492" Enabled="borderEnabled" Selected="Border?.BorderKind == 0"
             OnMouseDown="async () => await ChangeBorder((BorderKind)0)"/>
         <SelectableIcon XPosition="467" Enabled="borderEnabled" Selected="Border?.BorderKind == (BorderKind)15"
@@ -106,22 +107,45 @@
     </div>
 </div>
 
-<Caspian.UI.Window Title="@title" Style="width:400px" @bind-Status="status">
-    <SettingWindowComponent Setting="setting" @bind-Status="status" />
+ <Caspian.UI.Window Title="@title" Style="width:400px" Status="status" StatusChanged="CloseWindow">
+    @if (isSettingWindow)
+    {
+        <SettingWindowComponent Page="Page" Status="status" StatusChanged="CloseWindow" />
+    }
+    else
+    {
+        <FormatingWindowComponent Page="Page" Status="status" StatusChanged="CloseWindow" />
+    }
 </Caspian.UI.Window>
 
 @code 
- {
+{
+    bool isSettingWindow;
     string title;
     Caspian.UI.WindowStatus status;
-    ReportSetting setting = new ReportSetting();
 
     DropdownIcon borderStyle, borderWidth;
 
+    void CloseWindow(Caspian.UI.WindowStatus status)
+    {
+        Page.WindowIsOpened = status == UI.WindowStatus.Open;
+        this.status = status;
+    }
+
     void OpenSettingWindow()
     {
+        Page.WindowIsOpened = true;
+        isSettingWindow = true;
         status = Caspian.UI.WindowStatus.Open;
         title = "Page Setting";
+    }
+
+    void OpenFormatingWindow()
+    {
+        Page.WindowIsOpened = true;
+        isSettingWindow = false;
+        status = Caspian.UI.WindowStatus.Open;
+        title = "Number Formating";
     }
 
     [Parameter]
@@ -135,6 +159,9 @@
 
     [Parameter]
     public Border Border { get; set; }
+
+    [Parameter]
+    public Page Page { get; set; }
 
     [Parameter]
     public Table SelectedTable { get; set; }

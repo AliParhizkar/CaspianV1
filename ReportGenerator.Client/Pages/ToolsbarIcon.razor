@@ -26,7 +26,7 @@
 
     async Task OnClicked()
     {
-        if (OnIconClick.HasDelegate)
+        if (Enabled && OnIconClick.HasDelegate)
             await OnIconClick.InvokeAsync();
     }
 

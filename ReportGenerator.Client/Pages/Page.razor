@@ -1,5 +1,6 @@
 ﻿@page "/"
 @namespace Caspian.Report
+@using Caspian.UI
 @inject IJSRuntime JSRuntime
 @{
     var alignment = SelectedControl?.Alignment;
@@ -8,7 +9,7 @@
 }
 <div tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
      @onclick="MouseClick">
-    <ToolsBar @ref="toolsBar" Alignment="alignment" Font="font" Border="border" ReportId="1" SelectedTable="SelectedTable" />
+    <ToolsBar @ref="toolsBar" Page="this" Alignment="alignment" Font="font" Border="border" ReportId="1" SelectedTable="SelectedTable" />
     <div class="report-content">
         <ToolsBox @ref="toolsBox" Page="this" />
         <div class="report-panel">
@@ -30,9 +31,12 @@
         <Table @ref="creatingTable" TableData="tableData" Left="(int)left" Top="(int)top" OnChange="UpdateTableData" />
     }
 </div>
-
+<Window Style="width:400px;" Status="status" StatusChanged="CloseWindow">
+    <TextboxWindow Status="status" StatusChanged="CloseWindow" Page="this" />
+</Window>
 @code 
 {
+    WindowStatus status;
     ToolsBar toolsBar;
     ElementReference element;
     bool controlAdding, tableAdding;
@@ -91,10 +95,25 @@
         }
     }
 
+    public bool WindowIsOpened { get; set; }
+
     void UpdateTableData()
     {
         left = creatingTable.Left;
         top = creatingTable.Top;
+    }
+
+    public void OpenTextWindow()
+    {
+        status = WindowStatus.Open;
+        
+        StateHasChanged();
+    }
+
+    void CloseWindow(WindowStatus status)
+    {
+        this.status = status;
+
     }
 
     public async Task AddControl(double x, double y)
@@ -161,6 +180,8 @@
 
     public async Task MouseMove(MouseEventArgs e)
     {
+        if (WindowIsOpened)
+            return;
         if (controlAdding || tableAdding)
         {
             left = e.ClientX;

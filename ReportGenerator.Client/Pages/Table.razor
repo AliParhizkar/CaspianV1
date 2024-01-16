@@ -138,6 +138,22 @@
         }
     }
 
+    public NumberFormating GetNumberFormating()
+    {
+        if (selectedCells.Count == 1)
+        {
+            var cell = selectedCells.Single();
+            return cell.NumberFormating;
+        }
+        return null;
+    }
+
+    public void SetFormating(NumberFormating formating)
+    {
+        foreach(var cell in selectedCells)
+            cell.NumberFormating = formating;
+    }
+
     public bool CanUnmerge()
     {
         if (selectedCells.Count != 1)

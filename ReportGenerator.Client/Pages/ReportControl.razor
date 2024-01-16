@@ -5,7 +5,7 @@
     var style = $"left:{Left}px;top:{Top}px;width:{Width}px;height:{Height}px;";
     var textStyle = $"{Alignment.TextStyle + Font.Style}";
 }
-<div class="r-controls" style="@style" @onmousedown="SelectControl">
+<div class="r-controls" style="@style" @onmousedown="SelectControl" @ondblclick="OpenWindow">
     @if (Page.SelectedControl == this)
     {
         <span class="r-square r-top-center"></span>
@@ -18,7 +18,7 @@
     <span class="r-angle r-bottom-left"></span>
     <span class="r-angle r-bottom-right"></span>
     <div style="@(Alignment.Style + Border.Style)" class="r-controls-flex">
-        <span style="@textStyle">@Text</span>
+        <span style="@textStyle">@ReportParam.Text</span>
     </div>
 
 </div>
@@ -40,11 +40,18 @@
         base.OnInitialized();
     }
 
+    void OpenWindow()
+    {
+        Page.OpenTextWindow();
+    }
+
     public double Width { get; private set; } = 180;
 
     public double Height { get; private set; } = 30;
 
-    public string Text { get; private set; } = "ّThis is a real test";
+    public ReportParam ReportParam { get; set; }
+
+    public NumberFormating NumberFormating { get; set; }
 
     [Parameter]
     public double Left { get; set; }
