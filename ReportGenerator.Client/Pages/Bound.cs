@@ -117,30 +117,45 @@ namespace Caspian.Report
                     if (Math.Abs(total - x) < 6)
                     {
                         verticalRulerLeft = left = total;
-                        break;
+                        return;
                     }
                     total += cell.Width;
                 }
             }
+            foreach (var control in reportControls)
+            {
+                if (Math.Abs(control.Left - x) < 6)
+                {
+                    verticalRulerLeft = left = (int)control.Left;
+                    break;
+                }
+                var right = control.Left + control.Width;
+                if (Math.Abs(right - x) < 6)
+                {
+                    verticalRulerLeft = left = (int)right;
+                    break;
+                }
+            }
         }
 
-        public void ShowRuler(ControlData controlData, ref double width, ref double height, ChangeType change)
+        void ShowRuler(IList<RecData> recDatas, ControlData controlData, ref double width, ref double height, ChangeType change)
         {
-            HideRulers();
-            
             double left = controlData.Left, right = left + width, top = controlData.Top, bottom = top + height;
-            foreach(var control in reportControls)
+            foreach (var rect in recDatas)
             {
-                if (Page.SelectedControl != control)
+                ReportControl control = null;
+                if (rect.Bottom > 0)
+                    control = reportControls.ElementAt((int)rect.Bottom - 1);
+                if (Page.SelectedControl != control || control == null)
                 {
-                    var ctrRight = control.Left + control.Width;
-                    var ctrBottom = control.Top + control.Height;
+                    var ctrRight = rect.Left + rect.Width;
+                    var ctrBottom = rect.Top + rect.Height;
                     switch (change)
                     {
                         case ChangeType.Move:
-                            if (Math.Abs(left - control.Left) < 6)
+                            if (Math.Abs(left - rect.Left) < 6)
                             {
-                                controlData.Left = control.Left;
+                                controlData.Left = rect.Left;
                                 verticalRulerLeft = controlData.Left;
                             }
                             if (Math.Abs(right - ctrRight) < 6)
@@ -148,9 +163,9 @@ namespace Caspian.Report
                                 controlData.Left = ctrRight - width;
                                 verticalRulerRight = ctrRight;
                             }
-                            if (Math.Abs(top - control.Top) < 6)
+                            if (Math.Abs(top - rect.Top) < 6)
                             {
-                                controlData.Top = control.Top;
+                                controlData.Top = rect.Top;
                                 horizontalRulerTop = controlData.Top;
                             }
                             if (Math.Abs(bottom - ctrBottom) < 6)
@@ -160,10 +175,10 @@ namespace Caspian.Report
                             }
                             break;
                         case ChangeType.LeftResize:
-                            if (Math.Abs(left - control.Left) < 6)
+                            if (Math.Abs(left - rect.Left) < 6)
                             {
-                                controlData.Left = control.Left;
-                                width = right - control.Left;
+                                controlData.Left = rect.Left;
+                                width = right - rect.Left;
                                 verticalRulerLeft = controlData.Left;
                             }
                             break;
@@ -175,10 +190,10 @@ namespace Caspian.Report
                             }
                             break;
                         case ChangeType.TopResize:
-                            if (Math.Abs(top - control.Top) < 6)
+                            if (Math.Abs(top - rect.Top) < 6)
                             {
-                                controlData.Top = control.Top;
-                                height = bottom - control.Top;
+                                controlData.Top = rect.Top;
+                                height = bottom - rect.Top;
                                 horizontalRulerTop = controlData.Top;
                             }
                             break;
@@ -193,7 +208,38 @@ namespace Caspian.Report
 
                 }
             }
+        }
 
+        public void ShowRuler(ControlData controlData, ref double width, ref double height, ChangeType change)
+        {
+            HideRulers();
+            var list = reportControls.Select((t, index) => new RecData()
+            {
+                Left = t.Left,
+                Top = t.Top,
+                Width = t.Width,
+                Height = t.Height,
+                Bottom = index + 1
+            }).ToList();
+            if (HeaderBoundTable != null)
+                AddCellsRectToList(HeaderBoundTable, list);
+            if (BoundTable != null)
+                AddCellsRectToList(BoundTable, list);
+            ShowRuler(list, controlData, ref width, ref height, change);
+        }
+
+        void AddCellsRectToList(Table table, IList<RecData> list)
+        {
+            var sumLeft = table.Left + 15;
+            foreach (var cell in table.TableData.HeaderCells)
+            {
+                list.Add(new RecData()
+                {
+                    Left = sumLeft,
+                    Width = cell.Width,
+                });
+                sumLeft += cell.Width;
+            }
         }
 
         public void Drag(double x, double y)
@@ -202,10 +248,17 @@ namespace Caspian.Report
             {
                 var difHeight = y - yStart;
                 UpdateSelectedBoundHeight(heightStart + difHeight);
+                ///Drag controls and tables
                 if (dataHeaderBoundTable != null && selectedBond.Value < BondType.DataHeader)
                     dataHeaderBoundTable.Top = dataHeaderBoundTable.TopStart + (int)(difHeight);
                 if (dataBoundTable != null && selectedBond < BoundTable.BondType)
                     dataBoundTable.Top = dataBoundTable.TopStart + (int)(difHeight);
+                foreach(var control in bondControls)
+                {
+                    if (control.BondType.Value > selectedBond.Value)
+                        control.Top = control.TopStart + (int)(difHeight);
+                }
+
                 selectionIsDisabled = true;
             }
         }
@@ -221,7 +274,8 @@ namespace Caspian.Report
                     dataHeaderBoundTable.TopStart = dataHeaderBoundTable.Top;
                 if (dataBoundTable != null)
                     dataBoundTable.TopStart = dataBoundTable.Top;
-
+                foreach(var control in bondControls)
+                    control.TopStart = control.Top;
             }
         }
 

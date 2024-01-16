@@ -150,9 +150,9 @@
         }
     }
 
-    public void MouseDown(MouseEventArgs e)
+    async Task MouseDown(MouseEventArgs e)
     {
-        toolsBar.CloseDropdown();
+        await toolsBar.CloseDropdown();
         IsMouseDown = true;
         Bound.DragStart(e.ClientX, e.ClientY);
         SelectedControl?.DragStart(e.ClientX, e.ClientY);

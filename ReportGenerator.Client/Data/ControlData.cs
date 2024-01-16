@@ -10,6 +10,8 @@
 
         public double Left { get; set; }
 
+        public double TopStart { get; set; }
+
         public double Top { get; set; }
 
         public BondType? BondType { get; set; }

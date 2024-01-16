@@ -106,9 +106,6 @@ a, .btn-link {
         content: var(--blazor-load-percentage-text, "Loading");
     }
 
-code {
-    color: #c02d76;
-}
 
 .r-controls{
     position:absolute;
@@ -146,9 +143,6 @@ code {
     width: 30px;
     height:30px;
     display:inline-block;
-}
-.r-bond-container{
-    
 }
 .r-bond {
     border: 1px solid red;

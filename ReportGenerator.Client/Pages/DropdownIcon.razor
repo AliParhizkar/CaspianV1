@@ -21,11 +21,13 @@
     {
         string solid = Value == 1 ? "r-selected" : "", dashed = Value == 2 ? "r-selected" : "",
         dotted = Value == 3 ? "r-selected" : "", doublee = Value == 4 ? "r-selected" : "";
-        <span @onmousedown:stopPropagation @onmousemove:stopPropagation class="r-border-kind">
-            <span class="r-solid @(solid)" @onmousedown="async () => await SelectItem(1)"></span>
-            <span class="r-dashed @(dashed)" @onmousedown="async () => await SelectItem(2)"></span>
-            <span class="r-dotted @(dotted)" @onmousedown="async () => await SelectItem(3)"></span>
-            <span class="r-double @(doublee)" @onmousedown="async () => await SelectItem(4)"></span>
+        <span class="r-dropdown-icon-container">
+            <span style="top:@(top)" @onmousedown:stopPropagation @onmousemove:stopPropagation class="r-border-kind">
+                <span class="r-solid @(solid)" @onmousedown="async () => await SelectItem(1)"></span>
+                <span class="r-dashed @(dashed)" @onmousedown="async () => await SelectItem(2)"></span>
+                <span class="r-dotted @(dotted)" @onmousedown="async () => await SelectItem(3)"></span>
+                <span class="r-double @(doublee)" @onmousedown="async () => await SelectItem(4)"></span>
+            </span>
         </span>
     }
     @if (!BorderStyle && showItem)
@@ -33,31 +35,42 @@
         string first = Value == 1 ? "r-selected" : "", second = Value == 2 ? "r-selected" : "",
         third = Value == 3 ? "r-selected" : "", forth = Value == 4 ? "r-selected" : "",
         fifth = Value == 5 ? "r-selected" : "";
-        <span @onmousedown:stopPropagation @onmousemove:stopPropagation class="r-border-width">
-            <span class="r-first @(first)" @onmousedown="async () => await SelectItem(1)"></span>
-            <span class="r-second @(second)" @onmousedown="async () => await SelectItem(2)"></span>
-            <span class="r-third @(third)" @onmousedown="async () => await SelectItem(3)"></span>
-            <span class="r-fourth @(forth)" @onmousedown="async () => await SelectItem(4)"></span>
-            <span class="r-fifth @(fifth)" @onmousedown="async () => await SelectItem(5)"></span>
+        <span  class="r-dropdown-icon-container">
+            <span style="top:@(top)" @onmousedown:stopPropagation @onmousemove:stopPropagation class="r-border-width">
+                <span class="r-first @(first)" @onmousedown="async () => await SelectItem(1)"></span>
+                <span class="r-second @(second)" @onmousedown="async () => await SelectItem(2)"></span>
+                <span class="r-third @(third)" @onmousedown="async () => await SelectItem(3)"></span>
+                <span class="r-fourth @(forth)" @onmousedown="async () => await SelectItem(4)"></span>
+                <span class="r-fifth @(fifth)" @onmousedown="async () => await SelectItem(5)"></span>
+            </span>
         </span>
     }
 </span>
 
 @code 
 {
+    string top = "-100%";
     bool showItem;
     bool mouseEnter, buttonClicked;
 
-    void OpenItem()
+    async Task OpenItem()
     {
-        showItem = true;
-        buttonClicked = false;
+        if (!showItem)
+        {
+            showItem = true;
+            buttonClicked = false;
+            await Task.Delay(1);
+            top = "8px";
+        }
+
     }
 
-    public void Close()
+    public async Task Close()
     {
         if (showItem)
         {
+            top = "-100%";
+            await Task.Delay(250);
             showItem = false;
             buttonClicked = false;
             mouseEnter = false;
@@ -73,6 +86,8 @@
 
     async Task SelectItem(int value)
     {
+        top = "-100%";
+        await Task.Delay(250);
         showItem = false;
         if (OnChange.HasDelegate)
             await OnChange.InvokeAsync(value);

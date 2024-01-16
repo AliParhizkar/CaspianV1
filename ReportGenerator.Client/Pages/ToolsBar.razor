@@ -85,7 +85,7 @@
         <ToolsbarIcon XPosition="871" />
         <ToolsbarIcon XPosition="846" />
         <span class="toolsbar" style="width:2px;background-position:-844px 0px"></span>
-        <ToolsbarIcon XPosition="819" OnIconClick="() => status = Caspian.UI.WindowStatus.Open" />
+        <ToolsbarIcon XPosition="819" OnIconClick="OpenSettingWindow" />
         <a target="_blank" href="/report/GetReport?reportid=@(ReportId)">
             <span class="toolsbar" style="width:25px;background-position:-794px 0px"></span>
         </a>
@@ -106,12 +106,23 @@
     </div>
 </div>
 
+<Caspian.UI.Window Title="@title" Style="width:400px" @bind-Status="status">
+    <SettingWindowComponent Setting="setting" @bind-Status="status" />
+</Caspian.UI.Window>
+
 @code 
  {
+    string title;
     Caspian.UI.WindowStatus status;
     ReportSetting setting = new ReportSetting();
 
     DropdownIcon borderStyle, borderWidth;
+
+    void OpenSettingWindow()
+    {
+        status = Caspian.UI.WindowStatus.Open;
+        title = "Page Setting";
+    }
 
     [Parameter]
     public int ReportId { get; set; }
@@ -200,10 +211,10 @@
         await ChangeStyle();
     }
 
-    public void CloseDropdown()
+    public async Task CloseDropdown()
     {
-        borderStyle.Close();
-        borderWidth.Close();
+        await borderStyle.Close();
+        await borderWidth.Close();
     }
 
 }
