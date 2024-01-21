@@ -11,7 +11,7 @@ namespace Caspian.Report
         [DisplayName("Number Digits")]
         public int? NumberDigits { get; set; }
 
-        [DisplayName("کاراکتر گروهبندی")]
+        [DisplayName("Grouping Char")]
         public GroupNumberChar? GroupNumberChar { get; set; }
 
         [DisplayName("Decimal Char")]

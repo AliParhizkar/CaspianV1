@@ -9,6 +9,7 @@ namespace ReportGenerator.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
             await builder.Build().RunAsync();
+            
         }
     }
 }

@@ -2,5 +2,8 @@
 
 namespace Caspian.Report
 {
-    
+    public class Border
+    {
+
+    }
 }

@@ -88,4 +88,104 @@ namespace Caspian.Report
 
         RowResize
     }
+
+    public enum SystemVariable
+    {
+        [Display(Name = "Date")]
+        Date = 1,
+
+        [Display(Name = "First Name")]
+        FName,
+
+        [Display(Name = "Last Name")]
+        LName,
+
+        [Display(Name = "Name")]
+        FLName,
+
+        [Display(Name = "Personnel Code")]
+        UserId
+    }
+
+    public enum BorderStyle
+    {
+        Solid = 1,
+        Dash,
+        Dot,
+        Double
+    }
+
+    public enum VerticalAlign
+    {
+        Top = 1,
+        Middle,
+        Bottom,
+    }
+
+    public enum HorizontalAlign
+    {
+        Left = 1,
+        Center,
+        Right,
+        Justify
+    }
+
+    public enum TotalFuncType
+    {
+        [Display(Name = "Sum")]
+        Sum,
+
+        [Display(Name = "Avrage")]
+        Avg,
+
+        [Display(Name = "Count")]
+        Count,
+
+        [Display(Name = "Min")]
+        Min,
+
+        [Display(Name = "Max")]
+        Max
+    }
+
+    public enum SystemFiledType
+    {
+        [Display(Name = "Row Number")]
+        Line = 1,
+
+        [Display(Name = "Page Number")]
+        PageNumber,
+
+        [Display(Name = "Page Number From Total")]
+        PageNofM,
+
+        [Display(Name = "Total Page Count")]
+        TotalPageCount
+    }
+
+    public enum BorderKind
+    {
+        Top = 1,
+        Bottom = 2,
+        Left = 4,
+        Right = 8,
+    }
+
+    public enum DecimalChar
+    {
+        [Display(Name = ".")]
+        Dot = 1,
+
+        [Display(Name = "/")]
+        Slash
+    }
+
+    public enum GroupNumberChar
+    {
+        [Display(Name = ",")]
+        Camma = 1,
+
+        [Display(Name = ".")]
+        Dot,
+    }
 }
