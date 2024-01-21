@@ -1,0 +1,67 @@
+﻿@page "/Demo/ContextMenu"
+@namespace Demo.Web.Pages
+
+
+
+
+<ContextMenu @bind-Status="leftStatus" Left="left" Top="top">
+    <ContextMenuItem Title="Ali Parhizkar 1" />
+    <ContextMenuItem Title="Hosin 2" >
+        <ContextMenuItem Title="Item dass" />
+        <ContextMenuItem Title="Item" />
+        <ContextMenuItem Title="Item dasa asdsad as" />
+    </ContextMenuItem>
+    <ContextMenuItem Title="sadsa das dasdas">
+        <ContextMenuItem Title="Item dass">
+            <ContextMenuItem Title="Item 1" />
+            <ContextMenuItem Title="Item 2" />
+            <ContextMenuItem Title="Item 3" />
+        </ContextMenuItem>
+        <ContextMenuItem Title="Item" />
+        <ContextMenuItem Title="Item dasa" />
+    </ContextMenuItem>
+    <ContextMenuItem Title="Item 4" />
+</ContextMenu>
+
+<div>
+    <button @onclick="ShowOnLeft" class="c-btn c-outline-primary">Context Menu On Right</button>
+</div>
+
+<div>
+    <button @onclick="ShowOnLeft" style="float:right;margin-right:100px;" class="c-btn c-outline-primary">Context Menu On Left</button>
+</div>
+
+<ContextMenu @bind-Status="rightStatus" Left="left" Top="top">
+    <ContextMenuItem Title="Ali Parhizkar 2" />
+    <ContextMenuItem Title="Hosin 2">
+        <ContextMenuItem Title="Item dass" />
+        <ContextMenuItem Title="Item" />
+        <ContextMenuItem Title="Item dasa asdsad as" />
+    </ContextMenuItem>
+    <ContextMenuItem Title="sadsa das dasdas">
+        <ContextMenuItem Title="Item dass" />
+        <ContextMenuItem Title="Item" />
+        <ContextMenuItem Title="Item dasa" />
+    </ContextMenuItem>
+    <ContextMenuItem Title="Item 4" />
+</ContextMenu>
+
+@code {
+    bool leftStatus, rightStatus;
+    double left, top;
+
+    void ShowOnLeft(MouseEventArgs e)
+    {
+        left = e.ClientX;
+        top = e.ClientY;
+        leftStatus = true;
+    }
+
+    void ShowOnRight(MouseEventArgs e)
+    {
+        left = e.ClientX;
+        top = e.ClientY;
+        rightStatus = true;
+    }
+}
+

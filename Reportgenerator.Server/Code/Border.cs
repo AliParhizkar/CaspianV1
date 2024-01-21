@@ -15,10 +15,10 @@ namespace Caspian.Server
                     borderKindValue |= (int)typeof(BorderKind).GetField(borderKindArray[i]).GetValue(null);
             this.BorderKind = (BorderKind)borderKindValue;
             Color = new Color(array[1]);
-            Width = Convert.ToDouble(array[2]);
-            var filed = typeof(BorderStyle).GetField(array[3]);
-            if (filed != null)
-                Style = (BorderStyle)filed.GetValue(null);
+            //Width = Convert.ToDouble(array[2]);
+            //var filed = typeof(BorderStyle).GetField(array[3]);
+            //if (filed != null)
+            //    Style = (BorderStyle)filed.GetValue(null);
         }
     }
 }
