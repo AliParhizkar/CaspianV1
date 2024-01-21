@@ -20,6 +20,26 @@
     <script src="/_content/UIComponent/Scripts/Main/caspian.textbox.js"></script>
     <script src="/_content/UIComponent/Scripts/Main/caspian.TextArea.js"></script>
     <script type="text/javascript">
+        function getClientRecBounds() {
+            let ids = ['reportTitle', 'pageHeader', 'dataHeader', 'databond1', 'databond2', 'databond3', 'dataFooter', 'pageFooter'];
+            let result = [];
+            for (let key in ids) {
+                let bound = document.getElementById(ids[key]);
+                if (bound != null) {
+                    let rect = bound.getBoundingClientRect();
+                    result.push({
+                        top: rect.top,
+                        left: rect.left,
+                        width: rect.width,
+                        height: rect.height,
+                        bottom: rect.bottom,
+                        right: rect.right,
+                        bondValue: parseInt(key),
+                    });
+                }
+            }
+            return result;
+        }
         const getClientRecById = id => document.getElementById(id).getBoundingClientRect();
     </script>
 </head>

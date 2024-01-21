@@ -31,8 +31,15 @@
         <Table @ref="creatingTable" TableData="tableData" Left="(int)left" Top="(int)top" OnChange="UpdateTableData" />
     }
 </div>
-<Window Style="width:400px;" Status="status" StatusChanged="CloseWindow">
-    <TextboxWindow Status="status" StatusChanged="CloseWindow" Page="this" />
+<Window Title="@windowTitle" Style="width:400px;" Status="status" StatusChanged="CloseWindow">
+    @if (isTextWindow)
+    {
+        <TextboxWindow Status="status" StatusChanged="CloseWindow" Page="this" />
+    }
+    else
+    {
+        <ColumnWindow Status="status" StatusChanged="CloseWindow"  />
+    }
 </Window>
 @code 
 {
@@ -45,6 +52,8 @@
     Table creatingTable;
     TableData tableData;
     ToolsBox toolsBox;
+    bool isTextWindow;
+    string windowTitle;
 
     string cursor = "default";
 
@@ -106,14 +115,26 @@
     public void OpenTextWindow()
     {
         status = WindowStatus.Open;
-        
+        isTextWindow = true;
+        windowTitle = "Textbox Window";
         StateHasChanged();
+    }
+
+    public void OpenColumnWindow()
+    {
+        if (SelectedControl == null && SelectedTable == null)
+        {
+            status = WindowStatus.Open;
+            isTextWindow = false;
+            windowTitle = "Column Window";
+            StateHasChanged();
+        }
+
     }
 
     void CloseWindow(WindowStatus status)
     {
         this.status = status;
-
     }
 
     public async Task AddControl(double x, double y)
@@ -146,25 +167,25 @@
         top = data.Top;
     }
 
-    async Task MouseClick(MouseEventArgs e)
+    void MouseClick(MouseEventArgs e)
     {
         if (controlAdding)
         {
-            await Bound.AddControlToBound(new ControlData(left, top));
+            Bound.AddControlToBound(new ControlData(left, top));
             controlAdding = false;
         }
         if (tableAdding)
         {
-            await Bound.AddTableToBound((int)left, (int)top, ToolsBox.GetTableData(1));
+            Bound.AddTableToBound((int)left, (int)top, ToolsBox.GetTableData(Bound.ColumnCount));
             tableAdding = false;
         }
     }
 
-    async Task MouseUp(MouseEventArgs e)
+    void MouseUp(MouseEventArgs e)
     {
         if (IsMouseDown)
         {
-            await Bound.Drop(e.ClientX, e.ClientY);
+            Bound.Drop(e.ClientX, e.ClientY);
             IsMouseDown = false;
         }
     }

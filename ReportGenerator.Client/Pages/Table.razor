@@ -257,7 +257,7 @@
     {
         if (BondType.HasValue)
         {
-            
+
         }
         await base.OnInitializedAsync();
     }
@@ -338,7 +338,7 @@
                     }
                     index++;
                 }
-                
+
             }
             ///row resize
             if (x > Left && x < Left + 15)
@@ -441,8 +441,8 @@
     {
         if (BondType.HasValue)
         {
-            var data = await Bound.GetBondDataAsync(BondType.Value);
-            Left = Convert.ToInt32(data.Left + (data.Width - TableWidth - 15) / 2);
+            var data = Bound.GetBondData(BondType.Value);
+            Left = Convert.ToInt32(data.Left + (Bound.ColumnWidth - TableWidth - 15) / 2);
             TableData.Top = Convert.ToInt32(data.Top);
             await OnChange.InvokeAsync(TableData);
         }

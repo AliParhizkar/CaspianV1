@@ -988,8 +988,8 @@
                 $(ddl).find('.t-dropdown-wrap').removeClass('t-state-focused').addClass('t-state-default');
                 $.caspian.hideErrorMessage($(ddl)[0]);
             });
-            $(window).bind('click', e => {
-                if (!$(e.target).closest('.t-dropdown').hasClass('t-dropdown')) {
+            $(window).bind('mouseup', e => {
+                if (!$(e.target).hasClass('t-disable') || !$(e.target).closest('.t-dropdown').hasClass('t-dropdown')) {
                     let $group = $(ddl).find('.c-animate-down .t-group');
                     if ($(ddl).find('.t-group')[0]) {
                         $group.css('top', '-100%');

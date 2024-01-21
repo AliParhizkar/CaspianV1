@@ -52,15 +52,18 @@
     var style = $"top:{horizontalRulerBottom}px";
     <div style="@style" class="r-h-ruler"></div>
 }
+
 @code 
 {
+    int columnCount = 2;
+    int columnGap = 2;
     void CreateBound(RenderTreeBuilder __builder, BondType bondType, double height, string title)
     {
         string id = bondType.ToString();
         id = id.Substring(0, 1).ToLower() + id.Substring(1);
         <tr>
             <td colspan="@(DataLevel)" class="reportheader">@(title)</td>
-            <td id="@(id)" style="@($"height:{height}px")" @onmouseup="async () => await SelectBond(bondType, id)">
+            <td id="@(id)" style="@($"height:{height}px")" @onmouseup="() => SelectBond(bondType)">
                 @foreach(var control in bondControls.Where(t => t.BondType == bondType))
                 {
                     <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"  
@@ -102,28 +105,42 @@
             else
                 bondType = BondType.ThirdDataLevel;
         }
+
         <tr>
             @for (var index = 2; index <= level; index++)
             {
                 <td class="dataBond data-bond-first"></td>
             }
             <td colspan="@(colSpan)" class="@className">@(title)</td>
-            <td id="@(id)" style="@($"height:{height}px;width:{Width}px")" class="bond"
-                @onmouseup="async () => await SelectBond(bondType, id)">
-                @foreach (var control in bondControls.Where(t => t.BondType == bondType))
+            <td @ondblclick="() => Page.OpenColumnWindow()" id="@(id)" style="@($"height:{height}px;width:{Width}px")" class="bond"
+                @onmouseup="() => SelectBond(bondType.Value)">
+                @if (columnCount > 1)
                 {
-                    <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"
-                                   BondType="bondType" Page="Page" OnChange="c => ControlChanged(control, c)" />
+                    for (var i = 1; i <= columnCount; i++)
+                    {
+                        className = "column ";
+                        if (i == 1)
+                            className += "left";
+                        else if (i == columnCount)
+                            className += "right";
+                        else
+                            className += "middel";
+                        var style = $"width:{ColumnWidth}px;";
+                        if (i < columnCount)
+                            style += $"margin-right:{columnGap}px;";
+                        <div class="@className" style="@style">
+                            @if (i == 1)
+                            {
+                                CreateControlsAndTable(__builder, bondType);
+                            }
+                        </div>
+                    }
                 }
-                @if (bondType == BondType.DataHeader && dataHeaderBoundTable != null)
+                else
                 {
-                    <Table @ref="HeaderBoundTable" Top="dataHeaderBoundTable.Top" Bound="this" BondType="bondType" TableData="dataHeaderBoundTable" OnChange="data => dataHeaderBoundTable = data" />
+                    CreateControlsAndTable(__builder, bondType);
                 }
-                
-                @if (bondType.ConvertToInt() - 2 == DataLevel && dataBoundTable != null)
-                {
-                    <Table @ref="BoundTable" Bound="this" Top="dataBoundTable.Top" BondType="bondType" TableData="dataBoundTable" OnChange="data => dataBoundTable = data" />
-                }
+
                 @if (bondType == selectedBond)
                 {
                     CreateSqures(__builder, bondType.Value, id);
@@ -136,6 +153,24 @@
             </td>
             <td class="spliter"></td>
         </tr>
+    }
+
+    void CreateControlsAndTable(RenderTreeBuilder __builder, BondType? bondType)
+    {
+        @foreach (var control in bondControls.Where(t => t.BondType == bondType))
+        {
+            <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"
+                           BondType="bondType" Page="Page" OnChange="c => ControlChanged(control, c)" />
+        }
+        @if (bondType == BondType.DataHeader && dataHeaderBoundTable != null)
+        {
+            <Table @ref="HeaderBoundTable" Top="dataHeaderBoundTable.Top" Bound="this" BondType="bondType" TableData="dataHeaderBoundTable" OnChange="data => dataHeaderBoundTable = data" />
+        }
+
+        @if (bondType.ConvertToInt() - 2 == DataLevel && dataBoundTable != null)
+        {
+            <Table @ref="BoundTable" Bound="this" Top="dataBoundTable.Top" BondType="bondType" TableData="dataBoundTable" OnChange="data => dataBoundTable = data" />
+        }
     }
 
     void CreateSqures(RenderTreeBuilder __builder, BondType bondType, string id)

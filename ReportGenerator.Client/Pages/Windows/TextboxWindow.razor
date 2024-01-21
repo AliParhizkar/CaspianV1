@@ -1,4 +1,4 @@
-﻿@* @namespace Caspian.Report
+﻿@namespace Caspian.Report
 @using Caspian.Common
 @using Caspian.Common.Extension
 @using Caspian.UI
@@ -7,10 +7,10 @@
         <label>Textbox text</label>
     </div>
     <div class="col-md-8">
-        <StringTextBox @bind-Value="@(param.Text)" Disabled="param.TotalFuncType.HasValue || Title.HasValue() || param.SystemVariable.HasValue
+        <StringTextBox @bind-Value="@(param.Text)" Disabled="param.TotalFuncType.HasValue || param.Title.HasValue() || param.SystemVariable.HasValue
             || param.SystemFiledType.HasValue" />
     </div>
-    @if (BondType == BondType.DataFooter)
+    @if (bondType == BondType.DataFooter)
     {
         <div class="col-md-4">
             <label>Method name</label>
@@ -31,7 +31,7 @@
                 <label>Data field</label>
             </div>
             <div class="col-md-8">
-                <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" @bind-Value="Title"
+                <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" @bind-Value="param.Title"
                           Disabled="param.Text.HasValue() && param.TotalFuncType == null || param.SystemFiledType.HasValue || param.TotalFuncType == null" />
             </div>
         }
@@ -42,27 +42,27 @@
             <label>Data field</label>
         </div>
         <div class="col-md-8">
-            <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" Value="Title" ValueChanged="ParamChanged"
+            <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" Value="param.Title" ValueChanged="ParamChanged"
                       Disabled="param.Text.HasValue() && param.Title == null || param.SystemFiledType.HasValue || param.TotalFuncType.HasValue" />
         </div>
     }
-    @if (BondType == BondType.ReportTitle)
+    @if (bondType == BondType.ReportTitle)
     {
         <div class="col-md-4">
             <label>System variable</label>
         </div>
         <div class="col-md-8">
-            <DropdownList TValue="SystemVariable?" Value="SystemVariable" Disabled="Text.HasValue() && SystemVariable == null"
+            <DropdownList TValue="SystemVariable?" Value="param.SystemVariable" Disabled="param.Text.HasValue() && param.SystemVariable == null"
                           ValueChanged="SystemVariableChange" />
         </div>
     }
-    else if (BondType != BondType.DataHeader)
+    else if (bondType != BondType.DataHeader)
     {
         <div class="col-md-4">
             <label>System filed</label>
         </div>
         <div class="col-md-8">
-            <DropdownList TValue="param.SystemFiledType?" Value="param.SystemFiledType"
+            <DropdownList TValue="SystemFiledType?" Value="param.SystemFiledType"
                           Disabled="param.Text.HasValue() && param.SystemFiledType == null || param.TotalFuncType.HasValue"
                           ValueChanged="SystemFiledTypeChanged" />
         </div>
@@ -80,11 +80,12 @@
     BondType bondType;
     protected override void OnInitialized()
     {
-        var control = Page.SelectedContro;
+        var control = Page.SelectedControl;
+        param = new ReportParam();
         if (control != null)
         {
-            param.CopySimpleProperty(control.ReportParam ?? new ReportParam());
-            bondType = control.BondType;
+            param.CopySimpleProperty(control.ReportParam);
+            bondType = control.BondType.Value;
         }    
         base.OnInitialized();
     }
@@ -110,13 +111,13 @@
     void TotalFuncTypeChanged(TotalFuncType? funcType)
     {
         param.TotalFuncType = funcType;
-        Text = '{' + TotalFuncType.EnumText() + '}';
+        param.Text = '{' + param.TotalFuncType.EnumText() + '}';
     }
 
     void SystemFiledTypeChanged(SystemFiledType? filedType)
     {
         param.SystemFiledType = filedType;
-        Text = '{' + param.SystemFiledType.EnumText() + '}';
+        param.Text = '{' + param.SystemFiledType.EnumText() + '}';
     }
 
     void SystemVariableChange(SystemVariable? variable)
@@ -131,4 +132,3 @@
     [Parameter]
     public EventCallback<WindowStatus> StatusChanged { get; set; }
 }
- *@

@@ -9,6 +9,11 @@ namespace Caspian.Report
             return await jSRuntime.InvokeAsync<RecData>("eval", $"getClientRecById('{id}')");
         }
 
+        public static async Task<RecData[]> GetClientRecBounds(this IJSRuntime jSRuntime)
+        {
+            return await jSRuntime.InvokeAsync<RecData[]>("getClientRecBounds");
+        }
+
         public static double Floor(this double d, int digits)
         {
             d = d * Math.Pow(10, digits);

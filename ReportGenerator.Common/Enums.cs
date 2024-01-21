@@ -123,37 +123,22 @@ namespace Caspian.Common
 
     public enum SystemFiledType
     {
-        /// <summary>
-        /// شماره ردیف
-        /// </summary>
-        [Display(Name = "شماره ردیف")]
+        [Display(Name = "Row Number")]
         Line = 1,
 
-        /// <summary>
-        /// شماره صفحه
-        /// </summary>
-        [Display(Name = "شماره صفحه")]
+        [Display(Name = "Page Number")]
         PageNumber,
 
-        /// <summary>
-        /// شماره ی صفحه از کل
-        /// </summary>
-        [Display(Name = "شماره صفحه از کل")]
+        [Display(Name = "Page Number From Total")]
         PageNofM,
 
-        /// <summary>
-        /// تعداد کل صفحات
-        /// </summary>
-        [Display(Name = "تعداد کل صفحات")]
+        [Display(Name = "Total Pages")]
         TotalPageCount
     }
 
-    /// <summary>
-    /// متغیرهای سیستمی
-    /// </summary>
     public enum SystemVariable
     {
-        [Display(Name = "ِDate")]
+        [Display(Name = "Date")]
         Date = 1,
 
         [Display(Name = "First Name")]

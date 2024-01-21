@@ -1,5 +1,7 @@
 ﻿using System.Data;
-using System.Security.Cryptography;
+using Caspian.Common;
+using Microsoft.JSInterop;
+using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.Report
@@ -18,7 +20,7 @@ namespace Caspian.Report
         bool canChangeHeight;
         double yStart, heightStart;
         IList<ControlData> bondControls;
-        IDictionary<string, RecData> bondsData;
+        IList<RecData> bondsData;
 
         TableData dataHeaderBoundTable, dataBoundTable;
         Table HeaderBoundTable, BoundTable;
@@ -54,34 +56,31 @@ namespace Caspian.Report
             selectionIsDisabled = true;
         }
 
-        public async Task AddControlToBound(ControlData control)
+        public void AddControlToBound(ControlData control)
         {
-            await UpdateBoundsData();
             foreach (var bondData in bondsData)
             {
-                double left = bondData.Value.Left, right = bondData.Value.Right, top = bondData.Value.Top, 
-                    bottom = bondData.Value.Bottom;
+                double left = bondData.Left, right = bondData.Right, top = bondData.Top, 
+                    bottom = bondData.Bottom;
                 if (control.Left > left && control.Left < right && control.Top > top && control.Top < bottom)
                 {
-                    control.BondType = GetBondType(bondData.Key);
+                    control.BondType = bondData.BondType;
                     bondControls.Add(control);
                     break;
                 }
             }
         }
 
-        public async Task AddTableToBound(int tableLeft, int tableTop, TableData data)
+        public void AddTableToBound(int tableLeft, int tableTop, TableData data)
         {
-            await UpdateBoundsData();
-            var dataBindName = $"databond{DataLevel}";
             //Last data boun or data header bound can be table
-            foreach(var bondData in bondsData.Where(t => t.Key == dataBindName || t.Key == "dataHeader") )
+            foreach(var bondData in bondsData.Where(t => t.BondType.ConvertToInt() == DataLevel + 2 || t.BondType == BondType.DataHeader) )
             {
-                double left = bondData.Value.Left, right = bondData.Value.Right, top = bondData.Value.Top,
-                    bottom = bondData.Value.Bottom;
+                double left = bondData.Left, right = bondData.Right, top = bondData.Top,
+                    bottom = bondData.Bottom;
                 if (tableLeft > left && tableLeft < right && tableTop > top && tableTop < bottom)
                 {
-                    var bondType = GetBondType(bondData.Key);
+                    var bondType = bondData.BondType;
                     if (bondType == BondType.DataHeader)
                     {
                         if (dataHeaderBoundTable == null)
@@ -103,6 +102,18 @@ namespace Caspian.Report
             verticalRulerRight = null;
             horizontalRulerTop = null;
             horizontalRulerBottom = null;
+        }
+
+        public int ColumnCount { get { return columnCount; } }
+
+        public double ColumnWidth 
+        { 
+            get 
+            {
+                if (ColumnCount <= 1) 
+                    return Width;
+                return (Width - (columnCount - 1) * columnGap) / columnCount;
+            } 
         }
 
         public void ShowRuler(Table table, int x, out int left)
@@ -267,7 +278,7 @@ namespace Caspian.Report
                     dataHeaderBoundTable.Top = dataHeaderBoundTable.TopStart + (int)(difHeight);
                 if (dataBoundTable != null && selectedBond < BoundTable.BondType)
                     dataBoundTable.Top = dataBoundTable.TopStart + (int)(difHeight);
-                foreach(var control in bondControls)
+                foreach (var control in bondControls)
                 {
                     if (control.BondType.Value > selectedBond.Value)
                         control.Top = control.TopStart + (int)(difHeight);
@@ -300,9 +311,7 @@ namespace Caspian.Report
                 if (selectedBond == null)
                     canChangeHeight = false;
                 else
-                {
                     canChangeHeight = Math.Abs(y - selectedBondRecData.Bottom - 2) < 5;
-                }
             }
             return canChangeHeight ? "row-resize" : "default";
         }
@@ -312,29 +321,15 @@ namespace Caspian.Report
             selectedBond = null;
         }
 
-        public async Task<RecData> GetBondDataAsync(BondType bondType)
-        {
-            var id = GetBondId(bondType);
-            if (bondsData == null)
-                await UpdateBoundsData();
-            return bondsData[id];
-        }
-
         public RecData GetBondData(BondType bondType)
         {
-            var id = GetBondId(bondType);
-            return bondsData[id];
+            return bondsData.SingleOrDefault(t => t.BondType == bondType);
         }
 
-        public async Task Drop(double x, double y)
+        public void Drop(double x, double y)
         {
-            await UpdateBoundsData();
             if (selectedBond.HasValue)
-            {
-                var id = GetBondId(selectedBond.Value);
-                selectedBondRecData = bondsData[id];
-            }
-            
+                selectedBondRecData = GetBondData(selectedBond.Value);
             selectionIsDisabled = false;
             HideRulers();
         }
@@ -355,14 +350,14 @@ namespace Caspian.Report
             }
         }
 
-        async Task SelectBond(BondType? bondType, string id)
+        void SelectBond(BondType bondType)
         {
             if (Page.IsMouseDown && !selectionIsDisabled)
             {
                 selectedBond = bondType;
                 Page.ResetControl();
                 Page.ResetTable();
-                selectedBondRecData = await JSRuntime.GetClientRecById(id);
+                selectedBondRecData = GetBondData(bondType);
             }
         }
 
@@ -392,36 +387,13 @@ namespace Caspian.Report
             }
         }
 
-        async Task UpdateBoundsData()
-        {
-            var ids = new List<string>();
-            if (reportTitleHeight > 0) 
-                ids.Add(GetBondId(BondType.ReportTitle));
-            if (pageHeaderHeight > 0)
-                ids.Add(GetBondId(BondType.PageHeader));
-            if (dataHeaderHeight > 0)
-                ids.Add(GetBondId(BondType.DataHeader));
-            if (firstDLHeight > 0)
-                ids.Add(GetBondId(BondType.FirstDataLevel));
-            if (secondDLHeight > 0)
-                ids.Add(GetBondId(BondType.SecondDataLevel));
-            if (thirdDLHeight > 0)
-                ids.Add(GetBondId(BondType.ThirdDataLevel));
-            if (dataFooterHeight > 0)
-                ids.Add(GetBondId(BondType.DataFooter));
-            if (pageFooterHeight > 0)
-                ids.Add(GetBondId(BondType.PageFooter));
-            if (bondsData == null)
-                bondsData = new Dictionary<string, RecData>();
-            foreach (var id in ids)
-            {
-                var data = await JSRuntime.GetClientRecById(id);
-                bondsData[id] = data;
-            }
-        }
-
         public async Task UpdateBondSetting(ReportSetting setting)
         {
+            var list = bondsData.Select(x => new
+            {
+                x.BondType,
+                x.Top
+            }).ToList();
             /// Adding Bounds to page
             if (setting.ReportTitle && reportTitleHeight == 0)
                 reportTitleHeight = 120;
@@ -444,30 +416,40 @@ namespace Caspian.Report
                 dataFooterHeight = 0;
             if (!setting.PageFooter && pageFooterHeight > 0 && await Confirm("555555"))
                 pageFooterHeight = 0;
-            StateHasChanged();
-        }
-
-        BondType GetBondType(string id)
-        {
-            switch (id)
+            reportControls.Clear();
+            await Task.Delay(1);
+            var newList = bondsData.Select(x => new
             {
-                case "databond1": return BondType.FirstDataLevel;
-                case "databond2":  return BondType.SecondDataLevel;
-                case "databond3":  return BondType.ThirdDataLevel;
-                default: 
-                    id = id.Substring(0, 1).ToUpper() + id.Substring(1); 
-                    return (BondType)typeof(BondType).GetField(id).GetValue(null);
+                BoundType = x.BondType,
+                BoundTop = x.Top
+            });
+            
+            bondControls = bondControls.Where(t => newList.Any(u => u.BoundType == t.BondType.Value)).ToList();
+            foreach (var control in bondControls)
+            {
+                var bond = control.BondType.Value;
+                var boundTop = list.Single(t => t.BondType == bond).Top;
+                var newBoundTop = newList.Single(t => t.BoundType == bond).BoundTop;
+                control.Top += newBoundTop - boundTop;
             }
+            if (dataBoundTable != null)
+            {
+                var bondTop = list.Single(t => t.BondType.ConvertToInt() == DataLevel + 2).Top;
+                var boundNewType = newList.Single(t => t.BoundType.ConvertToInt() == DataLevel + 2).BoundTop;
+                dataBoundTable.Top += (int)(boundNewType - bondTop);
+            }
+            if (dataHeaderBoundTable != null)
+            {
+                var bondTop = list.Single(t => t.BondType == BondType.DataHeader).Top ;
+                var boundNewType = newList.Single(t => t.BoundType == BondType.DataHeader).BoundTop;
+                dataHeaderBoundTable.Top += (int)(boundNewType - bondTop);
+            }
+            StateHasChanged();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
-            {
-                await UpdateBoundsData();
-                await Task.Delay(100);
-                StateHasChanged();
-            }
+            bondsData = await JSRuntime.InvokeAsync<RecData[]>("getClientRecBounds");
             await base.OnAfterRenderAsync(firstRender);
         }
     }

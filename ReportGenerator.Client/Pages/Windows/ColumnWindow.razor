@@ -1,0 +1,85 @@
+﻿@namespace Caspian.Report
+<div class="row p-2 c-controls">
+        <div class="col-md-5">
+            <label>Show On New page</label>
+        </div>
+@*         <div class="col-md-7">
+            <CheckBox @bind-Value="Bond.NewPageAfter" />
+        </div>
+        <div class="col-md-5">
+            <label>New page after Bond</label>
+        </div>
+        <div class="col-md-7 ">
+            <CheckBox @bind-Value="Bond.NewPageBefore" />
+        </div>
+        @if (MinDataLevel.HasValue && Bond.BondType == BondType.DataBond)
+        {
+            if (MinDataLevel == Bond.DataLevel)
+            {
+                <div class="col-md-5">
+                    <label>Columns count</label>
+                </div>
+                <div class="col-md-7">
+                    <DropdownList @bind-Value="Bond.ColumnsCount" />
+                </div>
+                <div class="col-md-5">
+                    <label>Columns margin</label>
+                </div>
+                <div class="col-md-7">
+                    <NumericTextBox @bind-Value="Bond.ColumnsMargin" />
+                </div>
+            }
+            else
+            {
+                <div class="d-flex justify-content-center d-flex pt-3 pb-3">
+                    <span style="font-weight:bold;color:red">In each page of the report, only the last level of data can have multiple columns.</span>
+                    <span style="display:block;font-weight:bold">If you want more than one level of data to have several columns, use the sub-report</span>
+                </div>
+            }
+        } *@
+        <div class="col-md-5"></div>
+        <div class="col-md-7 justify-content-center d-flex pt-3 pb-2">
+        <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(Caspian.UI.WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
+            <button style="width:70px;" @onclick="UpdateData" class="c-btn c-primary">Save</button>
+        </div>
+    </div>
+
+@code 
+{
+    bool isUpdate;
+    async Task UpdateData()
+    {
+        isUpdate = true;
+        await StatusChanged.InvokeAsync(Caspian.UI.WindowStatus.Close);
+    }
+
+    [Parameter]
+    public bool LastDataLevel { get; set; }
+
+    [Parameter]
+    public BondType BondType { get; set; }
+
+    [Parameter]
+    public Caspian.UI.WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<Caspian.UI.WindowStatus> StatusChanged { get; set; }
+
+    // [Parameter]
+    // public Bond Bond { get; set; }
+
+    [Parameter]
+    public int? MinDataLevel { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // if (isUpdate)
+        // {
+        //     var count = Bond.ColumnsCount.ConvertToInt().GetValueOrDefault(1);
+        //     var margin = Bond.ColumnsMargin.GetValueOrDefault(0);
+        //     await jsRundTime.InvokeVoidAsync("$.report.updateColumnsData", count, margin, Bond.NewPageAfter, Bond.NewPageBefore);
+        //     isUpdate = false;
+        // }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}
