@@ -9,7 +9,7 @@ namespace Caspian.Report
     public partial class Bound: Caspian.UI.BasePage
     {
         double reportTitleHeight, pageHeaderHeight, dataHeaderHeight, dataFooterHeight, pageFooterHeight;
-        double firstDLHeight = 50, secondDLHeight, thirdDLHeight;
+        double firstDLHeight = 30, secondDLHeight, thirdDLHeight;
         bool selectionIsDisabled;
         BondType? selectedBond;
         

@@ -1,4 +1,6 @@
-using ReportGenerator.Client.Pages;
+using Caspian.Common;
+using Caspian.UI;
+using ReportGenerator.Client;
 using ReportGenerator.Components;
 
 namespace ReportGenerator
@@ -12,9 +14,9 @@ namespace ReportGenerator
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveWebAssemblyComponents();
-
+            builder.Services.AddScoped<CaspianDataService>();
+            builder.Services.AddScoped<BasePageService>();
             var app = builder.Build();
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -35,7 +37,6 @@ namespace ReportGenerator
             app.MapRazorComponents<App>()
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
-
             app.Run();
         }
     }
