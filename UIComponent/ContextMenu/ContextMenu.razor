@@ -1,0 +1,63 @@
+﻿@namespace Caspian.UI
+@inject IJSRuntime jsRuntime;
+
+@{
+    string contextMenuLocation = $"left:{Left}px;top:{Top}px";
+}
+
+@if (Status)
+{
+    firstRender = true;
+    <div @ref="igniterContextMenuElement" style="@contextMenuLocation" class="c-context-menu-container">
+        <ul class="c-context-menu">
+            <CascadingValue Value="Left" Name="Left">
+                @ChildContent
+            </CascadingValue>
+        </ul>
+    </div>
+}
+
+@code
+{
+    ElementReference igniterContextMenuElement;
+    bool firstRender;
+    bool showMenuItemContainer = false;
+
+    [Parameter]
+    public bool Status { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> StatusChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public double Left { get; set; }
+
+    [Parameter]
+    public double Top { get; set; }
+
+    [JSInvokable]
+    public async Task Close()
+    {
+        Status = false;
+        firstRender = false;
+        if (StatusChanged.HasDelegate)
+            await StatusChanged.InvokeAsync(Status);
+        else
+            StateHasChanged();
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstTime)
+    {
+        if (firstRender)
+        {
+            firstRender = false;
+            var dotnet = DotNetObjectReference.Create(this);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindContextMenu", dotnet, igniterContextMenuElement);
+        }
+        await base.OnAfterRenderAsync(firstTime);
+    }
+}

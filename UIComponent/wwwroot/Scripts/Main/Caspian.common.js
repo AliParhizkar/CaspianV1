@@ -1,4 +1,4 @@
-﻿(function($) {
+﻿(function ($) {
     let $c = $.caspian = {
         bindCodeEditor: function (code, dotnet, readonly, lineNumber, column, tokensData) {
             $.caspian.dotnet = dotnet;
@@ -36,7 +36,7 @@
         },
         gridData: {
             resize: 0,
-            gridStatus:0,
+            gridStatus: 0,
             mouseState: 0,
             curent: null,
             other: null,
@@ -126,7 +126,7 @@
         setTime: function (elem, dotnet) {
             let $panel = $(elem).find('.c-timepicker');
             let height = $panel.height() + 2;
-            if ($(elem).position().top > height) 
+            if ($(elem).position().top > height)
                 $panel.css('bottom', -height);
             else
                 $panel.css('top', -height);
@@ -190,7 +190,7 @@
                     $(elem).find('.c-span-hours').text('00');
                     $(elem).find('.c-span-minutes').text('00');
                 });
-                $.caspian.bindTimePanel($(elem).find('.c-timepicker')[0], dotnet); 
+                $.caspian.bindTimePanel($(elem).find('.c-timepicker')[0], dotnet);
             });
             mutationObserver.observe($(element)[0], {
                 attributes: false,
@@ -335,16 +335,16 @@
                     $animate = $ctr.addClass('c-animate-up').css('bottom', $(window).height() - location.top - 22 - scrolTop);
                 }
                 else {
-                    
+
                     maxHeight = $(window).height() - location.top - 62;
                     $animate = $ctr.addClass('c-animate-down').css('top', location.top + 34);
                 }
                 $animate = $animate.find('.c-treeview');
                 $ctr.css('height', maxHeight).width(width + 2);
                 setTimeout(() => {
-                    if (downToUp) 
+                    if (downToUp)
                         $animate.css('bottom', 0);
-                     else
+                    else
                         $animate.css('top', 0);
                     $ctr.find('.c-node-template').click(() => {
                         if ($(input).closest('.c-lookup-tree').attr('multiselect') == undefined) {
@@ -566,7 +566,7 @@
                 $lookup.focusout(async () => {
                     //let downToUp = top > $(window).height() / 2 - 20;
                     //$.caspian.closeLookupWindow($lookup.find('.t-HelpWindow'), downToUp);
-                    
+
                     //await dotnet.invokeMethodAsync('Close');
                 });
             }
@@ -720,7 +720,7 @@
                             $(grv).find('.t-grid-header').css('padding-right', 11);
                         else
                             $(grv).find('.t-grid-header').css('padding-left', 11);
-                    } else 
+                    } else
                         $(grv).find('.t-grid-header').css('padding-right', 0).css('padding-left', 0);
                 }
             });
@@ -746,12 +746,12 @@
             });
         },
         serversideCombobox: function (input, errorMessage, diable, status) {
-            
+
             if (status == 2) {
                 let $control = $(input).closest('.t-combobox').find('.t-popup');
                 $control.css('display', 'block');
                 let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
-                
+
                 let height = $control.height() + 5;
                 if (height > 300)
                     height = 300;
@@ -789,7 +789,7 @@
             $c.bindtomask($(ctr).find('input')[0], '____/__/__');
             $(ctr).mouseenter(() => {
                 let $element = $(ctr).find('.t-picker-wrap');
-                if (!$element.hasClass('t-state-selected') && !$element.hasClass('t-state-disabled')) 
+                if (!$element.hasClass('t-state-selected') && !$element.hasClass('t-state-disabled'))
                     $element.addClass('t-state-hover');
             });
             $(ctr).mouseleave(() => {
@@ -805,7 +805,7 @@
             });
             $(window).bind('click', e => {
                 if (!$(e.target).closest('.t-calendar').hasClass('t-calendar') &&
-                        $(e.target).closest('.t-picker-wrap')[0] != $(ctr).find('.t-picker-wrap')[0]) {
+                    $(e.target).closest('.t-picker-wrap')[0] != $(ctr).find('.t-picker-wrap')[0]) {
                     $(ctr).find('.c-animate-down .t-datepicker-calendar').css('top', '-100%');
                     $(ctr).find('.c-animate-up .t-datepicker-calendar').css('bottom', '-100%');
                     setTimeout(async () => await dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
@@ -950,7 +950,7 @@
                             $group.css('bottom', '-100%');
                             $(ddl).find('.t-dropdown-wrap').removeClass('t-state-hover').addClass('t-state-default');
                         }
-                        
+
                     });
                     let loc = $group.offset().top - $(window).scrollTop();
                     if (loc > $(window).height() / 2) {
@@ -997,6 +997,26 @@
                         $group.css('bottom', '-100%');
                         setTimeout(async () => await dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
                     }
+                }
+            });
+        },
+        bindContextMenu(dotnet, elem) {
+            const mutationObserver = new MutationObserver((list) => {
+                list.every(t => {
+                    if ($(elem).offset().left < $(window).width() / 2)
+                        $(t.target).find('.c-context-menu').addClass('c-context-menu-left').removeClass('c-context-menu-right');
+                    else
+                        $(t.target).find('.c-context-menu').addClass('c-context-menu-right').removeClass('c-context-menu-left');
+                });
+            });
+            mutationObserver.observe(elem, {
+                attributes: false,
+                childList: true,
+                subtree: true,
+            });
+            $(window).bind('mousedown', async e => {
+                if ($(elem).find('.c-context-menu').hasClass('c-context-menu')) {
+                    await dotnet.invokeMethodAsync("Close");
                 }
             });
         },
@@ -1221,7 +1241,7 @@
             }
             $(element).bind('focus', () => {
                 setTimeout(() => {
-                    
+
                     $(element).select();
                 }, 100);
                 $.caspian.showErrorMessage($(element).closest('.t-widget')[0]);
@@ -1253,30 +1273,30 @@
         },
         bindtomask: function (el, patern) {
             const pattern = patern,
-            slots = new Set(el.dataset.slots || "_"),
-            prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0),
-            first = [...pattern].findIndex(c => slots.has(c)),
-            accept = new RegExp(el.dataset.accept || "\\d", "g"),
-            clean = input => {
-                input = input.match(accept) || [];
-                return Array.from(pattern, c =>
-                input[0] === c || slots.has(c) ? input.shift() || c : c
-                );
-                    },
-                    format = () => {
-                        const [i, j] = [el.selectionStart, el.selectionEnd].map(i => {
-                            i = clean(el.value.slice(0, i)).findIndex(c => slots.has(c));
-                            return i < 0 ? prev[prev.length - 1] : back ? prev[i - 1] || first : i;
-                        });
-                        el.value = clean(el.value).join``;
-                        el.setSelectionRange(i, j);
-                        back = false;
-                    };
-                let back = false;
-                el.addEventListener("keydown", (e) => back = e.key === "Backspace");
-                el.addEventListener("input", format);
-                el.addEventListener("focus", format);
-                el.addEventListener("blur", () => el.value === pattern && (el.value = ""));
+                slots = new Set(el.dataset.slots || "_"),
+                prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0),
+                first = [...pattern].findIndex(c => slots.has(c)),
+                accept = new RegExp(el.dataset.accept || "\\d", "g"),
+                clean = input => {
+                    input = input.match(accept) || [];
+                    return Array.from(pattern, c =>
+                        input[0] === c || slots.has(c) ? input.shift() || c : c
+                    );
+                },
+                format = () => {
+                    const [i, j] = [el.selectionStart, el.selectionEnd].map(i => {
+                        i = clean(el.value.slice(0, i)).findIndex(c => slots.has(c));
+                        return i < 0 ? prev[prev.length - 1] : back ? prev[i - 1] || first : i;
+                    });
+                    el.value = clean(el.value).join``;
+                    el.setSelectionRange(i, j);
+                    back = false;
+                };
+            let back = false;
+            el.addEventListener("keydown", (e) => back = e.key === "Backspace");
+            el.addEventListener("input", format);
+            el.addEventListener("focus", format);
+            el.addEventListener("blur", () => el.value === pattern && (el.value = ""));
         }
     }
 })(jQuery);
