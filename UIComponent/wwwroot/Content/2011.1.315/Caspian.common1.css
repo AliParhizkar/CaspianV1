@@ -2961,6 +2961,57 @@ html body .t-grid tbody .t-button-icon {
     background-position: 100% 50% !important;
 }
 
+/* ContextMenu*/
+.c-context-menu-container {
+    width: fit-content;
+    border-radius: 8px;
+    cursor: default;
+    user-select: none;
+    position: fixed;
+}
+
+.c-context-menu {
+    padding-left: 0px;
+    position: absolute;
+    transition: top linear .2s;
+    border: 5px solid #f7f7f7;
+    top:0;
+}
+
+.c-context-menu-left {
+    left: 100%;
+    padding-left: 0px;
+}
+
+.c-context-menu-right {
+    right: 100%;
+    padding-right: 5px;
+}
+
+.c-context-menu-item {
+    background-color: #ebebeb;
+    position: relative;
+    list-style: none;
+    width: 100%;
+    padding: 2px 5px;
+    box-sizing: border-box;
+}
+
+.c-context-menu-item-title {
+    white-space: nowrap;
+    margin-right: 8px;
+}
+
+.c-context-menu-item:hover {
+    background-color: #dadada
+}
+
+.c-context-menu-down {
+    display: flex;
+    justify-content: space-between;
+}
+
+
 /* ComboBox & Drop-down*/
 .t-combobox {
     background-image: none !important;
