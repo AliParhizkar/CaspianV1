@@ -2971,44 +2971,48 @@ html body .t-grid tbody .t-button-icon {
 }
 
 .c-context-menu {
-    padding-left: 0px;
     position: absolute;
     transition: top linear .2s;
-    border: 5px solid #f7f7f7;
-    top:0;
+    border: 5px solid #fefefe;
+    border-radius: 8px;
+    box-shadow: 0px 5px 4px 4px rgba(0, 0, 0, 0.4);
+    /*margin:0 2px;*/
+    top: 0;
+    min-width: 8rem;
+    outline: 5px solid #fefefe;
 }
 
 .c-context-menu-left {
     left: 100%;
-    padding-left: 0px;
 }
 
 .c-context-menu-right {
     right: 100%;
-    padding-right: 5px;
 }
 
-.c-context-menu-item {
-    background-color: #ebebeb;
+.c-context-menu-item, .c-context-menu-parent-item {
+    background-color: #fefefe;
     position: relative;
     list-style: none;
     width: 100%;
-    padding: 2px 5px;
     box-sizing: border-box;
 }
 
+
 .c-context-menu-item-title {
     white-space: nowrap;
-    margin-right: 8px;
+    margin-right: 1rem;
 }
 
-.c-context-menu-item:hover {
-    background-color: #dadada
+.c-context-menu-item:hover, .c-context-menu-parent-item:hover {
+    background-color: #e4e4e4;
 }
 
 .c-context-menu-down {
     display: flex;
     justify-content: space-between;
+    padding: 2px 5px;
+    align-items: center;
 }
 
 

@@ -3,10 +3,15 @@
 
 @{
     string styleIcon = "color: black;display: flex;justify-content: center;align-items: center;position: relative;";
+    string menuItemClass = "c-context-menu-";
+    if (ChildContent is not null)
+        menuItemClass += "parent-item";
+    else
+        menuItemClass += "item";
 }
 
-<li class="c-context-menu-item" @onmouseenter="() => showContextMenuItems = true"
-                                @onmouseleave="() => showContextMenuItems = false">
+<li class="@menuItemClass" @onmouseenter="() => { Task.Delay(20); showContextMenuItems = true;}"
+                           @onmouseleave="() => { Task.Delay(100); showContextMenuItems = false;}">
     <div class="c-context-menu-down">
         <span class="c-context-menu-item-title">@Title</span>
         @if (ChildContent != null)

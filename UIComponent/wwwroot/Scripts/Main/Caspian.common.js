@@ -1015,7 +1015,9 @@
                 subtree: true,
             });
             $(window).bind('mousedown', async e => {
-                if ($(elem).find('.c-context-menu').hasClass('c-context-menu')) {
+                const eventAncestors = event.composedPath(e);
+                if (eventAncestors.some(t => t.className === "c-context-menu-item") ||
+                    !eventAncestors.some(t => t.className === "c-context-menu-parent-item")) {
                     await dotnet.invokeMethodAsync("Close");
                 }
             });
