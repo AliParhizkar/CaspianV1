@@ -1,7 +1,7 @@
 ﻿@namespace Caspian.Report
 @using Caspian.Common
 @{
-    var style = $"left:{Left}px;top:{Top}px";
+    var style = $"left:{Data.Left}px;top:{Data.Top}px";
 }
 <table style="@style" class="reportcontrol tablecontrol" cellpadding="0" cellspacing="0">
     <thead>
@@ -10,7 +10,7 @@
             @{
                 var index = 1;
             }
-            @foreach (var cell in TableData.HeaderCells)
+            @foreach (var cell in Data.HeaderCells)
             {
                 var tempIndex = index;
                 <th style="width:@(cell.Width)px;"></th>
@@ -22,7 +22,7 @@
         @{
             var rowIndex = 1;
         }
-        @foreach (var row in TableData.Rows)
+        @foreach (var row in Data.Rows)
         {
             var tempRowIndex = rowIndex;
             <tr style="line-height:@(row.Height)px">
@@ -56,20 +56,28 @@
 
     int? changeRowIndex, heightStart, yStart;
 
+    [Parameter]
+    public Bound Bound { get; set; }
+
+    [Parameter]
+    public TableData Data { get; set; }
+
+    public int TopStart { get; set; }
+
     #region Add or Remove Column and row
     void InsertRow(bool insertBefor, int index)
     {
         /// Insert column befor or after the selected row
         var row = new TableRow();
-        for (var i = 1; i < TableData.HeaderCells.Count; i++)
+        for (var i = 1; i < Data.HeaderCells.Count; i++)
             row.Cells.Add(new TableCell(row));
-        TableData.Rows.Insert(insertBefor ? index : index - 1, row);
+        Data.Rows.Insert(insertBefor ? index : index - 1, row);
         UpdateRowAndColumnIndex();
     }
 
     void RemoveRow(int index)
     {
-        TableData.Rows.RemoveAt(index - 1);
+        Data.Rows.RemoveAt(index - 1);
         UpdateRowAndColumnIndex();
     }
 
@@ -77,17 +85,17 @@
     {
         /// Insert column befor or after the selectd column
         var tempIndex = insertBefor ? index : index - 1;
-        var head = TableData.HeaderCells.ElementAt(index - 1);
-        TableData.HeaderCells.Insert(tempIndex, new HeaderCell() { Width = head.Width / 2 });
+        var head = Data.HeaderCells.ElementAt(index - 1);
+        Data.HeaderCells.Insert(tempIndex, new HeaderCell() { Width = head.Width / 2 });
         head.Width = head.Width - head.Width / 2;
-        foreach (var row in TableData.Rows)
+        foreach (var row in Data.Rows)
             row.Cells.Insert(tempIndex, new TableCell(row));
         UpdateRowAndColumnIndex();
     }
 
     void RemoveColumn(int index)
     {
-        var headerCells = TableData.HeaderCells;
+        var headerCells = Data.HeaderCells;
         var curent = headerCells.ElementAt(index - 1);
         if (index == 1)
         {
@@ -99,7 +107,7 @@
             var pre = headerCells.ElementAt(index - 2);
             pre.Width += curent.Width;
         }
-        foreach (var row in TableData.Rows)
+        foreach (var row in Data.Rows)
             row.Cells.RemoveAt(index - 1);
         headerCells.Remove(curent);
         UpdateRowAndColumnIndex();
@@ -108,7 +116,7 @@
     void UpdateRowAndColumnIndex()
     {
         var rowIndex = 1;
-        foreach (var row in TableData.Rows)
+        foreach (var row in Data.Rows)
         {
             row.RowIndex = rowIndex;
             var colIndex = 1;
@@ -171,7 +179,7 @@
             if (sameRow)
             {
                 var min = selectedCells.Min(t => t.ColIndex);
-                var row = TableData.Rows.ElementAt(selectedCells.First().Row.RowIndex - 1);
+                var row = Data.Rows.ElementAt(selectedCells.First().Row.RowIndex - 1);
                 var index = 1;
                 foreach (var cell in row.Cells)
                 {
@@ -187,7 +195,7 @@
                 var min = selectedCells.Min(t => t.Row.RowIndex);
                 var col = selectedCells.First().ColIndex - 1;
                 var index = 1;
-                foreach (var row in TableData.Rows)
+                foreach (var row in Data.Rows)
                 {
                     if (index == min)
                         row.Cells.ElementAt(col).RowSpan = selectedCells.Count;
@@ -241,25 +249,10 @@
     }
     #endregion
 
-    [Parameter]
-    public int Left { get; set; }
-
-    [Parameter]
-    public TableData TableData {get;set;}
-
     protected override void OnInitialized()
     {
         selectedCells = new List<TableCell>();
         base.OnInitialized();
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (BondType.HasValue)
-        {
-
-        }
-        await base.OnInitializedAsync();
     }
 
     void SelectTableCell(bool ctrKey, TableCell cell)
@@ -285,22 +278,22 @@
     {
         if (Bound.Page.SelectedTable == this)
         {
-            if (y > Top && y < Top + 20)
+            if (y > Data.Top && y < Data.Top + 20)
             {
-                var leftColl = Left + 15;
+                var leftColl = Data.Left + 15;
                 if (Math.Abs(leftColl - x) < 6)
                     return "col-resize";
-                foreach (var cel in TableData.HeaderCells)
+                foreach (var cel in Data.HeaderCells)
                 {
                     leftColl += cel.Width;
                     if (Math.Abs(leftColl - x) < 6)
                         return "col-resize";
                 }
             }
-            if (x > Left && x < Left + 15)
+            if (x > Data.Left && x < Data.Left + 15)
             {
-                var topRow = Top + 20;
-                foreach (var row in TableData.Rows)
+                var topRow = Data.Top + 20;
+                foreach (var row in Data.Rows)
                 {
                     topRow += row.Height;
                     if (Math.Abs(topRow - y) < 5)
@@ -317,9 +310,9 @@
         {
             changeKind = null;
             ///Column resize
-            if (y > Top && y < Top + 20)
+            if (y > Data.Top && y < Data.Top + 20)
             {
-                var leftCell = Left + 15;
+                var leftCell = Data.Left + 15;
                 if (Math.Abs(leftCell - (int)x) < 6)
                 {
                     changeKind = ChangeKind.ColumnResize;
@@ -327,7 +320,7 @@
                     difrentCurcer = leftCell - (int)x;
                 }
                 var index = 2;
-                foreach (var cel in TableData.HeaderCells)
+                foreach (var cel in Data.HeaderCells)
                 {
                     leftCell += cel.Width;
                     if (Math.Abs(leftCell - (int)x) < 6)
@@ -341,11 +334,11 @@
 
             }
             ///row resize
-            if (x > Left && x < Left + 15)
+            if (x > Data.Left && x < Data.Left + 15)
             {
-                var topRow = Top + 20;
+                var topRow = Data.Top + 20;
                 var index = 1;
-                foreach (var row in TableData.Rows)
+                foreach (var row in Data.Rows)
                 {
                     topRow += row.Height;
                     if (Math.Abs(topRow - y) < 5)
@@ -363,32 +356,32 @@
         if (changeKind == ChangeKind.ColumnResize)
         {
             xStart = (int)x;
-            leftStart = (int)Left;
+            leftStart = (int)Data.Left;
             if (changeColIndex.Value == 1) // first column
-                rightCellStartWidth = TableData.HeaderCells.ElementAt(changeColIndex.Value - 1).Width;
-            else if (changeColIndex.Value == TableData.HeaderCells.Count + 1)
+                rightCellStartWidth = Data.HeaderCells.ElementAt(changeColIndex.Value - 1).Width;
+            else if (changeColIndex.Value == Data.HeaderCells.Count + 1)
             {
                 //last column
-                leftCellStartWidth = TableData.HeaderCells.ElementAt(changeColIndex.Value - 2).Width;
+                leftCellStartWidth = Data.HeaderCells.ElementAt(changeColIndex.Value - 2).Width;
             }
             else
             {
                 //others columns
-                leftCellStartWidth = TableData.HeaderCells.ElementAt(changeColIndex.Value - 2).Width;
-                rightCellStartWidth = TableData.HeaderCells.ElementAt(changeColIndex.Value - 1).Width;
+                leftCellStartWidth = Data.HeaderCells.ElementAt(changeColIndex.Value - 2).Width;
+                rightCellStartWidth = Data.HeaderCells.ElementAt(changeColIndex.Value - 1).Width;
             }
             Bound.DisableSelection();
         }
         else if (changeKind == ChangeKind.RowResize)
         {
             yStart = (int)y;
-            heightStart = TableData.Rows.ElementAt(changeRowIndex.Value - 1).Height;
+            heightStart = Data.Rows.ElementAt(changeRowIndex.Value - 1).Height;
             Bound.DisableSelection();
 
         }
     }
 
-    public async Task Drag(double x, double y)
+    public void Drag(double x, double y)
     {
         if (changeKind == null)
             return;
@@ -402,57 +395,42 @@
             dif += difrentCurcer.Value;
             if (changeColIndex.Value == 1)
             {
-                TableData.HeaderCells.ElementAt(changeColIndex.Value - 1).Width = rightCellStartWidth.Value + 2 * dif;
-                Left = leftStart.Value - dif;
+                Data.HeaderCells.ElementAt(changeColIndex.Value - 1).Width = rightCellStartWidth.Value + 2 * dif;
+                Data.Left = leftStart.Value - dif;
             }
-            else if (changeColIndex.Value == TableData.HeaderCells.Count + 1)
+            else if (changeColIndex.Value == Data.HeaderCells.Count + 1)
             {
-                TableData.HeaderCells.ElementAt(changeColIndex.Value - 2).Width = leftCellStartWidth.Value - 2 * dif;
-                Left = leftStart.Value + dif;
+                Data.HeaderCells.ElementAt(changeColIndex.Value - 2).Width = leftCellStartWidth.Value - 2 * dif;
+                Data.Left = leftStart.Value + dif;
             }
             else
             {
-                TableData.HeaderCells.ElementAt(changeColIndex.Value - 1).Width = rightCellStartWidth.Value + dif;
-                TableData.HeaderCells.ElementAt(changeColIndex.Value - 2).Width = leftCellStartWidth.Value - dif;
+                Data.HeaderCells.ElementAt(changeColIndex.Value - 1).Width = rightCellStartWidth.Value + dif;
+                Data.HeaderCells.ElementAt(changeColIndex.Value - 2).Width = leftCellStartWidth.Value - dif;
             }
         }
         else
         {
             var dif = yStart.Value - (int)y;
-            TableData.Rows.ElementAt(changeRowIndex.Value - 1).Height = heightStart.Value - dif;
+            Data.Rows.ElementAt(changeRowIndex.Value - 1).Height = heightStart.Value - dif;
         }
-
-        await OnChange.InvokeAsync(TableData);
     }
 
-    [Parameter]
-    public EventCallback<TableData> OnChange { get; set; }
-
-    [Parameter]
-    public int Top { get; set; }
-
-    [Parameter]
-    public BondType? BondType { get; set; }
-
-    [Parameter]
-    public Bound Bound { get; set; }
-
-    async Task UpdateTableLocation()
+    void UpdateTableLocation()
     {
-        if (BondType.HasValue)
+        if (Data.BondType.HasValue)
         {
-            var data = Bound.GetBondData(BondType.Value);
-            Left = Convert.ToInt32(data.Left + (Bound.ColumnWidth - TableWidth - 15) / 2);
-            TableData.Top = Convert.ToInt32(data.Top);
-            await OnChange.InvokeAsync(TableData);
+            var data = Bound.GetBondData(Data.BondType.Value);
+            Data.Left = Convert.ToInt32(data.Left + (Bound.ColumnWidth - TableWidth - 15) / 2);
+            Data.Top = Convert.ToInt32(data.Top);
         }
     }
 
     int GetCellLeftLocation()
     {
-        var total = Left + 15;
+        var total = Data.Left + 15;
         var index = 1;
-        foreach(var cel in TableData.HeaderCells)
+        foreach(var cel in Data.HeaderCells)
         {
             if (index < changeColIndex)
                 total += cel.Width;
@@ -465,7 +443,7 @@
     {
         if (firstRender)
         {
-            await UpdateTableLocation();
+            UpdateTableLocation();
             StateHasChanged();
         }
         await base.OnAfterRenderAsync(firstRender);
@@ -476,7 +454,7 @@
         get
         {
             var total = 15;
-            foreach (var cell in TableData.HeaderCells)
+            foreach (var cell in Data.HeaderCells)
                 total += cell.Width;
             return total;
         }

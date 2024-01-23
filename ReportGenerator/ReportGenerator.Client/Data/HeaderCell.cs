@@ -6,9 +6,11 @@
 
         public IList<TableRow> Rows { get; set; }
 
+        public int Left { get; set; }
+
         public int Top { get; set; }
 
-        public int TopStart { get; set; }
+        public BondType? BondType { get; set; }
     }
 
     public class HeaderCell

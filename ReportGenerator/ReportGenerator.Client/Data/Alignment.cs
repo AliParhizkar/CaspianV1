@@ -1,11 +1,8 @@
-﻿using Caspian.UI;
-using Caspian.Common;
-
-namespace Caspian.Report
+﻿namespace Caspian.Report
 {
-    public class AlignmentBase
+    public class Alignment
     {
-        public AlignmentBase() 
+        public Alignment() 
         {
             VerticalAlign = VerticalAlign.Middle;
             HorizontalAlign = HorizontalAlign.Center;

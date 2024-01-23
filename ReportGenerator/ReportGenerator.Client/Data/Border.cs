@@ -1,6 +1,4 @@
-﻿using Caspian.Common;
-
-namespace Caspian.Report
+﻿namespace Caspian.Report
 {
     public class Border
     {

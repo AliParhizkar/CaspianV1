@@ -85,7 +85,7 @@
         if (control != null)
         {
             param.CopySimpleProperty(control.ReportParam);
-            bondType = control.BondType.Value;
+            bondType = control.Data.BondType.Value;
         }    
         base.OnInitialized();
     }

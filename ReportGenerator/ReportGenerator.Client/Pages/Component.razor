@@ -1,0 +1,15 @@
+﻿@page "/Test"
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@inject IWebAssemblyHostEnvironment envoi
+<h3>Component</h3>
+
+@code 
+{
+    protected override async Task OnInitializedAsync()
+    {
+        var host = new HttpClient();
+        host.BaseAddress = new Uri(envoi.BaseAddress);
+        await base.OnInitializedAsync();
+
+    }
+}

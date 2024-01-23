@@ -10,12 +10,16 @@ namespace ReportGenerator
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Add services to the container.
-            builder.Services.AddRazorComponents()
-                .AddInteractiveWebAssemblyComponents();
+            builder.Services.AddControllers();
+            builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
             builder.Services.AddScoped<CaspianDataService>();
             builder.Services.AddScoped<BasePageService>();
+            builder.Services.AddScoped<FormAppState>();
+            builder.Services.AddSingleton(http => new System.Net.Http.HttpClient
+            {
+                BaseAddress = new Uri("https://localhost:7284/")
+            });
             var app = builder.Build();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -28,15 +32,14 @@ namespace ReportGenerator
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
             app.UseAntiforgery();
-
             app.MapRazorComponents<App>()
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+            app.MapControllers(); 
             app.Run();
         }
     }

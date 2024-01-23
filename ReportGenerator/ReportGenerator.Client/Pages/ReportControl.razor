@@ -2,7 +2,7 @@
 @using Caspian.Common
 
 @{
-    var style = $"left:{Left}px;top:{Top}px;width:{Width}px;height:{Height}px;";
+    var style = $"left:{Data.Left}px;top:{Data.Top}px;width:{Width}px;height:{Height}px;";
     var textStyle = $"{Alignment.TextStyle + Font.Style}";
 }
 <div class="r-controls" style="@style" @onmousedown="SelectControl" @ondblclick="OpenWindow">
@@ -29,11 +29,11 @@
     ChangeType? changeType;
     protected override void OnInitialized()
     {
-        Alignment = new AlignmentBase();
+        Alignment = new Alignment();
         Font = new Font();
         Border = new Border();
         ReportParam = new ReportParam();
-        if (BondType.HasValue)
+        if (Data.BondType.HasValue)
         {
             Page.SelectControl(this);
             changeType = null;
@@ -46,6 +46,9 @@
         Page.OpenTextWindow();
     }
 
+    [Parameter]
+    public ControlData Data { get; set; }
+
     public double Width { get; private set; } = 180;
 
     public double Height { get; private set; } = 30;
@@ -54,16 +57,7 @@
 
     public NumberFormating NumberFormating { get; set; }
 
-    [Parameter]
-    public double Left { get; set; }
-
-    [Parameter]
-    public BondType? BondType { get; set; }
-
-    [Parameter]
-    public double Top { get; set; }
-
-    public AlignmentBase Alignment { get; private set; }
+    public Alignment Alignment { get; private set; }
 
     public Font Font { get; private set; }
 
@@ -73,7 +67,7 @@
     public Page Page { get; set; }
 
     [Parameter]
-    public EventCallback<ControlData> OnChange { get; set; }
+    public EventCallback OnChange { get; set; }
 
     public void SelectControl()
     {
@@ -84,32 +78,32 @@
 
     public string GetCursor(double x, double y)
     {
-        double right = Left + Width, bottom = Top + Height;
-        if (Math.Abs(y - Top) < 5 && x > Left && x < right)
+        double right = Data.Left + Width, bottom = Data.Top + Height;
+        if (Math.Abs(y - Data.Top) < 5 && x > Data.Left && x < right)
             return "n-resize";
-        if (Math.Abs(y - bottom) < 5 && x > Left && x < right)
+        if (Math.Abs(y - bottom) < 5 && x > Data.Left && x < right)
             return "s-resize";
-        if (Math.Abs(x - Left) < 5 && y > Top && y < bottom)
+        if (Math.Abs(x - Data.Left) < 5 && y > Data.Top && y < bottom)
             return "e-resize";
-        if (Math.Abs(x - right) < 5 && y > Top && y < bottom)
+        if (Math.Abs(x - right) < 5 && y > Data.Top && y < bottom)
             return "e-resize";
-        if (x > Left + 5 && x < right - 5 && y > Top + 5 && y < bottom - 5)
+        if (x > Data.Left + 5 && x < right - 5 && y > Data.Top + 5 && y < bottom - 5)
             return "move";
         return "default";
     }
 
     public void DragStart(double x, double y)
     {
-        double right = Left + Width, bottom = Top + Height;
-        if (Math.Abs(y - Top) < 5 && x > Left && x < right)
+        double right = Data.Left + Width, bottom = Data.Top + Height;
+        if (Math.Abs(y - Data.Top) < 5 && x > Data.Left && x < right)
             changeType = ChangeType.TopResize;
-        else if (Math.Abs(y - bottom) < 5 && x > Left && x < right)
+        else if (Math.Abs(y - bottom) < 5 && x > Data.Left && x < right)
             changeType = ChangeType.BottomResize;
-        else if (Math.Abs(x - Left) < 5 && y > Top && y < bottom)
+        else if (Math.Abs(x - Data.Left) < 5 && y > Data.Top && y < bottom)
             changeType = ChangeType.LeftResize;
-        else if (Math.Abs(x - right) < 5 && y > Top && y < bottom)
+        else if (Math.Abs(x - right) < 5 && y > Data.Top && y < bottom)
             changeType = ChangeType.RightResize;
-        else if (x > Left + 5 && x < right - 5 && y > Top + 5 && y < bottom - 5)
+        else if (x > Data.Left + 5 && x < right - 5 && y > Data.Top + 5 && y < bottom - 5)
             changeType = ChangeType.Move;
         else
             changeType = null;
@@ -118,8 +112,8 @@
             Page.Bound.DisableSelection();
             xStart = x;
             yStart = y;
-            leftStart = Left;
-            topStart = Top;
+            leftStart = Data.Left;
+            topStart = Data.Top;
             widthStart = Width;
             heightStart = Height;
         }
@@ -128,12 +122,14 @@
     public void InitializeBeforAddedToPage()
     {
         changeType = ChangeType.Move;
-        BondType = null;
+        Data.BondType = null;
     }
 
-    public async Task Move(int x, int y)
+    public void Move(int x, int y)
     {
-        await OnChange.InvokeAsync(new ControlData(Left + x, Top + y));
+        Data.Left += x;
+        Data.Top += y;
+       
     }
 
     public void Resize(int width, int height)
@@ -142,28 +138,27 @@
         Height += height;
     }
 
-    public async Task Drag(double x, double y)
+    public void Drag(double x, double y)
     {
         if (changeType == null)
             return;
         double difX = xStart - x, difY = yStart - y;
-        var controlData = new ControlData(Left, Top);
         RecData bondData = null;
-        if (BondType.HasValue)
-            bondData = Page.Bound.GetBondData(BondType.Value);
+        if (Data.BondType.HasValue)
+            bondData = Page.Bound.GetBondData(Data.BondType.Value);
         switch (changeType)
         {
             case ChangeType.Move:
-                controlData.Left = leftStart - difX;
-                controlData.Top = topStart - difY;
-                if (BondType.HasValue)
+                Data.Left = leftStart - difX;
+                Data.Top = topStart - difY;
+                if (Data.BondType.HasValue)
                 {
-                    if (controlData.Left < bondData.Left)
-                        controlData.Left = bondData.Left;
-                    if (controlData.Top < bondData.Top)
-                        controlData.Top = bondData.Top;
-                    if (controlData.Left + Width > bondData.Right)
-                        controlData.Left = bondData.Right - Width;
+                    if (Data.Left < bondData.Left)
+                        Data.Left = bondData.Left;
+                    if (Data.Top < bondData.Top)
+                        Data.Top = bondData.Top;
+                    if (Data.Left + Width > bondData.Right)
+                        Data.Left = bondData.Right - Width;
                 }
                 break;
             case ChangeType.BottomResize:
@@ -173,20 +168,20 @@
                 Width = widthStart - difX;
                 break;
             case ChangeType.LeftResize:
-                controlData.Left = leftStart - difX;
+                Data.Left = leftStart - difX;
                 Width = widthStart + difX;
                 break;
             case ChangeType.TopResize:
-                controlData.Top = topStart - difY;
+                Data.Top = topStart - difY;
                 Height = heightStart + difY;
                 break;
         }
         double width = Width, height = Height;
         
 
-        Page.Bound.ShowRuler(controlData, ref width, ref height, changeType.Value);
+        Page.Bound.ShowRuler(Data, ref width, ref height, changeType.Value);
         Width = width;
         Height = height;
-        await OnChange.InvokeAsync(controlData);
+        
     }
 }

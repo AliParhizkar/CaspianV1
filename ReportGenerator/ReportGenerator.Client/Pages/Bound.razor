@@ -5,30 +5,30 @@
 @inject IJSRuntime JSRuntime
 <div class="bound-content">
     <table cellpadding="0" cellspacing="0" id="bond">
-        @if (reportTitleHeight > 0)
+        @if (bond.TitleHeight.HasValue)
         {
-            CreateBound(__builder, BondType.ReportTitle, reportTitleHeight, "Report Title");
+            CreateBound(__builder, BondType.ReportTitle, bond.TitleHeight.Value, "Report Title");
         }
-        @if (pageHeaderHeight > 0)
+        @if (bond.PageHeaderHeight.HasValue)
         {
-            CreateBound(__builder, BondType.PageHeader, pageHeaderHeight, "Page Header");
+            CreateBound(__builder, BondType.PageHeader, bond.PageHeaderHeight.Value, "Page Header");
         }
-        @for (var level = 1; level <= DataLevel; level++)
+        @for (var level = 1; level <= bond.DataLevel; level++)
         {
-            if (level == DataLevel && dataHeaderHeight > 0)
+            if (level == bond.DataLevel && bond.DataHeaderHeight.HasValue)
             {
-                CreateDataBond(__builder, level, 1, dataHeaderHeight, "Data Header", BondType.DataHeader);
+                CreateDataBond(__builder, level, 1, bond.DataHeaderHeight.Value, "Data Header", BondType.DataHeader);
             }
-            var height = level == 1 ? firstDLHeight : level == 2 ? secondDLHeight : thirdDLHeight;
-            CreateDataBond(__builder, level, DataLevel - level + 1, height, "Data", null);
-            @if (level == DataLevel && dataFooterHeight > 0)
+            var height = level == 1 ? bond.FirstDLHeight : level == 2 ? bond.SecondDLHeight.Value : bond.ThirdDLHeight.Value;
+            CreateDataBond(__builder, level, bond.DataLevel - level + 1, height, "Data", null);
+            @if (level == bond.DataLevel && bond.DataFooterHeight.HasValue)
             {
-                CreateDataBond(__builder, level, 1, dataFooterHeight, "Data Footer", BondType.DataFooter);
+                CreateDataBond(__builder, level, 1, bond.DataFooterHeight.Value, "Data Footer", BondType.DataFooter);
             }
         }
-        @if (pageFooterHeight > 0)
+        @if (bond.PageFooterHeight.HasValue)
         {
-            CreateBound(__builder, BondType.PageFooter, pageFooterHeight, "Page Footer");
+            CreateBound(__builder, BondType.PageFooter, bond.PageFooterHeight.Value, "Page Footer");
         }
     </table>
 </div>
@@ -55,19 +55,17 @@
 
 @code 
 {
-    int columnCount = 2;
-    int columnGap = 2;
+
     void CreateBound(RenderTreeBuilder __builder, BondType bondType, double height, string title)
     {
         string id = bondType.ToString();
         id = id.Substring(0, 1).ToLower() + id.Substring(1);
         <tr>
-            <td colspan="@(DataLevel)" class="reportheader">@(title)</td>
+            <td colspan="@(bond.DataLevel)" class="reportheader">@(title)</td>
             <td id="@(id)" style="@($"height:{height}px")" @onmouseup="() => SelectBond(bondType)">
                 @foreach(var control in bondControls.Where(t => t.BondType == bondType))
                 {
-                    <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"  
-                        BondType="bondType" Page="Page" OnChange="c => ControlChanged(control, c)" />
+                    <ReportControl @ref="ReportControl" Data="control" Page="Page" />
                 }
                 @{
                     CreateSqures(__builder, bondType, id);
@@ -75,7 +73,7 @@
             </td>
         </tr>
         <tr>
-            <td colspan="@DataLevel" class="spliter-first">
+            <td colspan="@bond.DataLevel" class="spliter-first">
                 <hr />
             </td>
             <td class="spliter"></td>
@@ -91,7 +89,7 @@
     void CreateDataBond(RenderTreeBuilder __builder, int level, int colSpan, double height, string title, BondType? bondType)
     {
         string className = "dataBond", id = bondType == BondType.DataHeader ? "dataHeader" : "dataFooter";
-        if (DataLevel > 1)
+        if (bond.DataLevel > 1)
             className += " data-bond-second";
         if (level == 3)
             className += "-2";
@@ -148,7 +146,7 @@
             </td>
         </tr>
         <tr style="height:3px">
-            <td colspan="@(DataLevel)" class="dataBond">
+            <td colspan="@(bond.DataLevel)" class="dataBond">
                 <hr style="width:130px;margin:1px auto 0 auto">
             </td>
             <td class="spliter"></td>
@@ -159,17 +157,16 @@
     {
         @foreach (var control in bondControls.Where(t => t.BondType == bondType))
         {
-            <ReportControl @ref="ReportControl" Left="control.Left" Top="control.Top"
-                           BondType="bondType" Page="Page" OnChange="c => ControlChanged(control, c)" />
+            <ReportControl @ref="ReportControl" Data="control" Page="Page" />
         }
         @if (bondType == BondType.DataHeader && dataHeaderBoundTable != null)
         {
-            <Table @ref="HeaderBoundTable" Top="dataHeaderBoundTable.Top" Bound="this" BondType="bondType" TableData="dataHeaderBoundTable" OnChange="data => dataHeaderBoundTable = data" />
+            <Table @ref="HeaderBoundTable" Bound="this" Data="dataHeaderBoundTable" />
         }
 
-        @if (bondType.ConvertToInt() - 2 == DataLevel && dataBoundTable != null)
+        @if (bondType.ConvertToInt() - 2 == bond.DataLevel && dataBoundTable != null)
         {
-            <Table @ref="BoundTable" Bound="this" Top="dataBoundTable.Top" BondType="bondType" TableData="dataBoundTable" OnChange="data => dataBoundTable = data" />
+            <Table @ref="BoundTable" Bound="this" Data="dataBoundTable" />
         }
     }
 

@@ -1,4 +1,8 @@
-﻿#page {
+﻿body
+{
+    overflow:hidden!important;
+}
+#page {
     background-color: rgb(204, 207, 212);
 }
 .r-border-kind, .r-border-width {

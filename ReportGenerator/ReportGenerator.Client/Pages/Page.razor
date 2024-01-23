@@ -1,5 +1,7 @@
 ﻿@page "/"
+@inject HttpClient Host
 @namespace Caspian.Report
+@using Caspian.Report.Data
 @using Caspian.UI
 @inject IJSRuntime JSRuntime
 @{
@@ -7,30 +9,33 @@
     var font = SelectedControl?.Font;
     var border = SelectedControl?.Border;
 }
-<div tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
-     @onclick="MouseClick">
-    <ToolsBar @ref="toolsBar" Page="this" Alignment="alignment" Font="font" Border="border" ReportId="1" SelectedTable="SelectedTable" />
-    <div class="report-content">
-        <ToolsBox @ref="toolsBox" Page="this" />
-        <div class="report-panel">
-            <div id="bindConfig">
-                <span>@(Title)</span>
+@if (ReportPage != null)
+{
+    <div tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
+         @onclick="MouseClick">
+        <ToolsBar @ref="toolsBar" Page="this" Alignment="alignment" Font="font" Border="border" ReportId="1" SelectedTable="SelectedTable" />
+        <div class="report-content">
+            <ToolsBox @ref="toolsBox" Page="this" />
+            <div class="report-panel">
+                <div id="bindConfig">
+                    <span>Bounds Config</span>
+                </div>
+                <div id="ruler">
+                </div>
+                <Bound @ref=Bound Page="this" Width=800/>
             </div>
-            <div id="ruler">
-
-            </div>
-            <Bound @ref=Bound Page="this" Width=800 DataLevel=1 />
         </div>
+        @if (controlAdding)
+        {
+            <ReportControl @ref="creatingControl" Data="controlData" Page="this" />
+        }
+        @if (tableAdding)
+        {
+            <Table @ref="creatingTable" Data="tableData" />
+        }
     </div>
-    @if (controlAdding)
-    {
-        <ReportControl @ref="creatingControl" Left="left" Top="top" Page="this" OnChange="CreatingControlChanged" />
-    }
-    @if (tableAdding)
-    {
-        <Table @ref="creatingTable" TableData="tableData" Left="(int)left" Top="(int)top" OnChange="UpdateTableData" />
-    }
-</div>
+}
+
 <Window Title="@windowTitle" Style="width:400px;" Status="status" StatusChanged="CloseWindow">
     @if (isTextWindow)
     {
@@ -47,19 +52,17 @@
     ToolsBar toolsBar;
     ElementReference element;
     bool controlAdding, tableAdding;
-    double left, top;
     ReportControl creatingControl;
     Table creatingTable;
     TableData tableData;
     ToolsBox toolsBox;
     bool isTextWindow;
     string windowTitle;
+    ControlData controlData;
 
     string cursor = "default";
 
-    public static object Title;
-
-    public object Text { get; set; }
+    public ReportPage ReportPage { get; private set; }
 
     public Bound Bound { get; private set; }
 
@@ -69,7 +72,16 @@
 
     public bool IsMouseDown { get; private set; }
 
-    async Task OnKeyDown(KeyboardEventArgs e)
+    protected override async Task OnInitializedAsync()
+    {
+        ReportPage = await Host.GetFromJsonAsync<ReportPage>($"/ReportGenerator/GetReportData?reportId={ReportId}");
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter]
+    public int ReportId { get; set; } = 1;
+
+    void OnKeyDown(KeyboardEventArgs e)
     {
         if (SelectedControl != null)
         {
@@ -80,37 +92,31 @@
                     if (ctrKey)
                         SelectedControl.Resize(0, -1);
                     else
-                        await SelectedControl.Move(0, -1);
+                        SelectedControl.Move(0, -1);
                     break;
                 case "ArrowDown":
                     if (ctrKey)
                         SelectedControl.Resize(0, 1);
                     else
-                        await SelectedControl.Move(0, 1);
+                        SelectedControl.Move(0, 1);
                     break;
                 case "ArrowRight":
                     if (ctrKey)
                         SelectedControl.Resize(1, 0);
                     else
-                        await SelectedControl.Move(1, 0);
+                        SelectedControl.Move(1, 0);
                     break;
                 case "ArrowLeft":
                     if (ctrKey)
                         SelectedControl.Resize(-1, 0);
                     else
-                        await SelectedControl.Move(-1, 0);
+                        SelectedControl.Move(-1, 0);
                     break;
             }
         }
     }
 
     public bool WindowIsOpened { get; set; }
-
-    void UpdateTableData()
-    {
-        left = creatingTable.Left;
-        top = creatingTable.Top;
-    }
 
     public void OpenTextWindow()
     {
@@ -139,8 +145,7 @@
 
     public async Task AddControl(double x, double y)
     {
-        left = x;
-        top = y;
+        controlData = new ControlData(x, y);
         controlAdding = true;
         await Task.Delay(100);
         creatingControl.InitializeBeforAddedToPage();
@@ -151,32 +156,24 @@
 
     public async Task AddTable(double x, double y, TableData table)
     {
-        left = x;
-        top = y;
-        tableAdding = true;
         tableData = table;
+        tableAdding = true;
         await Task.Delay(100);
         ResetControl();
         ResetTable();
         Bound.ResetBond();
     }
 
-    void CreatingControlChanged(ControlData data)
-    {
-        left = data.Left;
-        top = data.Top;
-    }
-
     void MouseClick(MouseEventArgs e)
     {
         if (controlAdding)
         {
-            Bound.AddControlToBound(new ControlData(left, top));
+            Bound.AddControlToBound(controlData);
             controlAdding = false;
         }
         if (tableAdding)
         {
-            Bound.AddTableToBound((int)left, (int)top, ToolsBox.GetTableData(Bound.ColumnCount));
+            Bound.AddTableToBound(tableData);
             tableAdding = false;
         }
     }
@@ -199,17 +196,21 @@
         SelectedTable?.DragStart(e.ClientX, e.ClientY);
     }
 
-    public async Task MouseMove(MouseEventArgs e)
+    public void MouseMove(MouseEventArgs e)
     {
         if (WindowIsOpened)
             return;
-        if (controlAdding || tableAdding)
+        if (controlAdding)
         {
-            left = e.ClientX;
-            top = e.ClientY;
-            if (controlAdding && creatingControl != null)
-                await creatingControl.Drag(e.ClientX, e.ClientY);
-            
+            controlData.Left = e.ClientX;
+            controlData.Top = e.OffsetY;
+            creatingControl?.Drag(e.ClientX, e.ClientY);
+        }
+        if (tableAdding)
+        {
+            tableData.Left = (int)e.ClientX;
+            tableData.Top = (int)e.ClientY;
+
         }
         cursor = Bound.GetCursor(e.ClientX, e.ClientY);
         if (IsMouseDown)
@@ -218,13 +219,13 @@
         {
             cursor = SelectedControl.GetCursor(e.ClientX, e.ClientY);
             if (IsMouseDown)
-                await SelectedControl.Drag(e.ClientX, e.ClientY);
+                SelectedControl.Drag(e.ClientX, e.ClientY);
         }
         if (SelectedTable != null)
         {
             cursor = SelectedTable.GetCursor(e.ClientX, e.ClientY);
             if (IsMouseDown)
-                await SelectedTable.Drag(e.ClientX, e.ClientY);
+                SelectedTable.Drag(e.ClientX, e.ClientY);
         }
     }
 
