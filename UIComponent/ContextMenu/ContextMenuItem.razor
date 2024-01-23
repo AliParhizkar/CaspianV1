@@ -1,0 +1,41 @@
+﻿@namespace Caspian.UI
+@inject IJSRuntime jsRuntime;
+
+@{
+    string styleIcon = "color: black;display: flex;justify-content: center;align-items: center;position: relative;";
+    string menuItemClass = "c-context-menu-";
+    if (ChildContent is not null)
+        menuItemClass += "parent-item";
+    else
+        menuItemClass += "item";
+}
+
+<li class="@menuItemClass" @onmouseenter="() => showContextMenuItems = true"
+                           @onmouseleave="() => showContextMenuItems = false">
+    <div class="c-context-menu-down">
+        <span class="c-context-menu-item-title">@Title</span>
+        @if (ChildContent != null)
+        {
+            <i class="fa fa-caret-right" style="@styleIcon" aria-hidden="true"></i>
+        }
+    </div>
+    @if (ChildContent is not null && showContextMenuItems)
+    {
+        <ul class="c-context-menu">
+            @ChildContent
+        </ul>
+    }
+</li>
+
+
+@code {
+
+    bool showContextMenuItems = false;
+    bool preventDefault = false;
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}
