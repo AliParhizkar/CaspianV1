@@ -5,22 +5,25 @@
 
 
 <ContextMenu @bind-Status="leftStatus" Left="left" Top="top">
-    <ContextMenuItem Title="Ali Parhizkar 1" />
-    <ContextMenuItem Title="Hosin 2" >
-        <ContextMenuItem Title="Item dass" />
-        <ContextMenuItem Title="Item" />
-        <ContextMenuItem Title="Item dasa asdsad as" />
+    <ContextMenuItem Title="item1" />
+    <ContextMenuItem Title="item2" >
+        <ContextMenuItem Disabled Title="item2_1" />
+        <ContextMenuItem Title="item2_2" />
+        <ContextMenuItem Separator />
+        <ContextMenuItem Title="item2_3" />
     </ContextMenuItem>
-    <ContextMenuItem Title="sadsa das dasdas">
-        <ContextMenuItem Title="Item dass">
-            <ContextMenuItem Title="Item 1" />
-            <ContextMenuItem Title="Item 2" />
-            <ContextMenuItem Title="Item 3" />
+    <ContextMenuItem Title="item3">
+        <ContextMenuItem Disabled Title="item3_1">
+            <ContextMenuItem Title="item3_1_1" />
+            <ContextMenuItem Separator />
+            <ContextMenuItem Title="item3_1_2" />
+            <ContextMenuItem Disabled Title="item3_1_3" />
         </ContextMenuItem>
-        <ContextMenuItem Title="Item" />
-        <ContextMenuItem Title="Item dasa" />
+        <ContextMenuItem Title="item3_2" />
+        <ContextMenuItem Separator />
+        <ContextMenuItem Title="item3_3" />
     </ContextMenuItem>
-    <ContextMenuItem Title="Item 4" />
+    <ContextMenuItem Disabled Title="item4" />
 </ContextMenu>
 
 <div>
@@ -32,18 +35,25 @@
 </div>
 
 <ContextMenu @bind-Status="rightStatus" Left="left" Top="top">
-    <ContextMenuItem Title="Ali Parhizkar 2" />
-    <ContextMenuItem Title="Hosin 2">
-        <ContextMenuItem Title="Item dass" />
-        <ContextMenuItem Title="Item" />
-        <ContextMenuItem Title="Item dasa asdsad as" />
+    <ContextMenuItem Title="item1" />
+    <ContextMenuItem Title="item2">
+        <ContextMenuItem Disabled Title="item2_1" />
+        <ContextMenuItem Title="item2_2" />
+        <ContextMenuItem Separator />
+        <ContextMenuItem Title="item2_3" />
     </ContextMenuItem>
-    <ContextMenuItem Title="sadsa das dasdas">
-        <ContextMenuItem Title="Item dass" />
-        <ContextMenuItem Title="Item" />
-        <ContextMenuItem Title="Item dasa" />
+    <ContextMenuItem Title="item3">
+        <ContextMenuItem Disabled Title="item3_1">
+            <ContextMenuItem Title="item3_1_1" />
+            <ContextMenuItem Separator />
+            <ContextMenuItem Title="item3_1_2" />
+            <ContextMenuItem Disabled Title="item3_1_3" />
+        </ContextMenuItem>
+        <ContextMenuItem Title="item3_2" />
+        <ContextMenuItem Separator />
+        <ContextMenuItem Title="item3_3" />
     </ContextMenuItem>
-    <ContextMenuItem Title="Item 4" />
+    <ContextMenuItem Disabled Title="item4" />
 </ContextMenu>
 
 @code {

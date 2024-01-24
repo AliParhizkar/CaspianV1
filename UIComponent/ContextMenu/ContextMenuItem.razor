@@ -8,34 +8,49 @@
         menuItemClass += "parent-item";
     else
         menuItemClass += "item";
+
+    if (Disabled)
+        menuItemClass += " disabled";
 }
 
-<li class="@menuItemClass" @onmouseenter="() => showContextMenuItems = true"
-                           @onmouseleave="() => showContextMenuItems = false">
-    <div class="c-context-menu-down">
-        <span class="c-context-menu-item-title">@Title</span>
-        @if (ChildContent != null)
+@if (Separator)
+{
+    <hr style="background-color: black;width: 90%;margin:10px auto;" />
+}
+else
+{
+    <li class="@menuItemClass" @onmouseenter="() => showContextMenuItems = true"
+        @onmouseleave="() => showContextMenuItems = false">
+        <div class="c-context-menu-down">
+            <span class="c-context-menu-item-title">@Title</span>
+            @if (ChildContent != null)
+            {
+                <i class="fa fa-caret-right" style="@styleIcon" aria-hidden="true"></i>
+            }
+        </div>
+        @if (ChildContent is not null && showContextMenuItems)
         {
-            <i class="fa fa-caret-right" style="@styleIcon" aria-hidden="true"></i>
+            <ul class="c-context-menu">
+                @ChildContent
+            </ul>
         }
-    </div>
-    @if (ChildContent is not null && showContextMenuItems)
-    {
-        <ul class="c-context-menu">
-            @ChildContent
-        </ul>
-    }
-</li>
+    </li>
+}
 
 
 @code {
 
     bool showContextMenuItems = false;
-    bool preventDefault = false;
 
     [Parameter]
     public string Title { get; set; }
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public bool Separator { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
 }
