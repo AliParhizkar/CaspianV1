@@ -12,34 +12,37 @@
 {
     async Task AddControl(MouseEventArgs e)
     {
-        await Page.AddControl(e.ClientX, e.ClientY);
+        var control = new ControlData(e.ClientX, e.ClientY);
+        control.Width = 180;
+        control.Height = 32;
+        await Page.AddControl(control);
     }
 
     async Task AddTable(MouseEventArgs e)
     {
-        var data = ToolsBox.GetTableData(Page.Bound.ColumnCount);
-        await Page.AddTable(e.ClientX, e.ClientY, data);
+        var table = GetTableData(Page.Bound.Data.ColumnCount);
+        await Page.AddTable(table);
     }
 
-    public static TableData GetTableData(int columnCount)
+    TableData GetTableData(int columnCount)
     {
         var table = new TableData();
-        table.HeaderCells = new List<HeaderCell>()
+        table.HeaderCells = new List<HeaderCellData>()
             {
-                new HeaderCell(){Width = 100},
-                new HeaderCell(){Width = 150},
+                new HeaderCellData(){Width = 100},
+                new HeaderCellData(){Width = 150},
             };
         if (columnCount < 2)
         {
-            table.HeaderCells.Add(new HeaderCell() { Width = 200 });
-            table.HeaderCells.Add(new HeaderCell() { Width = 200 });
+            table.HeaderCells.Add(new HeaderCellData() { Width = 200 });
+            table.HeaderCells.Add(new HeaderCellData() { Width = 200 });
         }
-        table.Rows = new List<TableRow>();
-        var row = new TableRow();
+        table.Rows = new List<TableRowData>();
+        var row = new TableRowData();
         row.RowIndex = 1;
         for (var colIndex = 1; colIndex <= table.HeaderCells.Count; colIndex++)
         {
-            row.Cells.Add(new TableCell(row)
+            row.Cells.Add(new TableCellData(row)
                 {
                     ColIndex = colIndex
                 });

@@ -1,0 +1,107 @@
+﻿@namespace Caspian.Report
+@using Caspian.Common
+@if (DataLevel.HasValue || Data.BondType == BondType.DataHeader || Data.BondType == BondType.DataFooter)
+{
+    string className = "dataBond";
+    if (Bound.Data.DataLevel > 1)
+        className += " data-bond-second";
+    if (DataLevel == 3)
+        className += "-2";
+    var colspan = 1;
+    if (DataLevel.HasValue)
+        colspan = Bound.Data.DataLevel - DataLevel.Value + 1;
+    <tr>
+        @for (var index = 2; index <= DataLevel; index++)
+        {
+            <td class="dataBond data-bond-first"></td>
+        }
+        <td colspan="@(colspan)" class="@className">@(Title)</td>
+        <td @ondblclick="() => Bound.Page.OpenColumnWindow()" style="@($"height:{Data.Height}px;width:{Bound.Page.Data.Width}px")" class="bond"
+            @onclick="() => Bound.Page.SelectBound(this)">
+            @if (Data.ColumnsCount > 1)
+            {
+                for (var i = 1; i <= Data.ColumnsCount; i++)
+                {
+                    className = "column ";
+                    if (i == 1)
+                        className += "left";
+                    else if (i == Data.ColumnsCount)
+                        className += "right";
+                    else
+                        className += "middel";
+                    var style = $"width:{ColumnWidth}px;";
+                    if (i < Data.ColumnsCount)
+                        style += $"margin-right:{Data.GapBetweenColumns}px;";
+                    <div class="@className" style="@style">
+                        @if (i == 1)
+                        {
+                            CreateControlsAndTable(__builder);
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                CreateControlsAndTable(__builder);
+            }
+
+            @if (Bound.Page.SelectedBound == this)
+            {
+                CreateSqures(__builder);
+            }
+        </td>
+    </tr>
+    <tr style="height:3px">
+        <td colspan="@(Bound.Data.DataLevel)" class="dataBond">
+            <hr style="width:130px;margin:1px auto 0 auto">
+        </td>
+        <td class="spliter"></td>
+    </tr>
+}
+else
+{
+    <tr>
+        <td colspan="@(Bound.Data.DataLevel)" class="reportheader">@(Title)</td>
+        <td style="@($"height:{Data.Height}px")" @onmouseup="() => Bound.Page.SelectBound(this)">
+            @foreach (var control in Data.Controls)
+            {
+                <ReportControl @ref="ReportControl" Data="control" Page="Bound.Page" BoundItem="this" />
+            }
+            @{
+                CreateSqures(__builder);
+            }
+        </td>
+    </tr>
+    <tr>
+        <td colspan="@DataLevel" class="spliter-first">
+            <hr />
+        </td>
+        <td class="spliter"></td>
+    </tr>
+}
+@code 
+{
+    void CreateControlsAndTable(RenderTreeBuilder __builder)
+    {
+        @foreach (var control in Data.Controls)
+        {
+            <ReportControl @ref="ReportControl" Data="control" Page="Bound.Page" BoundItem="this" />
+        }
+
+        @if (Data.TableData != null)
+        {
+            <Table @ref="table" BoundItem="this" Bound="Bound" Data="Data.TableData" />
+        }
+    }
+
+    void CreateSqures(RenderTreeBuilder __builder)
+    {
+        if (this == Bound.Page.SelectedBound)
+        {
+            <span style="@($"left:{Bound.Left - 3}px;top:{Top - 3}px")" class="squarebond"></span>
+            <span style="@($"left:{Bound.Right - 3}px;top:{Top - 3}px")" class="squarebond"></span>
+            <span style="@($"left:{Bound.Left - 3}px;top:{Bottom}px")" class="squarebond"></span>
+            <span style="@($"left:{Bound.Right - 3}px;top:{Bottom}px")" class="squarebond"></span>
+        }
+    }
+}

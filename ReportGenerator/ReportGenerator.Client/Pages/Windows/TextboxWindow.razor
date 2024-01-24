@@ -76,23 +76,23 @@
 @code 
 {
     IEnumerable<SelectListItem> Params;
-    ReportParam param;
+    ParameterData param;
     BondType bondType;
     protected override void OnInitialized()
     {
         var control = Page.SelectedControl;
-        param = new ReportParam();
+        param = new ParameterData();
         if (control != null)
         {
-            param.CopySimpleProperty(control.ReportParam);
-            bondType = control.BondType.Value;
+            param.CopySimpleProperty(control.ParameterData);
+            bondType = control.Data.BondType.Value;
         }    
         base.OnInitialized();
     }
 
     async Task UpdateData()
     {
-        Page.SelectedControl.ReportParam.CopySimpleProperty(param);
+        Page.SelectedControl.ParameterData.CopySimpleProperty(param);
         await StatusChanged.InvokeAsync(WindowStatus.Close);
     }
 

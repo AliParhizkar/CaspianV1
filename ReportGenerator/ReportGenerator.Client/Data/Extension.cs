@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace Caspian.Report
+namespace Caspian.Report.Data
 {
     public static class Extension
     {

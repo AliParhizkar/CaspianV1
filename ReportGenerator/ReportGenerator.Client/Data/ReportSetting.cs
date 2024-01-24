@@ -1,17 +1,10 @@
 ﻿using System.ComponentModel;
 
-namespace Caspian.Report
+namespace Caspian.Report.Data
 {
-    public class PageSize
-    {
-        public double PageWidth { get; set; }
-
-        public double PageHeight { get; set; }
-    }
-
     public class ReportSetting
     {
-        private readonly PageSize[] list = new PageSize[]
+        private readonly PageSize[] list = 
             {
                 new PageSize() { PageWidth = 21.59, PageHeight = 27.94},
                 new PageSize(){PageWidth = 29.7, PageHeight = 42},
@@ -66,58 +59,38 @@ namespace Caspian.Report
             return type;
         }
 
-        /// <summary>
-        /// ارتفاع صفحه در گزارش
-        /// </summary>
-        [DisplayName("ارتفاع")]
+        [DisplayName("Page Height")]
         public double PageHeight { get; set; }
 
-        /// <summary>
-        /// عرض صفحه در گزارش
-        /// </summary>
-        [DisplayName("عرض")]
+        [DisplayName("Page Width")]
         public double PageWidth { get; set; }
 
-        /// <summary>
-        /// اندازه
-        /// </summary>
-        [DisplayName("اندازه")]
+        [DisplayName("Page Type")]
         public ReportPageType? PageType { get; set; }
 
-        /// <summary>
-        /// گزارش دارای سر گزارش می باشد
-        /// </summary>
-        [DisplayName("سرگزارش")]
+        [DisplayName("Report Title")]
         public bool ReportTitle { get; set; }
 
-        /// <summary>
-        /// گزراش دارای سرصفحه می باشد.
-        /// </summary>
-        [DisplayName("سرصفحه")]
+        [DisplayName("Page Header")]
         public bool PageHeader { get; set; }
 
-        /// <summary>
-        /// نوع چاپ سرصفحه در سرگزارش
-        /// </summary>
-        [DisplayName("نوع چاپ")]
+        [DisplayName("Print Type")]
         public PrintOnType PrintOn { get; set; }
 
-        /// <summary>
-        /// گزارش دارای سرداده می باشد
-        /// </summary>
-        [DisplayName("سرداده")]
+        [DisplayName("Data Header")]
         public bool DataHeader { get; set; }
 
-        /// <summary>
-        /// گزراش دارای ته داده می باشد
-        /// </summary>
-        [DisplayName("ته داده")]
+        [DisplayName("Data Footer")]
         public bool DataFooter { get; set; }
 
-        /// <summary>
-        /// گزارش دارای ته صفحه می باشد
-        /// </summary>
-        [DisplayName("ته صفحه")]
+        [DisplayName("Page Footer")]
         public bool PageFooter { get; set; }
+    }
+
+    public class PageSize
+    {
+        public double PageWidth { get; set; }
+
+        public double PageHeight { get; set; }
     }
 }

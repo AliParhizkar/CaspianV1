@@ -1,4 +1,7 @@
-﻿#page {
+﻿body{
+    overflow:hidden;
+}
+#page {
     background-color: rgb(204, 207, 212);
 }
 .tools-bar {
