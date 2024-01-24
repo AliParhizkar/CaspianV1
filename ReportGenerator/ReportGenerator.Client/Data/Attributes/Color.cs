@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Globalization;
 
-namespace Caspian.Report
+namespace Caspian.Report.Data
 {
     public class Color
     {

@@ -1,7 +1,6 @@
-﻿using System.Globalization;
-using System.Text.Json;
+﻿using System.Text.Json;
 
-namespace Caspian.Report
+namespace Caspian.Report.Data
 {
     public class Font
     {

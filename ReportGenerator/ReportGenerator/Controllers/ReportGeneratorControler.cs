@@ -14,20 +14,38 @@ namespace ReportGenerator.Controllers
         }
 
         [HttpGet]
-        public ReportPage GetReportData(int reportId)
+        public PageData GetReportData(int reportId)
         {
-            return new ReportPage()
+            return new PageData()
             {
-                ReportBound = new ReportBound()
+                Bound = new BoundData()
                 {
-                    TitleHeight = 60,
-                    ThirdDLHeight = 30,
-                    DataLevel = 1
+                    DataLevel = 1,
+                    Items = new List<BoundItemData>()
+                    {
+                        new BoundItemData()
+                        {
+                            BondType = Caspian.Report.BondType.ReportTitle,
+                            Height = 70
+                        },
+                        new BoundItemData()
+                        {
+                            BondType = Caspian.Report.BondType.FirstDataLevel,
+                            Height = 45
+                        },
+                        //new BoundItemData()
+                        //{
+                        //    BondType = Caspian.Report.BondType.SecondDataLevel,
+                        //    Height = 45
+                        //},
+                        //new BoundItemData()
+                        //{
+                        //    BondType = Caspian.Report.BondType.ThirdDataLevel,
+                        //    Height = 45
+                        //},
+                    }
                 },
-                Setting = new ReportSetting() 
-                {
-                    PageWidth = 800
-                }
+                Width = 800
             };
         }
     }

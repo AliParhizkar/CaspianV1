@@ -1,4 +1,4 @@
-﻿namespace Caspian.Report
+﻿namespace Caspian.Report.Data
 {
     public class ControlData
     {
@@ -10,7 +10,9 @@
 
         public double Left { get; set; }
 
-        public double TopStart { get; set; }
+        public double Width { get; set; }
+
+        public double Height { get; set; }
 
         public double Top { get; set; }
 

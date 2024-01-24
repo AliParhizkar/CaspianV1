@@ -2,16 +2,9 @@
 
 namespace Caspian.Report.Data
 {
-    public class PageSize
-    {
-        public double PageWidth { get; set; }
-
-        public double PageHeight { get; set; }
-    }
-
     public class ReportSetting
     {
-        private readonly PageSize[] list = new PageSize[]
+        private readonly PageSize[] list = 
             {
                 new PageSize() { PageWidth = 21.59, PageHeight = 27.94},
                 new PageSize(){PageWidth = 29.7, PageHeight = 42},
@@ -92,5 +85,12 @@ namespace Caspian.Report.Data
 
         [DisplayName("Page Footer")]
         public bool PageFooter { get; set; }
+    }
+
+    public class PageSize
+    {
+        public double PageWidth { get; set; }
+
+        public double PageHeight { get; set; }
     }
 }

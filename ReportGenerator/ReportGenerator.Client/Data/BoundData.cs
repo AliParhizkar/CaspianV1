@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace Caspian.Report.Data
+﻿namespace Caspian.Report.Data
 {
-    public class ReportBound
+    public class BoundData
     {
         public double? TitleHeight { get; set; }
 
@@ -21,5 +19,11 @@ namespace Caspian.Report.Data
         public double? ThirdDLHeight { get; set; }
 
         public byte DataLevel { get; set; }
+
+        public IList<BoundItemData> Items { get; set; }
+
+        public byte ColumnCount { get; set; }
+
+        public byte ColumnGap { get; set; }
     }
 }

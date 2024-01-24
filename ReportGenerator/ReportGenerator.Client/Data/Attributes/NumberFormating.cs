@@ -1,7 +1,6 @@
-﻿using Caspian.Common;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
-namespace Caspian.Report
+namespace Caspian.Report.Data
 {
     public class NumberFormating
     {

@@ -1,4 +1,4 @@
-﻿namespace Caspian.Report
+﻿namespace Caspian.Report.Data
 {
     public class Alignment
     {

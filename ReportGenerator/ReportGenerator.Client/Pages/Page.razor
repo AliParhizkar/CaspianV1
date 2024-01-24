@@ -9,7 +9,7 @@
     var font = SelectedControl?.Font;
     var border = SelectedControl?.Border;
 }
-@if (ReportPage != null)
+@if (Data != null)
 {
     <div tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
          @onclick="MouseClick">
@@ -22,7 +22,7 @@
                 </div>
                 <div id="ruler">
                 </div>
-                <Bound @ref=Bound Page="this" Width=800/>
+                <Bound @ref=Bound Page="this" Data="Data.Bound"/>
             </div>
         </div>
         @if (controlAdding)
@@ -31,7 +31,7 @@
         }
         @if (tableAdding)
         {
-            <Table @ref="creatingTable" Data="tableData" />
+            <Table @ref="creatingTable" Data="tableData" Bound="Bound" />
         }
     </div>
 }
@@ -46,212 +46,4 @@
         <ColumnWindow Status="status" StatusChanged="CloseWindow"  />
     }
 </Window>
-@code 
-{
-    WindowStatus status;
-    ToolsBar toolsBar;
-    ElementReference element;
-    bool controlAdding, tableAdding;
-    ReportControl creatingControl;
-    Table creatingTable;
-    TableData tableData;
-    ToolsBox toolsBox;
-    bool isTextWindow;
-    string windowTitle;
-    ControlData controlData;
 
-    string cursor = "default";
-
-    public ReportPage ReportPage { get; private set; }
-
-    public Bound Bound { get; private set; }
-
-    public ReportControl SelectedControl { get; private set; }
-
-    public Table SelectedTable { get; private set; }
-
-    public bool IsMouseDown { get; private set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        ReportPage = await Host.GetFromJsonAsync<ReportPage>($"/ReportGenerator/GetReportData?reportId={ReportId}");
-        await base.OnInitializedAsync();
-    }
-
-    [Parameter]
-    public int ReportId { get; set; } = 1;
-
-    void OnKeyDown(KeyboardEventArgs e)
-    {
-        if (SelectedControl != null)
-        {
-            var ctrKey = e.CtrlKey;
-            switch(e.Code)
-            {
-                case "ArrowUp":
-                    if (ctrKey)
-                        SelectedControl.Resize(0, -1);
-                    else
-                        SelectedControl.Move(0, -1);
-                    break;
-                case "ArrowDown":
-                    if (ctrKey)
-                        SelectedControl.Resize(0, 1);
-                    else
-                        SelectedControl.Move(0, 1);
-                    break;
-                case "ArrowRight":
-                    if (ctrKey)
-                        SelectedControl.Resize(1, 0);
-                    else
-                        SelectedControl.Move(1, 0);
-                    break;
-                case "ArrowLeft":
-                    if (ctrKey)
-                        SelectedControl.Resize(-1, 0);
-                    else
-                        SelectedControl.Move(-1, 0);
-                    break;
-            }
-        }
-    }
-
-    public bool WindowIsOpened { get; set; }
-
-    public void OpenTextWindow()
-    {
-        status = WindowStatus.Open;
-        isTextWindow = true;
-        windowTitle = "Textbox Window";
-        StateHasChanged();
-    }
-
-    public void OpenColumnWindow()
-    {
-        if (SelectedControl == null && SelectedTable == null)
-        {
-            status = WindowStatus.Open;
-            isTextWindow = false;
-            windowTitle = "Column Window";
-            StateHasChanged();
-        }
-
-    }
-
-    void CloseWindow(WindowStatus status)
-    {
-        this.status = status;
-    }
-
-    public async Task AddControl(double x, double y)
-    {
-        controlData = new ControlData(x, y);
-        controlAdding = true;
-        await Task.Delay(100);
-        creatingControl.InitializeBeforAddedToPage();
-        ResetControl();
-        ResetTable();
-        Bound.ResetBond();
-    }
-
-    public async Task AddTable(double x, double y, TableData table)
-    {
-        tableData = table;
-        tableAdding = true;
-        await Task.Delay(100);
-        ResetControl();
-        ResetTable();
-        Bound.ResetBond();
-    }
-
-    void MouseClick(MouseEventArgs e)
-    {
-        if (controlAdding)
-        {
-            Bound.AddControlToBound(controlData);
-            controlAdding = false;
-        }
-        if (tableAdding)
-        {
-            Bound.AddTableToBound(tableData);
-            tableAdding = false;
-        }
-    }
-
-    void MouseUp(MouseEventArgs e)
-    {
-        if (IsMouseDown)
-        {
-            Bound.Drop(e.ClientX, e.ClientY);
-            IsMouseDown = false;
-        }
-    }
-
-    async Task MouseDown(MouseEventArgs e)
-    {
-        await toolsBar.CloseDropdown();
-        IsMouseDown = true;
-        Bound.DragStart(e.ClientX, e.ClientY);
-        SelectedControl?.DragStart(e.ClientX, e.ClientY);
-        SelectedTable?.DragStart(e.ClientX, e.ClientY);
-    }
-
-    public void MouseMove(MouseEventArgs e)
-    {
-        if (WindowIsOpened)
-            return;
-        if (controlAdding)
-        {
-            controlData.Left = e.ClientX;
-            controlData.Top = e.OffsetY;
-            creatingControl?.Drag(e.ClientX, e.ClientY);
-        }
-        if (tableAdding)
-        {
-            tableData.Left = (int)e.ClientX;
-            tableData.Top = (int)e.ClientY;
-
-        }
-        cursor = Bound.GetCursor(e.ClientX, e.ClientY);
-        if (IsMouseDown)
-            Bound.Drag(e.ClientX, e.ClientY);
-        if (SelectedControl != null)
-        {
-            cursor = SelectedControl.GetCursor(e.ClientX, e.ClientY);
-            if (IsMouseDown)
-                SelectedControl.Drag(e.ClientX, e.ClientY);
-        }
-        if (SelectedTable != null)
-        {
-            cursor = SelectedTable.GetCursor(e.ClientX, e.ClientY);
-            if (IsMouseDown)
-                SelectedTable.Drag(e.ClientX, e.ClientY);
-        }
-    }
-
-    public void SelectControl(ReportControl control)
-    {
-        SelectedControl = control;
-        SelectedTable = null;
-        StateHasChanged();
-    }
-
-    public void SelectTable(Table table)
-    {
-        SelectedTable = table;
-        SelectedControl = null;
-        StateHasChanged();
-    }
-
-    public void ResetControl()
-    {
-        SelectedControl = null;
-        StateHasChanged();
-    }
-
-    public void ResetTable()
-    {
-        SelectedTable = null;
-        StateHasChanged();
-    }
-}

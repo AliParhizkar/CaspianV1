@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Report
 {
@@ -50,22 +51,30 @@ namespace Caspian.Report
         Custome
     }
 
-    public enum BondType
+    public enum BondType: byte
     {
+        [Display(Name = "Report Title")]
         ReportTitle,
 
+        [Display(Name = "Page Header")]
         PageHeader,
 
+        [Display(Name = "Data Header")]
         DataHeader,
 
+        [Display(Name = "Data")]
         FirstDataLevel,
 
+        [Display(Name = "Data")]
         SecondDataLevel,
 
+        [Display(Name = "Data")]
         ThirdDataLevel,
 
+        [Display(Name = "Data Footer")]
         DataFooter,
 
+        [Display(Name = "Page Footer")]
         PageFooter,
     }
 
