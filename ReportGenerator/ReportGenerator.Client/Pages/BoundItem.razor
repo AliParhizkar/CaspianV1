@@ -88,9 +88,9 @@ else
             <ReportControl @ref="ReportControl" Data="control" Page="Bound.Page" BoundItem="this" />
         }
 
-        @if (Data.TableData != null)
+        @if (Data.Table != null)
         {
-            <Table @ref="table" BoundItem="this" Bound="Bound" Data="Data.TableData" />
+            <Table @ref="Table" BoundItem="this" Bound="Bound" Data="Data.Table" />
         }
     }
 

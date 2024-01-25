@@ -25,21 +25,31 @@
         @foreach (var row in Data.Rows)
         {
             var tempRowIndex = rowIndex;
-            <tr style="line-height:@(row.Height)px">
+            <tr>
                 @{
                     var colIndex = 1;
                 }
-                <td class="rowHeader" style="height:@(row.Height)px"></td>
+                <td class="rowHeader">
+                    <div style="height:@(row.Height)px">
+
+                    </div>
+                </td>
                 @foreach(var cell in row.Cells)
                 {
+                    style = $"{cell.Alignment.Style}{cell.Font.Style}";
                     var tempColIndex = colIndex;
-                    var className = "";
+                    var className = "r-cell ";
                     if (BoundItem?.Bound.Page.SelectedTable == this)
                         if (selectedCells.Any(t => t.Row.RowIndex == tempRowIndex && t.ColIndex == tempColIndex))
                             className = "cellselected";
                     if (cell.Hidden)
                         className += " hidden-cell";
-                    <td colspan="@(cell.ColSpan)" rowspan="@(cell.RowSpan)" class="@(className)" @onmousedown="e => SelectTableCell(e.CtrlKey, cell)">@(cell.Text)</td>
+                    <td style="@cell.Border.Style" colspan="@(cell.ColSpan)" rowspan="@(cell.RowSpan)" class="@(className)" @ondblclick="() => Bound.Page.OpenTextWindow()" @onmousedown="e => SelectTableCell(e.CtrlKey, cell)">
+                        <div style="@style" class="r-table-content">
+                            @(cell.Text)
+                        </div>
+
+                    </td>
                     colIndex++;
                 }
             </tr>

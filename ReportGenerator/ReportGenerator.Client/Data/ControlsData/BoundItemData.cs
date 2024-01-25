@@ -7,7 +7,7 @@
             Controls = new List<ControlData>();
         }
 
-        public TableData TableData { get; set; }
+        public TableData Table { get; set; }
 
         public IList<ControlData> Controls { get; set; }
 

@@ -45,9 +45,11 @@
     [Parameter]
     public bool Enabled { get; set; }
 
-    void Input(ChangeEventArgs e)
+    async Task Input(ChangeEventArgs e)
     {
         Color = e.Value?.ToString();
+        if (ColorChanged.HasDelegate)
+            await ColorChanged.InvokeAsync(Color);
     }
 
     async Task Change(ChangeEventArgs e)

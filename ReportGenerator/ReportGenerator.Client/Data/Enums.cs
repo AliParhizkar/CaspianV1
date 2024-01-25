@@ -119,8 +119,8 @@ namespace Caspian.Report
     public enum BorderStyle
     {
         Solid = 1,
-        Dash,
-        Dot,
+        Dashed,
+        Dotted,
         Double
     }
 

@@ -1,12 +1,15 @@
 ﻿namespace Caspian.Report.Data
 {
-    public class ParameterData
+    public class TextFieldData
     {
         public string Text { get; set; }
 
-        public string Title { get; set; }
+        public Color BackGroundColor { get; set; }
 
-        public string Alias { get; set; }
+        /// <summary>
+        /// Object Path for example Product.ProductCategory.Title
+        /// </summary>
+        public string Path { get; set; }
 
         public TotalFuncType? TotalFuncType { get; set; }
 

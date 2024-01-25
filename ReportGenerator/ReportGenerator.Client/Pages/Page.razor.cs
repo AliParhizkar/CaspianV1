@@ -19,6 +19,7 @@ namespace Caspian.Report
         bool isTextWindow;
         string windowTitle;
         ControlData controlData;
+        MessageBox messageBox;
 
         string cursor = "default";
 
@@ -41,7 +42,21 @@ namespace Caspian.Report
 
         protected override async Task OnInitializedAsync()
         {
-            Data = await Host.GetFromJsonAsync<PageData>($"/ReportGenerator/GetReportData?reportId={ReportId}");
+            try
+            {
+                Data = await Host.GetFromJsonAsync<PageData>($"/ReportGenerator/GetReportData?reportId={ReportId}");
+                /// Set table row for each table cells
+                var tables = Data.Bound.Items.Where(t => t.Table != null).Select(t => t.Table).ToList();
+                foreach (var table in tables)
+                    foreach (var row in table.Rows)
+                        foreach (var cell in row.Cells)
+                            cell.Row = row;
+            }
+            catch(Exception ex)
+            {
+
+            }
+
             await base.OnInitializedAsync();
         }
 
@@ -110,6 +125,16 @@ namespace Caspian.Report
             this.status = status;
         }
 
+        public async Task RemoveSelectedItem()
+        {
+            if (SelectedControl != null || SelectedTable != null)
+            {
+                if (await messageBox.Confirm("Do you want selected item removed"))
+                    (SelectedControl?.BoundItem ?? SelectedTable?.BoundItem).RemoveSelectedItem();
+                StateChanged();
+            }
+        }
+
         public async Task AddControl(ControlData control)
         {
             ResetAll();
@@ -125,6 +150,14 @@ namespace Caspian.Report
             tableData = table;
             tableAdding = true;
             await Task.Delay(100);
+        }
+
+        public async Task Save()
+        {
+            if (await messageBox.Confirm("Do you want save the report?"))
+            {
+                await Host.PostAsJsonAsync($"/ReportGenerator/SaveReport?", Data);
+            }
         }
 
         void MouseClick(MouseEventArgs e)

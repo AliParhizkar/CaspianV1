@@ -45,7 +45,7 @@
         {
             get
             {
-                return $"text-align:{HorizontalAlign};";
+                return $"text-align:{HorizontalAlign};vertical-align:{VerticalAlign}";
             }
         }
     }

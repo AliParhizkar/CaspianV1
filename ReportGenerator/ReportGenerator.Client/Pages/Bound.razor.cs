@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using Caspian.Report.Data;
-using Microsoft.JSInterop;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
 
@@ -68,7 +67,7 @@ namespace Caspian.Report
                 if (table.Left > Left && table.Left < Right && table.Top > bond.Top && table.Top < bond.Bottom)
                 {
                     table.BondType = bond.Data.BondType;
-                    bond.Data.TableData = table;
+                    bond.Data.Table = table;
                     break;
                 }
             }
@@ -94,35 +93,30 @@ namespace Caspian.Report
 
         public void ShowRuler(Table table, int x, out int left)
         {
+            HideRulers();
             left = x;
-            verticalRulerLeft = null;
-            //if (otherTable != null)
-            //{
-            //    var total = otherTable.Data.Left + 15;
-            //    foreach (var cell in otherTable.Data.HeaderCells)
-            //    {
-            //        if (Math.Abs(total - x) < 6)
-            //        {
-            //            verticalRulerLeft = left = total;
-            //            return;
-            //        }
-            //        total += cell.Width;
-            //    }
-            //}
-            //foreach (var control in reportControls)
-            //{
-            //    if (Math.Abs(control.Data.Left - x) < 6)
-            //    {
-            //        verticalRulerLeft = left = (int)control.Data.Left;
-            //        break;
-            //    }
-            //    var right = control.Data.Left + control.Data.Width;
-            //    if (Math.Abs(right - x) < 6)
-            //    {
-            //        verticalRulerLeft = left = (int)right;
-            //        break;
-            //    }
-            //}
+            var list = new List<RecData>();
+            foreach (var item in bounditems)
+                item.GetRecDatas(list);
+            foreach (var rect in list)
+            {
+                if (Math.Abs(rect.Left - x) < 6)
+                {
+                    verticalRulerLeft = left = (int)rect.Left;
+                    break;
+                }
+                var right = rect.Left + rect.Width;
+                if (Math.Abs(right - x) < 6)
+                {
+                    verticalRulerLeft = left = (int)right;
+                    break;
+                }
+            }
+        }
+
+        public void ShowRuler(double? verticalRulerLeft)
+        {
+            this.verticalRulerLeft = verticalRulerLeft;
         }
 
         void ShowRuler(IList<RecData> recDatas, ControlData controlData, ref double width, ref double height, ChangeType change)
@@ -206,16 +200,8 @@ namespace Caspian.Report
                 var difHeight = y - yStart;
                 Page.SelectedBound.Data.Height = (int)(heightStart + difHeight);
                 ///Drag controls and tables
-                //if (dataHeaderBoundTable != null && selectedBond.Value < BondType.DataHeader)
-                //    dataHeaderBoundTable.Top = HeaderBoundTable.TopStart + (int)(difHeight);
-                //if (dataBoundTable != null && selectedBond < BoundTable.Data.BondType)
-                //    dataBoundTable.Top = BoundTable.TopStart + (int)(difHeight);
-                //foreach (var control in reportControls)
-                //{
-                //    if (control.Data.BondType.Value > selectedBond.Value)
-                //        control.Data.Top = control.TopStart + (int)(difHeight);
-                //}
-
+                foreach (var item in bounditems.Where(t => t.Data.BondType > Page.SelectedBound.Data.BondType))
+                    item.UpdateTopOnBoundDrag((int)difHeight);
                 SelectionIsDisabled = true;
             }
         }
@@ -227,12 +213,8 @@ namespace Caspian.Report
                 yStart = y;
                 heightStart = Page.SelectedBound.Data.Height;
                 /// Initial For drag
-                //if (HeaderBoundTable != null)
-                //    HeaderBoundTable.TopStart = HeaderBoundTable.Data.Top;
-                //if (dataBoundTable != null)
-                //    BoundTable.TopStart = dataBoundTable.Top;
-                //foreach(var control in reportControls)
-                //    control.TopStart = control.Data.Top;
+                foreach (var bound in bounditems)
+                    bound.SetTopStartForControlsAndTable();
             }
         }
 
