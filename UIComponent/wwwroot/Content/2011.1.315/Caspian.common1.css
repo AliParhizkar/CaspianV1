@@ -2972,9 +2972,10 @@ html body .t-grid tbody .t-button-icon {
 
 .c-context-menu {
     position: absolute;
+    background-color: #fefefe;
     transition: top linear .2s;
     border: 5px solid #fefefe;
-    border-radius: 8px;
+    border-radius: 2px;
     box-shadow: 0px 5px 4px 4px rgba(0, 0, 0, 0.4);
     /*margin:0 2px;*/
     top: 0;
@@ -3014,6 +3015,12 @@ html body .t-grid tbody .t-button-icon {
     padding: 2px 5px;
     align-items: center;
 }
+
+.c-context-menu li.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
 
 
 /* ComboBox & Drop-down*/
