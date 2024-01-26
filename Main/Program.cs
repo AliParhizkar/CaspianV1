@@ -6,6 +6,7 @@ using System.Globalization;
 using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace Main
 {
@@ -37,14 +38,15 @@ namespace Main
                     Menus = context.Menus.ToList()
                 };
             });
-            builder.Services.AddSingleton(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
+            builder.Services.AddSingleton<ProtectedSessionStorage>();
+            builder.Services.AddScoped(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
             builder.Services.AddSingleton<FormAppState>();
             builder.Services.AddScoped<CaspianDataService>();
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ActivityService).Assembly.InjectServices(builder.Services);
-            builder.Services.AddAuthentication("Cookies").AddCookie();
+            builder.Services.AddAuthenticationCore();
             var app = builder.Build();
             CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
             // Configure the HTTP request pipeline.
