@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.Report
+@inject HttpClient Host
 @using Caspian.Common
 @using Caspian.Common.Extension
 @using Caspian.UI
@@ -7,23 +8,16 @@
         <label>Textbox text</label>
     </div>
     <div class="col-md-8">
-        <StringTextBox @bind-Value="@(param.Text)" Disabled="param.TotalFuncType.HasValue || param.Title.HasValue() || param.SystemVariable.HasValue
-            || param.SystemFiledType.HasValue" />
+        <StringTextBox @bind-Value="@(text)" Disabled="fieldData.TotalFuncType.HasValue || fieldData.SystemFiledType.HasValue || fieldData.Path.HasValue() || fieldData.SystemVariable.HasValue" />
     </div>
-    @if (bondType == BondType.DataFooter)
+     @if (bondType == BondType.DataFooter)
     {
         <div class="col-md-4">
             <label>Method name</label>
         </div>
         <div class="col-md-8">
-            <DropdownList TValue="TotalFuncType?" Value="param.TotalFuncType" Disabled="param.Text.HasValue() && param.TotalFuncType == null || param.SystemFiledType.HasValue"
-                          ValueChanged="TotalFuncTypeChanged" />
-        </div>
-        <div class="col-md-4">
-            <label>Alias</label>
-        </div>
-        <div class="col-md-8">
-            <StringTextBox @bind-Value="param.Alias" Disabled="param.TotalFuncType == null" />
+@*             <DropdownList TValue="TotalFuncType?" Value="param.TotalFuncType" Disabled="param.ObjectPath.HasValue() && param.TotalFuncType == null || param.SystemFiledType.HasValue"
+                          ValueChanged="TotalFuncTypeChanged" /> *@
         </div>
         @if (Params != null)
         {
@@ -31,8 +25,8 @@
                 <label>Data field</label>
             </div>
             <div class="col-md-8">
-                <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" @bind-Value="param.Title"
-                          Disabled="param.Text.HasValue() && param.TotalFuncType == null || param.SystemFiledType.HasValue || param.TotalFuncType == null" />
+@*                 <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" @bind-Value="param.Path"
+                          Disabled="param.Path.HasValue() && param.TotalFuncType == null || param.SystemFiledType.HasValue || param.TotalFuncType == null" /> *@
             </div>
         }
     }
@@ -42,8 +36,8 @@
             <label>Data field</label>
         </div>
         <div class="col-md-8">
-            <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" Value="param.Title" ValueChanged="ParamChanged"
-                      Disabled="param.Text.HasValue() && param.Title == null || param.SystemFiledType.HasValue || param.TotalFuncType.HasValue" />
+            <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" Value="fieldData.Path" ValueChanged="ParamChanged"
+                      Disabled="fieldData.Path.HasValue() && fieldData.Path == null || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue" />
         </div>
     }
     @if (bondType == BondType.ReportTitle)
@@ -52,7 +46,7 @@
             <label>System variable</label>
         </div>
         <div class="col-md-8">
-            <DropdownList TValue="SystemVariable?" Value="param.SystemVariable" Disabled="param.Text.HasValue() && param.SystemVariable == null"
+            <DropdownList TValue="SystemVariable?" Value="fieldData.SystemVariable" Disabled="(text.HasValue() && fieldData.SystemVariable == null) || fieldData.Path.HasValue()"
                           ValueChanged="SystemVariableChange" />
         </div>
     }
@@ -62,11 +56,11 @@
             <label>System filed</label>
         </div>
         <div class="col-md-8">
-            <DropdownList TValue="SystemFiledType?" Value="param.SystemFiledType"
-                          Disabled="param.Text.HasValue() && param.SystemFiledType == null || param.TotalFuncType.HasValue"
-                          ValueChanged="SystemFiledTypeChanged" />
+@*             <DropdownList TValue="SystemFiledType?" Value="param.SystemFiledType"
+                          Disabled="param.Path.HasValue() && param.SystemFiledType == null || param.TotalFuncType.HasValue"
+                          ValueChanged="SystemFiledTypeChanged" /> *@
         </div>
-    }
+    } 
     <div class="col-md-4"></div>
     <div class="col-md-8 justify-content-center d-flex pt-3 pb-2">
         <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
@@ -75,24 +69,48 @@
     </div>
 @code 
 {
+    string text;
     IEnumerable<SelectListItem> Params;
-    ParameterData param;
+    TextFieldData fieldData;
     BondType bondType;
     protected override void OnInitialized()
     {
-        var control = Page.SelectedControl;
-        param = new ParameterData();
-        if (control != null)
-        {
-            param.CopySimpleProperty(control.ParameterData);
-            bondType = control.Data.BondType.Value;
-        }    
+        if (Page.SelectedControl != null)
+            text = Page.SelectedControl.Data.Text;
+        else
+            text = Page.SelectedTable.Text;
+        fieldData = new TextFieldData();
+        if (Page.SelectedControl != null)
+            fieldData.CopySimpleProperty(Page.SelectedControl.Data.TextFieldData);
+        // else
+        //     fieldData.CopySimpleProperty(Page.SelectedTable.Text);
+        // if (control != null)
+        // {
+        //     param.CopySimpleProperty(control.Data.ParameterData);
+        //     bondType = control.Data.BondType.Value;
+        // }    
         base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var dataLevel = Page.SelectedTable?.BoundItem.DataLevel ?? Page.SelectedControl?.BoundItem.DataLevel;
+        if (dataLevel.HasValue)
+        {
+            var url = $"/ReportGenerator/GetReportParameters?reportId={Page.ReportId}&dataLevel={dataLevel.Value}";
+            Params = await Host.GetFromJsonAsync<IEnumerable<SelectListItem>>(url);
+            
+            await base.OnInitializedAsync();
+        }
     }
 
     async Task UpdateData()
     {
-        Page.SelectedControl.ParameterData.CopySimpleProperty(param);
+        if (Page.SelectedControl != null)
+            Page.SelectedControl.Data.Text = text;
+        else
+            Page.SelectedTable.Text = text;
+        Page.SelectedControl?.Data.TextFieldData.CopySimpleProperty(fieldData);
         await StatusChanged.InvokeAsync(WindowStatus.Close);
     }
 
@@ -101,29 +119,30 @@
 
     void ParamChanged(string title)
     {
-        param.Title = title;
-        if (param.Title.HasValue())
-            param.Text = '{' + Params.Single(t => t.Value == param.Title).Text + '}';
-        else
-            param.Text = null;
+        // param.Path = title;
+        // if (param.Path.HasValue())
+        //     param.Path = '{' + Params.Single(t => t.Value == param.Path).Text + '}';
+        // else
+        //     param.Path = null;
     }
 
     void TotalFuncTypeChanged(TotalFuncType? funcType)
     {
-        param.TotalFuncType = funcType;
-        param.Text = '{' + param.TotalFuncType.EnumText() + '}';
+        // param.TotalFuncType = funcType;
+        // param.Path = '{' + param.TotalFuncType.EnumText() + '}';
     }
 
     void SystemFiledTypeChanged(SystemFiledType? filedType)
     {
-        param.SystemFiledType = filedType;
-        param.Text = '{' + param.SystemFiledType.EnumText() + '}';
+        // param.SystemFiledType = filedType;
+        // param.Path = '{' + param.SystemFiledType.EnumText() + '}';
     }
 
-    void SystemVariableChange(SystemVariable? variable)
+    async Task SystemVariableChange(SystemVariable? variable)
     {
-        param.SystemVariable = variable;
-        param.Text = param.SystemVariable.HasValue ? ('{' + param.SystemVariable.EnumText() + '}') : null;
+        fieldData.SystemVariable = variable;
+        text = fieldData.SystemVariable.HasValue ? ('{' + fieldData.SystemVariable.EnumText() + '}') : null;
+        await UpdateData();
     }
 
     [Parameter]

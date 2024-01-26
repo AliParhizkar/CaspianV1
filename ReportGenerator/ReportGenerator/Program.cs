@@ -1,4 +1,6 @@
 using Caspian.Common;
+using Caspian.Engine.Model;
+using Caspian.Engine.Service;
 using Caspian.UI;
 using ReportGenerator.Client;
 using ReportGenerator.Components;
@@ -13,9 +15,13 @@ namespace ReportGenerator
             // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
+            CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
             builder.Services.AddScoped<CaspianDataService>();
             builder.Services.AddScoped<BasePageService>();
             builder.Services.AddScoped<FormAppState>();
+            builder.Services.AddScoped<Context>();
+            builder.Services.AddScoped<ReportService>();
+            builder.Services.AddScoped<ReportParamService>();
             builder.Services.AddSingleton(http => new System.Net.Http.HttpClient
             {
                 BaseAddress = new Uri("https://localhost:7284/")

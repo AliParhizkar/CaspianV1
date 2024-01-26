@@ -52,7 +52,7 @@
         if (Page.SelectedControl == null)
             formating = Page.SelectedTable.GetNumberFormating();
         else
-            formating = Page.SelectedControl.NumberFormating;
+            formating = Page.SelectedControl.Data.NumberFormating;
         formating = formating ?? new NumberFormating();
         base.OnInitialized();
     }
@@ -77,7 +77,7 @@
             if (Page.SelectedControl == null)
                 Page.SelectedTable.SetFormating(formating);
             else
-                Page.SelectedControl.NumberFormating = formating;
+                Page.SelectedControl.Data.NumberFormating = formating;
             await StatusChanged.InvokeAsync(WindowStatus.Close);
         }
     }

@@ -3,7 +3,7 @@
 
 @{
     var style = $"left:{Data.Left}px;top:{Data.Top}px;width:{Data.Width}px;height:{Data.Height}px;";
-    var textStyle = $"{Alignment.TextStyle + Font.Style}";
+    var textStyle = $"{Data.Alignment.TextStyle + Data.Font.Style}";
 }
 <div class="r-controls" style="@style" @onmousedown="SelectControl" @ondblclick="OpenWindow">
     @if (Page.SelectedControl == this)
@@ -17,7 +17,7 @@
     <span class="r-angle r-top-right"></span>
     <span class="r-angle r-bottom-left"></span>
     <span class="r-angle r-bottom-right"></span>
-    <div style="@(Alignment.Style + Border.Style)" class="r-controls-flex">
-        <span style="@textStyle">@ParameterData.Text</span>
+    <div style="@(Data.Alignment.Style + Data.Border.Style)" class="r-controls-flex">
+        <span style="@textStyle">@Data.Text</span>
     </div>
 </div>

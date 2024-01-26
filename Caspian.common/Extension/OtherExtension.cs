@@ -46,8 +46,6 @@ namespace Caspian.Common.Extension
 
         public static void CopySimpleProperty<TModel>(this TModel model, TModel newModel)
         {
-            if (model == null)
-                model = Activator.CreateInstance<TModel>();
             foreach (var info in typeof(TModel).GetProperties())
             {
                 var type = info.PropertyType;

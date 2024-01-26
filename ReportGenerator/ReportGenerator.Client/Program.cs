@@ -9,7 +9,7 @@ namespace Caspian.Report
         static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
+            
             builder.Services.AddScoped<CaspianDataService>();
             builder.Services.AddScoped<BasePageService>();
             builder.Services.AddScoped<FormAppState>();

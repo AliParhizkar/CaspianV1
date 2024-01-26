@@ -2,6 +2,20 @@
 {
     overflow:hidden!important;
 }
+.tablecontrol td{
+    height:0
+}
+
+.r-table-content {
+    height: 100%;
+    overflow: auto;
+    display:flex;
+}
+
+.r-table-content::-webkit-scrollbar {
+    display: none;
+}
+
 #page {
     background-color: rgb(204, 207, 212);
 }
@@ -1717,18 +1731,17 @@ td {
 }
 
 .reportcontrol {
-    z-index: 2;
+    z-index: 1;
     position: absolute;
+    box-shadow: #bbbbbb 1px 1px 7px 0px;
 }
 
     .reportcontrol.tablecontrol {
-        border-collapse:separate;
-
+        border-collapse: separate;
     }
 
 .tablecontrol td:not(.rowHeader) {
-    border-right: 1px solid gray;
-    border-bottom: 1px solid gray
+
 }
 
 .reportcontrol legend .show-form {

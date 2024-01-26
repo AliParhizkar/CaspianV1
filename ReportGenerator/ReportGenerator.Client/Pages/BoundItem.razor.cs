@@ -6,7 +6,7 @@ namespace Caspian.Report
 {
     public partial class BoundItem
     {
-        Table table;
+        public Table Table { get; private set; }
 
         public int Top { get { return GetTopBounnd(Data.BondType); } }
 
@@ -27,6 +27,14 @@ namespace Caspian.Report
 
         [Parameter]
         public BoundItemData Data { get; set; }
+
+        public void RemoveSelectedItem()
+        {
+            if (Bound.Page.SelectedControl != null)
+                Data.Controls.Remove(Bound.Page.SelectedControl.Data);
+            else
+                Data.Table = null;
+        }
 
         int ColumnWidth
         {
@@ -53,10 +61,10 @@ namespace Caspian.Report
 
         public void GetRecDatas(IList<RecData> list)
         {
-            if (table != null && table != Bound.Page.SelectedTable)
+            if (Table != null && Table != Bound.Page.SelectedTable)
             {
-                var sumLeft = table.Data.Left + 15;
-                foreach (var cell in table.Data.HeaderCells)
+                var sumLeft = Table.Data.Left + 15;
+                foreach (var cell in Table.Data.HeaderCells)
                 {
                     list.Add(new RecData()
                     {
@@ -74,6 +82,25 @@ namespace Caspian.Report
                 Height = t.Data.Height
             }).ToArray();
             list.AddRange(result);
+        }
+
+        public void SetTopStartForControlsAndTable()
+        {
+            if (Table != null)
+                Table.TopStart = Table.Data.Top;
+            foreach(var control in ReportControls)
+                control.TopStart = control.Data.Top;
+        }
+
+        /// <summary>
+        /// This method update top of controls and table on bound dragging
+        /// </summary>
+        public void UpdateTopOnBoundDrag(int difY)
+        {
+            if (Table != null)
+                Table.Data.Top = Table.TopStart + difY;
+            foreach (var control in ReportControls)
+                control.Data.Top = control.TopStart + difY;
         }
 
         public string Title

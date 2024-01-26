@@ -7,12 +7,29 @@ namespace Caspian.Report
     {
         double xStart, yStart, widthStart, heightStart, leftStart, topStart;
         ChangeType? changeType;
+
+        [Parameter]
+        public ControlData Data { get; set; }
+
+        public double TopStart { get; set; }
+
+        [Parameter]
+        public Page Page { get; set; }
+
+        [Parameter]
+        public BoundItem BoundItem { get; set; }
+
+        [Parameter]
+        public EventCallback OnChange { get; set; }
+
+        void SelectControl()
+        {
+            Page.SelectControl(this);
+            Page.Bound.DisableSelection();
+        }
+
         protected override void OnInitialized()
         {
-            Alignment = new Alignment();
-            Font = new Font();
-            Border = new Border();
-            ParameterData = new ParameterData();
             if (Data.BondType.HasValue)
             {
                 Page.SelectControl(this);
@@ -24,36 +41,6 @@ namespace Caspian.Report
         void OpenWindow()
         {
             Page.OpenTextWindow();
-        }
-
-        [Parameter]
-        public ControlData Data { get; set; }
-
-        public double TopStart { get; set; }
-
-        public ParameterData ParameterData { get; set; }
-
-        public NumberFormating NumberFormating { get; set; }
-
-        public Alignment Alignment { get; private set; }
-
-        public Font Font { get; private set; }
-
-        public Border Border { get; private set; }
-
-        [Parameter]
-        public Page Page { get; set; }
-
-        [Parameter]
-        public BoundItem BoundItem { get; set; }
-
-        [Parameter]
-        public EventCallback OnChange { get; set; }
-
-        public void SelectControl()
-        {
-            Page.SelectControl(this);
-            Page.Bound.DisableSelection();
         }
 
         public string GetCursor(double x, double y)
@@ -154,8 +141,6 @@ namespace Caspian.Report
                     break;
             }
             double width = Data.Width, height = Data.Height;
-
-
             Page.Bound.ShowRuler(Data, ref width, ref height, changeType.Value);
             Data.Width = width;
             Data.Height = height;

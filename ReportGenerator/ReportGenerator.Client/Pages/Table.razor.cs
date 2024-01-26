@@ -1,5 +1,6 @@
 ﻿using Caspian.Report.Data;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Caspian.Report
 {
@@ -16,6 +17,89 @@ namespace Caspian.Report
 
         [Parameter]
         public Bound Bound { get; set; }
+
+        public Alignment Alignment 
+        { 
+            get
+            {
+                var alignment = selectedCells.First().Alignment;
+                return new Alignment()
+                {
+                    HorizontalAlign = selectedCells.All(t => t.Alignment.HorizontalAlign == alignment.HorizontalAlign) ? alignment.HorizontalAlign : 0,
+                    VerticalAlign = selectedCells.All(t => t.Alignment.VerticalAlign == alignment.VerticalAlign) ? alignment.VerticalAlign : 0
+                };
+            }
+            set
+            {
+                foreach(var cell in selectedCells)
+                    Data.Rows[cell.Row.RowIndex - 1].Cells[cell.ColIndex - 1].Alignment = value;
+            }
+        }
+
+        public Font Font
+        {
+            get
+            {
+                var font = selectedCells.First().Font;
+                return new Font()
+                {
+                    Bold = selectedCells.All(t => t.Font.Bold),
+                    Italic = selectedCells.All(t => t.Font.Italic),
+                    UnderLine = selectedCells.All(t => t.Font.UnderLine),
+                    Color = selectedCells.All(t => t.Font.Color.ColorString == font.Color.ColorString) ? font.Color : new Color("#000")
+                };
+            }
+            set
+            {
+                foreach (var cell in selectedCells)
+                    Data.Rows[cell.Row.RowIndex - 1].Cells[cell.ColIndex - 1].Font = value;
+            }
+        }
+
+        public Border Border
+        {
+            get
+            {
+                var border = selectedCells.First().Border;
+                BorderKind kind = 0;
+                if (selectedCells.All(t => (t.Border.BorderKind & BorderKind.Top) == BorderKind.Top))
+                    kind |= BorderKind.Top;
+                if (selectedCells.All(t => (t.Border.BorderKind & BorderKind.Bottom) == BorderKind.Bottom))
+                    kind |= BorderKind.Bottom;
+                if (selectedCells.All(t => (t.Border.BorderKind & BorderKind.Left) == BorderKind.Left))
+                    kind |= BorderKind.Left;
+                if (selectedCells.All(t => (t.Border.BorderKind & BorderKind.Right) == BorderKind.Right))
+                    kind |= BorderKind.Right;
+                return new Border()
+                {
+                    BorderKind = kind,
+                    BorderStyle = selectedCells.All(t => t.Border.BorderStyle == border.BorderStyle) ? border.BorderStyle : 0,
+                    Width = selectedCells.All(t => t.Border.Width == border.Width) ? border.Width : 0,
+                    Color = selectedCells.All(t => t.Border.Color.ColorString == border.Color.ColorString) ? border.Color : new Color("#000"),
+                };
+            }
+            set
+            {
+                foreach (var cell in selectedCells)
+                    Data.Rows[cell.Row.RowIndex - 1].Cells[cell.ColIndex - 1].Border = value;
+            }
+        }
+
+        public string Text
+        {
+            get
+            {
+                if (selectedCells.Count != 1)
+                    return null;
+                return selectedCells.Single().Text;
+            }
+            set
+            {
+                var cell = selectedCells.Single();
+                Data.Rows[cell.Row.RowIndex - 1].Cells[cell.ColIndex - 1].Text = value;
+            }
+        }
+
 
         [Parameter]
         public TableData Data { get; set; }
@@ -345,7 +429,6 @@ namespace Caspian.Report
 
             if (changeKind == ChangeKind.ColumnResize)
             {
-                var actualLeft = GetCellLeftLocation();
                 int left;
                 Bound.ShowRuler(this, (int)x, out left);
                 var dif = xStart.Value - left;
@@ -380,19 +463,6 @@ namespace Caspian.Report
                 Data.Left = Convert.ToInt32(Bound.Left + (Bound.ColumnWidth - TableWidth - 15) / 2);
                 Data.Top = Convert.ToInt32(BoundItem.Top);
             }
-        }
-
-        int GetCellLeftLocation()
-        {
-            var total = Data.Left + 15;
-            var index = 1;
-            foreach (var cel in Data.HeaderCells)
-            {
-                if (index < changeColIndex)
-                    total += cel.Width;
-                index++;
-            }
-            return total;
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -82,7 +82,7 @@
         <ToolsbarIcon XPosition="947" Enabled="SelectedTable?.CanMerge(out _, out _) == true" OnIconClick="() => SelectedTable?.MergeSelectedCells()" />
         <ToolsbarIcon XPosition="922" Enabled="SelectedTable?.CanUnmerge() == true" OnIconClick="() => SelectedTable?.UnmergeSelectedCell()" />
         <span class="toolsbar" style="width:2px;background-position:-895px 0px"></span>
-        <ToolsbarIcon XPosition="897" />
+        <ToolsbarIcon XPosition="897" OnIconClick="async () => await Page.RemoveSelectedItem()" />
         <ToolsbarIcon XPosition="871" />
         <ToolsbarIcon XPosition="846" />
         <span class="toolsbar" style="width:2px;background-position:-844px 0px"></span>
@@ -92,18 +92,8 @@
         </a>
         <span class="toolsbar" style="width:2px;background-position:-792px 0px"></span>
         <ToolsbarIcon XPosition="767" />
-        <ToolsbarIcon XPosition="742" />
-        <ToolsbarIcon XPosition="717" />
+        <ToolsbarIcon XPosition="717" OnIconClick="async () => await Page.Save()" />
         <span class="toolsbar" style="width:13px;background-position:-972px 0px"></span>
-        <div style="position:absolute;right:67px">
-            <input style="display:none" id="fontColorpicker" />
-        </div>
-        <div style="position: absolute; left: 550px;top:30px;">
-            <input style="display:none" id="borderColorpicker" />
-        </div>
-        <div style="position:absolute;left:575px;top:30px">
-            <input style="display:none" id="contentColorpicker" />
-        </div>
     </div>
 </div>
 

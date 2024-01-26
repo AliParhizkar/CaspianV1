@@ -23,10 +23,10 @@
         dotted = Value == 3 ? "r-selected" : "", doublee = Value == 4 ? "r-selected" : "";
         <span class="r-dropdown-icon-container">
             <span style="top:@(top)" @onmousedown:stopPropagation @onmousemove:stopPropagation class="r-border-kind">
-                <span class="r-solid @(solid)" @onmousedown="async () => await SelectItem(1)"></span>
-                <span class="r-dashed @(dashed)" @onmousedown="async () => await SelectItem(2)"></span>
-                <span class="r-dotted @(dotted)" @onmousedown="async () => await SelectItem(3)"></span>
-                <span class="r-double @(doublee)" @onmousedown="async () => await SelectItem(4)"></span>
+                <span class="r-solid @(solid)" @onclick="async () => await SelectItem(1)"></span>
+                <span class="r-dashed @(dashed)" @onclick="async () => await SelectItem(2)"></span>
+                <span class="r-dotted @(dotted)" @onclick="async () => await SelectItem(3)"></span>
+                <span class="r-double @(doublee)" @onclick="async () => await SelectItem(4)"></span>
             </span>
         </span>
     }
@@ -37,11 +37,11 @@
         fifth = Value == 5 ? "r-selected" : "";
         <span  class="r-dropdown-icon-container">
             <span style="top:@(top)" @onmousedown:stopPropagation @onmousemove:stopPropagation class="r-border-width">
-                <span class="r-first @(first)" @onmousedown="async () => await SelectItem(1)"></span>
-                <span class="r-second @(second)" @onmousedown="async () => await SelectItem(2)"></span>
-                <span class="r-third @(third)" @onmousedown="async () => await SelectItem(3)"></span>
-                <span class="r-fourth @(forth)" @onmousedown="async () => await SelectItem(4)"></span>
-                <span class="r-fifth @(fifth)" @onmousedown="async () => await SelectItem(5)"></span>
+                <span class="r-first @(first)" @onclick="async () => await SelectItem(1)"></span>
+                <span class="r-second @(second)" @onclick="async () => await SelectItem(2)"></span>
+                <span class="r-third @(third)" @onclick="async () => await SelectItem(3)"></span>
+                <span class="r-fourth @(forth)" @onclick="async () => await SelectItem(4)"></span>
+                <span class="r-fifth @(fifth)" @onclick="async () => await SelectItem(5)"></span>
             </span>
         </span>
     }
