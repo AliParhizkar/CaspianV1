@@ -38,7 +38,7 @@ namespace Main
                     Menus = context.Menus.ToList()
                 };
             });
-            builder.Services.AddSingleton<ProtectedSessionStorage>();
+            builder.Services.AddScoped<ProtectedSessionStorage>();
             builder.Services.AddScoped(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
             builder.Services.AddSingleton<FormAppState>();
             builder.Services.AddScoped<CaspianDataService>();
