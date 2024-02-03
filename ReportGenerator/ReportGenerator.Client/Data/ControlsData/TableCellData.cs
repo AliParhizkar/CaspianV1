@@ -16,6 +16,7 @@ namespace Caspian.Report.Data
                 BorderKind = BorderKind.Bottom | BorderKind.Right,
                 Color = new Color() { ColorString = "#808080" }
             };
+            FieldData = new TextFieldData();
         }
 
         public int ColIndex { get; set; }
