@@ -1,20 +1,10 @@
-﻿@page "/"
-@namespace Main.Pages
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@{
-    Layout = null;
-        var useId = HttpContext.User.Claims.FirstOrDefault()?.Value;
-    var url = HttpContext.Request.Path;
-}
-
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Demo</title>
-    <base href="~/" />
+    <base href="/" />
     <link href="/_content/Demo.Web/css/site.css" rel="stylesheet" />
     <link href="/_content/UIComponent/Content/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/site.css" rel="stylesheet" />
@@ -34,27 +24,20 @@
     <script src="/_content/UIComponent/Scripts/Main/caspian.TextArea.js"></script>
     <link href="Main.styles.css" rel="stylesheet" />
     <script src="/site.js"></script>
+    <HeadOutlet @rendermode="@RenderModeForPage" />
 </head>
 <body class="t-ltr">
-    <div>
-        <component type="typeof(App)" render-mode="Server" />
-    </div>
-    <div id="blazor-error-ui">
-        <environment include="Staging,Production">
-            An error has occurred. This application may no longer respond until reloaded.
-        </environment>
-        <environment include="Development">
-            بعلت یک خطای دامه عملیات میسر نیست
-        </environment>
-        <a href="" class="reload">بارگداری</a>
-        <a class="dismiss">🗙</a>
-    </div>
-    <script src="_framework/blazor.server.js"></script>
+    <Routes @rendermode="@RenderModeForPage" />
+    <script src="_framework/blazor.web.js"></script>
 </body>
+
 </html>
 
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
 
-
-
-
-
+    private IComponentRenderMode RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account")
+        ? null
+        : InteractiveServer;
+}

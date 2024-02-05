@@ -4,7 +4,7 @@
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject SingletonMenuService MenuService
 @inject NavigationManager navigationManager
-@inject AuthenticationStateProvider stateProvider
+@inject AuthenticationStateProvider authStateProvider 
 @inject ProtectedSessionStorage storage
 @inject CaspianDataService dataService
 @{
@@ -167,7 +167,8 @@
 
     async Task Logout()
     {
-        var result = await ((CustomAuthenticationStateProvider)stateProvider).Logout();
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
         navigationManager.NavigateTo("/Login", true);
     }
 

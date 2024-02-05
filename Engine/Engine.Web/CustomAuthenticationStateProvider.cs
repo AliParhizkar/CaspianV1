@@ -1,6 +1,7 @@
 ﻿using Caspian.Common;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace Caspian.Engine.Web
 {
@@ -8,37 +9,58 @@ namespace Caspian.Engine.Web
     {
         string UserId;
         DateTime? dateTime;
-        public override Task<AuthenticationState> GetAuthenticationStateAsync()
+        private readonly ProtectedSessionStorage _sessionStorage;
+        private ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
+
+        public CustomAuthenticationStateProvider(ProtectedSessionStorage sessionStorage)
         {
-            ClaimsPrincipal user = null;
-            if (UserId.HasValue() && (DateTime.Now - dateTime.Value).TotalMinutes > 20)
-                UserId = null;
-            if (UserId.HasValue())
+            _sessionStorage = sessionStorage;
+        }
+
+        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+        {
+            try
             {
-                var identity = new ClaimsIdentity(new[]
+                var userSessionStorageResult = await _sessionStorage.GetAsync<UserSession>("UserSession");
+                var userSession = userSessionStorageResult.Success ? userSessionStorageResult.Value : null;
+
+                if (userSession == null)
                 {
-                    new Claim("UserId", UserId ?? ""),
-                }, "Authentication type");
-                user = new ClaimsPrincipal(identity);
+                    return await Task.FromResult(new AuthenticationState(_anonymous));
+                }
+
+                var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+                {
+                    new Claim("UserId",userSession.UserId),
+                }, "CustomAuth"));
+                return await Task.FromResult(new AuthenticationState(claimsPrincipal));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new AuthenticationState(_anonymous));
+            }
+        }
+
+        public async Task UpdateAuthenticationState(UserSession userSession)
+        {
+            ClaimsPrincipal claimsPrincipal;
+
+            if (userSession is not null)
+            {
+                await _sessionStorage.SetAsync("UserSession", userSession);
+                claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+                {
+                    new Claim("UserId",userSession.UserId)
+                }));
             }
             else
-                user = new ClaimsPrincipal();
-            var task = Task.FromResult(new AuthenticationState(user));
-            return task;
-        }
+            {
+                await _sessionStorage.DeleteAsync("UserSession");
+                claimsPrincipal = _anonymous;
+            }
 
-        public Task<AuthenticationState> Login(string userId)
-        {
-            UserId = userId;
-            dateTime = DateTime.Now;
-            var task = this.GetAuthenticationStateAsync();
-            this.NotifyAuthenticationStateChanged(task);
-            return task;
-        }
-
-        public Task<AuthenticationState> Logout()
-        {
-            return Login(null);
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
         }
     }
+    public record UserSession(string UserId);
 }
