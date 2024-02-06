@@ -2961,6 +2961,65 @@ html body .t-grid tbody .t-button-icon {
     background-position: 100% 50% !important;
 }
 
+/* Login Form */
+.c-login-container {
+    /*border: 2px solid red;*/
+    display: flex;
+    min-width: 200px;
+    padding: 2% 10%;
+    flex-direction: column-reverse;
+}
+
+.c-login {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex: 1;
+    /*border: 2px solid green;*/
+    margin: 10px;
+}
+
+.c-login-img, .c-login-form {
+    width:80%;
+    min-width:200px;
+}
+.c-login-form {
+    justify-content:flex-start;
+}
+
+/* No less than 768px, no greater than 992px */
+@media (min-width:768px) and (max-width:992px) {
+    .c-login-container {
+        /*border: 2px solid red;*/
+        display: flex;
+        flex-direction: row;
+        min-width: 200px;
+        padding: 10% 0;
+    }
+}
+
+@media (min-width:992px) {
+    .c-login-container {
+        /*border: 2px solid red;*/
+        display: flex;
+        flex-direction: row;
+        min-width: 200px;
+        padding: 10%;
+    }
+
+    .c-login-img, .c-login-form {
+        min-width: 200px;
+    }
+
+    .c-login-form {
+        
+        align-items:flex-start;
+        justify-content:flex-start;
+        min-width: 200px;
+    }
+}
+
+​
 /* ContextMenu*/
 .c-context-menu-container {
     width: fit-content;
