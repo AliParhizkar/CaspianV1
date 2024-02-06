@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Report
 {
@@ -124,14 +123,14 @@ namespace Caspian.Report
         Double
     }
 
-    public enum VerticalAlign
+    public enum VerticalAlign: byte
     {
         Top = 1,
         Middle,
         Bottom,
     }
 
-    public enum HorizontalAlign
+    public enum HorizontalAlign: byte
     {
         Left = 1,
         Center,
@@ -196,5 +195,11 @@ namespace Caspian.Report
 
         [Display(Name = ".")]
         Dot,
+    }
+
+    public enum ControlType
+    {
+        TextBox,
+        PictureBox
     }
 }

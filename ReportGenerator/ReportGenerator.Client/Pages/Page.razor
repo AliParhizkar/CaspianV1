@@ -5,16 +5,14 @@
 @using Caspian.UI
 @inject IJSRuntime JSRuntime
 @{
-    var alignment = SelectedControl?.Data.Alignment ?? SelectedTable?.Alignment;
-    var font = SelectedControl?.Data.Font ?? SelectedTable?.Font;
-    var border = SelectedControl?.Data.Border ?? SelectedTable?.Border;
+    var style = $"width:{windowWidth}px;";
 }
 <MessageBox @ref="messageBox" />
 @if (Data != null)
 {
-    <div tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
+    <div  tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
          @onclick="MouseClick">
-        <ToolsBar @ref="toolsBar" Page="this" Alignment="alignment" Font="font" Border="border" ReportId="1" SelectedTable="SelectedTable" OnChange="() => ChangeAlignment(alignment, font, border)" />
+        <ToolsBar @ref="toolsBar" Page="this" OnChange="() => {}" />
         <div class="report-content">
             <ToolsBox @ref="toolsBox" Page="this" />
             <div class="report-panel">
@@ -37,45 +35,21 @@
     </div>
 }
 
-<Window Title="@windowTitle" Style="width:400px;" Status="status" StatusChanged="CloseWindow">
-    @if (isTextWindow)
+<Window Title="@windowTitle" Style="@style" Status="status" StatusChanged="CloseWindow">
+    @if (SelectedControl?.Data.ControlType == ControlType.PictureBox)
     {
-        <TextboxWindow Status="status" StatusChanged="CloseWindow" Page="this" />
+        <PictureBoxWindow Status="status" StatusChanged="CloseWindow" Page="this" />
     }
     else
     {
-        <ColumnWindow Status="status" StatusChanged="CloseWindow"  />
-    }
-</Window>
-
-@code 
-{
-    void ChangeAlignment(Alignment alignment, Font font, Border border)
-    {
-        if (SelectedTable != null)
+        if (isTextWindow)
         {
-            SelectedTable.Alignment = new Alignment()
-                {
-                    HorizontalAlign = alignment.HorizontalAlign,
-                    VerticalAlign = alignment.VerticalAlign
-                };
-            SelectedTable.Font = new Font()
-                {
-                    Bold = font.Bold,
-                    Color = font.Color,
-                    Family = font.Family,
-                    Italic = font.Italic,
-                    Size = font.Size,
-                    UnderLine = font.UnderLine
-                };
-            SelectedTable.Border = new Border()
-                {
-                    BorderKind = border.BorderKind,
-                    Color = border.Color,
-                    Width = border.Width,
-                    BorderStyle = border.BorderStyle
-                };
+            <TextboxWindow Status="status" StatusChanged="CloseWindow" Page="this" />
+        }
+        else
+        {
+            <ColumnWindow Status="status" StatusChanged="CloseWindow" />
         }
     }
-}
+</Window>
 

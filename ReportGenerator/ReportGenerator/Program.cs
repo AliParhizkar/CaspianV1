@@ -2,8 +2,10 @@ using Caspian.Common;
 using Caspian.Engine.Model;
 using Caspian.Engine.Service;
 using Caspian.UI;
+using Demo.Service;
 using ReportGenerator.Client;
 using ReportGenerator.Components;
+using System.Linq.Dynamic.Core;
 
 namespace ReportGenerator
 {
@@ -20,8 +22,10 @@ namespace ReportGenerator
             builder.Services.AddScoped<BasePageService>();
             builder.Services.AddScoped<FormAppState>();
             builder.Services.AddScoped<Context>();
+            builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<ReportService>();
             builder.Services.AddScoped<ReportParamService>();
+            builder.Services.AddScoped<OrderDeatilService>();
             builder.Services.AddSingleton(http => new System.Net.Http.HttpClient
             {
                 BaseAddress = new Uri("https://localhost:7284/")
@@ -38,7 +42,13 @@ namespace ReportGenerator
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
+            IList<DynamicProperty> dpList = new List<DynamicProperty>()
+            {
+                new DynamicProperty("Id", typeof(int)),
+                new DynamicProperty("Name", typeof(string)),
+            };
+            var newType = DynamicClassFactory.CreateType(dpList, false);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAntiforgery();

@@ -48,5 +48,16 @@
                 return $"text-align:{HorizontalAlign};vertical-align:{VerticalAlign}";
             }
         }
+
+        public string ImageStyle
+        {
+            get
+            {
+                var str = $"background-position:{HorizontalAlign.ToString().ToLower()} ";
+                if (VerticalAlign == VerticalAlign.Middle)
+                    return str + "center";
+                return str + VerticalAlign.ToString().ToLower();
+            }
+        }
     }
 }

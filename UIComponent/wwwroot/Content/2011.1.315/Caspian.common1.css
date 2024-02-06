@@ -2968,6 +2968,7 @@ html body .t-grid tbody .t-button-icon {
     cursor: default;
     user-select: none;
     position: fixed;
+    z-index:50000;
 }
 
 .c-context-menu {
@@ -3002,7 +3003,7 @@ html body .t-grid tbody .t-button-icon {
 
 .c-context-menu-item-title {
     white-space: nowrap;
-    margin-right: 1rem;
+    margin-right: 0.25rem;
 }
 
 .c-context-menu-item:hover, .c-context-menu-parent-item:hover {

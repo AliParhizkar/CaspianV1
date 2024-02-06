@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Caspian.Report.Data;
 using Caspian.Common.Extension;
+using ReportGenerator.Client.Data;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.Report
@@ -10,14 +11,14 @@ namespace Caspian.Report
         public const int Left = 182;
         public const int Top = 53;
         public const int BoundBetweenSpace = 3;
-        IList<BoundItem> bounditems; 
 
-        BoundItem BoundItem { get { return default; } set { bounditems.Add(value); } }
+        BoundItem BoundItem { get { return default; } set { BoundItems.Add(value); } }
         
         double? horizontalRulerTop, horizontalRulerBottom, verticalRulerLeft, verticalRulerRight;
         
         bool canChangeHeight;
         double yStart, heightStart;
+        double minHeightofSelectedBound;
 
         public int Right
         {
@@ -26,6 +27,9 @@ namespace Caspian.Report
                 return Left + Page.Data.Width;
             }
         }
+
+        
+        public IList<BoundItem> BoundItems { get; private set; }
 
         public bool SelectionIsDisabled { get; private set; }
 
@@ -37,7 +41,7 @@ namespace Caspian.Report
 
         protected override void OnInitialized()
         {
-            bounditems = new List<BoundItem>();
+            BoundItems = new List<BoundItem>();
             base.OnInitialized();
         }
 
@@ -48,12 +52,14 @@ namespace Caspian.Report
 
         public void AddControlToBound(ControlData control)
         {
-            foreach (var bond in bounditems)
+            foreach (var bond in BoundItems)
             {
                 if (control.Left > Left && control.Left < Right && control.Top > bond.Top && control.Top < bond.Bottom)
                 {
                     control.BondType = bond.Data.BondType;
                     bond.Data.Controls.Add(control);
+                    control.Id = Page.GetId();
+                    Page.Stack.Push(control.Id);
                     break;
                 }
             }
@@ -62,7 +68,7 @@ namespace Caspian.Report
         public void AddTableToBound(TableData table)
         {
             //Last data boun or data header bound can be table
-            foreach(var bond in bounditems.Where(t => t.DataLevel == Data.DataLevel || t.Data.BondType == BondType.DataHeader) )
+            foreach(var bond in BoundItems.Where(t => t.DataLevel == Data.DataLevel || t.Data.BondType == BondType.DataHeader) )
             {
                 if (table.Left > Left && table.Left < Right && table.Top > bond.Top && table.Top < bond.Bottom)
                 {
@@ -96,7 +102,7 @@ namespace Caspian.Report
             HideRulers();
             left = x;
             var list = new List<RecData>();
-            foreach (var item in bounditems)
+            foreach (var item in BoundItems)
                 item.GetRecDatas(list);
             foreach (var rect in list)
             {
@@ -188,51 +194,60 @@ namespace Caspian.Report
         {
             HideRulers();
             var list = new List<RecData>();
-            foreach (var item in bounditems)
+            foreach (var item in BoundItems)
                 item.GetRecDatas(list);
             ShowRuler(list, controlData, ref width, ref height, change);
-        }
-
-        public void Drag(double x, double y)
-        {
-            if (canChangeHeight && Page.IsMouseDown)
-            {
-                var difHeight = y - yStart;
-                Page.SelectedBound.Data.Height = (int)(heightStart + difHeight);
-                ///Drag controls and tables
-                foreach (var item in bounditems.Where(t => t.Data.BondType > Page.SelectedBound.Data.BondType))
-                    item.UpdateTopOnBoundDrag((int)difHeight);
-                SelectionIsDisabled = true;
-            }
-        }
-
-        public void DragStart(double x, double y)
-        {
-            if (canChangeHeight)
-            {
-                yStart = y;
-                heightStart = Page.SelectedBound.Data.Height;
-                /// Initial For drag
-                foreach (var bound in bounditems)
-                    bound.SetTopStartForControlsAndTable();
-            }
-        }
-
-        public string GetCursor(double x, double y)
-        {
-            if (!Page.IsMouseDown)
-            {
-                if (Page.SelectedBound == null)
-                    canChangeHeight = false;
-                else
-                    canChangeHeight = Math.Abs(y - Page.SelectedBound.Bottom - 2) < 5;
-            }
-            return canChangeHeight ? "row-resize" : "default";
         }
 
         public void Drop(double x, double y)
         {
             HideRulers();
+        }
+
+        public void UpdateControl(StackData stackData)
+        {
+            if (stackData.BoundItem != null)
+            {
+                var bound = BoundItems.SingleOrDefault(t => t.Data.BondType == stackData.BoundItem.BondType);
+                Page.SelectBound(bound);
+                bound.Data.Height = stackData.BoundItem.Height;
+            }
+            else if (stackData.Bound != null) 
+            {
+            
+            }
+            else if (stackData.Control != null)
+            {
+                var control = GetControlById(stackData.Id);
+                if (control == null)
+                {
+                    var bondType = stackData.Control.BondType;
+                    var bound = Data.Items.Single(t => t.BondType == bondType);
+                    bound.Controls.Add(stackData.Control);
+                }
+                else
+                {
+                    control.Data.FullCopy(stackData.Control);
+                    Page.SelectControl(control);
+                }
+            }
+            else
+            {
+                var control = GetControlById(stackData.Id);
+                control.BoundItem.Data.Controls.Remove(control.Data);
+                control.BoundItem.ReportControls.Remove(control);
+            }
+        }
+
+        public ReportControl GetControlById(string Id)
+        {
+            foreach(var item in BoundItems)
+            {
+                var control = item.ReportControls.SingleOrDefault(t => t.Data.Id == Id);
+                if (control != null)
+                    return control;
+            }
+            return null;
         }
 
         public void EnableSelecting()

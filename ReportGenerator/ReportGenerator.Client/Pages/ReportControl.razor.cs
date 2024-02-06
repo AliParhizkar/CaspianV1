@@ -7,6 +7,7 @@ namespace Caspian.Report
     {
         double xStart, yStart, widthStart, heightStart, leftStart, topStart;
         ChangeType? changeType;
+        bool statePushed;
 
         [Parameter]
         public ControlData Data { get; set; }
@@ -34,6 +35,18 @@ namespace Caspian.Report
             {
                 Page.SelectControl(this);
                 changeType = null;
+                /////If Control added on Undo we need get Id from stack
+                //var id = Page.Stack.GetIdByControlData(Data);
+                //if (id != null)
+                //{
+                //    Page.Stack.Pop();
+                //    Id = id;
+                //}
+                //else
+                //{
+                //    Id = Page.GetId();
+                //    Page.Stack.Push(Id);
+                //}
             }
             base.OnInitialized();
         }
@@ -84,6 +97,7 @@ namespace Caspian.Report
                 widthStart = Data.Width;
                 heightStart = Data.Height;
             }
+            statePushed = false;
         }
 
         public void InitializeBeforAddedToPage()
@@ -109,6 +123,11 @@ namespace Caspian.Report
         {
             if (changeType == null)
                 return;
+            if (!statePushed)
+            {
+                statePushed = true;
+                Page.PushControl();
+            }
             double difX = xStart - x, difY = yStart - y;
             switch (changeType)
             {
@@ -144,7 +163,6 @@ namespace Caspian.Report
             Page.Bound.ShowRuler(Data, ref width, ref height, changeType.Value);
             Data.Width = width;
             Data.Height = height;
-
         }
     }
 }

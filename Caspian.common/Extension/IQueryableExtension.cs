@@ -82,7 +82,7 @@ namespace Caspian.Common.Extension
             var list = new List<DynamicProperty>();
             foreach(var info in type.GetProperties().Where(t => t.Name.StartsWith("Info__")))
                 list.Add(new DynamicProperty(info.Name, info.PropertyType));
-            return DynamicClassFactory.CreateType(list);
+            return DynamicClassFactory.CreateType(list, false);
         }
 
         public async static Task<Tuple<IList<TEntity>, IList<object>>> AggregateValuesAsync<TEntity>(this IQueryable<TEntity> query, 
@@ -164,7 +164,7 @@ namespace Caspian.Common.Extension
             /// Select Expresion
             var memberExprList = new List<MemberAssignment>();
             param = Expression.Parameter(groupByQuery.ElementType, "t");
-            var selectType = DynamicClassFactory.CreateType(properties);
+            var selectType = DynamicClassFactory.CreateType(properties, false);
             foreach (var expr in exprList)
             {
                 var path = expr.ToString();

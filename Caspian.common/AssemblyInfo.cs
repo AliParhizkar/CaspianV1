@@ -49,7 +49,8 @@ namespace Caspian.Common
 
         public Type[] GetServiseTypes(SubSystemKind subSystemKind)
         {
-            return Assembly.LoadFile(RelatedPath + "\\" + subSystemKind.ToString() + ".Service.dll" ).GetTypes();
+            var path = $"{RelatedPath}\\{subSystemKind}.Service.dll";
+            return Assembly.LoadFile(path).GetTypes();
         }
 
         public Type[] GetModelTypes(SubSystemKind subSystemKind)

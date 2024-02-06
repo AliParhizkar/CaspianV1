@@ -1,11 +1,8 @@
-﻿using System;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using Caspian.Common.Extension;
-using System.Collections.Generic;
 
 namespace ReportUiModels
 {
-    
     public class Dictionary: ReportObject
     {
         public Dictionary(Type type)
@@ -33,9 +30,8 @@ namespace ReportUiModels
             throw new Exception("خطا:Level is invalid");
         }
 
-        private void InitBusinessObject(Type type, BusinessObject businessObject, string name)
+        void InitBusinessObject(Type type, BusinessObject businessObject, string name)
         {
-            var obj = Activator.CreateInstance(type);
             foreach (var info in type.GetProperties())
             {
                 if (info.PropertyType.IsGenericType && !info.PropertyType.IsValueType)
@@ -77,8 +73,7 @@ namespace ReportUiModels
             var value = "," + name + "," + name + ",";
             if (type == typeof(string) || type == null)
                 value += "System.String";
-            else
-                if (type == typeof(Int32))
+            else if (type == typeof(Int32))
                 value += "System.Int32";
             else
                 throw new Exception("خطای عدم پیش بینی");

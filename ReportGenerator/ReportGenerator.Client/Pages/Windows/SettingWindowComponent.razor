@@ -73,15 +73,7 @@
     ReportSetting Setting;
     protected override void OnInitialized()
     {
-        Setting = new ReportSetting()
-            {
-                ReportTitle = AddedToPage(BondType.ReportTitle),
-                PageHeader = AddedToPage(BondType.PageHeader),
-                DataHeader = AddedToPage(BondType.DataHeader),
-                DataFooter = AddedToPage(BondType.DataFooter),
-                PageFooter = AddedToPage(BondType.PageFooter),
-                PageType = ReportPageType.B4
-            };
+        Setting = Page.Data.Setting;
         base.OnInitialized();
     }
 
@@ -102,6 +94,7 @@
             message = "لطفا اندازه صفحه را مشخص نمایید";
         else
         {
+
             /// Bounds need to added to page
             var list = new List<BoundItemData>();
             AddBoundToList(Setting.ReportTitle, BondType.ReportTitle, 60, list);
@@ -116,11 +109,18 @@
             await AddBoundToList(Setting.DataHeader, BondType.DataHeader, deletedBounds);
             await AddBoundToList(Setting.DataFooter, BondType.DataFooter, deletedBounds);
             await AddBoundToList(Setting.PageFooter, BondType.PageFooter, deletedBounds);
+            /// Befor bound changing we need to set Top start for Controls and Table
+            foreach (var bound in Page.Bound.BoundItems)
+                bound.SetTopStart();
             ///Adding to 
-            Page.Bound.Data.Items.AddRange(list.ToArray());
+            Page.Data.Bound.Items.AddRange(list.ToArray());
             ///Removing from;
             Page.Bound.Data.Items = Page.Bound.Data.Items.Where(t => !deletedBounds.Any(u => u == t.BondType))
                 .OrderBy(t => t.BondType).ToList();
+            Page.Data.Width = Convert.ToInt32(Page.Data.PixelsPerCentimetre * Setting.PageWidth);
+            /// After bound chaiging we need to update Top of Controls and Table
+            foreach (var bound in Page.Bound.BoundItems)
+                bound.UpdateControlsTop();
             Page.StateChanged();
             await StatusChanged.InvokeAsync(WindowStatus.Close);
         }

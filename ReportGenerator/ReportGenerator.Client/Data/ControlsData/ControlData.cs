@@ -2,16 +2,26 @@
 {
     public class ControlData
     {
-        public ControlData(double left, double top) 
+        public ControlData(double left, double top, ControlType controlType) 
         {
             Left = left;
             Top = top;
+            this.ControlType = controlType;
             Alignment = new Alignment();
-            Font = new Font();
+            if (controlType == ControlType.TextBox)
+                Font = new Font();
             Border = new Border();
-            TextFieldData = new TextFieldData();
+            FieldData = new TextFieldData();
             NumberFormating = new NumberFormating();
+            BackgroundColor = new Color()
+            {
+                ColorString = "transparent"
+            };
         }
+
+        public string Id { get; set; }
+
+        public ControlType ControlType { get; private set; }
 
         public double Left { get; set; }
 
@@ -23,13 +33,19 @@
 
         public string Text { get; set; }
 
+        public byte[] ImageContent { get; set; }
+
+        public bool Stretch { get; set; }
+
         public BondType? BondType { get; set; }
+
+        public Color BackgroundColor { get; set; }
 
         public Alignment Alignment { get; set; }
 
         public Font Font { get; set; }
 
-        public TextFieldData TextFieldData { get; set; }
+        public TextFieldData FieldData { get; set; }
 
         public NumberFormating NumberFormating { get; set; }
 

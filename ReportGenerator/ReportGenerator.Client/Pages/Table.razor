@@ -1,5 +1,7 @@
 ﻿@namespace Caspian.Report
 @using Caspian.Common
+@inject IJSRuntime JSRuntime
+@using Caspian.UI
 @{
     var style = $"left:{Data.Left}px;top:{Data.Top}px";
 }
@@ -29,7 +31,7 @@
                 @{
                     var colIndex = 1;
                 }
-                <td class="rowHeader">
+                <td class="rowHeader" >
                     <div style="height:@(row.Height)px">
 
                     </div>
@@ -44,7 +46,7 @@
                             className = "cellselected";
                     if (cell.Hidden)
                         className += " hidden-cell";
-                    <td style="@cell.Border.Style" colspan="@(cell.ColSpan)" rowspan="@(cell.RowSpan)" class="@(className)" @ondblclick="() => Bound.Page.OpenTextWindow()" @onmousedown="e => SelectTableCell(e.CtrlKey, cell)">
+                    <td style="@cell.Border.Style" @oncontextmenu="ShowContextMenu" @oncontextmenu:preventDefault colspan="@(cell.ColSpan)" rowspan="@(cell.RowSpan)" class="@(className)" @ondblclick="() => Bound.Page.OpenTextWindow()" @onmousedown="e => SelectTableCell(e.CtrlKey, cell)">
                         <div style="@style" class="r-table-content">
                             @(cell.Text)
                         </div>
@@ -58,4 +60,12 @@
     </tbody>
 </table>
 
-
+<ContextMenu @bind-Status="contextMenuStatus" Left="left" Top="top">
+    <ContextMenuItem Title="Add Row on Above" OnClick="() => InsertRow(true)" />
+    <ContextMenuItem Title="Add Row on Below" OnClick="() => InsertRow(false)" />
+    <ContextMenuItem Title="Remove Row" OnClick="RemoveRow" />
+    <ContextMenuItem Separator />
+    <ContextMenuItem Title="Add Column on Left" OnClick="() => InsertColumn(true)" />
+     <ContextMenuItem Title="Add Column on Right" OnClick="() => InsertColumn(false)" />
+     <ContextMenuItem Title="Remove Column" OnClick="RemoveColumn" />
+</ContextMenu>

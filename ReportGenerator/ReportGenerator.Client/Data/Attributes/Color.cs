@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace Caspian.Report.Data
 {
@@ -22,7 +23,8 @@ namespace Caspian.Report.Data
             ColorString = "#000000";
         }
 
-        private int Red
+        [JsonIgnore]
+        public int Red
         {
             get
             {
@@ -34,7 +36,8 @@ namespace Caspian.Report.Data
             }
         }
 
-        private int Green
+        [JsonIgnore]
+        public int Green
         {
             get
             {
@@ -46,7 +49,8 @@ namespace Caspian.Report.Data
             }
         }
 
-        private int Blue
+        [JsonIgnore]
+        public int Blue
         {
             get
             {

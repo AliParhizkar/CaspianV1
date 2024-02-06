@@ -5,7 +5,6 @@ using Caspian.Engine;
 using Caspian.Common;
 using System.Xml.Linq;
 using Caspian.Common.Extension;
-using System.Collections.Generic;
 
 namespace ReportUiModels
 {
@@ -33,7 +32,7 @@ namespace ReportUiModels
 
         public IList<ReportPrintPage> Pages { get; set; }
 
-        private string GetParameterName(string parameter, int level, int maxLevel, Type type)
+        string GetParameterName(string parameter, int level, int maxLevel, Type type)
         {
             if (level > 1)
             {

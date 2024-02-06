@@ -1,16 +1,16 @@
 ﻿@namespace Caspian.Report
 @using Caspian.Common
 @{
-    bool alignmentEnabled = Alignment != null;
-    var verticalAlign = Alignment?.VerticalAlign;
-    var horizontalAlign = Alignment?.HorizontalAlign;
-    var fontEnabled = Font != null;
-    var borderEnabled = Border != null;
-    var leftBorder = Border != null && (Border.BorderKind & BorderKind.Left) == BorderKind.Left;
-    var rightBorder = Border != null && (Border.BorderKind & BorderKind.Right) == BorderKind.Right;
-    var topBorder = Border != null && (Border.BorderKind & BorderKind.Top) == BorderKind.Top;
-    var bottomBorder = Border != null && (Border.BorderKind & BorderKind.Bottom) == BorderKind.Bottom;
-    var foramtingEnabled = Page.SelectedControl != null || Page.SelectedTable != null;
+    bool alignmentEnabled = alignment != null;
+    var verticalAlign = alignment?.VerticalAlign;
+    var horizontalAlign = alignment?.HorizontalAlign;
+    var fontEnabled = font != null;
+    var borderEnabled = border != null;
+    var leftBorder = border != null && (border.BorderKind & BorderKind.Left) == BorderKind.Left;
+    var rightBorder = border != null && (border.BorderKind & BorderKind.Right) == BorderKind.Right;
+    var topBorder = border != null && (border.BorderKind & BorderKind.Top) == BorderKind.Top;
+    var bottomBorder = border != null && (border.BorderKind & BorderKind.Bottom) == BorderKind.Bottom;
+    var controlSelected = Page.SelectedControl != null || Page.SelectedTable != null;
 }
 <div class="tools-bar">
     <div id="toolsBar1">
@@ -24,7 +24,7 @@
         <SelectableIcon Enabled="alignmentEnabled" Selected="verticalAlign == VerticalAlign.Top" XPosition="204"
             OnMouseDown="async () => await ChangeVerticalAlignment(VerticalAlign.Top)"/>
         <span class="toolsbar toolsbar" style="width:2px;background-position:-202px 0px"></span>
-        <SelectableIcon Enabled="alignmentEnabled" Selected="horizontalAlign == HorizontalAlign.Justify"  XPosition="177" 
+        <SelectableIcon Enabled="alignmentEnabled && Page.SelectedControl?.Data.ControlType != ControlType.PictureBox" Selected="horizontalAlign == HorizontalAlign.Justify"  XPosition="177" 
             OnMouseDown="async () => await ChangeHorizontalAlignment(HorizontalAlign.Justify)"/>
         <SelectableIcon Enabled="alignmentEnabled" Selected="horizontalAlign == HorizontalAlign.Left" XPosition="102"
             OnMouseDown="async () => await ChangeHorizontalAlignment(HorizontalAlign.Left)"/>
@@ -33,14 +33,14 @@
         <SelectableIcon Enabled="alignmentEnabled" Selected="horizontalAlign == HorizontalAlign.Right" XPosition="152"
             OnMouseDown="async () => await ChangeHorizontalAlignment(HorizontalAlign.Right)"/>
         <span class="toolsbar toolsbar" style="width:2px;background-position:-100px 0px"></span>
-        <SelectableIcon Enabled="fontEnabled" Selected="Font?.UnderLine == true" XPosition="75" 
-            OnMouseDown="async () => await ChangeFont(!Font.UnderLine, null, null)" />
-        <SelectableIcon Enabled="fontEnabled" Selected="Font?.Italic == true" XPosition="50" 
-            OnMouseDown="async () => await ChangeFont(null, null, !Font.Italic)"/>
-        <SelectableIcon Enabled="fontEnabled" Selected="Font?.Bold == true" XPosition="25" 
-            OnMouseDown="async () => await ChangeFont(null, !Font.Bold, null)"/>
-        <CollorPicker Enabled="fontEnabled" Color="@Font?.Color?.ColorString" XPosition="281" 
-            ColorChanged="async color => await ChangeFont(null, null, color)"/>
+        <SelectableIcon Enabled="fontEnabled" Selected="font?.UnderLine == true" XPosition="75"
+                        OnMouseDown="async () => await ChangeFont(!font.UnderLine, null, null)" />
+        <SelectableIcon Enabled="fontEnabled" Selected="font?.Italic == true" XPosition="50"
+                        OnMouseDown="async () => await ChangeFont(null, null, !font.Italic)" />
+        <SelectableIcon Enabled="fontEnabled" Selected="font?.Bold == true" XPosition="25"
+                        OnMouseDown="async () => await ChangeFont(null, !font.Bold, null)" />
+        <CollorPicker Enabled="fontEnabled" Color="@font?.Color?.ColorString" XPosition="281"
+                      ColorChanged="async color => await ChangeFont(null, null, color)"/>
         <span class="toolsbar-list" style="width:62px;">
             <input disabled="disabled" class="toolsbar-list-input" value="12" style="width:40px" />
             <span id="_14" class="toolsbar" style="width:17px;background-position:-8px 0px;"></span>
@@ -53,18 +53,17 @@
     </div>
     <div id="toolsBar2">
         <span class="toolsbar" style="width:7px;background-position:-358px 0px"></span>
-        <DropdownIcon @ref="borderStyle" BorderStyle Enabled="borderEnabled" Value="(int?)Border?.BorderStyle"
+        <DropdownIcon @ref="borderStyle" BorderStyle Enabled="borderEnabled" Value="(int?)border?.BorderStyle"
             OnChange="async style => await ChangeBorder((BorderStyle)style)" />
-        <DropdownIcon @ref="borderWidth" Enabled="borderEnabled" Value="Border?.Width"
+         <DropdownIcon @ref="borderWidth" Enabled="borderEnabled" Value="border?.Width"
             OnChange="async width => await ChangeBorder(width)"/>
-        <CollorPicker XPosition="582" Enabled="borderEnabled" 
-            ColorChanged="async color => await ChangeBorder(color)"/>
-        <CollorPicker XPosition="544" Enabled />
+        <CollorPicker XPosition="582" Enabled="borderEnabled" ColorChanged="async color => await ChangeBorder(color)"/>
+         <CollorPicker XPosition="544" Enabled="controlSelected" ColorChanged="async color => await ChangeBackgroundColor(color)" />
         <span class="toolsbar" style="width:2px;background-position:-542px 0px"></span>
-         <ToolsbarIcon XPosition="517" Enabled="foramtingEnabled" OnIconClick="OpenFormatingWindow" />
-        <SelectableIcon XPosition="492" Enabled="borderEnabled" Selected="Border?.BorderKind == 0"
+         <ToolsbarIcon XPosition="517" Enabled="controlSelected" OnIconClick="OpenFormatingWindow" />
+         <SelectableIcon XPosition="492" Enabled="borderEnabled" Selected="border?.BorderKind == 0"
             OnMouseDown="async () => await ChangeBorder((BorderKind)0)"/>
-        <SelectableIcon XPosition="467" Enabled="borderEnabled" Selected="Border?.BorderKind == (BorderKind)15"
+         <SelectableIcon XPosition="467" Enabled="borderEnabled" Selected="border?.BorderKind == (BorderKind)15"
             OnMouseDown="async () => await ChangeBorder((BorderKind)15)"/>
         <span class="toolsbar" style="width:2px;background-position:-465px 0px"></span>
         <SelectableIcon XPosition="440" Enabled="borderEnabled" Selected="rightBorder" 
@@ -79,15 +78,15 @@
     </div>
     <div id="toolsBar3">
         <span class="toolsbar" style="width:7px;background-position:-710px 0px"></span>
-        <ToolsbarIcon XPosition="947" Enabled="SelectedTable?.CanMerge(out _, out _) == true" OnIconClick="() => SelectedTable?.MergeSelectedCells()" />
-        <ToolsbarIcon XPosition="922" Enabled="SelectedTable?.CanUnmerge() == true" OnIconClick="() => SelectedTable?.UnmergeSelectedCell()" />
+         <ToolsbarIcon XPosition="947" Enabled="Page.SelectedTable?.CanMerge(out _, out _) == true" OnIconClick="() => Page.SelectedTable?.MergeSelectedCells()" />
+         <ToolsbarIcon XPosition="922" Enabled="Page.SelectedTable?.CanUnmerge() == true" OnIconClick="() => Page.SelectedTable?.UnmergeSelectedCell()" />
         <span class="toolsbar" style="width:2px;background-position:-895px 0px"></span>
-        <ToolsbarIcon XPosition="897" OnIconClick="async () => await Page.RemoveSelectedItem()" />
-        <ToolsbarIcon XPosition="871" />
-        <ToolsbarIcon XPosition="846" />
+        <ToolsbarIcon XPosition="897" OnIconClick="() => Page.RemoveSelectedItem()" />
+         <ToolsbarIcon XPosition="846" Enabled="Page.Stack.CanUndo" OnIconClick="() => Page.Undo()" />
+         <ToolsbarIcon XPosition="871" Enabled="Page.Stack.CanRedo" />
         <span class="toolsbar" style="width:2px;background-position:-844px 0px"></span>
         <ToolsbarIcon XPosition="819" OnIconClick="OpenSettingWindow" />
-        <a target="_blank" href="/report/GetReport?reportid=@(ReportId)">
+         <a target="_blank" href="/ReportGenerator/GetReport?reportid=@(Page.ReportId)">
             <span class="toolsbar" style="width:25px;background-position:-794px 0px"></span>
         </a>
         <span class="toolsbar" style="width:2px;background-position:-792px 0px"></span>

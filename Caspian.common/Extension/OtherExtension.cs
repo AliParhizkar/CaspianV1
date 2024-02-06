@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 [assembly: InternalsVisibleTo("UIComponent")]
 namespace Caspian.Common.Extension
@@ -44,6 +46,21 @@ namespace Caspian.Common.Extension
             return newEntity;
         }
 
+        public static void FullCopy<TModel>(this TModel model, TModel newModel)
+        {
+            foreach (var info in model.GetType().GetProperties())
+            {
+                var type = info.PropertyType;
+                if (info.SetMethod != null)
+                {
+                    if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
+                        info.SetValue(model, info.GetValue(newModel));
+                    else if (type.GetCustomAttribute<JsonIgnoreAttribute>() == null)
+                        FullCopy(info.GetValue(model), info.GetValue(newModel));
+                }
+            }
+        }
+
         public static void CopySimpleProperty<TModel>(this TModel model, TModel newModel)
         {
             foreach (var info in typeof(TModel).GetProperties())
@@ -53,6 +70,16 @@ namespace Caspian.Common.Extension
                     info.SetValue(model, info.GetValue(newModel));
             }
         }
+
+        //public static void FullCop<TModel>(this TModel model, TModel newModel)
+        //{
+        //    foreach (var info in typeof(TModel).GetProperties())
+        //    {
+        //        var type = info.PropertyType;
+        //        if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
+        //            info.SetValue(model, info.GetValue(newModel));
+        //    }
+        //}
 
 
         public static void CopyEntity<TEntity>(this TEntity entity, TEntity newObject)

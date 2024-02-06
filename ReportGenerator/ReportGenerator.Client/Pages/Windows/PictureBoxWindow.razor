@@ -1,0 +1,75 @@
+﻿@namespace Caspian.Report
+@using Caspian.Common
+@using Caspian.UI
+@{
+    var style = "width: 300px; height: 360px;background-size:";
+    if (stretch)
+        style += "100% 100%";
+    else
+        style += "auto";
+}
+    <div class="row p-2 c-controls">
+        @if (Params == null)
+        {
+        <div class="ustify-content-center d-flex pt-2 pb-2">
+            <Fileupload Style="width:250px;height:275px;" OnChange="SetContent">
+                <PictureBox style="@style" class="c-image-frame" NoContentTitle="Click to upload" Data="imageContent" />
+            </Fileupload>
+        </div>
+        }
+        else
+        {
+            <div class="col-md-5">
+                <label>Data field</label>
+            </div>
+            <div class="col-md-7">
+            <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="objectPath" Source="Params" />
+            </div>
+        }
+        <div class="col-md-5">
+            <label>Stretch</label>
+        </div>
+        <div class="col-md-7">
+            <CheckBox @bind-Value="stretch" />
+        </div>
+        <div class="col-md-5"></div>
+        <div class="justify-content-center col-md-7 d-flex pt-3 pb-2">
+            <button @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
+            <button @onclick="SaveFile" class="c-btn c-primary">Save</button>
+        </div>
+    </div>
+@code 
+{
+    bool stretch;
+    string objectPath;
+    byte[] imageContent;
+    IEnumerable<SelectListItem> Params;
+
+    protected override void OnInitialized()
+    {
+        imageContent = Page.SelectedControl.Data.ImageContent;
+        stretch = Page.SelectedControl.Data.Stretch;
+        base.OnInitialized();
+    }
+
+    async Task SetContent(InputFileChangeEventArgs e)
+    {
+        imageContent = await e.File.GetByteArrayAsync();
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public Page Page { get; set; }
+
+    async Task SaveFile()
+    {
+        Page.SelectedControl.Data.ImageContent = imageContent;
+        Page.SelectedControl.Data.Stretch = stretch;
+        await StatusChanged.InvokeAsync();
+    }
+}

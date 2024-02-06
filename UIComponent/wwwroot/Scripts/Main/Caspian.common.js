@@ -1014,12 +1014,16 @@
                 childList: true,
                 subtree: true,
             });
-            $(window).bind('mousedown', async e => {
-                const eventAncestors = event.composedPath(e);
-                if (eventAncestors.some(t => t.className === "c-context-menu-item") ||
-                    !eventAncestors.some(t => t.className === "c-context-menu-parent-item")) {
+            $(window).unbind("mousedown.ContextMenu");
+            $(window).bind('mousedown.ContextMenu', async e => {
+                if (!$(e.target).closest('.c-context-menu').hasClass('c-context-menu')) {
                     await dotnet.invokeMethodAsync("Close");
                 }
+                //const eventAncestors = event.composedPath(e);
+                //if (eventAncestors.some(t => t.className === "c-context-menu-item") ||
+                //    !eventAncestors.some(t => t.className === "c-context-menu-parent-item")) {
+                //    await dotnet.invokeMethodAsync("Close");
+                //}
             });
         },
         bindComboBox(dotnetHelper, input, pageable) {

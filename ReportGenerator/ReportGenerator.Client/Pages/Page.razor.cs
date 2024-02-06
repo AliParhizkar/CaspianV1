@@ -1,6 +1,7 @@
 ﻿using Caspian.UI;
 using Caspian.Report.Data;
 using System.Net.Http.Json;
+using ReportGenerator.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -20,10 +21,16 @@ namespace Caspian.Report
         string windowTitle;
         ControlData controlData;
         MessageBox messageBox;
+        int windowWidth;
+        double pixelsPerCentimetre;
+        int controlId;
+        
 
         string cursor = "default";
 
         public PageData Data { get; private set; }
+
+        public readonly ReportStack Stack = new ReportStack();
 
         public Bound Bound { get; private set; }
 
@@ -40,23 +47,26 @@ namespace Caspian.Report
 
         public bool IsMouseDown { get; private set; }
 
+        async Task FetchData()
+        {
+            Data = await Host.GetFromJsonAsync<PageData>($"/ReportGenerator/GetReportData?reportId={ReportId}");
+            /// Set table row for each table cells
+            var tables = Data.Bound.Items.Where(t => t.Table != null).Select(t => t.Table).ToList();
+            foreach (var table in tables)
+                foreach (var row in table.Rows)
+                    foreach (var cell in row.Cells)
+                        cell.Row = row;
+            var maxId = Data.Bound.Items.Max(t => t.Controls.Max(t => t.Id));
+            if (maxId != null)
+            {
+                controlId = Convert.ToInt32(maxId.Replace("ctr", ""));
+            }
+            Data.Width = Convert.ToInt32(Data.Setting.PageWidth * pixelsPerCentimetre);
+        }
+
         protected override async Task OnInitializedAsync()
         {
-            try
-            {
-                Data = await Host.GetFromJsonAsync<PageData>($"/ReportGenerator/GetReportData?reportId={ReportId}");
-                /// Set table row for each table cells
-                var tables = Data.Bound.Items.Where(t => t.Table != null).Select(t => t.Table).ToList();
-                foreach (var table in tables)
-                    foreach (var row in table.Rows)
-                        foreach (var cell in row.Cells)
-                            cell.Row = row;
-            }
-            catch(Exception ex)
-            {
-
-            }
-
+            await FetchData();
             await base.OnInitializedAsync();
         }
 
@@ -104,7 +114,17 @@ namespace Caspian.Report
         {
             status = WindowStatus.Open;
             isTextWindow = true;
-            windowTitle = "Textbox Window";
+            if (SelectedControl?.Data.ControlType == ControlType.PictureBox)
+            {
+                windowTitle = "Picturebox Window";
+                windowWidth = 335;
+            }
+            else
+            {
+                windowTitle = "Textbox Window";
+                windowWidth = 400;
+            }
+
             StateHasChanged();
         }
 
@@ -116,8 +136,24 @@ namespace Caspian.Report
                 isTextWindow = false;
                 windowTitle = "Column Window";
                 StateHasChanged();
+                windowWidth = 400;
             }
+        }
 
+        public void PushControl()
+        {
+            Stack.Push(SelectedControl);
+        }
+
+        public void PushBound()
+        {
+            Stack.Push(SelectedBound);
+        }
+
+        public void Undo()
+        {
+            var result = Stack.Undo();
+            Bound.UpdateControl(result);
         }
 
         void CloseWindow(WindowStatus status)
@@ -125,12 +161,13 @@ namespace Caspian.Report
             this.status = status;
         }
 
-        public async Task RemoveSelectedItem()
+        public void RemoveSelectedItem()
         {
             if (SelectedControl != null || SelectedTable != null)
             {
-                if (await messageBox.Confirm("Do you want selected item removed"))
-                    (SelectedControl?.BoundItem ?? SelectedTable?.BoundItem).RemoveSelectedItem();
+                if (SelectedControl != null)
+                    PushControl();
+                (SelectedControl?.BoundItem ?? SelectedTable?.BoundItem).RemoveSelectedItem();
                 StateChanged();
             }
         }
@@ -156,7 +193,8 @@ namespace Caspian.Report
         {
             if (await messageBox.Confirm("Do you want save the report?"))
             {
-                await Host.PostAsJsonAsync($"/ReportGenerator/SaveReport?", Data);
+                Data.PixelsPerCentimetre = pixelsPerCentimetre;
+                await Host.PostAsJsonAsync($"/ReportGenerator/SaveReport", Data);
             }
         }
 
@@ -181,6 +219,7 @@ namespace Caspian.Report
             {
                 Bound.Drop(e.ClientX, e.ClientY);
                 IsMouseDown = false;
+                (SelectedControl?.BoundItem ?? SelectedTable?.BoundItem)?.UpdateHeight();
             }
         }
 
@@ -188,7 +227,7 @@ namespace Caspian.Report
         {
             await toolsBar.CloseDropdown();
             IsMouseDown = true;
-            Bound.DragStart(e.ClientX, e.ClientY);
+            SelectedBound?.DragStart(e.ClientX, e.ClientY);
             SelectedControl?.DragStart(e.ClientX, e.ClientY);
             SelectedTable?.DragStart(e.ClientX, e.ClientY);
         }
@@ -207,11 +246,13 @@ namespace Caspian.Report
             {
                 tableData.Left = (int)e.ClientX;
                 tableData.Top = (int)e.ClientY;
-
             }
-            cursor = Bound.GetCursor(e.ClientX, e.ClientY);
-            if (IsMouseDown)
-                Bound.Drag(e.ClientX, e.ClientY);
+            if (SelectedBound != null)
+            {
+                cursor = SelectedBound.GetCursor(e.ClientX, e.ClientY);
+                if (IsMouseDown)
+                    SelectedBound.Drag(e.ClientX, e.ClientY);
+            }
             if (SelectedControl != null)
             {
                 cursor = SelectedControl.GetCursor(e.ClientX, e.ClientY);
@@ -231,6 +272,12 @@ namespace Caspian.Report
             ResetAll();
             SelectedControl = control;
             StateHasChanged();
+        }
+
+        public string GetId()
+        {
+            controlId++;
+            return $"ctr{controlId}";
         }
 
         public void SelectTable(Table table)
@@ -257,5 +304,13 @@ namespace Caspian.Report
             StateHasChanged();
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+                pixelsPerCentimetre = await JSRuntime.InvokeAsync<double>("getPixelsPerCentimetre", null);
+            if (Data != null)
+                Data.Width = Convert.ToInt32(Data.Setting.PageWidth * pixelsPerCentimetre);
+            await base.OnAfterRenderAsync(firstRender);
+        }
     }
 }

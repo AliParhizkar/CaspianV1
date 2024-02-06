@@ -7,10 +7,9 @@
 
 @if (Status)
 {
-    firstRender = true;
     <div @ref="igniterContextMenuElement" style="@contextMenuLocation" class="c-context-menu-container">
         <ul class="c-context-menu">
-            <CascadingValue Value="Left" Name="Left">
+            <CascadingValue Value="this">
                 @ChildContent
             </CascadingValue>
         </ul>
@@ -20,8 +19,16 @@
 @code
 {
     ElementReference igniterContextMenuElement;
-    bool firstRender;
-    bool showMenuItemContainer = false;
+    bool firstRender, oldStatus;
+
+    protected override void OnParametersSet()
+    {
+        if (Status && !oldStatus)
+            firstRender = true;
+        oldStatus = Status;
+        base.OnParametersSet();
+    }
+
 
     [Parameter]
     public bool Status { get; set; }

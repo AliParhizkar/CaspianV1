@@ -49,8 +49,8 @@ namespace ReportUiModels
                 Include(t => t.Rule).Where(t => t.ReportId == reportId && !t.IsKey).ToListAsync();
             var tempParams = reportParams.ToList();
             var selectReport = new SelectReport(mainType);
-            var type = selectReport.SimpleSelect(tempParams).Body.Type;
-            type = selectReport.GetEqualType(tempParams, type);
+            //var type = selectReport.SimpleSelect(tempParams).Body.Type;
+            var type = selectReport.GetEqualType(tempParams);
             type = new ReportPrintEngine(Scope.ServiceProvider).GetTypeOf(tempParams, type, mainType.Name);
             var maxDataLevel = tempParams.Max(t => t.DataLevel).GetValueOrDefault(1);
             var dic = new Dictionary<string, string>();

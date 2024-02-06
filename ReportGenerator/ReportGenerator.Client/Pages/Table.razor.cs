@@ -1,6 +1,7 @@
-﻿using Caspian.Report.Data;
+﻿using Microsoft.JSInterop;
+using Caspian.Report.Data;
 using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Caspian.Report
 {
@@ -9,6 +10,9 @@ namespace Caspian.Report
         IList<TableCellData> selectedCells;
         ChangeKind? changeKind;
         int? changeColIndex, leftCellStartWidth, rightCellStartWidth, xStart, leftStart, difrentCurcer;
+        bool contextMenuStatus, statePushed;
+        double left, top;
+        string message;
 
         int? changeRowIndex, heightStart, yStart;
 
@@ -36,6 +40,13 @@ namespace Caspian.Report
             }
         }
 
+        void ShowContextMenu(MouseEventArgs e)
+        {
+            contextMenuStatus = true;
+            left = e.ClientX;
+            top = e.ClientY - 100;
+        }
+
         public Font Font
         {
             get
@@ -53,6 +64,22 @@ namespace Caspian.Report
             {
                 foreach (var cell in selectedCells)
                     Data.Rows[cell.Row.RowIndex - 1].Cells[cell.ColIndex - 1].Font = value;
+            }
+        }
+
+        public Color BackgroundColor
+        {
+            get
+            {
+                var color = selectedCells.First().BackgroundColor;
+                if (selectedCells.All(t => t.BackgroundColor.ColorString == color.ColorString))
+                    return color;
+                return new Color();
+            }
+            set
+            {
+                foreach (var cell in selectedCells)
+                    Data.Rows[cell.Row.RowIndex - 1].Cells[cell.ColIndex - 1].BackgroundColor = value;
             }
         }
 
@@ -85,6 +112,21 @@ namespace Caspian.Report
             }
         }
 
+        public TextFieldData FieldData
+        {
+            get
+            {
+                if (selectedCells.Count != 1)
+                    return null;
+                return selectedCells.Single().FieldData;
+            }
+            set
+            {
+                foreach (var cell in selectedCells)
+                    cell.FieldData = value;
+            }
+        }
+
         public string Text
         {
             get
@@ -100,59 +142,93 @@ namespace Caspian.Report
             }
         }
 
-
         [Parameter]
         public TableData Data { get; set; }
 
         public int TopStart { get; set; }
 
         #region Add or Remove Column and row
-        void InsertRow(bool insertBefor, int index)
-        {
-            /// Insert row befor or after the selected row
-            var row = new TableRowData();
-            for (var i = 1; i < Data.HeaderCells.Count; i++)
-                row.Cells.Add(new TableCellData(row));
-            Data.Rows.Insert(insertBefor ? index : index - 1, row);
-            UpdateRowAndColumnIndex();
-        }
 
-        void RemoveRow(int index)
+        void InsertRow(bool insertAbove)
         {
-            Data.Rows.RemoveAt(index - 1);
-            UpdateRowAndColumnIndex();
-        }
-
-        void InsertColumn(bool insertBefor, int index)
-        {
-            /// Insert column befor or after the selectd column
-            var tempIndex = insertBefor ? index : index - 1;
-            var head = Data.HeaderCells.ElementAt(index - 1);
-            Data.HeaderCells.Insert(tempIndex, new HeaderCellData() { Width = head.Width / 2 });
-            head.Width = head.Width - head.Width / 2;
-            foreach (var row in Data.Rows)
-                row.Cells.Insert(tempIndex, new TableCellData(row));
-            UpdateRowAndColumnIndex();
-        }
-
-        void RemoveColumn(int index)
-        {
-            var headerCells = Data.HeaderCells;
-            var curent = headerCells.ElementAt(index - 1);
-            if (index == 1)
+            if (!TableMeged())
             {
-                var next = headerCells.ElementAt(index);
-                next.Width += curent.Width;
+                var index = selectedCells.First().Row.RowIndex;
+                /// Insert row above or after the selected row
+                var row = new TableRowData();
+                for (var i = 1; i <= Data.HeaderCells.Count; i++)
+                    row.Cells.Add(new TableCellData(row));
+                Data.Rows.Insert(insertAbove ? index - 1 : index, row);
+                UpdateRowAndColumnIndex();
+            }
+            else
+                message = "For row inserting we need to unmerge table";
+        }
+
+        void RemoveRow()
+        {
+            if (!TableMeged() && Data.Rows.Count > 1)
+            {
+                var index = selectedCells.First().Row.RowIndex - 1;
+                Data.Rows.RemoveAt(index);
+                UpdateRowAndColumnIndex();
             }
             else
             {
-                var pre = headerCells.ElementAt(index - 2);
-                pre.Width += curent.Width;
+                if (Data.Rows.Count == 1)
+                    message = "Table should have at least a row";
+                else
+                    message = "For row removeing we need to unmerge table";
             }
-            foreach (var row in Data.Rows)
-                row.Cells.RemoveAt(index - 1);
-            headerCells.Remove(curent);
-            UpdateRowAndColumnIndex();
+        }
+
+        void InsertColumn(bool insertBefor)
+        {
+            if (!TableMeged())
+            {
+                /// Insert column befor or after the selectd column
+                var index = selectedCells.First().ColIndex;
+                var tempIndex = insertBefor ? index - 1 : index;
+                var head = Data.HeaderCells.ElementAt(index - 1);
+                Data.HeaderCells.Insert(tempIndex, new HeaderCellData() { Width = head.Width / 2 });
+                head.Width = head.Width - head.Width / 2;
+                foreach (var row in Data.Rows)
+                    row.Cells.Insert(tempIndex, new TableCellData(row));
+                UpdateRowAndColumnIndex();
+            }
+            else
+                message = "For column insertig we need to unmerge table";
+        }
+
+        void RemoveColumn()
+        {
+            if (!TableMeged() && Data.HeaderCells.Count > 1)
+            {
+                var index = selectedCells.First().ColIndex;
+                var headerCells = Data.HeaderCells;
+                var curent = headerCells.ElementAt(index - 1);
+                if (index == 1)
+                {
+                    var next = headerCells.ElementAt(index);
+                    next.Width += curent.Width;
+                }
+                else
+                {
+                    var pre = headerCells.ElementAt(index - 2);
+                    pre.Width += curent.Width;
+                }
+                foreach (var row in Data.Rows)
+                    row.Cells.RemoveAt(index - 1);
+                headerCells.Remove(curent);
+                UpdateRowAndColumnIndex();
+            }
+            else
+            {
+                if (Data.HeaderCells.Count == 1)
+                    message = "Table should have at least a column";
+                else
+                    message = "For column removing we need to unmerge table";
+            }
         }
 
         void UpdateRowAndColumnIndex()
@@ -186,22 +262,12 @@ namespace Caspian.Report
                 }
                 selectedCell.ColSpan = 1;
             }
-        }
-
-        public NumberFormating GetNumberFormating()
-        {
-            if (selectedCells.Count == 1)
+            if (selectedCell.RowSpan > 1)
             {
-                var cell = selectedCells.Single();
-                return cell.NumberFormating;
+                for (var i = 0; i < selectedCell.RowSpan - 1; i++)
+                    Data.Rows[selectedCell.Row.RowIndex + i].Cells[selectedCell.ColIndex - 1].Hidden = false;
+                selectedCell.RowSpan = 1;
             }
-            return null;
-        }
-
-        public void SetFormating(NumberFormating formating)
-        {
-            foreach (var cell in selectedCells)
-                cell.NumberFormating = formating;
         }
 
         public bool CanUnmerge()
@@ -249,6 +315,14 @@ namespace Caspian.Report
             }
         }
 
+        bool TableMeged()
+        {
+            foreach (var row in Data.Rows)
+                if (row.Cells.Any(t => t.RowSpan > 1 || t.ColSpan > 1))
+                    return true;
+            return false;
+        }
+
         public bool CanMerge(out bool sameRow, out bool sameCol)
         {
             sameRow = true;
@@ -290,6 +364,22 @@ namespace Caspian.Report
             return false;
         }
         #endregion
+
+        public NumberFormating GetNumberFormating()
+        {
+            if (selectedCells.Count == 1)
+            {
+                var cell = selectedCells.Single();
+                return cell.NumberFormating;
+            }
+            return null;
+        }
+
+        public void SetFormating(NumberFormating formating)
+        {
+            foreach (var cell in selectedCells)
+                cell.NumberFormating = formating;
+        }
 
         protected override void OnInitialized()
         {
@@ -471,6 +561,11 @@ namespace Caspian.Report
             {
                 UpdateTableLocation();
                 StateHasChanged();
+            }
+            if (message != null)
+            {
+                await JSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+                message = null;
             }
             await base.OnAfterRenderAsync(firstRender);
         }

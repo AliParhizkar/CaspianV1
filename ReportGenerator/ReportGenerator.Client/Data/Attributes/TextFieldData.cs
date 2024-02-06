@@ -2,9 +2,9 @@
 {
     public class TextFieldData
     {
-        public string Text { get; set; }
+        //public string Text { get; set; }
 
-        public Color BackGroundColor { get; set; }
+        //public Color BackGroundColor { get; set; }
 
         /// <summary>
         /// Object Path for example Product.ProductCategory.Title

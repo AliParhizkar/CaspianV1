@@ -123,7 +123,7 @@ namespace Caspian.Common.Extension
                 str = str.Substring(str.IndexOf('.') + 1);
                 properties.Add(new DynamicProperty(str, type));
             }
-            return DynamicClassFactory.CreateType(properties);
+            return DynamicClassFactory.CreateType(properties, false);
         }
 
         public static bool IsEnumerableType(this Type type)

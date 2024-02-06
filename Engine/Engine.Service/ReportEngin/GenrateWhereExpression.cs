@@ -65,7 +65,7 @@ namespace Caspian.Engine
             }
             IList<DynamicProperty> dpList = new List<DynamicProperty>();
             dpList.Add(new DynamicProperty("Values", type.MakeArrayType()));
-            var newType = DynamicClassFactory.CreateType(dpList);
+            var newType = DynamicClassFactory.CreateType(dpList, false);
             var obj = Activator.CreateInstance(newType);
             newType.GetProperty("Values").SetValue(obj, array);
             return obj;

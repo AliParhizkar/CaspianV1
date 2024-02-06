@@ -18,7 +18,7 @@ namespace Caspian.Engine.Service
             ServiceProvider = provider;
         }
 
-        private IList GeoupByData3Level(Type type, IList<ReportParam> reportParams, IList list)
+        IList GeoupByData3Level(Type type, IList<ReportParam> reportParams, IList list)
         {
             var index = 0;
             var list2 = new List<object>();
@@ -92,7 +92,7 @@ namespace Caspian.Engine.Service
             return list2;
         }
 
-        private IList GeoupByData2Level(Type type, IList<ReportParam> reportParams, IList list)
+        IList GeoupByData2Level(Type type, IList<ReportParam> reportParams, IList list)
         {
             var index = 0;
             var list2 = new List<object>();
@@ -268,7 +268,7 @@ namespace Caspian.Engine.Service
                 if (param.RuleId.HasValue || param.DynamicParameterId.HasValue)
                     name = "DynamicParam" + (param.RuleId ?? param.DynamicParameterId.Value);
                 else
-                    name = param.TitleEn.Replace('.', '_');
+                    name = param.TitleEn;
                 switch(param.CompositionMethodType)
                 {
                     case CompositionMethodType.Sum: name = "Sum_" + name; break;
@@ -278,14 +278,14 @@ namespace Caspian.Engine.Service
                 }
                 propertiesList.Add(new DynamicProperty(name, dynamicType.GetProperty(name).PropertyType));
             }
-            var type = DynamicClassFactory.CreateType(propertiesList);
+            var type = DynamicClassFactory.CreateType(propertiesList, false);
             dataParam = reportParams.Where(t => t.DataLevel == 2 && !t.IsKey);
             if (dataParam.Any())
             {
                 propertiesList.Clear();
                 foreach (var param in dataParam)
                 {
-                    var name = param.TitleEn.Replace('.', '_');
+                    var name = param.TitleEn;
                     var tempType = dynamicType.GetProperty(name).PropertyType;
                     name = GetGroupingFiledName(param.TitleEn, 2);
                     propertiesList.Add(new DynamicProperty(name, tempType));
@@ -293,14 +293,14 @@ namespace Caspian.Engine.Service
                 var listType = typeof(List<>);
                 listType = listType.MakeGenericType(type);
                 propertiesList.Add(new DynamicProperty(mainTypeName + 's', listType));
-                type = DynamicClassFactory.CreateType(propertiesList);
+                type = DynamicClassFactory.CreateType(propertiesList, false);
                 dataParam = reportParams.Where(t => t.DataLevel == 3 && !t.IsKey);
                 if (dataParam.Any())
                 {
                     propertiesList.Clear();
                     foreach (var param in dataParam)
                     {
-                        var name = param.TitleEn.Replace('.', '_');
+                        var name = param.TitleEn;
                         var tempType = dynamicType.GetProperty(name).PropertyType;
                         name = GetGroupingFiledName(param.TitleEn, 3);
                         propertiesList.Add(new DynamicProperty(name, tempType));
@@ -309,7 +309,7 @@ namespace Caspian.Engine.Service
                     listType = listType.MakeGenericType(type);
                     var name2 = GetPropertyListName(dataParam.First().TitleEn, 3);
                     propertiesList.Add(new DynamicProperty(name2, listType));
-                    type = DynamicClassFactory.CreateType(propertiesList);
+                    type = DynamicClassFactory.CreateType(propertiesList, false);
                 }
             }
             return type;

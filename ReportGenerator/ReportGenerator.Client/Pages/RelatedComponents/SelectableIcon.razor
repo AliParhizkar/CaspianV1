@@ -33,7 +33,7 @@
     async Task MouseUp()
     {
         buttonClicked = false;
-        if (OnMouseDown.HasDelegate)
+        if (Enabled && OnMouseDown.HasDelegate)
             await OnMouseDown.InvokeAsync();
     }
 

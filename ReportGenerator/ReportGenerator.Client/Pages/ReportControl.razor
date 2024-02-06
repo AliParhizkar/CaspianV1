@@ -1,9 +1,10 @@
 ﻿@namespace Caspian.Report
 @using Caspian.Common
-
 @{
-    var style = $"left:{Data.Left}px;top:{Data.Top}px;width:{Data.Width}px;height:{Data.Height}px;";
-    var textStyle = $"{Data.Alignment.TextStyle + Data.Font.Style}";
+    var style = $"left:{Data.Left}px;top:{Data.Top}px;width:{Data.Width}px;height:{Data.Height}px;background-color:{Data.BackgroundColor.ColorString};";
+    var textStyle = $"{Data.Alignment.TextStyle}";
+    if (Data.ControlType == ControlType.TextBox)
+        textStyle += $";{Data.Font.Style}";
 }
 <div class="r-controls" style="@style" @onmousedown="SelectControl" @ondblclick="OpenWindow">
     @if (Page.SelectedControl == this)
@@ -17,7 +18,22 @@
     <span class="r-angle r-top-right"></span>
     <span class="r-angle r-bottom-left"></span>
     <span class="r-angle r-bottom-right"></span>
-    <div style="@(Data.Alignment.Style + Data.Border.Style)" class="r-controls-flex">
-        <span style="@textStyle">@Data.Text</span>
-    </div>
+    @if (Data.ControlType == ControlType.PictureBox)
+    {
+        @if (Data.ImageContent != null)
+        {
+            style = $"{Data.Alignment.ImageStyle};{Data.Border.Style}";
+            if (Data.Stretch)
+                style += $"background-size:100% 100%;";
+            <div class="r-picturebox-content" style="@(style)background-image:url(data:image/png;base64,@(Convert.ToBase64String(Data.ImageContent)))">
+            </div>
+        }
+        <span class="imageboxicon"></span>
+    }
+    else
+    {
+        <div style="@(Data.Alignment.Style + Data.Border.Style)" class="r-controls-flex">
+            <span style="@textStyle">@Data.Text</span>
+        </div>
+    }
 </div>

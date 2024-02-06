@@ -12,7 +12,6 @@
           <value>Price,System.Int32</value>
           <value>Quantity,System.Int32</value>
           <value>Product_ProductCategory_Title,System.String</value>
-          <value>Item,System.Object</value>
         </Columns>
         <Dictionary isRef="127" />
         <Guid>7a825bf628354f8e94edcf72eb15c251</Guid>

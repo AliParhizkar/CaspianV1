@@ -9,9 +9,23 @@ namespace Caspian.Report
     {
         bool isSettingWindow;
         string title;
+        
+        Font font;
         WindowStatus status;
+        Alignment alignment;
+        Border border;
+        Color BackGroundColor;
 
         DropdownIcon borderStyle, borderWidth;
+
+        protected override void OnParametersSet()
+        {
+            alignment = Page.SelectedControl?.Data.Alignment ?? Page.SelectedTable?.Alignment;
+            font = Page.SelectedControl?.Data.Font ?? Page.SelectedTable?.Font;
+            border = Page.SelectedControl?.Data.Border ?? Page.SelectedTable?.Border;
+            BackGroundColor = Page.SelectedControl?.Data.BackgroundColor ?? Page.SelectedTable?.BackgroundColor;
+            base.OnParametersSet();
+        }
 
         void CloseWindow(Caspian.UI.WindowStatus status)
         {
@@ -36,92 +50,105 @@ namespace Caspian.Report
         }
 
         [Parameter]
-        public int ReportId { get; set; }
-
-        [Parameter]
-        public Alignment Alignment { get; set; }
-
-        [Parameter]
-        public Font Font { get; set; }
-
-        [Parameter]
-        public Border Border { get; set; }
-
-        [Parameter]
         public Page Page { get; set; }
 
         [Parameter]
-        public Table SelectedTable { get; set; }
-
-        [Parameter]
-        public EventCallback<string> OnChange { get; set; }
+        public EventCallback OnChange { get; set; }
 
         async Task ChangeStyle()
         {
             if (OnChange.HasDelegate)
-                await OnChange.InvokeAsync(Alignment.Style);
+                await OnChange.InvokeAsync();
         }
 
         async Task ChangeFont(bool? underline, bool? bold, bool? italic)
         {
+            Page.PushControl();
             if (underline.HasValue)
-                Font.UnderLine = underline.Value;
+                font.UnderLine = underline.Value;
             if (bold.HasValue)
-                Font.Bold = bold.Value;
+                font.Bold = bold.Value;
             if (italic.HasValue)
-                Font.Italic = italic.Value;
+                font.Italic = italic.Value;
+            if (Page.SelectedTable != null)
+                Page.SelectedTable.Font = font;
             await ChangeStyle();
         }
 
         async Task ChangeFont(int? size, string family, string color)
         {
             if (size.HasValue)
-                Font.Size = size.Value;
+                font.Size = size.Value;
             if (family != null)
-                Font.Family = family;
+                font.Family = family;
             if (color != null)
-                Font.Color = new Color(color);
+                font.Color = new Color(color);
+            if (Page.SelectedTable != null)
+                Page.SelectedTable.Font = font;
             await ChangeStyle();
         }
 
         async Task ChangeVerticalAlignment(VerticalAlign align)
         {
-            Alignment.VerticalAlign = align;
+            Page.PushControl();
+            alignment.VerticalAlign = align;
+            if (Page.SelectedTable != null)
+                Page.SelectedTable.Alignment = alignment;
             await ChangeStyle();
         }
 
         async Task ChangeBorder(BorderStyle style)
         {
-            Border.BorderStyle = style;
+            Page.PushControl();
+            border.BorderStyle = style;
+            if (Page.SelectedTable != null)
+                Page.SelectedTable.Border = border;
             await ChangeStyle();
         }
 
         async Task ChangeBorder(int width)
         {
-            Border.Width = width;
+            Page.PushControl();
+            border.Width = width;
+            if (Page.SelectedTable != null)
+                Page.SelectedTable.Border = border;
             await ChangeStyle();
         }
 
         async Task ChangeBorder(string color)
         {
-            Border.Color = new Color(color);
+            border.Color = new Color(color);
+            if (Page.SelectedTable != null)
+                Page.SelectedTable.Border = border;
+            await ChangeStyle();
+        }
+
+        async Task ChangeBackgroundColor(string color)
+        {
+            BackGroundColor.ColorString = color;
             await ChangeStyle();
         }
 
         async Task ChangeBorder(BorderKind type)
         {
+            Page.PushControl();
             if (type == 0 || type.ConvertToInt() == 15)
-                Border.BorderKind = type;
-            else if ((Border.BorderKind & type) == type)
-                Border.BorderKind = (BorderKind)(Border.BorderKind - type);
+                border.BorderKind = type;
+            else if ((border.BorderKind & type) == type)
+                border.BorderKind = (BorderKind)(border.BorderKind - type);
             else
-                Border.BorderKind |= type;
+                border.BorderKind |= type;
+            if (Page.SelectedTable != null)
+                Page.SelectedTable.Border = border;
             await ChangeStyle();
         }
 
         async Task ChangeHorizontalAlignment(HorizontalAlign align)
         {
-            Alignment.HorizontalAlign = align;
+            Page.PushControl();
+            alignment.HorizontalAlign = align;
+            if (Page.SelectedTable != null)
+                Page.SelectedTable.Alignment = alignment;
             await ChangeStyle();
         }
 

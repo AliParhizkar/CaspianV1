@@ -17,7 +17,7 @@ namespace Caspian.Common.RowNumber
                 new DynamicProperty("Id", typeof(int)),
                 new DynamicProperty("RowNumber", typeof(int))
             };
-            return DynamicClassFactory.CreateType(properties);
+            return DynamicClassFactory.CreateType(properties, false);
         }
 
         private static IQueryable CreateSelectExpr(this IQueryable source)

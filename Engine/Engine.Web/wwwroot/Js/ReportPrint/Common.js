@@ -13,6 +13,7 @@
             if (arguments.length > 4)
                 str += ',' + a5;
             $('#lbl').text(str);
+            
         },
         printf: function (txt) {
             let temp = $('#fortest1').text() + ',' + txt;

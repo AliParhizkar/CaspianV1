@@ -1599,7 +1599,7 @@ td {
 
 .tools {
     background-image: url(/Content/Images/ToolsBox.png);
-    width: 16px;
+    width: 16px!important;
     height: 28px;
     display: block;
     background-repeat: no-repeat;
@@ -1699,16 +1699,18 @@ td {
     top: 3px;
     left: 5px;
 }
-
+.r-picturebox-content {
+    height:100%;
+    background-repeat:no-repeat;
+}
 .imageboxicon {
     background-image: url(/Content/Images/ToolsBox.png);
     background-position: 98px -1px;
     width: 14px;
     height: 14px;
     display: block;
-    position: relative;
-    float: right;
-    top: 2px;
+    position: absolute;
+    top: 3px;
     left: 3px;
 }
 

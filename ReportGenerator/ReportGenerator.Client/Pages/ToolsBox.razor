@@ -1,20 +1,28 @@
 ﻿@namespace Caspian.Report
 <div class="r-toolsbox">
-    <span @onmousedown="AddControl" class="tools textbox" title="متن"></span>
-    <span @onmousedown="AddTable" class="tools picture" title="تصویر"></span>
+    <span @onmousedown="AddTextbox" class="tools textbox" title="Textbox"></span>
+    <span @onmousedown="AddPicturebox" class="tools picture" title="Picturebox"></span>
+    <span @onmousedown="AddTable" class="tools table" title="Table"></span>
+    <span class="tools checkbox" title="Check box"></span>
+    <span class="tools chart" title="Chart"></span>
     <span class="tools subreport" title="گزارش فرعی"></span>
-    <span class="tools table" title="جدول"></span>
-    <span class="tools checkbox" title="check box"></span>
-    <span class="tools chart" title="نمودار"></span>
 </div>
 
 @code 
 {
-    async Task AddControl(MouseEventArgs e)
+    async Task AddTextbox(MouseEventArgs e)
     {
-        var control = new ControlData(e.ClientX, e.ClientY);
+        var control = new ControlData(e.ClientX, e.ClientY, ControlType.TextBox);
         control.Width = 180;
         control.Height = 32;
+        await Page.AddControl(control);
+    }
+
+    async Task AddPicturebox(MouseEventArgs e)
+    {
+        var control = new ControlData(e.ClientX, e.ClientY, ControlType.PictureBox);
+        control.Width = 90;
+        control.Height = 90;
         await Page.AddControl(control);
     }
 
@@ -47,6 +55,7 @@
                     ColIndex = colIndex
                 });
         }
+        row.Cells[0].Border.BorderKind = BorderKind.Bottom | BorderKind.Right | BorderKind.Left;
         table.Rows.Add(row);
         return table;
     }

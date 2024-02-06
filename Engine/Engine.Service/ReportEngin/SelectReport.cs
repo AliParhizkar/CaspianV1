@@ -19,11 +19,9 @@ namespace Caspian.Engine
         public SelectReport(Type type)
         {
             paramExpr = Expression.Parameter(type, "t");
-            var dynamicField = type.GetCustomAttribute<DynamicFieldAttribute>();
-
         }
 
-        private IEnumerable<ReportParam> ComplexTypeFilter(IEnumerable<ReportParam> fields)
+        IEnumerable<ReportParam> ComplexTypeFilter(IEnumerable<ReportParam> fields)
         {
             var list = new List<ReportParam>();
             foreach (var field in fields)
@@ -133,7 +131,7 @@ namespace Caspian.Engine
                 type = type.MakeGenericType(new Type[] { dynamicTypeOfDynamicItem });
                 list.Add(new DynamicProperty("DynamicItems", type));
             }
-            return DynamicClassFactory.CreateType(list);
+            return DynamicClassFactory.CreateType(list, false);
         }
 
         public LambdaExpression GroupBy(IList<ReportParam> reportParams)
@@ -215,7 +213,7 @@ namespace Caspian.Engine
                     type = typeof(string);
                 list.Add(new DynamicProperty(name, type));
             }
-            return DynamicClassFactory.CreateType(list);
+            return DynamicClassFactory.CreateType(list, false);
         }
 
         private Expression PropertyExpr(Expression parameter, string path)
@@ -297,7 +295,7 @@ namespace Caspian.Engine
         public IList GetValues(IQueryable values, IList<ReportParam> reportParams)
         {
             //var fields = reportParams.Where(t => !t.DynamicItemId.HasValue).Select(t => t.TitleEn).ToList();
-            var type = GetEqualType(reportParams, typeof(string));
+            var type = GetEqualType(reportParams);
             var listType = typeof(List<>);
             listType = listType.MakeGenericType(new Type[] { type });
             IList list = (IList)Activator.CreateInstance(listType);
@@ -404,7 +402,7 @@ namespace Caspian.Engine
             return list;
         }
 
-        public Type GetEqualType(IList<ReportParam> reportParams, Type dynamicValueType)
+        public Type GetEqualType(IList<ReportParam> reportParams)
         {
             var list = new List<DynamicProperty>();
             foreach (var param in reportParams)
@@ -421,9 +419,7 @@ namespace Caspian.Engine
                     type = GetEqualType(param.TitleEn, false);
                     if (type.IsEnum)
                         type = typeof(string);
-                    if (type.GetUnderlyingType() == typeof(DateTime))
-                        type = typeof(string);
-                    name = GetEqualFieldName(param.TitleEn).Replace('.', '_');
+                    name = GetEqualFieldName(param.TitleEn);
                     switch(param.CompositionMethodType)
                     {
                         case CompositionMethodType.Sum: name = "Sum_" + name; break;
@@ -439,7 +435,7 @@ namespace Caspian.Engine
                 }
                 list.Add(new DynamicProperty(name, type));
             }
-            return DynamicClassFactory.CreateType(list);
+            return DynamicClassFactory.CreateType(list, false);
         }
 
         private Type GetEqualType(string field, bool flag = true)
@@ -454,22 +450,21 @@ namespace Caspian.Engine
         private string GetEqualFieldName(string field, CompositionMethodType? methodType = null)
         {
             var tempType = paramExpr.Type.GetMyProperty(field);
-            var name = field.Replace('.', '_');;
             if (methodType.HasValue)
             {
                 switch(methodType.Value)
                 {
                     case CompositionMethodType.Sum: 
-                        return "Sum_" + name;
+                        return "Sum_" + field;
                     case CompositionMethodType.Avg: 
-                        return "Avg_" + name;
+                        return "Avg_" + field;
                     case CompositionMethodType.Max: 
-                        return "Max_" + name;
+                        return "Max_" + field;
                     case CompositionMethodType.Min: 
-                        return "Min_" + name;
+                        return "Min_" + field;
                 }
             }
-            return name;
+            return field;
         }
 
         public LambdaExpression DynamicItemSelect()

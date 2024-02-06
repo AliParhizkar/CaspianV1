@@ -234,8 +234,8 @@ namespace Caspian.Engine.ReportPrint
                 var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
                 var reportParams = new ReportParamService(scope.ServiceProvider).GetAll().Where(t => t.ReportId == ReportId).ToList();
                 var selectReport = new SelectReport(mainType);
-                var type = selectReport.SimpleSelect(reportParams).Body.Type;
-                type = selectReport.GetEqualType(reportParams, type);
+                //var type = selectReport.SimpleSelect(reportParams).Body.Type;
+                var type = selectReport.GetEqualType(reportParams);
                 type = new ReportPrintEngine(scope.ServiceProvider).GetTypeOf(reportParams, type, mainType.Name);
                 var reportPrint = new ReportUiModels.ReportPrint(type);
                 reportPrint.Pages.Add(page);

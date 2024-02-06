@@ -37,7 +37,7 @@
         </div>
         <div class="col-md-8">
             <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" Value="fieldData.Path" ValueChanged="ParamChanged"
-                      Disabled="fieldData.Path.HasValue() && fieldData.Path == null || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue" />
+                      Disabled="text.HasValue() && fieldData.Path == null || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue" />
         </div>
     }
     @if (bondType == BondType.ReportTitle)
@@ -46,7 +46,7 @@
             <label>System variable</label>
         </div>
         <div class="col-md-8">
-            <DropdownList TValue="SystemVariable?" Value="fieldData.SystemVariable" Disabled="(text.HasValue() && fieldData.SystemVariable == null) || fieldData.Path.HasValue()"
+            <DropdownList TValue="SystemVariable?" Value="fieldData.SystemVariable" Disabled="text.HasValue() && fieldData.SystemVariable == null || fieldData.Path.HasValue() || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue"
                           ValueChanged="SystemVariableChange" />
         </div>
     }
@@ -56,9 +56,9 @@
             <label>System filed</label>
         </div>
         <div class="col-md-8">
-@*             <DropdownList TValue="SystemFiledType?" Value="param.SystemFiledType"
-                          Disabled="param.Path.HasValue() && param.SystemFiledType == null || param.TotalFuncType.HasValue"
-                          ValueChanged="SystemFiledTypeChanged" /> *@
+            <DropdownList TValue="SystemFiledType?" Value="fieldData.SystemFiledType"
+                          Disabled="text.HasValue() && fieldData.SystemFiledType == null || fieldData.TotalFuncType.HasValue"
+                          ValueChanged="SystemFiledTypeChanged" />
         </div>
     } 
     <div class="col-md-4"></div>
@@ -70,25 +70,26 @@
 @code 
 {
     string text;
+
     IEnumerable<SelectListItem> Params;
     TextFieldData fieldData;
     BondType bondType;
     protected override void OnInitialized()
     {
-        if (Page.SelectedControl != null)
-            text = Page.SelectedControl.Data.Text;
-        else
-            text = Page.SelectedTable.Text;
         fieldData = new TextFieldData();
         if (Page.SelectedControl != null)
-            fieldData.CopySimpleProperty(Page.SelectedControl.Data.TextFieldData);
-        // else
-        //     fieldData.CopySimpleProperty(Page.SelectedTable.Text);
-        // if (control != null)
-        // {
-        //     param.CopySimpleProperty(control.Data.ParameterData);
-        //     bondType = control.Data.BondType.Value;
-        // }    
+        {
+            text = Page.SelectedControl.Data.Text;
+            bondType = Page.SelectedControl.BoundItem.Data.BondType;
+            fieldData.CopySimpleProperty(Page.SelectedControl.Data.FieldData);
+        }
+        else
+        {
+            text = Page.SelectedTable.Text;
+            bondType = Page.SelectedTable.BoundItem.Data.BondType;
+            fieldData.CopySimpleProperty(Page.SelectedTable.FieldData);
+        }
+        
         base.OnInitialized();
     }
 
@@ -99,7 +100,7 @@
         {
             var url = $"/ReportGenerator/GetReportParameters?reportId={Page.ReportId}&dataLevel={dataLevel.Value}";
             Params = await Host.GetFromJsonAsync<IEnumerable<SelectListItem>>(url);
-            
+
             await base.OnInitializedAsync();
         }
     }
@@ -107,23 +108,28 @@
     async Task UpdateData()
     {
         if (Page.SelectedControl != null)
+        {
             Page.SelectedControl.Data.Text = text;
+            Page.SelectedControl.Data.FieldData.CopySimpleProperty(fieldData);
+        }
         else
+        {
             Page.SelectedTable.Text = text;
-        Page.SelectedControl?.Data.TextFieldData.CopySimpleProperty(fieldData);
+            Page.SelectedTable.FieldData = fieldData;
+        }
         await StatusChanged.InvokeAsync(WindowStatus.Close);
     }
 
     [Parameter]
     public Page Page { get; set; }
 
-    void ParamChanged(string title)
+    void ParamChanged(string path)
     {
-        // param.Path = title;
-        // if (param.Path.HasValue())
-        //     param.Path = '{' + Params.Single(t => t.Value == param.Path).Text + '}';
-        // else
-        //     param.Path = null;
+        fieldData.Path = path;
+        if (path.HasValue())
+            text = '{' + Params.Single(t => t.Value == path).Text + '}';
+        else
+            text = null;
     }
 
     void TotalFuncTypeChanged(TotalFuncType? funcType)
@@ -134,15 +140,17 @@
 
     void SystemFiledTypeChanged(SystemFiledType? filedType)
     {
-        // param.SystemFiledType = filedType;
-        // param.Path = '{' + param.SystemFiledType.EnumText() + '}';
+        fieldData.SystemFiledType = filedType;
+        if (filedType.HasValue)
+            text = '{' + filedType.EnumText() + '}';
+        else
+            text = null;
     }
 
-    async Task SystemVariableChange(SystemVariable? variable)
+    void SystemVariableChange(SystemVariable? variable)
     {
         fieldData.SystemVariable = variable;
         text = fieldData.SystemVariable.HasValue ? ('{' + fieldData.SystemVariable.EnumText() + '}') : null;
-        await UpdateData();
     }
 
     [Parameter]

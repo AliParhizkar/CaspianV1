@@ -16,6 +16,10 @@ namespace Caspian.Report.Data
                 BorderKind = BorderKind.Bottom | BorderKind.Right,
                 Color = new Color() { ColorString = "#808080" }
             };
+            BackgroundColor = new Color()
+            {
+                ColorString = "#FFFFFF"
+            };
             FieldData = new TextFieldData();
         }
 
@@ -24,13 +28,22 @@ namespace Caspian.Report.Data
         [JsonIgnore]
         public TableRowData Row { get; set; }
 
+        public Color BackgroundColor { get; set; }
+
         public string Text { get; set; }
+
+        public TextFieldData FieldData { get; set; }
 
         public NumberFormating NumberFormating { get; set; }
 
         public int RowSpan { get; set; }
 
         public int ColSpan { get; set; }
+
+        /// <summary>
+        /// For Row span join on report
+        /// </summary>
+        public int? ParentJoin {  get; set; }
 
         public bool Hidden { get; set; }
 
