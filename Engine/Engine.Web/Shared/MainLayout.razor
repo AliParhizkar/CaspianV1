@@ -1,27 +1,28 @@
 ﻿@inherits LayoutComponentBase
 @namespace Caspian.Engine.Shared
-@inject NavigationManager navigationManager
 
-<AuthorizeView>
-    <Authorized>
-        <div class="main">
-            <div class="content">
-                <CaspianExceptionComponent SystemKind="SubSystemKind.Engine" UserId="userId">
-                    @Body
-                </CaspianExceptionComponent>
-            </div>
-        </div>
-    </Authorized>
-    <NotAuthorized>
-        <Caspian.Engine.Shared.LoginComponent />
-    </NotAuthorized>
-</AuthorizeView>
-
+<div class="main">
+    <div class="content">
+        @if (HttpContext.Request.Path.StartsWithSegments("/Account/Login"))
+        {
+            @Body
+        }
+        else 
+        {
+            <CaspianExceptionComponent SystemKind="SubSystemKind.Engine" UserId="userId">
+                @Body
+            </CaspianExceptionComponent>
+        }
+    </div>
+</div>
 
 
 @code
 {
     int userId;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> authenticationStateTask { get; set; }

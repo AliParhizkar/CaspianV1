@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using UIComponent;
 using Main.Components;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Identity;
+using Caspian.Engine.Model;
+using Engine.Web.Pages.Account;
+using Engine.Model;
 
 namespace Main
 {
@@ -23,6 +27,19 @@ namespace Main
                 .AddInteractiveServerComponents()
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
 
+            builder.Services.AddCascadingAuthenticationState();
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            }).AddIdentityCookies();
+
+
+            builder.Services.AddScoped<IdentityUserAccessor>();
+            builder.Services.AddScoped<IdentityRedirectManager>();
+            builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
             builder.Services.AddCaspianUIComponentsServices();
             builder.Services.AddSyncfusionBlazor();
             builder.Services.AddSingleton<SingletonMenuService>(t =>
@@ -34,15 +51,26 @@ namespace Main
                     Menus = context.Menus.ToList()
                 };
             });
-            builder.Services.AddScoped<ProtectedSessionStorage>();
-            builder.Services.AddScoped(typeof(AuthenticationStateProvider), typeof(CustomAuthenticationStateProvider));
 
             builder.Services.AddScoped<CaspianDataService>();
-            builder.Services.AddScoped<Demo.Model.Context>();
-            builder.Services.AddScoped<Caspian.Engine.Model.Context>();
+
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ActivityService).Assembly.InjectServices(builder.Services);
+
+            builder.Services.AddScoped<Demo.Model.Context>();
+            builder.Services.AddScoped<Caspian.Engine.Model.Context>();
+
+            var connectionString = builder.Configuration.GetConnectionString("CaspianDb");
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+               options.UseSqlServer(connectionString));
+
             builder.Services.AddAuthenticationCore();
+
+            builder.Services.AddIdentityCore<User>(options => options.Password.RequireNonAlphanumeric = false)
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddSignInManager()
+                .AddDefaultTokenProviders();
+
             var app = builder.Build();
             CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
             // Configure the HTTP request pipeline.
@@ -63,8 +91,14 @@ namespace Main
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 
-            app.MapCaspianRelevantProject<Demo.Web.App>("/Demo");
-            app.MapCaspianRelevantProject<Engine.Web.App>("/Egnine");
+            app.MapCaspianProjectWhen<Demo.Web.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/Demo"));
+
+            app.MapCaspianProjectWhen<Engine.Web.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/Egnine") ||
+                httpContext.Request.Path.StartsWithSegments("/Account"));
+
+            app.MapAdditionalIdentityEndpoints();
 
             app.Run();
         }
@@ -82,10 +116,10 @@ namespace Main
 
     public static class CaspianWebAppPipelineExtension
     {
-        public static void MapCaspianRelevantProject<TAppComponent>(this IApplicationBuilder app, string pathStartUri) 
-            where TAppComponent : ComponentBase
+        public static void MapCaspianProjectWhen<TAppComponent>(this IApplicationBuilder appBuilder, Func<HttpContext, bool> func)
+           where TAppComponent : ComponentBase
         {
-            app.MapWhen(context => context.Request.Path.StartsWithSegments(pathStartUri), app =>
+            appBuilder.MapWhen(func, app =>
             {
                 app.UseHsts();
                 app.UseRouting();
@@ -93,6 +127,9 @@ namespace Main
 
                 app.UseStaticFiles();
                 app.UseAntiforgery();
+
+                app.UseAuthentication();
+                app.UseAuthorization();
 
                 app.UseEndpoints(endpoint =>
                 {

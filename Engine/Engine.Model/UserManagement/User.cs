@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,13 +7,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Caspian.Engine.Model
 {
     [Table("Users", Schema = "cmn")]
-    public class User
+    public class User : IdentityUser<int>
     {
         [Key]
-        public int Id { get; set; }
+        public override int Id { get; set; }
 
         [DisplayName("Username")]
-        public string UserName { get; set; }
+        public override string UserName { get; set; }
 
         [DisplayName("First name")]
         public string FName { get; set; }
@@ -24,7 +25,7 @@ namespace Caspian.Engine.Model
         public string Password { get; set; }
 
         [DisplayName("Email")]
-        public string Email { get; set; }
+        public override string Email { get; set; }
 
         [DisplayName("Mobile number")]
         public string MobileNumber { get; set; }

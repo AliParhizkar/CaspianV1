@@ -27,9 +27,15 @@
                             </span>
                         </div>
                         <div style="width:100px">
-                            <span class="c-container">
-                                <i @onclick="async () => await Logout()" title="خروج" class="fa fa-sign-out" />
-                            </span>
+                            <form action="Account/Logout" method="post">
+                                <AntiforgeryToken />
+                                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                                <button style="border:0" type="submit">
+                                    <span class="c-container">
+                                        <i title="خروج" class="fa fa-sign-out" />
+                                    </span>
+                                </button>
+                            </form>
                         </div>
                         <div>
                             <span class="c-container">
@@ -99,6 +105,10 @@
     bool userHasAccess;
     bool userIsAuthenticated;
     SubSystemKind systemKind;
+    private string currentUrl;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> authenticationStateTask { get; set; }
@@ -106,6 +116,18 @@
     void ToggeleMenu()
     {
         hideMenu = !hideMenu;
+    }
+
+    protected override void OnInitialized()
+    {
+        currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
+        navigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        currentUrl = navigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
     }
 
     protected override void OnParametersSet()
@@ -165,18 +187,13 @@
         await base.OnParametersSetAsync();
     }
 
-    async Task Logout()
-    {
-        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
-        await customAuthStateProvider.UpdateAuthenticationState(null);
-        navigationManager.NavigateTo("/Login", true);
-    }
-
     void MainMenu()
     {
         navigationManager.NavigateTo("/Default", true);
     }
 
-    [Parameter]
-    public RenderFragment ChildContent{ get; set; }
+    public void Dispose()
+    {
+        navigationManager.LocationChanged -= OnLocationChanged;
+    }
 }
