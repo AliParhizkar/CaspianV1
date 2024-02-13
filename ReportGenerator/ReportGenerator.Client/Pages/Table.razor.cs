@@ -284,6 +284,7 @@ namespace Caspian.Report
             var result = CanMerge(out sameRow, out sameCol);
             if (result)
             {
+                Bound.Page.Stack.Push(Data);
                 if (sameRow)
                 {
                     var min = selectedCells.Min(t => t.ColIndex);
@@ -372,6 +373,7 @@ namespace Caspian.Report
                 var cell = selectedCells.Single();
                 return cell.NumberFormating;
             }
+            
             return null;
         }
 
@@ -510,13 +512,18 @@ namespace Caspian.Report
                 Bound.DisableSelection();
 
             }
+            statePushed = false;
         }
 
         public void Drag(double x, double y)
         {
             if (changeKind == null)
                 return;
-
+            if (!statePushed)
+            {
+                Bound.Page.Stack.Push(Data);
+                statePushed = true;
+            }
             if (changeKind == ChangeKind.ColumnResize)
             {
                 int left;

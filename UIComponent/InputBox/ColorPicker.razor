@@ -1,5 +1,89 @@
-﻿<h3>ColorPicker</h3>
+﻿@namespace Caspian.UI
+@inject IJSRuntime JSRuntime
+<div @ref="reference" class="c-colorpicker-panel">
+    <div class="c-color-block">
+        <div class="c-color-white">
+            <div class="c-color-black">
+            </div>
+        </div>
+    </div>
+    <span class="c-color-selector"></span>
+    <input type="hidden" @onchange="ChangeColor" />
+    <div class="c-colorpicker-strip">
+        <div class="c-color-icon">
+            <span class="c-color-displayer"></span>
+        </div>
+        <div class="c-color-strips">
+            <div class="c-colors-hue">
+                <input value="0" class="c-color-bar" min="0" step="1" max="359" type="range" />
+            </div>
+            <div class="c-transparent-bar">
+                <div class="c-transparent-strip">
+                    <input value="100" class="c-color-bar" min="0" max="100" type="range" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="c-color-number">
+        <input readonly />
+    </div>
+    <hr />
+    <div class="c-colors-palette">
+        @foreach (var color in colors)
+        {
+            var className = $"c-color";
+            if (color == "transparent")
+                className += " c-transparent";
+            <div style="background-color:@(color)" class="@(className)">
+            </div>
+        }
+    </div>
+</div>
 
-@code {
+@code
+{
+    string color;
+    ElementReference reference;
+    IList<string> colors;
 
+    protected override void OnInitialized()
+    {
+        color = Color ?? "#FFF";
+
+        colors = new List<string>() { "transparent", "#fff", "#000", "#ff0000", "#00ff00", "#0000ff", "#00ffff", "#ff00ff", "#ffff00" };
+        base.OnInitialized();
+    }
+
+    async Task ChangeColor(ChangeEventArgs e)
+    {
+        var array = e.Value.ToString().Replace("rgba", "").Replace("rgb", "").Replace("(", "").Replace(")", "").Split(',')
+            .Select(t => Convert.ToDouble(t.Trim())).ToArray();
+        if (array.Length == 4)
+            array[3] = Convert.ToInt32(array[3] * 255);
+        Color = color = $"#{String.Concat(array.Select(t => Convert.ToInt32(t).ToString("X2")))}";
+        if (ColorChanged.HasDelegate)
+            await ColorChanged.InvokeAsync(Color);
+    }
+
+    [Parameter]
+    public string Color { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ColorChanged { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var colorString = Color.Substring(1);
+        var count = colorString.Length == 8 ? 4 : 3;
+        var size = colorString.Length / count;
+        var array = Enumerable.Range(0, count).Select(index => colorString.Substring(index * size, size))
+            .Select(value => Convert.ToInt32($"0x{value}", 16)).ToList();
+        double? opacity = array.Count == 4 ? Math.Round(100 * array[3] / 255.0) / 100.0 : null;
+
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("$.caspian.bindColorPicker", reference, array[0], array[1], array[2], opacity);
+        else
+            await JSRuntime.InvokeVoidAsync("$.caspian.updateColor", reference, array[0], array[1], array[2], opacity);
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }

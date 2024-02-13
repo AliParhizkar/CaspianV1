@@ -15,6 +15,25 @@ namespace ReportGenerator.Client
             tempStack = new Stack<StackData>();
         }
 
+        public void Push(TableData table)
+        {
+            if (table != null)
+            {
+                tempStack.Clear();
+                if (stack.Count > 50)
+                    stack = new Stack<StackData>(stack.Where((t, index) => index <= 50));
+                var json = JsonSerializer.Serialize(table);
+                var newTable = JsonSerializer.Deserialize<TableData>(json);
+                foreach (var row in newTable.Rows)
+                    foreach (var cell in row.Cells)
+                        cell.Row = row;
+                stack.Push(new StackData()
+                {
+                    Table = newTable,
+                });
+            }
+        }
+
         public void Push(BoundItem bound)
         {
             if (bound != null)

@@ -206,7 +206,12 @@ namespace Caspian.Report
 
         public void UpdateControl(StackData stackData)
         {
-            if (stackData.BoundItem != null)
+            if (stackData.Table != null)
+            {
+                var bound = BoundItems.SingleOrDefault(t => t.Data.BondType == stackData.Table.BondType);
+                bound.Data.Table = stackData.Table;
+            }
+            else if (stackData.BoundItem != null)
             {
                 var bound = BoundItems.SingleOrDefault(t => t.Data.BondType == stackData.BoundItem.BondType);
                 Page.SelectBound(bound);

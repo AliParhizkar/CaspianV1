@@ -11,5 +11,7 @@ namespace ReportGenerator.Client.Data
         public BoundItemData BoundItem{ get; set; }
 
         public BoundData Bound {  get; set; }
+
+        public TableData Table { get; set; }    
     }
 }

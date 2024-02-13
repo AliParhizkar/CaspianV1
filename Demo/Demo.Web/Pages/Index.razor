@@ -1,20 +1,11 @@
 ﻿@page "/Demo"
 @inherits BasePage
 @namespace Demo.Web.Pages
-@{
-    base.BuildRenderTree(__builder);
-}
-
+<span>Color: @(color)</span><span style="display:inline-block;width:50px;height:12px;background-color:@(color)"></span>
+<ColorPicker @bind-Color="color" />
 
 @code
 {
-    void Testttt()
-    {
-        var q = 5;
-        if (q == 5)
-            throw new Exception("");
-    }
-
-    OrderType? orderType;
+    string color = "#57BD6D";
 }
 
