@@ -12,7 +12,6 @@
     <link href="/_content/UIComponent/Content/2011.1.315/Caspian.silver.css" rel="stylesheet" type="text/css" />
     <link href="/_content/UIComponent/Content/2011.1.315/Caspian.rtl.css" rel="stylesheet" type="text/css" />
     <link href="/_content/UIComponent/Content/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="/_content/Engine.Web/css/Report.css" rel="stylesheet" />
     <link href="/_content/Engine.Web/jeegoocontext/skins/cm_default/style.css" rel="stylesheet" />
     <link href="/_content/Engine.Web/css/evol.colorpicker.min.css" rel="stylesheet" />
     <link href="/_content/Engine.Web/Content/Workflow/css/site.css" rel="stylesheet" />
@@ -59,7 +58,7 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; }
 
-    private IComponentRenderMode RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account")
+    private IComponentRenderMode RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account/Login")
         ? null
         : InteractiveServer;
 }

@@ -10,7 +10,7 @@ namespace Caspian.Engine.Service
         public RoleService(IServiceProvider provider) :
             base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("نقشی با این عنوان در سیستم وجود دارد");
+            RuleFor(t => t.Name).Required().UniqAsync("نقشی با این عنوان در سیستم وجود دارد");
         }
     }
 }

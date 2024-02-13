@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,13 +7,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Caspian.Engine.Model
 {
     [Table("Roles", Schema = "cmn")]
-    public class Role
+    public class Role : IdentityRole<int>
     {
         [Key]
-        public int Id { get; set; }
+        public override int Id { get; set; }
 
-        [DisplayName("Title")]
-        public string Title { get; set; }
+        [DisplayName("Name")]
+        public override string Name { get; set; }
 
         [CheckOnDelete("The role has members and it is not possible to delete it")]
         public virtual ICollection<UserMembership> Memberships { get; set; }

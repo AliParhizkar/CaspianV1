@@ -8,12 +8,12 @@
         <label>Title</label>
     </div>
     <div class="col-md-8">
-        <StringTextBox @bind-Value="SearchData.Title" />
+        <StringTextBox @bind-Value="SearchData.Name" />
     </div>
 </div>
 <DataGrid @ref="CrudGrid" TEntity="Role" ContentHeight="400">
     <Columns>
-        <GridColumn Field="t => t.Title" />
+        <GridColumn Field="t => t.Name" />
         <GridColumn Title="Members" style="width:80px">
             <Template>
                 <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserMembership/{context.Data.Id}")' IconType="IconType.Wpforms" />
@@ -37,10 +37,10 @@
         <CaspianForm @ref="UpsertForm" Model="UpsertData">
             <div class="row c-controls ps-2 pe-2">
                 <div class="col-md-3">
-                    <label>Title</label>
+                    <label>Name</label>
                 </div>
                 <div class="col-md-9">
-                    <StringTextBox @bind-Value="UpsertData.Title" />
+                    <StringTextBox @bind-Value="UpsertData.Name" />
                 </div>
                 <div class="col-md-3"></div>
                 <div class="col-md-9">
