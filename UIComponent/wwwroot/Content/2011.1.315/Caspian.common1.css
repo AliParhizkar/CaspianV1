@@ -1,12 +1,11 @@
 ﻿.c-colorpicker-panel {
     position: absolute;
-    top: 100px;
-    left: 300px;
     overflow: hidden;
     box-shadow: #cfcfcf 1px 1px 12px 4px;
     border: 1px solid #cfcfcf;
     width: 235px;
-    background-color:white;
+    background-color: white;
+    z-index: 100000;
 }
 
 .c-color-block {
@@ -3197,6 +3196,9 @@ html body .t-grid tbody .t-button-icon {
     position: fixed;
     z-index:50000;
 }
+.c-context-menu-container{
+    position:absolute;
+}
 
 .c-context-menu {
     position: absolute;
@@ -3209,6 +3211,7 @@ html body .t-grid tbody .t-button-icon {
     top: 0;
     min-width: 8rem;
     outline: 5px solid #fefefe;
+    z-index: 10000000;
 }
 
 .c-context-menu-left {

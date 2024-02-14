@@ -1,6 +1,6 @@
 ﻿@namespace Caspian.UI
 @inject IJSRuntime JSRuntime
-<div @ref="reference" class="c-colorpicker-panel">
+<div @ref="reference" class="c-colorpicker-panel" style="left:@(Left)px;top:@(Top)px">
     <div class="c-color-block">
         <div class="c-color-white">
             <div class="c-color-black">
@@ -48,9 +48,9 @@
 
     protected override void OnInitialized()
     {
-        color = Color ?? "#FFF";
+        color = Color ?? "#FFFFFF";
 
-        colors = new List<string>() { "transparent", "#fff", "#000", "#ff0000", "#00ff00", "#0000ff", "#00ffff", "#ff00ff", "#ffff00" };
+        colors = new List<string>() { "transparent", "#FFFFFF", "#000000", "#ff0000", "#00ff00", "#0000ff", "#00ffff", "#ff00ff", "#ffff00" };
         base.OnInitialized();
     }
 
@@ -69,11 +69,17 @@
     public string Color { get; set; }
 
     [Parameter]
+    public int Left { get; set; }
+
+    [Parameter]
+    public int Top { get; set; }
+
+    [Parameter]
     public EventCallback<string> ColorChanged { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var colorString = Color.Substring(1);
+        var colorString = color.Substring(1);
         var count = colorString.Length == 8 ? 4 : 3;
         var size = colorString.Length / count;
         var array = Enumerable.Range(0, count).Select(index => colorString.Substring(index * size, size))

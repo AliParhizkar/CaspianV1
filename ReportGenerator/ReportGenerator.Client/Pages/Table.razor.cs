@@ -43,8 +43,8 @@ namespace Caspian.Report
         void ShowContextMenu(MouseEventArgs e)
         {
             contextMenuStatus = true;
-            left = e.ClientX;
-            top = e.ClientY - 100;
+            left = e.ClientX + 10;
+            top = e.ClientY - 10;
         }
 
         public Font Font

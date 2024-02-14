@@ -9,7 +9,6 @@ namespace Caspian.Report
     {
         bool isSettingWindow;
         string title;
-        
         Font font;
         WindowStatus status;
         Alignment alignment;

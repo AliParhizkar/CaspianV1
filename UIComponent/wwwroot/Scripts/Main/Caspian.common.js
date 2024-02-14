@@ -1,13 +1,21 @@
 ﻿(function ($) {
     let $c = $.caspian = {
         updateColor: function (element, r, g, b, a) {
-            let [h, s, v] = $c.convertRGBAtoHSVA(r, g, b);
-            $c.update(element, h, s, v);
-            let color = a == null ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${a})`;
-            $(element).find('.c-color-number input').val(color);
-            $(element).find('.c-color-displayer').css('background-color', color);
+            if (element.red != r || element.green != g || element.blue != b || element.alpha != a) {
+                let [h, s, v] = $c.convertRGBAtoHSVA(r, g, b);
+                $c.update(element, h, s, v);
+                let color = a == null ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${a})`;
+                $(element).find('.c-color-number input').val(color);
+                $(element).find('.c-color-displayer').css('background-color', color);
+            }
+            element.red = r;
+            element.green = g;
+            element.blue = b;
+            element.alpha = a;
+            
         },
         bindColorPicker: function (element, r, g, b, a) {
+            
             $c.updateColor(element, r, g, b, a);
 
             $(element).find('.c-color-selector').mousedown(e => {

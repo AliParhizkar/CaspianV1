@@ -39,7 +39,7 @@
                         OnMouseDown="async () => await ChangeFont(null, null, !font.Italic)" />
         <SelectableIcon Enabled="fontEnabled" Selected="font?.Bold == true" XPosition="25"
                         OnMouseDown="async () => await ChangeFont(null, !font.Bold, null)" />
-        <CollorPicker Enabled="fontEnabled" Color="@font?.Color?.ColorString" XPosition="281"
+        <ReportGenerator.CollorPicker Enabled="fontEnabled" XPosition="281"
                       ColorChanged="async color => await ChangeFont(null, null, color)"/>
         <span class="toolsbar-list" style="width:62px;">
             <input disabled="disabled" class="toolsbar-list-input" value="12" style="width:40px" />
@@ -57,8 +57,8 @@
             OnChange="async style => await ChangeBorder((BorderStyle)style)" />
          <DropdownIcon @ref="borderWidth" Enabled="borderEnabled" Value="border?.Width"
             OnChange="async width => await ChangeBorder(width)"/>
-        <CollorPicker XPosition="582" Enabled="borderEnabled" ColorChanged="async color => await ChangeBorder(color)"/>
-         <CollorPicker XPosition="544" Enabled="controlSelected" ColorChanged="async color => await ChangeBackgroundColor(color)" />
+        <ReportGenerator.CollorPicker XPosition="582" Enabled="borderEnabled" ColorChanged="async color => await ChangeBorder(color)"/>
+         <ReportGenerator.CollorPicker XPosition="544" Enabled="controlSelected" ColorChanged="async color => await ChangeBackgroundColor(color)" />
         <span class="toolsbar" style="width:2px;background-position:-542px 0px"></span>
          <ToolsbarIcon XPosition="517" Enabled="controlSelected" OnIconClick="OpenFormatingWindow" />
          <SelectableIcon XPosition="492" Enabled="borderEnabled" Selected="border?.BorderKind == 0"

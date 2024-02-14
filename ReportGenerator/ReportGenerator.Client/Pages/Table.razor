@@ -38,15 +38,11 @@
                 </td>
                 @foreach(var cell in row.Cells)
                 {
-                    style = $"{cell.Alignment.Style}{cell.Font.Style}";
+                    style = $"{cell.Alignment.Style}{cell.Font.Style}background-color:{cell.BackgroundColor.ColorString};";
                     var tempColIndex = colIndex;
                     var className = "r-cell ";
                     if (BoundItem?.Bound.Page.SelectedTable == this)
                     {
-                        if (selectedCells.Any(t => t.Row == null))
-                        {
-                            
-                        }
                         if (selectedCells.Any(t => t.Row.RowIndex == tempRowIndex && t.ColIndex == tempColIndex))
                             className = "cellselected";
                     }
