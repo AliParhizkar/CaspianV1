@@ -34,7 +34,13 @@ namespace Caspian.Common
         /// حقوق و دستمزد
         /// </summary>
         [Display(Name = "حقوق و دستمزد")]
-        Payment
+        Payment,
+
+        /// <summary>
+        /// صندوق
+        /// </summary>
+        [Display(Name = "صندوق")]
+        Cash
     }
 
     public static class SubSystemExt

@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "Style/cash-style.css",
+    "inputFile": "Style/cash-style.scss"
+  },
+  {
+    "outputFile": "wwwroot/cash-style.css",
+    "inputFile": "Style/cash-style.scss"
+  }
+]

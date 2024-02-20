@@ -1,0 +1,204 @@
+﻿@using Caspian.Engine.Web
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using Caspian.Engine.Service;
+@using Caspian.Common
+@using Caspian.Engine.Navigation
+@using Caspian.Engine.Shared
+
+@inherits LayoutComponentBase
+
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject SingletonMenuService MenuService
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider authStateProvider 
+@inject ProtectedSessionStorage storage
+@inject CaspianDataService dataService
+
+@{
+    var className = "page";
+    if (hideMenu)
+        className += " hideMenu";
+    var uri = new Uri(navigationManager.Uri);
+}
+<AuthorizeView>
+    <Authorized>
+        <div class="@className">
+            @if (menusId != null)
+            {
+                var className = "content";
+                <div class="sidebar">
+                    <div class="c-menu-icon">
+                        <div>
+                            <span class="c-container">
+                                <i @onclick="ToggeleMenu" class="fa fa-bars" />
+                            </span>
+                        </div>
+                        <div style="width:100px">
+                            <form action="Account/Logout" method="post">
+                                <AntiforgeryToken />
+                                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                                <button style="border:0" type="submit">
+                                    <span class="c-container">
+                                        <i title="خروج" class="fa fa-sign-out" />
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
+                        <div>
+                            <span class="c-container">
+                                <i @onclick="MainMenu" class="fa fa-th" />
+                            </span>
+                        </div>
+                    </div>
+                    <DataMenu OnChange="() => hideMenu = false" MenusId="menusId" />
+                </div>
+                <div class="@className">
+                    @if (userId == 1 || menusId.Contains(menuId))
+                    {
+                        <div class="c-main-head">
+                            <div>
+                                <i class="fa fa-user" />
+                                <span>@userName</span>
+                            </div>
+                            <div>
+                                <i class="fa fa-calendar" />
+                                <span>@date</span>
+                            </div>
+                            <div>
+                                <i class="fa fa-clock-o" />
+                                <span>@time</span>
+                            </div>
+                            <div>
+                                <i class="fa fa-wpforms"  />
+                                <span>@title</span>
+                            </div>
+                        </div>
+                        <div class="c-content-main">
+                            <CaspianExceptionComponent SystemKind="systemKind" @ref="exceptionComponent" UserId="userId">
+                                @Body
+                            </CaspianExceptionComponent>
+                        </div>
+                    }
+                    else
+                    {
+                        if (dataService.Language == Language.Fa)
+                        {
+                            <h1 style="color:red">شما به این صفحه دسترسی ندارید</h1>
+                        }
+                        else
+                        {
+                            <h1 style="color:red">You do not have access to this page</h1>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <Caspian.Engine.Shared.LoginComponent />
+    </NotAuthorized>
+</AuthorizeView>
+@code
+{
+    CaspianExceptionComponent exceptionComponent;
+    bool hideMenu;
+    string date;
+    string userName;
+    IList<int> menusId;
+    int? userId;
+    string time;
+    string title;
+    int menuId;
+    bool userHasAccess;
+    bool userIsAuthenticated;
+    SubSystemKind systemKind;
+    private string currentUrl;
+
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    void ToggeleMenu()
+    {
+        hideMenu = !hideMenu;
+    }
+
+    protected override void OnInitialized()
+    {
+        currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
+        navigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        currentUrl = navigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    protected override void OnParametersSet()
+    {
+        date = DateTime.Now.Date.ToShortDateString();
+        time = DateTime.Now.TimeOfDay.ShortString();
+        var uri = new Uri(navigationManager.Uri);
+        var url = uri.AbsolutePath;
+        if (url.StartsWith("/"))
+            url = url.Substring(1);
+        var strSubsystem = url.Split('/')[0];
+        var field = typeof(SubSystemKind).GetFields().Single(t => t.Name.Equals(strSubsystem, 
+            StringComparison.OrdinalIgnoreCase));
+        systemKind = (SubSystemKind)field.GetValue(null);
+        url = "";
+        foreach (var segment in uri.Segments)
+        {
+            if (!Int64.TryParse(segment, out _))
+                url += segment;
+        }
+        if (url.EndsWith('/'))
+            url = url.Substring(0, url.Length - 1);
+        var menu = MenuService.GetMenu(url);
+        menuId = 0;
+        title = "";
+        if (menu != null)
+        {
+            menuId = menu.Id;
+            title = menu.Title;
+        }
+        exceptionComponent?.Recover();
+        base.OnParametersSet();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (authenticationStateTask != null)
+        {
+            var result = await authenticationStateTask;
+            userIsAuthenticated = result.User.Identity?.IsAuthenticated == true;
+            if (userIsAuthenticated)
+            {
+                var claim = result.User.Claims.FirstOrDefault()?.Value;
+                if (claim.HasValue())
+                {
+                    userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+                    if (!userName.HasValue())
+                    {
+                        using var scope = ServiceScopeFactory.CreateScope();
+                        var user = await new UserService(scope.ServiceProvider).SingleAsync(userId.Value);
+                        userName = user.FName + " " + user.LName;
+                        menusId = await new MenuAccessibilityService(scope.ServiceProvider).GetUserMenus(userId.Value);
+                    }
+                }
+            }
+        }
+        await base.OnParametersSetAsync();
+    }
+
+    void MainMenu()
+    {
+        navigationManager.NavigateTo("/Default", true);
+    }
+
+    public void Dispose()
+    {
+        navigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

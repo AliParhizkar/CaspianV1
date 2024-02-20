@@ -1,0 +1,47 @@
+﻿@using Caspian.Engine.Model
+
+@typeparam TValue
+@inherits LookupWindow<User, TValue>
+
+<div class="p-2 row">
+    <div class="col-md-2">
+        <label>Id</label>
+    </div>
+    <div class="col-md-4 pe-5">
+        <NumericTextBox @bind-Value="SearchData.Id" Search />
+    </div>
+    <div class="col-md-2">
+        <label>First Name</label>
+    </div>
+    <div class="col-md-4 pe-5">
+        <StringTextBox @bind-Value="SearchData.FName" Search />
+    </div>
+    <div class="col-md-2">
+        <label>Last Name</label>
+    </div>
+    <div class="col-md-4 pe-5">
+        <StringTextBox @bind-Value="SearchData.LName" Search />
+    </div>
+</div>
+<div class="c-lookup-page" style="width:750px;">
+    <DataGrid @ref="Grid" TEntity="User" ContentHeight="150" Search="SearchData" HidePageSize>
+        <Columns Context="user">
+            <GridColumn Field="t => t.Id" Title="Id" />
+            <GridColumn Field="t => t.FName" Title="First Name" />
+            <GridColumn Field="t => t.LName" Title="Last Name" />
+        </Columns>
+    </DataGrid>
+</div>
+
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null 
+            || t.FName.Contains(LookupStringSearchValue) 
+            || t.LName.Contains(LookupStringSearchValue) 
+            || t.MobileNumber.Contains(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

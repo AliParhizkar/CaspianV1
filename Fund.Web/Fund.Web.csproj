@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
+    <ProjectReference Include="..\Engine\Engine.Model\Engine.Model.csproj" />
+    <ProjectReference Include="..\Engine\Engine.Service\Engine.Service.csproj" />
+    <ProjectReference Include="..\Engine\Engine.Web\Engine.Web.csproj" />
+    <ProjectReference Include="..\Fund.Model\Fund.Model.csproj" />
+    <ProjectReference Include="..\Fund.Service\Fund.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
+
+</Project>

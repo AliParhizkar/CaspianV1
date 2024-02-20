@@ -52,17 +52,27 @@ namespace Main
                 };
             });
 
-            builder.Services.AddScoped<CaspianDataService>();
+            builder.Services.AddScoped<CaspianDataService>(t => 
+            {
+                var dataService = new CaspianDataService() { Language = Language.En };
+                return dataService;
+            });
 
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ActivityService).Assembly.InjectServices(builder.Services);
+
+            typeof(Fund.Service.TreasurerService).Assembly.InjectServices(builder.Services);
+
 
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
 
             var connectionString = builder.Configuration.GetConnectionString("CaspianDb");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString));
+            CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
+
+            builder.Services.AddDbContext<Fund.Model.CashContext>();
 
             builder.Services.AddAuthenticationCore();
 
@@ -72,7 +82,7 @@ namespace Main
                 .AddDefaultTokenProviders();
 
             var app = builder.Build();
-            CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -97,6 +107,9 @@ namespace Main
             app.MapCaspianProjectWhen<Engine.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Egnine") ||
                 httpContext.Request.Path.StartsWithSegments("/Account"));
+
+            app.MapCaspianProjectWhen<Fund.Web.Components.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/Cash"));
 
             app.MapAdditionalIdentityEndpoints();
 
