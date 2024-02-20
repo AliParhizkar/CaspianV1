@@ -76,6 +76,13 @@ namespace Caspian.Engine.Service
             await base.UpdateAsync(entity);
         }
 
+        public override IQueryable<User> GetAll(User search = null)
+        {
+            if (search is not null)
+                search.ConcurrencyStamp = null;
+            return base.GetAll(search);
+        }
+
         public async Task<User> UserIsvalidAsync(string userName, string password)
         {
             var md5Password = CreateMD5(password);
