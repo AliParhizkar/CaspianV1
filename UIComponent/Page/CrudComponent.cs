@@ -172,7 +172,8 @@ namespace Caspian.UI
                             UpsertData.CopySimpleProperty(tempData);
                             if (UpsertForm != null && !UpsertForm.OnInternalSubmit.HasDelegate)
                                 FormInitial();
-                            await UpsertForm?.FocusToFirstControlAsync();
+                            if(UpsertForm is not null)
+                                await UpsertForm.FocusToFirstControlAsync();
                         });
                     }
                     else

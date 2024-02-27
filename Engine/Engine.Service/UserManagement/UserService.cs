@@ -3,6 +3,13 @@ using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
+using Castle.Core.Smtp;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System.Text.Encodings.Web;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
@@ -64,8 +71,19 @@ namespace Caspian.Engine.Service
 
         public async override Task<User> AddAsync(User entity)
         {
-            entity.Password = CreateMD5(entity.Password);
-            return await base.AddAsync(entity);
+            var userStore = ServiceProvider.GetRequiredService<IUserStore<User>>();
+            await userStore.SetUserNameAsync(entity, entity.UserName, CancellationToken.None);
+
+            var userManager = ServiceProvider.GetRequiredService<UserManager<User>>();
+            var result = await userManager.CreateAsync(entity, entity.Password);
+
+            if (!result.Succeeded)
+            {
+                // TODO
+                throw new Exception();
+            }
+
+            return entity;
         }
 
         public async override Task UpdateAsync(User entity)
@@ -96,6 +114,19 @@ namespace Caspian.Engine.Service
             var inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
             byte[] hashBytes = md5.ComputeHash(inputBytes);
             return Convert.ToHexString(hashBytes);
+        }
+
+        private User CreateUser()
+        {
+            try
+            {
+                return Activator.CreateInstance<User>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(User)}'. " +
+                    $"Ensure that '{nameof(User)}' is not an abstract class and has a parameterless constructor.");
+            }
         }
     }
 }

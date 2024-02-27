@@ -1,0 +1,89 @@
+﻿@page "/Cash/TreasuryList"
+
+<PageTitle>مدیریت خزانه ها</PageTitle>
+
+<AdvanceSearch />
+
+<CrudComponent TEntity="Treasury" UpsertData="treasuryData">
+    <div class="row c-controls">
+        <div class="col-md-4 ps-4">
+            <label>Title</label>
+        </div>
+        <div class="col-md-8 pe-4">
+            <NumericTextBox @bind-Value="treasurySearch.Title" Search />
+        </div>
+    </div>
+    <DataGrid TEntity="Treasury" Search="treasurySearch">
+        <Columns>
+            <GridColumn Field="t => t.Id" Title="Code" />
+            <GridColumn Field="t => t.CashBoxType.Name" Title="Cash box Type" />
+            <GridColumn Field="t => t.AccountHolder" Title="Treasurer" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.FloorLimit" />
+            <GridColumn Field="t => t.Status" />
+            <GridColumn Field="t => t.Description" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Title="Add new treasury" Style="width:450px;">
+        <Content>
+            <CaspianForm Model="treasuryData">
+                <div class="row c-controls ps-3 pe-3">
+                    <div class="col-md-3">
+                        <label>Cash box Type</label>
+                    </div>
+                    <div class="col-md-9">
+                        <ComboBox TEntity="CashBoxType" TValue="int" @bind-Value="treasuryData.CashBoxTypeId" TextExpression="t => t.Name" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Treasurer</label>
+                    </div>
+                    <div class="col-md-9">
+                        <ComboBox TEntity="Treasurer" TValue="int" 
+                                  @bind-Value="treasuryData.AccountHolderId" 
+                                  OnChanged="OnTextExpressionChanged"
+                                  TextExpression='(t => t.User.FName + " " + t.User.LName)' />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Title</label>
+                    </div>
+                    <div class="col-md-9">
+                        <StringTextBox Class="asdasd" @bind-Value="treasuryData.Title"  />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Floor Limit</label>
+                    </div>
+                    <div class="col-md-9">
+                        <NumericTextBox @bind-Value="treasuryData.FloorLimit" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Status</label>
+                    </div>
+                    <div class="col-md-9">
+                        <NumericTextBox @bind-Value="treasuryData.Status" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Description</label>
+                    </div>
+                    <div class="col-md-9">
+                        <StringTextBox MultiLine @bind-Value="treasuryData.Description" />
+                    </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9 text-center">
+                        <WindowCommandButtons />
+                    </div>
+                </div>
+            </CaspianForm>
+        </Content>
+    </Window>
+</CrudComponent>
+
+@code {
+    Treasury treasurySearch = new Treasury();
+    Treasury treasuryData = new Treasury();
+
+    void OnTextExpressionChanged(string textExpression)
+    {
+        treasuryData.Title = textExpression;
+    }
+}

@@ -16,20 +16,9 @@ namespace Fund.Model
     {
     }
 
-    public enum Status
+    public enum Status : byte
     {
         Enable = 1,
         Disable,
-    }
-
-    public class TreasurerValidator : AbstractValidator<Treasurer>
-    {
-        public TreasurerValidator()
-        {
-            RuleFor(r => r.User).Required();
-            RuleFor(r => r.Status).Required();
-            RuleFor(r => r.BeginDate).Required();
-            RuleFor(r => r.EndDate).Required();
-        }
     }
 }

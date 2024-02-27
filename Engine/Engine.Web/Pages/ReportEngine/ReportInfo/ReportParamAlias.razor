@@ -1,5 +1,7 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
-@inject IServiceScopeFactory serviceFactory
+
+@inject IServiceScopeFactory ServiceScopeFactory
+
 <table>
     <thead>
         <tr>
@@ -29,7 +31,7 @@
     IList<ReportParam> reportParams;
     protected override async Task OnInitializedAsync()
     {
-        using var service = serviceFactory.CreateScope().GetService<ReportParamService>();
+        using var service = ServiceScopeFactory.CreateScope().GetService<ReportParamService>();
         reportParams = await service.GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
         await base.OnInitializedAsync();
     }

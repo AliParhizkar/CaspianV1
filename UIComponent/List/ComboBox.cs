@@ -69,7 +69,7 @@ namespace Caspian.UI
         public Func<IQueryable<TEntity>, string, IQueryable<TEntity>> OnDataBinding { get; set; }
 
         [Parameter]
-        public EventCallback OnChanged { get; set; }
+        public EventCallback<string> OnChanged { get; set; }
 
         [Parameter]
         public EnableLoadContiner EnableLoadContiner { get; set; }
@@ -595,7 +595,7 @@ namespace Caspian.UI
             {
                 valueChanged = false;
                 if (OnChanged.HasDelegate)
-                    await OnChanged.InvokeAsync();
+                    await OnChanged.InvokeAsync(text);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

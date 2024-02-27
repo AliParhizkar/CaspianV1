@@ -1,0 +1,38 @@
+﻿@using Caspian.UI
+
+@inherits CaspianForm<User>
+@if (_model is not null)
+{
+    <CaspianForm @ref="form" Model="_model">
+    @UserFormContent
+    </CaspianForm>
+}
+@code {
+    User _model;
+    CaspianForm<User> form;
+
+    [Parameter]
+    public RenderFragment UserFormContent { get; set; }
+
+    [Parameter]
+    public User UserModel 
+    {
+        get { return _model; }
+        set 
+        { 
+            _model = value;
+            if(form is not null)
+            {
+                
+            }
+            StateHasChanged();
+        }
+    } 
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+
+    }
+}

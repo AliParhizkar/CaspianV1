@@ -1,104 +1,131 @@
 ﻿@namespace Caspian.Engine.UserManagement
-@inherits SimplePage<User>
-@{
-    base.BuildRenderTree(__builder);
-}
-<div class="row c-controls">
-    <div class="col-md-2">
-        <label>Last name</label>
+
+@using Microsoft.AspNetCore.Identity
+
+@inherits BasePage
+
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject UserManager<User> UserManager
+@inject IUserStore<User> UserStore
+
+<CrudComponent TEntity="User" UpsertData="userData">
+    <div class="row c-controls">
+        <div class="col-md-2">
+            <label>Last name</label>
+        </div>
+        <div class="col-md-4 pe-3">
+            <StringTextBox @bind-Value="userSearch.LName" />
+        </div>
+        <div class="col-md-2 ps-3">
+            <label>Username</label>
+        </div>
+        <div class="col-md-4">
+            <StringTextBox @bind-Value="userSearch.UserName" />
+        </div>
     </div>
-    <div class="col-md-4 pe-3">
-        <StringTextBox @bind-Value="SearchData.LName" />
-    </div>
-    <div class="col-md-2 ps-3">
-        <label>Username</label>
-    </div>
-    <div class="col-md-4">
-        <StringTextBox @bind-Value="SearchData.UserName" />
-    </div>
-</div>
-<DataGrid @ref="CrudGrid" TEntity="User" ContentHeight="400">
-    <Columns>
-        <GridColumn Field="t => t.FName" />
-        <GridColumn Field="t => t.LName" />
-        <GridColumn Field="t => t.UserName" />
-        <GridColumn Field="t => t.Email" />
-        <GridColumn Field="t => t.MobileNumber" />
-        <GridColumn Title="Menus" style="width:80px">
-            <Template>
-                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccess/{context.Data.Id}")' IconType="IconType.Wpforms" />
-            </Template>
-        </GridColumn>
-        <GridColumn Title="Menus-Tree" style="width:90px">
-            <Template>
-                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccessTree/{context.Data.Id}")' IconType="IconType.Wpforms" />
-            </Template>
-        </GridColumn>
-        <GridCommandColumns />
-    </Columns>
-</DataGrid>
-<Window @ref="UpsertWindow" Title="User properties" Style="width:500px">
-    <Content>
-        <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="SetPasswordForUpdate" OnValidSubmit="CheckConfirmPassword">
-            <div class="row c-controls ps-3 pe-3">
-                <div class="col-md-4">
-                    <label>First name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.FName" />
-                </div>
-                <div class="col-md-4">
-                    <label>Last name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.LName" />
-                </div>
-                <div class="col-md-4">
-                    <label>User name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.UserName" Disabled="UpsertData.Id > 0" />
-                </div>
-                @if (UpsertData.Id == 0)
+    <DataGrid TEntity="User" Search="userSearch">
+        <Columns>
+            <GridColumn Field="t => t.FName" />
+            <GridColumn Field="t => t.LName" />
+            <GridColumn Field="t => t.UserName" />
+            <GridColumn Field="t => t.Email" />
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridColumn Title="Menus" style="width:80px">
+                <Template>
+                    <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccess/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridColumn Title="Menus-Tree" style="width:90px">
+                <Template>
+                    <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccessTree/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window @ref="window" Title="User properties" Style="width:500px">
+        <Content>
+            <div>
+                @if (!string.IsNullOrEmpty(Message))
                 {
-                    <div class="col-md-4">
-                        <label>Password</label>
-                    </div>
-                    <div class="col-md-8">
-                        <StringTextBox @bind-Value="UpsertData.Password" type="password" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Confirm password</label>
-                    </div>
-                    <div class="col-md-8">
-                        <StringTextBox @bind-Value="confirmPassword" type="password" />
+                    var statusMessageClass = Message.StartsWith("Error") ? "danger" : "success";
+                    <div class="alert alert-@statusMessageClass" role="alert">
+                        @Message
                     </div>
                 }
-                <div class="col-md-4">
-                    <label>Email</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.Email" type="password" />
-                </div>
-                <div class="col-md-4">
-                    <label>Mobile number</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.MobileNumber" />
-                </div>
-                <div class="col-md-4"></div>
-                <div class="col-md-8 text">
-                    <FormCommandButton />
-                </div>
             </div>
-        </CaspianForm>
-    </Content>
-</Window>
+            <EditForm Model="userData" OnValidSubmit="RegisterUser">
+                <CaspianValidationValidator ValidatorType=typeof(UserService) />
+               
+                <div class="row c-controls ps-3 pe-3">
+                    <div class="col-md-4">
+                        <label>First name</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="userData.FName" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Last name</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="userData.LName" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>User name</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="userData.UserName" Disabled="userData.Id > 0" />
+                    </div>
+                    @if (userData.Id == 0)
+                    {
+                        <div class="col-md-4">
+                            <label>Password</label>
+                        </div>
+                        <div class="col-md-8">
+                            <StringTextBox @bind-Value="userData.Password" type="password" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Confirm password</label>
+                        </div>
+                        <div class="col-md-8">
+                            <StringTextBox @bind-Value="confirmPassword" type="password" />
+                        </div>
+                    }
+                    <div class="col-md-4">
+                        <label>Email</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="userData.Email" type="password" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Mobile number</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="userData.MobileNumber" />
+                    </div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-8 text">
+                        <FormCommandButton />
+                    </div>
+                </div>
+            </EditForm>
+        </Content>
+    </Window>
+</CrudComponent>
 
-
-@code
-{
+@code {
+    private IEnumerable<Microsoft.AspNetCore.Identity.IdentityError> identityErrors;
+    Window window;
     string confirmPassword;
+    User userSearch = new User();
+    User userData = new User();
+    private string Message => identityErrors is null
+                    ? null
+                    : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+
+    [Parameter]
+    public SubSystemKind? SubSystemKind { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -107,21 +134,45 @@
         base.OnParametersSet();
     }
 
-    async Task SetPasswordForUpdate(EditContext context)
+    void WindowStatusChanged(WindowStatus status)
     {
-        if (UpsertData.Id > 0)
+        if (status == WindowStatus.Close)
+            confirmPassword = string.Empty;
+    }
+
+    public async Task RegisterUser(EditContext editContext)
+    {
+        if (userData.Id > 0)
         {
-            var scope = CreateScope();
-            var old = await new UserService(scope.ServiceProvider).SingleAsync(UpsertData.Id);
-            UpsertData.UserName = old.UserName;
+            var scope = ServiceScopeFactory.CreateScope();
+            var userService = scope.GetService<UserService>();
+            var old = await userService.SingleAsync(userData.Id);
+            userData.UserName = old.UserName;
             ///In update password should be and in service not changed
-            UpsertData.Password = null;
+            userData.Password = null;
         }
+
+        // var user = CreateUser();
+        var checkConfirmPassword = await CheckConfirmPassword(editContext);
+        if (!checkConfirmPassword)
+            return;
+
+        await UserStore.SetUserNameAsync(userData, userData.UserName, CancellationToken.None);
+        var result = await UserManager.CreateAsync(userData, userData.Password);
+
+        if (!result.Succeeded)
+        {
+            identityErrors = result.Errors;
+            return;
+        }
+
+        if (window is not null)
+            await window.Close();
     }
 
     Task<bool> CheckConfirmPassword(EditContext context)
     {
-        if (confirmPassword != UpsertData.Password)
+        if (confirmPassword != userData.Password)
         {
             ShowMessage("Password and Confirm password is not equal");
             StateHasChanged();
@@ -129,7 +180,4 @@
         }
         return Task.FromResult(true);
     }
-
-    [Parameter]
-    public SubSystemKind? SubSystemKind { get; set; }
 }

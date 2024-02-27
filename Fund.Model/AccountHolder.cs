@@ -18,11 +18,6 @@ namespace Fund.Model
 
         public long Code { get; set; }
 
-        //public virtual CashBranch Branch1 { get; set; }
-
-        [Display(Name = "کاربر")]
-        public int UserId { get; set; }
-
         [Display(Name = "وضعیت")]
         public Status Status {  get; set; }
 
@@ -37,9 +32,8 @@ namespace Fund.Model
         [Display(Name = "توضیح")]
         public string Description { get; set; }
 
-        //public bool? IsCenteralized {  get; set; }
-
-        //public string Title { get; set; }
+        [Display(Name = "کاربر")]
+        public int UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; }

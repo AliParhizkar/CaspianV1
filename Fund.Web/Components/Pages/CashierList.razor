@@ -1,20 +1,21 @@
-﻿@page "/Cash/TreasurerList"
+﻿@page "/Cash/CashierList"
 @using Caspian.Engine.Model
 
-<PageTitle>مدیریت خزانه دارها</PageTitle>
+<PageTitle>مدیریت صندوق دارها</PageTitle>
+
 
 <AdvanceSearch />
 
-<CrudComponent TEntity="Treasurer"  UpsertData="treasurerData">
+<CrudComponent TEntity="Cashier" UpsertData="cashierData">
     <div class="row c-controls">
         <div class="col-md-4 ps-4">
             <label>Title</label>
         </div>
         <div class="col-md-8 pe-4">
-            <NumericTextBox @bind-Value="treasurerSearch.Code" Search />
+            <NumericTextBox @bind-Value="cashierSearch.Code" Search />
         </div>
     </div>
-    <DataGrid TEntity="Treasurer" Search="treasurerSearch">
+    <DataGrid TEntity="Cashier" Search="cashierSearch">
         <Columns>
             <GridColumn Field="t => t.Code" />
             <GridColumn Field="@(t => t.User.FName + " " + t.User.LName)" Title="User" />
@@ -25,15 +26,15 @@
             <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window Title="Add new treasurer" Style="width:450px;">
+    <Window Title="Add new cashier" Style="width:450px;">
         <Content>
-            <CaspianForm Model="treasurerData">
+            <CaspianForm Model="cashierData">
                 <div class="row c-controls ps-3 pe-3">
                     <div class="col-md-3">
                         <label>User</label>
                     </div>
                     <div class="col-md-9">
-                        <AutoComplete TValue="int" TEntity="User" @bind-Value="treasurerData.UserId" TextExpression='t => t.FName + " " + t.LName'>
+                        <AutoComplete TValue="int" TEntity="User" @bind-Value="cashierData.UserId" TextExpression='t => t.FName + " " + t.LName'>
                             <AdvanceSearchUserLookupWindow />
                         </AutoComplete>
                     </div>
@@ -41,31 +42,31 @@
                         <label>Status</label>
                     </div>
                     <div class="col-md-9">
-                        <DropdownList @bind-Value="treasurerData.Status" />
+                        <DropdownList @bind-Value="cashierData.Status" />
                     </div>
                     <div class="col-md-3">
                         <label>Begin Date</label>
                     </div>
                     <div class="col-md-9">
-                        <DatePicker @bind-Value="treasurerData.BeginDate" />
+                        <DatePicker @bind-Value="cashierData.BeginDate" />
                     </div>
                     <div class="col-md-3">
                         <label>End Date</label>
                     </div>
                     <div class="col-md-9">
-                        <DatePicker @bind-Value="treasurerData.EndDate" />
+                        <DatePicker @bind-Value="cashierData.EndDate" />
                     </div>
                     <div class="col-md-3">
                         <label>Code</label>
                     </div>
                     <div class="col-md-9">
-                        <NumericTextBox @bind-Value="treasurerData.Code" />
+                        <NumericTextBox @bind-Value="cashierData.Code" />
                     </div>
                     <div class="col-md-3">
                         <label>Description</label>
                     </div>
                     <div class="col-md-9">
-                        <StringTextBox MultiLine @bind-Value="treasurerData.Description" />
+                        <StringTextBox MultiLine @bind-Value="cashierData.Description" />
                     </div>
                     <div class="col-md-3"></div>
                     <div class="col-md-9 text-center">
@@ -78,6 +79,6 @@
 </CrudComponent>
 
 @code {
-    Treasurer treasurerSearch = new Treasurer();
-    Treasurer treasurerData = new Treasurer();
+    Cashier cashierSearch = new Cashier();
+    Cashier cashierData = new Cashier();
 }

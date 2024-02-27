@@ -15,15 +15,4 @@ namespace Fund.Model
     {
 
     }
-
-    public class CashierValidator : AbstractValidator<Cashier>
-    {
-        public CashierValidator()
-        {
-            RuleFor(r => r.User).Required();
-            RuleFor(r => r.Status).Required();
-            RuleFor(r => r.BeginDate).Required();
-            RuleFor(r => r.EndDate).Required();
-        }
-    }
 }
