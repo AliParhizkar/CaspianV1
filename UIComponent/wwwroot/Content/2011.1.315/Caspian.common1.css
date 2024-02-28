@@ -2270,6 +2270,14 @@ div.t-window {
     border: 1px solid #c3c3c3;
 }
 /* TabStrip */
+.t-item.t-state-default:hover , .t-item.t-state-active:hover {
+    background-color: #cdcdcd;
+}
+
+.t-item.t-state-default:first-child:hover, .t-item.t-state-active:first-child:hover {
+    border-radius: 6px 0 0 0;
+}
+
 .t-tabstrip {
     margin: 0;
     padding: 0;
@@ -2344,9 +2352,9 @@ div.t-window {
     display: inline-block;
     zoom: 1;
     padding: 0;
-    height: 18px;
+    height: 100%;
     position: relative;
-    margin: 4px 0;
+    /*margin: 4px 0;*/
 }
 
 .t-tabstrip.t-header .t-padd {
@@ -3182,7 +3190,6 @@ html body .t-grid tbody .t-button-icon {
 
 /* Login Form */
 .c-login-container {
-    /*border: 2px solid red;*/
     display: flex;
     min-width: 200px;
     padding: 2% 10%;
@@ -3194,7 +3201,6 @@ html body .t-grid tbody .t-button-icon {
     align-items:center;
     justify-content:center;
     flex: 1;
-    /*border: 2px solid green;*/
     margin: 10px;
 }
 
@@ -3209,7 +3215,6 @@ html body .t-grid tbody .t-button-icon {
 /* No less than 768px, no greater than 992px */
 @media (min-width:768px) and (max-width:992px) {
     .c-login-container {
-        /*border: 2px solid red;*/
         display: flex;
         flex-direction: row;
         min-width: 200px;
@@ -3230,12 +3235,78 @@ html body .t-grid tbody .t-button-icon {
     }
 
     .c-login-form {
-        
         align-items:flex-start;
         justify-content:flex-start;
         min-width: 200px;
     }
 }
+
+​
+/* ContextMenu*/
+.c-context-menu-container {
+    width: fit-content;
+    border-radius: 8px;
+    cursor: default;
+    user-select: none;
+    position: fixed;
+    z-index:50000;
+}
+.c-context-menu-container{
+    position:absolute;
+}
+
+.c-context-menu {
+    position: absolute;
+    background-color: #fefefe;
+    transition: top linear .2s;
+    border: 5px solid #fefefe;
+    border-radius: 2px;
+    box-shadow: 0px 5px 4px 4px rgba(0, 0, 0, 0.4);
+    /*margin:0 2px;*/
+    top: 0;
+    min-width: 8rem;
+    outline: 5px solid #fefefe;
+    z-index: 10000000;
+}
+
+.c-context-menu-left {
+    left: 100%;
+}
+
+.c-context-menu-right {
+    right: 100%;
+}
+
+.c-context-menu-item, .c-context-menu-parent-item {
+    background-color: #fefefe;
+    position: relative;
+    list-style: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.c-context-menu-item-title {
+    white-space: nowrap;
+    margin-right: 0.25rem;
+}
+
+.c-context-menu-item:hover, .c-context-menu-parent-item:hover {
+    background-color: #e4e4e4;
+}
+
+.c-context-menu-down {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 5px;
+    align-items: center;
+}
+
+.c-context-menu li.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+
 
 /* ComboBox & Drop-down*/
 .t-combobox {
