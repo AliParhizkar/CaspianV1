@@ -36,6 +36,14 @@ namespace Caspian.Report
         [Parameter]
         public BoundData Data { get; set; }
 
+        public int MaxDataLevel
+        {
+            get
+            {
+                return BoundItems.Where(t => t.DataLevel.HasValue).Max(t => t.DataLevel.Value);
+            }
+        }
+
         [Parameter]
         public Page Page { get; set; }
 

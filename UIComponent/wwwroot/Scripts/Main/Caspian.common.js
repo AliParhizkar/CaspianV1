@@ -1,162 +1,8 @@
 ﻿(function ($) {
     let $c = $.caspian = {
-        updateColor: function (element, r, g, b, a) {
-            if (element.red != r || element.green != g || element.blue != b || element.alpha != a) {
-                let [h, s, v] = $c.convertRGBAtoHSVA(r, g, b);
-                $c.update(element, h, s, v);
-                let color = a == null ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${a})`;
-                $(element).find('.c-color-number input').val(color);
-                $(element).find('.c-color-displayer').css('background-color', color);
-            }
-            element.red = r;
-            element.green = g;
-            element.blue = b;
-            element.alpha = a;
-            
-        },
-        bindColorPicker: function (element, r, g, b, a) {
-            
-            $c.updateColor(element, r, g, b, a);
-
-            $(element).find('.c-color-selector').mousedown(e => {
-                let pos = $(e.target).position();
-                $c.dragStart(e.clientX, e.clientY, pos.left, pos.top);
-            });
-            $(element).find('.c-color-displayer').click(() => {
-                $c.changeColor(element);
-            });
-            $(element).find('.c-transparent-strip input').bind('input', e => {
-                let value = parseInt(e.target.value) / 100;
-                $c.update(element, null, null, null, value);
-            });
-            $('body').unbind('mousemove.colorpicker');
-            $('body').bind('mousemove.colorpicker', e => {
-                if ($c.mouseisDows) {
-                    let $element = $(element).find('.c-color-black');
-                    let width = $element.width(), height = $element.height();
-                    let difX = e.clientX - $c.xStart;
-                    let left = $c.leftStart + difX;
-                    if (left < -7)
-                        left = -7;
-                    if (left > width - 7)
-                        left = width - 7;
-                    let difY = e.clientY - $c.yStart;
-                    let top = $c.topStart + difY;
-                    if (top < -7)
-                        top = -7;
-                    if (top > height - 7)
-                        top = height - 7;
-                    $(element).find('.c-color-selector').css('left', left).css('top', top);
-                    $c.setColor($element[0], left + 7, top + 7);
-
-                }
-            });
-            $('body').unbind('mouseup.colorpicker');
-            $('body').bind('mouseup.colorpicker', e => {
-                $c.mouseisDows = false;
-            });
-
-            $(element).find('.c-color-block').bind('mousedown', e => {
-                $(element).find('.c-color-selector').css('left', e.offsetX - 7).css('top', e.offsetY - 7);
-                $c.dragStart(e.clientX, e.clientY, e.offsetX - 7, e.offsetY - 7);
-                //setColor(e.offsetX, e.offsetY);
-
-            });
-            $(element).find('.c-colors-hue input').bind('input', e => {
-                let value = parseInt(e.target.value);
-                $c.update(element, value, element.saturation, element.value);
-            });
-            $(element).find('.c-colors-palette .c-color').bind('click', e => {
-                let array = $(e.target).css('background-color').replace('rgba(', '').replace('rgb(', '').replace(')', '').split(', ')
-                    .map(t => parseInt(t));
-                let [h, s, v] = $c.convertRGBAtoHSVA(array[0], array[1], array[2]);
-                if (array.length == 4)
-                    $c.update(element, h, s, v, 0);
-                else
-                    $c.update(element, h, s, v, 1);
-                //console.log(color);
-            });
-        },
-        setColor: function (element, x, y) {
-            let width = $(element).width(), height = $(element).height();
-            $c.update($(element).closest('.c-colorpicker-panel')[0], null, parseInt(x / width * 100), parseInt(100 - y / height * 100))
-        },
-        changeColor: function (element) {
-            let input = $(element).find('input[type="hidden"]')[0];
-            input.value = $(element).find('.c-color-displayer').css('background-color');
-            var event = new Event('change');
-            input.dispatchEvent(event);
-        },
-        update(element, h, s, v, a) {
-            if (h != null) {
-                $(element).find('.c-colors-hue input').val(h);
-                element.hue = h;
-                let [red, green, blue] = $c.convertHSVtoRGB(h, 100, 100);
-                let color = `rgb(${red}, ${green}, ${blue})`;
-                $(element).find('.c-color-block').css('background-color', color);
-            }
-            if (a != null) {
-                $(element).find('.c-transparent-strip input').val(a * 100);
-                element.alpha = a;
-            }
-            if (s != null) {
-                let $element = $(element).find('.c-color-block'), width = $element.width(), height = $element.height();
-                let left = width / 100 * s, top = height / 100 * (100 - v);
-                $(element).find('.c-color-selector').css('left', left - 7).css('top', top - 7);
-                element.saturation = s;
-                element.value = v;
-            }
-            let [red, green, blue] = $c.convertHSVtoRGB(element.hue, element.saturation, element.value);
-            let color = `rgb(${red}, ${green}, ${blue})`;
-            $(element).find('.c-transparent-strip').css('background-image', 'linear-gradient(90deg, rgba(0, 0, 0, 0), ' + color + ')');
-            if (element.alpha != null && element.alpha != 1)
-                color = `rgba(${red}, ${green}, ${blue}, ${element.alpha})`;
-            $(element).find('.c-color-displayer').css('background-color', color);
-            $(element).find('.c-color-number input').val(color);
-
-        },
-        dragStart: function (x, y, left, top) {
-            $c.mouseisDows = true;
-            $c.leftStart = left;
-            $c.topStart = top;
-            $c.xStart = x;
-            $c.yStart = y;
-        },
-        convertRGBAtoHSVA(r, g, b) {
-            const red = r / 255;
-            const green = g / 255;
-            const blue = b / 255;
-            const xmax = Math.max(red, green, blue);
-            const xmin = Math.min(red, green, blue);
-            const chroma = xmax - xmin;
-            const value = xmax;
-            let hue = 0;
-            let saturation = 0;
-
-            if (chroma) {
-                if (xmax === red) { hue = ((green - blue) / chroma); }
-                if (xmax === green) { hue = 2 + (blue - red) / chroma; }
-                if (xmax === blue) { hue = 4 + (red - green) / chroma; }
-                if (xmax) { saturation = chroma / xmax; }
-            }
-
-            hue = Math.floor(hue * 60);
-            return [hue < 0 ? hue + 360 : hue, Math.round(saturation * 100), Math.round(value * 100)]
-        },
-        convertHSVtoRGB(h, s, v) {
-            const saturation = s / 100;
-            const value = v / 100;
-            let chroma = saturation * value;
-            let hueBy60 = h / 60;
-            let x = chroma * (1 - Math.abs(hueBy60 % 2 - 1));
-            let m = value - chroma;
-            chroma = (chroma + m);
-            x = (x + m);
-            const index = Math.floor(hueBy60) % 6;
-            const red = [chroma, x, m, m, x, chroma][index];
-            const green = [x, chroma, chroma, x, m, m][index];
-            const blue = [m, m, x, chroma, chroma, x][index];
-            return [Math.round(red * 255), Math.round(green * 255), Math.round(blue * 255)];
+        bindColorPicker: function (element, red, green, blue, alpha) {
+            let picker = $(element).colorPicker();
+            picker.updateColor(red, green, blue, alpha);
         },
         bindCodeEditor: function (code, dotnet, readonly, lineNumber, column, tokensData) {
             $.caspian.dotnet = dotnet;
@@ -1161,10 +1007,15 @@
         bindContextMenu(dotnet, elem) {
             const mutationObserver = new MutationObserver((list) => {
                 list.every(t => {
-                    if ($(elem).offset().left < $(window).width() / 2)
-                        $(t.target).find('.c-context-menu').addClass('c-context-menu-left').removeClass('c-context-menu-right');
-                    else
-                        $(t.target).find('.c-context-menu').addClass('c-context-menu-right').removeClass('c-context-menu-left');
+                    if (t.addedNodes.length == 1) {
+                        let $ctr = $(t.addedNodes[0]);
+                        let right = $ctr.parent().offset().left + $ctr.parent().outerWidth() + $ctr.outerWidth() + 10;
+                        if (right < $(window).width())
+                            $ctr.addClass('c-context-menu-left').removeClass('c-context-menu-right');
+                        else
+                            $ctr.addClass('c-context-menu-right').removeClass('c-context-menu-left');
+                        setTimeout(() => $ctr.css('margin-top', '-28px'), 1);
+                    }
                 });
             });
             mutationObserver.observe(elem, {
@@ -1174,14 +1025,8 @@
             });
             $(window).unbind("mousedown.ContextMenu");
             $(window).bind('mousedown.ContextMenu', async e => {
-                if (!$(e.target).closest('.c-context-menu').hasClass('c-context-menu')) {
+                if (!$(e.target).closest('.c-context-menu').hasClass('c-context-menu')) 
                     await dotnet.invokeMethodAsync("Close");
-                }
-                //const eventAncestors = event.composedPath(e);
-                //if (eventAncestors.some(t => t.className === "c-context-menu-item") ||
-                //    !eventAncestors.some(t => t.className === "c-context-menu-parent-item")) {
-                //    await dotnet.invokeMethodAsync("Close");
-                //}
             });
         },
         bindComboBox(dotnetHelper, input, pageable) {

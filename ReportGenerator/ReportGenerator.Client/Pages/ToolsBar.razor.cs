@@ -76,6 +76,7 @@ namespace Caspian.Report
 
         async Task ChangeFont(int? size, string family, string color)
         {
+            Page.PushControl();
             if (size.HasValue)
                 font.Size = size.Value;
             if (family != null)
@@ -116,6 +117,7 @@ namespace Caspian.Report
 
         async Task ChangeBorder(string color)
         {
+            Page.PushControl();
             border.Color = new Color(color);
             if (Page.SelectedTable != null)
                 Page.SelectedTable.Border = border;
@@ -124,7 +126,11 @@ namespace Caspian.Report
 
         async Task ChangeBackgroundColor(string color)
         {
-            BackGroundColor.ColorString = color;
+            Page.PushControl();
+            if (Page.SelectedTable != null)
+                Page.SelectedTable.BackgroundColor = new Color() { ColorString = color };
+            else
+                BackGroundColor.ColorString = color;
             await ChangeStyle();
         }
 

@@ -14,7 +14,7 @@
           <Value>Product_ProductCategory_Title,System.String</Value>
         </Columns>
         <Dictionary isRef="10" />
-        <Guid>59b92093939747e3868d581d428d444d</Guid>
+        <Guid>e5e1943f385445198f313a8432ecd269</Guid>
         <Name>list</Name>
       </list>
     </BusinessObjects>
@@ -40,22 +40,22 @@
     <Page1 Ref="15" type="Page" isKey="true">
       <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
       <Brush>Transparent</Brush>
-      <Components isList="true" count="2">
+      <Components isList="true" count="3">
         <ReportTitleBand1 Ref="1" type="ReportTitleBand" isKey="true">
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
-          <ClientRectangle>0,0,21.01,2.81</ClientRectangle>
+          <ClientRectangle>0,0,21.01,4.37</ClientRectangle>
           <Components isList="true" count="3">
             <Text11 Ref="31" type="Text" isKey="true">
-              <Brush>[0:0:0]</Brush>
-              <ClientRectangle>5.74,0.53,4.76,0.85</ClientRectangle>
+              <Brush>[207:255:207]</Brush>
+              <ClientRectangle>5.77,0.53,4.34,2.65</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Expressions isList="true" count="0" />
               <HorAlignment>Center</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Font>Arial,12</Font>
               <TextBrush>[204:108:108]</TextBrush>
-              <Border>None;[189:94:94];1;Solid;False;4;[0:0:0]</Border>
+              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
               <Name>Text11</Name>
               <Page isRef="15" />
@@ -64,15 +64,15 @@
               <Type>Expression</Type>
             </Text11>
             <Text12 Ref="32" type="Text" isKey="true">
-              <Brush>[0:0:0]</Brush>
-              <ClientRectangle>11.78,0.53,4.76,0.85</ClientRectangle>
+              <Brush>[207:255:207]</Brush>
+              <ClientRectangle>11.78,0.53,4.71,0.79</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Expressions isList="true" count="0" />
               <HorAlignment>Center</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Font>Arial,12</Font>
               <TextBrush>[204:108:108]</TextBrush>
-              <Border>None;[62:70:163];3;Solid;False;4;[0:0:0]</Border>
+              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
               <Name>Text12</Name>
               <Page isRef="15" />
@@ -81,15 +81,15 @@
               <Type>Expression</Type>
             </Text12>
             <Text13 Ref="33" type="Text" isKey="true">
-              <Brush>[0:0:0]</Brush>
-              <ClientRectangle>0.61,0.53,4.76,0.85</ClientRectangle>
+              <Brush>[207:255:207]</Brush>
+              <ClientRectangle>0.61,0.53,4.71,2.65</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Expressions isList="true" count="0" />
               <HorAlignment>Center</HorAlignment>
               <VertAlignment>Center</VertAlignment>
               <Font>Arial,12</Font>
               <TextBrush>[204:108:108]</TextBrush>
-              <Border>None;[62:70:163];2;Solid;False;4;[0:0:0]</Border>
+              <Border>All;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
               <Name>Text13</Name>
               <Page isRef="15" />
@@ -104,8 +104,19 @@
           <Page isRef="15" />
           <Parent isRef="15" />
         </ReportTitleBand1>
+        <HeaderBand2 Ref="3" type="HeaderBand" isKey="true">
+          <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21.01,1.06</ClientRectangle>
+          <Components isList="true" count="0" />
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Name>HeaderBand2</Name>
+          <Page isRef="15" />
+          <Parent isRef="15" />
+        </HeaderBand2>
         <Table2 Ref="17" type="Stimulsoft.Report.Components.Table.StiTable" isKey="true">
-          <BusinessObjectGuid>59b92093939747e3868d581d428d444d</BusinessObjectGuid>
+          <BusinessObjectGuid>e5e1943f385445198f313a8432ecd269</BusinessObjectGuid>
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <ClientRectangle>0,0,21.01,29.7</ClientRectangle>
           <ColumnCount>6</ColumnCount>
@@ -126,7 +137,7 @@
               <Name>Table2_Cell1</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>1</Text>
             </Table2_Cell1>
             <Table2_Cell2 Ref="35" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
@@ -144,7 +155,7 @@
               <Name>Table2_Cell2</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>2</Text>
             </Table2_Cell2>
             <Table2_Cell3 Ref="36" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
@@ -162,7 +173,7 @@
               <Name>Table2_Cell3</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>3</Text>
             </Table2_Cell3>
             <Table2_Cell4 Ref="37" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
@@ -180,7 +191,7 @@
               <Name>Table2_Cell4</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>4</Text>
             </Table2_Cell4>
             <Table2_Cell5 Ref="38" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
@@ -198,7 +209,7 @@
               <Name>Table2_Cell5</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>5</Text>
             </Table2_Cell5>
             <Table2_Cell6 Ref="39" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
@@ -216,11 +227,11 @@
               <Name>Table2_Cell6</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>6</Text>
             </Table2_Cell6>
             <Table2_Cell7 Ref="40" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
-              <ClientRectangle>0.16,0.71,4.13,0.85</ClientRectangle>
+              <ClientRectangle>0.16,0.71,4.13,2.73</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Expressions isList="true" count="0" />
               <Font>Arial,12</Font>
@@ -238,7 +249,7 @@
             </Table2_Cell7>
             <Table2_Cell8 Ref="41" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
-              <ClientRectangle>4.29,0.71,3.47,0.85</ClientRectangle>
+              <ClientRectangle>4.29,0.71,3.47,2.73</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Expressions isList="true" count="0" />
               <Font>Arial,12</Font>
@@ -252,11 +263,11 @@
               <Name>Table2_Cell8</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>7</Text>
             </Table2_Cell8>
             <Table2_Cell9 Ref="42" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
-              <ClientRectangle>7.75,0.71,3.33,0.85</ClientRectangle>
+              <ClientRectangle>7.75,0.71,3.33,2.73</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Expressions isList="true" count="0" />
               <Font>Arial,12</Font>
@@ -270,11 +281,11 @@
               <Name>Table2_Cell9</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>8</Text>
             </Table2_Cell9>
             <Table2_Cell10 Ref="43" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
-              <ClientRectangle>11.09,0.71,2.96,0.85</ClientRectangle>
+              <ClientRectangle>11.09,0.71,2.96,2.73</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Expressions isList="true" count="0" />
               <Font>Arial,12</Font>
@@ -288,11 +299,11 @@
               <Name>Table2_Cell10</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>9</Text>
             </Table2_Cell10>
             <Table2_Cell11 Ref="44" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
-              <ClientRectangle>14.05,0.71,3.28,0.85</ClientRectangle>
+              <ClientRectangle>14.05,0.71,3.28,2.73</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Expressions isList="true" count="0" />
               <Font>Arial,12</Font>
@@ -306,11 +317,11 @@
               <Name>Table2_Cell11</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>10</Text>
             </Table2_Cell11>
             <Table2_Cell12 Ref="45" type="TableCell" isKey="true">
               <Brush>[255:255:255]</Brush>
-              <ClientRectangle>17.33,0.71,3.52,0.85</ClientRectangle>
+              <ClientRectangle>17.33,0.71,3.52,2.73</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Expressions isList="true" count="0" />
               <Font>Arial,12</Font>
@@ -324,7 +335,7 @@
               <Name>Table2_Cell12</Name>
               <Page isRef="15" />
               <Parent isRef="17" />
-              <Text />
+              <Text>11</Text>
             </Table2_Cell12>
           </Components>
           <Conditions isList="true" count="0" />

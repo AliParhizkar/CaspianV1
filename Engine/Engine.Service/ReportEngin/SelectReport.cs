@@ -112,7 +112,7 @@ namespace Caspian.Engine
                 var index = name.IndexOf('.');
                 if (index > 0)
                 {
-                    name = name.Substring(0, index);
+                    //name = name.Substring(0, index);
                     tempType = paramExpr.Type.GetComplexPropertyInfo(field.TitleEn).PropertyType;
                 }
                 else
@@ -370,7 +370,7 @@ namespace Caspian.Engine
                             case CompositionMethodType.Max: name = "Max_" +  name; break;
                             case CompositionMethodType.Min: name = "Min_" + name; break;
                         }
-                        tempValue = value.GetMyValue(name.Replace('.', '_'), false);
+                        tempValue = value.GetType().GetProperty(name).GetValue(value);
                         var tempInfo = paramExpr.Type.GetMyProperty(param.TitleEn);
                         if (tempInfo.DeclaringType.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
                         {
@@ -388,12 +388,12 @@ namespace Caspian.Engine
                             if (tempType.IsEnumType())
                                 tempValue = (tempValue as Enum).EnumText();
                             if (tempType.GetUnderlyingType() == typeof(DateTime) && tempValue != null)
-                                tempValue = ((DateTime)tempValue).ToPersianDateString();
+                                tempValue = ((DateTime)tempValue);
                         }
                     }
                     if (name.HasValue())
                     {
-                        var propertyInfo = type.GetProperty(name.Replace('.', '_'));
+                        var propertyInfo = type.GetProperty(name);
                         propertyInfo.SetValue(obj, tempValue);
                     }
                 }

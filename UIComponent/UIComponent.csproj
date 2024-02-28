@@ -33,4 +33,11 @@
 		<ProjectReference Include="..\Engine\Engine.Model\Engine.Model.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Content Update="wwwroot\Scripts\Main\Caspian.ColorPicker.js">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>
+
 </Project>

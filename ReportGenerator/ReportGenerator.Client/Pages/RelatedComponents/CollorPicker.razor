@@ -39,7 +39,7 @@
     <div @onmousedown:stopPropagation @onmouseenter:stopPropagation @onmousemove:stopPropagation @onmouseup:stopPropagation @onclick:stopPropagation>
         <Caspian.UI.ColorPicker Left="@colorPickerLeft" Top="30" Color="@color" ColorChanged="ChangeColor" />
     </div>
-    <div @onclick="() => colorPickerOpen = false" class="r-behind">
+    <div @onclick="() => colorPickerOpen = false" @onmousemove:stopPropagation class="r-behind">
     </div>
 }
 
@@ -52,28 +52,23 @@
     int colorPickerLeft;
     string color;
 
+    protected override void OnInitialized()
+    {
+        color = DefaultColor;
+        base.OnInitialized();
+    }
+
     [Parameter]
     public bool Enabled { get; set; }
+
+    [Parameter]
+    public string DefaultColor { get; set; }
 
     void OpenColorPicker()
     {
         colorPickerOpen = true;
         colorPickerLeft = XPosition;
     }
-
-    // async Task Input(ChangeEventArgs e)
-    // {
-    //     Color = e.Value?.ToString();
-    //     if (ColorChanged.HasDelegate)
-    //         await ColorChanged.InvokeAsync(Color);
-    // }
-
-    // async Task Change(ChangeEventArgs e)
-    // {
-    //     Color = e.Value?.ToString();
-    //     if (ColorChanged.HasDelegate)
-    //         await ColorChanged.InvokeAsync(Color);
-    // }
 
     async Task ChangeColor(string color)
     {
@@ -85,14 +80,11 @@
     async Task ChangeControlColor()
     {
         firstButtonClicked = false;
-        await ChangeColor(color);
+        await ChangeColor(color ?? DefaultColor);
     }
 
     [Parameter]
     public int XPosition { get; set; }
-
-    // [Parameter]
-    // public string Color { get; set; }
 
     [Parameter]
     public EventCallback<string> ColorChanged { get; set; }

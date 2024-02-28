@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StiSerializer version="1.02" type="Net" application="StiReport">
+  <CalculationMode>Interpretation</CalculationMode>
+  <Dictionary Ref="10" type="Dictionary" isKey="true">
+    <BusinessObjects isList="true" count="1">
+      <list Ref="11" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+        <Alias>list</Alias>
+        <BusinessObjects isList="true" count="1">
+          <Orders Ref="12" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+            <Alias>Orders</Alias>
+            <BusinessObjects isList="true" count="1">
+              <OrderDeatils Ref="13" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+                <Alias>OrderDeatils</Alias>
+                <BusinessObjects isList="true" count="0" />
+                <Category />
+                <Columns isList="true" count="3">
+                  <Value>Product_Title,System.String</Value>
+                  <Value>Price,System.Int32</Value>
+                  <Value>Quantity,System.Int32</Value>
+                </Columns>
+                <Dictionary isRef="10" />
+                <Guid>4f15375e90b84608a517cf2db3b6615a</Guid>
+                <Name>OrderDeatils</Name>
+              </OrderDeatils>
+            </BusinessObjects>
+            <Category />
+            <Columns isList="true" count="2">
+              <Value>Order_Date,System.DateTime</Value>
+              <Value>Order_OrderType,System.String</Value>
+            </Columns>
+            <Dictionary isRef="10" />
+            <Guid>e1106d459f854b6ea820d20a49403b22</Guid>
+            <Name>Orders</Name>
+          </Orders>
+        </BusinessObjects>
+        <Category />
+        <Columns isList="true" count="6">
+          <Value>Order_Customer_CustomerType,System.String</Value>
+          <Value>Order_Customer_FName,System.String</Value>
+          <Value>Order_Customer_LName,System.String</Value>
+          <Value>Order_Customer_Gender,System.String</Value>
+          <Value>Order_Customer_CompanyName,System.String</Value>
+          <Value>Order_Customer_MobileNumber,System.String</Value>
+        </Columns>
+        <Dictionary isRef="10" />
+        <Guid>43d20506ca2c40008595b995affd70fb</Guid>
+        <Name>list</Name>
+      </list>
+    </BusinessObjects>
+    <Databases isList="true" count="0" />
+    <DataSources isList="true" count="0" />
+    <Relations isList="true" count="0" />
+    <Report isRef="0" />
+    <Resources isList="true" count="0" />
+    <Variables isList="true" count="0">
+      <value>,ReportDate,ReportDate,DateTime,,False,False</value>
+      <value>,FirstName,FirstName,String,,False,False</value>
+      <value>,LastName,LastName,String,,False,False</value>
+      <value>,FullName,FullName,String,,False,False</value>
+      <value>,PersonalCode,PersonalCode,String,,False,False</value>
+    </Variables>
+    <Variables isList="true" count="5" />
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings isList="true" count="0" />
+  <Key>49524a268db240eab98e84c14d67e873</Key>
+  <MetaTags isList="true" count="0" />
+  <Pages isList="true" count="1">
+    <Page1 Ref="15" type="Page" isKey="true">
+      <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+      <Brush>Transparent</Brush>
+      <Components isList="true" count="3">
+        <DataBand3 Ref="4" type="DataBand" isKey="true">
+          <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21.01,0.9</ClientRectangle>
+          <BusinessObjectGuid>43d20506ca2c40008595b995affd70fb</BusinessObjectGuid>
+          <Components isList="true" count="1">
+            <Text11 Ref="31" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>1.03,0.05,4.76,0.85</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Expressions isList="true" count="0" />
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Font>Arial,12</Font>
+              <TextBrush>[0:0:0]</TextBrush>
+              <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text11</Name>
+              <Page isRef="15" />
+              <Parent isRef="4" />
+              <Text>{list.Order_Customer_FName}</Text>
+              <Type>Expression</Type>
+            </Text11>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Name>DataBand3</Name>
+          <Page isRef="15" />
+          <Parent isRef="15" />
+        </DataBand3>
+        <DataBand4 Ref="5" type="DataBand" isKey="true">
+          <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21.01,0.9</ClientRectangle>
+          <BusinessObjectGuid>e1106d459f854b6ea820d20a49403b22</BusinessObjectGuid>
+          <MasterComponent isRef="4" />
+          <Components isList="true" count="1">
+            <Text12 Ref="32" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>3.84,0.05,4.76,0.85</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Expressions isList="true" count="0" />
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Font>Arial,12</Font>
+              <TextBrush>[0:0:0]</TextBrush>
+              <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text12</Name>
+              <Page isRef="15" />
+              <Parent isRef="5" />
+              <Text>{list.Orders.Order_Date}</Text>
+              <Type>Expression</Type>
+            </Text12>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Name>DataBand4</Name>
+          <Page isRef="15" />
+          <Parent isRef="15" />
+        </DataBand4>
+        <DataBand5 Ref="6" type="DataBand" isKey="true">
+          <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21.01,1.4</ClientRectangle>
+          <BusinessObjectGuid>4f15375e90b84608a517cf2db3b6615a</BusinessObjectGuid>
+          <MasterComponent isRef="5" />
+          <Components isList="true" count="1">
+            <Text13 Ref="33" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>6.59,0.03,4.76,0.85</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Expressions isList="true" count="0" />
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Font>Arial,12</Font>
+              <TextBrush>[0:0:0]</TextBrush>
+              <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text13</Name>
+              <Page isRef="15" />
+              <Parent isRef="6" />
+              <Text>{list.Orders.OrderDeatils.Product_Title}</Text>
+              <Type>Expression</Type>
+            </Text13>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Name>DataBand5</Name>
+          <Page isRef="15" />
+          <Parent isRef="15" />
+        </DataBand5>
+      </Components>
+      <Conditions isList="true" count="0" />
+      <Expressions isList="true" count="0" />
+      <Guid>f1f6fa338a744ced830a2b55c8e7a5f8</Guid>
+      <Margins>0,0,0,0</Margins>
+      <Name>Page1</Name>
+      <PageWidth>21</PageWidth>
+      <PageHeight>29.7</PageHeight>
+      <Report isRef="0" />
+    </Page1>
+  </Pages>
+  <PrinterSettings Ref="9999" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
+  <ReportAlias>Report</ReportAlias>
+  <ReportChanged>5/3/2015 4:05:02 PM</ReportChanged>
+  <ReportCreated>5/1/2015 7:31:06 PM</ReportCreated>
+  <ReportFile>D:\e.mrt</ReportFile>
+  <ReportGuid>7a59e6f3323042d4848703beddfe3e7b</ReportGuid>
+  <ReportName>ReportName</ReportName>
+  <ReportUnit>Centimeters</ReportUnit>
+  <ReportVersion>2012.1.1300</ReportVersion>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles isList="true" count="0" />
+</StiSerializer>

@@ -9,6 +9,7 @@ using Caspian.Common.Extension;
 using ReportGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Demo.Model;
 
 namespace ReportGenerator.Controllers
 {
@@ -70,12 +71,13 @@ namespace ReportGenerator.Controllers
         [HttpGet]
         public async Task<IList<SelectListItem>> GetReportParameters(int reportId, int dataLevel)
         {
-            return await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == null || t.DataLevel == dataLevel))
+            var result = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == null || t.DataLevel == dataLevel))
                 .Select(t => new SelectListItem
                 {
                     Text = t.Alias,
                     Value = t.TitleEn
                 }).ToListAsync();
+            return result;
         }
 
         public async Task SaveReport(PageData page)
@@ -109,7 +111,6 @@ namespace ReportGenerator.Controllers
         public async Task<FileContentResult> GetReport(int reportId )
         {
             var report = await GetService<ReportService>().SingleAsync(reportId);
-            //report.PrintFileName = "BusinessObjects";
             var path = $"{environment.ContentRootPath}/Report/Print/{report.PrintFileName}.mrt";
             var stiReport = new StiReport();
             stiReport["@ReportDate"] = DateTime.Now;
@@ -119,13 +120,90 @@ namespace ReportGenerator.Controllers
             stiReport["FullName"] = "Ali Parhizkar";
             stiReport["@PersonalCode"] = "123456";
             stiReport.Variables["FullName"] = "Ali Parhizkar";
-            var result = await GetService<OrderDeatilService>().GetReportOrderDeatils(null).Select(t => new 
+            var result = new List<object>() 
+            { 
+                new 
+                {
+                    Order_Customer_FName = "Ali",
+                    OrderDeatils = new List<object>()
+                    {
+                        new 
+                        {
+                            Product_Title = "Pizza",
+                        },
+                        new
+                        {
+                            Product_Title = "Hamberger"
+                        }
+                    }
+                },
+                new
+                {
+                    Order_Customer_FName = "Amir",
+                    OrderDeatils = new List<object>()
+                    {
+                        new
+                        {
+                            Product_Title = "Frnch fries",
+                        },
+                        new
+                        {
+                            Product_Title = "Hotdog"
+                        }
+                    }
+                },
+                new
+                {
+                    Order_Customer_FName = "Reza",
+                    OrderDeatils = new List<object>()
+                    {
+                        new
+                        {
+                            Product_Title = "Sousuge",
+                        },
+                        new
+                        {
+                            Product_Title = "Hotdog"
+                        }
+                    }
+                }
+            };
+            result = new List<object>
             {
-                Product_Title = t.Product.Title,
-                t.Price,
-                t.Quantity
-            }).ToListAsync();
-            stiReport.RegBusinessObject("list", result);
+                new
+                {
+                    Order_Customer_FName = "Ali",
+                    Orders = new List<object>()
+                    {
+                        new 
+                        {
+                            Order_Date = "2024/01/02",
+                            OrderDeatils = new List<object>()
+                            {
+                                new
+                                {
+                                    Product_Title = "Pizza"
+                                }
+                            }
+                        },
+                        new
+                        {
+                            Order_Date = "2024/01/03",
+                            OrderDeatils = new List<object>()
+                            {
+                                new
+                                {
+                                    Product_Title = "Hamberger"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var query = provider.GetService<OrderDeatilService>().GetAll();
+            var qqq = new ReportPrintEngine(provider).GetData(reportId, query);
+
+            stiReport.RegBusinessObject("list", qqq);
             stiReport.Load(path);
             stiReport.Render(false);
             var stream = new MemoryStream();

@@ -38,7 +38,7 @@
                 </td>
                 @foreach(var cell in row.Cells)
                 {
-                    style = $"{cell.Alignment.Style}{cell.Font.Style}background-color:{cell.BackgroundColor.ColorString};";
+                    style = $"{cell.Alignment.Style}{cell.Font.Style}";
                     var tempColIndex = colIndex;
                     var className = "r-cell ";
                     if (BoundItem?.Bound.Page.SelectedTable == this)
@@ -49,7 +49,7 @@
 
                     if (cell.Hidden)
                         className += " hidden-cell";
-                    <td style="@cell.Border.Style" @oncontextmenu="ShowContextMenu" @oncontextmenu:preventDefault colspan="@(cell.ColSpan)" rowspan="@(cell.RowSpan)" class="@(className)" @ondblclick="() => Bound.Page.OpenTextWindow()" @onmousedown="e => SelectTableCell(e.CtrlKey, cell)">
+                    <td style="@(cell.Border.Style + "background-color:" + cell.BackgroundColor.ColorString)" @oncontextmenu="ShowContextMenu" @oncontextmenu:preventDefault colspan="@(cell.ColSpan)" rowspan="@(cell.RowSpan)" class="@(className)" @ondblclick="() => Bound.Page.OpenTextWindow()" @onmousedown="e => SelectTableCell(e.CtrlKey, cell)">
                         <div style="@style" class="r-table-content">
                             @(cell.Text)
                         </div>

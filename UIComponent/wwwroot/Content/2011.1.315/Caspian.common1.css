@@ -1,4 +1,56 @@
-﻿.c-colorpicker-panel {
+﻿.c-context-menu-container {
+    z-index: 50000;
+    position: absolute;
+    border: 1px solid #e3e3e3;
+    background-color: #fafafa;
+    border-radius: 6px;
+    box-shadow: #e4e4e4 1px 1px 10px 5px;
+}
+
+    .c-context-menu-container .c-context-menu-container {
+        margin-top: -100%;
+        transition: margin-top .2s cubic-bezier(0.35, 0, 0.25, 1);
+    }
+
+.c-context-menu {
+    margin:0;
+    padding:6px 0;
+}
+.c-context-menu-left {
+    left: 100%;
+}
+
+.c-context-menu-right {
+    right: 100%;
+}
+
+.c-context-menu-item {
+    list-style: none;
+    clip-path: polygon(-1000px -10px, 1000px -10px, 1000px 1000px, 0 1000px);
+}
+
+.c-context-menu-item-title {
+    white-space: nowrap;
+    margin-right:1rem;
+}
+
+.c-context-menu-item:hover {
+    background-color: #e4e4e4;
+}
+
+.c-context-menu-down {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 5px;
+    align-items: center;
+}
+
+.c-context-menu li.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.c-colorpicker-panel {
     position: absolute;
     overflow: hidden;
     box-shadow: #cfcfcf 1px 1px 12px 4px;
@@ -3167,7 +3219,6 @@ html body .t-grid tbody .t-button-icon {
 
 @media (min-width:992px) {
     .c-login-container {
-        /*border: 2px solid red;*/
         display: flex;
         flex-direction: row;
         min-width: 200px;
@@ -3185,74 +3236,6 @@ html body .t-grid tbody .t-button-icon {
         min-width: 200px;
     }
 }
-
-​
-/* ContextMenu*/
-.c-context-menu-container {
-    width: fit-content;
-    border-radius: 8px;
-    cursor: default;
-    user-select: none;
-    position: fixed;
-    z-index:50000;
-}
-.c-context-menu-container{
-    position:absolute;
-}
-
-.c-context-menu {
-    position: absolute;
-    background-color: #fefefe;
-    transition: top linear .2s;
-    border: 5px solid #fefefe;
-    border-radius: 2px;
-    box-shadow: 0px 5px 4px 4px rgba(0, 0, 0, 0.4);
-    /*margin:0 2px;*/
-    top: 0;
-    min-width: 8rem;
-    outline: 5px solid #fefefe;
-    z-index: 10000000;
-}
-
-.c-context-menu-left {
-    left: 100%;
-}
-
-.c-context-menu-right {
-    right: 100%;
-}
-
-.c-context-menu-item, .c-context-menu-parent-item {
-    background-color: #fefefe;
-    position: relative;
-    list-style: none;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-
-.c-context-menu-item-title {
-    white-space: nowrap;
-    margin-right: 0.25rem;
-}
-
-.c-context-menu-item:hover, .c-context-menu-parent-item:hover {
-    background-color: #e4e4e4;
-}
-
-.c-context-menu-down {
-    display: flex;
-    justify-content: space-between;
-    padding: 2px 5px;
-    align-items: center;
-}
-
-.c-context-menu li.disabled {
-    pointer-events: none;
-    opacity: 0.4;
-}
-
-
 
 /* ComboBox & Drop-down*/
 .t-combobox {

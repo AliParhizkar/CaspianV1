@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.UI
+@using System.Text.Json
 @inject IJSRuntime JSRuntime
 <div @ref="reference" class="c-colorpicker-panel" style="left:@(Left)px;top:@(Top)px">
     <div class="c-color-block">
@@ -42,7 +43,7 @@
 
 @code
 {
-    string color;
+    string color, oldColor;
     ElementReference reference;
     IList<string> colors;
 
@@ -79,17 +80,18 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var colorString = color.Substring(1);
-        var count = colorString.Length == 8 ? 4 : 3;
-        var size = colorString.Length / count;
-        var array = Enumerable.Range(0, count).Select(index => colorString.Substring(index * size, size))
-            .Select(value => Convert.ToInt32($"0x{value}", 16)).ToList();
-        double? opacity = array.Count == 4 ? Math.Round(100 * array[3] / 255.0) / 100.0 : null;
+        if (oldColor != color)
+        {
+            oldColor = color;
+            var colorString = color.Substring(1);
+            var count = colorString.Length == 8 ? 4 : 3;
+            var size = colorString.Length / count;
+            var array = Enumerable.Range(0, count).Select(index => colorString.Substring(index * size, size))
+                .Select(value => Convert.ToInt32($"0x{value}", 16)).ToList();
+            double? opacity = array.Count == 4 ? Math.Round(100 * array[3] / 255.0) / 100.0 : null;
+            await JSRuntime.InvokeVoidAsync("$.caspian.bindColorPicker", reference, array[0], array[1], array[2], opacity ?? 1);
+        }
 
-        if (firstRender)
-            await JSRuntime.InvokeVoidAsync("$.caspian.bindColorPicker", reference, array[0], array[1], array[2], opacity);
-        else
-            await JSRuntime.InvokeVoidAsync("$.caspian.updateColor", reference, array[0], array[1], array[2], opacity);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

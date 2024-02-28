@@ -10,8 +10,19 @@ namespace Caspian.Report
         double minHeight;
         double yStart, heightStart, topStart;
         bool statePushed;
+        Table table;
+        public Table Table 
+        {  
+            get { return table; }
+            set
+            {
+                if (Data.Table == null)
+                {
 
-        public Table Table { get; private set; }
+                }
+                table = value;
+            }
+        }
 
         /// <summary>
         /// It return the top of boundItem
@@ -98,6 +109,7 @@ namespace Caspian.Report
                 }
                 var difHeight = y - yStart;
                 var height = (int)(heightStart + difHeight);
+                Console.WriteLine(heightStart);
                 if (height >= minHeight && height >= 24)
                 {
                     Data.Height = height;
@@ -169,8 +181,8 @@ namespace Caspian.Report
         public double MinHeight()
         {
             double max = 0;
-            if (Table != null)
-                max = 22 + Table.Data.Rows.Sum(t => t.Height);
+            if (Data.Table != null)
+                max = 22 + Data.Table.Rows.Sum(t => t.Height);
             foreach(var control in Data.Controls)
             {
                 if (control.Top + control.Height - Top > max)

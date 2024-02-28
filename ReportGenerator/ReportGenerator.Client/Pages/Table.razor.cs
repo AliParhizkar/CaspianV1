@@ -404,7 +404,10 @@ namespace Caspian.Report
                 selectedCells.Add(cell);
             }
             Bound.DisableSelection();
-            Bound.Page.SelectTable(this);
+            if (selectedCells.Count > 0)
+                Bound.Page.SelectTable(this);
+            else
+                Bound.Page.ResetAll();
         }
 
         public string GetCursor(double x, double y)

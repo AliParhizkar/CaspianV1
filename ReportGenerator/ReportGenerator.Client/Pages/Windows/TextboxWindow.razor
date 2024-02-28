@@ -89,7 +89,7 @@
             bondType = Page.SelectedTable.BoundItem.Data.BondType;
             fieldData.CopySimpleProperty(Page.SelectedTable.FieldData);
         }
-        
+
         base.OnInitialized();
     }
 
@@ -98,7 +98,8 @@
         var dataLevel = Page.SelectedTable?.BoundItem.DataLevel ?? Page.SelectedControl?.BoundItem.DataLevel;
         if (dataLevel.HasValue)
         {
-            var url = $"/ReportGenerator/GetReportParameters?reportId={Page.ReportId}&dataLevel={dataLevel.Value}";
+            var level = Page.Bound.MaxDataLevel - dataLevel.Value + 1;
+            var url = $"/ReportGenerator/GetReportParameters?reportId={Page.ReportId}&dataLevel={level}";
             Params = await Host.GetFromJsonAsync<IEnumerable<SelectListItem>>(url);
 
             await base.OnInitializedAsync();

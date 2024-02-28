@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
@@ -23,9 +24,9 @@ namespace Caspian.Engine.Service
             var index = 0;
             var list2 = new List<object>();
             object item = null, obj3 = null, obj4 = null;
-            var strArray = reportParams.Where(t => !t.IsKey).OrderByDescending(t => t.DataLevel).Select(t => t.TitleEn.Replace('.', '_')).ToArray();
-            var keyName = reportParams.SingleOrDefault<ReportParam>(t => ((t.DataLevel == 3) && t.IsKey)).TitleEn.Replace('.', '_');
-            var str2 = reportParams.SingleOrDefault<ReportParam>(t => ((t.DataLevel == 2) && t.IsKey)).TitleEn.Replace('.', '_');
+            var strArray = reportParams.Where(t => !t.IsKey).OrderByDescending(t => t.DataLevel).Select(t => t.TitleEn).ToArray();
+            var keyName = reportParams.SingleOrDefault<ReportParam>(t => ((t.DataLevel == 3) && t.IsKey)).TitleEn;
+            var str2 = reportParams.SingleOrDefault<ReportParam>(t => ((t.DataLevel == 2) && t.IsKey)).TitleEn;
             foreach (object obj5 in list)
             {
                 if (this.IsNewObject(list, keyName, index))
@@ -57,7 +58,7 @@ namespace Caspian.Engine.Service
                                 {
                                     if (info3.Name != "Item")
                                     {
-                                        obj7 = obj5.GetMyValue(strArray[num2], true);
+                                        obj7 = obj5.GetType().GetProperty(strArray[num2]).GetValue(obj5);
                                         info3.SetValue(obj4, obj7);
                                         num2++;
                                     }
@@ -70,7 +71,7 @@ namespace Caspian.Engine.Service
                             {
                                 if (info2.Name != "Item")
                                 {
-                                    obj7 = obj5.GetMyValue(strArray[num2], true);
+                                    obj7 = obj5.GetType().GetProperty(strArray[num2]).GetValue(obj5);
                                     info2.SetValue(obj3, obj7);
                                     num2++;
                                 }
@@ -81,7 +82,7 @@ namespace Caspian.Engine.Service
                     {
                         if (info.Name != "Item")
                         {
-                            obj7 = obj5.GetMyValue(strArray[num2], true);
+                            obj7 = obj5.GetType().GetProperty(strArray[num2]).GetValue(obj5);
                             info.SetValue(item, obj7);
                             num2++;
                         }
@@ -102,7 +103,7 @@ namespace Caspian.Engine.Service
             var index1 = 0;
             foreach(var reportParam in tempList.OrderByDescending(t => t.DataLevel))
             {
-                var str = reportParam.TitleEn.Replace('.', '_');
+                var str = reportParam.TitleEn;
                 if (reportParam.CompositionMethodType.HasValue)
                 {
                     switch(reportParam.CompositionMethodType.Value)
@@ -116,7 +117,7 @@ namespace Caspian.Engine.Service
                 strArray[index1] = str;
                 index1++;
             }
-            var keyName = reportParams.SingleOrDefault<ReportParam>(t => ((t.DataLevel == 2) && t.IsKey)).TitleEn.Replace('.', '_');
+            var keyName = reportParams.SingleOrDefault<ReportParam>(t => ((t.DataLevel == 2) && t.IsKey)).TitleEn;
             foreach (var obj4 in list)
             {
                 if (IsNewObject(list, keyName, index))
@@ -138,7 +139,7 @@ namespace Caspian.Engine.Service
                         {
                             if (info2.Name != "Item")
                             {
-                                obj6 = obj4.GetMyValue(strArray[num2], true);
+                                obj6 = obj4.GetType().GetProperty(strArray[num2]).GetValue(obj4);
                                 info2.SetValue(obj3, obj6);
                                 num2++;
                             }
@@ -149,7 +150,7 @@ namespace Caspian.Engine.Service
                     {
                         if (info.Name != "Item")
                         {
-                            obj6 = obj4.GetMyValue(strArray[num2], false);
+                            obj6 = obj4.GetType().GetProperty(strArray[num2]).GetValue(obj4);
                             info.SetValue(item, obj6);
                             num2++;
                         }
@@ -164,8 +165,8 @@ namespace Caspian.Engine.Service
         {
             if (index == 0)
                 return true;
-            var obj2 = list[index - 1].GetMyValue(keyName, true);
-            return !list[index].GetMyValue(keyName, true).Equals(obj2);
+            var obj2 = list[index - 1].GetType().GetProperty(keyName).GetValue(list[index - 1]);
+            return !list[index].GetType().GetProperty(keyName).GetValue(list[index]).Equals(obj2);
         }
 
         public IQueryable AddOrderBy(IQueryable source, IList<ReportParam> list)
@@ -242,8 +243,8 @@ namespace Caspian.Engine.Service
 
         public IList GetData(int reportId, IQueryable data)
         {
-            var a = new ReportParamService(ServiceProvider);
-            var reportParams = a.GetAll().Include(t => t.DynamicParameter).Include(t => t.Rule).Where(t => t.ReportId == reportId).ToList();
+            var service = ServiceProvider.GetService<ReportParamService>();
+            var reportParams = service.GetAll().Include(t => t.DynamicParameter).Include(t => t.Rule).Where(t => t.ReportId == reportId).ToList();
             var report = new SelectReport(data.ElementType);
             if (reportParams.Any(t => t.DataLevel.GetValueOrDefault(1) > 1))
             {
@@ -268,7 +269,7 @@ namespace Caspian.Engine.Service
                 if (param.RuleId.HasValue || param.DynamicParameterId.HasValue)
                     name = "DynamicParam" + (param.RuleId ?? param.DynamicParameterId.Value);
                 else
-                    name = param.TitleEn;
+                    name = param.TitleEn.Replace('.', '_');
                 switch(param.CompositionMethodType)
                 {
                     case CompositionMethodType.Sum: name = "Sum_" + name; break;
@@ -276,7 +277,7 @@ namespace Caspian.Engine.Service
                     case CompositionMethodType.Max: name = "Max_" + name; break;
                     case CompositionMethodType.Min: name = "Min_" + name; break;
                 }
-                propertiesList.Add(new DynamicProperty(name, dynamicType.GetProperty(name).PropertyType));
+                propertiesList.Add(new DynamicProperty(name, dynamicType.GetProperty(param.TitleEn).PropertyType));
             }
             var type = DynamicClassFactory.CreateType(propertiesList, false);
             dataParam = reportParams.Where(t => t.DataLevel == 2 && !t.IsKey);
@@ -285,10 +286,9 @@ namespace Caspian.Engine.Service
                 propertiesList.Clear();
                 foreach (var param in dataParam)
                 {
-                    var name = param.TitleEn;
-                    var tempType = dynamicType.GetProperty(name).PropertyType;
-                    name = GetGroupingFiledName(param.TitleEn, 2);
-                    propertiesList.Add(new DynamicProperty(name, tempType));
+                    var tempType = dynamicType.GetProperty(param.TitleEn).PropertyType;
+                    //name = GetGroupingFiledName(param.TitleEn, 2);
+                    propertiesList.Add(new DynamicProperty(param.TitleEn.Replace('.', '_'), tempType));
                 }
                 var listType = typeof(List<>);
                 listType = listType.MakeGenericType(type);
@@ -300,10 +300,9 @@ namespace Caspian.Engine.Service
                     propertiesList.Clear();
                     foreach (var param in dataParam)
                     {
-                        var name = param.TitleEn;
-                        var tempType = dynamicType.GetProperty(name).PropertyType;
-                        name = GetGroupingFiledName(param.TitleEn, 3);
-                        propertiesList.Add(new DynamicProperty(name, tempType));
+                        var tempType = dynamicType.GetProperty(param.TitleEn).PropertyType;
+                        //name = GetGroupingFiledName(param.TitleEn, 3);
+                        propertiesList.Add(new DynamicProperty(param.TitleEn.Replace('.', '_'), tempType));
                     }
                     listType = typeof(List<>);
                     listType = listType.MakeGenericType(type);

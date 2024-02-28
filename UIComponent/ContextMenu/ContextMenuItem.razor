@@ -3,12 +3,7 @@
 
 @{
     string styleIcon = "color: black;display: flex;justify-content: center;align-items: center;position: relative;";
-    string menuItemClass = "c-context-menu-";
-    if (ChildContent is not null)
-        menuItemClass += "parent-item";
-    else
-        menuItemClass += "item";
-
+    string menuItemClass = "c-context-menu-item";
     if (Disabled)
         menuItemClass += " disabled";
 }
@@ -32,9 +27,11 @@ else
         </div>
         @if (ChildContent is not null && showContextMenuItems)
         {
-            <ul class="c-context-menu">
-                @ChildContent
-            </ul>
+            <div class="c-context-menu-container">
+                <ul class="c-context-menu">
+                    @ChildContent
+                </ul>
+            </div>
         }
     </li>
 }

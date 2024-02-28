@@ -28,7 +28,7 @@ namespace ReportGenerator.Services
         {
             var name = "";
             for (var i = 1; i <= dataLevel; i++)
-                name += $"{BusinessObjectsPath[dataLevel]}.";
+                name += $"{BusinessObjectsPath[i]}.";
             return name;
         }
 

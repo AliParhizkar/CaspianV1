@@ -24,7 +24,6 @@ namespace Caspian.Report
         int windowWidth;
         double pixelsPerCentimetre;
         int controlId;
-        
 
         string cursor = "default";
 
@@ -142,7 +141,10 @@ namespace Caspian.Report
 
         public void PushControl()
         {
-            Stack.Push(SelectedControl);
+            if (SelectedControl != null)
+                Stack.Push(SelectedControl);
+            if (SelectedTable != null)
+                Stack.Push(SelectedTable.Data);
         }
 
         public void PushBound()

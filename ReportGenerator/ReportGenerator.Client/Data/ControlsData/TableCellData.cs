@@ -18,7 +18,7 @@ namespace Caspian.Report.Data
             };
             BackgroundColor = new Color()
             {
-                ColorString = "#FFFFFF"
+                ColorString = "Transparent"
             };
             FieldData = new TextFieldData();
         }

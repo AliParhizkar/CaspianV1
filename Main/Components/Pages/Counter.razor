@@ -1,13 +1,14 @@
 ﻿@page "/counter"
-@namespace Test.UI
+@using Caspian.UI
 
 
-
-
+<ColorPicker Color="#FF0000" Left="100" Top="100"  />
 
 
 @code 
 {
+    bool flag = true;
+    string selectedAction;
     Person person = new Person();
     public class Person
     {
@@ -19,15 +20,9 @@
     bool cancelSubmit;
     EditContext context;
 
-    protected override void OnInitialized()
+    void SelectItem(string str)
     {
-        
-        base.OnInitialized();
-    }
-
-    void FormSubmited()
-    {
-        
+        selectedAction = str;
     }
 
     void keyhandler(KeyboardEventArgs args)
