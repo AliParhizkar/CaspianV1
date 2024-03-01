@@ -1632,6 +1632,7 @@ td {
 
     .tools.table {
         background-position: -34px 0px;
+        margin-bottom:0;
     }
 
     .tools.checkbox {

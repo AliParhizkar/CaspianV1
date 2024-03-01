@@ -560,7 +560,7 @@ namespace Caspian.Report
         {
             if (Data.BondType.HasValue)
             {
-                Data.Left = Convert.ToInt32(Bound.Left + (Bound.ColumnWidth - TableWidth - 15) / 2);
+                Data.Left = Convert.ToInt32(Bound.Left + (BoundItem.ColumnWidth - TableWidth - 15) / 2);
                 Data.Top = Convert.ToInt32(BoundItem.Top);
             }
         }

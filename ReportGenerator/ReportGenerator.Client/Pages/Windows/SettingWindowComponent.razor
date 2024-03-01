@@ -118,7 +118,8 @@
             Page.Bound.Data.Items = Page.Bound.Data.Items.Where(t => !deletedBounds.Any(u => u == t.BondType))
                 .OrderBy(t => t.BondType).ToList();
             Page.Data.Width = Convert.ToInt32(Page.Data.PixelsPerCentimetre * Setting.PageWidth);
-            /// After bound chaiging we need to update Top of Controls and Table
+            /// After bound chaiging we need to arrange and update Top of Controls and Table
+            Page.Bound.ArrangeBoundItems();
             foreach (var bound in Page.Bound.BoundItems)
                 bound.UpdateControlsTop();
             Page.StateChanged();

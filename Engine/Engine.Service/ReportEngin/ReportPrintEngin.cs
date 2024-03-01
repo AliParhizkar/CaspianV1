@@ -212,8 +212,7 @@ namespace Caspian.Engine.Service
                     }
                     else
                         source = source.ThenBy(orderExpr.Expr as LambdaExpression);
-                else
-                    if (firstOrderBy)
+                else if (firstOrderBy)
                 {
                     var lambda = orderExpr.Expr as LambdaExpression;
                     source = source.OrderBy(lambda);
@@ -256,7 +255,8 @@ namespace Caspian.Engine.Service
                 data = data.GroupBy(report.GroupBy(reportParams)).Select(report.SelectForGroupBy(reportParams));
             else
                 data = data.Select(report.SimpleSelect(reportParams));
-            return report.GetValues(data, reportParams);
+            return data.ToIList();
+            //return report.GetValues(data, reportParams);
         }
 
         public Type GetTypeOf(IList<ReportParam> reportParams, Type dynamicType, string mainTypeName)

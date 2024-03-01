@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Caspian.Common;
 using Caspian.Report.Data;
 using Caspian.Common.Extension;
 using ReportGenerator.Client.Data;
@@ -25,6 +26,19 @@ namespace Caspian.Report
             get
             {
                 return Left + Page.Data.Width;
+            }
+        }
+
+        public void ArrangeBoundItems()
+        {
+            var bondItems = Data.Items.Where(t => t.BondType != BondType.DataHeader).OrderBy(t => t.BondType).ToList();
+            var dataHeader = Data.Items.SingleOrDefault(t => t.BondType == BondType.DataHeader);
+            if (dataHeader != null)
+            {
+                var maxDataLevel = Data.Items.Where(t => t.BondType < BondType.DataFooter).Max(t => t.BondType.ConvertToInt().Value) - 3;
+                var index = maxDataLevel + Data.Items.Where(t => t.BondType < BondType.DataHeader).Count();
+                bondItems.Insert(index, dataHeader);
+                Data.Items = bondItems;
             }
         }
 
@@ -93,16 +107,6 @@ namespace Caspian.Report
             verticalRulerRight = null;
             horizontalRulerTop = null;
             horizontalRulerBottom = null;
-        }
-
-        public double ColumnWidth 
-        { 
-            get 
-            { 
-                if (Data.ColumnCount < 2)
-                    return Page.Data.Width;
-                return (Page.Data.Width - (Data.ColumnCount - 1) * Data.ColumnGap) / Data.ColumnCount; 
-            } 
         }
 
         public void ShowRuler(Table table, int x, out int left)

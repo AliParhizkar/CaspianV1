@@ -14,8 +14,6 @@
 
     protected ElementReference htmlElement;
 
-    //protected IDictionary<string, object> Attributes;
-
     [Inject]
     public FormAppState FormAppState { get; set; }
 
@@ -134,6 +132,12 @@
         }
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Focused)
+            await base.OnAfterRenderAsync(firstRender);
+    }
+
     [Parameter]
     public EventCallback OnChange{ get; set; }
 
@@ -159,6 +163,8 @@
             CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
             oldContext = CurrentEditContext;
         }
+        if (Focused)
+            focuced = true;
         base.OnParametersSet();
     }
 

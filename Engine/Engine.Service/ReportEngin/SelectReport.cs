@@ -63,8 +63,8 @@ namespace Caspian.Engine
             {
                 if (info.Name != "DynamicItems" && i < fields.Length)
                 {
-                    var name = fields[i].TitleEn;
-                    list.Add(Expression.Bind(info, GetMemberExpr(name)));
+                    //var name = fields[i].TitleEn.Replace('.', '_');
+                    list.Add(Expression.Bind(info, GetMemberExpr(fields[i].TitleEn)));
                 }
                 i++;
             }
@@ -123,7 +123,7 @@ namespace Caspian.Engine
                     else
                         tempType = info.PropertyType;
                 }
-                list.Add(new DynamicProperty(name, tempType));
+                list.Add(new DynamicProperty(name.Replace('.', '_'), tempType));
             }
             if (dynamicTypeOfDynamicItem != null)
             {
@@ -370,7 +370,7 @@ namespace Caspian.Engine
                             case CompositionMethodType.Max: name = "Max_" +  name; break;
                             case CompositionMethodType.Min: name = "Min_" + name; break;
                         }
-                        tempValue = value.GetType().GetProperty(name).GetValue(value);
+                        tempValue = value.GetType().GetProperty(name.Replace('.', '_')).GetValue(value);
                         var tempInfo = paramExpr.Type.GetMyProperty(param.TitleEn);
                         if (tempInfo.DeclaringType.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
                         {

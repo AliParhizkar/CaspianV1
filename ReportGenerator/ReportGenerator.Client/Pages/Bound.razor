@@ -4,7 +4,7 @@
 @inject IJSRuntime JSRuntime
 <div class="bound-content">
     <table cellpadding="0" cellspacing="0" id="bond">
-        @foreach(var boundData in Data.Items.OrderBy(t => t.BondType))
+        @foreach (var boundData in Data.Items)
         {
             <BoundItem @ref="BoundItem" Bound="this" Data="boundData" />  
         }

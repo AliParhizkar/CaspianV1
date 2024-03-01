@@ -20,5 +20,6 @@
         public BondType? BondType { get; set; }
 
         public Border Border { get; set; }  
+
     }
 }

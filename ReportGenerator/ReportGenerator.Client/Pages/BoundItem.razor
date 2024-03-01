@@ -2,16 +2,15 @@
 @using Caspian.Common
 @if (DataLevel.HasValue || Data.BondType == BondType.DataHeader || Data.BondType == BondType.DataFooter)
 {
-    string className = "dataBond";
-    if (Bound.Data.DataLevel > 1)
+    var className = "dataBond";
+    var dataLevel = DataLevel ?? Bound.MaxDataLevel;
+    if (dataLevel > 1)
         className += " data-bond-second";
-    if (DataLevel == 3)
+    if (dataLevel == 3)
         className += "-2";
-    var colspan = 1;
-    if (DataLevel.HasValue)
-        colspan = Bound.Data.DataLevel - DataLevel.Value + 1;
+    var colspan = Bound.Data.DataLevel - dataLevel + 1;
     <tr>
-        @for (var index = 2; index <= DataLevel; index++)
+        @for (var index = 2; index <= dataLevel; index++)
         {
             <td class="dataBond data-bond-first"></td>
         }
@@ -73,7 +72,7 @@ else
         </td>
     </tr>
     <tr>
-        <td colspan="@DataLevel" class="spliter-first">
+        <td colspan="@(Bound.MaxDataLevel)" class="spliter-first">
             <hr />
         </td>
         <td class="spliter"></td>

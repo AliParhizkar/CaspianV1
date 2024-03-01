@@ -2,8 +2,6 @@
 using Caspian.Common;
 using System.Xml.Linq;
 using Caspian.Report.Data;
-using Caspian.Common.Extension;
-using Newtonsoft.Json;
 
 namespace ReportGenerator.Services
 {
@@ -13,13 +11,16 @@ namespace ReportGenerator.Services
         {
             string name;
             int id;
+            double tableHeight;
             if (data.BondType == Caspian.Report.BondType.DataHeader)
             {
                 name = "Table1";
                 id = 16;
+                tableHeight = data.Rows.Sum(t => t.Height);
             }
             else
             {
+                tableHeight = page.Setting.PageHeight * page.PixelsPerCentimetre;
                 name = "Table2";
                 id = 17;
             }
@@ -29,8 +30,9 @@ namespace ReportGenerator.Services
                 var guId = BusinessObject.GetGuId(data.BondType.ConvertToInt().Value - 2);
                 element.AddElement("BusinessObjectGuid", guId);
             }
+            
             element.AddElement(data.Border.GetXMLElement());
-            element.AddElement(Extension.ClientRectangle(0, 0, page.Width, page.Setting.PageHeight * page.PixelsPerCentimetre));
+            element.AddElement(Extension.ClientRectangle(0, 0, page.Width, tableHeight));
             element.AddElement("ColumnCount", data.HeaderCells.Count);
             var count = data.HeaderCells.Count() * data.Rows.Count();
             var cellsElement = element.AddElement("Components").AddAttribute("isList", true).AddAttribute("count", count).Element("Components");
@@ -78,15 +80,20 @@ namespace ReportGenerator.Services
                 }
                 top += row.Height;
             }
-            
+            var bond = page.Bound.Items.SingleOrDefault(t => t.Table != null && t.BondType != BondType.DataHeader);
+            if (bond?.BondType == BondType.ThirdDataLevel)
+                element.AddElement("MasterComponent").AddAttribute("isRef", 5);
             element.AddElement("Conditions").AddAttribute("isList", true).AddAttribute("count", 0);
             element.AddElement("DataRelationName").AddAttribute("isNull", true);
             element.AddElement("Expressions").AddAttribute("isList", true).AddAttribute("count", 0);
             element.AddElement("Filters").AddAttribute("isList", true).AddAttribute("count", 0);
+
             element.AddElement("Name", name);
             element.AddElement("NumberID", id + 2);
             element.AddElement("Page").AddAttribute("isRef", 15);
-            element.AddElement("Parent").AddAttribute("isRef", 15);
+            ///If data bond is data header bond, Table's parent is data header bond else table's parent is page
+            var parentId = data.BondType == BondType.DataHeader ? 3 : 15;
+            element.AddElement("Parent").AddAttribute("isRef", parentId);
             element.AddElement("RowCount", data.Rows.Count);
             element.AddElement("Sort").AddAttribute("isList", true).AddAttribute("count", 0);
             return element;

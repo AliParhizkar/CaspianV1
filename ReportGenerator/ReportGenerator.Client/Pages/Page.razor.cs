@@ -131,11 +131,15 @@ namespace Caspian.Report
         {
             if (SelectedControl == null && SelectedTable == null)
             {
-                status = WindowStatus.Open;
-                isTextWindow = false;
-                windowTitle = "Column Window";
-                StateHasChanged();
-                windowWidth = 400;
+                var bondType = SelectedBound.Data.BondType;
+                if (bondType != BondType.DataHeader && bondType != BondType.DataFooter)
+                {
+                    status = WindowStatus.Open;
+                    isTextWindow = false;
+                    windowTitle = "Column Window";
+                    StateHasChanged();
+                    windowWidth = 400;
+                }
             }
         }
 

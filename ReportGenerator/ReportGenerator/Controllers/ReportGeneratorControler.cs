@@ -9,7 +9,6 @@ using Caspian.Common.Extension;
 using ReportGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Demo.Model;
 
 namespace ReportGenerator.Controllers
 {
@@ -120,90 +119,9 @@ namespace ReportGenerator.Controllers
             stiReport["FullName"] = "Ali Parhizkar";
             stiReport["@PersonalCode"] = "123456";
             stiReport.Variables["FullName"] = "Ali Parhizkar";
-            var result = new List<object>() 
-            { 
-                new 
-                {
-                    Order_Customer_FName = "Ali",
-                    OrderDeatils = new List<object>()
-                    {
-                        new 
-                        {
-                            Product_Title = "Pizza",
-                        },
-                        new
-                        {
-                            Product_Title = "Hamberger"
-                        }
-                    }
-                },
-                new
-                {
-                    Order_Customer_FName = "Amir",
-                    OrderDeatils = new List<object>()
-                    {
-                        new
-                        {
-                            Product_Title = "Frnch fries",
-                        },
-                        new
-                        {
-                            Product_Title = "Hotdog"
-                        }
-                    }
-                },
-                new
-                {
-                    Order_Customer_FName = "Reza",
-                    OrderDeatils = new List<object>()
-                    {
-                        new
-                        {
-                            Product_Title = "Sousuge",
-                        },
-                        new
-                        {
-                            Product_Title = "Hotdog"
-                        }
-                    }
-                }
-            };
-            result = new List<object>
-            {
-                new
-                {
-                    Order_Customer_FName = "Ali",
-                    Orders = new List<object>()
-                    {
-                        new 
-                        {
-                            Order_Date = "2024/01/02",
-                            OrderDeatils = new List<object>()
-                            {
-                                new
-                                {
-                                    Product_Title = "Pizza"
-                                }
-                            }
-                        },
-                        new
-                        {
-                            Order_Date = "2024/01/03",
-                            OrderDeatils = new List<object>()
-                            {
-                                new
-                                {
-                                    Product_Title = "Hamberger"
-                                }
-                            }
-                        }
-                    }
-                }
-            };
             var query = provider.GetService<OrderDeatilService>().GetAll();
-            var qqq = new ReportPrintEngine(provider).GetData(reportId, query);
-
-            stiReport.RegBusinessObject("list", qqq);
+            var list = new ReportPrintEngine(provider).GetData(reportId, query);
+            stiReport.RegBusinessObject("list", list);
             stiReport.Load(path);
             stiReport.Render(false);
             var stream = new MemoryStream();

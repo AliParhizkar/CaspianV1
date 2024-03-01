@@ -50,13 +50,21 @@
         });
         $(element).find('.c-colors-palette .c-color').click(e => {
             let [r, g, b, a] = $(e.target).css('background-color').replace('rgba', '').replace('rgb', '').replace('(', '').replace(')', '').split(',');
-            target.updateColor(r, g, b, a);
+            target.updateColor(r, g, b, a || 1);
+        });
+        $(element).find('.c-color-displayer').click(e => {
+            let color = $(e.target).css('background-color');
+            let $input = $(element).find('input[type="hidden"]').val(color);
+            let event = new Event('change');
+            $input[0].dispatchEvent(event);
         });
     }
 
     $C.colorPicker.prototype = {
         updateColor: function (red, green, blue, alpha) {
             if (this.red != red || this.green != green || this.blue != blue || this.alpha != alpha) {
+                $(this.element).find('.c-transparent-strip').css('background-image',
+                    `linear-gradient(15deg, transparent, rgb(${red}, ${green}, ${blue}))`);
                 this.red = red;
                 this.green = green;
                 this.blue = blue;
@@ -112,6 +120,7 @@
             $(this.element).find('.c-color-block').css('background-color', color);
             
             [r, g, b] = this.convertHSVtoRGB(this.hue, this.saturation, this.value);
+            $(this.element).find('.c-transparent-strip').css('background-image', `linear-gradient(15deg, transparent, rgb(${r}, ${g}, ${b}))`);
             color = this.alpha == 1 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${this.alpha})`;
             $(this.element).find('.c-color-displayer').css('background-color', color);
             $(this.element).find('.c-color-number input').val(color);
@@ -130,7 +139,7 @@
             const green = [x, chroma, chroma, x, m, m][index];
             const blue = [m, m, x, chroma, chroma, x][index];
             return [Math.round(red * 255), Math.round(green * 255), Math.round(blue * 255)];
-        },
+        }
     }
 
     $.fn.colorPicker = function () {

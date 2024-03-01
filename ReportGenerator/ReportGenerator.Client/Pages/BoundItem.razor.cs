@@ -16,10 +16,6 @@ namespace Caspian.Report
             get { return table; }
             set
             {
-                if (Data.Table == null)
-                {
-
-                }
                 table = value;
             }
         }
@@ -73,7 +69,6 @@ namespace Caspian.Report
 
         public string GetCursor(double x, double y)
         {
-            Console.WriteLine(Bottom);
             if (!Bound.Page.IsMouseDown)
             {
                 if (Bound.Page.SelectedBound == this)
@@ -109,26 +104,30 @@ namespace Caspian.Report
                 }
                 var difHeight = y - yStart;
                 var height = (int)(heightStart + difHeight);
-                Console.WriteLine(heightStart);
                 if (height >= minHeight && height >= 24)
                 {
                     Data.Height = height;
                     ///Drag controls and tables
-                    foreach (var item in Bound.BoundItems.Where(t => t.Data.BondType > Data.BondType))
-                        item.UpdateTopOnBoundDrag((int)difHeight);
+                    var bondIndex = Bound.BoundItems.IndexOf(this);
+                    var index = 0;
+                    foreach (var item in Bound.BoundItems)
+                    {
+                        if (index > bondIndex)
+                            item.UpdateTopOnBoundDrag((int)difHeight);
+                        index++;
+                    }
                 }
                 Bound.DisableSelection();
             }
         }
 
-        int ColumnWidth
+        public double ColumnWidth
         {
             get
             {
-                var width = Bound.Page.Data.Width;
-                if (Data.ColumnsCount == 0)
-                    return width;
-                return (width - Data.GapBetweenColumns * (Data.ColumnsCount - 1)) / Data.ColumnsCount;
+                if (Data.ColumnsCount < 2)
+                    return Bound.Page.Data.Width;
+                return (Bound.Page.Data.Width - (Data.ColumnsCount - 1) * Data.GapBetweenColumns) / Data.ColumnsCount - 1;
             }
         }
 

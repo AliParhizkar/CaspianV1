@@ -123,6 +123,7 @@
     {
         if (firstRender)
             await jsRuntime.InvokeVoidAsync("$.caspian.bindStringbox", htmlElement, focuced);
+
         await base.OnAfterRenderAsync(firstRender);
     }
 }

@@ -28,7 +28,9 @@
 
     async Task AddTable(MouseEventArgs e)
     {
-        var table = GetTableData(Page.Bound.Data.ColumnCount);
+        var bondType = (BondType)(Page.Bound.MaxDataLevel + 2);
+        var columnCount = Page.Bound.BoundItems.Single(t => t.Data.BondType == bondType).Data.ColumnsCount;
+        var table = GetTableData(columnCount);
         await Page.AddTable(table);
     }
 

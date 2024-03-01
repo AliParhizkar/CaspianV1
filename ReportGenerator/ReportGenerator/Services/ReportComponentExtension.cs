@@ -107,7 +107,7 @@ namespace ReportGenerator.Services
 
         public static XElement GetXMLElement(this BoundItemData boundItemData, PageData pageData)
         {
-            if (boundItemData.Table != null)
+            if (boundItemData.Table != null && boundItemData.BondType != BondType.DataHeader)
                 return boundItemData.Table.GetXMLElement(pageData);
             XElement element = null;
             var boundName = "";
@@ -124,7 +124,7 @@ namespace ReportGenerator.Services
                         .AddAttribute("isKey", true);
                     break;
                 case BondType.DataHeader:
-                    if (pageData.Bound.ColumnCount > 1)
+                    if (boundItemData.ColumnsCount > 1)
                     {
                         boundName = "ColumnHeaderBand1";
                         element = new XElement(boundName).AddAttribute("Ref", 3).AddAttribute("type", "Stimulsoft.Report.Components.StiColumnHeaderBand").AddAttribute("isKey", true);
@@ -153,7 +153,10 @@ namespace ReportGenerator.Services
             }
             element.Add(boundItemData.Border.GetXMLElement());
             element.AddElement("Brush", "Transparent");
-            element.AddElement(Extension.ClientRectangle(0, 0, pageData.Width, boundItemData.Height));
+            var height = boundItemData.Height;
+            if (boundItemData.Table != null)
+                height = boundItemData.Table.Rows.Sum(t => t.Height);
+            element.AddElement(Extension.ClientRectangle(0, 0, pageData.Width, height));
             var dataLevel = boundItemData.GetDataLevel();
             if (dataLevel.HasValue)
             {
@@ -162,10 +165,13 @@ namespace ReportGenerator.Services
                 if (dataLevel.Value > 1)
                     element.AddElement("MasterComponent").AddAttribute("isRef", dataLevel.Value + 2);
             }
-            var controls = element.AddElement("Components").AddAttribute("isList", true).AddAttribute("count", boundItemData.Controls.Count).Element("Components");
-            foreach (var control in boundItemData.Controls)
-                controls.AddElement(control.GetXMLElement(boundItemData));
-
+            var controlsCount = boundItemData.Table != null ? 1 : boundItemData.Controls.Count;
+            var controls = element.AddElement("Components").AddAttribute("isList", true).AddAttribute("count", controlsCount).Element("Components");
+            if (boundItemData.Table != null)
+                controls.AddElement(boundItemData.Table.GetXMLElement(pageData));
+            else
+                foreach (var control in boundItemData.Controls)
+                    controls.AddElement(control.GetXMLElement(boundItemData));
             element.AddElement(new XElement("Conditions").AddAttribute("isList", true).AddAttribute("count", 0));
             element.AddElement(new XElement("Expressions").AddAttribute("isList", true).AddAttribute("count", 0));
             element.AddElement("Name", boundName);
