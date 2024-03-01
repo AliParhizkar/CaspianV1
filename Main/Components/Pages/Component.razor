@@ -9,9 +9,26 @@
 @using Stimulsoft.Report
 @inject IHostEnvironment host
 
-
+<table>
+    <tr>
+        <td>
+            <label>Admin</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="userName" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>Password</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="password" type="password" />
+        </td>
+    </tr>
+</table>
 @code
 {
-    [Parameter]
-    public int Id { get; set; }
+    string userName;
+    string password;
 }

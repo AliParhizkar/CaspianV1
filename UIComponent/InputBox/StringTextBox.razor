@@ -5,7 +5,6 @@
         className += " t-state-disabled";
     else if (ErrorMessage != null)
         className += " t-state-error";
-
 <div class="@className" error-message="@ErrorMessage">
     @if (MultiLine)
     {
@@ -26,7 +25,6 @@
 @code
 {
     string className;
-
     async Task ChangeValue(ChangeEventArgs arg)
     {
         var readOnly = false;
@@ -122,8 +120,7 @@
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindStringbox", htmlElement, focuced);
-
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindStringbox", htmlElement);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

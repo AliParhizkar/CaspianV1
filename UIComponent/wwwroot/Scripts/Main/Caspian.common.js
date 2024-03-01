@@ -1242,6 +1242,7 @@
             }
         },
         bindStringbox: function (element, focuced) {
+            console.log(focuced)
             if (focuced) {
                 $(element).focus()
                 setTimeout(() => {
@@ -1249,13 +1250,9 @@
                 }, 1);
             }
             $(element).bind('focus', () => {
-                setTimeout(() => {
-
-                    $(element).select();
-                }, 100);
+                $(element).select();
                 $.caspian.showErrorMessage($(element).closest('.t-widget')[0]);
             });
-
             $(element).bind('blur', () => {
                 $.caspian.hideErrorMessage($(element).closest('.t-widget')[0]);
             });
