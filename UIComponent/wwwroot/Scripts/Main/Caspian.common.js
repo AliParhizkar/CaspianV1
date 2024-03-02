@@ -440,10 +440,10 @@
             });
             setTimeout(() => {
                 $("#outMessage").css('top', 30);
-                $.caspian.infoTimer = setTimeout(() => {
-                    $.caspian.hideMessage();
-                }, 2000)
-            }, 10);
+            }, 5);
+            $.caspian.infoTimer = setTimeout(() => {
+                $.caspian.hideMessage();
+            }, 4000);
         },
         bindTree: function (tree) {
             //$(tree).find('.c-expand,.c-collaps').each((index, t) => {
