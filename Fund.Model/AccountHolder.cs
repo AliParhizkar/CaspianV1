@@ -27,7 +27,7 @@ namespace Fund.Model
         [Display(Name = "تاریخ پایان")]
         public DateTime? EndDate {  get; set; }
 
-        //public AccountHolderTypeEnum Type { get; set; }
+        public AccountHolderTypeEnum Type { get; set; }
 
         [Display(Name = "توضیح")]
         public string Description { get; set; }

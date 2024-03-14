@@ -20,8 +20,8 @@
             <GridColumn Field="t => t.Code" />
             <GridColumn Field="@(t => t.User.FName + " " + t.User.LName)" Title="User" />
             <GridColumn Field="t => t.Status" />
-            <GridColumn Field="t => t.BeginDate" />
-            <GridColumn Field="t => t.EndDate" />
+            <GridColumn Field="t => t.BeginDate.ToShortDateString()" />
+            <GridColumn Field="t => t.EndDate.ToShortDateString()" />
             <GridColumn Field="t => t.Description" />
             <GridCommandColumns />
         </Columns>
