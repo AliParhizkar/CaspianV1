@@ -857,6 +857,12 @@ progress::-webkit-progress-value {
     font-size: 17px !important;
     padding-top: 2px;
 }
+
+.c-logout {
+    border:0;
+    background-color:transparent;
+}
+
 .c-main-head {
     height: 26px;
     background-color: #e5e5e5;
