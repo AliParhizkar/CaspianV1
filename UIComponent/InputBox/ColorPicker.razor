@@ -1,7 +1,14 @@
 ﻿@namespace Caspian.UI
 @using System.Text.Json
 @inject IJSRuntime JSRuntime
-<div @ref="reference" class="c-colorpicker-panel" style="left:@(Left)px;top:@(Top)px">
+@{
+    var style = "";
+    if (Left.HasValue)
+        style = $"left:{Left}px;";
+    if (Top.HasValue)
+        style += $"top:{Top}px;";
+}
+<div @ref="reference" class="c-colorpicker-panel" style="@style">
     <div class="c-color-block">
         <div class="c-color-white">
             <div class="c-color-black">
@@ -70,10 +77,10 @@
     public string Color { get; set; }
 
     [Parameter]
-    public int Left { get; set; }
+    public int? Left { get; set; }
 
     [Parameter]
-    public int Top { get; set; }
+    public int? Top { get; set; }
 
     [Parameter]
     public EventCallback<string> ColorChanged { get; set; }

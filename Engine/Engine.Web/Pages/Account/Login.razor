@@ -2,11 +2,13 @@
 
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 
 @inject SignInManager<User> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IServiceScopeFactory Scopefactory 
 
 <PageTitle>Log in</PageTitle>
 
@@ -157,10 +159,22 @@
     {
         // This doesn't count login failures towards account lockout
         // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+
         var result = await SignInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
+            using var scope = Scopefactory.CreateScope();
+            var user = await scope.GetService<UserService>().GetAll().SingleAsync(t => t.UserName == Input.Username);
+            string ip = HttpContext?.Connection.RemoteIpAddress?.ToString();
+            var service = scope.GetService<UserLoginService>();
+            await service.AddAsync(new UserLogin()
+            {
+                LoginDate = DateTime.Now,
+                UserId = user.Id,
+                IPAddress = ip
+            });
+            await service.SaveChangesAsync();
             if (!ReturnUrl.HasValue())
                 ReturnUrl = "/Demo";
             RedirectManager.RedirectTo(ReturnUrl);

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using Caspian.Common;
+﻿using Caspian.Common;
 using FluentValidation;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
-using System.Threading.Tasks;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
@@ -48,8 +45,6 @@ namespace Caspian.UI
             return scope;
         }
 
-
-
         protected override async Task OnInitializedAsync()
         {
             if (authenticationStateTask != null)
@@ -75,7 +70,7 @@ namespace Caspian.UI
 
                 var service = scope.ServiceProvider.GetService<IBaseService<TEntity>>();
                 if (service == null)
-                    throw new CaspianException("خطا: Service od type ISimpleService<" + typeof(TEntity).Name + "> not implimented", null);
+                    throw new CaspianException($"Error: Service od type ISimpleService<{typeof(TEntity).Name}> not implimented");
                 if (id == 0)
                     await service.AddAsync(data);
                 else
@@ -150,6 +145,8 @@ namespace Caspian.UI
             FormInitial();
             if (CrudGrid != null)
             {
+                if (CrudGrid.Search == UpsertData)
+                    throw new CaspianException("Error: Search object and UpsertData object is same");
                 CrudGrid.OnInternalDelete = EventCallback.Factory.Create<TEntity>(this, async (data) =>
                 {
                     await DeleteAsync(data);
@@ -169,6 +166,8 @@ namespace Caspian.UI
                                 tempData = Activator.CreateInstance<TEntity>();
                             else
                                 tempData = await service.SingleAsync(value);
+                            if (UpsertData == null)
+                                throw new CaspianException("Spicify UpsertData Parameter in CRUD Component.");
                             UpsertData.CopySimpleProperty(tempData);
                             if (UpsertForm != null && !UpsertForm.OnInternalSubmit.HasDelegate)
                                 FormInitial();

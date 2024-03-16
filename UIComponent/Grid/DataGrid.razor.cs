@@ -1,16 +1,12 @@
-﻿using System;
-using System.Linq;
-using Caspian.Common;
+﻿using Caspian.Common;
+using System.Text.Json;
 using System.Reflection;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Caspian.Common.RowNumber;
 using System.Linq.Dynamic.Core;
-using System.Collections.Generic;
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
@@ -452,14 +448,6 @@ namespace Caspian.UI
                         SelectRow(PageSize - 1);
                     }
                 }
-            }
-        }
-
-        public int PageCount
-        {
-            get
-            {
-                return (Total - 1) / PageSize + 1;
             }
         }
 

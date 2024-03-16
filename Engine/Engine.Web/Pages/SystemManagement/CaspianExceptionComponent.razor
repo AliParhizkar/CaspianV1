@@ -110,7 +110,7 @@
         {
             errorMessage = exception.Message;
             stackTraceMessage = exception.StackTrace;
-            if (isDevelopment)
+            if (!isDevelopment)
             {
                 var frame = GetFrame(exception);
                 if (frame != null)

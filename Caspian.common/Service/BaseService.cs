@@ -116,7 +116,7 @@ namespace Caspian.Common.Service
             foreach (var info in typeof(TEntity).GetProperties())
             {
                 var type = info.PropertyType;
-                if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || (type.IsCollectionType() && type != typeof(string)))
+                if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || (type.IsCollectionType() && type != typeof(string) && type != typeof(byte[])))
                     info.SetValue(entity, default);
             }
             var result1 = await Context.Set<TEntity>().AddAsync(entity);

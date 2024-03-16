@@ -19,7 +19,7 @@
                   <Value>Quantity,System.Int32</Value>
                 </Columns>
                 <Dictionary isRef="10" />
-                <Guid>e745bd1b606b4af3bb2c35bd509e70cc</Guid>
+                <Guid>4fbe44ec59e84ec5acc4b3dcc3de9391</Guid>
                 <Name>OrderDeatils</Name>
               </OrderDeatils>
             </BusinessObjects>
@@ -29,7 +29,7 @@
               <Value>Order_OrderType,System.String</Value>
             </Columns>
             <Dictionary isRef="10" />
-            <Guid>820ee5a9a47e4ea7971ce3abb0072ecb</Guid>
+            <Guid>3d8afb2212f34cdaa75a4d62e22f2c64</Guid>
             <Name>Orders</Name>
           </Orders>
         </BusinessObjects>
@@ -43,7 +43,7 @@
           <Value>Order_Customer_MobileNumber,System.String</Value>
         </Columns>
         <Dictionary isRef="10" />
-        <Guid>e9b45bb82e7f47bdb618449443c3aba0</Guid>
+        <Guid>1b3de49c95824850bb675f22265b1543</Guid>
         <Name>list</Name>
       </list>
     </BusinessObjects>
@@ -74,9 +74,9 @@
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
           <ClientRectangle>0,0,21.01,1.24</ClientRectangle>
-          <BusinessObjectGuid>e9b45bb82e7f47bdb618449443c3aba0</BusinessObjectGuid>
+          <BusinessObjectGuid>1b3de49c95824850bb675f22265b1543</BusinessObjectGuid>
           <Components isList="true" count="1">
-            <Text11 Ref="31" type="Text" isKey="true">
+            <Text61 Ref="81" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>1.38,0.16,4.76,0.85</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -87,12 +87,12 @@
               <TextBrush>[64:194:73]</TextBrush>
               <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
-              <Name>Text11</Name>
+              <Name>Text61</Name>
               <Page isRef="15" />
               <Parent isRef="4" />
               <Text>{list.Order_Customer_FName}</Text>
               <Type>Expression</Type>
-            </Text11>
+            </Text61>
           </Components>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
@@ -104,10 +104,10 @@
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
           <ClientRectangle>0,0,21.01,1.38</ClientRectangle>
-          <BusinessObjectGuid>820ee5a9a47e4ea7971ce3abb0072ecb</BusinessObjectGuid>
+          <BusinessObjectGuid>3d8afb2212f34cdaa75a4d62e22f2c64</BusinessObjectGuid>
           <MasterComponent isRef="4" />
           <Components isList="true" count="1">
-            <Text12 Ref="32" type="Text" isKey="true">
+            <Text62 Ref="82" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>0.95,0.19,4.76,0.85</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -118,12 +118,12 @@
               <TextBrush>[194:64:64]</TextBrush>
               <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
-              <Name>Text12</Name>
+              <Name>Text62</Name>
               <Page isRef="15" />
               <Parent isRef="5" />
               <Text>{list.Orders.Order_Date}</Text>
               <Type>Expression</Type>
-            </Text12>
+            </Text62>
           </Components>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
@@ -141,7 +141,7 @@
               <ClientRectangle>0,0,21.01,0.79</ClientRectangle>
               <ColumnCount>3</ColumnCount>
               <Components isList="true" count="3">
-                <Table1_Cell1 Ref="33" type="TableCell" isKey="true">
+                <Table1_Cell1 Ref="83" type="TableCell" isKey="true">
                   <Brush>[72:74:140]</Brush>
                   <ClientRectangle>2.28,0,5.16,0.79</ClientRectangle>
                   <Conditions isList="true" count="0" />
@@ -159,7 +159,7 @@
                   <Parent isRef="16" />
                   <Text>Product Title</Text>
                 </Table1_Cell1>
-                <Table1_Cell2 Ref="34" type="TableCell" isKey="true">
+                <Table1_Cell2 Ref="84" type="TableCell" isKey="true">
                   <Brush>[72:74:140]</Brush>
                   <ClientRectangle>7.44,0,6.3,0.79</ClientRectangle>
                   <Conditions isList="true" count="0" />
@@ -177,7 +177,7 @@
                   <Parent isRef="16" />
                   <Text>Price</Text>
                 </Table1_Cell2>
-                <Table1_Cell3 Ref="35" type="TableCell" isKey="true">
+                <Table1_Cell3 Ref="85" type="TableCell" isKey="true">
                   <Brush>[72:74:140]</Brush>
                   <ClientRectangle>13.73,0,5,0.79</ClientRectangle>
                   <Conditions isList="true" count="0" />
@@ -216,12 +216,12 @@
           <Parent isRef="15" />
         </HeaderBand2>
         <Table2 Ref="17" type="Stimulsoft.Report.Components.Table.StiTable" isKey="true">
-          <BusinessObjectGuid>e745bd1b606b4af3bb2c35bd509e70cc</BusinessObjectGuid>
+          <BusinessObjectGuid>4fbe44ec59e84ec5acc4b3dcc3de9391</BusinessObjectGuid>
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <ClientRectangle>0,0,21.01,29.7</ClientRectangle>
           <ColumnCount>3</ColumnCount>
           <Components isList="true" count="3">
-            <Table2_Cell1 Ref="36" type="TableCell" isKey="true">
+            <Table2_Cell1 Ref="86" type="TableCell" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>2.28,0,5.16,0.79</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -239,7 +239,7 @@
               <Parent isRef="17" />
               <Text>{list.Orders.OrderDeatils.Product_Title}</Text>
             </Table2_Cell1>
-            <Table2_Cell2 Ref="37" type="TableCell" isKey="true">
+            <Table2_Cell2 Ref="87" type="TableCell" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>7.44,0,6.3,0.79</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -257,7 +257,7 @@
               <Parent isRef="17" />
               <Text>{list.Orders.OrderDeatils.Price}</Text>
             </Table2_Cell2>
-            <Table2_Cell3 Ref="38" type="TableCell" isKey="true">
+            <Table2_Cell3 Ref="88" type="TableCell" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>13.73,0,5,0.79</ClientRectangle>
               <Conditions isList="true" count="0" />

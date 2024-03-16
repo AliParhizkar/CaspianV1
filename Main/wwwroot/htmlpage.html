@@ -3,18 +3,13 @@
 <html>
 <head>
     <script src="jquery-1.8.2.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('input').bind('input', e => {
-                console.log(e.target.value > 50)
-                if (parseInt(e.target.value) > 50)
-                    e.target.value = 50;
-            })
-        });
-    </script>
+    
 </head>
 <body style="margin:0;padding:0">
-    <input type="range" min="0" max="100" style="width:500px;border:1px solid red;" />
-
+    <div style="display:flex;justify-content:space-between;border:1px solid red;width:500px;height:100px;margin:100px auto">
+        <div style="width:100px;border:1px solid red;"></div>
+        <div style="width:100px;border:1px solid red;"></div>
+        <div style="width:100px;border:1px solid red;"></div>
+    </div>
 </body>
 </html>

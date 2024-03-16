@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
@@ -453,12 +454,10 @@ namespace Caspian.UI
                 if (Source == null)
                 {
                     using var scope = ServiceScopeFactory.CreateScope();
-                    var service = new BaseService<TEntity>(scope.ServiceProvider);
+                    var service = scope.ServiceProvider.GetService<IBaseService<TEntity>>();
                     var query = service.GetAll(default(TEntity));
                     if (ConditionExpression != null)
                         query = query.Where(ConditionExpression);
-                    //if (multiSelect)
-                    //    total = query.Count();
                     if (OrderByExpression != null)
                     {
                         if (SortType == SortType.Decs)
@@ -480,7 +479,7 @@ namespace Caspian.UI
                         else
                             query = OnDataBinding.Invoke(query, text);
                     }
-                                        var list = new ExpressionSurvey().Survey(TextExpression);
+                    var list = new ExpressionSurvey().Survey(TextExpression);
                     var type = typeof(TEntity);
                     query = query.Take(PageSize * pageNumber);
                     var parameter = Expression.Parameter(type, "t");

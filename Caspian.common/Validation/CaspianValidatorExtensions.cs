@@ -301,6 +301,8 @@ namespace Caspian.Common
                             var info1 = type.GetForeignKey(typeof(TModel));
                             var paramExpr = Expression.Parameter(type);
                             Expression expr = Expression.Property(paramExpr, info1);
+                            if (info1.PropertyType.IsNullableType())
+                                expr = Expression.Property(expr, "Value");
                             expr = Expression.Equal(expr, Expression.Constant(value));
                             var lambda = Expression.Lambda(expr, paramExpr);
                             var serviceType = typeof(BaseService<>).MakeGenericType(type);

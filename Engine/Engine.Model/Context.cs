@@ -25,6 +25,8 @@ namespace Caspian.Engine.Model
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<UserLogin> UsersLogins { get; set; }
+
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<Activity> Activities { get; set; }

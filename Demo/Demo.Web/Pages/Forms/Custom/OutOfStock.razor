@@ -23,7 +23,7 @@
                         <GridColumn Field="t => t.Title" />
                         <GridColumn Field="t => t.Price.Seprate3Digit()" />
                         <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
-                        <GridColumn Field="t => t.OutofStock">
+                        <GridColumn Field="t => t.OutofStock" style="width:95px;text-align:center;">
                             <Template>
                                 <CheckBox Value="context.Data.OutofStock" ValueChanged="async (bool t) => await ToggleOutofStock(context.Data.Id)" />
                             </Template>

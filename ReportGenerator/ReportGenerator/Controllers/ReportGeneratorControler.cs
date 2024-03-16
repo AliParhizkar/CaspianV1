@@ -9,11 +9,13 @@ using Caspian.Common.Extension;
 using ReportGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReportGenerator.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
+    //[Authorize]
     public class ReportGeneratorController : ControllerBase
     {
         IWebHostEnvironment environment;

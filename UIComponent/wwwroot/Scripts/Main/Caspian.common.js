@@ -1,5 +1,47 @@
 ﻿(function ($) {
     let $c = $.caspian = {
+        bindInputCollorPicker: function (element, dotnet) {
+            const mutationObserver = new MutationObserver(() => {
+                let $animate = $(element).find('.c-animation-container');
+                if ($animate.hasClass('c-animation-container')) {
+                    let loc = $(element).offset().top - $(window).scrollTop();
+                    let top;
+                    if (loc > $(window).height() / 2) {
+                        $animate.addClass('c-animation-up');
+                        top = '-295px';
+                    }
+                    else {
+                        $animate.addClass('c-animation-down');
+                        top = '6px';
+                    }
+                    setTimeout(t => {
+                        $(element).find('.c-colorpicker-panel').css('top', top);
+                    }, 10);
+                }
+            });
+            
+            mutationObserver.observe($(element)[0], {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+            $(element).mouseenter(() => {
+                $(element).find('.c-input-color').addClass('c-state-hover');
+            });
+            $(element).mouseleave(() => {
+                $(element).find('.c-input-color').removeClass('c-state-hover');
+            });
+            $(element).focus(() => {
+                $(element).find('.c-input-color').addClass('c-state-focused');
+            });
+            $(element).blur(() => {
+                $(element).find('.c-input-color').removeClass('c-state-focused').removeClass('c-state-hover');
+            });
+            $(window).bind('mousedown', async e => {
+                if (!$(e.target).closest('.c-animation-container').hasClass('c-animation-container') && $(element).find('.c-animation-container').hasClass('c-animation-container'))
+                    await dotnet.invokeMethodAsync("Close");
+            });
+        },
         bindColorPicker: function (element, red, green, blue, alpha) {
             let picker = $(element).colorPicker();
             picker.updateColor(red, green, blue, alpha);

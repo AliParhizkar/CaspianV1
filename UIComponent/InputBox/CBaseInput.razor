@@ -31,9 +31,6 @@
     [CascadingParameter]
     public EditContext CurrentEditContext { get; set; }
 
-    [Parameter]
-    public bool Focused { get; set; }
-
     [Inject]
     protected IJSRuntime jsRuntime { get; set; }
 
@@ -132,12 +129,6 @@
         }
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (Focused)
-            await base.OnAfterRenderAsync(firstRender);
-    }
-
     [Parameter]
     public EventCallback OnChange{ get; set; }
 
@@ -163,8 +154,6 @@
             CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
             oldContext = CurrentEditContext;
         }
-        if (Focused)
-            focuced = true;
         base.OnParametersSet();
     }
 

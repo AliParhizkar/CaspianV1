@@ -1,11 +1,19 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine.Model
 {
-    public class UserLogin : IdentityUserLogin<int> { }
+    [Table("UsersLogins", Schema = "cmn")]
+    public class UserLogin : IdentityUserLogin<int> 
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public string IPAddress { get; set; }
+
+        public DateTime LoginDate { get; set; }
+
+        public string PageUrl { get; set; }
+    }
 }

@@ -1,11 +1,14 @@
 ﻿@page "/Demo"
 @inherits BasePage
 @namespace Demo.Web.Pages
-<span>Color: @(color)</span><span style="display:inline-block;width:50px;height:12px;background-color:@(color)"></span>
-<ColorPicker @bind-Color="color" />
 
+<button @onclick="Test">Test</button>
 @code
 {
+    void Test()
+    {
+        var qqq = new Context().Products.FirstOrDefault();
+    }
     string color = "#57BD6D";
 }
 

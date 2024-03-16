@@ -103,6 +103,22 @@ namespace Caspian.UI
 
         public abstract Task DataBind();
 
+        public int PageNumber
+        {
+            get
+            {
+                return pageNumber;
+            }
+        }
+
+        public int PageCount
+        {
+            get
+            {
+                return (Total - 1) / PageSize + 1;
+            }
+        }
+
         protected override void OnInitialized()
         {
             var type = typeof(IBaseService<TEntity>);

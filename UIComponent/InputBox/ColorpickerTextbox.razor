@@ -1,0 +1,63 @@
+﻿@namespace Caspian.UI
+@inject IJSRuntime jSRuntime
+<div @ref="element" tabindex="0" class="t-widget c-input-colorpicker">
+    <div class="c-input-color" @onclick="() => isOpened = !isOpened">
+        <div class="c-color-show">
+            <span>
+                <span style="background-color:@(Color)"></span>
+            </span>
+        </div>
+        <div class="c-icon">
+            <i class="t-icon fa fa-caret-down"></i>
+        </div>
+    </div>
+    @if (isOpened)
+    {
+        <div class="c-animation-container">
+            <ColorPicker Color="@Color" ColorChanged="ChangeColor" />
+        </div>
+    }
+</div>
+
+
+@code 
+{
+    ElementReference element;
+    bool isOpened;
+
+    async Task ChangeColor(string color)
+    {
+        isOpened = false;
+        if (color != Color)
+        {
+            Color = color;
+            if (ColorChanged.HasDelegate)
+                await ColorChanged.InvokeAsync(color);
+        }
+        StateHasChanged();
+
+    }
+
+    [Parameter]
+    public string Color { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ColorChanged { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var dotnet = DotNetObjectReference.Create(this);
+            await jSRuntime.InvokeVoidAsync("$.caspian.bindInputCollorPicker", element, dotnet);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable]
+    public void Close()
+    {
+        isOpened = false;
+        StateHasChanged();
+    }
+}

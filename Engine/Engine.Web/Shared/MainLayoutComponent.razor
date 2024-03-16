@@ -7,6 +7,7 @@
 @inject AuthenticationStateProvider authStateProvider 
 @inject ProtectedSessionStorage storage
 @inject CaspianDataService dataService
+@inject IServiceScopeFactory Scopefactory
 @{
     var className = "page";
     if (hideMenu)
@@ -127,6 +128,21 @@
     private void OnLocationChanged(object sender, LocationChangedEventArgs e)
     {
         currentUrl = navigationManager.ToBaseRelativePath(e.Location);
+        base.InvokeAsync(async () =>
+        {
+            if (userId.HasValue)
+            {
+                using var scope = Scopefactory.CreateScope();
+                var service = scope.GetService<UserLoginService>();
+                await service.AddAsync(new UserLogin()
+                    {
+                        LoginDate = DateTime.Now,
+                        UserId = userId.Value,
+                        PageUrl = currentUrl
+                    });
+                await service.SaveChangesAsync();
+            }
+        });
         StateHasChanged();
     }
 

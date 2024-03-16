@@ -1,57 +1,58 @@
 ﻿@page "/Demo/Courier"
-@inherits SimplePage<Courier>
 @{
     base.BuildRenderTree(__builder);
 }
 <div style="background-color:white" class="row ps-5 pe-5 pt-4 pb-4 ms-4 me-4">
-    <div class="row c-controls">
-        <div class="col-md-4 ps-4">
-            <label>Last name</label>
+    <CrudComponent UpsertData="courier">
+        <div class="row c-controls">
+            <div class="col-md-4 ps-4">
+                <label>Last name</label>
+            </div>
+            <div class="col-md-8 pe-4">
+                <StringTextBox @bind-Value="serach.LName" Search />
+            </div>
         </div>
-        <div class="col-md-8 pe-4">
-            <StringTextBox @bind-Value="SearchData.LName" Search />
-         </div>
-     </div>
-     <DataGrid @ref="CrudGrid" TEntity="Courier" Search="SearchData" ContentHeight="300">
-         <Columns>
-             <GridColumn Field="t => t.FName" />
-             <GridColumn Field="t => t.LName" />
-             <GridColumn Field="t => t.Code" />
-             <GridCommandColumns />
-         </Columns>
-     </DataGrid>
-     <Window @ref="UpsertWindow" Title="Courier" Style="width:450px">
-         <Content>
-             <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                 <div class="row c-controls ps-3 pe-3">
-                     <div class="col-md-3">
-                         <label>First name</label>
-                     </div>
-                     <div class="col-md-9">
-                         <StringTextBox @bind-Value="UpsertData.FName" />
-                     </div>
-                     <div class="col-md-3">
-                         <label>Title</label>
-                     </div>
-                     <div class="col-md-9">
-                         <StringTextBox @bind-Value="UpsertData.LName" />
-                     </div>
-                     <div class="col-md-3">
-                         <label>Factor</label>
-                     </div>
-                     <div class="col-md-9">
-                         <StringTextBox @bind-Value="UpsertData.Code" />
-                     </div>
-                     <div class="col-md-3"></div>
-                     <div class="col-md-9 text-center">
-                         <WindowCommandButtons />
-                     </div>
-                 </div>
-             </CaspianForm>
-         </Content>
-     </Window>
+        <DataGrid TEntity="Courier" Search="serach" ContentHeight="300">
+            <Columns>
+                <GridColumn Field="t => t.FName" />
+                <GridColumn Field="t => t.LName" />
+                <GridColumn Field="t => t.Code" />
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+        <Window Title="Courier" Style="width:450px">
+            <CaspianForm Model="courier">
+                <div class="row c-controls ps-3 pe-3">
+                    <div class="col-md-3">
+                        <label>First name</label>
+                    </div>
+                    <div class="col-md-9">
+                        <StringTextBox @bind-Value="courier.FName" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Last Name</label>
+                    </div>
+                    <div class="col-md-9">
+                        <StringTextBox @bind-Value="courier.LName" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Personel Code</label>
+                    </div>
+                    <div class="col-md-9">
+                        <StringTextBox @bind-Value="courier.Code" />
+                    </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9 text-center">
+                        <WindowCommandButtons />
+                    </div>
+                </div>
+            </CaspianForm>
+        </Window>
+    </CrudComponent>
  </div>
  @code
- {
+{
+    Courier courier = new Courier();
+    Courier serach = new Courier();
 
 }

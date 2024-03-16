@@ -55,6 +55,11 @@
         $(element).find('.c-color-displayer').click(e => {
             let color = $(e.target).css('background-color');
             let $input = $(element).find('input[type="hidden"]').val(color);
+            let [r, g, b, a] = $(e.target).css('background-color').replace('rgba', '').replace('rgb', '').replace('(', '').replace(')', '').split(',');
+            this.red = r;
+            this.green = g;
+            this.blue = b;
+            this.alpha = a || 1;
             let event = new Event('change');
             $input[0].dispatchEvent(event);
         });

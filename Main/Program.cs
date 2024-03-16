@@ -1,18 +1,16 @@
-using Caspian.Common;
-using Syncfusion.Blazor;
-using Caspian.Engine.Web;
-using System.Globalization;
-using Caspian.Engine.Service;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using UIComponent;
-using Main.Components;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Identity;
-using Caspian.Engine.Model;
-using Engine.Web.Pages.Account;
 using Engine.Model;
+using Caspian.Common;
+using Main.Components;
+using Syncfusion.Blazor;
+using System.Globalization;
+using Caspian.Engine.Model;
+using Caspian.Engine.Service;
+using Engine.Web.Pages.Account;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Main
 {
@@ -22,11 +20,10 @@ namespace Main
         {
             var builder = WebApplication.CreateBuilder(args);
             ConfigureCulture();
-
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
-
+            CreateFilesAndDirectories(builder);
             builder.Services.AddCascadingAuthenticationState();
 
             builder.Services.AddAuthentication(options =>
@@ -103,7 +100,14 @@ namespace Main
             app.Run();
         }
 
-        private static void ConfigureCulture()
+        static void CreateFilesAndDirectories(WebApplicationBuilder builder)
+        {
+            var path = $"{builder.Environment.ContentRootPath}\\Data"; ;
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+        }
+        
+        static void ConfigureCulture()
         {
             CultureInfo culture = new CultureInfo("en-US");
             culture.DateTimeFormat.ShortDatePattern = "yyyy/MM/dd";

@@ -1,0 +1,46 @@
+﻿@page "/Demo/ProductCategory"
+@namespace Demo.Web.Pages
+
+@{
+    base.BuildRenderTree(__builder);
+}
+<h2>Custom update</h2>
+<p>
+    In this example we
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="p-4 row">
+                <span class="c-demo-description">
+                    In this example, we update the <b>database</b> and then update the grid
+                    by calling the <b>ReloadAsync</b> method.
+                </span>
+            </div>
+            <div class="ps-4 pe-4 pb-4">
+                <DataGrid TEntity="ProductCategory" ContentHeight="300" HideInsertIcon>
+                    <Columns>
+                        <GridColumn Field="t => t.Title" />
+                        <GridColumn Field="t => t.Ordering" style="width:95px;text-align:center;">
+                            <Template>
+                                <IconButton IconType="@IconType.AngleUp" />
+                                <IconButton IconType="@IconType.AngleDown" />
+                            </Template>
+                        </GridColumn>
+                    </Columns>
+                </DataGrid>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Custom" FileName="ProductUpdate" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Product service">
+            <Document FolderName="Service/Services" FileName="ProductService" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+@code
+{
+
+}

@@ -48,19 +48,27 @@ namespace Caspian.Report
 
         async Task FetchData()
         {
-            Data = await Host.GetFromJsonAsync<PageData>($"/ReportGenerator/GetReportData?reportId={ReportId}");
-            /// Set table row for each table cells
-            var tables = Data.Bound.Items.Where(t => t.Table != null).Select(t => t.Table).ToList();
-            foreach (var table in tables)
-                foreach (var row in table.Rows)
-                    foreach (var cell in row.Cells)
-                        cell.Row = row;
-            var maxId = Data.Bound.Items.Max(t => t.Controls.Max(t => t.Id));
-            if (maxId != null)
+            try
             {
-                controlId = Convert.ToInt32(maxId.Replace("ctr", ""));
+                Data = await Host.GetFromJsonAsync<PageData>($"/ReportGenerator/GetReportData?reportId={ReportId}");
+                /// Set table row for each table cells
+                var tables = Data.Bound.Items.Where(t => t.Table != null).Select(t => t.Table).ToList();
+                foreach (var table in tables)
+                    foreach (var row in table.Rows)
+                        foreach (var cell in row.Cells)
+                            cell.Row = row;
+                var maxId = Data.Bound.Items.Max(t => t.Controls.Max(t => t.Id));
+                if (maxId != null)
+                {
+                    controlId = Convert.ToInt32(maxId.Replace("ctr", ""));
+                }
+                Data.Width = Convert.ToInt32(Data.Setting.PageWidth * pixelsPerCentimetre);
             }
-            Data.Width = Convert.ToInt32(Data.Setting.PageWidth * pixelsPerCentimetre);
+            catch(Exception ex)
+            {
+
+            }
+
         }
 
         protected override async Task OnInitializedAsync()
@@ -74,9 +82,9 @@ namespace Caspian.Report
 
         void OnKeyDown(KeyboardEventArgs e)
         {
+            var ctrKey = e.CtrlKey;
             if (SelectedControl != null)
             {
-                var ctrKey = e.CtrlKey;
                 switch (e.Code)
                 {
                     case "ArrowUp":
@@ -105,6 +113,21 @@ namespace Caspian.Report
                         break;
                 }
             }
+            if (e.CtrlKey)
+            {
+                if (e.Code == "KeyC")
+                {
+                    
+                }
+                if (e.Code == "KeyD")
+                {
+                    
+                }
+            }
+
+            if (e.Code == "Delete")
+                RemoveSelectedItem();
+
         }
 
         public bool WindowIsOpened { get; set; }
@@ -174,6 +197,7 @@ namespace Caspian.Report
                 if (SelectedControl != null)
                     PushControl();
                 (SelectedControl?.BoundItem ?? SelectedTable?.BoundItem).RemoveSelectedItem();
+                ResetAll();
                 StateChanged();
             }
         }

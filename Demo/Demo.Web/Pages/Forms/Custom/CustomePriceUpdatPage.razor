@@ -54,13 +54,13 @@
                             <GridColumn Field="t => t.Title" />
                             <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
                                 <Template>
-                                    <NumericTextBox Focused="selectedId == context.Data.Id && colNumber == 1" TValue="int" Value="context.Data.Price" ValueChanged="value => context.Data.Price = value"
+                                    <NumericTextBox @ref="PriceControl" TValue="int" Value="context.Data.Price" ValueChanged="value => context.Data.Price = value"
                                             @onkeyup="async e => await UpdatePrice(e, context.Data.Id, context.Data.Price)" />
                                 </Template>
                             </GridColumn>
                             <GridColumn Field="t => t.TakeoutPrice.ToString()" style="width:150px;">
                                 <Template>
-                                    <NumericTextBox Focused="selectedId == context.Data.Id && colNumber == 2" TValue="int" Value="context.Data.TakeoutPrice" ValueChanged="value => context.Data.TakeoutPrice = value"
+                                    <NumericTextBox @ref="TakeoutPriceControl" TValue="int" Value="context.Data.TakeoutPrice" ValueChanged="value => context.Data.TakeoutPrice = value"
                                                     @onkeyup="async e => await UpdateTakeoutPrice(e, context.Data.Id, context.Data.TakeoutPrice)" />
                                 </Template>
                             </GridColumn>
@@ -80,6 +80,27 @@
     int? colNumber;
     Product searchProduct = new Product();
     DataGrid<Product> grid;
+    IList<IControl> priceControls = new List<IControl>();
+    IList<IControl> takeoutPriceControls = new List<IControl>();
+
+
+    NumericTextBox<int> PriceControl
+    {
+        get{ return null; }
+        set
+        {
+            priceControls.Add(value);
+        }
+    }
+
+    NumericTextBox<int> TakeoutPriceControl
+    {
+        get { return null; }
+        set
+        {
+            takeoutPriceControls.Add(value);
+        }
+    }
 
     async Task UpdatePrice(KeyboardEventArgs e, int productId, int price)
     {
@@ -88,8 +109,7 @@
             using var service = CreateScope().GetService<ProductService>();
             await service.UpdatePrice(productId, price);
             await service.SaveChangesAsync();
-            selectedId = productId;
-            colNumber = 2;
+            await takeoutPriceControls[grid.SelectedRowIndex.Value].FocusAsync();
         }
     }
 
@@ -101,11 +121,7 @@
             await service.UpdateTakeoutPrice(productId, takeoutPrice);
             await service.SaveChangesAsync();
             await grid.SelectNextRow();
-            if (grid.SelectedRowId.HasValue)
-            {
-                selectedId = grid.SelectedRowId.Value;
-                colNumber = 1;
-            }
+            await priceControls[grid.SelectedRowIndex.Value].FocusAsync();
         }
     }
 }
