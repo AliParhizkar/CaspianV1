@@ -9,10 +9,9 @@ using Caspian.Engine.Service;
 using Engine.Web.Pages.Account;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Caspian.Engine.Model;
-using Engine.Web.Pages.Account;
-using Engine.Model;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Main
 {
