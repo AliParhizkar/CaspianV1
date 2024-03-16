@@ -21,9 +21,12 @@
         <div class="c-login-form">
             <section>
                 <StatusMessage Message="@errorMessage" />
-                <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+                <EditForm Model="Input" method="post" style="display:inline" OnValidSubmit="LoginUser" FormName="login">
                     <DataAnnotationsValidator />
-                    <h2>Sign In</h2>
+                    <div class="p-3 mb-2 bg-info text-white">
+                        <p>If you do not have any account you can sign in as guest user and <em>press Gust button</em></p>
+                    </div>
+                    <h2>Sign in</h2>
                     <hr />
                     <ValidationSummary class="text-danger" role="alert" />
                     <div class="form-floating mb-3">
@@ -42,8 +45,22 @@
                             Remember me
                         </label>
                     </div>
-                    <div>
-                        <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                    <div class="c-login-submit">
+                        <button type="submit" class="btn-lg btn-primary">Log in</button>
+                    </div>
+                </EditForm>
+
+                <EditForm Model="gustModel" style="display:inline" method="post" OnSubmit="GuestLogin" FormName="guestlogin">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger" role="alert" />
+                    <div class="form-floating mb-3" style="display:none">
+                        <InputText @bind-Value="gustModel.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="username" />
+                        <label for="username" class="form-label">Username</label>
+                        <ValidationMessage For="() => gustModel.Username" class="text-danger" />
+                    </div>
+
+                    <div class="c-login-submit">
+                        <button type="submit" class="btn-lg btn-primary">Guest</button>
                     </div>
                 </EditForm>
             </section>
@@ -54,10 +71,14 @@
 @code {
     private string errorMessage;
 
+
+    [SupplyParameterFromForm(FormName = "guestlogin")]
+    private InputModel gustModel { get; set; } = new() { Username = "guest", Password = "Ali123456" };
+
     [CascadingParameter]
     private HttpContext HttpContext { get; set; }
 
-    [SupplyParameterFromForm]
+    [SupplyParameterFromForm(FormName = "login")]
     private InputModel Input { get; set; } = new();
 
     [SupplyParameterFromQuery]
@@ -85,6 +106,14 @@
         }
     }
 
+    async Task GuestLogin()
+    {
+        Input.Username = "guest";
+        Input.Password = "Ali123456";
+
+        await LoginUser();
+    }
+
     public async Task LoginUser()
     {
         // This doesn't count login failures towards account lockout
@@ -93,7 +122,7 @@
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
-            if (!ReturnUrl.HasValue() || ReturnUrl.Contains("pitch",StringComparison.InvariantCultureIgnoreCase))
+            if (!ReturnUrl.HasValue() || ReturnUrl.Contains("pitch", StringComparison.InvariantCultureIgnoreCase))
                 ReturnUrl = "/Demo";
             RedirectManager.RedirectTo(ReturnUrl);
         }

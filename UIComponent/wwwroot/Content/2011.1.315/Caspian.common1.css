@@ -3218,6 +3218,16 @@ html body .t-grid tbody .t-button-icon {
     justify-content:flex-start;
 }
 
+.c-login-submit {
+    display:inline;
+}
+
+.c-login-submit button{
+    padding:5px;
+    width:49%;
+}
+
+
 /* No less than 768px, no greater than 992px */
 @media (min-width:768px) and (max-width:992px) {
     .c-login-container {
