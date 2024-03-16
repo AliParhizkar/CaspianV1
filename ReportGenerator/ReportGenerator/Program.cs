@@ -3,6 +3,12 @@ using Caspian.Engine.Model;
 using Caspian.Engine.Service;
 using Caspian.UI;
 using Demo.Service;
+using Engine.Model;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ReportGenerator.Client;
 using ReportGenerator.Components;
 using System.Linq.Dynamic.Core;
@@ -17,6 +23,29 @@ namespace ReportGenerator
             // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
+
+            var persistKeyPath = builder.Configuration.GetSection("Authentication:PersistKeyPath").Value;
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
+                .SetApplicationName("SharedCookieApp");
+
+            var domain = builder.Configuration.GetSection("Authentication:Domain").Value;
+            builder.Services.ConfigureApplicationCookie(options => {
+                options.Cookie.Name = ".AspNet.SharedCookie";
+                options.Cookie.Domain = domain;
+                options.Cookie.Path = "/";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            });
+            //builder.Services.AddCascadingAuthenticationState();
+            builder.Services.AddScoped<AuthenticationStateProvider, PersistingServerAuthenticationStateProvider>();
+            builder.Services.AddAuthorization();
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            }).AddIdentityCookies();
+
             CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
             builder.Services.AddScoped<CaspianDataService>();
             builder.Services.AddScoped<BasePageService>();
@@ -30,6 +59,26 @@ namespace ReportGenerator
             {
                 BaseAddress = new Uri("https://localhost:7284/")
             });
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
+            
+            builder.Services.AddIdentityCore<User>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddSignInManager();
+
+            var loginPath = builder.Configuration.GetSection("Authentication:LoginPath").Value;
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = context =>
+                    {
+                        context.Response.Redirect(loginPath);
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
             var app = builder.Build();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

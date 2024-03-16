@@ -928,6 +928,12 @@ progress::-webkit-progress-value {
     font-size: 17px !important;
     padding-top: 2px;
 }
+
+.c-logout {
+    border:0;
+    background-color:transparent;
+}
+
 .c-main-head {
     height: 26px;
     background-color: #e5e5e5;
@@ -3281,6 +3287,16 @@ html body .t-grid tbody .t-button-icon {
 .c-login-form {
     justify-content:flex-start;
 }
+
+.c-login-submit {
+    display:inline;
+}
+
+.c-login-submit button{
+    padding:5px;
+    width:49%;
+}
+
 
 /* No less than 768px, no greater than 992px */
 @media (min-width:768px) and (max-width:992px) {

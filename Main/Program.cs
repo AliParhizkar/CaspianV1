@@ -9,8 +9,10 @@ using Caspian.Engine.Service;
 using Engine.Web.Pages.Account;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
+using Caspian.Engine.Model;
+using Engine.Web.Pages.Account;
+using Engine.Model;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace Main
 {
@@ -23,7 +25,20 @@ namespace Main
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
-            CreateFilesAndDirectories(builder);
+
+            var persistKeyPath = builder.Configuration.GetSection("Authentication:PersistKeyPath").Value;
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
+                .SetApplicationName("SharedCookieApp");
+
+            var domain = builder.Configuration.GetSection("Authentication:Domain").Value;
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = ".AspNet.SharedCookie";
+                options.Cookie.Domain = domain;
+                options.Cookie.Path = "/";
+            });
+
             builder.Services.AddCascadingAuthenticationState();
 
             builder.Services.AddAuthentication(options =>

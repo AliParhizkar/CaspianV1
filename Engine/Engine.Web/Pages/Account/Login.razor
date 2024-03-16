@@ -23,9 +23,12 @@
         <div class="c-login-form">
             <section>
                 <StatusMessage Message="@errorMessage" />
-                <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+                <EditForm Model="Input" method="post" style="display:inline" OnValidSubmit="LoginUser" FormName="login">
                     <DataAnnotationsValidator />
-                    <h2>Sign In</h2>
+                    <div class="p-3 mb-2 bg-info text-white">
+                        <p>If you do not have any account you can sign in as guest user and <em>press Gust button</em></p>
+                    </div>
+                    <h2>Sign in</h2>
                     <hr />
                     <ValidationSummary class="text-danger" role="alert" />
                     <div class="form-floating mb-3">
@@ -44,8 +47,22 @@
                             Remember me
                         </label>
                     </div>
-                    <div>
-                        <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                    <div class="c-login-submit">
+                        <button type="submit" class="btn-lg btn-primary">Log in</button>
+                    </div>
+                </EditForm>
+
+                <EditForm Model="gustModel" style="display:inline" method="post" OnSubmit="GuestLogin" FormName="guestlogin">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger" role="alert" />
+                    <div class="form-floating mb-3" style="display:none">
+                        <InputText @bind-Value="gustModel.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="username" />
+                        <label for="username" class="form-label">Username</label>
+                        <ValidationMessage For="() => gustModel.Username" class="text-danger" />
+                    </div>
+
+                    <div class="c-login-submit">
+                        <button type="submit" class="btn-lg btn-primary">Guest</button>
                     </div>
                 </EditForm>
             </section>
@@ -53,94 +70,17 @@
     </div>
 </div>
 
-@* 
-<div style="width:100%;background-color:aliceblue;display:flex;align-items:center;justify-content:center;">
-    <div style="background-color:aliceblue;">
-        <img src="/_content/Engine.Web/Content/Images/login.svg" alt="Image" class="img-fluid">
-    </div>
-    <div style="background-color:aliceblue;margin: 0 8%;">
-        <div style="width:80%">
-        <section style="min-width:200px;">
-            <StatusMessage Message="@errorMessage" />
-            <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
-                <DataAnnotationsValidator />
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <ValidationSummary class="text-danger" role="alert" />
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="username" />
-                    <label for="username" class="form-label">Username</label>
-                    <ValidationMessage For="() => Input.Username" class="text-danger" />
-                </div>
-                <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label for="password" class="form-label">Password</label>
-                    <ValidationMessage For="() => Input.Password" class="text-danger" />
-                </div>
-                <div class="checkbox mb-3">
-                    <label class="form-label">
-                        <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
-                        Remember me
-                    </label>
-                </div>
-                <div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-            </EditForm>
-        </section>
-        </div>
-    </div>
-</div> *@
-
-@* <div class="row">
-    <div class="col-md-4">
-        <section>
-            <StatusMessage Message="@errorMessage" />
-            <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
-                <DataAnnotationsValidator />
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <ValidationSummary class="text-danger" role="alert" />
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="username" />
-                    <label for="username" class="form-label">Username</label>
-                    <ValidationMessage For="() => Input.Username" class="text-danger" />
-                </div>
-                <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label for="password" class="form-label">Password</label>
-                    <ValidationMessage For="() => Input.Password" class="text-danger" />
-                </div>
-                <div class="checkbox mb-3">
-                    <label class="form-label">
-                        <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
-                        Remember me
-                    </label>
-                </div>
-                <div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-            </EditForm>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            TODO Naser
-            Need to Implement in the future
-            <ExternalLoginPicker />
-        </section>
-    </div>
-</div> *@
-
 @code {
     private string errorMessage;
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } 
 
-    [SupplyParameterFromForm]
+    [SupplyParameterFromForm(FormName = "guestlogin")]
+    private InputModel gustModel { get; set; } = new() { Username = "guest", Password = "Ali123456" };
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; }
+
+    [SupplyParameterFromForm(FormName = "login")]
     private InputModel Input { get; set; } = new();
 
     [SupplyParameterFromQuery]
@@ -153,6 +93,27 @@
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
         }
+
+        if (HttpContext is not null)
+        {
+            var queryStr = HttpContext.Request.QueryString.Value;
+            if (!string.IsNullOrEmpty(queryStr) &&
+                    queryStr.Contains("pitch", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Input.Username = "pitch";
+                Input.Password = "Ali123456";
+
+                await LoginUser();
+            }
+        }
+    }
+
+    async Task GuestLogin()
+    {
+        Input.Username = "guest";
+        Input.Password = "Ali123456";
+
+        await LoginUser();
     }
 
     public async Task LoginUser()
