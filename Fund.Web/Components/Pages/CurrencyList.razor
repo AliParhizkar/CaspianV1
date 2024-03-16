@@ -1,0 +1,52 @@
+﻿@page "/Cash/CurrencyList"
+
+<PageTitle>ارز</PageTitle>
+
+<AdvanceSearch />
+
+<CrudComponent TEntity="Currency" UpsertData="currencyData">
+    <div class="row c-controls">
+        <div class="col-md-4 ps-4">
+            <label>Code</label>
+        </div>
+        <div class="col-md-8 pe-4">
+            <NumericTextBox @bind-Value="currencySearch.Code" Search />
+        </div>
+    </div>
+    <DataGrid TEntity="Currency" Search="currencySearch">
+        <Columns>
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.Name" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Title="Add new Currency" Style="width:450px;">
+        <Content>
+            <CaspianForm Model="currencyData">
+                <div class="row c-controls ps-3 pe-3">
+                    <div class="col-md-3">
+                        <label>Code</label>
+                    </div>
+                    <div class="col-md-9">
+                        <StringTextBox @bind-Value="currencyData.Code" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Name</label>
+                    </div>
+                    <div class="col-md-9">
+                        <StringTextBox @bind-Value="currencyData.Name" />
+                    </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9 text-center">
+                        <WindowCommandButtons />
+                    </div>
+                </div>
+            </CaspianForm>
+        </Content>
+    </Window>
+</CrudComponent>
+
+@code {
+    Currency currencySearch = new Currency();
+    Currency currencyData = new Currency();
+}
