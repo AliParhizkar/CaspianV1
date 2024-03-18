@@ -34,7 +34,7 @@ namespace Caspian.Engine.Navigation
         {
             var url = navigationManager.Uri.Substring(navigationManager.BaseUri.Length);
             navigationManager.LocationChanged += NavigationManager_LocationChanged;
-            curentUrl = '/' + url;
+            curentUrl = '/' + url; 
             var segments = url.Split('/');
             if (url.HasValue() && segments.Length > 0 && !segments[0].Equals("login", StringComparison.OrdinalIgnoreCase))
             {
