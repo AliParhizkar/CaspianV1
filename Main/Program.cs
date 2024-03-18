@@ -26,7 +26,7 @@ namespace Main
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
             builder.Logging.ClearProviders();
             builder.Logging.AddCaspianConsoleLogger(builder);
-            var persistKeyPath = $"{builder.Environment.ContentRootPath}" ;
+            var persistKeyPath = Path.Combine(builder.Environment.ContentRootPath, "PersistKey");
             builder.Services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
                 .SetApplicationName("SharedCookieApp");
