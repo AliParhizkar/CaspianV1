@@ -364,7 +364,7 @@ FodyWeavers.xsd
 /Demo/Demo.Web/Pages/Forms/Crud/SimpleCrudPage.razor
 /Demo/Demo.Web/wwwroot/Pdf/Dropdownlist.htm
 /Main/Errors
-/Main/PersistKey
+/Main/PersistKey/*
 /Demo/Demo.Web/Help/
 /Main/Model/TestModel.cs
 /ReportGenerator/ReportGenerator/Report/Print/0wiuajnq.my5.mrt
