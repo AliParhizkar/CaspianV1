@@ -42,9 +42,13 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="Data\**" />
+		<Compile Remove="PersistKey\**" />
 		<Content Remove="Data\**" />
+		<Content Remove="PersistKey\**" />
 		<EmbeddedResource Remove="Data\**" />
+		<EmbeddedResource Remove="PersistKey\**" />
 		<None Remove="Data\**" />
+		<None Remove="PersistKey\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Errors\" />
