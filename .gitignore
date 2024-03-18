@@ -32,7 +32,6 @@ bld/
 [Oo]ut/
 [Ll]og/
 [Ll]ogs/
-Main/PersistKey/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -365,7 +364,6 @@ FodyWeavers.xsd
 /Demo/Demo.Web/Pages/Forms/Crud/SimpleCrudPage.razor
 /Demo/Demo.Web/wwwroot/Pdf/Dropdownlist.htm
 /Main/Errors
-/Main/PersistKey
 /Demo/Demo.Web/Help/
 /Main/Model/TestModel.cs
 /ReportGenerator/ReportGenerator/Report/Print/0wiuajnq.my5.mrt
