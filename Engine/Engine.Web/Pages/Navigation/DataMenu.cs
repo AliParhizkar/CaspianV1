@@ -38,7 +38,8 @@ namespace Caspian.Engine.Navigation
             var segments = url.Split('/');
             if (url.HasValue() && segments.Length > 0 && !segments[0].Equals("login", StringComparison.OrdinalIgnoreCase))
             {
-                var field = typeof(SubSystemKind).GetFields().Single(t => t.Name.Equals(segments[0], StringComparison.OrdinalIgnoreCase));
+                var str = segments[0].Split("?")[0];
+                var field = typeof(SubSystemKind).GetFields().Single(t => t.Name.Equals(str, StringComparison.OrdinalIgnoreCase));
                 var subSystemKind = (SubSystemKind)field.GetValue(null);
                 if (OldSubSystem != subSystemKind)
                 {

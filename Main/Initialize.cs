@@ -67,7 +67,9 @@ namespace Main
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            var value = builder.Configuration.GetSection("DetailedErrors").Value.ToLower();
+            var value = builder.Configuration.GetSection("DetailedErrors").Value?.ToLower();
+            if (value == null) 
+                return false;
             if (Boolean.TryParse(value, out _))
                 return Convert.ToBoolean(value);
             return false;
