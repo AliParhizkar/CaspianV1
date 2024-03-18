@@ -24,12 +24,13 @@ namespace Main
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
-
+            builder.Logging.ClearProviders();
+            builder.Logging.AddCaspianConsoleLogger(builder);
             var persistKeyPath = builder.Configuration.GetSection("Authentication:PersistKeyPath").Value;
+            persistKeyPath = $"{builder.Environment.ContentRootPath}" ;
             builder.Services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
                 .SetApplicationName("SharedCookieApp");
-
             var domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             builder.Services.ConfigureApplicationCookie(options =>
             {
@@ -81,7 +82,6 @@ namespace Main
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
-
             var app = builder.Build();
             CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
             // Configure the HTTP request pipeline.
@@ -110,7 +110,6 @@ namespace Main
                 httpContext.Request.Path.StartsWithSegments("/Account"));
 
             app.MapAdditionalIdentityEndpoints();
-
             app.Run();
         }
 
@@ -155,6 +154,9 @@ namespace Main
                     .AddInteractiveServerRenderMode();
                 });
             });
+
         }
     }
+
+    
 }
