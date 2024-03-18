@@ -136,7 +136,7 @@
                 IPAddress = ip
             });
             await service.SaveChangesAsync();
-            if (!ReturnUrl.HasValue())
+            if (!ReturnUrl.HasValue() || ReturnUrl.Contains("pitch", StringComparison.InvariantCultureIgnoreCase))
                 ReturnUrl = "/Demo";
             RedirectManager.RedirectTo(ReturnUrl);
         }
