@@ -1,14 +1,18 @@
 ﻿@page "/Demo"
 @inherits BasePage
 @namespace Demo.Web.Pages
-
-<button @onclick="Test">Test</button>
+<div class="m-body">
+    <div class="m-title">
+        <span>Caspian Software Solution</span>
+    </div>
+    <div class="m-hiro-title">
+        <span>Solutions that simplify software production</span>
+    </div>
+    <div class="m-content d-document">
+        <p>Caspian is application service provider which is going to develop web and mobile applications for medium or large businesses. We have been using agile principles along with creativity as an essential approach to generate our product which enables all developers to leverage our product capabilities in order to quickly develop applications that will be changed frequently based on customer requirements. The most important achievements of our product are productivity, agility, flexibility and maintainability. </p>
+    </div>
+</div>
 @code
 {
-    void Test()
-    {
-        var qqq = new Context().Products.FirstOrDefault();
-    }
-    string color = "#57BD6D";
 }
 

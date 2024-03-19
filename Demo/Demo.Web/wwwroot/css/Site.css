@@ -1,5 +1,30 @@
-﻿html {
-  scroll-behavior: smooth;
+﻿.m-body {
+    font-family: 'Calibri (Body)';
+    background-color: white;
+    margin: -30px;
+    padding-top: 40px;
+    height: calc(100% + 60px);
+}
+.m-title{
+    font-size:35px;
+    font-weight:bold;
+    text-align:center;
+}
+.m-hiro-title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    color: #2F5496;
+    padding:20px 0;
+}
+.m-content p {
+    font-size: 19px;
+    padding: 0 50px;
+    text-align: justify;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 .d-listview-product{
     margin:0 auto;
