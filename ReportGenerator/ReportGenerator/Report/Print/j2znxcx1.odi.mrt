@@ -16,7 +16,7 @@
               <Value>Product_Title,System.String</Value>
             </Columns>
             <Dictionary isRef="10" />
-            <Guid>dc7417c6546343ddad3119fd7a416324</Guid>
+            <Guid>ce4a543b555b4555975604ca3f53fee3</Guid>
             <Name>OrderDeatils</Name>
           </OrderDeatils>
         </BusinessObjects>
@@ -29,7 +29,7 @@
           <Value>Order_Customer_Tel,System.String</Value>
         </Columns>
         <Dictionary isRef="10" />
-        <Guid>e838090c336e48999a91ee1538a293bb</Guid>
+        <Guid>9ce141347b1d4cf9993b2cf8c49d02b4</Guid>
         <Name>list</Name>
       </list>
     </BusinessObjects>
@@ -71,11 +71,11 @@
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
           <ClientRectangle>0,0,21.01,2.2</ClientRectangle>
-          <BusinessObjectGuid>e838090c336e48999a91ee1538a293bb</BusinessObjectGuid>
+          <BusinessObjectGuid>9ce141347b1d4cf9993b2cf8c49d02b4</BusinessObjectGuid>
           <Components isList="true" count="1">
-            <Text56 Ref="76" type="Text" isKey="true">
+            <Text11 Ref="31" type="Text" isKey="true">
               <Brush>Transparent</Brush>
-              <ClientRectangle>0.9,1.35,4.76,0.85</ClientRectangle>
+              <ClientRectangle>2.83,0.19,4.76,0.85</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Expressions isList="true" count="0" />
               <HorAlignment>Center</HorAlignment>
@@ -84,12 +84,12 @@
               <TextBrush>[204:82:82]</TextBrush>
               <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
-              <Name>Text56</Name>
+              <Name>Text11</Name>
               <Page isRef="15" />
               <Parent isRef="4" />
               <Text>{list.Order_Date}</Text>
               <Type>Expression</Type>
-            </Text56>
+            </Text11>
           </Components>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
@@ -101,8 +101,9 @@
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
           <ClientRectangle>0,0,21.01,0.95</ClientRectangle>
+			<Columns>2</Columns>
           <Components isList="true" count="2">
-            <Text57 Ref="77" type="Text" isKey="true">
+            <Text12 Ref="32" type="Text" isKey="true">
               <Brush>[62:75:138]</Brush>
               <ClientRectangle>0.11,0,3.15,0.95</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -113,13 +114,13 @@
               <TextBrush>[255:255:255]</TextBrush>
               <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
-              <Name>Text57</Name>
+              <Name>Text12</Name>
               <Page isRef="15" />
               <Parent isRef="3" />
               <Text>Product</Text>
               <Type>Expression</Type>
-            </Text57>
-            <Text58 Ref="78" type="Text" isKey="true">
+            </Text12>
+            <Text13 Ref="33" type="Text" isKey="true">
               <Brush>[62:75:138]</Brush>
               <ClientRectangle>3.28,0,2.38,0.95</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -130,12 +131,12 @@
               <TextBrush>[255:255:255]</TextBrush>
               <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
-              <Name>Text58</Name>
+              <Name>Text13</Name>
               <Page isRef="15" />
               <Parent isRef="3" />
               <Text>Price</Text>
               <Type>Expression</Type>
-            </Text58>
+            </Text13>
           </Components>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
@@ -147,10 +148,11 @@
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
           <ClientRectangle>0,0,21.01,0.74</ClientRectangle>
-          <BusinessObjectGuid>dc7417c6546343ddad3119fd7a416324</BusinessObjectGuid>
+          <BusinessObjectGuid>ce4a543b555b4555975604ca3f53fee3</BusinessObjectGuid>
           <MasterComponent isRef="4" />
+			<Columns>2</Columns>
           <Components isList="true" count="2">
-            <Text59 Ref="79" type="Text" isKey="true">
+            <Text14 Ref="34" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>0.13,0,3.12,0.71</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -161,13 +163,13 @@
               <TextBrush>[0:0:0]</TextBrush>
               <Border>Bottom,Left,Right;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
-              <Name>Text59</Name>
+              <Name>Text14</Name>
               <Page isRef="15" />
               <Parent isRef="5" />
               <Text>{list.OrderDeatils.Product_Title}</Text>
               <Type>Expression</Type>
-            </Text59>
-            <Text60 Ref="80" type="Text" isKey="true">
+            </Text14>
+            <Text15 Ref="35" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>3.31,0,2.33,0.71</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -178,12 +180,12 @@
               <TextBrush>[0:0:0]</TextBrush>
               <Border>Bottom,Right;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
-              <Name>Text60</Name>
+              <Name>Text15</Name>
               <Page isRef="15" />
               <Parent isRef="5" />
               <Text>{list.OrderDeatils.Price}</Text>
               <Type>Expression</Type>
-            </Text60>
+            </Text15>
           </Components>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />

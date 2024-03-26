@@ -1,6 +1,5 @@
 ﻿using System.Xml.Linq;
 using Caspian.Common.Extension;
-using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -10,9 +9,13 @@ namespace Main
     {
         public static void CreateFileAndFolder(this WebApplication app)
         {
+
             if (!app.Environment.IsDevelopment())
             {
-                var path = app.Environment.ContentRootPath + "\\Errors";
+                var path = $"{app.Environment.ContentRootPath}\\Errors";
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+                path = $"{app.Environment.ContentRootPath}\\Data";
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
             }

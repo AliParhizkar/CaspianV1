@@ -59,8 +59,7 @@
     {
         await SearchOnTree();
         using var service = CreateScope().GetService<CountryService>();
-        var query = service.GetAll();
-        selectionSource = await query.Select(t => new NodeView()
+        selectionSource = await service.GetAll().Select(t => new NodeView()
         {
             Value = t.Id.ToString(),
             Text = t.Title,

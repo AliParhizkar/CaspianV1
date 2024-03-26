@@ -1311,16 +1311,10 @@ form > tr {
 }
 .c-lookup .fa-search {
     color: #423d96;
-    margin-top: -8px;
     z-index: 5;
     font-size: 18px;
     position: relative;
     cursor: pointer;
-    vertical-align: middle;
-}
-.t-HelpWindow .t-window-title {
-    width: calc(100% - 25px);
-    display: inline-block;
 }
 .c-page-size {
     width: 100px;
@@ -2200,11 +2194,6 @@ div.t-window {
     transition:top .4s ease
 }
 
-.t-HelpWindow .t-window-action{
-    padding: 1px 0 0 8px;
-    box-sizing:border-box;
-}
-
     .t-window-title .t-image {
         margin: 0 5px 0 0;
         vertical-align: middle;
@@ -2917,7 +2906,6 @@ div.t-grid-footer {
     }
 
 .t-numeric .t-link {
-    line-height: 25px;
     height:25px;
     vertical-align: middle;
     width: 25px;
@@ -4039,8 +4027,7 @@ label{
 .t-numerictextbox .t-link {
     border-style: none;
     display: inline-block;
-    *display: inline;
-    zoom: 1;
+    vertical-align:top;
 }
 
 

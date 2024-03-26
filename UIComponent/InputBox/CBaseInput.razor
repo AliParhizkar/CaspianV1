@@ -113,7 +113,10 @@
                 {
                     var info = model.GetType().GetProperty(_FieldName);
                     if (info == null && !Validate())
+                    {
                         FormAppState.AllControlsIsValid = false;
+                        FormAppState.Element = htmlElement;
+                    }
                     else if (info != null)
                     {
                         var field = new FieldIdentifier(CurrentEditContext.Model, _FieldName);

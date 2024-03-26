@@ -1,43 +1,16 @@
 ﻿@page "/counter"
 @using Caspian.UI
 
-<div style="width:245px;margin:1550px auto">
-    <ColorpickerTextbox Color="#FFFF00" />
-</div>
 
 
 @code 
 {
-    bool flag = true;
-    string selectedAction;
-    Person person = new Person();
+    Person person;
+    
     public class Person
     {
         public string Name { get; set; }
 
         public int Age { get; set; }
-    }
-
-    bool cancelSubmit;
-    EditContext context;
-
-    void SelectItem(string str)
-    {
-        selectedAction = str;
-    }
-
-    void keyhandler(KeyboardEventArgs args)
-    {
-        if (args.Key == "Enter")
-        {
-            return;
-        }
-
-
-    }
-
-    void KeyPress(KeyboardEventArgs e)
-    {
-        cancelSubmit = true;
     }
 }

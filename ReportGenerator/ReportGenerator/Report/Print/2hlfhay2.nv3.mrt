@@ -19,7 +19,7 @@
                   <Value>Quantity,System.Int32</Value>
                 </Columns>
                 <Dictionary isRef="10" />
-                <Guid>4fbe44ec59e84ec5acc4b3dcc3de9391</Guid>
+                <Guid>f35aaca1bc0f429698d62a4295d8f1e2</Guid>
                 <Name>OrderDeatils</Name>
               </OrderDeatils>
             </BusinessObjects>
@@ -29,7 +29,7 @@
               <Value>Order_OrderType,System.String</Value>
             </Columns>
             <Dictionary isRef="10" />
-            <Guid>3d8afb2212f34cdaa75a4d62e22f2c64</Guid>
+            <Guid>2db56595a33c46ec899e6d8bde588c25</Guid>
             <Name>Orders</Name>
           </Orders>
         </BusinessObjects>
@@ -43,7 +43,7 @@
           <Value>Order_Customer_MobileNumber,System.String</Value>
         </Columns>
         <Dictionary isRef="10" />
-        <Guid>1b3de49c95824850bb675f22265b1543</Guid>
+        <Guid>990d0252cb8b45fab72d27d6103211e3</Guid>
         <Name>list</Name>
       </list>
     </BusinessObjects>
@@ -74,9 +74,9 @@
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
           <ClientRectangle>0,0,21.01,1.24</ClientRectangle>
-          <BusinessObjectGuid>1b3de49c95824850bb675f22265b1543</BusinessObjectGuid>
+          <BusinessObjectGuid>990d0252cb8b45fab72d27d6103211e3</BusinessObjectGuid>
           <Components isList="true" count="1">
-            <Text61 Ref="81" type="Text" isKey="true">
+            <Text32 Ref="52" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>1.38,0.16,4.76,0.85</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -87,12 +87,12 @@
               <TextBrush>[64:194:73]</TextBrush>
               <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
-              <Name>Text61</Name>
+              <Name>Text32</Name>
               <Page isRef="15" />
               <Parent isRef="4" />
               <Text>{list.Order_Customer_FName}</Text>
               <Type>Expression</Type>
-            </Text61>
+            </Text32>
           </Components>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
@@ -104,10 +104,10 @@
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
           <ClientRectangle>0,0,21.01,1.38</ClientRectangle>
-          <BusinessObjectGuid>3d8afb2212f34cdaa75a4d62e22f2c64</BusinessObjectGuid>
+          <BusinessObjectGuid>2db56595a33c46ec899e6d8bde588c25</BusinessObjectGuid>
           <MasterComponent isRef="4" />
           <Components isList="true" count="1">
-            <Text62 Ref="82" type="Text" isKey="true">
+            <Text33 Ref="53" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>0.95,0.19,4.76,0.85</ClientRectangle>
               <Conditions isList="true" count="0" />
@@ -118,176 +118,82 @@
               <TextBrush>[194:64:64]</TextBrush>
               <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
               <Margins>0,0,0,0</Margins>
-              <Name>Text62</Name>
+              <Name>Text33</Name>
               <Page isRef="15" />
               <Parent isRef="5" />
               <Text>{list.Orders.Order_Date}</Text>
               <Type>Expression</Type>
-            </Text62>
+            </Text33>
           </Components>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
           <Name>DataBand4</Name>
+			<Columns>2</Columns>
           <Page isRef="15" />
           <Parent isRef="15" />
         </DataBand4>
-        <HeaderBand2 Ref="3" type="HeaderBand" isKey="true">
+        <ColumnHeaderBand1 Ref="3" type="Stimulsoft.Report.Components.StiColumnHeaderBand" isKey="true">
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
           <Brush>Transparent</Brush>
-          <ClientRectangle>0,0,21.01,0.79</ClientRectangle>
+          <ClientRectangle>0,0,21.01,0.69</ClientRectangle>
           <Components isList="true" count="1">
-            <Table1 Ref="16" type="Stimulsoft.Report.Components.Table.StiTable" isKey="true">
-              <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-              <ClientRectangle>0,0,21.01,0.79</ClientRectangle>
-              <ColumnCount>3</ColumnCount>
-              <Components isList="true" count="3">
-                <Table1_Cell1 Ref="83" type="TableCell" isKey="true">
-                  <Brush>[72:74:140]</Brush>
-                  <ClientRectangle>2.28,0,5.16,0.79</ClientRectangle>
-                  <Conditions isList="true" count="0" />
-                  <Expressions isList="true" count="0" />
-                  <Font>Arial,12,Bold</Font>
-                  <ID>0</ID>
-                  <JoinCells isList="true" count="0" />
-                  <HorAlignment>Center</HorAlignment>
-                  <VertAlignment>Center</VertAlignment>
-                  <TextBrush>[255:252:252]</TextBrush>
-                  <Border>Bottom,Left,Right;[255:255:255];1;Solid;False;4;[0:0:0]</Border>
-                  <Margins>0,0,0,0</Margins>
-                  <Name>Table1_Cell1</Name>
-                  <Page isRef="15" />
-                  <Parent isRef="16" />
-                  <Text>Product Title</Text>
-                </Table1_Cell1>
-                <Table1_Cell2 Ref="84" type="TableCell" isKey="true">
-                  <Brush>[72:74:140]</Brush>
-                  <ClientRectangle>7.44,0,6.3,0.79</ClientRectangle>
-                  <Conditions isList="true" count="0" />
-                  <Expressions isList="true" count="0" />
-                  <Font>Arial,12,Bold</Font>
-                  <ID>1</ID>
-                  <JoinCells isList="true" count="0" />
-                  <HorAlignment>Center</HorAlignment>
-                  <VertAlignment>Center</VertAlignment>
-                  <TextBrush>[255:252:252]</TextBrush>
-                  <Border>Bottom,Right;[255:255:255];1;Solid;False;4;[0:0:0]</Border>
-                  <Margins>0,0,0,0</Margins>
-                  <Name>Table1_Cell2</Name>
-                  <Page isRef="15" />
-                  <Parent isRef="16" />
-                  <Text>Price</Text>
-                </Table1_Cell2>
-                <Table1_Cell3 Ref="85" type="TableCell" isKey="true">
-                  <Brush>[72:74:140]</Brush>
-                  <ClientRectangle>13.73,0,5,0.79</ClientRectangle>
-                  <Conditions isList="true" count="0" />
-                  <Expressions isList="true" count="0" />
-                  <Font>Arial,12,Bold</Font>
-                  <ID>2</ID>
-                  <JoinCells isList="true" count="0" />
-                  <HorAlignment>Center</HorAlignment>
-                  <VertAlignment>Center</VertAlignment>
-                  <TextBrush>[255:252:252]</TextBrush>
-                  <Border>Bottom;[255:255:255];1;Solid;False;4;[0:0:0]</Border>
-                  <Margins>0,0,0,0</Margins>
-                  <Name>Table1_Cell3</Name>
-                  <Page isRef="15" />
-                  <Parent isRef="16" />
-                  <Text>Quantity</Text>
-                </Table1_Cell3>
-              </Components>
-              <MasterComponent isRef="5" />
+            <Text34 Ref="54" type="Text" isKey="true">
+              <Brush>[37:45:120]</Brush>
+              <ClientRectangle>0.08,0,3.36,0.69</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <DataRelationName isNull="true" />
               <Expressions isList="true" count="0" />
-              <Filters isList="true" count="0" />
-              <Name>Table1</Name>
-              <NumberID>18</NumberID>
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Top</VertAlignment>
+              <Font>Arial,12</Font>
+              <TextBrush>[255:255:255]</TextBrush>
+              <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text34</Name>
               <Page isRef="15" />
               <Parent isRef="3" />
-              <RowCount>1</RowCount>
-              <Sort isList="true" count="0" />
-            </Table1>
+              <Text>Product</Text>
+              <Type>Expression</Type>
+            </Text34>
           </Components>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
-          <Name>HeaderBand2</Name>
+			<Columns>2</Columns>
+          <Name>ColumnHeaderBand1</Name>
           <Page isRef="15" />
           <Parent isRef="15" />
-        </HeaderBand2>
-        <Table2 Ref="17" type="Stimulsoft.Report.Components.Table.StiTable" isKey="true">
-          <BusinessObjectGuid>4fbe44ec59e84ec5acc4b3dcc3de9391</BusinessObjectGuid>
+        </ColumnHeaderBand1>
+        <DataBand5 Ref="6" type="DataBand" isKey="true">
           <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
-          <ClientRectangle>0,0,21.01,29.7</ClientRectangle>
-          <ColumnCount>3</ColumnCount>
-          <Components isList="true" count="3">
-            <Table2_Cell1 Ref="86" type="TableCell" isKey="true">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>2.28,0,5.16,0.79</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Expressions isList="true" count="0" />
-              <Font>Arial,12</Font>
-              <ID>0</ID>
-              <JoinCells isList="true" count="0" />
-              <HorAlignment>Center</HorAlignment>
-              <VertAlignment>Center</VertAlignment>
-              <TextBrush>[0:0:0]</TextBrush>
-              <Border>Bottom,Left,Right;[128:128:128];1;Solid;False;4;[0:0:0]</Border>
-              <Margins>0,0,0,0</Margins>
-              <Name>Table2_Cell1</Name>
-              <Page isRef="15" />
-              <Parent isRef="17" />
-              <Text>{list.Orders.OrderDeatils.Product_Title}</Text>
-            </Table2_Cell1>
-            <Table2_Cell2 Ref="87" type="TableCell" isKey="true">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>7.44,0,6.3,0.79</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Expressions isList="true" count="0" />
-              <Font>Arial,12</Font>
-              <ID>1</ID>
-              <JoinCells isList="true" count="0" />
-              <HorAlignment>Center</HorAlignment>
-              <VertAlignment>Center</VertAlignment>
-              <TextBrush>[0:0:0]</TextBrush>
-              <Border>Bottom,Right;[128:128:128];1;Solid;False;4;[0:0:0]</Border>
-              <Margins>0,0,0,0</Margins>
-              <Name>Table2_Cell2</Name>
-              <Page isRef="15" />
-              <Parent isRef="17" />
-              <Text>{list.Orders.OrderDeatils.Price}</Text>
-            </Table2_Cell2>
-            <Table2_Cell3 Ref="88" type="TableCell" isKey="true">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>13.73,0,5,0.79</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Expressions isList="true" count="0" />
-              <Font>Arial,12</Font>
-              <ID>2</ID>
-              <JoinCells isList="true" count="0" />
-              <HorAlignment>Center</HorAlignment>
-              <VertAlignment>Center</VertAlignment>
-              <TextBrush>[0:0:0]</TextBrush>
-              <Border>Bottom,Right;[128:128:128];1;Solid;False;4;[0:0:0]</Border>
-              <Margins>0,0,0,0</Margins>
-              <Name>Table2_Cell3</Name>
-              <Page isRef="15" />
-              <Parent isRef="17" />
-              <Text>{list.Orders.OrderDeatils.Quantity}</Text>
-            </Table2_Cell3>
-          </Components>
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21.01,0.64</ClientRectangle>
+          <BusinessObjectGuid>f35aaca1bc0f429698d62a4295d8f1e2</BusinessObjectGuid>
           <MasterComponent isRef="5" />
+			<Columns>2</Columns>
+          <Components isList="true" count="1">
+            <Text35 Ref="55" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0.08,0.05,3.36,0.58</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Expressions isList="true" count="0" />
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Font>Arial,12</Font>
+              <TextBrush>[0:0:0]</TextBrush>
+              <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text35</Name>
+              <Page isRef="15" />
+              <Parent isRef="6" />
+              <Text>{list.Orders.OrderDeatils.Product_Title}</Text>
+              <Type>Expression</Type>
+            </Text35>
+          </Components>
           <Conditions isList="true" count="0" />
-          <DataRelationName isNull="true" />
           <Expressions isList="true" count="0" />
-          <Filters isList="true" count="0" />
-          <Name>Table2</Name>
-          <NumberID>19</NumberID>
+          <Name>DataBand5</Name>
           <Page isRef="15" />
           <Parent isRef="15" />
-          <RowCount>1</RowCount>
-          <Sort isList="true" count="0" />
-        </Table2>
+        </DataBand5>
       </Components>
       <Conditions isList="true" count="0" />
       <Expressions isList="true" count="0" />

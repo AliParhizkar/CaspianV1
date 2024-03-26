@@ -1,9 +1,6 @@
-﻿using System.Linq;
-using Caspian.Common;
+﻿using Caspian.Common;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
 using FluentValidation.Results;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -112,47 +109,6 @@ namespace Caspian.UI
             }
             if (OnReset.HasDelegate)
                 await OnReset.InvokeAsync();
-        }
-
-
-        void ValidationRequested(object sender, ValidationRequestedEventArgs e)
-        {
-            //FormAppState.AllControlsIsValid = true;
-            //FormAppState.Element = null;
-            //ErrorMessage = null;
-            //var result = EditContext.GetValidationMessages().FirstOrDefault();
-        }
-
-        void ValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
-        {
-            //var result = EditContext.GetValidationMessages();
-            //checkValidation = true;
-            //if (!result.Any() && FormAppState.AllControlsIsValid)
-            //{
-            //    ErrorMessage = null;
-            //    bool isValidSubmit = true;
-            //    var form = this as ICaspianForm;
-            //    if (!form.IgnoreOnValidSubmit)
-            //    {
-            //        if (OnValidSubmit != null)
-            //            isValidSubmit = await OnValidSubmit.Invoke(EditContext);
-            //        if (isValidSubmit && OnInternalValidSubmit.HasDelegate)
-            //            await OnInternalValidSubmit.InvokeAsync(EditContext);
-            //    }
-            //    form.IgnoreOnValidSubmit = false;
-            //}
-            //else
-            //{
-            //    if (FormAppState.AllControlsIsValid)
-            //    {
-            //        var result1 = EditContext.GetValidationMessages();
-            //        ErrorMessage = result1.FirstOrDefault();
-            //    }
-            //    if (OnInvalidSubmit.HasDelegate)
-            //        await OnInvalidSubmit.InvokeAsync(EditContext);
-            //    if (OnInternalInvalidSubmit.HasDelegate)
-            //        await OnInternalInvalidSubmit.InvokeAsync(EditContext);
-            //}
         }
 
         protected override void OnParametersSet()

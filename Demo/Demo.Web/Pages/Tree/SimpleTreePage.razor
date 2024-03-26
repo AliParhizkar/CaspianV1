@@ -92,10 +92,9 @@
 
     async Task OnExpanded(NodeView node)
     {
-        using var scope = CreateScope().GetService<MenuService>();
+        using var service = CreateScope().GetService<MenuService>();
         var categoryId = Convert.ToInt32(node.Value);
-        node.Children = await new MenuService(scope.ServiceProvider).GetAll()
-            .Where(t => t.MenuCategoryId == categoryId).Select(t => new NodeView()
+        node.Children = await service.GetAll().Where(t => t.MenuCategoryId == categoryId).Select(t => new NodeView()
                 { 
                     Text = t.Title,
                     Collabsable = false
