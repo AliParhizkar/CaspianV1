@@ -13,11 +13,11 @@
             <NumericTextBox @bind-Value="cashBoxSearch.Title" Search />
         </div>
     </div>
-    <DataGrid TEntity="CashBox" Search="cashBoxSearch">
+    <DataGrid TEntity="CashBox" PageSize="10" Search="cashBoxSearch">
         <Columns>
             <GridColumn Field="t => t.Id" Title="Code" />
             <GridColumn Field="t => t.CashBoxType.Name" Title="Cash box Type" />
-            <GridColumn Field="t => t.AccountHolder" Title="Treasurer" />
+            <GridColumn Field="@(t => t.AccountHolder.User.FName + " " + t.AccountHolder.User.LName)" Title="Treasurer" />
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.FloorLimit" />
             <GridColumn Field="t => t.Status" />
@@ -25,7 +25,7 @@
             <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window Title="Add new cashbox" Style="width:450px;">
+    <Window Title="Add new cashbox" Style="width:450px;" StatusChanged="StatusChanged">
         <Content>
             <CaspianForm Model="cashBoxData">
                 <div class="row c-controls ps-3 pe-3">
@@ -33,18 +33,28 @@
                         <label>Cash box Type</label>
                     </div>
                     <div class="col-md-9">
-                        <ComboBox TEntity="CashBoxType" TValue="int" @bind-Value="cashBoxData.CashBoxTypeId" TextExpression="t => t.Name" />
+                        <ComboBox 
+                            TEntity="CashBoxType" 
+                            TValue="int" 
+                            @bind-Value="cashBoxData.CashBoxTypeId"
+                            OnChanged="OnCashBoxTypeChanged"
+                            TextExpression="t => t.Name" />
                     </div>
                     <div class="col-md-3">
                         <label>Treasurer</label>
                     </div>
                     <div class="col-md-9">
-                        <ComboBox TEntity="Cashier" TValue="int" @bind-Value="cashBoxData.AccountHolderId" TextExpression='(t => t.User.FName + " " + t.User.LName)' />
+                        <ComboBox 
+                            TEntity="Cashier" 
+                            TValue="int" 
+                            @bind-Value="cashBoxData.AccountHolderId"
+                            OnChanged="OnCashierChanged"
+                            TextExpression='(t => t.User.FName + " " + t.User.LName)' />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-1">
                         <label>Title</label>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-11">
                         <StringTextBox @bind-Value="cashBoxData.Title" />
                     </div>
                     <div class="col-md-3">
@@ -57,7 +67,7 @@
                         <label>Status</label>
                     </div>
                     <div class="col-md-9">
-                        <NumericTextBox @bind-Value="cashBoxData.Status" />
+                        <DropdownList @bind-Value="cashBoxData.Status" />
                     </div>
                     <div class="col-md-3">
                         <label>Teller Type</label>
@@ -90,4 +100,31 @@
 @code {
     CashBox cashBoxSearch = new CashBox();
     CashBox cashBoxData = new CashBox();
+    string cashBoxType, cashier;
+
+    void OnCashBoxTypeChanged(string textExpression)
+    {
+        cashBoxType = textExpression;
+        UpdateTitle();
+    }
+
+    void OnCashierChanged(string textExpression)
+    {
+        cashier = textExpression;
+        UpdateTitle();
+    }
+
+    void UpdateTitle()
+    {
+        cashBoxData.Title = $"{cashBoxType} {cashier}";
+    }
+
+    void StatusChanged(WindowStatus status)
+    {
+        if (status == WindowStatus.Close)
+        {
+            cashBoxType = string.Empty;
+            cashier = string.Empty;
+        }
+    }
 }

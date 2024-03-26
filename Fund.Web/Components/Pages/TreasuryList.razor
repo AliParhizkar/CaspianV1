@@ -13,7 +13,7 @@
             <NumericTextBox @bind-Value="treasurySearch.Title" Search />
         </div>
     </div>
-    <DataGrid TEntity="Treasury" Search="treasurySearch">
+    <DataGrid TEntity="Treasury" PageSize="10" Search="treasurySearch">
         <Columns>
             <GridColumn Field="t => t.Id" Title="Code" />
             <GridColumn Field="t => t.CashBoxType.Name" Title="Cash box Type" />
@@ -41,14 +41,14 @@
                     <div class="col-md-9">
                         <ComboBox TEntity="Treasurer" TValue="int" 
                                   @bind-Value="treasuryData.AccountHolderId" 
-                                  OnChanged="OnTextExpressionChanged"
+                                  OnChanged="OnChanged"
                                   TextExpression='(t => t.User.FName + " " + t.User.LName)' />
                     </div>
                     <div class="col-md-3">
                         <label>Title</label>
                     </div>
                     <div class="col-md-9">
-                        <StringTextBox Class="asdasd" @bind-Value="treasuryData.Title"  />
+                        <StringTextBox @bind-Value="treasuryData.Title"  />
                     </div>
                     <div class="col-md-3">
                         <label>Floor Limit</label>
@@ -60,7 +60,7 @@
                         <label>Status</label>
                     </div>
                     <div class="col-md-9">
-                        <NumericTextBox @bind-Value="treasuryData.Status" />
+                        <DropdownList @bind-Value="treasuryData.Status" />
                     </div>
                     <div class="col-md-3">
                         <label>Description</label>
@@ -82,7 +82,7 @@
     Treasury treasurySearch = new Treasury();
     Treasury treasuryData = new Treasury();
 
-    void OnTextExpressionChanged(string textExpression)
+    void OnChanged(string textExpression)
     {
         treasuryData.Title = textExpression;
     }

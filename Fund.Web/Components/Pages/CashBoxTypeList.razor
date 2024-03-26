@@ -13,7 +13,7 @@
             <NumericTextBox @bind-Value="cashBoxTypeSearch.Name" Search />
         </div>
     </div>
-    <DataGrid TEntity="CashBoxType" Search="cashBoxTypeSearch">
+    <DataGrid TEntity="CashBoxType" PageSize="10" Search="cashBoxTypeSearch">
         <Columns>
             <GridColumn Field="t => t.Code" Title="Code" />
             <GridColumn Field="t => t.Name" />

@@ -15,7 +15,7 @@
             <NumericTextBox @bind-Value="cashierSearch.Code" Search />
         </div>
     </div>
-    <DataGrid TEntity="Cashier" Search="cashierSearch">
+    <DataGrid TEntity="Cashier" PageSize="10" Search="cashierSearch">
         <Columns>
             <GridColumn Field="t => t.Code" />
             <GridColumn Field="@(t => t.User.FName + " " + t.User.LName)" Title="User" />
