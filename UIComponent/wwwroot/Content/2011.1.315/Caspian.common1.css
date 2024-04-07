@@ -1,12 +1,15 @@
-﻿.c-input-color {
+﻿.c-input-colorpicker{
+    position:relative;
+}
+.c-input-color {
     border: 1px solid rgba(0,0,0,0.12);
     height: 32px;
     display: flex;
     box-sizing: border-box;
     border-radius: 8px;
-    justify-content:space-between;
-    overflow:hidden;
-    min-width:90px;
+    justify-content: space-between;
+    overflow: hidden;
+    min-width: 90px;
 }
     .c-input-color.c-state-hover {
         border: 1px solid rgba(0,0,0,0.24);
@@ -19,21 +22,27 @@
     border: 1px solid rgba(0,0,0,0.24) !important;
     box-shadow: #dcdcdc 1px 1px 3px 3px;
 }
-    .c-animation-container {
-        position: absolute;
-        margin-left: 5px;
-        width: 235px;
-        height: 265px;
-    }
-        .c-animation-container .c-colorpicker-panel {
-            transition: top .2s cubic-bezier(0.35, 0, 0.25, 1);
-        }
+.c-animation-container {
+    position: absolute;
+    margin-left: 5px;
+    width: 235px;
+    height: 265px;
+    box-sizing:content-box;
+}
+.c-animation-down .c-colorpicker-panel {
+    transition: top .2s cubic-bezier(0.35, 0, 0.25, 1);
+}
+.c-animation-container .c-colorpicker-panel {
+    box-shadow: #d6d6d6 0px 3px 3px 3px;
+}
 .c-animation-up {
-    clip-path: polygon(-1000px -32px, 1000px -32px, -1000px -1000px, 0 -1000px);
+    bottom: 30px;
+    clip-path: polygon(-10000px -1000px, 1000px -10000px, 1000px 260px, -1000px 260px);
 }
 
     .c-animation-up .c-colorpicker-panel {
-        top: 30px;
+        transition: bottom .2s cubic-bezier(0.35, 0, 0.25, 1);
+        bottom: -250px;
     }
 
     .c-animation-down {
@@ -122,9 +131,8 @@
 }
 
 .c-colorpicker-panel {
-    position: absolute;
+    position: relative;
     overflow: hidden;
-    box-shadow: #cfcfcf 1px 1px 12px 4px;
     border: 1px solid #cfcfcf;
     width: 235px;
     background-color: white;

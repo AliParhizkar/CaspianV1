@@ -5,18 +5,19 @@
                 let $animate = $(element).find('.c-animation-container');
                 if ($animate.hasClass('c-animation-container')) {
                     let loc = $(element).offset().top - $(window).scrollTop();
-                    let top;
                     if (loc > $(window).height() / 2) {
                         $animate.addClass('c-animation-up');
-                        top = '-295px';
+                        setTimeout(t => {
+                            $(element).find('.c-colorpicker-panel').css('bottom', '0');
+                        }, 10);
                     }
                     else {
                         $animate.addClass('c-animation-down');
-                        top = '6px';
+                        setTimeout(t => {
+                            $(element).find('.c-colorpicker-panel').css('top', '6px');
+                        }, 10);
                     }
-                    setTimeout(t => {
-                        $(element).find('.c-colorpicker-panel').css('top', top);
-                    }, 10);
+
                 }
             });
             
@@ -42,9 +43,20 @@
                     await dotnet.invokeMethodAsync("Close");
             });
         },
-        bindColorPicker: function (element, red, green, blue, alpha) {
+
+        bindColorPicker: function (element) {
             let picker = $(element).colorPicker();
-            picker.updateColor(red, green, blue, alpha);
+            picker.updateColor();
+            const mutationObserver = new MutationObserver((mutationList) => {
+                if (mutationList[0].attributeName != 'id') {
+                    picker.updateColor();
+                }
+            });
+            mutationObserver.observe(element, {
+                attributes: true,
+                childList: false,
+                subtree: false
+            });
         },
         bindCodeEditor: function (code, dotnet, readonly, lineNumber, column, tokensData) {
             $.caspian.dotnet = dotnet;

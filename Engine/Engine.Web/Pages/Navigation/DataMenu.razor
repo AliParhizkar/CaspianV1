@@ -28,16 +28,16 @@
                         <ul style="@(style)" class="submenu">
                             @foreach (var menu in menus)
                             {
-                                @if (curentUrl.Equals(menu.Source))
+                                @if (curentUrl.Equals(menu.URL))
                                 {
                                     <li class="selected" @ref="elm">
-                                        <a href="@(menu.Source)">@(menu.Title)</a>
+                                        <a href="@(menu.URL)">@(menu.Title)</a>
                                     </li>
                                 }
                                 else
                                 {
                                     <li>
-                                        <a href="@(menu.Source)">@(menu.Title)</a>
+                                        <a href="@(menu.URL)">@(menu.Title)</a>
                                     </li>
                                 }
                             }

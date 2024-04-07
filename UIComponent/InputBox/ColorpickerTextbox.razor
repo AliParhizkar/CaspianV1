@@ -14,7 +14,7 @@
     @if (isOpened)
     {
         <div class="c-animation-container">
-            <ColorPicker Color="@Color" ColorChanged="ChangeColor" />
+            <ColorPicker BindingType="BindingType" Color="@Color" ColorChanged="ChangeColor" />
         </div>
     }
 </div>
@@ -27,19 +27,25 @@
 
     async Task ChangeColor(string color)
     {
-        isOpened = false;
+        if (AutoClose)
+            isOpened = false;
         if (color != Color)
         {
             Color = color;
             if (ColorChanged.HasDelegate)
                 await ColorChanged.InvokeAsync(color);
         }
-        StateHasChanged();
 
     }
 
     [Parameter]
     public string Color { get; set; }
+
+    [Parameter]
+    public bool AutoClose { get; set; } = true;
+
+    [Parameter]
+    public BindingType BindingType { get; set; }
 
     [Parameter]
     public EventCallback<string> ColorChanged { get; set; }

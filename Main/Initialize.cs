@@ -87,15 +87,18 @@ namespace Main
                 {
                     var path = $"{builder.Environment.ContentRootPath}\\Errors\\{Path.GetRandomFileName()}.xml";
                     var doc = new XElement("Errors");
+                    var error = new XElement("Error");
                     if (exception == null)
-                        doc.AddElement("Error").AddContent(message);
+                        error.AddContent(message);
                     else
                     {
                         var ex = exception;
                         while(ex != null)
                         {
-                            doc.AddElement("Error").AddElement("Message", message).AddElement("StackTrace", exception.StackTrace);
+                            error.AddElement("Message", message).AddElement("StackTrace", exception.StackTrace);
+                            doc.AddElement(error);
                             ex = ex.InnerException;
+                            error = new XElement("Error");
                         }
                     }
                     doc.Save(path);

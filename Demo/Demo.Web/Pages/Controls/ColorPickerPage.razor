@@ -1,10 +1,138 @@
-﻿@page "/Demo/Colorpicker"
-<h2>Colorpicker</h2>
+﻿@page "/Demo/ColorPicker"
+@namespace Demo.Web.Pages
+<h2>Color Picker</h2>
 <p>
-    This control is a <b>key-value control</b> that is <b>usually bind to entity</b> type, although it can use the <b>SelectListItem list as a resource</b>.
+    this control is userd for
 </p>
+<h3>Binding</h3>
+<p>
+    we can bind this control 
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4>Bind to string</h4>
+                        <span class="c-demo-description">In this example, we </span>
+                    </div>
+                    <div class="col-md-4 pe-4">
+                        <div class="row c-controls">
+                            <div class="col-md-5">
+                                <label>Binding type</label>
+                            </div>
+                            <div class="col-md-7">
+                                <DropdownList @bind-Value="bindingType" />
+                            </div>
+                            <div class="col-md-5">
+                                <label>Color</label>
+                            </div>
+                            <div class="col-md-7">
+                                <span class="d-demo-color">
+                                    <span style="background-color:@(colorPickerColor)"></span>
+                                </span>
+                            </div>
+                            <div class="col-md-5">
+                                <label>Color No</label>
+                            </div>
+                            <div class="col-md-7">
+                                <span>#</span>
+                                <span style="color:red">@colorPickerColor.Substring(1, 2)</span>
+                                <span style="color:green">@colorPickerColor.Substring(3, 2)</span>
+                                <span style="color:blue">@colorPickerColor.Substring(5, 2)</span>
+                            </div>
+                            <div class="col-md-5">
+                                <label>Alpha</label>
+                            </div>
+                            <div class="col-md-7">
+                                <span>@(colorPickerColor.Length > 7 ? colorPickerColor.Substring(7, 2) : "---")</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <ColorPicker @bind-Color="colorPickerColor" BindingType="bindingType" />
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="ColorPicker" FileName="Binding" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
+<h2>ColorpickerTextbox</h2>
+<p>
+    This control is used for
+</p>
+<h3>Binding</h3>
+<p>
+    we can bind this control
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4>Bind to string</h4>
+                        <span class="c-demo-description">In this example, we </span>
+                    </div>
+                    <div class="col-md-4 pe-4">
+                        <div class="row c-controls">
+                            <div class="col-md-5">
+                                <label>Binding type</label>
+                            </div>
+                            <div class="col-md-7">
+                                <DropdownList @bind-Value="bindingType" />
+                            </div>
+                            <div class="col-md-5">
+                                <label>Auto Close</label>
+                            </div>
+                            <div class="col-md-7">
+                                <CheckBox @bind-Value="autoClose" />
+                            </div>
+                            <div class="col-md-5">
+                                <label>Color</label>
+                            </div>
+                            <div class="col-md-7">
+                                <span class="d-demo-color">
+                                    <span style="background-color:@(inputColorPicker)"></span>
+                                </span>
+                            </div>
+                            <div class="col-md-5">
+                                <label>Color No</label>
+                            </div>
+                            <div class="col-md-7">
+                                <span>#</span>
+                                <span style="color:red">@inputColorPicker.Substring(1, 2)</span>
+                                <span style="color:green">@inputColorPicker.Substring(3, 2)</span>
+                                <span style="color:blue">@inputColorPicker.Substring(5, 2)</span>
+                            </div>
+                            <div class="col-md-5">
+                                <label>Alpha</label>
+                            </div>
+                            <div class="col-md-7">
+                                <span>@(inputColorPicker.Length > 7 ? inputColorPicker.Substring(7, 2) : "---")</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <ColorpickerTextbox @bind-Color="inputColorPicker" BindingType="bindingType" AutoClose="autoClose" />
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<div style="height:350px">
+
+</div>
 @code 
 {
-
+    bool autoClose;
+    string colorPickerColor = "#00FFFF";
+    string inputColorPicker = "#FF00FF";
+    BindingType bindingType = BindingType.OnInput;
 }

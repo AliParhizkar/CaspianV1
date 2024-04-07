@@ -21,11 +21,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Remove="Pages\Controls\ColorPickerPage.razor" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Pages\Controls\ColorPickerPage.razor" />
 		<None Include="Pages\Index.razor" />
 	</ItemGroup>
 
@@ -47,10 +42,4 @@
 	<Target Name="CreateDataFolder" AfterTargets="AfterPublish">
 		<MakeDir Directories="$(PublishUrl)Data" Condition="!Exists('$(PublishUrl)Data')" />
 	</Target>
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Pages\Controls\ColorPickerPage.razor" />
-	</ItemGroup>
-	<ItemGroup>
-	  <_ContentIncludedByDefault Remove="Pages\Controls\ColorPickerPage.razor" />
-	</ItemGroup>
 </Project>

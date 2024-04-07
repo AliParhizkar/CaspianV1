@@ -6,14 +6,17 @@
         $(element).find('.c-color-selector').mousedown(e => {
             let pos = $(e.target).position();
             target.dragStart(e.clientX, e.clientY, pos.left, pos.top);
+            $C.__colorpicker = this;
         });
         $(element).find('.c-color-block').bind('mousedown', e => {
             $(element).find('.c-color-selector').css('left', e.offsetX - 7).css('top', e.offsetY - 7);
             let $element = $(e.target), width = $element.width(), height = $element.height();
+            target.element = $element.closest('.c-colorpicker-panel')[0];
             target.dragStart(e.clientX, e.clientY, e.offsetX - 7, e.offsetY - 7);
             target.saturation = parseInt((e.offsetX) / width * 100);
             target.value = 100 - parseInt((e.offsetY) / height * 100);
             target.update();
+            $C.__colorpicker = this;
         });
         $(element).find('.c-colors-hue input').bind('input', e => {
             target.hue = parseInt(e.target.value);
@@ -46,10 +49,14 @@
             }
         });
         $('body').bind('mouseup.colorpicker', e => {
+            if (e.target.type == 'range' || mouseisDows || $(e.target).hasClass('c-color')) {
+                $C.__colorpicker.bindColor();
+            }
             mouseisDows = false;
         });
-        $(element).find('.c-colors-palette .c-color').click(e => {
+        $(element).find('.c-colors-palette .c-color').mouseup(e => {
             let [r, g, b, a] = $(e.target).css('background-color').replace('rgba', '').replace('rgb', '').replace('(', '').replace(')', '').split(',');
+            $(this.element).attr('red', r).attr('green', g).attr('blue', b).attr('alpha', a);
             target.updateColor(r, g, b, a || 1);
         });
         $(element).find('.c-color-displayer').click(e => {
@@ -66,7 +73,26 @@
     }
 
     $C.colorPicker.prototype = {
-        updateColor: function (red, green, blue, alpha) {
+        
+        bindColor: function () {
+            if (this.bindingType == 2) {
+                let color = $(this.element).find('.c-color-displayer').css('background-color');
+                let [r, g, b, a] = color.replace('rgba', '').replace('rgb', '').replace('(', '').replace(')', '').split(',');
+                this.red = r;
+                this.green = g;
+                this.blue = b;
+                this.alpha = a || 1;
+                let $input = $(this.element).find('input[type="hidden"]').val(color);
+                let event = new Event('change');
+                $input[0].dispatchEvent(event);
+            }
+        },
+        updateColor: function () {
+            this.bindingType = parseInt($(this.element).attr('bindingType'));
+            let red = parseInt($(this.element).attr('red'));
+            let green = parseInt($(this.element).attr('green'));
+            let blue = parseInt($(this.element).attr('blue'));
+            let alpha = parseFloat($(this.element).attr('alpha'));
             if (this.red != red || this.green != green || this.blue != blue || this.alpha != alpha) {
                 $(this.element).find('.c-transparent-strip').css('background-image',
                     `linear-gradient(15deg, transparent, rgb(${red}, ${green}, ${blue}))`);

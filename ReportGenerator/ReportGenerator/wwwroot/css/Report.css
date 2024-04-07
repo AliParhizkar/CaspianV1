@@ -23,7 +23,11 @@ body {
     overflow: auto;
     display:flex;
 }
-
+.r-colorpicker-container {
+    position: absolute;
+    top: 30px;
+    box-shadow: #cfcfcf 1px 1px 12px 4px;
+}
 .r-table-content::-webkit-scrollbar {
     display: none;
 }

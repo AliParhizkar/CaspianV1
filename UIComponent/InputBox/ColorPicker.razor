@@ -7,8 +7,14 @@
         style = $"left:{Left}px;";
     if (Top.HasValue)
         style += $"top:{Top}px;";
+    var colorString = color.Substring(1);
+    var count = colorString.Length == 8 ? 4 : 3;
+    var size = colorString.Length / count;
+    var array = Enumerable.Range(0, count).Select(index => colorString.Substring(index * size, size))
+        .Select(value => Convert.ToInt32($"0x{value}", 16)).ToList();
+    double? opacity = array.Count == 4 ? Math.Round(100 * array[3] / 255.0) / 100.0 : null;
 }
-<div @ref="reference" class="c-colorpicker-panel" style="@style">
+<div @ref="reference" class="c-colorpicker-panel" red="@array[0]" green="@array[1]" blue="@array[2]" alpha="@(opacity ?? 1)" bindingType="@BindingType.ConvertToInt()" style="@style">
     <div class="c-color-block">
         <div class="c-color-white">
             <div class="c-color-black">
@@ -50,7 +56,7 @@
 
 @code
 {
-    string color, oldColor;
+    string color;
     ElementReference reference;
     IList<string> colors;
 
@@ -61,6 +67,9 @@
         colors = new List<string>() { "transparent", "#FFFFFF", "#000000", "#ff0000", "#00ff00", "#0000ff", "#00ffff", "#ff00ff", "#ffff00" };
         base.OnInitialized();
     }
+
+    [Parameter]
+    public BindingType BindingType { get; set; } = BindingType.OnChange;
 
     async Task ChangeColor(ChangeEventArgs e)
     {
@@ -87,17 +96,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (oldColor != color)
-        {
-            oldColor = color;
-            var colorString = color.Substring(1);
-            var count = colorString.Length == 8 ? 4 : 3;
-            var size = colorString.Length / count;
-            var array = Enumerable.Range(0, count).Select(index => colorString.Substring(index * size, size))
-                .Select(value => Convert.ToInt32($"0x{value}", 16)).ToList();
-            double? opacity = array.Count == 4 ? Math.Round(100 * array[3] / 255.0) / 100.0 : null;
-            await JSRuntime.InvokeVoidAsync("$.caspian.bindColorPicker", reference, array[0], array[1], array[2], opacity ?? 1);
-        }
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("$.caspian.bindColorPicker", reference);
 
         await base.OnAfterRenderAsync(firstRender);
     }

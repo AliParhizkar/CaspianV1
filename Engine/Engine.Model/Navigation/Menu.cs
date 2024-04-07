@@ -17,6 +17,9 @@ namespace Caspian.Engine.Model
         [DisplayName("Source")]
         public string Source { get; set; }
 
+        [DisplayName("URL")]
+        public string URL { get; set; }
+
         [DisplayName("Menu category")]
         public int? MenuCategoryId { get; set; }
 
@@ -31,10 +34,10 @@ namespace Caspian.Engine.Model
         public bool ShowonMenu { get; set; }
 
         /// <summary>
-        /// Addresses that exist in the database but are not in the system
+        /// Page is renamed or dropped and not exists in project
         /// </summary>
-        [DisplayName("Invalid address")]
-        public bool InvalidAddress { get; set; }
+        [DisplayName("Is Dropped")]
+        public bool IsDropped { get; set; }
 
         [CheckOnDelete("The menu has access and cannot be deleted")]
         public IList<MenuAccessibility> Accessibilities { get; set; }

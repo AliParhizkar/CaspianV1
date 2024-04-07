@@ -145,7 +145,7 @@ namespace Caspian.UI
             FormInitial();
             if (CrudGrid != null)
             {
-                if (CrudGrid.Search == UpsertData)
+                if (CrudGrid.Search != null && CrudGrid.Search == UpsertData)
                     throw new CaspianException("Error: Search object and UpsertData object is same");
                 CrudGrid.OnInternalDelete = EventCallback.Factory.Create<TEntity>(this, async (data) =>
                 {
