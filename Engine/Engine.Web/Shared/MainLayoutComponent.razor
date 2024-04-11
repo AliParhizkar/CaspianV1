@@ -106,7 +106,7 @@
     bool userHasAccess;
     bool userIsAuthenticated;
     SubSystemKind systemKind;
-    private string currentUrl;
+    string currentUrl;
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
@@ -140,6 +140,7 @@
                         UserId = userId.Value,
                         PageUrl = currentUrl
                     });
+
                 await service.SaveChangesAsync();
             }
         });
@@ -158,22 +159,18 @@
         var field = typeof(SubSystemKind).GetFields().Single(t => t.Name.Equals(strSubsystem, 
             StringComparison.OrdinalIgnoreCase));
         systemKind = (SubSystemKind)field.GetValue(null);
-        url = "";
-        foreach (var segment in uri.Segments)
-        {
-            if (!Int64.TryParse(segment, out _))
-                url += segment;
-        }
-        if (url.EndsWith('/'))
-            url = url.Substring(0, url.Length - 1);
-        var menu = MenuService.GetMenu(url);
         menuId = 0;
-        title = "";
-        if (menu != null)
+        if (PageTypeName.HasValue())
         {
-            menuId = menu.Id;
-            title = menu.Title;
+            var menu = MenuService.GetMenu(PageTypeName);
+            title = "";
+            if (menu != null)
+            {
+                menuId = menu.Id;
+                title = menu.Title;
+            }
         }
+
         exceptionComponent?.Recover();
         base.OnParametersSet();
     }
@@ -193,9 +190,9 @@
                     if (!userName.HasValue())
                     {
                         using var scope = ServiceScopeFactory.CreateScope();
-                        var user = await new UserService(scope.ServiceProvider).SingleAsync(userId.Value);
+                        var user = await scope.GetService<UserService>().SingleAsync(userId.Value);
                         userName = user.FName + " " + user.LName;
-                        menusId = await new MenuAccessibilityService(scope.ServiceProvider).GetUserMenus(userId.Value);
+                        menusId = await scope.GetService<MenuAccessibilityService>().GetUserMenus(userId.Value);
                     }
                 }
             }
@@ -207,6 +204,9 @@
     {
         navigationManager.NavigateTo("/Default", true);
     }
+
+    [Parameter]
+    public string PageTypeName { get; set; }
 
     public void Dispose()
     {

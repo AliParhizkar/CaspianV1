@@ -1,8 +1,10 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
 @inherits SimplePage<Report>
 @inject IJSRuntime runTime
+@inject IHostEnvironment Host
 @{
     base.BuildRenderTree(__builder);
+    string reportUrl = Host.IsProduction() ? "https://report.caspiansoftco.com/" : "https://localhost:7284/";
 }
 <div style="background-color:white" class="p-4 pt-2">
     <div class="row c-controls">
@@ -31,7 +33,7 @@
             </GridColumn>
             <GridColumn Title="Report" style="width:80px">
                 <Template>
-                    <a target="_blank" href="https://localhost:7284/@(context.Data.Id)">...</a>
+                    <a target="_blank" href="@(reportUrl + context.Data.Id)">...</a>
                 </Template>
             </GridColumn>
             <GridCommandColumns />
