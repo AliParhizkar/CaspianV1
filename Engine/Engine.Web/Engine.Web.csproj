@@ -44,4 +44,8 @@
 		<TypeScriptCompile Include="wwwroot\CodeEditor\file.ts" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\Js\ReportPrint\" />
+	</ItemGroup>
+
 </Project>
