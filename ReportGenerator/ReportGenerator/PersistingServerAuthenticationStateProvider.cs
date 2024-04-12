@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Components.Web;
+﻿using System.Diagnostics;
 using ReportGenerator.Client;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.Components.Authorization;
+
 
 namespace ReportGenerator
 {

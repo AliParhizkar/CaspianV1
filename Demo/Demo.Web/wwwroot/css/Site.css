@@ -1,10 +1,28 @@
-﻿.m-body {
-    font-family: 'Calibri (Body)';
-    background-color: white;
-    margin: -30px;
-    padding-top: 40px;
-    height: calc(100% + 60px);
+﻿.m-links {
+    padding:0 58px;
+    background-color:white;
 }
+    .m-links div {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+    .m-links label {
+        font-size: 22px;
+        padding-right: 8px;
+    }
+    .m-links a {
+        font-size: 17px;
+        font-weight:bold;
+        padding-top:3px;
+    }
+        .m-body {
+            font-family: 'Calibri (Body)';
+            background-color: white;
+            margin: -30px;
+            padding-top: 40px;
+            height: calc(100% + 60px);
+        }
 .d-demo-color {
     display: inline-block;
     background-image: url(/_content/UIComponent/Content/Transparent.png);
