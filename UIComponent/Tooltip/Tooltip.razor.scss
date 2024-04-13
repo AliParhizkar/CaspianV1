@@ -1,0 +1,91 @@
+﻿$tooltip-text-width: 120px;
+
+%tooltip {
+    position: relative;
+    display: inline-flex;
+    /*align-items: center;
+  border-bottom: 1px dotted black;
+  border: 1px solid red;*/
+}
+
+%tooltip-text {
+    width: $tooltip-text-width;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+    }
+}
+
+$tooltip: ( top: ( bordercolor: #555 transparent transparent transparent, ), bottom: ( bordercolor: transparent transparent #555 transparent, ), left: ( bordercolor: transparent transparent transparent #555, ), right: ( bordercolor: transparent #555 transparent transparent, ), );
+
+@mixin tooltip($tooltip-side) {
+    @each $side, $map in $tooltip-side {
+        .c-tooltip-#{$side} {
+            &:hover {
+                .c-tooltip-text-#{$side} {
+                    visibility: visible;
+                    opacity: 1;
+                }
+            }
+
+            @extend %tooltip;
+
+            .c-tooltip-text-#{$side} {
+                @extend %tooltip-text;
+
+                @if ($side == top) {
+                    bottom: 125%;
+                    left: calc(50% - $tooltip-text-width/2);
+                }
+
+                @if ($side == bottom) {
+                    top: 125%;
+                    left: calc(50% - $tooltip-text-width/2);
+                }
+
+                @if ($side == left) {
+                    right: 106%;
+                }
+
+                @if ($side == right) {
+                    left: 106%;
+                }
+
+                &::after {
+                    @if ($side == left) {
+                        #{$side}: 104%;
+                    }
+                    @else {
+                        #{$side}: 100%;
+
+                        @if ($side == right) {
+                            left: initial;
+                        }
+                    }
+
+                    border-color: map-get($map: $map, $key: bordercolor);
+                }
+            }
+        }
+    }
+}
+
+@include tooltip($tooltip);
