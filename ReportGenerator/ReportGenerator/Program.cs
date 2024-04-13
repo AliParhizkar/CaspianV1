@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Net.NetworkInformation;
 
 namespace ReportGenerator
 {
@@ -27,7 +28,8 @@ namespace ReportGenerator
             builder.Services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
                 .SetApplicationName("SharedCookieApp");
-
+            builder.Logging.ClearProviders();
+            builder.Logging.AddCaspianConsoleLogger(builder);
             var domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             builder.Services.ConfigureApplicationCookie(options => {
                 options.Cookie.Name = ".AspNet.SharedCookie";
@@ -79,6 +81,7 @@ namespace ReportGenerator
             });
 
             var app = builder.Build();
+            app.CreateFileAndFolder();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
