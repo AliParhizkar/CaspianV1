@@ -1,13 +1,22 @@
 ﻿@namespace Caspian.UI
 
-<div class="c-tooltip-top">
+@{
+    string position = Position?.ToString().ToLower() ?? "top";
+    string tooltip_Class = $"c-tooltip-{position}";
+    string tooltip_text_Class = $"c-tooltip-text-{position}";
+}
+
+<div class="@tooltip_Class">
     @ChildContent
-    <span class="c-tooltip-text-top">@Text</span>
+    <span class="@tooltip_text_Class">@Text</span>
 </div>
 
 @code {
     [Parameter]
     public string Text { get; set; }
+
+    [Parameter]
+    public Position? Position { get; set; }
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
