@@ -1,10 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Caspian.Common;
+﻿using Caspian.Common;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -177,12 +172,5 @@ namespace Caspian.UI
             }
             await base.OnAfterRenderAsync(firstRender);
         }
-    }
-
-    internal enum MessageType
-    {
-        Info = 1,
-
-        Quession,
     }
 }

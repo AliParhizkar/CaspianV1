@@ -17,6 +17,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Caspian.Common.Client\Caspian.Common.Client.csproj" />
+		<ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
 		<ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
 		<ProjectReference Include="..\Engine.Model\Engine.Model.csproj" />
 	</ItemGroup>

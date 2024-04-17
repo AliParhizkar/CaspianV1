@@ -1,11 +1,5 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
-<Router AppAssembly="typeof(Caspian.Report.Program).Assembly">
+﻿<Router AppAssembly="typeof(Caspian.Report.Program).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Caspian.Report.MainLayout)" >
-            <NotAuthorized>
-                <RedirectToLogin />
-            </NotAuthorized>
-        </AuthorizeRouteView>
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>

@@ -1,4 +1,4 @@
-﻿@namespace Caspian.Report
+﻿@* @namespace Caspian.Report
 @inject HttpClient Host
 @using Caspian.Common
 @using Caspian.Common.Extension
@@ -16,8 +16,7 @@
             <label>Method name</label>
         </div>
         <div class="col-md-8">
-@*             <DropdownList TValue="TotalFuncType?" Value="param.TotalFuncType" Disabled="param.ObjectPath.HasValue() && param.TotalFuncType == null || param.SystemFiledType.HasValue"
-                          ValueChanged="TotalFuncTypeChanged" /> *@
+
         </div>
         @if (Params != null)
         {
@@ -25,8 +24,7 @@
                 <label>Data field</label>
             </div>
             <div class="col-md-8">
-@*                 <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" @bind-Value="param.Path"
-                          Disabled="param.Path.HasValue() && param.TotalFuncType == null || param.SystemFiledType.HasValue || param.TotalFuncType == null" /> *@
+
             </div>
         }
     }
@@ -160,3 +158,4 @@
     [Parameter]
     public EventCallback<WindowStatus> StatusChanged { get; set; }
 }
+ *@

@@ -158,7 +158,7 @@ namespace Caspian.Report
                 Width = t.Data.Width,
                 Height = t.Data.Height
             }).ToArray();
-            list.AddRange(result);
+            list.ToList().AddRange(result);
         }
 
         /// <summary>

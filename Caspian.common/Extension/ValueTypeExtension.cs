@@ -154,12 +154,12 @@ namespace Caspian.Common
             return d / Math.Pow(10, digits);
         }
 
-        public static int? ConvertToInt(this Enum curentEnum)
-        {
-            if (curentEnum == null)
-                return null;
-            return Convert.ToInt32(curentEnum);
-        }
+        //public static int? ConvertToInt(this Enum curentEnum)
+        //{
+        //    if (curentEnum == null)
+        //        return null;
+        //    return Convert.ToInt32(curentEnum);
+        //}
 
         public static string ToPersianDateStringDayOfWeek(this DateTime date)
         {
@@ -210,20 +210,6 @@ namespace Caspian.Common
                     return nullText;
             }
             return field.EnumText();
-        }
-
-        public static string EnumText(this Enum field)
-        {
-            DisplayAttribute da;
-            if (field == null)
-                return null;
-            var fi = field.GetType().GetField(field.ToString());
-            if (fi == null)
-                throw new Exception("هیچ فیلدی برای " + field.GetType().Name + " با مقدار " + field + " تعریف نشده است.");
-            da = fi.GetCustomAttribute<DisplayAttribute>();
-            if (da != null)
-                return da.Name;
-            return Convert.ToString(field);
         }
 
         public static Dictionary<string, string> DisplayNames(this Enum currentEnum)

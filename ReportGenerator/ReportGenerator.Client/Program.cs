@@ -1,8 +1,5 @@
-using Caspian.UI;
 using Caspian.Common;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.AspNetCore.Components.Authorization;
-using ReportGenerator.Client;
 
 namespace Caspian.Report
 {
@@ -15,11 +12,11 @@ namespace Caspian.Report
 
             builder.Services.AddAuthorizationCore();
             //builder.Services.AddCascadingAuthenticationState();
-            builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+            //builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
             builder.Services.AddScoped<CaspianDataService>();
-            builder.Services.AddScoped<BasePageService>();
-            builder.Services.AddScoped<FormAppState>();
+            //builder.Services.AddScoped<BasePageService>();
+            //builder.Services.AddScoped<FormAppState>();
             builder.Services.AddSingleton(http => new System.Net.Http.HttpClient
             {
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)

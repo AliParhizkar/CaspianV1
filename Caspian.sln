@@ -29,6 +29,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator", "ReportGe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator.Client", "ReportGenerator\ReportGenerator.Client\ReportGenerator.Client.csproj", "{C6AC3963-7C1D-40B6-BEC3-879DD4A3B568}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIComponent.Clinet", "UIComponent.Clinet\UIComponent.Clinet.csproj", "{E15D1911-C157-471A-B398-06C7C8050D85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caspian.Common.Client", "Caspian.Common.Client\Caspian.Common.Client.csproj", "{9D02AFA7-F858-499A-89FB-4FFE00773435}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,14 @@ Global
 		{C6AC3963-7C1D-40B6-BEC3-879DD4A3B568}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6AC3963-7C1D-40B6-BEC3-879DD4A3B568}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6AC3963-7C1D-40B6-BEC3-879DD4A3B568}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E15D1911-C157-471A-B398-06C7C8050D85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E15D1911-C157-471A-B398-06C7C8050D85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E15D1911-C157-471A-B398-06C7C8050D85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E15D1911-C157-471A-B398-06C7C8050D85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D02AFA7-F858-499A-89FB-4FFE00773435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D02AFA7-F858-499A-89FB-4FFE00773435}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D02AFA7-F858-499A-89FB-4FFE00773435}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D02AFA7-F858-499A-89FB-4FFE00773435}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

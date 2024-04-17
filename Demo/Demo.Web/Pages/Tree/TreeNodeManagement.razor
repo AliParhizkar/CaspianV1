@@ -1,0 +1,90 @@
+﻿@page "/Demo/TreeNodeManagement"
+@inherits BasePage
+<h2>Node management</h2>
+<p>
+    In some case we can manage 
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row d-content">
+                <div class="col-md-6">
+                    <h4>Single select</h4>
+                    <span class="c-demo-description pe-5">
+                        In this example 
+                    </span>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <TreeView TEntity="NodeView" style="height:500px;" Source="source" OnChange="SingleSelect" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <hr />
+                    <h4>Disable nodes on below</h4>
+                    <span class="c-demo-description pe-5">
+                        In this example
+                    </span>
+                </div>
+                <div class="col-md-6">
+                    <hr />
+                    <div>
+                        <TreeView TEntity="NodeView" style="height:500px;" Source="source" OnChange="DisableNode" />
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+@code 
+{
+    IList<NodeView> source;
+
+    void DisableNode(NodeView node)
+    {
+        var selected = node.Selected == true;
+        if (selected)
+        {
+            foreach (var item in node.Parent.Children)
+                if (Convert.ToInt32(item.Value) > Convert.ToInt32(node.Value))
+                    item.Disabled = true;
+        }
+        else
+        {
+            foreach (var item in node.Parent.Children)
+                item.Disabled = false;
+        }
+    }
+
+    void SingleSelect(NodeView node)
+    {
+        var selected = node.Selected == true;
+        if (selected)
+        {
+            foreach (var item in node.Parent.Children)
+                item.Selected = false;
+            node.Selected = true;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<CountryService>();
+        source = await service.GetAll().Select(t => new NodeView()
+            {
+                Value = t.Id.ToString(),
+                Text = t.Title,
+                Expanded = true,
+                Selectable = false,
+                Children = t.Cities.Select(u => new NodeView()
+                {
+                    Value = u.Id.ToString(),
+                    Text = u.Title,
+                    Collabsable = false,
+                    Selectable = true,
+                }).ToList()
+            }).ToListAsync();
+        await base.OnInitializedAsync();
+    }
+}

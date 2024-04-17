@@ -20,8 +20,13 @@
         if (FolderName.HasValue())
             path += FolderName + '\\';
         path += FileName;
-        content = await File.ReadAllTextAsync(path);
-        content = content.Replace("�", "&nbsp;");
+        if (File.Exists(path))
+        {
+            content = await File.ReadAllTextAsync(path);
+            content = content.Replace("�", "&nbsp;");
+        }
+        else
+            content = $"File Not exist";
         await base.OnInitializedAsync();
     }
 

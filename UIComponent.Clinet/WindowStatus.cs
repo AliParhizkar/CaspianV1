@@ -6,4 +6,11 @@
 
         Open
     }
+
+    public enum MessageType
+    {
+        Info = 1,
+
+        Quession,
+    }
 }

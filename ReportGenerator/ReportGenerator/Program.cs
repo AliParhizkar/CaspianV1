@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Net.NetworkInformation;
 
 namespace ReportGenerator
 {
@@ -39,7 +38,7 @@ namespace ReportGenerator
                 options.Cookie.SameSite = SameSiteMode.Lax;
             });
             //builder.Services.AddCascadingAuthenticationState();
-            builder.Services.AddScoped<AuthenticationStateProvider, PersistingServerAuthenticationStateProvider>();
+            //builder.Services.AddScoped<AuthenticationStateProvider, PersistingServerAuthenticationStateProvider>();
             builder.Services.AddAuthorization();
             builder.Services.AddAuthentication(options =>
             {

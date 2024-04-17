@@ -2,6 +2,7 @@
 using Caspian.Report;
 using System.Xml.Linq;
 using Caspian.Report.Data;
+using Caspian.Common.Extension;
 
 namespace ReportGenerator.Services
 {
