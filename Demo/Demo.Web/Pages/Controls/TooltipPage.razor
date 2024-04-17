@@ -1,0 +1,56 @@
+﻿@page "/Demo/Tooltip"
+@namespace Demo.Web.Pages
+
+<h2>Tooltip</h2>
+<p>
+    The <b>tooltip</b> component <b>show extra information</b> beside a component.
+</p>
+<h3 class="pt-3">Simple usage</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
+            <div class="ps-4 pe-4 pt-4 pb-4">
+                <Tooltip Text="Tooltip text">
+                    Hover over me
+                </Tooltip>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Razor'>
+            <Document FolderName="Tabpanel" FileName="Static" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Tooltip in differnet positions</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
+            <div class="ps-4 pe-4 pt-4 pb-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <Tooltip Text="Tooltip text" Position="Position.Top">
+                            Show tooltip (on top)
+                        </Tooltip>
+                    </div>
+                    <div class="col-md-3">
+                        <Tooltip Text="Tooltip text" Position="Position.Right">
+                            Show tooltip (on right)
+                        </Tooltip>
+                    </div>
+                    <div class="col-md-3">
+                        <Tooltip Text="Tooltip text" Position="Position.Bottom">
+                            Show tooltip (on bottom)
+                        </Tooltip>
+                    </div>
+                    <div class="col-md-3">
+                        <Tooltip Text="Tooltip text" Position="Position.Left">
+                            Show tooltip (on left)
+                        </Tooltip>
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Razor'>
+            <Document FolderName="Tabpanel" FileName="Dynamic" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
