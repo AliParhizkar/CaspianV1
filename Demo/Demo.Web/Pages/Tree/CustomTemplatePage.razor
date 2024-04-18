@@ -1,5 +1,6 @@
 ﻿@page "/Demo/NodeTemplate"
 @inherits BasePage
+
 <h2>Custom template</h2>
 
 <p>
@@ -19,6 +20,7 @@
                 </div>
                 <div class="col-md-6">
                     <TreeView TEntity="NodeView" style="height:500px" Source="source">
+                        
                         <AfterNodeTemplate>
                             <TreeNodeTemplate Level="1">
                                 <span class=" d-tree-icon d-tree-add">

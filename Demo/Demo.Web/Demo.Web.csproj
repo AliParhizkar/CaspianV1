@@ -39,6 +39,10 @@
 		<ProjectReference Include="..\Demo.Model\Demo.Model.csproj" />
 		<ProjectReference Include="..\Demo.Service\Demo.Service.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Pages\GridListView\" />
+	</ItemGroup>
 	<Target Name="CreateDataFolder" AfterTargets="AfterPublish">
 		<MakeDir Directories="$(PublishUrl)Data" Condition="!Exists('$(PublishUrl)Data')" />
 	</Target>
