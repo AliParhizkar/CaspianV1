@@ -1154,18 +1154,18 @@
                 }
             });
         },
-        bindPopupWindow: function (dotnet, data, target) {
+        bindPopupWindow: function (dotnet, data, element, target) {
             let pos = JSON.parse(data);
-            $('.c-popup-window').css('display', 'block');
-            let className = $('.c-popup-window').attr('class');
-            $('.c-popup-window').attr('class', 'auto-hide c-popup-window');
-            let width = $('.c-popup-window').outerWidth();
-            let height = $('.c-popup-window').outerHeight();
+            $(element).css('display', 'block');
+            let className = $(element).attr('class');
+            $(element).attr('class', 'auto-hide c-popup-window');
+            let width = $(element).outerWidth();
+            let height = $(element).outerHeight();
             let top = $('.c-main-head').height();
             let left = $('.sidebar').width();
-            $('.c-popup-window').attr('class', className);
+            $(element).attr('class', className);
             if (target) {
-                $('.c-popup-window').attr('class', 'auto-hide c-popup-window');
+                $(element).attr('class', 'auto-hide c-popup-window');
                 let $target = $(target);
                 var sum = 0;
                 while ($target[0]) {
@@ -1210,7 +1210,7 @@
                     topT -= height / 2 + pos.offsetTop + offsetTop;
                 else if (pos.verticalAnchor == 3)
                     topT -= height + pos.offsetTop + offsetTop - 1;
-                $('.c-popup-window').css({
+                $(element).css({
                     position: 'absolute',
                     top: topT,
                     left: leftT
@@ -1218,13 +1218,13 @@
             }
             else {
                 if (pos.left != undefined)
-                    $('.c-popup-window').css({ left: pos.left + left, right: 'auto' });
+                    $(element).css({ left: pos.left + left, right: 'auto' });
                 else if (pos.right != undefined)
-                    $('.c-popup-window').css({ left: 'auto', right: pos.right });
+                    $(element).css({ left: 'auto', right: pos.right });
                 if (pos.top != undefined)
-                    $('.c-popup-window').css({ top: pos.top + top, bottom: 'auto' });
+                    $(element).css({ top: pos.top + top, bottom: 'auto' });
                 else if (pos.bottom != undefined)
-                    $('.c-popup-window').css({ top: 'auto', bottom: pos.bottom });
+                    $(element).css({ top: 'auto', bottom: pos.bottom });
             }
             $c.enableAutoHide(dotnet);
         },

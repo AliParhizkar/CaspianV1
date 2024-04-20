@@ -2,33 +2,18 @@
 @namespace Demo.Web.Pages
 
 
-
-<div class="col-md-6 pe-6 text-center">
-    <button class="c-btn c-success" @onclick="() => anchorStatus = WindowStatus.Open">Show Popup</button>
+<div style="margin: 150px;">
+    <Tooltip Text="Tooltip Text">
+        Hover Over Me
+    </Tooltip>
 </div>
 
-
-<div class="row">
-    <div @ref="targetElementTop" style="border:1px solid blue;" class="col-md-5 d-target-element">
-        Show Window Near Here
-    </div>
-
+<div style="margin: 150px;">
+    <Tooltip Position="Position.Right" Text="Tooltip Text">
+        Hover me (show on top)
+    </Tooltip>
 </div>
 
-
-<PopupWindow @bind-Status="anchorStatus"
-             Style="border-radius:0"
-             HorizontalAnchor="HorizontalAnchor.Center"
-             VerticalAnchor="VerticalAnchor.Bottom"
-             TargetHorizontalAnchor="HorizontalAnchor.Center"
-             TargetVerticalAnchor="VerticalAnchor.Top"
-             OffsetTop="5"
-             TargetElement="targetElementTop">
-
-    <div style="width:120px;height:50px;text-align:center;border:1px solid red;">
-        <h6>Target Element </h6>
-    </div>
-</PopupWindow>
 
 @code
 {

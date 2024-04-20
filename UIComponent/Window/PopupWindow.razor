@@ -3,13 +3,14 @@
 @inject IJSRuntime jSRuntime
 @if (Status == WindowStatus.Open)
 {
-    <div style="@Style" class="@className">
+    <div @ref="element" style="@Style" class="@className">
         @ChildContent
     </div>
 }
 
 @code 
 {
+    ElementReference element;
     string className;
 
     protected override void OnInitialized()
@@ -108,7 +109,7 @@
                 offsetLeft = OffsetLeft,
                 offsetTop = OffsetTop
             });
-            await jSRuntime.InvokeVoidAsync("$.caspian.bindPopupWindow", DotNetObjectReference.Create(this), json, TargetElement);
+            await jSRuntime.InvokeVoidAsync("$.caspian.bindPopupWindow", DotNetObjectReference.Create(this), json, element, TargetElement);
         }
         await base.OnAfterRenderAsync(firstRender);
     }
