@@ -2,16 +2,41 @@
 
 @{
     string position = Position?.ToString().ToLower() ?? "top";
-    string tooltip_Class = $"c-tooltip-{position}";
-    string tooltip_text_Class = $"c-tooltip-text-{position}";
+    string tooltip_class = $"c-tooltip-{position}";
 }
 
-<div class="@tooltip_Class">
+<div @ref="targetElement"
+     @onmouseenter="() => anchorStatus = WindowStatus.Open"
+     @onmouseleave="() => anchorStatus = WindowStatus.Close"
+     style="border:1px solid blue;width:fit-content;" class="d-target-element">
     @ChildContent
-    <span class="@tooltip_text_Class">@Text</span>
 </div>
 
-@code {
+<PopupWindow @bind-Status="anchorStatus"
+             Style="width:fit-content; border-radius: 0px; display: block; position: absolute;background: transparent;box-shadow: none"
+             HorizontalAnchor="popupX"
+             VerticalAnchor="popupY"
+             TargetHorizontalAnchor="targetX"
+             TargetVerticalAnchor="targetY"
+             OffsetLeft="offsetLeft"
+             OffsetTop="offsetTop"
+             TargetElement="targetElement">
+
+    <div class="@tooltip_class">
+        @Text
+    </div>
+</PopupWindow>
+
+
+@code
+{
+    ElementReference targetElement;
+    WindowStatus anchorStatus;
+
+    HorizontalAnchor targetX, popupX;
+    VerticalAnchor targetY, popupY;
+    int offsetLeft, offsetTop;
+
     [Parameter]
     public string Text { get; set; }
 
@@ -20,4 +45,68 @@
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Position.HasValue)
+        {
+            if (Position.Value == UI.Position.Top)
+                SetPopupTop();
+            else if (Position.Value == UI.Position.Right)
+                SetPopupRight();
+            else if (Position.Value == UI.Position.Bottom)
+                SetPopupBottom();
+            else if (Position == UI.Position.Left)
+                SetPopupLeft();
+        }
+        else
+            SetPopupTop();
+
+        base.OnParametersSet();
+    }
+
+    private void SetPopupTop()
+    {
+        offsetTop = 5;
+        offsetLeft = 0;
+
+        targetX = HorizontalAnchor.Center;
+        targetY = VerticalAnchor.Top;
+        popupX = HorizontalAnchor.Center;
+        popupY = VerticalAnchor.Bottom;
+    }
+
+    private void SetPopupRight()
+    {
+        offsetTop = 0;
+        offsetLeft = 5;
+
+        targetX = HorizontalAnchor.Right;
+        targetY = VerticalAnchor.Middle;
+        popupX = HorizontalAnchor.Left;
+        popupY = VerticalAnchor.Middle;
+    }
+
+    private void SetPopupBottom()
+    {
+        offsetTop = 5;
+        offsetLeft = 0;
+
+        targetX = HorizontalAnchor.Center;
+        targetY = VerticalAnchor.Bottom;
+        popupX = HorizontalAnchor.Center;
+        popupY = VerticalAnchor.Top;
+    }
+
+    private void SetPopupLeft()
+    {
+        offsetTop = 0;
+        offsetLeft = -2;
+
+        targetX = HorizontalAnchor.Left;
+        targetY = VerticalAnchor.Middle;
+        popupX = HorizontalAnchor.Right;
+        popupY = VerticalAnchor.Middle;
+    }
 }
+
