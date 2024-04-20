@@ -1,0 +1,50 @@
+﻿@page "/Demo/Test"
+@namespace Demo.Web.Pages
+
+
+
+<div class="col-md-6 pe-6 text-center">
+    <button class="c-btn c-success" @onclick="() => anchorStatus = WindowStatus.Open">Show Popup</button>
+</div>
+
+
+<div class="row">
+    <div @ref="targetElementTop" style="border:1px solid blue;" class="col-md-5 d-target-element">
+        Show Window Near Here
+    </div>
+
+</div>
+
+
+<PopupWindow @bind-Status="anchorStatus"
+             Style="border-radius:0"
+             HorizontalAnchor="HorizontalAnchor.Center"
+             VerticalAnchor="VerticalAnchor.Bottom"
+             TargetHorizontalAnchor="HorizontalAnchor.Center"
+             TargetVerticalAnchor="VerticalAnchor.Top"
+             OffsetTop="5"
+             TargetElement="targetElementTop">
+
+    <div style="width:120px;height:50px;text-align:center;border:1px solid red;">
+        <h6>Target Element </h6>
+    </div>
+</PopupWindow>
+
+@code
+{
+
+    ElementReference targetElementTop;
+    ElementReference targetElementLeft;
+    ElementReference targetElementRight;
+    ElementReference targetElementBottom;
+    WindowStatus anchorStatus;
+
+    int? left = 200;
+    int? right;
+    int offsetLeft = 2;
+    int offsetTop = 2;
+}
+
+@code {
+
+}

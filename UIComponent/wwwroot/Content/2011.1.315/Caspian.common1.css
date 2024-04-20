@@ -977,6 +977,7 @@ progress::-webkit-progress-value {
             height: 100vh;
         }
 .c-popup-window {
+    width:fit-content;
     margin:auto auto;
     position: fixed;
     border: 1px solid #d7d6d6;
