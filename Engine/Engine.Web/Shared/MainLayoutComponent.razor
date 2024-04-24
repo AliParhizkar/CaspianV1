@@ -4,7 +4,7 @@
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject SingletonMenuService MenuService
 @inject NavigationManager navigationManager
-@inject AuthenticationStateProvider authStateProvider 
+@inject AuthenticationStateProvider authStateProvider
 @inject ProtectedSessionStorage storage
 @inject CaspianDataService dataService
 @inject IServiceScopeFactory Scopefactory
@@ -63,8 +63,15 @@
                                 <span>@time</span>
                             </div>
                             <div>
-                                <i class="fa fa-wpforms"  />
+                                <i class="fa fa-wpforms" />
                                 <span>@title</span>
+                            </div>
+                            <div>
+                                <a type="button" href="https://github.com/AliParhizkar/CaspianV1" target="_blank">
+                                    <span>
+                                        <i style="color:black !important" class="fa fa-github" aria-hidden="true" />
+                                    </span>
+                                </a>
                             </div>
                         </div>
                         <div class="c-content-main">
@@ -156,7 +163,7 @@
         if (url.StartsWith("/"))
             url = url.Substring(1);
         var strSubsystem = url.Split('/')[0];
-        var field = typeof(SubSystemKind).GetFields().Single(t => t.Name.Equals(strSubsystem, 
+        var field = typeof(SubSystemKind).GetFields().Single(t => t.Name.Equals(strSubsystem,
             StringComparison.OrdinalIgnoreCase));
         systemKind = (SubSystemKind)field.GetValue(null);
         menuId = 0;
