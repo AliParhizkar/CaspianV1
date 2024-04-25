@@ -12,6 +12,8 @@ namespace Caspian.Engine.Model
 
         public string IPAddress { get; set; }
 
+        public string UserAgent { get; set; }
+
         public DateTime LoginDate { get; set; }
 
         public string PageUrl { get; set; }

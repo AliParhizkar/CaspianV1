@@ -1,8 +1,53 @@
-﻿
+﻿@page "/Test1"
+@using Caspian.UI
+@using Demo.Model
+@using Demo.Service
+@using Microsoft.EntityFrameworkCore
+@inherits BasePage
+@if (products == null)
+{
+    <div>
+        Loading
+    </div>
+}
+else
+{
+    @foreach(var product in products)
+    {
+        <div style="display:flex">
+            <div>@product.Title</div>
+        </div>
+    }
+}
+
 @code 
 {
+    IList<Product> products;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<ProductService>();
+        products = await service.GetAll().ToListAsync();
+        await base.OnInitializedAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        return base.OnParametersSetAsync();
+    }
+
+    protected override bool ShouldRender()
+    {
+        return base.ShouldRender();
     }
 }

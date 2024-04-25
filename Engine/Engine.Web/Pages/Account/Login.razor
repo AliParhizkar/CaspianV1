@@ -97,6 +97,8 @@
         if (HttpContext is not null)
         {
             var queryStr = HttpContext.Request.QueryString.Value;
+
+
             if (!string.IsNullOrEmpty(queryStr) &&
                     queryStr.Contains("pitch", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -127,13 +129,21 @@
             Logger.LogInformation("User logged in.");
             using var scope = Scopefactory.CreateScope();
             var user = await scope.GetService<UserService>().GetAll().SingleAsync(t => t.UserName == Input.Username);
-            string ip = HttpContext?.Connection.RemoteIpAddress?.ToString();
+            string ip = null, agent = null;
+            if (HttpContext != null)
+            {
+                if (HttpContext.Request.Headers.ContainsKey("User-Agent"))
+                    agent = HttpContext.Request.Headers["User-Agent"].ToString();
+                agent = agent.Substring(0, Math.Min(agent.Length, 200));
+                ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            }
             var service = scope.GetService<UserLoginService>();
             await service.AddAsync(new UserLogin()
             {
                 LoginDate = DateTime.Now,
                 UserId = user.Id,
-                IPAddress = ip
+                IPAddress = ip,
+                UserAgent = agent
             });
             await service.SaveChangesAsync();
             if (!ReturnUrl.HasValue() || ReturnUrl.Contains("pitch", StringComparison.InvariantCultureIgnoreCase))

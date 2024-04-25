@@ -1,6 +1,9 @@
 ﻿.c-input-colorpicker{
     position:relative;
 }
+.t-datepicker .t-animation-container{
+    width:225px;
+}
 .c-input-color {
     border: 1px solid rgba(0,0,0,0.12);
     height: 32px;
@@ -519,25 +522,23 @@ input[type='range']::-webkit-slider-thumb {
         width: 160px;
         height: auto;
     }
-        .t-tabstrip.t-vertical .t-tabstrip-items .t-link{
-            display:inline-block;
-            width:160px;
-            cursor:pointer;
+        .t-tabstrip.t-vertical .t-tabstrip-items .t-link {
+            display: inline-block;
+            width: 153px;
+            cursor: pointer;
+            height: 30px;
+            padding: 3px 4px;
+            border-radius: 15px;
         }
         .t-tabstrip.t-vertical .t-tabstrip-items .t-item {
             display: block !important;
             height: 39px;
-            line-height: 39px;
             border-right: none;
             border-bottom: 1px solid #d6d6d6;
             transition: background-color .4s cubic-bezier(0.35, 0, 0.25, 1) !important;
-            padding:0!important;
+            padding:4px!important;
             margin:0!important;
         }
-            .t-tabstrip.t-vertical .t-tabstrip-items .t-item:hover {
-                background-color: #e5e5e5;
-                border-color: #cacaca;
-            }
 .c-form-action button {
     min-width: 65px;
 }
@@ -1385,6 +1386,7 @@ form > tr {
         white-space: nowrap;
         margin:2px;
         height:20px;
+        line-height:19px;
     }
 .c-grid-command {
     white-space: nowrap;
@@ -2345,8 +2347,8 @@ div.t-window {
     border: 1px solid #c3c3c3;
 }
 /* TabStrip */
-.t-item.t-state-default:hover , .t-item.t-state-active:hover {
-    background-color: #cdcdcd;
+.c-tabstrip-items .t-state-default .t-link:hover {
+    background-color: #c2bfde;
 }
 
 .t-item.t-state-default:first-child:hover, .t-item.t-state-active:first-child:hover {
@@ -2440,10 +2442,13 @@ div.t-window {
 
 .t-tabstrip-items .t-link,
 .t-panelbar .t-tabstrip-items .t-link {
-    padding: 0px 5px;
     display: inline-block;
     border-bottom-width: 0;
-    font-size:16px;
+    font-size: 15px;
+    vertical-align: top;
+    border-radius:11px;
+    padding:0 4px;
+    height:24px;
 }
 
 .t-tabstrip-items .t-icon,

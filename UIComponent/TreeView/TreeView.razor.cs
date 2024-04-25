@@ -1,13 +1,9 @@
-﻿using System;
-using System.Linq;
-using Caspian.Common;
+﻿using Caspian.Common;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 
@@ -23,11 +19,11 @@ namespace Caspian.UI
 
         public EventCallback<NodeView> OnInternalClicked { get; set; }
 
-        [CascadingParameter(Name = "TreeViewCascadeData")]
-        public TreeViewCascadeData CascadeData { get; set; }
-
         [CascadingParameter]
         internal IAutoCompleteTree AutoComplete { get; set; }
+
+        [Parameter]
+        public RenderFragment<NodeView> BeforeNodeTemplate { get; set; }
 
         [Parameter]
         public RenderFragment<NodeView> AfterNodeTemplate { get; set; }
@@ -253,7 +249,6 @@ namespace Caspian.UI
                     Depth = parentNode?.Depth == null ? (byte)1 : (byte)(parentNode.Depth + 1),
                     Expanded = true,
                     Parent = parentNode,
-                    ShowTemplate = true,
                     Text = TextFunc.Invoke(entity),
                     Value = value
                 };
@@ -311,9 +306,6 @@ namespace Caspian.UI
 
         protected override void OnParametersSet()
         {
-            if (CascadeData == null)
-                CascadeData = new TreeViewCascadeData();
-            CascadeData.AfterNodeTemplate = AfterNodeTemplate;
             if (ParentNodeFilterFunc != null)
                 parentNodeFilterFunc = ParentNodeFilterFunc;
             base.OnParametersSet();

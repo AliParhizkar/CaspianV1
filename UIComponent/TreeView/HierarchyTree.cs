@@ -89,7 +89,6 @@ namespace Caspian.UI
                 {
                     var node = new NodeView();
                     node.Collabsable = true;
-                    node.ShowTemplate = true;
                     node.Selectable = selectable;
                     node.Text = TextFunc.Invoke(entity);
                     node.Value = key.GetValue(entity).ToString();
@@ -111,7 +110,6 @@ namespace Caspian.UI
                 node.Collabsable = true;
                 node.Text = TextFunc.Invoke(entity);
                 node.Value = key.GetValue(entity).ToString();
-                node.ShowTemplate = true;
                 node.Selectable = selectable;
                 node.Children = children;
                 return node;
@@ -125,7 +123,6 @@ namespace Caspian.UI
         {
             var node = new NodeView();
             node.Expanded = true;
-            node.ShowTemplate = true;
             node.Selectable = selectable;
             node.Text = TextFunc.Invoke(entity);
             node.Value = key.GetValue(entity).ToString();

@@ -34,6 +34,12 @@
                                await OnChanged.InvokeAsync(Item);
                            }" />
         }
+        @if (CascadeData?.BeforeNodeTemplate != null)
+        {
+            <div class="c-node-before-template">
+                @CascadeData.BeforeNodeTemplate(Item)
+            </div>
+        }
         <span class="c-title" @onclick="async () =>
                                     {
                                         if (!Item.Disabled)
@@ -59,7 +65,7 @@
             else
                 Item.Depth = Convert.ToByte(Item.Parent.Depth.Value + 1);
         }
-        @if (Item.ShowTemplate && CascadeData?.AfterNodeTemplate != null)
+        @if (CascadeData?.AfterNodeTemplate != null)
         {
             <CascadingValue Value="Item.Depth" Name="NodeDepthOnTree">
                 @CascadeData.AfterNodeTemplate(Item)
@@ -122,8 +128,8 @@
     [Parameter]
     public EventCallback<NodeView> OnCollapsed { get; set; }
 
-    [CascadingParameter(Name = "TreeViewCascadeData")]
-    public TreeViewCascadeData CascadeData { get; set; }
+    [CascadingParameter]
+    public ITreeView CascadeData { get; set; }
 
     [Parameter]
     public EventCallback<NodeView> OnSelected { get; set; }

@@ -1,16 +1,19 @@
 ﻿@page "/counter"
+@inherits BasePage
+@using Caspian.Common.Extension
 @using Caspian.UI
-
-
+@using Demo.Model
+@using Demo.Service
+@inject IJSRuntime Js
+<button @onclick=UpdateAsync>Update</button>
 
 @code 
 {
-    Person person;
-    
-    public class Person
+    async Task UpdateAsync()
     {
-        public string Name { get; set; }
-
-        public int Age { get; set; }
+        var service = CreateScope().GetService<CountryService>();
+        var country = await service.SingleAsync(3);
+        country.Title = "ForTest1";
+        await service.SaveChangesAsync();
     }
 }

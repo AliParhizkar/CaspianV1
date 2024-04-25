@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Drawing;
 
 namespace Main
 {
@@ -26,7 +27,6 @@ namespace Main
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
             builder.Logging.ClearProviders();
             builder.Logging.AddCaspianConsoleLogger(builder);
-
             var persistKeyPath = Path.Combine(builder.Environment.ContentRootPath, "PersistKey");
             builder.Services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))

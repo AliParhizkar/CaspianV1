@@ -1,4 +1,6 @@
 ﻿@page "/Demo/NodeTemplate"
+@using System.Drawing
+@inject IHostEnvironment Host
 @inherits BasePage
 
 <h2>Custom template</h2>
@@ -12,29 +14,58 @@
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="row d-content">
-                <div class="col-md-6">
-                    <h4>Custom template</h4>
+                <div class="col-md-5">
+                    <h4>Befor Node Template</h4>
+                    <span class="c-demo-description pe-5">
+                        In this example, we <b>put</b> the <b>files &Aacute; folder icon</b>
+                    </span>
+                </div>
+                <div class="col-md-7">
+                    <TreeView TEntity="NodeView" Source="foldersAndFiles" OnExpanded="OnExpand">
+                        <BeforeNodeTemplate>
+                            @if (context.Collabsable)
+                            {
+                                <img width="25" height="25" src="/_content/Demo.Web/FolderIcon.png" />
+                            }
+                            else
+                            {
+                                var index = context.Text.LastIndexOf('.');
+                                if (index >= 0)
+                                {
+                                    var extenssion = context.Text.Substring(index);
+                                    <PictureBox style="width:25px;height:25px" Data="filesIcon[extenssion]" />
+                                }
+
+                            }
+                        </BeforeNodeTemplate>
+                    </TreeView>
+                </div>
+                <div class="col-md-5">
+                    <hr />
+                    <h4>After Node Template</h4>
                     <span class="c-demo-description pe-5">
                         In this example, we <b>put</b> the <b>insert icon</b> for the <b>first level</b> of the tree and the <b>edit and delete icon</b> for the <b>second level</b> of the tree.
                     </span>
                 </div>
-                <div class="col-md-6">
-                    <TreeView TEntity="NodeView" style="height:500px" Source="source">
-                        
-                        <AfterNodeTemplate>
-                            <TreeNodeTemplate Level="1">
+                <div class="col-md-7">
+                    <hr />
+                    <TreeView TEntity="NodeView" style="height:500px" Source="source" >
+                        <AfterNodeTemplate >
+                            @if (context.Depth == 1)
+                            {
                                 <span class=" d-tree-icon d-tree-add">
                                     <span @onclick="() => ShowEditForm(context, false)" class="fa fa-plus"></span>
                                 </span>
-                            </TreeNodeTemplate>
-                            <TreeNodeTemplate Level="2">
+                            }
+                            else
+                            {
                                 <span class="d-tree-icon d-tree-edit" @onclick="() => ShowEditForm(context, true)">
                                     <span class="fa fa-pencil"></span>
                                 </span>
                                 <span class="d-tree-icon d-tree-delete" @onclick="async () => await DeleteCity(context)">
                                     <span class="fa fa-trash"></span>
                                 </span>
-                            </TreeNodeTemplate>
+                            }
                         </AfterNodeTemplate>
                     </TreeView>
                 </div>
@@ -70,25 +101,77 @@
 {
     IControl firstControl;
     IList<NodeView> source;
+    IList<NodeView> foldersAndFiles;
     NodeView selectedNode;
     WindowStatus status;
+    IDictionary<string, byte[]> filesIcon;
     City city;
+
+    void OnExpand(NodeView node)
+    {
+        var parent = node;
+        string path = null;
+        while (parent != null)
+        {
+            if (path == null)
+                path = parent.Text;
+            else
+                path = $"{parent.Text}\\{path}";
+            parent = parent.Parent;
+        }
+        path = $"{Host.ContentRootPath}\\{path}";
+        node.Children = FilesAndFolders(path);
+    }
+
+    IList<NodeView> FilesAndFolders(string path)
+    {
+        var list = new List<NodeView>();
+        foreach (var item in Directory.GetDirectories(path))
+        {
+            var index = item.LastIndexOf('\\');
+            var name = item.Substring(index + 1);
+            list.Add(new NodeView()
+            {
+                Collabsable = true,
+                Text = name,
+            });
+        }
+        foreach (var item in Directory.GetFiles(path))
+        {
+            var index = item.LastIndexOf('\\');
+            var name = item.Substring(index + 1);
+            var fileExtenssion = Path.GetExtension(item);
+            if (!filesIcon.ContainsKey(fileExtenssion))
+            {
+                using Icon appIcon = Icon.ExtractAssociatedIcon(item);
+                using var stream = new MemoryStream();
+                appIcon.Save(stream);
+                filesIcon.Add(fileExtenssion, stream.ToArray());
+            }
+            list.Add(new NodeView()
+                {
+                    Collabsable = false,
+                    Text = name
+                });
+        }
+        return list;
+    }
 
     protected override async Task OnInitializedAsync()
     {
+        filesIcon = new Dictionary<string, byte[]>();
+        foldersAndFiles = FilesAndFolders(Host.ContentRootPath);
         using var service = CreateScope().GetService<CountryService>();
         source = await service.GetAll().Select(t => new NodeView()
             {
                 Collabsable = true,
                 Text = t.Title,
                 Value = t.Id.ToString(),
-                ShowTemplate = true,
                 Children = t.Cities.Select(u => new NodeView()
                 {
                     Collabsable = false,
                     Text = u.Title,
                     Value = u.Id.ToString(),
-                    ShowTemplate = true
                 }).ToList()
             }).ToListAsync();
     }
@@ -118,8 +201,7 @@
                     Collabsable = false,
                     Expanded = false,
                     Text = t.Title,
-                    Value = t.Id.ToString(),
-                    ShowTemplate = true
+                    Value = t.Id.ToString()
                 }).ToListAsync();
     }
 
@@ -166,7 +248,6 @@
                     Expanded = false,
                     Text = t.Title,
                     Value = t.Id.ToString(),
-                    ShowTemplate = true
                 }).ToListAsync();
         }
         else

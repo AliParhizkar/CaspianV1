@@ -6,7 +6,7 @@
     @if (Source == null)
     {
         <div @ref="tree" @attributes="Attrs" class="c-treeview">
-            <CascadingValue Value="CascadeData" Name="TreeViewCascadeData">
+            <CascadingValue Value="this" >
                 <ul class="c-subtree">
                 @if (treeNodes != null)
                 {
@@ -43,7 +43,7 @@
     else 
     {
         <div @ref="tree" @attributes="Attrs" class="c-treeview">
-            <CascadingValue Value="CascadeData" Name="TreeViewCascadeData">
+            <CascadingValue Value="this">
                 <ul class="c-subtree">
                     @foreach (var item in Source)
                     {

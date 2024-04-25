@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Caspian.UI
+﻿namespace Caspian.UI
 {
     public class NodeView
     {
@@ -19,8 +17,6 @@ namespace Caspian.UI
         public bool Collabsable { get; set; } = true;
 
         public bool SingleSelect { get; set; }
-
-        public bool ShowTemplate { get; set; }
 
         public byte? Depth { get; set; }
 

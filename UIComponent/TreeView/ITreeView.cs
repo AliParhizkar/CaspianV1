@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -17,5 +15,9 @@ namespace Caspian.UI
         void SetSelectedNodesValue(IList<string> values);
 
         bool MultiSelectable { get; set; }
+
+        RenderFragment<NodeView> BeforeNodeTemplate { get; set; }
+
+        RenderFragment<NodeView> AfterNodeTemplate { get; set; }
     }
 }

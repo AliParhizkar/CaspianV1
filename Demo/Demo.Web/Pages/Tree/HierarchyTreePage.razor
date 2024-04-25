@@ -59,17 +59,15 @@
                             <TreeView @ref="customTemplateTree" TEntity="OrganUnit" style="height:500px"
                                       TextFunc="t => t.Title" FilterFunc="t => (!organSearchCustomTemplate.HasValue() || t.Title.StartsWith(organSearchCustomTemplate)) && t.ActiveType == activeType">
                                 <AfterNodeTemplate>
-                                    <TreeNodeTemplate AllLevels>
-                                        <span class="d-tree-icon">
-                                            <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
-                                        </span>
-                                        <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
-                                            <span class="fa fa-pencil"></span>
-                                        </span>
-                                        <span class="d-tree-icon" @onclick="async () => await DeleteOrganUnit(context)">
-                                            <span class="fa fa-trash"></span>
-                                        </span>
-                                    </TreeNodeTemplate>
+                                    <span class="d-tree-icon">
+                                        <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
+                                    </span>
+                                    <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
+                                        <span class="fa fa-pencil"></span>
+                                    </span>
+                                    <span class="d-tree-icon" @onclick="async () => await DeleteOrganUnit(context)">
+                                        <span class="fa fa-trash"></span>
+                                    </span>
                                 </AfterNodeTemplate>
                             </TreeView>
                         </div>

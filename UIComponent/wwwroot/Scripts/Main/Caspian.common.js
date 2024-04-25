@@ -712,7 +712,7 @@
             });
             $(grid).find('.t-grid-content').scroll(function () {
                 let scrollLeft = $(this).scrollLeft();
-                $(grv).find('.t-grid-header').scrollLeft(scrollLeft);
+                $(grid).find('.t-grid-header').scrollLeft(scrollLeft);
             });
             $(grid).find('.t-grid-header-wrap th').mousedown(function (e) {
                 $c.gridData.grid = $(e.target).closest('.t-grid');

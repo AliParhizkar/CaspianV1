@@ -392,8 +392,9 @@ fieldset.t-widget table {
     border-left: solid 1px grey;
 }
 
-.t-ltr .t-tabstrip-items .t-item{
+.t-ltr .t-tabstrip-items .t-item {
     border-right: solid 1px grey;
+    padding: 3px 4px;
 }
 
 .t-grid-add {
