@@ -1,83 +1,88 @@
-﻿@inherits SimplePage<DataParameter>
+﻿@inherits BasePage
 @namespace Caspian.Engine.RuleGenerator
 @{
     base.BuildRenderTree(__builder);
 }
-<div class="p-4">
-    <DataGrid @ref="CrudGrid" TEntity="DataParameter" Search="SearchData" ConditionExpr="t => t.ResultParameterId == ParameterId">
-        <Columns>
-            <GridColumn Field="t => t.ParameterType.EnumText()" />
-            <GridColumn Field="t => t.PropertyName">
-                <Template>
-                    <span>@properties.SingleOrDefault(t => t.Value == context.Data.PropertyName)?.Text</span>
-                </Template>
-            </GridColumn>
-            <GridColumn Field="@(t => t.DynamicParameter.Title)" Title="پارامتر" />
-            <GridColumn Field="@(t => t.Rule.Title)" Title="قانون" />
-            <GridCommandColumns />
-        </Columns>
-    </DataGrid>
 
-</div>
-<Window @ref="UpsertWindow" Title="فرم داده ای" Style="width:500px"
-        OnOpen="() =>
+<CrudComponent UpsertData="dataParameter">
+    <div class="p-4">
+        <DataGrid TEntity="DataParameter" Search="search" ConditionExpr="t => t.ResultParameterId == ParameterId">
+            <Columns>
+                <GridColumn Field="t => t.ParameterType.EnumText()" />
+                <GridColumn Field="t => t.PropertyName">
+                    <Template>
+                        <span>@properties.SingleOrDefault(t => t.Value == context.Data.PropertyName)?.Text</span>
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="@(t => t.DynamicParameter.Title)" Title="پارامتر" />
+                <GridColumn Field="@(t => t.Rule.Title)" Title="قانون" />
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+
+    </div>
+    <Window Title="فرم داده ای" Style="width:500px"
+            OnOpen="() =>
                     {
-                        if (UpsertData.Id == 0)
+                        if (dataParameter.Id == 0)
                         {
-                            UpsertData.ResultParameterId = ParameterId;
-                            UpsertData.ParameterType = DataParameterType.EntityProperties;
+                            dataParameter.ResultParameterId = ParameterId;
+                            dataParameter.ParameterType = DataParameterType.EntityProperties;
                         }
 
                     }">
-    <Content>
-        <CaspianForm @ref="UpsertForm" Model="UpsertData">
-            <CaspianValidationValidator ValidatorType="typeof(DataParameterService)" />
-            <div class="row ps-3 pe-3 c-controls">
-                <div class="col-md-2">
-                    <label>نوع پارامتر</label>
-                </div>
-                <div class="col-md-10">
-                    <RadioList @bind-Value="UpsertData.ParameterType" />
-                </div>
-                @if (UpsertData.ParameterType == DataParameterType.DynamicParameters)
-                {
+        <Content>
+            <CaspianForm Model="dataParameter">
+                <CaspianValidationValidator ValidatorType="typeof(DataParameterService)" />
+                <div class="row ps-3 pe-3 c-controls">
                     <div class="col-md-2">
-                        <label>پارامتر</label>
+                        <label>نوع پارامتر</label>
                     </div>
                     <div class="col-md-10">
-                        <ComboBox TEntity="DynamicParameter" TValue="int?" @bind-Value="UpsertData.DynamicParameterId" TextExpression="t => t.Title" />
+                        <RadioList @bind-Value="dataParameter.ParameterType" />
                     </div>
-                }
-                else if (UpsertData.ParameterType == DataParameterType.EntityProperties)
-                {
-                    <div class="col-md-2">
-                        <label>خصیصه</label>
-                    </div>
+                    @if (dataParameter.ParameterType == DataParameterType.DynamicParameters)
+                    {
+                        <div class="col-md-2">
+                            <label>پارامتر</label>
+                        </div>
+                        <div class="col-md-10">
+                            <ComboBox TEntity="DynamicParameter" TValue="int?" @bind-Value="dataParameter.DynamicParameterId" TextExpression="t => t.Title" />
+                        </div>
+                    }
+                    else if (dataParameter.ParameterType == DataParameterType.EntityProperties)
+                    {
+                        <div class="col-md-2">
+                            <label>خصیصه</label>
+                        </div>
+                        <div class="col-md-10">
+                            <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="dataParameter.PropertyName" Source="properties" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-2">
+                            <label>قانون</label>
+                        </div>
+                        <div class="col-md-10">
+                            <ComboBox TEntity="Rule" TValue="int?" @bind-Value="dataParameter.RuleId" TextExpression="t => t.Title" ConditionExpression="t => t.FormRule" />
+                        </div>
+                    }
+                    <div class="col-md-2"></div>
                     <div class="col-md-10">
-                        <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="UpsertData.PropertyName" Source="properties" />
+                        <FormCommandButton />
                     </div>
-                }
-                else
-                {
-                    <div class="col-md-2">
-                        <label>قانون</label>
-                    </div>
-                    <div class="col-md-10">
-                        <ComboBox TEntity="Rule" TValue="int?" @bind-Value="UpsertData.RuleId" TextExpression="t => t.Title" ConditionExpression="t => t.FormRule" />
-                    </div>
-                }
-                <div class="col-md-2"></div>
-                <div class="col-md-10">
-                    <FormCommandButton />
                 </div>
-            </div>
-        </CaspianForm>
-    </Content>
-</Window>
+            </CaspianForm>
+        </Content>
+    </Window>
 
+</CrudComponent>
 
 @code
 {
+    DataParameter search = new DataParameter();
+    DataParameter dataParameter = new DataParameter();
     IList<SelectListItem> properties;
 
     protected override async Task OnInitializedAsync()

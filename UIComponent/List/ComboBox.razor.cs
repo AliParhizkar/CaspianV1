@@ -462,7 +462,7 @@ namespace Caspian.UI
                             query = query.OrderBy(OrderByExpression);
                     }
 
-                    if (text.HasValue())
+                    if (text.HasValue() && Status == WindowStatus.Open)
                     {
                         if (OnDataBinding == null)
                         {

@@ -7,13 +7,21 @@
 @inject IJSRuntime Js
 <button @onclick=UpdateAsync>Update</button>
 
+
 @code 
 {
     async Task UpdateAsync()
     {
-        var service = CreateScope().GetService<CountryService>();
-        var country = await service.SingleAsync(3);
-        country.Title = "ForTest1";
+        using var service = CreateScope().GetService<CountryService>();
+        service.Context.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.TrackAll;
+        var q = await service.SingleAsync(15);
+        // var q = new Country()
+        // {
+        //     Id = 15,
+        //     ActiveType = ActiveType.Enable,
+        // };
+        q.Title = "sadasdsadasdasd";
+        await service.UpdateAsync(q);
         await service.SaveChangesAsync();
     }
 }

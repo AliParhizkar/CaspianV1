@@ -1,6 +1,7 @@
 ﻿@namespace Caspian.UI
 @inject IJSRuntime jsRuntime
 @inject CaspianDataService service
+@implements IDisposable
 @if (show)
 {
     <div class="t-overlay t-messageeeeeeee"></div>
@@ -59,6 +60,7 @@
     bool? confirmResult = null;
     bool? AlertResult = null;
     MessageType messageType;
+    bool cancel;
 
     void UpdateConfirmResult(bool result)
     {
@@ -114,7 +116,9 @@
         var task = Task.Run<bool>(async () =>
         {
             while (confirmResult == null)
-                await Task.Delay(100);
+            {
+                await Task.Delay(250);
+            }
             show = false;
             await jsRuntime.InvokeVoidAsync("$.caspian.enableDefaultShortKey", false);
             await InvokeAsync(StateHasChanged);
@@ -127,6 +131,11 @@
     public void HideConfirm(bool result)
     {
         confirmResult = result;
+    }
+
+    public void Dispose()
+    {
+        confirmResult = false;
     }
 
     public async Task Alert(string message)

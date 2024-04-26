@@ -1,6 +1,6 @@
 ﻿@using Caspian.Common.Attributes
 @namespace Caspian.Engine.RuleGenerator
-@inherits SimplePage<DataParameterValue>
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
@@ -14,7 +14,7 @@
                             <label>@titleArray[0]</label>
                         </td>
                         <td style="width:300px">
-                            <DropdownList @bind-Value="SearchData.Value1" Source="sourceArray[0]" />
+                            <DropdownList @bind-Value="search.Value1" Source="sourceArray[0]" />
                         </td>
             }
                 <td style="width:80px;"></td>
@@ -24,14 +24,15 @@
                             <label>@titleArray[1]</label>
                         </td>
                         <td style="width:300px">
-                            <DropdownList @bind-Value="SearchData.Value2" Source="sourceArray[1]" />
+                            <DropdownList @bind-Value="search.Value2" Source="sourceArray[1]" />
                         </td>
             }
             </tr>
         </table>
 
+    <CrudComponent UpsertData="dataParameterValue">
         <div style="width:90%;margin:5px auto">
-        <DataGrid @ref="CrudGrid" TEntity="DataParameterValue" Search="SearchData" ConditionExpr="t => t.Parameter1.ResultParameterId == ParameterId" ContentHeight="300">
+            <DataGrid TEntity="DataParameterValue" Search="search" ConditionExpr="t => t.Parameter1.ResultParameterId == ParameterId" ContentHeight="300">
                 <Columns>
                     <GridColumn Field="t => t.Value1" Title="@titleArray[0]">
                         <Template>
@@ -89,115 +90,116 @@
                     <GridCommandColumns/>
                 </Columns>
             </DataGrid>
-            <Window @ref="UpsertWindow" Title="@resultParameter.Title" Style="width:450px" OnOpen="() => OnOpenForm()">
-                <Content>
-                    <CaspianForm @ref="UpsertForm" Model="UpsertData">
-                        <CaspianValidationValidator ValidatorType="typeof(DataParameterValueService)" />
-                        <table style="width:90%;margin:0 auto">
-                        @{
-                            var index = 0;
-                        }
-                        @foreach (var title in titleArray.Where(t => t != null))
-                        {
-                                    <tr>
-                                        <td>
-                                            <label>@title</label>
-                                        </td>
-                                        <td style="width:250px">
-                                    @{
-                                        var tempindex = index;
-                                    }
-                                    @switch (index)
-                                    {
-                                        case 0:
-                                            if (controlsType[index] == ControlType.DropdownList)
-                                            {
-                                                                    <DropdownList @bind-Value="UpsertData.Value1" Source="sourceArray[index]" />
-                                            }
-                                            else
-                                            {
-                                                                    <NumericTextBox @bind-Value="UpsertData.Value1" />
-                                            }
-                                            break;
-                                        case 1:
-                                            if (controlsType[index] == ControlType.DropdownList)
-                                            {
-                                                                    <DropdownList @bind-Value="UpsertData.Value2" Source="sourceArray[index]" />
-                                            }
-                                            else
-                                            {
-                                                                    <NumericTextBox @bind-Value="UpsertData.Value2" />
-                                            }
-                                            break;
-                                        case 2:
-                                            if (controlsType[index] == ControlType.DropdownList)
-                                            {
-                                                                    <DropdownList @bind-Value="UpsertData.Value3" Source="sourceArray[index]" />
-                                            }
-                                            else
-                                            {
-                                                                    <NumericTextBox @bind-Value="UpsertData.Value3" />
-                                            }
-                                            break;
-                                        case 3:
-                                            if (controlsType[index] == ControlType.DropdownList)
-                                            {
-                                                                    <DropdownList @bind-Value="UpsertData.Value4" Source="sourceArray[index]" />
-                                            }
-                                            else
-                                            {
-                                                                    <NumericTextBox @bind-Value="UpsertData.Value4" />
-                                            }
-                                            break;
-                                        case 4:
-                                            if (controlsType[index] == ControlType.DropdownList)
-                                            {
-                                                                    <DropdownList @bind-Value="UpsertData.Value5" Source="sourceArray[index]" />
-                                            }
-                                            else
-                                            {
-                                                                    <NumericTextBox @bind-Value="UpsertData.Value5" />
-                                            }
-                                            break;
-                                        case 5:
-                                            if (controlsType[index] == ControlType.DropdownList)
-                                            {
-                                                                    <DropdownList @bind-Value="UpsertData.Value6" Source="sourceArray[index]" />
-                                            }
-                                            else
-                                            {
-                                                                    <NumericTextBox @bind-Value="UpsertData.Value6" />
-                                            }
-                                            break;
-                                    }
-                                        </td>
-                                    </tr>
-                            index++;
-                        }
-                            <tr>
-                                <td>
-                                    <label>@resultParameter.Title</label>
-                                </td>
-                                <td>
-                                    <NumericTextBox @bind-Value="UpsertData.ResultValue" NumberDigit="resultParameter.DecimalNumber ?? 2" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td style="text-align:center">
-                                    <WindowCommandButtons />
-                                </td>
-                            </tr>
-                        </table>
-                    </CaspianForm>
-                </Content>
-            </Window>
-        </div>
+        <Window Title="@resultParameter.Title" Style="width:450px" OnOpen="() => OnOpenForm()">
+            <CaspianForm Model="dataParameterValue">
+                <table style="width:90%;margin:0 auto">
+                    @{
+                        var index = 0;
+                    }
+                    @foreach (var title in titleArray.Where(t => t != null))
+                    {
+                        <tr>
+                            <td>
+                                <label>@title</label>
+                            </td>
+                            <td style="width:250px">
+                                @{
+                                    var tempindex = index;
+                                }
+                                @switch (index)
+                                {
+                                    case 0:
+                                        if (controlsType[index] == ControlType.DropdownList)
+                                        {
+                                            <DropdownList @bind-Value="dataParameterValue.Value1" Source="sourceArray[index]" />
+                                        }
+                                        else
+                                        {
+                                            <NumericTextBox @bind-Value="dataParameterValue.Value1" />
+                                        }
+                                        break;
+                                    case 1:
+                                        if (controlsType[index] == ControlType.DropdownList)
+                                        {
+                                            <DropdownList @bind-Value="dataParameterValue.Value2" Source="sourceArray[index]" />
+                                        }
+                                        else
+                                        {
+                                            <NumericTextBox @bind-Value="dataParameterValue.Value2" />
+                                        }
+                                        break;
+                                    case 2:
+                                        if (controlsType[index] == ControlType.DropdownList)
+                                        {
+                                            <DropdownList @bind-Value="dataParameterValue.Value3" Source="sourceArray[index]" />
+                                        }
+                                        else
+                                        {
+                                            <NumericTextBox @bind-Value="dataParameterValue.Value3" />
+                                        }
+                                        break;
+                                    case 3:
+                                        if (controlsType[index] == ControlType.DropdownList)
+                                        {
+                                            <DropdownList @bind-Value="dataParameterValue.Value4" Source="sourceArray[index]" />
+                                        }
+                                        else
+                                        {
+                                            <NumericTextBox @bind-Value="dataParameterValue.Value4" />
+                                        }
+                                        break;
+                                    case 4:
+                                        if (controlsType[index] == ControlType.DropdownList)
+                                        {
+                                            <DropdownList @bind-Value="dataParameterValue.Value5" Source="sourceArray[index]" />
+                                        }
+                                        else
+                                        {
+                                            <NumericTextBox @bind-Value="dataParameterValue.Value5" />
+                                        }
+                                        break;
+                                    case 5:
+                                        if (controlsType[index] == ControlType.DropdownList)
+                                        {
+                                            <DropdownList @bind-Value="dataParameterValue.Value6" Source="sourceArray[index]" />
+                                        }
+                                        else
+                                        {
+                                            <NumericTextBox @bind-Value="dataParameterValue.Value6" />
+                                        }
+                                        break;
+                                }
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                    <tr>
+                        <td>
+                            <label>@resultParameter.Title</label>
+                        </td>
+                        <td>
+                            <NumericTextBox @bind-Value="dataParameterValue.ResultValue" NumberDigit="resultParameter.DecimalNumber ?? 2" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="text-align:center">
+                            <WindowCommandButtons />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Window>
+    </div>
+    </CrudComponent>
 }
 
 
 @code
 {
+    DataParameterValue search = new DataParameterValue();
+    DataParameterValue dataParameterValue = new DataParameterValue();
+
     [Parameter]
     public int ParameterId { get; set; }
 
@@ -221,22 +223,22 @@
             switch (i)
             {
                 case 0:
-                    UpsertData.Parameter1Id = parametersId.ElementAt(i);
+                    dataParameterValue.Parameter1Id = parametersId.ElementAt(i);
                     break;
                 case 1:
-                    UpsertData.Parameter2Id = parametersId.ElementAt(i);
+                    dataParameterValue.Parameter2Id = parametersId.ElementAt(i);
                     break;
                 case 2:
-                    UpsertData.Parameter3Id = parametersId.ElementAt(i);
+                    dataParameterValue.Parameter3Id = parametersId.ElementAt(i);
                     break;
                 case 3:
-                    UpsertData.Parameter4Id = parametersId.ElementAt(i);
+                    dataParameterValue.Parameter4Id = parametersId.ElementAt(i);
                     break;
                 case 4:
-                    UpsertData.Parameter5Id = parametersId.ElementAt(i);
+                    dataParameterValue.Parameter5Id = parametersId.ElementAt(i);
                     break;
                 case 5:
-                    UpsertData.Parameter6Id = parametersId.ElementAt(i);
+                    dataParameterValue.Parameter6Id = parametersId.ElementAt(i);
                     break;
             }
         }

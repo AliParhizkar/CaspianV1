@@ -1,5 +1,5 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
-@inherits SimplePage<ReportParam>
+@inherits BasePage
 @inject IJSRuntime runTime
 @{
     base.BuildRenderTree(__builder);
@@ -56,7 +56,7 @@
             <div class="r-title">
                 <span>First level fields</span>
             </div>
-            <DataGrid @ref="CrudGrid" TEntity="ReportParam" HidePageSize Search="SearchData" HideInsertIcon OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 1); }">
+            <DataGrid @ref="grid1" TEntity="ReportParam" HidePageSize HideInsertIcon OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 1); }">
                 <Columns>
                     <GridColumn Field="t => t.RuleId != null ? t.Rule.Title : t.DynamicParameterId != null ? t.DynamicParameter.Title : t.TitleEn" />
                     <GridCommandColumns HideEdit />
@@ -67,7 +67,7 @@
             <IconButton IconType="IconType.AngleRight"
                         @onclick="async () =>
                                {
-                                   await ChangeParameterLevel(CrudGrid.SelectedRowId, 1);
+                                   await ChangeParameterLevel(grid1.SelectedRowId, 1);
                                }" />
             <div style="padding-top:10px">
                 <IconButton IconType="IconType.AngleLeft" @onclick="async () =>
@@ -80,7 +80,7 @@
             <div class="r-title">
                 <span>Second level fields</span>
             </div>
-            <DataGrid @ref="grid2" TEntity="ReportParam" Search="SearchData" HideInsertIcon HidePageSize
+            <DataGrid @ref="grid2" TEntity="ReportParam" HideInsertIcon HidePageSize
                   OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 2); }">
                 <Columns>
                     <GridColumn Field="t => t.TitleEn">
@@ -107,7 +107,7 @@
             <div class="r-title">
                 <span>Thired </span>
             </div>
-            <DataGrid  @ref="grid3" TEntity="ReportParam" Search="SearchData" HideInsertIcon HidePageSize
+            <DataGrid  @ref="grid3" TEntity="ReportParam" HideInsertIcon HidePageSize
                   OnDataBinding="(query) => { return query.Where(t => t.ReportId == ReportId && !t.IsKey && t.DataLevel == 3); }">
                 <Columns>
                     <GridColumn Field="t => t.TitleEn">
@@ -127,7 +127,7 @@
                 <SimpleReportParam @bind-Status="Status" ReportId="ReportId.Value"
                            OnParameterSave="() =>
                         {
-                            CrudGrid.EnableLoading();
+                            grid1.EnableLoading();
                         }" />
                 break;
             case ReportParamShowType.Manager:
@@ -144,6 +144,7 @@
 @code
 {
     Report report;
+    DataGrid<ReportParam> grid1;
     DataGrid<ReportParam> grid2;
     DataGrid<ReportParam> grid3;
     //IList<ReportNode> Nodes;
@@ -169,7 +170,7 @@
                 await parameterService.SaveChangesAsync();
                 grid2.EnableLoading();
                 if (buttonLevel == 1)
-                    CrudGrid.EnableLoading();
+                    grid1.EnableLoading();
                 else
                     grid3.EnableLoading();
                 StateHasChanged();
