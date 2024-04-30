@@ -77,7 +77,6 @@ html input[disabled], textarea[disabled] {
     border-width: 1px;
     border-style: solid;
     border-color: rgba(0, 0, 0, .12);
-    color: white;
     background-color: #e9ebee;
 }
 

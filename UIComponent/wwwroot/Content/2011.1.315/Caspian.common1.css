@@ -2729,7 +2729,9 @@ div, input, textarea {
 }
 
 .t-grid-header-wrap {
-    cursor:default;
+    cursor: default;
+    overflow: hidden;
+    background-color: #e9ebee;
 }
 .t-window fieldset.t-widget {
     margin:10px;
@@ -2761,11 +2763,14 @@ div.t-grid-footer {
     background-color:white;
 }
 .t-grid-content td, .c-grid-inline td {
-    border-width: 0 0 1px 1px;
+    border-width: 0 1px 1px 0;
     border-style: solid;
     border-color: rgba(0,0,0,0.08);
     color: #656565;
 }
+    .t-grid-content td:last-child, .t-grid-header th:last-child{
+        border-left-width: 0;
+    }
     .t-grid-content .c-grid-items tr:not(.t-state-selected):hover {
         background-color: #5e8f8f30 !important;
     }

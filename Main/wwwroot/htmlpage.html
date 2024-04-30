@@ -6,21 +6,32 @@
         const object = {
             message: '2222',
             awwww: function() {
-                console.log(this.message)
+                console.log(this.message);
+                window.addEventListener()
             }
         }
         object.awwww();
     </script>
     <style type="text/css">
-        input{
-            border:1px solid red;
-            background-color:aqua
+        .c-slider-main {
+            border: 1px solid red;
+            height: 100%;
+            background-color: whitesmoke;
+            display: flex;
+            align-items:center;
         }
+
     </style>
 </head>
 <body style="margin:0;padding:0">
-    <div style="font-size:0;margin:100px;border:1px solid red;justify-content:start;align-items:center;width:300px;height:35px;">
-        <button onclick="aaa()">1111</button>
+    <div style="width:850px;height:250px;margin:50px auto ">
+        <div class="c-slider-main">
+            <div style="width:50px" class="c-slider-arrow">
+                <span class="fa fa-chevron-left"></span>
+            </div>
+            <div style="width:750px" class="c-slider-content">2</div>
+            <div style="width:50px" class="c-slider-arrow">3</div>
+        </div>
     </div>
 </body>
 </html>

@@ -83,7 +83,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <DataGrid TEntity="Customer" HideInsertIcon TableWidth="900">
+                        <DataGrid TEntity="Customer" HideInsertIcon PageSize="10" TableWidth="900">
                             <Columns>
                                 <GridColumn Field="t => t.CustomerType.EnumText()" />
                                 <GridColumn Field="t => t.Gender.EnumText()" />
@@ -103,7 +103,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <DataGrid TEntity="Customer" HideInsertIcon>
+                        <DataGrid TEntity="Customer" HideInsertIcon PageSize="6" ContentHeight="200">
                             <Columns>
                                 <GridColumn Field="t => t.CustomerType.EnumText()" />
                                 <GridColumn Field="t => t.Gender">
