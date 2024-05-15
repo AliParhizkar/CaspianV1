@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
@@ -10,7 +9,7 @@ namespace Caspian.UI
         public Expression<Func<TEntity, byte[]>> Field { get; set; }
 
         [CascadingParameter(Name = "DataView")]
-        public ListView<TEntity> DataView { get; set; }
+        internal IListViewer<TEntity> DataView { get; set; }
 
         [CascadingParameter(Name = "RowData")]
         public RowData<TEntity> RowData { get; set; }

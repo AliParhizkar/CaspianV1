@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Drawing;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Main
 {
@@ -25,6 +25,7 @@ namespace Main
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
+            builder.Services.AddControllers();
             builder.Logging.ClearProviders();
             builder.Logging.AddCaspianConsoleLogger(builder);
             var persistKeyPath = Path.Combine(builder.Environment.ContentRootPath, "PersistKey");
@@ -38,7 +39,6 @@ namespace Main
                 options.Cookie.Domain = domain;
                 options.Cookie.Path = "/";
             });
-
             builder.Services.AddCascadingAuthenticationState();
 
             builder.Services.AddAuthentication(options =>
@@ -68,7 +68,7 @@ namespace Main
 
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ActivityService).Assembly.InjectServices(builder.Services);
-
+            builder.Services.AddControllers();
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
 
@@ -84,6 +84,7 @@ namespace Main
                 .AddDefaultTokenProviders();
             var app = builder.Build();
             CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -98,7 +99,7 @@ namespace Main
             app.UseAuthorization();
             app.UseRouting();
             app.UseAntiforgery();
-
+            
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 
@@ -110,6 +111,7 @@ namespace Main
                 httpContext.Request.Path.StartsWithSegments("/Account"));
 
             app.MapAdditionalIdentityEndpoints();
+            app.MapControllers();
             app.Run();
         }
 
@@ -153,6 +155,7 @@ namespace Main
                     endpoint.MapRazorComponents<TAppComponent>()
                     .AddInteractiveServerRenderMode();
                 });
+                
             });
 
         }

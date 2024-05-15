@@ -1,5 +1,43 @@
-﻿.c-input-colorpicker{
-    position:relative;
+﻿.c-slider-arrow .fa {
+    font-size: 40px;
+    color: #dae2f9;
+    cursor: pointer;
+}
+    .c-slider-arrow .fa:hover {
+        color: #97a7d4;
+    }
+.c-slider-body {
+    overflow: hidden;
+    transition: width .4s cubic-bezier(0.35, 0, 0.25, 1);
+    border: 1px solid #c4c4c4;
+    border-radius:8px;
+}
+.c-slider-main {
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
+}
+.c-slider-arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    width:40px;
+}
+    .c-slider-arrow:first-of-type {
+        justify-content: flex-end;
+    }
+    .c-slider-arrow:last-of-type {
+        justify-content: flex-start;
+    }
+
+
+.c-slider-content {
+    display: flex;
+    position: relative;
+    transition: left .4s cubic-bezier(0.35, 0, 0.25, 1);
+}
+.c-input-colorpicker {
+    position: relative;
 }
 .t-datepicker .t-animation-container{
     width:225px;
@@ -3563,8 +3601,12 @@ html body .t-grid tbody .t-button-icon {
     color: #656565;
     text-align: center;
 }
-.t-dropdown-wrap.t-state-disabled span{
-    border-color: rgba(0,0,0,0.2)!important;
+.t-state-hover .fa-caret-down, .t-state-hover .fa-calendar, .t-state-hover .fa-clock-o {
+    color: #0c007f;
+}
+
+.t-dropdown-wrap.t-state-disabled span {
+    border-color: rgba(0,0,0,0.2) !important;
 }
 
 .t-dropdown-wrap {

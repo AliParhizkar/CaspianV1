@@ -1,5 +1,11 @@
 ﻿(function ($) {
     let $c = $.caspian = {
+        bindSlider: async function (element, dotnet) {
+            let containerWidth = $(element).width();
+            let ContentWidth = $(element).find('.c-slider-slide').width();
+            $(element).find('.c-slider-body').width(ContentWidth);
+            await dotnet.invokeMethodAsync('SetData', containerWidth, ContentWidth);
+        },
         bindInputCollorPicker: function (element, dotnet) {
             const mutationObserver = new MutationObserver(() => {
                 let $animate = $(element).find('.c-animation-container');
@@ -1236,7 +1242,6 @@
             $(element).unbind('focus');
             $(element).bind('focus', function () {
                 let message = $(element).attr('error-message');
-                console.log(message)
                 if (message) {
                     $.caspian.showErrorMessage(element, message);
                     $(element).find('.errorMessage').css('margin-top', '35px')
@@ -1251,10 +1256,13 @@
 
             }
         },
-        bindImage: function (pic, img, contentType) {
-            contentType = contentType ?? 'image/png';
-            if (img)
-                $(pic).css('background-image', 'url(data:' + contentType + ';base64,' + img + ')');
+        bindImage: async function (pic, imageStream) {
+            if (imageStream) {
+                const arrayBuffer = await imageStream.arrayBuffer();
+                const blob = new Blob([arrayBuffer]);
+                const url = URL.createObjectURL(blob);
+                $(pic).css('background-image', 'url(' + url + ')');
+            }
             else
                 $(pic).css('background-image', 'none');
         },
@@ -1300,7 +1308,6 @@
             }
         },
         bindStringbox: function (element, focuced) {
-            console.log(focuced)
             if (focuced) {
                 $(element).focus()
                 setTimeout(() => {

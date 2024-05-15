@@ -38,6 +38,8 @@ namespace Caspian.UI
                         await SearchChanged.InvokeAsync(Search);
                 }
             }
+            else
+                await Task.Delay(1);
             await base.OnInitializedAsync();
         }
 

@@ -128,11 +128,7 @@ namespace Caspian.UI
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
-            {
-                await DataBind();
-                StateHasChanged();
                 await jsRuntime.InvokeVoidAsync("$.caspian.dadaGridBind", mainDiv);
-            }
 
             if (FormAppState.Element.HasValue)
             {
@@ -391,8 +387,6 @@ namespace Caspian.UI
             if (this.pageNumber != 1)
                 await ChangePageNumber(1);
         }
-
-        
 
         async Task ChangePageSize(int pageSize)
         {

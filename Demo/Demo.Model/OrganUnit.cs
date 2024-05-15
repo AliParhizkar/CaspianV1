@@ -24,4 +24,13 @@ namespace Demo.Model
         [CheckOnDelete("Organ unit has subunit and can not be removed")]
         public virtual ICollection<OrganUnit> SuborganUnits { get; set; }
     }
+
+    [Table("Test", Schema = "demo")]
+    public class Test
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public string Title { get; set; }
+    }
 }

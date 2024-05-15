@@ -32,6 +32,8 @@ namespace Demo.Model
 
         public DbSet<OrganUnit> OrganUnits { get; set; }
 
+        public DbSet<Test> Tests { get; set; }  
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()

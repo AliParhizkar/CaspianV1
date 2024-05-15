@@ -1,0 +1,60 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity where TEntity: class
+@attribute [CascadingTypeParameter(nameof(TEntity))]
+@implements IListViewer<TEntity> 
+@inject IJSRuntime JSRuntime
+@inject IServiceScopeFactory scopeFactory
+<CascadingValue Value="this" Name="DataView">
+    @if (fieldsExpression == null)
+    {
+        fieldsExpression = new List<Expression>();
+        @ChildContent(default)
+    }
+    else if (items != null)
+    {
+        var style = "width:" + (pageSize == 1 ? "fit-content" : $"{pageSize * contentWidth}px");
+        var styl1 = $"left:{(shift - 1)* contentWidth}px;";
+        if (!enableAnimate)
+            styl1 += "transition:none;";
+        <div @ref="element" class="c-slider-main">
+            <div class="c-slider-arrow">
+                <span @onmousedown="ShiftLeft" class="fa fa-chevron-left"></span>
+            </div>
+            <div style="@style" class="c-slider-body">
+                <div class="c-slider-content" style="@styl1">
+                    @{
+                        var index = 1;
+                        foreach (var item in items)
+                        {
+                            if (item == null)
+                            {
+                                <div class="c-slider-slide">
+                                    <div style="width:@(contentWidth)px">
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                var data = new RowData<TEntity>()
+                                {
+                                    Data = item,
+                                    RowIndex = index
+                                };
+                                index++;
+                                <div class="c-slider-slide">
+                                    <CascadingValue Value="data" Name="RowData">
+                                        @ChildContent(item)
+                                    </CascadingValue>
+                                </div>
+                            }
+
+                        }
+                    }
+                </div>
+            </div>
+            <div class="c-slider-arrow">
+                <span class="fa fa-chevron-right" @onmousedown="ShiftRight"></span>
+            </div>
+        </div>
+    }
+</CascadingValue>

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Linq;
-using Caspian.Common;
+﻿using Caspian.Common;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class ListView<TEntity>: DataView<TEntity> where TEntity : class
+    public partial class ListView<TEntity>: DataView<TEntity>, IListViewer<TEntity> where TEntity : class
     {
         IList<Expression> fieldsExpression;
         WindowStatus status;
@@ -80,7 +76,7 @@ namespace Caspian.UI
             }
         }
 
-        internal void AddDataField(Expression expression)
+        public void AddDataField(Expression expression)
         {
             fieldsExpression.Add(expression);
         }

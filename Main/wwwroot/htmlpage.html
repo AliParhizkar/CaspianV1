@@ -3,35 +3,53 @@
 <html>
 <head>
     <script type="text/javascript">
-        const object = {
-            message: '2222',
-            awwww: function() {
-                console.log(this.message);
-                window.addEventListener()
-            }
+        let isopen;
+        function setHeight() {
+            let div = document.getElementById('_1');
+            if (isopen)
+                div.style.maxHeight = '150px';
+            else
+                div.style.maxHeight = '15px';
+            isopen = !isopen;
         }
-        object.awwww();
     </script>
     <style type="text/css">
-        .c-slider-main {
-            border: 1px solid red;
-            height: 100%;
-            background-color: whitesmoke;
+        .c-test {
+            width: 80%;
+            margin: 100px auto;
+            border: 1px solid gray;
             display: flex;
+            justify-content: space-between;
             align-items:center;
         }
-
+        .c-child {
+            border: 1px solid red;
+            text-align:center;
+            vertical-align:baseline
+        }
+        .t-input{
+            width:calc(100% - 4px);
+            box-sizing:border-box;
+            outline:none;
+            margin:2px;
+            height:30px;
+            line-height:30px;
+        }
+        .c-lable {
+            border: 1px solid red;
+            background-color: #d7d7d7;
+        }
     </style>
 </head>
 <body style="margin:0;padding:0">
-    <div style="width:850px;height:250px;margin:50px auto ">
-        <div class="c-slider-main">
-            <div style="width:50px" class="c-slider-arrow">
-                <span class="fa fa-chevron-left"></span>
-            </div>
-            <div style="width:750px" class="c-slider-content">2</div>
-            <div style="width:50px" class="c-slider-arrow">3</div>
+    <div class="c-test">
+        <div style="width:50px;text-align:end" class="c-child">
+            <label class="c-lable">First Name</label>
         </div>
+        <div class="c-child">
+            <input class="t-input" />
+        </div>
+        <div style="width: 50px" class="c-child">1</div>
     </div>
 </body>
 </html>

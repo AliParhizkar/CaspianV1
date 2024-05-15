@@ -28,8 +28,8 @@
     {
         if (Data != null)
         {
-            var data = Convert.ToBase64String(Data);
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindImage", span, data, ContentType);
+            var dotnetImageStream = new DotNetStreamReference(new MemoryStream(Data));
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindImage", span, dotnetImageStream, ContentType);
         }
         else
             await jsRuntime.InvokeVoidAsync("$.caspian.bindImage", span, null);

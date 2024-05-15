@@ -4,24 +4,24 @@
 @using Caspian.UI
 @using Demo.Model
 @using Demo.Service
-@inject IJSRuntime Js
-<button @onclick=UpdateAsync>Update</button>
+@using Microsoft.EntityFrameworkCore
 
+
+<div style="margin:10px auto;width:600px">
+    <Slide TEntity="Product" ConditionExpression="t => t.Image != null" >
+        <div class="d-slider">
+            <div>
+                <TextField style="display:none" Field="t => t.Id.ToString()" />
+                <img width="180" height="180" src="/api/Product/GetImage?id=@(context?.Id)" />
+            </div>
+            <div>
+                <TextField Field="t => t.Title" />
+            </div>
+        </div>
+    </Slide>
+</div>
 
 @code 
 {
-    async Task UpdateAsync()
-    {
-        using var service = CreateScope().GetService<CountryService>();
-        service.Context.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.TrackAll;
-        var q = await service.SingleAsync(15);
-        // var q = new Country()
-        // {
-        //     Id = 15,
-        //     ActiveType = ActiveType.Enable,
-        // };
-        q.Title = "sadasdsadasdasd";
-        await service.UpdateAsync(q);
-        await service.SaveChangesAsync();
-    }
+
 }

@@ -1,6 +1,15 @@
-﻿.m-links {
-    padding:0 58px;
-    background-color:white;
+﻿.d-slider{
+    width:200px;
+    height:200px;
+    text-align:center;
+    box-sizing:border-box;
+    padding:10px;
+}
+
+
+.m-links {
+    padding: 0 58px;
+    background-color: white;
 }
     .m-links div {
         display: flex;
