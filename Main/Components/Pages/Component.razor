@@ -1,32 +1,35 @@
 ﻿@page "/Test"
 @inherits BasePage
 @using Caspian.Engine;
+@using Caspian.Engine.Model
 @using Caspian.UI;
 @using Demo.Model;
 @using Demo.Service
-@using Stimulsoft.Report
-@inject IHostEnvironment host
+
+<div class="main-window">
+    <div class="main-body">
+        <ComboBox TValue="int" TEntity="MenuCategory" TextExpression="t => t.Title">
+            <Template Context="Category">
+                <div class="d-menu-categories">
+                    <TextField Field="t => t.Title" />
+                </div>
+            </Template>
+        </ComboBox>
+    </div>
+    <div class="main-buttons">
+        <div>
+            <button>Save</button>
+        </div>
+        <div>
+            <button>Cancel</button>
+        </div>
+    </div>
+</div>
 
 
 
-<table>
-    <tr>
-        <td>
-            <label>Admin</label>
-        </td>
-        <td>
-            <StringTextBox @bind-Value="userName" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label>Password</label>
-        </td>
-        <td>
-            <StringTextBox @bind-Value="password" type="password" />
-        </td>
-    </tr>
-</table>
+    
+
 @code
 {
     string userName;

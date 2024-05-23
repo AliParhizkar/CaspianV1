@@ -7,20 +7,19 @@
 @using Microsoft.EntityFrameworkCore
 
 
-<div style="margin:10px auto;width:600px">
-    <Slide TEntity="Product" ConditionExpression="t => t.Image != null" >
+<div style="margin:10px auto;width:80%;">
+    <Slide TEntity="Product" ConditionExpression="t => t.Image != null && t.Id < 30" >
         <div class="d-slider">
             <div>
                 <TextField style="display:none" Field="t => t.Id.ToString()" />
                 <img width="180" height="180" src="/api/Product/GetImage?id=@(context?.Id)" />
             </div>
             <div>
-                <TextField Field="t => t.Title" />
+                <TextField Field="t => t.Id.ToString()" />
             </div>
         </div>
     </Slide>
 </div>
-
 @code 
 {
 

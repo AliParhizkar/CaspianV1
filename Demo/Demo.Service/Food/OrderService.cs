@@ -6,6 +6,9 @@ using Caspian.Engine;
 using FluentValidation;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Caspian.Common.Extension;
 
 namespace Demo.Service
 {
@@ -23,19 +26,25 @@ namespace Demo.Service
 
         }
 
-        public override Task<Order> AddAsync(Order entity)
+        public override Task<Order> AddAsync(Order order)
         {
-            var maxOrderNo = GetAll().Where(t => t.Date == entity.Date).Max(t => (int?)t.OrderNo).GetValueOrDefault() + 1;
-            entity.OrderNo = maxOrderNo;
-            
-            return base.AddAsync(entity);
+            var maxOrderNo = GetAll().Where(t => t.Date == order.Date).Max(t => (int?)t.OrderNo).GetValueOrDefault() + 1;
+            order.OrderNo = maxOrderNo;
+            order.TotalAmount = order.OrderDeatils.Sum(t => t.Price * t.Quantity);
+            return base.AddAsync(order);
         }
 
-        public override async Task UpdateAsync(Order entity)
+        public override async Task UpdateAsync(Order order, IEnumerable<int> deletedIds)
         {
-            var old = await SingleAsync(entity.Id);
-            entity.OrderNo = old.OrderNo;
-            await base.UpdateAsync(entity);
+            var old = await GetAll().Include(t => t.OrderDeatils).SingleAsync(order.Id);
+            var sum = 0;
+            foreach(var item in old.OrderDeatils.Where(t => !deletedIds.Contains(t.Id)))
+            {
+                var detail = order.OrderDeatils.SingleOrDefault(t => t.Id == item.Id);
+                sum += detail == null ? item.Quantity * item.Price : detail.Quantity * detail.Price;
+            }
+            order.TotalAmount = sum;
+            await base.UpdateAsync(order, deletedIds);
         }
     }
 }

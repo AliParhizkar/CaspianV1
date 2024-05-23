@@ -57,7 +57,12 @@ namespace Caspian.Common.Service
             return result1.Entity;
         }
 
-        public async Task UpdateAsync(TMaster entity, IEnumerable<int> deletedIds)
+        public override Task UpdateAsync(TMaster entity)
+        {
+            throw new CaspianException("Caspian Error: in Master Details Servise you should override UpdateAsync with two parameters");
+        }
+
+        public virtual async Task UpdateAsync(TMaster entity, IEnumerable<int> deletedIds)
         {
             var result = await ValidateAsync(entity);
             if (result.Errors.Count > 0)
@@ -91,13 +96,10 @@ namespace Caspian.Common.Service
                         }
                     }
                 }
-                else
+                foreach (var deletedId in deletedIds)
                 {
-                    foreach (var deletedId in deletedIds)
-                    {
-                        var item = items.Single(t => Convert.ToInt32(detailKey.GetValue(t)) == deletedId);
-                        items.Remove(item);
-                    }
+                    var item = items.Single(t => Convert.ToInt32(detailKey.GetValue(t)) == deletedId);
+                    items.Remove(item);
                 }
             }
             

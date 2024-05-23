@@ -19,7 +19,8 @@
     }
     else
     {
-        @Template
+        var text = Field.Compile().Invoke(RowData.Data);
+        @Template(text)
     }
 }
 

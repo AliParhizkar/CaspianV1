@@ -204,10 +204,11 @@ html input[disabled], textarea[disabled] {
     .t-dropdown .t-dropdown-wrap:focus {
         box-shadow: 0 0 3px 0 grey;
     }
+
 .t-animation-container .t-popup {
     background-color: #f9f9f9;
     border: 1px solid #c5c5c5;
-    max-height: 300px;
+    max-height: 250px;
     min-height: 30px;
     overflow: auto;
     border-radius: 8px;
@@ -215,6 +216,7 @@ html input[disabled], textarea[disabled] {
 .t-picker-wrap{
     margin:2px;
     border-radius:8px;
+    height:calc(100% - 2px);
 }
     .t-picker-wrap.t-state-focused .t-select {
         box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.4);
@@ -279,7 +281,9 @@ html input[disabled], textarea[disabled] {
     display: inline-block;
     text-align: center
 }
-
+.t-reset .t-item:not(.t-state-selected):nth-child(2n+1) {
+    background-color: #f0f1f5;
+}
 .t-grid .t-loading {
     display: block;
     width: 50px;

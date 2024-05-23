@@ -1,5 +1,6 @@
 ﻿@page "/Demo/ComboBox"
 @namespace Demo.Web.Pages
+@using Caspian.Engine.Model
 @inherits BasePage
 @inject CascadeService service
 <h2>Combobox</h2>
@@ -113,6 +114,35 @@
                             </div>
                             <div class="pe-5 col-md-8">
                                 <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Custom Templat</h4>
+                        <span class="c-demo-description">
+                            In this example, we use custom template 
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Menu Category</label>
+                            </div>
+                            <div class="pe-5 col-md-8">
+                                <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="menuCategoryId" TextExpression="t => t.Title">
+                                    <Template Context="Category">
+                                        <div class="d-menu-categories">
+                                            <TextField Field="t => t.IconFont">
+                                                <Template>
+                                                    <i class="d-icon @(context)"></i>
+                                                </Template>
+                                            </TextField>
+                                            <TextField Field="t => t.Title" />
+                                        </div>
+                                    </Template>
+                                </ComboBox>
                             </div>
                         </div>
                     </div>
@@ -325,6 +355,7 @@
 @code
 {
     bool disable;
+    int? menuCategoryId;
     IList<SelectListItem> countries;
     string CountryId;
     ControlSize controlSize = ControlSize.Auto;

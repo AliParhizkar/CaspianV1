@@ -25,13 +25,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caspian.common", "Caspian.c
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponent", "UIComponent\UIComponent.csproj", "{269C0CD5-CB56-421C-B88D-C4B2368AB838}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator", "ReportGenerator\ReportGenerator\ReportGenerator.csproj", "{E5D65D76-98F2-4BF4-B10E-5B567BA8971A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator.Client", "ReportGenerator\ReportGenerator.Client\ReportGenerator.Client.csproj", "{C6AC3963-7C1D-40B6-BEC3-879DD4A3B568}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponent.Clinet", "UIComponent.Clinet\UIComponent.Clinet.csproj", "{E15D1911-C157-471A-B398-06C7C8050D85}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caspian.Common.Client", "Caspian.Common.Client\Caspian.Common.Client.csproj", "{9D02AFA7-F858-499A-89FB-4FFE00773435}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportGenerator", "ReportGenerator\ReportGenerator\ReportGenerator.csproj", "{300D61C3-7606-4570-B909-C33FC927571F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportGenerator.Client", "ReportGenerator\ReportGenerator.Client\ReportGenerator.Client.csproj", "{D30B12C1-453C-4DC2-990A-19DAD5071391}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,14 +75,6 @@ Global
 		{269C0CD5-CB56-421C-B88D-C4B2368AB838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{269C0CD5-CB56-421C-B88D-C4B2368AB838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{269C0CD5-CB56-421C-B88D-C4B2368AB838}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E5D65D76-98F2-4BF4-B10E-5B567BA8971A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5D65D76-98F2-4BF4-B10E-5B567BA8971A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5D65D76-98F2-4BF4-B10E-5B567BA8971A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5D65D76-98F2-4BF4-B10E-5B567BA8971A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6AC3963-7C1D-40B6-BEC3-879DD4A3B568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6AC3963-7C1D-40B6-BEC3-879DD4A3B568}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C6AC3963-7C1D-40B6-BEC3-879DD4A3B568}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C6AC3963-7C1D-40B6-BEC3-879DD4A3B568}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E15D1911-C157-471A-B398-06C7C8050D85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E15D1911-C157-471A-B398-06C7C8050D85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E15D1911-C157-471A-B398-06C7C8050D85}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -91,6 +83,14 @@ Global
 		{9D02AFA7-F858-499A-89FB-4FFE00773435}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D02AFA7-F858-499A-89FB-4FFE00773435}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D02AFA7-F858-499A-89FB-4FFE00773435}.Release|Any CPU.Build.0 = Release|Any CPU
+		{300D61C3-7606-4570-B909-C33FC927571F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{300D61C3-7606-4570-B909-C33FC927571F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{300D61C3-7606-4570-B909-C33FC927571F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{300D61C3-7606-4570-B909-C33FC927571F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D30B12C1-453C-4DC2-990A-19DAD5071391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D30B12C1-453C-4DC2-990A-19DAD5071391}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D30B12C1-453C-4DC2-990A-19DAD5071391}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D30B12C1-453C-4DC2-990A-19DAD5071391}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

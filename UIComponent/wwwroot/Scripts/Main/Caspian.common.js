@@ -4,7 +4,13 @@
             let containerWidth = $(element).width();
             let ContentWidth = $(element).find('.c-slider-slide').width();
             $(element).find('.c-slider-body').width(ContentWidth);
+            $(element).find('.c-slider-content').css('left', -ContentWidth);
             await dotnet.invokeMethodAsync('SetData', containerWidth, ContentWidth);
+            $(window).resize(async () => {
+                let containerWidth = $(element).width();
+                let ContentWidth = $(element).find('.c-slider-slide').width();
+                await dotnet.invokeMethodAsync('SetData', containerWidth, ContentWidth);
+            });
         },
         bindInputCollorPicker: function (element, dotnet) {
             const mutationObserver = new MutationObserver(() => {
@@ -813,46 +819,6 @@
                 }
             });
         },
-        serversideCombobox: function (input, errorMessage, diable, status) {
-
-            if (status == 2) {
-                let $control = $(input).closest('.t-combobox').find('.t-popup');
-                $control.css('display', 'block');
-                let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
-
-                let height = $control.height() + 5;
-                if (height > 300)
-                    height = 300;
-                $continer.css('height', height);
-            }
-            if (diable)
-                $(input).attr("disabled", "disabled").parent().addClass('t-state-disabled').removeClass('t-state-default');
-            else
-                $(input).removeAttr("disabled").parent().removeClass('t-state-disabled').addClass('t-state-default');
-
-            if (errorMessage) {
-                input.errorMessage = errorMessage;
-                $(input).parent().removeClass('t-state-default').addClass('t-state-error');
-            } else {
-                input.errorMessage = null;
-                $(input).parent().removeClass('t-state-error').addClass('t-state-default');
-            }
-            let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
-            if ($continer.find('.t-state-selected').hasClass('t-state-selected')) {
-                let $control = $(input).closest('.t-combobox').find('.t-popup');
-                var bottom = $continer.find('.t-state-selected').position().top + $continer.find('.t-state-selected').height() +
-                    $control.scrollTop();
-                if (bottom >= 300) {
-                    $control.scrollTop(bottom - 300);
-                }
-            }
-            let $control = $(input).closest('.t-combobox').find('.t-popup');
-            let height = $control.height() + 5;
-            if (height > 300)
-                height = 300;
-            if (status == 2)
-                $continer.css('height', height);
-        },
         bindDatePicker(dotnetHelper, ctr) {
             $c.bindtomask($(ctr).find('input')[0], '____/__/__');
             $(ctr).mouseenter(() => {
@@ -1105,7 +1071,7 @@
             const mutationObserver = new MutationObserver(() => {
                 let $group = $(input).closest('.t-combobox').find('.t-group');
                 let $animate = $(input).closest('.t-combobox').find('.t-animation-container');
-                let height = $group.outerHeight();
+                let height = $group.find('.t-reset').outerHeight();
                 $(input).closest('.t-combobox').find('.t-item').click((e) => {
                     let $group = $(input).closest('.t-combobox').find('.c-animate-down .t-group');
                     $group.css('top', '-100%');
@@ -1114,8 +1080,13 @@
                     $control.removeClass('t-state-hover').addClass('t-state-default');
                 });
                 if ($group.offset()) {
-                    let loc = $group.offset().top - $(window).scrollTop();
-                    if (loc > $(window).height() / 2) {
+                    
+                    if (height > 250)
+                        height = 250;
+                    if (height < 30)
+                        height = 30;
+                    let loc = $group.offset().top + height + 5;
+                    if (loc > $(window).height()) {
                         $animate.addClass('c-animate-up').removeClass('c-animate-down');
                         $animate.height(height);
                         $group.css('bottom', 0);
@@ -1123,7 +1094,7 @@
                     else {
                         $animate.addClass('c-animate-down').removeClass('c-animate-up');
                         $animate.height(height + 7);
-                        $group.css('top', 0);
+                        $group.css('top', 5);
                     }
                 }
             });
@@ -1136,6 +1107,19 @@
                 let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
                 if (e.keyCode == 13 && $continer.css('display') == 'block')
                     return false;
+            });
+            $(input).keyup(e => {
+                if (e.keyCode == 38 || e.keyCode == 40) {
+                    let $selected = $(e.target).closest('.t-combobox').find('.t-item.t-state-selected');
+                    if ($selected[0]) {
+                        let $content = $(e.target).closest('.t-combobox').find('.t-popup.t-group');
+                        let top = $selected.position().top, bottom = top + $selected.outerHeight();
+                        if (bottom > 240 || top < 10) {
+                            let scrollTop = $content.scrollTop();;
+                            $content.scrollTop(scrollTop + bottom - 240);
+                        }
+                    }
+                }
             });
             var $control = $(input).closest('.t-combobox').find('.t-dropdown-wrap');
             $(input).closest('.t-combobox').mouseenter(function () {

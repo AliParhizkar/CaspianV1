@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections;
 
 namespace Caspian.UI
 {
@@ -29,10 +30,12 @@ namespace Caspian.UI
         TValue OldValue;
         string _FieldName;
         ValidationMessageStore _messageStore;
-        IList<SelectListItem> Items;
+        IList items;
         bool shouldRender = true;
         bool focused;
         protected ElementReference input;
+        IList<Expression> fieldsExpression;
+        bool fieldsAdd;
 
         internal int SelectedIndex { get; set; }
 
@@ -60,9 +63,6 @@ namespace Caspian.UI
         public int PageSize { get; set; } = 30;
 
         [Parameter]
-        public RenderFragment<TEntity> ChildContent { get; set; }
-
-        [Parameter]
         public Func<IQueryable<TEntity>, string, IQueryable<TEntity>> OnDataBinding { get; set; }
 
         [Parameter]
@@ -84,7 +84,7 @@ namespace Caspian.UI
         public Expression<Func<TEntity, bool>> ConditionExpression { get; set; }
 
         [Parameter]
-        public RenderFragment Template { get; set; }
+        public RenderFragment<TEntity> Template { get; set; }
 
         [Parameter]
         public TValue Value { get; set; }
@@ -111,7 +111,7 @@ namespace Caspian.UI
                 if (Status == WindowStatus.Close)
                 {
                     shouldRender = false;
-                    if (Items == null)
+                    if (items == null)
                     {
                         LoadData = true;
                         await DataBinding();
@@ -135,15 +135,26 @@ namespace Caspian.UI
             Disabled = true;
         }
 
-        public async Task SetValueAndClose(SelectListItem item)
+        public async Task SetValueAndClose(object item)
         {
-            if (!item.Disabled)
+            if (item != null)
             {
-                await SetValue(item.Value);
-                text = item.Text;
-                await Task.Delay(300);
-                Status = WindowStatus.Close;
+                if (Template == null)
+                {
+                    var temp = item as SelectListItem;
+                    await SetValue(temp.Value);
+                    text = temp.Text;
+                }
+                else
+                {
+                    var value = typeof(TEntity).GetPrimaryKey().GetValue(item);
+                    await SetValue(value);
+                    text = TextExpression.Compile().Invoke(item as TEntity);
+                }
             }
+
+            await Task.Delay(300);
+            Status = WindowStatus.Close;
         }
 
         async Task OnNochangeKeyDown(KeyboardEventArgs e)
@@ -155,7 +166,7 @@ namespace Caspian.UI
                 {
                     if (SelectedIndex == -1)
                         SelectedIndex = 0;
-                    if (Items.Count - 1 > SelectedIndex)
+                    if (items.Count - 1 > SelectedIndex)
                         SelectedIndex++;
                     else
                         SelectedIndex = 0;
@@ -171,10 +182,20 @@ namespace Caspian.UI
             {
                 if (SelectedIndex == -1)
                     SelectedIndex = 0;
-                if (Items != null && Items.Count > SelectedIndex)
+                if (items != null && items.Count > SelectedIndex)
                 {
-                    await SetValue(Items[SelectedIndex].Value);
-                    text = Items[SelectedIndex].Text;
+                    if (Template == null)
+                    {
+                        var temp = items[SelectedIndex] as SelectListItem;
+                        await SetValue(temp.Value);
+                        text = temp.Text;
+                    }
+                    else
+                    {
+                        var temp = items[SelectedIndex] as TEntity;
+                        await SetValue(typeof(TEntity).GetPrimaryKey().GetValue(temp));
+                        text = TextExpression.Compile().Invoke(temp);
+                    }
                     Status = WindowStatus.Close;
                 }
                 shouldRender = true;
@@ -240,6 +261,12 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
+        public void AddDataField(Expression expression)
+        {
+            fieldsAdd = true;
+            fieldsExpression.Add(expression);
+        }
+
         protected async override Task OnParametersSetAsync()
         {
             Container?.SetControl(this);
@@ -258,9 +285,9 @@ namespace Caspian.UI
             if (Disabled)
                 attrs.Add("disabled", "disabled");
             if (Source != null)
-                Items = Source.ToList();
+                items = Source.ToList();
             SelectedIndex = -1;
-            if (Items == null)
+            if (items == null)
             {
                 if (Value == null || Value.Equals(default(TEntity)))
                 {
@@ -292,17 +319,23 @@ namespace Caspian.UI
             else
             {
                 var index = 0;
-                foreach (var item in Items)
+                foreach (var item in items)
                 {
-                    if (Value != null && Value.ToString() == item.Value)
+                    var value = Template == null ? (item as SelectListItem).Value : typeof(TEntity).GetPrimaryKey().GetValue(item).ToString();
+                    if (Value != null && Value.ToString() == value)
                     {
                         SelectedIndex = index;
                         break;
                     }
                     index++;
                 }
-                if (SelectedIndex >= 0 && SelectedIndex < Items.Count)
-                    text = Items[SelectedIndex].Text;
+                if (SelectedIndex >= 0 && SelectedIndex < items.Count)
+                {
+                    if (Template == null)
+                        text = (items[SelectedIndex] as SelectListItem).Text;
+                    else
+                        text = TextExpression.Compile().Invoke(items[SelectedIndex] as TEntity).ToString();
+                }
                 else
                     text = "";
             }
@@ -475,7 +508,15 @@ namespace Caspian.UI
                         else
                             query = OnDataBinding.Invoke(query, text);
                     }
-                    var list = new ExpressionSurvey().Survey(TextExpression);
+                    IList<MemberExpression> list = null;
+                    if (Template == null)
+                        list = new ExpressionSurvey().Survey(TextExpression);
+                    else
+                    {
+                        list = new List<MemberExpression>();
+                        foreach (var fieldexpr in fieldsExpression)
+                            list.AddRange(new ExpressionSurvey().Survey(fieldexpr).ToArray());
+                    }
                     var type = typeof(TEntity);
                     query = query.Take(PageSize * pageNumber);
                     var parameter = Expression.Parameter(type, "t");
@@ -496,19 +537,27 @@ namespace Caspian.UI
                     shouldRender = false;
                     var dataList = await query.GetValuesAsync(list);
                     shouldRender = true;
-                    var displayFunc = TextExpression.Compile();
-                    var valueFunc = Expression.Lambda(pKeyExpr, parameter).Compile();
-                    Items = new List<SelectListItem>();
-                    foreach (var item in dataList)
+                    if (Template == null)
                     {
-                        var text = Convert.ToString(displayFunc.DynamicInvoke(item));
-                        var value = Convert.ToString(valueFunc.DynamicInvoke(item));
-                        Items.Add(new SelectListItem(value, text));
+                        var displayFunc = TextExpression.Compile();
+                        var valueFunc = Expression.Lambda(pKeyExpr, parameter).Compile();
+                        items = new List<SelectListItem>();
+                        foreach (var item in dataList)
+                        {
+                            var text = Convert.ToString(displayFunc.DynamicInvoke(item));
+                            var value = Convert.ToString(valueFunc.DynamicInvoke(item));
+                            items.Add(new SelectListItem(value, text));
+                        }
+                    }
+                    else
+                    {
+                        items = dataList as IList;
                     }
                 }
                 else
                 {
-                    Items = Source.Where(t => !text.HasValue() || t.Text.Contains(text)).Take(PageSize).ToList();
+                    shouldRender = true;
+                    items = Source.Where(t => !text.HasValue() || t.Text.Contains(text)).Take(PageSize).ToList();
                 }
 
             }
@@ -539,7 +588,7 @@ namespace Caspian.UI
                         expr = Expression.Equal(expr, Expression.Constant(value));
                         cascadExpression = Expression.Lambda(expr, param);
                         LoadData = true;
-                        Items = null;
+                        items = null;
 
                         break;
                     }
@@ -559,7 +608,7 @@ namespace Caspian.UI
 
         public async Task IncPageNumber()
         {
-            if (Items.Count >= PageSize)
+            if (items.Count >= PageSize)
             {
                 pageNumber++;
                 LoadData = true;
@@ -637,7 +686,7 @@ namespace Caspian.UI
         public void EnableLoading()
         {
             LoadData = true;
-            Items = null;
+            items = null;
         }
 
         [JSInvokable]

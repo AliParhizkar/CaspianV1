@@ -14,42 +14,29 @@
         }
     </script>
     <style type="text/css">
-        .c-test {
-            width: 80%;
-            margin: 100px auto;
-            border: 1px solid gray;
-            display: flex;
-            justify-content: space-between;
-            align-items:center;
-        }
-        .c-child {
+        .d-color-id {
+            position: absolute;
+            left: 0px;
+            right: 0;
+            top:0;
+            bottom:0;
             border: 1px solid red;
-            text-align:center;
-            vertical-align:baseline
+            width: fit-content;
+            height: fit-content;
+            margin: auto auto;
+            border-radius:15px;
         }
-        .t-input{
-            width:calc(100% - 4px);
-            box-sizing:border-box;
-            outline:none;
-            margin:2px;
-            height:30px;
-            line-height:30px;
-        }
-        .c-lable {
-            border: 1px solid red;
-            background-color: #d7d7d7;
+        .d-content-template{
+            width:300px;
+            height:200px;
         }
     </style>
 </head>
 <body style="margin:0;padding:0">
-    <div class="c-test">
-        <div style="width:50px;text-align:end" class="c-child">
-            <label class="c-lable">First Name</label>
+    <div class="d-color-id">
+        <div class="d-content-template">
+
         </div>
-        <div class="c-child">
-            <input class="t-input" />
-        </div>
-        <div style="width: 50px" class="c-child">1</div>
     </div>
 </body>
 </html>

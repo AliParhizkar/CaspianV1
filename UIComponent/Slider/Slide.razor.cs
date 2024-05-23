@@ -8,21 +8,30 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class Slide<TEntity> : ComponentBase where TEntity : class
+    public partial class Slide<TEntity> : ComponentBase, IDisposable where TEntity : class
     {
         IList<TEntity> items;
+        Timer timer;
         int pageSize = 1;
         IList<Expression> fieldsExpression;
         ElementReference element;
         double? contentWidth, containerWidth;
         int index, shift;
+        bool renderd;
         bool shouldRender = true;
         bool enableAnimate = true;
+        int shiftCount = 1;
 
         public void AddDataField(Expression expression)
         {
             fieldsExpression.Add(expression);
             StateHasChanged();
+        }
+
+        protected override void OnInitialized()
+        {
+            
+            base.OnInitialized();
         }
 
         protected override async Task OnInitializedAsync()
@@ -45,8 +54,9 @@ namespace Caspian.UI
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
+            if (!renderd && element.Id.HasValue())
             {
+                renderd = true;
                 var dotnet = DotNetObjectReference.Create(this);
                 await JSRuntime.InvokeVoidAsync("$.caspian.bindSlider", element, dotnet);
             }
@@ -77,26 +87,42 @@ namespace Caspian.UI
             return base.ShouldRender();
         }
 
-        async Task ShiftRight()
+        void ShiftRight()
         {
+            if (shift != 0)
+                return;
             enableAnimate = true;
             shouldRender = false;
             shift = -1;
-            items = await Binddata(pageSize + 2);
             var task = Task.Run(async () =>
             {
                 await Task.Delay(500);
                 index++;
                 shift = 0;
                 enableAnimate = false;
-                items.RemoveAt(0);
+                items = await Binddata(pageSize);
                 await InvokeAsync(StateHasChanged);
             });
+            StateHasChanged();
         }
 
-        async Task ShiftLeft()
+        void ShiftLeft()
         {
-
+            if (shift != 0)
+                return;
+            enableAnimate = true;
+            shouldRender = false;
+            shift = 1;
+            var task = Task.Run(async () =>
+            {
+                await Task.Delay(500);
+                index--;
+                shift = 0;
+                enableAnimate = false;
+                items = await Binddata(pageSize);
+                await InvokeAsync(StateHasChanged);
+            });
+            StateHasChanged();
         }
 
         async Task<IList<TEntity>> Binddata(int size)
@@ -106,29 +132,41 @@ namespace Caspian.UI
             if (ConditionExpression != null)
                 query = query.Where(ConditionExpression);
             var count = query.Count();
-            
-            //if (OrderByExpression == null)
-            //{
-            //    var param = Expression.Parameter(typeof(TEntity), "t");
-            //    Expression expr = Expression.Property(param, typeof(TEntity).GetPrimaryKey());
-            //    var lambda = Expression.Lambda(expr, param);
-            //    query = query.OrderBy(lambda).OfType<TEntity>();
-            //}
-            //else
-            //    query = query.OrderBy(OrderByExpression);
-            var shiftCount = ShiftPageSize ? pageSize : 1;
-            shiftCount = index - shiftCount;
             var list = new List<TEntity>();
-            if (shiftCount < 0)
+            if (index <= 0)
             {
-                var items = await query.Skip(count + shiftCount).ToListAsync();
-                list.AddRange(items);
+                if (index <= -count)
+                    index += count;
+                var tempList = await query.Skip(count - 1 + index).ToListAsync();
+                list.AddRange(tempList);
+                if (tempList.Count < size + 2)
+                {
+                    tempList = await query.Take(size + 2 - tempList.Count).ToListAsync();
+                    list.AddRange(tempList);
+                }
             }
-            if (index > 0)
-                query = query.Skip(index);
-            query = query.Take(size);
-            list.AddRange(await query.ToListAsync());
+            else
+            {
+                var tempQuery = query;
+                if (index > count)
+                    index -= count;
+                if (index > 1)
+                    tempQuery = tempQuery.Skip(index - 1);
+                var tempList = await tempQuery.Take(size + 2).ToListAsync();
+                list.AddRange(tempList);
+                if (tempList.Count < size + 2)
+                {
+                    tempList = await query.Take(size + 2 - tempList.Count).ToListAsync();
+                    list.AddRange(tempList);
+                }
+            }
             return list;
+        }
+
+        public void Dispose()
+        {
+            if (timer != null)
+                timer.Dispose();
         }
     }
 }

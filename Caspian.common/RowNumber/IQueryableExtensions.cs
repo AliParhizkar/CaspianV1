@@ -127,11 +127,4 @@ namespace Caspian.Common.RowNumber
             }
         }
     }
-
-    public class CaspianRowNumber
-    {
-        public int Id { get; set; }
-
-        public int RowNumber { get; set; }
-    }
 }

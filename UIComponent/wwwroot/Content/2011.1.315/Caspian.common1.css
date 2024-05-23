@@ -3611,12 +3611,12 @@ html body .t-grid tbody .t-button-icon {
 
 .t-dropdown-wrap {
     margin: 2px;
-    height: 30px;
+    height: 100%;
     box-sizing: border-box;
     font-size: 0;
 }
 .t-combobox .t-input {
-    height: 30px;
+    height: 100%;
     padding:0 4px;
     width: calc(100% - 27px);
     box-sizing: border-box;
@@ -3645,7 +3645,7 @@ html body .t-grid tbody .t-button-icon {
 }
 .t-picker-wrap .t-select,
 .t-dropdown-wrap .t-select {
-    height: 30px;
+    height: 100%;
     width: 27px;
     background-image: linear-gradient(#f6f6f6,#f1f1f1);
     text-align: center;

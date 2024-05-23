@@ -1,11 +1,15 @@
-﻿.d-slider{
-    width:200px;
-    height:200px;
-    text-align:center;
-    box-sizing:border-box;
-    padding:10px;
+﻿.d-icon {
+    font-size: 18px !important;
+    color: #342ac5 !important;
 }
 
+.d-slider {
+    width: 200px;
+    height: 220px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 10px;
+}
 
 .m-links {
     padding: 0 58px;
@@ -74,10 +78,20 @@ html {
 .d-product-content{
     width:100%;
 }
-
-.d-col-ph-1 {
-    border-right: 1px solid rgba(0, 0, 0, .2);
+.c-dataview-header{
+    padding-right:9px
 }
+.d-listview-product .d-product-content:nth-child(2n) .d-flex {
+    border-left: 1px solid white;
+}
+
+.d-listview-product .d-product-content:nth-child(2n - 1) .d-flex {
+    border-left: 1px solid #bbbbbb;
+}
+
+    .d-col-ph-1 {
+        border-right: 1px solid rgba(0, 0, 0, .2);
+    }
 .d-listview-product .c-dataview-field {
     line-height: 34px;
     display: inline-block;

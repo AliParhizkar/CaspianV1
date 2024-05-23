@@ -5,7 +5,7 @@ namespace Caspian.UI
 {
     public partial class TextField<TEntity> where TEntity : class
     {
-        [Parameter]
+        [Parameter, EditorRequired]
         public Expression<Func<TEntity, string>> Field { get; set; }
 
         [CascadingParameter(Name = "DataView")]
@@ -15,7 +15,7 @@ namespace Caspian.UI
         public RowData<TEntity> RowData { get; set; }
 
         [Parameter]
-        public RenderFragment Template { get; set; }
+        public RenderFragment<string> Template { get; set; }
 
         [Parameter]
         public RenderFragment EditTemplate { get; set; }

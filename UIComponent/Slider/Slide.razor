@@ -13,15 +13,15 @@
     else if (items != null)
     {
         var style = "width:" + (pageSize == 1 ? "fit-content" : $"{pageSize * contentWidth}px");
-        var styl1 = $"left:{(shift - 1)* contentWidth}px;";
+        var style1 = contentWidth.HasValue ? $"left:{(shift - 1) * shiftCount * contentWidth}px;" : null;
         if (!enableAnimate)
-            styl1 += "transition:none;";
+            style1 += "transition:none;";
         <div @ref="element" class="c-slider-main">
             <div class="c-slider-arrow">
                 <span @onmousedown="ShiftLeft" class="fa fa-chevron-left"></span>
             </div>
             <div style="@style" class="c-slider-body">
-                <div class="c-slider-content" style="@styl1">
+                <div class="c-slider-content" style="@style1">
                     @{
                         var index = 1;
                         foreach (var item in items)

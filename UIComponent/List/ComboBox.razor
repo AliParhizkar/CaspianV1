@@ -1,9 +1,21 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity
 @typeparam TValue
+@attribute [CascadingTypeParameter(nameof(TEntity))]
+@implements IListViewer<TEntity>
 @inject IJSRuntime jsRuntime
 @inject FormAppState FormAppState
 @inject IServiceScopeFactory ServiceScopeFactory
+
+@if (Template != null && !fieldsAdd)
+{
+    <CascadingValue Value="this" Name="DataView" IsFixed>
+        @{
+            fieldsExpression = new List<Expression>();
+        }
+        @Template(default)
+    </CascadingValue>
+}
 <div style="@Style" class="t-widget t-combobox" error-message="@ErrorMessage">
     <div class="@className">
         <input @ref="input" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await OnNochangeKeyDown(arg)"
@@ -13,26 +25,34 @@
             <i class="t-icon t-arrow-down fa fa-caret-down"></i>
         </span>
     </div>
-    @if (Items != null && Status == WindowStatus.Open)
+    @if (items != null && Status == WindowStatus.Open)
     {
         <div class="t-animation-container">
             <div class="t-popup t-group">
                 <ul class="t-reset">
                     @{
                         int index = 0;
-                        foreach (var item in Items)
+                        foreach (var item in items)
                         {
                             string className = "t-item";
                             if (SelectedIndex == index || index == 0 && SelectedIndex == -1)
                                 className += " t-state-selected";
-                            <li @onclick="async () => await SetValueAndClose(item)" class="@className" value="@item.Value">
-                                @if (ChildContent == null)
+                            var value = Template == null ? (item as SelectListItem).Value : typeof(TEntity).GetPrimaryKey().GetValue(item).ToString(); 
+                            <li @onclick="async () => await SetValueAndClose(item)" class="@className" value="@value">
+                                @if (Template == null)
                                 {
-                                    <span>@item.Text</span>
+                                    <span>@((item as SelectListItem).Text)</span>
                                 }
                                 else
                                 {
-
+                                    var data = new RowData<TEntity>()
+                                    {
+                                        Data = item as TEntity,
+                                        RowIndex = index
+                                    };
+                                    <CascadingValue Value="data" Name="RowData">
+                                        @Template(item as TEntity)
+                                    </CascadingValue>
                                 }
                             </li>
                             index++;
