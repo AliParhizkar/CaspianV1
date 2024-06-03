@@ -1,5 +1,6 @@
 ﻿using Caspian.Common;
 using System.Reflection;
+using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
@@ -9,7 +10,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.JSInterop;
 
 namespace Caspian.UI
 {
@@ -23,7 +23,6 @@ namespace Caspian.UI
         protected TEntity unchangedEntity;
         protected EditContext EditContext;
         protected bool shouldSetFocuc;
-        protected IList<int> updatedEntitiesId;
         protected IList<TEntity> deletedEntities;
         protected string errorMessage;
         protected bool shouldFetchData = true;
@@ -57,13 +56,16 @@ namespace Caspian.UI
         public int? ContentHeight { get; set; }
 
         [Parameter]
-        public IList<ChangedEntity<TEntity>> ChangedEntities { get; set; }
-
-        [Parameter]
         public string DeleteMessage { get; set; }
 
         [Parameter]
         public bool HideInsertIcon { get; set; }
+
+        [Parameter]
+        public IMasterBatchService<TEntity> MasterBatchService { get; set; }
+
+        [Parameter]
+        public IDetailsBatchService<TEntity> DetailsBatchService { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, bool>> ConditionExpr { get; set; }
@@ -129,6 +131,13 @@ namespace Caspian.UI
                 throw new CaspianException($"Service of type {type} not impilimented");
             if (!AutoHide && Inline)
                 CreateInsert();
+            if (MasterBatchService != null)
+            {
+                MasterBatchService.MasterDataView = this;
+                MasterBatchService.MasterGridInitialize();
+            }
+            if (DetailsBatchService != null)
+                DetailsBatchService.DetailsDataView = this;
             base.OnInitialized();
         }
 
@@ -151,7 +160,6 @@ namespace Caspian.UI
 
         protected void ManageExpressionForUpsert(IList<MemberExpression> list)
         {
-            updatedEntitiesId = new List<int>();
             deletedEntities = new List<TEntity>();
             expressionList = new Dictionary<string, LambdaExpression>();
             var dic = new Dictionary<string, IList<MemberExpression>>();
@@ -308,7 +316,7 @@ namespace Caspian.UI
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
             await service.AddAsync(entity);
-            ChangedEntities.Add(new ChangedEntity<TEntity>() 
+            DetailsBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>() 
             { 
                 Entity = entity, 
                 ChangeStatus = ChangeStatus.Added 
@@ -337,7 +345,7 @@ namespace Caspian.UI
             if (id > 0)
             {
                 var isExist = false;
-                foreach(var item in ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
+                foreach(var item in DetailsBatchService.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
                 {
                     var newId = Convert.ToInt32(pkey.GetValue(entity));
                     if (id == newId)
@@ -348,7 +356,7 @@ namespace Caspian.UI
                 }
                 if (!isExist)
                 {
-                    ChangedEntities.Add(new ChangedEntity<TEntity>()
+                    DetailsBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>()
                     {
                         ChangeStatus = ChangeStatus.Updated,
                         Entity = entity
@@ -435,23 +443,22 @@ namespace Caspian.UI
                 await ChangePageNumber(pageNumber);
                 if (id > 0)
                 {
-                    foreach (var item in ChangedEntities)
+                    foreach (var item in DetailsBatchService.ChangedEntities)
                     {
                         var newId = Convert.ToInt32(pKey.GetValue(item.Entity));
                         if (newId == id)
                         {
-                            ChangedEntities.Remove(item);
+                            DetailsBatchService.ChangedEntities.Remove(item);
                             break;
                         }
                     }
-                    ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
-                    updatedEntitiesId.Remove(id);
+                    DetailsBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
                     deletedEntities.Add(entity);
                 }
                 else
                 {
-                    var old = ChangedEntities.Single(t => t.Entity == entity);
-                    ChangedEntities.Remove(old);
+                    var old = DetailsBatchService.ChangedEntities.Single(t => t.Entity == entity);
+                    DetailsBatchService.ChangedEntities.Remove(old);
                 }
             }
             else
@@ -495,18 +502,6 @@ namespace Caspian.UI
             shouldFetchData = true;
         }
 
-        public IList<TEntity> GetUpdatedEntities()
-        {
-            var list = new List<TEntity>();
-            var pKey = typeof(TEntity).GetPrimaryKey();
-            foreach (var id in updatedEntitiesId)
-            {
-                var item = source.Single(t => pKey.GetValue(t).Equals(id));
-                list.Add(item.CreateNewSimpleEntity());
-            }
-            return list;
-        }
-
         public IList<TEntity> GetDeletedEntities()
         {
             var list = new List<TEntity>();
@@ -520,13 +515,6 @@ namespace Caspian.UI
             source = new List<TEntity>();
             Total = 0;
             items = new List<TEntity>();
-        }
-
-        public IList<TEntity> GetUpsertedEntities()
-        {
-            var list = GetInsertedEntities().ToList();
-            list.AddRange(GetUpdatedEntities());
-            return list;
         }
 
         public async Task ReloadAsync()

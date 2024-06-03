@@ -1,5 +1,5 @@
 ﻿@page "/Demo/CustomerAndCustomerAddress"
-
+@inject BatchService<Customer, CustomerAddress> Service
 @inherits MasterDetailPage<Customer, CustomerAddress>
 @{
     base.BuildRenderTree(__builder);
@@ -26,7 +26,7 @@
                         <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
                     </li>
                 </ul>
-                <DataGrid TEntity="Customer" @ref="MasterGrid" ContentHeight="400" 
+                <DataGrid TEntity="Customer" MasterBatchService="Service" ContentHeight="400" 
                         DeleteMessage="با حذف مشتری آدرسهای وی نیز حذف می شود آیا با حذف موافقید؟">
                     <Columns>
                         <GridColumn Field="t => t.CustomerType" />
@@ -35,7 +35,7 @@
                         <GridCommandColumns />
                     </Columns>
                 </DataGrid>
-                <Window @ref="Window" Title="Customer & Addresses" Style="width:750px;">
+                <Window Service="Service" Title="Customer & Addresses" Style="width:750px;">
                     <CustomerAndCustomerAddressComponent Page="this" />
                 </Window>
             </div>

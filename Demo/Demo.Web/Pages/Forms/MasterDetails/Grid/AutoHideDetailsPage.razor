@@ -82,7 +82,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 row pe-3">
-                        <CaspianForm @ref="Form" Model="UpsertData">
+                        <CaspianForm  Model="UpsertData">
                             <div class="row c-controls ps-3 pe-3">
                                 <div class="col-md-4">
                                     <label>Receipt date</label>
@@ -109,7 +109,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                        <DataGrid @ref="DataView" TEntity="ReceiptDetail" ContentHeight="300" ChangedEntities="ChangedEntities" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
+                        <DataGrid @ref="DataView" TEntity="ReceiptDetail" ContentHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material">
                                     <EditTemplate>

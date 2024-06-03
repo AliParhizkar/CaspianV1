@@ -45,19 +45,24 @@ namespace Caspian.Common.Service
             if (result.Errors.Count > 0)
                 throw new CaspianException(result.Errors[0].ErrorMessage);
             var newEntity = entity.CreateNewSimpleEntity();
-            var details = new List<TDetails>();
-            detailsInfo.SetValue(newEntity, details);
-            foreach (var detail in detailsInfo.GetValue(entity) as IEnumerable<TDetails>)
+            var details = detailsInfo.GetValue(entity) as IEnumerable<TDetails>;
+            if (details != null)
             {
-                var item = Activator.CreateInstance<TDetails>();
-                foreach (var info in typeof(TDetails).GetProperties())
+                var detailsList = new List<TDetails>();
+                detailsInfo.SetValue(newEntity, detailsList);
+                foreach (var detail in details)
                 {
-                    var type = info.PropertyType;
-                    if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
-                        info.SetValue(item, info.GetValue(detail));
+                    var item = Activator.CreateInstance<TDetails>();
+                    foreach (var info in typeof(TDetails).GetProperties())
+                    {
+                        var type = info.PropertyType;
+                        if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
+                            info.SetValue(item, info.GetValue(detail));
+                    }
+                    detailsList.Add(item);
                 }
-                details.Add(item);
             }
+
             var result1 = await Context.Set<TMaster>().AddAsync(newEntity);
             return result1.Entity;
         }

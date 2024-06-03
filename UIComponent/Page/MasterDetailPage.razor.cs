@@ -18,21 +18,6 @@ namespace Caspian.UI
         [Parameter]
         public int MasterId { get; set; }
 
-        public CaspianForm<TMaster> Form 
-        { 
-            get
-            {
-                return form;
-            }
-            set
-            {
-                form = value;
-                InitializeForm();
-            }
-        }
-
-        public IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
-
         public DataView<TDetail> DataView { get; set; }
 
         public DataGrid<TMaster> MasterGrid { get; set; }
@@ -52,7 +37,6 @@ namespace Caspian.UI
                 BatchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
             var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
             BatchServiceData.DetailPropertiesInfo.Add(detailsproperty);
-            ChangedEntities = new List<ChangedEntity<TDetail>>();
             base.OnInitialized();
         }
 
@@ -127,55 +111,57 @@ namespace Caspian.UI
 
         void InitializeForm()
         {
-            Form.OnInternalSubmit = EventCallback.Factory.Create<EditContext>(this, (EditContext context1) =>
-            {
-                if (DataView != null)
-                {
-                    foreach (var info in typeof(TMaster).GetProperties())
-                    {
-                        var type = info.PropertyType;
-                        if (type.IsCollectionType() && type.IsGenericType && type.GetGenericArguments()[0] == typeof(TDetail))
-                            info.SetValue(UpsertData, DataView.GetUpsertedEntities().AsEnumerable());
-                    }
-                }
+            //Form.OnInternalSubmit = EventCallback.Factory.Create<EditContext>(this, (EditContext context1) =>
+            //{
+            //    if (DataView != null)
+            //    {
+            //        //foreach (var info in typeof(TMaster).GetProperties())
+            //        //{
+            //        //    var type = info.PropertyType;
+            //        //    if (type.IsCollectionType() && type.IsGenericType && type.GetGenericArguments()[0] == typeof(TDetail))
+            //        //        throw new NotFiniteNumberException();
+            //        //        //info.SetValue(UpsertData, DataView.GetUpsertedEntities().AsEnumerable());
+            //        //}
+            //    }
 
-            });
-            Form.OnInternalReset = EventCallback.Factory.Create(this, () =>
-            {
-                DataView?.ClearSource();
-                Window?.Close();
-            });
-            if (Window != null)
-            {
-                Window.OnInternalOpen = EventCallback.Factory.Create(this, () =>
-                {
-                    MasterId = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(UpsertData));
-                    BatchServiceData.MasterId = MasterId;
-                });
-            }
-            Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context1) =>
-            {
-                var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(context1.Model));
-                using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
-                await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
-                await service.SaveChangesAsync();
-                ChangedEntities.Clear();
-                if (id == 0)
-                {
-                    if (DataView != null)
-                        DataView.ClearSource();
-                    UpsertData = Activator.CreateInstance<TMaster>();
-                    await OnMasterEntityCreatedAsync();
-                    ShowMessage("Registration was done successfully");
-                }
-                else
-                {
-                    if (DataView != null)
-                        await DataView.ReloadAsync();
-                    ShowMessage("Updating was done successfully");
-                }
-                Window?.Close();
-            });
+            //});
+            //Form.OnInternalReset = EventCallback.Factory.Create(this, () =>
+            //{
+            //    DataView?.ClearSource();
+            //    Window?.Close();
+            //});
+            //if (Window != null)
+            //{
+            //    Window.OnInternalOpen = EventCallback.Factory.Create(this, () =>
+            //    {
+            //        MasterId = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(UpsertData));
+            //        BatchServiceData.MasterId = MasterId;
+            //    });
+            //}
+            //Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context1) =>
+            //{
+            //    return;
+            //    var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(context1.Model));
+            //    using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
+            //    await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
+            //    await service.SaveChangesAsync();
+            //    ChangedEntities.Clear();
+            //    if (id == 0)
+            //    {
+            //        if (DataView != null)
+            //            DataView.ClearSource();
+            //        UpsertData = Activator.CreateInstance<TMaster>();
+            //        await OnMasterEntityCreatedAsync();
+            //ShowMessage("Registration was done successfully");
+            //    }
+            //    else
+            //    {
+            //        if (DataView != null)
+            //            await DataView.ReloadAsync();
+            //        ShowMessage("Updating was done successfully");
+            //    }
+            //    Window?.Close();
+            //});
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

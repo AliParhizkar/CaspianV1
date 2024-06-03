@@ -21,11 +21,11 @@ namespace Caspian.Common
                     if (type.GenericTypeArguments.Length == 2)
                     {
                         Type type1 = type.GenericTypeArguments[0], type2 = type.GenericTypeArguments[1];
-                        if (type == typeof(MasterDetailsService<,>).MakeGenericType(type1, type2))
-                        {
-                            var interfaceType = typeof(IMasterDetailsService<,>).MakeGenericType(type1, type2);
+                        var interfaceType = typeof(IMasterDetailsService<,>).MakeGenericType(type.GenericTypeArguments);
+                        if (type == interfaceType)
                             return serviceProvider.GetService(interfaceType) as TService;
-                        }
+                        if (type == typeof(MasterDetailsService<,>).MakeGenericType(type.GenericTypeArguments))
+                            return serviceProvider.GetService(interfaceType) as TService;
                     }
                     if (type.GenericTypeArguments.Length == 1)
                     {

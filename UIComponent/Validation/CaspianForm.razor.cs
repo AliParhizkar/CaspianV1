@@ -1,10 +1,10 @@
 ﻿using Caspian.Common;
 using Microsoft.JSInterop;
+using Caspian.Common.Service;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using Caspian.Common.Service;
 
 namespace Caspian.UI
 {
@@ -27,6 +27,9 @@ namespace Caspian.UI
         public TEntity Model { get; set; }
 
         public EditContext EditContext { get; private set; }
+
+        [Parameter]
+        public IMasterBatchService<TEntity> Service { get; set; }
 
         [Parameter]
         public EventCallback<EditContext> OnInvalidSubmit { get; set; }
@@ -65,6 +68,11 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             controls = new List<IControl>();
+            if (Service != null)
+            {
+                Service.Form = this;
+                Service.FormInitialize();
+            }
             if (FormAppState == null)
                 FormAppState = new FormAppState();
             if (CrudComponent != null)

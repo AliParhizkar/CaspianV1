@@ -1,6 +1,6 @@
 ﻿@namespace Caspian.UI
 @implements IWindow
-@inject BasePageService Service
+@inject BasePageService PageService
 @inject IJSRuntime jsRuntime
 @if (Status == WindowStatus.Open && Modal)
 {
@@ -70,6 +70,9 @@
     public RenderFragment Content { get; set; }
 
     [Parameter]
+    public ISimpleCrudService Service { get; set; }
+
+    [Parameter]
     public RenderFragment HeaderTemplate { get; set; }
 
     [Parameter]
@@ -113,7 +116,10 @@
     {
         isOpend = true;
         Status = WindowStatus.Open;
-        await StatusChanged.InvokeAsync(WindowStatus.Open);
+        if (StatusChanged.HasDelegate)
+            await StatusChanged.InvokeAsync(WindowStatus.Open);
+        else
+            StateHasChanged();
     }
 
     public async Task SetValue(object value)
@@ -131,12 +137,19 @@
         }
         if (StatusChanged.HasDelegate)
             await StatusChanged.InvokeAsync(WindowStatus.Close);
+        else
+            StateHasChanged();
     }
 
     protected override void OnInitialized()
     {
         if (CrudComponent != null)
             CrudComponent.SetWindow(this);
+        if (Service != null)
+        {
+            Service.Window = this;
+            Service.WindowInitialize();
+        }
         Modal = true;
         Draggable = true;
         base.OnInitialized();
@@ -161,11 +174,11 @@
         if (Status == WindowStatus.Open && oldStatus != WindowStatus.Open)
         {
             isOpend = true;
-            Service.Push(this);
+            PageService.Push(this);
         }
         if (Status != WindowStatus.Open && oldStatus == WindowStatus.Open)
         {
-            Service.Pop();
+            PageService.Pop();
             messageBox = null;
         }
         oldStatus = Status;

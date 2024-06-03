@@ -1,5 +1,6 @@
 ﻿@page "/Demo/Batch/Custom/Details"
 @page "/Demo/Batch/Custom/Details/{MasterId:int}"
+@inject BatchService<Order, OrderDeatil> Service
 @inherits MasterDetailPage<Order, OrderDeatil>
 @{
     base.BuildRenderTree(__builder);
@@ -98,7 +99,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 row pe-3">
-                        <CaspianForm @ref="Form" Model="UpsertData">
+                        <CaspianForm Model="UpsertData">
                             <div class="row c-controls ps-3 pe-3">
                                 <div class="col-md-4">
                                     <label>Order date</label>
@@ -146,7 +147,7 @@
                             </div>
                         }
                         <div class="pt-4">
-                            <DataGrid @ref="DataView" TEntity="OrderDeatil" Batch ChangedEntities="ChangedEntities" ConditionExpr="t => t.OrderId == MasterId" ContentHeight="250" HideInsertIcon>
+                            <DataGrid @ref="DataView" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == MasterId" ContentHeight="250" HideInsertIcon>
                                 <Columns>
                                     <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                                     <GridColumn Field="t => t.Product.Title" Title="Product" />
@@ -196,7 +197,7 @@
 
     async Task UpdatedProducts()
     {
-        var products = ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated).Select(t => t.Entity);
+        var products = Service.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated).Select(t => t.Entity);
         if (products.Count() == 0)
             await Alert("No products have been updated");
         else
@@ -216,7 +217,7 @@
 
     async Task DeletedProducts()
     {
-        var products = ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Deleted).Select(t => t.Entity);
+        var products = Service.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Deleted).Select(t => t.Entity);
         if (products.Count() == 0)
             await Alert("No products have been deleted");
         else
@@ -236,7 +237,7 @@
 
     async Task InsertedProducts()
     {
-        var products = DataView.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Added).Select(t => t.Entity);
+        var products = Service.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Added).Select(t => t.Entity);
         if (products.Count() == 0)
             await Alert("No products have been added");
         else

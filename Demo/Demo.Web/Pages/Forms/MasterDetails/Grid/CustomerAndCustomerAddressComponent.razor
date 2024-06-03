@@ -1,55 +1,55 @@
-﻿
+﻿@inject BatchService<Customer, CustomerAddress> Service
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="Customer">
-            <CaspianForm @ref="Page.Form" Model="Page.UpsertData">
+            <CaspianForm Service="Service" Model="Service.UpsertData">
                 <CaspianValidationValidator ValidatorType="typeof(CustomerAndAddressService)" />
                 <div class="row p-4 c-controls">
                     <div class="col-md-4">
                         <label>Customer Type</label>
                     </div>
                     <div class="col-md-8">
-                        <DropdownList @bind-Value="Page.UpsertData.CustomerType" />
+                        <DropdownList @bind-Value="Service.UpsertData.CustomerType" />
                     </div>
                     <div class="col-md-4">
                         <label>First Name</label>
                     </div>
                     <div class="col-md-8">
-                        <StringTextBox @bind-Value="Page.UpsertData.FName"
-                                       Disabled="Page.UpsertData.CustomerType == CustomerType.Legal" />
+                        <StringTextBox @bind-Value="Service.UpsertData.FName"
+                                       Disabled="Service.UpsertData.CustomerType == CustomerType.Legal" />
                     </div>
                     <div class="col-md-4">
                         <label>Last Name</label>
                     </div>
                     <div class="col-md-8">
-                        <StringTextBox @bind-Value="Page.UpsertData.LName"
-                                       Disabled="Page.UpsertData.CustomerType == CustomerType.Legal" />
+                        <StringTextBox @bind-Value="Service.UpsertData.LName"
+                                       Disabled="Service.UpsertData.CustomerType == CustomerType.Legal" />
                     </div>
                     <div class="col-md-4">
                         <label>Gender</label>
                     </div>
                     <div class="col-md-8">
-                        <DropdownList @bind-Value="Page.UpsertData.Gender"
-                                      Disabled="Page.UpsertData.CustomerType == CustomerType.Legal" />
+                        <DropdownList @bind-Value="Service.UpsertData.Gender"
+                                      Disabled="Service.UpsertData.CustomerType == CustomerType.Legal" />
                     </div>
                     <div class="col-md-4">
                         <label>Company Name</label>
                     </div>
                     <div class="col-md-8">
-                        <StringTextBox @bind-Value="Page.UpsertData.CompanyName"
-                                       Disabled="Page.UpsertData.CustomerType == CustomerType.Real" />
+                        <StringTextBox @bind-Value="Service.UpsertData.CompanyName"
+                                       Disabled="Service.UpsertData.CustomerType == CustomerType.Real" />
                     </div>
                     <div class="col-md-4">
                         <label>Mobile Number</label>
                     </div>
                     <div class="col-md-8">
-                        <StringTextBox @bind-Value="Page.UpsertData.MobileNumber" MaxLength="11" />
+                        <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" />
                     </div>
                     <div class="col-md-4">
                         <label>Tel</label>
                     </div>
                     <div class="col-md-8">
-                        <StringTextBox @bind-Value="Page.UpsertData.Tel" MaxLength="11" />
+                        <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" />
                     </div>
                     <div class="col-md-4"></div>
                     <div class="col-md-8">
@@ -60,7 +60,7 @@
         </TabPanelItem>
         <TabPanelItem Title="Addresses">
             <div class="p-2">
-                <DataGrid @ref="Page.DataView" TEntity="CustomerAddress" ChangedEntities="Page.ChangedEntities" ContentHeight="300" Inline Batch ConditionExpr="t => t.CustomerId == Page.MasterId">
+                <DataGrid TEntity="CustomerAddress" DetailsBatchService="Service" ContentHeight="300" Inline Batch ConditionExpr="t => t.CustomerId == Service.MasterId">
                     <Columns Context="con">
                         <GridColumn style="width:220px;" Field="t => t.AddressType.Title" Title="Address Type">
                             <EditTemplate>

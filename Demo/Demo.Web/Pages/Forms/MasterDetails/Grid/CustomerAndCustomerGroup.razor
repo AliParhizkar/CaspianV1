@@ -1,9 +1,12 @@
 ﻿@page "/Demo/CustomerAndCustomerGroup"
 @namespace Demo.Web.Pages
+@inject BatchService<Customer, CustomerGroupMembership> Service
+
 @inherits MasterDetailPage<Customer, CustomerGroupMembership>
 @{
     base.BuildRenderTree(__builder);
 }
+
 <h2>Custom Master-details</h2>
 <p>
     In this example, we can Upsert and delete the customer and its groups.
@@ -26,7 +29,7 @@
                         <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
                     </li>
                 </ul>
-                <DataGrid @ref="MasterGrid" Search="search" ContentHeight="400">
+                <DataGrid TEntity="Customer" @ref="MasterGrid" MasterBatchService="Service" Search="search" ContentHeight="400">
                     <Columns>
                         <GridColumn Field="t => t.CustomerType" />
                         <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
@@ -35,7 +38,7 @@
                     </Columns>
                 </DataGrid>
                 <Window @ref="Window" Title="Customer & Groups" Style="width:450px;">
-                    <CaspianForm @ref="Form" Model="UpsertData">
+                    <CaspianForm Model="UpsertData">
                         <TabPanel>
                             <Tabs>
                                 <TabPanelItem Title="Customer">

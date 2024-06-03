@@ -543,9 +543,9 @@ namespace Caspian.UI
             if (shouldFetchData && columnsData != null && Batch)
             {
                 await DataBind();
-                if (ChangedEntities == null)
+                if (DetailsBatchService.ChangedEntities == null)
                     throw new CaspianException($"Caspian Exception: please specify ChangedEntities parameter in DataGrid<{typeof(TEntity).Name}>");
-                foreach(var entity in ChangedEntities)
+                foreach(var entity in DetailsBatchService.ChangedEntities)
                 {
                     if (entity.ChangeStatus == ChangeStatus.Added)
                         source.Add(entity.Entity);
