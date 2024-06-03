@@ -29,9 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponent.Clinet", "UICom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caspian.Common.Client", "Caspian.Common.Client\Caspian.Common.Client.csproj", "{9D02AFA7-F858-499A-89FB-4FFE00773435}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportGenerator", "ReportGenerator\ReportGenerator\ReportGenerator.csproj", "{300D61C3-7606-4570-B909-C33FC927571F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator", "ReportGenerator\ReportGenerator\ReportGenerator.csproj", "{300D61C3-7606-4570-B909-C33FC927571F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportGenerator.Client", "ReportGenerator\ReportGenerator.Client\ReportGenerator.Client.csproj", "{D30B12C1-453C-4DC2-990A-19DAD5071391}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator.Client", "ReportGenerator\ReportGenerator.Client\ReportGenerator.Client.csproj", "{D30B12C1-453C-4DC2-990A-19DAD5071391}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

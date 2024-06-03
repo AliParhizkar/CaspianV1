@@ -95,7 +95,6 @@ html input[disabled], textarea[disabled] {
     border-color: rgba(0, 0, 0, 0.12);
     cursor:pointer;
     text-align:center;
-    padding-top:6px;
 }
 
 .t-panelbar .t-state-hover { background-image: none; }
@@ -239,11 +238,6 @@ html input[disabled], textarea[disabled] {
 .t-dropdown .t-state-focused {
     transition: box-shadow 0.15s ease-out 0s;
     box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3) !important;
-}
-
-.t-reset .t-state-selected
-{
-    background-color:#ff6358;
 }
 
 
@@ -692,7 +686,9 @@ button:disabled {
     border-radius: 3px;
     border-radius:8px 8px 4px 4px; 
 }
-
+.t-reset .t-state-selected {
+    background-color: #ff6358!important;
+}
 .t-grid-addTab
 {
     width:34px;

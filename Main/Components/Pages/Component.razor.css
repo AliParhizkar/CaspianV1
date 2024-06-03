@@ -1,29 +1,63 @@
-﻿.d-menu-categories{
-
+﻿.main-item-test{
+    position:relative;
+}
+.main-content-test {
+    display: flex;
+    justify-content: space-around;
+    height: 40px;
+    align-items: center;
+    border-bottom: 1px solid #d8d8d8;
 }
 body{
     padding:0;
     margin:0;
 }
+.main-content-test:hover {
+    background-color: #e8e8e8;
+}
+.main-content-test >div{
+    width:50%;
+}
+.second-layer {
+    position: absolute;
+}
+.second-layer-content {
+    width: 150px;
+    height: 50px;
+    border: 1px solid gray;
+}
+.test-main-step2 {
+    position: absolute;
+    border: 1px solid gray;
+    width: 350px;
+    height: 200px;
+    right: 100%;
+    top:0;
+}
 .main-window {
     border: 1px solid red;
-    width: 500px;
-    top:30px;
+    width: calc(100% - 80px);
+    top: 30px;
     position: absolute;
-    left: 100px;
-    max-height: calc(100vh - 200px);
+    right: 50px;
     overflow-y: auto;
     overflow-x: hidden;
-    box-sizing:border-box;
+    box-sizing: border-box;
+    height: 250px;
 }
+    .main-window > ul {
+        width: 350px;
+        border-left: 1px solid gray;
+    }
 
-.main-buttons {
-    display: flex;
-    justify-content: space-around;
-    height: 75px;
-    align-items: center;
-    border-top: 1px solid #e0e0e0;
-}
+
+    .main-buttons {
+        display: flex;
+        justify-content: space-around;
+        height: 75px;
+        align-items: center;
+        border-top: 1px solid #e0e0e0;
+    }
 .main-body {
     padding: 20px;
     width: 500px;

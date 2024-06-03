@@ -3,7 +3,7 @@
 @typeparam TEntity
 @typeparam TValue
 @inject IServiceProvider Provider
-@inject BatchService BatchService
+@inject BatchServiceData BatchServiceData
 <fieldset class="t-checkbox-list">
     <legend>@(Title)</legend>
     <div class="c-checkbox-list" style="@Style">
@@ -157,7 +157,10 @@
         var type = typeof(TValue).GetUnderlyingType();
         complexValueType = type.IsClass && type != typeof(string);
         if (complexValueType)
-            BatchService.OtherTypeInfo = type.GetProperties().Single(t => t.PropertyType == typeof(TEntity));
+        {
+            //throw new NotImplementedException("");
+            //BatchServiceData.OtherTypeInfo = type.GetProperties().Single(t => t.PropertyType == typeof(TEntity));
+        }
         if (CheckboxItems == null)
         {
 

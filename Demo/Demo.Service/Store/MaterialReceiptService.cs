@@ -28,7 +28,7 @@ namespace Demo.Service
                     }
                 }
                 return false;
-            }, "The value of sub-unit is invalid");
+            }, "The value of sub-unit is invalid").Custom(t => t.QuantityMain == 0 && t.QuantitySub == 0, "This parameter must be greater than zero.");
         }
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections;
+using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace Caspian.UI
 {
@@ -36,6 +37,7 @@ namespace Caspian.UI
         protected ElementReference input;
         IList<Expression> fieldsExpression;
         bool fieldsAdd;
+        EditContext oldContext;
 
         internal int SelectedIndex { get; set; }
 
@@ -250,14 +252,6 @@ namespace Caspian.UI
             CaspianForm?.AddControl(this);
             //LoadData = true;
             text = "";
-            if (CurrentEditContext != null && ValueExpression != null)
-            {
-                _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
-                _messageStore = new ValidationMessageStore(CurrentEditContext);
-                CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
-                //CurrentEditContext.OnFieldChanged += CurrentEditContext_OnFieldChanged;
-                CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
-            }
             base.OnInitialized();
         }
 
@@ -280,7 +274,15 @@ namespace Caspian.UI
                 else
                     className += " t-state-default";
             }
-                
+            if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
+            {
+                _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
+                _messageStore = new ValidationMessageStore(CurrentEditContext);
+                CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
+                //CurrentEditContext.OnFieldChanged += CurrentEditContext_OnFieldChanged;
+                CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
+                oldContext = CurrentEditContext;
+            }
             attrs = new Dictionary<string, object>();
             if (Disabled)
                 attrs.Add("disabled", "disabled");
@@ -483,7 +485,9 @@ namespace Caspian.UI
                 if (Source == null)
                 {
                     using var scope = ServiceScopeFactory.CreateScope();
-                    var service = scope.ServiceProvider.GetService<IBaseService<TEntity>>();
+                    var service = scope.GetService<BaseService<TEntity>>();
+                    if (service == null)
+                        throw new CaspianException($"Service of type IBaseService<{typeof(TEntity).Name}> not imilimented");
                     var query = service.GetAll(default(TEntity));
                     if (ConditionExpression != null)
                         query = query.Where(ConditionExpression);

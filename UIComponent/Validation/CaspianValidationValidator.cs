@@ -1,15 +1,12 @@
-﻿using System;
-using Caspian.Common;
+﻿using Caspian.Common;
 using FluentValidation;
 using Caspian.Common.Service;
-using System.Threading.Tasks;
 using FluentValidation.Results;
 using FluentValidation.Internal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Collections.Generic;
 
 namespace Caspian.UI
 {
@@ -19,7 +16,7 @@ namespace Caspian.UI
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
 
         [Inject]
-        public BatchService BatchService { get; set; }
+        public BatchServiceData BatchServiceData { get; set; }
 
         [Inject]
         public CaspianDataService CaspianDataService { get; set; }
@@ -74,19 +71,14 @@ namespace Caspian.UI
             using var scope = ServiceScopeFactory.CreateScope();
             if (CaspianDataService != null)
             {
-                var dataService = scope.ServiceProvider.GetService<CaspianDataService>();
+                var dataService = scope.GetService<CaspianDataService>();
                 dataService.UserId = CaspianDataService.UserId;
                 dataService.Language = CaspianDataService.Language;
             }
             Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
+            (Validator as ICaspianValidator).BatchServiceData = BatchServiceData;
             if (Source != null)
                 (Validator as IBaseService).SetSource(Source);
-            if (BatchService?.IgnorePropertyInfo != null)
-            {
-                context.RootContextData["__IgnorePropertyInfo"] = BatchService?.IgnorePropertyInfo;
-                context.RootContextData["__MasterId"] = BatchService.MasterId;
-            }
-            context.RootContextData["__ServiceScopeFactory"] = ServiceScopeFactory;
             var asyncValidationTask = Validator.ValidateAsync(context);
             EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
             var result = await asyncValidationTask;

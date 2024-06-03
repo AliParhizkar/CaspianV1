@@ -8,6 +8,11 @@ namespace Caspian.Common
     {
         public static TService GetService<TService>(this IServiceScope scope) where TService : class
         {
+            return scope.ServiceProvider.GetCaspianService<TService>();
+        }
+
+        public static TService GetCaspianService<TService>(this IServiceProvider serviceProvider) where TService : class
+        {
             var type = typeof(TService);
             while(type != typeof(object))
             {
@@ -19,21 +24,23 @@ namespace Caspian.Common
                         if (type == typeof(MasterDetailsService<,>).MakeGenericType(type1, type2))
                         {
                             var interfaceType = typeof(IMasterDetailsService<,>).MakeGenericType(type1, type2);
-                            return scope.ServiceProvider.GetService(interfaceType) as TService;
+                            return serviceProvider.GetService(interfaceType) as TService;
                         }
                     }
                     if (type.GenericTypeArguments.Length == 1)
                     {
                         var genericType = type.GenericTypeArguments[0];
+                        if (type == typeof(IBaseService<>).MakeGenericType(genericType))
+                            return serviceProvider.GetService(type) as TService;
                         if (type == typeof(BaseService<>).MakeGenericType(genericType))
                         {
                             var interfaceType = typeof(IBaseService<>).MakeGenericType(genericType);
-                            return scope.ServiceProvider.GetService(interfaceType) as TService;
+                            return serviceProvider.GetService(interfaceType) as TService;
                         }
                         if (type == typeof(AbstractValidator<>).MakeGenericType(genericType))
                         {
                             var interfaceType = typeof(IValidator<>).MakeGenericType(genericType);
-                            return scope.ServiceProvider.GetService(interfaceType) as TService;
+                            return serviceProvider.GetService(interfaceType) as TService;
                             
                         }
                     }
@@ -41,7 +48,10 @@ namespace Caspian.Common
                 }
                 type = type.BaseType;
             }
-            throw new CaspianException("Service not registered");
+            var service = serviceProvider.GetService(typeof(TService)) as TService;
+            if ( service == null)
+                throw new CaspianException($"Service of type {typeof(TService).Name} not registered");
+            return service;
         }
     }
 }

@@ -959,6 +959,11 @@
             const mutationObserver = new MutationObserver((mutationList) => {
                 mutationList.forEach(mutation => {
                     if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
+                        let status = $(mutation.target).attr('status');
+                        if (status == 1)
+                            $('.c-content-main').css('overflow', 'auto');
+                        else
+                            $('.c-content-main').css('overflow', 'hidden');
                         let $window = $(mutation.target).closest('.t-window');
                         $c.openWindow($window);
                     }

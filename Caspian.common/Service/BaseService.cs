@@ -4,8 +4,6 @@ using System.Reflection;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
-using FluentValidation.Results;
-using FluentValidation.Internal;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,6 +22,11 @@ namespace Caspian.Common.Service
         public void SetSource(object obj)
         {
             Source = (obj as List<TEntity>).AsReadOnly();
+        }
+
+        public TService GetService<TService>() where TService : class 
+        {
+            return ServiceProvider.GetCaspianService<TService>();
         }
 
         public IQueryable GetAllRecords()
@@ -89,30 +92,8 @@ namespace Caspian.Common.Service
             }
         }
 
-        public async virtual Task<ValidationResult> ValidateRemoveAsync(TEntity entity)
-        {
-            var list = new List<string>()
-            {
-                "remove"
-            };
-            var result = await ValidateAsync(new ValidationContext<TEntity>(entity, new PropertyChain(), new RulesetValidatorSelector(list)));
-            return result;
-        }
-
-        public override Task<ValidationResult> ValidateAsync(ValidationContext<TEntity> context, CancellationToken cancellation = default)
-        {
-            context.RootContextData["__ServiceScope"] = ServiceProvider;
-            if (!context.IsChildContext)
-                context.RootContextData["__MasterInstanse"] = context.InstanceToValidate;
-            
-            return base.ValidateAsync(context, cancellation);
-        }
-
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
-            var result = await ValidateAsync(entity);
-            if (result.Errors.Count > 0)
-                throw new CaspianException(result.Errors[0].ErrorMessage);
             foreach (var info in typeof(TEntity).GetProperties())
             {
                 var type = info.PropertyType;

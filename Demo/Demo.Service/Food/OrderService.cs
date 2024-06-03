@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Caspian.Common.Extension;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {
@@ -26,25 +27,30 @@ namespace Demo.Service
 
         }
 
-        public override Task<Order> AddAsync(Order order)
+        public override async Task UpdateDatabaseAsync(Order order, IList<ChangedEntity<OrderDeatil>> changedEntities)
         {
-            var maxOrderNo = GetAll().Where(t => t.Date == order.Date).Max(t => (int?)t.OrderNo).GetValueOrDefault() + 1;
-            order.OrderNo = maxOrderNo;
-            order.TotalAmount = order.OrderDeatils.Sum(t => t.Price * t.Quantity);
-            return base.AddAsync(order);
-        }
-
-        public override async Task UpdateAsync(Order order, IEnumerable<int> deletedIds)
-        {
-            var old = await GetAll().Include(t => t.OrderDeatils).SingleAsync(order.Id);
-            var sum = 0;
-            foreach(var item in old.OrderDeatils.Where(t => !deletedIds.Contains(t.Id)))
+            /// Add to factor
+            var sum = changedEntities.Where(t => t.ChangeStatus == ChangeStatus.Added).Sum(t => t.Entity.Price * t.Entity.Quantity);
+            if (order.Id == 0)
             {
-                var detail = order.OrderDeatils.SingleOrDefault(t => t.Id == item.Id);
-                sum += detail == null ? item.Quantity * item.Price : detail.Quantity * detail.Price;
+                var maxOrderNo = GetAll().Where(t => t.Date == order.Date).Max(t => (int?)t.OrderNo).GetValueOrDefault() + 1;
+                order.OrderNo = maxOrderNo;
+            }
+            else
+            {
+                var details = await GetService<OrderDeatilService>().GetAll().Where(t => t.OrderId == order.Id).AsNoTracking().ToListAsync();
+                foreach (var detail in details)
+                {
+                    var changed = changedEntities.SingleOrDefault(t => t.Entity.Id == detail.Id);
+                    /// if not changed
+                    if (changed == null)
+                        sum += detail.Price * detail.Quantity;
+                    else if (changed.ChangeStatus == ChangeStatus.Updated)
+                        sum += changed.Entity.Price * changed.Entity.Quantity;
+                }
             }
             order.TotalAmount = sum;
-            await base.UpdateAsync(order, deletedIds);
+            await base.UpdateDatabaseAsync(order, changedEntities);
         }
     }
 }

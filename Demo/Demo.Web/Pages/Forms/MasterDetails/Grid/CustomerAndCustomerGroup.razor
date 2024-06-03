@@ -11,7 +11,7 @@
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
-            <div class="p-4">
+            <div class="p-3 pt-4 ">
                 <span class="c-demo-description">
                     In this example we do the following together:
                 </span>
@@ -35,73 +35,71 @@
                     </Columns>
                 </DataGrid>
                 <Window @ref="Window" Title="Customer & Groups" Style="width:450px;">
-                    <Content>
-                        <CaspianForm @ref="Form" Model="UpsertData">
-                            <TabPanel>
-                                <Tabs>
-                                    <TabPanelItem Title="Customer">
-                                        <div class="row p-4 pt-2 pb-2 c-controls" style="height:320px">
-                                            <div class="col-md-4">
-                                                <label>Customer Type</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <DropdownList @bind-Value="UpsertData.CustomerType" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>First Name</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <StringTextBox @bind-Value="UpsertData.FName"
-                                                                Disabled="UpsertData.CustomerType == CustomerType.Legal" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Last Name</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <StringTextBox @bind-Value="UpsertData.LName"
-                                                                Disabled="UpsertData.CustomerType == CustomerType.Legal" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Gender</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <DropdownList @bind-Value="UpsertData.Gender"
-                                                                Disabled="UpsertData.CustomerType == CustomerType.Legal" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Company Name</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <StringTextBox @bind-Value="UpsertData.CompanyName"
-                                                                Disabled="UpsertData.CustomerType == CustomerType.Real" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Mobile Number</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <StringTextBox @bind-Value="UpsertData.MobileNumber" MaxLength="11" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Tel</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <StringTextBox @bind-Value="UpsertData.Tel" MaxLength="11" />
-                                            </div>
+                    <CaspianForm @ref="Form" Model="UpsertData">
+                        <TabPanel>
+                            <Tabs>
+                                <TabPanelItem Title="Customer">
+                                    <div class="row p-4 pt-2 pb-2 c-controls" style="height:320px">
+                                        <div class="col-md-4">
+                                            <label>Customer Type</label>
                                         </div>
-                                    </TabPanelItem>
-                                    <TabPanelItem Title="Groups">
-                                        <div class="ps-4 pe-4 pt-2 pb-2" style="height:320px">
-                                            <CheckboxList TValue="CustomerGroupMembership" TEntity="CustomerGroup" 
-                                                @bind-Values=UpsertData.CustomerGroupMemberships TextExpression="t => t.Title" Style="height:280px;" />
+                                        <div class="col-md-8">
+                                            <DropdownList @bind-Value="UpsertData.CustomerType" />
                                         </div>
-                                    </TabPanelItem>
-                                </Tabs>
-                            </TabPanel>
-                            <div class="pt-4 pt-0 pb-2">
-                                <FormCommandButton />
-                            </div>
-                        </CaspianForm>
-                    </Content>
+                                        <div class="col-md-4">
+                                            <label>First Name</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <StringTextBox @bind-Value="UpsertData.FName"
+                                                           Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Last Name</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <StringTextBox @bind-Value="UpsertData.LName"
+                                                           Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Gender</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <DropdownList @bind-Value="UpsertData.Gender"
+                                                          Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Company Name</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <StringTextBox @bind-Value="UpsertData.CompanyName"
+                                                           Disabled="UpsertData.CustomerType == CustomerType.Real" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Mobile Number</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <StringTextBox @bind-Value="UpsertData.MobileNumber" MaxLength="11" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Tel</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <StringTextBox @bind-Value="UpsertData.Tel" MaxLength="11" />
+                                        </div>
+                                    </div>
+                                </TabPanelItem>
+                                <TabPanelItem Title="Groups">
+                                    <div class="ps-4 pe-4 pt-2 pb-2" style="height:320px">
+                                        <CheckboxList TValue="CustomerGroupMembership" TEntity="CustomerGroup"
+                                                      @bind-Values=UpsertData.CustomerGroupMemberships TextExpression="t => t.Title" Style="height:280px;" />
+                                    </div>
+                                </TabPanelItem>
+                            </Tabs>
+                        </TabPanel>
+                        <div class="pt-4 pt-0 pb-2">
+                            <FormCommandButton />
+                        </div>
+                    </CaspianForm>
                 </Window>
             </div>
         </TabPanelItem>

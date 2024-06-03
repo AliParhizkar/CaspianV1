@@ -128,7 +128,12 @@ namespace Caspian.UI
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
+            {
                 await jsRuntime.InvokeVoidAsync("$.caspian.dadaGridBind", mainDiv);
+                shouldFetchData = true;
+                await DataBind();
+                StateHasChanged();
+            }
 
             if (FormAppState.Element.HasValue)
             {
@@ -471,7 +476,6 @@ namespace Caspian.UI
             if (CrudComponent != null)
                 CrudComponent.CrudGrid = this;
             RangeFilterColumnsData = new List<ColumnData>();
-            ContentHeight = 250;
             base.OnInitialized();
         }
 
@@ -533,11 +537,45 @@ namespace Caspian.UI
             {
                 shouldFetchData = true;
                 jsonOldSearch = jsonSearch;
-                if (columnsData != null && !Batch)
-                    await DataBind();
             }
-            else if (shouldFetchData && columnsData != null)
+            if (columnsData != null && !Batch)
                 await DataBind();
+            if (shouldFetchData && columnsData != null && Batch)
+            {
+                await DataBind();
+                if (ChangedEntities == null)
+                    throw new CaspianException($"Caspian Exception: please specify ChangedEntities parameter in DataGrid<{typeof(TEntity).Name}>");
+                foreach(var entity in ChangedEntities)
+                {
+                    if (entity.ChangeStatus == ChangeStatus.Added)
+                        source.Add(entity.Entity);
+                    else 
+                    {
+                        var pKey = typeof(TEntity).GetPrimaryKey();
+                        var id = Convert.ToInt32(pKey.GetValue(entity.Entity));
+                        if (id > 0)
+                        {
+                            foreach(var temp in source)
+                            {
+                                var newId = Convert.ToInt32(pKey.GetValue(temp));
+                                if (newId == id)
+                                {
+                                    if (entity.ChangeStatus == ChangeStatus.Deleted)
+                                        source.Remove(temp);
+                                    else
+                                    {
+                                        var index = source.IndexOf(temp);
+                                        source.Insert(index, entity.Entity);
+                                        source.Remove(temp);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                items = source.Take(PageSize).ToList();
+            }
             await base.OnParametersSetAsync();
         }
     }

@@ -1,4 +1,7 @@
-﻿.c-slider-arrow .fa {
+﻿textarea{
+    line-height:normal!important;
+}
+.c-slider-arrow .fa {
     font-size: 40px;
     color: #dae2f9;
     cursor: pointer;
@@ -904,13 +907,14 @@ input[type=time]{
 .c-grid-insert {
     background-color: #dae2f9;
 }
-.c-progress-bar {
-    width: 350px;
-    padding: 15px;
-    margin: 0 auto;
-    border-radius: 8px;
-    background-color: #F0F0F0;
-}
+
+    .c-progress-bar {
+        width: 350px;
+        padding: 15px;
+        margin: 0 auto;
+        border-radius: 8px;
+        background-color: #F0F0F0;
+    }
 .c-progress-item {
     border: 1px solid #a7b2c3;
     padding: 10px;
@@ -2458,6 +2462,7 @@ div.t-window {
     overflow: hidden;
     white-space: nowrap;
     height: 29px;
+    border-radius: 8px 8px 0 0;
 }
 
 .t-tabstrip-items .t-item,
@@ -2752,6 +2757,10 @@ div, input, textarea {
     cursor: pointer;
 }
 
+.t-grid .t-upsert-inline td{
+    overflow:visible;
+}
+
 .t-grid td {
     padding: 0 3px;
     border: 0;
@@ -2759,6 +2768,10 @@ div, input, textarea {
     line-height: 1.6em;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.c-grid-insert td {
+    overflow: visible;
 }
 
 .t-grid .t-last {
@@ -2792,13 +2805,19 @@ div.t-grid-footer {
     border-color: rgba(0,0,0,0.2);
     box-sizing:border-box;
 }
+.t-inline-content{
+    height:fit-content!important;
+    min-height:300px;
+    overflow-y:visible!important;
+}
 
 .t-grid-content {
     overflow-y: auto;
     border-width: 0 1px;
     border-style: solid;
     border-color: rgba(0,0,0,0.2);
-    background-color:white;
+    background-color: white;
+    height: 300px;
 }
 .t-grid-content td, .c-grid-inline td {
     border-width: 0 1px 1px 0;
@@ -3565,6 +3584,7 @@ html body .t-grid tbody .t-button-icon {
 }
 .t-dropdown-wrap .t-t-select {
     line-height: 30px;
+    height:30px;
     display: inline-block;
     vertical-align: top;
     width: 27px;
@@ -3580,7 +3600,7 @@ html body .t-grid tbody .t-button-icon {
 .t-dropdown .t-input,
 .t-selectbox .t-input {
     display: inline-block;
-    line-height: 30px;
+    line-height: 26px;
     padding: 0 4px;
     width: calc(100% - 27px);
     font-size: 14px;
@@ -3596,7 +3616,8 @@ html body .t-grid tbody .t-button-icon {
 .t-picker-wrap .t-icon,
 .t-dropdown-wrap .t-icon {
     vertical-align: -webkit-baseline-middle;
-    line-height: 18px;
+    line-height: 22px;
+    height:22px;
     font-size: 17px;
     color: #656565;
     text-align: center;
@@ -3646,6 +3667,7 @@ html body .t-grid tbody .t-button-icon {
 .t-picker-wrap .t-select,
 .t-dropdown-wrap .t-select {
     height: 100%;
+    line-height:30px;
     width: 27px;
     background-image: linear-gradient(#f6f6f6,#f1f1f1);
     text-align: center;

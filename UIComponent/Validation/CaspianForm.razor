@@ -4,9 +4,8 @@
 @inject IServiceProvider provider;
 @typeparam TEntity
 @{
-    var modelType = Model.GetType();
-    var serviceType = typeof(IBaseService<>).MakeGenericType(modelType);
-    serviceType = provider.GetService(serviceType)?.GetType();
+    var services = provider.GetServices<IBaseService<TEntity>>();
+    var serviceType = services.Count() == 1 ? services.SingleOrDefault()?.GetType() : null;
 }
 <EditForm EditContext="EditContext" 
           OnSubmit="@(async context => await OnFormSubmitHandler(context))"

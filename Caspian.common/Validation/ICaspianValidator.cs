@@ -4,6 +4,8 @@ namespace Caspian.Common
 {
     public interface ICaspianValidator
     {
-        public int UserId { get; }
+        BatchServiceData BatchServiceData { get; set; }
+
+        int UserId { get; }
     }
 }

@@ -12,6 +12,8 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
+
+
         [DisplayName("Customer type"), ReportField]
         public CustomerType CustomerType { get; set; }
 
@@ -41,5 +43,8 @@ namespace Demo.Model
 
         [CheckOnDelete("Customer is member of group and can not be removed")]
         public virtual IList<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
+
+        [CheckOnDelete("Customer has Address and can not be removed")]
+        public virtual IList<CustomerAddress> CustomerAddresses { get; set; }
     }
 }

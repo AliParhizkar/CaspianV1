@@ -3,6 +3,8 @@ using Microsoft.JSInterop;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.DependencyInjection;
+using Caspian.Common.Service;
 
 namespace Caspian.UI
 {
@@ -81,6 +83,22 @@ namespace Caspian.UI
             ErrorMessage = null;
             EditContext.Validate();
             EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
+            if (ValidationValidator == null)
+            {
+                var services = provider.GetServices<IBaseService<TEntity>>();
+                if (services.Count() > 1)
+                {
+                    var message = "";
+                    foreach(var service in services)
+                    {
+                        if (message.HasValue())
+                            message += " and ";
+                        message += service.GetType().Name;
+                    }
+                    message = $"Caspian Exception: {message} Types impiliment IBaseService<{typeof(TEntity).Name}> so you should specify service with CaspianValidationValidator component on CaspianForm component";
+                    throw new CaspianException(message);
+                }
+            }
             var result = await (Task<ValidationResult>)asyncValidationTask;
             if (result.IsValid)
             {

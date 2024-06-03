@@ -51,7 +51,7 @@ namespace Caspian.Engine.Service
             {
                 if (!oldParams.Any(t => t.TitleEn == param.TitleEn))
                 {
-                    var service = ServiceProvider.GetService<ReportParamService>();
+                    var service = GetService<ReportParamService>();
                     await service.AddAsync(param);
                     await service.SaveChangesAsync();
                 }

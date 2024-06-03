@@ -6,32 +6,53 @@
 @using Demo.Model;
 @using Demo.Service
 
-<div class="main-window">
-    <div class="main-body">
-        <ComboBox TValue="int" TEntity="MenuCategory" TextExpression="t => t.Title">
-            <Template Context="Category">
-                <div class="d-menu-categories">
-                    <TextField Field="t => t.Title" />
-                </div>
-            </Template>
-        </ComboBox>
-    </div>
-    <div class="main-buttons">
-        <div>
-            <button>Save</button>
-        </div>
-        <div>
-            <button>Cancel</button>
-        </div>
+<div style="direction:rtl">
+
+    <div class="main-window">
+        <ul>
+            @if (countries != null)
+            {
+                foreach (var country in countries)
+                {
+                    <li @onmouseenter="e => MouseEnter(e, country.Id)" class="main-item-test">
+                        <div class="main-content-test">
+                            <div>
+                                <label>@country.Id</label>
+                            </div>
+                            <div>
+                                <label>@country.Title</label>
+                            </div>
+                        </div>
+                        @if (selectedCountryId == country.Id)
+                        {
+                            <div class="test-main-step2">
+                            </div>
+                        }
+                    </li>
+                }
+            }
+        </ul>
     </div>
 </div>
 
-
-
-    
-
 @code
 {
+    int? selectedCountryId;
+
+    void MouseEnter(MouseEventArgs e, int countryId)
+    {
+        selectedCountryId = countryId;
+    }
+
+    IList<Country> countries;
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<CountryService>();
+        countries = service.GetAll().ToList();
+        await base.OnInitializedAsync();
+    }
+
+
     string userName;
     string password;
 }

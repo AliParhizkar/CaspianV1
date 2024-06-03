@@ -280,6 +280,9 @@ namespace Caspian.Common
         {
             ruleBuilder.CustomAsync(async (value, context, token) =>
             {
+                BatchServiceData batchService = null;
+                if (context.RootContextData.ContainsKey("__BatchServiceData"))
+                    batchService = context.RootContextData["__BatchServiceData"] as BatchServiceData;
                 foreach (var info in typeof(TModel).GetProperties())
                 {
                     if (info.PropertyType.IsEnumerableType() && info.PropertyType != typeof(string) && info.PropertyType != typeof(byte[]))
@@ -288,6 +291,8 @@ namespace Caspian.Common
                         if (attr == null)
                             throw new CaspianException("خطا: On type " + info.DeclaringType.Name + " property " + info.Name + " must has CheckOnDelete Attribute", 5);
                         if (!attr.Check)
+                            continue;
+                        if (batchService != null && batchService.DetailPropertiesInfo.Contains(info))
                             continue;
                         var type = info.PropertyType.GetGenericArguments()[0];
                         var pkey = type.GetPrimaryKey();
@@ -382,12 +387,15 @@ namespace Caspian.Common
                     if (value.Equals(0))
                     {
                         var flag = false;
-                        if (context.RootContextData.ContainsKey("__IgnorePropertyInfo"))
+                        if (context.RootContextData.ContainsKey("__BatchServiceData"))
                         {
-                            var info = context.RootContextData["__IgnorePropertyInfo"] as PropertyInfo;
-                            var MastreId = Convert.ToInt32(context.RootContextData["__MasterId"]);
-                            if (info == infoId && MastreId == 0)
-                                flag = true;
+                            var serviceData = context.RootContextData["__BatchServiceData"] as BatchServiceData;
+                            if (serviceData.MasterId == 0)
+                            {
+                                var MasterInfo = typeof(TModel).GetProperties().SingleOrDefault(t => t.PropertyType == serviceData.MasterType);
+                                if (MasterInfo != null && MasterInfo == info)
+                                    flag = true;
+                            }
                         }
                         if (!flag)
                         {

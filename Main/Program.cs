@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Caspian.Common.RowNumber;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Demo.Model;
 
 namespace Main
 {
@@ -47,7 +49,6 @@ namespace Main
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             }).AddIdentityCookies();
-
 
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
@@ -85,6 +86,7 @@ namespace Main
                 .AddDefaultTokenProviders();
             var app = builder.Build();
             CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

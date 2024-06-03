@@ -57,6 +57,9 @@ namespace Caspian.UI
         public int? ContentHeight { get; set; }
 
         [Parameter]
+        public IList<ChangedEntity<TEntity>> ChangedEntities { get; set; }
+
+        [Parameter]
         public string DeleteMessage { get; set; }
 
         [Parameter]
@@ -78,7 +81,7 @@ namespace Caspian.UI
         public int PageSize { get; set; } = 5;
 
         [Inject]
-        public BatchService BatchService { get; set; }
+        public BatchServiceData BatchServiceData { get; set; }
 
         [Parameter]
         public bool AutoHide { get; set; }
@@ -121,14 +124,24 @@ namespace Caspian.UI
             using var scope = ServiceScopeFactory.CreateScope();
             var dataService = scope.ServiceProvider.GetService(typeof(CaspianDataService)) as CaspianDataService;
             dataService.UserId = CaspianDataService.UserId;
-            serviceType = scope.ServiceProvider.GetService(type).GetType();
+            serviceType = scope.ServiceProvider.GetService(type)?.GetType();
+            if (serviceType == null)
+                throw new CaspianException($"Service of type {type} not impilimented");
             if (!AutoHide && Inline)
                 CreateInsert();
-            if (CaspianDataService.Language == Language.Fa)
-                DeleteMessage = "آیا با حذف موافقید؟";
-            else
-                DeleteMessage = "Do you agree to delete?";
             base.OnInitialized();
+        }
+
+        protected override void OnParametersSet()
+        {
+            if (DeleteMessage == null)
+            {
+                if (CaspianDataService.Language == Language.Fa)
+                    DeleteMessage = "آیا با حذف موافقید؟";
+                else
+                    DeleteMessage = "Do you agree to delete?";
+            }
+            base.OnParametersSet();
         }
 
         public IList<TEntity> GetAllRecords()
@@ -266,8 +279,8 @@ namespace Caspian.UI
                         insertedEntity.UpsertMode = UpsertMode.Insert;
                     }
                     insertedEntity.Data = Activator.CreateInstance<TEntity>();
-                    if (BatchService.MasterId > 0)
-                        BatchService.IgnorePropertyInfo.SetValue(insertedEntity.Data, BatchService.MasterId);
+                    if (BatchServiceData.MasterId > 0)
+                        BatchServiceData.GetMasterInfo(typeof(TEntity)).SetValue(insertedEntity.Data, BatchServiceData.MasterId);
                     InsertContext = new EditContext(insertedEntity.Data);
                 }
             }
@@ -292,6 +305,14 @@ namespace Caspian.UI
         {
             var type = typeof(TEntity);
             type.GetPrimaryKey().SetValue(entity, 0);
+            using var scope = ServiceScopeFactory.CreateScope();
+            var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
+            await service.AddAsync(entity);
+            ChangedEntities.Add(new ChangedEntity<TEntity>() 
+            { 
+                Entity = entity, 
+                ChangeStatus = ChangeStatus.Added 
+            });
             await UpdateEntityForForeignKey(entity);
             source.Add(entity);
             Total = source.Count;
@@ -313,8 +334,27 @@ namespace Caspian.UI
         {
             var pkey = typeof(TEntity).GetPrimaryKey();
             var id = Convert.ToInt32(pkey.GetValue(entity));
-            if (id > 0 && !updatedEntitiesId.Contains(id))
-                updatedEntitiesId.Add(id);
+            if (id > 0)
+            {
+                var isExist = false;
+                foreach(var item in ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
+                {
+                    var newId = Convert.ToInt32(pkey.GetValue(entity));
+                    if (id == newId)
+                    {
+                        isExist = true;
+                        break;
+                    }
+                }
+                if (!isExist)
+                {
+                    ChangedEntities.Add(new ChangedEntity<TEntity>()
+                    {
+                        ChangeStatus = ChangeStatus.Updated,
+                        Entity = entity
+                    });
+                }
+            }
             await UpdateEntityForForeignKey(entity);
             for (var index = 0; index < source.Count; index++)
             {
@@ -372,7 +412,8 @@ namespace Caspian.UI
 
         public async Task RemoveAsync(TEntity entity)
         {
-            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+            var pKey = typeof(TEntity).GetPrimaryKey();
+            var id = Convert.ToInt32(pKey.GetValue(entity));
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
             var result = await service.ValidateRemoveAsync(entity);
@@ -394,8 +435,23 @@ namespace Caspian.UI
                 await ChangePageNumber(pageNumber);
                 if (id > 0)
                 {
+                    foreach (var item in ChangedEntities)
+                    {
+                        var newId = Convert.ToInt32(pKey.GetValue(item.Entity));
+                        if (newId == id)
+                        {
+                            ChangedEntities.Remove(item);
+                            break;
+                        }
+                    }
+                    ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
                     updatedEntitiesId.Remove(id);
                     deletedEntities.Add(entity);
+                }
+                else
+                {
+                    var old = ChangedEntities.Single(t => t.Entity == entity);
+                    ChangedEntities.Remove(old);
                 }
             }
             else
@@ -476,8 +532,7 @@ namespace Caspian.UI
         public async Task ReloadAsync()
         {
             EnableLoading();
-
-            await OnParametersSetAsync();
+            await DataBind();
             var pageCount = (Total - 1) / PageSize + 1;
             if (pageCount < pageNumber)
             {
@@ -546,8 +601,8 @@ namespace Caspian.UI
             insertedEntity = new RowData<TEntity>();
             insertedEntity.UpsertMode = UpsertMode.Insert;
             insertedEntity.Data = Activator.CreateInstance<TEntity>();
-            if (BatchService.MasterId > 0)
-                BatchService.IgnorePropertyInfo.SetValue(insertedEntity.Data, BatchService.MasterId);
+            if (BatchServiceData.MasterId > 0)
+                BatchServiceData.GetMasterInfo(typeof(TEntity)).SetValue(insertedEntity.Data, BatchServiceData.MasterId);
             InsertContext = new EditContext(insertedEntity.Data);
             insertContinerHouldhasFocus = AutoHide;
             StateHasChanged();

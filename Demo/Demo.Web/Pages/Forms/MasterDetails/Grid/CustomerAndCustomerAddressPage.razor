@@ -1,0 +1,52 @@
+﻿@page "/Demo/CustomerAndCustomerAddress"
+
+@inherits MasterDetailPage<Customer, CustomerAddress>
+@{
+    base.BuildRenderTree(__builder);
+}
+<h2>Custome Master-details</h2>
+<p>
+    In this example, we can Upsert and delete the customer and its groups.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="p-4">
+                <span class="c-demo-description">
+                    In this example we do the following together:
+                </span>
+                <ul class="d-demo-inner-list">
+                    <li>
+                        <b>Insert customer & Groups: </b> We can insert a customer (Master) and many groups (Details) together (maybe only insert customer withoth any groups).
+                    </li>
+                    <li>
+                        <b>Update customer & add or remove Groups : </b> We can update customer (Master) and add or remove groups(details) together.
+                    </li>
+                    <li>
+                        <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
+                    </li>
+                </ul>
+                <DataGrid TEntity="Customer" @ref="MasterGrid" ContentHeight="400" 
+                        DeleteMessage="با حذف مشتری آدرسهای وی نیز حذف می شود آیا با حذف موافقید؟">
+                    <Columns>
+                        <GridColumn Field="t => t.CustomerType" />
+                        <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+                        <GridColumn Field="t => t.MobileNumber.CallFormat(' ')" />
+                        <GridCommandColumns />
+                    </Columns>
+                </DataGrid>
+                <Window @ref="Window" Title="Customer & Addresses" Style="width:750px;">
+                    <CustomerAndCustomerAddressComponent Page="this" />
+                </Window>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Batch" FileName="Customer&Groups" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+@code 
+{
+    
+}

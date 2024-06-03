@@ -2,7 +2,14 @@
 @typeparam TEntity
 @inherits DataView<TEntity>
 @attribute [CascadingTypeParameter(nameof(TEntity))]
-    
+
+@{
+    var style = !Inline && ContentHeight.HasValue ? $"height:{ContentHeight}px" : "";
+    var className = "t-grid-content";
+    if (Inline)
+        className += " t-inline-content";
+}    
+
 <CascadingValue Value="this" Name="DataView">
     @if (columnsData == null)
     {
@@ -26,7 +33,7 @@
                                                     await ChangePageNumber(pageNumber);
                                                 }" />
 
-        <div class="t-grid-content" style="height:@(ContentHeight)px">
+            <div class="@className" style="@(style)">
             @if (insertedEntity?.UpsertMode != null && Inline)
             {
                 <table @attributes="tableAttrs" class="c-grid-insert">
@@ -56,13 +63,18 @@
                                     var id = Convert.ToInt32(pkey.GetValue(item));
                                     var attrs = new Dictionary<string, object>();
                                     var rowIndex = index;
+                                    var classname = "";
                                     if (SelectType == SelectType.Single)
                                     {
                                         if (rowIndex == SelectedRowIndex)
-                                            attrs.Add("class", "t-state-selected");
+                                            classname = "t-state-selected";
                                     }
                                     if (SelectType == SelectType.Multi && selectedIds.Contains(id))
-                                        attrs.Add("class", "t-state-selected");
+                                        classname = "t-state-selected";
+                                    if (item == selectedEntity)
+                                        classname += " t-upsert-inline";
+                                    if (classname.HasValue())
+                                        attrs.Add("class", classname);
                                     if (SelectType != SelectType.None)
                                     {
                                         attrs.Add("onmousedown", EventCallback.Factory.Create<MouseEventArgs>(this, async (e) =>

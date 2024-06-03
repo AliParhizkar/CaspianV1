@@ -7,7 +7,7 @@ namespace Caspian.Common.Service
 
     }
 
-    public interface IBaseService<TEntity>: IEntity, IValidator<TEntity>
+    public interface IBaseService<TEntity>: IEntity, IValidator<TEntity>, IDisposable
     {
         IQueryable<TEntity> GetAll(TEntity entity = default);
 

@@ -3,12 +3,16 @@ using System.Reflection;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
+using FluentValidation.Results;
+using FluentValidation.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common
 {
     public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator, IEntity where TModel : class
     {
+        public BatchServiceData BatchServiceData { get; set; }
+
         public CaspianValidator(IServiceProvider provider)
         {
             ServiceProvider = provider;
@@ -55,6 +59,24 @@ namespace Caspian.Common
             });
         }
 
+        public async virtual Task<ValidationResult> ValidateRemoveAsync(TModel model)
+        {
+            var list = new List<string>()
+            {
+                "remove"
+            };
+            var result = await ValidateAsync(new ValidationContext<TModel>(model, new PropertyChain(), new RulesetValidatorSelector(list)));
+            return result;
+        }
+
+        public override Task<ValidationResult> ValidateAsync(ValidationContext<TModel> context, CancellationToken cancellation = default)
+        {
+            context.RootContextData["__ServiceScope"] = ServiceProvider;
+            if (BatchServiceData != null)
+                context.RootContextData["__BatchServiceData"] = BatchServiceData;
+            return base.ValidateAsync(context, cancellation);
+        }
+
         protected IRuleBuilderInitial<TModel, object> RuleForRemove()
         {
             var pkey = typeof(TModel).GetPrimaryKey();
@@ -77,13 +99,5 @@ namespace Caspian.Common
         public IServiceProvider ServiceProvider { get; private set; }
 
         public MyContext Context { get; private set; }
-
-        void CheckOnDelete(Expression<Func<TModel, object>> expression)
-        {
-            //var rule = PropertyRule.Create(expression);
-            //AddRule(rule);
-            //var ruleBuilder = new RuleBuilder<TModel, object>(rule, this);
-
-        }
     }
 }

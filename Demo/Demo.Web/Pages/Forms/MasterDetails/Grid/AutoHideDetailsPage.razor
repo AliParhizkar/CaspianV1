@@ -1,5 +1,6 @@
 ﻿@page "/Demo/Batch/AutoHide/Details"
 @page "/Demo/Batch/AutoHide/Details/{MasterId:int}"
+@using Caspian.Common.Extension
 @namespace Demo.Web.Pages
 @inherits MasterDetailPage<WarehouseReceipt, ReceiptDetail>
 <h2>Batch operation</h2>
@@ -108,7 +109,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                        <DataGrid @ref="DataView" TEntity="ReceiptDetail" ContentHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
+                        <DataGrid @ref="DataView" TEntity="ReceiptDetail" ContentHeight="300" ChangedEntities="ChangedEntities" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material">
                                     <EditTemplate>
@@ -131,7 +132,7 @@
                                 </GridColumn>
                                 <GridColumn Field="t => t.QuantitySub" style="width:110px;">
                                     <EditTemplate>
-                                        @if (con.Data?.Material?.SubunitId != null)
+                                        @if (con.Data?.Material?.SubunitId != null || con.Data?.Material?.Subunit?.Title != null)
                                         {
                                             <NumericTextBox @ref="txtSubunit" Total="5" @onkeyup="async e =>  await SubUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantitySub" />
                                         }
@@ -195,8 +196,7 @@
         if (materialId > 0)
         {
             using var service = CreateScope().GetService<MaterialService>();
-            detail.Material = await service.GetAll().Where(t => t.Id == materialId)
-                .Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync();
+            detail.Material = await service.GetAll().Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync(materialId);
             await txtMainUnit.FocusAsync();
 
         }

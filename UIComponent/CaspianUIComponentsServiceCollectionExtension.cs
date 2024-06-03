@@ -1,4 +1,5 @@
 ﻿using Caspian.UI;
+using Caspian.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace UIComponent
@@ -14,7 +15,7 @@ namespace UIComponent
         {
             services.AddTransient<FileUploadService>();
             services.AddTransient<CascadeService>();
-            services.AddScoped<BatchService>();
+            services.AddScoped<BatchServiceData>();
             services.AddScoped<BasePageService>();
 
             services.AddSingleton<FormAppState>();

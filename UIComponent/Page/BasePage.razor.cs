@@ -59,14 +59,8 @@ namespace Caspian.UI
         protected IServiceScope CreateScope()
         {
             var scope = ServiceScopeFactory.CreateScope();
-            scope.ServiceProvider.GetService<CaspianDataService>().UserId = UserId;
+            scope.GetService<CaspianDataService>().UserId = UserId;
             return scope;
-        }
-
-        protected TService GetService<TService>() where TService : class
-        {
-            var scope = CreateScope();
-            return scope.GetService<TService>();
         }
 
         public void ShowMessage(string msg)

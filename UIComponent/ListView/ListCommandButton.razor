@@ -69,7 +69,7 @@
     async Task RemoveAsync()
     {
         using var scope = Factory.CreateScope();
-        var service = scope.ServiceProvider.GetService<IBaseService<TEntity>>();
+        var service = scope.GetService<IBaseService<TEntity>>();
         var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(RowData.Data));
         var old = await service.SingleAsync(id);
         var result = await service.ValidateAsync(old, t => t.IncludeRuleSets("Remove"));

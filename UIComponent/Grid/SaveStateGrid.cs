@@ -1,8 +1,6 @@
 ﻿using System.Text.Json;
-using System.Threading.Tasks;
-using Caspian.Common;
-using Microsoft.AspNetCore.Components;
 using UIComponent.Grid;
+using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
@@ -38,8 +36,6 @@ namespace Caspian.UI
                         await SearchChanged.InvokeAsync(Search);
                 }
             }
-            else
-                await Task.Delay(1);
             await base.OnInitializedAsync();
         }
 

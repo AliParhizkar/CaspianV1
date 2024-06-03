@@ -69,9 +69,9 @@ namespace Caspian.Common.Extension
             var info = type.GetProperties().SingleOrDefault(t => t.PropertyType == foreignKeyType);
             if (info == null)
                 throw new CaspianException($"Type {type.Name} must a foreign key of type {foreignKeyType.Name}");
-            if (info == null) return null; 
             var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
-            if (attr == null) return null;
+            if (attr == null)
+                throw new CaspianException($"Property {info.Name} must have  a ForeignKey Attribute of type {foreignKeyType.Name}"); ;
             var foreignKeyName = info.GetCustomAttribute<ForeignKeyAttribute>().Name;
             return type.GetProperty(foreignKeyName);
         }
@@ -134,6 +134,12 @@ namespace Caspian.Common.Extension
         public static bool IsCollectionType(this Type type)
         {
             return (type.GetInterface(nameof(IEnumerable)) != null);
+        }
+
+        public static bool IsCollectionType(this Type type, Type collectionType)
+        {
+            return (type.IsCollectionType() && type.IsGenericType && type.GenericTypeArguments[0] == collectionType) ;
+
         }
     }
 }

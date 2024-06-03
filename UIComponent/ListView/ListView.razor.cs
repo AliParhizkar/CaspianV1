@@ -16,7 +16,6 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            ContentHeight = 400;
             PageSize = 4;
             base.OnInitialized();
         }

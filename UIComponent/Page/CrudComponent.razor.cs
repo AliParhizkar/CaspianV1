@@ -41,7 +41,7 @@ namespace Caspian.UI
         IServiceScope CreateScope()
         {
             var scope = ServiceScopeFactory.CreateScope();
-            scope.ServiceProvider.GetService<CaspianDataService>().UserId = userId;
+            scope.GetService<CaspianDataService>().UserId = userId;
             return scope;
         }
 
@@ -68,7 +68,7 @@ namespace Caspian.UI
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
                 using var scope = CreateScope();
 
-                var service = scope.ServiceProvider.GetService<IBaseService<TEntity>>();
+                var service = scope.GetService<IBaseService<TEntity>>();
                 if (service == null)
                     throw new CaspianException($"Error: Service od type ISimpleService<{typeof(TEntity).Name}> not implimented");
                 if (id == 0)
@@ -115,7 +115,7 @@ namespace Caspian.UI
         async Task DeleteAsync(TEntity data)
         {
             using var scope = CreateScope();
-            var service = scope.ServiceProvider.GetService<IBaseService<TEntity>>();
+            var service = scope.GetService<IBaseService<TEntity>>();
             var result = await service.ValidateAsync(data, t => t.IncludeRuleSets("Remove"));
             if (result.IsValid)
             {

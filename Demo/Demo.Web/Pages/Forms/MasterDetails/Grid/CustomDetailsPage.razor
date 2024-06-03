@@ -146,7 +146,7 @@
                             </div>
                         }
                         <div class="pt-4">
-                            <DataGrid @ref="DataView" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == MasterId" ContentHeight="250" HideInsertIcon>
+                            <DataGrid @ref="DataView" TEntity="OrderDeatil" Batch ChangedEntities="ChangedEntities" ConditionExpr="t => t.OrderId == MasterId" ContentHeight="250" HideInsertIcon>
                                 <Columns>
                                     <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                                     <GridColumn Field="t => t.Product.Title" Title="Product" />
@@ -196,12 +196,12 @@
 
     async Task UpdatedProducts()
     {
-        var products = DataView.GetUpdatedEntities();
-        if (products.Count == 0)
+        var products = ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated).Select(t => t.Entity);
+        if (products.Count() == 0)
             await Alert("No products have been updated");
         else
         {
-            var str = $"Updated products count: {products.Count}\nUpdated products Id: {{ ";
+            var str = $"Updated products count: {products.Count()}\nUpdated products Id: {{ ";
             var isFirst = true;
             foreach (var product in products)
             {
@@ -216,12 +216,12 @@
 
     async Task DeletedProducts()
     {
-        var products = DataView.GetDeletedEntities();
-        if (products.Count == 0)
+        var products = ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Deleted).Select(t => t.Entity);
+        if (products.Count() == 0)
             await Alert("No products have been deleted");
         else
         {
-            var str = $"Deleted products count: {products.Count}\n Deleted products Id {{ ";
+            var str = $"Deleted products count: {products.Count()}\n Deleted products Id {{ ";
             var isFirst = true;
             foreach (var product in products)
             {
@@ -236,12 +236,12 @@
 
     async Task InsertedProducts()
     {
-        var products = DataView.GetInsertedEntities();
-        if (products.Count == 0)
+        var products = DataView.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Added).Select(t => t.Entity);
+        if (products.Count() == 0)
             await Alert("No products have been added");
         else
         {
-            var str = $"Added Products count: {products.Count}\n Added products Id: {{";
+            var str = $"Added Products count: {products.Count()}\n Added products Id: {{";
             var isFirst = true;
             foreach (var product in products)
             {

@@ -22,9 +22,7 @@ namespace Caspian.UI
             if (result)
             {
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
-                using var scope = CreateScope();
-
-                var service = scope.ServiceProvider.GetService<IBaseService<TEntity>>();
+                using var service = CreateScope().GetService<IBaseService<TEntity>>();
                 if (service == null)
                     throw new CaspianException("خطا: Service od type ISimpleService<" + typeof(TEntity).Name + "> not implimented", null);
                 if (id == 0)
