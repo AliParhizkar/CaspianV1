@@ -2,6 +2,7 @@
 @typeparam TMaster
 @typeparam TDetail
 @inherits BasePage
+@inject BatchService<TMaster, TDetail> Service;
 @{
     base.BuildRenderTree(__builder);
 }

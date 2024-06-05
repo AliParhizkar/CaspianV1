@@ -118,8 +118,6 @@
         Status = WindowStatus.Open;
         if (StatusChanged.HasDelegate)
             await StatusChanged.InvokeAsync(WindowStatus.Open);
-        else
-            StateHasChanged();
     }
 
     public async Task SetValue(object value)
@@ -137,8 +135,6 @@
         }
         if (StatusChanged.HasDelegate)
             await StatusChanged.InvokeAsync(WindowStatus.Close);
-        else
-            StateHasChanged();
     }
 
     protected override void OnInitialized()

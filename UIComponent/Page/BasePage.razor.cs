@@ -123,6 +123,7 @@ namespace Caspian.UI
                 GlobalScope = CreateScope();
             if (ClassNameContainner != null)
                 ClassNameContainner.ClassName = this.GetType().Name;
+            BaseService.Target = this;
             base.OnInitialized();
         }
 

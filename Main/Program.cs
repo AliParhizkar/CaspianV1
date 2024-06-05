@@ -12,10 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Caspian.Common.RowNumber;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Demo.Model;
+using Caspian.UI;
 
 namespace Main
 {
@@ -73,7 +70,7 @@ namespace Main
             builder.Services.AddControllers();
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
-
+            builder.Services.AddScoped<BaseComponentService>();
             var connectionString = builder.Configuration.GetConnectionString("CaspianDb");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                options.UseSqlServer(connectionString));

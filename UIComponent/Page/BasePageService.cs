@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Caspian.UI
+﻿namespace Caspian.UI
 {
     public class BasePageService
     {

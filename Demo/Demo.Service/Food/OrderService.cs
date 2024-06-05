@@ -27,7 +27,7 @@ namespace Demo.Service
 
         }
 
-        public override async Task UpdateDatabaseAsync(Order order, IList<ChangedEntity<OrderDeatil>> changedEntities)
+        public override async Task<Order> UpdateDatabaseAsync(Order order, IList<ChangedEntity<OrderDeatil>> changedEntities)
         {
             /// Add to factor
             var sum = changedEntities.Where(t => t.ChangeStatus == ChangeStatus.Added).Sum(t => t.Entity.Price * t.Entity.Quantity);
@@ -50,7 +50,7 @@ namespace Demo.Service
                 }
             }
             order.TotalAmount = sum;
-            await base.UpdateDatabaseAsync(order, changedEntities);
+            return await base.UpdateDatabaseAsync(order, changedEntities);
         }
     }
 }

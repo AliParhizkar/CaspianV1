@@ -1,6 +1,7 @@
 ﻿@namespace Caspian.UI
 @inject BasePageService Service
-<MessageBox @ref="MessageBox" />
+@inject BaseComponentService BaseService
+<MessageBox Service="BaseService" @ref="MessageBox" />
 
 @code 
 {

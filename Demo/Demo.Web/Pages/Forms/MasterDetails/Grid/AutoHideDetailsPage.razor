@@ -2,6 +2,7 @@
 @page "/Demo/Batch/AutoHide/Details/{MasterId:int}"
 @using Caspian.Common.Extension
 @namespace Demo.Web.Pages
+@inject BatchService<WarehouseReceipt, ReceiptDetail> Service
 @inherits MasterDetailPage<WarehouseReceipt, ReceiptDetail>
 <h2>Batch operation</h2>
 <h3>Warehouse receipt</h3>
@@ -82,7 +83,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 row pe-3">
-                        <CaspianForm  Model="UpsertData">
+                        <CaspianForm Service="Service" Model="UpsertData">
                             <div class="row c-controls ps-3 pe-3">
                                 <div class="col-md-4">
                                     <label>Receipt date</label>
@@ -109,7 +110,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                        <DataGrid @ref="DataView" TEntity="ReceiptDetail" ContentHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
+                        <DataGrid TEntity="ReceiptDetail" DetailsBatchService="Service" ContentHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material">
                                     <EditTemplate>
@@ -181,14 +182,14 @@
             if (detail?.Material.SubunitId != null)
                 await txtSubunit.FocusAsync();
             else
-                await DataView.ValidateAndUpsert(mode);
+                await Service.DetailsDataView.ValidateAndUpsert(mode);
         }
     }
 
     async Task SubUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")
-            await DataView.ValidateAndUpsert(mode);
+            await Service.DetailsDataView.ValidateAndUpsert(mode);
     }
 
     async Task UpdateMaterialReceipt(int materialId, ReceiptDetail detail)

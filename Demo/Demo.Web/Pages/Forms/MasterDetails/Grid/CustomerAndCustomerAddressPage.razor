@@ -1,6 +1,7 @@
 ﻿@page "/Demo/CustomerAndCustomerAddress"
 @inject BatchService<Customer, CustomerAddress> Service
-@inherits MasterDetailPage<Customer, CustomerAddress>
+
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
@@ -36,7 +37,7 @@
                     </Columns>
                 </DataGrid>
                 <Window Service="Service" Title="Customer & Addresses" Style="width:750px;">
-                    <CustomerAndCustomerAddressComponent Page="this" />
+                    <CustomerAndCustomerAddressComponent />
                 </Window>
             </div>
         </TabPanelItem>
@@ -48,5 +49,5 @@
 
 @code 
 {
-    
+
 }

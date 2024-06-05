@@ -26,34 +26,20 @@ namespace Caspian.UI
 
         public TMaster UpsertData { get; set; } = Activator.CreateInstance<TMaster>();
 
-        [Inject]
-        public BatchServiceData BatchServiceData { get; set; }
+        //protected override async Task OnInitializedAsync()
+        //{
+        //    if (MasterId > 0)
+        //    {
+        //        using var masterService = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
+        //        UpsertData = await masterService.SingleAsync(MasterId);
+        //    }
+        //    else
+        //        UpsertData = Activator.CreateInstance<TMaster>();
 
-        protected override void OnInitialized()
-        {
-            BatchServiceData.MasterId = MasterId;
-            BatchServiceData.MasterType = typeof(TMaster);
-            if (BatchServiceData.DetailPropertiesInfo == null)
-                BatchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
-            var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
-            BatchServiceData.DetailPropertiesInfo.Add(detailsproperty);
-            base.OnInitialized();
-        }
+        //    await OnMasterEntityCreatedAsync();
 
-        protected override async Task OnInitializedAsync()
-        {
-            if (MasterId > 0)
-            {
-                using var masterService = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
-                UpsertData = await masterService.SingleAsync(MasterId);
-            }
-            else
-                UpsertData = Activator.CreateInstance<TMaster>();
-
-            await OnMasterEntityCreatedAsync();
-
-            await base.OnInitializedAsync();
-        }
+        //    await base.OnInitializedAsync();
+        //}
 
         async Task UpsertMaster()
         {
@@ -166,39 +152,39 @@ namespace Caspian.UI
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (MasterGrid != null)
-            {
-                MasterGrid.OnInternalUpsert = EventCallback.Factory.Create<TMaster>(this, async master => 
-                {
-                    var value = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
-                    if (value != 0)
-                    {
-                        var detailsName = typeof(TMaster).GetDetailsProperty(typeof(TDetail)).Name;
-                        using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
-                        UpsertData = await service.GetAll().Include(detailsName).SingleAsync(value);
-                    }
-                    else
-                        UpsertData = Activator.CreateInstance<TMaster>();
-                    await Window.Open();
-                });
-                MasterGrid.OnInternalDelete = EventCallback.Factory.Create<TMaster>(this, async master=>
-                {
-                    using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
-                    var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
-                    var old = await service.SingleAsync(id);
-                    var result = await service.ValidateRemoveAsync(old);
-                    if (result.IsValid)
-                    {
-                        if (!MasterGrid.DeleteMessage.HasValue() || await Confirm(MasterGrid.DeleteMessage))
-                        {
-                            await service.DeleteMasterAndDetails(old);
-                            await service.SaveChangesAsync();
-                        }
-                    }
-                    else
-                        ShowMessage(result.Errors[0].ErrorMessage);
-                });
-            }
+            //if (MasterGrid != null)
+            //{
+            //    MasterGrid.OnInternalUpsert = EventCallback.Factory.Create<TMaster>(this, async master => 
+            //    {
+            //        var value = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
+            //        if (value != 0)
+            //        {
+            //            var detailsName = typeof(TMaster).GetDetailsProperty(typeof(TDetail)).Name;
+            //            using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
+            //            UpsertData = await service.GetAll().Include(detailsName).SingleAsync(value);
+            //        }
+            //        else
+            //            UpsertData = Activator.CreateInstance<TMaster>();
+            //        await Window.Open();
+            //    });
+            //    MasterGrid.OnInternalDelete = EventCallback.Factory.Create<TMaster>(this, async master=>
+            //    {
+            //        using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
+            //        var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
+            //        var old = await service.SingleAsync(id);
+            //        var result = await service.ValidateRemoveAsync(old);
+            //        if (result.IsValid)
+            //        {
+            //            if (!MasterGrid.DeleteMessage.HasValue() || await Confirm(MasterGrid.DeleteMessage))
+            //            {
+            //                await service.DeleteMasterAndDetails(old);
+            //                await service.SaveChangesAsync();
+            //            }
+            //        }
+            //        else
+            //            ShowMessage(result.Errors[0].ErrorMessage);
+            //    });
+            //}
             await base.OnAfterRenderAsync(firstRender);
         }
 
@@ -214,16 +200,16 @@ namespace Caspian.UI
 
         async Task InsertMaster(EditContext context)
         {
-            var list = DataView.GetInsertedEntities();
-            using var scope = CreateScope();
-            var service = scope.GetService<MasterDetailsService<TMaster, TDetail>>();
-            await service.AddAsync(UpsertData);
-            service.SaveChanges();
-            await OnUpsertAsync(scope, list);
-            DataView.ClearSource();
-            UpsertData = Activator.CreateInstance<TMaster>();
-            await OnMasterEntityCreatedAsync();
-            ShowMessage("Registration was done successfully");
+            //var list = DataView.GetInsertedEntities();
+            //using var scope = CreateScope();
+            //var service = scope.GetService<MasterDetailsService<TMaster, TDetail>>();
+            //await service.AddAsync(UpsertData);
+            //service.SaveChanges();
+            //await OnUpsertAsync(scope, list);
+            //DataView.ClearSource();
+            //UpsertData = Activator.CreateInstance<TMaster>();
+            //await OnMasterEntityCreatedAsync();
+            //ShowMessage("Registration was done successfully");
         }
     }
 }

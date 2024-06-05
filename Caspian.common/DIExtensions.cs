@@ -20,7 +20,6 @@ namespace Caspian.Common
                 {
                     if (type.GenericTypeArguments.Length == 2)
                     {
-                        Type type1 = type.GenericTypeArguments[0], type2 = type.GenericTypeArguments[1];
                         var interfaceType = typeof(IMasterDetailsService<,>).MakeGenericType(type.GenericTypeArguments);
                         if (type == interfaceType)
                             return serviceProvider.GetService(interfaceType) as TService;

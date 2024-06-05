@@ -88,7 +88,6 @@ namespace Caspian.Common.Service
                 }
                 if (old != null)
                     old.CopySimpleProperty(entity);
-
             }
         }
 

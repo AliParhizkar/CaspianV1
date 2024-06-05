@@ -5,54 +5,13 @@
 @using Caspian.UI;
 @using Demo.Model;
 @using Demo.Service
+@inject BatchService<Customer, CustomerAddress> Service
 
-<div style="direction:rtl">
+<Window Service="Service" Style="width:200px;">
+    <div style="height:200px;">12345666</div>
+</Window>
 
-    <div class="main-window">
-        <ul>
-            @if (countries != null)
-            {
-                foreach (var country in countries)
-                {
-                    <li @onmouseenter="e => MouseEnter(e, country.Id)" class="main-item-test">
-                        <div class="main-content-test">
-                            <div>
-                                <label>@country.Id</label>
-                            </div>
-                            <div>
-                                <label>@country.Title</label>
-                            </div>
-                        </div>
-                        @if (selectedCountryId == country.Id)
-                        {
-                            <div class="test-main-step2">
-                            </div>
-                        }
-                    </li>
-                }
-            }
-        </ul>
-    </div>
-</div>
-
+<ChildComponent  Service="Service"></ChildComponent>
 @code
 {
-    int? selectedCountryId;
-
-    void MouseEnter(MouseEventArgs e, int countryId)
-    {
-        selectedCountryId = countryId;
-    }
-
-    IList<Country> countries;
-    protected override async Task OnInitializedAsync()
-    {
-        using var service = CreateScope().GetService<CountryService>();
-        countries = service.GetAll().ToList();
-        await base.OnInitializedAsync();
-    }
-
-
-    string userName;
-    string password;
 }

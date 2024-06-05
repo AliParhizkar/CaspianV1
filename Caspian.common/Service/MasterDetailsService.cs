@@ -67,7 +67,7 @@ namespace Caspian.Common.Service
             return result1.Entity;
         }
 
-        public virtual async Task UpdateDatabaseAsync(TMaster entity, IList<ChangedEntity<TDetails>> changedEntities)
+        public virtual async Task<TMaster> UpdateDatabaseAsync(TMaster entity, IList<ChangedEntity<TDetails>> changedEntities)
         {
             var masterId = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(entity));
             var changedList = new List<ChangedEntity<TDetails>>();
@@ -98,21 +98,19 @@ namespace Caspian.Common.Service
                             info.SetValue(entity, details);
                         }
                 }
-                await AddAsync(entity);
+                return await AddAsync(entity);
             }
-            else
-            {
-                var insertedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Added).Select(t => t.Entity);
-                if (insertedItems.Any())
-                    await Context.Set<TDetails>().AddRangeAsync(insertedItems);
-                var updatedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Updated).Select(t => t.Entity);
-                if (updatedItems.Any())
-                    Context.Set<TDetails>().UpdateRange(updatedItems);
-                var deletedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Deleted).Select(t => t.Entity);
-                if (deletedItems.Any())
-                    Context.Set<TDetails>().RemoveRange(deletedItems);
-                await UpdateAsync(entity);
-            }
+            var insertedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Added).Select(t => t.Entity);
+            if (insertedItems.Any())
+                await Context.Set<TDetails>().AddRangeAsync(insertedItems);
+            var updatedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Updated).Select(t => t.Entity);
+            if (updatedItems.Any())
+                Context.Set<TDetails>().UpdateRange(updatedItems);
+            var deletedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Deleted).Select(t => t.Entity);
+            if (deletedItems.Any())
+                Context.Set<TDetails>().RemoveRange(deletedItems);
+            await UpdateAsync(entity);
+            return entity;
         }
 
         public async Task DeleteMasterAndDetails(TMaster master)

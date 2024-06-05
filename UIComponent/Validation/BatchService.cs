@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using System.Reflection;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using Caspian.Common.Extension;
@@ -13,6 +14,8 @@ namespace Caspian.UI
     {
         IJSRuntime jSRuntime;
         IServiceProvider serviceProvider;
+        BatchServiceData batchServiceData;
+        BaseComponentService baseComponentService;
 
         public BatchService(IServiceProvider serviceProvider)
         {
@@ -20,6 +23,13 @@ namespace Caspian.UI
             jSRuntime = serviceProvider.GetService<IJSRuntime>();
             ChangedEntities = new List<ChangedEntity<TDetails>>();
             UpsertData = Activator.CreateInstance<TMaster>();
+            batchServiceData = serviceProvider.GetService<BatchServiceData>();
+            batchServiceData.MasterType = typeof(TMaster);
+            if (batchServiceData.DetailPropertiesInfo == null)
+                batchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
+            var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetails));
+            batchServiceData.DetailPropertiesInfo.Add(detailsproperty);
+            baseComponentService = serviceProvider.GetService<BaseComponentService>();
         }
 
         IServiceScope CreateScope()
@@ -47,13 +57,14 @@ namespace Caspian.UI
             {
                 DetailsDataView?.ClearSource();
                 await Window?.Close();
+                StateHasChanged();
             });
 
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context1) =>
             {
                 var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(context1.Model));
                 using var service = CreateScope().GetService<IMasterDetailsService<TMaster, TDetails>>();
-                await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
+                var result = await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
                 await service.SaveChangesAsync();
                 ChangedEntities.Clear();
                 if (id == 0)
@@ -62,16 +73,31 @@ namespace Caspian.UI
                         DetailsDataView.ClearSource();
                     UpsertData = Activator.CreateInstance<TMaster>();
                     //await OnMasterEntityCreatedAsync();
+                    if (MasterDataView != null && MasterDataView is DataGrid<TMaster>)
+                    {
+                        var newId = (int)typeof(TMaster).GetPrimaryKey().GetValue(result);
+                        await (MasterDataView as DataGrid<TMaster>).SelectRowById(newId);
+                    }
                     await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Registration was done successfully");
                 }
                 else
                 {
                     if (DetailsDataView != null)
                         await DetailsDataView.ReloadAsync();
+                    if (MasterDataView != null)
+                        await MasterDataView.ReloadAsync();
                     await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Updating was done successfully");
                 }
                 await Window?.Close();
+                StateHasChanged();
             });
+        }
+
+        public void StateHasChanged()
+        {
+            if (baseComponentService.Target == null)
+                throw new CaspianException("You must inherits from BasePage or configure page manioaly");
+            typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(baseComponentService.Target, null);
         }
 
         public void MasterGridInitialize()
@@ -88,6 +114,7 @@ namespace Caspian.UI
                 else
                     UpsertData = Activator.CreateInstance<TMaster>();
                 await Window.Open();
+                StateHasChanged();
             });
             MasterDataView.OnInternalDelete = EventCallback.Factory.Create<TMaster>(this, async master =>
             {
@@ -97,7 +124,7 @@ namespace Caspian.UI
                 var result = await service.ValidateRemoveAsync(old);
                 if (result.IsValid)
                 {
-                    if (MasterDataView.DeleteMessage.HasValue() /*|| await Confirm(MasterDataView.DeleteMessage)*/)
+                    if (!MasterDataView.DeleteMessage.HasValue() || await Confirm(MasterDataView.DeleteMessage))
                     {
                         await service.DeleteMasterAndDetails(old);
                         await service.SaveChangesAsync();
@@ -114,8 +141,13 @@ namespace Caspian.UI
             Window.OnInternalOpen = EventCallback.Factory.Create(this, () =>
             {
                 MasterId = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(UpsertData));
-                //BatchServiceData.MasterId = MasterId;
+                batchServiceData.MasterId = MasterId;
             });
+        }
+
+        async Task<bool> Confirm(string message)
+        {
+            return await baseComponentService.MessageBox.Confirm(message);
         }
     }
 
