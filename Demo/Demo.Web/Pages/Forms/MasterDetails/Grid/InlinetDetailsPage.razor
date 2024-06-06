@@ -1,7 +1,8 @@
 ﻿@page "/Demo/Batch/Inline/Details" 
-@page "/Demo/Batch/Inline/Details/{MasterId:int}"
+@page "/Demo/Batch/Inline/Details/{OrderId:int}"
 @namespace Demo.Web.Pages
-@inherits MasterDetailPage<Order, OrderDeatil>
+@inherits BasePage
+@inject BatchService<Order, OrderDeatil> Service
 <h2>Batch operation</h2>
 <h3>Order</h3>
 <p>
@@ -98,38 +99,38 @@
                         </div>
                     </div>
                     <div class="col-md-4 row pe-3">
-                        <CaspianForm Model="UpsertData">
+                        <CaspianForm Service="Service" Model="Service.UpsertData">
                             <div class="row c-controls">
                                 <div class="col-md-4">
                                     <label>Order date</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <DatePicker @bind-Value="UpsertData.Date" />
+                                    <DatePicker @bind-Value="Service.UpsertData.Date" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Order type</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <DropdownList @bind-Value="UpsertData.OrderType" />
+                                    <DropdownList @bind-Value="Service.UpsertData.OrderType" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Customer</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId"
+                                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="Service.UpsertData.CustomerId"
                                                 TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Courier</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <ComboBox TEntity="Courier" TValue="int?" @bind-Value="UpsertData.CourierId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
+                                    <ComboBox TEntity="Courier" TValue="int?" @bind-Value="Service.UpsertData.CourierId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Description</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="4" />
+                                    <StringTextBox @bind-Value="Service.UpsertData.Description" MultiLine Rows="4" />
                                 </div>
                                 <div class="col-md-12">
                                     <FormCommandButton />
@@ -138,7 +139,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                         <DataGrid @ref="DataView" TEntity="OrderDeatil" ContentHeight="250" ChangedEntities="ChangedEntities" Inline Batch ConditionExpr="t => t.OrderId == MasterId">
+                         <DataGrid DetailsBatchService="Service" TEntity="OrderDeatil" ContentHeight="250" Inline Batch ConditionExpr="t => t.OrderId == Service.MasterId">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Product.Title" Title="Product">
                                     <EditTemplate>
@@ -185,17 +186,26 @@
 {
     NumericTextBox<int> txtQuantity;
 
-    protected override async Task OnMasterEntityCreatedAsync()
+    [Parameter]
+    public int OrderId { get; set; }
+
+    protected override void OnInitialized()
     {
-        if (UpsertData.Id == 0)
-            UpsertData.Date = DateTime.Now.Date;
-        await base.OnMasterEntityCreatedAsync();
+        Service.MasterId = OrderId;
+        base.OnInitialized();
     }
+
+    // protected override async Task OnMasterEntityCreatedAsync()
+    // {
+    //     if (UpsertData.Id == 0)
+    //         UpsertData.Date = DateTime.Now.Date;
+    //     await base.OnMasterEntityCreatedAsync();
+    // }
 
     async Task UpsertOnEnter(KeyboardEventArgs e, UpsertMode mode)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
-            await DataView.ValidateAndUpsert(mode);
+            await Service.DetailsDataView.ValidateAndUpsert(mode);
     }
 
 

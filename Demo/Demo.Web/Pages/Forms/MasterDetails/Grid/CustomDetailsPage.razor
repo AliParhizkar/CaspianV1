@@ -1,7 +1,7 @@
 ﻿@page "/Demo/Batch/Custom/Details"
-@page "/Demo/Batch/Custom/Details/{MasterId:int}"
+@page "/Demo/Batch/Custom/Details/{OrderId:int}"
 @inject BatchService<Order, OrderDeatil> Service
-@inherits MasterDetailPage<Order, OrderDeatil>
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
@@ -99,25 +99,25 @@
                         </div>
                     </div>
                     <div class="col-md-4 row pe-3">
-                        <CaspianForm Model="UpsertData">
+                        <CaspianForm Model="Service.UpsertData">
                             <div class="row c-controls ps-3 pe-3">
                                 <div class="col-md-4">
                                     <label>Order date</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <DatePicker @bind-Value="UpsertData.Date" />
+                                    <DatePicker @bind-Value="Service.UpsertData.Date" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Order type</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <DropdownList @bind-Value="UpsertData.OrderType" />
+                                    <DropdownList @bind-Value="Service.UpsertData.OrderType" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Customer</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
+                                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="Service.UpsertData.CustomerId" TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
                                 </div>
                                 <div class="col-md-12">
                                     <FormCommandButton />
@@ -147,7 +147,7 @@
                             </div>
                         }
                         <div class="pt-4">
-                            <DataGrid @ref="DataView" TEntity="OrderDeatil" Batch ConditionExpr="t => t.OrderId == MasterId" ContentHeight="250" HideInsertIcon>
+                            <DataGrid TEntity="OrderDeatil" DetailsBatchService="Service" Batch ConditionExpr="t => t.OrderId == OrderId" ContentHeight="250" HideInsertIcon>
                                 <Columns>
                                     <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                                     <GridColumn Field="t => t.Product.Title" Title="Product" />
@@ -177,10 +177,19 @@
     IList<Product> products;
     IDictionary<string, object> btnAttr;
 
-    protected override Task OnMasterEntityCreatedAsync()
+    [Parameter]
+    public int OrderId { get; set; }
+
+    // protected override Task OnMasterEntityCreatedAsync()
+    // {
+    //     UpsertData.Date = DateTime.Now.Date;
+    //     return base.OnMasterEntityCreatedAsync();
+    // }
+
+    protected override void OnInitialized()
     {
-        UpsertData.Date = DateTime.Now.Date;
-        return base.OnMasterEntityCreatedAsync();
+        Service.MasterId = OrderId;
+        base.OnInitialized();
     }
 
     protected async override Task OnInitializedAsync()
@@ -190,7 +199,7 @@
         foreach (var product in products)
             product.Image = null;
         btnAttr = new Dictionary<string, object>();
-        if (MasterId == 0)
+        if (Service.MasterId == 0)
             btnAttr.Add("disabled", "disabled");
         await base.OnInitializedAsync();
     }
@@ -257,36 +266,36 @@
 
     async Task AddUpsertProduct(Product product)
     {
-        var old = DataView.GetAllRecords().SingleOrDefault(t => t.ProductId == product.Id);
+        var old = Service.ChangedEntities.SingleOrDefault(t => t.Entity.ProductId == product.Id)?.Entity;
         if (old == null)
         {
-            await DataView.InsertAsync(new OrderDeatil()
+            await Service.DetailsDataView.InsertAsync(new OrderDeatil()
                 {
                     Quantity = 1,
                     Price = product.Price,
                     ProductId = product.Id,
-                    OrderId = MasterId
+                    OrderId = OrderId
                 });
         }
         else
         {
             old.Quantity = old.Quantity + 1;
-            await DataView.UpdateAsync(old);
+            await Service.DetailsDataView.UpdateAsync(old);
         }
     }
 
     async Task IncQuantity(OrderDeatil detail)
     {
         detail.Quantity++;
-        await DataView.UpdateAsync(detail);
+        await Service.DetailsDataView.UpdateAsync(detail);
     }
 
     async Task DecQuantity(OrderDeatil detail)
     {
         detail.Quantity--;
         if (detail.Quantity == 0)
-            await DataView.RemoveAsync(detail);
+            await Service.DetailsDataView.RemoveAsync(detail);
         else
-            await DataView.UpdateAsync(detail);
+            await Service.DetailsDataView.UpdateAsync(detail);
     }
 }

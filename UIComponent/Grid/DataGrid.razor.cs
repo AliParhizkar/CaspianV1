@@ -135,10 +135,10 @@ namespace Caspian.UI
                 StateHasChanged();
             }
 
-            if (FormAppState.Element.HasValue)
+            if (FormAppState.Control != null)
             {
-                await jsRuntime.InvokeVoidAsync("$.caspian.focusAndShowErrorMessage", FormAppState.Element);
-                FormAppState.Element = null;
+                await FormAppState.Control.FocusAsync();
+                FormAppState.Control = null;
             }
             else if (errorMessage.HasValue())
             {

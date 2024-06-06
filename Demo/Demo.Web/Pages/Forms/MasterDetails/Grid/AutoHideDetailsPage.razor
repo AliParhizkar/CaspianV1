@@ -83,25 +83,25 @@
                         </div>
                     </div>
                     <div class="col-md-4 row pe-3">
-                        <CaspianForm Service="Service" Model="UpsertData">
+                        <CaspianForm Service="Service" Model="Service.UpsertData">
                             <div class="row c-controls ps-3 pe-3">
                                 <div class="col-md-4">
                                     <label>Receipt date</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <DatePicker @bind-Value="UpsertData.Date" />
+                                    <DatePicker @bind-Value="Service.UpsertData.Date" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Warehouse</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <ComboBox TEntity="Warehouse" TValue="int" @bind-Value="UpsertData.WarehouseId" TextExpression="t => t.Title" />
+                                    <ComboBox TEntity="Warehouse" TValue="int" @bind-Value="Service.UpsertData.WarehouseId" TextExpression="t => t.Title" />
                                 </div>
                                 <div class="col-md-4">
                                     <label>Description</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <StringTextBox @bind-Value="UpsertData.Comment" MultiLine Rows="3" />
+                                    <StringTextBox @bind-Value="Service.UpsertData.Comment" MultiLine Rows="3" />
                                 </div>
                                 <div class="col-md-12">
                                     <FormCommandButton />
@@ -110,7 +110,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                        <DataGrid TEntity="ReceiptDetail" DetailsBatchService="Service" ContentHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == MasterId">
+                        <DataGrid TEntity="ReceiptDetail" DetailsBatchService="Service" ContentHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == Service.MasterId">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material">
                                     <EditTemplate>
@@ -170,10 +170,24 @@
 
     protected override Task OnMasterEntityCreatedAsync()
     {
-        if (UpsertData.Id == 0)
-            UpsertData.Date = DateTime.Now.Date;
+        if (Service.UpsertData.Id == 0)
+            Service.UpsertData.Date = DateTime.Now.Date;
         return base.OnMasterEntityCreatedAsync();
     }
+
+    protected override void OnInitialized()
+    {
+        Service.MasterId = MasterId;
+        base.OnInitialized();
+    }
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Service.MasterId = MasterId;
+        base.OnAfterRender(firstRender);
+    }
+
 
     async Task MainUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {

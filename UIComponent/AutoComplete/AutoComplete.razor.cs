@@ -71,6 +71,11 @@ namespace Caspian.UI
             Disabled = false;
         }
 
+        public bool HasError()
+        {
+            return ErrorMessage != null;
+        }
+
         public void Disable()
         {
             Disabled = true;
@@ -181,7 +186,7 @@ namespace Caspian.UI
             if (ErrorMessage != null && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = input;
+                //FormAppState.Control = this;
                 FormAppState.ErrorMessage = ErrorMessage;
             }
         }
@@ -240,12 +245,12 @@ namespace Caspian.UI
             if (ErrorMessage == null && !Validate())
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = input;
+                //FormAppState.Control = this;
             }
             if (ErrorMessage != null && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = input;
+                //FormAppState.Control = this;
             }
         }
 
@@ -409,7 +414,7 @@ namespace Caspian.UI
             if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = input;
+                //FormAppState.Control = this;
                 FormAppState.ErrorMessage = ErrorMessage;
             }
             if (SearchState.Grid != null && !SearchState.Grid.OnInternalRowSelect.HasDelegate)

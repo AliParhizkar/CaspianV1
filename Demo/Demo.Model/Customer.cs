@@ -12,8 +12,6 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-
-
         [DisplayName("Customer type"), ReportField]
         public CustomerType CustomerType { get; set; }
 

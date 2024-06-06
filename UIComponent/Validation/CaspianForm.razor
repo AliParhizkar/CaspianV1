@@ -1,29 +1,32 @@
 ﻿@namespace Caspian.UI
 @inject IJSRuntime jsRuntime
 @inject FormAppState FormAppState
-@inject IServiceProvider provider;
+@inject IServiceProvider provider
 @typeparam TEntity
 @{
     var services = provider.GetServices<IBaseService<TEntity>>();
     var serviceType = services.Count() == 1 ? services.SingleOrDefault()?.GetType() : null;
 }
-<EditForm EditContext="EditContext" 
-          OnSubmit="@(async context => await OnFormSubmitHandler(context))"
-
-        @onreset="@(async (e) =>
+@if (EditContext != null)
+{
+    <EditForm EditContext="EditContext"
+              OnSubmit="@(async context => await OnFormSubmitHandler(context))"
+              @onreset="@(async (e) =>
                       {
                           await ResetFormAsync();
                           if (OnInternalReset.HasDelegate)
                               await OnInternalReset.InvokeAsync();
-                      })" >
-    <CascadingValue Value="this" Name="ParentForm">
-        @if (serviceType != null)
-        {
-            <CaspianValidationValidator ValidatorType="serviceType" />
-        }
-        @ChildContent
-    </CascadingValue>
-</EditForm>
+                      })">
+        <CascadingValue Value="this" Name="ParentForm">
+            @if (serviceType != null)
+            {
+                <CaspianValidationValidator ValidatorType="serviceType" />
+            }
+            @ChildContent
+        </CascadingValue>
+    </EditForm>
+}
+
 @code 
 {
 

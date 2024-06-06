@@ -16,6 +16,9 @@ namespace Caspian.UI
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
 
         [Inject]
+        public FormAppState FormAppState { get; set; }
+
+        [Inject]
         public BatchServiceData BatchServiceData { get; set; }
 
         [Inject]
@@ -142,6 +145,21 @@ namespace Caspian.UI
                 MasterIdName = CaspianForm.MasterIdName;
             }
             base.OnAfterRender(firstRender);
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (FormAppState.ValidationChecking)
+            {
+                CaspianForm.GetFirstInvalidControl();
+                if (FormAppState.Control != null)
+                {
+                    FormAppState.ValidationChecking = false;
+                    await FormAppState.Control.FocusAsync();
+                }
+            }
+
+            await base.OnAfterRenderAsync(firstRender);
         }
     }
 }

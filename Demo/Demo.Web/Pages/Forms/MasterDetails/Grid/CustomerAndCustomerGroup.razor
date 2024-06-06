@@ -1,8 +1,7 @@
 ﻿@page "/Demo/CustomerAndCustomerGroup"
 @namespace Demo.Web.Pages
 @inject BatchService<Customer, CustomerGroupMembership> Service
-
-@inherits MasterDetailPage<Customer, CustomerGroupMembership>
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
@@ -29,7 +28,7 @@
                         <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
                     </li>
                 </ul>
-                <DataGrid TEntity="Customer" @ref="MasterGrid" MasterBatchService="Service" Search="search" ContentHeight="400">
+                <DataGrid TEntity="Customer" MasterBatchService="Service" Search="search" ContentHeight="400">
                     <Columns>
                         <GridColumn Field="t => t.CustomerType" />
                         <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
@@ -37,72 +36,70 @@
                         <GridCommandColumns />
                     </Columns>
                 </DataGrid>
-                <Window @ref="Window" Title="Customer & Groups" Style="width:450px;">
-                    <CaspianForm Model="UpsertData">
-                        <TabPanel>
-                            <Tabs>
-                                <TabPanelItem Title="Customer">
+                <Window Service="Service" Title="Customer & Groups" Style="width:450px;">
+                    <TabPanel>
+                        <Tabs>
+                            <TabPanelItem Title="Customer">
+                                <CaspianForm Model="Service.UpsertData" OnSubmit="() => Service.UpsertData.CustomerType = CustomerType.Real">
+                                    <CaspianValidationValidator ValidatorType="typeof(CustomerService)" />
                                     <div class="row p-4 pt-2 pb-2 c-controls" style="height:320px">
                                         <div class="col-md-4">
                                             <label>Customer Type</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <DropdownList @bind-Value="UpsertData.CustomerType" />
+                                            <DropdownList @bind-Value="Service.UpsertData.CustomerType" />
                                         </div>
                                         <div class="col-md-4">
                                             <label>First Name</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <StringTextBox @bind-Value="UpsertData.FName"
-                                                           Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                            <StringTextBox @bind-Value="Service.UpsertData.FName" Disabled="Service.UpsertData.CustomerType == CustomerType.Legal" />
                                         </div>
                                         <div class="col-md-4">
                                             <label>Last Name</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <StringTextBox @bind-Value="UpsertData.LName"
-                                                           Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                            <StringTextBox @bind-Value="Service.UpsertData.LName"
+                                                           Disabled="Service.UpsertData.CustomerType == CustomerType.Legal" />
                                         </div>
                                         <div class="col-md-4">
                                             <label>Gender</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <DropdownList @bind-Value="UpsertData.Gender"
-                                                          Disabled="UpsertData.CustomerType == CustomerType.Legal" />
+                                            <DropdownList @bind-Value="Service.UpsertData.Gender" Disabled="Service.UpsertData.CustomerType == CustomerType.Legal" />
                                         </div>
                                         <div class="col-md-4">
                                             <label>Company Name</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <StringTextBox @bind-Value="UpsertData.CompanyName"
-                                                           Disabled="UpsertData.CustomerType == CustomerType.Real" />
+                                            <StringTextBox @bind-Value="Service.UpsertData.CompanyName" Disabled="Service.UpsertData.CustomerType == CustomerType.Real" />
                                         </div>
                                         <div class="col-md-4">
                                             <label>Mobile Number</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <StringTextBox @bind-Value="UpsertData.MobileNumber" MaxLength="11" />
+                                            <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" />
                                         </div>
                                         <div class="col-md-4">
                                             <label>Tel</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <StringTextBox @bind-Value="UpsertData.Tel" MaxLength="11" />
+                                            <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" />
                                         </div>
                                     </div>
-                                </TabPanelItem>
-                                <TabPanelItem Title="Groups">
-                                    <div class="ps-4 pe-4 pt-2 pb-2" style="height:320px">
-                                        <CheckboxList TValue="CustomerGroupMembership" TEntity="CustomerGroup"
-                                                      @bind-Values=UpsertData.CustomerGroupMemberships TextExpression="t => t.Title" Style="height:280px;" />
-                                    </div>
-                                </TabPanelItem>
-                            </Tabs>
-                        </TabPanel>
-                        <div class="pt-4 pt-0 pb-2">
-                            <FormCommandButton />
-                        </div>
-                    </CaspianForm>
+                                </CaspianForm>
+                            </TabPanelItem>
+                            <TabPanelItem Title="Groups">
+                                <div class="ps-4 pe-4 pt-2 pb-2" style="height:320px">
+                                    @*                                         <CheckboxList TValue="CustomerGroupMembership" TEntity="CustomerGroup"
+                                    @bind-Values=Service.UpsertData.CustomerGroupMemberships TextExpression="t => t.Title" Style="height:280px;" /> *@
+                                </div>
+                            </TabPanelItem>
+                        </Tabs>
+                    </TabPanel>
+                    <div class="pt-4 pt-0 pb-2">
+                        <FormCommandButton />
+                    </div>
                 </Window>
             </div>
         </TabPanelItem>

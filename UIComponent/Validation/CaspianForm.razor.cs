@@ -13,6 +13,7 @@ namespace Caspian.UI
         string ErrorMessage;
         bool checkValidation;
         IList<IControl> controls;
+        bool addControls;
         string ICaspianForm.MasterIdName { get; set; }
         bool ICaspianForm.IgnoreOnValidSubmit { get; set; }
         TEntity oldModel;
@@ -53,8 +54,12 @@ namespace Caspian.UI
 
         public void AddControl(IControl control)
         {
-            if (!controls.Contains(control))
+            if (addControls)
+            {
+                if (controls.Contains(control))
+                    controls.Clear();
                 controls.Add(control);
+            }
         }
 
         public CaspianValidationValidator ValidationValidator { get; set; }
@@ -65,14 +70,21 @@ namespace Caspian.UI
                 await controls[0].FocusAsync();
         }
 
+        public IControl GetFirstInvalidControl()
+        {
+            var old = controls.FirstOrDefault(t => t.HasError());
+            FormAppState.Control = old;
+            return old; 
+        }
+
         protected override void OnInitialized()
         {
-            controls = new List<IControl>();
             if (Service != null)
             {
                 Service.Form = this;
                 Service.FormInitialize();
             }
+            controls = new List<IControl>();
             if (FormAppState == null)
                 FormAppState = new FormAppState();
             if (CrudComponent != null)
@@ -81,9 +93,23 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
+        protected override async Task OnInitializedAsync()
+        {
+            if (Service != null)
+            {
+                await Service.FetchAsync();
+                EditContext = new EditContext(Service.UpsertData);
+            }
+            await base.OnInitializedAsync();
+        }
+
         async Task OnFormSubmitHandler(EditContext context)
         {
-            if (OnSubmit.HasDelegate)
+            addControls = true;
+            controls.Clear();
+            await Task.Delay(10);
+            addControls = false;
+            if(OnSubmit.HasDelegate)
                 await OnSubmit.InvokeAsync(EditContext);
             if (OnInternalSubmit.HasDelegate)
                 await OnInternalSubmit.InvokeAsync(EditContext);
@@ -114,12 +140,12 @@ namespace Caspian.UI
                     await OnValidSubmit.InvokeAsync(context);
                 if (OnInternalValidSubmit.HasDelegate)
                     await OnInternalValidSubmit.InvokeAsync(context);
-
             }
             else
             {
                 if (FormAppState.AllControlsIsValid)
                     ErrorMessage = EditContext.GetValidationMessages().First();
+                FormAppState.ValidationChecking = true;
                 if (OnInvalidSubmit.HasDelegate)
                     await OnInvalidSubmit.InvokeAsync(EditContext);
                 if (OnInternalInvalidSubmit.HasDelegate)
@@ -155,10 +181,9 @@ namespace Caspian.UI
                 ErrorMessage = null;
                 await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
             }
-            else if (FormAppState.Element.HasValue)
-                await jsRuntime.InvokeVoidAsync("$.caspian.focusAndShowErrorMessage", FormAppState.Element);
-            FormAppState.Element = null;
-            FormAppState.ErrorMessage = null;
+            //var ctr = controls.FirstOrDefault(t => t.HasError());
+            //if (ctr != null)
+            //    await ctr.FocusAsync();
             await base.OnAfterRenderAsync(firstRender);
         }
 

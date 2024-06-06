@@ -3,6 +3,8 @@
 @typeparam TValue
 @implements IValidate
 @implements IControl
+
+
 @code
 {
     string _FieldName;
@@ -11,8 +13,7 @@
     bool reseting;
     EditContext oldContext;
     protected bool focuced;
-
-    protected ElementReference htmlElement;
+    protected ElementReference inputElement;
 
     [Inject]
     public FormAppState FormAppState { get; set; }
@@ -81,6 +82,11 @@
         return true;
     }
 
+    public bool HasError()
+    {
+        return ErrorMessage != null;
+    }
+
     public virtual async Task SetValue(object obj)
     {
         var readOnly = false;
@@ -115,7 +121,7 @@
                     if (info == null && !Validate())
                     {
                         FormAppState.AllControlsIsValid = false;
-                        FormAppState.Element = htmlElement;
+                        //FormAppState.Control = this;
                     }
                     else if (info != null)
                     {
@@ -140,8 +146,8 @@
 
     protected override void OnParametersSet()
     {
-        CaspianForm?.AddControl(this);
         CaspianContainer?.SetControl(this);
+        CaspianForm?.AddControl(this);
         if (InputAttributes == null)
             InputAttributes = new Dictionary<string, object>();
         if (TabIndex.HasValue)
@@ -163,7 +169,7 @@
     public async Task FocusAsync()
     {
         focuced = true;
-        await htmlElement.FocusAsync();
+        await inputElement.FocusAsync();
     }
 
     public virtual async Task ResetAsync()
@@ -228,9 +234,14 @@
         if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
         {
             FormAppState.AllControlsIsValid = false;
-            FormAppState.Element = htmlElement;
+            //FormAppState.Control = this;
             FormAppState.ErrorMessage = ErrorMessage;
         }
+    }
+
+    public void Dispose()
+    {
+        
     }
 
     private void CurrentEditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
@@ -292,12 +303,12 @@
         if (ErrorMessage == null && !Validate())
         {
             FormAppState.AllControlsIsValid = false;
-            FormAppState.Element = htmlElement;
+            //FormAppState.Control = this;
         }
         if (ErrorMessage != null && FormAppState.AllControlsIsValid)
         {
             FormAppState.AllControlsIsValid = false;
-            FormAppState.Element = htmlElement;
+            //FormAppState.Control = this;
         }
     }
 

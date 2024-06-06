@@ -153,11 +153,6 @@ namespace Caspian.UI
             base.OnParametersSet();
         }
 
-        public IList<TEntity> GetAllRecords()
-        {
-            return source;
-        }
-
         protected void ManageExpressionForUpsert(IList<MemberExpression> list)
         {
             deletedEntities = new List<TEntity>();
@@ -213,7 +208,7 @@ namespace Caspian.UI
             if (upsertMode == UpsertMode.Edit)
             {
                 FormAppState.AllControlsIsValid = true;
-                FormAppState.Element = null;
+                //FormAppState.Control = null;
                 EditContext.Validate();
                 EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
                 var result = await (Task<ValidationResult>)asyncValidationTask;
@@ -242,7 +237,7 @@ namespace Caspian.UI
             else
             {
                 FormAppState.AllControlsIsValid = true;
-                FormAppState.Element = null;
+                //FormAppState.Control = null;
                 InsertContext.Validate();
                 InsertContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
                 var result = await (Task<ValidationResult>)asyncValidationTask;

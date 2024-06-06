@@ -13,6 +13,8 @@ namespace Caspian.UI
 
         CaspianValidationValidator ValidationValidator { get; set; }
 
+        IControl GetFirstInvalidControl();
+
         string MasterIdName { get; set; }
         
         bool IgnoreOnValidSubmit { get; set; }

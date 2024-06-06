@@ -1,5 +1,6 @@
 ﻿using Caspian.Common;
 using System.Reflection;
+using System.Collections;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
@@ -10,8 +11,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace Caspian.UI
 {
@@ -35,11 +34,13 @@ namespace Caspian.UI
         bool shouldRender = true;
         bool focused;
         protected ElementReference input;
+
         IList<Expression> fieldsExpression;
         bool fieldsAdd;
         EditContext oldContext;
 
         internal int SelectedIndex { get; set; }
+
 
         [Parameter]
         public IEnumerable<SelectListItem> Source { get; set; }
@@ -135,6 +136,11 @@ namespace Caspian.UI
         public void Disable()
         {
             Disabled = true;
+        }
+
+        public bool HasError()
+        {
+            return ErrorMessage != null;
         }
 
         public async Task SetValueAndClose(object item)
@@ -404,7 +410,7 @@ namespace Caspian.UI
             if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = input;
+                //FormAppState.Control = this;
                 FormAppState.ErrorMessage = ErrorMessage;
             }
         }
@@ -467,12 +473,12 @@ namespace Caspian.UI
             if (ErrorMessage == null && !Validate())
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = input;
+                //FormAppState.Control = this;
             }
             if (ErrorMessage != null && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                FormAppState.Element = input;
+                //FormAppState.Control = this;
             }
         }
 
@@ -704,6 +710,5 @@ namespace Caspian.UI
         {
             Close();
         }
-
     }
 }

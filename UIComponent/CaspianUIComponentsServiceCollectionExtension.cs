@@ -18,7 +18,7 @@ namespace UIComponent
             services.AddScoped<BatchServiceData>();
             services.AddScoped<BasePageService>();
 
-            services.AddSingleton<FormAppState>();
+            services.AddScoped<FormAppState>();
 
             return services;
         }

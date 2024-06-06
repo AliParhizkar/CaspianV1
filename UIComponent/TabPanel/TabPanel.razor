@@ -1,5 +1,6 @@
 ﻿@namespace Caspian.UI
 @inject IJSRuntime JSRuntime
+@inject FormAppState FormState
 @{
     var className = Vertical ? "t-widget t-tabstrip t-vertical" : "t-widget t-tabstrip";
 }
@@ -105,6 +106,7 @@
                 CurentTabpanel = tab;
             index++;
         }
+        
         base.OnParametersSet();
     }
 

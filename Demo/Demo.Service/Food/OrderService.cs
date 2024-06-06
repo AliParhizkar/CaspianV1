@@ -6,10 +6,9 @@ using Caspian.Engine;
 using FluentValidation;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
+using Caspian.Common.Extension;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Caspian.Common.Extension;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {
@@ -20,7 +19,7 @@ namespace Demo.Service
             :base(provider)
         {
             RuleFor(t => t.Date).CustomValue(t => t == null, "Please specify the order date");
-            RuleFor(t => t.OrderDeatils).Custom(t => t.Id == 0 && (t.OrderDeatils == null || t.OrderDeatils.Count == 0), "The order must has at leasta products");
+            //RuleFor(t => t.OrderDeatils).Custom(t => t.Id == 0 && (t.OrderDeatils == null || t.OrderDeatils.Count == 0), "The order must has at leasta products");
             RuleForEach(t => t.OrderDeatils).SetValidator(new OrderDeatilService(provider));
             RuleFor(t => t.OrderStatus).Custom(t => t.CourierId.HasValue && t.OrderStatus == OrderStatus.Canceled,
                 "The order has a courier and it is not possible to cancel it.");

@@ -39,7 +39,7 @@ namespace Caspian.UI
 
         public int MasterId { get; set; }
 
-        public TMaster UpsertData {  get; private set; }
+        public TMaster UpsertData { get; private set; }
 
         public DataView<TMaster> MasterDataView { get; set; }
 
@@ -51,12 +51,23 @@ namespace Caspian.UI
 
         public IList<ChangedEntity<TDetails>> ChangedEntities { get; set; }
 
+        public async Task FetchAsync()
+        {
+            if (MasterId > 0)
+            {
+                batchServiceData.MasterId = MasterId;
+                using var service = CreateScope().GetService<IBaseService<TMaster>>();
+                UpsertData = await service.SingleAsync(MasterId);
+            }
+        }
+
         public void FormInitialize()
         {
             Form.OnInternalReset = EventCallback.Factory.Create(this, async () =>
             {
                 DetailsDataView?.ClearSource();
-                await Window?.Close();
+                if (Window != null)
+                    await Window?.Close();
                 StateHasChanged();
             });
 
@@ -88,7 +99,8 @@ namespace Caspian.UI
                         await MasterDataView.ReloadAsync();
                     await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Updating was done successfully");
                 }
-                await Window?.Close();
+                if (Window != null)
+                    await Window?.Close();
                 StateHasChanged();
             });
         }
@@ -160,6 +172,10 @@ namespace Caspian.UI
         void FormInitialize();
 
         void MasterGridInitialize();
+
+        Task FetchAsync();
+
+        TMaster UpsertData { get; }
     }
 
     public interface IDetailsBatchService<TDetails> where TDetails : class

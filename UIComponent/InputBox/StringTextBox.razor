@@ -1,24 +1,27 @@
 ﻿@namespace Caspian.UI
 @using System.Diagnostics
 @inherits CBaseInput<string>
-    @if (Disabled)
+@{
+    base.BuildRenderTree(__builder);
+    if (Disabled)
         className += " t-state-disabled";
     else if (ErrorMessage != null)
         className += " t-state-error";
+}
 <div class="@className" error-message="@ErrorMessage">
     @if (MultiLine)
     {
-        <textarea @ref="htmlElement" style="@Style" @attributes="InputAttributes" @onchange="ChangeValue">@Value</textarea>
+        <textarea @ref="inputElement" style="@Style" @attributes="InputAttributes" @onchange="ChangeValue">@Value</textarea>
     }
     else
     {
         @if (base.BindingType == BindingType.OnChange)
         {
-            <input value="@Value" @onchange="ChangeValue" @ref="htmlElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
+            <input value="@Value" @onchange="ChangeValue" @ref="inputElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
         }
         else
         {
-            <input value="@Value" @oninput="ChangeValue" @ref="htmlElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
+            <input value="@Value" @oninput="ChangeValue" @ref="inputElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
         }
     }
 </div>
@@ -120,7 +123,7 @@
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindStringbox", htmlElement);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindStringbox", inputElement);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

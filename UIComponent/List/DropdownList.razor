@@ -11,13 +11,12 @@
     else
         className += " t-state-error";
 }
-<div @ref="element" @attributes="attrs" class="t-widget t-dropdown" error-message="@ErrorMessage">
+<div @ref="inputElement" @attributes="attrs" class="t-widget t-dropdown" error-message="@ErrorMessage">
     <div class="@className" @onclick="OpenWindow">
         <span class="t-input">@(text)</span>
         <span class="t-t-select" >
             <i class="t-icon t-arrow-down fa fa-caret-down"></i>
         </span>
-        <input @ref="htmlElement" @attributes="inputAttrs" @onchange="UpdateValue" autocomplete="off" style="display:none" />
     </div>
     @if (status == WindowStatus.Open)
     {
@@ -40,7 +39,6 @@
 </div>
 @code
 {
-    ElementReference element;
     string text;
     Dictionary<string, object> attrs;
     Dictionary<string, object> inputAttrs;
@@ -216,7 +214,7 @@
         if (firstRender)
         {
             var dotnet = DotNetObjectReference.Create(this);
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindDropdownList", dotnet, element);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindDropdownList", dotnet, inputElement);
         }
         await base.OnAfterRenderAsync(firstRender);
     }

@@ -6,12 +6,74 @@
 @using Demo.Model;
 @using Demo.Service
 @inject BatchService<Customer, CustomerAddress> Service
+<div style="width:600px;margin: 30px auto">
+    <CaspianForm Model="customer">
+        <CaspianValidationValidator ValidatorType="typeof(CustomerService)" />
+      <TabPanel>
+          <Tabs>
+              <TabPanelItem Title="Test">
+                    <div class="row p-3">
+                        <div class="col-md-4">
+                            <label>Customer Type</label>
+                        </div>
+                        <div class="col-md-8">
+                            <DropdownList @bind-Value="customer.CustomerType" />
+                        </div>
+                        @if (customer.CustomerType == CustomerType.Real)
+                        {
+                            <div class="col-md-4">
+                                <label>First Name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox @bind-Value="customer.FName" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Last Name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox @bind-Value="customer.LName" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Gender</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList @bind-Value="customer.Gender" />
+                            </div>
+                        }
+                        else if (customer.CustomerType == CustomerType.Legal)
+                        {
+                            <div class="col-md-4">
+                                <label>Company Name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox @bind-Value="customer.CompanyName" />
+                            </div>
+                        }
+                        <div class="col-md-4">
+                            <label>Mobile Number</label>
+                        </div>
+                        <div class="col-md-8">
+                            <StringTextBox @bind-Value="customer.MobileNumber" />
+                        </div>
+                    </div>
+              </TabPanelItem>
+              <TabPanelItem Title="Panel2">
 
-<Window Service="Service" Style="width:200px;">
-    <div style="height:200px;">12345666</div>
-</Window>
+              </TabPanelItem>
+          </Tabs>
+      </TabPanel>
+        <FormCommandButton />
+    </CaspianForm>
+</div>
 
-<ChildComponent  Service="Service"></ChildComponent>
 @code
 {
+    IControl txtLName;
+
+    Customer customer;
+    protected override void OnInitialized()
+    {
+        customer = new Customer();
+        base.OnInitialized();
+    }
 }
