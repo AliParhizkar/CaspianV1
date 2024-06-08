@@ -72,9 +72,7 @@ namespace Caspian.UI
 
         public IControl GetFirstInvalidControl()
         {
-            var old = controls.FirstOrDefault(t => t.HasError());
-            FormAppState.Control = old;
-            return old; 
+            return controls.FirstOrDefault(t => t.HasError());
         }
 
         protected override void OnInitialized()

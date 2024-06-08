@@ -42,6 +42,11 @@ namespace Caspian.Common.Extension
             return await query.Where(lambda).OfType<TEntity>().SingleOrDefaultAsync();
         }
 
+        public async static Task<IList<TEntity>> GetValuesAsync<TEntity>(this IQueryable<TEntity> source, params MemberExpression[] exprList)
+        {
+            return await source.GetValuesAsync(exprList.ToList());
+        }
+
         public async static Task<IList<TEntity>> GetValuesAsync<TEntity>(this IQueryable<TEntity> source, IList<MemberExpression> exprList)
         {
             var values = await source.Select(exprList).OfType<object>().ToListAsync();

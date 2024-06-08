@@ -34,7 +34,9 @@ namespace Caspian.UI
         protected CaspianValidationValidator validator;
         protected IList<TEntity> items;
 
-        public EventCallback<TEntity> OnInternalUpsert { get; set; }
+        internal EventCallback<TEntity> OnInternalUpsert { get; set; }
+
+        internal Expression InternalConditionExpr { get; set; }
 
         public int Total { get; set; }
 
@@ -137,7 +139,10 @@ namespace Caspian.UI
                 MasterBatchService.MasterGridInitialize();
             }
             if (DetailsBatchService != null)
+            {
                 DetailsBatchService.DetailsDataView = this;
+                DetailsBatchService.DetailGridInitialize();
+            }
             base.OnInitialized();
         }
 
@@ -342,7 +347,7 @@ namespace Caspian.UI
                 var isExist = false;
                 foreach(var item in DetailsBatchService.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
                 {
-                    var newId = Convert.ToInt32(pkey.GetValue(entity));
+                    var newId = Convert.ToInt32(pkey.GetValue(item.Entity));
                     if (id == newId)
                     {
                         isExist = true;

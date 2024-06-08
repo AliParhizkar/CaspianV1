@@ -114,14 +114,14 @@
             {
 
                 var model = CurrentEditContext.Model;
-                //FormAppState.AllControlsIsValid = true;
+                FormAppState.AllControlsIsValid = true;
                 if (_FieldName.HasValue())
                 {
                     var info = model.GetType().GetProperty(_FieldName);
                     if (info == null && !Validate())
                     {
                         FormAppState.AllControlsIsValid = false;
-                        //FormAppState.Control = this;
+                        FormAppState.Control = this;
                     }
                     else if (info != null)
                     {
@@ -234,7 +234,7 @@
         if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
         {
             FormAppState.AllControlsIsValid = false;
-            //FormAppState.Control = this;
+            FormAppState.Control = this;
             FormAppState.ErrorMessage = ErrorMessage;
         }
     }
@@ -303,12 +303,12 @@
         if (ErrorMessage == null && !Validate())
         {
             FormAppState.AllControlsIsValid = false;
-            //FormAppState.Control = this;
+            FormAppState.Control = this;
         }
         if (ErrorMessage != null && FormAppState.AllControlsIsValid)
         {
             FormAppState.AllControlsIsValid = false;
-            //FormAppState.Control = this;
+            FormAppState.Control = this;
         }
     }
 

@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 row pe-3">
-                        <CaspianForm Model="Service.UpsertData">
+                        <CaspianForm Service="Service" Model="Service.UpsertData">
                             <div class="row c-controls ps-3 pe-3">
                                 <div class="col-md-4">
                                     <label>Order date</label>
@@ -147,7 +147,7 @@
                             </div>
                         }
                         <div class="pt-4">
-                            <DataGrid TEntity="OrderDeatil" DetailsBatchService="Service" Batch ConditionExpr="t => t.OrderId == OrderId" ContentHeight="250" HideInsertIcon>
+                            <DataGrid TEntity="OrderDeatil" DetailsBatchService="Service" ContentHeight="250" HideInsertIcon>
                                 <Columns>
                                     <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                                     <GridColumn Field="t => t.Product.Title" Title="Product" />
@@ -179,12 +179,6 @@
 
     [Parameter]
     public int OrderId { get; set; }
-
-    // protected override Task OnMasterEntityCreatedAsync()
-    // {
-    //     UpsertData.Date = DateTime.Now.Date;
-    //     return base.OnMasterEntityCreatedAsync();
-    // }
 
     protected override void OnInitialized()
     {

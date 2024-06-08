@@ -473,12 +473,12 @@ namespace Caspian.UI
             if (ErrorMessage == null && !Validate())
             {
                 FormAppState.AllControlsIsValid = false;
-                //FormAppState.Control = this;
+                FormAppState.Control = this;
             }
             if (ErrorMessage != null && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                //FormAppState.Control = this;
+                FormAppState.Control = this;
             }
         }
 

@@ -110,7 +110,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                        <DataGrid TEntity="ReceiptDetail" DetailsBatchService="Service" ContentHeight="300" Inline Batch AutoHide ConditionExpr="t => t.ReceiptId == Service.MasterId">
+                        <DataGrid TEntity="ReceiptDetail" DetailsBatchService="Service" ContentHeight="300" Inline AutoHide>
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material">
                                     <EditTemplate>

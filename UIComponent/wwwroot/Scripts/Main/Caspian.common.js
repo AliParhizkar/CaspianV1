@@ -379,7 +379,7 @@
                 $(ctr).find('.c-selected-panel').css('top', top + 8);
             } else {
                 let left = pos.left + 5;
-                let width = ($(ctr).find('.t-state-active').width()) - 10;
+                let width = ($(ctr).find('.t-state-active').width()) - 3;
                 $(ctr).find('.t-tabstrip-items').width() - (left + width);
                 $(ctr).find('.c-selected-panel').css('left', left).css('width', width);
             }

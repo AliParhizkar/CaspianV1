@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Caspian.Common
+﻿namespace Caspian.Common
 {
     public class SelectListItem
     {

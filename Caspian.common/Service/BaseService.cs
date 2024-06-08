@@ -142,8 +142,9 @@ namespace Caspian.Common.Service
         {
             var type = typeof(TEntity);
             var t = Expression.Parameter(type, "t");
-            Expression expr = Expression.Property(t, type.GetPrimaryKey());
-            expr = Expression.Equal(expr, Expression.Constant(id));
+            var info = type.GetPrimaryKey();
+            Expression expr = Expression.Property(t, info);
+            expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(id, info.PropertyType)));
             expr = Expression.Lambda(expr, t);
             var entity = await GetAll().Where(expr).SingleOrDefaultAsync();
             return entity;

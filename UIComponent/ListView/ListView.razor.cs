@@ -35,6 +35,8 @@ namespace Caspian.UI
                 var query = service.GetAll();
                 if (ConditionExpr != null)
                     query = query.Where(ConditionExpr);
+                if (InternalConditionExpr != null)
+                    query = query.Where(InternalConditionExpr);
                 Total = await query.CountAsync();
                 var exprList = new List<MemberExpression>();
                 foreach(var expr in fieldsExpression)

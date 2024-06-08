@@ -139,7 +139,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                         <DataGrid DetailsBatchService="Service" TEntity="OrderDeatil" ContentHeight="250" Inline Batch ConditionExpr="t => t.OrderId == Service.MasterId">
+                         <DataGrid DetailsBatchService="Service" TEntity="OrderDeatil" ContentHeight="250" Inline>
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Product.Title" Title="Product">
                                     <EditTemplate>

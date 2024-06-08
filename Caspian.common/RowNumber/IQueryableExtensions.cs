@@ -3,18 +3,16 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
-using System.Reflection.Emit;
 
 namespace Caspian.Common.RowNumber
 {
     public static class IQueryableExtensions
     {
-        public static Type CreateType()
+        public static Type CreateType(Type type)
         {
             var properties = new List<DynamicProperty>
             {
-                new DynamicProperty("Id", typeof(int)),
+                new DynamicProperty("Id", type),
                 new DynamicProperty("RowNumber", typeof(int))
             };
             return DynamicClassFactory.CreateType(properties, false);
@@ -24,8 +22,11 @@ namespace Caspian.Common.RowNumber
         {
             var t = Expression.Parameter(source.ElementType, "t");
             var rowNumberExpr = CreateRowNumberExpression(source, t);
-            Expression exprId = Expression.Property(t, source.ElementType.GetPrimaryKey());
-            var type = CreateType();
+            var pKey = source.ElementType.GetPrimaryKey();
+            Expression exprId = Expression.Property(t, pKey);
+            var type = CreateType(pKey.PropertyType);
+            var q1 = Expression.Bind(type.GetProperty("Id"), exprId);
+            var q2 = Expression.Bind(type.GetProperty("RowNumber"), rowNumberExpr);
             var memberExprList = new List<MemberAssignment>
             {
                 Expression.Bind(type.GetProperty("Id"), exprId),

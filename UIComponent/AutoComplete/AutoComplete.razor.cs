@@ -186,7 +186,7 @@ namespace Caspian.UI
             if (ErrorMessage != null && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                //FormAppState.Control = this;
+                FormAppState.Control = this;
                 FormAppState.ErrorMessage = ErrorMessage;
             }
         }
@@ -245,12 +245,12 @@ namespace Caspian.UI
             if (ErrorMessage == null && !Validate())
             {
                 FormAppState.AllControlsIsValid = false;
-                //FormAppState.Control = this;
+                FormAppState.Control = this;
             }
             if (ErrorMessage != null && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                //FormAppState.Control = this;
+                FormAppState.Control = this;
             }
         }
 
@@ -414,7 +414,7 @@ namespace Caspian.UI
             if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                //FormAppState.Control = this;
+                FormAppState.Control = this;
                 FormAppState.ErrorMessage = ErrorMessage;
             }
             if (SearchState.Grid != null && !SearchState.Grid.OnInternalRowSelect.HasDelegate)

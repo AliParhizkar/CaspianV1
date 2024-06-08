@@ -136,10 +136,7 @@ namespace Caspian.UI
             }
 
             if (FormAppState.Control != null)
-            {
-                await FormAppState.Control.FocusAsync();
                 FormAppState.Control = null;
-            }
             else if (errorMessage.HasValue())
             {
                 await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
@@ -327,8 +324,6 @@ namespace Caspian.UI
                 return null;
             }
         }
-
-        internal Expression InternalConditionExpr { get; set; }
 
         [CascadingParameter(Name = "AutoComplateState")]
         public SearchState SearchState { get; set; }

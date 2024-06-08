@@ -1,5 +1,9 @@
-﻿textarea{
-    line-height:normal!important;
+﻿.c-error-develop{
+    overflow:auto;
+    height:calc(100% - 30px);
+}
+textarea {
+    line-height: normal !important;
 }
 .c-slider-arrow .fa {
     font-size: 40px;

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq.Expressions;
 
 namespace Caspian.UI
 {
@@ -125,6 +126,7 @@ namespace Caspian.UI
                 }
                 else
                     UpsertData = Activator.CreateInstance<TMaster>();
+                MasterId = value;
                 await Window.Open();
                 StateHasChanged();
             });
@@ -146,6 +148,17 @@ namespace Caspian.UI
                 else
                     await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", result.Errors[0].ErrorMessage);
             });
+        }
+
+        public void DetailGridInitialize()
+        {
+            DetailsDataView.Batch = true;
+            var param = Expression.Parameter(typeof(TDetails), "t");
+            var masterInfo = typeof(TDetails).GetForeignKey(typeof(TMaster));
+            Expression expr = Expression.Property(param, masterInfo);
+            var masterId = Convert.ChangeType(MasterId, masterInfo.PropertyType);
+            expr = Expression.Equal(expr, Expression.Constant(masterId));
+            DetailsDataView.InternalConditionExpr = expr;
         }
 
         public void WindowInitialize()
@@ -180,7 +193,11 @@ namespace Caspian.UI
 
     public interface IDetailsBatchService<TDetails> where TDetails : class
     {
+        int MasterId { get; }
+
         DataView<TDetails> DetailsDataView { get; set; }
+
+        void DetailGridInitialize();
 
         IList<ChangedEntity<TDetails>> ChangedEntities { get; set; }
     }

@@ -18,7 +18,7 @@ namespace Demo.Model
         public virtual Customer Customer { get; set; }
 
         [DisplayName("Customer Group")]
-        public int CustomerGroupId { get; set; }
+        public short CustomerGroupId { get; set; }
 
         [ForeignKey(nameof(CustomerGroupId))]
         public virtual CustomerGroup CustomerGroup { get; set; }

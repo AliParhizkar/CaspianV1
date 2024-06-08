@@ -9,7 +9,7 @@ namespace Demo.Model
     public class CustomerGroup
     {
         [Key]
-        public int Id { get; set; }
+        public short Id { get; set; }
 
         [DisplayName("Title")]
         public string Title { get; set; }

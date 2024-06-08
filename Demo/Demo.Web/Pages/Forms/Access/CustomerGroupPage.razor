@@ -23,7 +23,7 @@
                                 <label>Title</label>
                             </div>
                             <div class="col-md-8 pe-3">
-                                <StringTextBox @bind-Value="searchGroup.Title" />
+                                <StringTextBox @bind-Value="searchGroup.Title" Search />
                             </div>
                             <DataGrid TEntity="CustomerGroup" Search="searchGroup" ContentHeight="300">
                                 <Columns>

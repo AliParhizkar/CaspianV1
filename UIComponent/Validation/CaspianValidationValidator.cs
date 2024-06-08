@@ -1,5 +1,6 @@
 ﻿using Caspian.Common;
 using FluentValidation;
+using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using FluentValidation.Results;
 using FluentValidation.Internal;
@@ -14,6 +15,9 @@ namespace Caspian.UI
     {
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
+
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
 
         [Inject]
         public FormAppState FormAppState { get; set; }
@@ -128,15 +132,6 @@ namespace Caspian.UI
             }
         }
 
-        protected override void OnInitialized()
-        {
-            if (CaspianForm != null)
-            {
-
-            }
-            base.OnInitialized();
-        }
-
         protected override void OnAfterRender(bool firstRender)
         {
             if (CaspianForm != null)
@@ -151,14 +146,23 @@ namespace Caspian.UI
         {
             if (FormAppState.ValidationChecking)
             {
-                CaspianForm.GetFirstInvalidControl();
-                if (FormAppState.Control != null)
+                var control = CaspianForm.GetFirstInvalidControl();
+                if (control != null)
                 {
                     FormAppState.ValidationChecking = false;
-                    await FormAppState.Control.FocusAsync();
+                    await control.FocusAsync();
+                }
+                else if (FormAppState.ErrorMessage !=  null)
+                {
+                    await JSRuntime.InvokeVoidAsync("$.caspian.showMessage", FormAppState.ErrorMessage);
+                    FormAppState.ErrorMessage = null;
                 }
             }
-
+            if (CaspianForm == null && !FormAppState.AllControlsIsValid && FormAppState.Control != null)
+            {
+                FormAppState.AllControlsIsValid = true;
+                await FormAppState.Control.FocusAsync();
+            }
             await base.OnAfterRenderAsync(firstRender);
         }
     }
