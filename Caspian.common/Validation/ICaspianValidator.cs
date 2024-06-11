@@ -2,7 +2,7 @@
 
 namespace Caspian.Common
 {
-    public interface ICaspianValidator
+    internal interface ICaspianValidator
     {
         BatchServiceData BatchServiceData { get; set; }
 

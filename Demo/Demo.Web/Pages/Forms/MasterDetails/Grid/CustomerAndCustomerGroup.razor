@@ -28,7 +28,7 @@
                         <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
                     </li>
                 </ul>
-                <DataGrid TEntity="Customer" MasterBatchService="Service" Search="search" ContentHeight="400">
+                <DataGrid TEntity="Customer" Service="Service" Search="search" ContentHeight="400">
                     <Columns>
                         <GridColumn Field="t => t.CustomerType" />
                         <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
@@ -37,7 +37,7 @@
                     </Columns>
                 </DataGrid>
                 <Window Service="Service" Title="Customer & Groups" Style="width:450px;">
-                    <CaspianForm Service="Service" Model="Service.UpsertData">
+                    <CaspianForm Service="Service">
                         <CaspianValidationValidator ValidatorType="typeof(CustomerService)" />
                         <TabPanel>
                             <Tabs>

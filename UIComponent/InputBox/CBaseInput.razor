@@ -169,7 +169,14 @@
     public async Task FocusAsync()
     {
         focuced = true;
-        await inputElement.FocusAsync();
+        try
+        {
+            await inputElement.FocusAsync();
+        }
+        catch(JSException ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     public virtual async Task ResetAsync()

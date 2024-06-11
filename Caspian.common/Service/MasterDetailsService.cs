@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
 using System.Reflection;
+using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq.Expressions;
 
 namespace Caspian.Common.Service
 {
-    public class MasterDetailsService<TMaster, TDetails>: BaseService<TMaster> where TMaster : class where TDetails : class 
+    public class MasterDetailsService<TMaster, TDetails>: BaseService<TMaster>, IMasterDetailsService<TMaster, TDetails> where TMaster : class where TDetails : class 
     {
         public MasterDetailsService(IServiceProvider provider)
             : base(provider)

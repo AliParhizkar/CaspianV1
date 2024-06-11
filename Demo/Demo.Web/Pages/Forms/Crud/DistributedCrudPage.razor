@@ -1,6 +1,10 @@
 ﻿@page "/Demo/DistributedCrud"
 @namespace Demo.Web.Pages
 @inherits BasePage
+@inject SimpleService<Product> Service
+@{
+    base.BuildRenderTree(__builder);
+}
 <h2>Distributed CRUD</h2>
 <p>
     In this example, the ProductCategoryId is updated outside of the form.
@@ -21,73 +25,69 @@
                             <label>Product Category</label>
                         </div>
                         <div class="col-md-9">
-                            <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="upsertProduct.ProductCategoryId" TextExpression="t => t.Title" OnChanged="() => productGrid.EnableLoading()" />
+                            <ComboBox TEntity="ProductCategory" TValue="int?" @bind-Value="categoryId" TextExpression="t => t.Title" OnChanged="() => Service.MasterDataView.EnableLoading()" />
                         </div>
                     </div>
     <div class="c-body ps-3 pe-3">
-        @if (upsertProduct.ProductCategoryId > 0)
+        @if (categoryId.HasValue)
         {
-            <CrudComponent UpsertData="upsertProduct">
-                <DataGrid @ref="productGrid" TEntity="Product" Search="searcProduct" ContentHeight="350"
-                                          ConditionExpr="@(t => t.ProductCategoryId == upsertProduct.ProductCategoryId)">
-                    <Columns>
-                        <GridColumn Field="t => t.Title" />
-                        <GridColumn Field="t => t.ActiveType.EnumText()" />
-                        <GridColumn Field="t => t.Price.Seprate3Digit()" />
-                        <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
-                        <GridCommandColumns />
-                    </Columns>
-                </DataGrid>
-                <Window Title="Product" Style="width:500px;">
-                    <Content>
-                        <CaspianForm Model="upsertProduct">
-                            <div class="row c-controls ps-3 pe-3">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label>Title</label>
+                            <DataGrid TEntity="Product" Service="Service" ContentHeight="350"
+                                      ConditionExpr="@(t => t.ProductCategoryId == categoryId)">
+                                <Columns>
+                                    <GridColumn Field="t => t.Title" />
+                                    <GridColumn Field="t => t.ActiveType.EnumText()" />
+                                    <GridColumn Field="t => t.Price.Seprate3Digit()" />
+                                    <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
+                                    <GridCommandColumns />
+                                </Columns>
+                            </DataGrid>
+                            <Window Service="Service" Title="Product" Style="width:500px;">
+                                <CaspianForm Service="Service" OnSubmit="t => Service.UpsertData.ProductCategoryId = categoryId.Value">
+                                    <div class="row c-controls ps-3 pe-3">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>Title</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <StringTextBox @bind-Value="Service.UpsertData.Title" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Price</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <NumericTextBox @bind-Value="Service.UpsertData.Price" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Take out price</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <NumericTextBox @bind-Value="Service.UpsertData.TakeoutPrice" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Meal</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <MultiSelectBox @bind-Value="Service.UpsertData.Meal" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Discountable</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <CheckBox @bind-Value="Service.UpsertData.Discountable" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Status</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
+                                            </div>
+                                            <div class="col-md-12">
+                                                <WindowCommandButtons />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-md-8">
-                                        <StringTextBox @bind-Value="upsertProduct.Title" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Price</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <NumericTextBox @bind-Value="upsertProduct.Price" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Take out price</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <NumericTextBox @bind-Value="upsertProduct.TakeoutPrice" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Meal</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <MultiSelectBox @bind-Value="upsertProduct.Meal" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Discountable</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <CheckBox @bind-Value="upsertProduct.Discountable" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Status</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <DropdownList @bind-Value="upsertProduct.ActiveType" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <WindowCommandButtons />
-                                    </div>
-                                </div>
-                            </div>
-                        </CaspianForm>
-                    </Content>
-                </Window>
-            </CrudComponent>
+                                </CaspianForm>
+                            </Window>
         }
     </div>
                 </div>
@@ -100,7 +100,5 @@
 </TabPanel>
 @code
 {
-    Product upsertProduct = new Product();
-    Product searcProduct = new Product();
-    DataGrid<Product> productGrid;
+    int? categoryId;
 }

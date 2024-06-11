@@ -64,7 +64,7 @@ namespace Caspian.UI
         public bool HideInsertIcon { get; set; }
 
         [Parameter]
-        public IMasterBatchService<TEntity> MasterBatchService { get; set; }
+        public IMasterBatchService<TEntity> Service { get; set; }
 
         [Parameter]
         public IDetailsBatchService<TEntity> DetailsBatchService { get; set; }
@@ -133,10 +133,10 @@ namespace Caspian.UI
                 throw new CaspianException($"Service of type {type} not impilimented");
             if (!AutoHide && Inline)
                 CreateInsert();
-            if (MasterBatchService != null)
+            if (Service != null)
             {
-                MasterBatchService.MasterDataView = this;
-                MasterBatchService.MasterGridInitialize();
+                Service.MasterDataView = this;
+                Service.MasterGridInitialize();
             }
             if (DetailsBatchService != null)
             {

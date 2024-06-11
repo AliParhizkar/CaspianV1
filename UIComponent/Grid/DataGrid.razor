@@ -1,5 +1,5 @@
 ﻿@namespace Caspian.UI
-@typeparam TEntity
+@typeparam TEntity where TEntity: class
 @inherits DataView<TEntity>
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 

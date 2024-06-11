@@ -16,17 +16,16 @@
                 </div>
                 <div class="col-md-7 pt-3 pb-3">
                     <DataGrid HideInsertIcon TEntity="ProductCategory" ContentHeight="250">
-                    <Columns>
-                        <GridColumn Field="t => t.Title" />
-                        <GridColumn Field="t => t.ActiveType.EnumText()" />
-                        <GridColumn Title="Popup" style="width:50px">
-                            <Template>
-                                <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenPopupForm(context.Data.Id); }" />
-                            </Template>
-                        </GridColumn>
-                        <GridCommandColumns />
-                    </Columns>
-                </DataGrid>
+                        <Columns>
+                            <GridColumn Field="t => t.Title" />
+                            <GridColumn Field="t => t.ActiveType.EnumText()" />
+                            <GridColumn Title="Popup" style="width:50px">
+                                <Template>
+                                    <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenPopupForm(context.Data.Id); }" />
+                                </Template>
+                            </GridColumn>
+                        </Columns>
+                    </DataGrid>
                 </div>
             </div>
         </TabPanelItem>

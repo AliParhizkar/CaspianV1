@@ -73,7 +73,10 @@ namespace Caspian.Common
         {
             context.RootContextData["__ServiceScope"] = ServiceProvider;
             if (BatchServiceData != null)
+            {
                 context.RootContextData["__BatchServiceData"] = BatchServiceData;
+                
+            }
             return base.ValidateAsync(context, cancellation);
         }
 

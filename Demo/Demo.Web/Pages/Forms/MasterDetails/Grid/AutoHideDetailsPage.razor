@@ -1,9 +1,9 @@
 ﻿@page "/Demo/Batch/AutoHide/Details"
-@page "/Demo/Batch/AutoHide/Details/{MasterId:int}"
+@page "/Demo/Batch/AutoHide/Details/{ReceiptId:int}"
 @using Caspian.Common.Extension
 @namespace Demo.Web.Pages
 @inject BatchService<WarehouseReceipt, ReceiptDetail> Service
-@inherits MasterDetailPage<WarehouseReceipt, ReceiptDetail>
+@inherits BasePage
 <h2>Batch operation</h2>
 <h3>Warehouse receipt</h3>
 <p>
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 row pe-3">
-                        <CaspianForm Service="Service" Model="Service.UpsertData">
+                        <CaspianForm Service="Service">
                             <div class="row c-controls ps-3 pe-3">
                                 <div class="col-md-4">
                                     <label>Receipt date</label>
@@ -168,23 +168,23 @@
     NumericTextBox<int> txtMainUnit;
     NumericTextBox<int?> txtSubunit;
 
-    protected override Task OnMasterEntityCreatedAsync()
-    {
-        if (Service.UpsertData.Id == 0)
-            Service.UpsertData.Date = DateTime.Now.Date;
-        return base.OnMasterEntityCreatedAsync();
-    }
+    // protected override Task OnMasterEntityCreatedAsync()
+    // {
+    //     if (Service.UpsertData.Id == 0)
+    //         Service.UpsertData.Date = DateTime.Now.Date;
+    //     return base.OnMasterEntityCreatedAsync();
+    // }
 
     protected override void OnInitialized()
     {
-        Service.MasterId = MasterId;
+        Service.MasterId = ReceiptId;
         base.OnInitialized();
     }
 
 
     protected override void OnAfterRender(bool firstRender)
     {
-        Service.MasterId = MasterId;
+        Service.MasterId = ReceiptId;
         base.OnAfterRender(firstRender);
     }
 
@@ -216,4 +216,7 @@
 
         }
     }
+
+    [Parameter]
+    public int ReceiptId { get; set; }
 }

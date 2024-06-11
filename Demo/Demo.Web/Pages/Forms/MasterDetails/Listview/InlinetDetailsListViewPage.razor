@@ -1,7 +1,8 @@
 ﻿@page "/Demo/Batch/Inline/Listview/Details" 
-@page "/Demo/Batch/Inline/Listview/Details/{MasterId:int}"
+@page "/Demo/Batch/Inline/Listview/Details/{OrderId:int}"
 @namespace Demo.Web.Pages
-@inherits MasterDetailPage<Order, OrderDeatil>
+@inherits BasePage
+@inject BatchService<Order, OrderDeatil> Service
 <div class="d-content">
     <div class="row pt-4">
         <div class="col-md-4 row pe-3">
@@ -22,38 +23,38 @@
             </div>
         </div>
         <div class="col-md-4 row pe-3">
-            <CaspianForm Model="UpsertData">
+            <CaspianForm Service="Service" >
                 <div class="row c-controls">
                     <div class="col-md-4">
                         <label>Order date</label>
                     </div>
                     <div class="col-md-8">
-                        <DatePicker @bind-Value="UpsertData.Date" />
+                        <DatePicker @bind-Value="Service.UpsertData.Date" />
                     </div>
                     <div class="col-md-4">
                         <label>Order type</label>
                     </div>
                     <div class="col-md-8">
-                        <DropdownList @bind-Value="UpsertData.OrderType" />
+                        <DropdownList @bind-Value="Service.UpsertData.OrderType" />
                     </div>
                     <div class="col-md-4">
                         <label>Customer</label>
                     </div>
                     <div class="col-md-8">
-                        <ComboBox TEntity="Customer" TValue="int?" @bind-Value="UpsertData.CustomerId"
+                        <ComboBox TEntity="Customer" TValue="int?" @bind-Value="Service.UpsertData.CustomerId"
                                   TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
                     </div>
                     <div class="col-md-4">
                         <label>Courier</label>
                     </div>
                     <div class="col-md-8">
-                        <ComboBox TEntity="Courier" TValue="int?" @bind-Value="UpsertData.CourierId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
+                        <ComboBox TEntity="Courier" TValue="int?" @bind-Value="Service.UpsertData.CourierId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
                     </div>
                     <div class="col-md-4">
                         <label>Description</label>
                     </div>
                     <div class="col-md-8">
-                        <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="4" />
+                        <StringTextBox @bind-Value="Service.UpsertData.Description" MultiLine Rows="4" />
                      </div>
                      <div class="col-md-12">
                          <FormCommandButton />
@@ -62,7 +63,7 @@
              </CaspianForm>
          </div>
          <div class="col-md-8 ps-3">
-             <ListView @ref="DataView" TEntity="OrderDeatil" ContentHeight="350" Inline Batch ConditionExpr="t => t.OrderId == MasterId"
+            <ListView TEntity="OrderDeatil" DetailsBatchService="Service" ContentHeight="350" Inline 
                        OnCancel="HideDescription" OnUpsert="HideDescription" OnSave="HideDescription" HideInsertIcon>
                  <HeaderTempalte>
                      <div class="d-listview-col-1">Product</div>
@@ -99,8 +100,16 @@
                          <div class="d-listview-col-3">
                              <TextField Field="t => t.Quantity.ToString()">
                                 <EditTemplate>
-                                    <NumericTextBox @ref="txtQuantity" @bind-Value="detail.Data.Quantity"
-                                    @onkeyup="@(async e => await UpsertOnEnter(e, detail.UpsertMode.Value))" />
+                                    @if (detail.UpsertMode == UpsertMode.Insert)
+                                    {
+                                        <NumericTextBox @ref="txtQuantityForInsert" @bind-Value="detail.Data.Quantity"
+                                        @onkeyup="@(async e => await UpsertOnEnter(e, detail.UpsertMode.Value))" />
+                                    }
+                                    else
+                                    {
+                                        <NumericTextBox @ref="txtQuantityForUpdate" @bind-Value="detail.Data.Quantity"
+                                                        @onkeyup="@(async e => await UpsertOnEnter(e, detail.UpsertMode.Value))" />
+                                    }
                                 </EditTemplate>
                              </TextField>
                          </div>
@@ -131,10 +140,16 @@
 @code
 {
     StringTextBox txtDescription;
-    NumericTextBox<int> txtQuantity;
+    NumericTextBox<int> txtQuantityForInsert, txtQuantityForUpdate;
     bool ShowDescriptionStatuse;
     OrderDeatil selectedDeatil;
     UpsertMode upsertMode;
+
+    protected override void OnInitialized()
+    {
+        Service.MasterId = OrderId;
+        base.OnInitialized();
+    }
 
     void HideDescription()
     {
@@ -170,15 +185,23 @@
             using var service = CreateScope().GetService<ProductService>();
             var old = await service.SingleAsync(detail.ProductId);
             detail.Price = old.Price;
-            if (detail.Quantity == 0)
+            if (detail.Id == 0)
+            {
                 detail.Quantity = 1;
-            await txtQuantity.FocusAsync();
+                await txtQuantityForInsert.FocusAsync();
+            }
+            else
+                await txtQuantityForUpdate.FocusAsync();
+
         }
     }
 
     async Task UpsertOnEnter(KeyboardEventArgs e, UpsertMode mode)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
-            await DataView.ValidateAndUpsert(mode);
+            await Service.DetailsDataView.ValidateAndUpsert(mode);
     }
+
+    [Parameter]
+    public int OrderId { get; set; }
 }

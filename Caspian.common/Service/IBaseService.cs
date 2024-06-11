@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 
 namespace Caspian.Common.Service
 {
@@ -22,6 +23,8 @@ namespace Caspian.Common.Service
         Task<TEntity> SingleAsync(int id);
 
         Task<TEntity> SingleOrDefaultAsync(int id);
+
+        Task<ValidationResult> ValidateRemoveAsync(TEntity entity);
     }
 
     public interface IBaseService

@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 row pe-3">
-                        <CaspianForm Service="Service" Model="Service.UpsertData">
+                        <CaspianForm Service="Service">
                             <div class="row c-controls">
                                 <div class="col-md-4">
                                     <label>Order date</label>
@@ -157,8 +157,16 @@
                                 </GridColumn>
                                 <GridColumn Field="t => t.Quantity" style="width:100px">
                                     <EditTemplate>
-                                        <NumericTextBox @ref="txtQuantity" @bind-Value="con.Data.Quantity"
-                                                        @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
+                                        @if (con.UpsertMode == UpsertMode.Insert)
+                                        {
+                                            <NumericTextBox @ref="txtQuantityForInsert" @bind-Value="con.Data.Quantity"
+                                            @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
+                                        }
+                                        else
+                                        {
+                                            <NumericTextBox @ref="txtQuantityForUpdate" @bind-Value="con.Data.Quantity"
+                                                            @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
+                                        }
                                     </EditTemplate>
                                 </GridColumn>
                                 <GridCommandColumns />
@@ -184,7 +192,7 @@
 </div>
 @code
 {
-    NumericTextBox<int> txtQuantity;
+    NumericTextBox<int> txtQuantityForInsert, txtQuantityForUpdate;
 
     [Parameter]
     public int OrderId { get; set; }
@@ -216,9 +224,13 @@
             using var service = CreateScope().GetService<ProductService>();
             var old = await service.SingleAsync(detail.ProductId);
             detail.Price = old.Price;
-            if (detail.Quantity == 0)
+            if (detail.Id == 0)
+            {
                 detail.Quantity = 1;
-            await txtQuantity.FocusAsync();
+                await txtQuantityForInsert.FocusAsync();
+            }
+            else
+                await txtQuantityForUpdate.FocusAsync();
         }
     }
 }

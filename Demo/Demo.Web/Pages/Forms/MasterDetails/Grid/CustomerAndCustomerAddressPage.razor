@@ -27,7 +27,7 @@
                         <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
                     </li>
                 </ul>
-                <DataGrid TEntity="Customer" MasterBatchService="Service" ContentHeight="400" 
+                <DataGrid TEntity="Customer" Service="Service" ContentHeight="400" 
                         DeleteMessage="با حذف مشتری آدرسهای وی نیز حذف می شود آیا با حذف موافقید؟">
                     <Columns>
                         <GridColumn Field="t => t.CustomerType" />

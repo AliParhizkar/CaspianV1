@@ -1,4 +1,5 @@
 ﻿@inherits BasePage
+@inject SimpleService<Product> Service
 @namespace Demo.Web.Pages
 @{
     base.BuildRenderTree(__builder);
@@ -11,57 +12,53 @@
                     <span class="c-demo-description">in this component we use CategoryId parameter in grid filtering and set category property of upsertProduct field on form submit.</span>
                 </div>
                 <div class="col-md-7">
-                    <CrudComponent UpsertData="upsertProduct">
-                        <DataGrid ConditionExpr="@(t => t.ProductCategoryId == CategoryId)" Search="searchProduct" ContentHeight="300">
-                            <Columns>
-                                <GridColumn Field="t => t.Title" />
-                                <GridColumn Field="t => t.Price.Seprate3Digit()" />
-                                <GridCommandColumns />
-                            </Columns>
-                        </DataGrid>
-                        <Window Title="Product CRUD" Style="width:500px">
-                            <Content>
-                                <CaspianForm Model="upsertProduct" OnSubmit="SetCategory">
-                                    <div class="row c-controls ps-4 pe-4">
-                                        <div class="col-md-4">
-                                            <label>Title</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <StringTextBox @bind-Value="upsertProduct.Title" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Price</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <NumericTextBox @bind-Value="upsertProduct.Price" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Take out price</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <NumericTextBox @bind-Value="upsertProduct.TakeoutPrice" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Meal</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <MultiSelectBox @bind-Value="upsertProduct.Meal" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Status</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <DropdownList @bind-Value="upsertProduct.ActiveType" />
-                                        </div>
-                                        <div class="col-md-4"></div>
-                                        <div class="col-md-8 align-content-center">
-                                            <FormCommandButton />
-                                        </div>
-                                    </div>
-                                </CaspianForm>
-                            </Content>
-                        </Window>
-                    </CrudComponent>
+                    <DataGrid TEntity="Product" Service="Service" ConditionExpr="@(t => t.ProductCategoryId == CategoryId)" ContentHeight="300">
+                        <Columns>
+                            <GridColumn Field="t => t.Title" />
+                            <GridColumn Field="t => t.Price.Seprate3Digit()" />
+                            <GridCommandColumns />
+                        </Columns>
+                    </DataGrid>
+                    <Window Service="Service" Title="Product CRUD" Style="width:500px">
+                        <CaspianForm Service="Service" OnSubmit="SetCategory">
+                            <div class="row c-controls ps-4 pe-4">
+                                <div class="col-md-4">
+                                    <label>Title</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <StringTextBox @bind-Value="Service.UpsertData.Title" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Price</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <NumericTextBox @bind-Value="Service.UpsertData.Price" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Take out price</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <NumericTextBox @bind-Value="Service.UpsertData.TakeoutPrice" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Meal</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <MultiSelectBox @bind-Value="Service.UpsertData.Meal" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Status</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
+                                </div>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-8 align-content-center">
+                                    <FormCommandButton />
+                                </div>
+                            </div>
+                        </CaspianForm>
+                    </Window>
                 </div>
             </div>
         </TabPanelItem>
@@ -74,14 +71,11 @@
 </TabPanel>
 @code
 {
-    Product upsertProduct = new Product();
-    Product searchProduct = new Product();
-
     [Parameter]
     public int CategoryId { get; set; }
 
     void SetCategory()
     {
-        upsertProduct.ProductCategoryId = CategoryId;
+        Service.UpsertData.ProductCategoryId = CategoryId;
     }
 }

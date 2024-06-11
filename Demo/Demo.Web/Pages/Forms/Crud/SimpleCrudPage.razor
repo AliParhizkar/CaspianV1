@@ -1,6 +1,8 @@
 ﻿@page "/Demo/SimpleCrud"
 @namespace Demo.Web
 @inherits BasePage
+@inject SimpleService<Country> CountryService
+@inject SimpleService<Product> ProductService
 @{
     base.BuildRenderTree(__builder);
 }
@@ -40,47 +42,43 @@
                     </span>
                 </div>
                 <div class="col-md-7">
-                    <CrudComponent UpsertData="countryData">
-                        <div class="row c-controls">
-                            <div class="col-md-4 ps-4">
-                                <label>Title</label>
-                            </div>
-                            <div class="col-md-8 pe-4">
-                                <StringTextBox @bind-Value="countrySearch.Title" Search />
-                            </div>
+                    <div class="row c-controls">
+                        <div class="col-md-4 ps-4">
+                            <label>Title</label>
                         </div>
-                        <DataGrid Search="countrySearch">
-                            <Columns>
-                                <GridColumn Field="t => t.Title" />
-                                <GridColumn Field="t => t.ActiveType.EnumText()" />
-                                <GridCommandColumns />
-                            </Columns>
-                        </DataGrid>
-                        <Window Title="Country" Style="width:450px;">
-                            <Content>
-                                <CaspianForm Model="countryData">
-                                    <div class="row c-controls ps-3 pe-3">
-                                        <div class="col-md-3">
-                                            <label>Title</label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <StringTextBox @bind-Value="countryData.Title" />
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label>Status</label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <DropdownList @bind-Value="countryData.ActiveType" />
-                                        </div>
-                                        <div class="col-md-3"></div>
-                                        <div class="col-md-9 text-center">
-                                            <WindowCommandButtons />
-                                        </div>
-                                    </div>
-                                </CaspianForm>
-                            </Content>
-                        </Window>
-                    </CrudComponent>
+                        <div class="col-md-8 pe-4">
+                            <StringTextBox @bind-Value="CountryService.Search.Title" />
+                        </div>
+                    </div>
+                    <DataGrid TEntity="Country" Service="CountryService">
+                        <Columns>
+                            <GridColumn Field="t => t.Title" />
+                            <GridColumn Field="t => t.ActiveType.EnumText()" />
+                            <GridCommandColumns />
+                        </Columns>
+                    </DataGrid>
+                    <Window Service="CountryService" Title="Country" Style="width:450px;">
+                        <CaspianForm Service="CountryService">
+                            <div class="row c-controls ps-3 pe-3">
+                                <div class="col-md-3">
+                                    <label>Title</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <StringTextBox @bind-Value="CountryService.UpsertData.Title" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Status</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <DropdownList @bind-Value="CountryService.UpsertData.ActiveType" />
+                                </div>
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9 text-center">
+                                    <WindowCommandButtons />
+                                </div>
+                            </div>
+                        </CaspianForm>
+                    </Window>
                 </div>
             </div>
         </TabPanelItem>
@@ -116,88 +114,84 @@
                         this is an <b>EventCallback</b>, we can use it's input parameter to <b>cancel the upsert</b>.
                     </span>
                 </div>
-                <CrudComponent TEntity="Product" UpsertData="upsertData" OnUpsert="ConfirmForPrice">
-                    <div class="row c-controls">
-                        <div class="col-md-3 ps-4">
-                            <label>Title</label>
-                        </div>
-                        <div class="col-md-6">
-                            <StringTextBox @bind-Value="searchData.Title" Search />
-                        </div>
+                <div class="row c-controls">
+                    <div class="col-md-3 ps-4">
+                        <label>Title</label>
                     </div>
-                    <DataGrid Search="searchData">
-                        <Columns>
-                            <GridColumn Field="t => t.Title" />
-                            <GridColumn Field="t => t.Price.Seprate3Digit()" />
-                            <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
-                            <GridColumn Field="t => t.ActiveType.EnumText()" />
-                            <GridCommandColumns />
-                        </Columns>
-                    </DataGrid>
-                    <Window Title="Product" Style="width:750px;">
-                        <Content>
-                            <CaspianForm Model="upsertData">
-                                <div class="row c-controls ps-3 pe-3">
+                    <div class="col-md-6">
+                        <StringTextBox @bind-Value="ProductService.Search.Title" Search />
+                    </div>
+                </div>
+                <DataGrid TEntity="Product" Service="ProductService">
+                    <Columns>
+                        <GridColumn Field="t => t.Title" />
+                        <GridColumn Field="t => t.Price.Seprate3Digit()" />
+                        <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
+                        <GridColumn Field="t => t.ActiveType.EnumText()" />
+                        <GridCommandColumns />
+                    </Columns>
+                </DataGrid>
+                <Window Service="ProductService" Title="Product" Style="width:750px;">
+                    <CaspianForm Service="ProductService">
+                        <div class="row c-controls ps-3 pe-3">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Product Category</label>
+                                    </div>
                                     <div class="col-md-8">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <label>Product Category</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="upsertData.ProductCategoryId" TextExpression="t => t.Title" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Title</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <StringTextBox @bind-Value="upsertData.Title" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Price</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <NumericTextBox @bind-Value="upsertData.Price" OnChange="@SetOuterPrice" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Take out price</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <NumericTextBox @bind-Value="upsertData.TakeoutPrice" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Status</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <DropdownList @bind-Value="upsertData.ActiveType" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Discountable</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <CheckBox @bind-Value="upsertData.Discountable" />
-                                            </div>
-                                        </div>
+                                        <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="ProductService.UpsertData.ProductCategoryId" TextExpression="t => t.Title" />
                                     </div>
-                                    <div class="col-md-4 ps-3">
-                                        <Fileupload OnChange="SetImage">
-                                            <PictureBox Data="upsertData.Image" style="width:200px;height:200px" />
-                                        </Fileupload>
+                                    <div class="col-md-4">
+                                        <label>Title</label>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label>Meal</label>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="ProductService.UpsertData.Title" />
                                     </div>
-                                    <div class="col-md-9">
-                                        <MultiSelectBox @bind-Value="upsertData.Meal" />
+                                    <div class="col-md-4">
+                                        <label>Price</label>
                                     </div>
-                                    <div class="col-md-4"></div>
-                                    <div class="col-md-8 text-center">
-                                        <WindowCommandButtons />
+                                    <div class="col-md-8">
+                                        <NumericTextBox @bind-Value="ProductService.UpsertData.Price" OnChange="@SetOuterPrice" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Take out price</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <NumericTextBox @bind-Value="ProductService.UpsertData.TakeoutPrice" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Status</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <DropdownList @bind-Value="ProductService.UpsertData.ActiveType" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Discountable</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <CheckBox @bind-Value="ProductService.UpsertData.Discountable" />
                                     </div>
                                 </div>
-                            </CaspianForm>
-                        </Content>
-                    </Window>
-                </CrudComponent>
+                            </div>
+                            <div class="col-md-4 ps-3">
+                                <Fileupload OnChange="SetImage">
+                                    <PictureBox Data="ProductService.UpsertData.Image" style="width:200px;height:200px" />
+                                </Fileupload>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Meal</label>
+                            </div>
+                            <div class="col-md-9">
+                                <MultiSelectBox @bind-Value="ProductService.UpsertData.Meal" />
+                            </div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-8 text-center">
+                                <WindowCommandButtons />
+                            </div>
+                        </div>
+                    </CaspianForm>
+                </Window>
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
@@ -214,24 +208,20 @@
 </p>
 @code
 {
-    Country countrySearch = new Country();
-    Country countryData = new Country();
-    Product searchData = new Product();
-    Product upsertData = new Product();
+    protected override void OnInitialized()
+    {
+        ProductService.OnUpsert = async t => (t.Price > 0 && t.TakeoutPrice > 0) || await base.Confirm("آیا با ثبت محصول با قیمت صفر موافقید؟");
+        base.OnInitialized();
+    }
 
     async Task SetImage(InputFileChangeEventArgs e)
     {
-        upsertData.Image = await e.File.GetByteArrayAsync();
+        ProductService.UpsertData.Image = await e.File.GetByteArrayAsync();
     }
 
     void SetOuterPrice()
     {
-        if (upsertData.TakeoutPrice == 0)
-            upsertData.TakeoutPrice = upsertData.Price;
-    }
-
-    async Task ConfirmForPrice(FormData<Product> formData)
-    {
-        formData.Cancel = upsertData.Price == 0 && !(await Confirm("Do you want to register the product with zero amount?"));
+        if (ProductService.UpsertData.TakeoutPrice == 0)
+            ProductService.UpsertData.TakeoutPrice = ProductService.UpsertData.Price;
     }
 }

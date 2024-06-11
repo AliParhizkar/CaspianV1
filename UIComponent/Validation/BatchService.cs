@@ -2,12 +2,12 @@
 using System.Reflection;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
+using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq.Expressions;
 
 namespace Caspian.UI
 {
@@ -59,11 +59,13 @@ namespace Caspian.UI
                 batchServiceData.MasterId = MasterId;
                 using var service = CreateScope().GetService<IBaseService<TMaster>>();
                 UpsertData = await service.SingleAsync(MasterId);
+                Form.Model = UpsertData;
             }
         }
 
         public void FormInitialize()
         {
+            Form.Model = UpsertData;
             Form.OnInternalReset = EventCallback.Factory.Create(this, async () =>
             {
                 DetailsDataView?.ClearSource();
@@ -72,7 +74,7 @@ namespace Caspian.UI
                 StateHasChanged();
             });
 
-            Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context1) =>
+            Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async context1 =>
             {
                 var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(context1.Model));
                 using var service = CreateScope().GetService<IMasterDetailsService<TMaster, TDetails>>();

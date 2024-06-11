@@ -52,15 +52,14 @@
             var expr = ValueExpression.Body;
             while (expr.NodeType == ExpressionType.MemberAccess)
             {
-                var property = (expr as MemberExpression).Member;
-                if (property.Name == "SearchData" || property.Name == "MemberSearch")
+                var property = (expr as MemberExpression).Member as PropertyInfo;
+                if (property?.Name == "Search")
                 {
-                    var type = property.DeclaringType;
-                    if (type.IsGenericType)
+                    var serviceType = typeof(SimpleService<>).MakeGenericType(property.PropertyType);
+                    if (property.DeclaringType == serviceType)
                     {
-                        var genericType = type.GetGenericTypeDefinition();
                         Search = true;
-                        BindingType = BindingType.OnInput; 
+                        break;
                     }
                 }
                 expr = (expr as MemberExpression).Expression;

@@ -33,10 +33,22 @@ namespace Caspian.UI
                 shouldFetchData = false;
                 using var service = ServiceScopeFactory.CreateScope().GetService<BaseService<TEntity>>();
                 var query = service.GetAll();
+                var param = Expression.Parameter(typeof(TEntity), "t");
+                Expression condExr = null;
                 if (ConditionExpr != null)
-                    query = query.Where(ConditionExpr);
+                    condExr = param.ReplaceParameter(ConditionExpr.Body);
                 if (InternalConditionExpr != null)
-                    query = query.Where(InternalConditionExpr);
+                {
+                    if (condExr == null)
+                        condExr = param.ReplaceParameter(InternalConditionExpr);
+                    else
+                        condExr = Expression.And(condExr, param.ReplaceParameter(InternalConditionExpr));
+                }
+                if (condExr != null)
+                {
+                    var lambda = Expression.Lambda(condExr, param);
+                    query = query.Where(lambda);
+                }
                 Total = await query.CountAsync();
                 var exprList = new List<MemberExpression>();
                 foreach(var expr in fieldsExpression)
