@@ -1,13 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -28,7 +24,6 @@ namespace Caspian.UI
         SearchState SearchState;
         ValidationMessageStore _messageStore;
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
-        ElementReference input;
         WindowStatus status;
 
         void SetSearchValue(ChangeEventArgs e)
@@ -47,6 +42,8 @@ namespace Caspian.UI
                 SearchStr = Text;
             }
         }
+
+        public ElementReference? InputElement { get; private set; }
 
         [Parameter]
         public bool HideHeader { get; set; }
@@ -79,6 +76,11 @@ namespace Caspian.UI
         public void Disable()
         {
             Disabled = true;
+        }
+
+        public void Dispose()
+        {
+            InputElement = null;
         }
 
         [Parameter]
@@ -361,7 +363,7 @@ namespace Caspian.UI
 
         public async Task FocusAsync()
         {
-            await input.FocusAsync();
+            await InputElement.Value.FocusAsync();
         }
 
         protected override void OnParametersSet()
@@ -427,7 +429,7 @@ namespace Caspian.UI
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindLookup", dotnet, input);
+                await jsRuntime.InvokeVoidAsync("$.caspian.bindLookup", dotnet, InputElement);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

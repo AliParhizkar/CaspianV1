@@ -75,12 +75,10 @@ html {
 .d-listview-product{
     margin:0 auto;
 }
-.d-product-content{
-    width:100%;
+.d-product-content {
+    width: calc(100% - 2px);
 }
-.c-dataview-header{
-    padding-right:9px
-}
+
 .d-listview-product .d-product-content:nth-child(2n) .d-flex {
     border-left: 1px solid white;
 }
@@ -109,6 +107,7 @@ html {
     padding: 6px 2px;
     overflow: hidden;
     user-select: none;
+    background-color: #f0f0f0;
 }
 .d-list-head {
     display: flex;

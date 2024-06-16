@@ -6,37 +6,25 @@
         let isopen;
         function setHeight() {
             let div = document.getElementById('_1');
-            if (isopen)
-                div.style.maxHeight = '150px';
-            else
-                div.style.maxHeight = '15px';
-            isopen = !isopen;
+            const resizeObserver = new ResizeObserver(entries => {
+                console.log(div.getClientRects()[0].width)
+            });
+            resizeObserver.observe(div);
         }
     </script>
     <style type="text/css">
-        .d-color-id {
-            position: absolute;
-            left: 0px;
-            right: 0;
-            top:0;
-            bottom:0;
-            border: 1px solid red;
-            width: fit-content;
-            height: fit-content;
-            margin: auto auto;
-            border-radius:15px;
-        }
-        .d-content-template{
-            width:300px;
-            height:200px;
+        .d-test{
+            border:1px solid red;
+            width:150px;
+            margin:10px auto;
+            height:50px;
         }
     </style>
 </head>
 <body style="margin:0;padding:0">
-    <div style="margin:10px auto; width:150px;">
-        <div style="">
-
-        </div>
+    <div id="_1" class="d-test">
+        
     </div>
+    <button onclick="setHeight()">Bind</button>
 </body>
 </html>

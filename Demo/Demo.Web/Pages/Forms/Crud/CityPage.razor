@@ -1,6 +1,8 @@
 ﻿@page "/Demo/City/{CountryId:int}"
 @namespace Demo.Web.Pages
 @inherits BasePage
+@inject SimpleService<City> Service
+
 @{
     base.BuildRenderTree(__builder);
 }
@@ -10,49 +12,45 @@
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
-            <CrudComponent UpsertData="upsertCity">
-                <div class="row c-controls pt-3">
-                    <div class="col-md-3 ps-4">
-                        <label>Title</label>
-                    </div>
-                    <div class="col-md-6">
-                        <StringTextBox @bind-Value="searchCity.Title" />
-                    </div>
+            <div class="row c-controls pt-3">
+                <div class="col-md-3 ps-4">
+                    <label>Title</label>
                 </div>
-                <div class="p-4 pt-1">
-                    <DataGrid Search="searchCity" ConditionExpr="t => CountryId == 0 || t.CountryId == CountryId" ContentHeight="350">
-                        <Columns>
-                            <GridColumn Field="t => t.Title" />
-                            <GridColumn Field="t => t.ActiveType.EnumText()" />
-                            <GridCommandColumns />
-                        </Columns>
-                    </DataGrid>
+                <div class="col-md-6">
+                    <StringTextBox @bind-Value="Service.Search.Title" />
                 </div>
-                <Window Title="City" Style="width:450px">
-                    <Content>
-                        <CaspianForm Model="upsertCity" OnSubmit="SetCountryId">
-                            <div class="row c-controls ps-4 pe-4">
-                                <div class="col-md-3">
-                                    <label>Title</label>
-                                </div>
-                                <div class="col-md-9">
-                                    <StringTextBox @bind-Value="upsertCity.Title" />
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Status</label>
-                                </div>
-                                <div class="col-md-9">
-                                    <DropdownList @bind-Value="upsertCity.ActiveType" />
-                                </div>
-                                <div class="col-md-3"></div>
-                                <div class="col-md-9">
-                                    <FormCommandButton />
-                                </div>
-                            </div>
-                        </CaspianForm>
-                    </Content>
-                </Window>
-            </CrudComponent>
+            </div>
+            <div class="p-4 pt-1">
+                <DataGrid TEntity="City" Service="Service" ConditionExpr="t => t.CountryId == CountryId" ContentHeight="350">
+                    <Columns>
+                        <GridColumn Field="t => t.Title" />
+                        <GridColumn Field="t => t.ActiveType.EnumText()" />
+                        <GridCommandColumns />
+                    </Columns>
+                </DataGrid>
+            </div>
+            <Window Title="City" Style="width:450px">
+                <CaspianForm Service="Service" OnSubmit="SetCountryId">
+                    <div class="row c-controls ps-4 pe-4">
+                        <div class="col-md-3">
+                            <label>Title</label>
+                        </div>
+                        <div class="col-md-9">
+                            <StringTextBox @bind-Value="Service.UpsertData.Title" />
+                        </div>
+                        <div class="col-md-3">
+                            <label>Status</label>
+                        </div>
+                        <div class="col-md-9">
+                            <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
+                        </div>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-9">
+                            <FormCommandButton />
+                        </div>
+                    </div>
+                </CaspianForm>
+            </Window>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
             <Document FolderName="Crud" FileName="ParameterCrud2" />
@@ -62,12 +60,9 @@
 
 @code
 {
-    City upsertCity = new City();
-    City searchCity = new City();
-
     void SetCountryId()
     {
-        upsertCity.CountryId = CountryId;
+        Service.UpsertData.CountryId = CountryId;
     }
 
     [Parameter]

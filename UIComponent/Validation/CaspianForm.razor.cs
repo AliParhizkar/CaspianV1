@@ -17,6 +17,7 @@ namespace Caspian.UI
         string ICaspianForm.MasterIdName { get; set; }
         bool ICaspianForm.IgnoreOnValidSubmit { get; set; }
         TEntity oldModel;
+        IControl firstControl;
 
         [CascadingParameter]
         public CrudComponent<TEntity> CrudComponent { get; set; }
@@ -30,7 +31,7 @@ namespace Caspian.UI
         public EditContext EditContext { get; private set; }
 
         [Parameter]
-        public IMasterBatchService<TEntity> Service { get; set; }
+        public ISimpleService<TEntity> Service { get; set; }
 
         [Parameter]
         public EventCallback<EditContext> OnInvalidSubmit { get; set; }
@@ -52,6 +53,18 @@ namespace Caspian.UI
 
         internal EventCallback OnInternalReset { get; set; }
 
+        public void SetFirstControl(IControl control)
+        {
+            if (firstControl == null || firstControl.InputElement == null) 
+                firstControl = control;
+        }
+
+        public async Task FocusAsync()
+        {
+            if (firstControl != null) 
+                await firstControl?.FocusAsync();
+        }
+
         public void AddControl(IControl control)
         {
             if (addControls)
@@ -63,12 +76,6 @@ namespace Caspian.UI
         }
 
         public CaspianValidationValidator ValidationValidator { get; set; }
-
-        public async Task FocusToFirstControlAsync()
-        {
-            if (controls.Count > 0)
-                await controls[0].FocusAsync();
-        }
 
         public IControl GetFirstInvalidControl()
         {
@@ -153,12 +160,13 @@ namespace Caspian.UI
 
         async Task ResetFormAsync()
         {
-            foreach (var control in controls)
-            {
-                await control.ResetAsync();
-            }
-            if (OnReset.HasDelegate)
-                await OnReset.InvokeAsync();
+            //firstControl = null;
+            //foreach (var control in controls)
+            //{
+            //    await control.ResetAsync();
+            //}
+            //if (OnReset.HasDelegate)
+            //    await OnReset.InvokeAsync();
         }
 
         protected override void OnParametersSet()
@@ -195,6 +203,11 @@ namespace Caspian.UI
             ErrorMessage = null;
             await OnSubmit.InvokeAsync(EditContext);
             EditContext.Validate();
+        }
+
+        public void Dispose()
+        {
+            Service?.ClearForm();
         }
 
     }

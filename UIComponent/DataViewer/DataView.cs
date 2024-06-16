@@ -64,10 +64,10 @@ namespace Caspian.UI
         public bool HideInsertIcon { get; set; }
 
         [Parameter]
-        public IMasterBatchService<TEntity> Service { get; set; }
+        public ISimpleService<TEntity> Service { get; set; }
 
         [Parameter]
-        public IDetailsBatchService<TEntity> DetailsBatchService { get; set; }
+        public IDetailBatchService<TEntity> DetailBatchService { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, bool>> ConditionExpr { get; set; }
@@ -135,13 +135,13 @@ namespace Caspian.UI
                 CreateInsert();
             if (Service != null)
             {
-                Service.MasterDataView = this;
-                Service.MasterGridInitialize();
+                Service.DataView = this;
+                Service.DataViewInitialize();
             }
-            if (DetailsBatchService != null)
+            if (DetailBatchService != null)
             {
-                DetailsBatchService.DetailsDataView = this;
-                DetailsBatchService.DetailGridInitialize();
+                DetailBatchService.DetailDataView = this;
+                DetailBatchService.DetailDataViewInitialize();
             }
             base.OnInitialized();
         }
@@ -316,7 +316,7 @@ namespace Caspian.UI
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
             await service.AddAsync(entity);
-            DetailsBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>() 
+            DetailBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>() 
             { 
                 Entity = entity, 
                 ChangeStatus = ChangeStatus.Added 
@@ -345,7 +345,7 @@ namespace Caspian.UI
             if (id > 0)
             {
                 var isExist = false;
-                foreach(var item in DetailsBatchService.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
+                foreach(var item in DetailBatchService.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
                 {
                     var newId = Convert.ToInt32(pkey.GetValue(item.Entity));
                     if (id == newId)
@@ -356,7 +356,7 @@ namespace Caspian.UI
                 }
                 if (!isExist)
                 {
-                    DetailsBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>()
+                    DetailBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>()
                     {
                         ChangeStatus = ChangeStatus.Updated,
                         Entity = entity
@@ -443,22 +443,22 @@ namespace Caspian.UI
                 await ChangePageNumber(pageNumber);
                 if (id > 0)
                 {
-                    foreach (var item in DetailsBatchService.ChangedEntities)
+                    foreach (var item in DetailBatchService.ChangedEntities)
                     {
                         var newId = Convert.ToInt32(pKey.GetValue(item.Entity));
                         if (newId == id)
                         {
-                            DetailsBatchService.ChangedEntities.Remove(item);
+                            DetailBatchService.ChangedEntities.Remove(item);
                             break;
                         }
                     }
-                    DetailsBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
+                    DetailBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
                     deletedEntities.Add(entity);
                 }
                 else
                 {
-                    var old = DetailsBatchService.ChangedEntities.Single(t => t.Entity == entity);
-                    DetailsBatchService.ChangedEntities.Remove(old);
+                    var old = DetailBatchService.ChangedEntities.Single(t => t.Entity == entity);
+                    DetailBatchService.ChangedEntities.Remove(old);
                 }
             }
             else
@@ -515,6 +515,7 @@ namespace Caspian.UI
             source = new List<TEntity>();
             Total = 0;
             items = new List<TEntity>();
+            StateHasChanged();
         }
 
         public async Task ReloadAsync()

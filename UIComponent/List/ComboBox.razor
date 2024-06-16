@@ -17,7 +17,7 @@
 }
 <div style="@Style" class="t-widget t-combobox" error-message="@ErrorMessage">
     <div class="@className">
-        <input @ref="input" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await OnNochangeKeyDown(arg)"
+        <input @ref="InputElement" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await OnNochangeKeyDown(arg)"
                
                @oninput="async arg => await OnChangeValue(arg)" type="text" class="t-input" />
         <span @onmousedown="ToggelDropdownList" class="t-select t-header">

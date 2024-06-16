@@ -11,17 +11,17 @@
 <div class="@className" error-message="@ErrorMessage">
     @if (MultiLine)
     {
-        <textarea @ref="inputElement" style="@Style" @attributes="InputAttributes" @onchange="ChangeValue">@Value</textarea>
+        <textarea @ref="InputElement" style="@Style" @attributes="InputAttributes" @onchange="ChangeValue">@Value</textarea>
     }
     else
     {
         @if (base.BindingType == BindingType.OnChange)
         {
-            <input value="@Value" @onchange="ChangeValue" @ref="inputElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
+            <input value="@Value" @onchange="ChangeValue" @ref="InputElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
         }
         else
         {
-            <input value="@Value" @oninput="ChangeValue" @ref="inputElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
+            <input value="@Value" @oninput="ChangeValue" @ref="InputElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
         }
     }
 </div>
@@ -122,7 +122,7 @@
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindStringbox", inputElement);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindStringbox", InputElement);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

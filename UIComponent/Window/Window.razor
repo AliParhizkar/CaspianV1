@@ -70,7 +70,7 @@
     public RenderFragment Content { get; set; }
 
     [Parameter]
-    public ISimpleCrudService Service { get; set; }
+    public ISimpleService Service { get; set; }
 
     [Parameter]
     public RenderFragment HeaderTemplate { get; set; }
@@ -195,7 +195,11 @@
             if (OnOpen.HasDelegate)
                 await OnOpen.InvokeAsync();
         }
-
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public void Dispose()
+    {
+        Service?.ClearWindow();
     }
 }

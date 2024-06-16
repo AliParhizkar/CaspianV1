@@ -14,7 +14,7 @@ namespace Caspian.UI
         Task SetValue(object value);
     }
 
-    public interface IWindow
+    public interface IWindow: IDisposable
     {
         Task Close();
         

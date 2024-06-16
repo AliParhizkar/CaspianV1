@@ -32,10 +32,10 @@
     }
     @if (BindingType == BindingType.OnChange)
     {
-        <input @ref="inputElement" @attributes="InputAttributes" value="@text" @onchange="onChangeValue" class="t-input" />
+        <input @ref="InputElement" @attributes="InputAttributes" value="@text" @onchange="onChangeValue" class="t-input" />
     }
     else
     {
-        <input @ref="inputElement" maxlength="@maxLength" value="@text" @attributes="InputAttributes" @oninput="onChangeValue" class="t-input" />
+        <input @ref="InputElement" maxlength="@maxLength" value="@text" @attributes="InputAttributes" @oninput="onChangeValue" class="t-input" />
     }
 </div>

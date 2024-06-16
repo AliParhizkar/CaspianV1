@@ -20,7 +20,7 @@
 }
 
 <div style="@Style" closeOnBlur="@CloseOnBlur" error-message="@ErrorMessage" status="@status.ConvertToInt()" class="@className" autoHide="@AutoHide">
-    <input @ref="input" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => await OnKeyDownHandler(e))"
+    <input @ref="InputElement" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => await OnKeyDownHandler(e))"
            @attributes="inputAttrs" @onkeyup="@(async e => await OnKeyUp(e))" />
     @if (!HideIcon)
     {

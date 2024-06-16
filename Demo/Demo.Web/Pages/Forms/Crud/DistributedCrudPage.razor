@@ -25,12 +25,12 @@
                             <label>Product Category</label>
                         </div>
                         <div class="col-md-9">
-                            <ComboBox TEntity="ProductCategory" TValue="int?" @bind-Value="categoryId" TextExpression="t => t.Title" OnChanged="() => Service.MasterDataView.EnableLoading()" />
+                            <ComboBox TEntity="ProductCategory" TValue="int?" @bind-Value="categoryId" TextExpression="t => t.Title" OnChanged="() => Service.DataView.EnableLoading()" />
                         </div>
                     </div>
-    <div class="c-body ps-3 pe-3">
-        @if (categoryId.HasValue)
-        {
+                    <div class="c-body ps-3 pe-3">
+                        @if (categoryId.HasValue)
+                        {
                             <DataGrid TEntity="Product" Service="Service" ContentHeight="350"
                                       ConditionExpr="@(t => t.ProductCategoryId == categoryId)">
                                 <Columns>
@@ -88,8 +88,8 @@
                                     </div>
                                 </CaspianForm>
                             </Window>
-        }
-    </div>
+                        }
+                    </div>
                 </div>
             </div>
         </TabPanelItem>

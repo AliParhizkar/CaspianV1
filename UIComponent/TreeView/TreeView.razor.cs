@@ -203,13 +203,16 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             AutoComplete?.SetTreeView(this);
-            var info = typeof(TEntity).GetForeignKey(typeof(TEntity));
-            if (info != null)
+            if (typeof(TEntity) != typeof(NodeView))
             {
-                parentNodeFilterFunc = entity =>
+                var info = typeof(TEntity).GetForeignKey(typeof(TEntity));
+                if (info != null)
                 {
-                    return info.GetValue(entity) == null;
-                };
+                    parentNodeFilterFunc = entity =>
+                    {
+                        return info.GetValue(entity) == null;
+                    };
+                }
             }
             base.OnInitialized();
         }

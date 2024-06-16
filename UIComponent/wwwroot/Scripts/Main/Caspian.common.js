@@ -96,6 +96,31 @@
             if ($.caspian.editor)
                 $.caspian.editor.getModel().setValue(code);
         },
+        setListHeaderPadding($list) {
+            let $content = $list.find('.c-dataview-content');
+            let height = $content.outerHeight();
+            $content.css('overflow', 'visible').css('height', 'auto');
+            let realHeight = $content.outerHeight();
+            $content.css('overflow', 'auto').css('height', height);
+            if (realHeight > height)
+                $list.find('.c-dataview-header').css('padding-right', '11px');
+            else
+                $list.find('.c-dataview-header').css('padding-right', '0');
+        },
+        bindListView(list) {
+            $c.setListHeaderPadding($(list));
+            const mutationObserver = new MutationObserver(t => {
+                if (t.length > 1) {
+                    let $list = $(t[t.length - 1].target).closest('.c-widget.c-data-view');
+                    $c.setListHeaderPadding($($list));
+                }
+            });
+            mutationObserver.observe($(list).find('.c-dataview-content')[0], {
+                attributes: false,
+                childList: true,
+                subtree: true
+            });
+        },
         setEditoPosition: function (element, lineNumber, column) {
             //let editor = $.caspian.editor;
             //editor.focus();
@@ -151,6 +176,7 @@
         fitMainToParent: function () {
 
         },
+
         setMinute: function (elm, e, type) {
             let from = $(elm).attr('from');
             let to = $(elm).attr('to');
@@ -960,8 +986,17 @@
                 mutationList.forEach(mutation => {
                     if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
                         let status = $(mutation.target).attr('status');
-                        if (status == 1)
-                            $('.c-content-main').css('overflow', 'auto');
+                        if (status == 1) {
+                            let openWindowIsExist = false;
+                            $('.t-widget.t-window').each((index, item) => {
+                                if ($(item).find('.t-window-content').attr('status') == 2) {
+                                    openWindowIsExist = true;
+                                    return 0;
+                                }
+                            });
+                            if (!openWindowIsExist)
+                                $('.c-content-main').css('overflow', 'auto');
+                        }
                         else
                             $('.c-content-main').css('overflow', 'hidden');
                         let $window = $(mutation.target).closest('.t-window');

@@ -348,7 +348,7 @@ input[type='range']::-webkit-slider-thumb {
     vertical-align:middle;
 }
 .c-dataview-header {
-    background-color: #f0f0f0;
+    background-color: #e1e1e1;
     height: 36px;
     font-weight: bold;
     font-size: 14px;
@@ -1020,9 +1020,9 @@ progress::-webkit-progress-value {
             font-weight: bold;
             font-size: 14px;
         }
-        body {
-            height: 100vh;
-        }
+body {
+    height: 100vh;
+}
 .c-popup-window {
     margin: auto auto;
     width: fit-content;

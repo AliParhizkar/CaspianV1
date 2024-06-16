@@ -12,7 +12,7 @@
                     <span class="c-demo-description">in this component we use CategoryId parameter in grid filtering and set category property of upsertProduct field on form submit.</span>
                 </div>
                 <div class="col-md-7">
-                    <DataGrid TEntity="Product" Service="Service" ConditionExpr="@(t => t.ProductCategoryId == CategoryId)" ContentHeight="300">
+                    <DataGrid TEntity="Product" Service="Service" ConditionExpr="t => t.ProductCategoryId == CategoryId" ContentHeight="300">
                         <Columns>
                             <GridColumn Field="t => t.Title" />
                             <GridColumn Field="t => t.Price.Seprate3Digit()" />

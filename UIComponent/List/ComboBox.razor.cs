@@ -33,7 +33,6 @@ namespace Caspian.UI
         IList items;
         bool shouldRender = true;
         bool focused;
-        protected ElementReference input;
 
         IList<Expression> fieldsExpression;
         bool fieldsAdd;
@@ -41,6 +40,7 @@ namespace Caspian.UI
 
         internal int SelectedIndex { get; set; }
 
+        public ElementReference? InputElement { get; private set; }
 
         [Parameter]
         public IEnumerable<SelectListItem> Source { get; set; }
@@ -106,6 +106,11 @@ namespace Caspian.UI
 
         [Parameter]
         public EventCallback OnChange { get; set; }
+
+        public void Dispose()
+        {
+            InputElement = null;
+        }
 
         async Task ToggelDropdownList()
         {
@@ -255,10 +260,14 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            CaspianForm?.AddControl(this);
-            //LoadData = true;
             text = "";
             base.OnInitialized();
+        }
+
+        protected override void OnParametersSet()
+        {
+            CaspianForm?.AddControl(this);
+            base.OnParametersSet();
         }
 
         public void AddDataField(Expression expression)
@@ -415,9 +424,16 @@ namespace Caspian.UI
             }
         }
 
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+                CaspianForm?.SetFirstControl(this);
+            base.OnAfterRender(firstRender);
+        }
+
         private void CurrentEditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
         {
-
+            
         }
 
         private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
@@ -613,7 +629,7 @@ namespace Caspian.UI
 
         public async Task FocusAsync()
         {
-            await input.FocusAsync();
+            await InputElement.Value.FocusAsync();
         }
 
         public async Task IncPageNumber()
@@ -638,12 +654,12 @@ namespace Caspian.UI
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindComboBox", dotnet, input, Pageable);
+                await jsRuntime.InvokeVoidAsync("$.caspian.bindComboBox", dotnet, InputElement, Pageable);
             }
             if (focused)
             {
                 focused = false;
-                await input.FocusAsync();
+                await InputElement.Value.FocusAsync();
             }
             if (valueChanged)
             {

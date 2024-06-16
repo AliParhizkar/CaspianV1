@@ -15,7 +15,7 @@
     if (Disabled)
         className += " t-state-disabled";
 } 
-<div @ref="inputElement" class="t-widget t-timepicker" style="@(Style)">
+<div @ref="InputElement" class="t-widget t-timepicker" style="@(Style)">
     <div @attributes="attrs" class="@className">
         @if (DefaultMode)
         {
@@ -93,7 +93,7 @@
         if (firstRender)
         {
             var dotnet = DotNetObjectReference.Create(this);
-            await JSRuntime.InvokeVoidAsync("$.caspian.bindTimepicker", dotnet, inputElement);
+            await JSRuntime.InvokeVoidAsync("$.caspian.bindTimepicker", dotnet, InputElement);
         }
         await base.OnAfterRenderAsync(firstRender);
     }

@@ -2,21 +2,20 @@
 @typeparam TEntity
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 @inherits DataView<TEntity>
-
 <CascadingValue Value="this" Name="DataView">
-    @if (fieldsExpression == null)
-    {
-        fieldsExpression = new List<Expression>();
-        @Fields(default)
-    }
-    else
-    {
-        var style = ContentHeight == null ? null : $"height:{ContentHeight}";
-        <div class="c-widget c-data-view">
-            <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" />
-            <div class="c-dataview-header">
-                @HeaderTempalte
-            </div>
+    <div @ref="element" class="c-widget c-data-view">
+        <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" />
+        <div class="c-dataview-header">
+            @HeaderTempalte
+        </div>
+        @if (fieldsExpression == null)
+        {
+            fieldsExpression = new List<Expression>();
+            @Fields(default)
+        }
+        else
+        {
+            var style = ContentHeight == null ? null : $"height:{ContentHeight}px;";
             <div class="c-dataview-content" style="@(style)">
                 @if (insertedEntity?.UpsertMode != null && Inline && UpsertType == UpsertType.Inline)
                 {
@@ -39,20 +38,20 @@
                         index++;
                         var rowIndex = index;
                         var rowData = new RowData<TEntity>()
-                        {
-                            Data = item,
-                            RowIndex = rowIndex,
-                            UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
-                        };
+                            {
+                                Data = item,
+                                RowIndex = rowIndex,
+                                UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
+                            };
                         <CascadingValue Value="rowData" Name="RowData">
                             @if (item == selectedEntity)
                             {
-                            <CascadingValue Value="EditContext">
-                                <CaspianValidationValidator @ref="validator" Source="source" ValidatorType="serviceType" />
-                                <CaspianContainer @ref="updateContiner">
-                                    @Fields(rowData)
-                                </CaspianContainer>
-                            </CascadingValue>
+                                <CascadingValue Value="EditContext">
+                                    <CaspianValidationValidator @ref="validator" Source="source" ValidatorType="serviceType" />
+                                    <CaspianContainer @ref="updateContiner">
+                                        @Fields(rowData)
+                                    </CaspianContainer>
+                                </CascadingValue>
 
                             }
                             else
@@ -64,8 +63,11 @@
                 }
             </div>
             <DataPager PageNumber="pageNumber" PageNumberChanged="async t => await ChangePageNumber(t)" TotalRecord="Total" PageSize="PageSize" />
-        </div>
-    }
+        }
+    </div>
+
+
+
 </CascadingValue>
 @if (UpsertType != UpsertType.Inline)
 {

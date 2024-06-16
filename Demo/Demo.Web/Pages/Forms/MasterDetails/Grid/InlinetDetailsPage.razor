@@ -139,7 +139,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                         <DataGrid DetailsBatchService="Service" TEntity="OrderDeatil" ContentHeight="250" Inline>
+                         <DataGrid DetailBatchService="Service" TEntity="OrderDeatil" ContentHeight="250" Inline>
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Product.Title" Title="Product">
                                     <EditTemplate>
@@ -160,7 +160,7 @@
                                         @if (con.UpsertMode == UpsertMode.Insert)
                                         {
                                             <NumericTextBox @ref="txtQuantityForInsert" @bind-Value="con.Data.Quantity"
-                                            @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
+                                                    @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
                                         }
                                         else
                                         {
@@ -200,20 +200,14 @@
     protected override void OnInitialized()
     {
         Service.MasterId = OrderId;
+        Service.OnCreate = t => t.Date = DateTime.Now;
         base.OnInitialized();
     }
-
-    // protected override async Task OnMasterEntityCreatedAsync()
-    // {
-    //     if (UpsertData.Id == 0)
-    //         UpsertData.Date = DateTime.Now.Date;
-    //     await base.OnMasterEntityCreatedAsync();
-    // }
 
     async Task UpsertOnEnter(KeyboardEventArgs e, UpsertMode mode)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
-            await Service.DetailsDataView.ValidateAndUpsert(mode);
+            await Service.DetailDataView.ValidateAndUpsert(mode);
     }
 
 

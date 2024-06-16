@@ -59,7 +59,7 @@ namespace Caspian.UI
             {
                 errorMessage = ErrorMessage,
             });
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindMultiSelect", inputElement, json);
+            await jsRuntime.InvokeVoidAsync("$.caspian.bindMultiSelect", InputElement, json);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

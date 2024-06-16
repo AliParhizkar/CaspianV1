@@ -1,10 +1,29 @@
 ﻿@using Caspian.UI
 @using Demo.Model
 
-
-
-@code 
+@if (flag)
 {
+
+    @Template
+}
+else
+{
+    @Template
+}
+
+@if (flag)
+{
+    @Template
+}
+
+
+<button @onclick="() => flag = !flag">Toggle</button>
+
+@code
+{
+    bool flag;
+
     [Parameter]
-    public BatchService<Customer, CustomerAddress> Service { get; set; }
+    public RenderFragment Template { get; set; }
+
 }

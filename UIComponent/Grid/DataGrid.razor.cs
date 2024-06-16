@@ -129,14 +129,18 @@ namespace Caspian.UI
         {
             if (firstRender)
             {
-                await jsRuntime.InvokeVoidAsync("$.caspian.dadaGridBind", mainDiv);
                 shouldFetchData = true;
                 await DataBind();
+                await jsRuntime.InvokeVoidAsync("$.caspian.dadaGridBind", mainDiv);
                 StateHasChanged();
             }
 
             if (FormAppState.Control != null)
+            {
+                if (FormAppState.Control.InputElement.HasValue)
+                    await FormAppState.Control.FocusAsync();
                 FormAppState.Control = null;
+            }
             else if (errorMessage.HasValue())
             {
                 await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
@@ -538,9 +542,9 @@ namespace Caspian.UI
             if (shouldFetchData && columnsData != null && Batch)
             {
                 await DataBind();
-                if (DetailsBatchService.ChangedEntities == null)
+                if (DetailBatchService.ChangedEntities == null)
                     throw new CaspianException($"Caspian Exception: please specify ChangedEntities parameter in DataGrid<{typeof(TEntity).Name}>");
-                foreach(var entity in DetailsBatchService.ChangedEntities)
+                foreach(var entity in DetailBatchService.ChangedEntities)
                 {
                     if (entity.ChangeStatus == ChangeStatus.Added)
                         source.Add(entity.Entity);

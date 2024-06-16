@@ -75,7 +75,7 @@ namespace Caspian.UI
             if (!json.Equals(oldJson))
             {
                 oldJson = json;
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", inputElement, json, UiControlType.TextBox);
+                await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", InputElement, json, UiControlType.TextBox);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

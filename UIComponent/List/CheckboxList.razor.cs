@@ -151,7 +151,7 @@ namespace Caspian.UI
         public string Title { get; set; }
 
         [Parameter]
-        public IDetailsBatchService<TDetails> Service { get; set; }
+        public IDetailBatchService<TDetails> Service { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, string>> TextExpression { get; set; }

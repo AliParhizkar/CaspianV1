@@ -171,7 +171,7 @@ namespace Caspian.UI
                             UpsertData.CopySimpleProperty(tempData);
                             if (UpsertForm != null && !UpsertForm.OnInternalSubmit.HasDelegate)
                                 FormInitial();
-                            await UpsertForm?.FocusToFirstControlAsync();
+                            
                         });
                     }
                     else
@@ -189,7 +189,6 @@ namespace Caspian.UI
                         UpsertData.CopySimpleProperty(tempData);
                         if (UpsertForm != null && !UpsertForm.OnInternalSubmit.HasDelegate)
                             FormInitial();
-                        await UpsertForm?.FocusToFirstControlAsync();
                     }
                 });
                 if (errorMessage != null)

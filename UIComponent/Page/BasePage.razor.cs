@@ -3,10 +3,11 @@ using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Reflection;
 
 namespace Caspian.UI
 {
-    public partial class BasePage: ComponentBase
+    public partial class BasePage: ComponentBase, IDisposable
     {
         string message;
         protected MessageBox MessageBox;
@@ -50,11 +51,6 @@ namespace Caspian.UI
             }
             await base.OnInitializedAsync();
         }
-
-        /// <summary>
-        /// Create in OnInitialized and dispose in OnAfterRenderAsync
-        /// </summary>
-        public IServiceScope GlobalScope { get; private set; }
 
         protected IServiceScope CreateScope()
         {
@@ -119,8 +115,6 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (GlobalScope == null)
-                GlobalScope = CreateScope();
             if (ClassNameContainner != null)
                 ClassNameContainner.ClassName = this.GetType().Name;
             BaseService.Target = this;
@@ -160,12 +154,12 @@ namespace Caspian.UI
                 await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
                 message = null;
             }
-            if (GlobalScope != null)
-            {
-                GlobalScope.Dispose();
-                GlobalScope = CreateScope();
-            }
             await base.OnAfterRenderAsync(firstRender);
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }

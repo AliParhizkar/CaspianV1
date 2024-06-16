@@ -4,7 +4,6 @@
 @implements IValidate
 @implements IControl
 
-
 @code
 {
     string _FieldName;
@@ -13,7 +12,8 @@
     bool reseting;
     EditContext oldContext;
     protected bool focuced;
-    protected ElementReference inputElement;
+
+    public ElementReference? InputElement { get; protected set; }
 
     [Inject]
     public FormAppState FormAppState { get; set; }
@@ -169,14 +169,7 @@
     public async Task FocusAsync()
     {
         focuced = true;
-        try
-        {
-            await inputElement.FocusAsync();
-        }
-        catch(JSException ex)
-        {
-            Console.WriteLine(ex);
-        }
+        await InputElement.Value.FocusAsync();
     }
 
     public virtual async Task ResetAsync()
@@ -248,12 +241,19 @@
 
     public void Dispose()
     {
-        
+        InputElement = null;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+            CaspianForm?.SetFirstControl(this);
+        base.OnAfterRender(firstRender);
     }
 
     private void CurrentEditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
     {
-
+        
     }
 
     private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)

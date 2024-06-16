@@ -2,16 +2,20 @@
 @page "/Demo/ListView"
 <h2>List view</h2>
 <p>
-    We use this control to <b>display a list</b> with a <b>custom template</b>, unlike Grid, the programmer can set the <b>Header</b> and <b>Content Template</b>.
+    We use this control to <b>display a list</b> with a <b>custom Template</b>, unlike the Grid, which has a specific structure, the ListView does not have a specific structure.
+</p>
+<h3>Databinding</h3>
+<p>
+    We can easily bind the ListView to the <b>entity</b>, we just specify the <b>TEntity parameter</b>, then we can declare the <b>HeaderTemplate</b> and <b>Fields</b>We use the <b>TextField</b> and <b>ImageField</b> components to <b>bind</b> the Listview to the <b>database</b>. We just need to set the <b>Field parameter</b>(this is a lambda expression).
 </p>
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content ps-3 pe-3">
                 <div class="row">
-                    <div class="col-md-4 pe-3">
+                    <div class="col-md-5 pe-3">
                         <h4>Bind To Data</h4>
-                        <span class="c-demo-description">We use from <b>TextFiel</b> and <b>ImageField</b> components to bind Listview to data</span>
+                        <span class="c-demo-description">We use from <b>TextFiel</b>() and <b>ImageField</b> components to bind Listview to data</span>
                         <h5>Componets:</h5>
                         <ul class="d-demo-inner-list">
                             <li>
@@ -22,20 +26,20 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="ps-3 col-md-8">
+                    <div class="ps-3 col-md-7">
                         <div class="d-listview-product">
                             <ListView TEntity="Product" HideInsertIcon>
                                 <HeaderTempalte>
-                                    <div class="d-col-ph-1 col-md-7 justify-content-center d-flex">
+                                    <div class="d-col-ph-1 justify-content-center d-flex" style="width:362px;">
                                         Product
                                     </div>
-                                    <div class="col-md-5 justify-content-center d-flex">
+                                    <div class="justify-content-center d-flex" style="width:202px;">
                                         Image
                                     </div>
                                 </HeaderTempalte>
                                 <Fields>
                                     <div class="d-product-content d-flex">
-                                        <div class="col-md-7 c-controls row p-2">
+                                        <div class="c-controls row p-2" style="width:361px;">
                                             <div class="col-md-4">
                                                 <label>Category</label>
                                             </div>
@@ -61,41 +65,41 @@
                                                 <TextField Field="t => t.TakeoutPrice.Seprate3Digit()" />
                                             </div>
                                         </div>
-                                        <div class="col-md-5 justify-content-center d-flex p-2">
-                                            <ImageField Field="t => t.Image" Style="width:250px;height:200px;" />
+                                        <div class="justify-content-center d-flex p-2" style="width:202px;">
+                                            <ImageField Field="t => t.Image" Style="width:185px;height:160px;" />
                                         </div>
                                     </div>
                                 </Fields>
                             </ListView>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-5">
                         <hr />
                         <h4>Editing</h4>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-7">
                         <hr />
                         <div class="ps-3 d-listview-product">
                             <ListView TEntity="Product" HideInsertIcon>
                                 <HeaderTempalte>
-                                    <div class="d-col-ph-1 col-md-7 justify-content-center d-flex">
+                                    <div class="d-col-ph-1 col-md-7 justify-content-center d-flex" style="width:361px;">
                                         Product
                                     </div>
-                                    <div class="col-md-5 justify-content-center d-flex">
+                                    <div class="col-md-5 justify-content-center d-flex" style="width:202px;">
                                         Image
                                     </div>
                                 </HeaderTempalte>
                                 <Fields>
                                     <div class="d-product-content d-flex">
-                                        <div class="col-md-7 c-controls row p-2">
+                                        <div class="c-controls row p-2" style="width:361px;">
                                             <div class="col-md-4">
                                                 <label>Category</label>
                                             </div>
                                             <div class="col-md-8">
                                                 <TextField Field="t => t.ProductCategory.Title" >
                                                     <EditTemplate>
-                                                        <ComboBox TEntity="ProductCategory" TValue="int" TextExpression="t => t.Title" 
-                                                            @bind-Value="context.Data.ProductCategoryId" />
+                                                        <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="context.Data.ProductCategoryId"
+                                                                   TextExpression="t => t.Title" />
                                                     </EditTemplate>
                                                 </TextField>
                                             </div>
@@ -130,12 +134,12 @@
                                                 </TextField>
                                             </div>
                                             <div class="col-md-4"></div>
-                                            <div class="col-md-8 justify-content-center pt-2- pb-2 d-flex" >
+                                            <div class="justify-content-center d-flex" style="width:202px;padding-top:8px;border-left:none">
                                                 <ListCommandButton />
                                             </div>
                                         </div>
-                                        <div class="col-md-5 justify-content-center d-flex p-2">
-                                            <ImageField Field="t => t.Image" Style="width:250px;height:200px;" />
+                                        <div class="justify-content-center d-flex p-2">
+                                            <ImageField Field="t => t.Image" Style="width:185px;height:160px;" />
                                         </div>
                                     </div>
                                 </Fields>
@@ -146,7 +150,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-
+            <Document FolderName="ListView" FileName="Data-Binding" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

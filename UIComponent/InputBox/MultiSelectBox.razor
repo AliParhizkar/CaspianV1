@@ -8,7 +8,7 @@
     else if (ErrorMessage.HasValue())
         className += " t-state-error";
 }
-<div @ref="inputElement" tabindex="@(TabIndex ?? 0)" class="@className" error-message="@ErrorMessage">
+<div @ref="InputElement" tabindex="@(TabIndex ?? 0)" class="@className" error-message="@ErrorMessage">
     @{ 
         var diabledValue = Convert.ToInt64(DisabledValue);
     }

@@ -4,17 +4,16 @@ using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
-    public class SimpleService<TEntity>: ISimpleCrudService, IMasterBatchService<TEntity> where TEntity : class
+    public class SimpleService<TEntity>: ISimpleService, ISimpleService<TEntity> where TEntity : class
     {
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
         IJSRuntime jSRuntime;
-
 
         public SimpleService(IServiceProvider serviceProvider) 
         {
@@ -27,7 +26,7 @@ namespace Caspian.UI
 
         public Window Window { get; set; }
 
-        public DataView<TEntity> MasterDataView { get; set; }
+        public DataView<TEntity> DataView { get; set; }
 
         public CaspianForm<TEntity> Form { get; set; }
 
@@ -44,6 +43,8 @@ namespace Caspian.UI
 
         public void FormInitialize()
         {
+            if (UpsertData == null)
+                UpsertData = Activator.CreateInstance<TEntity>();
             Form.Model = UpsertData;
             Form.OnInternalReset = EventCallback.Factory.Create(this, async () =>
             {
@@ -75,10 +76,10 @@ namespace Caspian.UI
                 if (id == 0)
                 {
                     id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
-                    await (MasterDataView as DataGrid<TEntity>).SelectRowById(id);
+                    await (DataView as DataGrid<TEntity>).SelectRowById(id);
                 }
                 else
-                    await MasterDataView.ReloadAsync();
+                    await DataView.ReloadAsync();
                 await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
                 if (Window == null)
                     await Form.ResetAsync();
@@ -99,10 +100,10 @@ namespace Caspian.UI
             return serviceProvider.CreateScope();
         }
 
-        public void MasterGridInitialize()
+        public void DataViewInitialize()
         {
-            (MasterDataView as DataGrid<TEntity>).Search = Search;
-            MasterDataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async entity =>
+            (DataView as DataGrid<TEntity>).Search = Search;
+            DataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
                 var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
                 if (value != 0)
@@ -117,9 +118,12 @@ namespace Caspian.UI
                 if (Window != null)
                     await Window.Open();
                 StateHasChanged();
+                await Task.Delay(100);
+                if (Form != null)
+                    await Form.FocusAsync();
             });
 
-            MasterDataView.OnInternalDelete = EventCallback.Factory.Create<TEntity>(this, async entity =>
+            DataView.OnInternalDelete = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
@@ -127,11 +131,11 @@ namespace Caspian.UI
                 var result = await service.ValidateRemoveAsync(old);
                 if (result.IsValid)
                 {
-                    if (!MasterDataView.DeleteMessage.HasValue() || await Confirm(MasterDataView.DeleteMessage))
+                    if (!DataView.DeleteMessage.HasValue() || await Confirm(DataView.DeleteMessage))
                     {
                         await service.RemoveAsync(old);
                         await service.SaveChangesAsync();
-                        await MasterDataView.ReloadAsync();
+                        await DataView.ReloadAsync();
                     }
                 }
                 else
@@ -147,6 +151,18 @@ namespace Caspian.UI
         public void WindowInitialize()
         {
             Window.OnInternalClose = EventCallback.Factory.Create(this, () => StateHasChanged());
+            Window.OnInternalOpen = EventCallback.Factory.Create(this, async () => 
+            {
+                await Task.Delay(100);
+                await Form.FocusAsync();
+            });
+        }
+
+        public void ClearForm()
+        {
+            Form = null;
+            UpsertData = null;
+            
         }
     }
 }

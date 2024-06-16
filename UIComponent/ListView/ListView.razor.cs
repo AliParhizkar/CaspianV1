@@ -13,12 +13,7 @@ namespace Caspian.UI
     {
         IList<Expression> fieldsExpression;
         WindowStatus status;
-
-        protected override void OnInitialized()
-        {
-            PageSize = 4;
-            base.OnInitialized();
-        }
+        ElementReference element;
 
         public void OpenPopupWindow()
         {
@@ -115,6 +110,7 @@ namespace Caspian.UI
             {
                 await DataBind();
                 StateHasChanged();
+                await jsRuntime.InvokeVoidAsync("$.caspian.bindListView", element);
             }
             if (insertContinerHouldhasFocus)
             {

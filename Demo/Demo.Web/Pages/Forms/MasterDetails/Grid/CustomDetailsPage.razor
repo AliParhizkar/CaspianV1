@@ -147,7 +147,7 @@
                             </div>
                         }
                         <div class="pt-4">
-                            <DataGrid TEntity="OrderDeatil" DetailsBatchService="Service" ContentHeight="250" HideInsertIcon>
+                            <DataGrid TEntity="OrderDeatil" DetailBatchService="Service" ContentHeight="250" HideInsertIcon>
                                 <Columns>
                                     <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                                     <GridColumn Field="t => t.Product.Title" Title="Product" />
@@ -183,6 +183,7 @@
     protected override void OnInitialized()
     {
         Service.MasterId = OrderId;
+        Service.OnCreate = t => t.Date = DateTime.Now;
         base.OnInitialized();
     }
 
@@ -263,7 +264,7 @@
         var old = Service.ChangedEntities.SingleOrDefault(t => t.Entity.ProductId == product.Id)?.Entity;
         if (old == null)
         {
-            await Service.DetailsDataView.InsertAsync(new OrderDeatil()
+            await Service.DetailDataView.InsertAsync(new OrderDeatil()
                 {
                     Quantity = 1,
                     Price = product.Price,
@@ -274,22 +275,22 @@
         else
         {
             old.Quantity = old.Quantity + 1;
-            await Service.DetailsDataView.UpdateAsync(old);
+            await Service.DetailDataView.UpdateAsync(old);
         }
     }
 
     async Task IncQuantity(OrderDeatil detail)
     {
         detail.Quantity++;
-        await Service.DetailsDataView.UpdateAsync(detail);
+        await Service.DetailDataView.UpdateAsync(detail);
     }
 
     async Task DecQuantity(OrderDeatil detail)
     {
         detail.Quantity--;
         if (detail.Quantity == 0)
-            await Service.DetailsDataView.RemoveAsync(detail);
+            await Service.DetailDataView.RemoveAsync(detail);
         else
-            await Service.DetailsDataView.UpdateAsync(detail);
+            await Service.DetailDataView.UpdateAsync(detail);
     }
 }

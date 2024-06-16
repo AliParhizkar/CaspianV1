@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
-    public class BatchService<TMaster, TDetails>: IMasterBatchService<TMaster>, ISimpleCrudService, IDetailsBatchService<TDetails> where TMaster : class where TDetails : class
+    public class BatchService<TMaster, TDetail>: ISimpleService, ISimpleService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
     {
         IJSRuntime jSRuntime;
         IServiceProvider serviceProvider;
@@ -22,13 +22,13 @@ namespace Caspian.UI
         {
             this.serviceProvider = serviceProvider;
             jSRuntime = serviceProvider.GetService<IJSRuntime>();
-            ChangedEntities = new List<ChangedEntity<TDetails>>();
+            ChangedEntities = new List<ChangedEntity<TDetail>>();
             UpsertData = Activator.CreateInstance<TMaster>();
             batchServiceData = serviceProvider.GetService<BatchServiceData>();
             batchServiceData.MasterType = typeof(TMaster);
             if (batchServiceData.DetailPropertiesInfo == null)
                 batchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
-            var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetails));
+            var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
             batchServiceData.DetailPropertiesInfo.Add(detailsproperty);
             baseComponentService = serviceProvider.GetService<BaseComponentService>();
         }
@@ -42,15 +42,15 @@ namespace Caspian.UI
 
         public TMaster UpsertData { get; private set; }
 
-        public DataView<TMaster> MasterDataView { get; set; }
+        public DataView<TMaster> DataView { get; set; }
 
         public Window Window { get; set; }
 
-        public DataView<TDetails> DetailsDataView { get; set; }
+        public DataView<TDetail> DetailDataView { get; set; }
 
         public CaspianForm<TMaster> Form { get; set; }
 
-        public IList<ChangedEntity<TDetails>> ChangedEntities { get; set; }
+        public IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
 
         public async Task FetchAsync()
         {
@@ -63,43 +63,51 @@ namespace Caspian.UI
             }
         }
 
+        public Action<TMaster> OnCreate { get; set; }
+
         public void FormInitialize()
         {
+            if (UpsertData == null)
+                UpsertData = Activator.CreateInstance<TMaster>();
+            if (OnCreate != null)
+                OnCreate.Invoke(UpsertData);   
             Form.Model = UpsertData;
             Form.OnInternalReset = EventCallback.Factory.Create(this, async () =>
             {
-                DetailsDataView?.ClearSource();
+                DetailDataView?.ClearSource();
                 if (Window != null)
+                {
                     await Window?.Close();
-                StateHasChanged();
+                    StateHasChanged();
+                }
             });
 
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async context1 =>
             {
                 var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(context1.Model));
-                using var service = CreateScope().GetService<IMasterDetailsService<TMaster, TDetails>>();
+                using var service = CreateScope().GetService<IMasterDetailsService<TMaster, TDetail>>();
                 var result = await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
                 await service.SaveChangesAsync();
                 ChangedEntities.Clear();
                 if (id == 0)
                 {
-                    if (DetailsDataView != null)
-                        DetailsDataView.ClearSource();
+                    if (DetailDataView != null)
+                        DetailDataView.ClearSource();
                     UpsertData = Activator.CreateInstance<TMaster>();
                     //await OnMasterEntityCreatedAsync();
-                    if (MasterDataView != null && MasterDataView is DataGrid<TMaster>)
+                    if (DataView != null && DataView is DataGrid<TMaster>)
                     {
                         var newId = (int)typeof(TMaster).GetPrimaryKey().GetValue(result);
-                        await (MasterDataView as DataGrid<TMaster>).SelectRowById(newId);
+                        await (DataView as DataGrid<TMaster>).SelectRowById(newId);
                     }
                     await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Registration was done successfully");
                 }
                 else
                 {
-                    if (DetailsDataView != null)
-                        await DetailsDataView.ReloadAsync();
-                    if (MasterDataView != null)
-                        await MasterDataView.ReloadAsync();
+                    if (DetailDataView != null)
+                        await DetailDataView.ReloadAsync();
+                    if (DataView != null)
+                        await DataView.ReloadAsync();
                     await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Updating was done successfully");
                 }
                 if (Window != null)
@@ -115,15 +123,15 @@ namespace Caspian.UI
             typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(baseComponentService.Target, null);
         }
 
-        public void MasterGridInitialize()
+        public void DataViewInitialize()
         {
-            MasterDataView.OnInternalUpsert = EventCallback.Factory.Create<TMaster>(this, async master =>
+            DataView.OnInternalUpsert = EventCallback.Factory.Create<TMaster>(this, async master =>
             {
                 var value = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
                 if (value != 0)
                 {
-                    var detailsName = typeof(TMaster).GetDetailsProperty(typeof(TDetails)).Name;
-                    using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetails>>();
+                    var detailsName = typeof(TMaster).GetDetailsProperty(typeof(TDetail)).Name;
+                    using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
                     UpsertData = await service.GetAll().Include(detailsName).SingleAsync(value);
                 }
                 else
@@ -132,19 +140,19 @@ namespace Caspian.UI
                 await Window.Open();
                 StateHasChanged();
             });
-            MasterDataView.OnInternalDelete = EventCallback.Factory.Create<TMaster>(this, async master =>
+            DataView.OnInternalDelete = EventCallback.Factory.Create<TMaster>(this, async master =>
             {
-                using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetails>>();
+                using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
                 var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
                 var old = await service.SingleAsync(id);
                 var result = await service.ValidateRemoveAsync(old);
                 if (result.IsValid)
                 {
-                    if (!MasterDataView.DeleteMessage.HasValue() || await Confirm(MasterDataView.DeleteMessage))
+                    if (!DataView.DeleteMessage.HasValue() || await Confirm(DataView.DeleteMessage))
                     {
                         await service.DeleteMasterAndDetails(old);
                         await service.SaveChangesAsync();
-                        await MasterDataView.ReloadAsync();
+                        await DataView.ReloadAsync();
                     }
                 }
                 else
@@ -152,15 +160,15 @@ namespace Caspian.UI
             });
         }
 
-        public void DetailGridInitialize()
+        public void DetailDataViewInitialize()
         {
-            DetailsDataView.Batch = true;
-            var param = Expression.Parameter(typeof(TDetails), "t");
-            var masterInfo = typeof(TDetails).GetForeignKey(typeof(TMaster));
+            DetailDataView.Batch = true;
+            var param = Expression.Parameter(typeof(TDetail), "t");
+            var masterInfo = typeof(TDetail).GetForeignKey(typeof(TMaster));
             Expression expr = Expression.Property(param, masterInfo);
             var masterId = Convert.ChangeType(MasterId, masterInfo.PropertyType);
             expr = Expression.Equal(expr, Expression.Constant(masterId));
-            DetailsDataView.InternalConditionExpr = expr;
+            DetailDataView.InternalConditionExpr = expr;
         }
 
         public void WindowInitialize()
@@ -176,38 +184,52 @@ namespace Caspian.UI
         {
             return await baseComponentService.MessageBox.Confirm(message);
         }
+
+        public void ClearForm()
+        {
+            Form = null;
+            UpsertData = null;
+            ChangedEntities = null;
+        }
     }
 
-    public interface IMasterBatchService<TMaster> where TMaster : class
+    public interface ISimpleService<TMaster> where TMaster : class
     {
-        DataView<TMaster> MasterDataView { get; set; }
+        DataView<TMaster> DataView { get; set; }
 
         CaspianForm<TMaster> Form { get; set; }
 
         void FormInitialize();
 
-        void MasterGridInitialize();
+        void DataViewInitialize();
 
         Task FetchAsync();
 
         TMaster UpsertData { get; }
+
+        void ClearForm();
     }
 
-    public interface IDetailsBatchService<TDetails> where TDetails : class
+    public interface IDetailBatchService<TDetail> where TDetail : class
     {
         int MasterId { get; }
 
-        DataView<TDetails> DetailsDataView { get; set; }
+        DataView<TDetail> DetailDataView { get; set; }
 
-        void DetailGridInitialize();
+        void DetailDataViewInitialize();
 
-        IList<ChangedEntity<TDetails>> ChangedEntities { get; set; }
+        IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
     }
 
-    public interface ISimpleCrudService
+    public interface ISimpleService
     {
         Window Window { get; set; }
 
         void WindowInitialize();
+
+        void ClearWindow()
+        {
+            Window = null;
+        }
     }
 }

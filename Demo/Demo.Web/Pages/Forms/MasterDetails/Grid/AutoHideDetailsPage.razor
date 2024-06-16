@@ -1,5 +1,6 @@
 ﻿@page "/Demo/Batch/AutoHide/Details"
 @page "/Demo/Batch/AutoHide/Details/{ReceiptId:int}"
+
 @using Caspian.Common.Extension
 @namespace Demo.Web.Pages
 @inject BatchService<WarehouseReceipt, ReceiptDetail> Service
@@ -110,7 +111,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                        <DataGrid TEntity="ReceiptDetail" DetailsBatchService="Service" ContentHeight="300" Inline AutoHide>
+                        <DataGrid TEntity="ReceiptDetail" DetailBatchService="Service" ContentHeight="300" Inline AutoHide>
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material">
                                     <EditTemplate>
@@ -168,26 +169,16 @@
     NumericTextBox<int> txtMainUnit;
     NumericTextBox<int?> txtSubunit;
 
-    // protected override Task OnMasterEntityCreatedAsync()
-    // {
-    //     if (Service.UpsertData.Id == 0)
-    //         Service.UpsertData.Date = DateTime.Now.Date;
-    //     return base.OnMasterEntityCreatedAsync();
-    // }
-
     protected override void OnInitialized()
     {
         Service.MasterId = ReceiptId;
+        Service.OnCreate = t =>
+        {
+            if (t.Id == 0)
+                t.Date = DateTime.Now;
+        };
         base.OnInitialized();
     }
-
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        Service.MasterId = ReceiptId;
-        base.OnAfterRender(firstRender);
-    }
-
 
     async Task MainUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {
@@ -196,14 +187,14 @@
             if (detail?.Material.SubunitId != null)
                 await txtSubunit.FocusAsync();
             else
-                await Service.DetailsDataView.ValidateAndUpsert(mode);
+                await Service.DetailDataView.ValidateAndUpsert(mode);
         }
     }
 
     async Task SubUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")
-            await Service.DetailsDataView.ValidateAndUpsert(mode);
+            await Service.DetailDataView.ValidateAndUpsert(mode);
     }
 
     async Task UpdateMaterialReceipt(int materialId, ReceiptDetail detail)
