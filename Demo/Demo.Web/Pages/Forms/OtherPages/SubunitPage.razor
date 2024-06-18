@@ -3,64 +3,61 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<CrudComponent UpsertData="subunit">
-    <div style="background-color:white" class="row ps-5 pe-5 pt-4 pb-4 ms-4 me-4">
-        <div class="row c-controls">
-            <div class="col-md-4 ps-4">
-                <label>Title</label>
-            </div>
-            <div class="col-md-8 pe-4">
-                <StringTextBox @bind-Value="search.Title" Search />
-            </div>
+@inject SimpleService<Subunit> Service
+<div style="background-color:white" class="row ps-5 pe-5 pt-4 pb-4 ms-4 me-4">
+    <div class="row c-controls">
+        <div class="col-md-4 ps-4">
+            <label>Title</label>
         </div>
-        <DataGrid TEntity="Subunit" Search="search" ContentHeight="300">
-            <Columns>
-                <GridColumn Field="t => t.MainUnit.Title" Title="Mainunit" />
-                <GridColumn Field="t => t.Title" />
-                <GridColumn Field="t => t.Factor.Seprate3Digit()" />
-                <GridColumn Field="t => t.ActiveType.EnumText()" />
-                <GridCommandColumns />
-            </Columns>
-        </DataGrid>
-        <Window Title="MainUnit" Style="width:450px">
-            <CaspianForm Model="subunit">
-                <div class="row c-controls ps-3 pe-3">
-                    <div class="col-md-3">
-                        <label>Mainunit</label>
-                    </div>
-                    <div class="col-md-9">
-                        <ComboBox TEntity="MainUnit" TValue="int" @bind-Value="subunit.MainUnitId" TextExpression="t => t.Title" />
-                    </div>
-                    <div class="col-md-3">
-                        <label>Title</label>
-                    </div>
-                    <div class="col-md-9">
-                        <StringTextBox @bind-Value="subunit.Title" />
-                    </div>
-                    <div class="col-md-3">
-                        <label>Factor</label>
-                    </div>
-                    <div class="col-md-9">
-                        <NumericTextBox @bind-Value="subunit.Factor" />
-                    </div>
-                    <div class="col-md-3">
-                        <label>Status</label>
-                    </div>
-                    <div class="col-md-9">
-                        <DropdownList @bind-Value="subunit.ActiveType" />
-                    </div>
-                    <div class="col-md-3"></div>
-                    <div class="col-md-9 text-center">
-                        <WindowCommandButtons />
-                    </div>
-                </div>
-            </CaspianForm>
-        </Window>
+        <div class="col-md-8 pe-4">
+            <StringTextBox @bind-Value="Service.Search.Title" Search />
+        </div>
     </div>
-</CrudComponent>
+    <DataGrid TEntity="Subunit" Service="Service" ContentHeight="300">
+        <Columns>
+            <GridColumn Field="t => t.MainUnit.Title" Title="Mainunit" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Factor.Seprate3Digit()" />
+            <GridColumn Field="t => t.ActiveType.EnumText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Title="MainUnit" Style="width:450px">
+        <CaspianForm Service="Service">
+            <div class="row c-controls ps-3 pe-3">
+                <div class="col-md-3">
+                    <label>Mainunit</label>
+                </div>
+                <div class="col-md-9">
+                    <ComboBox TEntity="MainUnit" TValue="int" @bind-Value="Service.UpsertData.MainUnitId" TextExpression="t => t.Title" />
+                </div>
+                <div class="col-md-3">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-9">
+                    <StringTextBox @bind-Value="Service.UpsertData.Title" />
+                </div>
+                <div class="col-md-3">
+                    <label>Factor</label>
+                </div>
+                <div class="col-md-9">
+                    <NumericTextBox @bind-Value="Service.UpsertData.Factor" />
+                </div>
+                <div class="col-md-3">
+                    <label>Status</label>
+                </div>
+                <div class="col-md-9">
+                    <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
+                </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-9 text-center">
+                    <WindowCommandButtons />
+                </div>
+            </div>
+        </CaspianForm>
+    </Window>
+</div>
 
  @code
 {
-    Subunit search = new Subunit();
-    Subunit subunit = new Subunit();
 }

@@ -12,18 +12,18 @@
         str = time.ShortString();
     }
     string className = "t-picker-wrap";
-    if (Disabled)
+    if (disabled)
         className += " t-state-disabled";
 } 
 <div @ref="InputElement" class="t-widget t-timepicker" style="@(Style)">
     <div @attributes="attrs" class="@className">
         @if (DefaultMode)
         {
-            <input disabled="@Disabled" type="time" value="@str" class="t-input t-default-mode" @onchange="ChangeValue" />
+            <input disabled="@disabled" type="time" value="@str" class="t-input t-default-mode" @onchange="ChangeValue" />
         }
         else
         {
-            <input disabled="@Disabled" value="@str" class="t-input" @onchange="ChangeValue" />
+            <input disabled="@disabled" value="@str" class="t-input" @onchange="ChangeValue" />
             <span @onclick="OpenTimePanel" class="t-select">
                 <span class="t-icon t-icon-clock fa fa-clock-o"></span>
             </span>
@@ -43,7 +43,7 @@
 
     void OpenTimePanel()
     {
-        if (!Disabled)
+        if (!disabled)
             status = WindowStatus.Open;    
     }
 
@@ -64,7 +64,7 @@
         TValue value = default;
         var isValid = false;
         var str = Convert.ToString(arg.Value);
-        if (!Disabled && str.IndexOf('_') == -1)
+        if (!disabled && str.IndexOf('_') == -1)
         {
             if (Regex.IsMatch(str, "^[0,1][0-9]|2[0-3]:[0-5][0-9]$"))
             {

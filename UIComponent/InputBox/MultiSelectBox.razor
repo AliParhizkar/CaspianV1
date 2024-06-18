@@ -3,7 +3,7 @@
 @inherits CBaseInput<TValue>
 @{
     var className = $"t-widget c-multi-select justify-content-{DefaultLayout.GetCssClassName()}";
-    if (Disabled)
+    if (disabled)
         className += " t-state-disabled";
     else if (ErrorMessage.HasValue())
         className += " t-state-error";
@@ -14,16 +14,15 @@
     }
     @foreach (var item in Items)
     {
-        var diabled = Disabled;
         var keyValue = Convert.ToInt64(item.Key);
-        if (!diabled)
+        if (!disabled)
         {
             if ((diabledValue & keyValue) == keyValue)
-                diabled = true;
+                disabled = true;
         }
         var value = (keyValue & Convert.ToInt64(Value)) == keyValue;
         <div>
-            <CheckBox Disabled="diabled" Title="@item.Value" Value="value"
+            <CheckBox Disabled="disabled" Title="@item.Value" Value="value"
                   ValueChanged="@(async (bool flag) =>
                                   {
                                       if (flag || Convert.ToInt64(Value) > 0)

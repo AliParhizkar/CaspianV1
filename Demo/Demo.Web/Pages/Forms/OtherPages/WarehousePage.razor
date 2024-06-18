@@ -3,49 +3,46 @@
 @{
     base.BuildRenderTree(__builder);
 }
+@inject SimpleService<Warehouse> Service
 <div style="background-color:white" class="row ps-5 pe-5 pt-4 pb-4 ms-4 me-4">
-
-    <CrudComponent UpsertData="warehouse">
-        <div class="row c-controls">
-            <div class="col-md-4 ps-4">
-                <label>Title</label>
-            </div>
-            <div class="col-md-8 pe-4">
-                <StringTextBox @bind-Value="warehouse.Title" Search />
-            </div>
+    <div class="row c-controls">
+        <div class="col-md-4 ps-4">
+            <label>Title</label>
         </div>
-        <DataGrid TEntity="Warehouse" Search="search" ContentHeight="300">
-            <Columns>
-                <GridColumn Field="t => t.Title" />
-                <GridCommandColumns />
-            </Columns>
-        </DataGrid>
-        <Window Title="Warehouse" Style="width:450px">
-            <CaspianForm Model="warehouse">
-                <div class="row c-controls ps-3 pe-3">
-                    <div class="col-md-3">
-                        <label>Title</label>
-                    </div>
-                    <div class="col-md-9">
-                        <StringTextBox @bind-Value="warehouse.Title" />
-                    </div>
-                    <div class="col-md-3">
-                        <label>Status</label>
-                    </div>
-                    <div class="col-md-9">
-                        <DropdownList @bind-Value="warehouse.ActiveType" />
-                    </div>
-                    <div class="col-md-3"></div>
-                    <div class="col-md-9 text-center">
-                        <WindowCommandButtons />
-                    </div>
+        <div class="col-md-8 pe-4">
+            <StringTextBox @bind-Value="Service.Search.Title" Search />
+        </div>
+    </div>
+    <DataGrid TEntity="Warehouse" Service="Service" ContentHeight="300">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Title="Warehouse" Service="Service" Style="width:450px">
+        <CaspianForm Service="Service">
+            <div class="row c-controls ps-3 pe-3">
+                <div class="col-md-3">
+                    <label>Title</label>
                 </div>
-            </CaspianForm>
-        </Window>
-    </CrudComponent>
+                <div class="col-md-9">
+                    <StringTextBox @bind-Value="Service.UpsertData.Title" />
+                </div>
+                <div class="col-md-3">
+                    <label>Status</label>
+                </div>
+                <div class="col-md-9">
+                    <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
+                </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-9 text-center">
+                    <WindowCommandButtons />
+                </div>
+            </div>
+        </CaspianForm>
+    </Window>
 </div>
 @code
- {
-    Warehouse search = new Warehouse();
-    Warehouse warehouse = new Warehouse();
+{
+
 }

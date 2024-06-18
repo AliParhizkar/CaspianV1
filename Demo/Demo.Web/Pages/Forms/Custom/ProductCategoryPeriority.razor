@@ -1,6 +1,6 @@
 ﻿@page "/Demo/ProductCategory"
 @namespace Demo.Web.Pages
-
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
@@ -18,13 +18,13 @@
                 </span>
             </div>
             <div class="ps-4 pe-4 pb-4">
-                <DataGrid TEntity="ProductCategory" ContentHeight="300" HideInsertIcon>
+                <DataGrid @ref="grid" TEntity="ProductCategory" ContentHeight="300" HideInsertIcon>
                     <Columns>
                         <GridColumn Field="t => t.Title" />
-                        <GridColumn Field="t => t.Ordering" style="width:95px;text-align:center;">
+                        <GridColumn Field="t => t.Ordering" style="width:95px;text-align:center;" SortType="SortType.Asc">
                             <Template>
-                                <IconButton IconType="@IconType.AngleUp" />
-                                <IconButton IconType="@IconType.AngleDown" />
+                                <IconButton IconType="@IconType.AngleUp" @onclick="async () => await IncPOrder(context.Data.Id)" />
+                                <IconButton IconType="@IconType.AngleDown" @onclick="async () => await DecPOrder(context.Data.Id)" />
                             </Template>
                         </GridColumn>
                     </Columns>
@@ -42,5 +42,22 @@
 
 @code
 {
+    DataGrid<ProductCategory> grid;
+    async Task IncPOrder(int id)
+    {
+        using var service = CreateScope().GetService<ProductCategoryService>();
+        await service.IncOrderingAsync(id);
+        await service.SaveChangesAsync();
+        await grid.ReloadAsync();
+        await grid.SelectPrevRow();
+    }
 
+    async Task DecPOrder(int id)
+    {
+        using var service = CreateScope().GetService<ProductCategoryService>();
+        await service.DecOrderingAsync(id);
+        await service.SaveChangesAsync();
+        await grid.ReloadAsync();
+        await grid.SelectNextRow();
+    }
 }

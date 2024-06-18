@@ -24,22 +24,22 @@
                                 <label>First name</label>
                             </div>
                             <div class="col-md-8">
-                                <StringTextBox Search @bind-Value="customerSearch.FName" />
+                                <StringTextBox Search @bind-Value="customerStringSearch.FName" />
                             </div>
                             <div class="col-md-4">
                                 <label>Last name</label>
                             </div>
                             <div class="col-md-8">
-                                <StringTextBox Search @bind-Value="customerSearch.LName" />
+                                <StringTextBox Search @bind-Value="customerStringSearch.LName" />
                             </div>
                             <div class="col-md-4">
                                 <label>Company name</label>
                             </div>
                             <div class="col-md-8">
-                                <StringTextBox Search @bind-Value="customerSearch.CompanyName" />
+                                <StringTextBox Search @bind-Value="customerStringSearch.CompanyName" />
                             </div>
                         </div>
-                        <DataGrid TEntity="Customer" HideInsertIcon Search="customerSearch">
+                        <DataGrid TEntity="Customer" HideInsertIcon Search="customerStringSearch">
                             <Columns>
                                 <GridColumn Field="t => t.CustomerType.EnumText()" />
                                 <GridColumn Field="t => t.FName" />
@@ -62,16 +62,16 @@
                                 <label>Customer type</label>
                             </div>
                             <div class="col-md-8">
-                                <DropdownList Search @bind-Value="customerSearch.CustomerType" />
+                                <DropdownList Search @bind-Value="customerEnumSearch.CustomerType" />
                             </div>
                             <div class="col-md-4">
                                 <label>Gender</label>
                             </div>
                             <div class="col-md-8">
-                                <DropdownList @bind-Value="customerSearch.Gender" />
+                                <DropdownList @bind-Value="customerEnumSearch.Gender" />
                             </div>
                         </div>
-                        <DataGrid TEntity="Customer" HideInsertIcon Search="customerSearch">
+                        <DataGrid TEntity="Customer" HideInsertIcon Search="customerEnumSearch">
                             <Columns>
                                 <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
                                 <GridColumn Field="t => t.CustomerType.EnumText()" />
@@ -182,7 +182,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="Grid-Search" FileName="Grid-Search" />
+            <Document FolderName="Grid-Search" FileName="Search-Range" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -229,7 +229,8 @@
 @code {
     //Default search
     City citySearch = new City();
-    Customer customerSearch = new Customer();
+    Customer customerStringSearch = new Customer();
+    Customer customerEnumSearch = new Customer();
     //
     object fromPrice;
     object toPrice;

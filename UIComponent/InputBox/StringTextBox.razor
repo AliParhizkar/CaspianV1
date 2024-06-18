@@ -3,7 +3,7 @@
 @inherits CBaseInput<string>
 @{
     base.BuildRenderTree(__builder);
-    if (Disabled)
+    if (disabled)
         className += " t-state-disabled";
     else if (ErrorMessage != null)
         className += " t-state-error";
@@ -33,7 +33,7 @@
         var readOnly = false;
         if (InputAttributes.ContainsKey("readonly"))
             readOnly = Convert.ToBoolean(InputAttributes["readonly"]);
-        if (!readOnly && !Disabled)
+        if (!readOnly && !disabled)
         {
             Value = arg.Value.ToString();
             if (ValueChanged.HasDelegate)
@@ -86,7 +86,7 @@
                 InputAttributes["rows"] = Rows;
         }
 
-        if (Disabled)
+        if (disabled)
             InputAttributes["disabled"] = "disabled";
         else
             InputAttributes.Remove("disabled");

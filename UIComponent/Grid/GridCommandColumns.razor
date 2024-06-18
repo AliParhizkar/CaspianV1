@@ -4,14 +4,16 @@
 @inherits DataCommand<TEntity> 
 @{
     (DataView as DataGrid<TEntity>).AddCommandColumn(HeaderTitle, HeaderWidth);
+    var disabled = CaspianContainer?.Disabled == true;
+    var className = disabled ? "c-icon-disabled" : "";
 }
 <td class="c-grid-command" @attributes="attrs">
     @if (RowData?.UpsertMode != null)
     {
-        <span class="c-check">
-            <span class="t-icon fa fa-check" @onclick="@(async () => await DataView.ValidateAndUpsert(RowData.UpsertMode.Value))"></span>
+        <span class="c-check @(className)">
+            <span class="t-icon fa fa-check" @onclick="Check"></span>
         </span>
-        <span class="c-bar" @onclick="@(async () => await DataView.CalcelEdit(RowData.UpsertMode.Value))">
+        <span class="c-bar @(className)" @onclick="cancel">
             <span class="t-icon fa fa-ban"></span>
         </span>
     }
@@ -33,8 +35,23 @@
 </td>
 @code
 {
+    async Task Check()
+    {
+        if (CaspianContainer?.Disabled != true)
+            await DataView.ValidateAndUpsert(RowData.UpsertMode.Value);
+    }
+
+    async Task cancel()
+    {
+        if (CaspianContainer?.Disabled != true)
+            await DataView.CalcelEdit(RowData.UpsertMode.Value);
+    }
+
     [Parameter]
     public string HeaderTitle { get; set; }
+
+    [CascadingParameter]
+    public CaspianContainer CaspianContainer { get; set; }
 
     [Parameter]
     public string HeaderWidth { get; set; }

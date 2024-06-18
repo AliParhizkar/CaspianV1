@@ -1,11 +1,11 @@
 ﻿using Caspian.Common;
+using System.Reflection;
+using Microsoft.JSInterop;
+using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Caspian.UI
 {
@@ -31,7 +31,7 @@ namespace Caspian.UI
 
         async Task OnkeyUp(KeyboardEventArgs args)
         {
-            if (!Disabled)
+            if (!disabled)
             {
                 switch(args.Code)
                 {
@@ -67,7 +67,7 @@ namespace Caspian.UI
 
         void OpenWindow()
         {
-            if (status != WindowStatus.Open && !Disabled)
+            if (status != WindowStatus.Open && !disabled)
             {
                 int index = 1;
                 foreach (var item in Items.Select(t => t.Value))
@@ -86,7 +86,7 @@ namespace Caspian.UI
 
         async Task SetValueForActiveItem(SelectListItem item)
         {
-            if (!item.Disabled && !Disabled)
+            if (!item.Disabled && !disabled)
             {
                 await SetValue(item.Value);
                 await Task.Delay(300);
@@ -197,7 +197,7 @@ namespace Caspian.UI
             attrs = new Dictionary<string, object>();
             if (Style.HasValue())
                 attrs["style"] = Style;
-            attrs["tabindex"] = TabIndex ?? 0;
+
             inputAttrs = new Dictionary<string, object>();
 
             if (Id.HasValue())
@@ -214,8 +214,9 @@ namespace Caspian.UI
                 else
                     inputAttrs["value"] = Convert.ToInt32(Value).ToString();
             }
-
             base.OnParametersSet();
+            if (!disabled)
+                attrs["tabindex"] = TabIndex ?? 0;
         }
 
         IEnumerable<FieldInfo> GetFields()

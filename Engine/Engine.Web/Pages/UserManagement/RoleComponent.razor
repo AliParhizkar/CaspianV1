@@ -1,5 +1,6 @@
 ﻿@namespace Caspian.Engine.UserManagement
-@inherits SimplePage<Role>
+@inherits BasePage
+@inject SimpleService<Role> Service
 @{
     base.BuildRenderTree(__builder);
 }
@@ -8,10 +9,10 @@
         <label>Title</label>
     </div>
     <div class="col-md-8">
-        <StringTextBox @bind-Value="SearchData.Name" />
+        <StringTextBox @bind-Value="Service.Search.Name" />
     </div>
 </div>
-<DataGrid @ref="CrudGrid" TEntity="Role" ContentHeight="400">
+<DataGrid TEntity="Role" Service="Service" ContentHeight="400">
     <Columns>
         <GridColumn Field="t => t.Name" />
         <GridColumn Title="Members" style="width:80px">
@@ -32,15 +33,15 @@
         <GridCommandColumns />
     </Columns>
 </DataGrid>
-<Window @ref="UpsertWindow" Title="Role properties" Style="width:400px">
+<Window Service="Service" Title="Role properties" Style="width:400px">
     <Content>
-        <CaspianForm @ref="UpsertForm" Model="UpsertData">
+        <CaspianForm Service="Service">
             <div class="row c-controls ps-2 pe-2">
                 <div class="col-md-3">
                     <label>Name</label>
                 </div>
                 <div class="col-md-9">
-                    <StringTextBox @bind-Value="UpsertData.Name" />
+                    <StringTextBox @bind-Value="Service.UpsertData.Name" />
                 </div>
                 <div class="col-md-3"></div>
                 <div class="col-md-9">

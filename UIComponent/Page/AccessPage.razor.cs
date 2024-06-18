@@ -1,12 +1,8 @@
-﻿using System;
-using System.Linq;
-using Caspian.Common;
+﻿using Caspian.Common;
 using System.Reflection;
-using System.Threading.Tasks;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -33,30 +29,22 @@ namespace Caspian.UI
             {
                 if (CrudGrid != null)
                 {
-                    CrudGrid.SetDeleteMessage(null);
-                    var masterInfos = typeof(TAccess).GetProperties().Where(t => t.PropertyType == typeof(TMaster));
-                    if (masterInfos.Count() > 1)
-                        throw new CaspianException("Error: More than a property of type " + typeof(TMaster).Name + " in type " + typeof(TAccess).Name + " is Exist");
-                    if (masterInfos.Count() == 0)
-                        throw new CaspianException("Error: No property of type " + typeof(TMaster).Name + " in type " + typeof(TAccess).Name + " is Exist");
-                    var masterInfo = masterInfos.Single();
-                    var foreignKeyAttr = masterInfo.GetCustomAttribute<ForeignKeyAttribute>();
-                    if (foreignKeyAttr == null)
-                        throw new CaspianException("Property " + masterInfo.Name + "in type " + typeof(TAccess).Name + "has not ForeignKey Attribute");
-                    Expression expr = Expression.Property(Expression.Parameter(typeof(TAccess)), foreignKeyAttr.Name);
+                    CrudGrid.SetDeleteMessage("");
+                    var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
+                    Expression expr = Expression.Property(Expression.Parameter(typeof(TAccess)), masterIdInfo);
                     if (expr.Type.IsNullableType())
                         expr = Expression.Property(expr, "Value");
-                    expr = Expression.Equal(expr, Expression.Constant(MasterId));
+                    expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType())));
                     CrudGrid.InternalConditionExpr = expr;
                 }
                 if (MemberGrid != null)
                 {
-                    var masterIdName = typeof(TAccess).GetProperties().Single(t => t.PropertyType == typeof(TMaster)).GetCustomAttribute<ForeignKeyAttribute>().Name;
-                    var u = Expression.Parameter(typeof(TAccess));
-                    Expression innerExpr = Expression.Property(u, masterIdName);
+                    var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
+                    var u = Expression.Parameter(typeof(TAccess), "u");
+                    Expression innerExpr = Expression.Property(u, masterIdInfo);
                     if (innerExpr.Type.IsNullableType())
                         innerExpr = Expression.Property(innerExpr, "Value");
-                    innerExpr = Expression.Equal(innerExpr, Expression.Constant(MasterId));
+                    innerExpr = Expression.Equal(innerExpr, Expression.Constant(Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType())));
                     innerExpr = Expression.Lambda(innerExpr, u);
                     var accessListInf = typeof(TMember).GetProperties().Where(t => typeof(IEnumerable<TAccess>).IsAssignableFrom(t.PropertyType));
                     if (accessListInf.Count() != 1)
@@ -104,28 +92,13 @@ namespace Caspian.UI
 
         void SetData(EditContext context)
         {
-            var masterInfos = typeof(TAccess).GetProperties().Where(t => t.PropertyType == typeof(TMaster));
-            if (masterInfos.Count() > 1)
-                throw new CaspianException("More than a property of type " + typeof(TMaster).Name + " in type " + typeof(TAccess).Name + " is Exist");
-            if (masterInfos.Count() == 0)
-                throw new CaspianException("No property of type " + typeof(TMaster).Name + " in type " + typeof(TAccess).Name + " is Exist");
-            var masterInfo = masterInfos.Single();
-            var foreignKeyAttr = masterInfo.GetCustomAttribute<ForeignKeyAttribute>();
-            if (foreignKeyAttr == null)
-                throw new CaspianException("Property " + masterInfo.Name + "in type " + typeof(TAccess).Name + "has not ForeignKey Attribute");
-            typeof(TAccess).GetProperty(foreignKeyAttr.Name).SetValue(UpsertData, MasterId);
-            var memberInfos = typeof(TAccess).GetProperties().Where(t => t.PropertyType == typeof(TMember));
-            if (memberInfos.Count() > 1)
-                throw new CaspianException("More than a property of type " + typeof(TMember).Name + " in type " + typeof(TAccess).Name + " is Exist");
-            if (memberInfos.Count() == 0)
-                throw new CaspianException("No property of type " + typeof(TMember).Name + " in type " + typeof(TAccess).Name + " is Exist");
-            var memberInfo = memberInfos.Single();
-            foreignKeyAttr = memberInfo.GetCustomAttribute<ForeignKeyAttribute>();
-            if (foreignKeyAttr == null)
-                throw new CaspianException("Property " + masterInfo.Name + "in type " + typeof(TAccess).Name + "has not ForeignKey Attribute");
-            var memberIdInfo = typeof(TAccess).GetProperty(foreignKeyAttr.Name);
-            typeof(TAccess).GetPrimaryKey().SetValue(UpsertData, 0);
-            memberIdInfo.SetValue(UpsertData, MemberGrid.SelectedRowId);
+            var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
+            var masterType = masterIdInfo.PropertyType.GetUnderlyingType();
+            masterIdInfo.SetValue(UpsertData, Convert.ChangeType(MasterId, masterType));
+            var memberIdInfo = typeof(TAccess).GetForeignKey(typeof(TMember));
+            var pKey = typeof(TAccess).GetPrimaryKey();
+            pKey.SetValue(UpsertData, Convert.ChangeType(0, pKey.PropertyType));
+            memberIdInfo.SetValue(UpsertData, Convert.ChangeType(MemberGrid.SelectedRowId ?? 0, masterType));
         }
 
         protected override async Task UpsertAsync(TAccess data)

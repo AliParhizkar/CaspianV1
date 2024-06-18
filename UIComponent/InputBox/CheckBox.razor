@@ -33,7 +33,7 @@
             attrs.Add("name", Id.Replace('.', '_'));
         }
         var className = "t-widget t-checkbox";
-        if (Disabled)
+        if (disabled)
             className += " t-disabled";
         if (Value == null)
         {
@@ -63,7 +63,7 @@
 
     async void  ChangeValue()
     {
-        if (Disabled)
+        if (disabled)
             return;
         bool? tempValue = true;
         var type = typeof(TValue);

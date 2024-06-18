@@ -157,16 +157,8 @@
                                 </GridColumn>
                                 <GridColumn Field="t => t.Quantity" style="width:100px">
                                     <EditTemplate>
-                                        @if (con.UpsertMode == UpsertMode.Insert)
-                                        {
-                                            <NumericTextBox @ref="txtQuantityForInsert" @bind-Value="con.Data.Quantity"
-                                                    @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
-                                        }
-                                        else
-                                        {
-                                            <NumericTextBox @ref="txtQuantityForUpdate" @bind-Value="con.Data.Quantity"
-                                                            @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
-                                        }
+                                        <NumericTextBox @ref="txtQuantity" @bind-Value="con.Data.Quantity"
+                                                        @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
                                     </EditTemplate>
                                 </GridColumn>
                                 <GridCommandColumns />
@@ -192,7 +184,7 @@
 </div>
 @code
 {
-    NumericTextBox<int> txtQuantityForInsert, txtQuantityForUpdate;
+    NumericTextBox<int> txtQuantity;
 
     [Parameter]
     public int OrderId { get; set; }
@@ -219,12 +211,8 @@
             var old = await service.SingleAsync(detail.ProductId);
             detail.Price = old.Price;
             if (detail.Id == 0)
-            {
                 detail.Quantity = 1;
-                await txtQuantityForInsert.FocusAsync();
-            }
-            else
-                await txtQuantityForUpdate.FocusAsync();
+            await txtQuantity.FocusAsync();
         }
     }
 }

@@ -29,9 +29,9 @@ namespace Demo.Service
             }, "A product with this code has been registered.");
         }
 
-        public async Task IncOrderingAsync(ProductCategory productCategory)
+        public async Task IncOrderingAsync(int id)
         {
-            var old = await SingleAsync(productCategory.Id);
+            var old = await SingleAsync(id);
             var pre = await GetAll().Where(t => t.Ordering < old.Ordering).OrderByDescending(t => t.Ordering).FirstOrDefaultAsync();
             if (pre != null)
             {
@@ -44,9 +44,9 @@ namespace Demo.Service
             
         }
 
-        public async Task DecOrderingAsync(ProductCategory productCategory)
+        public async Task DecOrderingAsync(int id)
         {
-            var old = await SingleAsync(productCategory.Id);
+            var old = await SingleAsync(id);
             var next = await GetAll().Where(t => t.Ordering > old.Ordering).OrderBy(t => t.Ordering).FirstOrDefaultAsync();
             if (next != null)
             {

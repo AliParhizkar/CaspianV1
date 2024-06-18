@@ -12,6 +12,7 @@
     bool reseting;
     EditContext oldContext;
     protected bool focuced;
+    protected bool disabled;
 
     public ElementReference? InputElement { get; protected set; }
 
@@ -92,7 +93,7 @@
         var readOnly = false;
         if (InputAttributes.ContainsKey("readonly"))
             readOnly = Convert.ToBoolean(InputAttributes["readonly"]);
-        if (!Disabled && !readOnly)
+        if (!disabled && !readOnly)
         {
             var type = DynamicType ?? typeof(TValue);
             if (type.IsNullableType() && obj != null)
@@ -147,6 +148,10 @@
     protected override void OnParametersSet()
     {
         CaspianContainer?.SetControl(this);
+        if (CaspianContainer == null)
+            disabled = Disabled;
+        else
+            disabled = CaspianContainer?.Disabled == true;
         CaspianForm?.AddControl(this);
         if (InputAttributes == null)
             InputAttributes = new Dictionary<string, object>();
@@ -321,13 +326,13 @@
 
     public void Enable()
     {
-        Disabled = false;
+        disabled = false;
         StateHasChanged();
     }
 
     public void Disable()
     {
-        Disabled = true;
+        disabled = true;
         StateHasChanged();
     }
 

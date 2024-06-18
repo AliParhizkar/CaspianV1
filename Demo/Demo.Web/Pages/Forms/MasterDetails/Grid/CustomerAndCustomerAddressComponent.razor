@@ -1,5 +1,4 @@
 ﻿@namespace Demo.Web.Pages
-@inject BatchService<Customer, CustomerAddress> Service
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="Customer">
@@ -88,5 +87,6 @@
 
 @code 
 {
-
+    [Parameter]
+    public BatchService<Customer, CustomerAddress> Service { get; set; }
 }

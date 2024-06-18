@@ -5,7 +5,7 @@
 @inherits CBaseInput<TValue>
 @{
     var className = "t-picker-wrap";
-    if (Disabled)
+    if (disabled)
         className += " t-state-disabled";
     else if (ErrorMessage.HasValue())
         className += " t-state-error";
@@ -14,12 +14,12 @@
     <div class="@(className)">
         @if (DefaultMode)
         {
-            <input type="date" value="@text" @attributes="@attrs" disabled="@Disabled" class="t-input t-default-mode" autocomplete="off" @onchange="ChangeValue" />
+            <input type="date" value="@text" @attributes="@attrs" disabled="@disabled" class="t-input t-default-mode" autocomplete="off" @onchange="ChangeValue" />
         }
         else
         {
 
-            <input @attributes="@attrs" disabled="@Disabled" value="@text" @ref="InputElement" class="t-input" autocomplete="off" @onchange="ChangeValue" />
+            <input @attributes="@attrs" disabled="@disabled" value="@text" @ref="InputElement" class="t-input" autocomplete="off" @onchange="ChangeValue" />
             <span class="t-select" style="left:inherit" @onclick="OpenWindow">
                 <i class="t-icon t-icon-calendar fa fa-calendar" title="Calendar"></i>
             </span>

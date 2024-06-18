@@ -26,7 +26,7 @@
             </div>
         </div>
         <DataGrid @ref="MemberGrid" TEntity="Menu" HideInsertIcon Search="MemberSearch" 
-                    ConditionExpr="t => t.SubSystemKind == SubSystem" ContentHeight="330">
+                    ConditionExpr="t => t.SubSystemKind == SubSystem && t.Title != null" ContentHeight="330">
             <Columns>
                 <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
                 <GridColumn Field="t => t.Title" style="width:150px" />

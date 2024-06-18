@@ -39,6 +39,8 @@
                 <table @attributes="tableAttrs" class="c-grid-insert">
                     <tbody>
                         <tr>
+                        @if (selectedEntity == null)
+                        {
                             <CaspianContainer @ref="insertContiner">
                                 <CascadingValue Value="InsertContext">
                                     <CaspianValidationValidator Source="source" ValidatorType="serviceType" />
@@ -47,6 +49,15 @@
                                     </CascadingValue>
                                 </CascadingValue>
                             </CaspianContainer>
+                        }
+                        else
+                        {
+                                    <CaspianContainer Disabled>
+                                        <CascadingValue Value="insertedEntity" Name="RowData">
+                                            @Columns(insertedEntity)
+                                        </CascadingValue>
+                                    </CaspianContainer>
+                        }
                         </tr>
                     </tbody>
                 </table>

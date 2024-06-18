@@ -8,11 +8,12 @@
     {
         if (RowData.UpsertMode.HasValue)
         {
+            var className = disabled ? "c-icon-disabled" : "";
             <span class="c-dataview-button">
-                <span class="c-check">
+                <span class="c-check @(className)">
                     <span @onclick="@(async () => await DataView.ValidateAndUpsert(RowData.UpsertMode.Value))" class="t-icon fa fa fa-check"></span>
                 </span>
-                <span class="c-bar">
+                <span class="c-bar @(className)">
                     <span @onclick="@(async () => await DataView.CalcelEdit(RowData.UpsertMode.Value))" class="t-icon fa fa fa-ban"></span>
                 </span>
             </span>
@@ -44,7 +45,6 @@
                     </span>
                 </span>
             }
-
         }
     }
 }
@@ -53,9 +53,13 @@
 {
     string errorMessage;
     MessageBox MessageBox;
+    bool disabled;
 
     [Parameter]
     public CommandButtonType? ButtonType { get; set; }
+
+    [CascadingParameter]
+    public CaspianContainer Container { get; set; }
 
     protected override async Task OpenForm()
     {
@@ -64,6 +68,12 @@
             DataView.Inline = true;
             await base.OpenForm();
         }
+    }
+
+    protected override void OnParametersSet()
+    {
+        disabled = Container?.Disabled == true;
+        base.OnParametersSet();
     }
 
     async Task RemoveAsync()

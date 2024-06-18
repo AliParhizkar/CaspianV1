@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-md-4 pe-4">
                     <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="searchProduct.ProductCategoryId"
-                              TextExpression="t => t.Title" />
+                              TextExpression="t => t.Title" OnChanged="() => takeoutPriceControls.Clear()" />
                 </div>
                 <div class="col-md-2 ps-4">
                     <label>Status</label>
@@ -48,7 +48,7 @@
                     <DropdownList @bind-Value="searchProduct.ActiveType" />
                 </div>
                 <div class="col-md-12 pt-4">
-                    <DataGrid @ref="grid" TEntity="Product" Search="searchProduct" ContentHeight="400" HideInsertIcon>
+                    <DataGrid @ref="grid" TEntity="Product" Search="searchProduct" PageSize="10" ContentHeight="400" HideInsertIcon>
                         <Columns>
                             <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                             <GridColumn Field="t => t.Title" />
@@ -109,7 +109,9 @@
             using var service = CreateScope().GetService<ProductService>();
             await service.UpdatePrice(productId, price);
             await service.SaveChangesAsync();
-            await takeoutPriceControls[grid.SelectedRowIndex.Value].FocusAsync();
+            var control = takeoutPriceControls[grid.SelectedRowIndex.Value];
+            if (control.InputElement.HasValue)
+                await control.FocusAsync();
         }
     }
 
@@ -121,7 +123,9 @@
             await service.UpdateTakeoutPrice(productId, takeoutPrice);
             await service.SaveChangesAsync();
             await grid.SelectNextRow();
-            await priceControls[grid.SelectedRowIndex.Value].FocusAsync();
+            var control = priceControls[grid.SelectedRowIndex.Value];
+            if (control.InputElement.HasValue)
+                await control.FocusAsync();
         }
     }
 }

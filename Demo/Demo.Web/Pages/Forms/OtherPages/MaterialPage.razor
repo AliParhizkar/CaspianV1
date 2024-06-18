@@ -1,77 +1,72 @@
 ﻿@page "/Demo/Material"
 @namespace Demo.Web.Pages
 @inherits BasePage
+@inject SimpleService<Material> Service
 @{
     base.BuildRenderTree(__builder);
 }
 
-<CrudComponent UpsertData="material">
-    <div style="background-color:white" class="row ps-5 pe-5 pt-4 pb-4 ms-4 me-4">
+<div style="background-color:white" class="row ps-5 pe-5 pt-4 pb-4 ms-4 me-4">
     <div class="row c-controls">
         <div class="col-md-4 ps-4">
-            <label>Last name</label>
+            <label>Title</label>
         </div>
         <div class="col-md-8 pe-4">
-            <StringTextBox @bind-Value="search.Title" Search />
-         </div>
-     </div>
-    <DataGrid TEntity="Material" Search="search" ContentHeight="300">
-         <Columns Context="con">
-             <GridColumn Field="t => t.Title" />
-             <GridColumn Field="t => t.MainUnit.Title" Title="Mainunit" />
-             <GridColumn Field="t => t.Subunit.Title" Title="subUnit" />
-             <GridColumn Field="t => t.ActiveType.EnumText()" />
-             <GridCommandColumns />
-         </Columns>
-     </DataGrid>
-     <Window Title="Courier" Style="width:450px" 
-             OnOpen="() =>
+            <StringTextBox @bind-Value="Service.Search.Title" Search />
+        </div>
+    </div>
+    <DataGrid TEntity="Material" Service="Service" ContentHeight="300">
+        <Columns Context="con">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.MainUnit.Title" Title="Mainunit" />
+            <GridColumn Field="t => t.Subunit.Title" Title="subUnit" />
+            <GridColumn Field="t => t.ActiveType.EnumText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Title="Material" Style="width:450px"
+            OnOpen="() =>
                     {
-                        if (material.Id == 0)
-                            material.ActiveType = ActiveType.Enable;
+                        if (Service.UpsertData.Id == 0)
+                            Service.UpsertData.ActiveType = ActiveType.Enable;
                     }">
-         <Content>
-            <CaspianForm Model="material">
-                 <div class="row c-controls ps-3 pe-3">
-                     <div class="col-md-3">
-                         <label>Mainunit</label>
-                     </div>
-                     <div class="col-md-9">
-                        <ComboBox TEntity="MainUnit" TValue="int" @bind-Value="material.MainUnitId" TextExpression="t => t.Title" OnChange="() => cmb.EnableLoading()" />
-                     </div>
-                     <div class="col-md-3">
-                         <label>Subunit</label>
-                     </div>
-                     <div class="col-md-9">
-                        <ComboBox TEntity="Subunit" TValue="int?" @ref="cmb" Disabled="material.MainUnitId == 0" @bind-Value="material.SubunitId" TextExpression="t => t.Title" ConditionExpression="t => t.MainUnitId == material.MainUnitId" />
-                     </div>
-                     <div class="col-md-3">
-                         <label>Title</label>
-                     </div>
-                     <div class="col-md-9">
-                        <StringTextBox @bind-Value="material.Title" />
-                     </div>
-                     <div class="col-md-3">
-                         <label>Status</label>
-                     </div>
-                     <div class="col-md-9">
-                        <DropdownList @bind-Value="material.ActiveType" />
-                     </div>
-                     <div class="col-md-3"></div>
-                     <div class="col-md-9 text-center">
-                         <WindowCommandButtons />
-                     </div>
-                 </div>
-             </CaspianForm>
-         </Content>
-     </Window>
- </div>
-</CrudComponent>
+        <CaspianForm Service="Service">
+            <div class="row c-controls ps-3 pe-3">
+                <div class="col-md-3">
+                    <label>Mainunit</label>
+                </div>
+                <div class="col-md-9">
+                    <ComboBox TEntity="MainUnit" TValue="int" @bind-Value="Service.UpsertData.MainUnitId" TextExpression="t => t.Title" OnChange="() => cmb.EnableLoading()" />
+                </div>
+                <div class="col-md-3">
+                    <label>Subunit</label>
+                </div>
+                <div class="col-md-9">
+                    <ComboBox TEntity="Subunit" TValue="int?" @ref="cmb" Disabled="Service.UpsertData.MainUnitId == 0" @bind-Value="Service.UpsertData.SubunitId" TextExpression="t => t.Title" ConditionExpression="t => t.MainUnitId == Service.UpsertData.MainUnitId" />
+                </div>
+                <div class="col-md-3">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-9">
+                    <StringTextBox @bind-Value="Service.UpsertData.Title" />
+                </div>
+                <div class="col-md-3">
+                    <label>Status</label>
+                </div>
+                <div class="col-md-9">
+                    <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
+                </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-9 text-center">
+                    <WindowCommandButtons />
+                </div>
+            </div>
+        </CaspianForm>
+    </Window>
+</div>
 
 
 @code
 {
     ComboBox<Subunit, int?> cmb;
-    Material search = new Material();
-    Material material = new Material();
 }

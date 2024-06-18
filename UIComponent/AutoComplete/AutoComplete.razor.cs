@@ -381,6 +381,7 @@ namespace Caspian.UI
             }
             inputAttrs = new Dictionary<string, object>();
             inputAttrs["class"] = AutoHide ? "t-input auto-hide" : "t-input";
+            Disabled = Container?.Disabled == true;
             Container?.SetControl(this);
             if (OpenOnFocus)
             {

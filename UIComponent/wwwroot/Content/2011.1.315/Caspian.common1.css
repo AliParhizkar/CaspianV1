@@ -1,6 +1,11 @@
-﻿.c-error-develop{
-    overflow:auto;
-    height:calc(100% - 30px);
+﻿.c-icon-disabled .fa-check, .c-icon-disabled .fa-ban{
+    color: #c6c6c7 !important;
+    cursor: not-allowed !important;
+}
+
+.c-error-develop {
+    overflow: auto;
+    height: calc(100% - 30px);
 }
 textarea {
     line-height: normal !important;

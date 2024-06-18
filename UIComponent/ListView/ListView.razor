@@ -20,14 +20,25 @@
                 @if (insertedEntity?.UpsertMode != null && Inline && UpsertType == UpsertType.Inline)
                 {
                     <div class="c-listview-insert">
-                        <CaspianContainer @ref="insertContiner">
-                            <CascadingValue Value="InsertContext">
-                                <CaspianValidationValidator Source="source" ValidatorType="serviceType" />
+                        @if (selectedEntity == null)
+                        {
+                            <CaspianContainer @ref="insertContiner">
+                                <CascadingValue Value="InsertContext">
+                                    <CaspianValidationValidator Source="source" ValidatorType="serviceType" />
+                                    <CascadingValue Value="insertedEntity" Name="RowData">
+                                        @Fields(insertedEntity)
+                                    </CascadingValue>
+                                </CascadingValue>
+                            </CaspianContainer>
+                        }
+                        else
+                        {
+                            <CaspianContainer Disabled>
                                 <CascadingValue Value="insertedEntity" Name="RowData">
                                     @Fields(insertedEntity)
                                 </CascadingValue>
-                            </CascadingValue>
-                        </CaspianContainer>
+                            </CaspianContainer>
+                        }
                     </div>
                 }
                 @if (items != null)

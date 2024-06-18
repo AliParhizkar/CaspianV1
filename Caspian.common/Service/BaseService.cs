@@ -208,8 +208,9 @@ namespace Caspian.Common.Service
         public async Task<bool> AnyAsync(int id)
         {
             var param = Expression.Parameter(typeof(TEntity), "t");
-            Expression expr = Expression.Property(param, typeof(TEntity).GetPrimaryKey());
-            expr = Expression.Equal(expr, Expression.Constant(id));
+            var pKey = typeof(TEntity).GetPrimaryKey();
+            Expression expr = Expression.Property(param, pKey);
+            expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(id, pKey.PropertyType)));
             return await GetAll().Where(Expression.Lambda(expr, param)).AnyAsync();
         }
 

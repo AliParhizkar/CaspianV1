@@ -4,12 +4,12 @@
 @inherits CBaseInput<TValue>
 @{ 
     var className = "t-widget t-numerictextbox";
-    if (Disabled)
+    if (disabled)
         className += " t-state-disabled";
     else
     if (ErrorMessage != null)
         className += " t-state-error";
-    if (Disabled)
+    if (disabled)
         InputAttributes["disabled"] = "disabled";
     else
         InputAttributes.Remove("disabled");

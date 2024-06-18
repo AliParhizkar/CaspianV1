@@ -7,8 +7,8 @@
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
-            <div class="d-content">
-                <div class="row pt-4">
+            <div class="d-content pt-3">
+                <div class="row">
                     <div class="col-md-4 row pe-3">
                         <div class="col-md-2 text-start c-arrow-back">
                             <a href="/Demo/Batch/Inline/Master">
@@ -104,16 +104,8 @@
                                     <div class="d-listview-col-3">
                                         <TextField Field="t => t.Quantity.ToString()">
                                             <EditTemplate>
-                                                @if (detail.UpsertMode == UpsertMode.Insert)
-                                                {
-                                                    <NumericTextBox @ref="txtQuantityForInsert" @bind-Value="detail.Data.Quantity"
-                                                                    @onkeyup="@(async e => await UpsertOnEnter(e, detail.UpsertMode.Value))" />
-                                                }
-                                                else
-                                                {
-                                                    <NumericTextBox @ref="txtQuantityForUpdate" @bind-Value="detail.Data.Quantity"
-                                                                    @onkeyup="@(async e => await UpsertOnEnter(e, detail.UpsertMode.Value))" />
-                                                }
+                                                <NumericTextBox @ref="txtQuantity" @bind-Value="detail.Data.Quantity"
+                                                                @onkeyup="@(async e => await UpsertOnEnter(e, detail.UpsertMode.Value))" />
                                             </EditTemplate>
                                         </TextField>
                                     </div>
@@ -131,7 +123,6 @@
                                         <div class="d-listview-col-6">
                                             <StringTextBox @ref="txtDescription" @bind-Value="detail.Data.Descript" MultiLine Cols="5" />
                                         </div>
-
                                     }
                                 </div>
                             </Fields>
@@ -146,13 +137,10 @@
     </Tabs>
 </TabPanel>
 
-
-
-
 @code
 {
     StringTextBox txtDescription;
-    NumericTextBox<int> txtQuantityForInsert, txtQuantityForUpdate;
+    NumericTextBox<int> txtQuantity;
     bool ShowDescriptionStatuse;
     OrderDeatil selectedDeatil;
     UpsertMode upsertMode;
@@ -199,13 +187,8 @@
             var old = await service.SingleAsync(detail.ProductId);
             detail.Price = old.Price;
             if (detail.Id == 0)
-            {
                 detail.Quantity = 1;
-                await txtQuantityForInsert.FocusAsync();
-            }
-            else
-                await txtQuantityForUpdate.FocusAsync();
-
+            await txtQuantity.FocusAsync();
         }
     }
 
@@ -214,6 +197,9 @@
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
             await Service.DetailDataView.ValidateAndUpsert(mode);
     }
+
+    [CascadingParameter]
+    public CaspianContainer Container { get; set; }
 
     [Parameter]
     public int OrderId { get; set; }

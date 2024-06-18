@@ -1,138 +1,136 @@
 ﻿@page "/Demo/Customer"
+@inherits BasePage
+@inject SimpleService<Customer> Service
 @namespace Demo.Web.Pages
 @{
     base.BuildRenderTree(__builder);
 }
+
 <div style="background-color:white" class="row ps-5 pe-5 pt-4 pb-4 ms-4 me-4">
-    <CrudComponent UpsertData="customer">
-        <div class="row c-controls">
-            <div class="col-md-4 ps-4">
-                <label>Name</label>
-            </div>
-            <div class="col-md-8 pe-4">
-                <StringTextBox @bind-Value="name" placeholder="First & Last Name/Company" BindingType="BindingType.OnInput" OnChange="@LoadEnable" />
-            </div>
-            <div class="col-md-4 ps-4">
-                <label>Call Number</label>
-            </div>
-            <div class="col-md-8 pe-4">
-                <StringTextBox @bind-Value="callNumber" placeholder="Mobile/Tel" BindingType="BindingType.OnInput" OnChange="@LoadEnable" />
-            </div>
+    <div class="row c-controls">
+        <div class="col-md-4 ps-4">
+            <label>Name</label>
         </div>
-        <DataGrid @ref="grvCustomer" TEntity="Customer" ConditionExpr="t => (name == null || t.FName.Contains(name) || t.LName.Contains(name) || t.CompanyName.Contains(name)) && (callNumber == null || t.MobileNumber.StartsWith(callNumber) || t.Tel.StartsWith(callNumber))">
-            <Columns Context="customer">
-                <GridColumn Field="@(t => t.CustomerType.EnumText())" Title="Customer Type" />
-                <GridColumn Field="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" Title="Customer" />
-                <GridColumn Field="t => t.Gender.EnumText()" style="width:100px">
-                    <Template>
-                        @if (customer.Data.Gender == Gender.Male)
-                        {
-                            <span class="c-icon fa fa-male"></span>
-                        }
-                        else if (customer.Data.Gender == Gender.Female)
-                        {
-                            <span class="c-icon fa fa-female"></span>
-                        }
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="t => t.MobileNumber" />
-                <GridColumn Field="t => t.Tel" />
-                <GridCommandColumns DisableDeleteFunc="t => t.Gender == Gender.Male" DisableEditFunc="t => t.Gender == Gender.Female" />
-            </Columns>
-        </DataGrid>
-        <Window Title="Customer" Style="width:450px">
-            <Content>
-                <CaspianForm Model="customer">
-                    <table style="width:90%;margin:0 auto">
+        <div class="col-md-8 pe-4">
+            <StringTextBox @bind-Value="name" placeholder="First & Last Name/Company" BindingType="BindingType.OnInput" OnChange="@LoadEnable" />
+        </div>
+        <div class="col-md-4 ps-4">
+            <label>Call Number</label>
+        </div>
+        <div class="col-md-8 pe-4">
+            <StringTextBox @bind-Value="callNumber" placeholder="Mobile/Tel" BindingType="BindingType.OnInput" OnChange="@LoadEnable" />
+        </div>
+    </div>
+    <DataGrid @ref="grvCustomer" TEntity="Customer" Service="Service" ConditionExpr="t => (name == null || t.FName.Contains(name) || t.LName.Contains(name) || t.CompanyName.Contains(name)) && (callNumber == null || t.MobileNumber.StartsWith(callNumber) || t.Tel.StartsWith(callNumber))">
+        <Columns Context="customer">
+            <GridColumn Field="@(t => t.CustomerType.EnumText())" Title="Customer Type" />
+            <GridColumn Field="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" Title="Customer" />
+            <GridColumn Field="t => t.Gender.EnumText()" style="width:100px">
+                <Template>
+                    @if (customer.Data.Gender == Gender.Male)
+                    {
+                        <span class="c-icon fa fa-male"></span>
+                    }
+                    else if (customer.Data.Gender == Gender.Female)
+                    {
+                        <span class="c-icon fa fa-female"></span>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridColumn Field="t => t.Tel" />
+            <GridCommandColumns DisableDeleteFunc="t => t.Gender == Gender.Male" DisableEditFunc="t => t.Gender == Gender.Female" />
+        </Columns>
+    </DataGrid>
+    <Window Title="Customer" Service="Service" Style="width:450px">
+        <Content>
+            <CaspianForm Service="Service">
+                <table style="width:90%;margin:0 auto">
+                    <tr>
+                        <td>
+                            <label>Customer Type</label>
+                        </td>
+                        <td>
+                            <DropdownList @bind-Value="Service.UpsertData.CustomerType" />
+                        </td>
+                    </tr>
+                    @if (Service.UpsertData.CustomerType == CustomerType.Real)
+                    {
                         <tr>
                             <td>
-                                <label>Customer Type</label>
+                                <label>First Name</label>
                             </td>
                             <td>
-                                <DropdownList @bind-Value="customer.CustomerType" />
-                            </td>
-                        </tr>
-                        @if (customer.CustomerType == CustomerType.Real)
-                        {
-                            <tr>
-                                <td>
-                                    <label>First Name</label>
-                                </td>
-                                <td>
-                                    <StringTextBox @bind-Value="customer.FName" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>Last </label>
-                                </td>
-                                <td>
-                                    <StringTextBox @bind-Value="customer.LName" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>Gender</label>
-                                </td>
-                                <td>
-                                    <DropdownList @bind-Value="customer.Gender" />
-                                </td>
-                            </tr>
-                        }
-                        else if (customer.CustomerType == CustomerType.Legal)
-                        {
-                            <tr>
-                                <td>
-                                    <label>Company Name</label>
-                                </td>
-                                <td>
-                                    <StringTextBox @bind-Value="customer.CompanyName" />
-                                </td>
-                            </tr>
-                        }
-                        <tr>
-                            <td>
-                                <label>Customer Number</label>
-                            </td>
-                            <td>
-                                <NumericTextBox @bind-Value="customer.CustomerNumber" />
+                                <StringTextBox @bind-Value="Service.UpsertData.FName" />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <label>Mobile Number</label>
+                                <label>Last </label>
                             </td>
                             <td>
-                                <StringTextBox @bind-Value="customer.MobileNumber" Style="direction:ltr" MaxLength="11" />
+                                <StringTextBox @bind-Value="Service.UpsertData.LName" />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <label>Tel Number</label>
+                                <label>Gender</label>
                             </td>
                             <td>
-                                <StringTextBox @bind-Value="customer.Tel" Style="direction:ltr" MaxLength="11" />
+                                <DropdownList @bind-Value="Service.UpsertData.Gender" />
                             </td>
                         </tr>
+                    }
+                    else if (Service.UpsertData.CustomerType == CustomerType.Legal)
+                    {
                         <tr>
-                            <td colspan="2">
-                                <FormCommandButton />
+                            <td>
+                                <label>Company Name</label>
+                            </td>
+                            <td>
+                                <StringTextBox @bind-Value="Service.UpsertData.CompanyName" />
                             </td>
                         </tr>
-                    </table>
-                </CaspianForm>
-            </Content>
-        </Window>
-    </CrudComponent>
+                    }
+                    <tr>
+                        <td>
+                            <label>Customer Number</label>
+                        </td>
+                        <td>
+                            <NumericTextBox @bind-Value="Service.UpsertData.CustomerNumber" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Mobile Number</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" Style="direction:ltr" MaxLength="11" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Tel Number</label>
+                        </td>
+                        <td>
+                            <StringTextBox @bind-Value="Service.UpsertData.Tel" Style="direction:ltr" MaxLength="11" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <FormCommandButton />
+                        </td>
+                    </tr>
+                </table>
+            </CaspianForm>
+        </Content>
+    </Window>
 </div>
 
 @code
 {
     string name, callNumber;
-    Customer customer = new Customer();
     DataGrid<Customer> grvCustomer;
-    void LoadEnable()
-    {
-        grvCustomer.EnableLoading();
-    }
+
+    void LoadEnable() => grvCustomer.EnableLoading();
 }

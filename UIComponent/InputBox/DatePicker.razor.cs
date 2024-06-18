@@ -16,7 +16,7 @@ namespace Caspian.UI
 
         void OpenWindow()
         {
-            if (!Disabled)
+            if (!disabled)
                 Status = WindowStatus.Open;
         }
 
@@ -27,7 +27,7 @@ namespace Caspian.UI
 
         async Task ChangeDate(DateTime date)
         {
-            if (!Disabled)
+            if (!disabled)
             {
                 Value = (TValue)Convert.ChangeType(date, typeof(DateTime));
                 text = date.ToShortDateString();
@@ -40,7 +40,7 @@ namespace Caspian.UI
 
         async void ChangeValue(ChangeEventArgs arg)
         {
-            if (!Disabled)
+            if (!disabled)
             {
                 Value = default;
                 var strValue = Convert.ToString(arg.Value);

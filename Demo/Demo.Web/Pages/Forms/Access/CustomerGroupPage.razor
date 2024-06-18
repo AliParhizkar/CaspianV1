@@ -1,5 +1,6 @@
 ﻿@page "/Demo/CustomerGroup"
 @namespace Demo.Web.Pages
+@inject SimpleService<CustomerGroup> Service
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -17,52 +18,48 @@
                     </div>
                 </div>
                 <div class="col-md-7">
-                    <CrudComponent UpsertData="upsertGroup">
-                        <div class="row c-controls ">
-                            <div class="col-md-4 ps-3">
-                                <label>Title</label>
-                            </div>
-                            <div class="col-md-8 pe-3">
-                                <StringTextBox @bind-Value="searchGroup.Title" Search />
-                            </div>
-                            <DataGrid TEntity="CustomerGroup" Search="searchGroup" ContentHeight="300">
-                                <Columns>
-                                    <GridColumn Field="t => t.Title" />
-                                    <GridColumn Field="t => t.ActiveType.EnumText()" />
-                                    <GridColumn Title="Customers" style="width:80px;">
-                                        <Template>
-                                            <IconButton Href='@($"/Demo/CustomerGroupAccessPage/{context.Data.Id}")' IconType="IconType.Wpforms" />
-                                        </Template>
-                                    </GridColumn>
-                                    <GridCommandColumns />
-                                </Columns>
-                            </DataGrid>
+                    <div class="row c-controls ">
+                        <div class="col-md-4 ps-3">
+                            <label>Title</label>
                         </div>
-                        <Window Title="Customer Group" Style="width:400px">
-                            <Content>
-                                <CaspianForm Model="upsertGroup">
-                                    <div class="row c-controls ps-3 pe-3">
-                                        <div class="col-md-3">
-                                            <label>Title</label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <StringTextBox @bind-Value="upsertGroup.Title" />
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label>Status</label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <DropdownList @bind-Value="upsertGroup.ActiveType" />
-                                        </div>
-                                        <div class="col-md-3"></div>
-                                        <div class="col-md-9">
-                                            <FormCommandButton />
-                                        </div>
-                                    </div>
-                                </CaspianForm>
-                            </Content>
-                        </Window>
-                    </CrudComponent>
+                        <div class="col-md-8 pe-3">
+                            <StringTextBox @bind-Value="Service.Search.Title" Search />
+                        </div>
+                        <DataGrid TEntity="CustomerGroup" Service="Service" ContentHeight="300">
+                            <Columns>
+                                <GridColumn Field="t => t.Title" />
+                                <GridColumn Field="t => t.ActiveType.EnumText()" />
+                                <GridColumn Title="Customers" style="width:80px;">
+                                    <Template>
+                                        <IconButton Href='@($"/Demo/CustomerGroupAccessPage/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                                    </Template>
+                                </GridColumn>
+                                <GridCommandColumns />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                    <Window Title="Customer Group" Service="Service" Style="width:400px">
+                        <CaspianForm Service="Service">
+                            <div class="row c-controls ps-3 pe-3">
+                                <div class="col-md-3">
+                                    <label>Title</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <StringTextBox @bind-Value="Service.UpsertData.Title" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Status</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
+                                </div>
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9">
+                                    <FormCommandButton />
+                                </div>
+                            </div>
+                        </CaspianForm>
+                    </Window>
                 </div>
             </div>
         </TabPanelItem>
@@ -74,7 +71,5 @@
 
 @code 
 {
-    CustomerGroup upsertGroup = new CustomerGroup();
-    CustomerGroup searchGroup = new CustomerGroup();
 
 }

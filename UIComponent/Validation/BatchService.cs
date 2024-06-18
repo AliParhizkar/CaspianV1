@@ -187,9 +187,9 @@ namespace Caspian.UI
 
         public void ClearForm()
         {
-            Form = null;
-            UpsertData = null;
-            ChangedEntities = null;
+            //Form = null;
+            //UpsertData = null;
+            //ChangedEntities = null;
         }
     }
 

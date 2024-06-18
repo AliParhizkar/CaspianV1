@@ -15,6 +15,8 @@ namespace Caspian.Engine.Model
         [DisplayName("Username")]
         public override string UserName { get; set; }
 
+        public override string ConcurrencyStamp { get; set; }
+
         [DisplayName("First name")]
         public string FName { get; set; }
 

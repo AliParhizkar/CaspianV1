@@ -301,6 +301,8 @@ namespace Caspian.UI
                 RollBackEntity();
                 selectedEntity = null;
                 EditContext = null;
+                if (Batch)
+                    InsertContext = new EditContext(insertedEntity.Data);
             }
             else
                 await ReadyToInsert();

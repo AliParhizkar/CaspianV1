@@ -267,6 +267,8 @@ namespace Caspian.UI
         protected override void OnParametersSet()
         {
             CaspianForm?.AddControl(this);
+            Container?.SetControl(this);
+            Disabled = Container?.Disabled == true;
             base.OnParametersSet();
         }
 

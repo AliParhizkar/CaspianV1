@@ -75,7 +75,7 @@ namespace Caspian.Engine.Service
                                 var interfaceType = typeof(IMasterDetailsService<, >).MakeGenericType(type1, type2);
                                 services.AddScoped(interfaceType, provider => Activator.CreateInstance(type, provider));
                                 var batchServiceType = typeof(BatchService<,>).MakeGenericType(baseType.GenericTypeArguments);
-                                services.AddScoped(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
+                                services.AddTransient(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
                             }
                         }
                         if (baseType.GenericTypeArguments.Length == 1)

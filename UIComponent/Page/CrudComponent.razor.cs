@@ -105,7 +105,7 @@ namespace Caspian.UI
                 {
                     var info = typeof(TEntity).GetPrimaryKey();
                     var field = new FieldIdentifier(UpsertForm.EditContext.Model, info.Name);
-                    info.SetValue(UpsertForm.EditContext.Model, 0);
+                    info.SetValue(UpsertForm.EditContext.Model, Convert.ChangeType(0, info.PropertyType));
                     if (UpsertWindow != null)
                         await UpsertWindow.Close();
                 });
