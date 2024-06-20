@@ -28,6 +28,20 @@
                         <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
                     </li>
                 </ul>
+                <div class="c-controls row">
+                    <div class="col-md-2 ps-2">
+                        <label>Last Name</label>
+                    </div>
+                    <div class="col-md-4 pe-2">
+                        <StringTextBox @bind-Value="Service.Search.LName" />
+                    </div>
+                    <div class="col-md-2 ps-2">
+                        <label>Mobile</label>
+                    </div>
+                    <div class="col-md-4 pe-2">
+                        <StringTextBox @bind-Value="Service.Search.MobileNumber" />
+                    </div>
+                </div>
                 <DataGrid TEntity="Customer" Service="Service" ContentHeight="400">
                     <Columns>
                         <GridColumn Field="t => t.CustomerType" />

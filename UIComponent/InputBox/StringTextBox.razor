@@ -11,7 +11,14 @@
 <div class="@className" error-message="@ErrorMessage">
     @if (MultiLine)
     {
-        <textarea @ref="InputElement" style="@Style" @attributes="InputAttributes" @onchange="ChangeValue">@Value</textarea>
+        @if (base.BindingType == BindingType.OnChange)
+        {
+            <textarea @ref="InputElement" style="@Style" @attributes="InputAttributes" @onchange="ChangeValue">@Value</textarea>
+        }
+        else
+        {
+            <textarea @ref="InputElement" style="@Style" @attributes="InputAttributes" @oninput="ChangeValue">@Value</textarea>
+        }
     }
     else
     {
@@ -55,12 +62,8 @@
                 var property = (expr as MemberExpression).Member as PropertyInfo;
                 if (property?.Name == "Search")
                 {
-                    var serviceType = typeof(SimpleService<>).MakeGenericType(property.PropertyType);
-                    if (property.DeclaringType == serviceType)
-                    {
-                        Search = true;
-                        break;
-                    }
+                    Search = property.DeclaringType.GetInterfaces().Any(t => t == typeof(ISimpleService));
+                    break;
                 }
                 expr = (expr as MemberExpression).Expression;
             }

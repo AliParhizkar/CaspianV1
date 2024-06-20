@@ -4,6 +4,9 @@ using System.Linq;
 using Caspian.Common;
 using FluentValidation;
 using Caspian.Common.Service;
+using Caspian.Common.Extension;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {
@@ -18,15 +21,20 @@ namespace Demo.Service
             {
                 if (t.MaterialId > 0)
                 {
-                    var old = await new MaterialService(provider).SingleOrDefaultAsync(t.MaterialId);
+
+                    var old = await GetService<MaterialService>().GetAll().Include(t => t.Subunit).SingleOrDefaultAsync(t.MaterialId);
                     if (old != null)
                     {
-                        if (old.SubunitId.HasValue && t.QuantitySub == null)
-                            return true;
+                        if (old.SubunitId.HasValue)
+                        {
+                            if (t.QuantitySub == null || t.QuantitySub > old.Subunit.Factor)
+                                return true;
+                        }
                         if (old.SubunitId == null && t.QuantitySub.HasValue)
                             return true;
                     }
                 }
+
                 return false;
             }, "The value of sub-unit is invalid").Custom(t => t.QuantityMain == 0 && t.QuantitySub == 0, "This parameter must be greater than zero.");
         }

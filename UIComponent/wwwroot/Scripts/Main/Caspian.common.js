@@ -684,7 +684,7 @@
                             $animat.height($window.height() + 10);
                         }
                         else {
-                            $animat.css('top', top + $('.c-content-main').scrollTop() + 50);
+                            $animat.css('top', top + $('.c-content-main').scrollTop() + 35);
                             $window.css('top', -$window.height());
                             $animat.height($window.height() + 10);
                         }

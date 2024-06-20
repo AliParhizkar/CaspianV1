@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-md-4 pe-4">
                     <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="searchProduct.ProductCategoryId"
-                              TextExpression="t => t.Title" OnChanged="() => takeoutPriceControls.Clear()" />
+                              TextExpression="t => t.Title" />
                 </div>
                 <div class="col-md-2 ps-4">
                     <label>Status</label>
@@ -54,13 +54,13 @@
                             <GridColumn Field="t => t.Title" />
                             <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
                                 <Template>
-                                    <NumericTextBox @ref="PriceControl" TValue="int" Value="context.Data.Price" ValueChanged="value => context.Data.Price = value"
+                                    <NumericTextBox @key="context.Data.Id" @ref="PriceControl" OnDispose="ctr => priceControls.Remove(ctr)" TValue="int" Value="context.Data.Price" ValueChanged="value => context.Data.Price = value"
                                             @onkeyup="async e => await UpdatePrice(e, context.Data.Id, context.Data.Price)" />
                                 </Template>
                             </GridColumn>
                             <GridColumn Field="t => t.TakeoutPrice.ToString()" style="width:150px;">
                                 <Template>
-                                    <NumericTextBox @ref="TakeoutPriceControl" TValue="int" Value="context.Data.TakeoutPrice" ValueChanged="value => context.Data.TakeoutPrice = value"
+                                    <NumericTextBox @ref="TakeoutPriceControl" OnDispose="ctr => takeoutPriceControls.Remove(ctr)" TValue="int" Value="context.Data.TakeoutPrice" ValueChanged="value => context.Data.TakeoutPrice = value"
                                                     @onkeyup="async e => await UpdateTakeoutPrice(e, context.Data.Id, context.Data.TakeoutPrice)" />
                                 </Template>
                             </GridColumn>
@@ -74,6 +74,8 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
+
+
 @code
 {
     int? selectedId;
@@ -82,7 +84,6 @@
     DataGrid<Product> grid;
     IList<IControl> priceControls = new List<IControl>();
     IList<IControl> takeoutPriceControls = new List<IControl>();
-
 
     NumericTextBox<int> PriceControl
     {
@@ -109,9 +110,7 @@
             using var service = CreateScope().GetService<ProductService>();
             await service.UpdatePrice(productId, price);
             await service.SaveChangesAsync();
-            var control = takeoutPriceControls[grid.SelectedRowIndex.Value];
-            if (control.InputElement.HasValue)
-                await control.FocusAsync();
+            await takeoutPriceControls[grid.SelectedRowIndex.Value].FocusAsync();
         }
     }
 
@@ -123,9 +122,7 @@
             await service.UpdateTakeoutPrice(productId, takeoutPrice);
             await service.SaveChangesAsync();
             await grid.SelectNextRow();
-            var control = priceControls[grid.SelectedRowIndex.Value];
-            if (control.InputElement.HasValue)
-                await control.FocusAsync();
+            await priceControls[grid.SelectedRowIndex.Value].FocusAsync();
         }
     }
 }

@@ -26,5 +26,7 @@ namespace Demo.Model
 
         [DisplayName("Quantity-sub")]
         public int? QuantitySub { get; set; }
+
+        public string Description { get; set; }
     }
 }

@@ -6,11 +6,70 @@
 @using Demo.Model;
 @using Demo.Service
 
-<div style="width:500px;margin:20px auto">
-    <DropdownList @bind-Value="gender" />
+<div style="width:500px;margin: 10px auto">
+    <CaspianForm Model="customer">
+        <CaspianValidationValidator ValidatorType="typeof(CustomerService)" />
+        <div class="row c-controls">
+            <div class="col-md-4">
+                <label>Customer Type</label>
+            </div>
+            <div class="col-md-8">
+                <DropdownList @bind-Value="customer.CustomerType" />
+            </div>
+            @if (customer.CustomerType == CustomerType.Real)
+            {
+                <div class="col-md-4">
+                    <label>First Name</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="customer.FName" />
+                </div>
+                <div class="col-md-4">
+                    <label>Last Name</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="customer.LName" />
+                </div>
+                <div class="col-md-4">
+                    <label>Gender</label>
+                </div>
+                <div class="col-md-8">
+                    <DropdownList @bind-Value="customer.Gender" />
+                </div>
+            }
+            else
+            {
+                <div class="col-md-4">
+                    <label>Company Name</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="customer.CompanyName" />
+                </div>
+            }
+            <div class="col-md-4">
+                <label>Mobile</label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox @bind-Value="customer.MobileNumber" MaxLength="11" />
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <button type="submit">Submi</button>
+            </div>
+        </div>
+
+
+
+    </CaspianForm>
 </div>
+
+
 
 @code
 {
-    OrderKind2 gender = OrderKind2.Internet;
+    Customer customer = new Customer();
+    protected override void OnInitialized()
+    {
+        customer.CustomerType = CustomerType.Real;
+    }
 }

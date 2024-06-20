@@ -66,6 +66,9 @@
     [CascadingParameter(Name = "ParentForm")]
     internal ICaspianForm CaspianForm { get; set; }
 
+    [Parameter]
+    public EventCallback<CBaseInput<TValue>> OnDispose { get; set; }
+
     protected override void OnInitialized()
     {
         if (Search)
@@ -244,9 +247,11 @@
         }
     }
 
-    public void Dispose()
+    public async void Dispose()
     {
         InputElement = null;
+        if (OnDispose.HasDelegate)
+            await OnDispose.InvokeAsync(this);
     }
 
     protected override void OnAfterRender(bool firstRender)

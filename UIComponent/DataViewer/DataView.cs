@@ -52,6 +52,9 @@ namespace Caspian.UI
         public CaspianDataService CaspianDataService { get; set; }
 
         [Parameter]
+        public TEntity Search { get; set; }
+
+        [Parameter]
         public EventCallback<UpsertMode> OnCancel { get; set; }
 
         [Parameter]
@@ -235,7 +238,7 @@ namespace Caspian.UI
                 }
                 else
                 {
-                    if (FormAppState.AllControlsIsValid)
+                    if (FormAppState.AllControlsIsValid || FormAppState.Control.InputElement == null)
                         errorMessage = result.Errors[0].ErrorMessage;
                 }
             }
@@ -301,7 +304,7 @@ namespace Caspian.UI
                 RollBackEntity();
                 selectedEntity = null;
                 EditContext = null;
-                if (Batch)
+                if (Batch && !AutoHide)
                     InsertContext = new EditContext(insertedEntity.Data);
             }
             else

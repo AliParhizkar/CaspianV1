@@ -1,7 +1,11 @@
 ﻿@page "/Demo/Batch/AutoHide/Master"
 @using Caspian.Common.Extension
+@inject BatchService<WarehouseReceipt, ReceiptDetail> Service
 @inject NavigationManager navigationManager
 @inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
 @namespace Demo.Web.Pages
 <h2>Batch operation</h2>
 <h3>Batch-Autohide</h3>
@@ -19,11 +23,19 @@
                         In this example, we set <b>OnUpsert</b> parameter to redirect to a new page. All operations on the <b>Master</b> and <b>details</b> are done on this page.
                     </span>
                 </div>
-                <div class="col-md-6 pe-3">
-                    <div class="p-3">
-                        <CheckBox @bind-Value="onlyThisDay" Title="Only show today orders " OnChange="() => Grid.EnableLoading()" />
+                <div class="col-md-6 pe-3 row d-control">
+                    <div class="p-3 col-md-6">
+                        <CheckBox @bind-Value="onlyThisDay" Title="Only show today orders " OnChange="() => Service.DataView.EnableLoading()" />
                     </div>
-                    <DataGrid @ref="Grid" TEntity="WarehouseReceipt" OnUpsert="t => UpsertOrder(t)" ContentHeight="300"
+                    <div class="p-3 col-md-6">
+                        <RadioList @bind-Value="useListView">
+                            <RadioItems>
+                                <RadioItem Title="Grid" Value="false" />
+                                <RadioItem Title="List View" Value="true" />
+                            </RadioItems>
+                        </RadioList>
+                    </div>
+                    <DataGrid Service="Service" DeleteMessage="Do you want recipet and details" TEntity="WarehouseReceipt" OnUpsert="t => UpsertOrder(t)" ContentHeight="300"
                             ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
                         <Columns>
                             <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />
@@ -43,11 +55,13 @@
 {
     bool onlyThisDay = true;
     DateTime date = DateTime.Now.Date;
-    DataGrid<WarehouseReceipt> Grid;
+    bool useListView;
 
     void UpsertOrder(WarehouseReceipt receipt)
     {
-        string url = "Demo/Batch/AutoHide/Details" + (receipt.Id > 0 ? "/" + receipt.Id : "");
+        string url = "Demo/Batch/AutoHide/" + (useListView ? "Listview" : "Grid") + $"/Details";
+        if (receipt.Id > 0)
+            url += $"/{receipt.Id}";
         navigationManager.NavigateTo(url);
     }
 }

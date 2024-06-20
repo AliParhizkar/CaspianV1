@@ -346,9 +346,6 @@ namespace Caspian.UI
         public EventCallback<int> OnInternalRowSelect { get; set; }
 
         [Parameter]
-        public TEntity Search { get; set; }
-
-        [Parameter]
         public SelectType SelectType { get; set; } = SelectType.Single;
 
         [Parameter]
@@ -418,7 +415,7 @@ namespace Caspian.UI
         {
             if (SelectType == SelectType.Single && SelectedRowIndex.HasValue)
             {
-                if (SelectedRowIndex.Value + 1 < PageSize)
+                if (SelectedRowIndex.Value + 1 < PageSize && SelectedRowIndex.Value + 1 < items.Count)
                     SelectRow(SelectedRowIndex.Value + 1);
                 else
                 {

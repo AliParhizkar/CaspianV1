@@ -1,6 +1,12 @@
-﻿@page "/Demo/Batch/AutoHide/Details"
-@page "/Demo/Batch/AutoHide/Details/{ReceiptId:int}"
+﻿@page "/Demo/Batch/AutoHide/Grid/Details"
+@page "/Demo/Batch/AutoHide/Grid/Details/{ReceiptId:int}"
+<style type="text/css">
+    .c-content-main{
+        padding-left: .5rem!important;
+        padding-right: .5rem !important;
 
+    }
+</style>
 @using Caspian.Common.Extension
 @namespace Demo.Web.Pages
 @inject BatchService<WarehouseReceipt, ReceiptDetail> Service
@@ -35,7 +41,7 @@
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
-            <div class="d-content">
+            <div class="ps-2 pe-2">
                 <h4>Warehouse receipt-Receipt details</h4>
                 <span class="c-demo-description">In this example we can inser or update <b>warehouse receipt</b>, 
                     also insert update or delete receiptdetail(s).
@@ -73,7 +79,7 @@
                             </a>
                         </div>
                         <div class="col-md-10 text-center">
-                            <span class="d-membership">Warehouse receipt</span>
+                            <span class="d-membership">Receipt</span>
                         </div>
                         <hr class="mt-2" />
                     </div>
@@ -83,9 +89,9 @@
                             <hr class="mt-2" />
                         </div>
                     </div>
-                    <div class="col-md-4 row pe-3">
+                    <div class="col-md-3 row">
                         <CaspianForm Service="Service">
-                            <div class="row c-controls ps-3 pe-3">
+                            <div class="row c-controls">
                                 <div class="col-md-4">
                                     <label>Receipt date</label>
                                 </div>
@@ -110,7 +116,7 @@
                             </div>
                         </CaspianForm>
                     </div>
-                    <div class="col-md-8 ps-3">
+                    <div class="col-md-9 ps-4">
                         <DataGrid TEntity="ReceiptDetail" DetailBatchService="Service" ContentHeight="300" Inline AutoHide>
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material">
@@ -145,6 +151,11 @@
                                         <span>@(con.Data?.Material?.Subunit?.Title)</span>
                                     </Template>
                                 </GridColumn>
+                                <GridColumn Field="t => t.Description" Title="Comment" style="width:60px">
+                                    <Template>
+                                        <button @onclick="() => ShowDesccription(con.Data)" class="c-btn c-primary" disabled="@(con.UpsertMode == null)">...</button>
+                                    </Template>
+                                </GridColumn>
                                 <GridCommandColumns />
                             </Columns>
                         </DataGrid>
@@ -164,10 +175,31 @@
     </Tabs>
 </TabPanel>
 
+<PopupWindow @bind-Status="status">
+    <div style="width:450px;" class="row p-3 text-center">
+        <div class="col-md-4">@selectedReceiptDetail.Material?.Title</div>
+        <div class="col-md-1">@selectedReceiptDetail.QuantityMain.Seprate3Digit()</div>
+        <div class="col-md-3">@selectedReceiptDetail.Material?.MainUnit?.Title</div>
+        <div class="col-md-1">@selectedReceiptDetail.QuantitySub.Seprate3Digit()</div>
+        <div class="col-md-3">@selectedReceiptDetail.Material?.Subunit?.Title</div>
+    </div>
+    <div style="width:450px;" class="row p-3">
+        <StringTextBox @bind-Value="selectedReceiptDetail.Description" MultiLine Rows="3" />
+    </div>
+</PopupWindow>
+
 @code
 {
+    WindowStatus status;
     NumericTextBox<int> txtMainUnit;
     NumericTextBox<int?> txtSubunit;
+    ReceiptDetail selectedReceiptDetail;
+
+    void ShowDesccription(ReceiptDetail detail)
+    {
+        selectedReceiptDetail = detail;
+        status = WindowStatus.Open;
+    }
 
     protected override void OnInitialized()
     {
@@ -203,6 +235,8 @@
         {
             using var service = CreateScope().GetService<MaterialService>();
             detail.Material = await service.GetAll().Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync(materialId);
+            // if (detail.Material.SubunitId == null)
+            //     detail.QuantitySub = null;
             await txtMainUnit.FocusAsync();
 
         }

@@ -4,24 +4,25 @@
 @using Demo.Service
 @using Microsoft.EntityFrameworkCore
 @inherits BasePage
-@if (products == null)
+
+<StringTextBox @key="125" @ref="txt" />
+@if(flag)
 {
-    <div>
-        Loading
-    </div>
+    <StringTextBox @key="125" @ref="txt" />
 }
-else
-{
-    @foreach(var product in products)
-    {
-        <div style="display:flex">
-            <div>@product.Title</div>
-        </div>
-    }
-}
+
+<button @onclick="() => flag = !flag">Toggle</button>
 
 @code 
 {
+    StringTextBox txt;
+    bool flag = true;
+
+    async void Focus()
+    {
+        await txt.FocusAsync();
+    }
+
     IList<Product> products;
 
     protected override void OnInitialized()
@@ -34,20 +35,5 @@ else
         using var service = CreateScope().GetService<ProductService>();
         products = await service.GetAll().ToListAsync();
         await base.OnInitializedAsync();
-    }
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-    }
-
-    protected override Task OnParametersSetAsync()
-    {
-        return base.OnParametersSetAsync();
-    }
-
-    protected override bool ShouldRender()
-    {
-        return base.ShouldRender();
     }
 }

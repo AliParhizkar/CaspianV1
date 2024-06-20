@@ -1,35 +1,12 @@
 ﻿@page "/Demo/Test"
+@page "/Demo/Test/{ReciptId:int}"
 @namespace Demo.Web.Pages
 
 
-<div style="margin: 150px;">
-    <Tooltip Text="Tooltip Text">
-        Hover Over Me
-    </Tooltip>
-</div>
-
-<div style="margin: 150px;">
-    <Tooltip Position="Position.Right" Text="Tooltip Text">
-        Hover me (show on top)
-    </Tooltip>
-</div>
 
 
 @code
 {
-
-    ElementReference targetElementTop;
-    ElementReference targetElementLeft;
-    ElementReference targetElementRight;
-    ElementReference targetElementBottom;
-    WindowStatus anchorStatus;
-
-    int? left = 200;
-    int? right;
-    int offsetLeft = 2;
-    int offsetTop = 2;
-}
-
-@code {
-
+    [Parameter]
+    public int ReciptId { get; set; }
 }

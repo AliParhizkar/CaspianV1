@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using System.Data;
 
 namespace Caspian.UI
 {
@@ -31,6 +32,7 @@ namespace Caspian.UI
             var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
             batchServiceData.DetailPropertiesInfo.Add(detailsproperty);
             baseComponentService = serviceProvider.GetService<BaseComponentService>();
+            Search = Activator.CreateInstance<TMaster>();
         }
 
         IServiceScope CreateScope()
@@ -41,6 +43,8 @@ namespace Caspian.UI
         public int MasterId { get; set; }
 
         public TMaster UpsertData { get; private set; }
+
+        public TMaster Search {  get; set; }
 
         public DataView<TMaster> DataView { get; set; }
 
@@ -125,20 +129,24 @@ namespace Caspian.UI
 
         public void DataViewInitialize()
         {
+            DataView.Search = Search;
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TMaster>(this, async master =>
             {
-                var value = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
-                if (value != 0)
+                if (Window != null)
                 {
-                    var detailsName = typeof(TMaster).GetDetailsProperty(typeof(TDetail)).Name;
-                    using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
-                    UpsertData = await service.GetAll().Include(detailsName).SingleAsync(value);
+                    var value = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
+                    if (value != 0)
+                    {
+                        var detailsName = typeof(TMaster).GetDetailsProperty(typeof(TDetail)).Name;
+                        using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
+                        UpsertData = await service.GetAll().Include(detailsName).SingleAsync(value);
+                    }
+                    else
+                        UpsertData = Activator.CreateInstance<TMaster>();
+                    MasterId = value;
+                    await Window.Open();
+                    StateHasChanged();
                 }
-                else
-                    UpsertData = Activator.CreateInstance<TMaster>();
-                MasterId = value;
-                await Window.Open();
-                StateHasChanged();
             });
             DataView.OnInternalDelete = EventCallback.Factory.Create<TMaster>(this, async master =>
             {
