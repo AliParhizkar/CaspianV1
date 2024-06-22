@@ -201,21 +201,24 @@ namespace Caspian.UI
         }
     }
 
-    public interface ISimpleService<TMaster> where TMaster : class
+    public interface ISimpleService<TEntity>: ISearchService<TEntity> where TEntity : class
     {
-        DataView<TMaster> DataView { get; set; }
-
-        CaspianForm<TMaster> Form { get; set; }
+        CaspianForm<TEntity> Form { get; set; }
 
         void FormInitialize();
 
-        void DataViewInitialize();
-
         Task FetchAsync();
 
-        TMaster UpsertData { get; }
+        TEntity UpsertData { get; }
 
         void ClearForm();
+    }
+
+    public interface ISearchService<TEntity> where TEntity:class
+    {
+        DataView<TEntity> DataView { get; set; }
+
+        void DataViewInitialize();
     }
 
     public interface IDetailBatchService<TDetail> where TDetail : class

@@ -421,7 +421,7 @@ namespace Caspian.UI
             if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
-                //FormAppState.Control = this;
+                FormAppState.Control = this;
                 FormAppState.ErrorMessage = ErrorMessage;
             }
         }
@@ -631,7 +631,8 @@ namespace Caspian.UI
 
         public async Task FocusAsync()
         {
-            await InputElement.Value.FocusAsync();
+            if (InputElement.HasValue)
+                await InputElement.Value.FocusAsync();
         }
 
         public async Task IncPageNumber()
@@ -668,6 +669,12 @@ namespace Caspian.UI
                 valueChanged = false;
                 if (OnChanged.HasDelegate)
                     await OnChanged.InvokeAsync();
+            }
+            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
+            {
+                FormAppState.AllControlsIsValid = false;
+                FormAppState.Control = this;
+                FormAppState.ErrorMessage = ErrorMessage;
             }
             await base.OnAfterRenderAsync(firstRender);
         }

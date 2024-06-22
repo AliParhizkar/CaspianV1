@@ -238,12 +238,17 @@
                 break;
             }
         }
+        Console.WriteLine(_FieldName);
 
         if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
         {
-            FormAppState.AllControlsIsValid = false;
-            FormAppState.Control = this;
-            FormAppState.ErrorMessage = ErrorMessage;
+            if (InputElement != null)
+            {
+                FormAppState.AllControlsIsValid = false;
+                FormAppState.Control = this;
+            }
+            else
+                FormAppState.ErrorMessage = ErrorMessage;
         }
     }
 

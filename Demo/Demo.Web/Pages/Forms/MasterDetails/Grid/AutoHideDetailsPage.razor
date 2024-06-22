@@ -72,9 +72,9 @@
                     </li>
                 </ul>
                 <div class="row">
-                    <div class="col-md-4 row pe-3">
-                        <div class="col-md-2 text-start">
-                            <a href="/Demo/Batch/Inline/Master">
+                    <div class="col-md-3 row">
+                        <div class="col-md-2 text-start c-arrow-back">
+                            <a href="/Demo/Batch/AutoHide/Master">
                                 <span class="fa fa-arrow-left"></span>
                             </a>
                         </div>
@@ -235,8 +235,8 @@
         {
             using var service = CreateScope().GetService<MaterialService>();
             detail.Material = await service.GetAll().Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync(materialId);
-            // if (detail.Material.SubunitId == null)
-            //     detail.QuantitySub = null;
+            if (detail.Material.SubunitId == null)
+                detail.QuantitySub = null;
             await txtMainUnit.FocusAsync();
 
         }

@@ -24,7 +24,6 @@ namespace Caspian.UI
         protected EditContext EditContext;
         protected bool shouldSetFocuc;
         protected IList<TEntity> deletedEntities;
-        protected string errorMessage;
         protected bool shouldFetchData = true;
         protected CaspianContainer insertContiner;
         protected CaspianContainer updateContiner;
@@ -236,11 +235,6 @@ namespace Caspian.UI
                     if (OnSave.HasDelegate)
                         await OnSave.InvokeAsync();
                 }
-                else
-                {
-                    if (FormAppState.AllControlsIsValid || FormAppState.Control.InputElement == null)
-                        errorMessage = result.Errors[0].ErrorMessage;
-                }
             }
             else
             {
@@ -262,11 +256,6 @@ namespace Caspian.UI
                     await ReadyToInsert();
                     if (OnSave.HasDelegate)
                         await OnSave.InvokeAsync();
-                }
-                else
-                {
-                    if (FormAppState.AllControlsIsValid)
-                        errorMessage = result.Errors[0].ErrorMessage;
                 }
             }
             StateHasChanged();
@@ -466,8 +455,6 @@ namespace Caspian.UI
                     DetailBatchService.ChangedEntities.Remove(old);
                 }
             }
-            else
-                errorMessage = result.Errors[0].ErrorMessage;
             StateHasChanged();
         }
 

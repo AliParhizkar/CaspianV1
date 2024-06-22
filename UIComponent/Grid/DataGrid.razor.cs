@@ -134,17 +134,16 @@ namespace Caspian.UI
                 await jsRuntime.InvokeVoidAsync("$.caspian.dadaGridBind", mainDiv);
                 StateHasChanged();
             }
-
+            if (insertContinerHouldhasFocus)
+            {
+                insertContinerHouldhasFocus = false;
+                await insertContiner.FocusAsync();
+            }
             if (FormAppState.Control != null)
             {
                 if (FormAppState.Control.InputElement.HasValue)
                     await FormAppState.Control.FocusAsync();
                 FormAppState.Control = null;
-            }
-            else if (errorMessage.HasValue())
-            {
-                await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
-                errorMessage = null;
             }
             await base.OnAfterRenderAsync(firstRender);
         }
@@ -328,9 +327,6 @@ namespace Caspian.UI
                 return null;
             }
         }
-
-        [CascadingParameter(Name = "AutoComplateState")]
-        public SearchState SearchState { get; set; }
 
         public Window Control { get; set; }
 

@@ -6,7 +6,7 @@
         <label>Customer type</label>
     </div>
     <div class="col-md-4 pe-5">
-        <DropdownList @bind-Value="SearchData.CustomerType" Search />
+        <DropdownList @bind-Value="SearchData.CustomerType" />
     </div>
     <div class="col-md-2">
         @if (SearchData.CustomerType == CustomerType.Legal)
@@ -30,7 +30,7 @@
     </div>
 </div>
 <div class="c-lookup-page" style="width:750px;">
-    <DataGrid @ref="Grid" TEntity="Customer" ContentHeight="150" Search="SearchData" HidePageSize>
+    <DataGrid Service="Service" TEntity="Customer" ContentHeight="150" Search="SearchData" HidePageSize>
         <Columns Context="customer">
             <GridColumn Field="t => t.CustomerType" Title="Customer type" />
             <GridColumn Field='t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Customer Name" />

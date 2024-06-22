@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace Caspian.UI
 {
-    public partial class AutoComplete<TEntity, TValue> : IControl where TEntity: class
+    public partial class AutoComplete<TEntity, TValue> : IControl, IAutoComplete<TEntity> where TEntity: class
     {
         string Text;
         string oldText;
@@ -21,10 +21,11 @@ namespace Caspian.UI
         bool shouldRender;
         string _FieldName;
         EditContext oldContext;
-        SearchState SearchState;
+        DataGrid<TEntity> grid;
         ValidationMessageStore _messageStore;
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
         WindowStatus status;
+        bool valueUpdated;
 
         void SetSearchValue(ChangeEventArgs e)
         {
@@ -128,7 +129,6 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            SearchState = new SearchState();
             shouldRender = true;
             status = WindowStatus.Close;
             base.OnInitialized();
@@ -274,24 +274,24 @@ namespace Caspian.UI
             return false;
         }
 
-        public async Task CloseHelpForm(bool sholdRender = false)
+        public void CloseHelpForm(bool sholdRender = false)
         {
-            await Task.Delay(200);
             status = WindowStatus.Close;
             if (sholdRender)
                 StateHasChanged();
         }
 
         [JSInvokable]
-        public async Task Close()
+        public void Close()
         {
-            await CloseHelpForm(true);
+            CloseHelpForm(true);
         }
 
         async Task OnKeyUp(KeyboardEventArgs e)
         {
-            if (e.Code == "Enter" || e.Code == "NumpadEnter")
+            if (valueUpdated && (e.Code == "Enter" || e.Code == "NumpadEnter"))
             {
+                valueUpdated = false;
                 if (ValueChanged.HasDelegate)
                     await ValueChanged.InvokeAsync(Value);
                 if (OnChange.HasDelegate)
@@ -318,19 +318,20 @@ namespace Caspian.UI
             switch (e.Code)
             {
                 case "ArrowUp":
-                    SearchState?.Grid?.SelectPrevRow();
+                    grid?.SelectPrevRow();
                     break;
                 case "ArrowDown":
-                    SearchState?.Grid?.SelectNextRow();
+                    grid?.SelectNextRow();
                     break;
                 case "Enter":
                 case "NumpadEnter":
-                    if (SearchState?.Grid?.SelectedRowId != null)
+                    if (grid?.SelectedRowId != null)
                     {
-                        var value = SearchState.Grid.SelectedRowId.Value;
+                        var value = grid.SelectedRowId.Value;
                         Text = await GetText(value);
+                        CloseHelpForm();
                         await SetValue(value, false);
-                        await CloseHelpForm();
+                        valueUpdated = true;
                     }
                     break;
                 case "Escape":
@@ -346,8 +347,8 @@ namespace Caspian.UI
                             await OnChange.InvokeAsync();
                         mustClear = true;
                     }
-                    SearchState?.Grid?.SelectFirstPage();
-                    SearchState?.Grid?.SelectFirstRow();
+                    grid?.SelectFirstPage();
+                    grid?.SelectFirstRow();
                     break;
                 default:
                     shouldRender = false;
@@ -361,6 +362,18 @@ namespace Caspian.UI
             await SetValue(0);
         }
 
+        public void SetAndInitializeGrid(DataGrid<TEntity> grid)
+        {
+            this.grid = grid;
+            grid.HideInsertIcon = true;
+            grid.SelectFirstRow();
+            grid.OnInternalRowSelect = EventCallback.Factory.Create<int>(this, async id =>
+            {
+                Close();
+                await SetValue(id);
+            });
+        }
+
         public async Task FocusAsync()
         {
             await InputElement.Value.FocusAsync();
@@ -368,7 +381,6 @@ namespace Caspian.UI
 
         protected override void OnParametersSet()
         {
-            SearchState.Value = Value;
             if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
             {
                 _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
@@ -420,13 +432,7 @@ namespace Caspian.UI
                 FormAppState.Control = this;
                 FormAppState.ErrorMessage = ErrorMessage;
             }
-            if (SearchState.Grid != null && !SearchState.Grid.OnInternalRowSelect.HasDelegate)
-            {
-                SearchState.Grid.OnInternalRowSelect = EventCallback.Factory.Create<int>(this, async (int id) =>
-                {
-                    await this.SetValue(id);
-                });
-            }
+
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);
@@ -480,5 +486,10 @@ namespace Caspian.UI
             SearchStr = searchStr;
             StateHasChanged();
         }
+    }
+
+    public interface IAutoComplete<TEntity> where TEntity : class
+    {
+        void SetAndInitializeGrid(DataGrid<TEntity> grid);
     }
 }

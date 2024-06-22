@@ -19,12 +19,9 @@
     else
     {
     <div @ref="mainDiv" class="t-widget t-grid">
-        @if (SearchState == null)
+        @if (ToolsBar == null)
         {
-            @if (ToolsBar == null)
-            {
                 <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" />
-            }
         }
         else
             @ToolsBar

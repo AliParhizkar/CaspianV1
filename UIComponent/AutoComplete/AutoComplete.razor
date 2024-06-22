@@ -41,19 +41,15 @@
                 {
                     <div class="t-header">
                         <span class="t-window-title">@(Title)</span>
-                        <span class="t-window-action t-link" @onclick="async () => await CloseHelpForm()">
+                        <span class="t-window-action t-link" @onclick="() => CloseHelpForm()">
                             <i class="fa fa-close"></i>
                         </span>
                     </div>
                 }
                 <div class="t-content">
                     <CascadingValue Name="LookupStringSearchValue" Value="SearchStr">
-                        <CascadingValue Name="AutoComplateState" Value="SearchState">
-                            <CascadingValue Value="false" Name="GridEditableList">
-                                <CascadingValue Value=this>
-                                    @ChildContent
-                                </CascadingValue>
-                            </CascadingValue>
+                        <CascadingValue Value=this>
+                            @ChildContent
                         </CascadingValue>
                     </CascadingValue>
                 </div>

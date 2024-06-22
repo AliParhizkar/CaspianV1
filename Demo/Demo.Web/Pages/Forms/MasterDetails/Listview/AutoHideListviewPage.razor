@@ -5,8 +5,8 @@
 @inherits BasePage 
 @inject BatchService<WarehouseReceipt, ReceiptDetail> Service
 
-<div style="margin:0 -20px" class="d-content ps-2 pe-2">
-    <div class="row pt-4">
+<div style="margin:0 -20px" class="d-content p-2">
+    <div class="row">
         <div class="col-md-3 row">
             <div class="col-md-2 text-start c-arrow-back">
                 <a href="/Demo/Batch/Autohide/Master">
@@ -53,7 +53,7 @@
         </div>
         <div class="col-md-9 ps-3">
             <ListView TEntity="ReceiptDetail" DetailBatchService="Service" ContentHeight="250" Inline AutoHide PageSize="8"
-                      OnCancel="HideDescription" OnUpsert="HideDescription" OnSave="HideDescription">
+                      OnCancel="HideDescription" OnSave="HideDescription">
                 <HeaderTempalte>
                     <div class="d-lst-1">Material</div>
                     <div class="d-lst-2">Quantity</div>
@@ -95,7 +95,7 @@
                             </TextField>
                         </div>
                         <div class="d-lst-4">
-                            @if (detail?.Data?.QuantitySub != null || detail?.Data?.Material?.Subunit != null)
+                            @if (detail?.Data?.Material?.SubunitId != null || detail?.Data?.Material?.Subunit?.Title != null)
                             {
                                 <TextField Field="t => t.QuantitySub.Seprate3Digit()">
                                     <EditTemplate>
@@ -201,8 +201,9 @@
         {
             using var service = CreateScope().GetService<MaterialService>();
             detail.Material = await service.GetAll().Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync(detail.MaterialId);
+            // if (detail.Material.SubunitId == null)
+            //     detail.QuantitySub = null;
             await txtMainUnit.FocusAsync();
-
         }
     }
 

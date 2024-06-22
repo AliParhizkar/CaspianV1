@@ -161,6 +161,11 @@
                                                         @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
                                     </EditTemplate>
                                 </GridColumn>
+                                <GridColumn Field="t => t.Descript" Title="Comment" style="width:60px">
+                                    <Template>
+                                        <button @onclick="async () => await ShowDesccription(con.Data)" class="c-btn c-primary" disabled="@(con.UpsertMode == null)">...</button>
+                                    </Template>
+                                </GridColumn>
                                 <GridCommandColumns />
                             </Columns>
                         </DataGrid>
@@ -182,9 +187,32 @@
 <div style="height:110px">
 
 </div>
+<PopupWindow @bind-Status="status">
+    <div style="width:400px;" class="row p-3 text-center">
+        <div class="col-md-6">@selectedOrderDeatil.Product?.Title</div>
+        <div class="col-md-2">@selectedOrderDeatil.Quantity</div>
+        <div class="col-md-4">@selectedOrderDeatil.Price.Seprate3Digit()</div>
+    </div>
+    <div style="width:400px;" class="row p-3">
+        <StringTextBox @bind-Value="selectedOrderDeatil.Descript" MultiLine Rows="3" />
+    </div>
+</PopupWindow>
 @code
 {
+    WindowStatus status;
+    OrderDeatil selectedOrderDeatil;
     NumericTextBox<int> txtQuantity;
+
+    async Task ShowDesccription(OrderDeatil detail)
+    {
+        if (detail.Id == 0 && detail.ProductId > 0)
+        {
+            using var service = CreateScope().GetService<ProductService>();
+            detail.Product = await service.SingleAsync(detail.ProductId);
+        }
+        selectedOrderDeatil = detail;
+        status = WindowStatus.Open;
+    }
 
     [Parameter]
     public int OrderId { get; set; }

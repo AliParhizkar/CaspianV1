@@ -1,16 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class LookupWindow<TEntity, TValue> where TEntity:class
+    public partial class LookupWindow<TEntity, TValue>: BasePage where TEntity:class
     {
         string oldSerachStringValue;
         Expression<Func<TEntity, bool>> SearchExpression;
-        protected DataGrid<TEntity> Grid;
         protected TEntity SearchData;
+        DataGrid<TEntity> grid;
 
         protected virtual void InitialSearchExpression(Expression<Func<TEntity, bool>> expr)
         {
@@ -23,54 +21,49 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
-        [CascadingParameter]
-        public AutoComplete<TEntity, TValue> AutoComplete { get; set; }
-
         [CascadingParameter(Name = "LookupStringSearchValue")]
         public string LookupStringSearchValue { get; set; }
 
-        [CascadingParameter(Name = "AutoComplateState")]
-        public SearchState SearchState { get; set; }
+        [CascadingParameter]
+        public IAutoComplete<TEntity> AutoComplete { get; set; }
+
+        [Inject]
+        public SimpleService<TEntity> Service { get; set; }
 
         protected override async Task OnParametersSetAsync()
         {
-            if (Grid != null && SearchState != null)
-            {
-                if (Grid.InternalConditionExpr == null)
-                {
-                    
-                    Grid.InternalConditionExpr = SearchExpression.Body;
-                }
-                if (Grid.SelectedRowId == null)
-                    Grid.SelectFirstRow();
-                SearchState.Grid = Grid;
-                if (oldSerachStringValue != LookupStringSearchValue)
-                {
-                    oldSerachStringValue = LookupStringSearchValue;
-                    Grid.EnableLoading();
-                    await Grid.DataBind();
-                }
-            }
+            if (grid != null)
+                await UpdateGrid();
             await base.OnParametersSetAsync();
         }
 
-        protected override void OnAfterRender(bool firstRender)
+        async Task UpdateGrid()
         {
-            if (Grid != null)
+            if (grid.SelectedRowId == null)
+                grid.SelectFirstRow();
+            if (oldSerachStringValue != LookupStringSearchValue)
             {
-                Grid.HideInsertIcon = true;
-                if (!Grid.OnInternalRowSelect.HasDelegate)
-                {
-                    Grid.OnInternalRowSelect = EventCallback.Factory.Create<int>(this, async (int id) =>
-                    {
-                        var text = await AutoComplete.GetText(id);
-                        AutoComplete.SetText(text);
-                        await AutoComplete.SetValue(id);
-                        await AutoComplete.CloseHelpForm(true);
-                    });
-                }
+                oldSerachStringValue = LookupStringSearchValue;
+                grid.EnableLoading();
+                await grid.DataBind();
             }
-            base.OnAfterRender(firstRender);
+        }
+
+        void BindGrid()
+        {
+            grid.InternalConditionExpr = SearchExpression.Body;
+            AutoComplete.SetAndInitializeGrid(grid);
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (grid == null)
+            {
+                grid = Service.DataView as DataGrid<TEntity>;
+                BindGrid();
+                await UpdateGrid();
+            }
+            await base.OnAfterRenderAsync(firstRender);
         }
     }
 }

@@ -8,7 +8,7 @@
             <StringTextBox @bind-Value="SearchData.Title" placeholder="Title" />
         </div>
     }
-    <DataGrid @ref="Grid" TEntity="Product" Search="SearchData" ContentHeight="200" HidePageSize>
+    <DataGrid Service="Service" TEntity="Product" ContentHeight="200" HidePageSize>
         <Columns>
             <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
             <GridColumn Field="t => t.Title" />
