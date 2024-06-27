@@ -31,6 +31,7 @@ namespace Caspian.Report
 
         public void ArrangeBoundItems()
         {
+            
             var bondItems = Data.Items.Where(t => t.BondType != BondType.DataHeader).OrderBy(t => t.BondType).ToList();
             var dataHeader = Data.Items.SingleOrDefault(t => t.BondType == BondType.DataHeader);
             if (dataHeader != null)

@@ -1373,9 +1373,7 @@ form > tr {
 }
 .c-lookup .fa-search {
     color: #423d96;
-    z-index: 5;
     font-size: 18px;
-    position: relative;
     cursor: pointer;
 }
 .c-page-size {

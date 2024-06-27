@@ -201,8 +201,8 @@
         {
             using var service = CreateScope().GetService<MaterialService>();
             detail.Material = await service.GetAll().Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync(detail.MaterialId);
-            // if (detail.Material.SubunitId == null)
-            //     detail.QuantitySub = null;
+            if (detail.Material.SubunitId == null)
+                detail.QuantitySub = null;
             await txtMainUnit.FocusAsync();
         }
     }

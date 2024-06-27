@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Caspian.Common.Extension
+namespace Caspian.Common
 {
     public static class StringExtension
     {
@@ -8,6 +8,11 @@ namespace Caspian.Common.Extension
         {
             Regex r = new Regex(@"(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])");
             return r.Replace(str, " ");
+        }
+
+        public static bool HasValue(this string str)
+        {
+            return !string.IsNullOrEmpty(str);
         }
     }
 }

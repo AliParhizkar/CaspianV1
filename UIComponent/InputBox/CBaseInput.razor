@@ -11,7 +11,6 @@
     bool valueIsChanged;
     bool reseting;
     EditContext oldContext;
-    protected bool focuced;
     protected bool disabled;
 
     public ElementReference? InputElement { get; protected set; }
@@ -119,6 +118,7 @@
 
                 var model = CurrentEditContext.Model;
                 FormAppState.AllControlsIsValid = true;
+                FormAppState.ErrorMessage = null;
                 if (_FieldName.HasValue())
                 {
                     var info = model.GetType().GetProperty(_FieldName);
@@ -176,8 +176,8 @@
 
     public async Task FocusAsync()
     {
-        focuced = true;
-        await InputElement.Value.FocusAsync();
+        if (InputElement.HasValue)
+            await InputElement.Value.FocusAsync();
     }
 
     public virtual async Task ResetAsync()

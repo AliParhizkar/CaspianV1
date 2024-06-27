@@ -95,6 +95,7 @@ namespace Caspian.UI
             if (CrudComponent != null)
                 CrudComponent.UpsertForm = this;
             FormAppState.AllControlsIsValid = true;
+            FormAppState.ErrorMessage = null;
             base.OnInitialized();
         }
 
@@ -119,6 +120,7 @@ namespace Caspian.UI
             if (OnInternalSubmit.HasDelegate)
                 await OnInternalSubmit.InvokeAsync(EditContext);
             FormAppState.AllControlsIsValid = true;
+            FormAppState.ErrorMessage = null;
             ErrorMessage = null;
             EditContext.Validate();
             EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);

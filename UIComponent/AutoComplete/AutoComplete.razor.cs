@@ -26,7 +26,6 @@ namespace Caspian.UI
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
         WindowStatus status;
         bool valueUpdated;
-
         void SetSearchValue(ChangeEventArgs e)
         {
             if (status == WindowStatus.Close)
@@ -314,7 +313,6 @@ namespace Caspian.UI
 
         async Task OnKeyDownHandler(KeyboardEventArgs e)
         {
-            
             switch (e.Code)
             {
                 case "ArrowUp":
@@ -328,10 +326,12 @@ namespace Caspian.UI
                     if (grid?.SelectedRowId != null)
                     {
                         var value = grid.SelectedRowId.Value;
-                        Text = await GetText(value);
                         CloseHelpForm();
                         await SetValue(value, false);
                         valueUpdated = true;
+                        Oldvalue = Value;
+                        Text = await GetText(value);
+                        oldText = Text;
                     }
                     break;
                 case "Escape":
@@ -351,9 +351,10 @@ namespace Caspian.UI
                     grid?.SelectFirstRow();
                     break;
                 default:
-                    shouldRender = false;
+                        shouldRender = false;
                     break;
             }
+
         }
 
         public async Task ResetAsync()
@@ -464,7 +465,8 @@ namespace Caspian.UI
                     type = Nullable.GetUnderlyingType(type);
                 var tempValue = Convert.ChangeType(id, type);
                 Value = (TValue)tempValue;
-                await SetText();
+                if (fireEvent)
+                    await SetText();
                 Value = (TValue)tempValue;
                 if (fireEvent)
                 {

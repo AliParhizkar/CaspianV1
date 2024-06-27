@@ -654,6 +654,11 @@
             $(input).focus(() => {
                 $.caspian.showErrorMessage($lookup[0]);
             });
+            $(input).keydown(e => {
+                let code = e.code || e.keyCode;
+                if (code == 40 || code == 38) 
+                    e.preventDefault();
+            });
             $(input).blur(() => {
                 $.caspian.hideErrorMessage($lookup[0]);
             });

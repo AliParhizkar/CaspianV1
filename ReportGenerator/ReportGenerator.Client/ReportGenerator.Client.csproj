@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Caspian.Common.Client\Caspian.Common.Client.csproj" />
-    <ProjectReference Include="..\..\UIComponent.Clinet\UIComponent.Clinet.csproj" />
+    <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
+    <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
   </ItemGroup>
 
 </Project>

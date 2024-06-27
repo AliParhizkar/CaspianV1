@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Caspian.Common.Client\Caspian.Common.Client.csproj" />
+    <ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
   </ItemGroup>
 
 </Project>

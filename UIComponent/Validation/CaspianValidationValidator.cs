@@ -153,21 +153,14 @@ namespace Caspian.UI
                     await control.FocusAsync();
                 }
                 else if (FormAppState.ErrorMessage !=  null)
-                {
                     await JSRuntime.InvokeVoidAsync("$.caspian.showMessage", FormAppState.ErrorMessage);
-                    FormAppState.ErrorMessage = null;
-                }
             }
             if (CaspianForm == null && FormAppState.AllControlsIsValid)
             {
                 if (FormAppState.Control?.InputElement == null)
                 {
                     if (FormAppState.ErrorMessage.HasValue())
-                    {
                         await JSRuntime.InvokeVoidAsync("$.caspian.showMessage", FormAppState.ErrorMessage);
-                        FormAppState.ErrorMessage = null;
-                    }
-
                 }
                 else
                     await FormAppState.Control.FocusAsync();

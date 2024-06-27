@@ -184,7 +184,7 @@
         <div class="col-md-3">@selectedReceiptDetail.Material?.Subunit?.Title</div>
     </div>
     <div style="width:450px;" class="row p-3">
-        <StringTextBox @bind-Value="selectedReceiptDetail.Description" MultiLine Rows="3" />
+        <StringTextBox @ref="txtDescription" @bind-Value="selectedReceiptDetail.Description" MultiLine Rows="3" />
     </div>
 </PopupWindow>
 
@@ -194,11 +194,13 @@
     NumericTextBox<int> txtMainUnit;
     NumericTextBox<int?> txtSubunit;
     ReceiptDetail selectedReceiptDetail;
-
-    void ShowDesccription(ReceiptDetail detail)
+    StringTextBox txtDescription;
+    async Task ShowDesccription(ReceiptDetail detail)
     {
         selectedReceiptDetail = detail;
         status = WindowStatus.Open;
+        await Task.Delay(100);
+        await txtDescription.FocusAsync();
     }
 
     protected override void OnInitialized()
