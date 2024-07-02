@@ -1,6 +1,26 @@
-﻿.c-colorpicker-panel {
+﻿.r-cmb-body {
+    position: absolute;
+    height: 300px;
+    border: 1px solid gainsboro;
+    top: 26px;
+    background-color: white;
+    z-index: 10000;
+    cursor: default;
     transition: top .2s cubic-bezier(0.35, 0, 0.25, 1);
-    top:-300px;
+}
+.r-container {
+    position: absolute;
+    height:500px;
+    left:0;
+    right:0;
+    top:26px;
+    bottom:0;
+    overflow:hidden;
+}
+
+.c-colorpicker-panel {
+    transition: top .2s cubic-bezier(0.35, 0, 0.25, 1);
+    top: -300px;
     /*clip-path: polygon(-500px 27px, 500px 27px, 500px 500px, 0 500px)*/
 }
 .r-behind {

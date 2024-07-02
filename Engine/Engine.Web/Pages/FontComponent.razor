@@ -1,0 +1,48 @@
+﻿@using System.Drawing.Text
+@inject SimpleService<CaspianFont> Service
+@inherits BasePage
+<div class="row c-controls pt-3">
+    <div class="col-md-3 ps-4">
+        <label>Name</label>
+    </div>
+    <div class="col-md-6">
+        <StringTextBox @bind-Value="Service.Search.Name" />
+    </div>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="CaspianFont" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridCommandColumns HideEdit />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="Font" Style="width:450px">
+    <CaspianForm Service="Service">
+        <div class="row c-controls ps-4 pe-4">
+            <div class="col-md-3">
+                <label>Name</label>
+            </div>
+            <div class="col-md-9">
+                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="Service.UpsertData.Name" Source="fonts" />
+            </div>
+            <div class="col-md-3"></div>
+            <div class="col-md-9">
+                <FormCommandButton />
+            </div>
+        </div>
+    </CaspianForm>
+</Window>
+
+
+@code 
+{
+    IList<SelectListItem> fonts;
+
+    protected override void OnInitialized()
+    {
+        using var installedFontCollection = new InstalledFontCollection();
+        fonts = installedFontCollection.Families.Select(t => new SelectListItem() { Value = t.Name, Text = t.Name}).ToList();
+        base.OnInitialized();
+    }
+}

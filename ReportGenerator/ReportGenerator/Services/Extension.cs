@@ -22,16 +22,16 @@ namespace ReportGenerator.Services
             return Id;
         }
 
-        public static double ToCentimeter(this double value)
+        public static string ToCentimeter(this double value)
         {
             var result = value / ReportComponentExtension.PPC;
-            return Math.Round(result, 2);
+            return Math.Round(result, 2).ToString().Replace('/', '.');
         }
 
-        public static double ToCentimeter(this int value)
+        public static string ToCentimeter(this int value)
         {
             var result = value / ReportComponentExtension.PPC;
-            return Math.Round(result, 2);
+            return Math.Round(result, 2).ToString().Replace('/', '.');
         }
 
         public static XElement ClientRectangle(double left, double top, double width, double height)

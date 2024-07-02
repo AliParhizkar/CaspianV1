@@ -5,16 +5,11 @@
 @using Microsoft.EntityFrameworkCore
 @inherits BasePage
 
-<StringTextBox @key="125" @ref="txt" />
-@if(flag)
-{
-    <StringTextBox @key="125" @ref="txt" />
-}
-
-<button @onclick="() => flag = !flag">Toggle</button>
+<Stimulsoft.Report.Blazor.StiBlazorDesigner Report="report" />
 
 @code 
 {
+    Stimulsoft.Report.StiReport report;
     StringTextBox txt;
     bool flag = true;
 
@@ -23,17 +18,12 @@
         await txt.FocusAsync();
     }
 
-    IList<Product> products;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
-
     protected override async Task OnInitializedAsync()
     {
-        using var service = CreateScope().GetService<ProductService>();
-        products = await service.GetAll().ToListAsync();
+        report = new Stimulsoft.Report.StiReport();
+        using var service = CreateScope().GetService<OrderDeatilService>();
+        var list = await service.GetAll().ToListAsync();
+        report.RegBusinessObject("test", list);
         await base.OnInitializedAsync();
     }
 }

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<StiSerializer version="1.02" type="Net" application="StiReport">
+	<Dictionary Ref="1" type="Dictionary" isKey="true">
+		<BusinessObjects isList="true" count="0" />
+		<Databases isList="true" count="0" />
+		<DataSources isList="true" count="0" />
+		<Relations isList="true" count="0" />
+		<Report isRef="0" />
+		<Resources isList="true" count="0" />
+		<Variables isList="true" count="0" />
+	</Dictionary>
+	<EngineVersion>EngineV2</EngineVersion>
+	<GlobalizationStrings isList="true" count="0" />
+	<Key>c38a5290c81942aeb19562f15c4eb48c</Key>
+	<MetaTags isList="true" count="0" />
+	<Pages isList="true" count="1">
+		<Page1 Ref="2" type="Page" isKey="true">
+			<Border>None;Black;2;Solid;False;4;Black</Border>
+			<Brush>Transparent</Brush>
+			<Components isList="true" count="1">
+				<ReportTitleBand1 Ref="3" type="ReportTitleBand" isKey="true">
+					<Brush>Transparent</Brush>
+					<ClientRectangle>0,0.2,7.72,0.8</ClientRectangle>
+					<Components isList="true" count="0" />
+					<Conditions isList="true" count="0" />
+					<Expressions isList="true" count="0" />
+					<Name>ReportTitleBand1</Name>
+					<Page isRef="2" />
+					<Parent isRef="2" />
+				</ReportTitleBand1>
+				<ReportTitleBand1 Ref="3" type="ReportTitleBand" isKey="true">
+					<Brush>Transparent</Brush>
+					<ClientRectangle>0,0.2,7.72,0.8</ClientRectangle>
+					<Components isList="true" count="0" />
+					<Conditions isList="true" count="0" />
+					<Expressions isList="true" count="0" />
+					<Name>ReportTitleBand1</Name>
+					<Page isRef="2" />
+					<Parent isRef="2" />
+				</ReportTitleBand1>
+				
+				
+			</Components>
+			<Conditions isList="true" count="0" />
+			<Expressions isList="true" count="0" />
+			<Guid>e5478da27fad4aad83d6443058a2c551</Guid>
+			<Margins>0.39,0.39,0.39,0.39</Margins>
+			<Name>Page1</Name>
+			<PageHeight>11</PageHeight>
+			<PageWidth>8.5</PageWidth>
+			<PaperSize>Letter</PaperSize>
+			<Report isRef="0" />
+		</Page1>
+	</Pages>
+	<ReportAlias>Report</ReportAlias>
+	<ReportChanged>7/1/2024 8:42:52 PM</ReportChanged>
+	<ReportCreated>7/1/2024 8:42:52 PM</ReportCreated>
+	<ReportGuid>a80f43cf3d0343d89b3ccbd7b51326f5</ReportGuid>
+	<ReportName>Report</ReportName>
+	<ReportUnit>Centimeters</ReportUnit>
+	<ReportVersion>2023.4.4.0</ReportVersion>
+	<ScriptLanguage>CSharp</ScriptLanguage>
+	<Styles isList="true" count="0" />
+</StiSerializer>

@@ -20,17 +20,18 @@ namespace ReportGenerator
         {
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
-            //builder.Services.AddControllers();
+            builder.Services.AddControllers();
             builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 
             //var persistKeyPath = builder.Configuration.GetSection("Authentication:PersistKeyPath").Value;
             //builder.Services.AddDataProtection()
             //    .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
             //    .SetApplicationName("SharedCookieApp");
-            //builder.Logging.ClearProviders();
-            //builder.Logging.AddCaspianConsoleLogger(builder);
+            builder.Logging.ClearProviders();
+            builder.Logging.AddCaspianConsoleLogger(builder);
             //var domain = builder.Configuration.GetSection("Authentication:Domain").Value;
-            //builder.Services.ConfigureApplicationCookie(options => {
+            //builder.Services.ConfigureApplicationCookie(options =>
+            //{
             //    options.Cookie.Name = ".AspNet.SharedCookie";
             //    options.Cookie.Domain = domain;
             //    options.Cookie.Path = "/";
@@ -46,22 +47,26 @@ namespace ReportGenerator
             //    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             //}).AddIdentityCookies();
 
-            //CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
-            //builder.Services.AddScoped<CaspianDataService>();
-            //builder.Services.AddScoped<BasePageService>();
-            //builder.Services.AddScoped<FormAppState>();
-            //builder.Services.AddScoped<Context>();
-            //builder.Services.AddScoped<Demo.Model.Context>();
-            //builder.Services.AddScoped<ReportService>();
-            //builder.Services.AddScoped<ReportParamService>();
-            //builder.Services.AddScoped<OrderDeatilService>();
-            //builder.Services.AddSingleton(http => new System.Net.Http.HttpClient
-            //{
-            //    BaseAddress = new Uri("https://localhost:7284/")
-            //});
+            CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
+            builder.Services.AddScoped<CaspianDataService>();
+            builder.Services.AddScoped<BasePageService>();
+            builder.Services.AddScoped<FormAppState>();
+            builder.Services.AddScoped<Context>();
+            builder.Services.AddScoped<Demo.Model.Context>();
+            builder.Services.AddScoped(t => new CaspianFontService(t));
+            builder.Services.AddScoped(t => new ReportService(t));
+            builder.Services.AddScoped(t => new ReportParamService(t));
+            builder.Services.AddScoped(t => new OrderDeatilService(t));
+            builder.Services.AddSingleton(http =>
+            {
+                return new System.Net.Http.HttpClient
+                {
+                    BaseAddress = new Uri("https://localhost:7251")
+                };
+            });
 
             //builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
-            
+
             //builder.Services.AddIdentityCore<User>()
             //    .AddEntityFrameworkStores<ApplicationDbContext>()
             //    .AddSignInManager();
@@ -80,7 +85,7 @@ namespace ReportGenerator
             //});
 
             var app = builder.Build();
-            //app.CreateFileAndFolder();
+            app.CreateFileAndFolder();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -98,7 +103,7 @@ namespace ReportGenerator
             app.MapRazorComponents<App>()
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
-            //app.MapControllers();
+            app.MapControllers();
             app.Run();
         }
     }

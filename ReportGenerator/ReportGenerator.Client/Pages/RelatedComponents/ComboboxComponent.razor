@@ -1,0 +1,41 @@
+﻿@namespace Caspian.Report
+
+<span class="toolsbar-list" style="width:@(Width)px;" @onmouseup="Open">
+    <input class="toolsbar-list-input" style="width:@(Width - 22)px" />
+    <span id="_14" class="toolsbar" style="width:17px;background-position:-8px 0px;"></span>
+</span>
+@if (flag)
+{
+    var style = $"left:{Left}px;width:{Width - 6}px;top:{top}px";
+    <div class="r-container">
+        <div style="@style" class="r-cmb-body">
+        </div>
+    </div>
+}
+
+
+@code 
+{
+    bool flag;
+    int top;
+
+    [Parameter]
+    public int Width { get; set; }
+
+    [Parameter]
+    public int Left { get; set; }
+
+    async Task Open()
+    {
+        flag = true;
+        top = -200;
+        await Task.Delay(100);
+        top = 2;
+    }
+
+    public void Close()
+    {
+        flag = false;
+        StateHasChanged();
+    }
+}

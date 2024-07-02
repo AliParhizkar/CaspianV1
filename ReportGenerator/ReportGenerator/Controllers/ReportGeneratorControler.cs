@@ -1,8 +1,6 @@
-﻿using Demo.Service;
-using Caspian.Report;
+﻿using Caspian.Report;
 using Caspian.Common;
 using System.Text.Json;
-using Stimulsoft.Report;
 using Caspian.Report.Data;
 using Caspian.Engine.Service;
 using Caspian.Common.Extension;
@@ -10,6 +8,9 @@ using ReportGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Stimulsoft.Report;
+using Demo.Service;
+using System.Drawing.Text;
 
 namespace ReportGenerator.Controllers
 {
@@ -70,6 +71,13 @@ namespace ReportGenerator.Controllers
         }
 
         [HttpGet]
+        public async Task<IList<string>> GetFonts()
+        {
+            using var service = GetService<CaspianFontService>();
+            return await service.GetAll().Select(t => t.Name).ToListAsync();
+        }
+
+        [HttpGet]
         public async Task<IList<SelectListItem>> GetReportParameters(int reportId, int dataLevel)
         {
             var result = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == null || t.DataLevel == dataLevel))
@@ -124,11 +132,18 @@ namespace ReportGenerator.Controllers
             var query = provider.GetService<OrderDeatilService>().GetAll();
             var list = new ReportPrintEngine(provider).GetData(reportId, query);
             stiReport.RegBusinessObject("list", list);
-            stiReport.Load(path);
-            stiReport.Render(false);
-            var stream = new MemoryStream();
-            stiReport.ExportDocument(StiExportFormat.Pdf, stream);
-            return File(stream.ToArray(), "application/pdf");
+            try
+            {
+                stiReport.Load(path);
+                stiReport.Render(false);
+                var stream = new MemoryStream();
+                stiReport.ExportDocument(StiExportFormat.Pdf, stream);
+                return File(stream.ToArray(), "application/pdf");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             //return File(stream.ToArray(), "HTML");
         }
     }

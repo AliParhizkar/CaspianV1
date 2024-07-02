@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.Report
 {
-    public partial class BoundItem
+    public partial class BoundItem: ComponentBase
     {
         bool canChangeHeight;
         double minHeight;
@@ -157,8 +157,8 @@ namespace Caspian.Report
                 Top = t.Data.Top,
                 Width = t.Data.Width,
                 Height = t.Data.Height
-            }).ToArray();
-            list.ToList().AddRange(result);
+            });
+            list.AddRange(result.ToArray());
         }
 
         /// <summary>

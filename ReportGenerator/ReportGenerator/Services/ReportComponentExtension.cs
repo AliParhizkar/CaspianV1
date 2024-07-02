@@ -48,7 +48,7 @@ namespace ReportGenerator.Services
             if (kind == 15)
                 str = "All";
             else if (kind == 0)
-                str = str = "None";
+                str = "None";
             else
             {
                 if ((kind & 1) == 1)

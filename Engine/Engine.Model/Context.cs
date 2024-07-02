@@ -56,5 +56,7 @@ namespace Caspian.Engine.Model
         public DbSet<ExceptionData> ExceptionDatas { get; set; }
 
         public DbSet<ExceptionDetail> ExceptionDetail { get; set; }
+
+        public DbSet<CaspianFont> CaspianFonts { get; set; }
     }
 }

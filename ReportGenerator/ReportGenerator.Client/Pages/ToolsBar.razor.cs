@@ -1,6 +1,7 @@
 ﻿using Caspian.UI;
 using Caspian.Common;
 using Caspian.Report.Data;
+using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.Report
@@ -16,6 +17,14 @@ namespace Caspian.Report
         Color BackGroundColor;
 
         DropdownIcon borderStyle, borderWidth;
+        ComboboxComponent cmbFontSize, cmbFontFamily;
+        string[] fonts;
+
+        protected override async Task OnInitializedAsync()
+        {
+            fonts = await Host.GetFromJsonAsync<string[]>("/ReportGenerator/GetFonts");
+            await base.OnInitializedAsync();
+        }
 
         protected override void OnParametersSet()
         {
@@ -161,6 +170,8 @@ namespace Caspian.Report
         {
             await borderStyle.Close();
             await borderWidth.Close();
+            cmbFontSize.Close();
+            cmbFontFamily.Close();
         }
     }
 }

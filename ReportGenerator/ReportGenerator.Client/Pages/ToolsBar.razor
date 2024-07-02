@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.Report
+@inject HttpClient Host
 @using Caspian.Common
 @{
     bool alignmentEnabled = alignment != null;
@@ -41,14 +42,8 @@
                         OnMouseDown="async () => await ChangeFont(null, !font.Bold, null)" />
         <ReportGenerator.CollorPicker DefaultColor="#000000" Enabled="fontEnabled" XPosition="281"
                       ColorChanged="async color => await ChangeFont(null, null, color)"/>
-        <span class="toolsbar-list" style="width:62px;">
-            <input disabled="disabled" class="toolsbar-list-input" value="12" style="width:40px" />
-            <span id="_14" class="toolsbar" style="width:17px;background-position:-8px 0px;"></span>
-        </span>
-        <span class="toolsbar-list" style="width:142px;">
-            <input disabled="disabled" class="toolsbar-list-input" value="B1Nazanin" style="width:120px" />
-            <span id="_15" class="toolsbar" style="width:17px;background-position:-8px 0px;"></span>
-        </span>
+        <ComboboxComponent @ref="cmbFontSize" Width="62" Left="328" />
+        <ComboboxComponent @ref="cmbFontFamily" Width="142" Left="390" />
         <span class="toolsbar" style="width:13px;background-position:-344px 0px"></span>
     </div>
     <div id="toolsBar2">

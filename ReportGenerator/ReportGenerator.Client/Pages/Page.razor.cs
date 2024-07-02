@@ -4,6 +4,8 @@ using System.Net.Http.Json;
 using ReportGenerator.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Caspian.Common;
+using Microsoft.JSInterop;
 
 namespace Caspian.Report
 {
@@ -24,7 +26,7 @@ namespace Caspian.Report
         int windowWidth;
         double pixelsPerCentimetre;
         int controlId;
-
+        string message;
         string cursor = "default";
 
         public PageData Data { get; private set; }
@@ -225,6 +227,8 @@ namespace Caspian.Report
             {
                 Data.PixelsPerCentimetre = pixelsPerCentimetre;
                 await Host.PostAsJsonAsync($"/ReportGenerator/SaveReport", Data);
+                message = "ثبت با موفقیت انجام شد.";
+                StateChanged();
             }
         }
 
@@ -340,6 +344,11 @@ namespace Caspian.Report
                 pixelsPerCentimetre = await JSRuntime.InvokeAsync<double>("getPixelsPerCentimetre", null);
             if (Data != null)
                 Data.Width = Convert.ToInt32(Data.Setting.PageWidth * pixelsPerCentimetre);
+            if (message.HasValue())
+            {
+                await JSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+                message = null;
+            }
             await base.OnAfterRenderAsync(firstRender);
         }
     }

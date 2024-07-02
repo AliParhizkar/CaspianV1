@@ -585,7 +585,7 @@ namespace Caspian.UI
                 else
                 {
                     shouldRender = true;
-                    items = Source.Where(t => !text.HasValue() || t.Text.Contains(text)).Take(PageSize).ToList();
+                    items = Source.Where(t => !text.HasValue() || t.Text.Contains(text, StringComparison.OrdinalIgnoreCase)).Take(PageSize).ToList();
                 }
 
             }
