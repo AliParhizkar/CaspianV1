@@ -141,6 +141,7 @@
                     <div class="col-md-8 ps-3">
                          <DataGrid DetailBatchService="Service" TEntity="OrderDeatil" ContentHeight="250" Inline>
                             <Columns Context="con">
+                                <GridColumn Field="t => t.Product.Discount" DataField />
                                 <GridColumn Field="t => t.Product.Title" Title="Product">
                                     <EditTemplate>
                                          <AutoComplete TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId"
@@ -151,9 +152,13 @@
                                     </EditTemplate>
                                 </GridColumn>
                                 <GridColumn Field="t => t.Price.Seprate3Digit()" style="width:100px" >
-                                    <EditTemplate>
-                                        <span>@(con.Data.Price.Seprate3Digit())</span>
-                                    </EditTemplate>
+                                    <Template>
+                                        @if (con.Data.Product?.Discount > 0)
+                                        {
+                                            <div class="d-price d-discount">@(con.Data.Product.Discount + con.Data.Price)</div>
+                                        }
+                                        <div class="d-price">@(con.Data.Price.Seprate3Digit())</div>
+                                    </Template>
                                 </GridColumn>
                                 <GridColumn Field="t => t.Quantity" style="width:100px">
                                     <EditTemplate>
@@ -194,24 +199,28 @@
         <div class="col-md-4">@selectedOrderDeatil.Price.Seprate3Digit()</div>
     </div>
     <div style="width:400px;" class="row p-3">
-        <StringTextBox @bind-Value="selectedOrderDeatil.Descript" MultiLine Rows="3" />
+        <StringTextBox @ref="txtDescript" @bind-Value="selectedOrderDeatil.Descript" MultiLine Rows="3" />
     </div>
 </PopupWindow>
 @code
 {
     WindowStatus status;
+    StringTextBox txtDescript;
     OrderDeatil selectedOrderDeatil;
     NumericTextBox<int> txtQuantity;
 
     async Task ShowDesccription(OrderDeatil detail)
     {
+        status = WindowStatus.Open;
+        selectedOrderDeatil = detail;
         if (detail.Id == 0 && detail.ProductId > 0)
         {
             using var service = CreateScope().GetService<ProductService>();
             detail.Product = await service.SingleAsync(detail.ProductId);
         }
-        selectedOrderDeatil = detail;
-        status = WindowStatus.Open;
+        else
+            await Task.Delay(10);
+        txtDescript.Focus();
     }
 
     [Parameter]
@@ -238,6 +247,7 @@
             using var service = CreateScope().GetService<ProductService>();
             var old = await service.SingleAsync(detail.ProductId);
             detail.Price = old.Price;
+            detail.Product = old;
             if (detail.Id == 0)
                 detail.Quantity = 1;
             await txtQuantity.FocusAsync();

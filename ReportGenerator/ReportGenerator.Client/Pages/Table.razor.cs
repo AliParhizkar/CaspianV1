@@ -52,11 +52,15 @@ namespace Caspian.Report
             get
             {
                 var font = selectedCells.First().Font;
+                var fontName = selectedCells.All(t => t.Font.Family == font.Family) ? font.Family : null;
+                var fontSize = selectedCells.All(t => t.Font.Size == font.Size) ? font.Size : null;
                 return new Font()
                 {
                     Bold = selectedCells.All(t => t.Font.Bold),
                     Italic = selectedCells.All(t => t.Font.Italic),
                     UnderLine = selectedCells.All(t => t.Font.UnderLine),
+                    Family = fontName,
+                    Size = fontSize,
                     Color = selectedCells.All(t => t.Font.Color.ColorString == font.Color.ColorString) ? font.Color : new Color("#000")
                 };
             }

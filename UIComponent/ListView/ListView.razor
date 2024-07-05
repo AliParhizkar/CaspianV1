@@ -46,30 +46,37 @@
                     var index = 0;
                     foreach (var item in items)
                     {
-                        index++;
                         var rowIndex = index;
+                        var className = $"c-listview-row";
+                        if (item == selectedEntity)
+                            SelectedRowIndex = rowIndex;
+                        if (rowIndex == SelectedRowIndex)
+                            className += " c-selected"; 
                         var rowData = new RowData<TEntity>()
                             {
                                 Data = item,
                                 RowIndex = rowIndex,
                                 UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
                             };
-                        <CascadingValue Value="rowData" Name="RowData">
-                            @if (item == selectedEntity)
-                            {
-                                <CascadingValue Value="EditContext">
-                                    <CaspianValidationValidator @ref="validator" Source="source" ValidatorType="serviceType" />
-                                    <CaspianContainer @ref="updateContiner">
-                                        @Fields(rowData)
-                                    </CaspianContainer>
-                                </CascadingValue>
+                        index++;
+                        <div class="@className" @onclick="() => SelectedRowIndex = rowIndex">
+                            <CascadingValue Value="rowData" Name="RowData">
+                                @if (item == selectedEntity)
+                                {
+                                    <CascadingValue Value="EditContext">
+                                        <CaspianValidationValidator @ref="validator" Source="source" ValidatorType="serviceType" />
+                                        <CaspianContainer @ref="updateContiner">
+                                            @Fields(rowData)
+                                        </CaspianContainer>
+                                    </CascadingValue>
 
-                            }
-                            else
-                            {
-                                @Fields(rowData)
-                            }
-                        </CascadingValue>
+                                }
+                                else
+                                {
+                                    @Fields(rowData)
+                                }
+                            </CascadingValue>
+                        </div>
                     }
                 }
             </div>

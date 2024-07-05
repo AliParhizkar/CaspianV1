@@ -4,7 +4,7 @@
         <table @attributes="tableAttrs">
             <thead>
                 <tr>
-                    @foreach (var col in ColumnsData)
+                    @foreach (var col in ColumnsData.Where(t => !t.DataField))
                     {
                         <th style="@(col.Width)" data-resizeable="@(col.Resizeable)" class="t-header">
                             <span @onclick="(MouseEventArgs e) =>

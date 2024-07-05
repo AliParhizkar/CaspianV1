@@ -257,9 +257,9 @@ namespace Caspian.Report
             }
         }
 
-        async Task MouseDown(MouseEventArgs e)
+        void MouseDown(MouseEventArgs e)
         {
-            await toolsBar.CloseDropdown();
+            toolsBar.CloseDropdown();
             IsMouseDown = true;
             SelectedBound?.DragStart(e.ClientX, e.ClientY);
             SelectedControl?.DragStart(e.ClientX, e.ClientY);

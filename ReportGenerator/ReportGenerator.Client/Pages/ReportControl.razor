@@ -4,7 +4,9 @@
     var style = $"left:{Data.Left}px;top:{Data.Top}px;width:{Data.Width}px;height:{Data.Height}px;background-color:{Data.BackgroundColor.ColorString};";
     var textStyle = $"{Data.Alignment.TextStyle}";
     if (Data.ControlType == ControlType.TextBox)
+    {
         textStyle += $";{Data.Font.Style}";
+    }
 }
 <div class="r-controls" style="@style" @onmousedown="SelectControl" @ondblclick="OpenWindow">
     @if (Page.SelectedControl == this)

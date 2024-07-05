@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Engine</title>
-    <base href="/" />
+    <base href="/Engine" />
     <link href="/_content/UIComponent/Content/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/site.css" rel="stylesheet" />
     <link href="/_content/UIComponent/Content/2011.1.315/Caspian.common1.css" rel="stylesheet" type="text/css" />
@@ -53,7 +53,12 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; }
 
-    private IComponentRenderMode RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account/Login")
+    private IComponentRenderMode RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account")
         ? null
         : InteractiveServer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
 }

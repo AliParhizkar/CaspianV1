@@ -1,7 +1,17 @@
-﻿.c-icon-disabled .fa-check, .c-icon-disabled .fa-ban{
-    color: #c6c6c7 !important;
-    cursor: not-allowed !important;
+﻿.c-listview-row {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    flex-wrap: wrap;
+    text-align:center;
 }
+    .c-listview-row.c-selected {
+        background-color: #ccdcdc !important;
+    }
+    .c-icon-disabled .fa-check, .c-icon-disabled .fa-ban {
+        color: #c6c6c7 !important;
+        cursor: not-allowed !important;
+    }
 
 .c-error-develop {
     overflow: auto;
@@ -371,6 +381,9 @@ input[type='range']::-webkit-slider-thumb {
 .c-listview-insert {
     width: 100%;
     background-color: #dae2f9;
+    display:flex;
+    text-align:center;
+    flex-wrap:wrap;
 }
 
 .c-dataview-field {
@@ -414,9 +427,13 @@ input[type='range']::-webkit-slider-thumb {
     justify-content: space-between;
     align-content:flex-start;
 }
-    .c-dataview-content form{
-        width:min-content;
+    .c-dataview-content .c-listview-row:nth-child(2n) {
+        background-color: #f5f5f5;
     }
+
+.c-dataview-content form {
+    width: min-content;
+}
     .c-data-view-footer {
         display: flex;
         flex-flow: wrap;

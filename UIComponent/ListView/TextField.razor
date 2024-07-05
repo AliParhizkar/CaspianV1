@@ -4,7 +4,7 @@
     if (RowData == null)
         (DataView as IListViewer<TEntity>).AddDataField(Field.Body);
 }
-@if (RowData != null)
+@if (RowData != null && !DataField)
 {
     if (Template == null)
     {

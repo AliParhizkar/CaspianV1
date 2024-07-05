@@ -64,69 +64,62 @@
                     <div class="d-lst-7">Edit-Delete</div>
                 </HeaderTempalte>
                 <Fields Context="detail">
-                    @{
-                        var name = "d-listview-row";
-                        if (detail?.RowIndex % 2 == 0)
-                            name += " d-row-odd";
-                    }
-                    <div class="@name">
-                        <div class="d-lst-1">
-                            <TextField Field="t => t.Material.Title">
-                                <EditTemplate>
-                                    <AutoComplete TEntity="Material" TValue="int" @bind-Value="detail.Data.MaterialId"
-                                                  HideHeader AutoHide TextExpression="t => t.Title" OnChange="async () => await UpdateMaterialReceipt(detail.Data)">
-                                        <MaterialLookupWindow />
-                                    </AutoComplete>
-                                </EditTemplate>
-                            </TextField>
-                        </div>
-                        <div class="d-lst-2">
-                            <TextField Field="t => t.QuantityMain.Seprate3Digit()">
-                                <EditTemplate>
-                                    <NumericTextBox @ref="txtMainUnit" @bind-Value="detail.Data.QuantityMain" @onkeyup="async e =>  await MainUnitChanged(e, detail.Data, detail.UpsertMode.Value)" />
-                                </EditTemplate>
-                            </TextField>
-                        </div>
-                        <div class="d-lst-3">
-                            <TextField Field="t => t.Material.MainUnit.Title">
-                                <EditTemplate>
-                                    <span>@detail?.Data?.Material?.MainUnit?.Title</span>
-                                </EditTemplate>
-                            </TextField>
-                        </div>
-                        <div class="d-lst-4">
-                            @if (detail?.Data?.Material?.SubunitId != null || detail?.Data?.Material?.Subunit?.Title != null)
-                            {
-                                <TextField Field="t => t.QuantitySub.Seprate3Digit()">
-                                    <EditTemplate>
-                                        <NumericTextBox @ref="txtSubunit" @onkeyup="async e =>  await SubUnitChanged(e, detail.Data, detail.UpsertMode.Value)" @bind-Value="detail.Data.QuantitySub" />
-                                    </EditTemplate>
-                                </TextField>
-                            }
-                        </div>
-                        <div class="d-lst-5">
-                            <TextField Field="t => t.Material.Subunit.Title" >
-                                <EditTemplate>
-                                    <span>@detail?.Data?.Material?.Subunit?.Title</span>
-                                </EditTemplate>
-                            </TextField>
-                        </div>
-                        <div class="d-lst-6">
-                            <button class="c-btn c-info" disabled="@(detail?.UpsertMode == null)" @onclick="async () => await ShowDescription(detail)">...</button>
-                        </div>
-                        <div class="d-lst-7">
-                            <ListCommandButton ButtonType="CommandButtonType.Simple" />
-                        </div>
-                        @if (showDescriptionStatuse && selectedReceiptDetail == detail.Data) 
+                    <div class="d-lst-1">
+                        <TextField Field="t => t.Material.Title">
+                            <EditTemplate>
+                                <AutoComplete TEntity="Material" TValue="int" @bind-Value="detail.Data.MaterialId"
+                                              HideHeader AutoHide TextExpression="t => t.Title" OnChange="async () => await UpdateMaterialReceipt(detail.Data)">
+                                    <MaterialLookupWindow />
+                                </AutoComplete>
+                            </EditTemplate>
+                        </TextField>
+                    </div>
+                    <div class="d-lst-2">
+                        <TextField Field="t => t.QuantityMain.Seprate3Digit()">
+                            <EditTemplate>
+                                <NumericTextBox @ref="txtMainUnit" @bind-Value="detail.Data.QuantityMain" @onkeyup="async e =>  await MainUnitChanged(e, detail.Data, detail.UpsertMode.Value)" />
+                            </EditTemplate>
+                        </TextField>
+                    </div>
+                    <div class="d-lst-3">
+                        <TextField Field="t => t.Material.MainUnit.Title">
+                            <EditTemplate>
+                                <span>@detail?.Data?.Material?.MainUnit?.Title</span>
+                            </EditTemplate>
+                        </TextField>
+                    </div>
+                    <div class="d-lst-4">
+                        @if (detail?.Data?.Material?.SubunitId != null || detail?.Data?.Material?.Subunit?.Title != null)
                         {
-                            <div class="d-lst-8">
-                                <label>Description</label>
-                            </div>
-                            <div class="d-lst-9">
-                                <StringTextBox @ref="txtDescription" @bind-Value="detail.Data.Description" MultiLine Cols="5" />
-                            </div>
+                            <TextField Field="t => t.QuantitySub.Seprate3Digit()">
+                                <EditTemplate>
+                                    <NumericTextBox @ref="txtSubunit" @onkeyup="async e =>  await SubUnitChanged(e, detail.Data, detail.UpsertMode.Value)" @bind-Value="detail.Data.QuantitySub" />
+                                </EditTemplate>
+                            </TextField>
                         }
                     </div>
+                    <div class="d-lst-5">
+                        <TextField Field="t => t.Material.Subunit.Title">
+                            <EditTemplate>
+                                <span>@detail?.Data?.Material?.Subunit?.Title</span>
+                            </EditTemplate>
+                        </TextField>
+                    </div>
+                    <div class="d-lst-6">
+                        <button class="c-btn c-info" disabled="@(detail?.UpsertMode == null)" @onclick="async () => await ShowDescription(detail)">...</button>
+                    </div>
+                    <div class="d-lst-7">
+                        <ListCommandButton ButtonType="CommandButtonType.Simple" />
+                    </div>
+                    @if (showDescriptionStatuse && selectedReceiptDetail == detail.Data)
+                    {
+                        <div class="d-lst-8">
+                            <label>Description</label>
+                        </div>
+                        <div class="d-lst-9">
+                            <StringTextBox @ref="txtDescription" @bind-Value="detail.Data.Description" MultiLine Cols="5" />
+                        </div>
+                    }
                 </Fields>
             </ListView>
         </div>

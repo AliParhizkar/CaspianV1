@@ -11,7 +11,7 @@
     bool valueIsChanged;
     bool reseting;
     EditContext oldContext;
-    protected bool disabled;
+    protected bool disabled, focuced;
 
     public ElementReference? InputElement { get; protected set; }
 
@@ -180,6 +180,11 @@
             await InputElement.Value.FocusAsync();
     }
 
+    public void Focus()
+    {
+        focuced = true;
+    }
+
     public virtual async Task ResetAsync()
     {
         reseting = true;
@@ -238,8 +243,6 @@
                 break;
             }
         }
-        Console.WriteLine(_FieldName);
-
         if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
         {
             if (InputElement != null)

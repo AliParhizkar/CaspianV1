@@ -393,8 +393,10 @@
             $('body').bind('mousedown.autoHidedotnetObject', async function (e) {
                 if (!$(e.target).closest('.auto-hide').hasClass('auto-hide')) {
                     $('body').unbind('mousedown.autoHidedotnetObject');
-                    await $.caspian.autoHidedotnetObject.invokeMethodAsync('HideForm');
-                    $.caspian.autoHidedotnetObject = null;
+                    if ($.caspian.autoHidedotnetObject != null) {
+                        await $.caspian.autoHidedotnetObject.invokeMethodAsync('HideForm');
+                        $.caspian.autoHidedotnetObject = null;
+                    }
                 }
             });
         },
@@ -1014,6 +1016,9 @@
                 childList: false,
                 subtree: false
             });
+        },
+        focus(input) {
+            $(input).focus();
         },
         bindDropdownList(dotnetHelper, ddl) {
             const mutationObserver = new MutationObserver(() => {

@@ -26,5 +26,7 @@ namespace Caspian.UI
         public bool Sortable { get; set; }
 
         public bool Resizeable { get; set; }
+
+        public bool DataField { get; set; }
     }
 }

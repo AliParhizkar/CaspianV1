@@ -65,12 +65,11 @@
 
     }
 
-    public async Task Close()
+    public void Close()
     {
         if (showItem)
         {
             top = "-100%";
-            await Task.Delay(250);
             showItem = false;
             buttonClicked = false;
             mouseEnter = false;

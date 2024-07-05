@@ -19,6 +19,7 @@ namespace Caspian.Report
 
             builder.Services.AddScoped<CaspianDataService>();
             builder.Services.AddScoped<BasePageService>();
+            builder.Services.AddScoped<BaseComponentService>();
             builder.Services.AddScoped<FormAppState>();
             builder.Services.AddSingleton(http => new System.Net.Http.HttpClient
             {

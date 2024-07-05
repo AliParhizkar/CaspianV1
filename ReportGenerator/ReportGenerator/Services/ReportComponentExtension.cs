@@ -197,7 +197,7 @@ namespace ReportGenerator.Services
         public static XElement GetXMLElement(this Font font)
         {
             font.Family = "Arial"; //******************************************
-            font.Size = 12; //******************************************
+            font.Size = "14"; //******************************************
             var temp = "";
             if (font.Bold)
                 temp = "Bold";

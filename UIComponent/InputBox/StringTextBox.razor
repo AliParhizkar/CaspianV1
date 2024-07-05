@@ -126,6 +126,11 @@
     {
         if (firstRender)
             await jsRuntime.InvokeVoidAsync("$.caspian.bindStringbox", InputElement);
+        if (focuced)
+        {
+            focuced = false;
+            await jsRuntime.InvokeVoidAsync("$.caspian.focus", InputElement);
+        }
         await base.OnAfterRenderAsync(firstRender);
     }
 }

@@ -42,8 +42,10 @@
                         OnMouseDown="async () => await ChangeFont(null, !font.Bold, null)" />
         <ReportGenerator.CollorPicker DefaultColor="#000000" Enabled="fontEnabled" XPosition="281"
                       ColorChanged="async color => await ChangeFont(null, null, color)"/>
-        <ComboboxComponent @ref="cmbFontSize" Width="62" Left="328" />
-        <ComboboxComponent @ref="cmbFontFamily" Width="142" Left="390" />
+        <ComboboxComponent @ref="cmbFontSize" Width="62" Left="328" Source="fontsSize" Value="@font?.Size" Enabled="fontEnabled" 
+                ValueChanged="t => ChangeFont(t, null, null)" />
+        <ComboboxComponent @ref="cmbFontFamily" Source="fontsName" Value="@font?.Family" Width="142" Left="390" Enabled="fontEnabled"
+                           ValueChanged="t => ChangeFont(null, t, null)" />
         <span class="toolsbar" style="width:13px;background-position:-344px 0px"></span>
     </div>
     <div id="toolsBar2">

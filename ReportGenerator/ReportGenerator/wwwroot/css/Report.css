@@ -1,22 +1,59 @@
-﻿.r-cmb-body {
+﻿input[disabled] {
+    background-color: #cccfd4 !important;
+    border-color: #a8a8a8;
+    background-image:none;
+}
+.r-disabled .r-cmb-icon {
+    background-image: none;
+    background-color: #cccfd4;
+    cursor: not-allowed;
+    border-color: #a8a8a8;
+}
+.r-disabled .fa-caret-down {
+    color: #a7a7a7 !important;
+}
+.r-cmb-body {
     position: absolute;
-    height: 300px;
+    height: 220px;
     border: 1px solid gainsboro;
     top: 26px;
     background-color: white;
     z-index: 10000;
     cursor: default;
     transition: top .2s cubic-bezier(0.35, 0, 0.25, 1);
+    overflow: auto;
+    max-height: 220px;
+    box-shadow: #CFCFD0 0 2px 5px 1px;
 }
-.r-container {
-    position: absolute;
-    height:500px;
-    left:0;
-    right:0;
-    top:26px;
-    bottom:0;
-    overflow:hidden;
+.r-cmb-icon {
+    width: 20px;
+    background-image: linear-gradient(180deg, #d7d9f2, #a3a3a3);
+    border: 1px solid #898989;
+    height: 24px;
+    border-radius:0 4px 4px 0;
+    text-align:center;
 }
+.r-cmb-body .r-item {
+    padding: 0 3px;
+}
+    .r-cmb-body .r-item:hover {
+        background-color: #FFF8C9 !important;
+    }
+        .r-cmb-body .r-item:nth-child(2n) {
+            background-color: #efefef;
+        }
+    .r-cmb-body .r-item.r-selected {
+        background-color: #ffc579 !important;
+    }
+        .r-container {
+            position: absolute;
+            height: 500px;
+            left: 0;
+            right: 0;
+            top: 26px;
+            bottom: 0;
+            overflow: hidden;
+        }
 
 .c-colorpicker-panel {
     transition: top .2s cubic-bezier(0.35, 0, 0.25, 1);
@@ -1029,11 +1066,20 @@ table {
     display:flex;
 }
 
+.fa-caret-down {
+    color: #393939!important;
+}
+
 .toolsbar-list-input {
-    margin: 3px 0px 3px 0px;
-    height: 20px;
-    padding: 0px 0px 0px 0px;
+    height: 24px;
+    padding: 0 3px;
     border: 1px solid #898989;
+    height: 24px;
+    padding: 0 3px;
+    border: 1px solid #898989;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    background-image: linear-gradient(179deg, #e0e2ec, #e4e4e4);
 }
 
 .borderstylediv {

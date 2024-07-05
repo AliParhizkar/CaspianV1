@@ -77,54 +77,52 @@
                                 <div class="d-listview-col-5">Edit-Delete</div>
                             </HeaderTempalte>
                             <Fields Context="detail">
-                                @{
-                                    var name = "d-listview-row";
-                                    if (detail?.RowIndex % 2 == 0)
-                                        name += " d-row-odd";
-                                }
-                                <div class="@name">
-                                    <div class="d-listview-col-1">
-                                        <TextField Field="t => t.Product.Title">
-                                            <EditTemplate>
-                                                <AutoComplete TEntity="Product" TValue="int" @bind-Value="detail.Data.ProductId"
-                                                              HideHeader AutoHide TextExpression="t => t.Title"
-                                                              OnChange="async () => await SetPrice(detail.Data)">
-                                                    <ProductLookupWindow />
-                                                </AutoComplete>
-                                            </EditTemplate>
-                                        </TextField>
-                                    </div>
-                                    <div class="d-listview-col-2">
-                                        <TextField Field="t => t.Price.Seprate3Digit()">
-                                            <Template>
-                                                <span>@(detail.Data.Price.Seprate3Digit())</span>
-                                            </Template>
-                                        </TextField>
-                                    </div>
-                                    <div class="d-listview-col-3">
-                                        <TextField Field="t => t.Quantity.ToString()">
-                                            <EditTemplate>
-                                                <NumericTextBox @ref="txtQuantity" @bind-Value="detail.Data.Quantity"
-                                                                @onkeyup="@(async e => await UpsertOnEnter(e, detail.UpsertMode.Value))" />
-                                            </EditTemplate>
-                                        </TextField>
-                                    </div>
-                                    <div class="d-listview-col-4">
-                                        <button class="c-btn c-info" disabled="@(detail?.UpsertMode == null)" @onclick="async () => await ShowDescription(detail)">...</button>
-                                    </div>
-                                    <div class="d-listview-col-5">
-                                        <ListCommandButton ButtonType="CommandButtonType.Simple" />
-                                    </div>
-                                    @if (ShowDescriptionStatuse && selectedDeatil == detail.Data)
-                                    {
-                                        <div class="d-listview-col-7">
-                                            <label>Description</label>
-                                        </div>
-                                        <div class="d-listview-col-6">
-                                            <StringTextBox @ref="txtDescription" @bind-Value="detail.Data.Descript" MultiLine Cols="5" />
-                                        </div>
-                                    }
+                                <TextField DataField Field="t => t.Product.Discount.ToString()" />
+                                <div class="d-listview-col-1">
+                                    <TextField Field="t => t.Product.Title">
+                                        <EditTemplate>
+                                            <AutoComplete TEntity="Product" TValue="int" @bind-Value="detail.Data.ProductId"
+                                                          HideHeader AutoHide TextExpression="t => t.Title"
+                                                          OnChange="async () => await SetPrice(detail.Data)">
+                                                <ProductLookupWindow />
+                                            </AutoComplete>
+                                        </EditTemplate>
+                                    </TextField>
                                 </div>
+                                <div class="d-listview-col-2">
+                                    <TextField Field="t => t.Price.Seprate3Digit()">
+                                        <Template>
+                                            @if (detail.Data.Product?.Discount > 0)
+                                            {
+                                                <div class="d-price d-discount">@(detail.Data.Price + detail.Data.Product.Discount)</div>
+                                            }
+                                            <div class="d-price">@(detail.Data.Price.Seprate3Digit())</div>
+                                        </Template>
+                                    </TextField>
+                                </div>
+                                <div class="d-listview-col-3">
+                                    <TextField Field="t => t.Quantity.ToString()">
+                                        <EditTemplate>
+                                            <NumericTextBox @ref="txtQuantity" @bind-Value="detail.Data.Quantity"
+                                                            @onkeyup="@(async e => await UpsertOnEnter(e, detail.UpsertMode.Value))" />
+                                        </EditTemplate>
+                                    </TextField>
+                                </div>
+                                <div class="d-listview-col-4">
+                                    <button class="c-btn c-info" disabled="@(detail?.UpsertMode == null)" @onclick="async () => await ShowDescription(detail)">...</button>
+                                </div>
+                                <div class="d-listview-col-5">
+                                    <ListCommandButton ButtonType="CommandButtonType.Simple" />
+                                </div>
+                                @if (ShowDescriptionStatuse && selectedDeatil == detail.Data)
+                                {
+                                    <div class="d-listview-col-7">
+                                        <label>Description</label>
+                                    </div>
+                                    <div class="d-listview-col-6">
+                                        <StringTextBox @ref="txtDescription" @bind-Value="detail.Data.Descript" MultiLine Cols="5" />
+                                    </div>
+                                }
                             </Fields>
                         </ListView>
                     </div>

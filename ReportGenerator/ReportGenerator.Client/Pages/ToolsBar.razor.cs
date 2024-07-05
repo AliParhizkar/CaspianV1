@@ -18,11 +18,12 @@ namespace Caspian.Report
 
         DropdownIcon borderStyle, borderWidth;
         ComboboxComponent cmbFontSize, cmbFontFamily;
-        string[] fonts;
+        string[] fontsName, fontsSize;
 
         protected override async Task OnInitializedAsync()
         {
-            fonts = await Host.GetFromJsonAsync<string[]>("/ReportGenerator/GetFonts");
+            fontsName = await Host.GetFromJsonAsync<string[]>("/ReportGenerator/GetFonts");
+            fontsSize = new string[] { "8", "9", "10", "11", "12", "14", "16", "18", "20", "22", "24", "26", "28", "36", "48", "72"};
             await base.OnInitializedAsync();
         }
 
@@ -30,6 +31,8 @@ namespace Caspian.Report
         {
             alignment = Page.SelectedControl?.Data.Alignment ?? Page.SelectedTable?.Alignment;
             font = Page.SelectedControl?.Data.Font ?? Page.SelectedTable?.Font;
+            
+            
             border = Page.SelectedControl?.Data.Border ?? Page.SelectedTable?.Border;
             BackGroundColor = Page.SelectedControl?.Data.BackgroundColor ?? Page.SelectedTable?.BackgroundColor;
             base.OnParametersSet();
@@ -83,11 +86,11 @@ namespace Caspian.Report
             await ChangeStyle();
         }
 
-        async Task ChangeFont(int? size, string family, string color)
+        async Task ChangeFont(string size, string family, string color)
         {
             Page.PushControl();
-            if (size.HasValue)
-                font.Size = size.Value;
+            if (size.HasValue())
+                font.Size = size;
             if (family != null)
                 font.Family = family;
             if (color != null)
@@ -166,10 +169,10 @@ namespace Caspian.Report
             await ChangeStyle();
         }
 
-        public async Task CloseDropdown()
+        public void CloseDropdown()
         {
-            await borderStyle.Close();
-            await borderWidth.Close();
+            borderStyle.Close();
+            borderWidth.Close();
             cmbFontSize.Close();
             cmbFontFamily.Close();
         }

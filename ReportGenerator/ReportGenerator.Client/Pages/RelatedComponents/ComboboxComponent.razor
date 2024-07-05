@@ -1,14 +1,29 @@
 ﻿@namespace Caspian.Report
-
-<span class="toolsbar-list" style="width:@(Width)px;" @onmouseup="Open">
-    <input class="toolsbar-list-input" style="width:@(Width - 22)px" />
-    <span id="_14" class="toolsbar" style="width:17px;background-position:-8px 0px;"></span>
+@{
+    var classname = "toolsbar-list";
+    if (!Enabled)
+        classname += " r-disabled";
+}
+<span class="@classname" style="width:@(Width)px;" @onmouseup="Open">
+    <input disabled="@(!Enabled)" value="@Value" class="toolsbar-list-input" style="width:@(Width - 22)px" />
+    <span id="_14" class="r-cmb-icon">
+        <i class="fa fa-caret-down"></i>
+    </span>
 </span>
 @if (flag)
 {
-    var style = $"left:{Left}px;width:{Width - 6}px;top:{top}px";
+    var style = $"left:{Left}px;width:{Width - 1}px;top:{top}px";
     <div class="r-container">
-        <div style="@style" class="r-cmb-body">
+        <div style="@style" class="r-cmb-body" @onclick:stopPropagation @onmousedown:stopPropagation>
+            @foreach (var item in Source)
+            {
+                var className = "r-item";
+                if (Value == item)
+                    className += " r-selected";
+                <div class="@className" @onclick="async () => await Select(item)">
+                    @item
+                </div>
+            }
         </div>
     </div>
 }
@@ -19,23 +34,48 @@
     bool flag;
     int top;
 
+    async Task Select(string str)
+    {
+        flag = false;
+        await ValueChanged.InvokeAsync(str);
+    }
+
     [Parameter]
     public int Width { get; set; }
 
     [Parameter]
     public int Left { get; set; }
 
+    [Parameter]
+    public string[] Source { get; set; }
+
+    [Parameter]
+    public bool Enabled { get; set; }
+
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
     async Task Open()
     {
-        flag = true;
-        top = -200;
-        await Task.Delay(100);
-        top = 2;
+        if (Enabled)
+        {
+            flag = true;
+            top = -200;
+            await Task.Delay(10);
+            top = 2;
+        }
     }
 
     public void Close()
     {
-        flag = false;
-        StateHasChanged();
+        if (flag)
+        {
+            flag = false;
+            StateHasChanged();
+        }
+
     }
 }

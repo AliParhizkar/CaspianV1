@@ -17,7 +17,7 @@ namespace Caspian.Report.Data
 
         public string Family { get; set; }
 
-        public double Size { get; set; }
+        public string Size { get; set; }
 
         public Color Color { get; set; }
 
@@ -33,6 +33,8 @@ namespace Caspian.Report.Data
                 if (UnderLine)
                     str += "text-decoration: underline;";
                 str += $"color:{Color.ColorString};";
+                if (Size != null)
+                    str += $"font-size:{Size}px;";
                 return str;
             }
         }

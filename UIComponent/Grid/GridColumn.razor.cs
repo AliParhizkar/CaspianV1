@@ -61,6 +61,9 @@ namespace Caspian.UI
         [Parameter]
         public SortType? SortType { get; set; }
 
+        [Parameter]
+        public bool DataField { get; set; }
+
         [CascadingParameter(Name = "RowData")]
         public RowData<TEntity> RowData { get; set; }
 

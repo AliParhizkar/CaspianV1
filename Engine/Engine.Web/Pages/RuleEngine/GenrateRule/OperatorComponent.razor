@@ -79,13 +79,13 @@
     <table>
         <tr>
             <td>
-                <button class="operand-input" @attributes="IfButtonAttrs" @onclick="@(async() => await AddOperator("if"))">اگر</button>
+                <button class="operand-input" @attributes="IfButtonAttrs" @onclick="@(async() => await AddOperator("if"))">If</button>
             </td>
             <td>
-                <button class="operand-input" @attributes="QuestionMarkButtonAttrs" @onclick="@(async () => await AddOperator("?"))">?</button>
+                <button class="operand-input" @attributes="QuestionMarkButtonAttrs" @onclick="@(async () => await AddOperator("?"))">Thent</button>
             </td>
             <td>
-                <button class="operand-input" @attributes="ColonButtonAttrs" @onclick="@(async () => await AddOperator(":"))">:</button>
+                <button class="operand-input" @attributes="ColonButtonAttrs" @onclick="@(async () => await AddOperator(":"))">Else</button>
             </td>
         </tr>
         <tr>

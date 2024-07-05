@@ -131,7 +131,7 @@
                         <GridCommandColumns />
                     </Columns>
                 </DataGrid>
-                <Window Service="ProductService" Title="Product" Style="width:750px;">
+                <Window Service="ProductService" Title="Product" Style="width:650px;">
                     <CaspianForm Service="ProductService">
                         <div class="row c-controls ps-3 pe-3">
                             <div class="col-md-8">
@@ -161,23 +161,29 @@
                                         <NumericTextBox @bind-Value="ProductService.UpsertData.TakeoutPrice" />
                                     </div>
                                     <div class="col-md-4">
+                                        <label>Discount</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <NumericTextBox @bind-Value="ProductService.UpsertData.Discount" />
+                                    </div>
+                                    <div class="col-md-4">
                                         <label>Status</label>
                                     </div>
                                     <div class="col-md-8">
                                         <DropdownList @bind-Value="ProductService.UpsertData.ActiveType" />
                                     </div>
-                                    <div class="col-md-4">
-                                        <label>Discountable</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <CheckBox @bind-Value="ProductService.UpsertData.Discountable" />
-                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 ps-3">
+                            <div class="col-md-4 ps-3 row">
                                 <Fileupload OnChange="SetImage">
                                     <PictureBox Data="ProductService.UpsertData.Image" style="width:200px;height:200px" />
                                 </Fileupload>
+                                <div class="col-md-8 ps-3">
+                                    <label>Discountable</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <CheckBox @bind-Value="ProductService.UpsertData.Discountable" />
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <label>Meal</label>

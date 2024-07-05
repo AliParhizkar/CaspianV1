@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StiSerializer version="1.02" type="Net" application="StiReport">
+  <CalculationMode>Interpretation</CalculationMode>
+  <Dictionary Ref="10" type="Dictionary" isKey="true">
+    <BusinessObjects isList="true" count="1">
+      <list Ref="11" type="Stimulsoft.Report.Dictionary.StiBusinessObject" isKey="true">
+        <Alias>list</Alias>
+        <BusinessObjects isList="true" count="0" />
+        <Category />
+        <Columns isList="true" count="4">
+          <Value>Product_Title,System.String</Value>
+          <Value>Price,System.Int32</Value>
+          <Value>Quantity,System.Int32</Value>
+          <Value>Product_ProductCategory_Title,System.String</Value>
+        </Columns>
+        <Dictionary isRef="10" />
+        <Guid>6997690dfeb8412983141f7b4af282be</Guid>
+        <Name>list</Name>
+      </list>
+    </BusinessObjects>
+    <Databases isList="true" count="0" />
+    <DataSources isList="true" count="0" />
+    <Relations isList="true" count="0" />
+    <Report isRef="0" />
+    <Resources isList="true" count="0" />
+    <Variables isList="true" count="0">
+      <value>,ReportDate,ReportDate,DateTime,,False,False</value>
+      <value>,FirstName,FirstName,String,,False,False</value>
+      <value>,LastName,LastName,String,,False,False</value>
+      <value>,FullName,FullName,String,,False,False</value>
+      <value>,PersonalCode,PersonalCode,String,,False,False</value>
+    </Variables>
+    <Variables isList="true" count="5" />
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings isList="true" count="0" />
+  <Key>49524a268db240eab98e84c14d67e873</Key>
+  <MetaTags isList="true" count="0" />
+  <Pages isList="true" count="1">
+    <Page1 Ref="15" type="Page" isKey="true">
+      <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+      <Brush>Transparent</Brush>
+      <Components isList="true" count="3">
+        <ReportTitleBand1 Ref="1" type="ReportTitleBand" isKey="true">
+          <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21.01,4.02</ClientRectangle>
+          <Components isList="true" count="2">
+            <Text11 Ref="31" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>6.32,0.53,4,1.4</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Expressions isList="true" count="0" />
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Font>Arial,14</Font>
+              <TextBrush>[0:0:0]</TextBrush>
+              <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text11</Name>
+              <Page isRef="15" />
+              <Parent isRef="1" />
+              <Text>شرکت آسان پرداخت</Text>
+              <Type>Expression</Type>
+            </Text11>
+            <Text12 Ref="32" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>12.62,0.53,4.9,0.79</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Expressions isList="true" count="0" />
+              <HorAlignment>Center</HorAlignment>
+              <VertAlignment>Center</VertAlignment>
+              <Font>Arial,14</Font>
+              <TextBrush>[0:0:0]</TextBrush>
+              <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text12</Name>
+              <Page isRef="15" />
+              <Parent isRef="1" />
+              <Text>شرکت سخت دریافت</Text>
+              <Type>Expression</Type>
+            </Text12>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Name>ReportTitleBand1</Name>
+          <Page isRef="15" />
+          <Parent isRef="15" />
+        </ReportTitleBand1>
+        <HeaderBand2 Ref="3" type="HeaderBand" isKey="true">
+          <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21.01,0.79</ClientRectangle>
+          <Components isList="true" count="1">
+            <Table1 Ref="16" type="Stimulsoft.Report.Components.Table.StiTable" isKey="true">
+              <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+              <ClientRectangle>0,0,21.01,0.79</ClientRectangle>
+              <ColumnCount>4</ColumnCount>
+              <Components isList="true" count="4">
+                <Table1_Cell1 Ref="33" type="TableCell" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>0.42,0,5.61,0.79</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Arial,14</Font>
+                  <ID>0</ID>
+                  <JoinCells isList="true" count="0" />
+                  <HorAlignment>Center</HorAlignment>
+                  <VertAlignment>Center</VertAlignment>
+                  <TextBrush>[0:0:0]</TextBrush>
+                  <Border>Bottom,Left,Right;[128:128:128];1;Solid;False;4;[0:0:0]</Border>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Table1_Cell1</Name>
+                  <Page isRef="15" />
+                  <Parent isRef="16" />
+                  <Text>محصول</Text>
+                </Table1_Cell1>
+                <Table1_Cell2 Ref="34" type="TableCell" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>6.03,0,3.97,0.79</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Arial,14</Font>
+                  <ID>1</ID>
+                  <JoinCells isList="true" count="0" />
+                  <HorAlignment>Center</HorAlignment>
+                  <VertAlignment>Center</VertAlignment>
+                  <TextBrush>[0:0:0]</TextBrush>
+                  <Border>Bottom,Right;[128:128:128];1;Solid;False;4;[0:0:0]</Border>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Table1_Cell2</Name>
+                  <Page isRef="15" />
+                  <Parent isRef="16" />
+                  <Text>قیمت</Text>
+                </Table1_Cell2>
+                <Table1_Cell3 Ref="35" type="TableCell" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>10,0,5.29,0.79</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Arial,14</Font>
+                  <ID>2</ID>
+                  <JoinCells isList="true" count="0" />
+                  <HorAlignment>Center</HorAlignment>
+                  <VertAlignment>Center</VertAlignment>
+                  <TextBrush>[0:0:0]</TextBrush>
+                  <Border>Bottom,Right;[128:128:128];1;Solid;False;4;[0:0:0]</Border>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Table1_Cell3</Name>
+                  <Page isRef="15" />
+                  <Parent isRef="16" />
+                  <Text>تعداد</Text>
+                </Table1_Cell3>
+                <Table1_Cell4 Ref="36" type="TableCell" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>15.3,0,5.29,0.79</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Arial,14</Font>
+                  <ID>3</ID>
+                  <JoinCells isList="true" count="0" />
+                  <HorAlignment>Center</HorAlignment>
+                  <VertAlignment>Center</VertAlignment>
+                  <TextBrush>[0:0:0]</TextBrush>
+                  <Border>Bottom,Right;[128:128:128];1;Solid;False;4;[0:0:0]</Border>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Table1_Cell4</Name>
+                  <Page isRef="15" />
+                  <Parent isRef="16" />
+                  <Text>جمع</Text>
+                </Table1_Cell4>
+              </Components>
+              <Conditions isList="true" count="0" />
+              <DataRelationName isNull="true" />
+              <Expressions isList="true" count="0" />
+              <Filters isList="true" count="0" />
+              <Name>Table1</Name>
+              <NumberID>18</NumberID>
+              <Page isRef="15" />
+              <Parent isRef="3" />
+              <RowCount>1</RowCount>
+              <Sort isList="true" count="0" />
+            </Table1>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Name>HeaderBand2</Name>
+          <Page isRef="15" />
+          <Parent isRef="15" />
+        </HeaderBand2>
+        <DataBand3 Ref="4" type="DataBand" isKey="true">
+          <Border>None;[0:0:0];1;Solid;False;4;[0:0:0]</Border>
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0,21.01,1.56</ClientRectangle>
+          <BusinessObjectGuid>6997690dfeb8412983141f7b4af282be</BusinessObjectGuid>
+          <Components isList="true" count="0" />
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Name>DataBand3</Name>
+          <Page isRef="15" />
+          <Parent isRef="15" />
+        </DataBand3>
+      </Components>
+      <Conditions isList="true" count="0" />
+      <Expressions isList="true" count="0" />
+      <Guid>f1f6fa338a744ced830a2b55c8e7a5f8</Guid>
+      <Margins>0,0,0,0</Margins>
+      <Name>Page1</Name>
+      <PageWidth>21</PageWidth>
+      <PageHeight>29.7</PageHeight>
+      <Report isRef="0" />
+    </Page1>
+  </Pages>
+  <PrinterSettings Ref="9999" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
+  <ReportAlias>Report</ReportAlias>
+  <ReportChanged>5/3/2015 4:05:02 PM</ReportChanged>
+  <ReportCreated>5/1/2015 7:31:06 PM</ReportCreated>
+  <ReportFile>D:\e.mrt</ReportFile>
+  <ReportGuid>7a59e6f3323042d4848703beddfe3e7b</ReportGuid>
+  <ReportName>ReportName</ReportName>
+  <ReportUnit>Centimeters</ReportUnit>
+  <ReportVersion>2012.1.1300</ReportVersion>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles isList="true" count="0" />
+</StiSerializer>

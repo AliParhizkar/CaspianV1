@@ -24,6 +24,9 @@ namespace Demo.Model
         [DisplayName("Price"), ReportField]
         public int Price { get; set; }
 
+        [DisplayName("Discount")]
+        public int? Discount { get; set; }
+
         [DisplayName("Take out price"), ReportField]
         public int TakeoutPrice { get; set; }
 

@@ -35,18 +35,20 @@ namespace Caspian.UI
 
         internal void AddColumnData(GridColumn<TEntity> column)
         {
-            var columnData = new ColumnData()
+            var columnData = new ColumnData();
+            columnData.Expression = column.Field?.Body;
+            columnData.DataField = column.DataField;
+            if (!column.DataField)
             {
-                Title = column.Title,
-                Expression = column.Field?.Body,
-                AggregateExpression = column.AggregateField?.Body,
-                FromExpression = column.FromExpression,
-                ToExpression = column.ToExpression,
-                Sortable = column.Field?.Body as BinaryExpression == null,
-                Width = column.Width,
-                SortType = column.SortType,
-                Resizeable = column.Template == null && !column.IsCheckBox
-            };
+                columnData.Width = column.Width;
+                columnData.Title = column.Title;
+                columnData.AggregateExpression = column.AggregateField?.Body;
+                columnData.FromExpression = column.FromExpression;
+                columnData.ToExpression = column.ToExpression;
+                columnData.Sortable = column.Field?.Body as BinaryExpression == null;
+                columnData.SortType = column.SortType;
+                columnData.Resizeable = column.Template == null && !column.IsCheckBox;
+            }
             columnsData.Add(columnData);
             if (column.FromExpression != null || column.ToExpression != null)
                 RangeFilterColumnsData.Add(columnData);

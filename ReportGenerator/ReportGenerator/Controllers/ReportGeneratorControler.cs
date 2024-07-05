@@ -35,7 +35,15 @@ namespace ReportGenerator.Controllers
             {
                 var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
                 var content = System.IO.File.ReadAllText(path);
-                return JsonSerializer.Deserialize<PageData>(content);
+                try
+                {
+                    return JsonSerializer.Deserialize<PageData>(content);
+
+                }
+                catch(Exception ex)
+                {
+
+                }
             }
             var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId).ToListAsync();
             var maxdataLevel = parameters.Max(t => t.DataLevel).GetValueOrDefault(1);

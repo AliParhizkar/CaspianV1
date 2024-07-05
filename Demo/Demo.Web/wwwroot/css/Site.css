@@ -1,4 +1,17 @@
-﻿
+﻿.d-price {
+    display: flex;
+    line-height: 19px;
+    justify-content: space-around;
+    padding:0 8px;
+    font-size:15px;
+    padding:0;
+    vertical-align:top;
+}
+.d-discount{
+    text-decoration:line-through;
+    text-decoration-color:red;
+    text-decoration-thickness:1px;
+}
 .d-icon {
     font-size: 18px !important;
     color: #342ac5 !important;
@@ -148,16 +161,10 @@ html {
 .d-list-head {
     display: flex;
 }
-.d-listview-row {
-    display: flex;
-    width: 100%;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-    flex-wrap:wrap;
+
+.d-lst-1, .d-lst-2, .d-lst-3, .d-lst-4, .d-lst-5, .d-lst-6 {
+    border-right: 1px solid #e0e0e0;
 }
-    .d-listview-row > div {
-        text-align: center;
-        border-right: 1px solid #e0e0e0;
-    }
 .d-row-odd {
     background-color: #f5f5f5;
 }
