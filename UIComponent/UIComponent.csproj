@@ -11,16 +11,9 @@
 		<EmbeddedResource Remove="Data\**" />
 		<None Remove="Data\**" />
 	</ItemGroup>
-	<ItemGroup>
-	  <Content Remove="compilerconfig.json" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<None Remove="Grid\Grid.rar" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="compilerconfig.json" />
 	</ItemGroup>
 
 	<ItemGroup>

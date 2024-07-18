@@ -1,75 +1,173 @@
 ﻿@page "/Test"
 @inherits BasePage
+@using Caspian.Common.Extension
 @using Caspian.Engine;
 @using Caspian.Engine.Model
+@using Caspian.Engine.RuleGenerator
+@using Caspian.Engine.Service
 @using Caspian.UI;
 @using Demo.Model;
 @using Demo.Service
-
-<div style="width:500px;margin: 10px auto">
-    <CaspianForm Model="customer">
-        <CaspianValidationValidator ValidatorType="typeof(CustomerService)" />
-        <div class="row c-controls">
-            <div class="col-md-4">
-                <label>Customer Type</label>
-            </div>
-            <div class="col-md-8">
-                <DropdownList @bind-Value="customer.CustomerType" />
-            </div>
-            @if (customer.CustomerType == CustomerType.Real)
-            {
-                <div class="col-md-4">
-                    <label>First Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="customer.FName" />
-                </div>
-                <div class="col-md-4">
-                    <label>Last Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="customer.LName" />
-                </div>
-                <div class="col-md-4">
-                    <label>Gender</label>
-                </div>
-                <div class="col-md-8">
-                    <DropdownList @bind-Value="customer.Gender" />
-                </div>
-            }
-            else
-            {
-                <div class="col-md-4">
-                    <label>Company Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="customer.CompanyName" />
-                </div>
-            }
-            <div class="col-md-4">
-                <label>Mobile</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="customer.MobileNumber" MaxLength="11" />
-            </div>
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
-                <button type="submit">Submi</button>
-            </div>
+@using Microsoft.EntityFrameworkCore
+<div class="r-rule-main">
+    <div class="r-rule-displaier">
+        <RuleDisplaierComponent Tokens="tokens" />
+    </div>
+    <div class="r-rule-operator" style="text-align:center">
+        <OperatorComponent Tokens="tokens" OnChanged="OnOperatoeChanged" />
+        <div class="pt-3">
+            <button disabled="@disabled" class="c-btn c-primary" @onclick="OpenOperatorWindow">Parameter</button>
         </div>
-
-
-
-    </CaspianForm>
+        <div class="pt-3">
+            <button disabled="@(disabled || constValueDisabled)" class="c-btn c-primary" @onclick="OpenConstValueWindow">Const Value</button>
+        </div>
+    </div>
 </div>
-
-
+<Window @bind-Status="operatorWindowStatus" Title="Parameter" Style="width:350px">
+    <div class="row ps-3 pe-3">
+        <div class="col-md-3">
+            <label>Parameter</label>
+        </div>
+        <div class="col-md-9">
+            <ComboBox TEntity="SelectListItem" TValue="int?" @bind-Value="parameterId" Source="source" />
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-9 pt-3 pb-2">
+            <button class="c-btn c-primary" type="button" @onclick="AddParameter">Add Token</button>
+            <button class="c-btn c-danger" type="button" @onclick="() => operatorWindowStatus = WindowStatus.Close">Close</button>
+        </div>
+    </div>
+</Window>
+<Window @bind-Status="constValueWindowStatus" Title="Const Value" Style="width:350px">
+    <div class="row">
+        <div class="col-md-3">
+            <label>Const Value</label>
+        </div>
+        <div class="col-md-9">
+            @switch(valueTypeKind)
+            {
+                case ValueTypeKind.Enum:
+                    <DropdownList DynamicType="enumType" @bind-Value="enumValue" />
+                    break;
+            }
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-9 pt-3 pb-2">
+            <button class="c-btn c-primary" type="button" @onclick="AddConstValue">Add Value</button>
+            <button class="c-btn c-danger" type="button" @onclick="() => constValueWindowStatus = WindowStatus.Close">Close</button>
+        </div>
+    </div>
+</Window>
 
 @code
 {
-    Customer customer = new Customer();
+    WindowStatus operatorWindowStatus, constValueWindowStatus;
+    IList<Token> tokens;
+    IList<ReportParam> reportParams;
+    IList<SelectListItem> source;
+    int? parameterId;
+    bool disabled, constValueDisabled;
+    Type mainType = typeof(OrderDeatil);
+    ValueTypeKind valueTypeKind;
+    Type enumType;
+    object enumValue;
+
+    void OpenOperatorWindow()
+    {
+        operatorWindowStatus = WindowStatus.Open;
+        parameterId = null;
+    }
+
+    void OpenConstValueWindow()
+    {
+        constValueWindowStatus = WindowStatus.Open;
+        var last = tokens.Last();
+        if (last.TokenKind == TokenKind.Compareable)
+        {
+            var preLast = tokens[tokens.Count - 2];
+            var type = mainType.GetMyProperty(preLast.EnTitle).PropertyType;
+            if (type.IsEnumType())
+            {
+                enumType = type;
+                valueTypeKind = ValueTypeKind.Enum;
+                enumValue = enumType.GetFields().Where(t => !t.IsSpecialName).First().GetValue(null);
+            }    
+            else
+            {
+                enumType = type = null;
+                int id = 0;
+                int? id1 = null;
+                //Gender gender = Gender.Fema le;
+                //var q = id * id1 + gender.ToString();
+            }
+        }
+
+    }
+
     protected override void OnInitialized()
     {
-        customer.CustomerType = CustomerType.Real;
+        tokens = new List<Token>();
+        UpdateOperanButton();
+        base.OnInitialized();
+    }
+
+    void OnOperatoeChanged()
+    {
+        disabled = !new Parser(tokens).ValidTokenKinds().Any(t => t == TokenKind.Parameter);
+    }
+
+    void AddParameter()
+    {
+        if (parameterId.HasValue)
+        {
+            var param = reportParams.Single(t => t.Id == parameterId);
+            var token = new Token()
+            {
+                EnTitle = param.TitleEn,
+                FaTitle = param.Alias,
+                TokenType = TokenType.Oprand,
+            };
+            tokens.Add(token);
+            UpdateOperanButton();
+            operatorWindowStatus = WindowStatus.Close;
+        }
+    }
+
+    void AddConstValue()
+    {
+        var token = new Token();
+        token.ConstValueType = valueTypeKind;
+        switch (valueTypeKind)
+        {
+            case ValueTypeKind.Enum:
+                token.FaTitle = (enumValue as Enum).EnumText();
+                token.constValue = enumValue.ToString();
+                token.TokenType = TokenType.ConstValue;
+                break;
+            default:
+                break;
+
+        }
+        tokens.Add(token);
+        UpdateOperanButton();
+        constValueWindowStatus = WindowStatus.Close;
+    }
+
+    void UpdateOperanButton()
+    {
+        disabled = !new Parser(tokens).ValidTokenKinds().Any(t => t == TokenKind.Parameter);
+        constValueDisabled = tokens.Count < 2;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<ReportParamService>();
+        reportParams = await service.GetAll().Where(t => t.ReportId == 1).ToListAsync();
+        source = reportParams.Select(t => new SelectListItem()
+        {
+            Text = t.Alias,
+            Value = t.Id.ToString()
+        }).ToList();
+        await base.OnInitializedAsync();
     }
 }

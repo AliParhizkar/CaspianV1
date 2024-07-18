@@ -1,4 +1,5 @@
-﻿using Caspian.Common;
+﻿using System.Data;
+using Caspian.Common;
 using System.Reflection;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
@@ -8,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using System.Data;
 
 namespace Caspian.UI
 {
@@ -63,7 +63,7 @@ namespace Caspian.UI
                 batchServiceData.MasterId = MasterId;
                 using var service = CreateScope().GetService<IBaseService<TMaster>>();
                 UpsertData = await service.SingleAsync(MasterId);
-                Form.Model = UpsertData;
+                Form.SetModel(UpsertData);
             }
         }
 
@@ -75,7 +75,7 @@ namespace Caspian.UI
                 UpsertData = Activator.CreateInstance<TMaster>();
             if (OnCreate != null)
                 OnCreate.Invoke(UpsertData);   
-            Form.Model = UpsertData;
+            Form.SetModel(UpsertData);
             Form.OnInternalReset = EventCallback.Factory.Create(this, async () =>
             {
                 DetailDataView?.ClearSource();
@@ -98,7 +98,9 @@ namespace Caspian.UI
                     if (DetailDataView != null)
                         DetailDataView.ClearSource();
                     UpsertData = Activator.CreateInstance<TMaster>();
-                    //await OnMasterEntityCreatedAsync();
+                    Form.SetModel(UpsertData);
+                    if (OnCreate != null)
+                        OnCreate.Invoke(UpsertData);
                     if (DataView != null && DataView is DataGrid<TMaster>)
                     {
                         var newId = (int)typeof(TMaster).GetPrimaryKey().GetValue(result);

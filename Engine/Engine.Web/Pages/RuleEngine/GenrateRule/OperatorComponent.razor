@@ -9,16 +9,16 @@
     ColonButtonAttrs.Remove("disabled");
     OpenBracketButtonAttrs.Remove("disabled");
     CloseBracketButtonAttrs.Remove("disabled");
-    if (ValidTokensKind != null)
+    if (validTokensKind != null)
     {
-        MathButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Math);
-        LogicButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Logical);
-        CompareButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Compareable);
-        IfButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.If);
-        QuestionMarkButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.QuestionMark);
-        ColonButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.Colon);
-        OpenBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.OpenBracket);
-        CloseBracketButtonAttrs["disabled"] = !ValidTokensKind.Contains(TokenKind.CloseBracket);
+        MathButtonAttrs["disabled"] = !validTokensKind.Contains(TokenKind.Math);
+        LogicButtonAttrs["disabled"] = !validTokensKind.Contains(TokenKind.Logical);
+        CompareButtonAttrs["disabled"] = !validTokensKind.Contains(TokenKind.Compareable);
+        IfButtonAttrs["disabled"] = !validTokensKind.Contains(TokenKind.If);
+        QuestionMarkButtonAttrs["disabled"] = !validTokensKind.Contains(TokenKind.QuestionMark);
+        ColonButtonAttrs["disabled"] = !validTokensKind.Contains(TokenKind.Colon);
+        OpenBracketButtonAttrs["disabled"] = !validTokensKind.Contains(TokenKind.OpenBracket);
+        CloseBracketButtonAttrs["disabled"] = !validTokensKind.Contains(TokenKind.CloseBracket);
     }
 }
 <div class="f-operator">
@@ -82,10 +82,10 @@
                 <button class="operand-input" @attributes="IfButtonAttrs" @onclick="@(async() => await AddOperator("if"))">If</button>
             </td>
             <td>
-                <button class="operand-input" @attributes="QuestionMarkButtonAttrs" @onclick="@(async () => await AddOperator("?"))">Thent</button>
+                <button class="operand-input" @attributes="QuestionMarkButtonAttrs" @onclick="@(async () => await AddOperator("?"))">?</button>
             </td>
             <td>
-                <button class="operand-input" @attributes="ColonButtonAttrs" @onclick="@(async () => await AddOperator(":"))">Else</button>
+                <button class="operand-input" @attributes="ColonButtonAttrs" @onclick="@(async () => await AddOperator(":"))">:</button>
             </td>
         </tr>
         <tr>
@@ -105,7 +105,7 @@
 </div>
 @code
 {
-
+    IList<TokenKind> validTokensKind;
     string[] className;
     IDictionary<string, object> MathButtonAttrs;
     IDictionary<string, object> LogicButtonAttrs;
@@ -115,6 +115,7 @@
     IDictionary<string, object> ColonButtonAttrs;
     IDictionary<string, object> OpenBracketButtonAttrs;
     IDictionary<string, object> CloseBracketButtonAttrs;
+    int tokentsCount;
 
     protected override void OnInitialized()
     {
@@ -127,17 +128,44 @@
         ColonButtonAttrs = new Dictionary<string, object>();
         OpenBracketButtonAttrs = new Dictionary<string, object>();
         CloseBracketButtonAttrs = new Dictionary<string, object>();
+        new RuleEngine().UpdateTokens(Tokens);
+        validTokensKind = new Parser(Tokens).ValidTokenKinds();
         base.OnInitialized();
     }
 
     async Task ClearAsync()
     {
-        using var scope = CreateScope();
-        await new TokenService(scope.ServiceProvider).RemoveAsync(RuleId);
-        Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+        if (RuleId.HasValue)
+        {
+            using var scope = CreateScope();
+            await new TokenService(scope.ServiceProvider).RemoveAsync(RuleId.Value);
+            Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId.Value).ToListAsync();
+        }
+        else
+        {
+            if (Tokens.Count > 0)
+            {
+                Tokens.RemoveAt(Tokens.Count - 1);
+                tokentsCount = Tokens.Count;
+            }
+        }
         new RuleEngine().UpdateTokens(Tokens);
-        ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+        validTokensKind = new Parser(Tokens).ValidTokenKinds();
         await OnChanged.InvokeAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Tokens != null)
+        {
+            if (Tokens.Count != tokentsCount)
+            {
+                new RuleEngine().UpdateTokens(Tokens);
+                validTokensKind = new Parser(Tokens).ValidTokenKinds();
+                tokentsCount = Tokens.Count;
+            }
+        }
+        base.OnParametersSet();
     }
 
     async Task AddOperator(string enTitle)
@@ -181,24 +209,28 @@
                 token.FaTitle = enTitle;
                 break;
         };
-        using var scope = CreateScope();
-        var tokenService = new TokenService(scope.ServiceProvider);
-        await tokenService.AddAsync(token);
-        await tokenService.SaveChangesAsync();
-        Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+        @if (RuleId.HasValue)
+        {
+            using var scope = CreateScope();
+            var tokenService = new TokenService(scope.ServiceProvider);
+            await tokenService.AddAsync(token);
+            await tokenService.SaveChangesAsync();
+            Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
+        }
+        else
+            Tokens.Add(token);
         Tokens = new RuleEngine().UpdateTokens(Tokens);
-        ValidTokensKind = new Parser(Tokens).ValidTokenKinds();
+        validTokensKind = new Parser(Tokens).ValidTokenKinds();
         await OnChanged.InvokeAsync();
+
     }
 
-    public IList<Token> Tokens { get; private set; }
-
     [Parameter]
-    public IEnumerable<TokenKind> ValidTokensKind { get; set; }
+    public IList<Token> Tokens { get; set; }
 
     [Parameter]
     public EventCallback OnChanged { get; set; }
 
     [Parameter]
-    public int RuleId { get; set; }
+    public int? RuleId { get; set; }
 }

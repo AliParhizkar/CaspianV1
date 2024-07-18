@@ -109,6 +109,11 @@ namespace Caspian.UI
             await base.OnInitializedAsync();
         }
 
+        public async Task SubmitAsync()
+        {
+            await OnFormSubmitHandler(EditContext);
+        }
+
         async Task OnFormSubmitHandler(EditContext context)
         {
             addControls = true;
@@ -179,6 +184,13 @@ namespace Caspian.UI
                 oldModel = Model;
             }
             base.OnParametersSet();
+        }
+
+        internal void SetModel(TEntity entity)
+        {
+            EditContext = new EditContext(entity);
+            oldModel = entity;
+            Model = entity;
         }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)

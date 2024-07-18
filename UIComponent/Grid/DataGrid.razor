@@ -21,7 +21,8 @@
     <div @ref="mainDiv" class="t-widget t-grid">
         @if (ToolsBar == null)
         {
-                <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" />
+            <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" DisableInsertIcon="disableInsertIcon" 
+                    OnInsertButoonClicked="CreateInsert" />
         }
         else
             @ToolsBar
@@ -49,11 +50,11 @@
                         }
                         else
                         {
-                                    <CaspianContainer Disabled>
-                                        <CascadingValue Value="insertedEntity" Name="RowData">
-                                            @Columns(insertedEntity)
-                                        </CascadingValue>
-                                    </CaspianContainer>
+                            <CaspianContainer Disabled>
+                                <CascadingValue Value="insertedEntity" Name="RowData">
+                                    @Columns(insertedEntity)
+                                </CascadingValue>
+                            </CaspianContainer>
                         }
                         </tr>
                     </tbody>

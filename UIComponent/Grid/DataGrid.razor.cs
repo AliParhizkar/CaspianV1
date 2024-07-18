@@ -26,7 +26,6 @@ namespace Caspian.UI
         IList<ColumnData> RangeFilterColumnsData;
         IDictionary<string, object> tableAttrs;
         IList<MemberExpression> SelectExpressions;
-
         [CascadingParameter]
         public CrudComponent<TEntity> CrudComponent { get; set; }
 
@@ -110,6 +109,35 @@ namespace Caspian.UI
                     if (Batch)
                     {
                         source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
+                        if (DetailBatchService != null)
+                        {
+                            foreach(var item in DetailBatchService.ChangedEntities)
+                            {
+                                if (item.ChangeStatus == ChangeStatus.Added)
+                                    source.Add(item.Entity);
+                                else 
+                                {
+                                    TEntity old = default(TEntity);
+                                    var id = Convert.ToInt32(pKey.GetValue(item.Entity));
+                                    foreach(var entity in source)
+                                    {
+                                        if (Convert.ToInt32(pKey.GetValue(entity)) == id)
+                                        {
+                                            old = entity;
+                                            break;
+                                        }
+                                    }
+                                    if (item.ChangeStatus == ChangeStatus.Deleted)
+                                        source.Remove(old);
+                                    else if (item.ChangeStatus == ChangeStatus.Updated)
+                                    {
+                                        var index = source.IndexOf(old);
+                                        source.RemoveAt(index);
+                                        source.Insert(index, item.Entity);
+                                    }
+                                }
+                            }
+                        }
                         if (pageNumber == 1)
                             items = source.Take(PageSize).ToList();
                         else

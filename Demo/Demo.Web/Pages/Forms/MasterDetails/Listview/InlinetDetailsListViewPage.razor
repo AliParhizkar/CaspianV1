@@ -134,7 +134,6 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-
 @code
 {
     StringTextBox txtDescription;
@@ -184,6 +183,7 @@
             using var service = CreateScope().GetService<ProductService>();
             var old = await service.SingleAsync(detail.ProductId);
             detail.Price = old.Price;
+            detail.Product = old;
             if (detail.Id == 0)
                 detail.Quantity = 1;
             await txtQuantity.FocusAsync();

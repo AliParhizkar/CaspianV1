@@ -155,9 +155,9 @@
                                     <Template>
                                         @if (con.Data.Product?.Discount > 0)
                                         {
-                                            <div class="d-price d-discount">@(con.Data.Product.Discount + con.Data.Price)</div>
+                                            <div class="d-price d-discount">@(con.Data.Product.Discount + con.Data.Price)$</div>
                                         }
-                                        <div class="d-price">@(con.Data.Price.Seprate3Digit())</div>
+                                        <div class="d-price">@(con.Data.Price.Seprate3Digit())$</div>
                                     </Template>
                                 </GridColumn>
                                 <GridColumn Field="t => t.Quantity" style="width:100px">
@@ -168,7 +168,21 @@
                                 </GridColumn>
                                 <GridColumn Field="t => t.Descript" Title="Comment" style="width:60px">
                                     <Template>
-                                        <button @onclick="async () => await ShowDesccription(con.Data)" class="c-btn c-primary" disabled="@(con.UpsertMode == null)">...</button>
+                                        @if (con.UpsertMode == null)
+                                        {
+                                            <button class="c-btn c-primary" disabled="disabled">...</button>
+                                        }
+                                        else
+                                        {
+                                            if (con.UpsertMode == UpsertMode.Insert)
+                                            {
+                                                <button @ref="btnDescripOninsert" @onclick="async () => await ShowDesccription(con.Data, UpsertMode.Insert)" class="c-btn c-primary" >...</button>
+                                            }
+                                            else
+                                            {
+                                                <button @ref="btnDescripOnEdit" @onclick="async () => await ShowDesccription(con.Data, UpsertMode.Edit)" class="c-btn c-primary">...</button>
+                                            }
+                                        }
                                     </Template>
                                 </GridColumn>
                                 <GridCommandColumns />
@@ -192,7 +206,8 @@
 <div style="height:110px">
 
 </div>
-<PopupWindow @bind-Status="status">
+<PopupWindow @bind-Status="status" TargetElement="targetElement" TargetHorizontalAnchor="HorizontalAnchor.Left" OffsetLeft="-1"
+             TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right" VerticalAnchor="VerticalAnchor.Middle">
     <div style="width:400px;" class="row p-3 text-center">
         <div class="col-md-6">@selectedOrderDeatil.Product?.Title</div>
         <div class="col-md-2">@selectedOrderDeatil.Quantity</div>
@@ -208,11 +223,16 @@
     StringTextBox txtDescript;
     OrderDeatil selectedOrderDeatil;
     NumericTextBox<int> txtQuantity;
+    ElementReference? targetElement, btnDescripOninsert, btnDescripOnEdit;
 
-    async Task ShowDesccription(OrderDeatil detail)
+    async Task ShowDesccription(OrderDeatil detail, UpsertMode upsertMode)
     {
         status = WindowStatus.Open;
         selectedOrderDeatil = detail;
+        if (upsertMode == UpsertMode.Insert)
+            targetElement = btnDescripOninsert;
+        else
+            targetElement = btnDescripOnEdit;
         if (detail.Id == 0 && detail.ProductId > 0)
         {
             using var service = CreateScope().GetService<ProductService>();

@@ -54,7 +54,7 @@
                             <GridColumn Field="t => t.Title" />
                             <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
                                 <Template>
-                                    <NumericTextBox @key="context.Data.Id" @ref="PriceControl" OnDispose="ctr => priceControls.Remove(ctr)" TValue="int" Value="context.Data.Price" ValueChanged="value => context.Data.Price = value"
+                                    <NumericTextBox @ref="PriceControl" OnDispose="ctr => priceControls.Remove(ctr)" TValue="int" Value="context.Data.Price" ValueChanged="value => context.Data.Price = value"
                                             @onkeyup="async e => await UpdatePrice(e, context.Data.Id, context.Data.Price)" />
                                 </Template>
                             </GridColumn>

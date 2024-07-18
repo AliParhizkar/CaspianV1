@@ -4,7 +4,7 @@
 @inherits DataView<TEntity>
 <CascadingValue Value="this" Name="DataView">
     <div @ref="element" class="c-widget c-data-view">
-        <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" />
+        <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" OnInsertButoonClicked="CreateInsert" />
         <div class="c-dataview-header">
             @HeaderTempalte
         </div>

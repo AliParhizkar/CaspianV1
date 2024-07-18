@@ -68,6 +68,11 @@ namespace Caspian.UI
             Disabled = false;
         }
 
+        public void Focus()
+        {
+
+        }
+
         public bool HasError()
         {
             return ErrorMessage != null;

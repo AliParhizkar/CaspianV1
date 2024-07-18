@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
-    public abstract class DataView<TEntity>: ComponentBase where TEntity : class
+    public abstract class DataView<TEntity>: ComponentBase, IDisposable where TEntity : class
     {
         protected RowData<TEntity> insertedEntity;
         protected EditContext InsertContext;
@@ -32,7 +32,7 @@ namespace Caspian.UI
         protected Type serviceType;
         protected CaspianValidationValidator validator;
         protected IList<TEntity> items;
-
+        protected bool disableInsertIcon;
         internal EventCallback<TEntity> OnInternalUpsert { get; set; }
 
         internal Expression InternalConditionExpr { get; set; }
@@ -214,6 +214,7 @@ namespace Caspian.UI
         {
             if (upsertMode == UpsertMode.Edit)
             {
+                disableInsertIcon = false;
                 FormAppState.AllControlsIsValid = true;
                 //FormAppState.Control = null;
                 FormAppState.ErrorMessage = null;
@@ -292,6 +293,7 @@ namespace Caspian.UI
         {
             if (upsertMode == UpsertMode.Edit)
             {
+                disableInsertIcon = false;
                 RollBackEntity();
                 selectedEntity = null;
                 EditContext = null;
@@ -571,6 +573,7 @@ namespace Caspian.UI
 
         public void SetSelectedEntity(TEntity entity)
         {
+            disableInsertIcon = true;
             RollBackEntity();
             EditContext = new EditContext(entity);
             selectedEntity = entity;
@@ -589,6 +592,14 @@ namespace Caspian.UI
             InsertContext = new EditContext(insertedEntity.Data);
             insertContinerHouldhasFocus = AutoHide;
             StateHasChanged();
+        }
+
+        public void Dispose()
+        {
+            if (Service != null)
+                Service.DataView = null; 
+            if (DetailBatchService != null)
+                DetailBatchService.DetailDataView = null;
         }
     }
 }

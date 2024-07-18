@@ -40,7 +40,7 @@ namespace Caspian.Engine.RuleGenerator
         void OpratorAdded()
         {
             Tokens = operatorComponent.Tokens;
-            ValidTokensKind = operatorComponent.ValidTokensKind;
+            //ValidTokensKind = operatorComponent.ValidTokensKind;
             newStatus = WindowStatus.Close;
             StateHasChanged();
         }

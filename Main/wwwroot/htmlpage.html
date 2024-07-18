@@ -2,55 +2,31 @@
 
 <html>
 <head>
-    <script type="text/javascript">
-        let isopen;
-        function setHeight() {
-            let div = document.getElementById('_1');
-            const resizeObserver = new ResizeObserver(entries => {
-                console.log(div.getClientRects()[0].width)
-            });
-            resizeObserver.observe(div);
-        }
-    </script>
     <style type="text/css">
-        .d-main {
+        .c-parent {
             display: flex;
-            border: 1px solid red;
-            height: 150px;
-            width: 50%;
-            margin: 0 auto;
-            align-items:center;
+            justify-content: space-between;
+            padding: 0 3px;
+            text-align: center;
+            align-content: center;
+            align-items: center;
         }
-        .d-first{
-            width:200px;
-            height:100px;
-            border:1px solid red;
-        }
-        .d-second {
-            width: 200px;
-            height: 50px;
-            border: 1px solid red;
-        }
-        .d-third {
-            width: 200px;
-            height: 150px;
-            border: 1px solid red;
+        .c-child{
+
         }
     </style>
 </head>
-    <body style="margin:0;padding:0">
-        <div class="d-main">
-            <div class="d-first">
-                First
-            </div>
-            <div class="d-second">
-                Second
-            </div>
-            <div class="d-third">
-                Thired
-            </div>
+<body style="margin:0;padding:0;direction:rtl">
+    <div class="c-parent">
+        <div>
+            <span style="display: inline-block; width: 200px; height: 200px; border: 1px solid red;vertical-align:middle">1</span>
         </div>
-
-
-    </body>
+        <div>
+            <span style="display: inline-block; width: 200px; height: 100px; border: 1px solid red;vertical-align:middle">2</span>
+        </div>
+        <div>
+            <span style="display: inline-block; width: 200px; height: 50px; border: 1px solid red;vertical-align:middle">3</span>
+        </div>
+    </div>
+</body>
 </html>

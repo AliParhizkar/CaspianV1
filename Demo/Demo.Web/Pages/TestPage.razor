@@ -1,12 +1,13 @@
 ﻿@page "/Demo/Test"
-@page "/Demo/Test/{ReciptId:int}"
 @namespace Demo.Web.Pages
 
 
-
+<button @key="125698" @onclick="Clicked"></button>
 
 @code
 {
-    [Parameter]
-    public int ReciptId { get; set; }
+    void Clicked(MouseEventArgs e)
+    {
+        
+    }
 }

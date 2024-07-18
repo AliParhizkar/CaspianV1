@@ -2039,9 +2039,15 @@ ul {
     cursor: pointer;
     background-color:white;
 }
-a.t-grid-add :visited {
-    color: #026002;
-}
+    .t-grid-add.c-disabled{
+        border-color: #d0d0d0;
+        cursor:not-allowed;
+    }
+        .t-grid-add.c-disabled .fa-plus {
+            background-color: #d0d0d0;
+            
+        }
+
 .t-grid-add:hover {
     color: #026002;
 } 
@@ -2513,7 +2519,7 @@ div.t-window {
     border-bottom-width: 0;
     font-size: 15px;
     vertical-align: top;
-    border-radius:11px;
+    border-radius:4px;
     padding:0 4px;
     height:24px;
 }

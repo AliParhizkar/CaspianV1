@@ -9,7 +9,7 @@
         <StringTextBox @bind-Value="Service.Search.Name" />
     </div>
 </div>
-<div class="p-4 pt-1">
+<div class="p-4 pt-1" >
     <DataGrid TEntity="CaspianFont" Service="Service" ContentHeight="350">
         <Columns>
             <GridColumn Field="t => t.Name" />
@@ -17,9 +17,9 @@
         </Columns>
     </DataGrid>
 </div>
-<Window Service="Service" Title="Font" Style="width:450px">
+<Window Service="Service" Title="Font" Style="width:400px">
     <CaspianForm Service="Service">
-        <div class="row c-controls ps-4 pe-4">
+        <div class="row c-controls ps-2 pe-2">
             <div class="col-md-3">
                 <label>Name</label>
             </div>

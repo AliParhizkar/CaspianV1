@@ -159,6 +159,8 @@
         endRowIndex = startRowIndex + PageSize - 1;
         if (endRowIndex > TotalRecord)
             endRowIndex = TotalRecord;
+        if (TotalRecord == 0)
+            startRowIndex = 0;
         startPageNumber = (PageNumber - 1)/ pageNumberCount * pageNumberCount + 1;
         endPageNumber = startPageNumber + pageNumberCount;
         if (endPageNumber > PageCount)

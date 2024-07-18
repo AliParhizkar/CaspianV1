@@ -1,0 +1,33 @@
+﻿@namespace Caspian.Engine.RuleGenerator
+<div class="formola-content">
+    @if (Tokens != null)
+    {
+        @foreach (var item in Tokens)
+        {
+            var className = item.TokenType == TokenType.Oprator ? "f-operator" : "f-operand";
+            if (item.OperatorKind == OperatorType.Colon)
+            {
+                <div class="f-clear"></div>
+                @if (item.IfCount > 1)
+                {
+                    <span class="c-padd" style="width:@(3 * (item.IfCount - 1))em"></span>
+                }
+            }
+            <span class="@className">@item.FaTitle</span>
+            if (item.OperatorKind == OperatorType.QuestionMark || item.OperatorKind == OperatorType.Colon)
+            {
+                <div class="f-clear"></div>
+                @if (item.IfCount > 0)
+                {
+                    <span class="c-padd" style="width:@(3 * item.IfCount)em"></span>
+                }
+            }
+        }
+    }
+</div>
+
+@code 
+{
+    [Parameter]
+    public IList<Token> Tokens { get; set; }
+}

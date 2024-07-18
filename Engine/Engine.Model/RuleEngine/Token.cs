@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine
@@ -71,6 +69,8 @@ namespace Caspian.Engine
                 return Engine.TokenKind.CloseBracket;
             }
         }
+
+
 
         public string GetEnTitle(OperatorType operatorType)
         {

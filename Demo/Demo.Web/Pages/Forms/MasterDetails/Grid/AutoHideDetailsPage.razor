@@ -153,7 +153,21 @@
                                 </GridColumn>
                                 <GridColumn Field="t => t.Description" Title="Comment" style="width:60px">
                                     <Template>
-                                        <button @onclick="() => ShowDesccription(con.Data)" class="c-btn c-primary" disabled="@(con.UpsertMode == null)">...</button>
+                                        @if (con.UpsertMode == null)
+                                        {
+                                            <button class="c-btn c-primary" disabled="disabled">...</button>
+                                        }
+                                        else
+                                        {
+                                            if (con.UpsertMode == UpsertMode.Insert)
+                                            {
+                                                <button @ref="btnDescripOninsert" @onclick="() => ShowDesccription(con.Data, UpsertMode.Insert)" class="c-btn c-primary">...</button>
+                                            }
+                                            else
+                                            {
+                                                <button @ref="btnDescripOnEdit" @onclick="() => ShowDesccription(con.Data, UpsertMode.Edit)" class="c-btn c-primary">...</button>
+                                            }
+                                        }
                                     </Template>
                                 </GridColumn>
                                 <GridCommandColumns />
@@ -175,7 +189,8 @@
     </Tabs>
 </TabPanel>
 
-<PopupWindow @bind-Status="status">
+<PopupWindow @bind-Status="status" TargetElement="targetElement" TargetHorizontalAnchor="HorizontalAnchor.Left" OffsetLeft="-1"
+             TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right"VerticalAnchor="VerticalAnchor.Middle">
     <div style="width:450px;" class="row p-3 text-center">
         <div class="col-md-4">@selectedReceiptDetail.Material?.Title</div>
         <div class="col-md-1">@selectedReceiptDetail.QuantityMain.Seprate3Digit()</div>
@@ -195,10 +210,16 @@
     NumericTextBox<int?> txtSubunit;
     ReceiptDetail selectedReceiptDetail;
     StringTextBox txtDescription;
-    async Task ShowDesccription(ReceiptDetail detail)
+    ElementReference? targetElement, btnDescripOninsert, btnDescripOnEdit;
+
+    async Task ShowDesccription(ReceiptDetail detail, UpsertMode upsertMode)
     {
         selectedReceiptDetail = detail;
         status = WindowStatus.Open;
+        if (upsertMode == UpsertMode.Insert)
+            targetElement = btnDescripOninsert;
+        else
+            targetElement = btnDescripOnEdit;
         await Task.Delay(100);
         await txtDescription.FocusAsync();
     }
@@ -208,8 +229,7 @@
         Service.MasterId = ReceiptId;
         Service.OnCreate = t =>
         {
-            if (t.Id == 0)
-                t.Date = DateTime.Now;
+            t.Date = DateTime.Now;
         };
         base.OnInitialized();
     }

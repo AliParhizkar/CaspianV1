@@ -5,9 +5,12 @@
     <div class="t-toolbar t-grid-toolbar t-grid-top">
         @if (!HideInsertIcon)
         {
-                <span @onclick="OpenAddForm" class="t-grid-add" href="javascript:void(0)">
-                    <span class="t-icon fa fa-plus"></span>
-                </span>
+            var className = "t-grid-add";
+            if (DisableInsertIcon)
+                className += " c-disabled";
+            <span @onclick="OpenAddForm" class="@className">
+                <span class="t-icon fa fa-plus"></span>
+            </span>
         }
     </div>
 }
