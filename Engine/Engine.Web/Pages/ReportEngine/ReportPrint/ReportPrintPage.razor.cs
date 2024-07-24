@@ -57,7 +57,7 @@ namespace Caspian.Engine.ReportPrint
                 }
                 else
                 {
-                    int count = reportParams.Max(t => t.DataLevel).GetValueOrDefault();
+                    int count = reportParams.Max(t => t.DataLevel);
                     Page = new ReportUiModels.ReportPrintPage();
                     Page.Bonds = new List<Bond>();
                     for (int i = 0; i < count; i++)
@@ -168,7 +168,7 @@ namespace Caspian.Engine.ReportPrint
             UnescapeDataString(page);
             using var scope = ServiceScopeFactory.CreateScope();
             var report = await new ReportService(scope.ServiceProvider).SingleAsync(ReportId);
-            var maxDataLevel = report.ReportParams.Max(t => t.DataLevel).GetValueOrDefault(1);
+            var maxDataLevel = report.ReportParams.Max(t => t.DataLevel);
             page.Report = new ReportUiModels.ReportPrint();
             page.IsSubReport = true;
             page.Report.SubReportLevel = report.SubReportLevel;

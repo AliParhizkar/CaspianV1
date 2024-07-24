@@ -7,6 +7,7 @@ using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace Caspian.Engine.Service
 {
@@ -228,13 +229,13 @@ namespace Caspian.Engine.Service
         {
             SelectReport report = new SelectReport(data.ElementType);
             data = AddOrderBy(data, reportParams).AsQueryable();
-
-            LambdaExpression lambda = report.SimpleSelect(reportParams);
+            Type type = null;
+            LambdaExpression lambda = report.SimpleSelect(reportParams, out type);
             data = data.Select(lambda);
-            IList values = report.GetValues(data, reportParams);
+            IList values = report.GetValues(data, reportParams, type);
             if (values.Count == 0)
                 throw new Exception("گزارش فاقد داده می باشد و امکان پیش نمایش وجود ندارد.", null);
-            Type type = GetTypeOf(reportParams, values[0].GetType(), lambda.Parameters[0].Type.Name);
+            type = GetTypeOf(reportParams, values[0].GetType(), lambda.Parameters[0].Type.Name);
             if (reportParams.Any<ReportParam>(t => t.DataLevel == 3))
                 return this.GeoupByData3Level(type, reportParams, values);
             return this.GeoupByData2Level(type, reportParams, values);
@@ -245,17 +246,25 @@ namespace Caspian.Engine.Service
             var service = ServiceProvider.GetService<ReportParamService>();
             var reportParams = service.GetAll().Include(t => t.DynamicParameter).Include(t => t.Rule).Where(t => t.ReportId == reportId).ToList();
             var report = new SelectReport(data.ElementType);
-            if (reportParams.Any(t => t.DataLevel.GetValueOrDefault(1) > 1))
-            {
-                if (reportParams.Any(t => t.CompositionMethodType.HasValue))
-                    data = data.GroupBy(report.GroupBy(reportParams)).Select(report.SelectForGroupBy(reportParams));
-                return GroupByData(data, reportParams);
-            }
+            //if (reportParams.Any(t => t.DataLevel > 1))
+            //{
+            //    if (reportParams.Any(t => t.CompositionMethodType.HasValue))
+            //        data = data.GroupBy(report.GroupBy(reportParams)).Select(report.SelectForGroupBy(reportParams));
+            //    return GroupByData(data, reportParams);
+            //}
+            Type type = null;
             if (reportParams.Any(t => t.CompositionMethodType.HasValue))
-                data = data.GroupBy(report.GroupBy(reportParams)).Select(report.SelectForGroupBy(reportParams));
+            {
+                var lambda = report.SelectForGroupBy(reportParams);
+                data = data.GroupBy(report.GroupBy(reportParams)).Select(lambda);
+            }
             else
-                data = data.Select(report.SimpleSelect(reportParams));
-            return data.ToIList();
+            {
+                var lambda = report.SimpleSelect(reportParams, out type);
+                data = data.Select(lambda);
+            }
+            var list = data.ToIList();
+            return report.GetStumlData(list, reportParams, data.ElementType, reportParams.Max(t => t.DataLevel));
             //return report.GetValues(data, reportParams);
         }
 

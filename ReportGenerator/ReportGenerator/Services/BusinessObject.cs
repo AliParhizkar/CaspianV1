@@ -37,8 +37,9 @@ namespace ReportGenerator.Services
             var report = await provider.GetService<ReportService>().GetAll().Include(t => t.ReportParams).Include(t => t.ReportGroup).SingleAsync(reportId);
             var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
             var selectReport = new SelectReport(mainType);
-            var type = selectReport.GetEqualType(report.ReportParams.ToList());
-            type = new ReportPrintEngine(provider).GetTypeOf(report.ReportParams.ToList(), type, mainType.Name);
+            var maxLevel = report.ReportParams.Max(t => t.DataLevel);
+            var type = selectReport.GetStimuType(mainType, report.ReportParams.ToList(), maxLevel);
+            //type = new ReportPrintEngine(provider).GetTypeOf(report.ReportParams.ToList(), type, mainType.Name);
             return GetXElement(type, "list", 11);
         }
 
@@ -60,7 +61,7 @@ namespace ReportGenerator.Services
                 .AddAttribute ("count", columnsInfo.Count()).Element("Columns");
             foreach ( var column in columnsInfo)
             {
-                string content = $"{column.Name.Replace(".", "_")},{column.PropertyType.Namespace}.{column.PropertyType.Name}";
+                string content = $"{column.Name.Replace(".", "")},{column.PropertyType.Namespace}.{column.PropertyType.Name}";
                 columnsNode.AddElement("Value", content);
             }
             listNode.AddElement("Dictionary").AddAttribute("isRef", 10);

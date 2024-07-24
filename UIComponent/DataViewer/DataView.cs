@@ -264,7 +264,7 @@ namespace Caspian.UI
             StateHasChanged();
         }
 
-        async Task ReadyToInsert()
+        internal async Task ReadyToInsert()
         {
             if (Inline)
             {
@@ -289,7 +289,7 @@ namespace Caspian.UI
             }
         }
 
-        public async Task CalcelEdit(UpsertMode upsertMode)
+        public async Task CalcelUpsert(UpsertMode upsertMode)
         {
             if (upsertMode == UpsertMode.Edit)
             {
@@ -305,6 +305,17 @@ namespace Caspian.UI
             if (OnCancel.HasDelegate)
                 await OnCancel.InvokeAsync(upsertMode);
             StateHasChanged();
+        }
+
+        internal void CancelInternalUpdate()
+        {
+            InsertContext = null;
+            disableInsertIcon = false;
+            RollBackEntity();
+            selectedEntity = null;
+            EditContext = null;
+            if (Batch && !AutoHide)
+                InsertContext = new EditContext(insertedEntity.Data);
         }
 
         public async Task InsertAsync(TEntity entity)

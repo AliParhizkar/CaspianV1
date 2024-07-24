@@ -46,7 +46,7 @@ namespace ReportGenerator.Controllers
                 }
             }
             var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId).ToListAsync();
-            var maxdataLevel = parameters.Max(t => t.DataLevel).GetValueOrDefault(1);
+            var maxdataLevel = parameters.Max(t => t.DataLevel);
             var page = new PageData()
             {
                 Setting = new ReportSetting()
@@ -91,7 +91,7 @@ namespace ReportGenerator.Controllers
             var result = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == null || t.DataLevel == dataLevel))
                 .Select(t => new SelectListItem
                 {
-                    Text = t.Alias,
+                    Text = t.Alias ?? t.TitleEn,
                     Value = t.TitleEn
                 }).ToListAsync();
             return result;
@@ -138,10 +138,10 @@ namespace ReportGenerator.Controllers
             stiReport["@PersonalCode"] = "123456";
             stiReport.Variables["FullName"] = "Ali Parhizkar";
             var query = provider.GetService<OrderDeatilService>().GetAll();
-            var list = new ReportPrintEngine(provider).GetData(reportId, query);
-            stiReport.RegBusinessObject("list", list);
             try
             {
+                var list = new ReportPrintEngine(provider).GetData(reportId, query);
+                stiReport.RegBusinessObject("list", list);
                 stiReport.Load(path);
                 stiReport.Render(false);
                 var stream = new MemoryStream();

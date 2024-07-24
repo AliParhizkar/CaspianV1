@@ -52,7 +52,7 @@ namespace ReportUiModels
             //var type = selectReport.SimpleSelect(tempParams).Body.Type;
             var type = selectReport.GetEqualType(tempParams);
             type = new ReportPrintEngine(Scope.ServiceProvider).GetTypeOf(tempParams, type, mainType.Name);
-            var maxDataLevel = tempParams.Max(t => t.DataLevel).GetValueOrDefault(1);
+            var maxDataLevel = tempParams.Max(t => t.DataLevel);
             var dic = new Dictionary<string, string>();
             if (maxDataLevel == dataLevel)
             {

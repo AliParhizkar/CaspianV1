@@ -56,7 +56,7 @@ namespace Caspian.UI
         private void HookUpEditContextEvents()
         {
             EditContext.OnValidationRequested += async (sender, args) => await ValidationRequested(sender, args);
-            //EditContext.OnFieldChanged += async (sender, args) => await FieldChanged(sender, args);
+            EditContext.OnFieldChanged += async (sender, args) => await FieldChanged(sender, args);
         }
 
         async Task FieldChanged(object sender, FieldChangedEventArgs args)
@@ -66,7 +66,17 @@ namespace Caspian.UI
             {
                 "default"
             };
-            var context = new ValidationContext<object>(EditContext.Model, new PropertyChain(), new RulesetValidatorSelector(list));
+            var chain = new PropertyChain();
+            chain.Add(args.FieldIdentifier.FieldName);
+            var context = new ValidationContext<object>(EditContext.Model, chain, new RulesetValidatorSelector(list));
+            using var scope = ServiceScopeFactory.CreateScope();
+            if (CaspianDataService != null)
+            {
+                var dataService = scope.GetService<CaspianDataService>();
+                dataService.UserId = CaspianDataService.UserId;
+                dataService.Language = CaspianDataService.Language;
+            }
+            Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             var result = await Validator.ValidateAsync(context);
             AddValidationResult(EditContext.Model, result);
         }

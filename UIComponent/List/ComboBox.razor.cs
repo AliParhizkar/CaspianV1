@@ -21,7 +21,6 @@ namespace Caspian.UI
         int pageNumber = 1;
         bool setToDefault;
         bool valueChanged;
-        string className;
         string text;
         Expression cascadExpression;
         Dictionary<string, object> attrs;
@@ -281,22 +280,12 @@ namespace Caspian.UI
         protected async override Task OnParametersSetAsync()
         {
             Container?.SetControl(this);
-            className = "t-dropdown-wrap";
-            if (Disabled)
-                className += " t-state-disabled";
-            else
-            {
-                if (ErrorMessage.HasValue())
-                    className += " t-state-error";
-                else
-                    className += " t-state-default";
-            }
             if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
             {
                 _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
                 _messageStore = new ValidationMessageStore(CurrentEditContext);
                 CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
-                //CurrentEditContext.OnFieldChanged += CurrentEditContext_OnFieldChanged;
+                CurrentEditContext.OnFieldChanged += CurrentEditContext_OnFieldChanged;
                 CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
                 oldContext = CurrentEditContext;
             }

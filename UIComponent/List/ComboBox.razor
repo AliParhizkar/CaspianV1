@@ -6,6 +6,18 @@
 @inject IJSRuntime jsRuntime
 @inject FormAppState FormAppState
 @inject IServiceScopeFactory ServiceScopeFactory
+@{
+    var className = "t-dropdown-wrap";
+    if (Disabled)
+        className += " t-state-disabled";
+    else
+    {
+        if (ErrorMessage.HasValue())
+            className += " t-state-error";
+        else
+            className += " t-state-default";
+    }
+}
 @if (Template != null && !fieldsAdd)
 {
     <CascadingValue Value="this" Name="DataView" IsFixed>
@@ -33,7 +45,7 @@
                         int index = 0;
                         foreach (var item in items)
                         {
-                            string className = "t-item";
+                            className = "t-item";
                             if (SelectedIndex == index || index == 0 && SelectedIndex == -1)
                                 className += " t-state-selected";
                             var value = Template == null ? (item as SelectListItem).Value : typeof(TEntity).GetPrimaryKey().GetValue(item).ToString(); 

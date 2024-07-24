@@ -163,8 +163,10 @@
             });
         },
         showErrorMessage: function (ctr) {
+            
             $(ctr).find('.errorMessage').remove();
             let msg = $(ctr).attr('error-message');
+            console.log(msg)
             if (msg) {
                 $('<div class="errorMessage"><span class="c-icon"><i class="fa fa-info" aria-hidden="true"></i></span><Span class="c-content">'
                     + msg + '</Span><span class="c-pointer"></span></div>').appendTo(ctr);
@@ -1119,6 +1121,7 @@
                 });
             }
             const mutationObserver = new MutationObserver(() => {
+
                 let $group = $(input).closest('.t-combobox').find('.t-group');
                 let $animate = $(input).closest('.t-combobox').find('.t-animation-container');
                 let height = $group.find('.t-reset').outerHeight();
@@ -1146,6 +1149,9 @@
                         $animate.height(height + 7);
                         $group.css('top', 5);
                     }
+                }
+                if (!$(input).closest('.t-combobox').attr('error-message')) {
+                    $.caspian.hideErrorMessage($(input).closest('.t-widget')[0]);
                 }
             });
             mutationObserver.observe($(input).closest('.t-combobox')[0], {

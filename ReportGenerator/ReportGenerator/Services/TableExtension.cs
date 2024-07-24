@@ -140,7 +140,7 @@ namespace ReportGenerator.Services
             if (data.FieldData.Path.HasValue())
             {
                 var path = BusinessObject.GetBusinessObjectsPath(bondType.ConvertToInt().Value - 2);
-                text = $"{{{path}{data.FieldData.Path.Replace('.', '_')}}}";
+                text = $"{{{path}{data.FieldData.Path.Replace(".", "")}}}";
             }
             text ??= data.Text;
             element.AddElement("Text", text);

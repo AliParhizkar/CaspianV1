@@ -14,7 +14,7 @@
                     <span @onclick="@(async () => await DataView.ValidateAndUpsert(RowData.UpsertMode.Value))" class="t-icon fa fa fa-check"></span>
                 </span>
                 <span class="c-bar @(className)">
-                    <span @onclick="@(async () => await DataView.CalcelEdit(RowData.UpsertMode.Value))" class="t-icon fa fa fa-ban"></span>
+                    <span @onclick="@(async () => await DataView.CalcelUpsert(RowData.UpsertMode.Value))" class="t-icon fa fa fa-ban"></span>
                 </span>
             </span>
         }

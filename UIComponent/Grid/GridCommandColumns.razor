@@ -44,7 +44,7 @@
     async Task cancel()
     {
         if (CaspianContainer?.Disabled != true)
-            await DataView.CalcelEdit(RowData.UpsertMode.Value);
+            await DataView.CalcelUpsert(RowData.UpsertMode.Value);
     }
 
     [Parameter]

@@ -15,6 +15,7 @@ namespace Caspian.Engine.Service
         public ReportParamService(IServiceProvider provider)
             :base(provider)
         {
+            RuleFor(t => t.DataLevel).Custom(t => t.DataLevel < 1 || t.DataLevel > 3, "سطح داده باید بین یک تا سه باشد");
             RuleForRemove().CustomAsync(async t => 
             {
                 
@@ -68,32 +69,10 @@ namespace Caspian.Engine.Service
             await a.SaveChangesAsync();
         }
 
-        async public Task IncOrder(int reportParamId)
-        {
-            var curent = await SingleOrDefaultAsync(reportParamId);
-            var maxOrder = GetAll(curent.ReportId).Where(t => t.Order_ < curent.Order_).Max(t => t.Order_);
-            var item = GetAll().SingleOrDefault(t => t.ReportId == curent.ReportId && t.Order_ == maxOrder);
-            var temp = item.Order_;
-            item.Order_ = curent.Order_;
-            curent.Order_ = temp;
-            await SaveChangesAsync();
-        }
-
-        async public Task DecOrder(int reportParamId)
-        {
-            var curent = await SingleOrDefaultAsync(reportParamId);
-            var minOrder = GetAll(curent.ReportId).Where(t => t.Order_ > curent.Order_).Min(t => t.Order_);
-            var item = GetAll().SingleOrDefault(t => t.ReportId == curent.ReportId && t.Order_ == minOrder);
-            var temp = item.Order_;
-            item.Order_ = curent.Order_;
-            curent.Order_ = temp;
-            await SaveChangesAsync();
-        }
-
         async public Task<ReportParam> IncDataLevel(int id)
         {
             var temp = await SingleAsync(id);
-            if (temp.DataLevel.GetValueOrDefault(1) > 2)
+            if (temp.DataLevel > 2)
                 throw new CaspianException("It is not possible to increase the level");
             var report = await new ReportService(ServiceProvider).GetAll().Where(t => t.Id == temp.ReportId).Include(t => t.ReportGroup).SingleAsync();
             if (report.PrintFileName.HasValue())
@@ -103,6 +82,15 @@ namespace Caspian.Engine.Service
             if (temp.DataLevel + 1 > maxDataLevel)
                 throw new CaspianException("It is not possible to increase the level for this field", null);
             temp.DataLevel++;
+            var dataKey = await GetAll().SingleOrDefaultAsync(t => t.ReportId == temp.ReportId && t.DataLevel == temp.DataLevel && t.IsKey);
+            if (dataKey == null)
+                await AddDataKey(temp.ReportId, temp.DataLevel);
+            else
+            {
+                var KeyInfoName = type.GetProperty(dataKey.TitleEn).GetForeignKey().Name + '.';
+                if (!temp.TitleEn.StartsWith(KeyInfoName))
+                    throw new CaspianException("It is not possible to increase the level for this field", null);
+            }
             return temp;
         }
 
@@ -126,7 +114,7 @@ namespace Caspian.Engine.Service
         async public Task<ReportParam> DecDataLevel(int id)
         {
             var temp = await GetAll().Include(t => t.Report).SingleAsync(id);
-            if (temp.DataLevel.GetValueOrDefault(1) <= 1)
+            if (temp.DataLevel <= 1)
                 throw new CaspianException("It is not possible to reduce the level", null);
             if (temp.Report.PrintFileName.HasValue())
                 throw new CaspianException("After creating the report, it is not possible to reduce the field level", null);
@@ -136,7 +124,7 @@ namespace Caspian.Engine.Service
 
         public async void DeleteDataKey(int reportId, int dataLevel)
         {
-            if (dataLevel > 1 && !GetAll().Any(t => t.ReportId == reportId && t.DataLevel == dataLevel && !t.IsKey))
+            if (dataLevel > 1)
             {
                 var temp = GetAll().SingleOrDefault(t => t.ReportId == reportId && t.DataLevel == dataLevel && t.IsKey);
                 if (temp != null)
@@ -153,7 +141,7 @@ namespace Caspian.Engine.Service
         {
             if (dataLevel > 1 && !GetAll().Any(t => t.ReportId == reportId && t.DataLevel == dataLevel && t.IsKey))
             {
-                var param = GetAll().First(t => t.ReportId == reportId && t.DataLevel == dataLevel);
+                var param = GetAll().Include(t => t.Report.ReportGroup).First(t => t.ReportId == reportId);
                 var type = new AssemblyInfo().GetReturnType(param.Report.ReportGroup);
                 var enTitle = "";
                 var array = param.TitleEn.Split('.');

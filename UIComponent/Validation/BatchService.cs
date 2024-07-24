@@ -95,8 +95,7 @@ namespace Caspian.UI
                 ChangedEntities.Clear();
                 if (id == 0)
                 {
-                    if (DetailDataView != null)
-                        DetailDataView.ClearSource();
+                    DetailDataView?.ClearSource();
                     UpsertData = Activator.CreateInstance<TMaster>();
                     Form.SetModel(UpsertData);
                     if (OnCreate != null)
@@ -116,6 +115,8 @@ namespace Caspian.UI
                         await DataView.ReloadAsync();
                     await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Updating was done successfully");
                 }
+                if (DetailDataView != null)
+                    DetailDataView.CancelInternalUpdate();
                 if (Window != null)
                     await Window?.Close();
                 StateHasChanged();

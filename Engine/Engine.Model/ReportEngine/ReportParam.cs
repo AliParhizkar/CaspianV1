@@ -32,7 +32,7 @@ namespace Caspian.Engine.Model
         /// <summary>
         /// سطح گزارش در گزارشهای گروهبندی شده براساس گزارش
         /// </summary>
-        public byte? DataLevel { get; set; }
+        public byte DataLevel { get; set; }
 
         /// <summary>
         /// ترتیب در مرتب سازی
