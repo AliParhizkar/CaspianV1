@@ -4,6 +4,7 @@
 @implements IListViewer<TEntity> 
 @inject IJSRuntime JSRuntime
 @inject IServiceScopeFactory scopeFactory
+
 <CascadingValue Value="this" Name="DataView">
     @if (fieldsExpression == null)
     {

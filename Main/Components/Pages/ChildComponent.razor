@@ -1,29 +1,18 @@
 ﻿@using Caspian.UI
 @using Demo.Model
+@using Syncfusion.Blazor.DropDowns
 
-@if (flag)
-{
 
-    @Template
-}
-else
-{
-    @Template
+
+
+@{
+    var qq = 125;
 }
 
-@if (flag)
-{
-    @Template
-}
-
-
-<button @onclick="() => flag = !flag">Toggle</button>
 
 @code
 {
-    bool flag;
-
-    [Parameter]
-    public RenderFragment Template { get; set; }
+    [CascadingParameter]
+    public int Value { get; set; }
 
 }

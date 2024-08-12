@@ -120,24 +120,22 @@
 </div>
 
 <Window @bind-Status="Status" Title="Report parameters">
-    <Content>
-        @switch(reportParamShowType)
-        {
-            case ReportParamShowType.Simple:
-                <SimpleReportParam @bind-Status="Status" ReportId="ReportId.Value"
-                           OnParameterSave="() =>
+    @switch (reportParamShowType)
+    {
+        case ReportParamShowType.Simple:
+            <SimpleReportParam @bind-Status="Status" ReportId="ReportId.Value"
+                               OnParameterSave="() =>
                         {
                             grid1.EnableLoading();
                         }" />
-                break;
-            case ReportParamShowType.Manager:
-                <ManagementReportComponent ReportId="ReportId.Value" />
-                break;
-            case ReportParamShowType.Alias:
-                <ReportParamAlias ReportId="ReportId.Value" />
-                break;
-        }
-    </Content>
+            break;
+        case ReportParamShowType.Manager:
+            <ManagementReportComponent ReportId="ReportId.Value" />
+            break;
+        case ReportParamShowType.Alias:
+            <ReportParamAlias ReportId="ReportId.Value" />
+            break;
+    }
 </Window>
 
 

@@ -56,7 +56,7 @@ namespace Caspian.UI
         private void HookUpEditContextEvents()
         {
             EditContext.OnValidationRequested += async (sender, args) => await ValidationRequested(sender, args);
-            EditContext.OnFieldChanged += async (sender, args) => await FieldChanged(sender, args);
+            //EditContext.OnFieldChanged += async (sender, args) => await FieldChanged(sender, args);
         }
 
         async Task FieldChanged(object sender, FieldChangedEventArgs args)

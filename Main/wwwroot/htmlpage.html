@@ -1,32 +1,55 @@
 ﻿<!DOCTYPE html>
-
 <html>
 <head>
+    <meta charset="utf-8" />
+    <title></title>
     <style type="text/css">
-        .c-parent {
-            display: flex;
-            justify-content: space-between;
-            padding: 0 3px;
+        .main-div {
             text-align: center;
-            align-content: center;
-            align-items: center;
+            width: calc(100% - 300px);
         }
-        .c-child{
 
-        }
+            .main-div:hover {
+                background-color: red;
+                color: yellow;
+            }
     </style>
 </head>
-<body style="margin:0;padding:0;direction:rtl">
-    <div class="c-parent">
-        <div>
-            <span style="display: inline-block; width: 200px; height: 200px; border: 1px solid red;vertical-align:middle">1</span>
-        </div>
-        <div>
-            <span style="display: inline-block; width: 200px; height: 100px; border: 1px solid red;vertical-align:middle">2</span>
-        </div>
-        <div>
-            <span style="display: inline-block; width: 200px; height: 50px; border: 1px solid red;vertical-align:middle">3</span>
-        </div>
+<body style="direction:rtl">
+    <div style="padding:15px;text-align:center;background-color:seagreen;font-size:40px">
+        مشخصات کارت شما
     </div>
+    <div style="background-color: aqua;font-size:30px">
+        لطفا شماره کارت خود را وارد کنید
+    </div>
+    <div style="text-align:left; background-color: aqua; font-size: 80px">
+        <input type="text" style="text-align:left" maxlength="16" />
+    </div>
+    <div style="background-color: lightskyblue;font-size:40px">
+        cvvکارت خود را وارد کنید
+    </div>
+    <div style="text-align:left; background-color: lightskyblue; font-size: 50px">
+        <input type="text" style="text-align:left" maxlength="4" />
+    </div>
+    <div style="background-color: lawngreen;font-size:40px">
+        مشخصات تاریخ کارت شما
+    </div>
+    <div style="background-color: lawngreen; font-size: 25px">
+        <span>
+            ماه
+        </span>
+        <input type="text" style="text-align:left" maxlength="2" />
+        <span>
+            سال
+        </span>
+        <input type="text" style="text-align:left" maxlength="2" />
+    </div>
+
+    <div style="display:flex;padding:10px;">
+        <a href="Successful payment.html">
+            <buttem>قبول کردن کردن کارت من</buttem>
+        </a>
+    </div>
+
 </body>
 </html>

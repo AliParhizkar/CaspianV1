@@ -92,9 +92,9 @@ namespace Caspian.UI
                 Status = WindowStatus.Close;
                 if (OnInternalClose.HasDelegate)
                     await OnInternalClose.InvokeAsync();
+                if (StatusChanged.HasDelegate)
+                    await StatusChanged.InvokeAsync(WindowStatus.Close);
             }
-            if (StatusChanged.HasDelegate)
-                await StatusChanged.InvokeAsync(WindowStatus.Close);
         }
 
         protected override void OnInitialized()
@@ -146,14 +146,6 @@ namespace Caspian.UI
             if (firstRender)
             {
                 await jsRuntime.InvokeVoidAsync("$.caspian.bindWindow", DotNetObjectReference.Create(this), window);
-            }
-            if (isOpend)
-            {
-                isOpend = false;
-                if (OnInternalOpen.HasDelegate)
-                    await OnInternalOpen.InvokeAsync();
-                if (OnOpen.HasDelegate)
-                    await OnOpen.InvokeAsync();
             }
             await base.OnAfterRenderAsync(firstRender);
         }

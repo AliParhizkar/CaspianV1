@@ -38,7 +38,8 @@ namespace ReportGenerator.Services
             var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
             var selectReport = new SelectReport(mainType);
             var maxLevel = report.ReportParams.Max(t => t.DataLevel);
-            var type = selectReport.GetStimuType(mainType, report.ReportParams.ToList(), maxLevel);
+            var type = selectReport.GetDynamicType(report.ReportParams, null);
+            type = selectReport.GetStimuType(type, report.ReportParams.ToList(), maxLevel);
             //type = new ReportPrintEngine(provider).GetTypeOf(report.ReportParams.ToList(), type, mainType.Name);
             return GetXElement(type, "list", 11);
         }

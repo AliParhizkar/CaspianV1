@@ -14,6 +14,7 @@ namespace Caspian.UI
         IList<Expression> fieldsExpression;
         WindowStatus status;
         ElementReference element;
+        bool shouldRender = true;
 
         public void OpenPopupWindow()
         {
@@ -26,6 +27,7 @@ namespace Caspian.UI
             if (fieldsExpression != null && shouldFetchData)
             {
                 shouldFetchData = false;
+                
                 using var service = ServiceScopeFactory.CreateScope().GetService<BaseService<TEntity>>();
                 var query = service.GetAll();
                 var param = Expression.Parameter(typeof(TEntity), "t");
@@ -44,6 +46,7 @@ namespace Caspian.UI
                     var lambda = Expression.Lambda(condExr, param);
                     query = query.Where(lambda);
                 }
+                shouldRender = false;
                 Total = await query.CountAsync();
                 var exprList = new List<MemberExpression>();
                 foreach(var expr in fieldsExpression)
@@ -80,8 +83,17 @@ namespace Caspian.UI
                     ManageExpressionForUpsert(exprList);
                 }
                 else
+                {
                     items = await query.Skip((pageNumber - 1) * PageSize).Take(PageSize).GetValuesAsync(exprList);
+                    shouldRender = true;
+
+                }
             }
+        }
+
+        protected override bool ShouldRender()
+        {
+            return shouldRender;
         }
 
         public void AddDataField(Expression expression)
@@ -100,7 +112,7 @@ namespace Caspian.UI
 
         protected override async Task OnParametersSetAsync()
         {
-            await DataBind();
+            //await DataBind();
             await base.OnParametersSetAsync();
         }
 

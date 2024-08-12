@@ -1,13 +1,41 @@
-﻿@page "/Default"
-<div class="sys-page">
-    <div class="sys-sidebar">
+﻿@inject IJSRuntime jsRuntime
+@inherits BasePage
+@page "/Default"
+@using Caspian.UI
+@using Demo.Model
+@using Demo.Service
+@using Microsoft.EntityFrameworkCore
+@if (rowdata != null)
+{
+    <div style="width:500px;margin: 10px auto">
+        <CascadingValue Value="1256">
+            <CascadingValue Value="rowdata" Name="RowData">
+                <ImageField TEntity="Product" Field="t => t.Image" Style="width:185px;height:160px;" />
+            </CascadingValue>
+        </CascadingValue>
 
     </div>
-    <div class="sys-content">
+}
 
-    </div>
-</div>
+<button @onclick="Changed">Next</button>
 @code 
 {
+    IList<Product> products;
+    RowData<Product> rowdata;
+    int index = 0;
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<ProductService>();
+        products = await service.GetAll().ToListAsync();
+        rowdata = new RowData<Product>() { Data = products.First() };
+        await base.OnInitializedAsync();
+    }
 
+
+    void Changed()
+    {
+        index++;
+        rowdata = new RowData<Product>() { Data = products.ElementAt(index) };
+
+    }
 }

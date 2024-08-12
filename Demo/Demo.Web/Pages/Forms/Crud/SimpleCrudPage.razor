@@ -222,6 +222,8 @@
 
     async Task SetImage(InputFileChangeEventArgs e)
     {
+        using var service = CreateScope().GetService<ProductService>();
+
         ProductService.UpsertData.Image = await e.File.GetByteArrayAsync();
     }
 

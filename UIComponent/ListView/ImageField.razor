@@ -1,9 +1,6 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity
-@{
-    if (RowData == null) 
-        (DataView as IListViewer<TEntity>).AddDataField(Field.Body);
-}
+
 @if (RowData != null)
 {
     if (Template == null)

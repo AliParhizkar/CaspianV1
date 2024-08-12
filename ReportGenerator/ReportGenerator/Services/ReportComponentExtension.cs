@@ -249,7 +249,7 @@ namespace ReportGenerator.Services
             if (control.FieldData.Path.HasValue())
             {
                 var path = BusinessObject.GetBusinessObjectsPath(boundItem.BondType.ConvertToInt().Value - 2);
-                text = $"{{{path}{control.FieldData.Path.Replace('.', '_')}}}";
+                text = $"{{{path}{control.FieldData.Path.Replace(".", "")}}}";
             }
             text ??= control.Text;
             if (control.ControlType == ControlType.TextBox) 

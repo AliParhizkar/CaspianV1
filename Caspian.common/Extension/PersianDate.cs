@@ -514,7 +514,7 @@ namespace Caspian.Common
     /// <summary>
     /// ماهها سال در تقویم شمسی
     /// </summary>
-    public enum PersianMonth
+    public enum PersianMonth: byte
     {
         /// <summary>
         /// فروردین

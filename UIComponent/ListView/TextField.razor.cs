@@ -25,5 +25,11 @@ namespace Caspian.UI
 
         [Parameter]
         public bool DataField { get; set; }
+
+        protected override void OnInitialized()
+        {
+            DataView?.AddDataField(Field.Body);
+            base.OnInitialized();
+        }
     }
 }

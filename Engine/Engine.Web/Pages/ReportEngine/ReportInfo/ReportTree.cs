@@ -163,9 +163,7 @@ namespace ReportUiModels
             var type = new AssemblyInfo().GetReturnType(report.ReportGroup);
             var type1 = type;
             if (path.HasValue())
-                type1 = type.GetMyProperty(path).PropertyType;
-            if (type1.IsNullableType())
-                type1 = Nullable.GetUnderlyingType(type1);
+                type1 = type.GetMyProperty(path).PropertyType.GetUnderlyingType().GetUnderlyingType();
             var paramsList = new List<ReportNode>();
             if (type1.IsValueType && !type1.IsEnum)
             {
@@ -207,12 +205,32 @@ namespace ReportUiModels
                             if (displayAttr != null)
                                 reportField.Title = displayAttr.DisplayName;
                         }
-                        var type2 = info.PropertyType;
-                        if (type2.IsNullableType())
-                            type2 = Nullable.GetUnderlyingType(type2);
+                        var type2 = info.PropertyType.GetUnderlyingType();
                         if (type2.IsValueType)
                         {
-                            if (!type2.IsEnum)
+                            if (type2 == typeof(DateTime))
+                            {
+                                paramsList.Add(new ReportNode()
+                                {
+                                    TitleEn = path, 
+                                    TitleFa = "تاریخ",
+                                    Grouping = true
+                                });
+                                paramsList.Add(new ReportNode()
+                                {
+                                    TitleEn = path,
+                                    TitleFa = "ماکزیمم",
+                                    Type = CompositionMethodType.Max
+                                });
+                                paramsList.Add(new ReportNode()
+                                {
+                                    TitleEn = path,
+                                    TitleFa = "مینیمم",
+                                    Type = CompositionMethodType.Min
+                                });
+
+                            }
+                            else if (!type2.IsEnum)
                             {
                                 var str = path;
                                 if (str.HasValue())
@@ -225,45 +243,44 @@ namespace ReportUiModels
                                 paramsList.Add(param);
                             }
                         }
-                        else
-                            if (info.GetCustomAttribute<ForeignKeyAttribute>() != null)
+                        else if (info.GetCustomAttribute<ForeignKeyAttribute>() != null)
+                        {
+                            var paramsTitle = report.ReportParams.Where(t => !t.CompositionMethodType.HasValue).Select(t => t.TitleEn).ToList();
+                            var list = new List<string>();
+                            foreach (var param in paramsTitle)
                             {
-                                var paramsTitle = report.ReportParams.Where(t => !t.CompositionMethodType.HasValue).Select(t => t.TitleEn).ToList();
-                                var list = new List<string>();
-                                foreach (var param in paramsTitle)
+                                var str = "";
+                                var tempType = type;
+                                foreach (var strItem in param.Split('.'))
                                 {
-                                    var str = "";
-                                    var tempType = type;
-                                    foreach (var strItem in param.Split('.'))
+                                    var info1 = tempType.GetProperty(strItem);
+                                    if (info1.GetCustomAttribute<ForeignKeyAttribute>() != null)
                                     {
-                                        var info1 = tempType.GetProperty(strItem);
-                                        if (info1.GetCustomAttribute<ForeignKeyAttribute>() != null)
-                                        {
-                                            if (str.HasValue())
-                                                str += '.';
-                                            str += info1.Name;
-                                        }
-                                        tempType = info1.PropertyType;
+                                        if (str.HasValue())
+                                            str += '.';
+                                        str += info1.Name;
                                     }
-                                    if (str.HasValue() && !list.Any(t => t == str))
-                                        list.Add(str);
+                                    tempType = info1.PropertyType;
                                 }
-                                var strPath = path;
-                                if (strPath.HasValue())
-                                    strPath += '.';
-                                strPath += info.Name;
-                                if (!list.Any(t => t == strPath))
+                                if (str.HasValue() && !list.Any(t => t == str))
+                                    list.Add(str);
+                            }
+                            var strPath = path;
+                            if (strPath.HasValue())
+                                strPath += '.';
+                            strPath += info.Name;
+                            if (!paramsList.Any(t => t.TitleEn == strPath))
+                            {
+                                if (TypeHasGroupByField(info.PropertyType))
                                 {
-                                    if (TypeHasGroupByField(info.PropertyType))
-                                    {
-                                        var node = new ReportNode();
-                                        node.Grouping = true;
-                                        node.TitleEn = strPath;
-                                        node.TitleFa = reportField.Title;
-                                        paramsList.Add(node);
-                                    }
+                                    var node = new ReportNode();
+                                    node.Grouping = true;
+                                    node.TitleEn = strPath;
+                                    node.TitleFa = reportField.Title;
+                                    paramsList.Add(node);
                                 }
                             }
+                        }
                     }
                 }
             }

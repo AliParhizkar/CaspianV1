@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using System.Collections;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
@@ -7,12 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
-    public partial class CheckboxList<TEntity, TDetails> : ComponentBase where TEntity: class where TDetails : class 
+    public partial class CheckboxList<TEntity, TDetails> : ComponentBase where TEntity: class where TDetails : class
     {
         bool LoadData;
         IList<SelectListItem> Items;
         IList<TDetails> details;
         IList<int> SelectedIds;
+        string filterText;
 
         void UpdateSelectedIds(bool flag, string value)
         {
@@ -26,6 +28,10 @@ namespace Caspian.UI
 
         void UpdateChangedEntities()
         {
+            if (Service == null)
+            {
+                var type = typeof(TDetails).IsArray;
+            }
             var otherInfo = typeof(TDetails).GetForeignKey(typeof(TEntity));
             var masterType = Service.GetType().GenericTypeArguments[0];
             var masterInfo = typeof(TDetails).GetForeignKey(masterType);
@@ -151,7 +157,12 @@ namespace Caspian.UI
         public string Title { get; set; }
 
         [Parameter]
+        public bool Filterable { get; set; } = true;
+
+        [Parameter]
         public IDetailBatchService<TDetails> Service { get; set; }
+
+        public TDetails Value { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, string>> TextExpression { get; set; }

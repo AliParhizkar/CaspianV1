@@ -2,27 +2,29 @@
 @using Caspian.UI
 @using Demo.Model
 @using Demo.Service
+@using Engine.Model
 @using Microsoft.EntityFrameworkCore
+@using System.Linq.Expressions
 @inherits BasePage
 
 
 @code 
 {
-    Stimulsoft.Report.StiReport report;
-    StringTextBox txt;
-    bool flag = true;
 
-    async void Focus()
-    {
-        await txt.FocusAsync();
-    }
 
     protected override async Task OnInitializedAsync()
     {
-        report = new Stimulsoft.Report.StiReport();
-        using var service = CreateScope().GetService<OrderDeatilService>();
-        var list = await service.GetAll().ToListAsync();
-        report.RegBusinessObject("test", list);
+        using var context = new Context();
+        var query = context.Orders.Join(context.PersianDatesConvertor, date => date.Date, pdate => pdate.Date, (date, pdate) => new
+        {
+            Date = date, PDate = pdate
+        });
+        var str = query.ToQueryString();
         await base.OnInitializedAsync();
+    }
+
+    IQueryable<TResult> Join123<TOuter, TInner, TKey, TResult>(Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, TInner, TResult>> resultSelector)
+    {
+        return null;
     }
 }

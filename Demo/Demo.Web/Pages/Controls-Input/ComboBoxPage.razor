@@ -129,9 +129,10 @@
                         <div class="row c-controls">
                             <div class="ps-5 col-md-4">
                                 <label>Menu Category</label>
+                                <ComboBox TEntity="City" TValue="int" @bind-Value="menuCategoryId" TextExpression="t => t.Country.Title + ' ' + t.Title" />
                             </div>
                             <div class="pe-5 col-md-8">
-                                <ComboBox TValue="int?" TEntity="MenuCategory" @bind-Value="menuCategoryId" TextExpression="t => t.Title">
+                                <ComboBox TValue="int" TEntity="MenuCategory" @bind-Value="menuCategoryId" TextExpression="t => t.Title">
                                     <Template Context="Category">
                                         <div class="d-menu-categories">
                                             <TextField Field="t => t.IconFont">
@@ -355,7 +356,7 @@
 @code
 {
     bool disable;
-    int? menuCategoryId;
+    int menuCategoryId;
     IList<SelectListItem> countries;
     string CountryId;
     ControlSize controlSize = ControlSize.Auto;

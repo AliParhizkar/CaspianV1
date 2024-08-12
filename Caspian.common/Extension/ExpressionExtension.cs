@@ -26,7 +26,7 @@ namespace Caspian.Common.Extension
                 str = str.Substring(str.IndexOf('.') + 1);
                 var info = type.GetProperty(str);
                 Expression memberExpr = param.CreateMemberExpresion(str);
-                string foreignkeyId = null;
+                string foreignkeyId;
                 if (expr.CheckConfilictByNullValue(out foreignkeyId))
                 {
                     Expression expr1 = param.CreateMemberExpresion(foreignkeyId);

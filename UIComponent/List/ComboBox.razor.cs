@@ -14,7 +14,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
-    public partial class ComboBox<TEntity, TValue>: ICascading, IControl, IListValueInitializer, 
+    public partial class ComboBox<TEntity, TValue>: ComponentBase, ICascading, IControl, IListValueInitializer, 
         IEnableLoadData where TEntity: class
     {
         bool LoadData;

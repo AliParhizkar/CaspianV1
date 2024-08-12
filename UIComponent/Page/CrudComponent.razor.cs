@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Caspian.UI
 {
-    public partial class CrudComponent<TEntity>: ICrudComponent where TEntity : class
+    public partial class CrudComponent<TEntity>: ComponentBase, ICrudComponent where TEntity : class
     {
         string errorMessage;
         MessageBox messageBox;

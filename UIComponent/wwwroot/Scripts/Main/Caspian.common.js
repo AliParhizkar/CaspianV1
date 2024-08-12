@@ -166,7 +166,6 @@
             
             $(ctr).find('.errorMessage').remove();
             let msg = $(ctr).attr('error-message');
-            console.log(msg)
             if (msg) {
                 $('<div class="errorMessage"><span class="c-icon"><i class="fa fa-info" aria-hidden="true"></i></span><Span class="c-content">'
                     + msg + '</Span><span class="c-pointer"></span></div>').appendTo(ctr);
@@ -981,11 +980,9 @@
                     if ($overlay)
                         $overlay.css('opacity', 0);
                     $window.css('top', 0 + $c.scrollTop);
-                    setTimeout(function () {
-                        if ($overlay)
-                            $overlay.remove();
-                        $window.css('display', 'none');
-                    }, 200);
+                    if ($overlay)
+                        $overlay.remove();
+                    $window.css('display', 'none');
                 }, 25);
             }
         },
@@ -1074,14 +1071,14 @@
                 $(ddl).find('.t-dropdown-wrap').removeClass('t-state-focused').addClass('t-state-default');
                 $.caspian.hideErrorMessage($(ddl)[0]);
             });
-            $(window).bind('mouseup', e => {
+            $(window).bind('mouseup',async e => {
                 if (!$(e.target).hasClass('t-disable') || !$(e.target).closest('.t-dropdown').hasClass('t-dropdown')) {
                     let $group = $(ddl).find('.c-animate-down .t-group');
                     if ($(ddl).find('.t-group')[0]) {
                         $group.css('top', '-100%');
                         $group = $(ddl).find('.c-animate-up .t-group');
                         $group.css('bottom', '-100%');
-                        setTimeout(async () => await dotnetHelper.invokeMethodAsync('CloseWindow'), 200);
+                        await dotnetHelper.invokeMethodAsync('CloseWindow');
                     }
                 }
             });
@@ -1301,10 +1298,10 @@
                 const arrayBuffer = await imageStream.arrayBuffer();
                 const blob = new Blob([arrayBuffer]);
                 const url = URL.createObjectURL(blob);
-                $(pic).css('background-image', 'url(' + url + ')');
+                $(pic).attr('src', url);
             }
             else
-                $(pic).css('background-image', 'none');
+                $(pic).attr('src', '');
         },
         bindMenu: function (elem) {
             $(elem).closest('.submenu').css('display', 'block');
@@ -1360,6 +1357,11 @@
             });
             $(element).bind('blur', () => {
                 $.caspian.hideErrorMessage($(element).closest('.t-widget')[0]);
+            });
+            $(element).bind('input', e => {
+                if (e.target.timeOut)
+                    clearTimeout(e.target.timeOut);
+                e.target.timeOut = setTimeout(() => console.log(Date.now()), 100);
             });
         },
 

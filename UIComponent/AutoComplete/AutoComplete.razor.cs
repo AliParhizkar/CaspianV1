@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace Caspian.UI
 {
-    public partial class AutoComplete<TEntity, TValue> : IControl, IAutoComplete<TEntity> where TEntity: class
+    public partial class AutoComplete<TEntity, TValue> : ComponentBase, IControl, IAutoComplete<TEntity> where TEntity: class
     {
         string Text;
         string oldText;

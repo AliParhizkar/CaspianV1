@@ -1,5 +1,6 @@
 ﻿using Caspian.Common;
 using Caspian.Engine.Model;
+using Engine.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Model
@@ -34,7 +35,7 @@ namespace Demo.Model
 
         public DbSet<OrganUnit> OrganUnits { get; set; }
 
-        public DbSet<Test> Tests { get; set; }  
+        public DbSet<PersianDateConvertor> PersianDatesConvertor { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,5 +46,6 @@ namespace Demo.Model
                 .HasPrincipalKey(t => t.Id);
             base.OnModelCreating(modelBuilder);
         }
+
     }
 }

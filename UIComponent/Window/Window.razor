@@ -12,12 +12,7 @@
         {
             <div class="t-window-titlebar t-header">
                 <span class="t-window-title">@Title</span>
-                <span @onclick="() =>
-                                    {
-                                        if (StatusChanged.HasDelegate)
-                                            StatusChanged.InvokeAsync(WindowStatus.Close);
-                                        Status = WindowStatus.Close;
-                                    }" class="t-window-action t-link">
+                <span @onclick="Close" class="t-window-action t-link">
                     <i class="fa fa-close"></i>
                 </span>
             </div>

@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Linq.Expressions;
+using System.Linq.Dynamic.Core;
+using Demo.Model;
 
 namespace Main
 {
@@ -84,7 +87,6 @@ namespace Main
             var app = builder.Build();
             CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
 
-
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -115,13 +117,6 @@ namespace Main
             app.Run();
         }
 
-        static void CreateFilesAndDirectories(WebApplicationBuilder builder)
-        {
-            var path = $"{builder.Environment.ContentRootPath}\\Data"; ;
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-        }
-        
         static void ConfigureCulture()
         {
             CultureInfo culture = new CultureInfo("en-US");
@@ -161,5 +156,36 @@ namespace Main
         }
     }
 
+    public static class TestExtenssion
+    {
+        public static IQueryable<TResult> Join123<TKey, TResult>(this IQueryable<Order> outer, IEnumerable<PersianDateConvertor> inner, Expression<Func<Order, TKey>> outerKeySelector, Expression<Func<PersianDateConvertor, TKey>> innerKeySelector, Expression<Func<Order, PersianDateConvertor, TResult>> resultSelector)
+        {
+            var q = resultSelector;
+            var q11 = resultSelector.Body as NewExpression;
+            var type = CreateTypeeee();
+
+            var info0 = type.GetProperty("Entity");
+            var info1 = type.GetProperty("PDate");
+            var param0 = Expression.Parameter(typeof(Order), "entity");
+            var param1 = Expression.Parameter(typeof(PersianDateConvertor), "pdate");
+            var q0 = Expression.Bind(info0, param0);
+            var q1 = Expression.Bind(info1, param1);
+            var body = Expression.MemberInit(Expression.New(type), new MemberBinding[]{ q0, q1});
+            Expression<Func<Order, PersianDateConvertor, TResult>> qqqq = Expression.Lambda(body, param0, param1) as Expression<Func<Order, PersianDateConvertor, TResult>>;
+            Expression<Func<Order, PersianDateConvertor, TResult>> lambda = Expression.Lambda(Expression.New(q11.Constructor, q11.Arguments, q11.Members), q.Parameters) as Expression<Func<Order, PersianDateConvertor, TResult>>;
+            
+            return outer.Join(inner, outerKeySelector, innerKeySelector, lambda);
+        }
+
+        public static Type CreateTypeeee()
+        {
+            var list = new List<DynamicProperty>()
+            {
+                new DynamicProperty("Entity", typeof(Order)),
+                new DynamicProperty("PDate", typeof(PersianDateConvertor))
+            };
+            return DynamicClassFactory.CreateType(list);
+        }
+    }
     
 }
