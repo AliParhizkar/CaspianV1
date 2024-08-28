@@ -1,9 +1,39 @@
-﻿.c-listview-row {
+﻿.c-checkbox-list {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.c-filtering {
+    padding: 4px 10px 4px 0;
+}
+.t-dropdown .t-checkbox-list {
+    max-height: 250px;
+    position: absolute;
+    width: calc(100% - 14px);
+    overflow:auto;
+    margin-left:3px;
+}
+.c-animation-down .t-checkbox-list {
+    transition: top .2s cubic-bezier(0.35, 0, 0.25, 1);
+    top: -70%;
+    box-shadow: 0px 0px 5px 0px #a09f9f;
+}
+.c-animation-up .t-checkbox-list {
+    transition: bottom .2s cubic-bezier(0.35, 0, 0.25, 1);
+    bottom: -70%;
+    box-shadow: 0px 0px 5px 0px #a09f9f;
+}
+.c-select-all {
+    border-bottom: 1px solid #c9c9c9;
+    padding-bottom: 2px;
+    margin-bottom: 3px;
+}
+.c-listview-row {
     display: flex;
     width: 100%;
     border-bottom: 1px solid rgba(0,0,0,0.08);
     flex-wrap: wrap;
-    text-align:center;
+    text-align: center;
 }
     .c-listview-row.c-selected {
         background-color: #ccdcdc !important;
@@ -458,9 +488,7 @@ input[type='range']::-webkit-slider-thumb {
 .blazor-error-boundary span {
     user-select: auto;
 }
-.t-checkbox-list {
-    overflow: auto;
-}
+
 .c-error-develop .c-message {
     font-size: 18px;
     color: #7e1d1d;
@@ -1432,17 +1460,9 @@ form > tr {
 .t-checkbox-list {
     border: 1px solid rgba(0,0,0,0.25);
     border-radius: 8px;
-    padding: 5px 15px 10px 10px;
     background-color:white;
+    overflow:auto;
 }
-    .t-checkbox-list legend {
-        color: #5d5f60;
-        font-size: 12px;
-        float: none;
-        width: auto;
-        margin: 0;
-        font-weight:bold;
-    }
     .t-checkbox-list .t-content {
         display: table;
         width: 100%
@@ -2492,7 +2512,7 @@ div.t-window {
     overflow: hidden;
     white-space: nowrap;
     height: 29px;
-    border-radius: 8px 8px 0 0;
+    border-radius: 8px 0 0 0;
 }
 
 .t-tabstrip-items .t-item,
@@ -2836,8 +2856,6 @@ div.t-grid-footer {
     box-sizing:border-box;
 }
 .t-inline-content{
-    height:fit-content!important;
-    min-height:300px;
     overflow-y:visible!important;
 }
 
@@ -2847,7 +2865,6 @@ div.t-grid-footer {
     border-style: solid;
     border-color: rgba(0,0,0,0.2);
     background-color: white;
-    height: 300px;
 }
 .t-grid-content td, .c-grid-inline td {
     border-width: 0 1px 1px 0;
@@ -5948,7 +5965,7 @@ fieldset.t-widget {
     border-radius: 4px;
 }
 .t-grid-content tr:nth-child(2n) {
-    background-color: #f5f5f5;
+    background-color: #f0f1f5;
 }
 .t-combobox .t-state-disabled span {
     background-image: none;

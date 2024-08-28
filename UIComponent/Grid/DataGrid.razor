@@ -4,7 +4,11 @@
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 
 @{
-    var style = !Inline && ContentHeight.HasValue ? $"height:{ContentHeight}px" : "";
+    var style = "";
+    if (ContentHeight.HasValue)
+        style = $"height:{ContentHeight}px";
+    else if (Inline)
+        style = $"height:200px";
     var className = "t-grid-content";
     if (Inline)
         className += " t-inline-content";

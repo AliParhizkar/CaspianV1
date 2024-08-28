@@ -1,0 +1,116 @@
+﻿@page "/Demo/CustomerAndGroupsAndAddresses"
+@inject BatchService<Customer, CustomerGroupMembership, CustomerAddress> Service
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<DataGrid TEntity="Customer" Service="Service" ContentHeight="400"
+          DeleteMessage="با حذف مشتری آدرسها و گروههای وی نیز حذف می شود آیا با حذف موافقید؟">
+    <Columns>
+        <GridColumn Field="t => t.CustomerType" />
+        <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+        <GridColumn Field="t => t.MobileNumber.CallFormat(' ')" />
+        <GridCommandColumns />
+    </Columns>
+</DataGrid>
+<Window Service="Service" Title="Customer Properties" Style="width:800px;">
+    @{
+        var customerType = Service.UpsertData.CustomerType;
+    }
+    <CaspianForm Service="Service">
+        <CaspianValidationValidator ValidatorType="typeof(CustomerGroupAddressService)" />
+        <div class="c-controls row p-2  " >
+            <div class="col-md-2">
+                <label>Customer Type</label>
+            </div>
+            <div class="col-md-4 pe-2">
+                <DropdownList @bind-Value="Service.UpsertData.CustomerType" />
+            </div>
+            <div class="col-md-2 ps-2">
+                <label>First Name</label>
+            </div>
+            <div class="col-md-4">
+                <StringTextBox @bind-Value="Service.UpsertData.FName" Disabled="customerType == CustomerType.Legal" />
+            </div>
+            <div class="col-md-2">
+                <label>Last Name</label>
+            </div>
+            <div class="col-md-4 pe-2">
+                <StringTextBox @bind-Value="Service.UpsertData.LName" Disabled="customerType == CustomerType.Legal" />
+            </div>
+            <div class="col-md-2 ps-2">
+                <label>Gender</label>
+            </div>
+            <div class="col-md-4">
+                <DropdownList @bind-Value="Service.UpsertData.Gender" Disabled="customerType == CustomerType.Legal" />
+            </div>
+            <div class="col-md-2">
+                <label>Company Name</label>
+            </div>
+            <div class="col-md-4 pe-2">
+                <StringTextBox @bind-Value="Service.UpsertData.CompanyName" Disabled="customerType == CustomerType.Real" />
+            </div>
+            <div class="col-md-2 ps-2">
+                <label>Mobile Number</label>
+            </div>
+            <div class="col-md-4">
+                <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" />
+            </div>
+            <div class="col-md-2">
+                <label>Tel</label>
+            </div>
+            <div class="col-md-4 pe-2">
+                <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" />
+            </div>
+            <div class="col-md-6">
+                <FormCommandButton />
+            </div>
+        </div>
+    </CaspianForm>
+    <div class="p-2 pb-0">
+        <TabPanel>
+            <Tabs>
+                <TabPanelItem Title="Customer Addresses">
+                   <div class="p-2 ps-3 pe-3">
+                        <DataGrid TEntity="CustomerAddress" DetailBatchService="Service" ContentHeight="185" Inline>
+                            <Columns Context="con">
+                                <GridColumn style="width:220px;" Field="t => t.AddressType.Title" Title="Address Type">
+                                    <EditTemplate>
+                                        <ComboBox TValue="int" TEntity="AddressType" @bind-Value="con.Data.AddressTypeId" TextExpression="t => t.Title" />
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridColumn Field="t => t.Address" Title="Address">
+                                    <EditTemplate>
+                                        <StringTextBox MultiLine Rows="2" @bind-Value="con.Data.Address" />
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridColumn Field="t => t.ZipCode" Title="Zipcode" style="width:120px">
+                                    <EditTemplate>
+                                        <StringTextBox @bind-Value="con.Data.ZipCode" />
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridCommandColumns />
+                            </Columns>
+                        </DataGrid>
+                   </div>
+                </TabPanelItem>
+                <TabPanelItem Title="Groups Membership">
+                    <div class="p-3 pt-2 pb-2" style="width:600px;margin:0 auto">
+                        <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:247px;"
+                                      TextExpression="t => t.Title" />
+                    </div>
+
+                </TabPanelItem>
+            </Tabs>
+        </TabPanel>
+    </div>
+</Window>
+
+@code 
+{
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+}

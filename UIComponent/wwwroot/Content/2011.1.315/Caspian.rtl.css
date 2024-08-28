@@ -1,5 +1,10 @@
 /* base stylesheet */
-
+.t-rtl .t-checkbox-list{
+    padding-right:6px;
+}
+.t-ltr .t-checkbox-list {
+    padding-left:6px;
+}
 .t-rtl .t-tabstrip.t-vertical .t-header {
     border-left: 1px solid #cdcdcd;
 }

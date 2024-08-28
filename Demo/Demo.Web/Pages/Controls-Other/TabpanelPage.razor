@@ -70,12 +70,10 @@
                         </div>
                         <div class="col-md-8">
                             <RadioList TValue="int" DefaultLayout="DefaultLayout.SpaceAround" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => { tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1; }">
-                                <RadioItems>
-                                    @foreach(var item in dic)
-                                    {
-                                        <RadioItem Value="item.Key" Title="@(item.Value)" />
-                                    }
-                                </RadioItems>
+                                @foreach (var item in dic)
+                                {
+                                    <RadioItem Value="item.Key" Title="@(item.Value)" />
+                                }
                             </RadioList>
 
                         </div>

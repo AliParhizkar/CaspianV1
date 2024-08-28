@@ -23,10 +23,8 @@
                 <div class="col-md-6">
                     <div class="ps-3 pe-4 pb-2">
                         <RadioList @bind-Value="expanded" OnChange="ExpandedChanged">
-                            <RadioItems>
-                                <RadioItem TValue="bool" Value="false" Title="Collapsed" />
-                                <RadioItem TValue="bool" Value="true" Title="Expanded" />
-                            </RadioItems>
+                            <RadioItem TValue="bool" Value="false" Title="Collapsed" />
+                            <RadioItem TValue="bool" Value="true" Title="Expanded" />
                         </RadioList>
                     </div>
                     <TreeView TEntity="NodeView" style="height:500px;" Source="loadOnFirstSource" />

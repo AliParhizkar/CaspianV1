@@ -31,10 +31,8 @@
                     </div>
                     <div class="col-md-4 pe-3 pt-2">
                         <RadioList @bind-Value="useListView">
-                            <RadioItems>
-                                <RadioItem Value="false" Title="Grid" />
-                                <RadioItem Value="true" Title="Listview" />
-                            </RadioItems>
+                            <RadioItem Value="false" Title="Grid" />
+                            <RadioItem Value="true" Title="Listview" />
                         </RadioList>
                     </div>
                     <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" ContentHeight="300"

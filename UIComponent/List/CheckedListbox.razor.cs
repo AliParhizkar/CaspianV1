@@ -1,5 +1,4 @@
 ﻿using Caspian.Common;
-using System.Collections;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
@@ -8,30 +7,49 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
-    public partial class CheckboxList<TEntity, TDetails> : ComponentBase where TEntity: class where TDetails : class
+    public partial class CheckedListbox<TEntity, TDetails> : ComponentBase where TEntity: class 
     {
         bool LoadData;
         IList<SelectListItem> Items;
         IList<TDetails> details;
-        IList<int> SelectedIds;
+        IList<object> SelectedIds;
         string filterText;
 
-        void UpdateSelectedIds(bool flag, string value)
+        async Task UpdateSelectedIds(bool flag, object value)
         {
-            var id = Convert.ToInt32(value);
             if (flag)
-                SelectedIds.Add(id);
+                SelectedIds.Add(value);
             else
-                SelectedIds.Remove(id);
-            UpdateChangedEntities();
+                SelectedIds.Remove(value);
+            if (Service == null)
+            {
+                if (Values == null && ValuesChanged.HasDelegate)
+                    Values = new List<TDetails>();
+                Values.Clear();
+                foreach (var selectedId in SelectedIds)
+                    Values.Add((TDetails)selectedId);
+                if (ValuesChanged.HasDelegate)
+                    await ValuesChanged.InvokeAsync(Values);
+            }
+            else
+                UpdateChangedEntities();
+        }
+
+        internal string SelectedItemsText()
+        {
+            string str = string.Empty;
+            foreach(var id in SelectedIds)
+            {
+                if (str != string.Empty)
+                    str += ", ";
+                str += Items.Single(t => t.Value == id.ToString()).Text;
+            }
+
+            return str;
         }
 
         void UpdateChangedEntities()
         {
-            if (Service == null)
-            {
-                var type = typeof(TDetails).IsArray;
-            }
             var otherInfo = typeof(TDetails).GetForeignKey(typeof(TEntity));
             var masterType = Service.GetType().GenericTypeArguments[0];
             var masterInfo = typeof(TDetails).GetForeignKey(masterType);
@@ -39,15 +57,16 @@ namespace Caspian.UI
             /// Added to list
             foreach (var id in SelectedIds)
             {
-                if (!details.Any(t => Convert.ToInt32(otherInfo.GetValue(t)) == id))
+                var value = Convert.ChangeType(id, otherInfo.PropertyType);
+                if (!details.Any(t => otherInfo.GetValue(t).Equals(value)))
                 {
                     var entity = Activator.CreateInstance<TDetails>();
-                    otherInfo.SetValue(entity, Convert.ChangeType(id, otherInfo.PropertyType));
+                    otherInfo.SetValue(entity, value);
                     masterInfo.SetValue(entity, Convert.ChangeType(Service.MasterId, masterInfo.PropertyType));
-                    list.Add(new ChangedEntity<TDetails>() 
-                    { 
-                        Entity = entity, 
-                        ChangeStatus = ChangeStatus.Added 
+                    list.Add(new ChangedEntity<TDetails>()
+                    {
+                        Entity = entity,
+                        ChangeStatus = ChangeStatus.Added
                     });
                 }
             }
@@ -56,7 +75,7 @@ namespace Caspian.UI
             foreach (var detail in details)
             {
                 var otherId = otherInfo.GetValue(detail);
-                if (!SelectedIds.Contains(Convert.ToInt32(otherId)))
+                if (!SelectedIds.Contains(otherId))
                 {
                     var entity = Activator.CreateInstance<TDetails>();
                     otherInfo.SetValue(entity, otherId);
@@ -76,7 +95,7 @@ namespace Caspian.UI
         {
             if (LoadData)
             {
-                var service = Provider.GetService(typeof(IBaseService<TEntity>)) as IBaseService<TEntity>;
+                using var service = ScopeFactory.CreateScope().GetService<IBaseService<TEntity>>();
                 var query = service.GetAll(default(TEntity));
                 if (ConditionExpression != null)
                     query = query.Where(ConditionExpression);
@@ -112,7 +131,12 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             LoadData = true;
-            SelectedIds = new List<int>();
+            SelectedIds = new List<object>();
+            if (Values != null && Service == null)
+            {
+                foreach (var value in Values)
+                    SelectedIds.Add(value);
+            }
             base.OnInitialized();
         }
 
@@ -135,8 +159,7 @@ namespace Caspian.UI
                 foreach ( var detail in details )
                 {
                     var otherId = detailIdInfo.GetValue(detail);
-                    var id = Convert.ToInt32(otherId);
-                    SelectedIds.Add(id);
+                    SelectedIds.Add(otherId);
                 }
             }
             else
@@ -154,15 +177,10 @@ namespace Caspian.UI
         public EventCallback<TDetails> AddToChanged { get; set; }
 
         [Parameter]
-        public string Title { get; set; }
+        public bool Filterable { get; set; }
 
         [Parameter]
-        public bool Filterable { get; set; } = true;
-
-        [Parameter]
-        public IDetailBatchService<TDetails> Service { get; set; }
-
-        public TDetails Value { get; set; }
+        public ISimpleBatchService<TDetails> Service { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, string>> TextExpression { get; set; }
@@ -175,5 +193,58 @@ namespace Caspian.UI
 
         [Parameter]
         public string Style { get; set; }
+
+        [Parameter]
+        public bool ShowSelectAll { get; set; }
+
+        [Parameter]
+        public string SelectAllText { get; set; } = "انتخاب همه";
+
+        [Parameter]
+        public string PlaceHolder { get; set; } = "جستجو";
+
+        [Parameter]
+        public IList<TDetails> Values { get; set; }
+
+        [Parameter]
+        public EventCallback<IList<TDetails>> ValuesChanged { get; set; }
+
+        async Task SelectAll(bool? selected)
+        {
+            SelectedIds = new List<object>();
+            
+            if (Service == null)
+            {
+                if (Values == null && ValuesChanged.HasDelegate)
+                    Values = new List<TDetails>();
+                Values.Clear();
+                if (selected != false)
+                {
+                    var type = typeof(TDetails);
+                    foreach (var item in Items)
+                    {
+                        var value = Convert.ChangeType(item.Value, type);
+                        SelectedIds.Add(value);
+                        Values.Add((TDetails)value);
+                    }
+                }
+                if (ValuesChanged.HasDelegate)
+                    await ValuesChanged.InvokeAsync(Values);
+            }
+            else
+            {
+                if (selected != false)
+                {
+                    var type = typeof(TDetails).GetForeignKey(typeof(TEntity)).PropertyType;
+                    foreach (var item in Items)
+                    {
+                        var value = Convert.ChangeType(item.Value, type);
+                        SelectedIds.Add(value);
+
+                    }
+                }
+                UpdateChangedEntities();
+            }
+        }
     }
 }

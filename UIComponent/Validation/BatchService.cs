@@ -14,10 +14,10 @@ namespace Caspian.UI
 {
     public class BatchService<TMaster, TDetail>: ISimpleService, ISimpleService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
     {
-        IJSRuntime jSRuntime;
         IServiceProvider serviceProvider;
-        BatchServiceData batchServiceData;
         BaseComponentService baseComponentService;
+        protected IJSRuntime jSRuntime;
+        protected BatchServiceData batchServiceData;
 
         public BatchService(IServiceProvider serviceProvider)
         {
@@ -35,14 +35,14 @@ namespace Caspian.UI
             Search = Activator.CreateInstance<TMaster>();
         }
 
-        IServiceScope CreateScope()
+        protected IServiceScope CreateScope()
         {
             return serviceProvider.CreateScope();
         }
 
         public int MasterId { get; set; }
 
-        public TMaster UpsertData { get; private set; }
+        public TMaster UpsertData { get; protected set; }
 
         public TMaster Search {  get; set; }
 
@@ -69,6 +69,42 @@ namespace Caspian.UI
 
         public Action<TMaster> OnCreate { get; set; }
 
+        protected virtual async Task UpdateDatabaseAsync(EditContext context1)
+        {
+            var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(context1.Model));
+            using var service = CreateScope().GetService<IMasterDetailsService<TMaster, TDetail>>();
+            var result = await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
+            await service.SaveChangesAsync();
+            ChangedEntities.Clear();
+            if (id == 0)
+            {
+                DetailDataView?.ClearSource();
+                UpsertData = Activator.CreateInstance<TMaster>();
+                Form.SetModel(UpsertData);
+                if (OnCreate != null)
+                    OnCreate.Invoke(UpsertData);
+                if (DataView != null && DataView is DataGrid<TMaster>)
+                {
+                    var newId = (int)typeof(TMaster).GetPrimaryKey().GetValue(result);
+                    await (DataView as DataGrid<TMaster>).SelectRowById(newId);
+                }
+                await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Registration was done successfully");
+            }
+            else
+            {
+                if (DetailDataView != null)
+                    await DetailDataView.ReloadAsync();
+                if (DataView != null)
+                    await DataView.ReloadAsync();
+                await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Updating was done successfully");
+            }
+            if (DetailDataView != null)
+                DetailDataView.CancelInternalUpdate();
+            if (Window != null)
+                await Window?.Close();
+            StateHasChanged();
+        }
+
         public void FormInitialize()
         {
             if (UpsertData == null)
@@ -86,41 +122,7 @@ namespace Caspian.UI
                 }
             });
 
-            Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async context1 =>
-            {
-                var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(context1.Model));
-                using var service = CreateScope().GetService<IMasterDetailsService<TMaster, TDetail>>();
-                var result = await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
-                await service.SaveChangesAsync();
-                ChangedEntities.Clear();
-                if (id == 0)
-                {
-                    DetailDataView?.ClearSource();
-                    UpsertData = Activator.CreateInstance<TMaster>();
-                    Form.SetModel(UpsertData);
-                    if (OnCreate != null)
-                        OnCreate.Invoke(UpsertData);
-                    if (DataView != null && DataView is DataGrid<TMaster>)
-                    {
-                        var newId = (int)typeof(TMaster).GetPrimaryKey().GetValue(result);
-                        await (DataView as DataGrid<TMaster>).SelectRowById(newId);
-                    }
-                    await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Registration was done successfully");
-                }
-                else
-                {
-                    if (DetailDataView != null)
-                        await DetailDataView.ReloadAsync();
-                    if (DataView != null)
-                        await DataView.ReloadAsync();
-                    await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Updating was done successfully");
-                }
-                if (DetailDataView != null)
-                    DetailDataView.CancelInternalUpdate();
-                if (Window != null)
-                    await Window?.Close();
-                StateHasChanged();
-            });
+            Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, UpdateDatabaseAsync);
         }
 
         public void StateHasChanged()
@@ -171,7 +173,7 @@ namespace Caspian.UI
             });
         }
 
-        public void DetailDataViewInitialize()
+        public virtual void DetailDataViewInitialize()
         {
             DetailDataView.Batch = true;
             var param = Expression.Parameter(typeof(TDetail), "t");
@@ -224,15 +226,18 @@ namespace Caspian.UI
         void DataViewInitialize();
     }
 
-    public interface IDetailBatchService<TDetail> where TDetail : class
+    public interface ISimpleBatchService<TDetail>
     {
         int MasterId { get; }
 
-        DataView<TDetail> DetailDataView { get; set; }
+        IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
 
         void DetailDataViewInitialize();
+    }
 
-        IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
+    public interface IDetailBatchService<TDetail>: ISimpleBatchService<TDetail> where TDetail : class
+    {
+        DataView<TDetail> DetailDataView { get; set; }
     }
 
     public interface ISimpleService

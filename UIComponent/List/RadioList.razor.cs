@@ -45,7 +45,7 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (RadioItems == null)
+            if (ChildContent == null)
             {
                 var type = typeof(TValue).GetUnderlyingType();
                 if (type.IsEnum)
@@ -87,7 +87,7 @@ namespace Caspian.UI
         public IList<SelectListItem> Source { get; set; }
 
         [Parameter]
-        public RenderFragment RadioItems { get; set; }
+        public RenderFragment ChildContent { get; set; }
 
         protected override void OnParametersSet()
         {

@@ -1,0 +1,78 @@
+﻿@namespace Demo.Web.Pages
+<CaspianForm Service="Service">
+    <CaspianValidationValidator ValidatorType="typeof(CustomerService)" />
+    <div class="p-4 pt-3 pb-0">
+        <TabPanel>
+            <Tabs>
+                <TabPanelItem Title="Customer">
+                    <div class="row p-4 pt-2 pb-2 c-controls" style="height:260px;align-content:flex-start">
+                        <div class="col-md-4">
+                            <label>Customer Type</label>
+                        </div>
+                        <div class="col-md-8">
+                            <DropdownList @bind-Value="Service.UpsertData.CustomerType" />
+                        </div>
+                        @if (Service.UpsertData.CustomerType == CustomerType.Real)
+                        {
+                            <div class="col-md-4">
+                                <label>First Name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox @bind-Value="Service.UpsertData.FName" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Last Name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox @bind-Value="Service.UpsertData.LName" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Gender</label>
+                            </div>
+                            <div class="col-md-8">
+                                <DropdownList @bind-Value="Service.UpsertData.Gender" />
+                            </div>
+                        }
+                        else if (Service.UpsertData.CustomerType == CustomerType.Legal)
+                        {
+                            <div class="col-md-4">
+                                <label>Company Name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox @bind-Value="Service.UpsertData.CompanyName" />
+                            </div>
+                        }
+                        <div class="col-md-4">
+                            <label>Mobile Number</label>
+                        </div>
+                        <div class="col-md-8">
+                            <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Tel</label>
+                        </div>
+                        <div class="col-md-8">
+                            <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" />
+                        </div>
+                    </div>
+
+                </TabPanelItem>
+                <TabPanelItem Title="Groups">
+                    <div class="ps-4 pe-4 pt-2 pb-2" style="height:260px">
+                        <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service"
+                                      TextExpression="t => t.Title" Style="height:220px;" />
+                    </div>
+                </TabPanelItem>
+            </Tabs>
+        </TabPanel>
+    </div>
+    <div class="pt-4">
+        <FormCommandButton />
+    </div>
+</CaspianForm>
+
+@code 
+{
+    [Parameter]
+    public BatchService<Customer, CustomerGroupMembership> Service { get; set; }
+}

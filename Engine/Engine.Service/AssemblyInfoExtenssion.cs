@@ -67,7 +67,19 @@ namespace Caspian.Engine.Service
                 {
                     if (baseType.IsGenericType)
                     {
-                        if (baseType.GenericTypeArguments.Length == 2)
+                        if (baseType.GenericTypeArguments.Length == 3)
+                        {
+                            Type type1 = baseType.GenericTypeArguments[0], type2 = baseType.GenericTypeArguments[1],
+                                type3 = baseType.GenericTypeArguments[2];
+                            if (baseType == typeof(MasterDetailsService<,,>).MakeGenericType(type1, type2, type3))
+                            {
+                                var interfaceType = typeof(IMasterDetailsService<,,>).MakeGenericType(type1, type2, type3);
+                                services.AddScoped(interfaceType, provider => Activator.CreateInstance(type, provider));
+                                var batchServiceType = typeof(BatchService<,,>).MakeGenericType(baseType.GenericTypeArguments);
+                                services.AddTransient(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
+                            }
+                        }
+                        else if (baseType.GenericTypeArguments.Length == 2)
                         {
                             Type type1 = baseType.GenericTypeArguments[0], type2 = baseType.GenericTypeArguments[1];
                             if (baseType == typeof(MasterDetailsService<,>).MakeGenericType(type1, type2))
@@ -78,7 +90,7 @@ namespace Caspian.Engine.Service
                                 services.AddTransient(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
                             }
                         }
-                        if (baseType.GenericTypeArguments.Length == 1)
+                        else if (baseType.GenericTypeArguments.Length == 1)
                         {
                             var genericType = baseType.GenericTypeArguments[0];
                             var serviceType = typeof(BaseService<>).MakeGenericType(genericType);

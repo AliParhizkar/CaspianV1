@@ -46,7 +46,7 @@ namespace Caspian.UI
                     var lambda = Expression.Lambda(condExr, param);
                     query = query.Where(lambda);
                 }
-                shouldRender = false;
+                //shouldRender = false;
                 Total = await query.CountAsync();
                 var exprList = new List<MemberExpression>();
                 foreach(var expr in fieldsExpression)
@@ -112,7 +112,7 @@ namespace Caspian.UI
 
         protected override async Task OnParametersSetAsync()
         {
-            //await DataBind();
+            await DataBind();
             await base.OnParametersSetAsync();
         }
 

@@ -1,5 +1,34 @@
 ﻿(function ($) {
     let $c = $.caspian = {
+        bindCheclistDropdown: function (element, dotnet) {
+            const mutationObserver = new MutationObserver(t => {
+                let $element = $(t[0].target);
+                if ($element.hasClass('c-checkbox-list'))
+                    $element = $element.parent();
+                if ($element.hasClass('t-checkbox-list')) {
+                    let loc = $($element[0]).offset().top - $(window).scrollTop();
+                    let height = $element.outerHeight();
+                    let $animate = $element.closest('.t-animation-container');
+                    if (loc > $(window).height() / 2) {
+                        $animate.addClass('c-animation-up').height(height + 6);
+                        setTimeout(() => $element.css('bottom', '3px'), 10);
+                    } else {
+                        $animate.addClass('c-animation-down').height(height + 3);
+                        setTimeout(() => $element.css('top', '0'), 10);
+                    }
+                }
+            });
+            mutationObserver.observe(element, {
+                attributes: false,
+                childList: true,
+                subtree: true
+            });
+            $(window).bind('click', async e => {
+                let elem = $(e.target).closest('.t-dropdown')[0];
+                if (elem != element)
+                    await dotnet.invokeMethodAsync('CloseWindow');
+            });
+        },
         bindSlider: async function (element, dotnet) {
             let containerWidth = $(element).width();
             let ContentWidth = $(element).find('.c-slider-slide').width();
@@ -115,7 +144,7 @@
                     $c.setListHeaderPadding($($list));
                 }
             });
-            mutationObserver.observe($(list).find('.c-dataview-content')[0], {
+            mutationObserver.observe(list, {
                 attributes: false,
                 childList: true,
                 subtree: true
@@ -952,7 +981,7 @@
                 let $parent = $window.parent().closest('.t-window');
                 $c.scrollTop = 0;
                 if (!$parent[0]) {
-                    $c.scrollTop = $('.c-content-main').scrollTop() - 20;
+                    $c.scrollTop = $('.c-content-main').scrollTop();
                     $window.css('top', $c.scrollTop);
                     $parent = $('.c-content-main');
                 }
@@ -969,7 +998,7 @@
                     $window.addClass('window-animate');
                     if ($overlay)
                         $overlay.css('opacity', .5);
-                    $window.css('top', 40 + $c.scrollTop);
+                    $window.css('top', 10 + $c.scrollTop);
                     setTimeout(() => $window.removeClass('window-animate'), 400);
                 }, 25);
             }
@@ -986,8 +1015,8 @@
                 }, 25);
             }
         },
-        bindWindow(dotnet, window) {
-            $c.openWindow($(window).closest('.t-window'));
+        bindWindow(dotnet, win) {
+            $c.openWindow($(win).closest('.t-window'));
             const mutationObserver = new MutationObserver((mutationList) => {
                 mutationList.forEach(mutation => {
                     if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
@@ -1010,11 +1039,23 @@
                     }
                 });
             });
-            mutationObserver.observe($(window)[0], {
+            mutationObserver.observe(win, {
                 attributes: true,
                 childList: false,
                 subtree: false
             });
+            const sizeObserver = new ResizeObserver(t => {
+                let $win = $(t[0].target).closest('.t-window');
+                let height = $win.outerHeight();
+                let containerHeight = $('.c-content-main').outerHeight() - 15;
+                if (height > containerHeight) {
+                    height = containerHeight - $win.find('.t-window-titlebar').outerHeight();
+                    $win.find('.t-window-content').height(containerHeight).css('overflow', 'auto');
+                }
+                else
+                    $win.find('.t-window-content').css('height', 'auto').css('overflow', 'visible');
+            });
+            sizeObserver.observe(win);
         },
         focus(input) {
             $(input).focus();

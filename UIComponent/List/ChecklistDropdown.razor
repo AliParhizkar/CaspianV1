@@ -1,0 +1,24 @@
+﻿@namespace Caspian.UI
+@using System.Collections
+@typeparam TEntity where TEntity : class
+@typeparam TDetails 
+@inject IJSRuntime jSRuntime
+@inject IServiceScopeFactory ScopeFactory
+<div @ref="element" class="t-widget t-dropdown">
+    <div class="t-dropdown-wrap t-state-default" @onclick="Open">
+        <span class="t-input">@(text)</span>
+        <span class="t-t-select">
+            <i class="t-icon t-arrow-down fa fa-caret-down"></i>
+        </span>
+    </div>
+    @if (status == WindowStatus.Open)
+    {
+        <div class="t-animation-container">
+            <CheckedListbox @ref="checkboxList" TEntity="TEntity" TDetails="TDetails" TextExpression="TextExpression" Service="Service" Filterable="Filterable"
+                OrderByExpression="OrderByExpression" ConditionExpression="ConditionExpression" PlaceHolder="@PlaceHolder"
+                          SelectAllText="@SelectAllText" ShowSelectAll="ShowSelectAll" Values="Values" ValuesChanged="ValuesChangedHandler" />
+        </div>
+    }
+</div>
+
+

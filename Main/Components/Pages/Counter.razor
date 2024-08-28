@@ -5,10 +5,16 @@
 @using Demo.Model
 @using Demo.Service
 @using Microsoft.EntityFrameworkCore
+<span>@values.Count</span>
+<div style="width:600px;margin:10px auto">
+    <ChecklistDropdown TEntity="CustomerGroup" TDetails="int" @bind-Values="values" TextExpression="t => t.Title" />
+</div>
+<div style="height:400px;">
 
-<CheckboxList TEntity="CustomerGroup" TDetails="int[]" TextExpression="t => t.Title" />
-
-
+</div>
+<div style="width:600px;margin:10px auto">
+    <ChecklistDropdown TEntity="CustomerGroup" TDetails="int" @bind-Values="values" TextExpression="t => t.Title" />
+</div>
 @* <div style="margin:10px auto;width:80%;">
     <Slide TEntity="Product" ConditionExpression="t => t.Image != null && t.Id < 30" >
         <div class="d-slider">
@@ -22,8 +28,7 @@
         </div>
     </Slide>
 </div> *@
-<button @onclick="() => value++">+</button>
 @code 
 {
-    int value;
+    IList<int> values = new List<int>();
 }

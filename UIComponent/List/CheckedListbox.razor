@@ -1,0 +1,39 @@
+﻿@namespace Caspian.UI
+@using System.ComponentModel.DataAnnotations
+@typeparam TEntity where TEntity : class
+@typeparam TDetails
+@inject IServiceProvider Provider
+@inject IServiceScopeFactory ScopeFactory
+<div class="t-checkbox-list">
+    @if (Items != null)
+    {
+        @if (Filterable)
+        {
+            <div class="c-filtering">
+                <StringTextBox @bind-Value="filterText" BindingType="BindingType.OnInput" placeholder="@PlaceHolder" />
+            </div>
+        }
+        @if (ShowSelectAll)
+        {
+            bool? selectAll = Items.Count == SelectedIds.Count ? true : SelectedIds.Count == 0 ? false : null;
+            <div class="c-select-all">
+                <CheckBox TValue="bool?" Title="@SelectAllText" Value="selectAll" ValueChanged="SelectAll" />
+            </div>
+        }
+    }
+
+    <div class="c-checkbox-list" style="@Style">
+        @if (Items != null)
+        {
+            var items = filterText.HasValue() ? Items.Where(t => t.Text.Contains(filterText)) : Items;
+            var type = Service == null ? typeof(TDetails) : typeof(TDetails).GetForeignKey(typeof(TEntity)).PropertyType;
+            foreach (var item in items)
+            {
+                var value = Convert.ChangeType(item.Value, type);
+                <div class="c-item">
+                    <CheckBox TValue="bool" Value="@SelectedIds.Contains(value)" ValueChanged="check => UpdateSelectedIds(check, value)" Title="@item.Text" />
+                </div>
+            }
+        }
+    </div>
+</div>
