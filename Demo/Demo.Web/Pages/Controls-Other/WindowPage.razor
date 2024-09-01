@@ -12,6 +12,9 @@
 <p>
     We can specify general properties like <b>width, and title, modal, draggable</b>, etc.
 </p>
+<div class="d-price">
+
+</div>
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
@@ -134,22 +137,20 @@
     </Tabs>
 </TabPanel>
 <Window @bind-Status="widthWindowStatus" Title="Width property window" Style="@(GetStyle())">
-    <Content>
-        <div class="p-5 text-center">
-            <h3>@controlSize.EnumText()</h3>
-        </div>
-    </Content>
+    <div class="p-5 text-center">
+        <h3>@controlSize.EnumText()</h3>
+    </div>
 </Window>
+
 <Window @bind-Status="modalAndDraggableStatus" Style="width:300px" Modal="modal" Draggable="draggable" Title="Modal & dragable window">
-    <Content>
-        <div class="p-5 text-center">
-            <CheckBox @bind-Value="modal" Disabled Title="Modal" />
-        </div>
-        <div class="p-5 text-center">
-            <CheckBox @bind-Value="draggable" Disabled Title="Draggable" />
-        </div>
-    </Content>
+    <div class="p-5 text-center">
+        <CheckBox @bind-Value="modal" Disabled Title="Modal" />
+    </div>
+    <div class="p-5 text-center">
+        <CheckBox @bind-Value="draggable" Disabled Title="Draggable" />
+    </div>
 </Window>
+
 <Window @bind-Status="headerWindowStatus" Title="@(title)" ShowCustomHeader="customHeader">
     <HeaderTemplate >
         <div class="d-window-header">
@@ -174,53 +175,46 @@
     </Content>
 </Window>
 
-
 <Window @bind-Status="status1"  Title="Window 1" Style="width:700px;height:500px">
-    <Content>
+    <div class="row d-cascade">
+        <div class="col-md-12">
+            <h3>Cascade Window</h3>
+        </div>
+        <div class="col-md-6">
+            <hr />
+            <h6 class="d-window1">Window 1</h6>
+        </div>
+        <div class="col-md-6">
+            <hr />
+            <button class="c-btn c-success" @onclick="() => { status2 = WindowStatus.Open; }">Window 2</button>
+        </div>
+    </div>
+    <Window @bind-Status="status2" Title="Window 2" Style="width:600px;height:400px">
         <div class="row d-cascade">
             <div class="col-md-12">
                 <h3>Cascade Window</h3>
             </div>
             <div class="col-md-6">
                 <hr />
-                <h6 class="d-window1">Window 1</h6>
+                <h6 class="d-window2">Window 2</h6>
             </div>
             <div class="col-md-6">
                 <hr />
-                <button class="c-btn c-success" @onclick="() => { status2 = WindowStatus.Open; }">Window 2</button>
+                <button class="c-btn c-secondary" @onclick="() => { status3 = WindowStatus.Open; }">Window 3</button>
             </div>
         </div>
-        <Window @bind-Status="status2" Title="Window 2" Style="width:600px;height:400px">
-            <Content>
-                <div class="row d-cascade">
-                    <div class="col-md-12">
-                        <h3>Cascade Window</h3>
-                    </div>
-                    <div class="col-md-6">
-                        <hr />
-                        <h6 class="d-window2">Window 2</h6>
-                    </div>
-                    <div class="col-md-6">
-                        <hr />
-                        <button class="c-btn c-secondary" @onclick="() => { status3 = WindowStatus.Open; }">Window 3</button>
-                    </div>
+        <Window @bind-Status="status3" Title="Window 3" Style="width:500px;height:300px">
+            <div class="row d-cascade">
+                <div class="col-md-12">
+                    <h3>Cascade Window</h3>
                 </div>
-                <Window @bind-Status="status3" Title="Window 3" Style="width:500px;height:300px">
-                    <Content>
-                        <div class="row d-cascade">
-                            <div class="col-md-12">
-                                <h3>Cascade Window</h3>
-                            </div>
-                            <div class="col-md-12">
-                                <hr />
-                                <h6 class="d-window3">Window 3</h6>
-                            </div>
-                        </div>
-                    </Content>
-                </Window>
-            </Content>
+                <div class="col-md-12">
+                    <hr />
+                    <h6 class="d-window3">Window 3</h6>
+                </div>
+            </div>
         </Window>
-    </Content>
+    </Window>
 </Window>
 @code {
     ControlSize controlSize = ControlSize.Medium;

@@ -1,44 +1,44 @@
 ﻿@namespace Caspian.Engine.SystemManagement
 @inherits BasePage
 @inject SingletonMenuService service
-
+@inject SimpleService<Menu> Service
 <div class="row c-controls">
     <div class="col-md-2">
         <label>Main menu</label>
     </div>
     <div class="col-md-4 pe-4">
-        <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="search.MenuCategoryId"
+        <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="Service.Search.MenuCategoryId"
                   TextExpression="t => t.Title" ConditionExpression="t => t.SubSystemKind == Subsystem" OrderByExpression="t => t.Ordering" />
     </div>
     <div class="col-md-2 ps-4">
         <label>Menu</label>
     </div>
     <div class="col-md-4 pe-4">
-        <StringTextBox @bind-Value="search.Title" Search />
+        <StringTextBox @bind-Value="Service.Search.Title" />
     </div>
     <div class="col-md-2">
         <label>Only untitled menus</label>
     </div>
     <div class="col-md-2">
-        <CheckBox @bind-Value="onlyUntitledMenus" OnChange="() => grvMenu.EnableLoading()" />
+        <CheckBox @bind-Value="onlyUntitledMenus" OnChange="() => Service.DataView.EnableLoading()" />
     </div>
     <div class="col-md-2">
         <label>Show in menu</label>
     </div>
     <div class="col-md-2">
-        <CheckBox @bind-Value="showInMenu" OnChange="() => grvMenu.EnableLoading()" />
+        <CheckBox @bind-Value="showInMenu" OnChange="() => Service.DataView.EnableLoading()" />
     </div>
     <div class="col-md-2">
         <label>Invalid address</label>
     </div>
     <div class="col-md-2">
-        <CheckBox @bind-Value="isDropped" OnChange="() => grvMenu.EnableLoading()" />
+        <CheckBox @bind-Value="isDropped" OnChange="() => Service.DataView.EnableLoading()" />
     </div>
     <div class="col-md-2">
         <label>Source</label>
     </div>
     <div class="col-md-4 pe-4">
-        <StringTextBox @bind-Value="search.Source" Search />
+        <StringTextBox @bind-Value="Service.Search.Source" />
     </div>
     <div class="col-md-3 text-center">
         <IconButton @onclick="async () => await UpdateMenus()" IconType="IconType.Refresh" title="Update menus" />
@@ -46,66 +46,64 @@
     <div class="col-md-3 text-center">
         <IconButton @onclick="async () => await LoadMenus()" IconType="IconType.Refresh" title="Load menus" />
     </div>
-    <CrudComponent UpsertData="menu">
-        <div class="pt-4">
-            <DataGrid @ref="grvMenu" Search="search" TEntity="Menu" ContentHeight="300" HideInsertIcon ConditionExpr='t => (isDropped == null || t.IsDropped == isDropped) && (showInMenu == null || t.ShowonMenu == showInMenu.Value) && (!onlyUntitledMenus || t.Title == null) && t.SubSystemKind == Subsystem'>
-                <Columns>
-                    <GridColumn Field="t => t.Id" Title="Id" />
-                    <GridColumn Field="t => t.MenuCategory.Title" Title="main menu" />
-                    <GridColumn Field="t => t.Title" />
-                    <GridColumn Field="t => t.Source" />
-                    <GridColumn Field="t => t.Ordering" style="width:100px;" />
-                    <GridColumn Field="t => t.ShowonMenu" style="width:100px;" />
-                    <GridCommandColumns  />
-                </Columns>
-            </DataGrid>
-        </div>
-        <Window Title="Menu" Style="width:500px;" OnOpen="FillUrls">
-            <CaspianForm Model="menu">
-                @{
-                    var path = $"/{Subsystem}/Engin";
-                    var disable = menu.Source?.StartsWith(path) == true;
-                }
-                <div class="row c-controls ps-4 pe-4">
-                    <div class="col-md-4">
-                        <label>Source</label>
-                    </div>
-                    <div class="col-md-8">
-                        <StringTextBox @bind-Value="menu.Source" readonly Disabled="disable" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Menu category</label>
-                    </div>
-                    <div class="col-md-8">
-                        <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="menu.MenuCategoryId"
-                                  TextExpression="t => t.Title" Disabled="disable"
-                                  ConditionExpression='t => t.SubSystemKind == Subsystem && t.Title != "Engin"' />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Title</label>
-                    </div>
-                    <div class="col-md-8">
-                        <StringTextBox @bind-Value="menu.Title" Disabled="disable" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Show on Menu</label>
-                    </div>
-                    <div class="col-md-8 ps-2">
-                        <CheckBox @bind-Value="menu.ShowonMenu" Disabled="disable" OnChange="FillUrls" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>URL</label>
-                    </div>
-                    <div class="col-md-8">
-                        <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="menu.URL" Source="source" />
-                    </div>
-                    <div class="col-md-12 ps-5 text-center">
-                        <FormCommandButton disabled="@disable" />
-                    </div>
+    <div class="pt-4">
+        <DataGrid TEntity="Menu" Service="Service" ContentHeight="300" HideInsertIcon ConditionExpr='t => (isDropped == null || t.IsDropped == isDropped) && (showInMenu == null || t.ShowonMenu == showInMenu.Value) && (!onlyUntitledMenus || t.Title == null) && t.SubSystemKind == Subsystem'>
+            <Columns>
+                <GridColumn Field="t => t.Id" Title="Id" />
+                <GridColumn Field="t => t.MenuCategory.Title" Title="main menu" />
+                <GridColumn Field="t => t.Title" />
+                <GridColumn Field="t => t.Source" />
+                <GridColumn Field="t => t.Ordering" style="width:100px;" />
+                <GridColumn Field="t => t.ShowonMenu" style="width:100px;" />
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+    </div>
+    <Window Service="Service" Title="Menu" Style="width:500px;" OnOpen="FillUrls">
+        <CaspianForm Service="Service">
+            @{
+                var path = $"/{Subsystem}/Engin";
+                var disable = Service.UpsertData.Source?.StartsWith(path) == true;
+            }
+            <div class="row c-controls ps-4 pe-4">
+                <div class="col-md-4">
+                    <label>Source</label>
                 </div>
-            </CaspianForm>
-        </Window>
-    </CrudComponent>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="Service.UpsertData.Source" readonly Disabled="disable" />
+                </div>
+                <div class="col-md-4">
+                    <label>Menu category</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="Service.UpsertData.MenuCategoryId"
+                              TextExpression="t => t.Title" Disabled="disable"
+                              ConditionExpression='t => t.SubSystemKind == Subsystem && t.Title != "Engin"' />
+                </div>
+                <div class="col-md-4">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="Service.UpsertData.Title" Disabled="disable" />
+                </div>
+                <div class="col-md-4">
+                    <label>Show on Menu</label>
+                </div>
+                <div class="col-md-8 ps-2">
+                    <CheckBox @bind-Value="Service.UpsertData.ShowonMenu" Disabled="disable" OnChange="FillUrls" />
+                </div>
+                <div class="col-md-4">
+                    <label>URL</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="Service.UpsertData.URL" Source="source" />
+                </div>
+                <div class="col-md-12 ps-5 text-center">
+                    <FormCommandButton disabled="@disable" />
+                </div>
+            </div>
+        </CaspianForm>
+    </Window>
 
 </div>
 
@@ -114,9 +112,6 @@
     bool? showInMenu;
     bool? isDropped;
     bool onlyUntitledMenus;
-    Menu search = new Menu();
-    Menu menu = new Menu();
-    DataGrid<Menu> grvMenu;
     IList<SelectListItem> source = new List<SelectListItem>();
 
     [Parameter]
@@ -124,15 +119,15 @@
 
     void FillUrls()
     {
-        if (menu.ShowonMenu)
+        if (Service.UpsertData.ShowonMenu)
         {
-            var page = new AssemblyInfo().GetWebTypes(Subsystem).SingleOrDefault(t => t.FullName == menu.Source);
+            var page = new AssemblyInfo().GetWebTypes(Subsystem).SingleOrDefault(t => t.FullName == Service.UpsertData.Source);
             if (page != null)
             {
                 var urls = page.GetCustomAttributes<RouteAttribute>().Select(t => t.Template).Where(t => !t.Contains("{"));
                 source = urls.Select(t => new SelectListItem(t, t)).ToList();
                 if (urls.Count() == 1)
-                    menu.URL = urls.Single();
+                    Service.UpsertData.URL = urls.Single();
             }
         }
     }
@@ -198,6 +193,6 @@
                 }
             }
         }
-        await grvMenu.ResetGrid();
+        await (Service.DataView as DataGrid<Menu>).ResetGrid();
     }
 }

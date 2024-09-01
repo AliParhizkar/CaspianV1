@@ -23,7 +23,7 @@ namespace Caspian.UI
                 SelectedIds.Remove(value);
             if (Service == null)
             {
-                if (Values == null && ValuesChanged.HasDelegate)
+                if (Values == null)
                     Values = new List<TDetails>();
                 Values.Clear();
                 foreach (var selectedId in SelectedIds)
@@ -215,7 +215,7 @@ namespace Caspian.UI
             
             if (Service == null)
             {
-                if (Values == null && ValuesChanged.HasDelegate)
+                if (Values == null)
                     Values = new List<TDetails>();
                 Values.Clear();
                 if (selected != false)

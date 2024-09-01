@@ -9,8 +9,8 @@ namespace Caspian.UI
     public enum Position : byte
     {
         Top = 1,
+        Right,
         Bottom,
-        Left,
-        Right
+        Left
     }
 }

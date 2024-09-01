@@ -105,7 +105,7 @@
             require.config({ paths: { vs: '/node_modules/monaco-editor/min/vs' } });
             require(['vs/editor/editor.main'], function () {
                 registerCsharpProvider();
-                var editor = $.caspian.editor = monaco.editor.create(document.getElementById('caspianCodeGenerator'), {
+                let editor = $.caspian.editor = monaco.editor.create(document.getElementById('caspianCodeGenerator'), {
                     value: code,
                     language: 'csharp',
                     readOnly: readonly
@@ -259,7 +259,7 @@
             let $input = $(elem).find('input');
             $input.val($.caspian.getTime(elem));
             setTimeout(async () => {
-                var event = new Event('change');
+                let event = new Event('change');
                 $input[0].dispatchEvent(event);
                 await dotnet.invokeMethodAsync("CloseWindow");
             }, 200);
@@ -431,7 +431,7 @@
             });
         },
         bindTabpanel: function (ctr) {
-            var pos = $(ctr).find('.t-state-active').position();
+            let pos = $(ctr).find('.t-state-active').position();
             if ($(ctr).hasClass('t-vertical')) {
                 let top = pos.top;
                 $(ctr).find('.c-selected-panel').css('top', top + 8);
@@ -490,7 +490,7 @@
                 subtree: false
             });
             $('body').bind('click', e => {
-                var flag = $(input).closest('.c-lookup-tree').find('.c-tree-content').hasClass('c-tree-content');
+                let flag = $(input).closest('.c-lookup-tree').find('.c-tree-content').hasClass('c-tree-content');
                 if (!$(e.target).closest('.auto-hide').hasClass('auto-hide') && flag) {
                     let $animate = $(input).closest('.c-lookup-tree').find('.c-animate-down >.c-treeview');
                     $animate.css('top', "-100%");
@@ -514,7 +514,7 @@
         get3Digit: function (num) {
             if (num === null || num === undefined)
                 return '';
-            var parts = num.toString().split(".");
+            let parts = num.toString().split(".");
             parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             return parts.join(".");
         },
@@ -553,7 +553,7 @@
             if ($.caspian.infoTimer)
                 clearTimeout($.caspian.infoTimer);
             $("#outMessage").remove();
-            var odv = $('<div class="t-widget t-message" id="outMessage"></div>');
+            let odv = $('<div class="t-widget t-message" id="outMessage"></div>');
             if ($(".c-content-main")[0])
                 $(".c-content-main").append(odv);
             else
@@ -666,7 +666,7 @@
             if (status) {
                 $('.c-messagebox .c-primary').focus();
                 $('body').bind('keyup.confirmMessage', async function (e) {
-                    var key = e.keyCode;
+                    let key = e.keyCode;
                     if (!$(e.target).hasClass('c-primary')) {
                         if (key == 13 || key == 27) {
                             await dotnet.invokeMethodAsync('HideConfirm', key == 13);
@@ -1124,6 +1124,9 @@
                 }
             });
         },
+        bindTooltip(elem) {
+
+        },
         bindContextMenu(dotnet, elem) {
             const mutationObserver = new MutationObserver((list) => {
                 list.every(t => {
@@ -1153,7 +1156,7 @@
             if (pageable) {
                 let div = $(input).closest('.t-combobox').find('.t-group');
                 div.bind('scroll', async e => {
-                    var height = $(this).scrollTop() + $(this).innerHeight();
+                    let height = $(this).scrollTop() + $(this).innerHeight();
                     if (height > $(this).find('.t-reset').height() + 1)
                         await dotnetHelper.invokeMethodAsync('IncPageNumberInvokable');
                 });
@@ -1215,7 +1218,7 @@
                     }
                 }
             });
-            var $control = $(input).closest('.t-combobox').find('.t-dropdown-wrap');
+            let $control = $(input).closest('.t-combobox').find('.t-dropdown-wrap');
             $(input).closest('.t-combobox').mouseenter(function () {
                 if (!$control.hasClass('t-state-disabled'))
                     $control.removeClass('t-state-default').addClass('t-state-hover');
@@ -1255,7 +1258,7 @@
             if (target) {
                 $(element).attr('class', 'auto-hide c-popup-window');
                 let $target = $(target);
-                var sum = 0;
+                let sum = 0;
                 while ($target[0]) {
                     sum += $target.scrollTop();
                     $target = $target.parent();
@@ -1349,33 +1352,33 @@
             $(elem).addClass('selected');
             if (!$('#accordion').data('accordion')) {
                 $(function () {
-                    var Accordion = function (el, multiple) {
+                    let Accordion = function (el, multiple) {
                         this.el = el || {};
                         this.multiple = multiple || false;
                         el.find('.submenu li').click(function () {
                             el.find('.submenu li').removeClass('selected');
                             $(this).addClass('selected');
                         });
-                        var links = this.el.find('.link');
+                        let links = this.el.find('.link');
                         links.on('click', { el: this.el, multiple: this.multiple }, this.dropdown);
                     };
                     Accordion.prototype.dropdown = function (e) {
-                        var flag = $(e.target).closest('.page').hasClass('hideMenu');
+                        let flag = $(e.target).closest('.page').hasClass('hideMenu');
                         if (!flag) {
-                            var $el = e.data.el, $this = $(this), $next = $this.next();
+                            let $el = e.data.el, $this = $(this), $next = $this.next();
                             $next.slideToggle();
                             $this.parent().toggleClass('open');
                             if (!e.data.multiple)
                                 $el.find('.submenu').not($next).slideUp().parent().removeClass('open');
                         }
                     };
-                    var data = new Accordion($('#accordion'), false);
+                    let data = new Accordion($('#accordion'), false);
                     $('#accordion').data('accordion', data);
                 });
 
                 $('.accordion.m-collapse .link').mouseenter(function (e) {
                     $(this).append('<div class="m-submenu"></div>');
-                    var self_ = this;
+                    let self_ = this;
                     $(this).parent().find('.submenu li').each(function () {
                         $(self_).find('.m-submenu').append('<div><span>' + $(this).text() + '</span></div>');
                     });
@@ -1461,7 +1464,7 @@
         if (id)
             el = document.getElementById(id);
         el.focus();
-        var start = 0, end = 0, normalizedValue, range, textInputRange, len, endRange;
+        let start = 0, end = 0, normalizedValue, range, textInputRange, len, endRange;
         if (typeof el.selectionStart === "number" && typeof el.selectionEnd === "number") {
 
             start = el.selectionStart;
@@ -1505,7 +1508,7 @@
             input.setSelectionRange(start, end);
         } else
             if (input.createTextRange) {
-                var range = input.createTextRange();
+                let range = input.createTextRange();
                 range.collapse(true);
                 range.moveEnd('character', selectionEnd);
                 range.moveStart('character', selectionStart);

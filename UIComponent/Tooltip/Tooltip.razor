@@ -1,112 +1,32 @@
 ﻿@namespace Caspian.UI
-
+@inject IJSRuntime JSRuntime
 @{
     string position = Position?.ToString().ToLower() ?? "top";
     string tooltip_class = $"c-tooltip-{position}";
 }
 
-<div @ref="targetElement"
-     @onmouseenter="() => anchorStatus = WindowStatus.Open"
-    
-     style="border:1px solid blue;width:fit-content;" class="d-target-element">
-    @ChildContent
-</div>
-
-<PopupWindow @bind-Status="anchorStatus"
-             Style="width:fit-content; border-radius: 0px; display: block; position: absolute;background: transparent;box-shadow: none"
-             HorizontalAnchor="popupX"
-             VerticalAnchor="popupY"
-             TargetHorizontalAnchor="targetX"
-             TargetVerticalAnchor="targetY"
-             OffsetLeft="offsetLeft"
-             OffsetTop="offsetTop"
-             TargetElement="targetElement">
-
-    <div class="@tooltip_class">
-        @Text
-    </div>
-</PopupWindow>
+@ChildContent
+<span class="@tooltip_class">@Text</span>
 
 
 @code
 {
-    ElementReference targetElement;
-    WindowStatus anchorStatus;
-
-    HorizontalAnchor targetX, popupX;
-    VerticalAnchor targetY, popupY;
-    int offsetLeft, offsetTop;
-
-    [Parameter]
-    public string Text { get; set; }
-
-    [Parameter]
-    public Position? Position { get; set; }
+    ElementReference tooltip;
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 
-    protected override void OnParametersSet()
+    [Parameter]
+    public string Text { get; set; } = "This is a test";
+
+    [Parameter]
+    public Position? Position { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Position.HasValue)
-        {
-            if (Position.Value == UI.Position.Top)
-                SetPopupTop();
-            else if (Position.Value == UI.Position.Right)
-                SetPopupRight();
-            else if (Position.Value == UI.Position.Bottom)
-                SetPopupBottom();
-            else if (Position == UI.Position.Left)
-                SetPopupLeft();
-        }
-        else
-            SetPopupTop();
-
-        base.OnParametersSet();
-    }
-
-    private void SetPopupTop()
-    {
-        offsetTop = 5;
-        offsetLeft = 0;
-
-        targetX = HorizontalAnchor.Center;
-        targetY = VerticalAnchor.Top;
-        popupX = HorizontalAnchor.Center;
-        popupY = VerticalAnchor.Bottom;
-    }
-
-    private void SetPopupRight()
-    {
-        offsetTop = 0;
-        offsetLeft = 5;
-
-        targetX = HorizontalAnchor.Right;
-        targetY = VerticalAnchor.Middle;
-        popupX = HorizontalAnchor.Left;
-        popupY = VerticalAnchor.Middle;
-    }
-
-    private void SetPopupBottom()
-    {
-        offsetTop = 5;
-        offsetLeft = 0;
-
-        targetX = HorizontalAnchor.Center;
-        targetY = VerticalAnchor.Bottom;
-        popupX = HorizontalAnchor.Center;
-        popupY = VerticalAnchor.Top;
-    }
-
-    private void SetPopupLeft()
-    {
-        offsetTop = 0;
-        offsetLeft = -2;
-
-        targetX = HorizontalAnchor.Left;
-        targetY = VerticalAnchor.Middle;
-        popupX = HorizontalAnchor.Right;
-        popupY = VerticalAnchor.Middle;
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("$.caspian.bindTooltip", tooltip);
+        await base.OnAfterRenderAsync(firstRender);
     }
 }
 

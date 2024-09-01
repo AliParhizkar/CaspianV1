@@ -1,7 +1,121 @@
-﻿@page "/Demo/ChecklistBox"
-<CheckedListbox TEntity="CustomerGroup" TDetails="int[]" TextExpression="t => t.Title"  />
+﻿@page "/Demo/CheckedListbox"
+@namespace Demo.Web.Pages
 
+<h2>Checked Listbox</h2>
+<p>
+    This component is used to select <b>more than one</b> item. this component is suitable only when the <b>total number</b> of items and the <b>number of selected</b> items are <b>small</b>.
+</p>
+<h3>Binding & Appearance</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4>Binding</h4>
+                        <span class="c-demo-description">In this example, we <b>bind the component to customerGroupsId</b>, which is a <b>list of integer</b></span>
+                    </div>
+                    <div class="col-md-4 ps-4">
+                        <div class="row">
+                            <CheckedListbox TEntity="CustomerGroup" TDetails="int" @bind-Values="customerGroupsId" TextExpression="t => t.Title" Style="height:220px;flex-wrap:nowrap" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 c-controls ps-3 d-flex flex-column">
+                        <div class="col-md-8">
+                            <label class="justify-content-center">Selected Id</label>
+                        </div>
+                        <div style="height:180px;border:1px solid #dadada;border-radius:8px;width:100%;text-align:center" class="d-customer-group-container d-flex flex-column overflow-auto">
+                            @if (customerGroupsId != null && customerGroupsId.Count > 0)
+                            {
+                                foreach (var item in customerGroupsId)
+                                {
+                                    <div>
+                                        @item
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <span style="color:red;">Please Select ...</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="pe-4">
+                            <h4>Appearance</h4>
+                            <span class="c-demo-description"> In this example we have <b>multi columns</b> checked listbox</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div>
+                            <CheckedListbox  TEntity="CustomerGroup" TDetails="int" TextExpression="t => t.Title" Style="height:220px;" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Default Parameters</h4>
+                        <span class="c-demo-description"> In this example we </span>
+                    </div>
+                    <div class="col-md-3">
+                        <hr />
+                        <div class="pe-3">
+                            <div class="pb-1">
+                                <CheckBox @bind-Value="filterable" Title="Filterable" />
+                            </div>
+                            <div class="pb-3">
+                                <StringTextBox @bind-Value="placeHolder" placeholder="Search text" Disabled="!filterable" />
+                            </div>
+
+                            <div class="pb-1 pt-3">
+                                <CheckBox @bind-Value="showSelectAll" Title="Show Select All" />
+                            </div>
+                            <div class="pb-3">
+                                <StringTextBox @bind-Value="selectAllText" placeholder="Select all text" Disabled="!showSelectAll" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <hr />
+                        <CheckedListbox TEntity="CustomerGroup" TDetails="int" PlaceHolder="@placeHolder" SelectAllText="@selectAllText" ShowSelectAll="showSelectAll" Filterable="filterable" TextExpression="t => t.Title" Style="height:220px;flex-wrap:nowrap" />
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Lookup" FileName="Data-Binding" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h2 class="pt-3">Checked list Dropdown</h2>
+<p>
+    This component is used to select <b>more than one</b> item. this component is suitable only when the <b>total number</b> of items and the <b>number of selected</b> items are <b>small</b>.
+</p>
+<h3>Binding & Appearance</h3>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4>Binding</h4>
+                        <span class="c-demo-description">In this example, we <b>bind the component to otherCustomerGroupsId</b>, which is a <b>list of integer</b></span>
+                    </div>
+                    <div class="col-md-7 ps-4">
+                        <CheckedDropdownList TEntity="CustomerGroup" TDetails="int" @bind-Values="otherCustomerGroupsId" TextExpression="t => t.Title" />
+                    </div>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Lookup" FileName="Data-Binding" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 @code 
 {
-    int[] groupsId;
+    IList<int> customerGroupsId, otherCustomerGroupsId;
+    bool filterable, showSelectAll;
+    string selectAllText = "Select all text", placeHolder = "Search";
 }

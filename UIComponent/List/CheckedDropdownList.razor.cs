@@ -8,16 +8,18 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class ChecklistDropdown<TEntity, TDetails> where TEntity : class
+    public partial class CheckedDropdownList<TEntity, TDetails> where TEntity : class
     {
         CheckedListbox<TEntity, TDetails> checkboxList;
         WindowStatus status;
         ElementReference element;
         string text;
 
-        void ValuesChangedHandler(IList<TDetails> details)
+        async Task ValuesChangedHandler(IList<TDetails> details)
         {
             text = checkboxList.SelectedItemsText();
+            if (ValuesChanged.HasDelegate)
+                await ValuesChanged.InvokeAsync(details);
         }
 
         protected override async Task OnInitializedAsync()

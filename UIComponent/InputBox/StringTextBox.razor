@@ -24,7 +24,7 @@
     {
         @if (base.BindingType == BindingType.OnChange)
         {
-            <input value="@Value" @onchange="ChangeValue" @ref="InputElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
+            <input  value="@Value" @onchange="ChangeValue" @ref="InputElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
         }
         else
         {
@@ -105,6 +105,7 @@
             foreach(var item in InputAttributes)
                 InputAttributes[item.Key] = item.Value;
         }
+
         return base.OnParametersSetAsync();
     }
 

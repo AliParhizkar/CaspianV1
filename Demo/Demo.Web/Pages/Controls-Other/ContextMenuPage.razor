@@ -1,64 +1,174 @@
 ﻿@page "/Demo/ContextMenu"
 @namespace Demo.Web.Pages
 
+<h2>Context menu & Tooltip</h2>
+<p>
+    Context menu use for 
+</p>
 
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
+            <div class="d-content">
+                <h4>Show Context menu on click</h4>
+                <div class="d-flex justify-content-between p-4">
+                    <div>
+                        <button @onclick="ShowOnLeft" class="c-btn c-outline-primary">Context Menu On Left</button>
+                    </div>
+                    <div>
+                        <button @onclick="ShowOnRight" class="c-btn c-outline-primary">Context Menu On Right</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Disable & Separator</h4>
+                        <span class="c-demo-description">We can disable items and groups them </span>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <hr />
+                        <button @onclick="ShowDisableContextMenu" class="c-btn c-outline-primary">Show Context menu</button>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Onclick Event</h4>
+                        <span class="c-demo-description">We can disable items and groups them </span>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <hr />
+                        <div class="p-3 text-center">
+                            <label style="color:red">@result</label>
+                        </div>
+                        <button @onclick="ShowEventContextMenu" class="c-btn c-outline-primary">Show Context menu</button>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Show on right click</h4>
+                        <span class="c-demo-description">We can disable items and groups them </span>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <hr />
+                        <div class="d-target-element" oncontextmenu="return false" @onmouseup="ShowOnRightClick">Target Element</div>
+                    </div>
+                </div>
+            </div>
 
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Window" FileName="Generalproperties" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-3">Tooltip</h3>
+<p>
+    Tooltip
+</p>
+
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
+            <div class="d-content">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4>Use of Tooltip</h4>
+                        <span class="c-demo-description"></span>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="row c-controls ps-4">
+                            <div class="col-md-4">
+                                <label>Text</label>
+                            </div>
+                            <div class="col-md-8">
+                                <StringTextBox @bind-Value="@tooltipText" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Position</label>
+                            </div>
+                            <div class="col-md-8">
+                                <RadioList @bind-Value="tooltipPosition" OnChange="SetTooltipText" />
+                            </div>
+                            <div>
+                                <Tooltip >
+
+                                </Tooltip>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Window" FileName="Generalproperties" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
 <ContextMenu @bind-Status="leftStatus" Left="left" Top="top">
     <ContextMenuItem Title="item1" />
     <ContextMenuItem Title="item2" >
-        <ContextMenuItem Disabled Title="item2_1" />
+        <ContextMenuItem Title="item2_1" />
         <ContextMenuItem Title="item2_2" />
-        <ContextMenuItem Separator />
         <ContextMenuItem Title="item2_3" />
     </ContextMenuItem>
     <ContextMenuItem Title="item3">
-        <ContextMenuItem Disabled Title="item3_1">
+        <ContextMenuItem Title="item3_1">
             <ContextMenuItem Title="item3_1_1" />
-            <ContextMenuItem Separator />
             <ContextMenuItem Title="item3_1_2" />
-            <ContextMenuItem Disabled Title="item3_1_3" />
+            <ContextMenuItem Title="item3_1_3" />
         </ContextMenuItem>
         <ContextMenuItem Title="item3_2" />
-        <ContextMenuItem Separator />
         <ContextMenuItem Title="item3_3" />
     </ContextMenuItem>
-    <ContextMenuItem Disabled Title="item4" />
+    <ContextMenuItem Title="item4" />
 </ContextMenu>
-
-<div>
-    <button @onclick="ShowOnLeft" class="c-btn c-outline-primary">Context Menu On Right</button>
-</div>
-
-<div>
-    <button @onclick="ShowOnLeft" style="float:right;margin-right:100px;" class="c-btn c-outline-primary">Context Menu On Left</button>
-</div>
 
 <ContextMenu @bind-Status="rightStatus" Left="left" Top="top">
     <ContextMenuItem Title="item1" />
     <ContextMenuItem Title="item2">
-        <ContextMenuItem Disabled Title="item2_1" />
+        <ContextMenuItem Title="item2_1" />
         <ContextMenuItem Title="item2_2" />
-        <ContextMenuItem Separator />
         <ContextMenuItem Title="item2_3" />
     </ContextMenuItem>
     <ContextMenuItem Title="item3">
-        <ContextMenuItem Disabled Title="item3_1">
-            <ContextMenuItem Title="item3_1_1" />
-            <ContextMenuItem Separator />
-            <ContextMenuItem Title="item3_1_2" />
-            <ContextMenuItem Disabled Title="item3_1_3" />
+        <ContextMenuItem Title="item3_1">
         </ContextMenuItem>
         <ContextMenuItem Title="item3_2" />
-        <ContextMenuItem Separator />
         <ContextMenuItem Title="item3_3" />
     </ContextMenuItem>
-    <ContextMenuItem Disabled Title="item4" />
+    <ContextMenuItem Title="item4" />
+</ContextMenu>
+
+<ContextMenu @bind-Status="disableStatus" Left="left" Top="top">
+    <ContextMenuItem Title="item 1" />
+    <ContextMenuItem Disabled Title="item 2" />
+    <ContextMenuItem Title="item 3" />
+    <ContextMenuItem Separator />
+    <ContextMenuItem Title="item 4" />
+</ContextMenu>
+
+<ContextMenu @bind-Status="eventStatus" Left="left" Top="top">
+    <ContextMenuItem Title="item 1" OnClick='() => result = "Item 1 clicked"' />
+    <ContextMenuItem Disabled Title="item 2" OnClick='() => result = "Item 2 clicked"' />
+    <ContextMenuItem Title="item 3" OnClick='() => result = "Item 3 clicked"' />
+</ContextMenu>
+
+<ContextMenu @bind-Status="rightClickStatus" Left="left" Top="top">
+    <ContextMenuItem Title="item 1"/>
+    <ContextMenuItem Title="item 2"/>
+    <ContextMenuItem Title="item 3"/>
 </ContextMenu>
 
 @code {
-    bool leftStatus, rightStatus;
+    bool leftStatus, rightStatus, disableStatus, eventStatus, rightClickStatus;
     double left, top;
+    Position tooltipPosition = Position.Top;
+    string result, tooltipText = $"Tooltip in Top side";
+
+    void SetTooltipText()
+    {
+        tooltipText = $"Tooltip in {tooltipPosition.ToString()} side";
+    }
 
     void ShowOnLeft(MouseEventArgs e)
     {
@@ -69,9 +179,33 @@
 
     void ShowOnRight(MouseEventArgs e)
     {
+        left = e.ClientX - e.OffsetX;
+        top = e.ClientY - e.OffsetY;
+        rightStatus = true;
+    }
+
+    void ShowDisableContextMenu(MouseEventArgs e)
+    {
         left = e.ClientX;
         top = e.ClientY;
-        rightStatus = true;
+        disableStatus = true;
+    }
+
+    void ShowEventContextMenu(MouseEventArgs e)
+    {
+        left = e.ClientX;
+        top = e.ClientY;
+        eventStatus = true;
+    }
+
+    void ShowOnRightClick(MouseEventArgs e)
+    {
+        if (e.Button == 2)
+        {
+            left = e.ClientX;
+            top = e.ClientY;
+            rightClickStatus = true;
+        }
     }
 }
 

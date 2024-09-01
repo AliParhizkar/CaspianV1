@@ -7,13 +7,13 @@
 @using Microsoft.EntityFrameworkCore
 <span>@values.Count</span>
 <div style="width:600px;margin:10px auto">
-    <ChecklistDropdown TEntity="CustomerGroup" TDetails="int" @bind-Values="values" TextExpression="t => t.Title" />
+    <CheckedDropdownList TEntity="CustomerGroup" TDetails="int" @bind-Values="values" TextExpression="t => t.Title" />
 </div>
 <div style="height:400px;">
 
 </div>
 <div style="width:600px;margin:10px auto">
-    <ChecklistDropdown TEntity="CustomerGroup" TDetails="int" @bind-Values="values" TextExpression="t => t.Title" />
+    <CheckedDropdownList TEntity="CustomerGroup" TDetails="int" @bind-Values="values" TextExpression="t => t.Title" />
 </div>
 @* <div style="margin:10px auto;width:80%;">
     <Slide TEntity="Product" ConditionExpression="t => t.Image != null && t.Id < 30" >

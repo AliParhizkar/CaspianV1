@@ -145,6 +145,8 @@ namespace Caspian.UI
 
         async Task<bool> Confirm(string message)
         {
+            if (baseComponentService.MessageBox == null)
+                throw new CaspianException("لطفا صفحه ی پایه را به این صفحه اضافه کنید");
             return await baseComponentService.MessageBox.Confirm(message);
         }
 
