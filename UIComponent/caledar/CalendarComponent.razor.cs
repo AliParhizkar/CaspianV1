@@ -1,7 +1,5 @@
-﻿using System;
-using Caspian.Common;
+﻿using Caspian.Common;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
@@ -124,7 +122,7 @@ namespace Caspian.UI
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("$.caspian.bindCalendar", element, viewType, vNavigation);
+            await JSRuntime.InvokeVoidAsync("caspian.common.bindCalendar", element, viewType, vNavigation);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

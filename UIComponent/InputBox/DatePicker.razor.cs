@@ -1,8 +1,5 @@
-﻿using System;
-using Caspian.Common;
+﻿using Caspian.Common;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
@@ -20,11 +17,6 @@ namespace Caspian.UI
                 Status = WindowStatus.Open;
         }
 
-        void UpdateValue()
-        {
-
-        }
-
         async Task ChangeDate(DateTime date)
         {
             if (!disabled)
@@ -33,7 +25,6 @@ namespace Caspian.UI
                 text = date.ToShortDateString();
                 if (ValueChanged.HasDelegate)
                     await ValueChanged.InvokeAsync(Value);
-                await Task.Delay(400);
                 Status = WindowStatus.Close;
             }
         }
@@ -111,7 +102,7 @@ namespace Caspian.UI
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindDatePicker", dotnet, element);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindDatePicker", element, dotnet);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

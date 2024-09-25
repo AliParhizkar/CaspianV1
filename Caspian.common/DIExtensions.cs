@@ -18,6 +18,14 @@ namespace Caspian.Common
             {
                 if (type.IsGenericType)
                 {
+                    if (type.GenericTypeArguments.Length == 3)
+                    {
+                        var interfaceType = typeof(IMasterDetailsService<,,>).MakeGenericType(type.GenericTypeArguments);
+                        if (type == interfaceType)
+                            return serviceProvider.GetService(interfaceType) as TService;
+                        if (type == typeof(MasterDetailsService<,,>).MakeGenericType(type.GenericTypeArguments))
+                            return serviceProvider.GetService(interfaceType) as TService;
+                    }
                     if (type.GenericTypeArguments.Length == 2)
                     {
                         var interfaceType = typeof(IMasterDetailsService<,>).MakeGenericType(type.GenericTypeArguments);

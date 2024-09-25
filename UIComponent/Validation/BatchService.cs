@@ -88,7 +88,7 @@ namespace Caspian.UI
                     var newId = (int)typeof(TMaster).GetPrimaryKey().GetValue(result);
                     await (DataView as DataGrid<TMaster>).SelectRowById(newId);
                 }
-                await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Registration was done successfully");
+                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "Registration was done successfully");
             }
             else
             {
@@ -96,7 +96,7 @@ namespace Caspian.UI
                     await DetailDataView.ReloadAsync();
                 if (DataView != null)
                     await DataView.ReloadAsync();
-                await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", "Updating was done successfully");
+                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "Updating was done successfully");
             }
             if (DetailDataView != null)
                 DetailDataView.CancelInternalUpdate();
@@ -169,7 +169,7 @@ namespace Caspian.UI
                     }
                 }
                 else
-                    await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", result.Errors[0].ErrorMessage);
+                    await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", result.Errors[0].ErrorMessage);
             });
         }
 

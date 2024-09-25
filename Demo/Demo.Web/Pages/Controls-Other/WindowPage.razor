@@ -231,13 +231,6 @@
     bool resizeable;
     string title = "Title & custom header";
 
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-            await base.BindTooltip();
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
     string GetStyle()
     {
         switch (controlSize)

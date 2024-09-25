@@ -161,7 +161,7 @@ namespace Caspian.UI
             {
                 shouldFetchData = true;
                 await DataBind();
-                await jsRuntime.InvokeVoidAsync("$.caspian.dadaGridBind", mainDiv);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindDataGrid", mainDiv);
                 StateHasChanged();
             }
             if (insertContinerHouldhasFocus)

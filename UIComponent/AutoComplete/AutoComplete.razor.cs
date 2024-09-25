@@ -63,11 +63,6 @@ namespace Caspian.UI
         [Parameter]
         public bool AutoHide { get; set; }
 
-        public void Enable()
-        {
-            Disabled = false;
-        }
-
         public void Focus()
         {
 
@@ -76,11 +71,6 @@ namespace Caspian.UI
         public bool HasError()
         {
             return ErrorMessage != null;
-        }
-
-        public void Disable()
-        {
-            Disabled = true;
         }
 
         public void Dispose()
@@ -399,7 +389,8 @@ namespace Caspian.UI
             }
             inputAttrs = new Dictionary<string, object>();
             inputAttrs["class"] = AutoHide ? "t-input auto-hide" : "t-input";
-            Disabled = Container?.Disabled == true;
+            if (Container?.Disabled == true)
+                Disabled = true;
             Container?.SetControl(this);
             if (OpenOnFocus)
             {
@@ -442,7 +433,7 @@ namespace Caspian.UI
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindLookup", dotnet, InputElement);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindLookup", InputElement, dotnet);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

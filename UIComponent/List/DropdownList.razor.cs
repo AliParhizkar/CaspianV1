@@ -237,7 +237,7 @@ namespace Caspian.UI
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindDropdownList", dotnet, InputElement);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindDropdownList", InputElement, dotnet);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

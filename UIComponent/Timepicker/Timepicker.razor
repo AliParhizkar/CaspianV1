@@ -33,13 +33,26 @@
     @if (status == WindowStatus.Open && !DefaultMode)
     {
         <div class="t-animation-container">
-            <TimePanel FromTime="FromTime" ToTime="ToTime" AutoSelect="AutoSelect" Hour="time.Hours" Minute="time.Minutes" />
+            <TimePanel OnChange="Change" FromTime="FromTime" ToTime="ToTime" AutoSelect="AutoSelect" Hour="time.Hours" Minute="time.Minutes" />
         </div>
     }
 </div>
+
 @code
 {
     WindowStatus status;
+
+    async Task Change(TimeSpan? time)
+    {
+        if (time.HasValue && !disabled)
+        {
+            var value = (TValue)Convert.ChangeType(time, typeof(TimeSpan));
+            Value = value;
+            if (ValueChanged.HasDelegate)
+                await ValueChanged.InvokeAsync(value);
+        }
+        status = WindowStatus.Close;
+    }
 
     void OpenTimePanel()
     {
@@ -93,13 +106,13 @@
         if (firstRender)
         {
             var dotnet = DotNetObjectReference.Create(this);
-            await JSRuntime.InvokeVoidAsync("$.caspian.bindTimepicker", dotnet, InputElement);
+            await JSRuntime.InvokeVoidAsync("caspian.common.bindTimepicker", InputElement, dotnet);
         }
         await base.OnAfterRenderAsync(firstRender);
     }
 
     [JSInvokable]
-    public void CloseWindow()
+    public void Close()
     {
         status = WindowStatus.Close;
         StateHasChanged();

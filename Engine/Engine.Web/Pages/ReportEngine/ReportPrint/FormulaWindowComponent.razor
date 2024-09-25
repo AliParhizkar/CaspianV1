@@ -283,7 +283,7 @@
     {
         if (message.HasValue())
         {
-            await JSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+            await JSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
             message = null;
         }
         if (updateData)

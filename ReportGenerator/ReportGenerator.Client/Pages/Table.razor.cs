@@ -578,7 +578,7 @@ namespace Caspian.Report
             }
             if (message != null)
             {
-                await JSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+                await JSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
                 message = null;
             }
             await base.OnAfterRenderAsync(firstRender);

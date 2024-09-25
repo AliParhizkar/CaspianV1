@@ -63,7 +63,7 @@
         {
             firstRender = false;
             var dotnet = DotNetObjectReference.Create(this);
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindContextMenu", dotnet, igniterContextMenuElement);
+            await jsRuntime.InvokeVoidAsync("caspian.common.bindContextMenu", igniterContextMenuElement, dotnet);
         }
         await base.OnAfterRenderAsync(firstTime);
     }

@@ -199,8 +199,8 @@ namespace Caspian.UI
             {
                 var message = ErrorMessage;
                 ErrorMessage = null;
-                await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
-            }
+                await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
+            }   
             //var ctr = controls.FirstOrDefault(t => t.HasError());
             //if (ctr != null)
             //    await ctr.FocusAsync();

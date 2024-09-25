@@ -29,7 +29,7 @@
             if (window.chrome.webview)
                 window.chrome.webview.postMessage(data);
             else
-                $.caspian.showMessage('Using WPF for coding')
+                caspian.common.showMessage('Using WPF for coding')
         },
 
         getSourceCodeString() {

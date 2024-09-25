@@ -145,7 +145,8 @@ namespace Caspian.UI
         {
             if (firstRender)
             {
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindWindow", DotNetObjectReference.Create(this), window);
+                var dotnet = DotNetObjectReference.Create(this);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindWindow", window, dotnet);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

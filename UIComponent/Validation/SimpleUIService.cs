@@ -80,7 +80,7 @@ namespace Caspian.UI
                 }
                 else
                     await DataView.ReloadAsync();
-                await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
                 if (Window == null)
                     await Form.ResetAsync();
                 else
@@ -139,7 +139,7 @@ namespace Caspian.UI
                     }
                 }
                 else
-                    await jSRuntime.InvokeVoidAsync("$.caspian.showMessage", result.Errors[0].ErrorMessage);
+                    await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", result.Errors[0].ErrorMessage);
             });
         }
 

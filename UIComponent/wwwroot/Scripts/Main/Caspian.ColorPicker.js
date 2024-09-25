@@ -136,7 +136,7 @@
             }
 
             hue = Math.floor(hue * 60);
-            return [hue < 0 ? hue + 360 : hue, Math.round(saturation * 100), Math.round(value * 100)]
+            return [hue < 0 ? hue + 360 : hue, Math.round(saturation * 100), Math.round(value * 100)];
         },
         dragStart: function (x, y, left, top) {
             mouseisDows = true;

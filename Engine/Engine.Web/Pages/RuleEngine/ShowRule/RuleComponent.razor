@@ -161,14 +161,4 @@
             return ruleEngine.GetUserdata(param);
         return ruleEngine.GetFormData(param.Id);
     }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (OldRuleId != Rule.Id)
-        {
-            OldRuleId = Rule.Id;
-            await BindTooltip();
-        }
-        await base.OnAfterRenderAsync(firstRender);
-    }
 }

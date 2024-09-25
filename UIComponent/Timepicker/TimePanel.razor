@@ -39,8 +39,8 @@
     {
         <div class="c-time-footer">
             <div class="w-100 d-flex justify-content-between">
-                <button class="c-clear">Clear</button>
-                <button class="c-cancel">Cancel</button>
+                <button class="c-clear" @onclick="Clear">Clear</button>
+                <button class="c-cancel" @onclick="Cancel">Cancel</button>
                 <button class="c-ok">Ok</button>
             </div>
         </div>
@@ -60,6 +60,22 @@
         navigate = state;
     }
 
+    void Clear()
+    {
+        Hour = 0;
+        Minute = 0;
+    }
+
+    async Task Cancel()
+    {
+        await OnChange.InvokeAsync(null);
+    }
+
+    async Task Ok()
+    {
+        await OnChange.InvokeAsync(new TimeSpan(Hour, Minute, 0));
+    }
+
     [Parameter]
     public int Hour { get; set; }
 
@@ -71,6 +87,9 @@
 
     [Parameter]
     public TimeSpan? ToTime { get; set; }
+
+    [Parameter]
+    public EventCallback<TimeSpan?> OnChange { get; set; }
 
     void HoureChanged(int hour)
     {

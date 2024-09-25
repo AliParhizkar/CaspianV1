@@ -1,11 +1,11 @@
 ﻿@namespace Caspian.UI
 @inject IJSRuntime jsRuntime
 <div @attributes="Attributes" class="c-picturebox">
-    <img class="c-content" @ref="span" />
+    <img class="c-content" @ref="img" />
 </div>
 @code
 {
-    ElementReference span;
+    ElementReference img;
 
     [Parameter]
     public string NoContentTitle { get; set; }
@@ -19,18 +19,15 @@
     [Parameter]
     public byte[] Data { get; set; }
 
-    [Parameter]
-    public string ContentType{ get; set; }
-
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (Data != null)
         {
             var dotnetImageStream = new DotNetStreamReference(new MemoryStream(Data));
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindImage", span, dotnetImageStream, ContentType);
+            await jsRuntime.InvokeVoidAsync("caspian.common.bindImage", img, dotnetImageStream);
         }
         else
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindImage", span, null);
+            await jsRuntime.InvokeVoidAsync("caspian.common.bindImage", img, null);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Linq;
-using Caspian.Common;
+﻿using Caspian.Common;
 using System.Reflection;
 using Microsoft.JSInterop;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
 
 namespace Caspian.UI
 {
@@ -55,11 +50,8 @@ namespace Caspian.UI
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            var json = JsonSerializer.Serialize(new
-            {
-                errorMessage = ErrorMessage,
-            });
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindMultiSelect", InputElement, json);
+            if (firstRender)
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindMultiSelect", InputElement);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

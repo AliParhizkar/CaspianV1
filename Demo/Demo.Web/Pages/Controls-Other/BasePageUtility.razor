@@ -199,9 +199,14 @@
 
     async Task DownloadFile()
     {
-        var path = host.ContentRootPath + "\\Data\\resumes.pdf";
-        var byteArray = await File.ReadAllBytesAsync(path);
-        await base.DownloadFile("resumes.pdf", byteArray);
+        var path = host.ContentRootPath + "\\Data\\resume.pdf";
+        if (File.Exists(path))
+        {
+            var byteArray = await File.ReadAllBytesAsync(path);
+            await base.DownloadFile("resume.pdf", byteArray);
+        }
+        else
+            ShowMessage("File not Exist");
     }
 
     async Task AlertMessageAsync()

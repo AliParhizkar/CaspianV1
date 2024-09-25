@@ -346,7 +346,7 @@ namespace Caspian.Report
                 Data.Width = Convert.ToInt32(Data.Setting.PageWidth * pixelsPerCentimetre);
             if (message.HasValue())
             {
-                await JSRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+                await JSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
                 message = null;
             }
             await base.OnAfterRenderAsync(firstRender);

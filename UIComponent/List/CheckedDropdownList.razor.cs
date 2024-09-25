@@ -126,7 +126,7 @@ namespace Caspian.UI
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);
-                await jSRuntime.InvokeVoidAsync("$.caspian.bindCheclistDropdown", element, dotnet);
+                await jSRuntime.InvokeVoidAsync("caspian.common.bindCheclistDropdown", element, dotnet);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

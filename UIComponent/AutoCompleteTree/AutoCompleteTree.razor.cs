@@ -114,7 +114,6 @@ namespace Caspian.UI
                     await ValueChanged.InvokeAsync(Value);
                 if (OnChanged.HasDelegate)
                     await OnChanged.InvokeAsync();
-                await Task.Delay(200);
                 show = false;
             }
         }
@@ -151,7 +150,7 @@ namespace Caspian.UI
         public EventCallback OnInternalClose { get; set; }
 
         [JSInvokable]
-        public async Task HideForm()
+        public async Task Close()
         {
             show = false;
             if (multiSelectable)
@@ -164,9 +163,8 @@ namespace Caspian.UI
         {
             if (firstRender)
             {
-                
                 var dotnet = DotNetObjectReference.Create(this);
-                await jSRuntime.InvokeVoidAsync("$.caspian.bindLookupTree", dotnet, input);
+                await jSRuntime.InvokeVoidAsync("caspian.common.bindLookupTree", input, dotnet);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

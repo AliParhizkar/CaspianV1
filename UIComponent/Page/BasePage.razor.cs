@@ -110,7 +110,7 @@ namespace Caspian.UI
         protected async Task DownloadFile(string fileName, MemoryStream fileContent)
         {
             using var streamRef = new DotNetStreamReference(fileContent);
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindFileDownload", fileName, streamRef);
+            await jsRuntime.InvokeVoidAsync("caspian.common.bindFileDownload", fileName, streamRef);
         }
 
         protected override void OnInitialized()
@@ -134,7 +134,7 @@ namespace Caspian.UI
         protected async Task EnableWindowClick(BasePage child)
         {
             this.child = child;
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindWindowClick", DotNetObjectReference.Create(child));
+            await jsRuntime.InvokeVoidAsync("caspian.common.bindWindowClick", DotNetObjectReference.Create(child));
         }
 
         protected virtual void OnWindowClick()
@@ -142,16 +142,11 @@ namespace Caspian.UI
 
         }
 
-        protected async Task BindTooltip()
-        {
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindTooltip");
-        }
-
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (message.HasValue())
             {
-                await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", message);
+                await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
                 message = null;
             }
             await base.OnAfterRenderAsync(firstRender);

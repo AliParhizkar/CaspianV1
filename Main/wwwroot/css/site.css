@@ -615,3 +615,18 @@ html, body {
     background-size:cover;
 }
 
+
+.test-control {
+    border: 1px solid red;
+    height: 32px;
+    box-sizing: border-box;
+}
+.test-animate-container{
+    background-color:blueviolet;
+    height:100px;
+    position:absolute;
+    width:300px;
+    box-sizing:border-box;
+    margin-top:33px;
+    margin-left:-1px;
+}

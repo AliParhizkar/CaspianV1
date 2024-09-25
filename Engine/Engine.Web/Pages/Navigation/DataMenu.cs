@@ -83,7 +83,7 @@ namespace Caspian.Engine.Navigation
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            await jSRuntime.InvokeVoidAsync("$.caspian.bindMenu", elm);
+            await jSRuntime.InvokeVoidAsync("caspian.common.bindMenu", elm);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

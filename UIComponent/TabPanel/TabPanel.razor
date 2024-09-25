@@ -117,7 +117,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JSRuntime.InvokeVoidAsync("$.caspian.bindTabpanel", element);
+        await JSRuntime.InvokeVoidAsync("caspian.common.bindTabpanel", element);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

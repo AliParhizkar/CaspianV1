@@ -24,12 +24,12 @@
         {
             var dotnet = DotNetObjectReference.Create(this);
             var data = new Tokenizer().GetTokenizeData(Source);
-            await jSRuntime.InvokeVoidAsync("$.caspian.bindCodeEditor", Source, dotnet, Readonly, LineNumber, Column, data);
+            await jSRuntime.InvokeVoidAsync("caspian.common.bindCodeEditor", Source, dotnet, Readonly, LineNumber, Column, data);
         }
         else if (Source != null && Source.Length != oldSourceLength && !updatedFromClient)
         {
             oldSourceLength = Source.Length;
-            await jSRuntime.InvokeVoidAsync("$.caspian.setEditorCode", Source);
+            await jSRuntime.InvokeVoidAsync("caspian.comon.setEditorCode", Source);
         }
         await base.OnAfterRenderAsync(firstRender);
     }
@@ -68,12 +68,12 @@
 
     public async Task SetCode(string code)
     {
-        await jSRuntime.InvokeVoidAsync("$.caspian.setEditorCode", element, code);
+        await jSRuntime.InvokeVoidAsync("caspian.common.setEditorCode", element, code);
     }
 
     public async Task SetPosition(int lineNumber, int column)
     {
-        await jSRuntime.InvokeVoidAsync("$.caspian.setEditoPosition", element, lineNumber, column);
+        await jSRuntime.InvokeVoidAsync("caspian.common.setEditoPosition", element, lineNumber, column);
     }
 
     [Parameter]

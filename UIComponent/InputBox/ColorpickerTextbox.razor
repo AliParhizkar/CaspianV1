@@ -55,7 +55,7 @@
         if (firstRender)
         {
             var dotnet = DotNetObjectReference.Create(this);
-            await jSRuntime.InvokeVoidAsync("$.caspian.bindInputCollorPicker", element, dotnet);
+            await jSRuntime.InvokeVoidAsync("caspian.common.bindInputCollorPicker", element, dotnet);
         }
         await base.OnAfterRenderAsync(firstRender);
     }

@@ -267,11 +267,4 @@
     HorizontalAnchor hAnchorTarget = HorizontalAnchor.Left;
     VerticalAnchor vAnchor = VerticalAnchor.Top;
     HorizontalAnchor hAnchor = HorizontalAnchor.Left;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-            await base.BindTooltip();
-        await base.OnAfterRenderAsync(firstRender);
-    }
 }

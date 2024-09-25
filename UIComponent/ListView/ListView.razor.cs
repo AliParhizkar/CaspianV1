@@ -122,7 +122,7 @@ namespace Caspian.UI
             {
                 await DataBind();
                 StateHasChanged();
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindListView", element);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindListView", element);
             }
             if (insertContinerHouldhasFocus)
             {

@@ -19,25 +19,6 @@
         },
         focus: function () {
             $(this.element).focus();
-        },
-        enable: function (flag) {
-            if (arguments.length == 0)
-                return $(this.element).attr('disabled') != "disabled";
-            $(this.element).parent().removeClass('t-state-disabled');
-            if (flag)
-                $(this.element).attr('disabled', null);
-            else
-                $(this.element).attr('disabled', "disabled");
-        },
-        disable: function (flag) {
-            if (arguments.length == 0)
-                return $(this.element).attr('disabled') === "disabled";
-            $(this.element).parent().addClass('t-state-disabled');
-            if (flag)
-                $(this.element).attr('disabled', true);
-            else
-                $(this.element).attr('disabled', null);
-                
         }
     }
 

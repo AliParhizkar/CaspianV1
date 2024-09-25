@@ -156,7 +156,7 @@ namespace Caspian.UI
                 });
                 if (errorMessage != null)
                 {
-                    await jsRuntime.InvokeVoidAsync("$.caspian.showMessage", errorMessage);
+                    await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", errorMessage);
                     errorMessage = null;
                 }
             }

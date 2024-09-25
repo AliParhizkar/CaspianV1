@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Text.Json;
 using Microsoft.JSInterop;
-using System.Text.Json;
+using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
@@ -71,13 +71,13 @@ namespace Caspian.UI
         public ElementReference? TargetElement { get; set; }
 
         [JSInvokable]
-        public async Task HideForm()
+        public async Task Close()
         {
             if (AutoHide && StatusChanged.HasDelegate)
             {
                 //Delay to Value of control set in binding after change
                 await Task.Delay(100);
-                await StatusChanged.InvokeAsync();
+                await StatusChanged.InvokeAsync(WindowStatus.Close);
             }
         }
 
@@ -128,7 +128,7 @@ namespace Caspian.UI
                     offsetLeft = OffsetLeft,
                     offsetTop = OffsetTop
                 });
-                await jSRuntime.InvokeVoidAsync("$.caspian.bindPopupWindow", DotNetObjectReference.Create(this), json, element, TargetElement);
+                await jSRuntime.InvokeVoidAsync("caspian.common.bindPopupWindow", element, TargetElement, json, DotNetObjectReference.Create(this));
             }
             await base.OnAfterRenderAsync(firstRender);
         }

@@ -7,6 +7,7 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject ProtectedSessionStorage storage
 @inject CaspianDataService dataService
+@inject IHostEnvironment host
 @{
     var className = "page";
     if (hideMenu)
@@ -19,6 +20,7 @@
             @if (menusId != null)
             {
                 var className = "content";
+
                 <div class="sidebar">
                     <div class="c-menu-icon">
                         <div>
@@ -127,6 +129,7 @@
 
     protected override void OnInitialized()
     {
+        hideMenu = host.IsDevelopment();
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.LocationChanged += OnLocationChanged;
         

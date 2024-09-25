@@ -164,8 +164,6 @@ namespace Caspian.UI
                     text = TextExpression.Compile().Invoke(item as TEntity);
                 }
             }
-
-            await Task.Delay(300);
             Status = WindowStatus.Close;
         }
 
@@ -646,7 +644,7 @@ namespace Caspian.UI
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindComboBox", dotnet, InputElement, Pageable);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindComboBox", InputElement, Pageable, dotnet);
             }
             if (focused)
             {
