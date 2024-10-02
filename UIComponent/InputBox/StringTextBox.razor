@@ -1,137 +1,27 @@
 ﻿@namespace Caspian.UI
 @using System.Diagnostics
 @inherits CBaseInput<string>
-@{
-    base.BuildRenderTree(__builder);
-    if (disabled)
-        className += " t-state-disabled";
-    else if (ErrorMessage != null)
-        className += " t-state-error";
-}
-<div class="@className" error-message="@ErrorMessage">
+<div @attributes="GetAttributes()">
     @if (MultiLine)
     {
         @if (base.BindingType == BindingType.OnChange)
         {
-            <textarea @ref="InputElement" style="@Style" @attributes="InputAttributes" @onchange="ChangeValue">@Value</textarea>
+            <textarea @ref="InputElement" @attributes="GetInputAttributes()" @onchange="ChangeValue">@Value</textarea>
         }
         else
         {
-            <textarea @ref="InputElement" style="@Style" @attributes="InputAttributes" @oninput="ChangeValue">@Value</textarea>
+            <textarea @ref="InputElement" @attributes="GetInputAttributes()" @oninput="ChangeValue">@Value</textarea>
         }
     }
     else
     {
         @if (base.BindingType == BindingType.OnChange)
         {
-            <input  value="@Value" @onchange="ChangeValue" @ref="InputElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
+            <input  value="@Value" @onchange="ChangeValue" @ref="InputElement" @attributes="GetInputAttributes()" />
         }
         else
         {
-            <input value="@Value" @oninput="ChangeValue" @ref="InputElement" style="@Style" @attributes="InputAttributes" autocomplete="off" />
+            <input value="@Value" @oninput="ChangeValue" @ref="InputElement" @attributes="GetInputAttributes()" />
         }
     }
 </div>
-@code
-{
-    string className;
-    async Task ChangeValue(ChangeEventArgs arg)
-    {
-        var readOnly = false;
-        if (InputAttributes.ContainsKey("readonly"))
-            readOnly = Convert.ToBoolean(InputAttributes["readonly"]);
-        if (!readOnly && !disabled)
-        {
-            Value = arg.Value.ToString();
-            if (ValueChanged.HasDelegate)
-                await ValueChanged.InvokeAsync(Value);
-            if (OnChange.HasDelegate)
-                await OnChange.InvokeAsync();
-        }
-    }
-
-    protected override void OnInitialized()
-    {
-        if (Id == null)
-            Id = "";
-        if (ValueExpression != null)
-        {
-            var expr = ValueExpression.Body;
-            while (expr.NodeType == ExpressionType.MemberAccess)
-            {
-                var property = (expr as MemberExpression).Member as PropertyInfo;
-                if (property?.Name == "Search")
-                {
-                    Search = property.DeclaringType.GetInterfaces().Any(t => t == typeof(ISimpleService));
-                    break;
-                }
-                expr = (expr as MemberExpression).Expression;
-            }
-        }
-        base.OnInitialized();
-    }
-
-    protected override Task OnParametersSetAsync()
-    {
-        className = "t-widget";
-        if (MultiLine)
-            className += " t-multitextbox";
-        else
-            className += " t-stringtextbox";
-
-        if (MaxLength.HasValue)
-            InputAttributes["maxlength"] = MaxLength;
-        if (MultiLine)
-        {
-            if (Cols.HasValue)
-                InputAttributes["cols"] = Cols;
-            if (Rows.HasValue)
-                InputAttributes["rows"] = Rows;
-        }
-
-        if (disabled)
-            InputAttributes["disabled"] = "disabled";
-        else
-            InputAttributes.Remove("disabled");
-        InputAttributes["class"] = "t-input";
-        if (Id.HasValue())
-        {
-            var id = Id.Replace('.', '_');
-            InputAttributes["id"] = id;
-            InputAttributes["name"] = id;
-        }
-        if (InputAttributes != null)
-        {
-            foreach(var item in InputAttributes)
-                InputAttributes[item.Key] = item.Value;
-        }
-
-        return base.OnParametersSetAsync();
-    }
-
-    [Parameter]
-    public int? MaxLength { get; set; }
-
-    [Parameter]
-    public bool MultiLine { get; set; }
-
-    [Parameter]
-    public int? Cols { get; set; }
-
-    [Parameter]
-    public int? Rows { get; set; }
-
-    public string Type { get; set; } = "string";
-
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-            await jsRuntime.InvokeVoidAsync("$.caspian.bindStringbox", InputElement);
-        if (focuced)
-        {
-            focuced = false;
-            await jsRuntime.InvokeVoidAsync("$.caspian.focus", InputElement);
-        }
-        await base.OnAfterRenderAsync(firstRender);
-    }
-}

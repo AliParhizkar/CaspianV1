@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
+using Caspian.Common;
 
 namespace Caspian.UI
 {
@@ -26,6 +27,23 @@ namespace Caspian.UI
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
         WindowStatus status;
         bool valueUpdated;
+
+
+        IDictionary<string, object> GetMainAttribute()
+        {
+            var className = "t-widget t-numerictextbox c-lookup";
+            if (Disabled)
+                className += " t-state-disabled";
+            if (ErrorMessage.HasValue())
+                className += " t-state-error";
+            var dic = new Dictionary<string, object>()
+            {
+                {"style", Style }, {"closeOnBlur", CloseOnBlur}, {"error-message", ErrorMessage}, {"class", className}, 
+                {"autoHide", AutoHide}
+            };
+            return dic;
+        }
+
         void SetSearchValue(ChangeEventArgs e)
         {
             if (status == WindowStatus.Close)

@@ -4,27 +4,37 @@
     <meta charset="utf-8" />
     <title></title>
     <style type="text/css">
-        #qqqq {
-            border:1px solid blue;
+        #parent {
+            border:1px solid red;
             width:250px;
-            margin:80px auto;
-            height:32px;
-            overflow:auto;
             box-sizing:border-box;
+            position:absolute;
+            top:100px;
+            margin-left:100px;
+        }
+        #target {
+            border: 1px solid blue;
+            background-color: aquamarine;
+            margin: 20px;
+            height:100px;
         }
     </style>
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', e => {
-            let qqq = document.getElementById('target').getBoundingClientRect();
+            let target = document.getElementById('target');
+
         });
     </script>
     <link href="css/site.css" rel="stylesheet" />
 </head>
 <body>
-    <div id="qqqq" class="col">
-        <div style="border:1px solid red;background-color:aquamarine;position:absolute;margin-top:33px;width" id="target">
-            111
+    <div id="parent" class="col">
+        <div id="q12345" style="position:relative;border:1px solid yellow;margin:35px">
+            <div style="" id="target">
+                111
+            </div>
         </div>
+
     </div>
 </body>
 </html>

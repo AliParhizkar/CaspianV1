@@ -86,13 +86,5 @@ namespace Caspian.Engine.RuleGenerator
             Type = new AssemblyInfo().GetModelType(rule.SystemKind, rule.TypeName);
             await base.OnParametersSetAsync();
         }
-
-        protected async override Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-                await jSRuntime.InvokeVoidAsync("$.caspian.fitMainToParent");
-            await base.OnAfterRenderAsync(firstRender);
-        }
-
     }
 }

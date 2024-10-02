@@ -118,7 +118,7 @@
         if (message.HasValue())
             Message = message.Replace("\n", "<br/>");
         show = true;
-        await jsRuntime.InvokeVoidAsync("$.caspian.enableDefaultShortKey", true, DotNetObjectReference.Create(this));
+        await jsRuntime.InvokeVoidAsync("caspian.common.enableDefaultShortKey", true, DotNetObjectReference.Create(this));
         StateHasChanged();
         var task = Task.Run<bool>(async () =>
         {
@@ -127,7 +127,7 @@
                 await Task.Delay(100);
             }
             show = false;
-            await jsRuntime.InvokeVoidAsync("$.caspian.enableDefaultShortKey", false);
+            await jsRuntime.InvokeVoidAsync("caspian.common.enableDefaultShortKey", false);
             await InvokeAsync(StateHasChanged);
             return confirmResult.Value;
         });

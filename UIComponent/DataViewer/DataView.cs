@@ -54,10 +54,13 @@ namespace Caspian.UI
         public TEntity Search { get; set; }
 
         [Parameter]
+        public SelectType SelectType { get; set; } = SelectType.Single;
+
+        [Parameter]
         public EventCallback<UpsertMode> OnCancel { get; set; }
 
         [Parameter]
-        public int? ContentHeight { get; set; }
+        public int? ContentHeight { get; set; } = 250;
 
         [Parameter]
         public string DeleteMessage { get; set; }

@@ -58,7 +58,7 @@ namespace Caspian.UI
             {
                 renderd = true;
                 var dotnet = DotNetObjectReference.Create(this);
-                await JSRuntime.InvokeVoidAsync("$.caspian.bindSlider", element, dotnet);
+                await JSRuntime.InvokeVoidAsync("caspian.common.bindSlider", element, dotnet);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

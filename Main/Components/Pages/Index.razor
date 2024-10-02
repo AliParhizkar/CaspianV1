@@ -267,9 +267,8 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-            await runTime.InvokeVoidAsync("$.caspian.bindBox");
-        using var context = new Demo.Model.Context();
-        //context.Orders.Join()
+            await runTime.InvokeVoidAsync("caspian.common.bindBox");
+
         await base.OnAfterRenderAsync(firstRender);
     }
 }

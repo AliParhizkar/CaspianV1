@@ -16,8 +16,8 @@ namespace Caspian.UI
         
         public static bool IsStarted { get; set; }
 
-        [CascadingParameter]
-        public ClassNameContainner ClassNameContainner { get; set; }
+        //[CascadingParameter]
+        //public ClassNameContainner ClassNameContainner { get; set; }
 
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
@@ -115,8 +115,6 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (ClassNameContainner != null)
-                ClassNameContainner.ClassName = this.GetType().Name;
             BaseService.Target = this;
             base.OnInitialized();
         }

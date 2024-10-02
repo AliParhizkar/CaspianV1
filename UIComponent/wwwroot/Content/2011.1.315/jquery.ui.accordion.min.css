@@ -168,8 +168,8 @@ a {
         .page.hideMenu .link span {
             display: none;
         }
-.page.hideMenu .link .fa-chevron-down{
-    display:none;
+.page.hideMenu .link .fa-chevron-up, .page.hideMenu .link .fa-chevron-down {
+    display: none;
 }
 .page.hideMenu .accordion .submenu {
     display: none !important;
@@ -196,6 +196,7 @@ a {
 
         .accordion li i.fa-chevron-down {
             font-size: 12px;
+
         }
 
     .accordion li.open .link {
@@ -206,7 +207,7 @@ a {
         color: white;
     }
 
-        .accordion li.open i.fa-chevron-down {
+        .accordion li.open i.fa-chevron-up {
             -webkit-transform: rotate(180deg);
             -ms-transform: rotate(180deg);
             -o-transform: rotate(180deg);
@@ -214,16 +215,20 @@ a {
         }
 
     .accordion li.default .submenu {
-        display: block;
         overflow:hidden;
     }
 /**
  * Submenu
  -----------------------------*/
 .submenu {
-    display: none;
     background: #bdbdbd;
     font-size: 12px;
+    transition: height 0.4s ease;
+    height:0;
+}
+
+#mainmenu .open .submenu {
+    height:auto
 }
 
 @keyframes example {

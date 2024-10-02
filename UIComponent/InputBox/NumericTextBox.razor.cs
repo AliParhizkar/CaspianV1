@@ -8,17 +8,34 @@ namespace Caspian.UI
 {
     public partial class NumericTextBox<TValue>: CBaseInput<TValue>
     {
-        string oldJson;
         int? maxLength = 8;
 
         [Parameter]
         public int Total { get; set; } = 8;
 
         [Parameter]
-        public int NumberDigit { get; set; } = 2;
+        public int? NumberDigit { get; set; } = 2;
 
         [Parameter]
         public bool DigitGrouping { get; set; } = true;
+
+        Dictionary<string, object> GetAttributes()
+        {
+            var attributes = new Dictionary<string, object>();
+            var className = "t-widget t-numerictextbox";
+            if (disabled)
+                className += " t-state-disabled";
+            if (!disabled && ErrorMessage != null)
+                className += " t-state-error";
+            attributes["class"] = className;
+            attributes["total"] = Total;
+            if (NumberDigit.HasValue)
+                attributes["number-digit"] = NumberDigit.Value;
+            if (Style.HasValue())
+                attributes["style"] = Style;
+
+            return attributes;
+        }
 
         async Task onChangeValue(ChangeEventArgs arg)
         {
@@ -61,22 +78,8 @@ namespace Caspian.UI
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            var type = typeof(TValue);
-            if (type.IsNullableType())
-                type = Nullable.GetUnderlyingType(type);
-            if (type == typeof(int) || type == typeof(long) || type == typeof(short))
-                NumberDigit = 0;
-            var obj = new
-            {
-                total = Total,
-                digits = NumberDigit
-            };
-            var json = JsonSerializer.Serialize(obj);
-            if (!json.Equals(oldJson))
-            {
-                oldJson = json;
-                await jsRuntime.InvokeVoidAsync("$.caspian.bindControl", InputElement, json, UiControlType.TextBox);
-            }
+            if (firstRender)
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindTextBox", InputElement);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

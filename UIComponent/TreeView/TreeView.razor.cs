@@ -317,7 +317,7 @@ namespace Caspian.UI
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
-                await JSRuntime.InvokeVoidAsync("$.caspian.bindTree", tree);
+                await JSRuntime.InvokeVoidAsync("caspian.common.bindTree", tree);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

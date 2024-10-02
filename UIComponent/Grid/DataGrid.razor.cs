@@ -372,9 +372,6 @@ namespace Caspian.UI
         public EventCallback<int> OnInternalRowSelect { get; set; }
 
         [Parameter]
-        public SelectType SelectType { get; set; } = SelectType.Single;
-
-        [Parameter]
         public RenderFragment<RowData<TEntity>> Columns { get; set; }
 
         [Parameter]

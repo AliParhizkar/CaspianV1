@@ -1,12 +1,37 @@
-﻿.d-price {
-    display: flex;
-    line-height: 19px;
-    justify-content: space-around;
-    padding:0 8px;
-    font-size:15px;
-    padding:0;
-    vertical-align:top;
+﻿.d-order {
+    flex-wrap: wrap;
 }
+.d-details-title {
+    font-weight: bold;
+    color: #a18636;
+    font-size: 21px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    width: 40px;
+    justify-content: center;
+}
+    .d-details-title div {
+        transform: rotate(90deg);
+    }
+    .d-orderdetails {
+        padding: 5px 0;
+        border-top: 1px solid #cacaca;
+        margin: 0 10px;
+        display: flex;
+    }
+    .d-orderdetails tbody tr:nth-child(2n){
+        background-color:azure;
+    }
+    .d-price {
+        display: flex;
+        line-height: 19px;
+        justify-content: space-around;
+        padding: 0 8px;
+        font-size: 15px;
+        padding: 0;
+        vertical-align: top;
+    }
 .d-discount{
     text-decoration:line-through;
     text-decoration-color:red;

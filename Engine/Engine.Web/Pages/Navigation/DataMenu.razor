@@ -15,17 +15,20 @@
             @foreach (var category in Categories)
             {
                 var menus = Menus.Where(t => t.MenuCategoryId == category.Id);
-                var flag = menus.Any(t => curentUrl.Equals(t.Source));
-                var style = flag ? "" : "display:none";
+                string className = "default";
+                if (menus.Any(t => curentUrl.Equals(t.URL)))
+                {
+                    className += " open";
+                }
                 if (menus.Any())
                 {
-                    <li class="default">
+                    <li class="@className">
                         <div class="link" @onclick="@(async() => await ChangeValueAsync())">
                             <i class="fa @(category.IconFont)"></i>
                             <span>@category.Title</span>
-                            <i class="c-icon fa fa-chevron-down"></i>
+                            <i class="c-icon fa fa-chevron-up"></i>
                         </div>
-                        <ul style="@(style)" class="submenu">
+                        <ul class="submenu">
                             @foreach (var menu in menus)
                             {
                                 @if (curentUrl.Equals(menu.URL))

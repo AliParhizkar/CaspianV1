@@ -6,21 +6,77 @@
 @using Demo.Service
 @using Microsoft.EntityFrameworkCore
 
-<Window @bind-Status="status" Title="Test" Style="width:500px;">
-    <div style="width:300px;margin:10px auto">
-        <div class="test-control">
-            <div class="test-animate-container">
+<div style="width:625px;margin:0 auto">
+    <ListView TEntity="Order" HideInsertIcon SelectType="SelectType.None" ContentHeight="500" OnPageChanged="() => expandedOrdersId.Clear()">
+        <HeaderTempalte>
+            <div class="justify-content-center d-flex" style="width:150px">
+                Order Date
+            </div>
+            <div class="justify-content-center d-flex" style="width:100px">
+                Order No
+            </div>
+            <div class="justify-content-center d-flex" style="width:300px">
+                Customer
+            </div>
+            <div class="justify-content-center d-flex" style="width:calc(100% - 550px)">
+                Details
+            </div>
+        </HeaderTempalte>
+        <Fields>
+            <div class="d-order d-flex">
+                <div class="justify-content-center" style="width:150px">
+                    <TextField Field="t => t.Date.ToShortDateString()" />
+                </div>
+                <div class="justify-content-center" style="width:100px">
+                    <TextField Field="t => t.OrderNo.Seprate3Digit()" />
+                </div>
+                <div class="justify-content-center" style="width:300px">
+                    <TextField Field="t => t.Customer.CustomerType == CustomerType.Real ? t.Customer.FName + ' ' + t.Customer.LName : t.Customer.CompanyName" />
+                </div>
+                <div class="justify-content-center" style="width:60px">
+                    <button @onclick="() => ToggleStatus(context.Data.Id)">...</button>
+                </div>
+                @if (context?.Data != null && expandedOrdersId.Contains(context.Data.Id))
+                {
+                    <div class="d-orderdetails">
+                        <div class="d-details-title">
+                            <div>Order Details</div>
+                        </div>
+                        <div>
+                            <DataGrid TEntity="OrderDeatil" HideInsertIcon ContentHeight="200" ConditionExpr="t => t.OrderId == context.Data.Id">
+                                <Columns Context="con">
+                                    <GridColumn Field="t => t.Product.Title" Title="Product" />
+                                    <GridColumn Field="t => t.Price" />
+                                    <GridColumn Field="t => t.Quantity" />
+                                    <GridColumn Field="t => t.Price * t.Quantity" Title="Sum" />
+                                </Columns>
+                            </DataGrid>
+                        </div>
+                    </div>
+                }
+            </div>
+        </Fields>
+    </ListView>
+</div>
 
+
+
+
+@* <div style="margin:10px auto;width:70%;">
+    <Slide TEntity="Product" ConditionExpression="t => t.Image != null && t.Id < 8" >
+        <div class="d-slider">
+            <div>
+                <TextField DataField Field="t => t.Id.ToString()" />
+                <img width="180" height="180" src="/api/Product/GetImage?id=@(context?.Id)" />
+            </div>
+            <div>
+                <TextField Field="t => t.Id.ToString()" />
             </div>
         </div>
-    </div>
-
-</Window>
-
-
-
-@* <div style="margin:10px auto;width:80%;">
-    <Slide TEntity="Product" ConditionExpression="t => t.Image != null && t.Id < 30" >
+    </Slide>
+</div>
+<div style="margin:10px auto;width:90%;">
+    <Slide TEntity="Product" ConditionExpression="t => t.Image != null && t.Id < 8">
         <div class="d-slider">
             <div>
                 <TextField DataField Field="t => t.Id.ToString()" />
@@ -34,6 +90,13 @@
 </div> *@
 @code 
 {
-    WindowStatus status = WindowStatus.Open;
-    IList<int> values = new List<int>();
+    IList<int> expandedOrdersId = new List<int>();
+
+    void ToggleStatus(int orderId)
+    {
+        if (expandedOrdersId.Contains(orderId))
+            expandedOrdersId.Remove(orderId);
+        else
+            expandedOrdersId.Add(orderId);
+    }
 }

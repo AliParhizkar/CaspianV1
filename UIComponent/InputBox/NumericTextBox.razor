@@ -2,33 +2,17 @@
 @using System.Threading
 @typeparam TValue
 @inherits CBaseInput<TValue>
-@{ 
-    var className = "t-widget t-numerictextbox";
-    if (disabled)
-        className += " t-state-disabled";
-    else
-    if (ErrorMessage != null)
-        className += " t-state-error";
+@{
     if (disabled)
         InputAttributes["disabled"] = "disabled";
     else
         InputAttributes.Remove("disabled");
 }
-<div error-message="@ErrorMessage" class="@className" style="@Style">
+<div  @attributes="GetAttributes()">
     @{
         var text = Convert.ToString(Value);
         var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
         text = text.Replace(decimalDigits, '.');
-        if (DigitGrouping)
-        {
-            //var array = text.Split('.');
-            //text = "";
-            //if (array[0].HasValue())
-            //    text += string.Format("{0:#,0}", Convert.ToInt64(array[0]));
-            //if (array.Length == 2 && array[1].HasValue())
-            //    text += '.' + string.Format("{0:#,0}", Convert.ToInt64(array[1]));
-        }
-
     }
     @if (BindingType == BindingType.OnChange)
     {
@@ -36,6 +20,6 @@
     }
     else
     {
-        <input @ref="InputElement" maxlength="@maxLength" value="@text" @attributes="InputAttributes" @oninput="onChangeValue" class="t-input" />
+        <input @ref="InputElement" value="@text" @attributes="InputAttributes" @oninput="onChangeValue" class="t-input" />
     }
 </div>

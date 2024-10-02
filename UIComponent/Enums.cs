@@ -31,7 +31,7 @@ namespace Caspian.UI
         WidthoutTitle
     }
 
-    public enum WindowStatus
+    public enum WindowStatus: byte
     {
         Close = 1,
 

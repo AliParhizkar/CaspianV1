@@ -122,7 +122,7 @@ namespace Caspian.UI
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("caspian.common.bindCalendar", element, viewType, vNavigation);
+            await JSRuntime.InvokeVoidAsync("caspian.DatePicker.bindCalendar", element, viewType, vNavigation);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

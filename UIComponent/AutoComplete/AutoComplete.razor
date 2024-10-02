@@ -5,21 +5,8 @@
 @inject IJSRuntime jsRuntime
 @inject IServiceScopeFactory ServiceScopeFactory
 
-@{
-    var attrs = new Dictionary<string, object>();
-    if (Id.HasValue())
-    {
-        attrs.Add("id", Id.Replace('.', '_'));
-        attrs.Add("name", Id.Replace('.', '_'));
-    }
-    var className = "t-widget t-numerictextbox c-lookup";
-    if (Disabled)
-        className += " t-state-disabled";
-    if (ErrorMessage.HasValue())
-        className += " t-state-error";
-}
 
-<div style="@Style" closeOnBlur="@CloseOnBlur" error-message="@ErrorMessage" status="@status.ConvertToInt()" class="@className" autoHide="@AutoHide">
+<div @attributes="GetMainAttribute()">
     <input @ref="InputElement" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => await OnKeyDownHandler(e))"
            @attributes="inputAttrs" @onkeyup="@(async e => await OnKeyUp(e))"  />
     @if (!HideIcon)

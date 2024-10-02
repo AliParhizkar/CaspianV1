@@ -50,7 +50,7 @@
                         var className = $"c-listview-row";
                         if (item == selectedEntity)
                             SelectedRowIndex = rowIndex;
-                        if (rowIndex == SelectedRowIndex)
+                        if (rowIndex == SelectedRowIndex && SelectType == SelectType.Single)
                             className += " c-selected"; 
                         var rowData = new RowData<TEntity>()
                             {
