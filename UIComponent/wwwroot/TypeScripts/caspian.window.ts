@@ -34,11 +34,11 @@
                     left = loc.left + (loc.width - win.getBoundingClientRect().width) / 2;
                     top = loc.top - 45;
                 }
-                win.style.left = left + 'px';
-                win.style.top = top + 'px';
+                win.style.left = `${left}px`;
+                win.style.top = `${top}px`;
                 setTimeout(function () {
                     win.classList.add('window-animate');
-                    win.style.top = (top + 80) + 'px';
+                    win.style.top = `${top + 80}px`;
                     setTimeout(() => win.classList.remove('window-animate'), 250);
                 }, 25);
             }
@@ -56,8 +56,8 @@
                 }
                 document.onmousemove = e => {
                     let difX = e.clientX - xStart, difY = e.clientY - yStart;
-                    dragableDom.style.left = (leftStart + difX) + 'px';
-                    dragableDom.style.top = (topStart + difY) + 'px';
+                    dragableDom.style.left = `${leftStart + difX}px`;
+                    dragableDom.style.top = `${topStart + difY}px`;
                 }
             }
         }

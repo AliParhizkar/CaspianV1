@@ -30,9 +30,9 @@ var caspian;
                             let header = grv.getElementsByClassName('t-grid-header')[0];
                             if (contentHeight < tableHeight) {
                                 if (caspian.common.RightToLeft())
-                                    header.style.paddingLeft = 11 + 'px';
+                                    header.style.paddingLeft = '11px';
                                 else
-                                    header.style.paddingRight = 11 + 'px';
+                                    header.style.paddingRight = '11px';
                             }
                             else {
                                 if (caspian.common.RightToLeft())
@@ -104,22 +104,22 @@ var caspian;
             let curentResult = curentWidth - dif, otherResult = otherWidth + dif;
             if (curentResult < 30 || otherResult < 30)
                 return;
-            this.curent.style.width = curentResult + 'px';
-            this.other.style.width = otherResult + 'px';
+            this.curent.style.width = `${curentResult}px`;
+            this.other.style.width = `${otherResult}px`;
             let columns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
             let curentIndex = columns.indexOf(this.curent);
             let otherIndex = columns.indexOf(this.other);
             columns = this.grid.getElementsByClassName('t-grid-content')[0].getElementsByTagName('tr')[0].children;
-            columns.item(curentIndex).style.width = curentResult + 'px';
-            columns.item(otherIndex).style.width = otherResult + 'px';
+            columns.item(curentIndex).style.width = `${curentResult}px`;
+            columns.item(otherIndex).style.width = `${otherResult}px`;
             let contentHeight = this.grid.getElementsByClassName('t-grid-content')[0].getBoundingClientRect().height;
             let tableHeight = this.grid.getElementsByClassName('c-grid-items')[0].getBoundingClientRect().height;
             let header = this.grid.getElementsByClassName('t-grid-header')[0];
             if (contentHeight < tableHeight) {
                 if (caspian.common.RightToLeft())
-                    header.style.paddingLeft = 11 + 'px';
+                    header.style.paddingLeft = '11px';
                 else
-                    header.style.paddingRight = 11 + 'px';
+                    header.style.paddingRight = '11px';
             }
             else {
                 header.style.paddingLeft = '0';
@@ -228,11 +228,11 @@ var caspian;
                     left = loc.left + (loc.width - win.getBoundingClientRect().width) / 2;
                     top = loc.top - 45;
                 }
-                win.style.left = left + 'px';
-                win.style.top = top + 'px';
+                win.style.left = `${left}px`;
+                win.style.top = `${top}px`;
                 setTimeout(function () {
                     win.classList.add('window-animate');
-                    win.style.top = (top + 80) + 'px';
+                    win.style.top = `${top + 80}px`;
                     setTimeout(() => win.classList.remove('window-animate'), 250);
                 }, 25);
             }
@@ -249,8 +249,8 @@ var caspian;
                 };
                 document.onmousemove = e => {
                     let difX = e.clientX - xStart, difY = e.clientY - yStart;
-                    dragableDom.style.left = (leftStart + difX) + 'px';
-                    dragableDom.style.top = (topStart + difY) + 'px';
+                    dragableDom.style.left = `${leftStart + difX}px`;
+                    dragableDom.style.top = `${topStart + difY}px`;
                 };
             };
         }
@@ -804,12 +804,12 @@ var caspian;
                     let animate = element.closest('.t-animation-container');
                     if (loc.top > window.outerHeight / 2) {
                         animate.classList.add('c-animation-up');
-                        animate.style.height = (loc.height + 6) + 'px';
+                        animate.style.height = `${loc.height + 6}px`;
                         setTimeout(() => element.style.bottom = '3px', 20);
                     }
                     else {
                         animate.classList.add('c-animation-down');
-                        animate.style.height = (loc.height + 3) + 'px';
+                        animate.style.height = `${loc.height + 3}px`;
                         setTimeout(() => element.style.top = '0', 20);
                     }
                 }
@@ -897,7 +897,7 @@ var caspian;
             let realHeight = content.getBoundingClientRect().height;
             ;
             content.style.overflow = 'auto';
-            content.style.height = height + 'px';
+            content.style.height = `${height}px`;
             let header = list.getElementsByClassName('c-dataview-header')[0];
             if (realHeight > height)
                 header.style.paddingRight = '11px';
@@ -923,11 +923,11 @@ var caspian;
             let activeTab = tabpanel.getElementsByClassName('t-state-active')[0];
             let pos = activeTab.getBoundingClientRect();
             if (tabpanel.classList.contains('t-vertical'))
-                tabpanel.getElementsByClassName('c-selected-panel')[0].style.top = (pos.top - basePos.top + 8) + 'px';
+                tabpanel.getElementsByClassName('c-selected-panel')[0].style.top = `${pos.top - basePos.top + 8}px`;
             else {
                 let seledtedPanel = tabpanel.getElementsByClassName('c-selected-panel')[0];
-                seledtedPanel.style.left = (pos.left - basePos.left + 3) + 'px';
-                seledtedPanel.style.width = (pos.width - 8) + 'px';
+                seledtedPanel.style.left = `${pos.left - basePos.left + 3}px`;
+                seledtedPanel.style.width = `${pos.width - 8}px`;
             }
         }
         static enableDefaultShortKey(status, dotnet) {

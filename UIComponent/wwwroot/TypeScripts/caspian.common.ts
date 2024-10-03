@@ -16,12 +16,12 @@
                     let animate = element.closest('.t-animation-container') as HTMLDivElement;
                     if (loc.top > window.outerHeight / 2) {
                         animate.classList.add('c-animation-up');
-                        animate.style.height = (loc.height + 6) + 'px';
+                        animate.style.height = `${loc.height + 6}px`;
                         setTimeout(() => element.style.bottom = '3px', 20);
                     }
                     else {
                         animate.classList.add('c-animation-down');
-                        animate.style.height = (loc.height + 3) + 'px';
+                        animate.style.height = `${loc.height + 3}px`;
                         setTimeout(() => element.style.top = '0', 20);
                     }
 
@@ -115,7 +115,7 @@
             content.style.height = 'auto';
             let realHeight = content.getBoundingClientRect().height;;
             content.style.overflow = 'auto';
-            content.style.height = height + 'px';
+            content.style.height = `${height}px`;
             let header = list.getElementsByClassName('c-dataview-header')[0] as HTMLDivElement;
             if (realHeight > height)
                 header.style.paddingRight = '11px';
@@ -143,11 +143,11 @@
             let activeTab = tabpanel.getElementsByClassName('t-state-active')[0];
             let pos = activeTab.getBoundingClientRect();
             if (tabpanel.classList.contains('t-vertical'))
-                (tabpanel.getElementsByClassName('c-selected-panel')[0] as HTMLElement).style.top = (pos.top - basePos.top + 8) + 'px';
+                (tabpanel.getElementsByClassName('c-selected-panel')[0] as HTMLElement).style.top = `${pos.top - basePos.top + 8}px`;
             else {
                 let seledtedPanel = tabpanel.getElementsByClassName('c-selected-panel')[0] as HTMLElement;
-                seledtedPanel.style.left = (pos.left - basePos.left + 3) + 'px';
-                seledtedPanel.style.width = (pos.width - 8) + 'px';
+                seledtedPanel.style.left = `${pos.left - basePos.left + 3}px`;
+                seledtedPanel.style.width = `${pos.width - 8}px`;
             }
         }
 

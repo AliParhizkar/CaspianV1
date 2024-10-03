@@ -31,9 +31,9 @@
                             let header = grv.getElementsByClassName('t-grid-header')[0] as HTMLElement;
                             if (contentHeight < tableHeight) {
                                 if (caspian.common.RightToLeft())
-                                    header.style.paddingLeft = 11 + 'px';
+                                    header.style.paddingLeft = '11px';
                                 else
-                                    header.style.paddingRight = 11 + 'px';
+                                    header.style.paddingRight = '11px';
                             }
                             else {
                                 if (caspian.common.RightToLeft())
@@ -107,22 +107,22 @@
             let curentResult = curentWidth - dif, otherResult = otherWidth + dif;
             if (curentResult < 30 || otherResult < 30)
                 return;
-            this.curent.style.width = curentResult + 'px';
-            this.other.style.width = otherResult + 'px';
+            this.curent.style.width = `${curentResult}px`;
+            this.other.style.width = `${otherResult }px`;
             let columns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
             let curentIndex = columns.indexOf(this.curent)
             let otherIndex = columns.indexOf(this.other);
             columns = this.grid.getElementsByClassName('t-grid-content')[0].getElementsByTagName('tr')[0].children;
-            (columns.item(curentIndex) as HTMLElement).style.width = curentResult + 'px';
-            (columns.item(otherIndex) as HTMLElement).style.width = otherResult + 'px';
+            (columns.item(curentIndex) as HTMLElement).style.width = `${curentResult}px`;
+            (columns.item(otherIndex) as HTMLElement).style.width = `${otherResult}px`;
             let contentHeight = this.grid.getElementsByClassName('t-grid-content')[0].getBoundingClientRect().height;
             let tableHeight = this.grid.getElementsByClassName('c-grid-items')[0].getBoundingClientRect().height;
             let header = this.grid.getElementsByClassName('t-grid-header')[0] as HTMLElement;
             if (contentHeight < tableHeight) {
                 if (caspian.common.RightToLeft())
-                    header.style.paddingLeft = 11 + 'px';
+                    header.style.paddingLeft = '11px';
                 else
-                    header.style.paddingRight = 11 + 'px';
+                    header.style.paddingRight = '11px';
             }
             else {
                 header.style.paddingLeft = '0';
