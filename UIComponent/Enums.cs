@@ -31,20 +31,6 @@ namespace Caspian.UI
         WidthoutTitle
     }
 
-    public enum WindowStatus: byte
-    {
-        Close = 1,
-
-        Open
-    }
-
-    public enum MessageType
-    {
-        Info = 1,
-
-        Quession,
-    }
-
     public enum DefaultLayout
     {
         [Display(Name = "Center")]

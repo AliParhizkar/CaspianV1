@@ -1,4 +1,4 @@
-﻿namespace Caspian.UI
+﻿namespace Caspian.UI.Client
 {
     public class BasePageService
     {

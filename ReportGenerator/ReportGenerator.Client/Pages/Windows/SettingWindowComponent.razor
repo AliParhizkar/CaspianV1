@@ -3,62 +3,62 @@
 @namespace Caspian.Report
 @using Caspian.Report.Data
 @inject IJSRuntime jSRuntime
-@inherits BasePage
+@inherits BaseClientPage
 
 <div class="p-2 row c-controls">
     <div class="col-md-4">
         <label>Page size</label>
     </div>
     <div class="col-md-8">
-        <DropdownList @bind-Value="Setting.PageType" OnChange="SetPageSize" />
+        @*<DropdownList @bind-Value="Setting.PageType" OnChange="SetPageSize" />*@
     </div>
     <div class="col-md-4">
         <label>Page width</label>
     </div>
     <div class="col-md-8">
-        <NumericTextBox @bind-Value="Setting.PageWidth" Disabled="Setting.PageType != ReportPageType.Custome" />
+        @*<NumericTextBox @bind-Value="Setting.PageWidth" Disabled="Setting.PageType != ReportPageType.Custome" />*@
     </div>
     <div class="col-md-4">
         <label>Page height</label>
     </div>
     <div class="col-md-8">
-        <NumericTextBox @bind-Value="Setting.PageHeight" Disabled="Setting.PageType != ReportPageType.Custome" />
+        @*<NumericTextBox @bind-Value="Setting.PageHeight" Disabled="Setting.PageType != ReportPageType.Custome" />*@
     </div>
     <div class="col-md-4">
         <label>Report title</label>
     </div>
     <div class="col-md-8">
-        <CheckBox @bind-Value="Setting.ReportTitle" />
+        @*<CheckBox @bind-Value="Setting.ReportTitle" />*@
     </div> 
     <div class="col-md-4">
         <label>Page header</label>
     </div>
     <div class="col-md-8">
-        <CheckBox @bind-Value="Setting.PageHeader" />
+        @*<CheckBox @bind-Value="Setting.PageHeader" />*@
     </div>
     <div class="col-md-5 ps-5">
         <label>Print type</label>
     </div>
     <div class="col-md-7">
-        <DropdownList Disabled="!Setting.PageHeader" @bind-Value="Setting.PrintOn" />
+        @*<DropdownList Disabled="!Setting.PageHeader" @bind-Value="Setting.PrintOn" />*@
     </div>
     <div class="col-md-4">
         <label>Data header</label>
     </div>
     <div class="col-md-8">
-        <CheckBox @bind-Value="Setting.DataHeader" />
+        @*<CheckBox @bind-Value="Setting.DataHeader" />*@
     </div>
     <div class="col-md-4">
         <label>Data footer</label>
     </div>
     <div class="col-md-8">
-        <CheckBox @bind-Value="Setting.DataFooter" />
+        @*<CheckBox @bind-Value="Setting.DataFooter" />*@
     </div>
     <div class="col-md-4">
         <label>Page footer</label>
     </div>
     <div class="col-md-8">
-        <CheckBox @bind-Value="Setting.PageFooter" />
+        @*<CheckBox @bind-Value="Setting.PageFooter" />*@
     </div>
     <div class="col-md-4"></div>
     <div class="col-md-8 justify-content-center d-flex pt-3 pb-2">

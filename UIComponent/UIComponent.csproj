@@ -42,6 +42,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
 		<ProjectReference Include="..\Engine\Engine.Model\Engine.Model.csproj" />
+		<ProjectReference Include="..\UIComponent.Client\UIComponent.Client.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.5.3">

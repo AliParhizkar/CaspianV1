@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -13,17 +13,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Caspian.Common.Client\Caspian.Common.Client.csproj" />
     <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
     <ProjectReference Include="..\..\Demo\Demo.Model\Demo.Model.csproj" />
     <ProjectReference Include="..\..\Demo\Demo.Service\Demo.Service.csproj" />
-    <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
-    <ProjectReference Include="..\..\Engine\Engine.Service\Engine.Service.csproj" />
     <ProjectReference Include="..\ReportGenerator.Client\ReportGenerator.Client.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
     <PackageReference Include="Stimulsoft.Reports.Blazor" Version="2024.3.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Engine.Model">
+      <HintPath>..\..\Engine\Engine.Model\bin\Release\net8.0\Engine.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="Engine.Service">
+      <HintPath>..\..\Engine\Engine.Service\bin\Release\net8.0\Engine.Service.dll</HintPath>
+    </Reference>
     <Reference Include="Stimulsoft.Base">
       <HintPath>..\..\..\..\..\.nuget\packages\stimulsoft.reports.engine.blazor\2023.4.4\lib\net6.0\Stimulsoft.Base.dll</HintPath>
     </Reference>

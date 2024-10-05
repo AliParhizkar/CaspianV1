@@ -7,7 +7,7 @@
 @{
     var style = $"width:{windowWidth}px;";
 }
-<MessageBox @ref="messageBox" />
+@*<MessageBox @ref="messageBox" />*@
 @if (Data != null)
 {
     <div  tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
@@ -35,7 +35,7 @@
     </div>
 }
 
-<Window Title="@windowTitle" Style="@style" Status="status" StatusChanged="CloseWindow">
+@*<Window Title="@windowTitle" Style="@style" Status="status" StatusChanged="CloseWindow">
     @if (SelectedControl?.Data.ControlType == ControlType.PictureBox)
     {
         <PictureBoxWindow Status="status" StatusChanged="CloseWindow" Page="this" />
@@ -51,7 +51,7 @@
             <ColumnWindow Status="status" StatusChanged="CloseWindow" BoundItem="SelectedBound" />
         }
     }
-</Window>
+</Window>*@
 
 
 

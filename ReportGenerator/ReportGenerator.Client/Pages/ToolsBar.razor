@@ -93,7 +93,7 @@
     </div>
 </div>
 
- <Caspian.UI.Window Title="@title" Style="width:400px" Status="status" StatusChanged="CloseWindow">
+<Caspian.UI.Client.Window Title="@title" Style="width:400px" Status="status" StatusChanged="CloseWindow">
     @if (isSettingWindow)
     {
         <SettingWindowComponent Page="Page" Status="status" StatusChanged="CloseWindow" />
@@ -101,5 +101,5 @@
     else
     {
         <FormatingWindowComponent Page="Page" Status="status" StatusChanged="CloseWindow" />
-    }
-</Caspian.UI.Window>
+    } 
+</Caspian.UI.Client.Window>

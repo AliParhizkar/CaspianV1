@@ -5,13 +5,13 @@
         <label>Columns count</label>
     </div>
     <div class="col-md-7">
-        <NumericTextBox @bind-Value="ColumnsCount" />
+        @*<NumericTextBox @bind-Value="ColumnsCount" />*@
     </div>
     <div class="col-md-5">
         <label>Columns gap</label>
     </div>
     <div class="col-md-7">
-        <NumericTextBox @bind-Value="columnsGap" />
+        @*<NumericTextBox @bind-Value="columnsGap" />*@
     </div>
     <div class="col-md-7 justify-content-center d-flex pt-3 pb-2">
         <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(Caspian.UI.WindowStatus.Close)" class="c-btn c-danger">Cancel</button>

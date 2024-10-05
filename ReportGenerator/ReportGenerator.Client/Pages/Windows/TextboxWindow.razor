@@ -1,14 +1,13 @@
 ﻿@namespace Caspian.Report
 @inject HttpClient Host
 @using Caspian.Common
-@using Caspian.Common.Extension
 @using Caspian.UI
 <div class="row c-controls p-2">
     <div class="col-md-4">
         <label>Textbox text</label>
     </div>
     <div class="col-md-8">
-        <StringTextBox @bind-Value="@(text)" Disabled="fieldData.TotalFuncType.HasValue || fieldData.SystemFiledType.HasValue || fieldData.Path.HasValue() || fieldData.SystemVariable.HasValue" />
+        @*<StringTextBox @bind-Value="@(text)" Disabled="fieldData.TotalFuncType.HasValue || fieldData.SystemFiledType.HasValue || fieldData.Path.HasValue() || fieldData.SystemVariable.HasValue" />*@
     </div>
      @if (bondType == BondType.DataFooter)
     {
@@ -54,9 +53,9 @@
             <label>System filed</label>
         </div>
         <div class="col-md-8">
-            <DropdownList TValue="SystemFiledType?" Value="fieldData.SystemFiledType"
+            @*<DropdownList TValue="SystemFiledType?" Value="fieldData.SystemFiledType"
                           Disabled="text.HasValue() && fieldData.SystemFiledType == null || fieldData.TotalFuncType.HasValue"
-                          ValueChanged="SystemFiledTypeChanged" />
+        ValueChanged="SystemFiledTypeChanged" />*@
         </div>
     } 
     <div class="col-md-4"></div>

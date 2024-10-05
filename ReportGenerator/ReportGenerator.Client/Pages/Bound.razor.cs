@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using Caspian.Common;
 using Caspian.Report.Data;
-using Caspian.Common.Extension;
 using ReportGenerator.Client.Data;
 using Microsoft.AspNetCore.Components;
 

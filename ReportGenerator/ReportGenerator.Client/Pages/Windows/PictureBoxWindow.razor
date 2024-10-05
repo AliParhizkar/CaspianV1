@@ -12,9 +12,9 @@
         @if (Params == null)
         {
         <div class="ustify-content-center d-flex pt-2 pb-2">
-            <Fileupload Style="width:250px;height:275px;" OnChange="SetContent">
+            @*<Fileupload Style="width:250px;height:275px;" OnChange="SetContent">
                 <PictureBox style="@style" class="c-image-frame" NoContentTitle="Click to upload" Data="imageContent" />
-            </Fileupload>
+            </Fileupload>*@
         </div>
         }
         else
@@ -23,14 +23,14 @@
                 <label>Data field</label>
             </div>
             <div class="col-md-7">
-            <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="objectPath" Source="Params" />
+            @*<ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="objectPath" Source="Params" />*@
             </div>
         }
         <div class="col-md-5">
             <label>Stretch</label>
         </div>
         <div class="col-md-7">
-            <CheckBox @bind-Value="stretch" />
+            @*<CheckBox @bind-Value="stretch" />*@
         </div>
         <div class="col-md-5"></div>
         <div class="justify-content-center col-md-7 d-flex pt-3 pb-2">

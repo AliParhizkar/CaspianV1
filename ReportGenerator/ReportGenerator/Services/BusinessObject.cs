@@ -1,7 +1,7 @@
 ﻿using Caspian.Engine;
 using Caspian.Common;
 using System.Xml.Linq;
-using Caspian.Engine.Service;
+//using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,14 +34,15 @@ namespace ReportGenerator.Services
 
         public async Task<XElement> GetXmlElement(int reportId)
         {
-            var report = await provider.GetService<ReportService>().GetAll().Include(t => t.ReportParams).Include(t => t.ReportGroup).SingleAsync(reportId);
-            var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
-            var selectReport = new SelectReport(mainType);
-            var maxLevel = report.ReportParams.Max(t => t.DataLevel);
-            var type = selectReport.GetDynamicType(report.ReportParams, null);
-            type = selectReport.GetStimuType(type, report.ReportParams.ToList(), maxLevel);
-            //type = new ReportPrintEngine(provider).GetTypeOf(report.ReportParams.ToList(), type, mainType.Name);
-            return GetXElement(type, "list", 11);
+            //var report = await provider.GetService<ReportService>().GetAll().Include(t => t.ReportParams).Include(t => t.ReportGroup).SingleAsync(reportId);
+            //var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
+            //var selectReport = new SelectReport(mainType);
+            //var maxLevel = report.ReportParams.Max(t => t.DataLevel);
+            //var type = selectReport.GetDynamicType(report.ReportParams, null);
+            //type = selectReport.GetStimuType(type, report.ReportParams.ToList(), maxLevel);
+            ////type = new ReportPrintEngine(provider).GetTypeOf(report.ReportParams.ToList(), type, mainType.Name);
+            //return GetXElement(type, "list", 11);
+            throw new NotImplementedException();
         }
 
         public XElement GetXElement(Type type, string name, int id) 

@@ -14,12 +14,6 @@ namespace Caspian.UI
         Task SetValue(object value);
     }
 
-    public interface IWindow: IDisposable
-    {
-        Task Close();
-        
-    }
-
     public class CascadeService 
     {
         public ICascading Cascade { get; set; }

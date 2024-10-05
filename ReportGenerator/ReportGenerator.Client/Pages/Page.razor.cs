@@ -1,11 +1,11 @@
 ﻿using Caspian.UI;
+using Caspian.Common;
+using Microsoft.JSInterop;
 using Caspian.Report.Data;
 using System.Net.Http.Json;
 using ReportGenerator.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Caspian.Common;
-using Microsoft.JSInterop;
 
 namespace Caspian.Report
 {
@@ -46,6 +46,12 @@ namespace Caspian.Report
             StateHasChanged();
         }
 
+        protected override async Task OnInitializedAsync()
+        {
+            await FetchData();
+            await base.OnInitializedAsync();
+        }
+
         public bool IsMouseDown { get; private set; }
 
         async Task FetchData()
@@ -53,6 +59,16 @@ namespace Caspian.Report
             try
             {
                 Data = await Host.GetFromJsonAsync<PageData>($"/ReportGenerator/GetReportData?reportId={ReportId}");
+                for (var level = 1; level <= 1; level++)
+                {
+                    Data.Bound.Items.Add(new BoundItemData()
+                    {
+                        BondType = (BondType)(level + 2),
+                        Height = 30
+                    });
+                }
+
+
                 /// Set table row for each table cells
                 var tables = Data.Bound.Items.Where(t => t.Table != null).Select(t => t.Table).ToList();
                 foreach (var table in tables)
@@ -71,12 +87,6 @@ namespace Caspian.Report
 
             }
 
-        }
-
-        protected override async Task OnInitializedAsync()
-        {
-            await FetchData();
-            await base.OnInitializedAsync();
         }
 
         [Parameter]
@@ -225,10 +235,10 @@ namespace Caspian.Report
         {
             if (await messageBox.Confirm("Do you want save the report?"))
             {
-                Data.PixelsPerCentimetre = pixelsPerCentimetre;
-                await Host.PostAsJsonAsync($"/ReportGenerator/SaveReport", Data);
-                message = "ثبت با موفقیت انجام شد.";
-                StateChanged();
+                //Data.PixelsPerCentimetre = pixelsPerCentimetre;
+                //await Host.PostAsJsonAsync($"/ReportGenerator/SaveReport", Data);
+                //message = "ثبت با موفقیت انجام شد.";
+                //StateChanged();
             }
         }
 
@@ -341,7 +351,7 @@ namespace Caspian.Report
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
-                pixelsPerCentimetre = await JSRuntime.InvokeAsync<double>("getPixelsPerCentimetre", null);
+                pixelsPerCentimetre = 37;
             if (Data != null)
                 Data.Width = Convert.ToInt32(Data.Setting.PageWidth * pixelsPerCentimetre);
             if (message.HasValue())

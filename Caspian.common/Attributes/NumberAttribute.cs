@@ -1,5 +1,4 @@
-﻿using Caspian.Common.Extension;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Common.Attributes
 {

@@ -2,15 +2,13 @@
 using Caspian.Common;
 using System.Text.Json;
 using Caspian.Report.Data;
-using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using ReportGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using Stimulsoft.Report;
 using Demo.Service;
-using System.Drawing.Text;
+using Caspian.Engine.Service;
 
 namespace ReportGenerator.Controllers
 {
@@ -40,7 +38,7 @@ namespace ReportGenerator.Controllers
                     return JsonSerializer.Deserialize<PageData>(content);
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
                 }
@@ -109,7 +107,7 @@ namespace ReportGenerator.Controllers
                     await service.SaveChangesAsync();
                 }
                 ReportComponentExtension.PPC = page.PixelsPerCentimetre;
-                
+
                 var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
                 var json = JsonSerializer.Serialize(page);
                 System.IO.File.WriteAllText(path, json);
@@ -125,7 +123,7 @@ namespace ReportGenerator.Controllers
         }
 
         [HttpGet]
-        public async Task<FileContentResult> GetReport(int reportId )
+        public async Task<FileContentResult> GetReport(int reportId)
         {
             var report = await GetService<ReportService>().SingleAsync(reportId);
             var path = $"{environment.ContentRootPath}/Report/Print/{report.PrintFileName}.mrt";

@@ -1,7 +1,7 @@
 ﻿@namespace Caspian.Report
-@using Caspian.Common
-@inject IJSRuntime JSRuntime
 @using Caspian.UI
+@inject IJSRuntime JSRuntime
+
 @{
     var style = $"left:{Data.Left}px;top:{Data.Top}px";
 }
@@ -72,3 +72,8 @@
      <ContextMenuItem Title="Add Column on Right" OnClick="() => InsertColumn(false)" />
      <ContextMenuItem Title="Remove Column" OnClick="RemoveColumn" />
 </ContextMenu>
+
+@code
+{
+
+}

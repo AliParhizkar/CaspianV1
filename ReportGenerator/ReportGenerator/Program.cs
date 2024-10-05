@@ -3,7 +3,6 @@ using Engine.Model;
 using Demo.Service;
 using Caspian.Common;
 using Caspian.Engine.Model;
-using Caspian.Engine.Service;
 using System.Linq.Dynamic.Core;
 using ReportGenerator.Components;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using Caspian.Engine.Service;
 
 namespace ReportGenerator
 {
@@ -49,24 +49,17 @@ namespace ReportGenerator
 
             CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
             builder.Services.AddScoped<CaspianDataService>();
-            builder.Services.AddScoped<BasePageService>();
-            builder.Services.AddScoped<FormAppState>();
+            //builder.Services.AddScoped<BasePageService>();
+            //builder.Services.AddScoped<FormAppState>();
             builder.Services.AddScoped<Context>();
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped(t => new CaspianFontService(t));
             builder.Services.AddScoped(t => new ReportService(t));
             builder.Services.AddScoped(t => new ReportParamService(t));
             builder.Services.AddScoped(t => new OrderDeatilService(t));
-            builder.Services.AddSingleton(http =>
-            {
-                return new System.Net.Http.HttpClient
-                {
-                    BaseAddress = new Uri("https://localhost:7251")
-                };
-            });
 
-            //builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
-
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
+            builder.Services.AddHttpClient();
             //builder.Services.AddIdentityCore<User>()
             //    .AddEntityFrameworkStores<ApplicationDbContext>()
             //    .AddSignInManager();
