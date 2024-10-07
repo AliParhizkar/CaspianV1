@@ -35,7 +35,7 @@
     </div>
 }
 
-@*<Window Title="@windowTitle" Style="@style" Status="status" StatusChanged="CloseWindow">
+<Caspian.UI.Client.Window Title="@windowTitle" Style="@style" Status="status" StatusChanged="CloseWindow">
     @if (SelectedControl?.Data.ControlType == ControlType.PictureBox)
     {
         <PictureBoxWindow Status="status" StatusChanged="CloseWindow" Page="this" />
@@ -51,7 +51,7 @@
             <ColumnWindow Status="status" StatusChanged="CloseWindow" BoundItem="SelectedBound" />
         }
     }
-</Window>*@
+</Caspian.UI.Client.Window>
 
 
 

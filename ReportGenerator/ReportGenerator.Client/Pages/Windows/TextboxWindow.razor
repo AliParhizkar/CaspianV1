@@ -33,8 +33,8 @@
             <label>Data field</label>
         </div>
         <div class="col-md-8">
-            <ComboBox TEntity="SelectListItem" TValue="string" Source="Params" Value="fieldData.Path" ValueChanged="ParamChanged"
-                      Disabled="text.HasValue() && fieldData.Path == null || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue" />
+            @*<ComboBox TEntity="SelectListItem" TValue="string" Source="Params" Value="fieldData.Path" ValueChanged="ParamChanged"
+        Disabled="text.HasValue() && fieldData.Path == null || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue" />*@
         </div>
     }
     @if (bondType == BondType.ReportTitle)
@@ -43,8 +43,8 @@
             <label>System variable</label>
         </div>
         <div class="col-md-8">
-            <DropdownList TValue="SystemVariable?" Value="fieldData.SystemVariable" Disabled="text.HasValue() && fieldData.SystemVariable == null || fieldData.Path.HasValue() || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue"
-                          ValueChanged="SystemVariableChange" />
+            @*<DropdownList TValue="SystemVariable?" Value="fieldData.SystemVariable" Disabled="text.HasValue() && fieldData.SystemVariable == null || fieldData.Path.HasValue() || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue"
+        ValueChanged="SystemVariableChange" />*@
         </div>
     }
     else if (bondType != BondType.DataHeader)
