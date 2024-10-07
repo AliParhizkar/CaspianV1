@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Caspian.Common.Client\Caspian.Common.Client.csproj" />
   </ItemGroup>
 

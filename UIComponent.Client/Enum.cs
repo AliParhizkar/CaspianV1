@@ -9,15 +9,6 @@ namespace Caspian.UI
         Open
     }
 
-    public enum BindingType
-    {
-        [Display(Name = "On change")]
-        OnChange = 1,
-
-        [Display(Name = "On input")]
-        OnInput
-    }
-
     public enum MessageType
     {
         Info = 1,

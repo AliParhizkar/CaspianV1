@@ -1,7 +1,9 @@
 using Caspian.UI;
 using Caspian.Common;
-using Caspian.UI.Client;
+//using ReportGenerator.Client;
+//using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Caspian.UI.Client;
 
 namespace Caspian.Report
 {
@@ -10,6 +12,12 @@ namespace Caspian.Report
         static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+
+            //builder.Services.AddAuthorizationCore();
+            //builder.Services.AddCascadingAuthenticationState();
+            //builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+
             builder.Services.AddScoped<CaspianDataService>();
             builder.Services.AddScoped<BasePageService>();
             builder.Services.AddScoped<BaseComponentService>();
