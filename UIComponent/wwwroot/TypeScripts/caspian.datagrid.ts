@@ -8,7 +8,7 @@
         other: HTMLElement;
         otherWidth: number;
         xStart: number;
-        
+
         constructor(grv: HTMLElement) {
             this.grid = grv;
             this.bindObserver();
@@ -16,6 +16,7 @@
                 let target = e.target as HTMLElement;
                 target.closest('.t-grid').getElementsByClassName('t-grid-header-wrap')[0].scrollLeft = target.scrollLeft;
             }
+            this.columnResize();
         }
 
         bindObserver() {
@@ -92,11 +93,12 @@
                         this.otherWidth = other.getBoundingClientRect().width;
                     this.xStart = e.clientX;
                 }
-                window.onclick = this.drop;
-                window.onmousemove = this.dragging;
+                window.onclick = () => this.drop();
+                window.onmousemove = e => this.dragging(e);
             }
         }
         public dragging(e: MouseEvent) {
+            
             if (this.other == null)
                 return;
             let dif = this.xStart - e.clientX;

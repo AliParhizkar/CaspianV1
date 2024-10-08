@@ -142,28 +142,42 @@ namespace Caspian.UI
 
         protected override async Task OnInitializedAsync()
         {
-            if (Service?.MasterId > 0)
+            if (Service != null)
             {
-                var masterType = Service.GetType().GetGenericArguments()[0];
-                var masterIdInfo = typeof(TDetails).GetForeignKey(masterType);
-                var param = Expression.Parameter(typeof(TDetails), "t");
-                Expression expr = Expression.Property(param, masterIdInfo);
-                expr = Expression.Equal(expr, Expression.Constant(Service.MasterId));
-                var lambda = Expression.Lambda(expr, param);
-                using var service = Provider.CreateScope().GetService<IBaseService<TDetails>>();
-                var query = service.GetAll().Where(lambda);
                 var detailIdInfo = typeof(TDetails).GetForeignKey(typeof(TEntity));
-                var exprDetailId = Expression.Property(param, detailIdInfo);
-                var exprPKey = Expression.Property(param, typeof(TDetails).GetPrimaryKey());
-                details = await query.GetValuesAsync(exprDetailId, exprPKey);
-                foreach ( var detail in details )
+                if (Service?.MasterId > 0)
                 {
-                    var otherId = detailIdInfo.GetValue(detail);
-                    SelectedIds.Add(otherId);
+                    var masterType = Service.GetType().GetGenericArguments()[0];
+                    var masterIdInfo = typeof(TDetails).GetForeignKey(masterType);
+                    var param = Expression.Parameter(typeof(TDetails), "t");
+                    Expression expr = Expression.Property(param, masterIdInfo);
+                    expr = Expression.Equal(expr, Expression.Constant(Service.MasterId));
+                    var lambda = Expression.Lambda(expr, param);
+                    using var service = Provider.CreateScope().GetService<IBaseService<TDetails>>();
+                    var query = service.GetAll().Where(lambda);
+                    var exprDetailId = Expression.Property(param, detailIdInfo);
+                    var exprPKey = Expression.Property(param, typeof(TDetails).GetPrimaryKey());
+                    details = await query.GetValuesAsync(exprDetailId, exprPKey);
+                    foreach (var detail in details)
+                    {
+                        var otherId = detailIdInfo.GetValue(detail);
+                        SelectedIds.Add(otherId);
+                    }
+                }
+                else
+                    details = new List<TDetails>();
+                if (Service.ChangedEntities != null)
+                {
+                    foreach (var detail in Service.ChangedEntities) 
+                    {
+                        var otherId = detailIdInfo.GetValue(detail.Entity);
+                        if (detail.ChangeStatus == ChangeStatus.Deleted)
+                            SelectedIds.Remove(otherId);
+                        else
+                            SelectedIds.Add(otherId);
+                    }
                 }
             }
-            else
-                details = new List<TDetails>();
             await base.OnInitializedAsync();
         }
 

@@ -60,10 +60,10 @@
                     let height = group.getElementsByClassName('t-reset')[0].getBoundingClientRect().height;
                     height = Math.min(250, height);
                     height = Math.max(height, 30);
-                    let loc = group.getBoundingClientRect().top + height + 5;
                     animate.style.height = `${height + 7}px`;
-                    animate.style.width = `${ctr.getBoundingClientRect().width + 7}px`;
-                    if (loc > window.innerHeight / 2) {
+                    let loc = ctr.getBoundingClientRect();
+                    animate.style.width = `${loc.width + 7}px`;
+                    if (loc.top > window.innerHeight / 2) {
                         animate.classList.add('c-animate-up');
                         setTimeout(() => group.style.bottom = '0', 10);
                         animate.style.marginTop = `${-height - 42}px`;

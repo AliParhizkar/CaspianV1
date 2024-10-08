@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
 
 namespace Caspian.UI
 {
@@ -24,22 +25,40 @@ namespace Caspian.UI
 
         protected override async Task OnInitializedAsync()
         {
-            if (Service?.MasterId > 0)
+            if (Service != null)
             {
-                var masterType = Service.GetType().GetGenericArguments()[0];
-                var masterIdInfo = typeof(TDetails).GetForeignKey(masterType);
-                var param = Expression.Parameter(typeof(TDetails), "t");
-                Expression expr = Expression.Property(param, masterIdInfo);
-                expr = Expression.Equal(expr, Expression.Constant(Service.MasterId));
-                var lambda = Expression.Lambda(expr, param);
-                using var service = ScopeFactory.CreateScope().GetService<IBaseService<TDetails>>();
-                var query = service.GetAll().Where(lambda);
                 var detailIdInfo = typeof(TDetails).GetForeignKey(typeof(TEntity));
-                Expression selectExpr = Expression.Property(param, detailIdInfo);
-                lambda = Expression.Lambda(selectExpr, param);
-                var list = await query.Select(lambda).ToDynamicListAsync();
-                await SetText(list);
+                var selectedIds = new List<dynamic>();
+                if (Service.MasterId > 0)
+                {
+                    var masterType = Service.GetType().GetGenericArguments()[0];
+                    var masterIdInfo = typeof(TDetails).GetForeignKey(masterType);
+                    var param = Expression.Parameter(typeof(TDetails), "t");
+                    Expression expr = Expression.Property(param, masterIdInfo);
+                    expr = Expression.Equal(expr, Expression.Constant(Service.MasterId));
+                    var lambda = Expression.Lambda(expr, param);
+                    using var service = ScopeFactory.CreateScope().GetService<IBaseService<TDetails>>();
+                    var query = service.GetAll().Where(lambda);
+                    Expression selectExpr = Expression.Property(param, detailIdInfo);
+                    lambda = Expression.Lambda(selectExpr, param);
+                    selectedIds = await query.Select(lambda).ToDynamicListAsync();
+                }
+
+                if (Service.ChangedEntities != null)
+                {
+                    foreach (var detail in Service.ChangedEntities)
+                    {
+                        var otherId = detailIdInfo.GetValue(detail.Entity);
+                        if (detail.ChangeStatus == ChangeStatus.Deleted)
+                            selectedIds.Remove(otherId);
+                        else
+                            selectedIds.Add(otherId);
+                    }
+                }
+                await SetText(selectedIds);
+
             }
+
             await base.OnInitializedAsync();
         }
 
@@ -71,7 +90,7 @@ namespace Caspian.UI
                 var displayFunc = TextExpression.Compile();
                 var info = typeof(TEntity).GetPrimaryKey();
                 var items = new List<SelectListItem>();
-                string str = string.Empty;
+                var str = string.Empty;
                 foreach (var item in dataList)
                 {
                     var value = info.GetValue(item);

@@ -6,12 +6,8 @@
 .c-picturebox {
     width: 50px;
     height: 50px;
-    border: 1px solid #b5b5b5;
     border-radius: 4px;
     text-align: center;
-    color: #b5b5b5;
-    background-size: cover;
-    background-position: center;
 }
     .c-picturebox .c-content {
         width: 100%;
@@ -19,7 +15,6 @@
         display: inline-block;
         background-repeat: no-repeat;
         background-size: inherit;
-        background-size:inherit;
         font-size:14px;
     }
 

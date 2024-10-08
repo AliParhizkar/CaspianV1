@@ -57,13 +57,7 @@ namespace ReportGenerator
             builder.Services.AddScoped(t => new ReportService(t));
             builder.Services.AddScoped(t => new ReportParamService(t));
             builder.Services.AddScoped(t => new OrderDeatilService(t));
-            builder.Services.AddSingleton(http =>
-            {
-                return new System.Net.Http.HttpClient
-                {
-                    BaseAddress = new Uri("https://localhost:7251")
-                };
-            });
+            builder.Services.AddHttpClient();
 
             //builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
 

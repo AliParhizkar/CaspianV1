@@ -65,9 +65,9 @@
         bindObserver(win: HTMLElement) {
             const mutationObserver = new MutationObserver(list => {
                 list.forEach(mutation => {
-                    console.log(mutation.target)
                     if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
                         let status = (mutation.target as HTMLElement).attributes['status'].value;
+                        let main = (document.getElementsByClassName('c-content-main')[0] as HTMLElement) || document.body;
                         if (status == '1') {
                             let openWindowIsExist = false;
                             let windows = document.getElementsByClassName('t-window');
@@ -78,10 +78,10 @@
                                 }
                             }
                             if (!openWindowIsExist)
-                                (document.getElementsByClassName('c-content-main')[0] as HTMLElement).style.overflow = 'auto';
+                                main.style.overflow = 'auto';
                         }
                         else
-                            (document.getElementsByClassName('c-content-main')[0] as HTMLElement).style.overflow = 'hidden';
+                            main.style.overflow = 'hidden';
                         let mywindow = (mutation.target as HTMLElement).closest('.t-window') as HTMLElement;
                         this.windowOpenClose(mywindow);
                     }

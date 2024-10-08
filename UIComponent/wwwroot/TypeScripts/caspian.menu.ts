@@ -7,8 +7,10 @@
             this.multiple = multiple || false;
             el.querySelectorAll('.submenu li').forEach(li => {
                 (li as HTMLElement).onclick = e => {
-                    el.querySelector('.submenu .selected').classList.remove('selected');
-                    (e.target as HTMLElement).closest('li').classList.add('selected');
+                    let selected = el.querySelector('.submenu .selected');
+                    if (selected != null)
+                        selected.classList.remove('selected');
+                    (e.target as HTMLElement).classList.add('selected');
                 }
             });
             el.querySelectorAll('.default .link').forEach(elem => {

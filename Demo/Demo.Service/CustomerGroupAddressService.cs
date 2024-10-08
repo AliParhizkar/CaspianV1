@@ -16,12 +16,8 @@ namespace Demo.Service
             RuleFor(t => t.LName).Required(t => t.CustomerType == CustomerType.Real);
             RuleFor(t => t.MobileNumber).Required().MobileNumber().UniqAsync("There is a customer with this mobile number");
             RuleFor(t => t.Tel).TelNumber();
-
             RuleForEach(t => t.CustomerAddresses).SetValidator(new CustomerAddressService(provider));
-
             RuleForEach(t => t.CustomerGroupMemberships).SetValidator(new CustomerGroupMembershipService(provider));
         }
-
-
     }
 }

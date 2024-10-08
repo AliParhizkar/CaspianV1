@@ -9,19 +9,21 @@
         public static bindCheclistDropdown(element: HTMLElement, dotnet: dotnetInvoker) {
             const mutationObserver = new MutationObserver(t => {
                 let element = t[0].target as HTMLElement;
+                let width = element.closest('.t-dropdown').getBoundingClientRect().width;
                 if (element.classList.contains('c-checkbox-list'))
                     element = element.parentElement;
                 if (element.classList.contains('t-checkbox-list')) {
                     let loc = element.getBoundingClientRect();
                     let animate = element.closest('.t-animation-container') as HTMLDivElement;
+                    animate.style.height = `${loc.height + 6}px`;
+                    animate.style.width = `${width + 6}px`;
                     if (loc.top > window.outerHeight / 2) {
                         animate.classList.add('c-animation-up');
-                        animate.style.height = `${loc.height + 6}px`;
+                        animate.style.marginTop = `${-loc.height - 37}px`;
                         setTimeout(() => element.style.bottom = '3px', 20);
                     }
                     else {
                         animate.classList.add('c-animation-down');
-                        animate.style.height = `${loc.height + 3}px`;
                         setTimeout(() => element.style.top = '0', 20);
                     }
 
@@ -64,7 +66,10 @@
         }
 
         public static bindTree(tree: HTMLElement) {
-            debugger;
+        }
+
+        public static bindTooltip() {
+
         }
 
         public static async onWindowResizeHandler(element: HTMLElement, dotnet: dotnetInvoker) {
@@ -118,7 +123,7 @@
             content.style.height = `${height}px`;
             let header = list.getElementsByClassName('c-dataview-header')[0] as HTMLDivElement;
             if (realHeight > height)
-                header.style.paddingRight = '11px';
+                header.style.paddingRight = '10px';
             else
                 header.style.paddingRight = '0';
         }
@@ -360,6 +365,10 @@
             this.infoTimer = setTimeout(() => {
                 this.hideMessage();
             }, 4_000);
+        }
+
+        public static focus(element: HTMLElement) {
+            element.focus();
         }
 
         public static hideMessage() {

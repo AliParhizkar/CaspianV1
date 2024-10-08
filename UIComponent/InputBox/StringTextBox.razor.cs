@@ -17,7 +17,7 @@ namespace Caspian.UI
                 className += " t-multitextbox";
             else
                 className += " t-stringtextbox";
-            attributes["class"] = className;
+            
             if (ErrorMessage.HasValue())
                 attributes["error-message"] = ErrorMessage;
             
@@ -25,8 +25,9 @@ namespace Caspian.UI
                 attributes["style"] = Style;
             if (disabled)
                 className += " t-state-disabled";
-            else if (ErrorMessage != null)
+            else if (ErrorMessage.HasValue())
                 className += " t-state-error";
+            attributes["class"] = className;
             if (MaskedText.HasValue())
                 attributes["masked-text"] = MaskedText;
             return attributes;

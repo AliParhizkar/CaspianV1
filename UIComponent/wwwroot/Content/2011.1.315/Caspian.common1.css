@@ -211,11 +211,15 @@ textarea {
 }
 
 .c-colorpicker-panel {
-    position: absolute;
-    overflow: hidden;
     border: 1px solid #cfcfcf;
     width: 235px;
     background-color: white;
+
+}
+
+.t-animation-container .c-colorpicker-panel {
+    position: absolute;
+    overflow: hidden;
     z-index: 100000;
     box-shadow: 0px 1px 7px 1px #cccccc;
 }

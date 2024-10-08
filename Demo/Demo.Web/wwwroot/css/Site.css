@@ -188,8 +188,9 @@ html {
 }
 
 .d-lst-1, .d-lst-2, .d-lst-3, .d-lst-4, .d-lst-5, .d-lst-6 {
-    border-right: 1px solid #e0e0e0;
+    border-right: 1px solid #b1b1b1;
 }
+
 .d-row-odd {
     background-color: #f5f5f5;
 }

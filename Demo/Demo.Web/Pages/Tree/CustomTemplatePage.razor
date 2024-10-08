@@ -21,7 +21,7 @@
                     </span>
                 </div>
                 <div class="col-md-7">
-                    <TreeView TEntity="NodeView" Source="foldersAndFiles" OnExpanded="OnExpand">
+                    <TreeView TEntity="NodeView" style="height:500px" Source="foldersAndFiles" OnExpanded="OnExpand">
                         <BeforeNodeTemplate>
                             @if (context.Collabsable)
                             {
