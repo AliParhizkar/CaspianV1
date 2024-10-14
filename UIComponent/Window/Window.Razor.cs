@@ -78,6 +78,8 @@ namespace Caspian.UI
             Status = WindowStatus.Open;
             if (StatusChanged.HasDelegate)
                 await StatusChanged.InvokeAsync(WindowStatus.Open);
+            if (OnOpen.HasDelegate) 
+                await OnOpen.InvokeAsync();
         }
 
         public async Task SetValue(object value)
@@ -147,6 +149,11 @@ namespace Caspian.UI
             {
                 var dotnet = DotNetObjectReference.Create(this);
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindWindow", window, dotnet);
+            }
+            if (isOpend && OnOpen.HasDelegate)
+            {
+                isOpend = false;
+                await OnOpen.InvokeAsync();
             }
             await base.OnAfterRenderAsync(firstRender);
         }

@@ -8,7 +8,7 @@
     else
         InputAttributes.Remove("disabled");
 }
-<div  @attributes="GetAttributes()">
+<div @attributes="GetAttributes()">
     @{
         var text = Convert.ToString(Value);
         var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);

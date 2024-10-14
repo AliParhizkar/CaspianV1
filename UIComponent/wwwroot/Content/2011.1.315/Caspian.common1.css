@@ -228,6 +228,7 @@ textarea {
     height: 128px;
     cursor: crosshair;
     user-select: none;
+    position:relative;
 }
 
 .c-color-white {

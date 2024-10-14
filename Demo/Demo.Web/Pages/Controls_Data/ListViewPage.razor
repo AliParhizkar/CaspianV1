@@ -147,9 +147,65 @@
                         </div>
                     </div>
                     <div class="col-md-5">
-
+                        <hr />
+                        <h4>Master-Details: Order-Order details</h4>
                     </div>
+                    <div class="col-md-7">
+                        <hr />
+                        <div class="ps-3">
+                            <ListView TEntity="Order" HideInsertIcon SelectType="SelectType.None" ContentHeight="500" OnPageChanged="() => expandedOrdersId.Clear()">
+                                <HeaderTempalte>
+                                    <div class="justify-content-center d-flex" style="width:125px">
+                                        Order Date
+                                    </div>
+                                    <div class="justify-content-center d-flex" style="width:75px">
+                                        Order No
+                                    </div>
+                                    <div class="justify-content-center d-flex" style="width:calc(100% - 250px)">
+                                        Customer
+                                    </div>
+                                    <div class="justify-content-center d-flex" style="width:50px">
+                                        Details
+                                    </div>
+                                </HeaderTempalte>
+                                <Fields>
+                                    <div class="d-order d-flex">
+                                        <div class="justify-content-center d-border-right" style="width:125px">
+                                            <TextField Field="t => t.Date.ToShortDateString()" />
+                                        </div>
+                                        <div class="justify-content-center d-border-right" style="width:75px">
+                                            <TextField Field="t => t.OrderNo.Seprate3Digit()" />
+                                        </div>
+                                        <div class="justify-content-center d-border-right" style="width:calc(100% - 250px)">
+                                            <TextField Field="t => t.Customer.CustomerType == CustomerType.Real ? t.Customer.FName + ' ' + t.Customer.LName : t.Customer.CompanyName" />
+                                        </div>
+                                        <div class="justify-content-center" style="width:50px">
+                                            <button class="c-btn c-primary" @onclick="() => ToggleStatus(context.Data.Id)">...</button>
+                                        </div>
+                                        @if (context?.Data != null && expandedOrdersId.Contains(context.Data.Id))
+                                        {
+                                            <div class="d-orderdetails">
+                                                <div class="d-details-title">
+                                                    <div>Order Details</div>
+                                                </div>
+                                                <div class="d-details-content">
+                                                    <DataGrid TEntity="OrderDeatil" HideInsertIcon ContentHeight="200" ConditionExpr="t => t.OrderId == context.Data.Id">
+                                                        <Columns Context="con">
+                                                            <GridColumn Field="t => t.Product.Title" Title="Product" />
+                                                            <GridColumn Field="t => t.Price" />
+                                                            <GridColumn Field="t => t.Quantity" />
+                                                            <GridColumn Field="t => t.Price * t.Quantity" Title="Sum" />
+                                                        </Columns>
+                                                    </DataGrid>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </Fields>
+                            </ListView>
 
+                        </div>
+                    </div>
                 </div>
             </div>
         </TabPanelItem>
@@ -159,6 +215,15 @@
     </Tabs>
 </TabPanel>
 
-@code {
-    
+@code 
+{
+    IList<int> expandedOrdersId = new List<int>();
+
+    void ToggleStatus(int orderId)
+    {
+        if (expandedOrdersId.Contains(orderId))
+            expandedOrdersId.Remove(orderId);
+        else
+            expandedOrdersId.Add(orderId);
+    }
 }

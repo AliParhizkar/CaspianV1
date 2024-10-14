@@ -1,16 +1,15 @@
-﻿using Caspian.Report;
+﻿using Demo.Service;
+using Caspian.Report;
 using Caspian.Common;
 using System.Text.Json;
+using Stimulsoft.Report;
 using Caspian.Report.Data;
 using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using ReportGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using Stimulsoft.Report;
-using Demo.Service;
-using System.Drawing.Text;
+using System.Collections.Generic;
 
 namespace ReportGenerator.Controllers
 {
@@ -30,23 +29,24 @@ namespace ReportGenerator.Controllers
         [HttpGet]
         public async Task<PageData> GetReportData(int reportId)
         {
-            var report = await GetService<ReportService>().SingleAsync(reportId);
-            if (report.PrintFileName.HasValue())
-            {
-                var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
-                var content = System.IO.File.ReadAllText(path);
-                try
-                {
-                    return JsonSerializer.Deserialize<PageData>(content);
+            //var report = await GetService<ReportService>().SingleAsync(reportId);
+            //if (report.PrintFileName.HasValue())
+            //{
+            //    var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
+            //    var content = System.IO.File.ReadAllText(path);
+            //    try
+            //    {
+            //        return JsonSerializer.Deserialize<PageData>(content);
 
-                }
-                catch(Exception ex)
-                {
+            //    }
+            //    catch (Exception ex)
+            //    {
 
-                }
-            }
-            var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId).ToListAsync();
-            var maxdataLevel = parameters.Max(t => t.DataLevel);
+            //    }
+            //}
+            //var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId).ToListAsync();
+            //var maxDataLevel = parameters.Max(t => t.DataLevel);
+            byte maxDataLevel = 1;
             var page = new PageData()
             {
                 Setting = new ReportSetting()
@@ -57,12 +57,12 @@ namespace ReportGenerator.Controllers
                 },
                 Bound = new BoundData()
                 {
-                    DataLevel = maxdataLevel,
+                    DataLevel = maxDataLevel,
                     Items = new List<BoundItemData>()
                 },
                 ReportId = reportId
             };
-            for (var level = 1; level <= maxdataLevel; level++)
+            for (var level = 1; level <= maxDataLevel; level++)
             {
                 page.Bound.Items.Add(new BoundItemData()
                 {
@@ -79,21 +79,39 @@ namespace ReportGenerator.Controllers
         }
 
         [HttpGet]
-        public async Task<IList<string>> GetFonts()
+        public IList<string> GetFonts()
         {
-            using var service = GetService<CaspianFontService>();
-            return await service.GetAll().Select(t => t.Name).ToListAsync();
+            //using var service = GetService<CaspianFontService>();
+            //return await service.GetAll().Select(t => t.Name).ToListAsync();
+            return new List<string>()
+            {
+                "B Nazanin", "B Roya", "New Time"
+            };
         }
 
         [HttpGet]
-        public async Task<IList<SelectListItem>> GetReportParameters(int reportId, int dataLevel)
+        public IList<SelectListItem> GetReportParameters(int reportId, int dataLevel)
         {
-            var result = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == null || t.DataLevel == dataLevel))
-                .Select(t => new SelectListItem
-                {
-                    Text = t.Alias ?? t.TitleEn,
-                    Value = t.TitleEn
-                }).ToListAsync();
+            //var result = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == null || t.DataLevel == dataLevel))
+            //    .Select(t => new SelectListItem
+            //    {
+            //        Text = t.Alias ?? t.TitleEn,
+            //        Value = t.TitleEn
+            //    }).ToListAsync();
+            var result = new List<SelectListItem>()
+            {
+                new SelectListItem("Order.Date", "Order Date"),
+                new SelectListItem("Order.Customer.CustomerType", "Customer Type"),
+                new SelectListItem("Order.Customer.FName", "First Name"),
+                new SelectListItem("Order.Customer.LName", "Last Name"),
+                new SelectListItem("Order.Customer.Gender", "Gender"),
+                new SelectListItem("Order.Customer.CompanyName", "Company Name"),
+                new SelectListItem("Order.Customer.MobileNumber", "Mobile Number"),
+                new SelectListItem("Product.Title", "Product Title"),
+                new SelectListItem("Price", "Price"),
+                new SelectListItem("Quantity", "Quantity"),
+                new SelectListItem("Order.OrderType", "Order Type"),
+            };
             return result;
         }
 
@@ -109,7 +127,7 @@ namespace ReportGenerator.Controllers
                     await service.SaveChangesAsync();
                 }
                 ReportComponentExtension.PPC = page.PixelsPerCentimetre;
-                
+
                 var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
                 var json = JsonSerializer.Serialize(page);
                 System.IO.File.WriteAllText(path, json);
@@ -125,7 +143,7 @@ namespace ReportGenerator.Controllers
         }
 
         [HttpGet]
-        public async Task<FileContentResult> GetReport(int reportId )
+        public async Task<FileContentResult> GetReport(int reportId)
         {
             var report = await GetService<ReportService>().SingleAsync(reportId);
             var path = $"{environment.ContentRootPath}/Report/Print/{report.PrintFileName}.mrt";

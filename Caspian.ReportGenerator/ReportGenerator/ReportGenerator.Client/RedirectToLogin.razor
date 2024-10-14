@@ -1,0 +1,11 @@
+﻿@inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        var loginPath = Configuration.GetSection("Authentication:LoginPath").Value;
+        NavigationManager.NavigateTo($"Account/Login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", forceLoad: true);
+    }
+}

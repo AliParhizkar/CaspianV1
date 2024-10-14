@@ -47,7 +47,7 @@
                         setTimeout(() => group.style.top = '0', 50);
                     }
                     document.body.onclick = async e => {
-                        if ((e.target as HTMLElement).closest('t-animation-container') == null) {
+                        if ((e.target as HTMLElement).closest('.t-animation-container') == null) {
                             document.body.onclick = null;
                             await dotnet.invokeMethodAsync('CloseWindow');
                         }

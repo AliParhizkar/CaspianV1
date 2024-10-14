@@ -943,7 +943,7 @@ var caspian;
                         setTimeout(() => group.style.top = '0', 50);
                     }
                     document.body.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
-                        if (e.target.closest('t-animation-container') == null) {
+                        if (e.target.closest('.t-animation-container') == null) {
                             document.body.onclick = null;
                             yield dotnet.invokeMethodAsync('CloseWindow');
                         }

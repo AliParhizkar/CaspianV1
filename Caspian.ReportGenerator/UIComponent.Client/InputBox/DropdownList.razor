@@ -1,0 +1,43 @@
+﻿@namespace Caspian.UI
+@using System.ComponentModel.DataAnnotations
+@typeparam TValue
+@inherits CBaseInput<TValue>
+@{
+    var className = "t-dropdown-wrap";
+    if (disabled)
+        className += " t-state-disabled";
+    else
+        className += " t-state-default";
+    var index = 1;
+}
+<div @ref="InputElement" @onkeyup="OnkeyUp" @attributes="attrs" class="t-widget t-dropdown">
+    <div class="@className" @onclick="OpenWindow">
+        <span class="t-input">@(text)</span>
+        <span class="t-t-select" >
+            <i class="t-icon t-arrow-down fa fa-caret-down"></i>
+        </span>
+    </div>
+    @if (status == WindowStatus.Open)
+    {
+        <div class="t-animation-container">
+            <div class="t-popup t-group">
+                <ul class="t-reset">
+                    @foreach(var item in items)
+                    {
+                        string name = "t-item";
+                        if (index == selectedIndex)
+                            name += " t-state-selected";
+                        if (item.Disabled)
+                            name += " t-disable";
+                        <li @onclick="async () => await SetValueForActiveItem(item)" class="@name">@item.Text</li>
+                        index++;
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+</div>
+@code
+{
+
+}

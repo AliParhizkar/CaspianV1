@@ -25,8 +25,11 @@ namespace Caspian.UI
             var className = "t-widget t-numerictextbox";
             if (disabled)
                 className += " t-state-disabled";
-            if (!disabled && ErrorMessage != null)
+            if (!disabled && ErrorMessage.HasValue())
+            {
                 className += " t-state-error";
+                attributes["error-message"] = ErrorMessage;
+            }
             attributes["class"] = className;
             attributes["total"] = Total;
             if (NumberDigit.HasValue)

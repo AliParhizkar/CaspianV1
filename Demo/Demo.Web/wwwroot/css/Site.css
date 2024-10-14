@@ -1,25 +1,32 @@
 ﻿.d-order {
     flex-wrap: wrap;
+    width:100%;
 }
 .d-details-title {
     font-weight: bold;
     color: #a18636;
     font-size: 21px;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    width: 40px;
-    justify-content: center;
+    text-align: left;
+    padding-left: 10px;
+    background-color: aliceblue;
+    border-radius: 15px;
+    border: 1px solid #d7d7d7;
+    margin-bottom: 5px;
 }
-    .d-details-title div {
-        transform: rotate(90deg);
-    }
-    .d-orderdetails {
-        padding: 5px 0;
-        border-top: 1px solid #cacaca;
-        margin: 0 10px;
-        display: flex;
-    }
+.d-border-right {
+    border-right: 1px solid #d4d4d4;
+}
+.d-order .c-btn {
+    margin: 0;
+    padding: 3px 8px;
+    margin-top: 3px;
+}
+
+.d-orderdetails {
+    padding: 5px 0;
+    border-top: 1px solid #cacaca;
+    margin: 0 10px;
+}
     .d-orderdetails tbody tr:nth-child(2n){
         background-color:azure;
     }

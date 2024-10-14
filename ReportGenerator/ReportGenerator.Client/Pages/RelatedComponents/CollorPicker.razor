@@ -36,8 +36,10 @@
 </span>
 @if (colorPickerOpen)
 {
-    <div style="left:@(colorPickerLeft - 70)px" class="r-colorpicker-container" @onmousedown:stopPropagation @onmouseenter:stopPropagation @onmousemove:stopPropagation @onmouseup:stopPropagation @onclick:stopPropagation>
-        <Caspian.UI.ColorPicker Top="0" Color="@color" ColorChanged="ChangeColor" />
+
+    var style = $"left:{colorPickerLeft - 70}px";
+    <div style="@style" class="r-colorpicker-container" @onmousedown:stopPropagation @onmouseenter:stopPropagation @onmousemove:stopPropagation @onmouseup:stopPropagation @onclick:stopPropagation>
+        <Caspian.UI.ColorPicker Top="top" Color="@color" ColorChanged="ChangeColor" />
     </div>
     <div @onclick="() => colorPickerOpen = false" @onmousemove:stopPropagation class="r-behind">
     </div>
@@ -51,6 +53,7 @@
     bool colorPickerOpen;
     int colorPickerLeft;
     string color;
+    int top = -250;
 
     protected override void OnInitialized()
     {
@@ -64,10 +67,14 @@
     [Parameter]
     public string DefaultColor { get; set; }
 
-    void OpenColorPicker()
+    async void OpenColorPicker()
     {
         colorPickerOpen = true;
         colorPickerLeft = XPosition;
+        top = -250;
+        await Task.Delay(10);
+        top = 0;
+        StateHasChanged();
     }
 
     async Task ChangeColor(string color)

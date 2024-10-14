@@ -35,6 +35,10 @@ namespace Main
             builder.Services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
                 .SetApplicationName("SharedCookieApp");
+            if (builder.Environment.IsDevelopment())
+                CS.Con = builder.Configuration.GetConnectionString("TestDB");
+            else
+                CS.Con = builder.Configuration.GetConnectionString("ServerDb");
             var domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             builder.Services.ConfigureApplicationCookie(options =>
             {
@@ -74,9 +78,8 @@ namespace Main
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
             builder.Services.AddScoped<BaseComponentService>();
-            var connectionString = builder.Configuration.GetConnectionString("CaspianDb");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(connectionString));
+               options.UseSqlServer(CS.Con));
 
             builder.Services.AddAuthenticationCore();
 
@@ -85,7 +88,7 @@ namespace Main
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
             var app = builder.Build();
-            CS.Con = builder.Configuration.GetConnectionString("CaspianDb");
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

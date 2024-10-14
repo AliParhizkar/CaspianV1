@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,23 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Layout\MainLayout.razor" />
-    <None Include="Layout\NavMenu.razor" />
-    <None Include="Pages\Home.razor" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
-    <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\ComponentsData\" />
-    <Folder Include="Data\Styles\" />
+    <ProjectReference Include="..\..\Common.Client\Common.Client.csproj" />
+    <ProjectReference Include="..\..\UIComponent.Client\UIComponent.Client.csproj" />
   </ItemGroup>
 
 </Project>

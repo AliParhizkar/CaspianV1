@@ -25,9 +25,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caspian.common", "Caspian.c
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponent", "UIComponent\UIComponent.csproj", "{269C0CD5-CB56-421C-B88D-C4B2368AB838}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator", "ReportGenerator\ReportGenerator\ReportGenerator.csproj", "{300D61C3-7606-4570-B909-C33FC927571F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caspian.ReportGenerator", "Caspian.ReportGenerator", "{BDD3E2E7-A138-413F-A674-F4402E1A4EDC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator.Client", "ReportGenerator\ReportGenerator.Client\ReportGenerator.Client.csproj", "{D30B12C1-453C-4DC2-990A-19DAD5071391}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponent.Client", "Caspian.ReportGenerator\UIComponent.Client\UIComponent.Client.csproj", "{88F21B17-AD06-4E46-B5CD-F11CEFD10556}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator.Client", "Caspian.ReportGenerator\ReportGenerator\ReportGenerator.Client\ReportGenerator.Client.csproj", "{49DED15F-BAA1-4464-8824-B53F189FD9F6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportGenerator", "Caspian.ReportGenerator\ReportGenerator\ReportGenerator\ReportGenerator.csproj", "{54DE828B-F751-460D-BC64-F6107F0C710A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,14 +75,18 @@ Global
 		{269C0CD5-CB56-421C-B88D-C4B2368AB838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{269C0CD5-CB56-421C-B88D-C4B2368AB838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{269C0CD5-CB56-421C-B88D-C4B2368AB838}.Release|Any CPU.Build.0 = Release|Any CPU
-		{300D61C3-7606-4570-B909-C33FC927571F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{300D61C3-7606-4570-B909-C33FC927571F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{300D61C3-7606-4570-B909-C33FC927571F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{300D61C3-7606-4570-B909-C33FC927571F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D30B12C1-453C-4DC2-990A-19DAD5071391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D30B12C1-453C-4DC2-990A-19DAD5071391}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D30B12C1-453C-4DC2-990A-19DAD5071391}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D30B12C1-453C-4DC2-990A-19DAD5071391}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88F21B17-AD06-4E46-B5CD-F11CEFD10556}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88F21B17-AD06-4E46-B5CD-F11CEFD10556}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88F21B17-AD06-4E46-B5CD-F11CEFD10556}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88F21B17-AD06-4E46-B5CD-F11CEFD10556}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49DED15F-BAA1-4464-8824-B53F189FD9F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49DED15F-BAA1-4464-8824-B53F189FD9F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49DED15F-BAA1-4464-8824-B53F189FD9F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49DED15F-BAA1-4464-8824-B53F189FD9F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54DE828B-F751-460D-BC64-F6107F0C710A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54DE828B-F751-460D-BC64-F6107F0C710A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54DE828B-F751-460D-BC64-F6107F0C710A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54DE828B-F751-460D-BC64-F6107F0C710A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +98,9 @@ Global
 		{2ECB27F7-11E3-4381-AC3B-8B2E2D0A8F5A} = {E0EE1582-7A21-4FBF-B8DB-715BC9A40C1E}
 		{30994B31-AE70-4CD9-8E84-ECDEA3AEE1F5} = {E0EE1582-7A21-4FBF-B8DB-715BC9A40C1E}
 		{44F56268-522C-40CB-91A3-687CE7D91E65} = {E0EE1582-7A21-4FBF-B8DB-715BC9A40C1E}
+		{88F21B17-AD06-4E46-B5CD-F11CEFD10556} = {BDD3E2E7-A138-413F-A674-F4402E1A4EDC}
+		{49DED15F-BAA1-4464-8824-B53F189FD9F6} = {BDD3E2E7-A138-413F-A674-F4402E1A4EDC}
+		{54DE828B-F751-460D-BC64-F6107F0C710A} = {BDD3E2E7-A138-413F-A674-F4402E1A4EDC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {02812EE1-F36A-451A-B0C6-DC5691FE5C75}

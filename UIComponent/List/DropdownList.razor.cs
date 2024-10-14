@@ -89,7 +89,6 @@ namespace Caspian.UI
             if (!item.Disabled && !disabled)
             {
                 await SetValue(item.Value);
-                await Task.Delay(300);
                 status = WindowStatus.Close;
             }
         }
