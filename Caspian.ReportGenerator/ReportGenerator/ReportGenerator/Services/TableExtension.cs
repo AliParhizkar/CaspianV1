@@ -2,6 +2,7 @@
 using Caspian.Common;
 using System.Xml.Linq;
 using Caspian.Report.Data;
+using Stimulsoft.System.Windows.Forms;
 
 namespace ReportGenerator.Services
 {
@@ -140,7 +141,13 @@ namespace ReportGenerator.Services
             if (data.FieldData.Path.HasValue())
             {
                 var path = BusinessObject.GetBusinessObjectsPath(bondType.ConvertToInt().Value - 2);
-                text = $"{{{path}{data.FieldData.Path.Replace(".", "")}}}";
+                var fieldName = $"{path}{data.FieldData.Path.Replace(".", "")}";
+                text = "{";
+                if (data.DataFieldType == DataFieldType.Date)
+                    text += $"{fieldName} == null ? \"\" : {fieldName}.ToString(\"yyyy/MM/dd\")";
+                else
+                    text += fieldName;
+                text += "}";
             }
             text ??= data.Text;
             element.AddElement("Text", text);

@@ -12,6 +12,7 @@
     var topBorder = border != null && (border.BorderKind & BorderKind.Top) == BorderKind.Top;
     var bottomBorder = border != null && (border.BorderKind & BorderKind.Bottom) == BorderKind.Bottom;
     var controlSelected = Page.SelectedControl != null || Page.SelectedTable != null;
+    var formatting = Page.SelectedControl?.Data.DataFieldType != null || Page.SelectedTable?.FieldDataType != null;
 }
 <div class="tools-bar">
     <div id="toolsBar1">
@@ -40,7 +41,7 @@
                         OnMouseDown="async () => await ChangeFont(null, null, !font.Italic)" />
         <SelectableIcon Enabled="fontEnabled" Selected="font?.Bold == true" XPosition="25"
                         OnMouseDown="async () => await ChangeFont(null, !font.Bold, null)" />
-        <ReportGenerator.CollorPicker DefaultColor="#000000" Enabled="fontEnabled" XPosition="281"
+        <Caspian.Report.CollorPicker DefaultColor="#000000" Page="Page" Enabled="fontEnabled" XPosition="281"
                       ColorChanged="async color => await ChangeFont(null, null, color)"/>
         <ComboboxComponent @ref="cmbFontSize" Width="62" Left="328" Source="fontsSize" Value="@font?.Size" Enabled="fontEnabled" 
                 ValueChanged="t => ChangeFont(t, null, null)" />
@@ -54,10 +55,10 @@
             OnChange="async style => await ChangeBorder((BorderStyle)style)" />
          <DropdownIcon @ref="borderWidth" Enabled="borderEnabled" Value="border?.Width"
             OnChange="async width => await ChangeBorder(width)"/>
-        <ReportGenerator.CollorPicker DefaultColor="#000" XPosition="582" Enabled="borderEnabled" ColorChanged="async color => await ChangeBorder(color)"/>
-         <ReportGenerator.CollorPicker DefaultColor="#FFFFFFFF" XPosition="544" Enabled="controlSelected" ColorChanged="async color => await ChangeBackgroundColor(color)" />
+        <Caspian.Report.CollorPicker DefaultColor="#000" Page="Page" XPosition="582" Enabled="borderEnabled" ColorChanged="async color => await ChangeBorder(color)"/>
+        <Caspian.Report.CollorPicker DefaultColor="#FFFFFFFF" Page="Page" XPosition="544" Enabled="controlSelected" ColorChanged="async color => await ChangeBackgroundColor(color)" />
         <span class="toolsbar" style="width:2px;background-position:-542px 0px"></span>
-         <ToolsbarIcon XPosition="517" Enabled="controlSelected" OnIconClick="OpenFormatingWindow" />
+         <ToolsbarIcon XPosition="517" Enabled="formatting" OnIconClick="OpenFormatingWindow" />
          <SelectableIcon XPosition="492" Enabled="borderEnabled" Selected="border?.BorderKind == 0"
             OnMouseDown="async () => await ChangeBorder((BorderKind)0)"/>
          <SelectableIcon XPosition="467" Enabled="borderEnabled" Selected="border?.BorderKind == (BorderKind)15"

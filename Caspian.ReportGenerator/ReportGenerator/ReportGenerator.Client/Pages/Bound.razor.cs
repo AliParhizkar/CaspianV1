@@ -140,64 +140,68 @@ namespace Caspian.Report
         void ShowRuler(IList<RecData> recDatas, ControlData controlData, ref double width, ref double height, ChangeType change)
         {
             double left = controlData.Left, right = left + width, top = controlData.Top, bottom = top + height;
+            Console.WriteLine(controlData.Id);
             foreach (var rect in recDatas)
             {
-                var ctrRight = rect.Left + rect.Width;
-                var ctrBottom = rect.Top + rect.Height;
-                switch (change)
+                if (rect.Id != controlData.Id)
                 {
-                    case ChangeType.Move:
-                        if (Math.Abs(left - rect.Left) < 6)
-                        {
-                            controlData.Left = rect.Left;
-                            verticalRulerLeft = controlData.Left;
-                        }
-                        if (Math.Abs(right - ctrRight) < 6)
-                        {
-                            controlData.Left = ctrRight - width;
-                            verticalRulerRight = ctrRight;
-                        }
-                        if (Math.Abs(top - rect.Top) < 6)
-                        {
-                            controlData.Top = rect.Top;
-                            horizontalRulerTop = controlData.Top;
-                        }
-                        if (Math.Abs(bottom - ctrBottom) < 6)
-                        {
-                            controlData.Top = ctrBottom - height;
-                            horizontalRulerBottom = ctrBottom;
-                        }
-                        break;
-                    case ChangeType.LeftResize:
-                        if (Math.Abs(left - rect.Left) < 6)
-                        {
-                            controlData.Left = rect.Left;
-                            width = right - rect.Left;
-                            verticalRulerLeft = controlData.Left;
-                        }
-                        break;
-                    case ChangeType.RightResize:
-                        if (Math.Abs(right - ctrRight) < 6)
-                        {
-                            width = ctrRight - left;
-                            verticalRulerRight = ctrRight;
-                        }
-                        break;
-                    case ChangeType.TopResize:
-                        if (Math.Abs(top - rect.Top) < 6)
-                        {
-                            controlData.Top = rect.Top;
-                            height = bottom - rect.Top;
-                            horizontalRulerTop = controlData.Top;
-                        }
-                        break;
-                    case ChangeType.BottomResize:
-                        if (Math.Abs(bottom - ctrBottom) < 6)
-                        {
-                            height = ctrBottom - top;
-                            horizontalRulerBottom = ctrBottom;
-                        }
-                        break;
+                    var ctrRight = rect.Left + rect.Width;
+                    var ctrBottom = rect.Top + rect.Height;
+                    switch (change)
+                    {
+                        case ChangeType.Move:
+                            if (Math.Abs(left - rect.Left) < 6)
+                            {
+                                controlData.Left = rect.Left;
+                                verticalRulerLeft = controlData.Left;
+                            }
+                            if (Math.Abs(right - ctrRight) < 6)
+                            {
+                                controlData.Left = ctrRight - width;
+                                verticalRulerRight = ctrRight;
+                            }
+                            if (Math.Abs(top - rect.Top) < 6)
+                            {
+                                controlData.Top = rect.Top;
+                                horizontalRulerTop = controlData.Top;
+                            }
+                            if (Math.Abs(bottom - ctrBottom) < 6)
+                            {
+                                controlData.Top = ctrBottom - height;
+                                horizontalRulerBottom = ctrBottom;
+                            }
+                            break;
+                        case ChangeType.LeftResize:
+                            if (Math.Abs(left - rect.Left) < 6)
+                            {
+                                controlData.Left = rect.Left;
+                                width = right - rect.Left;
+                                verticalRulerLeft = controlData.Left;
+                            }
+                            break;
+                        case ChangeType.RightResize:
+                            if (Math.Abs(right - ctrRight) < 6)
+                            {
+                                width = ctrRight - left;
+                                verticalRulerRight = ctrRight;
+                            }
+                            break;
+                        case ChangeType.TopResize:
+                            if (Math.Abs(top - rect.Top) < 6)
+                            {
+                                controlData.Top = rect.Top;
+                                height = bottom - rect.Top;
+                                horizontalRulerTop = controlData.Top;
+                            }
+                            break;
+                        case ChangeType.BottomResize:
+                            if (Math.Abs(bottom - ctrBottom) < 6)
+                            {
+                                height = ctrBottom - top;
+                                horizontalRulerBottom = ctrBottom;
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -208,6 +212,7 @@ namespace Caspian.Report
             var list = new List<RecData>();
             foreach (var item in BoundItems)
                 item.GetRecDatas(list);
+            
             ShowRuler(list, controlData, ref width, ref height, change);
         }
 

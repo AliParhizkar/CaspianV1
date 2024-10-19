@@ -82,29 +82,26 @@
 </TabPanel>
 
 <Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()">
-    <Content>
-        <CaspianForm Model="organUnit" OnValidSubmit="async t => await UpsertOrganUnit()">
-            <CaspianValidationValidator ValidatorType="typeof(OrganUnitService)" />
-            <div class="row c-controls ps-3 pe-3">
-                <div class="col-md-3">
-                    <label>Title</label>
-                </div>
-                <div class="col-md-9">
-                    <StringTextBox @ref="firstControl" @bind-Value="organUnit.Title" />
-                </div>
-                <div class="col-md-3">
-                    <label>Status</label>
-                </div>
-                <div class="col-md-9">
-                    <DropdownList @bind-Value="organUnit.ActiveType" />
-                </div>
-                <div class="col-md-3"></div>
-                <div class="col-md-9 text-ce">
-                    <WindowCommandButtons />
-                </div>
+    <CaspianForm Model="organUnit" OnValidSubmit="async t => await UpsertOrganUnit()">
+        <div class="row c-controls ps-3 pe-3">
+            <div class="col-md-3">
+                <label>Title</label>
             </div>
-        </CaspianForm>
-    </Content>
+            <div class="col-md-9">
+                <StringTextBox @ref="firstControl" @bind-Value="organUnit.Title" />
+            </div>
+            <div class="col-md-3">
+                <label>Status</label>
+            </div>
+            <div class="col-md-9">
+                <DropdownList @bind-Value="organUnit.ActiveType" />
+            </div>
+            <div class="col-md-3"></div>
+            <div class="col-md-9 text-ce">
+                <WindowCommandButtons />
+            </div>
+        </div>
+    </CaspianForm>
 </Window>
 
 @code

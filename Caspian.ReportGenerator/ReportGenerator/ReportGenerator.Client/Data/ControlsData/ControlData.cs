@@ -47,6 +47,8 @@
 
         public TextFieldData FieldData { get; set; }
 
+        public DataFieldType? DataFieldType { get; set; }
+
         public NumberFormating NumberFormating { get; set; }
 
         public Border Border { get; set; }

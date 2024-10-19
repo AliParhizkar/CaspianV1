@@ -93,6 +93,7 @@ namespace ReportGenerator.Services
         {
             var bound = new XElement("Components").AddAttribute("isList", true).AddAttribute("count", boundData.Items.Count);
             var top = 53;
+
             foreach ( var item in boundData.Items)
             {
                 foreach(var control in item.Controls)
@@ -154,6 +155,11 @@ namespace ReportGenerator.Services
             }
             element.Add(boundItemData.Border.GetXMLElement());
             element.AddElement("Brush", "Transparent");
+            if (boundItemData.ColumnsCount > 1)
+            {
+                element.AddElement("Columns", boundItemData.ColumnsCount);
+                element.AddElement("ColumnGaps", boundItemData.GapBetweenColumns.ToCentimeter());
+            }
             var height = boundItemData.Height;
             if (boundItemData.Table != null)
                 height = boundItemData.Table.Rows.Sum(t => t.Height);
@@ -249,7 +255,13 @@ namespace ReportGenerator.Services
             if (control.FieldData.Path.HasValue())
             {
                 var path = BusinessObject.GetBusinessObjectsPath(boundItem.BondType.ConvertToInt().Value - 2);
-                text = $"{{{path}{control.FieldData.Path.Replace(".", "")}}}";
+                var fieldName = $"{path}{control.FieldData.Path.Replace(".", "")}";
+                text = "{";
+                if (control.DataFieldType == DataFieldType.Date)
+                    text += $"{fieldName} == null ? \"\" : {fieldName}.ToString(\"yyyy/MM/dd\")";
+                else
+                    text += fieldName;
+                text += "}";
             }
             text ??= control.Text;
             if (control.ControlType == ControlType.TextBox) 

@@ -28,7 +28,7 @@ namespace ReportGenerator.Services
             return Math.Round(result, 2).ToString().Replace('/', '.');
         }
 
-        public static string ToCentimeter(this int value)
+        public static string ToCentimeter(this byte value)
         {
             var result = value / ReportComponentExtension.PPC;
             return Math.Round(result, 2).ToString().Replace('/', '.');

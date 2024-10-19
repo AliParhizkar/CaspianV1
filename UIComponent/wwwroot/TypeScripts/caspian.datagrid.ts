@@ -1,6 +1,7 @@
 ﻿namespace caspian {
     export class DataGrid {
         grid: HTMLElement;
+        content: HTMLElement;
         resize: boolean;
         curent: HTMLElement;
         curentWidth: number;
@@ -11,20 +12,22 @@
 
         constructor(grv: HTMLElement) {
             this.grid = grv;
-            this.bindObserver();
-            (grv.getElementsByClassName('t-grid-content')[0] as HTMLDivElement).onscroll = e => {
+            this.content = (grv.getElementsByClassName('t-grid-content')[0] as HTMLDivElement);
+            if (this.content.classList.contains('t-inline-content'))
+                this.bindObserver();
+            this.bindResizeObserver();
+            this.content.onscroll = e => {
                 let target = e.target as HTMLElement;
                 target.closest('.t-grid').getElementsByClassName('t-grid-header-wrap')[0].scrollLeft = target.scrollLeft;
             }
             this.columnResize();
         }
 
-        bindObserver() {
+        bindResizeObserver() {
             const resizeObserver = new ResizeObserver(entries => {
                 let grv = this.grid;
                 for (let entry of entries) {
                     if (entry.contentBoxSize && entry.contentBoxSize[0]) {
-
                         let contentHeight = grv.getElementsByClassName('t-grid-content')[0].getBoundingClientRect().height;
                         let table = grv.getElementsByClassName('t-grid-content')[0].getElementsByTagName('table')[0];
                         if (table) {
@@ -47,6 +50,26 @@
                 }
             });
             resizeObserver.observe(this.grid.getElementsByClassName('t-grid-content')[0]);
+
+        }
+
+        bindObserver() {
+            const mutationObserver = new MutationObserver(list => {
+                list.every(t => {
+                    let insertTable = (t.target as HTMLElement).getElementsByClassName('c-grid-insert')[0];
+                    if (insertTable != null) {
+                        let columns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
+                        let insertColumns = insertTable.getElementsByTagName('tr')[0].children;
+                        for (let index = 0; index < columns.length; index++) 
+                            (insertColumns[index] as HTMLElement).style.width = `${columns[index].getBoundingClientRect().width}px`
+                    }
+                });
+            });
+            mutationObserver.observe(this.content, {
+                attributes: false,
+                childList: true,
+                subtree: false,
+            });
         }
 
         columnResize() {
@@ -114,12 +137,18 @@
             let columns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
             let curentIndex = columns.indexOf(this.curent)
             let otherIndex = columns.indexOf(this.other);
-            columns = this.grid.getElementsByClassName('t-grid-content')[0].getElementsByTagName('tr')[0].children;
+            columns = this.content.getElementsByTagName('tr')[0].children;
             (columns.item(curentIndex) as HTMLElement).style.width = `${curentResult}px`;
             (columns.item(otherIndex) as HTMLElement).style.width = `${otherResult}px`;
-            let contentHeight = this.grid.getElementsByClassName('t-grid-content')[0].getBoundingClientRect().height;
+            let contentHeight = this.content.getBoundingClientRect().height;
             let tableHeight = this.grid.getElementsByClassName('c-grid-items')[0].getBoundingClientRect().height;
             let header = this.grid.getElementsByClassName('t-grid-header')[0] as HTMLElement;
+            let insertTable = this.grid.getElementsByClassName('c-grid-insert')[0];
+            if (insertTable != null) {
+                let insertColumns = insertTable.getElementsByTagName('tr')[0].children;
+                (insertColumns.item(curentIndex) as HTMLElement).style.width = `${curentResult}px`;
+                (insertColumns.item(otherIndex) as HTMLElement).style.width = `${otherResult}px`;
+            }
             if (contentHeight < tableHeight) {
                 if (caspian.common.RightToLeft())
                     header.style.paddingLeft = '11px';

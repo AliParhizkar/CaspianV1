@@ -29,6 +29,10 @@
             this.colorBlock = element.getElementsByClassName('c-color-block')[0] as HTMLElement;
             this.hueInput = element.querySelector('.c-colors-hue input') as HTMLInputElement;
             this.selector = element.getElementsByClassName('c-color-selector')[0] as HTMLElement;
+            this.displayer.onclick = () => {
+                if (this.bindingType == 1)
+                    this.bindColor();
+            }
             this.colorBlock.onmousedown = e => {
                 this.startDrag(e.clientX, e.clientY, e.layerX, e.layerY);
                 this.selector.style.left = `${e.layerX - 7}px`;
@@ -75,9 +79,6 @@
             input.value = color;
             let event = new Event('change');
             input.dispatchEvent(event);
-            this.displayer.onclick = () => {
-                this.bindColor();
-            }
         }
 
         update() {

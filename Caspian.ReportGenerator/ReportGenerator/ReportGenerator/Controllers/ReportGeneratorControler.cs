@@ -10,6 +10,8 @@ using ReportGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using Caspian.Engine.Model;
+using Stimulsoft.Base.Helpers;
 
 namespace ReportGenerator.Controllers
 {
@@ -41,12 +43,12 @@ namespace ReportGenerator.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    
+                    new DateTime().ToShortDateString();
                 }
             }
             var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId).ToListAsync();
             var maxDataLevel = parameters.Max(t => t.DataLevel);
-            //byte maxDataLevel = 1;
             var page = new PageData()
             {
                 Setting = new ReportSetting()
@@ -79,40 +81,36 @@ namespace ReportGenerator.Controllers
         }
 
         [HttpGet]
-        public IList<string> GetFonts()
+        public async Task<IList<string>> GetFonts()
         {
-            //using var service = GetService<CaspianFontService>();
-            //return await service.GetAll().Select(t => t.Name).ToListAsync();
-            return new List<string>()
-            {
-                "B Nazanin", "B Roya", "New Time"
-            };
+            return await GetService<CaspianFontService>().GetAll().Select(t => t.Name).ToListAsync();
         }
 
         [HttpGet]
-        public IList<SelectListItem> GetReportParameters(int reportId, int dataLevel)
+        public async  Task<IList<DataField>> GetReportParameters(int reportId, int dataLevel)
         {
-            //var result = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == null || t.DataLevel == dataLevel))
-            //    .Select(t => new SelectListItem
-            //    {
-            //        Text = t.Alias ?? t.TitleEn,
-            //        Value = t.TitleEn
-            //    }).ToListAsync();
-            var result = new List<SelectListItem>()
+            var report = await provider.GetService<ReportService>().GetAll().Include(t => t.ReportParams).Include(t => t.ReportGroup).SingleAsync(reportId);
+            var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
+            var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == dataLevel)).ToListAsync();
+            var fields = new List<DataField>();
+            foreach(var param in parameters)
             {
-                new SelectListItem("Order.Date", "Order Date"),
-                new SelectListItem("Order.Customer.CustomerType", "Customer Type"),
-                new SelectListItem("Order.Customer.FName", "First Name"),
-                new SelectListItem("Order.Customer.LName", "Last Name"),
-                new SelectListItem("Order.Customer.Gender", "Gender"),
-                new SelectListItem("Order.Customer.CompanyName", "Company Name"),
-                new SelectListItem("Order.Customer.MobileNumber", "Mobile Number"),
-                new SelectListItem("Product.Title", "Product Title"),
-                new SelectListItem("Price", "Price"),
-                new SelectListItem("Quantity", "Quantity"),
-                new SelectListItem("Order.OrderType", "Order Type"),
-            };
-            return result;
+                DataFieldType? dataFieldType = null;
+                var type = mainType.GetMyProperty(param.TitleEn).PropertyType.GetUnderlyingType();
+                if (type.IsIntegerType())
+                    dataFieldType = DataFieldType.Integer;
+                else if (type.IsNumericType())
+                    dataFieldType = DataFieldType.Number;
+                else if (type.IsDateType())
+                    dataFieldType = DataFieldType.Date;
+                fields.Add(new DataField()
+                {
+                    Name = param.TitleEn,
+                    Title = param.Alias ?? param.TitleEn,
+                    DataFieldType = dataFieldType
+                });
+            }
+            return fields;
         }
 
         public async Task SaveReport(PageData page)
@@ -138,7 +136,7 @@ namespace ReportGenerator.Controllers
             }
             catch (Exception ex)
             {
-
+                throw;
             }
         }
 
@@ -168,7 +166,7 @@ namespace ReportGenerator.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
             //return File(stream.ToArray(), "HTML");
         }

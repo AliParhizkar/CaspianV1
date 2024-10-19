@@ -64,7 +64,10 @@ namespace Caspian.Report
                 ReportControls.Remove(Bound.Page.SelectedControl);
             }
             else
+            {
                 Data.Table = null;
+                Table = null;
+            }
         }
 
         public string GetCursor(double x, double y)
@@ -138,6 +141,7 @@ namespace Caspian.Report
         /// <param name="list"></param>
         public void GetRecDatas(IList<RecData> list)
         {
+
             if (Table != null && Table != Bound.Page.SelectedTable)
             {
                 var sumLeft = Table.Data.Left + 15;
@@ -151,12 +155,13 @@ namespace Caspian.Report
                     sumLeft += cell.Width;
                 }
             }
-            var result = ReportControls.Where(t => t != Bound.Page.SelectedControl).Select(t => new RecData()
+            var result = ReportControls.Select(t => new RecData()
             {
                 Left = t.Data.Left,
                 Top = t.Data.Top,
                 Width = t.Data.Width,
-                Height = t.Data.Height
+                Height = t.Data.Height,
+                Id = t.Data.Id
             });
             list.AddRange(result.ToArray());
         }

@@ -202,4 +202,20 @@ namespace Caspian.Report
         TextBox,
         PictureBox
     }
+
+    public enum DataFieldType
+    {
+        Integer,
+        Number,
+        Date
+    }
+
+    public enum DateFormating
+    {
+        [Display(Name = "Date Only")]
+        DateOnly,
+
+        [Display(Name = "Date & Time")]
+        DateAndTime
+    }
 }

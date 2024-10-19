@@ -131,6 +131,21 @@ namespace Caspian.Report
             }
         }
 
+        public DataFieldType? FieldDataType
+        {
+            get
+            {
+                if (selectedCells.Count != 1)
+                    return null;
+                return selectedCells.Single().DataFieldType;
+            }
+            set
+            {
+                foreach (var cell in selectedCells)
+                    cell.DataFieldType = value;
+            }
+        }
+
         public string Text
         {
             get
@@ -390,6 +405,7 @@ namespace Caspian.Report
         protected override void OnInitialized()
         {
             selectedCells = new List<TableCellData>();
+            UpdateTableLocation();
             base.OnInitialized();
         }
 
@@ -560,22 +576,18 @@ namespace Caspian.Report
             }
         }
 
-        void UpdateTableLocation()
+        public void UpdateTableLocation()
         {
             if (Data.BondType.HasValue)
             {
                 Data.Left = Convert.ToInt32(Bound.Left + (BoundItem.ColumnWidth - TableWidth - 15) / 2);
                 Data.Top = Convert.ToInt32(BoundItem.Top);
+                TopStart = Data.Top;
             }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
-            {
-                UpdateTableLocation();
-                StateHasChanged();
-            }
             if (message != null)
             {
                 await JSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);

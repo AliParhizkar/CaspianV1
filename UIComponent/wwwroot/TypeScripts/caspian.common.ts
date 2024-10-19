@@ -216,7 +216,7 @@
                     await dotnet.invokeMethodAsync('Close');
                 }
             }
-            const mutationObserver = new MutationObserver((list) => {
+            const mutationObserver = new MutationObserver(list => {
                 list.every(t => {
                     if (t.addedNodes.length == 1) {
                         let ctr = t.addedNodes[0] as HTMLElement;

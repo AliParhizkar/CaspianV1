@@ -121,7 +121,10 @@
             /// After bound chaiging we need to arrange and update Top of Controls and Table
             Page.Bound.ArrangeBoundItems();
             foreach (var bound in Page.Bound.BoundItems)
+            {
+                bound.Table?.UpdateTableLocation();
                 bound.UpdateControlsTop();
+            }
             Page.StateChanged();
             await StatusChanged.InvokeAsync(WindowStatus.Close);
         }

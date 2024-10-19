@@ -8,8 +8,7 @@
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="p-4">
-                <DataGrid TEntity="Customer" Service="Service" ContentHeight="400"
-                          DeleteMessage="با حذف مشتری آدرسها و گروههای وی نیز حذف می شود آیا با حذف موافقید؟">
+                <DataGrid TEntity="Customer" Service="Service" ContentHeight="400" DeleteMessage="با حذف مشتری آدرسها و گروههای وی نیز حذف می شود آیا با حذف موافقید؟">
                     <Columns>
                         <GridColumn Field="t => t.CustomerType" />
                         <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
@@ -76,7 +75,7 @@
                             <Tabs>
                                 <TabPanelItem Title="Customer Addresses">
                                     <div class="p-2 ps-3 pe-3">
-                                        <DataGrid TEntity="CustomerAddress" DetailBatchService="Service" ContentHeight="185" Inline>
+                                        <DataGrid TEntity="CustomerAddress" DetailBatchService="Service" ContentHeight="185" Inline AutoHide>
                                             <Columns Context="con">
                                                 <GridColumn style="width:220px;" Field="t => t.AddressType.Title" Title="Address Type">
                                                     <EditTemplate>
@@ -103,7 +102,6 @@
                                         <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:247px;"
                                                         TextExpression="t => t.Title" />
                                     </div>
-
                                 </TabPanelItem>
                             </Tabs>
                         </TabPanel>
@@ -120,13 +118,7 @@
     </Tabs>
 </TabPanel>
 
-
-
-
 @code 
 {
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
+
 }

@@ -4,7 +4,7 @@ namespace Caspian.Report.Data
 {
     public class NumberFormating
     {
-        [DisplayName("Digit Group ")]
+        [DisplayName("Digit Group")]
         public bool DigitGroup { get; set; }
 
         [DisplayName("Number Digits")]

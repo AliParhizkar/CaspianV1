@@ -2,39 +2,48 @@
 @using Caspian.Common.Client
 
 @namespace Caspian.Report
-
 @inject IJSRuntime jsRundTime
-@{
-    if (!formating.DigitGroup)
-        formating.GroupNumberChar = null;
-    if (formating.DecimalChar == null)
-        formating.NumberDigits = null;
-}
+
 <div class="row p-2 c-controls">
-    <div class="col-md-5">
-        <label>Digit grouping</label>
-    </div>
-    <div class="col-md-7">
-        <CheckBox @bind-Value="formating.DigitGroup" />
-    </div>
-    <div class="col-md-5">
-        <label>Grouping character</label>
-    </div>
-    <div class="col-md-7">
-        <DropdownList @bind-Value="formating.GroupNumberChar" Disabled="!formating.DigitGroup" />
-    </div>
-    <div class="col-md-5">
-        <label>Point character</label>
-    </div>
-    <div class="col-md-7">
-        <DropdownList @bind-Value="formating.DecimalChar" />
-    </div>
-    <div class="col-md-5">
-        <label>Number of decimal</label>
-    </div>
-    <div class="col-md-7">
-        <NumericTextBox @bind-Value="formating.NumberDigits" Disabled="formating.DecimalChar == null" />
-    </div>
+    @if (dataFieldType != DataFieldType.Date)
+    {
+        <div class="col-md-5">
+            <label>Digit grouping</label>
+        </div>
+        <div class="col-md-7">
+            <CheckBox @bind-Value="formating.DigitGroup" />
+        </div>
+        <div class="col-md-5">
+            <label>Grouping character</label>
+        </div>
+        <div class="col-md-7">
+            <DropdownList @bind-Value="formating.GroupNumberChar" Disabled="!formating.DigitGroup" />
+        </div>
+    }
+    @if (dataFieldType == DataFieldType.Number)
+    {
+        <div class="col-md-5">
+            <label>Point character</label>
+        </div>
+        <div class="col-md-7">
+            <DropdownList @bind-Value="formating.DecimalChar" />
+        </div>
+        <div class="col-md-5">
+            <label>Number of decimal</label>
+        </div>
+        <div class="col-md-7">
+            <NumericTextBox @bind-Value="formating.NumberDigits" Disabled="formating.DecimalChar == null" />
+        </div>
+    }
+    @if (dataFieldType == DataFieldType.Date)
+    {
+        <div class="col-md-5">
+            <label>Date Type</label>
+        </div>
+        <div class="col-md-7">
+            <DropdownList @bind-Value="dateFormating" />
+        </div>
+    }
     <div class="col-md-5"></div>
         <div class="col-md-7 justify-content-center d-flex pt-3 pb-2">
             <button class="c-btn c-danger" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)">Cancel</button>
@@ -46,14 +55,22 @@
 @code 
 {
     string message;
+    DataFieldType dataFieldType;
     NumberFormating formating;
+    DateFormating? dateFormating;
 
     protected override void OnInitialized()
     {
         if (Page.SelectedControl == null)
+        {
+            dataFieldType = Page.SelectedTable.FieldDataType.Value;
             formating = Page.SelectedTable.GetNumberFormating();
+        }
         else
+        {
+            dataFieldType = Page.SelectedControl.Data.DataFieldType.Value;
             formating = Page.SelectedControl.Data.NumberFormating;
+        }
         formating = formating ?? new NumberFormating();
         base.OnInitialized();
     }

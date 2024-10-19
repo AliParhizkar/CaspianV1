@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.UI
+@using Microsoft.AspNetCore.Components.Rendering
 @typeparam TEntity where TEntity: class
 @inherits DataView<TEntity>
 @attribute [CascadingTypeParameter(nameof(TEntity))]
@@ -23,46 +24,26 @@
     else
     {
     <div @ref="mainDiv" class="t-widget t-grid">
-        @if (ToolsBar == null)
+        @if (!Inline)
         {
-            <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" DisableInsertIcon="disableInsertIcon" 
-                    OnInsertButoonClicked="CreateInsert" />
+            if (ToolsBar == null)
+            {
+                <DataToolsBar TEntity="TEntity" HideInsertIcon="HideInsertIcon" DisableInsertIcon="disableInsertIcon" 
+                            OnInsertButoonClicked="CreateInsert" />
+            }
+            else
+                @ToolsBar
         }
-        else
-            @ToolsBar
+
         <GridHeader TableWidth="TableWidth" ColumnsData="columnsData" OnOrderingChanged="async () =>
                                                 {
                                                     await ChangePageNumber(pageNumber);
                                                 }" />
 
             <div class="@className" style="@(style)">
-            @if (insertedEntity?.UpsertMode != null && Inline)
+            @if (Inline && !AutoHide)
             {
-                <table @attributes="tableAttrs" class="c-grid-insert">
-                    <tbody>
-                        <tr>
-                        @if (selectedEntity == null)
-                        {
-                            <CaspianContainer @ref="insertContiner">
-                                <CascadingValue Value="InsertContext">
-                                    <CaspianValidationValidator Source="source" ValidatorType="serviceType" />
-                                    <CascadingValue Value="insertedEntity" Name="RowData">
-                                        @Columns(insertedEntity)
-                                    </CascadingValue>
-                                </CascadingValue>
-                            </CaspianContainer>
-                        }
-                        else
-                        {
-                            <CaspianContainer Disabled>
-                                <CascadingValue Value="insertedEntity" Name="RowData">
-                                    @Columns(insertedEntity)
-                                </CascadingValue>
-                            </CaspianContainer>
-                        }
-                        </tr>
-                    </tbody>
-                </table>
+                    CreateInsertSection(__builder2);
             }
             @if (items != null)
             {
@@ -136,7 +117,21 @@
                             }
                         }
                     </tbody>
-                </table>
+                    </table>
+                    if (Inline && AutoHide)
+                    {
+                        if (insertedEntity?.UpsertMode != null)
+                        {
+                            CreateInsertSection(__builder2);
+                        }
+                        else
+                        {
+                            <div class="t-grid-inline-insert" @onclick="CreateInsert">
+                                <span class="fa fa-plus"></span>
+                            </div>
+                        }
+
+                }
             }
             else
             {
@@ -148,3 +143,35 @@
     </div>
     }
 </CascadingValue>
+
+@code 
+{
+    void CreateInsertSection(RenderTreeBuilder __builder)
+    {
+        <table @attributes="tableAttrs" class="c-grid-insert">
+            <tbody>
+                <tr>
+                    @if (selectedEntity == null)
+                    {
+                        <CaspianContainer @ref="insertContiner">
+                            <CascadingValue Value="InsertContext">
+                                <CaspianValidationValidator Source="source" ValidatorType="serviceType" />
+                                <CascadingValue Value="insertedEntity" Name="RowData">
+                                    @Columns(insertedEntity)
+                                </CascadingValue>
+                            </CascadingValue>
+                        </CaspianContainer>
+                    }
+                    else
+                    {
+                        <CaspianContainer Disabled>
+                            <CascadingValue Value="insertedEntity" Name="RowData">
+                                @Columns(insertedEntity)
+                            </CascadingValue>
+                        </CaspianContainer>
+                    }
+                </tr>
+            </tbody>
+        </table>
+    }
+}

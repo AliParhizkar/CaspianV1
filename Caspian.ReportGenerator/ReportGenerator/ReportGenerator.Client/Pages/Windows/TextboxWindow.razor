@@ -69,8 +69,11 @@
     string text;
 
     IEnumerable<SelectListItem> Params;
+    IEnumerable<DataField> fields;
     TextFieldData fieldData;
     BondType bondType;
+    DataFieldType? dataFieldType;
+
     protected override void OnInitialized()
     {
         fieldData = new TextFieldData();
@@ -97,8 +100,8 @@
         {
             var level = Page.Bound.MaxDataLevel - dataLevel.Value + 1;
             var url = $"/ReportGenerator/GetReportParameters?reportId={Page.ReportId}&dataLevel={level}";
-            Params = await Host.GetFromJsonAsync<IEnumerable<SelectListItem>>(url);
-
+            fields = await Host.GetFromJsonAsync<IEnumerable<DataField>>(url);
+            Params = fields.Select(t => new SelectListItem(t.Name, t.Title));
             await base.OnInitializedAsync();
         }
     }
@@ -107,13 +110,17 @@
     {
         if (Page.SelectedControl != null)
         {
+            Page.Stack.Push(Page.SelectedControl);
             Page.SelectedControl.Data.Text = text;
             Page.SelectedControl.Data.FieldData.CopySimpleProperty(fieldData);
+            Page.SelectedControl.Data.DataFieldType = dataFieldType;
         }
         else
         {
+            Page.Stack.Push(Page.SelectedTable.Data);
             Page.SelectedTable.Text = text;
             Page.SelectedTable.FieldData = fieldData;
+
         }
         await StatusChanged.InvokeAsync(WindowStatus.Close);
     }
@@ -125,9 +132,15 @@
     {
         fieldData.Path = path;
         if (path.HasValue())
+        {
             text = '{' + Params.Single(t => t.Value == path).Text + '}';
+            dataFieldType = fields.Single(t => t.Name == path).DataFieldType;
+        }
         else
+        {
             text = null;
+            dataFieldType = null;
+        }
     }
 
     void TotalFuncTypeChanged(TotalFuncType? funcType)

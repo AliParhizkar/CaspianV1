@@ -54,6 +54,6 @@ namespace Caspian.Engine.Model
         /// گزارش های این گروه
         /// </summary>
         [CheckOnDelete("گروه دارای گزارش می باشد و امکان حذف آن وجود ندارد")]
-        public virtual IList<Report> Params { get; set; }
+        public virtual IList<Report> Reports { get; set; }
     }
 }

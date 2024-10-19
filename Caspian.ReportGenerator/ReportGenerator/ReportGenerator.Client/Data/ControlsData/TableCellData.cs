@@ -34,6 +34,8 @@ namespace Caspian.Report.Data
 
         public TextFieldData FieldData { get; set; }
 
+        public DataFieldType? DataFieldType { get; set; }
+
         public NumberFormating NumberFormating { get; set; }
 
         public int RowSpan { get; set; }

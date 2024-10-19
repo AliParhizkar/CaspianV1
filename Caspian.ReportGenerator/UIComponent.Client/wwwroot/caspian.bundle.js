@@ -59,14 +59,19 @@ var caspian;
                 let ctr = t[0].target;
                 let group = ctr.getElementsByClassName('t-group')[0];
                 if (group) {
+                    if (pageable) {
+                        group.onscrollend = () => __awaiter(this, void 0, void 0, function* () {
+                            yield dotnet.invokeMethodAsync('IncPageNumberInvokable');
+                        });
+                    }
                     let animate = ctr.getElementsByClassName('t-animation-container')[0];
                     let height = group.getElementsByClassName('t-reset')[0].getBoundingClientRect().height;
                     height = Math.min(250, height);
                     height = Math.max(height, 30);
-                    let loc = group.getBoundingClientRect().top;
                     animate.style.height = `${height + 7}px`;
-                    animate.style.width = `${ctr.getBoundingClientRect().width + 7}px`;
-                    if (loc > window.innerHeight / 2) {
+                    let loc = ctr.getBoundingClientRect();
+                    animate.style.width = `${loc.width + 7}px`;
+                    if (loc.top > window.innerHeight / 2) {
                         animate.classList.add('c-animate-up');
                         setTimeout(() => group.style.bottom = '0', 10);
                         animate.style.marginTop = `${-height - 42}px`;
@@ -325,6 +330,10 @@ var caspian;
             this.colorBlock = element.getElementsByClassName('c-color-block')[0];
             this.hueInput = element.querySelector('.c-colors-hue input');
             this.selector = element.getElementsByClassName('c-color-selector')[0];
+            this.displayer.onclick = () => {
+                if (this.bindingType == 1)
+                    this.bindColor();
+            };
             this.colorBlock.onmousedown = e => {
                 this.startDrag(e.clientX, e.clientY, e.layerX, e.layerY);
                 this.selector.style.left = `${e.layerX - 7}px`;
@@ -365,15 +374,11 @@ var caspian;
             this.red = parseInt(r);
             this.green = parseInt(g);
             this.blue = parseInt(b);
-            ;
             this.alpha = parseFloat(a) || 1;
             let input = this.element.querySelector('input[type="hidden"]');
             input.value = color;
             let event = new Event('change');
             input.dispatchEvent(event);
-            this.displayer.onclick = () => {
-                this.bindColor();
-            };
         }
         update() {
             let [r, g, b] = this.convertHSVtoRGB(this.hue, 100, 100);
@@ -511,19 +516,21 @@ var caspian;
         static bindCheclistDropdown(element, dotnet) {
             const mutationObserver = new MutationObserver(t => {
                 let element = t[0].target;
+                let width = element.closest('.t-dropdown').getBoundingClientRect().width;
                 if (element.classList.contains('c-checkbox-list'))
                     element = element.parentElement;
                 if (element.classList.contains('t-checkbox-list')) {
                     let loc = element.getBoundingClientRect();
                     let animate = element.closest('.t-animation-container');
+                    animate.style.height = `${loc.height + 6}px`;
+                    animate.style.width = `${width + 6}px`;
                     if (loc.top > window.outerHeight / 2) {
                         animate.classList.add('c-animation-up');
-                        animate.style.height = `${loc.height + 6}px`;
+                        animate.style.marginTop = `${-loc.height - 37}px`;
                         setTimeout(() => element.style.bottom = '3px', 20);
                     }
                     else {
                         animate.classList.add('c-animation-down');
-                        animate.style.height = `${loc.height + 3}px`;
                         setTimeout(() => element.style.top = '0', 20);
                     }
                 }
@@ -563,7 +570,8 @@ var caspian;
             });
         }
         static bindTree(tree) {
-            debugger;
+        }
+        static bindTooltip() {
         }
         static onWindowResizeHandler(element, dotnet) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -614,7 +622,7 @@ var caspian;
             content.style.height = `${height}px`;
             let header = list.getElementsByClassName('c-dataview-header')[0];
             if (realHeight > height)
-                header.style.paddingRight = '11px';
+                header.style.paddingRight = '10px';
             else
                 header.style.paddingRight = '0';
         }
@@ -693,7 +701,7 @@ var caspian;
                     yield dotnet.invokeMethodAsync('Close');
                 }
             });
-            const mutationObserver = new MutationObserver((list) => {
+            const mutationObserver = new MutationObserver(list => {
                 list.every(t => {
                     if (t.addedNodes.length == 1) {
                         let ctr = t.addedNodes[0];
@@ -827,6 +835,9 @@ var caspian;
             this.infoTimer = setTimeout(() => {
                 this.hideMessage();
             }, 4000);
+        }
+        static focus(element) {
+            element.focus();
         }
         static hideMessage() {
             if (this.infoTimer)
@@ -1256,13 +1267,17 @@ var caspian;
     class DataGrid {
         constructor(grv) {
             this.grid = grv;
-            this.bindObserver();
-            grv.getElementsByClassName('t-grid-content')[0].onscroll = e => {
+            this.content = grv.getElementsByClassName('t-grid-content')[0];
+            if (this.content.classList.contains('t-inline-content'))
+                this.bindObserver();
+            this.bindResizeObserver();
+            this.content.onscroll = e => {
                 let target = e.target;
                 target.closest('.t-grid').getElementsByClassName('t-grid-header-wrap')[0].scrollLeft = target.scrollLeft;
             };
+            this.columnResize();
         }
-        bindObserver() {
+        bindResizeObserver() {
             const resizeObserver = new ResizeObserver(entries => {
                 let grv = this.grid;
                 for (let entry of entries) {
@@ -1289,6 +1304,24 @@ var caspian;
                 }
             });
             resizeObserver.observe(this.grid.getElementsByClassName('t-grid-content')[0]);
+        }
+        bindObserver() {
+            const mutationObserver = new MutationObserver(list => {
+                list.every(t => {
+                    let insertTable = t.target.getElementsByClassName('c-grid-insert')[0];
+                    if (insertTable != null) {
+                        let columns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
+                        let insertColumns = insertTable.getElementsByTagName('tr')[0].children;
+                        for (let index = 0; index < columns.length; index++)
+                            insertColumns[index].style.width = `${columns[index].getBoundingClientRect().width}px`;
+                    }
+                });
+            });
+            mutationObserver.observe(this.content, {
+                attributes: false,
+                childList: true,
+                subtree: false,
+            });
         }
         columnResize() {
             let head = this.grid.getElementsByClassName('t-grid-header-wrap')[0];
@@ -1333,8 +1366,8 @@ var caspian;
                         this.otherWidth = other.getBoundingClientRect().width;
                     this.xStart = e.clientX;
                 }
-                window.onclick = this.drop;
-                window.onmousemove = this.dragging;
+                window.onclick = () => this.drop();
+                window.onmousemove = e => this.dragging(e);
             };
         }
         dragging(e) {
@@ -1353,12 +1386,18 @@ var caspian;
             let columns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
             let curentIndex = columns.indexOf(this.curent);
             let otherIndex = columns.indexOf(this.other);
-            columns = this.grid.getElementsByClassName('t-grid-content')[0].getElementsByTagName('tr')[0].children;
+            columns = this.content.getElementsByTagName('tr')[0].children;
             columns.item(curentIndex).style.width = `${curentResult}px`;
             columns.item(otherIndex).style.width = `${otherResult}px`;
-            let contentHeight = this.grid.getElementsByClassName('t-grid-content')[0].getBoundingClientRect().height;
+            let contentHeight = this.content.getBoundingClientRect().height;
             let tableHeight = this.grid.getElementsByClassName('c-grid-items')[0].getBoundingClientRect().height;
             let header = this.grid.getElementsByClassName('t-grid-header')[0];
+            let insertTable = this.grid.getElementsByClassName('c-grid-insert')[0];
+            if (insertTable != null) {
+                let insertColumns = insertTable.getElementsByTagName('tr')[0].children;
+                insertColumns.item(curentIndex).style.width = `${curentResult}px`;
+                insertColumns.item(otherIndex).style.width = `${otherResult}px`;
+            }
             if (contentHeight < tableHeight) {
                 if (caspian.common.RightToLeft())
                     header.style.paddingLeft = '11px';
@@ -1385,8 +1424,10 @@ var caspian;
             this.multiple = multiple || false;
             el.querySelectorAll('.submenu li').forEach(li => {
                 li.onclick = e => {
-                    el.querySelector('.submenu .selected').classList.remove('selected');
-                    e.target.closest('li').classList.add('selected');
+                    let selected = el.querySelector('.submenu .selected');
+                    if (selected != null)
+                        selected.classList.remove('selected');
+                    e.target.classList.add('selected');
                 };
             });
             el.querySelectorAll('.default .link').forEach(elem => {
@@ -1501,11 +1542,9 @@ var caspian;
         bindObserver(win) {
             const mutationObserver = new MutationObserver(list => {
                 list.forEach(mutation => {
-                    let main = document.getElementsByClassName('c-content-main')[0] || document.body;
-                    if (main == null)
-                        main = document.body;
                     if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
                         let status = mutation.target.attributes['status'].value;
+                        let main = document.getElementsByClassName('c-content-main')[0] || document.body;
                         if (status == '1') {
                             let openWindowIsExist = false;
                             let windows = document.getElementsByClassName('t-window');

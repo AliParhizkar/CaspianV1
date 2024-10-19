@@ -30,5 +30,8 @@ namespace Demo.Model
 
         [DisplayName("Quantity"), ReportField]
         public int Quantity { get; set; }
+
+        [DisplayName("Sum"), DatabaseGenerated(DatabaseGeneratedOption.Computed), ReportField]
+        public int Result { get;set; }
     }
 }
