@@ -123,8 +123,8 @@
             var param = reportParams.Single(t => t.Id == parameterId);
             var token = new Token()
             {
-                EnTitle = param.TitleEn,
-                FaTitle = param.Alias,
+                EnTitle = param.ReportGroupParameter.TitleEn,
+                FaTitle = param.ReportGroupParameter.Alias,
                 TokenType = TokenType.Oprand,
             };
             tokens.Add(token);
@@ -165,7 +165,7 @@
         reportParams = await service.GetAll().Where(t => t.ReportId == 1).ToListAsync();
         source = reportParams.Select(t => new SelectListItem()
         {
-            Text = t.Alias,
+            Text = t.ReportGroupParameter.Alias,
             Value = t.Id.ToString()
         }).ToList();
         await base.OnInitializedAsync();

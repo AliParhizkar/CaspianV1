@@ -13,9 +13,9 @@
             @foreach (var param in reportParams)
             {
                 <tr>
-                    <td>@param.TitleEn</td>
+                    <td>@param.ReportGroupParameter.TitleEn</td>
                     <td>
-                        <StringTextBox @bind-Value="param.Alias" />
+                        <StringTextBox @bind-Value="param.ReportGroupParameter.Alias" />
                     </td>
                 </tr>
             }

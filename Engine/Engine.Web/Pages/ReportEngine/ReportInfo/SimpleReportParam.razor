@@ -1,47 +1,39 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
 @inherits BasePage
-<TreeView @ref="Tree" OnExpanded="@(async (item) =>
-                        {
-                            var data = System.Text.Json.JsonSerializer.Deserialize<ReportNode>(item.Value);
-                            var tempItems = (await new ReportTree().CreateTreeForSelect(Type, data, ReportParams));
-                            item.Children = tempItems.Select(t => new NodeView()
-                            {
-                                Value = System.Text.Json.JsonSerializer.Serialize(t),
-                                Selected = t.Selected,
-                                Selectable = !t.Grouping,
-                                Expanded = false,
-                                Collabsable = t.Grouping,
-                                Text = t.TitleFa,
-                                Disabled = t.Selected
-                            }).ToList();
-                        })" style="width:500px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="NodeView" Source="Nodes" />
-<div style="text-align:left;padding-left:75px;padding-top:10px;">
-    <button style="width:60px" class="c-btn c-primary" @onclick="PostParams">Save</button>
-    <button class="c-btn c-danger"
-            @onclick="async () =>
-                                  {
-                                      await StatusChanged.InvokeAsync( WindowStatus.Close);
-                                  }">
-        Cancel
-    </button>
-</div>
+<TreeView @ref="tree" OnExpanded="LoadNodeChilderen" style="width:500px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="NodeView" Source="nodes" />
 
 @code
 {
-    Type Type;
-    IList<NodeView> Nodes;
-    IList<ReportParam> ReportParams;
-    TreeView<NodeView> Tree;
+    Type type;
+    IList<NodeView> nodes;
+    IList<ReportGroupParameter> reportParams;
+    TreeView<NodeView> tree;
+
+    async Task LoadNodeChilderen(NodeView node)
+    {
+        var data = System.Text.Json.JsonSerializer.Deserialize<ReportNode>(node.Value);
+        var tempItems = (await new ReportTree().CreateTreeForSelect(type, data, new List<ReportParam>()));
+        node.Children = tempItems.Select(t => new NodeView()
+            {
+                Value = System.Text.Json.JsonSerializer.Serialize(t),
+                Selected = t.Selected,
+                Selectable = !t.Grouping,
+                Expanded = false,
+                Collabsable = t.Grouping,
+                Text = t.TitleFa,
+                Disabled = t.Selected
+            }).ToList();
+    }
 
     async Task PostParams()
     {
-        var result = Tree.GetSeletcedItems().Select(t => System.Text.Json.JsonSerializer.Deserialize<ReportNode>(t.Value));
-        var reportParams = Tree.GetSeletcedItems().Select(t => System.Text.Json.JsonSerializer.Deserialize<ReportNode>(t.Value))
+        var result = tree.GetSeletcedItems().Select(t => System.Text.Json.JsonSerializer.Deserialize<ReportNode>(t.Value));
+        var reportParams = tree.GetSeletcedItems().Select(t => System.Text.Json.JsonSerializer.Deserialize<ReportNode>(t.Value))
             .Select(t => new ReportParam()
             {
                 DataLevel = 1,
                 ReportId = ReportId,
-                TitleEn = t.TitleEn,
+                //TitleEn = t.TitleEn,
                 RuleId = t.RuleId,
                 DynamicParameterId = t.DynamicParameterId
             }).ToList();
@@ -53,15 +45,15 @@
             await service.AddAll(reportParams);
             await service.SaveChangesAsync();
             await OnParameterSave.InvokeAsync();
-            ReportParams = await service.GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
-            Nodes = (await new ReportTree().CreateTreeForSelect(Type, null, ReportParams)).Select(t => new NodeView()
+            reportParams = await service.GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
+            nodes = (await new ReportTree().CreateTreeForSelect(type, null, reportParams)).Select(t => new NodeView()
                 {
                     Value = System.Text.Json.JsonSerializer.Serialize(t),
                     Selected = t.Selected,
                     Selectable = !t.Grouping,
                     Expanded = false,
                     Collabsable = t.Grouping,
-                    Disabled = ReportParams.Any(u => u.TitleEn == t.TitleEn),
+                    Disabled = reportParams.Any(u => u.ReportGroupParameter.TitleEn == t.TitleEn),
                     Text = t.TitleFa
                 }).ToList();
             await StatusChanged.InvokeAsync(WindowStatus.Close);
@@ -70,19 +62,18 @@
 
     protected async override Task OnInitializedAsync()
     {
-        using var scope = CreateScope();
-        var report = await scope.GetService<ReportService>().GetAll().Include(t => t.ReportGroup).SingleAsync(ReportId);
-        Type = new AssemblyInfo().GetReturnType(report.ReportGroup);
-        ReportParams = await scope.GetService<ReportParamService>().GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
-        var nodes = await new ReportTree().CreateTreeForSelect(Type, null, ReportParams);
-        Nodes = nodes.Select(t => new NodeView()
+        using var service = CreateScope().GetService<ReportGroupService>();
+        var group = await service.GetAll().Include(t => t.ReportGroupParameters).SingleAsync(GroupId);
+        type = new AssemblyInfo().GetReturnType(group);
+        var nodes1 = await new ReportTree().CreateTreeForSelect(type, null, new List<ReportParam>());
+        nodes = nodes1.Select(t => new NodeView()
         {
             Value = System.Text.Json.JsonSerializer.Serialize(t),
             Selected = t.Selected,
             Selectable = !t.Grouping,
             Expanded = false,
             Collabsable = t.Grouping,
-            Disabled = ReportParams.Any(u => u.TitleEn == t.TitleEn),
+            Disabled = group.ReportGroupParameters.Any(u => u.TitleEn == t.TitleEn),
             Text = t.TitleFa
         }).ToList();
         await base.OnInitializedAsync();
@@ -90,6 +81,9 @@
 
     [Parameter]
     public int ReportId { get; set; }
+
+    [Parameter]
+    public int GroupId { get; set; }
 
     [Parameter]
     public WindowStatus Status { get; set; }

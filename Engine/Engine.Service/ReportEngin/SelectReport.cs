@@ -28,7 +28,7 @@ namespace Caspian.Engine
             {
                 var type = paramExpr.Type;
                 string str = "";
-                foreach (var item in field.TitleEn.Split('.'))
+                foreach (var item in field.ReportGroupParameter.TitleEn.Split('.'))
                 {
                     if (type.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
                         break;
@@ -38,7 +38,7 @@ namespace Caspian.Engine
                     var info = type.GetProperty(item);
                     type = info.PropertyType;
                 }
-                if (!list.Any(t => t.TitleEn == str))
+                if (!list.Any(t => t.ReportGroupParameter.TitleEn == str))
                     list.Add(field);
             }
             return list;
@@ -52,7 +52,7 @@ namespace Caspian.Engine
             Type dynamicItemType = null, dynamicTypeOfDynamicItem = null;
             if (flag)
             {
-                var enTitle = dynamicFields.First().TitleEn;
+                var enTitle = dynamicFields.First().ReportGroupParameter.TitleEn;
                 dynamicItemType = GetDynamicItemType(enTitle);
                 dynamicTypeOfDynamicItem = GetDynamicTypeOfDynamicItem(enTitle);
             }
@@ -63,7 +63,7 @@ namespace Caspian.Engine
             {
                 if (info.Name != "DynamicItems" && i < fields.Length)
                 {
-                    var name = fields[i].TitleEn;
+                    var name = fields[i].ReportGroupParameter.TitleEn;
                     list.Add(Expression.Bind(info, GetMemberExpr(name)));
                 }
                 i++;
@@ -71,7 +71,7 @@ namespace Caspian.Engine
             if (flag)
             {
                 var info = dynamicType.GetMember("DynamicItems")[0];
-                var titleEn = dynamicFields.First().TitleEn;
+                var titleEn = dynamicFields.First().ReportGroupParameter.TitleEn;
                 var tempExpr = DynamicItemSelectExpr(dynamicItemType, titleEn);
                 list.Add(Expression.Bind(info, tempExpr));
             }
@@ -131,8 +131,8 @@ namespace Caspian.Engine
             foreach (var field in fields)
             {
                 Type tempType = null;
-                string name = GetEqualFieldName(field.TitleEn, field.CompositionMethodType);
-                var info = paramExpr.Type.GetMyProperty(field.TitleEn);
+                string name = GetEqualFieldName(field.ReportGroupParameter.TitleEn, field.CompositionMethodType);
+                var info = paramExpr.Type.GetMyProperty(field.ReportGroupParameter.TitleEn);
                 if (info.DeclaringType.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
                     tempType = typeof(string);
                 else
@@ -179,7 +179,7 @@ namespace Caspian.Engine
             {
                 if (info.Name == "Item")
                     continue;
-                members.Add(Expression.Bind(info, PropertyExpr(parameterExpr, reportParams[index].TitleEn)));
+                members.Add(Expression.Bind(info, PropertyExpr(parameterExpr, reportParams[index].ReportGroupParameter.TitleEn)));
                 index++;
             }
             var expr = Expression.MemberInit(Expression.New(type), members);
@@ -196,7 +196,7 @@ namespace Caspian.Engine
             foreach (var param in reportParams)
             {
                 Expression expr = null;
-                var name = param.TitleEn.Replace('.', '_');
+                var name = param.ReportGroupParameter.TitleEn.Replace('.', '_');
                 if (param.CompositionMethodType.HasValue)
                 {
                     switch (param.CompositionMethodType.Value)
@@ -226,10 +226,10 @@ namespace Caspian.Engine
             var list = new List<DynamicProperty>();
             foreach (var param in reportParams)
             {
-                var info = mainType.GetMyProperty(param.TitleEn);
+                var info = mainType.GetMyProperty(param.ReportGroupParameter.TitleEn);
                 var type = info.PropertyType;
                 
-                var name = param.TitleEn.Replace('.', '_');
+                var name = param.ReportGroupParameter.TitleEn.Replace('.', '_');
                 switch (param.CompositionMethodType)
                 {
                     case CompositionMethodType.Sum: name = "Sum_" + name; break;
@@ -275,7 +275,7 @@ namespace Caspian.Engine
 
         MethodInfo GetMethodInfo(Type mainType, ReportParam param)
         {
-            var tempType  = mainType.GetMyProperty(param.TitleEn).PropertyType;
+            var tempType  = mainType.GetMyProperty(param.ReportGroupParameter.TitleEn).PropertyType;
             var type = tempType;
             if (param.CompositionMethodType == CompositionMethodType.Avg)
             {
@@ -319,7 +319,7 @@ namespace Caspian.Engine
         {
             var u = Expression.Parameter(mainType, "u");
             Expression expr = u;
-            foreach (var str in param.TitleEn.Split('.'))
+            foreach (var str in param.ReportGroupParameter.TitleEn.Split('.'))
                 expr = Expression.Property(u, str);
             expr = Expression.Lambda(expr, u);
             var method = GetMethodInfo(mainType, param);
@@ -392,7 +392,7 @@ namespace Caspian.Engine
                     }
                     else
                     {
-                        name = GetEqualFieldName(param.TitleEn);
+                        name = GetEqualFieldName(param.ReportGroupParameter.TitleEn);
                         switch(param.CompositionMethodType)
                         {
                             case CompositionMethodType.Sum: name = "Sum_" + name; break;
@@ -513,7 +513,7 @@ namespace Caspian.Engine
         Dictionary<int?, IList> GetDataOfLevel(IList source,IList<ReportParam> reportParams, Type type, int level)
         {
             var keyparam = reportParams.Single(t => t.DataLevel == level && t.IsKey);
-            var keyInfo = type.GetProperty(keyparam.TitleEn.Replace(".", ""));
+            var keyInfo = type.GetProperty(keyparam.ReportGroupParameter.TitleEn.Replace(".", ""));
             Dictionary<int?, IList> dictionary = new Dictionary<int?, IList>();
             dictionary.Add(null, source);
             foreach (var item in source)
@@ -541,7 +541,7 @@ namespace Caspian.Engine
             var list = new List<DynamicProperty>();
             foreach (var param in reportParams.Where(t => t.DataLevel == level))
             {
-                var name = param.TitleEn.Replace(".", "");
+                var name = param.ReportGroupParameter.TitleEn.Replace(".", "");
                 var type = mainType.GetProperty(name).PropertyType.GetUnderlyingType();
                 if (type.IsEnum)
                     type = typeof(string);
@@ -571,10 +571,10 @@ namespace Caspian.Engine
                 }
                 else
                 {
-                    type = GetEqualType(param.TitleEn, false);
+                    type = GetEqualType(param.ReportGroupParameter.TitleEn, false);
                     if (type.IsEnum)
                         type = typeof(string);
-                    name = GetEqualFieldName(param.TitleEn);
+                    name = GetEqualFieldName(param.ReportGroupParameter.TitleEn);
                     switch(param.CompositionMethodType)
                     {
                         case CompositionMethodType.Sum: name = "Sum_" + name; break;

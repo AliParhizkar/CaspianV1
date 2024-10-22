@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Caspian.Engine.Model
 {
@@ -25,17 +25,16 @@ namespace Caspian.Engine.Model
         /// <summary>
         /// عنوان لاتین <see cref="namespace"/>ئی که متد در یکی از کلاسهای آن قرار دارد
         /// </summary>
+        [DisplayName("NameSpace")]
         public string NameSpace { get; set; }
 
         /// <summary>
         /// عنوان لاتین کلاسی که متد در آن قرار دارد
         /// </summary>
+        [DisplayName("Class Title")]
         public string ClassTitle { get; set; }
 
-        /// <summary>
-        /// عنوان لاتین متد
-        /// </summary>
-        [DisplayName("عنوان متد")]
+        [DisplayName("Method Name")]
         public string MethodName { get; set; }
 
         /// <summary>
@@ -55,5 +54,8 @@ namespace Caspian.Engine.Model
         /// </summary>
         [CheckOnDelete("گروه دارای گزارش می باشد و امکان حذف آن وجود ندارد")]
         public virtual IList<Report> Reports { get; set; }
+
+        [CheckOnDelete("گروه دارای گزارش می باشد و امکان حذف آن وجود ندارد")]
+        public virtual IList<ReportGroupParameter> ReportGroupParameters { get; set; }
     }
 }

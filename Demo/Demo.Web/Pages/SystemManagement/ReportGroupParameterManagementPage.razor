@@ -1,14 +1,11 @@
-﻿@page "/Demo/SystemManagement/MenuManagement"
-@inherits BasePage
+﻿@page "/Demo/SystemManagement/ReportGroupParameter/{GroupId:int}"
 
-@{
-    base.BuildRenderTree(__builder);
-}
+
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="p-3">
-                <MenuManagementComponent Subsystem="SubSystemKind.Demo" />
+                <ReportGroupParameterComponent GroupId="GroupId" />
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
@@ -17,8 +14,8 @@
     </Tabs>
 </TabPanel>
 
-
-@code
+@code 
 {
-
+    [Parameter]
+    public int GroupId { get; set; }
 }

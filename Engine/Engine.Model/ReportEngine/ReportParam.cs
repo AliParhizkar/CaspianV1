@@ -18,19 +18,7 @@ namespace Caspian.Engine.Model
         public int Id { get; set; }
 
         /// <summary>
-        /// کد گزارش
-        /// </summary>
-        [DisplayName("گزارش")]
-        public int ReportId { get; set; }
-
-        /// <summary>
-        /// عنوان لاتین فیلد
-        /// </summary>
-        [StringLength(100), DisplayName("عنوان لاتین")]
-        public string TitleEn { get; set; }
-
-        /// <summary>
-        /// سطح گزارش در گزارشهای گروهبندی شده براساس گزارش
+        /// The Level of report in multi levels reports
         /// </summary>
         public byte DataLevel { get; set; }
 
@@ -46,9 +34,6 @@ namespace Caspian.Engine.Model
         [DisplayName("ترتیب")]
         public SortType? SortType { get; set; }
 
-        [DisplayName("Alias")]
-        public string Alias { get; set; }
-
         /// <summary>
         /// نوع متد در گروهبندی پایگاه داده ای
         /// </summary>
@@ -62,14 +47,19 @@ namespace Caspian.Engine.Model
 
         public bool IsKey { get; set; }
 
+        public int ReportGroupParameterId {  get; set; }
+
+        [ForeignKey(nameof(ReportGroupParameterId))]
+        public virtual ReportGroupParameter ReportGroupParameter { get; set; }
+
         public int? DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
         public virtual DynamicParameter DynamicParameter { get; set; }
 
-        /// <summary>
-        /// مشخصات گزارش
-        /// </summary>
+        [DisplayName("گزارش")]
+        public int ReportId { get; set; }
+
         [ForeignKey(nameof(ReportId))]
         public virtual Report Report { get; set; }
     }

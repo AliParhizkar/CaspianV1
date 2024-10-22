@@ -1,0 +1,21 @@
+﻿@namespace Caspian.Engine.ReportGenerator
+@inject SimpleService<ReportGroup> Service
+
+<DataGrid TEntity="ReportGroup" Service="Service" ConditionExpr="t => t.SubSystem == SubSystem" ContentHeight="350" HideInsertIcon>
+    <Columns>
+        <GridColumn Field="t => t.NameSpace" />
+        <GridColumn Field="t => t.ClassTitle" />
+        <GridColumn Field="t => t.MethodName" />
+        <GridColumn Title="Parameters" style="width:80px">
+            <Template>
+                <IconButton Href='@($"/{SubSystem.ToString()}/SystemManagement/ReportGroupParameter/{context.Data.Id}")' IconType="IconType.Wpforms" />
+            </Template>
+        </GridColumn>
+    </Columns>
+</DataGrid>
+
+@code 
+{
+    [Parameter]
+    public SubSystemKind SubSystem { get; set; }
+}

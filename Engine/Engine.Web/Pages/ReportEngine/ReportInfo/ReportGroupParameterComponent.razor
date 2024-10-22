@@ -1,0 +1,74 @@
+﻿@namespace Caspian.Engine.ReportGenerator
+@inherits BasePage
+<div class="row">
+    <div class="col-md-4">
+        <TreeView @ref="tree" OnExpanded="LoadNodeChilderen" style="max-width:400px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="NodeView" Source="nodes"
+                  OnChange="Change" />
+    </div>
+    <div class="col-md-8 ps-3">
+        <div class="c-engine-alise">
+            <div class="c-alise-head">
+                <div class="c-field-name">Field Name</div>
+                <div class="c-field-alise">Field Alise</div>
+            </div>
+            <div class="c-alise-body">
+                <div class="c-field-name">
+
+                </div>
+                <div class="c-field-alise">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code 
+{
+    Type type;
+    TreeView<NodeView> tree;
+    IList<NodeView> nodes;
+
+    void Change()
+    {
+        
+    }
+
+    async Task LoadNodeChilderen(NodeView node)
+    {
+        var data = System.Text.Json.JsonSerializer.Deserialize<ReportNode>(node.Value);
+        var tempItems = (await new ReportTree().CreateTreeForSelect(type, data, new List<ReportParam>()));
+        node.Children = tempItems.Select(t => new NodeView()
+            {
+                Value = System.Text.Json.JsonSerializer.Serialize(t),
+                Selected = t.Selected,
+                Selectable = !t.Grouping,
+                Expanded = false,
+                Collabsable = t.Grouping,
+                Text = t.TitleFa,
+                Disabled = t.Selected
+            }).ToList();
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<ReportGroupService>();
+        var group = await service.GetAll().Include(t => t.ReportGroupParameters).SingleAsync(GroupId);
+        type = new AssemblyInfo().GetReturnType(group);
+        var nodes1 = await new ReportTree().CreateTreeForSelect(type, null, new List<ReportParam>());
+        nodes = nodes1.Select(t => new NodeView()
+            {
+                Value = System.Text.Json.JsonSerializer.Serialize(t),
+                Selected = t.Selected,
+                Selectable = !t.Grouping,
+                Expanded = false,
+                Collabsable = t.Grouping,
+                Disabled = group.ReportGroupParameters.Any(u => u.TitleEn == t.TitleEn),
+                Text = t.TitleFa
+            }).ToList();
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter]
+    public int GroupId { get; set; }
+}

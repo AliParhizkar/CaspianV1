@@ -29,7 +29,7 @@
                         this.toggleSubmen(target, height);
                     }, 1)
                 }
-            })
+            });
         }
 
         setOpenMenusHeight() {

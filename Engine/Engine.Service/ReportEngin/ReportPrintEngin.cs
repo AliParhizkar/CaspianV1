@@ -52,7 +52,7 @@ namespace Caspian.Engine.Service
                 if (param.RuleId.HasValue || param.DynamicParameterId.HasValue)
                     name = "DynamicParam" + (param.RuleId ?? param.DynamicParameterId.Value);
                 else
-                    name = param.TitleEn.Replace('.', '_');
+                    name = param.ReportGroupParameter.TitleEn.Replace('.', '_');
                 switch(param.CompositionMethodType)
                 {
                     case CompositionMethodType.Sum: name = "Sum_" + name; break;
@@ -60,7 +60,7 @@ namespace Caspian.Engine.Service
                     case CompositionMethodType.Max: name = "Max_" + name; break;
                     case CompositionMethodType.Min: name = "Min_" + name; break;
                 }
-                propertiesList.Add(new DynamicProperty(name, dynamicType.GetProperty(param.TitleEn).PropertyType));
+                propertiesList.Add(new DynamicProperty(name, dynamicType.GetProperty(param.ReportGroupParameter.TitleEn).PropertyType));
             }
             var type = DynamicClassFactory.CreateType(propertiesList, false);
             dataParam = reportParams.Where(t => t.DataLevel == 2 && !t.IsKey);
@@ -69,9 +69,9 @@ namespace Caspian.Engine.Service
                 propertiesList.Clear();
                 foreach (var param in dataParam)
                 {
-                    var tempType = dynamicType.GetProperty(param.TitleEn).PropertyType;
+                    var tempType = dynamicType.GetProperty(param.ReportGroupParameter.TitleEn).PropertyType;
                     //name = GetGroupingFiledName(param.TitleEn, 2);
-                    propertiesList.Add(new DynamicProperty(param.TitleEn.Replace('.', '_'), tempType));
+                    propertiesList.Add(new DynamicProperty(param.ReportGroupParameter.TitleEn.Replace('.', '_'), tempType));
                 }
                 var listType = typeof(List<>);
                 listType = listType.MakeGenericType(type);
@@ -83,13 +83,13 @@ namespace Caspian.Engine.Service
                     propertiesList.Clear();
                     foreach (var param in dataParam)
                     {
-                        var tempType = dynamicType.GetProperty(param.TitleEn).PropertyType;
+                        var tempType = dynamicType.GetProperty(param.ReportGroupParameter.TitleEn).PropertyType;
                         //name = GetGroupingFiledName(param.TitleEn, 3);
-                        propertiesList.Add(new DynamicProperty(param.TitleEn.Replace('.', '_'), tempType));
+                        propertiesList.Add(new DynamicProperty(param.ReportGroupParameter.TitleEn.Replace('.', '_'), tempType));
                     }
                     listType = typeof(List<>);
                     listType = listType.MakeGenericType(type);
-                    var name2 = GetPropertyListName(dataParam.First().TitleEn, 3);
+                    var name2 = GetPropertyListName(dataParam.First().ReportGroupParameter.TitleEn, 3);
                     propertiesList.Add(new DynamicProperty(name2, listType));
                     type = DynamicClassFactory.CreateType(propertiesList, false);
                 }

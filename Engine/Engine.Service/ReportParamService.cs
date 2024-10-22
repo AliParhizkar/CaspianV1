@@ -50,7 +50,7 @@ namespace Caspian.Engine.Service
             
             foreach (var param in list)
             {
-                if (!oldParams.Any(t => t.TitleEn == param.TitleEn))
+                if (!oldParams.Any(t => t.ReportGroupParameter.TitleEn == param.ReportGroupParameter.TitleEn))
                 {
                     var service = GetService<ReportParamService>();
                     await service.AddAsync(param);
@@ -63,7 +63,7 @@ namespace Caspian.Engine.Service
         {
             var reportId = list.First().ReportId;
             var oldParams = await GetAll(reportId).ToListAsync();
-            list = list.Where(p => !oldParams.Any(t => t.TitleEn != null && t.TitleEn == p.TitleEn || t.RuleId.HasValue && t.RuleId == p.RuleId));
+            list = list.Where(p => !oldParams.Any(t => t.ReportGroupParameter.TitleEn != null && t.ReportGroupParameter.TitleEn == p.ReportGroupParameter.TitleEn || t.RuleId.HasValue && t.RuleId == p.RuleId));
             var a = new ReportParamService(ServiceProvider);
             await a.AddRangeAsync(list);
             await a.SaveChangesAsync();
@@ -78,7 +78,7 @@ namespace Caspian.Engine.Service
             if (report.PrintFileName.HasValue())
                 throw new CaspianException("After creating the report, it is not possible to increase the field level");
             var type = new AssemblyInfo().GetReturnType(report.ReportGroup);
-            var maxDataLevel = MaxDataLevel(temp.TitleEn, type, temp.CompositionMethodType);
+            var maxDataLevel = MaxDataLevel(temp.ReportGroupParameter.TitleEn, type, temp.CompositionMethodType);
             if (temp.DataLevel + 1 > maxDataLevel)
                 throw new CaspianException("It is not possible to increase the level for this field", null);
             temp.DataLevel++;
@@ -87,8 +87,8 @@ namespace Caspian.Engine.Service
                 await AddDataKey(temp.ReportId, temp.DataLevel);
             else
             {
-                var KeyInfoName = type.GetProperty(dataKey.TitleEn).GetForeignKey().Name + '.';
-                if (!temp.TitleEn.StartsWith(KeyInfoName))
+                var KeyInfoName = type.GetProperty(dataKey.ReportGroupParameter.TitleEn).GetForeignKey().Name + '.';
+                if (!temp.ReportGroupParameter.TitleEn.StartsWith(KeyInfoName))
                     throw new CaspianException("It is not possible to increase the level for this field", null);
             }
             return temp;
@@ -144,7 +144,7 @@ namespace Caspian.Engine.Service
                 var param = GetAll().Include(t => t.Report.ReportGroup).First(t => t.ReportId == reportId);
                 var type = new AssemblyInfo().GetReturnType(param.Report.ReportGroup);
                 var enTitle = "";
-                var array = param.TitleEn.Split('.');
+                var array = param.ReportGroupParameter.TitleEn.Split('.');
                 var peropertyInfo = type.GetProperty(array[0]);
                 type = peropertyInfo.PropertyType;
                 if (dataLevel == 3)
@@ -160,7 +160,7 @@ namespace Caspian.Engine.Service
                 enTitle += foreignKeyAttribute.Name;
                 var keyParam = new ReportParam()
                 {
-                    TitleEn = enTitle,
+                    //TitleEn = enTitle,
                     DataLevel = dataLevel,
                     IsKey = true,
                     ReportId = param.ReportId

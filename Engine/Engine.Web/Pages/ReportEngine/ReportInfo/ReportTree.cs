@@ -151,7 +151,7 @@ namespace ReportUiModels
                         singleRelation = keyInfo.GetCustomAttribute<ForeignKeyAttribute>() != null;
                     node.Grouping = info.GetCustomAttribute<ForeignKeyAttribute>() != null || complexAttr != null || singleRelation;
                     if (!node.Grouping)
-                        node.Selected = selectedNodes.Any(t => t.TitleEn == str);
+                        node.Selected = selectedNodes.Any(t => t.ReportGroupParameter.TitleEn == str);
                     list.Add(node);
                 }
             }
@@ -245,7 +245,7 @@ namespace ReportUiModels
                         }
                         else if (info.GetCustomAttribute<ForeignKeyAttribute>() != null)
                         {
-                            var paramsTitle = report.ReportParams.Where(t => !t.CompositionMethodType.HasValue).Select(t => t.TitleEn).ToList();
+                            var paramsTitle = report.ReportParams.Where(t => !t.CompositionMethodType.HasValue).Select(t => t.ReportGroupParameter.TitleEn).ToList();
                             var list = new List<string>();
                             foreach (var param in paramsTitle)
                             {

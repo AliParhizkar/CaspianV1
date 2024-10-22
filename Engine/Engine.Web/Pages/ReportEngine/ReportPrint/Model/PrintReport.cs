@@ -20,7 +20,7 @@ namespace ReportUiModels
             ReportParam param = null;
             foreach (var reportParam in reportParams)
             {
-                var name = reportParam.TitleEn.Replace('.', '_');
+                var name = reportParam.ReportGroupParameter.TitleEn.Replace('.', '_');
                 switch (reportParam.CompositionMethodType)
                 {
                     case CompositionMethodType.Sum: name = "Sum_" + name; break;
@@ -61,7 +61,7 @@ namespace ReportUiModels
                 if (dynamicParams.Any())
                 {
                     var tempType = mainType;
-                    var enTitle = dynamicParams.First().TitleEn;
+                    var enTitle = dynamicParams.First().ReportGroupParameter.TitleEn;
                     if (enTitle.HasValue())
                         tempType = mainType.GetMyProperty(enTitle).PropertyType;
                     foreach(var item in dynamicParams)
@@ -77,7 +77,7 @@ namespace ReportUiModels
                 {
                     if (!info.PropertyType.IsGenericType || info.PropertyType.IsValueType)
                     {
-                        string tempName = "", name = reportParams1.First().TitleEn;
+                        string tempName = "", name = reportParams1.First().ReportGroupParameter.TitleEn;
                         if (maxDataLevel > 2)
                         {
                             tempName += name.Substring(0, name.IndexOf('.')) + '_';
@@ -89,7 +89,7 @@ namespace ReportUiModels
                         var param = ReportParamOfProperty(tempName, reportParams1.Where(t => t.RuleId == null && t.DynamicParameterId == null).ToList());
                         if (param != null)
                         {
-                            name = param.TitleEn;
+                            name = param.ReportGroupParameter.TitleEn;
                             if (maxDataLevel > 1)
                                 name = name.Substring(name.IndexOf('.') + 1);
                             if (maxDataLevel > 2)
@@ -102,7 +102,7 @@ namespace ReportUiModels
                                 case CompositionMethodType.Max: name = "Max_" + name; break;
                                 case CompositionMethodType.Min: name = "Min_" + name; break;
                             }
-                            var title = new ReportControlModel(mainType).GetFaTitle(param.TitleEn, param.RuleId, param.CompositionMethodType);
+                            var title = new ReportControlModel(mainType).GetFaTitle(param.ReportGroupParameter.TitleEn, param.RuleId, param.CompositionMethodType);
                             dic.Add("{list." + name + '}', title);
                         }
                     }
@@ -116,14 +116,14 @@ namespace ReportUiModels
                 {
                     if (!info1.PropertyType.IsGenericType || info1.PropertyType.IsValueType)
                     {
-                        string tempName = "", name = reportParams2.First().TitleEn;
+                        string tempName = "", name = reportParams2.First().ReportGroupParameter.TitleEn;
                         if (maxDataLevel == 3)
                             tempName += name.Substring(0, name.IndexOf('.')) + '_';
                         tempName += info1.Name;
                         var param1 = ReportParamOfProperty(tempName, reportParams2);
                         if (param1 != null)
                         {
-                            var title = new ReportControlModel(mainType).GetFaTitle(param1.TitleEn, param1.RuleId, param1.CompositionMethodType);
+                            var title = new ReportControlModel(mainType).GetFaTitle(param1.ReportGroupParameter.TitleEn, param1.RuleId, param1.CompositionMethodType);
                             dic.Add("{list." + info.Name + '.' + info1.Name + '}', title);
                         }
                     }
@@ -141,7 +141,7 @@ namespace ReportUiModels
                     var param2 = ReportParamOfProperty(info2.Name, reportParams3);
                     if (param2 != null)
                     {
-                        var title = new ReportControlModel(mainType).GetFaTitle(param2.TitleEn, param2.RuleId, param2.CompositionMethodType);
+                        var title = new ReportControlModel(mainType).GetFaTitle(param2.ReportGroupParameter.TitleEn, param2.RuleId, param2.CompositionMethodType);
                         dic.Add("{list." + info.Name + '.' + info1.Name + '.' + info2.Name + '}', title);
                     }
                 }
