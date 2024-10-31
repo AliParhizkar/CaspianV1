@@ -26,6 +26,7 @@
 
     protected override void OnParametersSet()
     {
+        base.OnParametersSet();
         attrs = new Dictionary<string, object>();
         if (Id.HasValue())
         {
@@ -58,7 +59,6 @@
             }
         }
         attrs.Add("class", className);
-        base.OnParametersSet();
     }
 
     async void  ChangeValue()

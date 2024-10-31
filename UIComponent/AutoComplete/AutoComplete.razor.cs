@@ -232,26 +232,30 @@ namespace Caspian.UI
                     FieldInfo info = null;
                     while (expr.NodeType != ExpressionType.Constant)
                     {
-                        if (expr.NodeType == ExpressionType.MemberAccess)
+                        switch (expr.NodeType)
                         {
-                            var member = (expr as MemberExpression).Member;
-                            if (member.MemberType == MemberTypes.Field)
-                                info = member as FieldInfo;
-                            expr = (expr as MemberExpression).Expression;
+                            case ExpressionType.MemberAccess:
+                                var member = (expr as MemberExpression).Member;
+                                if (member.MemberType == MemberTypes.Field)
+                                    info = member as FieldInfo;
+                                expr = (expr as MemberExpression).Expression;
+                                break;
+                            case ExpressionType.Call:
+                                expr = (expr as MethodCallExpression).Arguments[0];
+                                break;
+                            default:
+                                throw new NotImplementedException("خطای عدم پیاده سازی");
                         }
                     }
                     var value = info.GetValue((expr as ConstantExpression).Value);
-                    var index = 0;
-                    foreach (var detail in details)
+                    if (info.FieldType == typeof(RowData<>).MakeGenericType(details.ToDynamicList()[0].GetType()))
+                        value = value.GetType().GetProperty("Data").GetValue(value);
+                    else
                     {
-                        if (detail == value)
-                        {
-                            var str = index == 0 ? fieldName : fieldName.Replace("[0]", '[' + index.ToString() + ']');
-                            var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
-                            var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                            ErrorMessage = result.FirstOrDefault();
-                        }
-                        index++;
+                        var str = fieldName.Replace("[0]", '[' + value.ToString() + ']');
+                        var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
+                        var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+                        ErrorMessage = result.FirstOrDefault();
                     }
                     break;
                 }

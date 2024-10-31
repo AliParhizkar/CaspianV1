@@ -11,7 +11,7 @@
 @{
     var className = "page";
     if (hideMenu)
-        className += " hideMenu";
+        className += " hide-menu";
     var uri = new Uri(navigationManager.Uri);
 }
 <AuthorizeView>
@@ -122,17 +122,23 @@
     [CascadingParameter]
     public Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    void ToggeleMenu()
+    async Task ToggeleMenu()
     {
         hideMenu = !hideMenu;
+        await storage.SetAsync("menu-status", hideMenu);
     }
 
     protected override void OnInitialized()
     {
-        hideMenu = host.IsDevelopment();
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.LocationChanged += OnLocationChanged;
-        
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var menuStatus = await storage.GetAsync<bool>("menu-status");
+        hideMenu = menuStatus.Success && menuStatus.Value;
+        await base.OnInitializedAsync();
     }
 
     private void OnLocationChanged(object sender, LocationChangedEventArgs e)

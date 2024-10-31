@@ -1,0 +1,65 @@
+﻿.e-main, .e-tree, .e-component {
+    height: 100%;
+}
+.e-head {
+    display: flex;
+    border: 1px solid #c7c7c7;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    padding: 4px 10px;
+    background-color: #f4f7ff;
+    align-items: center;
+}
+    .e-head label {
+        font-weight: bold;
+        color: #4e4e4e;
+        padding-bottom:5px;
+    }
+    .e-head button{
+        width:60px;
+    }
+    .group-title {
+        font-size: 15px;
+        color: brown;
+    }
+.c-alise-head {
+    display: flex;
+    background-color: #e1e1e1;
+    border: 1px solid #cdcdcd;
+    border-bottom: none;
+    font-weight: bold;
+    color: #656565;
+    font-size: 14px;
+    padding-right: 10px;
+}
+    .c-alise-head > div {
+        background-color: #e9ebee;
+    }
+    .c-engine-alise {
+        height: 100%;
+    }
+.c-field-name {
+    border-right: 1px solid #cdcdcd;
+}
+.c-field-name, .c-field-alise {
+    width: 50%;
+    text-align: center;
+    border-bottom: 1px solid #cdcdcd;
+    padding: 5px 10px;
+}
+
+.c-alise-body {
+    border: 1px solid #cdcdcd;
+    border-top: none;
+    height: calc(100% - 36px);
+    overflow-y: scroll;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    position:relative;
+}
+.c-field-name:nth-child(4n+3), .c-field-alise:nth-child(4n+4) {
+    background-color: #e6e9f3;
+}
+
+

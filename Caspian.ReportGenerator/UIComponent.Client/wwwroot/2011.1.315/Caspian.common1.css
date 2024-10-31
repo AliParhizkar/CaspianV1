@@ -870,7 +870,7 @@ input[type=time]{
     bottom: 5px;
 }
 
-.hideMenu .c-popup-window.c-left{
+.hide-menu .c-popup-window.c-left{
     left: 35px;
 }
 
@@ -1034,7 +1034,7 @@ progress::-webkit-progress-value {
     vertical-align: middle;
     line-height: 25px;
 }
-.page.hideMenu .content {
+.page.hide-menu .content {
     width: calc(100% - 27px);
 }
 .c-content-main {
@@ -1090,13 +1090,6 @@ body {
 }
 .c-controls {
     align-items:center;
-}
-.c-controls .col-md-1, .c-controls .col-md-2, .c-controls .col-md-3,
-.c-controls .col-md-4, .c-controls .col-md-5, .c-controls .col-md-6,
-.c-controls .col-md-7, .c-controls .col-md-8, .c-controls .col-md-9,
-.c-controls .col-md-10, .c-controls .col-md-11, .c-controls .col-md-12 {
-    place-items:center;
-    vertical-align:central
 }
 
 .c-tree-content .c-title {
@@ -1572,7 +1565,7 @@ span, label, td, th {
         transform: scale(1);
     }
 }
-.hideMenu .c-messagebox {
+.hide-menu .c-messagebox {
     left: 30px;
 }
 .t-grid-pager .fa {

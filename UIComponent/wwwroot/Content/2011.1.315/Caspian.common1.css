@@ -19,10 +19,12 @@
     flex-wrap: wrap;
     flex-direction: column;
     overflow: auto;
+
 }
-.c-filtering {
-    padding: 4px 10px 4px 0;
-}
+
+    .c-filtering {
+        padding: 4px 10px 4px 0;
+    }
 .t-dropdown .t-checkbox-list {
     max-height: 250px;
     position: absolute;
@@ -887,7 +889,7 @@ input[type=time]{
     bottom: 5px;
 }
 
-.hideMenu .c-popup-window.c-left{
+.hide-menu .c-popup-window.c-left{
     left: 35px;
 }
 
@@ -1051,7 +1053,7 @@ progress::-webkit-progress-value {
     vertical-align: middle;
     line-height: 25px;
 }
-.page.hideMenu .content {
+.page.hide-menu .content {
     width: calc(100% - 27px);
 }
 .c-content-main {
@@ -1107,13 +1109,6 @@ body {
 }
 .c-controls {
     align-items:center;
-}
-.c-controls .col-md-1, .c-controls .col-md-2, .c-controls .col-md-3,
-.c-controls .col-md-4, .c-controls .col-md-5, .c-controls .col-md-6,
-.c-controls .col-md-7, .c-controls .col-md-8, .c-controls .col-md-9,
-.c-controls .col-md-10, .c-controls .col-md-11, .c-controls .col-md-12 {
-    place-items:center;
-    vertical-align:central
 }
 
 .c-tree-content .c-title {
@@ -1589,7 +1584,7 @@ span, label, td, th {
         transform: scale(1);
     }
 }
-.hideMenu .c-messagebox {
+.hide-menu .c-messagebox {
     left: 30px;
 }
 .t-grid-pager .fa {
@@ -1838,14 +1833,14 @@ span, label, td, th {
     border-radius: 8px;
 }
 .c-animate-down .t-group, .c-animate-down .t-datepicker-calendar, .c-animate-down .t-HelpWindow {
-    top: -100%;
+    top: calc(-100% - 30px);
     box-shadow: 0px 1px 7px 1px #cccccc;
     transition: top .2s cubic-bezier(0.35, 0, 0.25, 1);
     border: 1px solid #a1a1a1;
 }
 .c-animate-up .t-group, .c-animate-up .t-datepicker-calendar, .c-animate-up .t-HelpWindow {
     box-shadow: -2px -2px 8px 0px dimgrey;
-    bottom: -100%;
+    bottom: calc(-100% - 30px);
     transition: bottom .2s ease;
    
     box-sizing: border-box;

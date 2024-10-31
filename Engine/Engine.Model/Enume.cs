@@ -109,12 +109,27 @@ namespace Caspian.Engine
         /// <summary>
         /// زیرفعالیت
         /// </summary>
-        SubProccess,
+        SubProcess,
 
         /// <summary>
         /// توضیحات
         /// </summary>
         Comment
+    }
+
+    public enum ReportType: byte
+    {
+        [Display(Name = "گزارش ساده")]
+        Simple = 1,
+
+        [Display(Name = "گزارش تجمعی")]
+        Aggregate,
+
+        [Display(Name = "گزارش 2 سطحی")]
+        TowLevels,
+
+        [Display(Name = "گزارش 3 سطحی")]
+        ThirdLevels
     }
 
     public enum TaskType: byte
@@ -174,7 +189,7 @@ namespace Caspian.Engine
         /// درگاه انحصاری مبتنی بر رویداد
         /// </summary>
         [Display(Name = "انحصاری مبتنی بر رویداد")] 
-        Eventbased,
+        EventBased,
 
         /// <summary>
         /// درگاه موازی
@@ -186,7 +201,7 @@ namespace Caspian.Engine
         /// درگاه موازی مبتنی بر رویداد
         /// </summary>
         [Display(Name = "موازی مبتنی بر رویداد")]
-        ParallelEventbased,
+        ParallelEventBased,
 
         /// <summary>
         /// درگاه فراگیر

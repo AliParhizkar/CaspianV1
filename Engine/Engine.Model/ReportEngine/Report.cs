@@ -21,6 +21,9 @@ namespace Caspian.Engine.Model
 
         public string FilteringFileName { get; set; }
 
+        [DisplayName("نوع گزارش")]
+        public ReportType ReportType { get; set; }
+
         /// <summary>
         /// The first level of subreport
         /// </summary>

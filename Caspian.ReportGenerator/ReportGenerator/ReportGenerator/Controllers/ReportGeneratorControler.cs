@@ -91,12 +91,13 @@ namespace ReportGenerator.Controllers
         {
             var report = await provider.GetService<ReportService>().GetAll().Include(t => t.ReportParams).Include(t => t.ReportGroup).SingleAsync(reportId);
             var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
-            var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == dataLevel)).ToListAsync();
+            var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == dataLevel))
+                .Include(t => t.ReportGroupParameter).ToListAsync();
             var fields = new List<DataField>();
             foreach(var param in parameters)
             {
                 DataFieldType? dataFieldType = null;
-                var type = mainType.GetMyProperty(param.TitleEn).PropertyType.GetUnderlyingType();
+                var type = mainType.GetMyProperty(param.ReportGroupParameter.TitleEn).PropertyType.GetUnderlyingType();
                 if (type.IsIntegerType())
                     dataFieldType = DataFieldType.Integer;
                 else if (type.IsNumericType())
@@ -105,8 +106,8 @@ namespace ReportGenerator.Controllers
                     dataFieldType = DataFieldType.Date;
                 fields.Add(new DataField()
                 {
-                    Name = param.TitleEn,
-                    Title = param.Alias ?? param.TitleEn,
+                    Name = param.ReportGroupParameter.TitleEn,
+                    Title = param.ReportGroupParameter.Alias,
                     DataFieldType = dataFieldType
                 });
             }

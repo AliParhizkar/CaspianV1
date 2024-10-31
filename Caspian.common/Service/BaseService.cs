@@ -21,7 +21,11 @@ namespace Caspian.Common.Service
 
         public void SetSource(object obj)
         {
-            Source = (obj as List<TEntity>).AsReadOnly();
+            var qqq = typeof(TEntity);
+            if (obj != null &&  obj is ICollection<TEntity>)
+            {
+                Source = (obj as List<TEntity>).AsReadOnly();
+            }
         }
 
         public TService GetService<TService>() where TService : class 

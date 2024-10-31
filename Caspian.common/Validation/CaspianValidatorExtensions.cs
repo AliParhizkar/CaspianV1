@@ -5,12 +5,11 @@ using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using System.Linq.Dynamic.Core;
+using Caspian.Common.Attributes;
+using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common.Attributes;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Metrics;
 
 namespace Caspian.Common
 {
@@ -69,7 +68,12 @@ namespace Caspian.Common
                     value = default(TProperty);
                 if ((value == null) && func?.Invoke((TModel)context.InstanceToValidate) != false)
                 {
-                    var attr = typeof(TModel).GetMyProperty(context.PropertyPath).GetCustomAttribute<DisplayNameAttribute>();
+                    DisplayNameAttribute attr = null;
+                    var path = context.PropertyPath;
+                    var index = path.IndexOf(']');
+                    if (index >= 0)
+                        path = path.Substring(index + 2);
+                    typeof(TModel).GetMyProperty(path).GetCustomAttribute<DisplayNameAttribute>();
                     var name = attr == null ? context.DisplayName : attr.DisplayName;
                     if (language == Language.Fa)
                         message = message ?? $"لطفا {name} را مشخص نمایید";

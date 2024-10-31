@@ -60,7 +60,7 @@
         </TabPanelItem>
         <TabPanelItem Title="Addresses">
             <div class="p-2">
-                <DataGrid TEntity="CustomerAddress" DetailBatchService="Service" ContentHeight="300" Inline AutoHide >
+                <DataGrid TEntity="CustomerAddress" DetailBatchService="Service" PageSize="20" ContentHeight="200" Inline AutoHide >
                     <Columns Context="con">
                         <GridColumn style="width:220px;" Field="t => t.AddressType.Title" Title="Address Type">
                             <EditTemplate>

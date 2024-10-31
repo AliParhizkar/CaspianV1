@@ -165,26 +165,26 @@ a {
             width: 111px;
             display: inline-block;
         }
-        .page.hideMenu .link span {
-            display: none;
-        }
-.page.hideMenu .link .fa-chevron-up, .page.hideMenu .link .fa-chevron-down {
+.page.hide-menu .link span {
     display: none;
 }
-.page.hideMenu .accordion .submenu {
+.page.hide-menu .link .fa-chevron-up, .page.hide-menu .link .fa-chevron-down {
+    display: none;
+}
+.page.hide-menu .accordion .submenu {
     display: none !important;
 }
-.page.hideMenu .c-menu-icon div {
+.page.hide-menu .c-menu-icon div {
     display: none;
 }
-    .page.hideMenu .c-menu-icon div:first-child{
-        display:block;
+    .page.hide-menu .c-menu-icon div:first-child {
+        display: block;
     }
     .accordion li:last-child .link {
         border-bottom: 0;
     }
-.page.hideMenu .sidebar {
-    width:30px;
+.page.hide-menu .sidebar {
+    width: 30px;
 }
 .accordion li i {
     color: white;

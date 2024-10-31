@@ -1,47 +1,115 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
 @inherits BasePage
-<div class="row">
-    <div class="col-md-4">
-        <TreeView @ref="tree" OnExpanded="LoadNodeChilderen" style="max-width:400px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="NodeView" Source="nodes"
+
+<div class="row e-main">
+    <div class="col-md-4 e-tree">
+        <TreeView @ref="tree" OnExpanded="LoadNodeChildren" style="max-width:400px;height:100%;padding:5px 10px 0 0" TEntity="NodeView" Source="nodes"
                   OnChange="Change" />
     </div>
-    <div class="col-md-8 ps-3">
-        <div class="c-engine-alise">
-            <div class="c-alise-head">
-                <div class="c-field-name">Field Name</div>
-                <div class="c-field-alise">Field Alise</div>
+    <div class="col-md-8 ps-3 e-component">
+        <div class="e-head">
+            <div class="col-md-3">
+                <label>Report Group Title</label>
             </div>
-            <div class="c-alise-body">
-                <div class="c-field-name">
-
-                </div>
-                <div class="c-field-alise">
-
-                </div>
+            <div class="col-md-7">
+                <span class="group-title">@(group?.Title)</span>
+            </div>
+            <div class="col-md-2 text-center">
+                <button class="c-btn c-primary" @onclick="async () => await form.SubmitAsync()">Save</button>
             </div>
         </div>
+        @if (group != null)
+        {
+            <CaspianForm @ref="form" Model="group" Style="height:calc(100% - 43px)" OnValidSubmit="ValidSubmit">
+                <CaspianValidationValidator ValidatorType="typeof(ReportGroupService)" Source="group.ReportGroupParameters" />         
+                <div class="c-engine-alise">
+                    <div class="c-alise-head">
+                        <div class="c-field-name">Field Name</div>
+                        <div class="c-field-alise">Field Alise</div>
+                    </div>
+
+                    <div class="c-alise-body">
+                        @for (var i = 0; i < group.ReportGroupParameters.Count(); i++)
+                        {
+                            var index = i;
+                            <div class="c-field-name">
+                                @group.ReportGroupParameters[index].TitleEn
+                            </div>
+                            <div class="c-field-alise">
+                                <StringTextBox @bind-Value="group.ReportGroupParameters[index].Alias" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </CaspianForm>
+        }
     </div>
 </div>
 
 @code 
 {
+    CaspianForm<ReportGroup> form;
     Type type;
     TreeView<NodeView> tree;
     IList<NodeView> nodes;
+    ReportGroup group;
+    IList<ReportGroupParameter> removedParamters;
 
-    void Change()
+    async Task ValidSubmit()
     {
-        
+        using var service = CreateScope().GetService<ReportGroupService>();
+        var list = new List<ChangedEntity<ReportGroupParameter>>();
+        ///Insert or update parameters
+        list = group.ReportGroupParameters.Select(t => new ChangedEntity<ReportGroupParameter>()
+        {
+            ChangeStatus = t.Id == 0 ? ChangeStatus.Added : ChangeStatus.Updated,
+            Entity = t
+        }).ToList();
+        /// Remove parameters
+        list.AddRange(removedParamters.Where(t => t.Id > 0).Select(t => new ChangedEntity<ReportGroupParameter>()
+        {
+            ChangeStatus = ChangeStatus.Deleted,
+            Entity = t
+        }));
+        await service.UpdateDatabaseAsync(group, list);
+        await service.SaveChangesAsync();
+        ShowMessage("Parameters updated successfully");
     }
 
-    async Task LoadNodeChilderen(NodeView node)
+    void Change(NodeView node)
+    {
+        var data = System.Text.Json.JsonSerializer.Deserialize<ReportNode>(node.Value);
+        if (node.Selected.Value)
+        {
+            var old = removedParamters.SingleOrDefault(t => t.TitleEn == data.TitleEn);
+            if (old == null)
+            {
+                old = new ReportGroupParameter()
+                    {
+                        ReportGroupId = GroupId,
+                        TitleEn = data.TitleEn,
+                    };
+            }
+            else
+                removedParamters.Remove(old);
+            group.ReportGroupParameters.Add(old);
+        }
+        else
+        {
+            var removed = group.ReportGroupParameters.SingleOrDefault(t => t.TitleEn == data.TitleEn);
+            group.ReportGroupParameters.Remove(removed);
+            removedParamters.Add(removed);
+        }
+    }
+
+    async Task LoadNodeChildren(NodeView node)
     {
         var data = System.Text.Json.JsonSerializer.Deserialize<ReportNode>(node.Value);
         var tempItems = (await new ReportTree().CreateTreeForSelect(type, data, new List<ReportParam>()));
         node.Children = tempItems.Select(t => new NodeView()
             {
                 Value = System.Text.Json.JsonSerializer.Serialize(t),
-                Selected = t.Selected,
+                Selected = group.ReportGroupParameters.Any(u => u.TitleEn == t.TitleEn),
                 Selectable = !t.Grouping,
                 Expanded = false,
                 Collabsable = t.Grouping,
@@ -53,17 +121,19 @@
     protected async override Task OnInitializedAsync()
     {
         using var service = CreateScope().GetService<ReportGroupService>();
-        var group = await service.GetAll().Include(t => t.ReportGroupParameters).SingleAsync(GroupId);
+        group = await service.GetAll().Include(t => t.ReportGroupParameters).AsNoTracking().SingleAsync(GroupId);
+        foreach (var parameter in group.ReportGroupParameters)
+            parameter.ReportGroup = null;
+        removedParamters = new List<ReportGroupParameter>();
         type = new AssemblyInfo().GetReturnType(group);
         var nodes1 = await new ReportTree().CreateTreeForSelect(type, null, new List<ReportParam>());
         nodes = nodes1.Select(t => new NodeView()
             {
                 Value = System.Text.Json.JsonSerializer.Serialize(t),
-                Selected = t.Selected,
+                Selected = group.ReportGroupParameters.Any(u => u.TitleEn == t.TitleEn),
                 Selectable = !t.Grouping,
                 Expanded = false,
                 Collabsable = t.Grouping,
-                Disabled = group.ReportGroupParameters.Any(u => u.TitleEn == t.TitleEn),
                 Text = t.TitleFa
             }).ToList();
         await base.OnInitializedAsync();

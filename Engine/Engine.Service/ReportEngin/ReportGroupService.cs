@@ -1,18 +1,22 @@
 ﻿using Caspian.Common;
+using FluentValidation;
 using Caspian.Engine.Model;
 using Caspian.Common.Service;
 
 namespace Caspian.Engine.Service
 {
-    public class ReportGroupService : BaseService<ReportGroup>, IBaseService<ReportGroup>
+    public class ReportGroupService : MasterDetailsService<ReportGroup, ReportGroupParameter>, 
+        IMasterDetailsService<ReportGroup, ReportGroupParameter>
     {
         public ReportGroupService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("گزارشی با این عنوان در سیستم ثبت شده است");
-            RuleFor(t => t.NameSpace).Required();
-            RuleFor(t => t.ClassTitle).Required();
-            RuleFor(t => t.MethodName).Required();
+            //RuleFor(t => t.Title).Required().UniqAsync("گزارشی با این عنوان در سیستم ثبت شده است");
+            //RuleFor(t => t.NameSpace).Required();
+            //RuleFor(t => t.ClassTitle).Required();
+            //RuleFor(t => t.MethodName).Required();
+            
+            RuleForEach(t => t.ReportGroupParameters).SetValidator(t => new ReportGroupParameterService(provider, t.ReportGroupParameters));
         }
 
         async public override Task UpdateAsync(ReportGroup entity)

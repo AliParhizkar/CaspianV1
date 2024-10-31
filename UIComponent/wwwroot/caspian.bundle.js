@@ -9,317 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var caspian;
 (function (caspian) {
-    class ComboBox {
-        constructor(input, Pageable, dotnet) {
-            this.bindObserver(input, Pageable, dotnet);
-            let control = input.closest('.t-combobox').getElementsByClassName('t-dropdown-wrap')[0];
-            input.onkeyup = e => {
-                if (e.key == 'ArrowDown' || e.key == 'ArrowUp') {
-                    let selected = e.target.closest('.t-combobox').getElementsByClassName('t-state-selected')[0];
-                    if (selected) {
-                        let content = e.target.closest('.t-combobox').getElementsByClassName('t-group')[0];
-                        let loc = selected.getBoundingClientRect();
-                        let top = loc.top - content.getBoundingClientRect().top, bottom = top + loc.height;
-                        if (bottom > 240 || top < 10) {
-                            let scrollTop = content.scrollTop;
-                            content.scrollTop = (scrollTop + bottom - 240);
-                        }
-                    }
-                }
-            };
-            input.closest('.t-combobox').onmouseenter = () => {
-                if (!control.classList.contains('t-state-disabled')) {
-                    let list = control.classList;
-                    list.add('t-state-hover');
-                    list.remove('t-state-default');
-                }
-            };
-            input.closest('.t-combobox').onmouseleave = () => {
-                if (!control.classList.contains('t-state-disabled')) {
-                    let list = control.classList;
-                    list.add('t-state-default');
-                    list.remove('t-state-hover');
-                }
-            };
-            input.onfocus = () => {
-                let list = control.classList;
-                list.add('t-state-focused');
-                list.remove('t-state-default');
-                caspian.common.showErrorMessage(input.closest('.t-widget'));
-            };
-            input.onblur = () => {
-                let list = control.classList;
-                list.add('t-state-default');
-                list.remove('t-state-focused');
-                caspian.common.hideErrorMessage(input.closest('.t-widget'));
-            };
-        }
-        bindObserver(input, pageable, dotnet) {
-            const mutationObserver = new MutationObserver(t => {
-                let ctr = t[0].target;
-                let group = ctr.getElementsByClassName('t-group')[0];
-                if (group) {
-                    if (pageable) {
-                        group.onscrollend = () => __awaiter(this, void 0, void 0, function* () {
-                            yield dotnet.invokeMethodAsync('IncPageNumberInvokable');
-                        });
-                    }
-                    let animate = ctr.getElementsByClassName('t-animation-container')[0];
-                    let height = group.getElementsByClassName('t-reset')[0].getBoundingClientRect().height;
-                    height = Math.min(250, height);
-                    height = Math.max(height, 30);
-                    animate.style.height = `${height + 7}px`;
-                    let loc = ctr.getBoundingClientRect();
-                    animate.style.width = `${loc.width + 7}px`;
-                    if (loc.top > window.innerHeight / 2) {
-                        animate.classList.add('c-animate-up');
-                        setTimeout(() => group.style.bottom = '0', 10);
-                        animate.style.marginTop = `${-height - 42}px`;
-                    }
-                    else {
-                        animate.classList.add('c-animate-down');
-                        setTimeout(() => group.style.top = '0', 10);
-                    }
-                    document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
-                        if (e.target.closest('.t-group') == null)
-                            yield dotnet.invokeMethodAsync('CloseInvokable');
-                    });
-                }
-                else
-                    document.body.onmousedown = null;
-            });
-            mutationObserver.observe(input.closest('.t-combobox'), {
-                attributes: false,
-                childList: true,
-                subtree: false
-            });
-        }
-    }
-    caspian.ComboBox = ComboBox;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class InputCollorPicker {
-        constructor(element, dotnet) {
-            this.bindObserver(element, dotnet);
-            element.onmouseenter = () => {
-                element.getElementsByClassName('c-input-color')[0].classList.add('c-state-hover');
-            };
-            element.onmouseleave = () => {
-                element.getElementsByClassName('c-input-color')[0].classList.remove('c-state-hover');
-            };
-            element.onfocus = () => {
-                element.getElementsByClassName('c-input-color')[0].classList.add('c-state-focused');
-            };
-            element.onblur = () => {
-                element.getElementsByClassName('c-input-color')[0].classList.remove('c-state-focused');
-            };
-        }
-        bindObserver(element, dotnet) {
-            const mutationObserver = new MutationObserver(t => {
-                let elem = t[0].target;
-                let animate = elem.getElementsByClassName('t-animation-container')[0];
-                if (animate != null) {
-                    let top = elem.getBoundingClientRect().top;
-                    let picker = elem.getElementsByClassName('c-colorpicker-panel')[0];
-                    animate.style.width = '245px';
-                    let height = picker.getBoundingClientRect().height;
-                    animate.style.height = `${height + 6}px`;
-                    if (top > window.innerHeight / 2) {
-                        animate.classList.add('c-animation-up');
-                        animate.style.marginTop = `${-height - 41}px`;
-                        setTimeout(t => {
-                            picker.style.bottom = '0';
-                        }, 10);
-                    }
-                    else {
-                        animate.classList.add('c-animation-down');
-                        setTimeout(t => {
-                            picker.style.top = '0px';
-                        }, 10);
-                    }
-                    document.body.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
-                        if (e.target.closest('.t-animation-container') == null)
-                            yield dotnet.invokeMethodAsync("Close");
-                    });
-                }
-                else
-                    document.body.onclick = null;
-            });
-            mutationObserver.observe(element, {
-                attributes: false,
-                childList: true,
-                subtree: false
-            });
-        }
-    }
-    caspian.InputCollorPicker = InputCollorPicker;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class PopupWindow {
-        constructor(element, target, json, dotnet) {
-            let data = JSON.parse(json);
-            element.style.display = 'block';
-            let className = element.className;
-            element.className = 'auto-hide c-popup-window';
-            let loc = element.getBoundingClientRect();
-            let mainLoc = document.getElementsByClassName('c-content-main')[0].getBoundingClientRect();
-            element.className = className;
-            if (target)
-                this.bindTarget(element, target, data);
-            else {
-                if (data.left != null) {
-                    element.style.left = `${data.left}px`;
-                    element.style.right = 'auto';
-                }
-                else if (data.right != null) {
-                    element.style.left = 'auto';
-                    element.style.right = `${data.right}px`;
-                }
-                else if (data.top != null) {
-                    element.style.top = `${data.top}px`;
-                    element.style.bottom = 'auto';
-                }
-                else if (data.bottom != null) {
-                    element.style.top = 'auto';
-                    element.style.bottom = `${data.bottom}px`;
-                }
-            }
-            document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
-                if (e.target.closest('.auto-hide') == null) {
-                    document.body.onmousedown = null;
-                    yield dotnet.invokeMethodAsync('Close');
-                }
-            });
-        }
-        bindTarget(element, target, data) {
-            element.className = 'auto-hide c-popup-window';
-            let targetLoc = target.getBoundingClientRect();
-            let leftT = targetLoc.left, topT = targetLoc.top;
-            let offsetLeft = data.offsetLeft, offsetTop = data.offsetTop;
-            switch (data.targetHorizontalAnchor) {
-                case HorizontalAnchor.Left:
-                    leftT += data.offsetLeft;
-                    break;
-                case HorizontalAnchor.Center:
-                    leftT += targetLoc.width / 2;
-                    offsetLeft = 0;
-                    break;
-                case HorizontalAnchor.Right:
-                    leftT += targetLoc.width + data.offsetLeft;
-                    break;
-            }
-            switch (data.targetVerticalAnchor) {
-                case VerticalAnchor.Top:
-                    topT += data.offsetTop;
-                    break;
-                case VerticalAnchor.Middle:
-                    topT += targetLoc.height / 2;
-                    offsetTop = 0;
-                    break;
-                case VerticalAnchor.Bottom:
-                    topT += targetLoc.height + data.offsetTop;
-                    break;
-            }
-            let loc = element.getBoundingClientRect();
-            if (data.horizontalAnchor == HorizontalAnchor.Center)
-                leftT -= loc.width / 2 + data.offsetLeft - offsetLeft;
-            else if (data.horizontalAnchor == HorizontalAnchor.Right)
-                leftT -= loc.width - data.offsetLeft - offsetLeft;
-            if (data.verticalAnchor == VerticalAnchor.Middle)
-                topT -= loc.height / 2 + data.offsetTop + offsetTop;
-            else if (data.verticalAnchor == VerticalAnchor.Bottom)
-                topT -= loc.height + data.offsetTop + offsetTop - 1;
-            element.style.left = `${leftT}px`;
-            element.style.top = `${topT}px`;
-        }
-    }
-    caspian.PopupWindow = PopupWindow;
-    let HorizontalAnchor;
-    (function (HorizontalAnchor) {
-        HorizontalAnchor[HorizontalAnchor["Left"] = 1] = "Left";
-        HorizontalAnchor[HorizontalAnchor["Center"] = 2] = "Center";
-        HorizontalAnchor[HorizontalAnchor["Right"] = 3] = "Right";
-    })(HorizontalAnchor || (HorizontalAnchor = {}));
-    let VerticalAnchor;
-    (function (VerticalAnchor) {
-        VerticalAnchor[VerticalAnchor["Top"] = 1] = "Top";
-        VerticalAnchor[VerticalAnchor["Middle"] = 2] = "Middle";
-        VerticalAnchor[VerticalAnchor["Bottom"] = 3] = "Bottom";
-    })(VerticalAnchor || (VerticalAnchor = {}));
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class Lookup {
-        constructor(input, dotnet) {
-            let lookup = input.closest('.c-lookup');
-            input.onfocus = () => {
-                caspian.common.showErrorMessage(lookup);
-            };
-            input.onkeydown = e => {
-                let code = e.keyCode;
-                if (code == 40 || code == 38)
-                    e.preventDefault();
-            };
-            input.onblur = () => {
-                caspian.common.hideErrorMessage(lookup);
-            };
-            //if (lookup.attributes['closeonblur'].value != undefined)
-            //    lookup.attributes['tabindex'].value = '0';
-            this.bindObserver(lookup, dotnet);
-        }
-        bindObserver(lookup, dotnet) {
-            const mutationObserver = new MutationObserver(list => {
-                let target = list[0].target;
-                let helpWindow = target.getElementsByClassName('t-HelpWindow')[0];
-                if (helpWindow != null) {
-                    let animate = target.getElementsByClassName('t-animation-container')[0];
-                    let locTarget = target.getBoundingClientRect();
-                    let locHelpWindow = helpWindow.getBoundingClientRect();
-                    let left = (locHelpWindow.width - locTarget.width) / 2;
-                    let posTarget = target.getPosition();
-                    if (posTarget.left - left + locHelpWindow.width > window.innerWidth)
-                        left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 20;
-                    animate.style.marginLeft = `${-left}px`;
-                    animate.style.width = `${locHelpWindow.width + 10}px`;
-                    animate.style.height = `${locHelpWindow.height - 20}px`;
-                    if (locTarget.bottom + locHelpWindow.height - 30 <= window.innerHeight) {
-                        animate.classList.add('c-animate-down');
-                        setTimeout(() => helpWindow.style.top = '0', 25);
-                    }
-                    else if (locTarget.top >= locHelpWindow.height - 30) {
-                        animate.style.marginTop = `${-locHelpWindow.height - 15}px`;
-                        animate.classList.add('c-animate-up');
-                        setTimeout(() => helpWindow.style.bottom = '0', 25);
-                    }
-                    else {
-                        debugger;
-                        helpWindow.style.top = `${-locHelpWindow.height}`;
-                    }
-                    if (lookup.attributes['autoHide']) {
-                        window.onclick = function (e) {
-                            return __awaiter(this, void 0, void 0, function* () {
-                                if (!e.target.closest('.c-lookup'))
-                                    yield dotnet.invokeMethodAsync('Close');
-                            });
-                        };
-                    }
-                }
-                else
-                    window.onclick = null;
-            });
-            mutationObserver.observe(lookup, {
-                attributes: false,
-                childList: true,
-                subtree: false
-            });
-        }
-    }
-    caspian.Lookup = Lookup;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
     class ColorPicker {
         constructor(element) {
             this.element = element;
@@ -507,6 +196,96 @@ var caspian;
         }
     }
     caspian.ColorPicker = ColorPicker;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class ComboBox {
+        constructor(input, Pageable, dotnet) {
+            this.bindObserver(input, Pageable, dotnet);
+            let control = input.closest('.t-combobox').getElementsByClassName('t-dropdown-wrap')[0];
+            input.onkeyup = e => {
+                if (e.key == 'ArrowDown' || e.key == 'ArrowUp') {
+                    let selected = e.target.closest('.t-combobox').getElementsByClassName('t-state-selected')[0];
+                    if (selected) {
+                        let content = e.target.closest('.t-combobox').getElementsByClassName('t-group')[0];
+                        let loc = selected.getBoundingClientRect();
+                        let top = loc.top - content.getBoundingClientRect().top, bottom = top + loc.height;
+                        if (bottom > 240 || top < 10) {
+                            let scrollTop = content.scrollTop;
+                            content.scrollTop = (scrollTop + bottom - 240);
+                        }
+                    }
+                }
+            };
+            input.closest('.t-combobox').onmouseenter = () => {
+                if (!control.classList.contains('t-state-disabled')) {
+                    let list = control.classList;
+                    list.add('t-state-hover');
+                    list.remove('t-state-default');
+                }
+            };
+            input.closest('.t-combobox').onmouseleave = () => {
+                if (!control.classList.contains('t-state-disabled')) {
+                    let list = control.classList;
+                    list.add('t-state-default');
+                    list.remove('t-state-hover');
+                }
+            };
+            input.onfocus = () => {
+                let list = control.classList;
+                list.add('t-state-focused');
+                list.remove('t-state-default');
+                caspian.common.showErrorMessage(input.closest('.t-widget'));
+            };
+            input.onblur = () => {
+                let list = control.classList;
+                list.add('t-state-default');
+                list.remove('t-state-focused');
+                caspian.common.hideErrorMessage(input.closest('.t-widget'));
+            };
+        }
+        bindObserver(input, pageable, dotnet) {
+            const mutationObserver = new MutationObserver(t => {
+                let ctr = t[0].target;
+                let group = ctr.getElementsByClassName('t-group')[0];
+                if (group) {
+                    if (pageable) {
+                        group.onscrollend = () => __awaiter(this, void 0, void 0, function* () {
+                            yield dotnet.invokeMethodAsync('IncPageNumberInvokable');
+                        });
+                    }
+                    let animate = ctr.getElementsByClassName('t-animation-container')[0];
+                    let height = group.getElementsByClassName('t-reset')[0].getBoundingClientRect().height;
+                    height = Math.min(250, height);
+                    height = Math.max(height, 30);
+                    animate.style.height = `${height + 7}px`;
+                    let loc = ctr.getBoundingClientRect();
+                    animate.style.width = `${loc.width + 7}px`;
+                    if (loc.top > window.innerHeight / 2) {
+                        animate.classList.add('c-animate-up');
+                        setTimeout(() => group.style.bottom = '0', 10);
+                        animate.style.marginTop = `${-height - 42}px`;
+                    }
+                    else {
+                        animate.classList.add('c-animate-down');
+                        setTimeout(() => group.style.top = '0', 10);
+                    }
+                    document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
+                        if (e.target.closest('.t-group') == null)
+                            yield dotnet.invokeMethodAsync('CloseInvokable');
+                    });
+                }
+                else
+                    document.body.onmousedown = null;
+            });
+            mutationObserver.observe(input.closest('.t-combobox'), {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+        }
+    }
+    caspian.ComboBox = ComboBox;
 })(caspian || (caspian = {}));
 var caspian;
 (function (caspian) {
@@ -882,389 +661,6 @@ HTMLElement.prototype.getPosition = function () {
 };
 var caspian;
 (function (caspian) {
-    class DropdownList {
-        constructor(element, dotnet) {
-            this.bindObserver(element, dotnet);
-            element.onmouseenter = e => {
-                let ddl = e.target.getElementsByClassName('t-dropdown-wrap')[0];
-                if (!ddl.classList.contains('t-state-disabled')) {
-                    ddl.classList.remove('t-state-default');
-                    ddl.classList.add('t-state-hover');
-                }
-            };
-            element.onmouseleave = e => {
-                let ddl = e.target.getElementsByClassName('t-dropdown-wrap')[0];
-                ddl.classList.remove('t-state-hover');
-                ddl.classList.add('t-state-default');
-            };
-            element.onfocus = e => {
-                let ddl = e.target.getElementsByClassName('t-dropdown-wrap')[0];
-                ddl.classList.remove('t-state-default');
-                ddl.classList.add('t-state-focused');
-                caspian.common.showErrorMessage(e.target);
-            };
-            element.onblur = () => {
-                let ddl = element.getElementsByClassName('t-dropdown-wrap')[0];
-                ddl.classList.remove('t-state-focused');
-                ddl.classList.add('t-state-default');
-                caspian.common.hideErrorMessage(element);
-            };
-        }
-        bindObserver(element, dotnet) {
-            const mutationObserver = new MutationObserver(t => {
-                let ddl = t[0].target;
-                let animate = ddl.getElementsByClassName('t-animation-container')[0];
-                if (animate != null) {
-                    animate.style.width = `${ddl.getBoundingClientRect().width + 4}px`;
-                    let group = animate.getElementsByClassName('t-group')[0];
-                    let height = group.getBoundingClientRect().height;
-                    animate.style.height = `${height + 5}px`;
-                    if (ddl.getBoundingClientRect().top > window.innerHeight / 2) {
-                        animate.classList.add('c-animate-up');
-                        animate.style.marginTop = `${-height - 38}px`;
-                        setTimeout(() => group.style.bottom = '0', 50);
-                    }
-                    else {
-                        animate.classList.add('c-animate-down');
-                        setTimeout(() => group.style.top = '0', 50);
-                    }
-                    document.body.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
-                        if (e.target.closest('.t-animation-container') == null) {
-                            document.body.onclick = null;
-                            yield dotnet.invokeMethodAsync('CloseWindow');
-                        }
-                    });
-                }
-            });
-            mutationObserver.observe(element, {
-                attributes: false,
-                childList: true,
-                subtree: false
-            });
-        }
-    }
-    caspian.DropdownList = DropdownList;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class TimePicker {
-        constructor(element, dotnet) {
-            this.dotnet = dotnet;
-            let input = element.getElementsByTagName('input')[0];
-            caspian.common.bindMask(input, '__:__');
-            element.onmouseenter = () => {
-                let wrap = element.getElementsByClassName('t-picker-wrap')[0];
-                if (!wrap.classList.contains('t-state-selected') && !wrap.classList.contains('t-state-disabled'))
-                    wrap.classList.add('t-state-hover');
-            };
-            element.onmouseleave = () => {
-                element.getElementsByClassName('t-picker-wrap')[0].classList.remove('t-state-hover');
-            };
-            input.onfocus = e => {
-                e.target.closest('.t-picker-wrap').classList.add('t-state-selected');
-            };
-            input.onblur = e => {
-                e.target.closest('.t-picker-wrap').classList.remove('t-state-selected');
-            };
-            this.bindMutationObserver(element);
-        }
-        bindTimePanel(elm) {
-            elm.getElementsByClassName('c-time-minutes')[0].onmousedown = e => {
-                let loc = elm.getElementsByTagName('circle')[2].getBoundingClientRect();
-                let r = Math.pow(e.pageX - loc.left - 2, 2) + Math.pow(e.pageY - loc.top - 2, 2);
-                if (r > 6400) {
-                    this.setMinutLocation(elm.getElementsByClassName('c-time-minutes')[0], e, 0);
-                    document.body.onmousemove = e => {
-                        this.setMinutLocation(elm.getElementsByClassName('c-time-minutes')[0], e, 1);
-                    };
-                    document.body.onmouseup = (e) => __awaiter(this, void 0, void 0, function* () {
-                        document.body.onmousemove = document.body.onmouseup = null;
-                        if (elm.getElementsByClassName('c-time-footer').length == 0) {
-                            this.setTime(elm.closest('.t-timepicker'));
-                            yield this.dotnet.invokeMethodAsync('Close');
-                        }
-                    });
-                }
-            };
-        }
-        setMinutLocation(elem, e, type) {
-            let from = elem.attributes['from'], to = elem.attributes['to'];
-            let loc = elem.getElementsByTagName('circle').item(2).getBoundingClientRect();
-            let difX = e.pageX - loc.left, difY = e.pageY - loc.top;
-            let deg = Math.atan(difY / difX);
-            if (difX < 0)
-                deg += Math.PI;
-            let minute = Math.round(deg / Math.PI * 30 + 15);
-            if (minute == 60)
-                minute = 0;
-            if (from != null && minute < from.value)
-                return false;
-            if (to != null && minute > to.value)
-                return false;
-            let text = minute.toString();
-            if (minute < 10)
-                text = '0' + text;
-            elem.closest('.c-timepicker').getElementsByClassName('c-span-minutes')[0].textContent = text;
-            let x2 = null, y2 = null;
-            if (type == 1) {
-                x2 = Math.cos(deg) * 110;
-                y2 = Math.sin(deg) * 110;
-            }
-            else {
-                let factor = (minute - 15) / 30 * Math.PI;
-                x2 = Math.cos(factor) * 110;
-                y2 = Math.sin(factor) * 110;
-            }
-            let svg = elem.getElementsByTagName('svg')[0];
-            let circles = svg.getElementsByTagName('circle');
-            circles[0].attributes['cx'].value = circles[1].attributes['cx'].value = x2;
-            circles[0].attributes['cy'].value = circles[1].attributes['cy'].value = y2;
-            let line = svg.getElementsByTagName('line')[0];
-            line.attributes['x2'].value = x2;
-            line.attributes['y2'].value = y2;
-            return true;
-        }
-        setTime(timepicker) {
-            let hours = timepicker.getElementsByClassName('c-span-hours')[0].textContent;
-            let minutes = timepicker.getElementsByClassName('c-span-minutes')[0].textContent;
-            let input = timepicker.getElementsByTagName('input')[0];
-            input.value = hours + ':' + minutes;
-            let event = new Event('change');
-            input.dispatchEvent(event);
-        }
-        bindMutationObserver(element) {
-            const mutationObserver = new MutationObserver(t => {
-                let panel = t[0].target.getElementsByClassName('c-timepicker')[0];
-                if (panel == null) {
-                    window.onclick = null;
-                    return;
-                }
-                let panelLoc = panel.getBoundingClientRect();
-                let elem = panel.closest('.t-timepicker');
-                let animate = panel.closest('.t-animation-container');
-                let height = panelLoc.height + 2;
-                if (elem.getBoundingClientRect().top > height) {
-                    animate.classList.add('c-animate-up');
-                    animate.style.marginTop = `${-height - 33}px`;
-                    setTimeout(() => {
-                        panel.style.bottom = '0';
-                    }, 10);
-                }
-                else {
-                    animate.classList.add('c-animate-down');
-                    setTimeout(() => {
-                        panel.style.top = '0';
-                    }, 10);
-                    height += 8;
-                }
-                animate.style.width = `${panelLoc.width + 8}px`;
-                animate.style.height = `${height}px`;
-                this.bindTimePanel(panel);
-                window.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
-                    if (e.target.closest('.c-timepicker') == null)
-                        yield this.dotnet.invokeMethodAsync('Close');
-                });
-                let okButton = panel.getElementsByClassName('c-ok')[0];
-                if (okButton != null) {
-                    okButton.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
-                        this.setTime(panel.closest('.t-timepicker'));
-                        yield this.dotnet.invokeMethodAsync('Close');
-                    });
-                }
-            });
-            mutationObserver.observe(element, {
-                attributes: false,
-                childList: true,
-                subtree: false
-            });
-        }
-    }
-    caspian.TimePicker = TimePicker;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class DatePicker {
-        constructor(element, dotnet) {
-            element.focus;
-            let input = element.getElementsByTagName('input')[0];
-            element.onmouseenter = e => {
-                let elem = e.target.getElementsByClassName('t-picker-wrap')[0];
-                if (!elem.classList.contains('t-state-selected') || !elem.classList.contains('t-state-disabled'))
-                    elem.classList.add('t-state-hover');
-            };
-            element.onmouseleave = e => {
-                let elem = e.target.getElementsByClassName('t-picker-wrap')[0];
-                elem.classList.remove('t-state-hover');
-            };
-            input.onfocus = e => {
-                let elem = e.target;
-                elem.closest('.t-picker-wrap').classList.replace('t-state-hover', 't-state-selected');
-                caspian.common.showErrorMessage(elem.closest('.t-widget'));
-            };
-            input.onblur = e => {
-                let elem = e.target;
-                elem.closest('.t-picker-wrap').classList.remove('t-state-selected');
-                caspian.common.hideErrorMessage(elem.closest('.t-widget'));
-            };
-            this.bindObserver(element, dotnet);
-        }
-        bindObserver(element, dotnet) {
-            const mutationObserver = new MutationObserver(t => {
-                let element = t[0].target, animate = t[0].addedNodes[0];
-                if (animate) {
-                    let calendar = animate.getElementsByClassName('t-datepicker-calendar')[0];
-                    if (element.getBoundingClientRect().top > window.outerHeight / 2) {
-                        animate.classList.add('c-animate-up');
-                        animate.style.marginTop = '-275px';
-                        setTimeout(() => __awaiter(this, void 0, void 0, function* () { return calendar.style.bottom = '-0'; }), 20);
-                    }
-                    else {
-                        animate.classList.add('c-animate-down');
-                        setTimeout(() => __awaiter(this, void 0, void 0, function* () { return calendar.style.top = '0'; }), 20);
-                    }
-                    document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
-                        if (e.target.closest('.t-animation-container') == null)
-                            yield dotnet.invokeMethodAsync('CloseWindow');
-                    });
-                }
-                else
-                    document.body.onmousedown = null;
-            });
-            mutationObserver.observe(element, {
-                attributes: false,
-                childList: true,
-                subtree: false
-            });
-        }
-        static bindCalendar(elm, viewType, vNavigation) {
-            let toDownState = elm.getElementsByClassName('c-down-to-state')[0];
-            let toUpState = elm.getElementsByClassName('c-up-to-state')[0];
-            let fromDownState = elm.getElementsByClassName('c-down-from-state')[0];
-            let fromUpState = elm.getElementsByClassName('c-up-from-state')[0];
-            if (viewType == ViewType.Month) {
-                if (vNavigation == VNavigation.Down) {
-                    toDownState.style.left = '0';
-                    toDownState.style.top = '36px';
-                    toDownState.style.width = '212px';
-                    toDownState.style.height = '200px';
-                    //-----------------------------
-                    fromDownState.style.opacity = '0';
-                }
-            }
-            else {
-                let locTarget = elm.getBoundingClientRect();
-                let left, top;
-                if (toUpState) {
-                    let loc = toUpState.getElementsByClassName('t-state-selected')[0].getBoundingClientRect();
-                    left = loc.left - locTarget.left, top = loc.top - locTarget.top;
-                }
-                if (vNavigation == VNavigation.Up) {
-                    fromUpState.style.left = `${left}px`;
-                    fromUpState.style.top = `${top}px`;
-                    fromUpState.style.width = '47px';
-                    fromUpState.style.height = '60px';
-                    toUpState.style.opacity = '1';
-                    setTimeout(() => fromUpState.style.display = 'none', 4000);
-                }
-                else if (vNavigation == VNavigation.Down) {
-                    toDownState.style.left = '0';
-                    toDownState.style.top = '35px';
-                    toDownState.style.width = '212px';
-                    toDownState.style.height = '200px';
-                    fromDownState.style.opacity = '0';
-                }
-            }
-        }
-    }
-    caspian.DatePicker = DatePicker;
-    let ViewType;
-    (function (ViewType) {
-        ViewType[ViewType["Month"] = 1] = "Month";
-        ViewType[ViewType["Year"] = 2] = "Year";
-        ViewType[ViewType["Decade"] = 3] = "Decade";
-        ViewType[ViewType["Century"] = 4] = "Century";
-    })(ViewType || (ViewType = {}));
-    let VNavigation;
-    (function (VNavigation) {
-        VNavigation[VNavigation["Up"] = 1] = "Up";
-        VNavigation[VNavigation["Down"] = 2] = "Down";
-    })(VNavigation || (VNavigation = {}));
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class TextBox {
-        constructor(input, type) {
-            this.input = input;
-            this.total || (this.total = 8);
-            input.onmouseenter = () => {
-                input.parentElement.classList.add('t-state-hover');
-            };
-            input.onmouseleave = () => {
-                input.parentElement.classList.remove('t-state-hover');
-            };
-            this.readAttributes();
-            this.bindAttributes();
-            if (type != 'string')
-                input.onkeypress = e => this.bindKeypress(e);
-            input.onfocus = () => {
-                setTimeout(() => {
-                    this.input.select();
-                }, 100);
-                caspian.common.showErrorMessage(this.input.closest('.t-widget'));
-            };
-            input.onblur = () => {
-                caspian.common.hideErrorMessage(this.input.closest('.t-widget'));
-            };
-        }
-        bindKeypress(e) {
-            let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
-            if (code == 46 && this.numberDigit) {
-                let remain = value.length - end;
-                if (remain <= this.numberDigit && value.indexOf('.') == -1)
-                    isValid = true;
-            }
-            if (code >= 48 && code <= 57 && value.substr(end).indexOf('-') == -1)
-                isValid = true;
-            if (code >= 48 && code <= 57 || code == 13 || code == 45 && start == 0 && value.substr(end).indexOf('-') == -1)
-                isValid = true;
-            var pointIndex = value.indexOf('.');
-            if (pointIndex >= 0 && start == end && end > pointIndex && value.split('.')[1].length == this.numberDigit)
-                isValid = false;
-            if (start == 0 && end == 0 && value.length > 0 && value[0] == '-' && code >= 48 && code <= 57)
-                isValid = false;
-            let len = value.replace('-', '').replace('.', '').length;
-            if (len == this.total && start == end && code != 45 && code != 46)
-                isValid = false;
-            if (!isValid)
-                e.preventDefault();
-        }
-        bindAttributes() {
-            const mutationObserver = new MutationObserver((mutationList) => {
-                let name = mutationList[0].attributeName;
-                let attrs = mutationList[0].target.attributes;
-                if (name == 'total')
-                    this.total = attrs['total'].value;
-                if (name == 'number-digit')
-                    this.numberDigit = attrs['number-digit'].value;
-            });
-            mutationObserver.observe(this.input.closest('.t-widget'), {
-                attributes: true,
-                childList: false,
-                subtree: false
-            });
-        }
-        readAttributes() {
-            let attrs = this.input.closest('.t-widget').attributes;
-            if (attrs['total'] != null)
-                this.total = attrs['total'].value;
-            if (attrs['number-digit'] != null)
-                this.numberDigit = attrs['number-digit'].value;
-        }
-    }
-    caspian.TextBox = TextBox;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
     class DataGrid {
         constructor(grv) {
             this.grid = grv;
@@ -1419,6 +815,306 @@ var caspian;
 })(caspian || (caspian = {}));
 var caspian;
 (function (caspian) {
+    class DatePicker {
+        constructor(element, dotnet) {
+            element.focus;
+            let input = element.getElementsByTagName('input')[0];
+            element.onmouseenter = e => {
+                let elem = e.target.getElementsByClassName('t-picker-wrap')[0];
+                if (!elem.classList.contains('t-state-selected') || !elem.classList.contains('t-state-disabled'))
+                    elem.classList.add('t-state-hover');
+            };
+            element.onmouseleave = e => {
+                let elem = e.target.getElementsByClassName('t-picker-wrap')[0];
+                elem.classList.remove('t-state-hover');
+            };
+            input.onfocus = e => {
+                let elem = e.target;
+                elem.closest('.t-picker-wrap').classList.replace('t-state-hover', 't-state-selected');
+                caspian.common.showErrorMessage(elem.closest('.t-widget'));
+            };
+            input.onblur = e => {
+                let elem = e.target;
+                elem.closest('.t-picker-wrap').classList.remove('t-state-selected');
+                caspian.common.hideErrorMessage(elem.closest('.t-widget'));
+            };
+            this.bindObserver(element, dotnet);
+        }
+        bindObserver(element, dotnet) {
+            const mutationObserver = new MutationObserver(t => {
+                let element = t[0].target, animate = t[0].addedNodes[0];
+                if (animate) {
+                    let calendar = animate.getElementsByClassName('t-datepicker-calendar')[0];
+                    if (element.getBoundingClientRect().top > window.outerHeight / 2) {
+                        animate.classList.add('c-animate-up');
+                        animate.style.marginTop = '-275px';
+                        setTimeout(() => __awaiter(this, void 0, void 0, function* () { return calendar.style.bottom = '-0'; }), 20);
+                    }
+                    else {
+                        animate.classList.add('c-animate-down');
+                        setTimeout(() => __awaiter(this, void 0, void 0, function* () { return calendar.style.top = '0'; }), 20);
+                    }
+                    document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
+                        if (e.target.closest('.t-animation-container') == null)
+                            yield dotnet.invokeMethodAsync('CloseWindow');
+                    });
+                }
+                else
+                    document.body.onmousedown = null;
+            });
+            mutationObserver.observe(element, {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+        }
+        static bindCalendar(elm, viewType, vNavigation) {
+            let toDownState = elm.getElementsByClassName('c-down-to-state')[0];
+            let toUpState = elm.getElementsByClassName('c-up-to-state')[0];
+            let fromDownState = elm.getElementsByClassName('c-down-from-state')[0];
+            let fromUpState = elm.getElementsByClassName('c-up-from-state')[0];
+            if (viewType == ViewType.Month) {
+                if (vNavigation == VNavigation.Down) {
+                    toDownState.style.left = '0';
+                    toDownState.style.top = '36px';
+                    toDownState.style.width = '212px';
+                    toDownState.style.height = '200px';
+                    //-----------------------------
+                    fromDownState.style.opacity = '0';
+                }
+            }
+            else {
+                let locTarget = elm.getBoundingClientRect();
+                let left, top;
+                if (toUpState) {
+                    let loc = toUpState.getElementsByClassName('t-state-selected')[0].getBoundingClientRect();
+                    left = loc.left - locTarget.left, top = loc.top - locTarget.top;
+                }
+                if (vNavigation == VNavigation.Up) {
+                    fromUpState.style.left = `${left}px`;
+                    fromUpState.style.top = `${top}px`;
+                    fromUpState.style.width = '47px';
+                    fromUpState.style.height = '60px';
+                    toUpState.style.opacity = '1';
+                    setTimeout(() => fromUpState.style.display = 'none', 4000);
+                }
+                else if (vNavigation == VNavigation.Down) {
+                    toDownState.style.left = '0';
+                    toDownState.style.top = '35px';
+                    toDownState.style.width = '212px';
+                    toDownState.style.height = '200px';
+                    fromDownState.style.opacity = '0';
+                }
+            }
+        }
+    }
+    caspian.DatePicker = DatePicker;
+    let ViewType;
+    (function (ViewType) {
+        ViewType[ViewType["Month"] = 1] = "Month";
+        ViewType[ViewType["Year"] = 2] = "Year";
+        ViewType[ViewType["Decade"] = 3] = "Decade";
+        ViewType[ViewType["Century"] = 4] = "Century";
+    })(ViewType || (ViewType = {}));
+    let VNavigation;
+    (function (VNavigation) {
+        VNavigation[VNavigation["Up"] = 1] = "Up";
+        VNavigation[VNavigation["Down"] = 2] = "Down";
+    })(VNavigation || (VNavigation = {}));
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class DropdownList {
+        constructor(element, dotnet) {
+            this.bindObserver(element, dotnet);
+            element.onmouseenter = e => {
+                let ddl = e.target.getElementsByClassName('t-dropdown-wrap')[0];
+                if (!ddl.classList.contains('t-state-disabled')) {
+                    ddl.classList.remove('t-state-default');
+                    ddl.classList.add('t-state-hover');
+                }
+            };
+            element.onmouseleave = e => {
+                let ddl = e.target.getElementsByClassName('t-dropdown-wrap')[0];
+                ddl.classList.remove('t-state-hover');
+                ddl.classList.add('t-state-default');
+            };
+            element.onfocus = e => {
+                let ddl = e.target.getElementsByClassName('t-dropdown-wrap')[0];
+                ddl.classList.remove('t-state-default');
+                ddl.classList.add('t-state-focused');
+                caspian.common.showErrorMessage(e.target);
+            };
+            element.onblur = () => {
+                let ddl = element.getElementsByClassName('t-dropdown-wrap')[0];
+                ddl.classList.remove('t-state-focused');
+                ddl.classList.add('t-state-default');
+                caspian.common.hideErrorMessage(element);
+            };
+        }
+        bindObserver(element, dotnet) {
+            const mutationObserver = new MutationObserver(t => {
+                let ddl = t[0].target;
+                let animate = ddl.getElementsByClassName('t-animation-container')[0];
+                if (animate != null) {
+                    animate.style.width = `${ddl.getBoundingClientRect().width + 4}px`;
+                    let group = animate.getElementsByClassName('t-group')[0];
+                    let height = group.getBoundingClientRect().height;
+                    animate.style.height = `${height + 5}px`;
+                    if (ddl.getBoundingClientRect().top > window.innerHeight / 2) {
+                        animate.classList.add('c-animate-up');
+                        animate.style.marginTop = `${-height - 38}px`;
+                        setTimeout(() => group.style.bottom = '0', 50);
+                    }
+                    else {
+                        animate.classList.add('c-animate-down');
+                        setTimeout(() => group.style.top = '0', 50);
+                    }
+                    document.body.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
+                        if (e.target.closest('.t-animation-container') == null) {
+                            document.body.onclick = null;
+                            yield dotnet.invokeMethodAsync('CloseWindow');
+                        }
+                    });
+                }
+            });
+            mutationObserver.observe(element, {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+        }
+    }
+    caspian.DropdownList = DropdownList;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class InputCollorPicker {
+        constructor(element, dotnet) {
+            this.bindObserver(element, dotnet);
+            element.onmouseenter = () => {
+                element.getElementsByClassName('c-input-color')[0].classList.add('c-state-hover');
+            };
+            element.onmouseleave = () => {
+                element.getElementsByClassName('c-input-color')[0].classList.remove('c-state-hover');
+            };
+            element.onfocus = () => {
+                element.getElementsByClassName('c-input-color')[0].classList.add('c-state-focused');
+            };
+            element.onblur = () => {
+                element.getElementsByClassName('c-input-color')[0].classList.remove('c-state-focused');
+            };
+        }
+        bindObserver(element, dotnet) {
+            const mutationObserver = new MutationObserver(t => {
+                let elem = t[0].target;
+                let animate = elem.getElementsByClassName('t-animation-container')[0];
+                if (animate != null) {
+                    let top = elem.getBoundingClientRect().top;
+                    let picker = elem.getElementsByClassName('c-colorpicker-panel')[0];
+                    animate.style.width = '245px';
+                    let height = picker.getBoundingClientRect().height;
+                    animate.style.height = `${height + 6}px`;
+                    if (top > window.innerHeight / 2) {
+                        animate.classList.add('c-animation-up');
+                        animate.style.marginTop = `${-height - 41}px`;
+                        setTimeout(t => {
+                            picker.style.bottom = '0';
+                        }, 10);
+                    }
+                    else {
+                        animate.classList.add('c-animation-down');
+                        setTimeout(t => {
+                            picker.style.top = '0px';
+                        }, 10);
+                    }
+                    document.body.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
+                        if (e.target.closest('.t-animation-container') == null)
+                            yield dotnet.invokeMethodAsync("Close");
+                    });
+                }
+                else
+                    document.body.onclick = null;
+            });
+            mutationObserver.observe(element, {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+        }
+    }
+    caspian.InputCollorPicker = InputCollorPicker;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class Lookup {
+        constructor(input, dotnet) {
+            let lookup = input.closest('.c-lookup');
+            input.onfocus = () => {
+                caspian.common.showErrorMessage(lookup);
+            };
+            input.onkeydown = e => {
+                let code = e.keyCode;
+                if (code == 40 || code == 38)
+                    e.preventDefault();
+            };
+            input.onblur = () => {
+                caspian.common.hideErrorMessage(lookup);
+            };
+            //if (lookup.attributes['closeonblur'].value != undefined)
+            //    lookup.attributes['tabindex'].value = '0';
+            this.bindObserver(lookup, dotnet);
+        }
+        bindObserver(lookup, dotnet) {
+            const mutationObserver = new MutationObserver(list => {
+                let target = list[0].target;
+                let helpWindow = target.getElementsByClassName('t-HelpWindow')[0];
+                if (helpWindow != null) {
+                    let animate = target.getElementsByClassName('t-animation-container')[0];
+                    let locTarget = target.getBoundingClientRect();
+                    let locHelpWindow = helpWindow.getBoundingClientRect();
+                    let left = (locHelpWindow.width - locTarget.width) / 2;
+                    let posTarget = target.getPosition();
+                    if (posTarget.left - left + locHelpWindow.width > window.innerWidth)
+                        left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 20;
+                    animate.style.marginLeft = `${-left}px`;
+                    animate.style.width = `${locHelpWindow.width + 10}px`;
+                    animate.style.height = `${locHelpWindow.height - 20}px`;
+                    if (locTarget.bottom + locHelpWindow.height - 30 <= window.innerHeight) {
+                        animate.classList.add('c-animate-down');
+                        setTimeout(() => helpWindow.style.top = '0', 25);
+                    }
+                    else if (locTarget.top >= locHelpWindow.height - 30) {
+                        animate.style.marginTop = `${-locHelpWindow.height - 15}px`;
+                        animate.classList.add('c-animate-up');
+                        setTimeout(() => helpWindow.style.bottom = '0', 25);
+                    }
+                    else {
+                        helpWindow.style.top = `${-locHelpWindow.height}`;
+                    }
+                    if (lookup.attributes['autoHide']) {
+                        window.onclick = function (e) {
+                            return __awaiter(this, void 0, void 0, function* () {
+                                if (!e.target.closest('.c-lookup'))
+                                    yield dotnet.invokeMethodAsync('Close');
+                            });
+                        };
+                    }
+                }
+                else
+                    window.onclick = null;
+            });
+            mutationObserver.observe(lookup, {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+        }
+    }
+    caspian.Lookup = Lookup;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
     class Accordion {
         constructor(el, multiple) {
             this.el = el;
@@ -1477,6 +1173,309 @@ var caspian;
         }
     }
     caspian.Accordion = Accordion;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class PopupWindow {
+        constructor(element, target, json, dotnet) {
+            let data = JSON.parse(json);
+            element.style.display = 'block';
+            let className = element.className;
+            element.className = 'auto-hide c-popup-window';
+            let loc = element.getBoundingClientRect();
+            let mainLoc = document.getElementsByClassName('c-content-main')[0].getBoundingClientRect();
+            element.className = className;
+            if (target)
+                this.bindTarget(element, target, data);
+            else {
+                if (data.left != null) {
+                    element.style.left = `${data.left}px`;
+                    element.style.right = 'auto';
+                }
+                else if (data.right != null) {
+                    element.style.left = 'auto';
+                    element.style.right = `${data.right}px`;
+                }
+                else if (data.top != null) {
+                    element.style.top = `${data.top}px`;
+                    element.style.bottom = 'auto';
+                }
+                else if (data.bottom != null) {
+                    element.style.top = 'auto';
+                    element.style.bottom = `${data.bottom}px`;
+                }
+            }
+            document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
+                if (e.target.closest('.auto-hide') == null) {
+                    document.body.onmousedown = null;
+                    yield dotnet.invokeMethodAsync('Close');
+                }
+            });
+        }
+        bindTarget(element, target, data) {
+            element.className = 'auto-hide c-popup-window';
+            let targetLoc = target.getBoundingClientRect();
+            let leftT = targetLoc.left, topT = targetLoc.top;
+            let offsetLeft = data.offsetLeft, offsetTop = data.offsetTop;
+            switch (data.targetHorizontalAnchor) {
+                case HorizontalAnchor.Left:
+                    leftT += data.offsetLeft;
+                    break;
+                case HorizontalAnchor.Center:
+                    leftT += targetLoc.width / 2;
+                    offsetLeft = 0;
+                    break;
+                case HorizontalAnchor.Right:
+                    leftT += targetLoc.width + data.offsetLeft;
+                    break;
+            }
+            switch (data.targetVerticalAnchor) {
+                case VerticalAnchor.Top:
+                    topT += data.offsetTop;
+                    break;
+                case VerticalAnchor.Middle:
+                    topT += targetLoc.height / 2;
+                    offsetTop = 0;
+                    break;
+                case VerticalAnchor.Bottom:
+                    topT += targetLoc.height + data.offsetTop;
+                    break;
+            }
+            let loc = element.getBoundingClientRect();
+            if (data.horizontalAnchor == HorizontalAnchor.Center)
+                leftT -= loc.width / 2 + data.offsetLeft - offsetLeft;
+            else if (data.horizontalAnchor == HorizontalAnchor.Right)
+                leftT -= loc.width - data.offsetLeft - offsetLeft;
+            if (data.verticalAnchor == VerticalAnchor.Middle)
+                topT -= loc.height / 2 + data.offsetTop + offsetTop;
+            else if (data.verticalAnchor == VerticalAnchor.Bottom)
+                topT -= loc.height + data.offsetTop + offsetTop - 1;
+            element.style.left = `${leftT}px`;
+            element.style.top = `${topT}px`;
+        }
+    }
+    caspian.PopupWindow = PopupWindow;
+    let HorizontalAnchor;
+    (function (HorizontalAnchor) {
+        HorizontalAnchor[HorizontalAnchor["Left"] = 1] = "Left";
+        HorizontalAnchor[HorizontalAnchor["Center"] = 2] = "Center";
+        HorizontalAnchor[HorizontalAnchor["Right"] = 3] = "Right";
+    })(HorizontalAnchor || (HorizontalAnchor = {}));
+    let VerticalAnchor;
+    (function (VerticalAnchor) {
+        VerticalAnchor[VerticalAnchor["Top"] = 1] = "Top";
+        VerticalAnchor[VerticalAnchor["Middle"] = 2] = "Middle";
+        VerticalAnchor[VerticalAnchor["Bottom"] = 3] = "Bottom";
+    })(VerticalAnchor || (VerticalAnchor = {}));
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class TextBox {
+        constructor(input, type) {
+            this.input = input;
+            this.total || (this.total = 8);
+            input.onmouseenter = () => {
+                input.parentElement.classList.add('t-state-hover');
+            };
+            input.onmouseleave = () => {
+                input.parentElement.classList.remove('t-state-hover');
+            };
+            this.readAttributes();
+            this.bindAttributes();
+            if (type != 'string')
+                input.onkeypress = e => this.bindKeypress(e);
+            input.onfocus = () => {
+                setTimeout(() => {
+                    this.input.select();
+                }, 100);
+                caspian.common.showErrorMessage(this.input.closest('.t-widget'));
+            };
+            input.onblur = () => {
+                caspian.common.hideErrorMessage(this.input.closest('.t-widget'));
+            };
+        }
+        bindKeypress(e) {
+            let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
+            if (code == 46 && this.numberDigit) {
+                let remain = value.length - end;
+                if (remain <= this.numberDigit && value.indexOf('.') == -1)
+                    isValid = true;
+            }
+            if (code >= 48 && code <= 57 && value.substr(end).indexOf('-') == -1)
+                isValid = true;
+            if (code >= 48 && code <= 57 || code == 13 || code == 45 && start == 0 && value.substr(end).indexOf('-') == -1)
+                isValid = true;
+            var pointIndex = value.indexOf('.');
+            if (pointIndex >= 0 && start == end && end > pointIndex && value.split('.')[1].length == this.numberDigit)
+                isValid = false;
+            if (start == 0 && end == 0 && value.length > 0 && value[0] == '-' && code >= 48 && code <= 57)
+                isValid = false;
+            let len = value.replace('-', '').replace('.', '').length;
+            if (len == this.total && start == end && code != 45 && code != 46)
+                isValid = false;
+            if (!isValid)
+                e.preventDefault();
+        }
+        bindAttributes() {
+            const mutationObserver = new MutationObserver((mutationList) => {
+                let name = mutationList[0].attributeName;
+                let attrs = mutationList[0].target.attributes;
+                if (name == 'total')
+                    this.total = attrs['total'].value;
+                if (name == 'number-digit')
+                    this.numberDigit = attrs['number-digit'].value;
+            });
+            mutationObserver.observe(this.input.closest('.t-widget'), {
+                attributes: true,
+                childList: false,
+                subtree: false
+            });
+        }
+        readAttributes() {
+            let attrs = this.input.closest('.t-widget').attributes;
+            if (attrs['total'] != null)
+                this.total = attrs['total'].value;
+            if (attrs['number-digit'] != null)
+                this.numberDigit = attrs['number-digit'].value;
+        }
+    }
+    caspian.TextBox = TextBox;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class TimePicker {
+        constructor(element, dotnet) {
+            this.dotnet = dotnet;
+            let input = element.getElementsByTagName('input')[0];
+            caspian.common.bindMask(input, '__:__');
+            element.onmouseenter = () => {
+                let wrap = element.getElementsByClassName('t-picker-wrap')[0];
+                if (!wrap.classList.contains('t-state-selected') && !wrap.classList.contains('t-state-disabled'))
+                    wrap.classList.add('t-state-hover');
+            };
+            element.onmouseleave = () => {
+                element.getElementsByClassName('t-picker-wrap')[0].classList.remove('t-state-hover');
+            };
+            input.onfocus = e => {
+                e.target.closest('.t-picker-wrap').classList.add('t-state-selected');
+            };
+            input.onblur = e => {
+                e.target.closest('.t-picker-wrap').classList.remove('t-state-selected');
+            };
+            this.bindMutationObserver(element);
+        }
+        bindTimePanel(elm) {
+            elm.getElementsByClassName('c-time-minutes')[0].onmousedown = e => {
+                let loc = elm.getElementsByTagName('circle')[2].getBoundingClientRect();
+                let r = Math.pow(e.pageX - loc.left - 2, 2) + Math.pow(e.pageY - loc.top - 2, 2);
+                if (r > 6400) {
+                    this.setMinutLocation(elm.getElementsByClassName('c-time-minutes')[0], e, 0);
+                    document.body.onmousemove = e => {
+                        this.setMinutLocation(elm.getElementsByClassName('c-time-minutes')[0], e, 1);
+                    };
+                    document.body.onmouseup = (e) => __awaiter(this, void 0, void 0, function* () {
+                        document.body.onmousemove = document.body.onmouseup = null;
+                        if (elm.getElementsByClassName('c-time-footer').length == 0) {
+                            this.setTime(elm.closest('.t-timepicker'));
+                            yield this.dotnet.invokeMethodAsync('Close');
+                        }
+                    });
+                }
+            };
+        }
+        setMinutLocation(elem, e, type) {
+            let from = elem.attributes['from'], to = elem.attributes['to'];
+            let loc = elem.getElementsByTagName('circle').item(2).getBoundingClientRect();
+            let difX = e.pageX - loc.left, difY = e.pageY - loc.top;
+            let deg = Math.atan(difY / difX);
+            if (difX < 0)
+                deg += Math.PI;
+            let minute = Math.round(deg / Math.PI * 30 + 15);
+            if (minute == 60)
+                minute = 0;
+            if (from != null && minute < from.value)
+                return false;
+            if (to != null && minute > to.value)
+                return false;
+            let text = minute.toString();
+            if (minute < 10)
+                text = '0' + text;
+            elem.closest('.c-timepicker').getElementsByClassName('c-span-minutes')[0].textContent = text;
+            let x2 = null, y2 = null;
+            if (type == 1) {
+                x2 = Math.cos(deg) * 110;
+                y2 = Math.sin(deg) * 110;
+            }
+            else {
+                let factor = (minute - 15) / 30 * Math.PI;
+                x2 = Math.cos(factor) * 110;
+                y2 = Math.sin(factor) * 110;
+            }
+            let svg = elem.getElementsByTagName('svg')[0];
+            let circles = svg.getElementsByTagName('circle');
+            circles[0].attributes['cx'].value = circles[1].attributes['cx'].value = x2;
+            circles[0].attributes['cy'].value = circles[1].attributes['cy'].value = y2;
+            let line = svg.getElementsByTagName('line')[0];
+            line.attributes['x2'].value = x2;
+            line.attributes['y2'].value = y2;
+            return true;
+        }
+        setTime(timepicker) {
+            let hours = timepicker.getElementsByClassName('c-span-hours')[0].textContent;
+            let minutes = timepicker.getElementsByClassName('c-span-minutes')[0].textContent;
+            let input = timepicker.getElementsByTagName('input')[0];
+            input.value = hours + ':' + minutes;
+            let event = new Event('change');
+            input.dispatchEvent(event);
+        }
+        bindMutationObserver(element) {
+            const mutationObserver = new MutationObserver(t => {
+                let panel = t[0].target.getElementsByClassName('c-timepicker')[0];
+                if (panel == null) {
+                    window.onclick = null;
+                    return;
+                }
+                let panelLoc = panel.getBoundingClientRect();
+                let elem = panel.closest('.t-timepicker');
+                let animate = panel.closest('.t-animation-container');
+                let height = panelLoc.height + 2;
+                if (elem.getBoundingClientRect().top > height) {
+                    animate.classList.add('c-animate-up');
+                    animate.style.marginTop = `${-height - 33}px`;
+                    setTimeout(() => {
+                        panel.style.bottom = '0';
+                    }, 10);
+                }
+                else {
+                    animate.classList.add('c-animate-down');
+                    setTimeout(() => {
+                        panel.style.top = '0';
+                    }, 10);
+                    height += 8;
+                }
+                animate.style.width = `${panelLoc.width + 8}px`;
+                animate.style.height = `${height}px`;
+                this.bindTimePanel(panel);
+                window.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
+                    if (e.target.closest('.c-timepicker') == null)
+                        yield this.dotnet.invokeMethodAsync('Close');
+                });
+                let okButton = panel.getElementsByClassName('c-ok')[0];
+                if (okButton != null) {
+                    okButton.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
+                        this.setTime(panel.closest('.t-timepicker'));
+                        yield this.dotnet.invokeMethodAsync('Close');
+                    });
+                }
+            });
+            mutationObserver.observe(element, {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+        }
+    }
+    caspian.TimePicker = TimePicker;
 })(caspian || (caspian = {}));
 var caspian;
 (function (caspian) {

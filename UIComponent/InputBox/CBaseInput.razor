@@ -164,9 +164,8 @@
         {
             _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
             _messageStore = new ValidationMessageStore(CurrentEditContext);
-            CurrentEditContext.OnValidationRequested -= CurrentEditContext_OnValidationRequested;
-            CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
-            //CurrentEditContext.OnFieldChanged -= CurrentEditContext_OnFieldChanged;
+            // CurrentEditContext.OnValidationRequested -= CurrentEditContext_OnValidationRequested;
+            // CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
             CurrentEditContext.OnValidationStateChanged -= CurrentEditContext_OnValidationStateChanged;
             CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
             oldContext = CurrentEditContext;
@@ -217,30 +216,35 @@
                 FieldInfo info = null;
                 while(expr.NodeType != ExpressionType.Constant)
                 {
-                    if (expr.NodeType == ExpressionType.MemberAccess)
+                    switch(expr.NodeType)
                     {
-                        var member = (expr as MemberExpression).Member;
-                        if (member.MemberType == MemberTypes.Field)
-                            info = member as FieldInfo;
-                        expr = (expr as MemberExpression).Expression;
+                        case ExpressionType.MemberAccess:
+                            var member = (expr as MemberExpression).Member;
+                            if (member.MemberType == MemberTypes.Field)
+                                info = member as FieldInfo;
+                            expr = (expr as MemberExpression).Expression;
+                            break;
+                        case  ExpressionType.Call:
+                            expr = (expr as MethodCallExpression).Arguments[0];
+                            break;
+                        default:
+                            throw new NotImplementedException("خطای عدم پیاده سازی");
                     }
                 }
                 var value = info.GetValue((expr as ConstantExpression).Value);
                 if (info.FieldType == typeof(RowData<>).MakeGenericType(details.ToDynamicList()[0].GetType()))
                     value = value.GetType().GetProperty("Data").GetValue(value);
-                var index = 0;
-                foreach (var detail in details)
+                else
                 {
-                    if (detail == value)
+                    var str = $"{mainField}[{value}].{_FieldName}";
+                    if (fieldName == str)
                     {
-                        var str = index == 0 ? fieldName : fieldName.Replace("[0]", '[' + index.ToString() + ']');
                         var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
                         var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
                         ErrorMessage = result.FirstOrDefault();
+
                     }
-                    index++;
                 }
-                break;
             }
         }
         if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
@@ -271,7 +275,7 @@
 
     private void CurrentEditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
     {
-        
+
     }
 
     private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
@@ -301,15 +305,31 @@
                 FieldInfo info = null;
                 while (expr.NodeType != ExpressionType.Constant)
                 {
-                    if (expr.NodeType == ExpressionType.MemberAccess)
+                    switch(expr.NodeType)
                     {
-                        var member = (expr as MemberExpression).Member;
-                        if (member.MemberType == MemberTypes.Field)
-                            info = member as FieldInfo;
-                        expr = (expr as MemberExpression).Expression;
+                        case ExpressionType.MemberAccess:
+                            var member = (expr as MemberExpression).Member;
+                            if (member.MemberType == MemberTypes.Field)
+                                info = member as FieldInfo;
+                            expr = (expr as MemberExpression).Expression;
+                            break;
+                        case ExpressionType.Call:
+                            expr = (expr as MethodCallExpression).Arguments[0];
+                            break;
+                        default:
+                            throw new NotImplementedException("عدم پیاده سازی");
                     }
                 }
                 var value = info.GetValue((expr as ConstantExpression).Value);
+                if (info.FieldType == typeof(RowData<>).MakeGenericType(details.ToDynamicList()[0].GetType()))
+                    value = value.GetType().GetProperty("Data").GetValue(value);
+                else
+                {
+                    var str = fieldName.Replace("[0]", '[' + value.ToString() + ']');
+                    var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
+                    var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+                    ErrorMessage = result.FirstOrDefault();
+                }
                 var index = 0;
                 foreach (var detail in details)
                 {

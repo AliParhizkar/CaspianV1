@@ -27,6 +27,7 @@
     <DataGrid TEntity="Report" ConditionExpr="t => t.ReportGroup.SubSystem == Subsystem" Service="Service" ContentHeight="300">
         <Columns>
             <GridColumn Field="t => t.ReportGroup.Title" Title="Report group" />
+            <GridColumn Field="t => t.ReportType.EnumText()" />
             <GridColumn Field="t => t.Title" />
             <GridColumn Title="Parameters" style="width:80px">
                 <Template>
@@ -52,6 +53,12 @@
             <div class="col-md-8">
                 <ComboBox TEntity="ReportGroup" TValue="int" @bind-Value="report.ReportGroupId" TextExpression="t => t.Title"
                           ConditionExpression="t => t.SubSystem == Subsystem" />
+            </div>
+            <div class="col-md-4">
+                <label>Report Type</label>
+            </div>
+            <div class="col-md-8">
+                <DropdownList @bind-Value="report.ReportType" />
             </div>
             <div class="col-md-4">
                 <label>Title</label>

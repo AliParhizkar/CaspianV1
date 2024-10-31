@@ -1,64 +1,11 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
 @inherits BasePage
-<TreeView @ref="tree" OnExpanded="LoadNodeChilderen" style="width:500px;height:calc(100vh - 155px);padding:5px 10px 0 0" TEntity="NodeView" Source="nodes" />
 
 @code
 {
     Type type;
     IList<NodeView> nodes;
     IList<ReportGroupParameter> reportParams;
-    TreeView<NodeView> tree;
-
-    async Task LoadNodeChilderen(NodeView node)
-    {
-        var data = System.Text.Json.JsonSerializer.Deserialize<ReportNode>(node.Value);
-        var tempItems = (await new ReportTree().CreateTreeForSelect(type, data, new List<ReportParam>()));
-        node.Children = tempItems.Select(t => new NodeView()
-            {
-                Value = System.Text.Json.JsonSerializer.Serialize(t),
-                Selected = t.Selected,
-                Selectable = !t.Grouping,
-                Expanded = false,
-                Collabsable = t.Grouping,
-                Text = t.TitleFa,
-                Disabled = t.Selected
-            }).ToList();
-    }
-
-    async Task PostParams()
-    {
-        var result = tree.GetSeletcedItems().Select(t => System.Text.Json.JsonSerializer.Deserialize<ReportNode>(t.Value));
-        var reportParams = tree.GetSeletcedItems().Select(t => System.Text.Json.JsonSerializer.Deserialize<ReportNode>(t.Value))
-            .Select(t => new ReportParam()
-            {
-                DataLevel = 1,
-                ReportId = ReportId,
-                //TitleEn = t.TitleEn,
-                RuleId = t.RuleId,
-                DynamicParameterId = t.DynamicParameterId
-            }).ToList();
-        if (reportParams.Count == 0)
-            ShowMessage("لطفا یک پارامتر را انخاب نمایید");
-        else
-        {
-            using var service = CreateScope().GetService<ReportParamService>();
-            await service.AddAll(reportParams);
-            await service.SaveChangesAsync();
-            await OnParameterSave.InvokeAsync();
-            reportParams = await service.GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
-            nodes = (await new ReportTree().CreateTreeForSelect(type, null, reportParams)).Select(t => new NodeView()
-                {
-                    Value = System.Text.Json.JsonSerializer.Serialize(t),
-                    Selected = t.Selected,
-                    Selectable = !t.Grouping,
-                    Expanded = false,
-                    Collabsable = t.Grouping,
-                    Disabled = reportParams.Any(u => u.ReportGroupParameter.TitleEn == t.TitleEn),
-                    Text = t.TitleFa
-                }).ToList();
-            await StatusChanged.InvokeAsync(WindowStatus.Close);
-        }
-    }
 
     protected async override Task OnInitializedAsync()
     {

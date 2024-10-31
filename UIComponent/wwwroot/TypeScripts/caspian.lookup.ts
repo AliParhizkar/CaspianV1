@@ -45,7 +45,6 @@
                         setTimeout(() => helpWindow.style.bottom = '0', 25);
                     }
                     else {
-                        debugger
                         helpWindow.style.top = `${-locHelpWindow.height}`;
                     }
                     if (lookup.attributes['autoHide']) {

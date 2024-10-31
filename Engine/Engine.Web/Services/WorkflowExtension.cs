@@ -196,9 +196,9 @@ namespace Engine.Web.Services
             switch(activity.GatewayType)
             {
                 case BpmnGatewayType.Exclusive: return GatewayType.Exclusive;
-                case BpmnGatewayType.EventBased: return GatewayType.Eventbased;
+                case BpmnGatewayType.EventBased: return GatewayType.EventBased;
                 case BpmnGatewayType.Parallel: return GatewayType.Parallel;
-                case BpmnGatewayType.ParallelEventBased: return GatewayType.ParallelEventbased;
+                case BpmnGatewayType.ParallelEventBased: return GatewayType.ParallelEventBased;
                 case BpmnGatewayType.Inclusive: return GatewayType.Inclusive;
                 case BpmnGatewayType.Complex: return GatewayType.Complex;
                 default: throw new NotImplementedException();
@@ -266,9 +266,9 @@ namespace Engine.Web.Services
             switch (gateway)
             {
                 case GatewayType.Exclusive: return BpmnGatewayType.Exclusive;
-                case GatewayType.Eventbased: return BpmnGatewayType.EventBased;
+                case GatewayType.EventBased: return BpmnGatewayType.EventBased;
                 case GatewayType.Parallel: return BpmnGatewayType.Parallel;
-                case GatewayType.ParallelEventbased: return BpmnGatewayType.ParallelEventBased;
+                case GatewayType.ParallelEventBased: return BpmnGatewayType.ParallelEventBased;
                 case GatewayType.Inclusive: return BpmnGatewayType.Inclusive;
                 case GatewayType.Complex: return BpmnGatewayType.Complex;
                 case null: return BpmnGatewayType.None;

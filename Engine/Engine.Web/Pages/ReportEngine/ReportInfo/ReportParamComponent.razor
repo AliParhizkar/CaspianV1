@@ -1,11 +1,135 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
 @inherits BasePage
-<SimpleReportParam ReportId="ReportId.Value" />
+@if (report != null)
+{
+    <div class="e-head">
+        <div class="col-md-4">
+            <label>Group Title</label>
+            <span class="group-title">@(report.ReportGroup.Title)</span>
+        </div>
+        <div class="col-md-3">
+            <label>Report Type</label>
+            <span class="group-title">@(report.ReportType.EnumText())</span>
+        </div>        
+        <div class="col-md-4">
+            <label>Report Title</label>
+            <span class="group-title">@(report.Title)</span>
+        </div>
+        <div class="col-md-1 text-center">
+            <button class="c-btn c-primary" @onclick="SaveData">Save</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="params-title">Group Parameters</div>
+            <CheckedListbox TEntity="ReportGroupParameter" TDetails="int" Values="selectedParameters" TextExpression="t => t.Alias"
+                            OnChange="OnChange" ConditionExpression="t => t.ReportGroupId == report.ReportGroupId" Filterable Style="height:100%" />
+        </div>
+        <div class="col-md-6">
+            <div class="params-title">Report Parameters</div>
+            <div class="params-body ms-4">
+                <div class="engin-main">
+                    <div class="c-alise-head">
+                        <div class="c-field-name">عنوان فیلد گزارش</div>
+                    </div>
+                </div>
+                <div class="engine-body">
+                    @if (selectedParameters.Count == 0)
+                    {
+                        <div class="no-content">هیچ فیلدی انتخاب نشده است</div>
+                    }
+                    else
+                    {
+                        foreach(var param in reportParams)
+                        {
+                            <div class="c-field-name">
+                                @(param.ReportGroupParameter.Alias)
+                            </div>
+                        }
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
+
 @code 
 {
-    [Parameter]
-    public int? ReportId { get; set; }
+    Report report;
+    IList<int> selectedParameters;
+    IList<ReportParam> reportParams;
+    IList<ReportParam> removedParams;
+
+    async Task OnChange(ChangedEntity<int> parameter)
+    {
+        if (parameter.ChangeStatus == ChangeStatus.Added)
+        {
+            var old = removedParams.SingleOrDefault(t => t.ReportGroupParameterId == parameter.Entity);
+            if (old == null)
+            {
+                using var service = CreateScope().GetService<ReportGroupParameterService>();
+                var param = await service.SingleAsync(parameter.Entity);
+                old = new ReportParam()
+                    {
+                        ReportId = ReportId,
+                        ReportGroupParameter = param,
+                        ReportGroupParameterId = param.Id,
+                        DataLevel = 1
+                    };
+            }
+            else
+                removedParams.Remove(old);
+            reportParams.Add(old);
+        }
+        else
+        {
+            var old = reportParams.Single(t => t.ReportGroupParameterId == parameter.Entity);
+            reportParams.Remove(old);
+            if (old.Id > 0)
+                removedParams.Add(old);
+        }
+    }
+
+    async Task LoadData()
+    {
+        removedParams = new List<ReportParam>();
+        using var service = CreateScope().GetService<ReportParamService>();
+        reportParams = await service.GetAll().Include(t => t.ReportGroupParameter).Where(t => t.ReportId == ReportId).ToListAsync();
+        selectedParameters = reportParams.Select(t => t.ReportGroupParameterId).ToList();
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<ReportService>();
+        report = await service.GetAll().Include(t => t.ReportGroup).SingleAsync(ReportId);
+        await LoadData();
+        await base.OnInitializedAsync();
+    }
+
+    async Task SaveData()
+    {
+        using var service = CreateScope().GetService<ReportService>();
+        var old = await service.SingleAsync(ReportId);
+        var list = reportParams.Where(t => t.Id == 0).Select(t => new ChangedEntity<ReportParam>
+        {
+            ChangeStatus = ChangeStatus.Added,
+            Entity = t
+        }).ToList();
+        list.AddRange(removedParams.Select(t => new ChangedEntity<ReportParam>()
+        {
+            ChangeStatus = ChangeStatus.Deleted,
+            Entity = t
+        }));
+        await service.UpdateDatabaseAsync(old, list);
+        await service.SaveChangesAsync();
+        await LoadData();
+        ShowMessage("ثبت با موفقیت انجام شد.");
+    }
 
     [Parameter]
-    public SubSystemKind Subsystem { get; set; }
+    public int ReportId { get; set; }
+
 }

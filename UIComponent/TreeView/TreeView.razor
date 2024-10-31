@@ -14,7 +14,7 @@
                     {
                         if (ChildContent == null)
                         {
-                            <TreeNode @bind-Selected="item.Selected" Item="item"
+                            <TreeNode @bind-Selected="item.Selected" Item="item" 
                                 OnClick="async node => await NodeClicked(node)"
                                 OnChanged="async node => await SelectStateChanged(node)"
                                 OnSelected="async (node) =>

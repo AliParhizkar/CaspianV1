@@ -21,6 +21,12 @@ namespace Caspian.Common.Service
             BatchServiceData.DetailPropertiesInfo.Add(detailsproperty);
         }
 
+        protected override void OnRuleAdded(IValidationRule<TMaster> rule)
+        {
+            
+            base.OnRuleAdded(rule);
+        }
+
         public async override Task<TMaster> AddAsync(TMaster entity)
         {
             PropertyInfo detailsInfo = null;

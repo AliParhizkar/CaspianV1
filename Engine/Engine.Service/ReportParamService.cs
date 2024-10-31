@@ -5,24 +5,45 @@ using Caspian.Common.Service;
 using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine.Service
 {
     public class ReportParamService : BaseService<ReportParam>
     {
-        public ReportParamService(IServiceProvider provider)
-            :base(provider)
+        void BindRule(Report report)
         {
             RuleFor(t => t.DataLevel).Custom(t => t.DataLevel < 1 || t.DataLevel > 3, "سطح داده باید بین یک تا سه باشد");
-            RuleForRemove().CustomAsync(async t => 
+            RuleForRemove().CustomAsync(async t =>
             {
-                
-                var param = await provider.GetService<ReportParamService>().GetAll().Include(t => t.Report)
+                var param = await ServiceProvider.GetService<ReportParamService>().GetAll().Include(t => t.Report)
                     .SingleAsync(t.Id);
                 return param.Report.PrintFileName.HasValue();
             }, "After creating the report, it is not possible to delete the report parameters");
+            RuleFor(t => t.ReportGroupParameterId)
+                .Custom(t =>
+                {
+                    foreach(var qq in report.ReportParams)
+                    {
+                        var qqqq = t == qq;
+                    }
+                    var result = report.ReportParams.Any(u => u != t && u.ReportId == t.ReportId && u.ReportGroupParameterId == t.ReportGroupParameterId);
+                    return result;
+                }, "این گروه پارامتر قبلا اضافه شده است.");
+        }
+
+        public ReportParamService(IServiceProvider provider)
+            :base(provider)
+        {
+            BindRule(null);
+        }
+
+        public ReportParamService(IServiceProvider provider, Report report)
+            :base(provider)
+        {
+
+            BindRule(report);
         }
 
         public IQueryable<ReportParam> GetAll(int reportId)

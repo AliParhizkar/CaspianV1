@@ -30,6 +30,15 @@ namespace Caspian.UI
                     Values.Add((TDetails)selectedId);
                 if (ValuesChanged.HasDelegate)
                     await ValuesChanged.InvokeAsync(Values);
+                if (OnChange.HasDelegate)
+                {
+                    var data = new ChangedEntity<TDetails>()
+                    {
+                        Entity = (TDetails)value,
+                        ChangeStatus = flag ? ChangeStatus.Added : ChangeStatus.Deleted
+                    };
+                    await OnChange.InvokeAsync(data);
+                }
             }
             else
                 UpdateChangedEntities();
@@ -44,7 +53,6 @@ namespace Caspian.UI
                     str += ", ";
                 str += Items.Single(t => t.Value == id.ToString()).Text;
             }
-
             return str;
         }
 
@@ -90,6 +98,9 @@ namespace Caspian.UI
             }
             Service.ChangedEntities = list;
         }
+
+        [Parameter]
+        public EventCallback<ChangedEntity<TDetails>> OnChange {  get; set; }
 
         async Task DataBinding()
         {
@@ -186,9 +197,6 @@ namespace Caspian.UI
             await DataBinding();
             await base.OnParametersSetAsync();
         }
-
-        [Parameter]
-        public EventCallback<TDetails> AddToChanged { get; set; }
 
         [Parameter]
         public bool Filterable { get; set; }

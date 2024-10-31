@@ -23,6 +23,9 @@ namespace Caspian.UI
         public CrudComponent<TEntity> CrudComponent { get; set; }
 
         [Parameter]
+        public string Style { get; set; }
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
