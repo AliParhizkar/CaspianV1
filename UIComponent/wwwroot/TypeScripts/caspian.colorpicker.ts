@@ -42,6 +42,8 @@
                 let loc = this.element.getBoundingClientRect();
                 let locSelector = this.selector.getBoundingClientRect();
                 let left = locSelector.left - loc.left + 7, top = locSelector.top - loc.top + 7;
+                console.log(left);
+                e.stopPropagation();
                 this.startDrag(e.clientX, e.clientY, left, top);
             };
             (element.getElementsByClassName('c-color-bar')[0] as HTMLInputElement).oninput = e => {

@@ -28,6 +28,7 @@ namespace Caspian.Report
         int controlId;
         string message;
         string cursor = "default";
+        ReportControl conterolToCopy;
 
         public PageData Data { get; private set; }
 
@@ -84,46 +85,53 @@ namespace Caspian.Report
 
         void OnKeyDown(KeyboardEventArgs e)
         {
+            Console.WriteLine(e.Code);
             var ctrKey = e.CtrlKey;
-            if (SelectedControl != null)
-            {
-                switch (e.Code)
-                {
-                    case "ArrowUp":
-                        if (ctrKey)
-                            SelectedControl.Resize(0, -1);
-                        else
-                            SelectedControl.Move(0, -1);
-                        break;
-                    case "ArrowDown":
-                        if (ctrKey)
-                            SelectedControl.Resize(0, 1);
-                        else
-                            SelectedControl.Move(0, 1);
-                        break;
-                    case "ArrowRight":
-                        if (ctrKey)
-                            SelectedControl.Resize(1, 0);
-                        else
-                            SelectedControl.Move(1, 0);
-                        break;
-                    case "ArrowLeft":
-                        if (ctrKey)
-                            SelectedControl.Resize(-1, 0);
-                        else
-                            SelectedControl.Move(-1, 0);
-                        break;
-                }
-            }
+            //if (SelectedControl != null)
+            //{
+            //    switch (e.Code)
+            //    {
+            //        case "ArrowUp":
+            //            if (ctrKey)
+            //                SelectedControl.Resize(0, -1);
+            //            else
+            //                SelectedControl.Move(0, -1);
+            //            break;
+            //        case "ArrowDown":
+            //            if (ctrKey)
+            //                SelectedControl.Resize(0, 1);
+            //            else
+            //                SelectedControl.Move(0, 1);
+            //            break;
+            //        case "ArrowRight":
+            //            if (ctrKey)
+            //                SelectedControl.Resize(1, 0);
+            //            else
+            //                SelectedControl.Move(1, 0);
+            //            break;
+            //        case "ArrowLeft":
+            //            if (ctrKey)
+            //                SelectedControl.Resize(-1, 0);
+            //            else
+            //                SelectedControl.Move(-1, 0);
+            //            break;
+            //    }
+            //}
             if (e.CtrlKey)
             {
+                
                 if (e.Code == "KeyC")
                 {
-                    
+                    conterolToCopy = SelectedControl;
                 }
-                if (e.Code == "KeyD")
+                if (e.Code == "KeyV")
                 {
-                    
+                    if (conterolToCopy == null)
+                        message = "هیچ کنترلی برای کپی انتخاب نشده است";
+                    else
+                    {
+                        conterolToCopy.BoundItem.Data.Controls.Add(conterolToCopy.Data);
+                    }
                 }
             }
 

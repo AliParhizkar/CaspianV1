@@ -147,7 +147,10 @@ namespace Caspian.UI
                         UpsertData = await service.GetAll().Include(detailsName).SingleAsync(value);
                     }
                     else
+                    {
                         UpsertData = Activator.CreateInstance<TMaster>();
+                        ChangedEntities.Clear();
+                    }
                     MasterId = value;
                     await Window.Open();
                     StateHasChanged();

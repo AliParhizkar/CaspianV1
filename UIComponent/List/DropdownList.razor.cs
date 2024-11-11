@@ -169,7 +169,20 @@ namespace Caspian.UI
                 }
             }
             else
-                Items = Source.ToList();
+            {
+                if (FilterFunc == null)
+                    Items = Source.ToList();
+                else
+                {
+                    Items = new List<SelectListItem>();
+                    foreach (var item in Source)
+                    {
+                        var value = (TValue)Convert.ChangeType(item.Value, typeof(TValue));
+                        if (FilterFunc.Invoke(value))
+                            Items.Add(item);
+                    }
+                }
+            }
             //text = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
             text = "Please select ...";
             if (Value != null && !Value.Equals(default(TValue)))

@@ -216,11 +216,11 @@ namespace Caspian.Engine
                     var complexTypeInfo = PInfo.PropertyType.GetProperties().Single(t => t.SetMethod != null);
                     expr = Expression.Property(expr, complexTypeInfo);
                     var strName = str.Split('.').Last();
-                    var reportField = PInfo.PropertyType.GetProperty(strName).GetCustomAttribute<ReportFieldAttribute>();
-                    startIndex = reportField.StartIndex;
-                    length = reportField.Length;
-                    if (length > 0)
-                        expr = CallSubString(expr, startIndex, length);
+                    //var reportField = PInfo.PropertyType.GetProperty(strName).GetCustomAttribute<ReportFieldAttribute>();
+                    //startIndex = reportField.StartIndex;
+                    //length = reportField.Length;
+                    //if (length > 0)
+                    //    expr = CallSubString(expr, startIndex, length);
                     break;
                 }
             }

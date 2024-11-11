@@ -5,10 +5,8 @@ using Caspian.Engine.Model;
 using System.ComponentModel;
 using Caspian.Engine.Service;
 using Caspian.Common.Extension;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReportUiModels
 {
@@ -46,7 +44,6 @@ namespace ReportUiModels
                             {
                                 RuleId= item.Id,
                                 DynamicParameterType = DynamicParameterType.Rule,
-                                TitleFa = item.Title,
                                 TitleEn = enTitle,
                                 Selected = selectedNodes.Any(u => u.RuleId == item.Id)
                             });
@@ -65,7 +62,6 @@ namespace ReportUiModels
                             {
                                 DynamicParameterId = item.Id,
                                 DynamicParameterType = DynamicParameterType.User,
-                                TitleFa = item.Title,
                                 TitleEn = enTitle,
                                 Selected = selectedNodes.Any(u => u.DynamicParameterId == item.Id)
                             });
@@ -83,7 +79,6 @@ namespace ReportUiModels
                             {
                                 DynamicParameterId = item.Id,
                                 DynamicParameterType = DynamicParameterType.User,
-                                TitleFa = item.Title,
                                 TitleEn = enTitle,
                                 Selected = selectedNodes.Any(u => u.DynamicParameterId == item.Id)
                             });
@@ -101,59 +96,49 @@ namespace ReportUiModels
                 list.Add(new ReportNode()
                 {
                     DynamicParameterType = DynamicParameterType.User,
-                    TitleFa = "پارامترهای کاربر",
                     TitleEn = str,
                     Grouping = true
                 });
                 list.Add(new ReportNode()
                 {
                     DynamicParameterType = DynamicParameterType.Form,
-                    TitleFa = "پارامترهای فرم",
                     TitleEn = str,
                     Grouping = true
                 });
                 list.Add(new ReportNode()
                 {
                     DynamicParameterType = DynamicParameterType.Rule,
-                    TitleFa = "پارامترهای حقوقی",
                     Grouping = true,
                     TitleEn = str
                 });
             }
-            foreach (var info in type.GetProperties())
+            var pKey = type.GetPrimaryKey();
+            foreach (var info in type.GetProperties().Where(t => t != pKey && (!t.PropertyType.IsCollectionType())))
             {
-                var reportFieldAttribute = info.GetCustomAttribute<ReportFieldAttribute>();
-                if (reportFieldAttribute != null)
-                {
-                    var node = new ReportNode();
-                    str = enTitle;
-                    if (str == null)
-                        str = "";
-                    if (str != "")
-                        str += '.';
-                    str += info.Name;
-                    node.TitleEn = str;
-                    if (reportFieldAttribute.Title.HasValue())
-                        node.TitleFa = reportFieldAttribute.Title;
-                    else
-                    {
-                        var displayName = info.GetCustomAttribute<DisplayNameAttribute>();
-                        if (displayName != null)
-                            node.TitleFa = displayName.DisplayName;
-                    }
-                    var complextypeAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
-                    if (complextypeAttr != null)
-                        node.TitleFa = info.PropertyType.GetProperties().Single(t => t.CanWrite).GetCustomAttribute<ReportFieldAttribute>().Title + " " + node.TitleFa + "(*)";
-                    var complexAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
-                    bool singleRelation = false;
-                    var keyInfo = info.PropertyType.GetPrimaryKey(true);
-                    if (keyInfo != null)
-                        singleRelation = keyInfo.GetCustomAttribute<ForeignKeyAttribute>() != null;
-                    node.Grouping = info.GetCustomAttribute<ForeignKeyAttribute>() != null || complexAttr != null || singleRelation;
-                    if (!node.Grouping)
-                        node.Selected = selectedNodes.Any(t => t.ReportGroupParameter.TitleEn == str);
-                    list.Add(node);
-                }
+                var node = new ReportNode();
+                str = enTitle;
+                if (str == null)
+                    str = "";
+                if (str != "")
+                    str += '.';
+                str += info.Name;
+                node.TitleEn = str;
+                var displayName = info.GetCustomAttribute<DisplayNameAttribute>();
+                //if (displayName != null)
+                //    node.TitleFa = displayName.DisplayName ?? str;
+                var complextypeAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
+                //if (complextypeAttr != null)
+                //    node.TitleFa = info.PropertyType.GetProperties().Single(t => t.CanWrite).GetCustomAttribute<ReportFieldAttribute>().Title + " " + node.TitleFa + "(*)";
+                var complexAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
+                bool singleRelation = false;
+                var keyInfo = info.PropertyType.GetPrimaryKey(true);
+                if (keyInfo != null)
+                    singleRelation = keyInfo.GetCustomAttribute<ForeignKeyAttribute>() != null;
+                node.Grouping = info.GetCustomAttribute<ForeignKeyAttribute>() != null || complexAttr != null || singleRelation;
+                if (!node.Grouping)
+                    node.Selected = selectedNodes.Any(t => t.ReportGroupParameter.TitleEn == str);
+                node.IsKey = info.IsForeignKey();
+                list.Add(node);
             }
             return list;
         }
@@ -170,25 +155,21 @@ namespace ReportUiModels
                 paramsList.Add(new ReportNode()
                 {
                     TitleEn = path,
-                    TitleFa = "مجموع",
                     Type = CompositionMethodType.Sum
                 });
                 paramsList.Add(new ReportNode()
                 {
                     TitleEn = path,
-                    TitleFa = "میانگین",
                     Type = CompositionMethodType.Avg
                 });
                 paramsList.Add(new ReportNode()
                 {
                     TitleEn = path,
-                    TitleFa = "ماکزیمم",
                     Type = CompositionMethodType.Max
                 });
                 paramsList.Add(new ReportNode()
                 {
                     TitleEn = path,
-                    TitleFa = "مینیمم",
                     Type = CompositionMethodType.Min
                 });
             }
@@ -196,89 +177,75 @@ namespace ReportUiModels
             {
                 foreach (var info in type1.GetProperties())
                 {
-                    var reportField = info.GetCustomAttribute<ReportFieldAttribute>();
-                    if (reportField != null)
+                    var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>();
+                    var type2 = info.PropertyType.GetUnderlyingType();
+                    if (type2.IsValueType)
                     {
-                        if (!reportField.Title.HasValue())
+                        if (type2 == typeof(DateTime))
                         {
-                            var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>();
-                            if (displayAttr != null)
-                                reportField.Title = displayAttr.DisplayName;
-                        }
-                        var type2 = info.PropertyType.GetUnderlyingType();
-                        if (type2.IsValueType)
-                        {
-                            if (type2 == typeof(DateTime))
+                            paramsList.Add(new ReportNode()
                             {
-                                paramsList.Add(new ReportNode()
-                                {
-                                    TitleEn = path, 
-                                    TitleFa = "تاریخ",
-                                    Grouping = true
-                                });
-                                paramsList.Add(new ReportNode()
-                                {
-                                    TitleEn = path,
-                                    TitleFa = "ماکزیمم",
-                                    Type = CompositionMethodType.Max
-                                });
-                                paramsList.Add(new ReportNode()
-                                {
-                                    TitleEn = path,
-                                    TitleFa = "مینیمم",
-                                    Type = CompositionMethodType.Min
-                                });
+                                TitleEn = path,
+                                Grouping = true
+                            });
+                            paramsList.Add(new ReportNode()
+                            {
+                                TitleEn = path,
+                                Type = CompositionMethodType.Max
+                            });
+                            paramsList.Add(new ReportNode()
+                            {
+                                TitleEn = path,
+                                Type = CompositionMethodType.Min
+                            });
 
-                            }
-                            else if (!type2.IsEnum)
-                            {
-                                var str = path;
-                                if (str.HasValue())
-                                    str += '.';
-                                str += info.Name;
-                                var param = new ReportNode();
-                                param.TitleEn = str;
-                                param.TitleFa = reportField.Title;
-                                param.Grouping = true;
-                                paramsList.Add(param);
-                            }
                         }
-                        else if (info.GetCustomAttribute<ForeignKeyAttribute>() != null)
+                        else if (!type2.IsEnum)
                         {
-                            var paramsTitle = report.ReportParams.Where(t => !t.CompositionMethodType.HasValue).Select(t => t.ReportGroupParameter.TitleEn).ToList();
-                            var list = new List<string>();
-                            foreach (var param in paramsTitle)
+                            var str = path;
+                            if (str.HasValue())
+                                str += '.';
+                            str += info.Name;
+                            var param = new ReportNode();
+                            param.TitleEn = str;
+                            param.Grouping = true;
+                            paramsList.Add(param);
+                        }
+                    }
+                    else if (info.GetCustomAttribute<ForeignKeyAttribute>() != null)
+                    {
+                        var paramsTitle = report.ReportParams.Where(t => !t.CompositionMethodType.HasValue).Select(t => t.ReportGroupParameter.TitleEn).ToList();
+                        var list = new List<string>();
+                        foreach (var param in paramsTitle)
+                        {
+                            var str = "";
+                            var tempType = type;
+                            foreach (var strItem in param.Split('.'))
                             {
-                                var str = "";
-                                var tempType = type;
-                                foreach (var strItem in param.Split('.'))
+                                var info1 = tempType.GetProperty(strItem);
+                                if (info1.GetCustomAttribute<ForeignKeyAttribute>() != null)
                                 {
-                                    var info1 = tempType.GetProperty(strItem);
-                                    if (info1.GetCustomAttribute<ForeignKeyAttribute>() != null)
-                                    {
-                                        if (str.HasValue())
-                                            str += '.';
-                                        str += info1.Name;
-                                    }
-                                    tempType = info1.PropertyType;
+                                    if (str.HasValue())
+                                        str += '.';
+                                    str += info1.Name;
                                 }
-                                if (str.HasValue() && !list.Any(t => t == str))
-                                    list.Add(str);
+                                tempType = info1.PropertyType;
                             }
-                            var strPath = path;
-                            if (strPath.HasValue())
-                                strPath += '.';
-                            strPath += info.Name;
-                            if (!paramsList.Any(t => t.TitleEn == strPath))
+                            if (str.HasValue() && !list.Any(t => t == str))
+                                list.Add(str);
+                        }
+                        var strPath = path;
+                        if (strPath.HasValue())
+                            strPath += '.';
+                        strPath += info.Name;
+                        if (!paramsList.Any(t => t.TitleEn == strPath))
+                        {
+                            if (TypeHasGroupByField(info.PropertyType))
                             {
-                                if (TypeHasGroupByField(info.PropertyType))
-                                {
-                                    var node = new ReportNode();
-                                    node.Grouping = true;
-                                    node.TitleEn = strPath;
-                                    node.TitleFa = reportField.Title;
-                                    paramsList.Add(node);
-                                }
+                                var node = new ReportNode();
+                                node.Grouping = true;
+                                node.TitleEn = strPath;
+                                paramsList.Add(node);
                             }
                         }
                     }
@@ -291,18 +258,15 @@ namespace ReportUiModels
         {
             foreach(var info in type.GetProperties())
             {
-                if (info.GetCustomAttribute<ReportFieldAttribute>() != null)
+                var tempType = info.PropertyType;
+                if (tempType.IsNullableType())
+                    tempType = Nullable.GetUnderlyingType(tempType);
+                if (tempType.IsValueType && !tempType.IsEnum)
+                    return true;
+                if (info.GetCustomAttribute<ForeignKeyAttribute>() != null)
                 {
-                    var tempType = info.PropertyType;
-                    if (tempType.IsNullableType())
-                        tempType = Nullable.GetUnderlyingType(tempType);
-                    if (tempType.IsValueType && !tempType.IsEnum)
+                    if (TypeHasGroupByField(info.PropertyType))
                         return true;
-                    if (info.GetCustomAttribute<ForeignKeyAttribute>() != null)
-                    {
-                        if (TypeHasGroupByField(info.PropertyType))
-                            return true;
-                    }
                 }
             }
             return false;
@@ -310,37 +274,37 @@ namespace ReportUiModels
 
         private void GetOrderByList(Type type, string enTitle, IDictionary<string, string> dic)
         {
-            foreach(var info in type.GetProperties())
-            {
-                var reportAttr = info.GetCustomAttribute<ReportFieldAttribute>();
-                if (reportAttr != null && reportAttr.OrderBy)
-                {
-                    string fielName = enTitle, faTitle = reportAttr.Title;
-                    if (!faTitle.HasValue())
-                    {
-                        var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>();
-                        if (displayAttr != null)
-                            faTitle = displayAttr.DisplayName;
-                    }
-                    if (fielName.HasValue())
-                        fielName += '.';
-                    fielName += info.Name;
-                    var foreignKeyAttr = info.GetCustomAttribute<ForeignKeyAttribute>();
-                    if (foreignKeyAttr != null)
-                        GetOrderByList(info.PropertyType, fielName, dic);
-                    else
-                    {
-                        var complexTypeAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
-                        if (complexTypeAttr != null)
-                        {
-                            var complexTypeInfo = info.PropertyType.GetProperties().Single(t => t.CanWrite);
-                            faTitle = complexTypeInfo.GetCustomAttribute<ReportFieldAttribute>().Title + ' ' + faTitle + "(*)";
-                            fielName += '.' + complexTypeInfo.Name;
-                        }
-                    }
-                    dic.Add(fielName, faTitle);
-                }
-            }
+            //foreach(var info in type.GetProperties())
+            //{
+            //    var reportAttr = info.GetCustomAttribute<ReportFieldAttribute>();
+            //    if (reportAttr != null && reportAttr.OrderBy)
+            //    {
+            //        string fielName = enTitle, faTitle = reportAttr.Title;
+            //        if (!faTitle.HasValue())
+            //        {
+            //            var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>();
+            //            if (displayAttr != null)
+            //                faTitle = displayAttr.DisplayName;
+            //        }
+            //        if (fielName.HasValue())
+            //            fielName += '.';
+            //        fielName += info.Name;
+            //        var foreignKeyAttr = info.GetCustomAttribute<ForeignKeyAttribute>();
+            //        if (foreignKeyAttr != null)
+            //            GetOrderByList(info.PropertyType, fielName, dic);
+            //        else
+            //        {
+            //            var complexTypeAttr = info.PropertyType.GetCustomAttribute<ComplexTypeAttribute>();
+            //            if (complexTypeAttr != null)
+            //            {
+            //                var complexTypeInfo = info.PropertyType.GetProperties().Single(t => t.CanWrite);
+            //                faTitle = complexTypeInfo.GetCustomAttribute<ReportFieldAttribute>().Title + ' ' + faTitle + "(*)";
+            //                fielName += '.' + complexTypeInfo.Name;
+            //            }
+            //        }
+            //        dic.Add(fielName, faTitle);
+            //    }
+            //}
         }
     }
 }

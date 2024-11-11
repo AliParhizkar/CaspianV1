@@ -141,35 +141,35 @@ namespace ReportGenerator.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<FileContentResult> GetReport(int reportId)
-        {
-            var report = await GetService<ReportService>().SingleAsync(reportId);
-            var path = $"{environment.ContentRootPath}/Report/Print/{report.PrintFileName}.mrt";
-            var stiReport = new StiReport();
-            stiReport["@ReportDate"] = DateTime.Now;
-            stiReport["@FirstName"] = "Ali";
-            stiReport["FirstName"] = "Ali";
-            stiReport["@LastName"] = "Parhizkar";
-            stiReport["FullName"] = "Ali Parhizkar";
-            stiReport["@PersonalCode"] = "123456";
-            stiReport.Variables["FullName"] = "Ali Parhizkar";
-            var query = provider.GetService<OrderDeatilService>().GetAll();
-            try
-            {
-                var list = new ReportPrintEngine(provider).GetData(reportId, query);
-                stiReport.RegBusinessObject("list", list);
-                stiReport.Load(path);
-                stiReport.Render(false);
-                var stream = new MemoryStream();
-                stiReport.ExportDocument(StiExportFormat.Pdf, stream);
-                return File(stream.ToArray(), "application/pdf");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            //return File(stream.ToArray(), "HTML");
-        }
+        //[HttpGet]
+        //public async Task<FileContentResult> GetReport(int reportId)
+        //{
+        //    var report = await GetService<ReportService>().SingleAsync(reportId);
+        //    var path = $"{environment.ContentRootPath}/Report/Print/{report.PrintFileName}.mrt";
+        //    var stiReport = new StiReport();
+        //    stiReport["@ReportDate"] = DateTime.Now;
+        //    stiReport["@FirstName"] = "Ali";
+        //    stiReport["FirstName"] = "Ali";
+        //    stiReport["@LastName"] = "Parhizkar";
+        //    stiReport["FullName"] = "Ali Parhizkar";
+        //    stiReport["@PersonalCode"] = "123456";
+        //    stiReport.Variables["FullName"] = "Ali Parhizkar";
+        //    var query = provider.GetService<OrderDeatilService>().GetAll();
+        //    try
+        //    {
+        //        var list = new ReportPrintEngine(provider).GetData(reportId, query);
+        //        stiReport.RegBusinessObject("list", list);
+        //        stiReport.Load(path);
+        //        stiReport.Render(false);
+        //        var stream = new MemoryStream();
+        //        stiReport.ExportDocument(StiExportFormat.Pdf, stream);
+        //        return File(stream.ToArray(), "application/pdf");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //    //return File(stream.ToArray(), "HTML");
+        //}
     }
 }

@@ -317,8 +317,13 @@ namespace Caspian.UI
             RollBackEntity();
             selectedEntity = null;
             EditContext = null;
-            if (Batch && !AutoHide)
-                InsertContext = new EditContext(insertedEntity.Data);
+            if (Batch)
+            {
+                if (AutoHide)
+                    insertedEntity = null;
+                else
+                    InsertContext = new EditContext(insertedEntity.Data);
+            }
         }
 
         public async Task InsertAsync(TEntity entity)

@@ -58,6 +58,12 @@ namespace Main
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
+
+            builder.Services.AddScoped<ReportParamService>();
+
+
+
+
             builder.Services.AddCaspianUIComponentsServices();
             builder.Services.AddSyncfusionBlazor();
             builder.Services.AddSingleton<SingletonMenuService>(t =>
@@ -73,7 +79,7 @@ namespace Main
             builder.Services.AddScoped<CaspianDataService>();
 
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
-            typeof(Caspian.Engine.Service.ActivityService).Assembly.InjectServices(builder.Services);
+            typeof(Caspian.Engine.Service.ReportParamService).Assembly.InjectServices(builder.Services);
             builder.Services.AddControllers();
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();

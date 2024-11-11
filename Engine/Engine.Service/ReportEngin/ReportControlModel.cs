@@ -46,30 +46,31 @@ namespace Caspian.Engine
         {
             var info = type.GetMyProperty(enTitle);
             string complexTypeTitle = null;
-            if (info.DeclaringType.GetCustomAttribute<ComplexTypeAttribute>() != null)
-            {
-                complexTypeTitle = info.GetCustomAttribute<ReportFieldAttribute>().Title;
-                var index = enTitle.LastIndexOf('.');
-                var str = enTitle.Substring(0, index);
-                info = type.GetMyProperty(str);
-            }
-            var title = info.GetCustomAttribute<ReportFieldAttribute>().Title;
-            if (!title.HasValue())
-            {
-                var display = info.GetCustomAttribute<DisplayNameAttribute>();
-                if (display != null)
-                    title = display.DisplayName;
-            }
-            if (complexTypeTitle.HasValue())
-                return complexTypeTitle + " " + title;
-            switch (methodType)
-            {
-                case CompositionMethodType.Sum: return "مجموع(" + title + ')';
-                case CompositionMethodType.Avg: return "میانگین(" + title + ')';
-                case CompositionMethodType.Max: return "ماکزیمم(" + title + ')';
-                case CompositionMethodType.Min: return "مینیمم(" + title + ')';
-            }
-            return title;
+            //if (info.DeclaringType.GetCustomAttribute<ComplexTypeAttribute>() != null)
+            //{
+            //    complexTypeTitle = info.GetCustomAttribute<ReportFieldAttribute>().Title;
+            //    var index = enTitle.LastIndexOf('.');
+            //    var str = enTitle.Substring(0, index);
+            //    info = type.GetMyProperty(str);
+            //}
+            //var title = info.GetCustomAttribute<ReportFieldAttribute>().Title;
+            //if (!title.HasValue())
+            //{
+            //    var display = info.GetCustomAttribute<DisplayNameAttribute>();
+            //    if (display != null)
+            //        title = display.DisplayName;
+            //}
+            //if (complexTypeTitle.HasValue())
+            //    return complexTypeTitle + " " + title;
+            //switch (methodType)
+            //{
+            //    case CompositionMethodType.Sum: return "مجموع(" + title + ')';
+            //    case CompositionMethodType.Avg: return "میانگین(" + title + ')';
+            //    case CompositionMethodType.Max: return "ماکزیمم(" + title + ')';
+            //    case CompositionMethodType.Min: return "مینیمم(" + title + ')';
+            //}
+            //return title;
+            throw new NotImplementedException();
         }
 
         /// <summary>

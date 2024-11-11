@@ -35,7 +35,8 @@ namespace ReportGenerator.Services
 
         public async Task<XElement> GetXmlElement(int reportId)
         {
-            var report = await provider.GetService<ReportService>().GetAll().Include(t => t.ReportParams).Include(t => t.ReportGroup).SingleAsync(reportId);
+            var report = await provider.GetService<ReportService>().GetAll().Include(t => t.ReportParams).Include(t => t.ReportGroup)
+                .Include("ReportParams.ReportGroupParameter").SingleAsync(reportId);
             var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
             var selectReport = new SelectReport(mainType);
             var maxLevel = report.ReportParams.Max(t => t.DataLevel);

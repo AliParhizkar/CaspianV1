@@ -21,16 +21,9 @@ namespace Caspian.Engine.Service
                     .SingleAsync(t.Id);
                 return param.Report.PrintFileName.HasValue();
             }, "After creating the report, it is not possible to delete the report parameters");
-            RuleFor(t => t.ReportGroupParameterId)
-                .Custom(t =>
-                {
-                    foreach(var qq in report.ReportParams)
-                    {
-                        var qqqq = t == qq;
-                    }
-                    var result = report.ReportParams.Any(u => u != t && u.ReportId == t.ReportId && u.ReportGroupParameterId == t.ReportGroupParameterId);
-                    return result;
-                }, "این گروه پارامتر قبلا اضافه شده است.");
+            RuleFor(t => t.ReportGroupParameterId).Custom(t => report.ReportParams.Any(u => u != t && u.ReportId == t.ReportId && u.ReportGroupParameterId == t.ReportGroupParameterId), "این گروه پارامتر قبلا اضافه شده است.");
+            RuleFor(t => t.DataLevel).Custom(t => report.ReportType >= ReportType.TowLevels && !report.ReportParams.Any(t => t.DataLevel == 2), "گزارش باید حداقلی یک فیلد سطح دو داشته باشد");
+            RuleFor(t => t.DataLevel).Custom(t => report.ReportType == ReportType.ThirdLevels && !report.ReportParams.Any(t => t.DataLevel == 3), "گزارش باید حداقلی یک فیلد سطح سه داشته باشد");
         }
 
         public ReportParamService(IServiceProvider provider)
@@ -103,7 +96,7 @@ namespace Caspian.Engine.Service
             if (temp.DataLevel + 1 > maxDataLevel)
                 throw new CaspianException("It is not possible to increase the level for this field", null);
             temp.DataLevel++;
-            var dataKey = await GetAll().SingleOrDefaultAsync(t => t.ReportId == temp.ReportId && t.DataLevel == temp.DataLevel && t.IsKey);
+            var dataKey = await GetAll().SingleOrDefaultAsync(t => t.ReportId == temp.ReportId && t.DataLevel == temp.DataLevel && t.ReportGroupParameter.IsKey);
             if (dataKey == null)
                 await AddDataKey(temp.ReportId, temp.DataLevel);
             else
@@ -147,7 +140,7 @@ namespace Caspian.Engine.Service
         {
             if (dataLevel > 1)
             {
-                var temp = GetAll().SingleOrDefault(t => t.ReportId == reportId && t.DataLevel == dataLevel && t.IsKey);
+                var temp = GetAll().SingleOrDefault(t => t.ReportId == reportId && t.DataLevel == dataLevel && t.ReportGroupParameter.IsKey);
                 if (temp != null)
                 {
                     await base.RemoveAsync(new ReportParam()
@@ -160,7 +153,7 @@ namespace Caspian.Engine.Service
 
         async public Task AddDataKey(int reportId, byte dataLevel)
         {
-            if (dataLevel > 1 && !GetAll().Any(t => t.ReportId == reportId && t.DataLevel == dataLevel && t.IsKey))
+            if (dataLevel > 1 && !GetAll().Any(t => t.ReportId == reportId && t.DataLevel == dataLevel && t.ReportGroupParameter.IsKey))
             {
                 var param = GetAll().Include(t => t.Report.ReportGroup).First(t => t.ReportId == reportId);
                 var type = new AssemblyInfo().GetReturnType(param.Report.ReportGroup);
@@ -183,7 +176,6 @@ namespace Caspian.Engine.Service
                 {
                     //TitleEn = enTitle,
                     DataLevel = dataLevel,
-                    IsKey = true,
                     ReportId = param.ReportId
                 };
                 await base.AddAsync(keyParam);

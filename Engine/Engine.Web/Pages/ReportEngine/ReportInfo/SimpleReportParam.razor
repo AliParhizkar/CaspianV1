@@ -21,7 +21,7 @@
             Expanded = false,
             Collabsable = t.Grouping,
             Disabled = group.ReportGroupParameters.Any(u => u.TitleEn == t.TitleEn),
-            Text = t.TitleFa
+            Text = t.TitleEn
         }).ToList();
         await base.OnInitializedAsync();
     }

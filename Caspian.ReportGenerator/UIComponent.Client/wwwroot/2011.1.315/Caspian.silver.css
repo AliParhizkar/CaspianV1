@@ -149,11 +149,13 @@ html input[disabled], textarea[disabled] {
 .t-picker-wrap.t-state-hover .t-select {
     background-image: linear-gradient(#00000010,#00000020);
     border-color: rgba(0,0,0,0.15);
+    background-color: white;
 }
 
 .t-dropdown-wrap.t-state-hover  {
     background-image: linear-gradient(#00000010,#00000020)!important;
     border-color: rgba(0,0,0,0.24)!important;
+    background-color:white;
 }
 
     .t-dropdown-wrap.t-state-hover .t-input {

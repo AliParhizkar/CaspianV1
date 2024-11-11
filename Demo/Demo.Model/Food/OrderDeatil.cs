@@ -14,7 +14,7 @@ namespace Demo.Model
         [DisplayName("Order")]
         public int OrderId { get; set; }
 
-        [ForeignKey(nameof(OrderId)), ReportField("Order")]
+        [ForeignKey(nameof(OrderId))]
         public virtual Order Order { get; set; }
 
         [DisplayName("Descript")]
@@ -22,16 +22,16 @@ namespace Demo.Model
 
         public int ProductId { get; set; }
 
-        [ForeignKey(nameof(ProductId)), ReportField("Product")]
+        [ForeignKey(nameof(ProductId))]
         public virtual Product Product { get; set; }
 
-        [DisplayName("Price"), ReportField]
+        [DisplayName("Price")]
         public int Price { get; set; }
 
-        [DisplayName("Quantity"), ReportField]
+        [DisplayName("Quantity")]
         public int Quantity { get; set; }
 
-        [DisplayName("Sum"), DatabaseGenerated(DatabaseGeneratedOption.Computed), ReportField]
+        [DisplayName("Sum"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int Result { get;set; }
     }
 }

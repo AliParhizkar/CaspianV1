@@ -12,28 +12,31 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("Customer type"), ReportField]
+        [DisplayName("Customer type")]
         public CustomerType CustomerType { get; set; }
 
-        [DisplayName("First name"), ReportField]
+        [DisplayName("First name")]
         public string FName { get; set; }
 
-        [DisplayName("Last name"), ReportField]
+        [DisplayName("Last name")]
         public string LName { get; set; }
 
-        [DisplayName("Gender"), ReportField]
+        [DisplayName("Gender")]
         public Gender? Gender { get; set; }
 
-        [DisplayName("Company name"), ReportField]
+        [DisplayName("Company name")]
         public string CompanyName { get; set; }
+
+        [DisplayName("Customer name"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string CustomerName { get; set; }
 
         [DisplayName("Customer number")]
         public int CustomerNumber { get; set; }
 
-        [DisplayName("Mobile number"), ReportField]
+        [DisplayName("Mobile number")]
         public string MobileNumber { get; set; }
 
-        [DisplayName("Tel"), ReportField]
+        [DisplayName("Tel")]
         public string Tel { get; set; }
 
         [CheckOnDelete("The customer has Orders and can not be removed")]

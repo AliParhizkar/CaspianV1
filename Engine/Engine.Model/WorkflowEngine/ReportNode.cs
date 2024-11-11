@@ -7,8 +7,6 @@
     {
         public string TitleEn { get; set; }
 
-        public string TitleFa { get; set; }
-
         public bool Selected { get; set; }
 
         public bool Grouping { get; set; }
@@ -22,5 +20,7 @@
         public int? RuleId { get; set; }
 
         public int? DynamicParameterId { get; set; }
+
+        public bool IsKey { get; set; }
     }
 }

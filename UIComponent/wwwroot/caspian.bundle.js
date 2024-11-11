@@ -32,6 +32,8 @@ var caspian;
                 let loc = this.element.getBoundingClientRect();
                 let locSelector = this.selector.getBoundingClientRect();
                 let left = locSelector.left - loc.left + 7, top = locSelector.top - loc.top + 7;
+                console.log(left);
+                e.stopPropagation();
                 this.startDrag(e.clientX, e.clientY, left, top);
             };
             element.getElementsByClassName('c-color-bar')[0].oninput = e => {
@@ -372,7 +374,7 @@ var caspian;
         static bindDatePicker(element, dotnet) {
             new caspian.DatePicker(element, dotnet);
         }
-        static showErrorMessage(element) {
+        static showErrorMessage(element, marginTop) {
             let error = element.getElementsByClassName('errorMessage')[0];
             if (error)
                 error.remove();
@@ -380,6 +382,8 @@ var caspian;
             if (msg) {
                 let htmlString = '<div class="errorMessage"></div>';
                 var messageBox = document.createElement('div');
+                if (marginTop)
+                    messageBox.style.marginTop = `${marginTop}px`;
                 messageBox.classList.add('errorMessage');
                 messageBox.innerHTML = '<span class="c-icon"><i class="fa fa-info" aria-hidden="true"></i></span><Span class="c-content">'
                     + msg.value + '</Span><span class="c-pointer"></span>';
@@ -468,7 +472,7 @@ var caspian;
         }
         static bindMultiSelect(element) {
             element.onfocus = () => {
-                this.showErrorMessage(element);
+                this.showErrorMessage(element, 32);
             };
             element.onblur = () => {
                 this.hideErrorMessage(element);

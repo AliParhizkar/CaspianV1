@@ -4,23 +4,9 @@
     <meta charset="utf-8" />
     <title></title>
     <style type="text/css">
-        .c-body {
-            display: flex;
-            flex-wrap: wrap;
-            border:1px solid gray;
-            width:1080px;
-            max-width:100%;
-            margin:0 auto;
-        }
-        .item {
-            box-sizing: border-box;
-            width: 350px;
-            height: 300px;
-            margin: 5px;
-            border-radius: 8px;
-            text-align: center;
-            vertical-align: central;
-            background-color: #e6e9f3;
+        .c-content {
+            border: 1px solid gray;
+            box-sizing: border-box
         }
     </style>
     <script type="text/javascript">
@@ -32,13 +18,13 @@
     <link href="css/site.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="c-body">
-        <div class="item">1</div>
-        <div class="item">2</div>
-        <div class="item">3</div>
-        <div class="item">4</div>
-        <div class="item">5</div>
-        <div class="item">6</div>
+    <div style="display:flex;width:80%;margin:10px auto">
+        <div class="c-content" style="width:50%;">
+            <div style="height:550px;"></div>
+        </div>
+        <div class="c-content" style="width:50%;">
+            <div style="height:450px;"></div>
+        </div>
     </div>
 </body>
 </html>

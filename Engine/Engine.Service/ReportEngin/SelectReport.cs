@@ -6,6 +6,8 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using Elfie.Serialization;
 
 namespace Caspian.Engine
 {
@@ -87,16 +89,16 @@ namespace Caspian.Engine
             {
                 var info = type.GetProperty(item);
                 
-                if (info.DeclaringType.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
-                {
-                    var attr = info.GetCustomAttribute<ReportFieldAttribute>();
-                    int startIndex = attr.StartIndex, length = attr.Length;
-                    info = info.DeclaringType.GetProperties().Single(t => t.CanWrite);
-                    expr = Expression.Property(expr, info);
-                    var method = typeof(string).GetMethod("Substring", new Type[] { typeof(int), typeof(int) });
-                    expr = Expression.Call(expr, method, Expression.Constant(startIndex), Expression.Constant(length));
-                }
-                else
+                //if (info.DeclaringType.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
+                //{
+                //    var attr = info.GetCustomAttribute<ReportFieldAttribute>();
+                //    int startIndex = attr.StartIndex, length = attr.Length;
+                //    info = info.DeclaringType.GetProperties().Single(t => t.CanWrite);
+                //    expr = Expression.Property(expr, info);
+                //    var method = typeof(string).GetMethod("Substring", new Type[] { typeof(int), typeof(int) });
+                //    expr = Expression.Call(expr, method, Expression.Constant(startIndex), Expression.Constant(length));
+                //}
+                //else
                     expr = Expression.Property(expr, info);
                 type = info.PropertyType;
             }
@@ -170,7 +172,7 @@ namespace Caspian.Engine
 
         public LambdaExpression GroupBy(IList<ReportParam> reportParams)
         {
-            reportParams = reportParams.Where(t => !t.IsKey && !t.CompositionMethodType.HasValue).ToArray();
+            reportParams = reportParams.Where(t => !t.ReportGroupParameter.IsKey && !t.CompositionMethodType.HasValue).ToArray();
             var type = GetTSourceType(paramExpr.Type, reportParams);
             Expression parameterExpr = Expression.Parameter(paramExpr.Type, "t");
             var index = 0;
@@ -257,16 +259,16 @@ namespace Caspian.Engine
             foreach (var str in path.Split('.'))
             {
                 var info = type.GetProperty(str);
-                if (info.DeclaringType.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
-                {
-                    var attr = info.GetCustomAttribute<ReportFieldAttribute>();
-                    int startIndex = attr.StartIndex, length = attr.Length;
-                    info = info.DeclaringType.GetProperties().Single(t => t.CanWrite);
-                    expr = Expression.Property(expr, info);
-                    var method = typeof(string).GetMethod("Substring", new Type[] { typeof(int), typeof(int) });
-                    expr = Expression.Call(expr, method, Expression.Constant(startIndex), Expression.Constant(length));
-                }
-                else
+                //if (info.DeclaringType.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
+                //{
+                //    var attr = info.GetCustomAttribute<ReportFieldAttribute>();
+                //    int startIndex = attr.StartIndex, length = attr.Length;
+                //    info = info.DeclaringType.GetProperties().Single(t => t.CanWrite);
+                //    expr = Expression.Property(expr, info);
+                //    var method = typeof(string).GetMethod("Substring", new Type[] { typeof(int), typeof(int) });
+                //    expr = Expression.Call(expr, method, Expression.Constant(startIndex), Expression.Constant(length));
+                //}
+                //else
                     expr = Expression.Property(expr, info);
                 type = info.PropertyType;
             }
@@ -434,10 +436,10 @@ namespace Caspian.Engine
             return newList;
         }
 
-        object GetObjectFromData(Type type, IList list)
+        object GetObjectFromData(Type type, IList secondLevelData, Type mainType, IList<ReportParam> reportParams)
         {
             var item = Activator.CreateInstance(type);
-            var old = list[0];
+            var old = secondLevelData[0];
             var oldType = old.GetType();
             foreach(var info in type.GetProperties().Where(t => t.IsCollectible))
             {
@@ -447,16 +449,45 @@ namespace Caspian.Engine
                     var detailsType = tempType.GenericTypeArguments[0];
                     var details = Activator.CreateInstance(typeof(List<>).MakeGenericType(detailsType)) as IList;
                     
-                    foreach(var oldDeatil in list)
+                    foreach(var oldDeatil in secondLevelData)
                     {
                         var detail = Activator.CreateInstance(detailsType);
                         foreach (var info1 in detailsType.GetProperties().Where(t => t.IsCollectible))
                         {
-                            var tempInfo = oldType.GetProperty(info1.Name);
-                            var value = oldType.GetProperty(info1.Name).GetValue(oldDeatil);
-                            if (tempInfo.PropertyType.GetUnderlyingType().IsEnum)
-                                value = (value as Enum).EnumText();
-                            info1.SetValue(detail, value);
+                            tempType = info1.PropertyType;
+                            if (info1.Name == "Details" && tempType.IsCollectionType() && tempType != typeof(string) && tempType != typeof(byte[]))
+                            {
+                                PropertyInfo keyInfo = null;
+                                var secondLevelSource = GetDataOfLevel(secondLevelData, reportParams, mainType, 2, out keyInfo);
+                                var detailsType1 = tempType.GenericTypeArguments[0];
+                                var details1 = Activator.CreateInstance(typeof(List<>).MakeGenericType(detailsType1)) as IList;
+                                var keyValue = detailsType.GetProperty(keyInfo.Name).GetValue(detail);
+                                var oldDetails1 = secondLevelSource.Single(t => Convert.ToInt32(keyValue) == t.Key).Values;
+                                foreach (var oldDetail1  in oldDetails1)
+                                {
+                                    var detail2 = Activator.CreateInstance(detailsType1);
+                                    foreach (var info2 in detailsType1.GetProperties().Where(t => t.IsCollectible))
+                                    {
+                                        var tempInfo = oldType.GetProperty(info2.Name);
+                                        var value = oldType.GetProperty(info2.Name).GetValue(oldDetail1);
+                                        if (tempInfo.PropertyType.GetUnderlyingType().IsEnum)
+                                            value = (value as Enum).EnumText();
+                                        info2.SetValue(detail2, value);
+                                    }
+                                    details1.Add(detail2);
+                                }
+
+                                info1.SetValue(detail, details1);
+                            }
+                            else
+                            {
+                                var tempInfo = oldType.GetProperty(info1.Name);
+                                var value = oldType.GetProperty(info1.Name).GetValue(oldDeatil);
+                                if (tempInfo.PropertyType.GetUnderlyingType().IsEnum)
+                                    value = (value as Enum).EnumText();
+                                info1.SetValue(detail, value);
+                            }
+
                         }
                         details.Add(detail);
                     }
@@ -474,66 +505,60 @@ namespace Caspian.Engine
             return item;
         }
 
-        object GetObjectFromData(Type type, IList list, string keyName)
-        {
-            var item = Activator.CreateInstance(type);
-            var old = list[0];
-            var oldType = old.GetType();
-            foreach (var info in type.GetProperties().Where(t => t.IsCollectible))
-            {
-
-            }
-            return null;
-        }
-
         public IList GetStumlData(IList source, IList<ReportParam> reportParams, Type mainType, int level)
         {
             Type type = GetStimuType(mainType, reportParams, level);
             if (level == 1)
                 return GetStimulData(source, mainType, type);
-            var secondLevelSource = GetDataOfLevel(source, reportParams, mainType, level);
             if (level == 2)
             {
+                var secondLevelSource = GetDataOfLevel(source, reportParams, mainType, 2, out _);
                 IList list = new ArrayList();
-                foreach (var  dic in secondLevelSource)
+                foreach (var item in secondLevelSource)
                 {
-                    var value = GetObjectFromData(type, dic.Value);
+                    var value = GetObjectFromData(type, item.Values, null, null);
                     list.Add(value);
                 }
                 return list;
             }
-            foreach(var dic in secondLevelSource)
+            
+            if (level == 3)
             {
-                GetObjectFromData(type, dic.Value, "");
-            }
-            throw new NotImplementedException();
+                var thirdLevelSource = GetDataOfLevel(source, reportParams, mainType, 3, out _);
+                IList list = new ArrayList();
+                foreach (var item in thirdLevelSource)
+                {
+                    var value = GetObjectFromData(type, item.Values, mainType, reportParams);
 
+
+                    list.Add(value);
+                }
+                return list;
+            }
+            return null;
         }
 
-        Dictionary<int?, IList> GetDataOfLevel(IList source,IList<ReportParam> reportParams, Type type, int level)
+        IList<ReportLevelDada> GetDataOfLevel(IList source,IList<ReportParam> reportParams, Type type, int level, out PropertyInfo keyInfo)
         {
-            var keyparam = reportParams.Single(t => t.DataLevel == level && t.IsKey);
-            var keyInfo = type.GetProperty(keyparam.ReportGroupParameter.TitleEn.Replace(".", ""));
-            Dictionary<int?, IList> dictionary = new Dictionary<int?, IList>();
-            dictionary.Add(null, source);
+            var keyparam = reportParams.Single(t => t.DataLevel == level && t.ReportGroupParameter.IsKey);
+            keyInfo = type.GetProperty(keyparam.ReportGroupParameter.TitleEn.Replace(".", ""));
+            var values = new List<ReportLevelDada>();
             foreach (var item in source)
             {
                 var keyvalue = (int?)keyInfo.GetValue(item);
-                if (keyvalue != null && dictionary.ContainsKey(keyvalue))
+                var old = values.SingleOrDefault(t => t.Key == keyvalue);
+                if (old == null)
                 {
-                    var list = dictionary[keyvalue];
-                    list.Add(item);
+                    values.Add(new ReportLevelDada()
+                    {
+                        Key = keyvalue,
+                        Values = new ArrayList() { item },
+                    });
                 }
                 else
-                {
-                    var list = new ArrayList
-                    {
-                        item
-                    };
-                    dictionary.Add(keyvalue, list);       
-                }
+                    old.Values.Add(item);
             }
-            return dictionary;
+            return values;
         }
 
         public Type GetStimuType(Type mainType, IList<ReportParam> reportParams, int level)
@@ -542,8 +567,8 @@ namespace Caspian.Engine
             foreach (var param in reportParams.Where(t => t.DataLevel == level))
             {
                 var name = param.ReportGroupParameter.TitleEn.Replace(".", "");
-                var type = mainType.GetProperty(name).PropertyType.GetUnderlyingType();
-                if (type.IsEnum)
+                var type = mainType.GetProperty(name).PropertyType;
+                if (type.GetUnderlyingType().IsEnum)
                     type = typeof(string);
                 list.Add(new DynamicProperty(name, type));
             }
@@ -557,50 +582,6 @@ namespace Caspian.Engine
 
         }
 
-        public Type GetEqualType(IList<ReportParam> reportParams)
-        {
-            var list = new List<DynamicProperty>();
-            foreach (var param in reportParams)
-            {
-                Type type = null;
-                string name = null;
-                if (param.RuleId.HasValue || param.DynamicParameterId.HasValue)
-                {
-                    type = typeof(string);
-                    name = "DynamicParam" + (param.RuleId ?? param.DynamicParameterId.Value);
-                }
-                else
-                {
-                    type = GetEqualType(param.ReportGroupParameter.TitleEn, false);
-                    if (type.IsEnum)
-                        type = typeof(string);
-                    name = GetEqualFieldName(param.ReportGroupParameter.TitleEn);
-                    switch(param.CompositionMethodType)
-                    {
-                        case CompositionMethodType.Sum: name = "Sum_" + name; break;
-                        case CompositionMethodType.Avg: name = "Avg_" + name;
-                            if (type == typeof(int) || type == typeof(long))
-                                type = typeof(double);
-                            else if (type == typeof(int?) || type == typeof(long?))
-                                type = typeof(double?);
-                            break;
-                        case CompositionMethodType.Max: name = "Max_" + name; break;
-                        case CompositionMethodType.Min: name = "Min_" + name; break;
-                    }
-                }
-                list.Add(new DynamicProperty(name, type));
-            }
-            return DynamicClassFactory.CreateType(list, false);
-        }
-
-        private Type GetEqualType(string field, bool flag = true)
-        {
-            var info = paramExpr.Type.GetMyProperty(field);
-            var type = info.PropertyType;
-            if (type.IsNullableType())
-                type = Nullable.GetUnderlyingType(type);
-            return type;
-        }
 
         private string GetEqualFieldName(string field, CompositionMethodType? methodType = null)
         {
@@ -689,5 +670,12 @@ namespace Caspian.Engine
                 throw new NotImplementedException("خطای عدم پیاده سازی");
             return DynamicItemSelect().Body.Type;
         }
+    }
+
+    public class ReportLevelDada
+    {
+        public int? Key { get; set; }
+
+        public IList Values { get; set; }
     }
 }

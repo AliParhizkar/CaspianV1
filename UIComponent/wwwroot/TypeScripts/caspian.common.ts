@@ -92,14 +92,16 @@
             new DatePicker(element, dotnet);
         }
 
-        public static showErrorMessage(element: HTMLElement) {
+        public static showErrorMessage(element: HTMLElement, marginTop?: number) {
             let error = element.getElementsByClassName('errorMessage')[0];
             if (error)
                 error.remove();
             let msg = element.attributes['error-message'];
             if (msg) {
-                let htmlString = '<div class="errorMessage"></div>'
+                let htmlString = '<div class="errorMessage"></div>';
                 var messageBox = document.createElement('div');
+                if (marginTop)
+                    messageBox.style.marginTop = `${marginTop}px`;
                 messageBox.classList.add('errorMessage');
                 messageBox.innerHTML = '<span class="c-icon"><i class="fa fa-info" aria-hidden="true"></i></span><Span class="c-content">'
                     + msg.value + '</Span><span class="c-pointer"></span>';
@@ -202,7 +204,7 @@
 
         public static bindMultiSelect(element: HTMLElement) {
             element.onfocus = () => {
-                this.showErrorMessage(element);
+                this.showErrorMessage(element, 32);
             }
             element.onblur = () => {
                 this.hideErrorMessage(element);

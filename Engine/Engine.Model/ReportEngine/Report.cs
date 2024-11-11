@@ -39,6 +39,6 @@ namespace Caspian.Engine.Model
         public virtual ReportGroup ReportGroup { get; set; }
 
         [CheckOnDelete("The report has parameter(s) and can not be removed")]
-        public virtual ICollection<ReportParam> ReportParams { get; set; }
+        public virtual IList<ReportParam> ReportParams { get; set; }
     }
 }

@@ -29,7 +29,10 @@ namespace Caspian.Common.Service
 
         public async override Task<TMaster> AddAsync(TMaster entity)
         {
-            PropertyInfo detailsInfo = null;
+            PropertyInfo detailsInfo = typeof(TMaster).GetDetailsProperty(typeof(TDetails));
+            var details = detailsInfo.GetValue(entity) as IEnumerable<TDetails>;
+            if (details == null || details.Count() == 0)
+                return await base.AddAsync(entity);
             foreach (var info in typeof(TMaster).GetProperties())
             {
                 var type = info.PropertyType;
@@ -39,9 +42,7 @@ namespace Caspian.Common.Service
                 {
                     if (type != typeof(string))
                     {
-                        if (info.PropertyType.GetInterfaces().Contains(typeof(IEnumerable<TDetails>)))
-                            detailsInfo= info;
-                        else
+                        if (info.PropertyType != detailsInfo)
                             info.SetValue(entity, default);
                     }
                 }
@@ -51,22 +52,18 @@ namespace Caspian.Common.Service
             if (result.Errors.Count > 0)
                 throw new CaspianException(result.Errors[0].ErrorMessage);
             var newEntity = entity.CreateNewSimpleEntity();
-            var details = detailsInfo.GetValue(entity) as IEnumerable<TDetails>;
-            if (details != null)
+            var detailsList = new List<TDetails>();
+            detailsInfo.SetValue(newEntity, detailsList);
+            foreach (var detail in details)
             {
-                var detailsList = new List<TDetails>();
-                detailsInfo.SetValue(newEntity, detailsList);
-                foreach (var detail in details)
+                var item = Activator.CreateInstance<TDetails>();
+                foreach (var info in typeof(TDetails).GetProperties())
                 {
-                    var item = Activator.CreateInstance<TDetails>();
-                    foreach (var info in typeof(TDetails).GetProperties())
-                    {
-                        var type = info.PropertyType;
-                        if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
-                            info.SetValue(item, info.GetValue(detail));
-                    }
-                    detailsList.Add(item);
+                    var type = info.PropertyType;
+                    if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
+                        info.SetValue(item, info.GetValue(detail));
                 }
+                detailsList.Add(item);
             }
 
             var result1 = await Context.Set<TMaster>().AddAsync(newEntity);

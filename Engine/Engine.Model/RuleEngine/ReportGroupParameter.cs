@@ -19,10 +19,13 @@ namespace Caspian.Engine.Model
         /// <summary>
         /// عنوان لاتین فیلد
         /// </summary>
-        [StringLength(100), DisplayName("عنوان لاتین")]
+        [DisplayName("عنوان لاتین")]
         public string TitleEn { get; set; }
 
         [DisplayName("Alias")]
         public string Alias { get; set; }
+
+        [DisplayName("Is key")]
+        public bool IsKey { get; set; }
     }
 }

@@ -41,7 +41,7 @@ namespace Caspian.UI
                 }
             }
             else
-                UpdateChangedEntities();
+                await UpdateChangedEntities();
         }
 
         internal string SelectedItemsText()
@@ -56,7 +56,7 @@ namespace Caspian.UI
             return str;
         }
 
-        void UpdateChangedEntities()
+        async Task UpdateChangedEntities()
         {
             var otherInfo = typeof(TDetails).GetForeignKey(typeof(TEntity));
             var masterType = Service.GetType().GenericTypeArguments[0];
@@ -97,6 +97,8 @@ namespace Caspian.UI
                 }
             }
             Service.ChangedEntities = list;
+            if (ValuesChanged.HasDelegate)
+                await ValuesChanged.InvokeAsync();
         }
 
         [Parameter]
@@ -265,7 +267,7 @@ namespace Caspian.UI
 
                     }
                 }
-                UpdateChangedEntities();
+                await UpdateChangedEntities();
             }
         }
     }

@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
 
 namespace Caspian.UI
 {
@@ -64,7 +63,7 @@ namespace Caspian.UI
 
         async Task SetText(IList<dynamic> values)
         {
-            if (Service?.MasterId > 0)
+            if (Service != null)
             {
                 using var service = ScopeFactory.CreateScope().GetService<IBaseService<TEntity>>();
                 var query = service.GetAll(default(TEntity));

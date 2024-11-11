@@ -53,6 +53,11 @@ namespace Caspian.Engine.Service
                 return ControlType.Numeric;
             throw new NotImplementedException("خطای عدم پیاده سازی");
         }
+
+        public static bool IsForeignKey(this PropertyInfo property)
+        {
+            return property.DeclaringType.GetProperties().Any(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == property.Name);
+        }
     }
 
     public static class AssemblyExtension

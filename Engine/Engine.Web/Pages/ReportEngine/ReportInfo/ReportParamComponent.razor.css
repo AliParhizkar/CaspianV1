@@ -1,4 +1,15 @@
-﻿.e-head {
+﻿.e-main, .e-tree, .e-component {
+    height: 100%;
+}
+
+.fa-arrow-left {
+    color: brown !important;
+    font-size: 28px;
+    vertical-align: middle;
+    margin-right: 15px;
+}
+
+.e-head {
     display: flex;
     border: 1px solid #c7c7c7;
     margin-bottom: 5px;
@@ -7,6 +18,7 @@
     background-color: #f4f7ff;
     align-items: center;
 }
+
     .e-head label {
         font-weight: bold;
         color: #4e4e4e;
@@ -16,32 +28,53 @@
     .e-head button {
         width: 60px;
     }
+
 .group-title {
     font-size: 15px;
     color: brown;
 }
-.params-title {
-    color: #4b66a1;
-    text-align:center;
-    font-weight:bold;
-    font-size:14px;
+
+.c-alise-head {
+    display: flex;
+    background-color: #e1e1e1;
+    border: 1px solid #cdcdcd;
+    border-bottom: none;
+    font-weight: bold;
+    color: #656565;
+    font-size: 14px;
+    overflow-y: scroll;
 }
 
-.params-body {
-    border: 1px solid rgba(0,0,0,0.25);
-    height:calc(100% - 22px);
+    .c-alise-head > div {
+        background-color: #e9ebee;
+    }
+
+.c-engine-alise {
+    height: 100%;
 }
-.c-alise-head {
+
+.c-field-name {
+    border-right: 1px solid #cdcdcd;
+}
+
+.c-field-name, .c-field-alise {
+    width: 50%;
     text-align: center;
     border-bottom: 1px solid #cdcdcd;
-    background-color: #e9ebee;
+    padding: 5px 10px;
 }
-.c-field-name {
-    padding-top:2px;
-    height: 32px;
-    text-align: center;
-    color: #656565;
+
+.c-alise-body {
+    border: 1px solid #cdcdcd;
+    border-top: none;
+    height: calc(100% - 36px);
+    overflow-y: scroll;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    position: relative;
 }
-    .c-field-name:nth-child(2n) {
-        background-color: #e6e9f3;
-    }
+
+.c-field-name:nth-child(4n+3), .c-field-alise:nth-child(4n+4) {
+    background-color: #e6e9f3;
+}

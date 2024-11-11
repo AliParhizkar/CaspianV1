@@ -13,7 +13,7 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("Order date"), ReportField]
+        [DisplayName("Order date")]
         public DateTime? Date { get; set; }
 
         [DisplayName("Customer")]
@@ -22,7 +22,7 @@ namespace Demo.Model
         [DisplayName("Order number")]
         public int? OrderNo { get; set; }
 
-        [ForeignKey(nameof(CustomerId)),ReportField("Customer")]
+        [ForeignKey(nameof(CustomerId))]
         public virtual Customer Customer { get; set; }
 
         public int? CourierId { get; set; }
@@ -30,7 +30,7 @@ namespace Demo.Model
         [ForeignKey(nameof(CourierId))]
         public virtual Courier Courier { get; set; }
 
-        [DisplayName("Order type"), ReportField]
+        [DisplayName("Order type")]
         public OrderType OrderType { get; set; }
 
         [DisplayName("Status")]

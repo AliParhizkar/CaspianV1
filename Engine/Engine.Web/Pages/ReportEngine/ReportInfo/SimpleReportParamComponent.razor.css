@@ -1,0 +1,98 @@
+﻿.fa-arrow-left {
+    color: brown !important;
+    font-size:28px;
+    vertical-align:middle;
+    margin-right:15px;
+}
+.e-head {
+    display: flex;
+    border: 1px solid #c7c7c7;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    padding: 4px 10px;
+    background-color: #f4f7ff;
+    align-items: center;
+}
+    .row{
+        height:calc(100% - 30px);
+    }
+.col-md-7{
+    height:calc(100% - 20px);
+}
+.e-head label {
+    font-weight: bold;
+    color: #4e4e4e;
+    padding-bottom: 5px;
+}
+
+    .e-head button {
+        width: 60px;
+    }
+.group-title {
+    font-size: 15px;
+    color: brown;
+}
+.no-content {
+    width: 100%;
+    height: 100%;
+    border: none !important;
+    color: #717171;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.multi-columns {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+    .multi-columns .c-field-name{
+        width: calc(65%);
+        height:40px;
+    }
+.engine-body :nth-last-child(2), .engine-body :last-child {
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+}
+.c-field-level {
+    width: 35%;
+    border-left: 1px solid rgba(0,0,0,0.25);
+    padding: 0 5px;
+    color: #656565;
+}
+.params-title {
+    color: #4b66a1;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.params-body {
+    border: 1px solid rgba(0,0,0,0.25);
+    height: 100%;
+}
+.c-alise-head {
+    text-align: center;
+    border-bottom: 1px solid #cdcdcd;
+    overflow-y:scroll;
+}
+    .c-alise-head .c-field-name, .c-alise-head .c-field-level {
+        background-color: #e9ebee;
+    }
+
+        .c-field-name, .c-field-title {
+            padding-top: 2px;
+            height: 32px;
+            text-align: center;
+            color: #656565;
+            height: 34px;
+        }
+    .c-field-name:nth-child(2n) {
+        background-color: #e6e9f3;
+    }
+.engine-body {
+    height: calc(100% - 41px);
+    overflow-y: scroll;
+}
+.engine-body.multi-columns .c-field-name:nth-child(4n+3), .engine-body.multi-columns .c-field-level:nth-child(4n) {
+    background-color: #e6e9f3;
+}
