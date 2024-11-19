@@ -15,7 +15,7 @@ namespace Caspian.UI
         Dictionary<string, object> attrs;
         Dictionary<string, object> inputAttrs;
         WindowStatus status;
-        List<SelectListItem> Items;
+        List<SelectListItem> items;
         int? selectedIndex = null;
 
         bool IsEqual(string value1, TValue value2)
@@ -39,7 +39,7 @@ namespace Caspian.UI
                         if (status == WindowStatus.Open)
                         {
                             selectedIndex++;
-                            if (selectedIndex > Items.Count)
+                            if (selectedIndex > items.Count)
                                 selectedIndex = 1;
                         }
                         else
@@ -50,7 +50,7 @@ namespace Caspian.UI
                         {
                             selectedIndex--;
                             if (selectedIndex == 0)
-                                selectedIndex = Items.Count;
+                                selectedIndex = items.Count;
                         }
                         break;
                     case "Enter":
@@ -58,7 +58,7 @@ namespace Caspian.UI
                         if (selectedIndex.GetValueOrDefault() > 0)
                         {
                             status = WindowStatus.Close;
-                            await SetValueForActiveItem(Items[selectedIndex.Value - 1]);
+                            await SetValueForActiveItem(items[selectedIndex.Value - 1]);
                         }
                         break;
                 }
@@ -70,7 +70,7 @@ namespace Caspian.UI
             if (status != WindowStatus.Open && !disabled)
             {
                 int index = 1;
-                foreach (var item in Items.Select(t => t.Value))
+                foreach (var item in items.Select(t => t.Value))
                 {
                     if (IsEqual(item, Value))
                     {
@@ -148,11 +148,11 @@ namespace Caspian.UI
             {
                 //string str = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
                 string str = "Please select ...";
-                Items = new List<SelectListItem>();
+                items = new ();
                 if (typeof(TValue).IsNullableType())
-                    Items.Add(new SelectListItem(null, str));
+                    items.Add(new SelectListItem(null, str));
                 else if (Search)
-                    Items.Add(new SelectListItem("0", str));
+                    items.Add(new SelectListItem("0", str));
                 var fields = GetFields();
                 foreach (var field in fields.Where(t => !t.IsSpecialName))
                 {
@@ -165,21 +165,21 @@ namespace Caspian.UI
                         disable = DisableFunc.Invoke(enumValue);
                     }
                     var intValue = Convert.ToInt32(value);
-                    Items.Add(new SelectListItem(intValue.ToString(), attr == null ? field.Name : attr.Name, disable));
+                    items.Add(new SelectListItem(intValue.ToString(), attr == null ? field.Name : attr.Name, disable));
                 }
             }
             else
             {
                 if (FilterFunc == null)
-                    Items = Source.ToList();
+                    items = Source.ToList();
                 else
                 {
-                    Items = new List<SelectListItem>();
+                    items = new List<SelectListItem>();
                     foreach (var item in Source)
                     {
                         var value = (TValue)Convert.ChangeType(item.Value, typeof(TValue));
                         if (FilterFunc.Invoke(value))
-                            Items.Add(item);
+                            items.Add(item);
                     }
                 }
             }

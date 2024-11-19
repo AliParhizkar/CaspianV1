@@ -37,6 +37,8 @@ namespace Demo.Model
 
         public DbSet<PersianDateConvertor> PersianDatesConvertor { get; set; }
 
+        public DbSet<Meeting> Lectures { get; set; }    
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()

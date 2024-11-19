@@ -102,7 +102,7 @@ namespace Caspian.Engine.Service
                             if (baseType == serviceType)
                             {
                                 services.AddScoped(typeof(IBaseService<>).MakeGenericType(genericType), provider => Activator.CreateInstance(type, provider));
-                                var simpleService = typeof(SimpleService<>).MakeGenericType(genericType);
+                                var simpleService = typeof(UIService<>).MakeGenericType(genericType);
                                 services.AddScoped(simpleService, provider => Activator.CreateInstance(simpleService, provider));
                                 break;
                             }

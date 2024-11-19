@@ -13,7 +13,7 @@
     var index = 1;
 }
 <div @ref="InputElement" @onkeyup="OnkeyUp" @attributes="attrs" class="t-widget t-dropdown" error-message="@ErrorMessage">
-    <div class="@className" @onclick="OpenWindow">
+    <div class="@className" @onmousedown="OpenWindow">
         <span class="t-input">@(text)</span>
         <span class="t-t-select" >
             <i class="t-icon t-arrow-down fa fa-caret-down"></i>
@@ -24,14 +24,14 @@
         <div class="t-animation-container">
             <div class="t-popup t-group">
                 <ul class="t-reset">
-                    @foreach(var item in Items)
+                    @foreach(var item in items)
                     {
                         string name = "t-item";
                         if (index == selectedIndex)
                             name += " t-state-selected";
                         if (item.Disabled)
                             name += " t-disable";
-                        <li @onclick="async () => await SetValueForActiveItem(item)" class="@name">@item.Text</li>
+                        <li @onmousedown="async () => await SetValueForActiveItem(item)" class="@name">@item.Text</li>
                         index++;
                     }
                 </ul>

@@ -30,7 +30,7 @@ namespace Caspian.UI
         public RenderFragment Content { get; set; }
 
         [Parameter]
-        public ISimpleService Service { get; set; }
+        public IUIService Service { get; set; }
 
         [Parameter]
         public RenderFragment HeaderTemplate { get; set; }

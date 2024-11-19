@@ -5,6 +5,7 @@ using Caspian.Common;
 using System.Threading.Tasks;
 using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {
@@ -25,7 +26,8 @@ namespace Demo.Service
             {
                 if (!pc.Code.HasValue())
                     return false;
-                return new ProductService(ServiceProvider).GetAll().Any(p => p.Code == pc.Code);
+
+                return provider.GetService<ProductService>().GetAll().Any(p => p.Code == pc.Code);
             }, "A product with this code has been registered.");
         }
 

@@ -1,8 +1,8 @@
 ﻿@page "/Demo/SimpleCrud"
 @namespace Demo.Web
 @inherits BasePage
-@inject SimpleService<Country> CountryService
-@inject SimpleService<Product> ProductService
+@inject UIService<Country> CountryService
+@inject UIService<Product> ProductService
 @{
     base.BuildRenderTree(__builder);
 }

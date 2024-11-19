@@ -1,0 +1,130 @@
+﻿@page "/Demo/Meeting"
+@namespace Demo.Web.Pages
+@inherits BasePage
+@inject UIService<Meeting> Service
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+
+<ListView Service="Service" TEntity="Meeting" SelectType="SelectType.None" ContentHeight="600">
+    <Fields Context="meeting">
+        @{
+            var className = "d-main";
+            if (meetingsId.Any(t => t == meeting?.Data?.Id))
+                className += " open";
+        }
+        <div class="@(className)">
+            <div class="d-number" @onmousedown="() => ToggleList(meeting.Data.Id)">
+                <TextField Field="t => t.OrderNo.ToString()" />
+            </div>
+            <div class="d-name" @onmousedown="() => ToggleList(meeting.Data.Id)">
+                <TextField Field="t => t.Name" />
+            </div>
+            <div @onmousedown="() => ToggleList(meeting.Data.Id)" class="d-icon">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+            <div class="d-details">
+                <div class="d-title">جزئیات</div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-lecture-detail">
+                            <label>ایجاد کننده:</label>
+                            <TextField Field="t => t.User.LName" />
+                        </div>
+                        <div class="d-lecture-detail">
+                            <label>ضبط فیلم:</label>
+                            <TextField Field='t => t.RecordingVideoIs ? "فعال" : "غیرفعال"' />
+                        </div>
+                        <div class="d-lecture-detail">
+                            <label>وضعیت:</label>
+                            <TextField Field='t => t.ActiveIs ? "فعال" : "غیرفعال"' />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-lecture-detail">
+                            <label>حوزه آموزش:</label>
+                            <TextField Field='t => t.LearningScope.EnumText()' />
+                        </div>
+                        <div class="d-lecture-detail">
+                            <label>ضبط صدا:</label>
+                            <TextField Field='t => t.RecordingAudioIs ? "فعال" : "غیرفعال"' />
+                        </div>
+                        <div class="d-lecture-detail">
+                            <label>نوع سرویس:</label>
+                            <TextField Field='t => t.ServerType.EnumText()' />
+                        </div>
+                    </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-9">
+                        <button @onclick='() => NavigationManager.NavigateTo($"/Demo//{meeting.Data.Id}")' class="c-btn c-secondary">
+                            Details
+                            <span class="fa fa-wpforms"></span>
+                        </button>
+                        <ListCommandButton />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Fields>
+</ListView>
+<Window Service="Service" Style="width:500px">
+    <CaspianForm Service="Service" OnSubmit= "() => Service.UpsertData.UserId = base.UserId">
+        <div class="row c-controls ps-3 pe-3">
+            <div class="col-md-3 pt-3">
+                <label>عنوان</label>
+            </div>
+            <div class="col-md-9 pt-3">
+                <StringTextBox MultiLine Rows="3" @bind-Value="Service.UpsertData.Name" />
+            </div>
+            <div class="col-md-4 pt-3">
+                <CheckBox @bind-Value="Service.UpsertData.RecordingVideoIs" Title="ضبط فیلم" />
+            </div>
+            <div class="col-md-4 pt-3">
+                <CheckBox @bind-Value="Service.UpsertData.RecordingAudioIs" Title="ضبط صدا" />
+            </div>
+            <div class="col-md-4 pt-3">
+                <CheckBox @bind-Value="Service.UpsertData.ActiveIs" Title="فعال" />
+            </div>
+            <div class="col-md-4 pt-3">
+               <label>حوزه آموزش</label>
+            </div>
+            <div class="col-md-8 pt-3">
+                <DropdownList @bind-Value="Service.UpsertData.LearningScope" />
+            </div>
+            <div class="col-md-4 pt-3">
+                <label>سرور واسط</label>
+            </div>
+            <div class="col-md-8 pt-3">
+                <DropdownList @bind-Value="Service.UpsertData.ServerType" />
+            </div>
+            <div class="col-md-3 ">
+            </div>
+            <div class="col-md-9 pt-3">
+                <FormCommandButton />
+            </div>
+        </div>
+    </CaspianForm>
+</Window>
+
+
+@code 
+{
+    IList<int> meetingsId;
+
+    void ToggleList(int id)
+    {
+        if (meetingsId.Contains(id))
+            meetingsId.Remove(id);
+        else
+            meetingsId.Add(id);
+    }
+
+    protected override void OnInitialized()
+    {
+        meetingsId = new List<int>();
+        base.OnInitialized();
+    }
+}

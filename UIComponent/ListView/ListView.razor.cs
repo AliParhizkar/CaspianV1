@@ -6,6 +6,9 @@ using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Caspian.Common.RowNumber;
 
 namespace Caspian.UI
 {
@@ -22,30 +25,53 @@ namespace Caspian.UI
             CreateInsert();
         }
 
+        public override async Task<TEntity> SelectRowById(int id)
+        {
+            using var scope = ServiceScopeFactory.CreateScope();
+            var query = GetGuery(scope);
+            var rowId = await query.GetRowNumber(scope.GetService<BaseService<TEntity>>().Context, id);
+            if (rowId.HasValue)
+            {
+                var pageNumber = (rowId.Value - 1) / PageSize + 1;
+                await this.ChangePageNumber(pageNumber);
+                var rowIndex = (rowId.Value - 1) % PageSize;
+                SelectedRowIndex = rowIndex;
+                return items[rowIndex];
+            }
+            return default(TEntity);
+        }
+
+        IQueryable<TEntity> GetGuery(IServiceScope scope)
+        {
+            var query = scope.GetService<BaseService<TEntity>>().GetAll();
+            var param = Expression.Parameter(typeof(TEntity), "t");
+            Expression condExr = null;
+            if (ConditionExpr != null)
+                condExr = param.ReplaceParameter(ConditionExpr.Body);
+            if (InternalConditionExpr != null)
+            {
+                if (condExr == null)
+                    condExr = param.ReplaceParameter(InternalConditionExpr);
+                else
+                    condExr = Expression.And(condExr, param.ReplaceParameter(InternalConditionExpr));
+            }
+
+            if (condExr != null)
+            {
+                var lambda = Expression.Lambda(condExr, param);
+                query = query.Where(lambda);
+            }
+            return query;
+        }
+
         public override async Task DataBind()
         {
             if (fieldsExpression != null && shouldFetchData)
             {
                 shouldFetchData = false;
-                
-                using var service = ServiceScopeFactory.CreateScope().GetService<BaseService<TEntity>>();
-                var query = service.GetAll();
-                var param = Expression.Parameter(typeof(TEntity), "t");
-                Expression condExr = null;
-                if (ConditionExpr != null)
-                    condExr = param.ReplaceParameter(ConditionExpr.Body);
-                if (InternalConditionExpr != null)
-                {
-                    if (condExr == null)
-                        condExr = param.ReplaceParameter(InternalConditionExpr);
-                    else
-                        condExr = Expression.And(condExr, param.ReplaceParameter(InternalConditionExpr));
-                }
-                if (condExr != null)
-                {
-                    var lambda = Expression.Lambda(condExr, param);
-                    query = query.Where(lambda);
-                }
+                using var scope = ServiceScopeFactory.CreateScope();
+                var query = GetGuery(scope);
+
                 //shouldRender = false;
                 Total = await query.CountAsync();
                 var exprList = new List<MemberExpression>();

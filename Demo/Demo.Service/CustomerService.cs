@@ -27,6 +27,7 @@ namespace Demo.Service
 
         void UpdateCustomer(Customer entity)
         {
+
             if (entity.CustomerType == CustomerType.Real)
                 entity.CompanyName = null;
             else

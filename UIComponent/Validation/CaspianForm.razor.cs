@@ -34,7 +34,7 @@ namespace Caspian.UI
         public EditContext EditContext { get; private set; }
 
         [Parameter]
-        public ISimpleService<TEntity> Service { get; set; }
+        public IUIService<TEntity> Service { get; set; }
 
         [Parameter]
         public EventCallback<EditContext> OnInvalidSubmit { get; set; }

@@ -28,7 +28,7 @@ namespace Caspian.UI
         public IAutoComplete<TEntity> AutoComplete { get; set; }
 
         [Inject]
-        public SimpleService<TEntity> Service { get; set; }
+        public UIService<TEntity> Service { get; set; }
 
         protected override async Task OnParametersSetAsync()
         {

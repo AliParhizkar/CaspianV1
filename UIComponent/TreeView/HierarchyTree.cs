@@ -87,11 +87,9 @@ namespace Caspian.UI
             {
                 if (FilterFunc(entity))
                 {
-                    var node = new NodeView();
+                    var node = new NodeView(key.GetValue(entity).ToString(), TextFunc.Invoke(entity));
                     node.Collabsable = true;
                     node.Selectable = selectable;
-                    node.Text = TextFunc.Invoke(entity);
-                    node.Value = key.GetValue(entity).ToString();
                     return node;
                 }
                 return null;

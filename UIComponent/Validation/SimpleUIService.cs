@@ -9,13 +9,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
-    public class SimpleService<TEntity>: ISimpleService, ISimpleService<TEntity> where TEntity : class
+    public class UIService<TEntity>: IUIService, IUIService<TEntity> where TEntity : class
     {
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
         IJSRuntime jSRuntime;
 
-        public SimpleService(IServiceProvider serviceProvider) 
+        public UIService(IServiceProvider serviceProvider) 
         {
             baseComponentService = serviceProvider.GetService<BaseComponentService>();
             jSRuntime = serviceProvider.GetService<IJSRuntime>();
@@ -76,7 +76,7 @@ namespace Caspian.UI
                 if (id == 0)
                 {
                     id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
-                    await (DataView as DataGrid<TEntity>).SelectRowById(id);
+                    await DataView.SelectRowById(id);
                 }
                 else
                     await DataView.ReloadAsync();
@@ -102,7 +102,7 @@ namespace Caspian.UI
 
         public void DataViewInitialize()
         {
-            (DataView as DataGrid<TEntity>).Search = Search;
+            DataView.Search = Search;
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
                 var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));

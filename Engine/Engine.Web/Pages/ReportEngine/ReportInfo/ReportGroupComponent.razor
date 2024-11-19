@@ -1,5 +1,5 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
-@inject SimpleService<ReportGroup> Service
+@inject UIService<ReportGroup> Service
 
 <DataGrid TEntity="ReportGroup" Service="Service" ConditionExpr="t => t.SubSystem == SubSystem" ContentHeight="350" HideInsertIcon>
     <Columns>

@@ -5,6 +5,7 @@ using Caspian.Engine;
 using Caspian.Common;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {
@@ -29,7 +30,7 @@ namespace Demo.Service
                 {
                     if (!p.Code.HasValue())
                         return false;
-                    return new ProductCategoryService(ServiceProvider).GetAll().Any(pc => pc.Code == p.Code);
+                    return provider.GetService<ProductCategoryService>().GetAll().Any(pc => pc.Code == p.Code);
                 }, "There is a product category with this code in the system");
         }
 

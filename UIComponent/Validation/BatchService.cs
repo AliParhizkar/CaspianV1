@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
-    public class BatchService<TMaster, TDetail>: ISimpleService, ISimpleService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
+    public class BatchService<TMaster, TDetail>: IUIService, IUIService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
     {
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
@@ -209,7 +209,7 @@ namespace Caspian.UI
         }
     }
 
-    public interface ISimpleService<TEntity>: ISearchService<TEntity> where TEntity : class
+    public interface IUIService<TEntity>: ISearchService<TEntity> where TEntity : class
     {
         CaspianForm<TEntity> Form { get; set; }
 
@@ -243,7 +243,7 @@ namespace Caspian.UI
         DataView<TDetail> DetailDataView { get; set; }
     }
 
-    public interface ISimpleService
+    public interface IUIService
     {
         Window Window { get; set; }
 

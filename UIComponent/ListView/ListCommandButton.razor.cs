@@ -24,7 +24,6 @@ namespace Caspian.UI
         {
             if (DataView != null)
             {
-                DataView.Inline = true;
                 await base.OpenForm();
             }
         }

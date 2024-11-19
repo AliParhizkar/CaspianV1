@@ -163,23 +163,6 @@ namespace Caspian.Engine
             return str.Substring(tempStr.Length + 1, str.Length - tempStr.Length - 1);
         }
 
-        public static string GetPrefix(this Type mainType, string path)
-        {
-            var parentType = mainType;
-            string tempStr = "";
-            foreach (var item in path.Split('.'))
-            {
-                var info = parentType.GetProperty(item);
-                if (tempStr.HasValue())
-                    tempStr += '.';
-                tempStr += info.Name;
-                if (info.GetCustomAttribute<ForeignKeyAttribute>() == null)
-                    break;
-                parentType = info.PropertyType;
-            }
-            return tempStr;
-        }
-
         /// <summary>
         /// این متد نوع <see cref="Entity"/> یک مسیر را برمی گرداند.
         /// </summary>

@@ -40,13 +40,13 @@
                     if (ddl.getBoundingClientRect().top > window.innerHeight / 2) {
                         animate.classList.add('c-animate-up');
                         animate.style.marginTop = `${-height - 38}px`;
-                        setTimeout(() => group.style.bottom = '0', 50);
+                        setTimeout(() => group.style.bottom = '0', 30);
                     }
                     else {
                         animate.classList.add('c-animate-down');
-                        setTimeout(() => group.style.top = '0', 50);
+                        setTimeout(() => group.style.top = '0', 30);
                     }
-                    document.body.onclick = async e => {
+                    document.body.onmousedown = async e => {
                         if ((e.target as HTMLElement).closest('.t-animation-container') == null) {
                             document.body.onclick = null;
                             await dotnet.invokeMethodAsync('CloseWindow');

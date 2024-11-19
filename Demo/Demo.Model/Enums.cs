@@ -81,4 +81,28 @@ namespace Demo.Model
         [Display(Name = "Dinner")]
         Dinner = 4,
     }
+
+    public enum LearningScope: byte
+    {
+        [Display(Name = "حوزه ی شخصی")]
+        Peronality = 1,
+
+        [Display(Name = "حوزه ی آموزش")]
+        Learning
+    }
+
+    public enum ServerType:byte
+    {
+        [Display(Name = "Open video")]
+        OpenVideo = 1,
+        
+        [Display(Name = "Adobe Content")]
+        AdobeContent,
+
+        [Display(Name = "Janus")] 
+        Janus,
+
+        [Display(Name = "Big Blue Button")]
+        BigBlueButton
+    }
 }

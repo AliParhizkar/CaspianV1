@@ -469,7 +469,7 @@ namespace Caspian.UI
             }
         }
 
-        public async Task<TEntity> SelectRowById(int id)
+        public override async Task<TEntity> SelectRowById(int id)
         {
             using var scope = ServiceScopeFactory.CreateScope();
             var query = GetQuery(scope);

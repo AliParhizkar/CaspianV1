@@ -89,7 +89,7 @@ namespace Caspian.UI
                     var property = (expr as MemberExpression).Member as PropertyInfo;
                     if (property?.Name == "Search")
                     {
-                        Search = property.DeclaringType.GetInterfaces().Any(t => t == typeof(ISimpleService));
+                        Search = property.DeclaringType.GetInterfaces().Any(t => t == typeof(IUIService));
                         break;
                     }
                     expr = (expr as MemberExpression).Expression;

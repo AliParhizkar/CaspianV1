@@ -1,8 +1,8 @@
 ﻿@page "/Demo/MultipleCrud"
 @namespace Demo.Web
 @inherits BasePage
-@inject SimpleService<ProductCategory> CategoryService
-@inject SimpleService<Product> ProductService
+@inject UIService<ProductCategory> CategoryService
+@inject UIService<Product> ProductService
 @{
     base.BuildRenderTree(__builder);
 }

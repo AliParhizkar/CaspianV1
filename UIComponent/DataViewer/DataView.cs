@@ -69,7 +69,7 @@ namespace Caspian.UI
         public bool HideInsertIcon { get; set; }
 
         [Parameter]
-        public ISimpleService<TEntity> Service { get; set; }
+        public IUIService<TEntity> Service { get; set; }
 
         [Parameter]
         public IDetailBatchService<TEntity> DetailBatchService { get; set; }
@@ -108,6 +108,8 @@ namespace Caspian.UI
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
 
         internal EventCallback<TEntity> OnInternalDelete { get; set; }
+
+        public abstract Task<TEntity> SelectRowById(int id);
 
         public abstract Task DataBind();
 

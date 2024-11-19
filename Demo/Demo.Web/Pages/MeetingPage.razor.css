@@ -1,0 +1,72 @@
+﻿.d-main {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    align-items: center;
+    border-bottom: 1px solid darkgray;
+    direction:rtl;
+}
+
+.d-number {
+    width: 30px;
+    background-color: #f5f5f5;
+    height: 50px;
+    text-align:center;
+}
+
+.d-name {
+    width: calc(100% - 70px);
+    background-color: #f5f5f5;
+    height:50px;
+    white-space:nowrap;
+}
+.d-title{
+    text-align:right;
+    padding-top:5px;
+    color:forestgreen;
+}
+.d-icon {
+    width: 40px;
+    cursor: pointer;
+    text-align: left;
+    color: darkgray;
+    background-color: #f5f5f5;
+    height: 50px;
+    text-align:center;
+}
+hr {
+    padding:0;
+}
+    .d-icon .fa {
+        transition: all 0.4s ease;
+        color: #655272 !important;
+    }
+    .open .fa{
+        transform: rotate(180deg)
+    }
+    .open .d-details{
+        height:260px!important;
+    }
+
+
+.d-details {
+    height: 0px;
+    width: 100%;
+    transition: height 0.4s ease;
+    background-color: white;
+    overflow: hidden;
+    padding: 0 20px 0 20px;
+}
+.d-lecture-detail{
+    text-align:right;
+    height:50px;
+}
+label{
+    font-size:14px;
+    font-weight:bold;
+    color:darkgray;
+}
+.c-dataview-field {
+    font-size: 12px !important;
+    background-color: red!important;
+}
