@@ -5,7 +5,7 @@ namespace Caspian.UI
     public partial class DataToolsBar<TEntity> where TEntity: class
     {
         [Parameter]
-        public bool HideInsertIcon { get; set; }
+        public bool ShowInsertIcon { get; set; }
 
         [Parameter]
         public bool DisableInsertIcon { get; set; }

@@ -5,8 +5,8 @@ namespace Caspian.UI
     {
         void OnParameterSetInint()
         {
-            if (!HideInsertIcon)
-                HideInsertIcon = !AutoHide && Inline;
+            if (ShowInsertIcon == false)
+                ShowInsertIcon = !AutoHide && Inline;
         }
     }
 }

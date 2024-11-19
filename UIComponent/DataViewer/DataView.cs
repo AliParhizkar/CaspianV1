@@ -33,6 +33,8 @@ namespace Caspian.UI
         protected CaspianValidationValidator validator;
         protected IList<TEntity> items;
         protected bool disableInsertIcon;
+        protected bool? showInsertIcon;
+
         internal EventCallback<TEntity> OnInternalUpsert { get; set; }
 
         internal Expression InternalConditionExpr { get; set; }
@@ -66,7 +68,7 @@ namespace Caspian.UI
         public string DeleteMessage { get; set; }
 
         [Parameter]
-        public bool HideInsertIcon { get; set; }
+        public bool? ShowInsertIcon { get; set; }
 
         [Parameter]
         public IUIService<TEntity> Service { get; set; }
@@ -151,6 +153,12 @@ namespace Caspian.UI
                 DetailBatchService.DetailDataViewInitialize();
             }
             base.OnInitialized();
+        }
+
+        internal void InsertIconState(bool flag)
+        {
+            if (AutoHide || !Inline)
+                showInsertIcon = flag;
         }
 
         protected override void OnParametersSet()

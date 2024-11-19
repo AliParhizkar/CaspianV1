@@ -25,7 +25,7 @@
                 <span class="d-membership">Inaccessible menus</span>
             </div>
         </div>
-        <DataGrid @ref="MemberGrid" TEntity="Menu" HideInsertIcon ConditionExpr="t => t.SubSystemKind == SubSystem" Search="MemberSearch" ContentHeight="330">
+        <DataGrid @ref="MemberGrid" TEntity="Menu" ConditionExpr="t => t.SubSystemKind == SubSystem" Search="MemberSearch" ContentHeight="330">
             <Columns>
                 <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
                 <GridColumn Field="t => t.Title" style="width:150px" />
@@ -66,7 +66,7 @@
                 <span class="d-membership">Accessible menus</span>
             </div>
         </div>
-         <DataGrid @ref="CrudGrid" TEntity="MenuAccessibility" HideInsertIcon ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" Search="SearchData" ContentHeight="330">
+         <DataGrid @ref="CrudGrid" TEntity="MenuAccessibility" ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" Search="SearchData" ContentHeight="330">
             <Columns>
                 <GridColumn Field="t => t.Menu.MenuCategory.Title" Title="Menu" />
                 <GridColumn Field="t => t.Menu.Title" />

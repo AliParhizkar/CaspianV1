@@ -1,0 +1,23 @@
+﻿.d-detail
+{
+    display:flex;
+    width:100%;
+    flex-wrap:wrap;
+}
+.fa-chevron-up{
+    transition:all 0.2s ease;
+}
+
+.d-open-form .fa-chevron-up {
+    transform: rotate(180deg);
+}
+.d-lst-8, .d-lst-9 {
+    height: 0;
+    overflow: hidden;
+    visibility:collapse;
+    transition: height 0.2s ease;
+}
+.d-open-form .d-lst-8, .d-open-form .d-lst-9{
+    height:65px;
+    visibility:visible;
+}

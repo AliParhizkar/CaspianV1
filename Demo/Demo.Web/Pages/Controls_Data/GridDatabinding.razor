@@ -18,7 +18,7 @@
                         <span class="c-demo-description">In this example we <b>specify the TEntity parameter</b> in the grid and specify the <b>Field parameter</b> in column (this is a <b>lambda expression</b>)</span>
                     </div>
                     <div class="col-md-6">
-                        <DataGrid TEntity="Country" HideInsertIcon>
+                        <DataGrid TEntity="Country">
                             <Columns>
                                 <GridColumn Field="t => t.Title" />
                             </Columns>
@@ -38,7 +38,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <DataGrid TEntity="City" HideInsertIcon>
+                        <DataGrid TEntity="City">
                             <Columns>
                                 <GridColumn Field="t => t.Country.Title" Title="Country" />
                                 <GridColumn Field="t => t.Title" />
@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <DataGrid TEntity="Customer" HideInsertIcon>
+                        <DataGrid TEntity="Customer">
                             <Columns>
                                 <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + t.LName : t.CompanyName' Title="Name" />
                                 <GridColumn Field="t => t.MobileNumber" />
@@ -83,7 +83,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <DataGrid TEntity="Customer" HideInsertIcon PageSize="10" TableWidth="900">
+                        <DataGrid TEntity="Customer" PageSize="10" TableWidth="900">
                             <Columns>
                                 <GridColumn Field="t => t.CustomerType.EnumText()" />
                                 <GridColumn Field="t => t.Gender.EnumText()" />
@@ -103,7 +103,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <DataGrid TEntity="Customer" HideInsertIcon PageSize="6" ContentHeight="200">
+                        <DataGrid TEntity="Customer" PageSize="6" ContentHeight="200">
                             <Columns>
                                 <GridColumn Field="t => t.CustomerType.EnumText()" />
                                 <GridColumn Field="t => t.Gender">

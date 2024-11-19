@@ -48,7 +48,7 @@
                     <DropdownList @bind-Value="searchProduct.ActiveType" />
                 </div>
                 <div class="col-md-12 pt-4">
-                    <DataGrid @ref="grid" TEntity="Product" Search="searchProduct" PageSize="10" ContentHeight="400" HideInsertIcon>
+                    <DataGrid @ref="grid" TEntity="Product" Search="searchProduct" PageSize="10" ContentHeight="400">
                         <Columns>
                             <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                             <GridColumn Field="t => t.Title" />

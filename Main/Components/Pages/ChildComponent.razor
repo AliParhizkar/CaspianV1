@@ -7,22 +7,15 @@
 @using Syncfusion.Blazor.DropDowns
 
 
-
-
+<div style="width:500px;margin:0 auto">
+    <DataGrid TEntity="Country">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+        </Columns>
+    </DataGrid>
+</div>
 
 @code
 {
-    StiReport report;
-
-    protected override void OnInitialized()
-    {
-        var customers = new Context().Customers.AsQueryable().ToList();
-        report = new StiReport();
-        report.RegBusinessObject("list", customers);
-        base.OnInitialized();
-    }
-
-    [CascadingParameter]
-    public int Value { get; set; }
 
 }

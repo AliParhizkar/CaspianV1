@@ -1,0 +1,22 @@
+﻿.d-main {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+.fa-chevron-up {
+    transition: all 0.2s ease;
+}
+
+.d-open-form .fa-chevron-up {
+    transform: rotate(180deg);
+}
+.d-listview-col-6, .d-listview-col-7 {
+    height: 0;
+    overflow: hidden;
+    visibility: collapse;
+    transition: height 0.2s ease;
+}
+.d-open-form .d-listview-col-6, .d-open-form .d-listview-col-7 {
+    height: 65px;
+    visibility: visible;
+}

@@ -31,6 +31,7 @@
                 <DataGrid TEntity="ProductCategory" Service="CategoryService" ContentHeight="208" OnRowSelect="ShowProductGrid">
                     <Columns>
                         <GridColumn Field="t => t.Title" />
+                        <GridColumn Field="t => t.Code"  />
                         <GridColumn Field="t => t.ActiveType.EnumText()" />
                         <GridCommandColumns />
                     </Columns>

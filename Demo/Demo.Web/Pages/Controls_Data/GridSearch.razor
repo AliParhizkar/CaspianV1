@@ -39,7 +39,7 @@
                                 <StringTextBox Search @bind-Value="customerStringSearch.CompanyName" />
                             </div>
                         </div>
-                        <DataGrid TEntity="Customer" HideInsertIcon Search="customerStringSearch">
+                        <DataGrid TEntity="Customer" Search="customerStringSearch">
                             <Columns>
                                 <GridColumn Field="t => t.CustomerType.EnumText()" />
                                 <GridColumn Field="t => t.FName" />
@@ -71,7 +71,7 @@
                                 <DropdownList @bind-Value="customerEnumSearch.Gender" />
                             </div>
                         </div>
-                        <DataGrid TEntity="Customer" HideInsertIcon Search="customerEnumSearch">
+                        <DataGrid TEntity="Customer" Search="customerEnumSearch">
                             <Columns>
                                 <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
                                 <GridColumn Field="t => t.CustomerType.EnumText()" />
@@ -98,7 +98,7 @@
                                  <ComboBox TEntity="Country" TValue="int" @bind-Value="citySearch.CountryId" TextExpression="t => t.Title" />
                             </div>
                         </div>
-                        <DataGrid TEntity="City" HideInsertIcon Search="citySearch">
+                        <DataGrid TEntity="City" Search="citySearch">
                             <Columns>
                                 <GridColumn Field="t => t.Country.Title" Title="Country" />
                                 <GridColumn Field="t => t.Title" />
@@ -141,7 +141,7 @@
                                 <NumericTextBox @bind-Value="toPrice" />
                             </div>
                         </div>
-                        <DataGrid TEntity="Product" HideInsertIcon>
+                        <DataGrid TEntity="Product">
                             <Columns>
                                 <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                                 <GridColumn Field="t => t.Title" />
@@ -170,7 +170,7 @@
                                 <DatePicker @bind-Value="toDate" />
                             </div>
                         </div>
-                        <DataGrid TEntity="OrderDeatil" HideInsertIcon>
+                        <DataGrid TEntity="OrderDeatil">
                             <Columns>
                                 <GridColumn Field="t => t.Order.Date" Title="Order date" @bind-From="fromDate" @bind-To="toDate" />
                                 <GridColumn Field="t => t.Product.Title" />
@@ -210,7 +210,7 @@
                                 <CheckBox @bind-Value="isOutOfStock" OnChange="() => gridProduct.EnableLoading()" />
                             </div>
                         </div>
-                        <DataGrid @ref="gridProduct" TEntity="Product" HideInsertIcon ConditionExpr="t => isOutOfStock == null || t.OutofStock == isOutOfStock">
+                        <DataGrid @ref="gridProduct" TEntity="Product" ConditionExpr="t => isOutOfStock == null || t.OutofStock == isOutOfStock">
                             <Columns>
                                 <GridColumn Field="t => t.Title" />
                                 <GridColumn Field="t => t.Price.Seprate3Digit()" />

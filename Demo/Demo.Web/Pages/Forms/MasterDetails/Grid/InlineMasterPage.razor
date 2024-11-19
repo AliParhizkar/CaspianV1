@@ -35,7 +35,7 @@
                             <RadioItem Value="true" Title="Listview" />
                         </RadioList>
                     </div>
-                    <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" ContentHeight="300"
+                    <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" ContentHeight="300" ShowInsertIcon="true"
                             ConditionExpr="t => !onlyThisDay || t.Date == date">
                         <Columns>
                             <GridColumn Field="t => t.Date.ToShortDateString()" Title="Order date" />

@@ -103,6 +103,7 @@ namespace Caspian.UI
         public void DataViewInitialize()
         {
             DataView.Search = Search;
+            DataView.InsertIconState(true);
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
                 var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));

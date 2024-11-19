@@ -33,7 +33,7 @@
                         left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 20;
                     animate.style.marginLeft = `${-left}px`;
                     animate.style.width = `${locHelpWindow.width + 10}px`;
-                    animate.style.height = `${locHelpWindow.height - 20}px`;
+                    animate.style.height = `${locHelpWindow.height + 5}px`;
 
                     if (locTarget.bottom + locHelpWindow.height - 30 <= window.innerHeight) {
                         animate.classList.add('c-animate-down');

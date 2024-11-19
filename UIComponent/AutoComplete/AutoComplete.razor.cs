@@ -383,7 +383,6 @@ namespace Caspian.UI
         public void SetAndInitializeGrid(DataGrid<TEntity> grid)
         {
             this.grid = grid;
-            grid.HideInsertIcon = true;
             grid.SelectFirstRow();
             grid.OnInternalRowSelect = EventCallback.Factory.Create<int>(this, async id =>
             {

@@ -135,6 +135,7 @@ namespace Caspian.UI
         public void DataViewInitialize()
         {
             DataView.Search = Search;
+            DataView.InsertIconState(true);
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TMaster>(this, async master =>
             {
                 if (Window != null)
@@ -179,6 +180,7 @@ namespace Caspian.UI
         public virtual void DetailDataViewInitialize()
         {
             DetailDataView.Batch = true;
+            DetailDataView.InsertIconState(true);
             var param = Expression.Parameter(typeof(TDetail), "t");
             var masterInfo = typeof(TDetail).GetForeignKey(typeof(TMaster));
             Expression expr = Expression.Property(param, masterInfo);

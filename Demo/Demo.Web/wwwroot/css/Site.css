@@ -170,7 +170,6 @@ html {
 
 .d-lst-8 {
     width:90px;
-    padding: 12px 5px;
     font-weight: 700;
     color: #4e4e4e;
 }
@@ -235,7 +234,6 @@ html {
 .d-listview-col-7 {
     width: 100px;
     border-top: 1px solid rgba(0,0,0,0.08);
-    padding:20px 0 0 5px;
     font-weight:bold;
     color:darkslategray;
 }

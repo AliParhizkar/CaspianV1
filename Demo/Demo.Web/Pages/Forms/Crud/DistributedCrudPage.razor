@@ -25,7 +25,7 @@
                             <label>Product Category</label>
                         </div>
                         <div class="col-md-9">
-                            <ComboBox TEntity="ProductCategory" TValue="int?" @bind-Value="categoryId" TextExpression="t => t.Title" OnChanged="() => Service.DataView.EnableLoading()" />
+                            <ComboBox TEntity="ProductCategory" TValue="int?" @bind-Value="categoryId" TextExpression="t => t.Title" OnChanged="() => Service.DataView?.EnableLoading()" />
                         </div>
                     </div>
                     <div class="c-body ps-3 pe-3">
