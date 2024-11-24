@@ -9,6 +9,102 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var caspian;
 (function (caspian) {
+    class Window {
+        constructor(win) {
+            this.windowOpenClose(win.closest('.t-window'));
+            this.bindObserver(win);
+        }
+        windowOpenClose(win) {
+            let content = win.getElementsByClassName('t-window-content')[0];
+            if (content.attributes['status'].value == '2') {
+                let main = document.getElementsByClassName('c-content-main')[0];
+                if (main == null)
+                    document.body.style.overflow = 'hidden';
+                else
+                    main.style.overflow = 'hidden';
+                let header = win.getElementsByClassName('t-window-titlebar')[0];
+                if (content.attributes['draggable']) {
+                    this.bindDragAndDrop(win, header);
+                    header.style.cursor = 'move';
+                }
+                else {
+                    header.onmousedown = null;
+                    header.style.cursor = 'default';
+                }
+                win.style.display = 'block';
+                let left, top;
+                let parent = win.parentElement.closest('.t-window');
+                if (parent == null) {
+                    left = (window.innerWidth - win.getBoundingClientRect().width) / 2;
+                    top = -50;
+                }
+                else {
+                    let loc = parent.getBoundingClientRect();
+                    left = loc.left + (loc.width - win.getBoundingClientRect().width) / 2;
+                    top = loc.top - 45;
+                }
+                win.style.left = `${left}px`;
+                win.style.top = `${top}px`;
+                setTimeout(function () {
+                    win.classList.add('window-animate');
+                    win.style.top = `${top + 80}px`;
+                    setTimeout(() => win.classList.remove('window-animate'), 250);
+                }, 25);
+            }
+            else
+                win.style.display = 'none';
+        }
+        bindDragAndDrop(dragableDom, header) {
+            header.onmousedown = e => {
+                let loc = e.target.getBoundingClientRect();
+                let xStart = e.clientX, yStart = e.clientY, leftStart = loc.left, topStart = loc.top;
+                document.onmouseup = () => {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                };
+                document.onmousemove = e => {
+                    let difX = e.clientX - xStart, difY = e.clientY - yStart;
+                    dragableDom.style.left = `${leftStart + difX}px`;
+                    dragableDom.style.top = `${topStart + difY}px`;
+                };
+            };
+        }
+        bindObserver(win) {
+            const mutationObserver = new MutationObserver(list => {
+                list.forEach(mutation => {
+                    if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
+                        let status = mutation.target.attributes['status'].value;
+                        let main = document.getElementsByClassName('c-content-main')[0] || document.body;
+                        if (status == '1') {
+                            let openWindowIsExist = false;
+                            let windows = document.getElementsByClassName('t-window');
+                            for (let index = 0; index < windows.length; index++) {
+                                if (windows.item(index).getElementsByClassName('t-window-content')[0].attributes['status'].value == '2') {
+                                    openWindowIsExist = true;
+                                    break;
+                                }
+                            }
+                            if (!openWindowIsExist)
+                                main.style.overflow = 'auto';
+                        }
+                        else
+                            main.style.overflow = 'hidden';
+                        let mywindow = mutation.target.closest('.t-window');
+                        this.windowOpenClose(mywindow);
+                    }
+                });
+            });
+            mutationObserver.observe(win, {
+                attributes: true,
+                childList: false,
+                subtree: false
+            });
+        }
+    }
+    caspian.Window = Window;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
     class ComboBox {
         constructor(input, Pageable, dotnet) {
             this.bindObserver(input, Pageable, dotnet);
@@ -289,7 +385,7 @@ var caspian;
                         setTimeout(() => helpWindow.style.top = '0', 25);
                     }
                     else if (locTarget.top >= locHelpWindow.height - 30) {
-                        animate.style.marginTop = `${-locHelpWindow.height - 15}px`;
+                        animate.style.marginTop = `${-locHelpWindow.height - 43}px`;
                         animate.classList.add('c-animate-up');
                         setTimeout(() => helpWindow.style.bottom = '0', 25);
                     }
@@ -777,6 +873,11 @@ var caspian;
         static bindMenu() {
             new caspian.Accordion(document.getElementById('accordion'), false);
         }
+        static convertToInt(value) {
+            if (!value)
+                return null;
+            return parseFloat(value.substring(0, value.length - 2));
+        }
         static bindTextBox(input) {
             new caspian.TextBox(input, 'numeric');
         }
@@ -882,6 +983,12 @@ HTMLElement.prototype.getPosition = function () {
         parent = parent.offsetParent;
     }
     return new DOMRect(left, top, rect.width, rect.height);
+};
+Array.prototype.sum = function () {
+    let sumArray = 0;
+    for (var index = 0; index < this.length; index++)
+        sumArray += this[index];
+    return sumArray;
 };
 var caspian;
 (function (caspian) {
@@ -1273,15 +1380,50 @@ var caspian;
             this.grid = grv;
             this.content = grv.getElementsByClassName('t-grid-content')[0];
             if (this.content.classList.contains('t-inline-content'))
-                this.bindObserver();
-            this.bindResizeObserver();
+                this.bindObserverForInsertTable();
+            this.bindResizeForHeight();
+            this.header = this.grid.getElementsByClassName('t-grid-header-wrap')[0];
+            this.headerColumns = Array.from(this.header.querySelectorAll('table thead tr th'));
+            this.headerColumns.forEach(t => {
+                t.attributes['default-size'] = t.style.width;
+            });
             this.content.onscroll = e => {
                 let target = e.target;
                 target.closest('.t-grid').getElementsByClassName('t-grid-header-wrap')[0].scrollLeft = target.scrollLeft;
             };
             this.columnResize();
+            this.bindObserverSizeForWidth();
         }
-        bindResizeObserver() {
+        bindObserverSizeForWidth() {
+            const resizeObserver = new ResizeObserver(entries => {
+                this.headerColumns.forEach(t => {
+                    t.style.width = t.attributes['default-size'];
+                });
+                this.grid.querySelectorAll('.c-grid-insert tbody >tr td').forEach((t, index) => {
+                    t.style.width = this.headerColumns[index].attributes['default-size'];
+                });
+                this.content.getElementsByClassName('c-grid-items')[0].querySelectorAll('tbody >tr td').forEach((t, index) => {
+                    t.style.width = this.headerColumns[index].attributes['default-size'];
+                });
+            });
+            resizeObserver.observe(this.grid);
+        }
+        bindObserverForContentTable(element) {
+            const mutationObserver = new MutationObserver(list => {
+                let table = list[0].target.closest('table');
+                debugger;
+                if (table.rows.length == 1) {
+                    for (let index = 0; index < this.headerColumns.length; index++)
+                        table.rows[0].cells[index].style.width = `${this.headerColumns[index].getBoundingClientRect().width}px`;
+                }
+            });
+            mutationObserver.observe(element.getElementsByTagName('tbody')[0], {
+                attributes: false,
+                childList: true,
+                subtree: false,
+            });
+        }
+        bindResizeForHeight() {
             const resizeObserver = new ResizeObserver(entries => {
                 let grv = this.grid;
                 for (let entry of entries) {
@@ -1309,15 +1451,19 @@ var caspian;
             });
             resizeObserver.observe(this.grid.getElementsByClassName('t-grid-content')[0]);
         }
-        bindObserver() {
+        bindObserverForInsertTable() {
             const mutationObserver = new MutationObserver(list => {
                 list.every(t => {
                     let insertTable = t.target.getElementsByClassName('c-grid-insert')[0];
+                    let contentTable = t.target.getElementsByClassName('c-grid-items')[0];
+                    if (contentTable && !contentTable.attributes['isbinded']) {
+                        contentTable.attributes['isbinded'] = true;
+                        this.bindObserverForContentTable(contentTable);
+                    }
                     if (insertTable != null) {
-                        let columns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
-                        let insertColumns = insertTable.getElementsByTagName('tr')[0].children;
-                        for (let index = 0; index < columns.length; index++)
-                            insertColumns[index].style.width = `${columns[index].getBoundingClientRect().width}px`;
+                        let insertColumns = insertTable.querySelectorAll('tbody tr td');
+                        for (let index = 0; index < this.headerColumns.length; index++)
+                            insertColumns[index].style.width = `${this.headerColumns[index].getBoundingClientRect().width}px`;
                     }
                 });
             });
@@ -1385,14 +1531,20 @@ var caspian;
             let curentResult = curentWidth - dif, otherResult = otherWidth + dif;
             if (curentResult < 30 || otherResult < 30)
                 return;
+            if (caspian.common.convertToInt(this.curent.style.minWidth) > curentResult || caspian.common.convertToInt(this.other.style.minWidth) > otherResult)
+                return;
             this.curent.style.width = `${curentResult}px`;
             this.other.style.width = `${otherResult}px`;
-            let columns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
-            let curentIndex = columns.indexOf(this.curent);
-            let otherIndex = columns.indexOf(this.other);
-            columns = this.content.getElementsByTagName('tr')[0].children;
-            columns.item(curentIndex).style.width = `${curentResult}px`;
-            columns.item(otherIndex).style.width = `${otherResult}px`;
+            let headerColumns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
+            let curentIndex = headerColumns.indexOf(this.curent);
+            let otherIndex = headerColumns.indexOf(this.other);
+            //change width of content
+            let contentTable = this.content.getElementsByClassName('c-grid-items')[0];
+            if (contentTable != null && contentTable.rows.length > 0) {
+                let contentColumns = contentTable.getElementsByTagName('tr')[0].children;
+                contentColumns.item(curentIndex).style.width = `${curentResult}px`;
+                contentColumns.item(otherIndex).style.width = `${otherResult}px`;
+            }
             let contentHeight = this.content.getBoundingClientRect().height;
             let tableHeight = this.grid.getElementsByClassName('c-grid-items')[0].getBoundingClientRect().height;
             let header = this.grid.getElementsByClassName('t-grid-header')[0];
@@ -1480,101 +1632,5 @@ var caspian;
         }
     }
     caspian.Accordion = Accordion;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class Window {
-        constructor(win) {
-            this.windowOpenClose(win.closest('.t-window'));
-            this.bindObserver(win);
-        }
-        windowOpenClose(win) {
-            let content = win.getElementsByClassName('t-window-content')[0];
-            if (content.attributes['status'].value == '2') {
-                let main = document.getElementsByClassName('c-content-main')[0];
-                if (main == null)
-                    document.body.style.overflow = 'hidden';
-                else
-                    main.style.overflow = 'hidden';
-                let header = win.getElementsByClassName('t-window-titlebar')[0];
-                if (content.attributes['draggable']) {
-                    this.bindDragAndDrop(win, header);
-                    header.style.cursor = 'move';
-                }
-                else {
-                    header.onmousedown = null;
-                    header.style.cursor = 'default';
-                }
-                win.style.display = 'block';
-                let left, top;
-                let parent = win.parentElement.closest('.t-window');
-                if (parent == null) {
-                    left = (window.innerWidth - win.getBoundingClientRect().width) / 2;
-                    top = -50;
-                }
-                else {
-                    let loc = parent.getBoundingClientRect();
-                    left = loc.left + (loc.width - win.getBoundingClientRect().width) / 2;
-                    top = loc.top - 45;
-                }
-                win.style.left = `${left}px`;
-                win.style.top = `${top}px`;
-                setTimeout(function () {
-                    win.classList.add('window-animate');
-                    win.style.top = `${top + 80}px`;
-                    setTimeout(() => win.classList.remove('window-animate'), 250);
-                }, 25);
-            }
-            else
-                win.style.display = 'none';
-        }
-        bindDragAndDrop(dragableDom, header) {
-            header.onmousedown = e => {
-                let loc = e.target.getBoundingClientRect();
-                let xStart = e.clientX, yStart = e.clientY, leftStart = loc.left, topStart = loc.top;
-                document.onmouseup = () => {
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                };
-                document.onmousemove = e => {
-                    let difX = e.clientX - xStart, difY = e.clientY - yStart;
-                    dragableDom.style.left = `${leftStart + difX}px`;
-                    dragableDom.style.top = `${topStart + difY}px`;
-                };
-            };
-        }
-        bindObserver(win) {
-            const mutationObserver = new MutationObserver(list => {
-                list.forEach(mutation => {
-                    if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
-                        let status = mutation.target.attributes['status'].value;
-                        let main = document.getElementsByClassName('c-content-main')[0] || document.body;
-                        if (status == '1') {
-                            let openWindowIsExist = false;
-                            let windows = document.getElementsByClassName('t-window');
-                            for (let index = 0; index < windows.length; index++) {
-                                if (windows.item(index).getElementsByClassName('t-window-content')[0].attributes['status'].value == '2') {
-                                    openWindowIsExist = true;
-                                    break;
-                                }
-                            }
-                            if (!openWindowIsExist)
-                                main.style.overflow = 'auto';
-                        }
-                        else
-                            main.style.overflow = 'hidden';
-                        let mywindow = mutation.target.closest('.t-window');
-                        this.windowOpenClose(mywindow);
-                    }
-                });
-            });
-            mutationObserver.observe(win, {
-                attributes: true,
-                childList: false,
-                subtree: false
-            });
-        }
-    }
-    caspian.Window = Window;
 })(caspian || (caspian = {}));
 //# sourceMappingURL=caspian.bundle.js.map

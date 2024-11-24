@@ -18,7 +18,9 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             SearchData = Activator.CreateInstance<TEntity>();
+            Service?.IsLookup();
             base.OnInitialized();
+            
         }
 
         [CascadingParameter(Name = "LookupStringSearchValue")]

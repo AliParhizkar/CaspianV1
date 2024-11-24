@@ -6,16 +6,13 @@
 @using Stimulsoft.Report.Blazor
 @using Syncfusion.Blazor.DropDowns
 
+<button @onclick="OnClick">Test</button>
 
-<div style="width:500px;margin:0 auto">
-    <DataGrid TEntity="Country">
-        <Columns>
-            <GridColumn Field="t => t.Title" />
-        </Columns>
-    </DataGrid>
-</div>
 
 @code
 {
-
+    void OnClick()
+    {
+        
+    }
 }

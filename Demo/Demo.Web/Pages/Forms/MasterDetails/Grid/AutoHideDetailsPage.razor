@@ -74,7 +74,7 @@
                 <div class="row">
                     <div class="col-md-3 row">
                         <div class="col-md-2 text-start c-arrow-back">
-                            <a href="/Demo/Batch/AutoHide/Master">
+                            <a href="/Demo/Batch/AutoHide/Master/@(receiptId)">
                                 <span class="fa fa-arrow-left"></span>
                             </a>
                         </div>
@@ -119,7 +119,7 @@
                     <div class="col-md-9 ps-4">
                         <DataGrid TEntity="ReceiptDetail" DetailBatchService="Service" Inline AutoHide>
                             <Columns Context="con">
-                                <GridColumn Field="t => t.Material.Title" Title="Material">
+                                <GridColumn Field="t => t.Material.Title" Title="Material" style="min-width:180px">
                                     <EditTemplate>
                                          <AutoComplete TEntity="Material" TValue="int" @bind-Value="con.Data.MaterialId"
                                                         HideHeader AutoHide Title="Material" TextExpression="t => t.Title"
@@ -211,6 +211,7 @@
     ReceiptDetail selectedReceiptDetail;
     StringTextBox txtDescription;
     ElementReference? targetElement, btnDescripOninsert, btnDescripOnEdit;
+    int? receiptId;
 
     async Task ShowDesccription(ReceiptDetail detail, UpsertMode upsertMode)
     {
@@ -230,6 +231,11 @@
         Service.OnCreate = t =>
         {
             t.Date = DateTime.Now;
+        };
+        Service.OnUpsert = t =>
+        {
+            receiptId = t.Id;
+            StateHasChanged();
         };
         base.OnInitialized();
     }

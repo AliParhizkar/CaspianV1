@@ -295,6 +295,12 @@
             new Accordion(document.getElementById('accordion'), false);
         }
 
+        public static convertToInt(value: string):number {
+            if (!value)
+                return null;
+            return parseFloat(value.substring(0, value.length - 2));
+        }
+
         public static bindTextBox(input: HTMLInputElement) {
             new TextBox(input, 'numeric');
         }
@@ -410,6 +416,10 @@ interface HTMLElement {
     getPosition(): DOMRect;
 }
 
+interface Array<T extends number > {
+    sum(): number; 
+}
+
 
 // Implement the Extension
 HTMLCollection.prototype.indexOf = function (element: HTMLElement): number {
@@ -431,6 +441,9 @@ HTMLElement.prototype.getPosition = function () {
     return new DOMRect(left, top, rect.width, rect.height);
 }
 
-interface position {
-    left: number; top: number;
+Array.prototype.sum = function (): number{
+    let sumArray = 0;
+    for (var index = 0; index < (this as Array<number>).length; index++)
+        sumArray += this[index];
+    return sumArray;
 }

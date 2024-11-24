@@ -39,6 +39,10 @@ namespace Demo.Model
 
         public DbSet<Meeting> Lectures { get; set; }    
 
+        public DbSet<Scope> Scopes { get; set; } 
+
+        public DbSet<Evaluation> Evaluations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()

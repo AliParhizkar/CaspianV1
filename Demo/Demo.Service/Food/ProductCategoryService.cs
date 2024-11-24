@@ -26,8 +26,7 @@ namespace Demo.Service
             {
                 if (!pc.Code.HasValue())
                     return false;
-
-                return provider.GetService<ProductService>().GetAll().Any(p => p.Code == pc.Code);
+                return provider.GetCaspianService<ProductService>().GetAll().Any(p => p.Code == pc.Code);
             }, "A product with this code has been registered.");
         }
 

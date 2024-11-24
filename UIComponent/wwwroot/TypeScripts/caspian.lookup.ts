@@ -40,7 +40,7 @@
                         setTimeout(() => helpWindow.style.top = '0', 25);
                     }
                     else if (locTarget.top >= locHelpWindow.height - 30) {
-                        animate.style.marginTop = `${-locHelpWindow.height - 15}px`;
+                        animate.style.marginTop = `${-locHelpWindow.height - 43}px`;
                         animate.classList.add('c-animate-up');
                         setTimeout(() => helpWindow.style.bottom = '0', 25);
                     }

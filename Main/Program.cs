@@ -57,13 +57,7 @@ namespace Main
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-
-
             builder.Services.AddScoped<ReportParamService>();
-
-
-
-
             builder.Services.AddCaspianUIComponentsServices();
             builder.Services.AddSyncfusionBlazor();
             builder.Services.AddSingleton<SingletonMenuService>(t =>
@@ -123,6 +117,11 @@ namespace Main
 
             app.MapAdditionalIdentityEndpoints();
             app.MapControllers();
+            if (!builder.Environment.IsDevelopment())
+            {
+                app.Urls.Add("https://localhost:443");
+                app.Urls.Add("http://localhost:80");
+            }
             app.Run();
         }
 

@@ -69,6 +69,8 @@ namespace Caspian.UI
 
         public Action<TMaster> OnCreate { get; set; }
 
+        public Action<TMaster> OnUpsert { get; set; }
+
         protected virtual async Task UpdateDatabaseAsync(EditContext context1)
         {
             var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(context1.Model));
@@ -103,6 +105,8 @@ namespace Caspian.UI
             if (Window != null)
                 await Window?.Close();
             StateHasChanged();
+            if (OnUpsert != null)
+                OnUpsert.Invoke(result);
         }
 
         public void FormInitialize()

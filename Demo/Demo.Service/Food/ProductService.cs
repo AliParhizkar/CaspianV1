@@ -30,7 +30,7 @@ namespace Demo.Service
                 {
                     if (!p.Code.HasValue())
                         return false;
-                    return provider.GetService<ProductCategoryService>().GetAll().Any(pc => pc.Code == p.Code);
+                    return provider.GetCaspianService<ProductCategoryService>().GetAll().Any(pc => pc.Code == p.Code);
                 }, "There is a product category with this code in the system");
         }
 

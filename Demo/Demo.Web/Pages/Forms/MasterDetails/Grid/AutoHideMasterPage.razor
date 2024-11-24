@@ -1,4 +1,5 @@
 ﻿@page "/Demo/Batch/AutoHide/Master"
+@page "/Demo/Batch/AutoHide/Master/{ReciptId:int}"
 @using Caspian.Common.Extension
 @inject BatchService<WarehouseReceipt, ReceiptDetail> Service
 @inject NavigationManager navigationManager
@@ -61,5 +62,17 @@
         if (receipt.Id > 0)
             url += $"/{receipt.Id}";
         navigationManager.NavigateTo(url);
+        
+
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && ReciptId.HasValue)
+            await Service.DataView.SelectRowById(ReciptId.Value);
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [Parameter]
+    public int? ReciptId { get; set; }
 }

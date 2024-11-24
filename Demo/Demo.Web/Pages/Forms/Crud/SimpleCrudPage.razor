@@ -216,7 +216,7 @@
 {
     protected override void OnInitialized()
     {
-        ProductService.OnUpsert = async t => (t.Price > 0 && t.TakeoutPrice > 0) || await base.Confirm("آیا با ثبت محصول با قیمت صفر موافقید؟");
+        ProductService.OnUpsert = async t => (t.Price > 0 && t.TakeoutPrice > 0) || t.Id > 0 || await base.Confirm("آیا با ثبت محصول با قیمت صفر موافقید؟");
         base.OnInitialized();
     }
 

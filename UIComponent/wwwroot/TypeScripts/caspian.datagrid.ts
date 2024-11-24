@@ -9,21 +9,60 @@
         other: HTMLElement;
         otherWidth: number;
         xStart: number;
+        header: HTMLElement;
+        headerColumns: HTMLElement[];
 
         constructor(grv: HTMLElement) {
             this.grid = grv;
             this.content = (grv.getElementsByClassName('t-grid-content')[0] as HTMLDivElement);
             if (this.content.classList.contains('t-inline-content'))
-                this.bindObserver();
-            this.bindResizeObserver();
+                this.bindObserverForInsertTable();
+            this.bindResizeForHeight();
+            this.header = this.grid.getElementsByClassName('t-grid-header-wrap')[0] as HTMLElement;
+            this.headerColumns = Array.from(this.header.querySelectorAll('table thead tr th'));
+            this.headerColumns.forEach(t => {
+                t.attributes['default-size'] = t.style.width;
+            });
             this.content.onscroll = e => {
                 let target = e.target as HTMLElement;
                 target.closest('.t-grid').getElementsByClassName('t-grid-header-wrap')[0].scrollLeft = target.scrollLeft;
             }
             this.columnResize();
+            this.bindObserverSizeForWidth();
         }
 
-        bindResizeObserver() {
+        bindObserverSizeForWidth() {
+            const resizeObserver = new ResizeObserver(entries => {
+                this.headerColumns.forEach(t => {
+                    t.style.width = t.attributes['default-size'];
+                });
+                this.grid.querySelectorAll('.c-grid-insert tbody >tr td').forEach((t, index) => {
+                    (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
+                });
+                this.content.getElementsByClassName('c-grid-items')[0].querySelectorAll('tbody >tr td').forEach((t, index) => {
+                    (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
+                });
+            });
+            resizeObserver.observe(this.grid);
+        }
+
+        bindObserverForContentTable(element: HTMLElement) {
+            const mutationObserver = new MutationObserver(list => {
+                let table = ((list[0].target as HTMLElement).closest('table') as HTMLTableElement);
+                debugger
+                if (table.rows.length == 1) {
+                    for (let index = 0; index < this.headerColumns.length; index++)
+                        table.rows[0].cells[index].style.width = `${this.headerColumns[index].getBoundingClientRect().width}px`    
+                }
+            });
+            mutationObserver.observe(element.getElementsByTagName('tbody')[0], {
+                attributes: false,
+                childList: true,
+                subtree: false,
+            });
+        }
+
+        bindResizeForHeight() {
             const resizeObserver = new ResizeObserver(entries => {
                 let grv = this.grid;
                 for (let entry of entries) {
@@ -50,18 +89,21 @@
                 }
             });
             resizeObserver.observe(this.grid.getElementsByClassName('t-grid-content')[0]);
-
         }
 
-        bindObserver() {
+        bindObserverForInsertTable() {
             const mutationObserver = new MutationObserver(list => {
                 list.every(t => {
                     let insertTable = (t.target as HTMLElement).getElementsByClassName('c-grid-insert')[0];
+                    let contentTable = (t.target as HTMLElement).getElementsByClassName('c-grid-items')[0];
+                    if (contentTable && !contentTable.attributes['isbinded']) {
+                        contentTable.attributes['isbinded'] = true;
+                        this.bindObserverForContentTable(contentTable as HTMLElement);
+                    }
                     if (insertTable != null) {
-                        let columns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
-                        let insertColumns = insertTable.getElementsByTagName('tr')[0].children;
-                        for (let index = 0; index < columns.length; index++) 
-                            (insertColumns[index] as HTMLElement).style.width = `${columns[index].getBoundingClientRect().width}px`
+                        let insertColumns = insertTable.querySelectorAll('tbody tr td');
+                        for (let index = 0; index < this.headerColumns.length; index++) 
+                            (insertColumns[index] as HTMLElement).style.width = `${this.headerColumns[index].getBoundingClientRect().width}px`
                     }
                 });
             });
@@ -132,14 +174,20 @@
             let curentResult = curentWidth - dif, otherResult = otherWidth + dif;
             if (curentResult < 30 || otherResult < 30)
                 return;
+            if (common.convertToInt(this.curent.style.minWidth) > curentResult || common.convertToInt(this.other.style.minWidth) > otherResult)
+                return;
             this.curent.style.width = `${curentResult}px`;
             this.other.style.width = `${otherResult }px`;
-            let columns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
-            let curentIndex = columns.indexOf(this.curent)
-            let otherIndex = columns.indexOf(this.other);
-            columns = this.content.getElementsByTagName('tr')[0].children;
-            (columns.item(curentIndex) as HTMLElement).style.width = `${curentResult}px`;
-            (columns.item(otherIndex) as HTMLElement).style.width = `${otherResult}px`;
+            let headerColumns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
+            let curentIndex = headerColumns.indexOf(this.curent)
+            let otherIndex = headerColumns.indexOf(this.other);
+            //change width of content
+            let contentTable = this.content.getElementsByClassName('c-grid-items')[0] as HTMLTableElement;
+            if (contentTable != null && contentTable.rows.length > 0) {
+                let contentColumns = contentTable.getElementsByTagName('tr')[0].children;
+                (contentColumns.item(curentIndex) as HTMLElement).style.width = `${curentResult}px`;
+                (contentColumns.item(otherIndex) as HTMLElement).style.width = `${otherResult}px`;
+            }
             let contentHeight = this.content.getBoundingClientRect().height;
             let tableHeight = this.grid.getElementsByClassName('c-grid-items')[0].getBoundingClientRect().height;
             let header = this.grid.getElementsByClassName('t-grid-header')[0] as HTMLElement;

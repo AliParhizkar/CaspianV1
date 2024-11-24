@@ -14,6 +14,12 @@ namespace Caspian.UI
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
         IJSRuntime jSRuntime;
+        bool isLookup;
+
+        internal void IsLookup()
+        {
+            isLookup = true;
+        }
 
         public UIService(IServiceProvider serviceProvider) 
         {
@@ -103,7 +109,8 @@ namespace Caspian.UI
         public void DataViewInitialize()
         {
             DataView.Search = Search;
-            DataView.InsertIconState(true);
+            if (!isLookup)
+                DataView.InsertIconState(true);
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
                 var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
