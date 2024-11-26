@@ -109,9 +109,9 @@ namespace Caspian.UI
                     if (Batch)
                     {
                         source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
-                        if (DetailBatchService != null)
+                        if (DetailsService != null)
                         {
-                            foreach(var item in DetailBatchService.ChangedEntities)
+                            foreach(var item in DetailsService.ChangedEntities)
                             {
                                 if (item.ChangeStatus == ChangeStatus.Added)
                                     source.Add(item.Entity);
@@ -562,9 +562,9 @@ namespace Caspian.UI
             if (shouldFetchData && columnsData != null && Batch)
             {
                 await DataBind();
-                if (DetailBatchService.ChangedEntities == null)
+                if (DetailsService.ChangedEntities == null)
                     throw new CaspianException($"Caspian Exception: please specify ChangedEntities parameter in DataGrid<{typeof(TEntity).Name}>");
-                foreach(var entity in DetailBatchService.ChangedEntities)
+                foreach(var entity in DetailsService.ChangedEntities)
                 {
                     if (entity.ChangeStatus == ChangeStatus.Added)
                         source.Add(entity.Entity);

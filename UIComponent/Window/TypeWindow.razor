@@ -1,0 +1,15 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity where TEntity : class
+@inject IServiceScopeFactory ScopeFactory
+
+<Window @bind-Status="status" @attributes="windowProperties" >
+    <CaspianForm @ref="form" Model="entity" OnSubmit="UpdateEntity">
+        <CaspianValidationValidator Source="source" ValidatorType="serviceType" />
+        @Content(newEntity)
+   </CaspianForm>
+</Window>
+
+@code 
+{
+
+}

@@ -19,6 +19,16 @@ namespace Caspian.UI
         }
 
         public DataView<TDetail1> DetailDataView { get; set; }
+
+        public TypeWindow<TDetail1> TypeWindow { get; set; }
+
+        public CaspianForm<TDetail1> DetailForm { get; set; }
+
+        public void DetailFormInitialize()
+        {
+
+        }
+
         public IList<ChangedEntity<TDetail1>> ChangedEntities { get; set; }
 
         public override void DetailDataViewInitialize()

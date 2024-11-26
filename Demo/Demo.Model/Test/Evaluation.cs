@@ -32,7 +32,7 @@ namespace Demo.Model
         public DateTime? StartDate { get; set; }
 
         [DisplayName("تاریخ پایان سال ارزیابی")]
-        public DateTime? EnddDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [DisplayName("تاریخ گردش ارزیابی از")]
         public DateTime? EvalDateFrom { get; set; }
@@ -53,7 +53,7 @@ namespace Demo.Model
         public DateTime? NotificationDateTo { get; set; }
     }
 
-    public enum EvaluationTurn
+    public enum EvaluationTurn: byte
     {
         [Display(Name = "دوره اول")]
         Turn1 = 1, 

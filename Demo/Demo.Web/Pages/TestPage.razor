@@ -1,13 +1,74 @@
 ﻿@page "/Demo/Test"
 @namespace Demo.Web.Pages
-
-
-<button @key="125698" @onclick="Clicked"></button>
+<div class="row">
+    <div class="col-md-1">
+        <label>سال</label>
+    </div>
+    <div class="col-md-3">
+        <DropdownList @bind-Value="year" Source="years" OnChange="CreateMenus" />
+    </div>
+    <div class="col-md-1">
+        <label>ماه</label>
+    </div>
+    <div class="col-md-3">
+        <DropdownList @bind-Value="month" OnChange="CreateMenus" />
+    </div>
+</div>
+<div class="main">
+    <div class="days-week">
+        <div class="c-day-week">ایام هفته</div>
+        @foreach(var item in DayOfPersianWeek.Tus.DisplayNames().Select(t => t.Key))
+        {
+            <div class="c-day-week">@(item)</div>
+        }
+    </div>
+    <div class="weeks">
+        @{
+            <div class="weeks-title">
+                @for (var i = 0; i < weeksCount; i++)
+                {
+                    <div class="week-title week-@(weeksCount)">هفته @weeksName[i]</div>
+                }
+            </div>
+            <div class="d-calendar">
+                @foreach(var item in dates)
+                {
+                    <div class="day-month week-@(weeksCount)">@item</div>
+                }
+            </div>
+        }
+    </div>
+</div>
 
 @code
 {
-    void Clicked(MouseEventArgs e)
+    IList<SelectListItem> years;
+    int weeksCount, year = DateTime.Now.ToPersianDate().Year.Value;
+    PersianMonth month = DateTime.Now.ToPersianDate().Month.Value;
+    string[] weeksName = {"اول", "دوم", "سوم", "چهارم", "پنجم", "ششم"};
+    IList<string> dates = new List<string>();
+
+    protected override void OnInitialized()
     {
-        
+        years = new List<SelectListItem>()
+        {
+            new SelectListItem("1403", "1403"),
+            new SelectListItem("1404", "1404"),
+        };
+        CreateMenus();
+        base.OnInitialized();
+    }
+
+    void CreateMenus()
+    {
+        var startDate = new PersianDate(year, month, 1);
+        dates = new List<string>();
+        for (var index = 1; index < startDate.FirstDayOfMonth().DayOfWeek.ConvertToInt().Value; index++)
+            dates.Add(null);
+        for (var date = startDate; date < startDate.AddMonth(1); date = date.AddDays(1))
+            dates.Add(date.ToShortDateString());
+        weeksCount = (dates.Count - 1) / 7 + 1;
+        for (var i = dates.Count; i < weeksCount * 7; i++)
+            dates.Add(null);
     }
 }

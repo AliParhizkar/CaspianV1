@@ -276,9 +276,9 @@ namespace Caspian.Common
         {
             if (IsNull)
                 return null;
-            month = month + Month.ConvertToInt().Value;
-            var year = Year.Value + month / 12;
-            month = Month.ConvertToInt().Value + month % 12;
+            var temp = month + Month.ConvertToInt().Value;
+            var year = Year.Value + temp / 12;
+            month = (temp - 1) % 12 + 1;
             return new PersianDate(year, (PersianMonth)month, Day.Value);
         }
 

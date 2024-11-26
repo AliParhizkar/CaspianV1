@@ -74,7 +74,7 @@ namespace Caspian.UI
         public IUIService<TEntity> Service { get; set; }
 
         [Parameter]
-        public IDetailBatchService<TEntity> DetailBatchService { get; set; }
+        public IDetailBatchService<TEntity> DetailsService { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, bool>> ConditionExpr { get; set; }
@@ -147,10 +147,10 @@ namespace Caspian.UI
                 Service.DataView = this;
                 Service.DataViewInitialize();
             }
-            if (DetailBatchService != null)
+            if (DetailsService != null)
             {
-                DetailBatchService.DetailDataView = this;
-                DetailBatchService.DetailDataViewInitialize();
+                DetailsService.DetailDataView = this;
+                DetailsService.DetailDataViewInitialize();
             }
             base.OnInitialized();
         }
@@ -277,6 +277,11 @@ namespace Caspian.UI
             StateHasChanged();
         }
 
+        internal IList<TEntity>  GetSource()
+        {
+            return source;
+        }
+
         internal async Task ReadyToInsert()
         {
             if (Inline)
@@ -331,7 +336,7 @@ namespace Caspian.UI
             {
                 if (AutoHide)
                     insertedEntity = null;
-                else
+                else if (insertedEntity != null)
                     InsertContext = new EditContext(insertedEntity.Data);
             }
         }
@@ -343,7 +348,7 @@ namespace Caspian.UI
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
             await service.AddAsync(entity);
-            DetailBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>() 
+            DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() 
             { 
                 Entity = entity, 
                 ChangeStatus = ChangeStatus.Added 
@@ -372,7 +377,7 @@ namespace Caspian.UI
             if (id > 0)
             {
                 var isExist = false;
-                foreach(var item in DetailBatchService.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
+                foreach(var item in DetailsService.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
                 {
                     var newId = Convert.ToInt32(pkey.GetValue(item.Entity));
                     if (id == newId)
@@ -383,7 +388,7 @@ namespace Caspian.UI
                 }
                 if (!isExist)
                 {
-                    DetailBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>()
+                    DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>()
                     {
                         ChangeStatus = ChangeStatus.Updated,
                         Entity = entity
@@ -470,22 +475,22 @@ namespace Caspian.UI
                 await ChangePageNumber(pageNumber);
                 if (id > 0)
                 {
-                    foreach (var item in DetailBatchService.ChangedEntities)
+                    foreach (var item in DetailsService.ChangedEntities)
                     {
                         var newId = Convert.ToInt32(pKey.GetValue(item.Entity));
                         if (newId == id)
                         {
-                            DetailBatchService.ChangedEntities.Remove(item);
+                            DetailsService.ChangedEntities.Remove(item);
                             break;
                         }
                     }
-                    DetailBatchService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
+                    DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
                     deletedEntities.Add(entity);
                 }
                 else
                 {
-                    var old = DetailBatchService.ChangedEntities.Single(t => t.Entity == entity);
-                    DetailBatchService.ChangedEntities.Remove(old);
+                    var old = DetailsService.ChangedEntities.Single(t => t.Entity == entity);
+                    DetailsService.ChangedEntities.Remove(old);
                 }
             }
             StateHasChanged();
@@ -627,8 +632,8 @@ namespace Caspian.UI
         {
             if (Service != null)
                 Service.DataView = null; 
-            if (DetailBatchService != null)
-                DetailBatchService.DetailDataView = null;
+            if (DetailsService != null)
+                DetailsService.DetailDataView = null;
         }
     }
 }

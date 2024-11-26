@@ -9,6 +9,343 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var caspian;
 (function (caspian) {
+    class TextBox {
+        constructor(input, type) {
+            this.input = input;
+            this.total || (this.total = 8);
+            input.onmouseenter = () => {
+                input.parentElement.classList.add('t-state-hover');
+            };
+            input.onmouseleave = () => {
+                input.parentElement.classList.remove('t-state-hover');
+            };
+            this.readAttributes();
+            this.bindAttributes();
+            if (type != 'string')
+                input.onkeypress = e => this.bindKeypress(e);
+            input.onfocus = () => {
+                this.input.select();
+                caspian.common.showErrorMessage(this.input.closest('.t-widget'));
+            };
+            input.onblur = () => {
+                caspian.common.hideErrorMessage(this.input.closest('.t-widget'));
+            };
+        }
+        bindKeypress(e) {
+            let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
+            if (code == 46 && this.numberDigit) {
+                let remain = value.length - end;
+                if (remain <= this.numberDigit && value.indexOf('.') == -1)
+                    isValid = true;
+            }
+            if (code >= 48 && code <= 57 && value.substr(end).indexOf('-') == -1)
+                isValid = true;
+            if (code >= 48 && code <= 57 || code == 13 || code == 45 && start == 0 && value.substr(end).indexOf('-') == -1)
+                isValid = true;
+            var pointIndex = value.indexOf('.');
+            if (pointIndex >= 0 && start == end && end > pointIndex && value.split('.')[1].length == this.numberDigit)
+                isValid = false;
+            if (start == 0 && end == 0 && value.length > 0 && value[0] == '-' && code >= 48 && code <= 57)
+                isValid = false;
+            let len = value.replace('-', '').replace('.', '').length;
+            if (len == this.total && start == end && code != 45 && code != 46)
+                isValid = false;
+            if (!isValid)
+                e.preventDefault();
+        }
+        bindAttributes() {
+            const mutationObserver = new MutationObserver((mutationList) => {
+                let name = mutationList[0].attributeName;
+                let attrs = mutationList[0].target.attributes;
+                if (name == 'total')
+                    this.total = attrs['total'].value;
+                if (name == 'number-digit')
+                    this.numberDigit = attrs['number-digit'].value;
+            });
+            mutationObserver.observe(this.input.closest('.t-widget'), {
+                attributes: true,
+                childList: false,
+                subtree: false
+            });
+        }
+        readAttributes() {
+            let attrs = this.input.closest('.t-widget').attributes;
+            if (attrs['total'] != null)
+                this.total = attrs['total'].value;
+            if (attrs['number-digit'] != null)
+                this.numberDigit = attrs['number-digit'].value;
+        }
+    }
+    caspian.TextBox = TextBox;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class DataGrid {
+        constructor(grv) {
+            this.grid = grv;
+            this.content = grv.getElementsByClassName('t-grid-content')[0];
+            if (this.content.classList.contains('t-inline-content'))
+                this.bindObserverForInsertTable();
+            this.bindResizeForHeight();
+            this.header = this.grid.getElementsByClassName('t-grid-header-wrap')[0];
+            this.headerColumns = Array.from(this.header.querySelectorAll('table thead tr th'));
+            this.headerColumns.forEach(t => {
+                t.attributes['default-size'] = t.style.width;
+            });
+            this.content.onscroll = e => {
+                let target = e.target;
+                target.closest('.t-grid').getElementsByClassName('t-grid-header-wrap')[0].scrollLeft = target.scrollLeft;
+            };
+            this.columnResize();
+            this.bindObserverSizeForWidth();
+        }
+        bindObserverSizeForWidth() {
+            const resizeObserver = new ResizeObserver(entries => {
+                this.headerColumns.forEach(t => {
+                    t.style.width = t.attributes['default-size'];
+                });
+                let insert = this.grid.querySelector('.c-grid-insert');
+                if (insert != null) {
+                    insert.querySelector('tbody tr').querySelectorAll('td').forEach((t, index) => {
+                        t.style.width = this.headerColumns[index].attributes['default-size'];
+                    });
+                }
+                let content = this.content.querySelector('.c-grid-items tbody');
+                if (content == null) {
+                    content.querySelector('tr').querySelectorAll('td').forEach((t, index) => {
+                        t.style.width = this.headerColumns[index].attributes['default-size'];
+                    });
+                }
+            });
+            resizeObserver.observe(this.grid);
+        }
+        bindObserverForContentTable(element) {
+            const mutationObserver = new MutationObserver(list => {
+                let table = list[0].target.closest('table');
+                debugger;
+                if (table.rows.length == 1) {
+                    for (let index = 0; index < this.headerColumns.length; index++)
+                        table.rows[0].cells[index].style.width = `${this.headerColumns[index].getBoundingClientRect().width}px`;
+                }
+            });
+            mutationObserver.observe(element.getElementsByTagName('tbody')[0], {
+                attributes: false,
+                childList: true,
+                subtree: false,
+            });
+        }
+        bindResizeForHeight() {
+            const resizeObserver = new ResizeObserver(entries => {
+                let grv = this.grid;
+                for (let entry of entries) {
+                    if (entry.contentBoxSize && entry.contentBoxSize[0]) {
+                        let contentHeight = grv.getElementsByClassName('t-grid-content')[0].getBoundingClientRect().height;
+                        let table = grv.getElementsByClassName('t-grid-content')[0].getElementsByTagName('table')[0];
+                        if (table) {
+                            let tableHeight = table.getBoundingClientRect().height;
+                            let header = grv.getElementsByClassName('t-grid-header')[0];
+                            if (contentHeight < tableHeight) {
+                                if (caspian.common.RightToLeft())
+                                    header.style.paddingLeft = '11px';
+                                else
+                                    header.style.paddingRight = '11px';
+                            }
+                            else {
+                                if (caspian.common.RightToLeft())
+                                    header.style.paddingLeft = '0';
+                                else
+                                    header.style.paddingRight = '0';
+                            }
+                        }
+                    }
+                }
+            });
+            resizeObserver.observe(this.grid.getElementsByClassName('t-grid-content')[0]);
+        }
+        bindObserverForInsertTable() {
+            const mutationObserver = new MutationObserver(list => {
+                list.every(t => {
+                    let insertTable = t.target.getElementsByClassName('c-grid-insert')[0];
+                    let contentTable = t.target.getElementsByClassName('c-grid-items')[0];
+                    if (contentTable && !contentTable.attributes['isbinded']) {
+                        contentTable.attributes['isbinded'] = true;
+                        this.bindObserverForContentTable(contentTable);
+                    }
+                    if (insertTable != null) {
+                        let insertColumns = insertTable.querySelectorAll('tbody tr td');
+                        for (let index = 0; index < this.headerColumns.length; index++)
+                            insertColumns[index].style.width = `${this.headerColumns[index].getBoundingClientRect().width}px`;
+                    }
+                });
+            });
+            mutationObserver.observe(this.content, {
+                attributes: false,
+                childList: true,
+                subtree: false,
+            });
+        }
+        columnResize() {
+            let head = this.grid.getElementsByClassName('t-grid-header-wrap')[0];
+            head.onmousemove = e => {
+                let element = e.target;
+                if (element.tagName != 'th')
+                    element = element.closest('th');
+                if (element) {
+                    let loc = element.getBoundingClientRect(), x = e.clientX;
+                    if ((x - loc.left) < 5 || (loc.right - x) < 5) {
+                        e.target.style.cursor = 'col-resize';
+                        this.resize = true;
+                    }
+                    else {
+                        e.target.style.cursor = '';
+                        this.resize = false;
+                    }
+                }
+            };
+            head.onmousedown = e => {
+                if (this.resize) {
+                    let rtl = caspian.common.RightToLeft();
+                    let element = e.target;
+                    if (element.tagName != 'th')
+                        element = element.closest('th');
+                    let loc = element.getBoundingClientRect(), x = e.clientX;
+                    this.curent = element;
+                    this.curentWidth = loc.width;
+                    let other = null;
+                    if (x - loc.left < 5 && rtl || loc.right - x < 5 && !rtl) {
+                        other = element.nextSibling;
+                        this.gridStatus = 1;
+                    }
+                    if (loc.right - x < 5 && rtl || x - loc.left < 5 && !rtl) {
+                        other = element.previousSibling;
+                        this.gridStatus = 2;
+                    }
+                    this.other = other;
+                    if (other == null)
+                        this.gridStatus = 3;
+                    else
+                        this.otherWidth = other.getBoundingClientRect().width;
+                    this.xStart = e.clientX;
+                }
+                window.onclick = () => this.drop();
+                window.onmousemove = e => this.dragging(e);
+            };
+        }
+        dragging(e) {
+            if (this.other == null)
+                return;
+            let dif = this.xStart - e.clientX;
+            if (this.gridStatus == 2)
+                dif = -dif;
+            let curentWidth = this.curentWidth;
+            let otherWidth = this.otherWidth - 1;
+            let curentResult = curentWidth - dif, otherResult = otherWidth + dif;
+            if (curentResult < 30 || otherResult < 30)
+                return;
+            if (caspian.common.convertToInt(this.curent.style.minWidth) > curentResult || caspian.common.convertToInt(this.other.style.minWidth) > otherResult)
+                return;
+            this.curent.style.width = `${curentResult}px`;
+            this.other.style.width = `${otherResult}px`;
+            let headerColumns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
+            let curentIndex = headerColumns.indexOf(this.curent);
+            let otherIndex = headerColumns.indexOf(this.other);
+            //change width of content
+            let contentTable = this.content.getElementsByClassName('c-grid-items')[0];
+            if (contentTable != null && contentTable.rows.length > 0) {
+                let contentColumns = contentTable.getElementsByTagName('tr')[0].children;
+                contentColumns.item(curentIndex).style.width = `${curentResult}px`;
+                contentColumns.item(otherIndex).style.width = `${otherResult}px`;
+            }
+            let contentHeight = this.content.getBoundingClientRect().height;
+            let tableHeight = this.grid.getElementsByClassName('c-grid-items')[0].getBoundingClientRect().height;
+            let header = this.grid.getElementsByClassName('t-grid-header')[0];
+            let insertTable = this.grid.getElementsByClassName('c-grid-insert')[0];
+            if (insertTable != null) {
+                let insertColumns = insertTable.getElementsByTagName('tr')[0].children;
+                insertColumns.item(curentIndex).style.width = `${curentResult}px`;
+                insertColumns.item(otherIndex).style.width = `${otherResult}px`;
+            }
+            if (contentHeight < tableHeight) {
+                if (caspian.common.RightToLeft())
+                    header.style.paddingLeft = '11px';
+                else
+                    header.style.paddingRight = '11px';
+            }
+            else {
+                header.style.paddingLeft = '0';
+                header.style.paddingRight = '0';
+            }
+        }
+        drop() {
+            window.onmousemove = null;
+            window.onclick = null;
+        }
+    }
+    caspian.DataGrid = DataGrid;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class Accordion {
+        constructor(el, multiple) {
+            this.el = el;
+            this.multiple = multiple || false;
+            el.querySelectorAll('.submenu li').forEach(li => {
+                li.onclick = e => {
+                    let selected = el.querySelector('.submenu .selected');
+                    if (selected != null)
+                        selected.classList.remove('selected');
+                    e.target.classList.add('selected');
+                };
+            });
+            el.querySelectorAll('.default .link').forEach(elem => {
+                elem.onclick = e => {
+                    this.setOpenMenusHeight();
+                    let target = e.target.closest('.default');
+                    let height = null;
+                    if (!target.classList.contains('open')) {
+                        let submenu = target.querySelector('.submenu');
+                        submenu.style.height = 'auto';
+                        height = submenu.getBoundingClientRect().height;
+                        submenu.style.height = '0';
+                    }
+                    setTimeout(() => {
+                        this.toggleSubmen(target, height);
+                    }, 1);
+                };
+            });
+        }
+        setOpenMenusHeight() {
+            this.el.querySelectorAll('.default.open').forEach(elem => {
+                let open = elem.querySelector('.submenu');
+                let height = open.getBoundingClientRect().height;
+                open.style.height = `${height}px`;
+            });
+        }
+        toggleSubmen(menu, height) {
+            if (this.multiple) {
+            }
+            else {
+                let opendMenu = this.el.querySelector('.default.open');
+                if (opendMenu != menu)
+                    this.openSubmenu(menu, height);
+                if (opendMenu != null)
+                    this.closeSubmenu(opendMenu);
+            }
+        }
+        closeSubmenu(category) {
+            category.classList.remove('open');
+            category.querySelector('.submenu').style.height = '0';
+        }
+        openSubmenu(category, height) {
+            category.classList.add('open');
+            let submenu = category.querySelector('.submenu');
+            submenu.style.height = `${height}px`;
+        }
+    }
+    caspian.Accordion = Accordion;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
     class Window {
         constructor(win) {
             this.windowOpenClose(win.closest('.t-window'));
@@ -1299,338 +1636,5 @@ var caspian;
         VNavigation[VNavigation["Up"] = 1] = "Up";
         VNavigation[VNavigation["Down"] = 2] = "Down";
     })(VNavigation || (VNavigation = {}));
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class TextBox {
-        constructor(input, type) {
-            this.input = input;
-            this.total || (this.total = 8);
-            input.onmouseenter = () => {
-                input.parentElement.classList.add('t-state-hover');
-            };
-            input.onmouseleave = () => {
-                input.parentElement.classList.remove('t-state-hover');
-            };
-            this.readAttributes();
-            this.bindAttributes();
-            if (type != 'string')
-                input.onkeypress = e => this.bindKeypress(e);
-            input.onfocus = () => {
-                setTimeout(() => {
-                    this.input.select();
-                }, 100);
-                caspian.common.showErrorMessage(this.input.closest('.t-widget'));
-            };
-            input.onblur = () => {
-                caspian.common.hideErrorMessage(this.input.closest('.t-widget'));
-            };
-        }
-        bindKeypress(e) {
-            let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
-            if (code == 46 && this.numberDigit) {
-                let remain = value.length - end;
-                if (remain <= this.numberDigit && value.indexOf('.') == -1)
-                    isValid = true;
-            }
-            if (code >= 48 && code <= 57 && value.substr(end).indexOf('-') == -1)
-                isValid = true;
-            if (code >= 48 && code <= 57 || code == 13 || code == 45 && start == 0 && value.substr(end).indexOf('-') == -1)
-                isValid = true;
-            var pointIndex = value.indexOf('.');
-            if (pointIndex >= 0 && start == end && end > pointIndex && value.split('.')[1].length == this.numberDigit)
-                isValid = false;
-            if (start == 0 && end == 0 && value.length > 0 && value[0] == '-' && code >= 48 && code <= 57)
-                isValid = false;
-            let len = value.replace('-', '').replace('.', '').length;
-            if (len == this.total && start == end && code != 45 && code != 46)
-                isValid = false;
-            if (!isValid)
-                e.preventDefault();
-        }
-        bindAttributes() {
-            const mutationObserver = new MutationObserver((mutationList) => {
-                let name = mutationList[0].attributeName;
-                let attrs = mutationList[0].target.attributes;
-                if (name == 'total')
-                    this.total = attrs['total'].value;
-                if (name == 'number-digit')
-                    this.numberDigit = attrs['number-digit'].value;
-            });
-            mutationObserver.observe(this.input.closest('.t-widget'), {
-                attributes: true,
-                childList: false,
-                subtree: false
-            });
-        }
-        readAttributes() {
-            let attrs = this.input.closest('.t-widget').attributes;
-            if (attrs['total'] != null)
-                this.total = attrs['total'].value;
-            if (attrs['number-digit'] != null)
-                this.numberDigit = attrs['number-digit'].value;
-        }
-    }
-    caspian.TextBox = TextBox;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class DataGrid {
-        constructor(grv) {
-            this.grid = grv;
-            this.content = grv.getElementsByClassName('t-grid-content')[0];
-            if (this.content.classList.contains('t-inline-content'))
-                this.bindObserverForInsertTable();
-            this.bindResizeForHeight();
-            this.header = this.grid.getElementsByClassName('t-grid-header-wrap')[0];
-            this.headerColumns = Array.from(this.header.querySelectorAll('table thead tr th'));
-            this.headerColumns.forEach(t => {
-                t.attributes['default-size'] = t.style.width;
-            });
-            this.content.onscroll = e => {
-                let target = e.target;
-                target.closest('.t-grid').getElementsByClassName('t-grid-header-wrap')[0].scrollLeft = target.scrollLeft;
-            };
-            this.columnResize();
-            this.bindObserverSizeForWidth();
-        }
-        bindObserverSizeForWidth() {
-            const resizeObserver = new ResizeObserver(entries => {
-                this.headerColumns.forEach(t => {
-                    t.style.width = t.attributes['default-size'];
-                });
-                this.grid.querySelectorAll('.c-grid-insert tbody >tr td').forEach((t, index) => {
-                    t.style.width = this.headerColumns[index].attributes['default-size'];
-                });
-                this.content.getElementsByClassName('c-grid-items')[0].querySelectorAll('tbody >tr td').forEach((t, index) => {
-                    t.style.width = this.headerColumns[index].attributes['default-size'];
-                });
-            });
-            resizeObserver.observe(this.grid);
-        }
-        bindObserverForContentTable(element) {
-            const mutationObserver = new MutationObserver(list => {
-                let table = list[0].target.closest('table');
-                debugger;
-                if (table.rows.length == 1) {
-                    for (let index = 0; index < this.headerColumns.length; index++)
-                        table.rows[0].cells[index].style.width = `${this.headerColumns[index].getBoundingClientRect().width}px`;
-                }
-            });
-            mutationObserver.observe(element.getElementsByTagName('tbody')[0], {
-                attributes: false,
-                childList: true,
-                subtree: false,
-            });
-        }
-        bindResizeForHeight() {
-            const resizeObserver = new ResizeObserver(entries => {
-                let grv = this.grid;
-                for (let entry of entries) {
-                    if (entry.contentBoxSize && entry.contentBoxSize[0]) {
-                        let contentHeight = grv.getElementsByClassName('t-grid-content')[0].getBoundingClientRect().height;
-                        let table = grv.getElementsByClassName('t-grid-content')[0].getElementsByTagName('table')[0];
-                        if (table) {
-                            let tableHeight = table.getBoundingClientRect().height;
-                            let header = grv.getElementsByClassName('t-grid-header')[0];
-                            if (contentHeight < tableHeight) {
-                                if (caspian.common.RightToLeft())
-                                    header.style.paddingLeft = '11px';
-                                else
-                                    header.style.paddingRight = '11px';
-                            }
-                            else {
-                                if (caspian.common.RightToLeft())
-                                    header.style.paddingLeft = '0';
-                                else
-                                    header.style.paddingRight = '0';
-                            }
-                        }
-                    }
-                }
-            });
-            resizeObserver.observe(this.grid.getElementsByClassName('t-grid-content')[0]);
-        }
-        bindObserverForInsertTable() {
-            const mutationObserver = new MutationObserver(list => {
-                list.every(t => {
-                    let insertTable = t.target.getElementsByClassName('c-grid-insert')[0];
-                    let contentTable = t.target.getElementsByClassName('c-grid-items')[0];
-                    if (contentTable && !contentTable.attributes['isbinded']) {
-                        contentTable.attributes['isbinded'] = true;
-                        this.bindObserverForContentTable(contentTable);
-                    }
-                    if (insertTable != null) {
-                        let insertColumns = insertTable.querySelectorAll('tbody tr td');
-                        for (let index = 0; index < this.headerColumns.length; index++)
-                            insertColumns[index].style.width = `${this.headerColumns[index].getBoundingClientRect().width}px`;
-                    }
-                });
-            });
-            mutationObserver.observe(this.content, {
-                attributes: false,
-                childList: true,
-                subtree: false,
-            });
-        }
-        columnResize() {
-            let head = this.grid.getElementsByClassName('t-grid-header-wrap')[0];
-            head.onmousemove = e => {
-                let element = e.target;
-                if (element.tagName != 'th')
-                    element = element.closest('th');
-                if (element) {
-                    let loc = element.getBoundingClientRect(), x = e.clientX;
-                    if ((x - loc.left) < 5 || (loc.right - x) < 5) {
-                        e.target.style.cursor = 'col-resize';
-                        this.resize = true;
-                    }
-                    else {
-                        e.target.style.cursor = '';
-                        this.resize = false;
-                    }
-                }
-            };
-            head.onmousedown = e => {
-                if (this.resize) {
-                    let rtl = caspian.common.RightToLeft();
-                    let element = e.target;
-                    if (element.tagName != 'th')
-                        element = element.closest('th');
-                    let loc = element.getBoundingClientRect(), x = e.clientX;
-                    this.curent = element;
-                    this.curentWidth = loc.width;
-                    let other = null;
-                    if (x - loc.left < 5 && rtl || loc.right - x < 5 && !rtl) {
-                        other = element.nextSibling;
-                        this.gridStatus = 1;
-                    }
-                    if (loc.right - x < 5 && rtl || x - loc.left < 5 && !rtl) {
-                        other = element.previousSibling;
-                        this.gridStatus = 2;
-                    }
-                    this.other = other;
-                    if (other == null)
-                        this.gridStatus = 3;
-                    else
-                        this.otherWidth = other.getBoundingClientRect().width;
-                    this.xStart = e.clientX;
-                }
-                window.onclick = () => this.drop();
-                window.onmousemove = e => this.dragging(e);
-            };
-        }
-        dragging(e) {
-            if (this.other == null)
-                return;
-            let dif = this.xStart - e.clientX;
-            if (this.gridStatus == 2)
-                dif = -dif;
-            let curentWidth = this.curentWidth;
-            let otherWidth = this.otherWidth - 1;
-            let curentResult = curentWidth - dif, otherResult = otherWidth + dif;
-            if (curentResult < 30 || otherResult < 30)
-                return;
-            if (caspian.common.convertToInt(this.curent.style.minWidth) > curentResult || caspian.common.convertToInt(this.other.style.minWidth) > otherResult)
-                return;
-            this.curent.style.width = `${curentResult}px`;
-            this.other.style.width = `${otherResult}px`;
-            let headerColumns = this.grid.getElementsByClassName('t-grid-header-wrap')[0].getElementsByTagName("tr")[0].children;
-            let curentIndex = headerColumns.indexOf(this.curent);
-            let otherIndex = headerColumns.indexOf(this.other);
-            //change width of content
-            let contentTable = this.content.getElementsByClassName('c-grid-items')[0];
-            if (contentTable != null && contentTable.rows.length > 0) {
-                let contentColumns = contentTable.getElementsByTagName('tr')[0].children;
-                contentColumns.item(curentIndex).style.width = `${curentResult}px`;
-                contentColumns.item(otherIndex).style.width = `${otherResult}px`;
-            }
-            let contentHeight = this.content.getBoundingClientRect().height;
-            let tableHeight = this.grid.getElementsByClassName('c-grid-items')[0].getBoundingClientRect().height;
-            let header = this.grid.getElementsByClassName('t-grid-header')[0];
-            let insertTable = this.grid.getElementsByClassName('c-grid-insert')[0];
-            if (insertTable != null) {
-                let insertColumns = insertTable.getElementsByTagName('tr')[0].children;
-                insertColumns.item(curentIndex).style.width = `${curentResult}px`;
-                insertColumns.item(otherIndex).style.width = `${otherResult}px`;
-            }
-            if (contentHeight < tableHeight) {
-                if (caspian.common.RightToLeft())
-                    header.style.paddingLeft = '11px';
-                else
-                    header.style.paddingRight = '11px';
-            }
-            else {
-                header.style.paddingLeft = '0';
-                header.style.paddingRight = '0';
-            }
-        }
-        drop() {
-            window.onmousemove = null;
-            window.onclick = null;
-        }
-    }
-    caspian.DataGrid = DataGrid;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class Accordion {
-        constructor(el, multiple) {
-            this.el = el;
-            this.multiple = multiple || false;
-            el.querySelectorAll('.submenu li').forEach(li => {
-                li.onclick = e => {
-                    let selected = el.querySelector('.submenu .selected');
-                    if (selected != null)
-                        selected.classList.remove('selected');
-                    e.target.classList.add('selected');
-                };
-            });
-            el.querySelectorAll('.default .link').forEach(elem => {
-                elem.onclick = e => {
-                    this.setOpenMenusHeight();
-                    let target = e.target.closest('.default');
-                    let height = null;
-                    if (!target.classList.contains('open')) {
-                        let submenu = target.querySelector('.submenu');
-                        submenu.style.height = 'auto';
-                        height = submenu.getBoundingClientRect().height;
-                        submenu.style.height = '0';
-                    }
-                    setTimeout(() => {
-                        this.toggleSubmen(target, height);
-                    }, 1);
-                };
-            });
-        }
-        setOpenMenusHeight() {
-            this.el.querySelectorAll('.default.open').forEach(elem => {
-                let open = elem.querySelector('.submenu');
-                let height = open.getBoundingClientRect().height;
-                open.style.height = `${height}px`;
-            });
-        }
-        toggleSubmen(menu, height) {
-            if (this.multiple) {
-            }
-            else {
-                let opendMenu = this.el.querySelector('.default.open');
-                if (opendMenu != menu)
-                    this.openSubmenu(menu, height);
-                if (opendMenu != null)
-                    this.closeSubmenu(opendMenu);
-            }
-        }
-        closeSubmenu(category) {
-            category.classList.remove('open');
-            category.querySelector('.submenu').style.height = '0';
-        }
-        openSubmenu(category, height) {
-            category.classList.add('open');
-            let submenu = category.querySelector('.submenu');
-            submenu.style.height = `${height}px`;
-        }
-    }
-    caspian.Accordion = Accordion;
 })(caspian || (caspian = {}));
 //# sourceMappingURL=caspian.bundle.js.map

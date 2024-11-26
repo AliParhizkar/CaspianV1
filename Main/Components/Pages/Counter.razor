@@ -14,7 +14,7 @@
     base.BuildRenderTree(__builder);
 }
 
-<button @onclick="GetData">Save</button>
+
 
 
 
@@ -48,9 +48,12 @@
 @code 
 {
     bool flag = true;
+    EditContext editContext;
 
     async Task GetData()
     {
+        editContext.Validate();
+
         using var scope = CreateScope();
         using var service = scope.GetService<OrderDeatilService>();
         var query = service.GetAll();

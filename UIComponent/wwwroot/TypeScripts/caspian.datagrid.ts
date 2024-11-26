@@ -36,12 +36,18 @@
                 this.headerColumns.forEach(t => {
                     t.style.width = t.attributes['default-size'];
                 });
-                this.grid.querySelectorAll('.c-grid-insert tbody >tr td').forEach((t, index) => {
-                    (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
-                });
-                this.content.getElementsByClassName('c-grid-items')[0].querySelectorAll('tbody >tr td').forEach((t, index) => {
-                    (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
-                });
+                let insert = this.grid.querySelector('.c-grid-insert');
+                if (insert != null) {
+                    insert.querySelector('tbody tr').querySelectorAll('td').forEach((t, index) => {
+                        (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
+                    });
+                }
+                let content = this.content.querySelector('.c-grid-items tbody');
+                if (content == null) {
+                    content.querySelector('tr').querySelectorAll('td').forEach((t, index) => {
+                        (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
+                    });
+                }
             });
             resizeObserver.observe(this.grid);
         }

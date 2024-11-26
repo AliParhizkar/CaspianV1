@@ -52,7 +52,29 @@ namespace Caspian.UI
 
         public DataView<TDetail> DetailDataView { get; set; }
 
+        public TypeWindow<TDetail> TypeWindow { get; set; }
+
         public CaspianForm<TMaster> Form { get; set; }
+
+        public CaspianForm<TDetail> DetailForm { get; set; }
+
+        public void DetailFormInitialize()
+        {
+            if (DetailForm != null)
+            {
+                DetailForm.OnInternalReset = EventCallback.Factory.Create(this, TypeWindow.Close);
+                DetailForm.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async context => 
+                {
+                    TypeWindow.Close();
+                    var detail = context.Model as TDetail;
+                    if (DetailDataView.GetSource().Any(t => t == detail))
+                        await DetailDataView.UpdateAsync(detail);
+                    else
+                        await DetailDataView.InsertAsync(detail);   
+                    StateHasChanged();
+                });
+            }
+;        }
 
         public IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
 
@@ -181,9 +203,25 @@ namespace Caspian.UI
             });
         }
 
-        public virtual void DetailDataViewInitialize()
+        public void DetailTypwWindowInitialize()
         {
             DetailDataView.Batch = true;
+            DetailDataView.OnInternalUpsert = EventCallback.Factory.Create<TDetail>(this, async detail => 
+            {
+                if (MasterId > 0)
+                {
+                    var info = typeof(TDetail).GetForeignKey(typeof(TMaster));
+                    var value = Convert.ChangeType(MasterId, info.PropertyType.GetUnderlyingType());
+                    info.SetValue(detail, value);
+                }
+                await TypeWindow.OpenAsync(detail, DetailDataView.GetSource().ToList());
+            });
+        }
+
+        public virtual void DetailDataViewInitialize()
+        {
+            if (DetailDataView.Inline)
+                DetailDataView.Batch = true;
             DetailDataView.InsertIconState(true);
             var param = Expression.Parameter(typeof(TDetail), "t");
             var masterInfo = typeof(TDetail).GetForeignKey(typeof(TMaster));
@@ -247,6 +285,14 @@ namespace Caspian.UI
     public interface IDetailBatchService<TDetail>: ISimpleBatchService<TDetail> where TDetail : class
     {
         DataView<TDetail> DetailDataView { get; set; }
+
+        TypeWindow<TDetail> TypeWindow { get; set; }
+
+        CaspianForm<TDetail> DetailForm { get; set; }
+
+        void DetailTypwWindowInitialize();
+
+        void DetailFormInitialize();
     }
 
     public interface IUIService

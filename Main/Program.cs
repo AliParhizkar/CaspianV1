@@ -47,7 +47,6 @@ namespace Main
                 options.Cookie.Path = "/";
             });
             builder.Services.AddCascadingAuthenticationState();
-
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
