@@ -10,7 +10,7 @@ namespace Caspian.UI
 
     public interface ICascading
     {
-        void CascadTo(Type masterType, object value);
+        void CascadeTo(Type masterType, object value);
         Task SetValue(object value);
     }
 

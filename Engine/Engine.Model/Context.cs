@@ -58,5 +58,7 @@ namespace Caspian.Engine.Model
         public DbSet<ExceptionDetail> ExceptionDetail { get; set; }
 
         public DbSet<CaspianFont> CaspianFonts { get; set; }
+
+        public DbSet<PersianDateTable> PersianDateTables { get; set; }
     }
 }

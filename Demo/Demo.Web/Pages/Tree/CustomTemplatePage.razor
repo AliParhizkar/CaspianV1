@@ -15,7 +15,7 @@
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="row d-content">
                 <div class="col-md-5">
-                    <h4>Befor Node Template</h4>
+                    <h4>Before Node Template</h4>
                     <span class="c-demo-description pe-5">
                         In this example, we <b>put</b> the <b>files &Aacute; folder icon</b>
                     </span>
@@ -32,8 +32,8 @@
                                 var index = context.Text.LastIndexOf('.');
                                 if (index >= 0)
                                 {
-                                    var extenssion = context.Text.Substring(index);
-                                    <PictureBox style="width:25px;height:25px" Data="filesIcon[extenssion]" />
+                                    var extension = context.Text.Substring(index);
+                                    <PictureBox style="width:25px;height:25px" Data="filesIcon[extension]" />
                                 }
 
                             }
@@ -140,13 +140,13 @@
         {
             var index = item.LastIndexOf('\\');
             var name = item.Substring(index + 1);
-            var fileExtenssion = Path.GetExtension(item);
-            if (!filesIcon.ContainsKey(fileExtenssion))
+            var fileExtension = Path.GetExtension(item);
+            if (!filesIcon.ContainsKey(fileExtension))
             {
                 using Icon appIcon = Icon.ExtractAssociatedIcon(item);
                 using var stream = new MemoryStream();
                 appIcon.Save(stream);
-                filesIcon.Add(fileExtenssion, stream.ToArray());
+                filesIcon.Add(fileExtension, stream.ToArray());
             }
             list.Add(new NodeView()
                 {

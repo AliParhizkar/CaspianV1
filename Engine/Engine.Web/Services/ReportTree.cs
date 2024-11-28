@@ -16,6 +16,19 @@ namespace ReportUiModels
     /// </summary>
     public class ReportTree
     {
+        public static string[] DateFields = { "Date", "DayOfWeek" };
+
+        public static IDictionary<string, string> DateFieldsText;
+        public static string[] TotalDateFields = { "Date", "Year", "Month", "Day", "DayOfWeek" };
+
+        static ReportTree()
+        {
+            DateFieldsText = new Dictionary<string, string>()
+            {
+                { "Date", "تاریخ"}, {"Year", "سال"}, {"Month", "ماه"}, {"Day", "روز"}, {"DayOfWeek", "روز هفته"}
+            };
+        }
+
         public async Task<IList<ReportNode>> CreateTreeForSelect(Type type, ReportNode reportNode, IList<ReportParam> selectedNodes)
         {
             var list = new List<ReportNode>();
@@ -143,6 +156,7 @@ namespace ReportUiModels
         {
             var nodes = new List<NodeView>();
             ForeignKeyNodes(type, nodes, null);
+            DateAndEnumNodes(type, nodes, null);
             return nodes;
         }
 
@@ -152,23 +166,24 @@ namespace ReportUiModels
                 path += '.';
             foreach(var info in type.GetProperties())
             {
-                var Fkey = info.GetCustomAttribute<ForeignKeyAttribute>();
-                if (Fkey != null)
+                var fKey = info.GetCustomAttribute<ForeignKeyAttribute>();
+                if (fKey != null)
                 {
                     var stringProperties = info.PropertyType.GetProperties().Where(t => t.PropertyType == typeof(string));
                     if (stringProperties.Any())
                     {
                         var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>();
                         if (displayAttr == null)
-                            displayAttr = info.DeclaringType.GetProperty(Fkey.Name).GetCustomAttribute<DisplayNameAttribute>();
+                            displayAttr = info.DeclaringType.GetProperty(fKey.Name).GetCustomAttribute<DisplayNameAttribute>();
                         var node = new NodeView(path + info.Name, displayAttr?.DisplayName ?? info.Name);
                         node.Children = stringProperties.Select(t => new NodeView()
                         { 
-                            Value = path + t.Name,
+                            Value = node.Value + '.' + t.Name,
                             Text = t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? t.Name,
                             Collabsable = false,
                             Selectable = true
                         }).ToList();
+                        node.Expanded = true;
                         nodes.Add(node);
                     }
                     ForeignKeyNodes(info.PropertyType, nodes, path + info.Name);
@@ -176,7 +191,7 @@ namespace ReportUiModels
             }
         }
 
-        void DateAndEnumeNodes(Type type, IList<NodeView> nodes, string path) 
+        void DateAndEnumNodes(Type type, IList<NodeView> nodes, string path) 
         {
             if (path != null)
                 path += '.';
@@ -189,13 +204,33 @@ namespace ReportUiModels
                     var node = new NodeView()
                     {
                         Value = path + info.Name,
-                        Text = attr?.DisplayName ?? path + info.Name
+                        Text = attr?.DisplayName ?? path + info.Name, 
+                        Collabsable = false,
+                        Selectable = true
                     };
-                    if (propertyType == typeof(DateTime))
-                    {
-                        
-                    }
+                    //if (propertyType == typeof(DateTime))
+                    //{
+                    //    node.Children = new List<NodeView>();
+                    //    var persianDate = info.DeclaringType.GetProperties().SingleOrDefault(t => t.PropertyType == typeof(PersianDateTable) &&
+                    //        t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name);
+                    //    if (persianDate == null)
+                    //    {
+                    //        foreach (var item in DateFields) 
+                    //            node.Children.Add(new NodeView($"{path + info.Name}.{item}", item, false, true));
+                    //    }
+                    //    else
+                    //    {
+                    //        foreach (var item in TotalDateFields)
+                    //            node.Children.Add(new NodeView($"{path + info.Name}.{item}", item, false, true));
+                    //    }
+                    //}
                     nodes.Add(node);
+                }
+                else if (!propertyType.IsValueType && !propertyType.IsCollectionType() && propertyType != typeof(PersianDateTable)) 
+                {
+                    var fKey = info.GetCustomAttribute<ForeignKeyAttribute>();
+                    if (fKey != null)
+                        DateAndEnumNodes(info.PropertyType, nodes, info.Name);
                 }
 
             }

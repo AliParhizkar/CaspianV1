@@ -1,4 +1,4 @@
-﻿namespace Caspian.Engine
+﻿namespace Caspian.Engine.Model
 {
     /// <summary>
     /// مشخصات نودهای گزارش در درخت <see cref="Select"/> و یا در درخت <see cref="Where"/>

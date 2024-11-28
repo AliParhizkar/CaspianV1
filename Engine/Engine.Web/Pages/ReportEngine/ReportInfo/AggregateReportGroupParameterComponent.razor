@@ -1,0 +1,62 @@
+﻿@namespace Caspian.Engine.ReportGenerator
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="main">
+    <div class="nodes-container">
+        <TreeView style="height:100%" TEntity="NodeView" Source="nodes" OnChange="UpdateNodesData" />
+    </div>
+    <div class="parameter-container">
+        <div class="e-head">
+            <div class="col-md-4">
+                <label>Report Group Title</label>
+            </div>
+            <div class="col-md-6">
+                <span class="group-title">@(reportGroup?.Title)</span>
+            </div>
+            <div class="col-md-2 text-center">
+                <button class="c-btn c-primary" @onclick="UpsertAll">Save</button>
+            </div>
+        </div>
+        <TreeView style="height:calc(100% - 47px)" TEntity="NodeView" Source="source">
+            <AfterNodeTemplate Context="node">
+                @if (!IsIdentityNode(node))
+                {
+                    <span class="d-tree-icon d-tree-edit" @onclick="() => OpenForm(node)">
+                        <span class="fa fa-pencil"></span>
+                    </span>
+                }
+            </AfterNodeTemplate>
+            <BeforeNodeTemplate Context="node">
+                @if (IsIdentityNode(node))
+                {
+                    <span class="fa fa-key"></span>
+                }
+            </BeforeNodeTemplate>
+        </TreeView>
+    </div>
+</div>
+
+
+<Window Title="Update Allis" @bind-Status="windowStatus" Style="width:400px;">
+    <div class="row c-controls ps-3 pe-3">
+        <div class="col-md-3">
+            <label>Path</label>
+        </div>
+        <div class="col-md-9">
+            <span>@selectedParameter.Path   </span>
+        </div>
+        <div class="col-md-3">
+            <label>Allis</label>
+        </div>
+        <div class="col-md-9">
+            <StringTextBox @bind-Value="allis" />
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-9 c-window-action pt-3 pb-3">
+            <button class="c-btn c-primary" type="button" @onclick="() => UpdateAllis(selectedParameter.Path, allis)">Save</button>
+            <button class="c-btn c-danger" type="button" @onclick="() => windowStatus = WindowStatus.Close">Close</button>
+        </div>
+    </div>
+</Window>

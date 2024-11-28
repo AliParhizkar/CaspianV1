@@ -33,6 +33,7 @@
 
         bindObserverSizeForWidth() {
             const resizeObserver = new ResizeObserver(entries => {
+                
                 this.headerColumns.forEach(t => {
                     t.style.width = t.attributes['default-size'];
                 });
@@ -43,7 +44,7 @@
                     });
                 }
                 let content = this.content.querySelector('.c-grid-items tbody');
-                if (content == null) {
+                if (content != null) {
                     content.querySelector('tr').querySelectorAll('td').forEach((t, index) => {
                         (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
                     });

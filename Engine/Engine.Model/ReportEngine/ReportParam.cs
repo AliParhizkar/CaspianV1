@@ -45,8 +45,6 @@ namespace Caspian.Engine.Model
         [ForeignKey(nameof(RuleId))]
         public virtual Rule Rule { get; set; }
 
-        //public bool IsKey { get; set; }
-
         public int ReportGroupParameterId {  get; set; }
 
         [ForeignKey(nameof(ReportGroupParameterId))]

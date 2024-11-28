@@ -171,7 +171,7 @@ namespace Caspian.UI
             }
             if (FormAppState.Control != null)
             {
-                if (FormAppState.Control.InputElement.HasValue)
+                if (FormAppState.Control.InputElement.HasValue && Inline)
                     await FormAppState.Control.FocusAsync();
                 FormAppState.Control = null;
             }

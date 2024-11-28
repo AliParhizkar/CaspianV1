@@ -183,15 +183,6 @@ namespace Caspian.Engine
             return toExpr;
         }
 
-        private Expression CallCompareToExpr(Expression expr, object value, CompareToType compareType)
-        {
-            var method = typeof(string).GetMethod("CompareTo", new Type[] { typeof(object) });
-            var compare = Expression.Call(expr, method, new Expression[] { Expression.Constant(value) });
-            if (compareType == CompareToType.GTEZero)
-                return Expression.GreaterThanOrEqual(compare, Expression.Constant(0));
-            return Expression.LessThanOrEqual(compare, Expression.Constant(0));
-        }
-
         /// <summary>
         /// این متد با توجه به رشته ی ورودی یک Expression تولید می کند
         /// </summary>

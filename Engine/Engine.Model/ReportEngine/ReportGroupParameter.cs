@@ -25,6 +25,9 @@ namespace Caspian.Engine.Model
         [DisplayName("Alias")]
         public string Alias { get; set; }
 
+        /// <summary>
+        /// This Field is used for multi level report 
+        /// </summary>
         [DisplayName("Is key")]
         public bool IsKey { get; set; }
     }

@@ -1,0 +1,42 @@
+﻿.main {
+    display: flex;
+    height: 100%;
+    width:800px;
+    margin:0 auto;
+}
+.nodes-container{
+    padding-right:15px;
+    width:400px;
+    height:100%;
+}
+.parameter-container {
+    padding-left: 15px;
+    width: 400px;
+    height: 100%;
+}
+
+.fa-key{
+    color:red!important;
+    transform:rotate(135deg)
+}
+
+.e-head {
+    display: flex;
+    border: 1px solid #c7c7c7;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    padding: 4px 10px;
+    background-color: #f4f7ff;
+    align-items: center;
+}
+    .e-head label {
+        font-weight: bold;
+        color: #4e4e4e;
+        padding-bottom: 5px;
+    }
+.group-title {
+    font-size: 15px;
+    color: brown;
+}
+.e-head button {
+}

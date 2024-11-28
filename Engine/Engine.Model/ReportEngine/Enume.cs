@@ -1,7 +1,6 @@
-﻿using Caspian.Common.Attributes;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Caspian.Engine
+namespace Caspian.Engine.Model
 {
     /// <summary>
     /// سطحی از داده ها که در سمت زیرگزارش قرار می گیرند.
@@ -105,5 +104,18 @@ namespace Caspian.Engine
         /// بزرگتر مساوی صفر
         /// </summary>
         GTEZero
+    }
+
+    public enum AggregateParameterType: byte
+    {
+        Parent,
+
+        Selecting,
+
+        Grouping,
+
+        Aggregate,
+
+        Identity
     }
 }

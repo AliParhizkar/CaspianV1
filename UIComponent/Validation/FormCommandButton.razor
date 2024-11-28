@@ -1,11 +1,11 @@
 ﻿@namespace Caspian.UI
 @inject CaspianDataService service
 @{
-    string sumitTitle = SumitButtonTitle ?? (service.Language == Language.Fa ? "ثـبـت" : "Save");
+    string submitTitle = SubmitButtonTitle ?? (service.Language == Language.Fa ? "ثـبـت" : "Save");
     string resetButtonTitle = ResetButtonTitle ?? (service.Language == Language.Fa ? "بازنشانی" : "Reset");
 }
 <div  class="c-form-action">
-    <button class="c-btn c-primary" @attributes="Attributes" type="submit">@sumitTitle</button>
+    <button class="c-btn c-primary" @attributes="Attributes" type="submit">@submitTitle</button>
     <button class="c-btn c-danger" type="reset">@resetButtonTitle</button>
 </div>
 
@@ -13,7 +13,7 @@
 {
 
     [Parameter]
-    public string SumitButtonTitle { get; set; }
+    public string SubmitButtonTitle { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> Attributes { get; set; }

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
+using System;
 
 namespace Main
 {
@@ -39,6 +40,7 @@ namespace Main
                 CS.Con = builder.Configuration.GetConnectionString("TestDB");
             else
                 CS.Con = builder.Configuration.GetConnectionString("ServerDb");
+
             var domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             builder.Services.ConfigureApplicationCookie(options =>
             {

@@ -33,15 +33,18 @@
             <div class="d-calendar">
                 @foreach(var item in dates)
                 {
-                    <div class="day-month week-@(weeksCount)">@item</div>
+                    <div class="day-month week-@(weeksCount)" @onclick="() => selectedDate = item">@item</div>
                 }
             </div>
         }
     </div>
 </div>
 
+
 @code
 {
+    WindowStatus status;
+    string selectedDate;
     IList<SelectListItem> years;
     int weeksCount, year = DateTime.Now.ToPersianDate().Year.Value;
     PersianMonth month = DateTime.Now.ToPersianDate().Month.Value;
@@ -66,7 +69,7 @@
         for (var index = 1; index < startDate.FirstDayOfMonth().DayOfWeek.ConvertToInt().Value; index++)
             dates.Add(null);
         for (var date = startDate; date < startDate.AddMonth(1); date = date.AddDays(1))
-            dates.Add(date.ToShortDateString());
+            dates.Add(date.ToString());
         weeksCount = (dates.Count - 1) / 7 + 1;
         for (var i = dates.Count; i < weeksCount * 7; i++)
             dates.Add(null);

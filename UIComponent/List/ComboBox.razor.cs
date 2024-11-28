@@ -22,7 +22,7 @@ namespace Caspian.UI
         bool setToDefault;
         bool valueChanged;
         string text;
-        Expression cascadExpression;
+        Expression cascadeExpression;
         Dictionary<string, object> attrs;
         WindowStatus? Status = WindowStatus.Close;
         WindowStatus? oldStatus = WindowStatus.Close;
@@ -536,26 +536,26 @@ namespace Caspian.UI
                     query = query.Take(PageSize * pageNumber);
                     var parameter = Expression.Parameter(type, "t");
                     list = list.Select(t => parameter.ReplaceParameter(t)).ToList();
-                    var pkey = type.GetPrimaryKey();
-                    var pKeyExpr = Expression.Property(parameter, pkey);
-                    var pkeyAdded = false;
+                    var primaryKey = type.GetPrimaryKey();
+                    var primaryKeyExpr = Expression.Property(parameter, primaryKey);
+                    var primaryKeyAdded = false;
                     foreach (var expr in list)
                     {
-                        if (expr.Member == pkey)
-                            pkeyAdded = true;
+                        if (expr.Member == primaryKey)
+                            primaryKeyAdded = true;
                     }
-                    if (!pkeyAdded)
-                        list.Add(pKeyExpr);
+                    if (!primaryKeyAdded)
+                        list.Add(primaryKeyExpr);
                     var lambda = parameter.CreateLambdaExpresion(list);
-                    if (cascadExpression != null)
-                        query = query.Where(cascadExpression).OfType<TEntity>();
+                    if (cascadeExpression != null)
+                        query = query.Where(cascadeExpression).OfType<TEntity>();
                     shouldRender = false;
                     var dataList = await query.GetValuesAsync(list);
                     shouldRender = true;
                     if (Template == null)
                     {
                         var displayFunc = TextExpression.Compile();
-                        var valueFunc = Expression.Lambda(pKeyExpr, parameter).Compile();
+                        var valueFunc = Expression.Lambda(primaryKeyExpr, parameter).Compile();
                         items = new List<SelectListItem>();
                         foreach (var item in dataList)
                         {
@@ -587,7 +587,7 @@ namespace Caspian.UI
             ErrorMessage = null;
         }
 
-        public void CascadTo(Type masterType, object value)
+        public void CascadeTo(Type masterType, object value)
         {
             Disabled = value == null;
             if (value != null)
@@ -601,7 +601,7 @@ namespace Caspian.UI
                         var param = Expression.Parameter(typeof(TEntity), "t");
                         Expression expr = Expression.Property(param, masterInfo);
                         expr = Expression.Equal(expr, Expression.Constant(value));
-                        cascadExpression = Expression.Lambda(expr, param);
+                        cascadeExpression = Expression.Lambda(expr, param);
                         LoadData = true;
                         items = null;
 
@@ -675,14 +675,14 @@ namespace Caspian.UI
                 if (type.IsNullableType())
                     type = Nullable.GetUnderlyingType(type);
                 var convertedValue = (TValue)Convert.ChangeType(value, type);
-                CascadeService?.Cascade?.CascadTo(typeof(TEntity), convertedValue);
+                CascadeService?.Cascade?.CascadeTo(typeof(TEntity), convertedValue);
                 Value = convertedValue;
                 await ValueChanged.InvokeAsync(convertedValue);
                 valueChanged = true;
             }
             else
             {
-                CascadeService?.Cascade?.CascadTo(typeof(TEntity), null);
+                CascadeService?.Cascade?.CascadeTo(typeof(TEntity), null);
                 Value = default(TValue);
                 await ValueChanged.InvokeAsync(default(TValue));
                 valueChanged = true;

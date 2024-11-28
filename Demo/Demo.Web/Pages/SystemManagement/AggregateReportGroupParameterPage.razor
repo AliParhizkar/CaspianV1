@@ -1,0 +1,21 @@
+﻿@page "/Demo/SystemManagement/AggregateReportGroupParameter/{GroupId:int}"
+
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div style="height:450px" class="p-3">
+                <AggregateReportGroupParameterComponent GroupId="GroupId" />
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="SystemManagement" FileName="MenuManagement" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+
+@code 
+{
+    [Parameter]
+    public int GroupId { get; set; }
+}

@@ -1,14 +1,19 @@
 ﻿@namespace Caspian.Engine.ReportGenerator
 @inject UIService<ReportGroup> Service
 
-<DataGrid TEntity="ReportGroup" Service="Service" ConditionExpr="t => t.SubSystem == SubSystem" ContentHeight="350">
+<DataGrid TEntity="ReportGroup" Service="Service" ConditionExpr="t => t.SubSystem == SubSystem" ContentHeight="350" ShowInsertIcon="false">
     <Columns>
         <GridColumn Field="t => t.NameSpace" />
         <GridColumn Field="t => t.ClassTitle" />
         <GridColumn Field="t => t.MethodName" />
-        <GridColumn Title="Parameters" style="width:80px">
+        <GridColumn Title="Parameters" style="width:90px">
             <Template>
                 <IconButton Href='@($"/{SubSystem.ToString()}/SystemManagement/ReportGroupParameter/{context.Data.Id}")' IconType="IconType.Wpforms" />
+            </Template>
+        </GridColumn>
+        <GridColumn Title="Aggregate Parameters" style="width:170px">
+            <Template>
+                <IconButton Href='@($"/{SubSystem.ToString()}/SystemManagement/AggregateReportGroupParameter/{context.Data.Id}")' IconType="IconType.Wpforms" />
             </Template>
         </GridColumn>
     </Columns>

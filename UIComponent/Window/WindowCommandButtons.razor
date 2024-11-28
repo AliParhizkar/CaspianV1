@@ -1,7 +1,7 @@
 ﻿@namespace Caspian.UI
 @inject CaspianDataService DataService
 <div class="c-window-action">
-    <button class="c-btn c-primary" type="submit">@SumitButtonTitle</button>
+    <button class="c-btn c-primary" type="submit">@SubmitButtonTitle</button>
     <button class="c-btn c-danger" type="button" @onclick="CloseWindow">@CancelButtonTitle</button>
 </div>
 
@@ -11,12 +11,12 @@
     {
         if (DataService.Language == Language.Fa)
         {
-            SumitButtonTitle = "ثبت";
+            SubmitButtonTitle = "ثبت";
             CancelButtonTitle = "انصراف";
         }
         else
         {
-            SumitButtonTitle = "Save";
+            SubmitButtonTitle = "Save";
             CancelButtonTitle = "Cancel";
         }
         base.OnInitialized();
@@ -32,7 +32,7 @@
 
 
     [Parameter]
-    public string SumitButtonTitle { get; set; }
+    public string SubmitButtonTitle { get; set; }
 
     [Parameter]
     public string CancelButtonTitle { get; set; }

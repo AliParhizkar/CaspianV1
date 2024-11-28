@@ -7,10 +7,12 @@
 
         }
 
-        public NodeView(string value, string text)
+        public NodeView(string value, string text, bool collabsable = true, bool selectable = false)
         {
             Text = text;
             Value = value;
+            Collabsable = collabsable;
+            Selectable = selectable;
         }
 
         public string Text { get; set; }
