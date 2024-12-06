@@ -1,11 +1,11 @@
 ﻿@page "/Demo/Scope"
 @namespace Demo.Web.Pages
+@using System.Globalization
 @inject BatchService<Scope, Evaluation> Service
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
-
 <DataGrid TEntity="Scope" Service="Service" ContentHeight="300" DeleteMessage="با حذف حوزه اعتبارسنجی های آن نیز حذف می شود آیا با حذف موافقید؟">
     <Columns>
         <GridColumn Field="t => t.Title" />
@@ -142,7 +142,7 @@
         var month = PersianMonth.Tear;
         var startDate = new PersianDate(year, month, 1).ToShortDateString();
         var endDate = new PersianDate(startDate).AddMonth(1).ToShortDateString();
-        
+
         base.OnInitialized();
     }
 

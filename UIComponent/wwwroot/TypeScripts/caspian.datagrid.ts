@@ -43,9 +43,9 @@
                         (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
                     });
                 }
-                let content = this.content.querySelector('.c-grid-items tbody');
-                if (content != null) {
-                    content.querySelector('tr').querySelectorAll('td').forEach((t, index) => {
+                let tr = this.content.querySelector('.c-grid-items tbody tr');
+                if (tr != null) {
+                    tr.querySelectorAll('td').forEach((t, index) => {
                         (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
                     });
                 }

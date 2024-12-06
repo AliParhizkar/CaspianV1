@@ -1,0 +1,63 @@
+﻿@namespace Test
+@using System.Linq.Expressions
+@using System.Reflection
+@using Caspian.Common.Service
+@using Demo.Service
+
+@typeparam TEntity where TEntity : class
+@typeparam TDetail where TDetail : class
+@inject IServiceScopeFactory Factory
+@{
+    var detail = GetDetail();
+}
+<Caspian.UI.TabPanelItem Title="@Title">
+    <Caspian.UI.CaspianForm Model="detail" OnValidSubmit="OnValidSubmit">
+        <Caspian.UI.CaspianValidationValidator ValidatorType="GetServiceType()" />
+        @if (Content != null)
+        {
+            @Content(detail)
+        }
+    </Caspian.UI.CaspianForm>
+</Caspian.UI.TabPanelItem>
+
+
+@code 
+{
+    Type GetServiceType()
+    {
+        using var service = Factory.CreateScope().ServiceProvider.GetService<IBaseService<TDetail>>();
+        return service?.GetType();
+    }
+
+    TDetail GetDetail()
+    {
+        if (Child.Body.NodeType == ExpressionType.MemberAccess)
+        {
+            var info = (Child.Body as MemberExpression).Member as PropertyInfo;
+            var detail = info.GetValue(Entity) as TDetail;
+            if (detail == null)
+                detail = Activator.CreateInstance<TDetail>();
+            return detail;
+        }
+        if (Child.Body.NodeType == ExpressionType.Parameter)
+            return Entity as TDetail;
+        throw new NotImplementedException("خطای عدم پیاده سازی");
+    }
+
+    void OnValidSubmit()
+    {
+
+    }
+
+    [CascadingParameter]
+    public TEntity Entity { get; set; }
+
+    [Parameter]
+    public Expression<Func<TEntity, TDetail>> Child { get; set; }
+
+    [Parameter]
+    public RenderFragment<TDetail> Content { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+}

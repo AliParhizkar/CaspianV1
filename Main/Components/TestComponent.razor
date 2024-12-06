@@ -1,4 +1,5 @@
 ﻿@page "/Test1"
+@using Test
 @using Caspian.UI
 @using Demo.Model
 @using Demo.Service
@@ -6,26 +7,17 @@
 @using Microsoft.EntityFrameworkCore
 @using System.Linq.Expressions
 @inherits BasePage
+<span>@customer.CustomerGroup?.Title</span>
+<TabPaneEntity TEntity="Customer" Entity="customer">
+    <TabPanelEntityItem  Field="t => t.CustomerGroup">
+        <Content Context="group">
+            <StringTextBox @bind-Value="group.Title" />
+        </Content>
+    </TabPanelEntityItem>
+</TabPaneEntity>
 
-<Stimulsoft.Report.Blazor.StiBlazorDesigner />
 
 @code 
 {
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        using var context = new Context();
-        var query = context.Orders.Join(context.PersianDatesConvertor, date => date.Date, pdate => pdate.Date, (date, pdate) => new
-        {
-            Date = date, PDate = pdate
-        });
-        var str = query.ToQueryString();
-        await base.OnInitializedAsync();
-    }
-
-    IQueryable<TResult> Join123<TOuter, TInner, TKey, TResult>(Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, TInner, TResult>> resultSelector)
-    {
-        return null;
-    }
+    Customer customer = new Customer();
 }

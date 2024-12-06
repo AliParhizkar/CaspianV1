@@ -8,6 +8,7 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
 
 namespace Caspian.Engine.ReportGenerator
 {
@@ -39,7 +40,7 @@ namespace Caspian.Engine.ReportGenerator
                 message = "لطفا اسم مستعار پارامتر را مشخص نمایید";
             else
             {
-                var multiple = parameters.Any(t => t.Path != path && t.Allis == allis) || parameters.Any(t => t.Parameters.Any(u => u.Path != path && u.Allis == allis));
+                var multiple = parameters.Any(t => t.Path != path && t.Allis == allis) || parameters.Any(t => t.Parameters?.Any(u => u.Path != path && u.Allis == allis) == true);
                 if (multiple)
                     message = "پارامتر دیگر دارای این اسم مستعار می باشد";
             }
@@ -68,11 +69,16 @@ namespace Caspian.Engine.ReportGenerator
                     await service.AddAsync(param);
                 else
                 {
-                    var list = param.Parameters.Select(t => new ChangedEntity<AggregateReportGroupParameter>()
+                    var list = new List<ChangedEntity<AggregateReportGroupParameter>>();
+                    if (param.Parameters != null)
                     {
-                        ChangeStatus = t.Id == 0 ? ChangeStatus.Added : ChangeStatus.Updated,
-                        Entity = t
-                    }).ToList();
+                        list = param.Parameters.Select(t => new ChangedEntity<AggregateReportGroupParameter>()
+                        {
+                            ChangeStatus = t.Id == 0 ? ChangeStatus.Added : ChangeStatus.Updated,
+                            Entity = t
+                        }).ToList();
+                    }
+
                     list.AddRange(removedParameters.Where(t => t.ParentParameterId == param.Id).Select(t => new ChangedEntity<AggregateReportGroupParameter>() 
                     {
                         ChangeStatus = ChangeStatus.Deleted,
@@ -92,16 +98,29 @@ namespace Caspian.Engine.ReportGenerator
             await ReLoadData();
         }
 
+        bool CanEdited(NodeView node)
+        {
+            var parent = node.Parent;
+            if (parent == null)
+                return true;
+            if (node.Value == null) 
+                return false;
+            var type = reportType.GetMyProperty(node.Parent.Value).PropertyType.GetUnderlyingType();
+            if (IsIdentityNode(node))
+                return false;
+            return type != typeof(DateTime);
+        }
+
         bool IsIdentityNode(NodeView node)
         {
             var parent = node.Parent;
-            if (parent == null || parameters == null)
+            if (parent == null || parameters == null || node.Value == null)
                 return false;
-            var child = parameters.Single(t => t.Path == parent.Value).Parameters?.FirstOrDefault(t => t.Path == node.Value);
+            var child = parameters.Single(t => t.Path == parent.Value).Parameters.Single(t => t.Path == node.Value);
             return child?.AggregateParameterType == AggregateParameterType.Identity;
         }
 
-        void AddSelectNodeToTree(NodeView node)
+        void AddSelectingNodeToTree(NodeView node)
         {
             var parent = parameters.SingleOrDefault(t => t.Path == node.Parent.Value);
             if (parent == null)
@@ -143,42 +162,82 @@ namespace Caspian.Engine.ReportGenerator
             }
         }
 
+        void AddGroupingNodeToTree(NodeView node)
+        {
+            var info = reportType.GetMyProperty(node.Value);
+            var type = info.PropertyType.GetUnderlyingType();
+            var parameter = new AggregateReportGroupParameter()
+            {
+                Allis = node.Text,
+                ReportGroupId = GroupId,
+                Path = node.Value
+            };
+            if (type == typeof(DateTime))
+            {
+                parameter.AggregateParameterType = AggregateParameterType.Parent;
+                string[] dateFields = null;
+                if (info.DeclaringType.GetProperties().Any(t => t.PropertyType == typeof(PersianDateTable) && t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name))
+                    dateFields = ReportTree.TotalDateFields;
+                else
+                    dateFields = ReportTree.DateFields;
+                parameter.Parameters = dateFields.Select(t => new AggregateReportGroupParameter()
+                {
+                    AggregateParameterType = AggregateParameterType.Grouping,
+                    Path = t,
+                    Allis = ReportTree.DateFieldsDictionary[t],
+                    ReportGroupId = GroupId,
+                    ParentParameterId = parameter.Id
+                }).ToList();
+            }
+            else
+                parameter.AggregateParameterType = AggregateParameterType.Grouping;
+            parameters.Add(parameter);
+        }
+
+        void AddAggregateNodeToTree(NodeView node)
+        {
+            var parent = parameters.SingleOrDefault(t => t.Path == node.Parent.Value);
+            var info = reportType.GetMyProperty(node.Parent.Value);
+            if (parent == null)
+            {
+                parent = new AggregateReportGroupParameter()
+                {
+                    AggregateParameterType = AggregateParameterType.Parent,
+                    Path = node.Parent.Value,
+                    Allis = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? info.Name,
+                    ReportGroupId = GroupId,
+                    Parameters = new List<AggregateReportGroupParameter>()
+                };
+                parameters.Add(parent);
+            }
+            var isNumeric = info.PropertyType.IsNumberType();
+            var dictionary = isNumeric ? ReportTree.AggregateFunctionsDictionary : ReportTree.AggregateDateFunctionsNameDictionary;
+            var functionType = (AggregateFunctionType)typeof(AggregateFunctionType).GetFields().Single(t => t.Name.ToLower() == node.Value.ToLower()).GetValue(null);
+            parent.Parameters.Add(new AggregateReportGroupParameter()
+            {
+                AggregateParameterType = AggregateParameterType.AggregateFunction,
+                Allis = node.Text,
+                ParentParameterId = parent.Id,
+                ReportGroupId = GroupId,
+                AggregateFunctionType = functionType
+            });
+        }
+
         void UpdateNodesData(NodeView node)
         {
             if (node.Selected == true)
             {
                 if (node.Parent == null)
-                {
-                    var info = reportType.GetMyProperty(node.Value);
-                    var type = info.PropertyType.GetUnderlyingType();
-                    var parameter = new AggregateReportGroupParameter()
-                    {
-                        Allis = node.Text,
-                        ReportGroupId = GroupId,
-                        Path = node.Value
-                    };
-                    if (type == typeof(DateTime))
-                    {
-                        parameter.AggregateParameterType = AggregateParameterType.Parent;
-                        string[] dateFields = null;
-                        if (info.DeclaringType.GetProperties().Any(t => t.PropertyType == typeof(PersianDateTable) && t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name))
-                            dateFields = ReportTree.TotalDateFields;
-                        else
-                            dateFields = ReportTree.DateFields;
-                        parameter.Parameters = dateFields.Select(t => new AggregateReportGroupParameter()
-                        {
-                            AggregateParameterType = AggregateParameterType.Grouping,
-
-                        }).ToList();
-                    }
-                    else
-                    {
-                        parameter.AggregateParameterType = AggregateParameterType.Grouping;
-                    }
-                    parameters.Add(parameter);
-                }
+                    AddGroupingNodeToTree(node); /// Add node is grouping nodes (Enum, Date)
                 else if (node.Parent != null)
-                    AddSelectNodeToTree(node);
+                {
+                    var nodeIsAggregateFunction = ReportTree.AggregateFunctionsName.Contains(node.Value) || ReportTree.AggregateDateFunctionsName.Contains(node.Value);
+                    ///parent node value is a property of "Report Type" and child node is Aggregate Functions
+                    if (reportType.GetMyProperty(node.Parent.Value).DeclaringType == reportType && nodeIsAggregateFunction)
+                        AddAggregateNodeToTree(node);
+                    else
+                        AddSelectingNodeToTree(node);
+                }
             }
             else
             {
@@ -192,7 +251,11 @@ namespace Caspian.Engine.ReportGenerator
                 else
                 {
                     var parent = parameters.Single(t => t.Path == node.Parent.Value);
-                    var old = parent.Parameters.Single(t => t.Path == node.Value);
+                    AggregateReportGroupParameter old = null;
+                    if (parent.Parameters.Any(u => u.AggregateParameterType == AggregateParameterType.AggregateFunction))
+                        old = parent.Parameters.Single(u => u.AggregateFunctionType.ToString() == node.Value);
+                    else
+                        old = parent.Parameters.Single(t => t.Path == node.Value);
                     if (old.Id > 0)
                         removedParameters.Add(old);
                     parent.Parameters.Remove(old);
@@ -201,10 +264,13 @@ namespace Caspian.Engine.ReportGenerator
                         parameters.Remove(parent);
                         if (parent.Id > 0)
                             removedParameters.Add(parent);
-                        var identityNode = parent.Parameters[0];
-                        parent.Parameters.RemoveAt(0);
-                        if (identityNode.Id > 0)
-                            removedParameters.Add(identityNode);
+                        if (parent.Parameters.Count > 0)
+                        {
+                            var identityNode = parent.Parameters[0];
+                            parent.Parameters.RemoveAt(0);
+                            if (identityNode.Id > 0)
+                                removedParameters.Add(identityNode);
+                        }
                     }
                 }
             }
@@ -247,7 +313,15 @@ namespace Caspian.Engine.ReportGenerator
                     else
                     {
                         foreach (var child in node.Children)
-                            child.Selected = parameter.Parameters?.Any(u => u.Path == child.Value) == true;
+                        {
+                            if (parameter.Parameters != null)
+                            {
+                                if (parameter.Parameters.Any(t => t.Path == null))
+                                    child.Selected = parameter.Parameters.Any(t => t.AggregateFunctionType?.ToString() == child.Value);
+                                else
+                                    child.Selected = parameter.Parameters?.Any(u => u.Path == child.Value) == true;
+                            }
+                        }
                     }
                 }
             }

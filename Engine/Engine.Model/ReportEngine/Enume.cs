@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Engine.Model
 {
@@ -114,8 +115,29 @@ namespace Caspian.Engine.Model
 
         Grouping,
 
-        Aggregate,
+        AggregateFunction,
 
         Identity
+    }
+
+    public enum AggregateFunctionType: byte
+    {
+        [Display(Name = "مجموع")]
+        Sum  = 1,
+
+        [Display(Name = "میانگین")]
+        Average,
+
+        [Display(Name = "بیشترین")]
+        Maximum,
+
+        [Display(Name = "کمترین")]
+        Minimum,
+        
+        [Display(Name = "اولین")]
+        First,
+        
+        [Display(Name = "آخرین")]
+        Last
     }
 }

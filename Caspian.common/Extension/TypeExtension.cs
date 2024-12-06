@@ -10,9 +10,17 @@ namespace Caspian.Common.Extension
 {
     public static class TypeExtension
     {
+        public static Type[] NumericTypes = {typeof(byte), typeof(byte?), typeof(short), typeof(short?), typeof(int), typeof(int?), typeof(long), 
+            typeof(long?), typeof(float?), typeof(float?), typeof(decimal), typeof(decimal?), typeof(double), typeof(double?) };
         public static bool IsNullableType(this Type type)
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        public static bool IsNumberType(this Type type)
+        {
+            return NumericTypes.Contains(type);
+
         }
 
         public static bool IsNullableType(this PropertyInfo info)

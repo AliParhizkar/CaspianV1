@@ -2,6 +2,7 @@
 using Demo.Model;
 using Caspian.Common;
 using Caspian.Common.Service;
+using FluentValidation;
 
 namespace Demo.Service
 {
@@ -11,6 +12,8 @@ namespace Demo.Service
             :base(provider)
         {
             RuleFor(t => t.Title).Required().UniqAsync("مشتری با این عنوان در سیستم ثبت شده است");
+
+            
         }
     }
 }

@@ -5,31 +5,6 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<style type="text/css">
-    .product {
-        border: 1px solid lightgray;
-        padding: 5px;
-        margin: 5px;
-        display: inline-block;
-        border-radius: 15px;
-        width: 160px;
-        text-align: center;
-        font-weight: bold;
-        white-space: nowrap;
-        font-size: 13px;
-        cursor: pointer;
-        background-color: aliceblue;
-    }
-
-    .products {
-        border: 1px solid lightgray;
-        max-height: 200px;
-        overflow: auto;
-        margin-bottom: 10px;
-        border-radius: 17px;
-        width: calc(100% - 300px)
-    }
-</style>
 <h3>Batch-Custom</h3>
 <p>
     In this example, we have <b>a few products</b> to choose, with the <b>first click</b> on the product, 
@@ -147,16 +122,18 @@
                             </div>
                         }
                         <div class="pt-4">
-                            <DataGrid TEntity="OrderDeatil" DetailsService="Service" ContentHeight="250" ShowInsertIcon="false">
+                            <DataGrid TEntity="OrderDeatil" DetailsService="Service" ContentHeight="250" ShowInsertIcon="false" Batch>
                                 <Columns>
                                     <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                                     <GridColumn Field="t => t.Product.Title" Title="Product" />
                                     <GridColumn Field="t => t.Price.Seprate3Digit()" Title="Price" />
-                                    <GridColumn Field="t => t.Quantity" Title="Quantity">
+                                    <GridColumn Field="t => t.Quantity" Title="Quantity" style="width:140px;">
                                         <Template>
-                                            <IconButton IconType="IconType.Plus" @onclick="async () => await IncQuantity(context.Data)" />
-                                            <span style="display:inline-block;width:38px;height:38px;">@context.Data.Quantity</span>
-                                            <IconButton IconType="IconType.Minus" @onclick="async () => await DecQuantity(context.Data)" />
+                                            <div class="d-icons">
+                                                <IconButton IconType="IconType.Plus" @onclick="async () => await IncQuantity(context.Data)" />
+                                                <NumericTextBox @bind-Value="@context.Data.Quantity" />
+                                                <IconButton IconType="IconType.Minus" @onclick="async () => await DecQuantity(context.Data)" />
+                                            </div>
                                         </Template>
                                     </GridColumn>
                                 </Columns>

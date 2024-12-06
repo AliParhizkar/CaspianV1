@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Reflection;
+using System.Collections;
 
 namespace Caspian.UI
 {
@@ -55,6 +57,7 @@ namespace Caspian.UI
 
         private void HookUpEditContextEvents()
         {
+            EditContext.OnValidationRequested -= async (sender, args) => await ValidationRequested(sender, args);
             EditContext.OnValidationRequested += async (sender, args) => await ValidationRequested(sender, args);
             //EditContext.OnFieldChanged += async (sender, args) => await FieldChanged(sender, args);
         }
@@ -93,6 +96,7 @@ namespace Caspian.UI
                 dataService.Language = CaspianDataService.Language;
             }
             Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
+            var qqq = Validator.GetType().GetProperty("Rules", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).GetValue(Validator);
             (Validator as ICaspianValidator).BatchServiceData = BatchServiceData;
             if (Source != null)
                 (Validator as IBaseService).SetSource(Source);

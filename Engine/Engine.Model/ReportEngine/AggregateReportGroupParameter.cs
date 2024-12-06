@@ -20,6 +20,8 @@ namespace Caspian.Engine.Model
 
         public AggregateParameterType AggregateParameterType { get; set; }
 
+        public AggregateFunctionType? AggregateFunctionType { get; set; }
+
         public int ReportGroupId {  get; set; }
 
         [ForeignKey(nameof(ReportGroupId))]

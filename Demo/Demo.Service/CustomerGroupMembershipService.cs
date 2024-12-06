@@ -10,7 +10,7 @@ namespace Demo.Service
         public CustomerGroupMembershipService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.CustomerId).UniqAsync(t => t.CustomerGroupId, "مشتری در حال حاضر عضو این گروه می باشد.");
+            RuleFor(t => t.CustomerId).UniqueAsync(t => t.CustomerGroupId, "مشتری در حال حاضر عضو این گروه می باشد.");
         }
     }
 }

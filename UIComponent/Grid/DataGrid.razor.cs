@@ -164,10 +164,10 @@ namespace Caspian.UI
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindDataGrid", mainDiv);
                 StateHasChanged();
             }
-            if (insertContinerHouldhasFocus && insertContiner != null)
+            if (insertContainerHoldHasFocus && insertContainer != null)
             {
-                insertContinerHouldhasFocus = false;
-                await insertContiner.FocusAsync();
+                insertContainerHoldHasFocus = false;
+                await insertContainer.FocusAsync();
             }
             if (FormAppState.Control != null)
             {

@@ -70,10 +70,15 @@ namespace Caspian.Common
                 {
                     DisplayNameAttribute attr = null;
                     var path = context.PropertyPath;
+                    if (context.IsChildContext)
+                    {
+                        
+                        //var parentPropertyName = (context as dynamic).RawPropertyName;
+                    }
                     var index = path.IndexOf(']');
                     if (index >= 0)
                         path = path.Substring(index + 2);
-                    typeof(TModel).GetMyProperty(path).GetCustomAttribute<DisplayNameAttribute>();
+                    //typeof(TModel).GetMyProperty(path).GetCustomAttribute<DisplayNameAttribute>();
                     var name = attr == null ? context.DisplayName : attr.DisplayName;
                     if (language == Language.Fa)
                         message = message ?? $"لطفا {name} را مشخص نمایید";
@@ -184,19 +189,19 @@ namespace Caspian.Common
         public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             string errorMessage) where TModel: class
         {
-            return ruleBuilder.UniqAsync(null, null, null, errorMessage);
+            return ruleBuilder.UniqueAsync(null, null, null, errorMessage);
         }
 
-        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqueAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             Expression<Func<TModel, object>> expr1, string errorMessage) where TModel: class
         {
-            return ruleBuilder.UniqAsync(expr1, null, null, errorMessage);
+            return ruleBuilder.UniqueAsync(expr1, null, null, errorMessage);
         }
 
-        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqueAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             Expression<Func<TModel, object>> expr1, Expression<Func<TModel, object>> expr2, string errorMessage) where TModel: class
         {
-            return ruleBuilder.UniqAsync(expr1, expr2, null, errorMessage);
+            return ruleBuilder.UniqueAsync(expr1, expr2, null, errorMessage);
         }
 
         static async Task<Expression> CreateExpression<TModel>(ParameterExpression param, TModel model, Expression expr, IServiceScope scope)
@@ -216,7 +221,7 @@ namespace Caspian.Common
             return null;
         }
 
-        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, 
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqueAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, 
             Expression<Func<TModel, object>> expr1, Expression<Func<TModel, object>> expr2,
             Expression<Func<TModel, object>> expr3, string errorMessage) where TModel:class
         {

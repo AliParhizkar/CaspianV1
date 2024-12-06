@@ -16,6 +16,7 @@ namespace Caspian.Common
         public CaspianValidator(IServiceProvider provider)
         {
             ServiceProvider = provider;
+
             var contextType = new AssemblyInfo().GetDbContextType(typeof(TModel));
             if (contextType.Namespace == "Demo.Model")
                 Language = Language.En;
@@ -26,7 +27,6 @@ namespace Caspian.Common
             UserId = data.UserId;
             if (!data.Language.HasValue)
                 data.Language = Language;
-           
             foreach (var info in typeof(TModel).GetProperties())
             {
                 var type = info.PropertyType;
@@ -48,11 +48,12 @@ namespace Caspian.Common
                     RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyAsync(info, infoId);
                 }
             }
+
             RuleSet("remove", () =>
             {
-                var pkey = typeof(TModel).GetPrimaryKey();
+                var pKey = typeof(TModel).GetPrimaryKey();
                 var param = Expression.Parameter(typeof(TModel), "t");
-                Expression expr = Expression.Property(param, pkey);
+                Expression expr = Expression.Property(param, pKey);
                 expr = Expression.Convert(expr, typeof(object));
                 expr = Expression.Lambda(expr, param);
                 RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyOnRemove();
@@ -61,6 +62,7 @@ namespace Caspian.Common
 
         public async virtual Task<ValidationResult> ValidateRemoveAsync(TModel model)
         {
+            
             var list = new List<string>()
             {
                 "remove"
@@ -72,6 +74,7 @@ namespace Caspian.Common
         public override Task<ValidationResult> ValidateAsync(ValidationContext<TModel> context, CancellationToken cancellation = default)
         {
             context.RootContextData["__ServiceScope"] = ServiceProvider;
+            
             if (BatchServiceData != null)
             {
                 context.RootContextData["__BatchServiceData"] = BatchServiceData;
@@ -82,9 +85,9 @@ namespace Caspian.Common
 
         protected IRuleBuilderInitial<TModel, object> RuleForRemove()
         {
-            var pkey = typeof(TModel).GetPrimaryKey();
+            var pKey = typeof(TModel).GetPrimaryKey();
             var param = Expression.Parameter(typeof(TModel), "t");
-            Expression expr = Expression.Property(param, pkey);
+            Expression expr = Expression.Property(param, pKey);
             expr = Expression.Convert(expr, typeof(object));
             var lambda = Expression.Lambda(expr, param) as Expression<Func<TModel, object>>;
             IRuleBuilderInitial<TModel, object> rule = null;

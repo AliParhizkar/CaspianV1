@@ -9,6 +9,405 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var caspian;
 (function (caspian) {
+    class Accordion {
+        constructor(el, multiple) {
+            this.el = el;
+            this.multiple = multiple || false;
+            el.querySelectorAll('.submenu li').forEach(li => {
+                li.onclick = e => {
+                    let selected = el.querySelector('.submenu .selected');
+                    if (selected != null)
+                        selected.classList.remove('selected');
+                    e.target.classList.add('selected');
+                };
+            });
+            el.querySelectorAll('.default .link').forEach(elem => {
+                elem.onclick = e => {
+                    this.setOpenMenusHeight();
+                    let target = e.target.closest('.default');
+                    let height = null;
+                    if (!target.classList.contains('open')) {
+                        let submenu = target.querySelector('.submenu');
+                        submenu.style.height = 'auto';
+                        height = submenu.getBoundingClientRect().height;
+                        submenu.style.height = '0';
+                    }
+                    setTimeout(() => {
+                        this.toggleSubmen(target, height);
+                    }, 1);
+                };
+            });
+        }
+        setOpenMenusHeight() {
+            this.el.querySelectorAll('.default.open').forEach(elem => {
+                let open = elem.querySelector('.submenu');
+                let height = open.getBoundingClientRect().height;
+                open.style.height = `${height}px`;
+            });
+        }
+        toggleSubmen(menu, height) {
+            if (this.multiple) {
+            }
+            else {
+                let opendMenu = this.el.querySelector('.default.open');
+                if (opendMenu != menu)
+                    this.openSubmenu(menu, height);
+                if (opendMenu != null)
+                    this.closeSubmenu(opendMenu);
+            }
+        }
+        closeSubmenu(category) {
+            category.classList.remove('open');
+            category.querySelector('.submenu').style.height = '0';
+        }
+        openSubmenu(category, height) {
+            category.classList.add('open');
+            let submenu = category.querySelector('.submenu');
+            submenu.style.height = `${height}px`;
+        }
+    }
+    caspian.Accordion = Accordion;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class Window {
+        constructor(win) {
+            this.windowOpenClose(win.closest('.t-window'));
+            this.bindObserver(win);
+        }
+        windowOpenClose(win) {
+            let content = win.getElementsByClassName('t-window-content')[0];
+            if (content.attributes['status'].value == '2') {
+                let main = document.getElementsByClassName('c-content-main')[0];
+                if (main == null)
+                    document.body.style.overflow = 'hidden';
+                else
+                    main.style.overflow = 'hidden';
+                let header = win.getElementsByClassName('t-window-titlebar')[0];
+                if (content.attributes['draggable']) {
+                    this.bindDragAndDrop(win, header);
+                    header.style.cursor = 'move';
+                }
+                else {
+                    header.onmousedown = null;
+                    header.style.cursor = 'default';
+                }
+                win.style.display = 'block';
+                let left, top;
+                let parent = win.parentElement.closest('.t-window');
+                if (parent == null) {
+                    left = (window.innerWidth - win.getBoundingClientRect().width) / 2;
+                    top = -50;
+                }
+                else {
+                    let loc = parent.getBoundingClientRect();
+                    left = loc.left + (loc.width - win.getBoundingClientRect().width) / 2;
+                    top = loc.top - 45;
+                }
+                win.style.left = `${left}px`;
+                win.style.top = `${top}px`;
+                setTimeout(function () {
+                    win.classList.add('window-animate');
+                    win.style.top = `${top + 80}px`;
+                    setTimeout(() => win.classList.remove('window-animate'), 250);
+                }, 25);
+            }
+            else
+                win.style.display = 'none';
+        }
+        bindDragAndDrop(dragableDom, header) {
+            header.onmousedown = e => {
+                let loc = e.target.getBoundingClientRect();
+                let xStart = e.clientX, yStart = e.clientY, leftStart = loc.left, topStart = loc.top;
+                document.onmouseup = () => {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                };
+                document.onmousemove = e => {
+                    let difX = e.clientX - xStart, difY = e.clientY - yStart;
+                    dragableDom.style.left = `${leftStart + difX}px`;
+                    dragableDom.style.top = `${topStart + difY}px`;
+                };
+            };
+        }
+        bindObserver(win) {
+            const mutationObserver = new MutationObserver(list => {
+                list.forEach(mutation => {
+                    if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
+                        let status = mutation.target.attributes['status'].value;
+                        let main = document.getElementsByClassName('c-content-main')[0] || document.body;
+                        if (status == '1') {
+                            let openWindowIsExist = false;
+                            let windows = document.getElementsByClassName('t-window');
+                            for (let index = 0; index < windows.length; index++) {
+                                if (windows.item(index).getElementsByClassName('t-window-content')[0].attributes['status'].value == '2') {
+                                    openWindowIsExist = true;
+                                    break;
+                                }
+                            }
+                            if (!openWindowIsExist)
+                                main.style.overflow = 'auto';
+                        }
+                        else
+                            main.style.overflow = 'hidden';
+                        let mywindow = mutation.target.closest('.t-window');
+                        this.windowOpenClose(mywindow);
+                    }
+                });
+            });
+            mutationObserver.observe(win, {
+                attributes: true,
+                childList: false,
+                subtree: false
+            });
+        }
+    }
+    caspian.Window = Window;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class ComboBox {
+        constructor(input, Pageable, dotnet) {
+            this.bindObserver(input, Pageable, dotnet);
+            let control = input.closest('.t-combobox').getElementsByClassName('t-dropdown-wrap')[0];
+            input.onkeyup = e => {
+                if (e.key == 'ArrowDown' || e.key == 'ArrowUp') {
+                    let selected = e.target.closest('.t-combobox').getElementsByClassName('t-state-selected')[0];
+                    if (selected) {
+                        let content = e.target.closest('.t-combobox').getElementsByClassName('t-group')[0];
+                        let loc = selected.getBoundingClientRect();
+                        let top = loc.top - content.getBoundingClientRect().top, bottom = top + loc.height;
+                        if (bottom > 240 || top < 10) {
+                            let scrollTop = content.scrollTop;
+                            content.scrollTop = (scrollTop + bottom - 240);
+                        }
+                    }
+                }
+            };
+            input.closest('.t-combobox').onmouseenter = () => {
+                if (!control.classList.contains('t-state-disabled')) {
+                    let list = control.classList;
+                    list.add('t-state-hover');
+                    list.remove('t-state-default');
+                }
+            };
+            input.closest('.t-combobox').onmouseleave = () => {
+                if (!control.classList.contains('t-state-disabled')) {
+                    let list = control.classList;
+                    list.add('t-state-default');
+                    list.remove('t-state-hover');
+                }
+            };
+            input.onfocus = () => {
+                let list = control.classList;
+                list.add('t-state-focused');
+                list.remove('t-state-default');
+                caspian.common.showErrorMessage(input.closest('.t-widget'));
+            };
+            input.onblur = () => {
+                let list = control.classList;
+                list.add('t-state-default');
+                list.remove('t-state-focused');
+                caspian.common.hideErrorMessage(input.closest('.t-widget'));
+            };
+        }
+        bindObserver(input, pageable, dotnet) {
+            const mutationObserver = new MutationObserver(t => {
+                let ctr = t[0].target;
+                let group = ctr.getElementsByClassName('t-group')[0];
+                if (group) {
+                    if (pageable) {
+                        group.onscrollend = () => __awaiter(this, void 0, void 0, function* () {
+                            yield dotnet.invokeMethodAsync('IncPageNumberInvokable');
+                        });
+                    }
+                    let animate = ctr.getElementsByClassName('t-animation-container')[0];
+                    let height = group.getElementsByClassName('t-reset')[0].getBoundingClientRect().height;
+                    height = Math.min(250, height);
+                    height = Math.max(height, 30);
+                    animate.style.height = `${height + 7}px`;
+                    let loc = ctr.getBoundingClientRect();
+                    animate.style.width = `${loc.width + 7}px`;
+                    if (loc.top > window.innerHeight / 2) {
+                        animate.classList.add('c-animate-up');
+                        setTimeout(() => group.style.bottom = '0', 10);
+                        animate.style.marginTop = `${-height - 42}px`;
+                    }
+                    else {
+                        animate.classList.add('c-animate-down');
+                        setTimeout(() => group.style.top = '0', 10);
+                    }
+                    document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
+                        if (e.target.closest('.t-group') == null)
+                            yield dotnet.invokeMethodAsync('CloseInvokable');
+                    });
+                }
+                else
+                    document.body.onmousedown = null;
+            });
+            mutationObserver.observe(input.closest('.t-combobox'), {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+        }
+    }
+    caspian.ComboBox = ComboBox;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class InputCollorPicker {
+        constructor(element, dotnet) {
+            this.bindObserver(element, dotnet);
+            element.onmouseenter = () => {
+                element.getElementsByClassName('c-input-color')[0].classList.add('c-state-hover');
+            };
+            element.onmouseleave = () => {
+                element.getElementsByClassName('c-input-color')[0].classList.remove('c-state-hover');
+            };
+            element.onfocus = () => {
+                element.getElementsByClassName('c-input-color')[0].classList.add('c-state-focused');
+            };
+            element.onblur = () => {
+                element.getElementsByClassName('c-input-color')[0].classList.remove('c-state-focused');
+            };
+        }
+        bindObserver(element, dotnet) {
+            const mutationObserver = new MutationObserver(t => {
+                let elem = t[0].target;
+                let animate = elem.getElementsByClassName('t-animation-container')[0];
+                if (animate != null) {
+                    let top = elem.getBoundingClientRect().top;
+                    let picker = elem.getElementsByClassName('c-colorpicker-panel')[0];
+                    animate.style.width = '245px';
+                    let height = picker.getBoundingClientRect().height;
+                    animate.style.height = `${height + 6}px`;
+                    if (top > window.innerHeight / 2) {
+                        animate.classList.add('c-animation-up');
+                        animate.style.marginTop = `${-height - 41}px`;
+                        setTimeout(t => {
+                            picker.style.bottom = '0';
+                        }, 10);
+                    }
+                    else {
+                        animate.classList.add('c-animation-down');
+                        setTimeout(t => {
+                            picker.style.top = '0px';
+                        }, 10);
+                    }
+                    document.body.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
+                        if (e.target.closest('.t-animation-container') == null)
+                            yield dotnet.invokeMethodAsync("Close");
+                    });
+                }
+                else
+                    document.body.onclick = null;
+            });
+            mutationObserver.observe(element, {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
+        }
+    }
+    caspian.InputCollorPicker = InputCollorPicker;
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
+    class PopupWindow {
+        constructor(element, target, json, dotnet) {
+            let data = JSON.parse(json);
+            element.style.display = 'block';
+            let className = element.className;
+            element.className = 'auto-hide c-popup-window';
+            let loc = element.getBoundingClientRect();
+            let mainLoc = document.getElementsByClassName('c-content-main')[0].getBoundingClientRect();
+            element.className = className;
+            if (target)
+                this.bindTarget(element, target, data);
+            else {
+                if (data.left != null) {
+                    element.style.left = `${data.left}px`;
+                    element.style.right = 'auto';
+                }
+                else if (data.right != null) {
+                    element.style.left = 'auto';
+                    element.style.right = `${data.right}px`;
+                }
+                else if (data.top != null) {
+                    element.style.top = `${data.top}px`;
+                    element.style.bottom = 'auto';
+                }
+                else if (data.bottom != null) {
+                    element.style.top = 'auto';
+                    element.style.bottom = `${data.bottom}px`;
+                }
+            }
+            document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
+                if (e.target.closest('.auto-hide') == null) {
+                    document.body.onmousedown = null;
+                    yield dotnet.invokeMethodAsync('Close');
+                }
+            });
+        }
+        bindTarget(element, target, data) {
+            element.className = 'auto-hide c-popup-window';
+            let targetLoc = target.getBoundingClientRect();
+            let leftT = targetLoc.left, topT = targetLoc.top;
+            let offsetLeft = data.offsetLeft, offsetTop = data.offsetTop;
+            switch (data.targetHorizontalAnchor) {
+                case HorizontalAnchor.Left:
+                    leftT += data.offsetLeft;
+                    break;
+                case HorizontalAnchor.Center:
+                    leftT += targetLoc.width / 2;
+                    offsetLeft = 0;
+                    break;
+                case HorizontalAnchor.Right:
+                    leftT += targetLoc.width + data.offsetLeft;
+                    break;
+            }
+            switch (data.targetVerticalAnchor) {
+                case VerticalAnchor.Top:
+                    topT += data.offsetTop;
+                    break;
+                case VerticalAnchor.Middle:
+                    topT += targetLoc.height / 2;
+                    offsetTop = 0;
+                    break;
+                case VerticalAnchor.Bottom:
+                    topT += targetLoc.height + data.offsetTop;
+                    break;
+            }
+            let loc = element.getBoundingClientRect();
+            if (data.horizontalAnchor == HorizontalAnchor.Center)
+                leftT -= loc.width / 2 + data.offsetLeft - offsetLeft;
+            else if (data.horizontalAnchor == HorizontalAnchor.Right)
+                leftT -= loc.width - data.offsetLeft - offsetLeft;
+            if (data.verticalAnchor == VerticalAnchor.Middle)
+                topT -= loc.height / 2 + data.offsetTop + offsetTop;
+            else if (data.verticalAnchor == VerticalAnchor.Bottom)
+                topT -= loc.height + data.offsetTop + offsetTop - 1;
+            element.style.left = `${leftT}px`;
+            element.style.top = `${topT}px`;
+        }
+    }
+    caspian.PopupWindow = PopupWindow;
+    let HorizontalAnchor;
+    (function (HorizontalAnchor) {
+        HorizontalAnchor[HorizontalAnchor["Left"] = 1] = "Left";
+        HorizontalAnchor[HorizontalAnchor["Center"] = 2] = "Center";
+        HorizontalAnchor[HorizontalAnchor["Right"] = 3] = "Right";
+    })(HorizontalAnchor || (HorizontalAnchor = {}));
+    let VerticalAnchor;
+    (function (VerticalAnchor) {
+        VerticalAnchor[VerticalAnchor["Top"] = 1] = "Top";
+        VerticalAnchor[VerticalAnchor["Middle"] = 2] = "Middle";
+        VerticalAnchor[VerticalAnchor["Bottom"] = 3] = "Bottom";
+    })(VerticalAnchor || (VerticalAnchor = {}));
+})(caspian || (caspian = {}));
+var caspian;
+(function (caspian) {
     class Lookup {
         constructor(input, dotnet) {
             let lookup = input.closest('.c-lookup');
@@ -1065,9 +1464,9 @@ var caspian;
                         t.style.width = this.headerColumns[index].attributes['default-size'];
                     });
                 }
-                let content = this.content.querySelector('.c-grid-items tbody');
-                if (content != null) {
-                    content.querySelector('tr').querySelectorAll('td').forEach((t, index) => {
+                let tr = this.content.querySelector('.c-grid-items tbody tr');
+                if (tr != null) {
+                    tr.querySelectorAll('td').forEach((t, index) => {
                         t.style.width = this.headerColumns[index].attributes['default-size'];
                     });
                 }
@@ -1237,404 +1636,5 @@ var caspian;
         }
     }
     caspian.DataGrid = DataGrid;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class Accordion {
-        constructor(el, multiple) {
-            this.el = el;
-            this.multiple = multiple || false;
-            el.querySelectorAll('.submenu li').forEach(li => {
-                li.onclick = e => {
-                    let selected = el.querySelector('.submenu .selected');
-                    if (selected != null)
-                        selected.classList.remove('selected');
-                    e.target.classList.add('selected');
-                };
-            });
-            el.querySelectorAll('.default .link').forEach(elem => {
-                elem.onclick = e => {
-                    this.setOpenMenusHeight();
-                    let target = e.target.closest('.default');
-                    let height = null;
-                    if (!target.classList.contains('open')) {
-                        let submenu = target.querySelector('.submenu');
-                        submenu.style.height = 'auto';
-                        height = submenu.getBoundingClientRect().height;
-                        submenu.style.height = '0';
-                    }
-                    setTimeout(() => {
-                        this.toggleSubmen(target, height);
-                    }, 1);
-                };
-            });
-        }
-        setOpenMenusHeight() {
-            this.el.querySelectorAll('.default.open').forEach(elem => {
-                let open = elem.querySelector('.submenu');
-                let height = open.getBoundingClientRect().height;
-                open.style.height = `${height}px`;
-            });
-        }
-        toggleSubmen(menu, height) {
-            if (this.multiple) {
-            }
-            else {
-                let opendMenu = this.el.querySelector('.default.open');
-                if (opendMenu != menu)
-                    this.openSubmenu(menu, height);
-                if (opendMenu != null)
-                    this.closeSubmenu(opendMenu);
-            }
-        }
-        closeSubmenu(category) {
-            category.classList.remove('open');
-            category.querySelector('.submenu').style.height = '0';
-        }
-        openSubmenu(category, height) {
-            category.classList.add('open');
-            let submenu = category.querySelector('.submenu');
-            submenu.style.height = `${height}px`;
-        }
-    }
-    caspian.Accordion = Accordion;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class Window {
-        constructor(win) {
-            this.windowOpenClose(win.closest('.t-window'));
-            this.bindObserver(win);
-        }
-        windowOpenClose(win) {
-            let content = win.getElementsByClassName('t-window-content')[0];
-            if (content.attributes['status'].value == '2') {
-                let main = document.getElementsByClassName('c-content-main')[0];
-                if (main == null)
-                    document.body.style.overflow = 'hidden';
-                else
-                    main.style.overflow = 'hidden';
-                let header = win.getElementsByClassName('t-window-titlebar')[0];
-                if (content.attributes['draggable']) {
-                    this.bindDragAndDrop(win, header);
-                    header.style.cursor = 'move';
-                }
-                else {
-                    header.onmousedown = null;
-                    header.style.cursor = 'default';
-                }
-                win.style.display = 'block';
-                let left, top;
-                let parent = win.parentElement.closest('.t-window');
-                if (parent == null) {
-                    left = (window.innerWidth - win.getBoundingClientRect().width) / 2;
-                    top = -50;
-                }
-                else {
-                    let loc = parent.getBoundingClientRect();
-                    left = loc.left + (loc.width - win.getBoundingClientRect().width) / 2;
-                    top = loc.top - 45;
-                }
-                win.style.left = `${left}px`;
-                win.style.top = `${top}px`;
-                setTimeout(function () {
-                    win.classList.add('window-animate');
-                    win.style.top = `${top + 80}px`;
-                    setTimeout(() => win.classList.remove('window-animate'), 250);
-                }, 25);
-            }
-            else
-                win.style.display = 'none';
-        }
-        bindDragAndDrop(dragableDom, header) {
-            header.onmousedown = e => {
-                let loc = e.target.getBoundingClientRect();
-                let xStart = e.clientX, yStart = e.clientY, leftStart = loc.left, topStart = loc.top;
-                document.onmouseup = () => {
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                };
-                document.onmousemove = e => {
-                    let difX = e.clientX - xStart, difY = e.clientY - yStart;
-                    dragableDom.style.left = `${leftStart + difX}px`;
-                    dragableDom.style.top = `${topStart + difY}px`;
-                };
-            };
-        }
-        bindObserver(win) {
-            const mutationObserver = new MutationObserver(list => {
-                list.forEach(mutation => {
-                    if (mutation.type == 'attributes' && mutation.attributeName == 'status') {
-                        let status = mutation.target.attributes['status'].value;
-                        let main = document.getElementsByClassName('c-content-main')[0] || document.body;
-                        if (status == '1') {
-                            let openWindowIsExist = false;
-                            let windows = document.getElementsByClassName('t-window');
-                            for (let index = 0; index < windows.length; index++) {
-                                if (windows.item(index).getElementsByClassName('t-window-content')[0].attributes['status'].value == '2') {
-                                    openWindowIsExist = true;
-                                    break;
-                                }
-                            }
-                            if (!openWindowIsExist)
-                                main.style.overflow = 'auto';
-                        }
-                        else
-                            main.style.overflow = 'hidden';
-                        let mywindow = mutation.target.closest('.t-window');
-                        this.windowOpenClose(mywindow);
-                    }
-                });
-            });
-            mutationObserver.observe(win, {
-                attributes: true,
-                childList: false,
-                subtree: false
-            });
-        }
-    }
-    caspian.Window = Window;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class ComboBox {
-        constructor(input, Pageable, dotnet) {
-            this.bindObserver(input, Pageable, dotnet);
-            let control = input.closest('.t-combobox').getElementsByClassName('t-dropdown-wrap')[0];
-            input.onkeyup = e => {
-                if (e.key == 'ArrowDown' || e.key == 'ArrowUp') {
-                    let selected = e.target.closest('.t-combobox').getElementsByClassName('t-state-selected')[0];
-                    if (selected) {
-                        let content = e.target.closest('.t-combobox').getElementsByClassName('t-group')[0];
-                        let loc = selected.getBoundingClientRect();
-                        let top = loc.top - content.getBoundingClientRect().top, bottom = top + loc.height;
-                        if (bottom > 240 || top < 10) {
-                            let scrollTop = content.scrollTop;
-                            content.scrollTop = (scrollTop + bottom - 240);
-                        }
-                    }
-                }
-            };
-            input.closest('.t-combobox').onmouseenter = () => {
-                if (!control.classList.contains('t-state-disabled')) {
-                    let list = control.classList;
-                    list.add('t-state-hover');
-                    list.remove('t-state-default');
-                }
-            };
-            input.closest('.t-combobox').onmouseleave = () => {
-                if (!control.classList.contains('t-state-disabled')) {
-                    let list = control.classList;
-                    list.add('t-state-default');
-                    list.remove('t-state-hover');
-                }
-            };
-            input.onfocus = () => {
-                let list = control.classList;
-                list.add('t-state-focused');
-                list.remove('t-state-default');
-                caspian.common.showErrorMessage(input.closest('.t-widget'));
-            };
-            input.onblur = () => {
-                let list = control.classList;
-                list.add('t-state-default');
-                list.remove('t-state-focused');
-                caspian.common.hideErrorMessage(input.closest('.t-widget'));
-            };
-        }
-        bindObserver(input, pageable, dotnet) {
-            const mutationObserver = new MutationObserver(t => {
-                let ctr = t[0].target;
-                let group = ctr.getElementsByClassName('t-group')[0];
-                if (group) {
-                    if (pageable) {
-                        group.onscrollend = () => __awaiter(this, void 0, void 0, function* () {
-                            yield dotnet.invokeMethodAsync('IncPageNumberInvokable');
-                        });
-                    }
-                    let animate = ctr.getElementsByClassName('t-animation-container')[0];
-                    let height = group.getElementsByClassName('t-reset')[0].getBoundingClientRect().height;
-                    height = Math.min(250, height);
-                    height = Math.max(height, 30);
-                    animate.style.height = `${height + 7}px`;
-                    let loc = ctr.getBoundingClientRect();
-                    animate.style.width = `${loc.width + 7}px`;
-                    if (loc.top > window.innerHeight / 2) {
-                        animate.classList.add('c-animate-up');
-                        setTimeout(() => group.style.bottom = '0', 10);
-                        animate.style.marginTop = `${-height - 42}px`;
-                    }
-                    else {
-                        animate.classList.add('c-animate-down');
-                        setTimeout(() => group.style.top = '0', 10);
-                    }
-                    document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
-                        if (e.target.closest('.t-group') == null)
-                            yield dotnet.invokeMethodAsync('CloseInvokable');
-                    });
-                }
-                else
-                    document.body.onmousedown = null;
-            });
-            mutationObserver.observe(input.closest('.t-combobox'), {
-                attributes: false,
-                childList: true,
-                subtree: false
-            });
-        }
-    }
-    caspian.ComboBox = ComboBox;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class InputCollorPicker {
-        constructor(element, dotnet) {
-            this.bindObserver(element, dotnet);
-            element.onmouseenter = () => {
-                element.getElementsByClassName('c-input-color')[0].classList.add('c-state-hover');
-            };
-            element.onmouseleave = () => {
-                element.getElementsByClassName('c-input-color')[0].classList.remove('c-state-hover');
-            };
-            element.onfocus = () => {
-                element.getElementsByClassName('c-input-color')[0].classList.add('c-state-focused');
-            };
-            element.onblur = () => {
-                element.getElementsByClassName('c-input-color')[0].classList.remove('c-state-focused');
-            };
-        }
-        bindObserver(element, dotnet) {
-            const mutationObserver = new MutationObserver(t => {
-                let elem = t[0].target;
-                let animate = elem.getElementsByClassName('t-animation-container')[0];
-                if (animate != null) {
-                    let top = elem.getBoundingClientRect().top;
-                    let picker = elem.getElementsByClassName('c-colorpicker-panel')[0];
-                    animate.style.width = '245px';
-                    let height = picker.getBoundingClientRect().height;
-                    animate.style.height = `${height + 6}px`;
-                    if (top > window.innerHeight / 2) {
-                        animate.classList.add('c-animation-up');
-                        animate.style.marginTop = `${-height - 41}px`;
-                        setTimeout(t => {
-                            picker.style.bottom = '0';
-                        }, 10);
-                    }
-                    else {
-                        animate.classList.add('c-animation-down');
-                        setTimeout(t => {
-                            picker.style.top = '0px';
-                        }, 10);
-                    }
-                    document.body.onclick = (e) => __awaiter(this, void 0, void 0, function* () {
-                        if (e.target.closest('.t-animation-container') == null)
-                            yield dotnet.invokeMethodAsync("Close");
-                    });
-                }
-                else
-                    document.body.onclick = null;
-            });
-            mutationObserver.observe(element, {
-                attributes: false,
-                childList: true,
-                subtree: false
-            });
-        }
-    }
-    caspian.InputCollorPicker = InputCollorPicker;
-})(caspian || (caspian = {}));
-var caspian;
-(function (caspian) {
-    class PopupWindow {
-        constructor(element, target, json, dotnet) {
-            let data = JSON.parse(json);
-            element.style.display = 'block';
-            let className = element.className;
-            element.className = 'auto-hide c-popup-window';
-            let loc = element.getBoundingClientRect();
-            let mainLoc = document.getElementsByClassName('c-content-main')[0].getBoundingClientRect();
-            element.className = className;
-            if (target)
-                this.bindTarget(element, target, data);
-            else {
-                if (data.left != null) {
-                    element.style.left = `${data.left}px`;
-                    element.style.right = 'auto';
-                }
-                else if (data.right != null) {
-                    element.style.left = 'auto';
-                    element.style.right = `${data.right}px`;
-                }
-                else if (data.top != null) {
-                    element.style.top = `${data.top}px`;
-                    element.style.bottom = 'auto';
-                }
-                else if (data.bottom != null) {
-                    element.style.top = 'auto';
-                    element.style.bottom = `${data.bottom}px`;
-                }
-            }
-            document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
-                if (e.target.closest('.auto-hide') == null) {
-                    document.body.onmousedown = null;
-                    yield dotnet.invokeMethodAsync('Close');
-                }
-            });
-        }
-        bindTarget(element, target, data) {
-            element.className = 'auto-hide c-popup-window';
-            let targetLoc = target.getBoundingClientRect();
-            let leftT = targetLoc.left, topT = targetLoc.top;
-            let offsetLeft = data.offsetLeft, offsetTop = data.offsetTop;
-            switch (data.targetHorizontalAnchor) {
-                case HorizontalAnchor.Left:
-                    leftT += data.offsetLeft;
-                    break;
-                case HorizontalAnchor.Center:
-                    leftT += targetLoc.width / 2;
-                    offsetLeft = 0;
-                    break;
-                case HorizontalAnchor.Right:
-                    leftT += targetLoc.width + data.offsetLeft;
-                    break;
-            }
-            switch (data.targetVerticalAnchor) {
-                case VerticalAnchor.Top:
-                    topT += data.offsetTop;
-                    break;
-                case VerticalAnchor.Middle:
-                    topT += targetLoc.height / 2;
-                    offsetTop = 0;
-                    break;
-                case VerticalAnchor.Bottom:
-                    topT += targetLoc.height + data.offsetTop;
-                    break;
-            }
-            let loc = element.getBoundingClientRect();
-            if (data.horizontalAnchor == HorizontalAnchor.Center)
-                leftT -= loc.width / 2 + data.offsetLeft - offsetLeft;
-            else if (data.horizontalAnchor == HorizontalAnchor.Right)
-                leftT -= loc.width - data.offsetLeft - offsetLeft;
-            if (data.verticalAnchor == VerticalAnchor.Middle)
-                topT -= loc.height / 2 + data.offsetTop + offsetTop;
-            else if (data.verticalAnchor == VerticalAnchor.Bottom)
-                topT -= loc.height + data.offsetTop + offsetTop - 1;
-            element.style.left = `${leftT}px`;
-            element.style.top = `${topT}px`;
-        }
-    }
-    caspian.PopupWindow = PopupWindow;
-    let HorizontalAnchor;
-    (function (HorizontalAnchor) {
-        HorizontalAnchor[HorizontalAnchor["Left"] = 1] = "Left";
-        HorizontalAnchor[HorizontalAnchor["Center"] = 2] = "Center";
-        HorizontalAnchor[HorizontalAnchor["Right"] = 3] = "Right";
-    })(HorizontalAnchor || (HorizontalAnchor = {}));
-    let VerticalAnchor;
-    (function (VerticalAnchor) {
-        VerticalAnchor[VerticalAnchor["Top"] = 1] = "Top";
-        VerticalAnchor[VerticalAnchor["Middle"] = 2] = "Middle";
-        VerticalAnchor[VerticalAnchor["Bottom"] = 3] = "Bottom";
-    })(VerticalAnchor || (VerticalAnchor = {}));
 })(caspian || (caspian = {}));
 //# sourceMappingURL=caspian.bundle.js.map

@@ -47,5 +47,7 @@ namespace Demo.Model
 
         [CheckOnDelete("Customer has Address and can not be removed")]
         public virtual IList<CustomerAddress> CustomerAddresses { get; set; }
+
+        public virtual CustomerGroup CustomerGroup { get; set; }
     }
 }

@@ -565,3 +565,18 @@ html {
     padding: 1.75rem;
     background-color:white;
 }
+
+.d-icons .t-numerictextbox {
+    width: 33px;
+    height: 33px;
+    border-radius: 16px;
+    border: 1px solid #423d96;
+    margin: 0 10px;
+}
+.d-icons input {
+    background-color: transparent;
+    border: none !important;
+    text-align: center;
+    line-height: 30px;
+    color: #423d96;
+}

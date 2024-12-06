@@ -7,6 +7,7 @@ using System.ComponentModel;
 using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReportUiModels
@@ -17,15 +18,26 @@ namespace ReportUiModels
     public class ReportTree
     {
         public static string[] DateFields = { "Date", "DayOfWeek" };
-
-        public static IDictionary<string, string> DateFieldsText;
+        public static string[] AggregateFunctionsName = {"Sum", "Average", "Maximum", "Minimum" };
+        public static string[] AggregateDateFunctionsName = {"First", "Last"};
+        public static IDictionary<string, string> DateFieldsDictionary;
+        public static IDictionary<string, string> AggregateFunctionsDictionary;
+        public static IDictionary<string, string> AggregateDateFunctionsNameDictionary;
         public static string[] TotalDateFields = { "Date", "Year", "Month", "Day", "DayOfWeek" };
 
         static ReportTree()
         {
-            DateFieldsText = new Dictionary<string, string>()
+            DateFieldsDictionary = new Dictionary<string, string>()
             {
                 { "Date", "تاریخ"}, {"Year", "سال"}, {"Month", "ماه"}, {"Day", "روز"}, {"DayOfWeek", "روز هفته"}
+            };
+            AggregateFunctionsDictionary = new Dictionary<string, string>()
+            {
+                {"Sum", "مجموع" }, {"Average", "میانگین"}, {"Maximum", "بیشترین"}, {"Minimum", "کمترین"}
+            };
+            AggregateDateFunctionsNameDictionary = new Dictionary<string, string>()
+            {
+                {"First", "اولین" }, {"Last", "آخرین"}
             };
         }
 
@@ -157,6 +169,30 @@ namespace ReportUiModels
             var nodes = new List<NodeView>();
             ForeignKeyNodes(type, nodes, null);
             DateAndEnumNodes(type, nodes, null);
+            foreach (var info in type.GetProperties())
+            {
+                var isDate = info.PropertyType == typeof(DateTime) || info.PropertyType == typeof(DateTime?);
+                if (info.PropertyType.IsNumberType() || isDate)
+                {
+                    var isKey = info.GetCustomAttribute<KeyAttribute>() != null || type.GetProperties().Any(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name);
+                    if (!isKey)
+                    {
+                        var text = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? info.Name;
+                        var node = new NodeView()
+                        {
+                            Collabsable = true,
+                            Expanded = true,
+                            Text = text,
+                            Value = info.Name
+                        };
+                        if (isDate)
+                            node.Children = AggregateDateFunctionsName.Select(t => new NodeView(t, AggregateDateFunctionsNameDictionary[t], false, true)).ToList();
+                        else
+                            node.Children = AggregateFunctionsName.Select(t => new NodeView(t, AggregateFunctionsDictionary[t], false, true)).ToList();
+                        nodes.Add(node);
+                    }
+                }
+            }
             return nodes;
         }
 
@@ -167,7 +203,7 @@ namespace ReportUiModels
             foreach(var info in type.GetProperties())
             {
                 var fKey = info.GetCustomAttribute<ForeignKeyAttribute>();
-                if (fKey != null)
+                if (fKey != null && info.PropertyType != typeof(PersianDateTable))
                 {
                     var stringProperties = info.PropertyType.GetProperties().Where(t => t.PropertyType == typeof(string));
                     if (stringProperties.Any())
@@ -208,29 +244,13 @@ namespace ReportUiModels
                         Collabsable = false,
                         Selectable = true
                     };
-                    //if (propertyType == typeof(DateTime))
-                    //{
-                    //    node.Children = new List<NodeView>();
-                    //    var persianDate = info.DeclaringType.GetProperties().SingleOrDefault(t => t.PropertyType == typeof(PersianDateTable) &&
-                    //        t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name);
-                    //    if (persianDate == null)
-                    //    {
-                    //        foreach (var item in DateFields) 
-                    //            node.Children.Add(new NodeView($"{path + info.Name}.{item}", item, false, true));
-                    //    }
-                    //    else
-                    //    {
-                    //        foreach (var item in TotalDateFields)
-                    //            node.Children.Add(new NodeView($"{path + info.Name}.{item}", item, false, true));
-                    //    }
-                    //}
                     nodes.Add(node);
                 }
                 else if (!propertyType.IsValueType && !propertyType.IsCollectionType() && propertyType != typeof(PersianDateTable)) 
                 {
                     var fKey = info.GetCustomAttribute<ForeignKeyAttribute>();
                     if (fKey != null)
-                        DateAndEnumNodes(info.PropertyType, nodes, info.Name);
+                        DateAndEnumNodes(info.PropertyType, nodes, path + info.Name);
                 }
 
             }

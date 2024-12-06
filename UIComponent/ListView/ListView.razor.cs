@@ -150,15 +150,15 @@ namespace Caspian.UI
                 StateHasChanged();
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindListView", element);
             }
-            if (insertContinerHouldhasFocus)
+            if (insertContainerHoldHasFocus)
             {
-                insertContinerHouldhasFocus = false;
-                await insertContiner.FocusAsync();
+                insertContainerHoldHasFocus = false;
+                await insertContainer.FocusAsync();
             }
             if (shouldSetFocuc)
             {
                 shouldSetFocuc = false;
-                await updateContiner.FocusAsync();
+                await updateContainer.FocusAsync();
             }
             else if (FormAppState.Control != null)
             {

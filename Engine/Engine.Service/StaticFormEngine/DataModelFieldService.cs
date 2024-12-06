@@ -23,10 +23,10 @@ namespace Caspian.Engine.Service
                     return false;
                 }, "فیلد دارای گزینه می باشد و امکان تغییر نوع آن وجود ندارد");
             
-            RuleFor(t => t.Title).Required().UniqAsync(t => t.DataModelId, "آبجکتی با این عنوان در فرم ثبت شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync(t => t.DataModelId, "آبجکتی با این عنوان در فرم ثبت شده است");
             RuleFor(t => t.EntityTypeId).Required(t => t.FieldType == DataModelFieldType.Relational)
                 .Custom(t => t.EntityTypeId.HasValue && t.FieldType != DataModelFieldType.Relational, "نوع موجودیت باید خالی باشد.");
-            RuleFor(t => t.FieldName).Required().UniqAsync(t => t.DataModelId, "آبجکتی با این عنوان در فرم ثبت شده است")
+            RuleFor(t => t.FieldName).Required().UniqueAsync(t => t.DataModelId, "آبجکتی با این عنوان در فرم ثبت شده است")
                 .CustomValue(t => t.IsValidIdentifire(), "برای تعریف متغیر فقط از کاراکترهای لاتین و یا اعداد استفاده کنید.");
         }
 

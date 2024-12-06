@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
-using System;
 
 namespace Main
 {
@@ -24,19 +23,20 @@ namespace Main
     {
         static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder();
             ConfigureCulture();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
             builder.Services.AddControllers();
             builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
             builder.Logging.AddCaspianConsoleLogger(builder);
             var persistKeyPath = Path.Combine(builder.Environment.ContentRootPath, "PersistKey");
             builder.Services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
                 .SetApplicationName("SharedCookieApp");
-            if (builder.Environment.IsDevelopment())
+            if (!builder.Environment.IsProduction())
                 CS.Con = builder.Configuration.GetConnectionString("TestDB");
             else
                 CS.Con = builder.Configuration.GetConnectionString("ServerDb");
@@ -79,8 +79,7 @@ namespace Main
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
             builder.Services.AddScoped<BaseComponentService>();
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(CS.Con));
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
 
             builder.Services.AddAuthenticationCore();
 
@@ -89,8 +88,6 @@ namespace Main
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
             var app = builder.Build();
-
-
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -118,13 +115,15 @@ namespace Main
 
             app.MapAdditionalIdentityEndpoints();
             app.MapControllers();
-            if (!builder.Environment.IsDevelopment())
+            if (builder.Environment.IsStaging())
             {
                 app.Urls.Add("https://localhost:443");
                 app.Urls.Add("http://localhost:80");
             }
+
             app.Run();
         }
+
 
         static void ConfigureCulture()
         {

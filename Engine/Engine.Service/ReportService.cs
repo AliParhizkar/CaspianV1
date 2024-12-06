@@ -9,7 +9,7 @@ namespace Caspian.Engine.Service
         public ReportService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync(t => t.ReportGroup.SubSystem, "گزارشی با این عنوان در سیستم ثبت شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync(t => t.ReportGroup.SubSystem, "گزارشی با این عنوان در سیستم ثبت شده است");
             RuleForEach(t => t.ReportParams).SetValidator(report => new ReportParamService(provider, report));
         }
     }

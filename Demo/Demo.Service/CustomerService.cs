@@ -15,14 +15,21 @@ namespace Demo.Service
         public CustomerService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.CompanyName).Required(t => t.CustomerType == CustomerType.Legal);
-            RuleFor(t => t.Gender).Required(t => t.CustomerType == CustomerType.Real);
-            RuleFor(t => t.FName).Custom(t => t.CustomerType == CustomerType.Legal && t.FName.HasValue(), "First Name is invalid");
-            RuleFor(t => t.LName).Required(t => t.CustomerType == CustomerType.Real);
-            RuleFor(t => t.MobileNumber).Required().MobileNumber().UniqAsync("There is a customer with this mobile number");
-            RuleFor(t => t.Tel).TelNumber();
-            RuleFor(t => t.CustomerGroupMemberships).Custom(t => t.CustomerGroupMemberships == null || t.CustomerGroupMemberships.Count == 0, "Customer should be member of a group");
-            RuleForEach(t => t.CustomerGroupMemberships).SetValidator(new CustomerGroupMembershipService(provider));
+            //RuleFor(t => t.CompanyName).Required(t => t.CustomerType == CustomerType.Legal);
+            //RuleFor(t => t.Gender).Required(t => t.CustomerType == CustomerType.Real);
+            //RuleFor(t => t.FName).Custom(t => t.CustomerType == CustomerType.Legal && t.FName.HasValue(), "First Name is invalid");
+            //RuleFor(t => t.LName).Required(t => t.CustomerType == CustomerType.Real);
+            //RuleFor(t => t.MobileNumber).Required().MobileNumber().UniqAsync("There is a customer with this mobile number");
+            //RuleFor(t => t.Tel).TelNumber();
+            //RuleFor(t => t.CustomerGroupMemberships).Custom(t => t.CustomerGroupMemberships == null || t.CustomerGroupMemberships.Count == 0, "Customer should be member of a group");
+            //RuleForEach(t => t.CustomerGroupMemberships).SetValidator(new CustomerGroupMembershipService(provider));
+            
+            RuleFor(t => t.CustomerGroup).ChildRules(x =>
+            {
+                x.RuleFor(u => u.Title).Required();
+                x.RuleFor(p => p.ActiveType >= ActiveType.Enable && p.ActiveType <= ActiveType.Disable);
+            });
+
         }
 
         void UpdateCustomer(Customer entity)

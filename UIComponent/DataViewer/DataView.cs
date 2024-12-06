@@ -17,7 +17,7 @@ namespace Caspian.UI
     {
         protected RowData<TEntity> insertedEntity;
         protected EditContext InsertContext;
-        protected bool insertContinerHouldhasFocus;
+        protected bool insertContainerHoldHasFocus;
         protected TEntity selectedEntity;
         protected IList<TEntity> source;
         protected TEntity unchangedEntity;
@@ -25,8 +25,8 @@ namespace Caspian.UI
         protected bool shouldSetFocuc;
         protected IList<TEntity> deletedEntities;
         protected bool shouldFetchData = true;
-        protected CaspianContainer insertContiner;
-        protected CaspianContainer updateContiner;
+        protected CaspianContainer insertContainer;
+        protected CaspianContainer updateContainer;
         protected IDictionary<string, LambdaExpression> expressionList;
         protected int pageNumber = 1;
         protected Type serviceType;
@@ -293,7 +293,7 @@ namespace Caspian.UI
                 }
                 else
                 {
-                    await insertContiner.ResetAsync();
+                    await insertContainer.ResetAsync();
                     if (insertedEntity == null)
                     {
                         insertedEntity = new RowData<TEntity>();
@@ -421,18 +421,22 @@ namespace Caspian.UI
                     var value = foreignKeyInfo.GetValue(entity);
                     if (value != null && !value.Equals(0))
                     {
-                        var selectExpr = expressionList.SingleOrDefault(t => t.Key == info.Name).Value;
-                        if (selectExpr != null)
+                        if (expressionList?.ContainsKey(info.Name) == true)
                         {
+
+                            var selectExpr = expressionList[info.Name];
                             var query = GetQueryForType(info.PropertyType, value);
                             var list = await query.Select(selectExpr).ToDynamicListAsync();
                             var result = list.SingleOrDefault();
                             var foreignKeyValue = Activator.CreateInstance(info.PropertyType);
-                            foreach (PropertyInfo info1 in result.GetType().GetProperties())
+                            foreach (var info1 in result.GetType().GetProperties())
+                            {
                                 if (info1.Name != "Item")
                                     IQueryableExtension.UpdateEntity(foreignKeyValue, info1.Name, info1.GetValue(result));
+                            }
                             info.SetValue(entity, foreignKeyValue);
                         }
+
                     }
                 }
             }
@@ -624,7 +628,7 @@ namespace Caspian.UI
             if (BatchServiceData.MasterId > 0)
                 BatchServiceData.GetMasterInfo(typeof(TEntity)).SetValue(insertedEntity.Data, BatchServiceData.MasterId);
             InsertContext = new EditContext(insertedEntity.Data);
-            insertContinerHouldhasFocus = AutoHide;
+            insertContainerHoldHasFocus = AutoHide;
             StateHasChanged();
         }
 

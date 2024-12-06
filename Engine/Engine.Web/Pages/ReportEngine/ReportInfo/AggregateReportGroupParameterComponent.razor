@@ -20,20 +20,20 @@
             </div>
         </div>
         <TreeView style="height:calc(100% - 47px)" TEntity="NodeView" Source="source">
-            <AfterNodeTemplate Context="node">
-                @if (!IsIdentityNode(node))
-                {
-                    <span class="d-tree-icon d-tree-edit" @onclick="() => OpenForm(node)">
-                        <span class="fa fa-pencil"></span>
-                    </span>
-                }
-            </AfterNodeTemplate>
             <BeforeNodeTemplate Context="node">
                 @if (IsIdentityNode(node))
                 {
                     <span class="fa fa-key"></span>
                 }
             </BeforeNodeTemplate>
+            <AfterNodeTemplate Context="node">
+                @if (CanEdited(node))
+                {
+                    <span class="d-tree-icon d-tree-edit" @onclick="() => OpenForm(node)">
+                        <span class="fa fa-pencil"></span>
+                    </span>
+                }
+            </AfterNodeTemplate>
         </TreeView>
     </div>
 </div>
