@@ -43,6 +43,8 @@ namespace Demo.Model
 
         public DbSet<Evaluation> Evaluations { get; set; }
 
+        public DbSet<CourseStudy> CourseStudies { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()

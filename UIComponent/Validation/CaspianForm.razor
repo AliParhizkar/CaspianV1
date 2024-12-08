@@ -23,7 +23,7 @@
             {
                 <CaspianValidationValidator ValidatorType="serviceType" />
             }
-            @ChildContent
+            @Content(EditContext.Model as TEntity)
         </CascadingValue>
     </EditForm>
 }

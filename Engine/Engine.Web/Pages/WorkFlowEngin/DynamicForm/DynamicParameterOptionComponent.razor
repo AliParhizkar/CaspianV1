@@ -1,11 +1,11 @@
 ﻿@namespace Caspian.Engine.WorkflowEngine
-@inherits SimplePage<DynamicParameterOption>
-
+@inherits BasePage
+@inject UIService<DynamicParameterOption> Service
 @{
     base.BuildRenderTree(__builder);
 }
 <div class="p-4">
-    <DataGrid @ref="CrudGrid" TEntity="DynamicParameterOption" Search="SearchData" ConditionExpr="t => t.DynamicParameterId == ParameterId">
+    <DataGrid Service="Service" TEntity="DynamicParameterOption" ConditionExpr="t => t.DynamicParameterId == ParameterId">
         <Columns Context="con">
             <GridColumn Field="t => t.FaTitle" />
             <GridColumn Field="t => t.EnTitle" />
@@ -14,36 +14,33 @@
         </Columns>
     </DataGrid>
 </div>
-<Window @ref="UpsertWindow" Title="مقادیر پارامتر" Style="width:450px"
-        OnOpen="async () => {await OpenForm(); }">
-    <Content>
-        <CaspianForm @ref="UpsertForm" Model="UpsertData">
-            <div class="row c-controls ps-4 pe-4">
-                <div class="col-md-4">
-                    <label>عنوان فارسی </label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.FaTitle" />
-                </div>
-                <div class="col-md-4">
-                    <label>عنوان لاتین </label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.EnTitle" />
-                </div>
-                <div class="col-md-4">
-                    <label>مقدار</label>
-                </div>
-                <div class="col-md-8">
-                    <NumericTextBox Disabled Value="UpsertData.Value" />
-                </div>
-                <div class="col-md-4"></div>
-                <div class="col-md-8">
-                    <FormCommandButton />
-                </div>
+<Window Service="Service" Title="مقادیر پارامتر" Style="width:450px" OnOpen="async () => await OpenForm()">
+    <CaspianForm Service="Service">
+        <div class="row c-controls ps-4 pe-4">
+            <div class="col-md-4">
+                <label>عنوان فارسی </label>
             </div>
-        </CaspianForm>
-    </Content>
+            <div class="col-md-8">
+                <StringTextBox @bind-Value="Service.UpsertData.FaTitle" />
+            </div>
+            <div class="col-md-4">
+                <label>عنوان لاتین </label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox Style="direction:ltr" @bind-Value="Service.UpsertData.EnTitle" />
+            </div>
+            <div class="col-md-4">
+                <label>مقدار</label>
+            </div>
+            <div class="col-md-8">
+                <NumericTextBox Disabled Value="Service.UpsertData.Value" />
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <FormCommandButton />
+            </div>
+        </div>
+    </CaspianForm>
 </Window>
 
 
@@ -51,12 +48,12 @@
 {
     async Task OpenForm()
     {
-        UpsertData.DynamicParameterId = ParameterId;
-        if (UpsertData.Id == 0)
+        Service.UpsertData.DynamicParameterId = ParameterId;
+        if (Service.UpsertData.Id == 0)
         {
             using var scope = CreateScope();
             var service = new DynamicParameterOptionService(scope.ServiceProvider);
-            UpsertData.Value = (await service.GetAll().Where(t => t.DynamicParameterId == ParameterId).MaxAsync(t => (long?)t.Value)).GetValueOrDefault() + 1;
+            Service.UpsertData.Value = (await service.GetAll().Where(t => t.DynamicParameterId == ParameterId).MaxAsync(t => (long?)t.Value)).GetValueOrDefault() + 1;
         }
     }
 

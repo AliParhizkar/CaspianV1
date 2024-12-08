@@ -46,59 +46,28 @@
     </Slide>
 </div> *@
 
+<div style="width:80%;margin:10px auto">
+    <Test.TabPaneEntity TEntity="Employee">
+        <Test.ChildTabPanelItem Child="t => t" Title="مشخصات اصلی">
+            <Content Context="emp">
+                <Test.MainComponent Employee="emp" />
+            </Content>
+        </Test.ChildTabPanelItem>
+        <Test.ChildTabPanelItem Child="t => t.Family" Title="مشخصات خانوادگی">
+            <Content Context="family">
+                <Test.FamilyComponent Family="family" />
+            </Content>
+        </Test.ChildTabPanelItem>
+        <Test.ChildrenTabPanelItem Children="t => t.CourseStudies" Title="تحصیلات">
+            <Content Context="service">
+                <Test.CourseStudyComponent Service="service" />
+            </Content>
+        </Test.ChildrenTabPanelItem>
+    </Test.TabPaneEntity>
+</div>
 
-<Test.TabPaneEntity Entity="employee">
-    
-    <Test.ChildTabPanelItem Child="t => t" Title="مشخصات اصلی">
-        <Content Context="emp">
-            <div class="row ">
-                <div class="col-md-4">
-                    <label>First Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="emp.FName" />
-                </div>
-                <div class="col-md-4">
-                    <label>Last Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="emp.LName" />
-                </div>
-                <div>
-                    <FormCommandButton />
-                </div>
-            </div>
-        </Content>
-    </Test.ChildTabPanelItem>
-    <Test.ChildTabPanelItem Child="t => t.Family" Title="مشخصات خانوادگی">
-        <Content Context="family">
-            <div class="row ">
-                <div class="col-md-4">
-                    <label>Wife Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="family.WifeName" />
-                </div>
-            </div>
-            <div>
-                <FormCommandButton />
-            </div>
-        </Content>
-    </Test.ChildTabPanelItem>
-    <Test.ChildrenTabPanelItem Children="t => t.CourseStudies" Title="تحصیلات">
-        <Content Context="service">
-            <DataGrid Service="service">
-                <Columns Context="courses">
-                    <GridColumn Field="t => t.Title" />
-                    <GridCommandColumns />
-                </Columns>
-            </DataGrid>
-            <Window Service="service">
 
-            </Window>
-        </Content>
-    </Test.ChildrenTabPanelItem>
-</Test.TabPaneEntity>
+
 @code 
 {
     Employee employee;

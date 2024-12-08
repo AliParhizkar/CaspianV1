@@ -1,18 +1,33 @@
 ﻿@namespace Test
 @using System.Linq.Expressions
 @using Caspian.UI
+@inject IServiceProvider ServiceProvider
 @typeparam TEntity where TEntity : class
 @typeparam TDetail where TDetail : class
-
+<Caspian.UI.TabPanelItem Title="@Title">
+    @if (Content != null)
+    {
+        @Content(service)
+    }
+</Caspian.UI.TabPanelItem>
 @code 
 {
+    UIService<TDetail> service;
+
+    protected override void OnInitialized()
+    {
+        service = new UIService<TDetail>(ServiceProvider);
+        base.OnInitialized();
+    }
 
     [Parameter]
-    public Expression<Func<TEntity, ICollection<TDetail>>> Children { get; set; }
+    public Expression<Func<TEntity, IList<TDetail>>> Children { get; set; }
 
     [Parameter]
     public RenderFragment<UIService<TDetail>> Content { get; set; }
 
     [Parameter]
     public string Title { get; set; }
+
+
 }

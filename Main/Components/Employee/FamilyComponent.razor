@@ -1,0 +1,18 @@
+﻿@namespace Test
+<div class="row ">
+    <div class="col-md-4">
+        <label>Wife Name</label>
+    </div>
+    <div class="col-md-8">
+        <StringTextBox @bind-Value="Family.WifeName" />
+    </div>
+</div>
+<div>
+    <FormCommandButton />
+</div>
+
+@code 
+{
+    [Parameter]
+    public Family Family { get; set; }
+}

@@ -1,0 +1,23 @@
+﻿@namespace Test
+<div class="row ">
+    <div class="col-md-4">
+        <label>First Name</label>
+    </div>
+    <div class="col-md-8">
+        <StringTextBox @bind-Value="Employee.FName" />
+    </div>
+    <div class="col-md-4">
+        <label>Last Name</label>
+    </div>
+    <div class="col-md-8">
+        <StringTextBox @bind-Value="Employee.LName" />
+    </div>
+    <div>
+        <FormCommandButton />
+    </div>
+</div>
+@code 
+{
+    [Parameter]
+    public Employee Employee { get; set; }
+}

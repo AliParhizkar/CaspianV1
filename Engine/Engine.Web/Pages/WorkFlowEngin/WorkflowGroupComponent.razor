@@ -1,5 +1,5 @@
 ﻿@namespace Caspian.Engine.WorkFlow
-@inherits SimplePage<WorkflowGroup>
+@inject UIService<WorkflowGroup> Service
 @{
     base.BuildRenderTree(__builder);
 }
@@ -9,11 +9,11 @@
             <label>Title</label>
         </div>
         <div class="col-md-8">
-            <StringTextBox @bind-Value="SearchData.Title" />
+            <StringTextBox @bind-Value="Service.Search.Title" />
         </div>
     </div>
 
-    <DataGrid @ref="CrudGrid" TEntity="WorkflowGroup" ContentHeight="250" ConditionExpr="t => t.SubSystemKind == Subsystem">
+    <DataGrid TEntity="WorkflowGroup" ContentHeight="250" ConditionExpr="t => t.SubSystemKind == Subsystem">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Title="Data model" style="width:90px">
@@ -42,29 +42,27 @@
 
 </div>
 
-<Window @ref="UpsertWindow" Title="Workflow group" Style="width:500px" OnOpen="() => {UpsertData.SubSystemKind = Subsystem;}">
-    <Content>
-        <CaspianForm @ref="UpsertForm" Model="UpsertData">
-            <div class="row c-controls ps-4 pe-4">
-                <div class="col-md-4">
-                    <label>Title</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.Title" />
-                </div>
-                <div class="col-md-4">
-                    <label>Description</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.Description" MultiLine Rows="3" />
-                </div>
-                <div class="col-md-4"></div>
-                <div class="col-md-8">
-                    <FormCommandButton />
-                </div>
+<Window Service="Service" Title="Workflow group" Style="width:500px" OnOpen="() => Service.UpsertData.SubSystemKind = Subsystem">
+    <CaspianForm Service="Service">
+        <div class="row c-controls ps-4 pe-4">
+            <div class="col-md-4">
+                <label>Title</label>
             </div>
-        </CaspianForm>
-    </Content>
+            <div class="col-md-8">
+                <StringTextBox @bind-Value="Service.UpsertData.Title" />
+            </div>
+            <div class="col-md-4">
+                <label>Description</label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox @bind-Value="Service.UpsertData.Description" MultiLine Rows="3" />
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <FormCommandButton />
+            </div>
+        </div>
+    </CaspianForm>
 </Window>
 
 @code

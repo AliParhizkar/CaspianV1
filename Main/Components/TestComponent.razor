@@ -8,13 +8,7 @@
 @using System.Linq.Expressions
 @inherits BasePage
 <span>@customer.CustomerGroup?.Title</span>
-<TabPaneEntity TEntity="Customer" Entity="customer">
-    <TabPanelEntityItem  Field="t => t.CustomerGroup">
-        <Content Context="group">
-            <StringTextBox @bind-Value="group.Title" />
-        </Content>
-    </TabPanelEntityItem>
-</TabPaneEntity>
+
 
 
 @code 

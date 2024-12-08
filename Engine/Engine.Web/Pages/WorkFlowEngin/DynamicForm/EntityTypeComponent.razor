@@ -1,5 +1,6 @@
 ﻿@namespace Caspian.Engine.WorkflowEngine
-@inherits SimplePage<EntityType>
+@inherits BasePage
+@inject UIService<EntityType> Service
 <style type="text/css">
     .fa-check{
         color: #34b8f9;
@@ -22,13 +23,13 @@
             <label>زیرسیستم</label>
         </div>
         <div class="col-md-4 ps-4">
-            <DropdownList @bind-Value="SearchData.SubSystem" />
+            <DropdownList @bind-Value="Service.Search.SubSystem" />
         </div>
         <div class="col-md-1 pe-4">
             <label>وضعیت</label>
         </div>
         <div class="col-md-4">
-            <DropdownList @bind-Value="SearchData.ValidationType" />
+            <DropdownList @bind-Value="Service.Search.ValidationType" />
         </div>
         <div class="col-md-2 text-center">
             <button class="c-icon-button c-title" @onclick="ValidateEntitiesType">
@@ -37,7 +38,7 @@
             </button>
         </div>
     </div>
-    <DataGrid @ref="CrudGrid" TEntity="EntityType">
+    <DataGrid Service="Service" TEntity="EntityType">
         <Columns Context="con">
             <GridColumn Field="t => t.SubSystem.EnumText()" />
             <GridColumn Field="t => t.Title" />
@@ -55,35 +56,33 @@
         </Columns>
     </DataGrid>
 </div>
-<Window @ref="UpsertWindow" Title="موجودیت ها" Style="width:500px">
-    <Content>
-        <CaspianForm @ref="UpsertForm" Model="UpsertData" OnSubmit="UpdateModel">
-            <div class="row c-controls ps-4 pe-4">
-                <div class="col-md-3">
-                    <label>زیرسیستم</label>
-                </div>
-                <div class="col-md-9">
-                    <DropdownList @bind-Value="subSystem" FilterFunc="t => t != SubSystemKind.Engine" OnChange="UpdateSource" />
-                </div>
-                <div class="col-md-3">
-                    <label>موجودیت</label>
-                </div>
-                <div class="col-md-9">
-                    <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="typeName" Source="source" />
-                </div>
-                <div class="col-md-3">
-                    <label>عنوان فارسی </label>
-                </div>
-                <div class="col-md-9">
-                    <StringTextBox @bind-Value="UpsertData.Title" />
-                </div>
-                <div class="col-md-3"></div>
-                <div class="col-md-9">
-                    <FormCommandButton />
-                </div>
+<Window Service="Service" Title="موجودیت ها" Style="width:500px">
+    <CaspianForm Service="Service" OnSubmit="UpdateModel">
+        <div class="row c-controls ps-4 pe-4">
+            <div class="col-md-3">
+                <label>زیرسیستم</label>
             </div>
-        </CaspianForm>
-    </Content>
+            <div class="col-md-9">
+                <DropdownList @bind-Value="subSystem" FilterFunc="t => t != SubSystemKind.Engine" OnChange="UpdateSource" />
+            </div>
+            <div class="col-md-3">
+                <label>موجودیت</label>
+            </div>
+            <div class="col-md-9">
+                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="typeName" Source="source" />
+            </div>
+            <div class="col-md-3">
+                <label>عنوان فارسی </label>
+            </div>
+            <div class="col-md-9">
+                <StringTextBox @bind-Value="Service.UpsertData.Title" />
+            </div>
+            <div class="col-md-3"></div>
+            <div class="col-md-9">
+                <FormCommandButton />
+            </div>
+        </div>
+    </CaspianForm>
 </Window>
 
 
@@ -112,14 +111,14 @@
 
     void UpdateModel()
     {
-        UpsertData.SubSystem = subSystem;
+        Service.UpsertData.SubSystem = subSystem;
         if (typeName.HasValue())
         {
             var items = source.Single(t => t.Value == typeName).Value.Split('-');
-            UpsertData.Namespace = items[0];
-            UpsertData.Name = items[1];
+            Service.UpsertData.Namespace = items[0];
+            Service.UpsertData.Name = items[1];
             var status = subSystem.HasEntityType(items[0], items[1]);
-            UpsertData.ValidationType = status ? ValidationType.Valid : ValidationType.Invalid; 
+            Service.UpsertData.ValidationType = status ? ValidationType.Valid : ValidationType.Invalid;
         }
         else
             ShowMessage("لطفا نوع موجودیت را مشخص نمایید.");
@@ -139,7 +138,7 @@
                 await service.SaveChangesAsync();
             }
         }
-        await CrudGrid.ReloadAsync();
+        await Service.DataView.ReloadAsync();
     }
 
     protected override void OnParametersSet()

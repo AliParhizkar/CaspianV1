@@ -1,16 +1,17 @@
 ﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @namespace Caspian.Engine.WorkFlow
-@inherits SimplePage<DataModelField>
+@inherits BasePage
+@inject UIService<DataModelField> Service
 @{
     base.BuildRenderTree(__builder);
-    if (UpsertData.EntityFullName.HasValue())
-        UpsertData.FieldType = null;
-    if (UpsertData.FieldType.HasValue)
-        UpsertData.EntityFullName = null;
+    if (Service.UpsertData.EntityFullName.HasValue())
+        Service.UpsertData.FieldType = null;
+    if (Service.UpsertData.FieldType.HasValue)
+        Service.UpsertData.EntityFullName = null;
 }
 
 <div class="p-4">
-    <DataGrid @ref="CrudGrid" TEntity="DataModelField" ContentHeight="300" ConditionExpr="t => t.DataModelId == DataModelId">
+    <DataGrid Service="Service" TEntity="DataModelField" ContentHeight="300" ConditionExpr="t => t.DataModelId == DataModelId">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.EntityFullName" />
@@ -28,55 +29,53 @@
     </DataGrid>
 </div>
 
-<Window @ref="UpsertWindow" Title="Data model fields" Style="width:500px" OnOpen="FormOpen">
-    <Content>
-        <CaspianForm @ref="UpsertForm" Model="UpsertData">
-            <div class="row ps-4 pe-4 c-controls">
-                <div class="col-md-4">
-                    <label>Entity name</label>
-                </div>
-                <div class="col-md-8">
-                    <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="UpsertData.EntityFullName"
-                              Source="workflowEntityTypes" Disabled="UpsertData.FieldType.HasValue" OnChanged="SetFieldData" />
-                </div>
-                <div class="col-md-4">
-                    <label>Field type</label>
-                </div>
-                <div class="col-md-8">
-                    <DropdownList @bind-Value="UpsertData.FieldType" Disabled="UpsertData.EntityFullName.HasValue()" />
-                </div>
-                <div class="col-md-4">
-                    <label>Title</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.Title" />
-                </div>
-                <div class="col-md-4">
-                    <label>Field name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.FieldName" />
-                </div>
-                <div class="col-md-4">
-                    <label>Entity type</label>
-                </div>
-                <div class="col-md-8">
-                    <ComboBox TEntity="Caspian.Engine.EntityType" TValue="int?" @bind-Value="UpsertData.EntityTypeId"
-                        TextExpression="t => t.Title" Disabled="UpsertData.FieldType != DataModelFieldType.Relational"/>
-                </div>
-                <div class="col-md-4">
-                    <label>Collection</label>
-                </div>
-                <div class="col-md-8">
-                    <CheckBox @bind-Value="UpsertData.IsDetails" />
-                </div>
-                <div class="col-md-4"></div>
-                <div class="col-md-8">
-                    <FormCommandButton />
-                </div>
+<Window Service="Service" Title="Data model fields" Style="width:500px" OnOpen="() => Service.UpsertData.DataModelId = DataModelId">
+    <CaspianForm Service="Service">
+        <div class="row ps-4 pe-4 c-controls">
+            <div class="col-md-4">
+                <label>Entity name</label>
             </div>
-        </CaspianForm>
-    </Content>
+            <div class="col-md-8">
+                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="Service.UpsertData.EntityFullName"
+                          Source="workflowEntityTypes" Disabled="Service.UpsertData.FieldType.HasValue" OnChanged="SetFieldData" />
+            </div>
+            <div class="col-md-4">
+                <label>Field type</label>
+            </div>
+            <div class="col-md-8">
+                <DropdownList @bind-Value="Service.UpsertData.FieldType" Disabled="Service.UpsertData.EntityFullName.HasValue()" />
+            </div>
+            <div class="col-md-4">
+                <label>Title</label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox @bind-Value="Service.UpsertData.Title" />
+            </div>
+            <div class="col-md-4">
+                <label>Field name</label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox Style="direction:ltr" @bind-Value="Service.UpsertData.FieldName" />
+            </div>
+            <div class="col-md-4">
+                <label>Entity type</label>
+            </div>
+            <div class="col-md-8">
+                <ComboBox TEntity="Caspian.Engine.EntityType" TValue="int?" @bind-Value="Service.UpsertData.EntityTypeId"
+                          TextExpression="t => t.Title" Disabled="Service.UpsertData.FieldType != DataModelFieldType.Relational" />
+            </div>
+            <div class="col-md-4">
+                <label>Collection</label>
+            </div>
+            <div class="col-md-8">
+                <CheckBox @bind-Value="Service.UpsertData.IsDetails" />
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <FormCommandButton />
+            </div>
+        </div>
+    </CaspianForm>
 </Window>
 
 @code
@@ -95,15 +94,15 @@
 
     void SetFieldData()
     {
-        if (UpsertData.EntityFullName.HasValue())
+        if (Service.UpsertData.EntityFullName.HasValue())
         {
-            UpsertData.Title = workflowEntityTypes.Single(t => t.Value == UpsertData.EntityFullName).Text;
-            UpsertData.FieldName = UpsertData.EntityFullName[0].ToString().ToLower() + UpsertData.EntityFullName.Substring(1);
+            Service.UpsertData.Title = workflowEntityTypes.Single(t => t.Value == Service.UpsertData.EntityFullName).Text;
+            Service.UpsertData.FieldName = Service.UpsertData.EntityFullName[0].ToString().ToLower() + Service.UpsertData.EntityFullName.Substring(1);
         }
         else
         {
-            UpsertData.Title = null;
-            UpsertData.FieldName = null;
+            Service.UpsertData.Title = null;
+            Service.UpsertData.FieldName = null;
         }
     }
 
@@ -112,9 +111,4 @@
 
     [Parameter]
     public SubSystemKind Subsystem { get; set; }
-
-    void FormOpen()
-    {
-        UpsertData.DataModelId = DataModelId;
-    }
 }

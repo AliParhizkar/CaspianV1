@@ -4,8 +4,8 @@
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 <Caspian.UI.TabPanel>
     <Tabs>
-        <CascadingValue Value="Entity">
-            @ChildContent(Entity)
+        <CascadingValue Value="entity">
+            @ChildContent(entity)
         </CascadingValue>
     </Tabs>
 </Caspian.UI.TabPanel>
@@ -13,8 +13,12 @@
 
 @code 
 {
-    [Parameter]
-    public TEntity Entity { get; set; }
+    TEntity entity;
+    protected override void OnInitialized()
+    {
+        entity = Activator.CreateInstance<TEntity>();
+        base.OnInitialized();
+    }
 
     [Parameter]
     public RenderFragment<TEntity> ChildContent { get; set; }

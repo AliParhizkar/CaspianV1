@@ -20,14 +20,11 @@ namespace Caspian.UI
         TEntity oldModel;
         IControl firstControl;
 
-        [CascadingParameter]
-        public CrudComponent<TEntity> CrudComponent { get; set; }
-
         [Parameter]
         public string Style { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment<TEntity> Content { get; set; }
 
         [Parameter]
         public TEntity Model { get; set; }
@@ -97,8 +94,6 @@ namespace Caspian.UI
             controls = new List<IControl>();
             if (FormAppState == null)
                 FormAppState = new FormAppState();
-            if (CrudComponent != null)
-                CrudComponent.UpsertForm = this;
             FormAppState.AllControlsIsValid = true;
             FormAppState.ErrorMessage = null;
             base.OnInitialized();

@@ -25,9 +25,6 @@ namespace Caspian.UI
         IList<ColumnData> columnsData;
         IList<ColumnData> RangeFilterColumnsData;
         IDictionary<string, object> tableAttrs;
-        IList<MemberExpression> SelectExpressions;
-        [CascadingParameter]
-        public CrudComponent<TEntity> CrudComponent { get; set; }
 
         [Parameter]
         public bool HidePageSize { get; set; }
@@ -492,8 +489,6 @@ namespace Caspian.UI
                 selectedIds = new List<int>();
             tableAttrs = new Dictionary<string, object>();
             commandColumnAdded = false;
-            if (CrudComponent != null)
-                CrudComponent.CrudGrid = this;
             RangeFilterColumnsData = new List<ColumnData>();
             base.OnInitialized();
         }

@@ -69,9 +69,6 @@ namespace Caspian.UI
         [Parameter]
         public bool ParentChaild { get; set; }
 
-        [CascadingParameter]
-        internal ICrudComponent CrudComponent { get; set; }
-
         public async Task Open()
         {
             isOpend = true;
@@ -101,8 +98,6 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (CrudComponent != null)
-                CrudComponent.SetWindow(this);
             if (Service != null)
             {
                 Service.Window = this;

@@ -1,0 +1,33 @@
+﻿@namespace Test
+
+<div class="p-3">
+    <DataGrid TEntity="CourseStudy" Service="Service">
+        <Columns Context="qqq">
+            <GridColumn Field="t => t.Title" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+<Window Service="Service" Style="width:500px">
+    <CaspianForm Service="Service" Model="Service.UpsertData">
+        <div class="row ">
+            <div class="col-md-4">
+                <label>عنوان</label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox @bind-Value="Service.UpsertData.Title" />
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <FormCommandButton />
+            </div>
+        </div>
+    </CaspianForm>
+</Window>
+
+@code 
+{
+    [Parameter]
+    public UIService<CourseStudy> Service { get; set; }
+}

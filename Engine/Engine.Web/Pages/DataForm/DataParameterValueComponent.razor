@@ -1,97 +1,96 @@
 ﻿@using Caspian.Common.Attributes
 @namespace Caspian.Engine.RuleGenerator
 @inherits BasePage
+@inject UIService<DataParameterValue> Service
 @{
     base.BuildRenderTree(__builder);
 }
 @if (titleArray[0].HasValue())
 {
-        <table style="margin:10px auto">
-            <tr>
-            @if (controlsType[0] == ControlType.DropdownList)
-            {
-                        <td style="width:150px;">
-                            <label>@titleArray[0]</label>
-                        </td>
-                        <td style="width:300px">
-                            <DropdownList @bind-Value="search.Value1" Source="sourceArray[0]" />
-                        </td>
-            }
-                <td style="width:80px;"></td>
+    <table style="margin:10px auto">
+        <tr>
+        @if (controlsType[0] == ControlType.DropdownList)
+        {
+            <td style="width:150px;">
+                <label>@titleArray[0]</label>
+            </td>
+            <td style="width:300px">
+                <DropdownList @bind-Value="Service.Search.Value1" Source="sourceArray[0]" />
+            </td>
+        }
+        <td style="width:80px;"></td>
+        @if (titleArray[1].HasValue())
+        {
+            <td style="width:150px;">
+                <label>@titleArray[1]</label>
+            </td>
+            <td style="width:300px">
+                <DropdownList @bind-Value="Service.Search.Value2" Source="sourceArray[1]" />
+            </td>
+        }
+        </tr>
+    </table>
+    <div style="width:90%;margin:5px auto">
+    <DataGrid TEntity="DataParameterValue" Service="Service" ConditionExpr="t => t.Parameter1.ResultParameterId == ParameterId" ContentHeight="300">
+        <Columns>
+            <GridColumn Field="t => t.Value1" Title="@titleArray[0]">
+                <Template>
+                    @if (controlsType[0] == ControlType.DropdownList)
+                    {
+                        @sourceArray[0].Single(t => t.Value == context.Data.Value1.ToString()).Text
+                    }
+                    else
+                    {
+                        @context.Data.Value1
+                    }
+                </Template>
+            </GridColumn>
             @if (titleArray[1].HasValue())
             {
-                        <td style="width:150px;">
-                            <label>@titleArray[1]</label>
-                        </td>
-                        <td style="width:300px">
-                            <DropdownList @bind-Value="search.Value2" Source="sourceArray[1]" />
-                        </td>
+                <GridColumn Field="t => t.Value2" Title="@titleArray[1]">
+                    <Template>
+                        @(sourceArray[1].Single(t => t.Value == context.Data.Value2.ToString()).Text)
+                    </Template>
+                </GridColumn>
             }
-            </tr>
-        </table>
-
-    <CrudComponent UpsertData="dataParameterValue">
-        <div style="width:90%;margin:5px auto">
-            <DataGrid TEntity="DataParameterValue" Search="search" ConditionExpr="t => t.Parameter1.ResultParameterId == ParameterId" ContentHeight="300">
-                <Columns>
-                    <GridColumn Field="t => t.Value1" Title="@titleArray[0]">
+            @if (titleArray[2].HasValue())
+                {
+                    <GridColumn Field="t => t.Value3" Title="@titleArray[2]">
                         <Template>
-                        @if (controlsType[0] == ControlType.DropdownList)
-                        {
-                            @sourceArray[0].Single(t => t.Value == context.Data.Value1.ToString()).Text
-                        }
-                        else
-                        {
-                            @context.Data.Value1
-                        }
+                            @(sourceArray[2].Single(t => t.Value == context.Data.Value3.ToString()).Text)
                         </Template>
                     </GridColumn>
-                @if (titleArray[1].HasValue())
-                {
-                            <GridColumn Field="t => t.Value2" Title="@titleArray[1]">
-                                <Template>
-                            @(sourceArray[1].Single(t => t.Value == context.Data.Value2.ToString()).Text)
-                                </Template>
-                            </GridColumn>
-                }
-                @if (titleArray[2].HasValue())
-                {
-                            <GridColumn Field="t => t.Value3" Title="@titleArray[2]">
-                                <Template>
-                            @(sourceArray[2].Single(t => t.Value == context.Data.Value3.ToString()).Text)
-                                </Template>
-                            </GridColumn>
                 }
                 @if (titleArray[3].HasValue())
                 {
-                            <GridColumn Field="t => t.Value4" Title="@titleArray[3]">
-                                <Template>
+                    <GridColumn Field="t => t.Value4" Title="@titleArray[3]">
+                        <Template>
                             @(sourceArray[3].Single(t => t.Value == context.Data.Value4.ToString()).Text)
-                                </Template>
-                            </GridColumn>
+                        </Template>
+                    </GridColumn>
                 }
                 @if (titleArray[4].HasValue())
                 {
-                            <GridColumn Field="t => t.Value5" Title="@titleArray[4]">
-                                <Template>
+                    <GridColumn Field="t => t.Value5" Title="@titleArray[4]">
+                        <Template>
                             @(sourceArray[4].Single(t => t.Value == context.Data.Value5.ToString()).Text)
-                                </Template>
-                            </GridColumn>
+                        </Template>
+                    </GridColumn>
                 }
                 @if (titleArray[5].HasValue())
                 {
-                            <GridColumn Field="t => t.Value6" Title="@titleArray[5]">
-                                <Template>
+                    <GridColumn Field="t => t.Value6" Title="@titleArray[5]">
+                        <Template>
                             @(sourceArray[5].Single(t => t.Value == context.Data.Value6.ToString()).Text)
-                                </Template>
-                            </GridColumn>
+                        </Template>
+                    </GridColumn>
                 }
-                    <GridColumn Field="t => t.ResultValue.Seprate3Digit()" Title="@resultParameter.Title" />
-                    <GridCommandColumns/>
-                </Columns>
-            </DataGrid>
-        <Window Title="@resultParameter.Title" Style="width:450px" OnOpen="() => OnOpenForm()">
-            <CaspianForm Model="dataParameterValue">
+                <GridColumn Field="t => t.ResultValue.Seprate3Digit()" Title="@resultParameter.Title" />
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+        <Window Service="Service" Title="@resultParameter.Title" Style="width:450px" OnOpen="() => OnOpenForm()">
+            <CaspianForm Service="Service">
                 <table style="width:90%;margin:0 auto">
                     @{
                         var index = 0;
@@ -111,61 +110,61 @@
                                     case 0:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="dataParameterValue.Value1" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="Service.UpsertData.Value1" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="dataParameterValue.Value1" />
+                                            <NumericTextBox @bind-Value="Service.UpsertData.Value1" />
                                         }
                                         break;
                                     case 1:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="dataParameterValue.Value2" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="Service.UpsertData.Value2" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="dataParameterValue.Value2" />
+                                            <NumericTextBox @bind-Value="Service.UpsertData.Value2" />
                                         }
                                         break;
                                     case 2:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="dataParameterValue.Value3" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="Service.UpsertData.Value3" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="dataParameterValue.Value3" />
+                                            <NumericTextBox @bind-Value="Service.UpsertData.Value3" />
                                         }
                                         break;
                                     case 3:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="dataParameterValue.Value4" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="Service.UpsertData.Value4" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="dataParameterValue.Value4" />
+                                            <NumericTextBox @bind-Value="Service.UpsertData.Value4" />
                                         }
                                         break;
                                     case 4:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="dataParameterValue.Value5" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="Service.UpsertData.Value5" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="dataParameterValue.Value5" />
+                                            <NumericTextBox @bind-Value="Service.UpsertData.Value5" />
                                         }
                                         break;
                                     case 5:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="dataParameterValue.Value6" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="Service.UpsertData.Value6" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="dataParameterValue.Value6" />
+                                            <NumericTextBox @bind-Value="Service.UpsertData.Value6" />
                                         }
                                         break;
                                 }
@@ -175,10 +174,8 @@
                     }
                     <tr>
                         <td>
-                            <label>@resultParameter.Title</label>
                         </td>
                         <td>
-                            <NumericTextBox @bind-Value="dataParameterValue.ResultValue" NumberDigit="resultParameter.DecimalNumber ?? 2" />
                         </td>
                     </tr>
                     <tr>
@@ -191,14 +188,11 @@
             </CaspianForm>
         </Window>
     </div>
-    </CrudComponent>
 }
 
 
 @code
 {
-    DataParameterValue search = new DataParameterValue();
-    DataParameterValue dataParameterValue = new DataParameterValue();
 
     [Parameter]
     public int ParameterId { get; set; }
@@ -223,22 +217,22 @@
             switch (i)
             {
                 case 0:
-                    dataParameterValue.Parameter1Id = parametersId.ElementAt(i);
+                    Service.UpsertData.Parameter1Id = parametersId.ElementAt(i);
                     break;
                 case 1:
-                    dataParameterValue.Parameter2Id = parametersId.ElementAt(i);
+                    Service.UpsertData.Parameter2Id = parametersId.ElementAt(i);
                     break;
                 case 2:
-                    dataParameterValue.Parameter3Id = parametersId.ElementAt(i);
+                    Service.UpsertData.Parameter3Id = parametersId.ElementAt(i);
                     break;
                 case 3:
-                    dataParameterValue.Parameter4Id = parametersId.ElementAt(i);
+                    Service.UpsertData.Parameter4Id = parametersId.ElementAt(i);
                     break;
                 case 4:
-                    dataParameterValue.Parameter5Id = parametersId.ElementAt(i);
+                    Service.UpsertData.Parameter5Id = parametersId.ElementAt(i);
                     break;
                 case 5:
-                    dataParameterValue.Parameter6Id = parametersId.ElementAt(i);
+                    Service.UpsertData.Parameter6Id = parametersId.ElementAt(i);
                     break;
             }
         }

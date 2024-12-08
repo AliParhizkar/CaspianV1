@@ -1,5 +1,6 @@
 ﻿@namespace Caspian.Engine.WorkFlow
-@inherits SimplePage<WorkflowForm>
+@inherits BasePage
+@inject UIService<WorkflowForm> Service
 @{ 
     base.BuildRenderTree(__builder);
 }
@@ -9,10 +10,10 @@
             <label>Title</label>
         </div>
         <div class="col-md-8">
-            <StringTextBox @bind-Value="SearchData.Title" />
+            <StringTextBox @bind-Value="Service.Search.Title" />
         </div>
     </div>
-    <DataGrid @ref="CrudGrid" TEntity="WorkflowForm" Search="SearchData" ContentHeight="300">
+    <DataGrid Service="Service" TEntity="WorkflowForm" ContentHeight="300">
         <Columns>
             <GridColumn Field="t => t.DataModel.Title" Title="Data model" />
             <GridColumn Field="t => t.Title" Title="Title" />
@@ -29,43 +30,41 @@
 
 </div>
 
-<Window @ref="UpsertWindow" Title="Form " Style="width:500px" OnOpen="FormOpen">
-    <Content>
-        <CaspianForm @ref="UpsertForm" Model="UpsertData">
-            <div class="row reportSelect ps-2 pe-2 c-controls">
-                <div class="col-md-4">
-                    <label>Data model</label>
-                </div>
-                <div class="col-md-8">
-                    <ComboBox TEntity="DataModel" TValue="int" @bind-Value="UpsertData.DataModelId"
-                        TextExpression="t => t.Title"/>
-                </div>
-                <div class="col-md-4">
-                    <label>Title</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.Title" />
-                </div>
-                <div class="col-md-4">
-                    <label>Column count</label>
-                </div>
-                <div class="col-md-8">
-                    <NumericTextBox @bind-Value="UpsertData.ColumnCount" />
-                </div>
-                <div class="col-md-4">
-                    <label>Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.Name" Style="text-align:left" />
-                </div>
-                <div class="col-md-4">
-                </div>
-                <div class="col-md-8">
-                    <FormCommandButton />
-                </div>
+<Window Service="Service" Title="Form " Style="width:500px" OnOpen="FormOpen">
+    <CaspianForm Service="Service">
+        <div class="row reportSelect ps-2 pe-2 c-controls">
+            <div class="col-md-4">
+                <label>Data model</label>
             </div>
-        </CaspianForm>
-    </Content>
+            <div class="col-md-8">
+                <ComboBox TEntity="DataModel" TValue="int" @bind-Value="Service.UpsertData.DataModelId"
+                          TextExpression="t => t.Title" />
+            </div>
+            <div class="col-md-4">
+                <label>Title</label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox @bind-Value="Service.UpsertData.Title" />
+            </div>
+            <div class="col-md-4">
+                <label>Column count</label>
+            </div>
+            <div class="col-md-8">
+                <NumericTextBox @bind-Value="Service.UpsertData.ColumnCount" />
+            </div>
+            <div class="col-md-4">
+                <label>Name</label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox @bind-Value="Service.UpsertData.Name" Style="text-align:left" />
+            </div>
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-8">
+                <FormCommandButton />
+            </div>
+        </div>
+    </CaspianForm>
 </Window>
 
 
@@ -76,6 +75,6 @@
 
     void FormOpen()
     {
-        UpsertData.WorkflowGroupId = GroupId;
+        Service.UpsertData.WorkflowGroupId = GroupId;
     }
 }
