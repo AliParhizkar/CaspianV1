@@ -29,52 +29,54 @@
     </DataGrid>
 </div>
 
-<Window Service="Service" Title="Data model fields" Style="width:500px" OnOpen="() => Service.UpsertData.DataModelId = DataModelId">
-    <CaspianForm Service="Service">
-        <div class="row ps-4 pe-4 c-controls">
-            <div class="col-md-4">
-                <label>Entity name</label>
+<Window Service="Service" Title="Data model fields" Style="width:500px">
+    <CaspianForm TEntity="DataModelField" Service="Service" OnSubmit="t => t.DataModelId = DataModelId">
+        <Content Context="field">
+            <div class="row ps-4 pe-4 c-controls">
+                <div class="col-md-4">
+                    <label>Entity name</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="field.EntityFullName"
+                              Source="workflowEntityTypes" Disabled="field.FieldType.HasValue" OnChanged="() => SetFieldData(field)" />
+                </div>
+                <div class="col-md-4">
+                    <label>Field type</label>
+                </div>
+                <div class="col-md-8">
+                    <DropdownList @bind-Value="field.FieldType" Disabled="field.EntityFullName.HasValue()" />
+                </div>
+                <div class="col-md-4">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="field.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>Field name</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox Style="direction:ltr" @bind-Value="field.FieldName" />
+                </div>
+                <div class="col-md-4">
+                    <label>Entity type</label>
+                </div>
+                <div class="col-md-8">
+                    <ComboBox TEntity="Caspian.Engine.EntityType" TValue="int?" @bind-Value="field.EntityTypeId"
+                              TextExpression="t => t.Title" Disabled="field.FieldType != DataModelFieldType.Relational" />
+                </div>
+                <div class="col-md-4">
+                    <label>Collection</label>
+                </div>
+                <div class="col-md-8">
+                    <CheckBox @bind-Value="field.IsDetails" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
             </div>
-            <div class="col-md-8">
-                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="Service.UpsertData.EntityFullName"
-                          Source="workflowEntityTypes" Disabled="Service.UpsertData.FieldType.HasValue" OnChanged="SetFieldData" />
-            </div>
-            <div class="col-md-4">
-                <label>Field type</label>
-            </div>
-            <div class="col-md-8">
-                <DropdownList @bind-Value="Service.UpsertData.FieldType" Disabled="Service.UpsertData.EntityFullName.HasValue()" />
-            </div>
-            <div class="col-md-4">
-                <label>Title</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Title" />
-            </div>
-            <div class="col-md-4">
-                <label>Field name</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox Style="direction:ltr" @bind-Value="Service.UpsertData.FieldName" />
-            </div>
-            <div class="col-md-4">
-                <label>Entity type</label>
-            </div>
-            <div class="col-md-8">
-                <ComboBox TEntity="Caspian.Engine.EntityType" TValue="int?" @bind-Value="Service.UpsertData.EntityTypeId"
-                          TextExpression="t => t.Title" Disabled="Service.UpsertData.FieldType != DataModelFieldType.Relational" />
-            </div>
-            <div class="col-md-4">
-                <label>Collection</label>
-            </div>
-            <div class="col-md-8">
-                <CheckBox @bind-Value="Service.UpsertData.IsDetails" />
-            </div>
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
-                <FormCommandButton />
-            </div>
-        </div>
+        </Content>
     </CaspianForm>
 </Window>
 
@@ -92,17 +94,17 @@
         await base.OnInitializedAsync();
     }
 
-    void SetFieldData()
+    void SetFieldData(DataModelField field)
     {
-        if (Service.UpsertData.EntityFullName.HasValue())
+        if (field.EntityFullName.HasValue())
         {
-            Service.UpsertData.Title = workflowEntityTypes.Single(t => t.Value == Service.UpsertData.EntityFullName).Text;
-            Service.UpsertData.FieldName = Service.UpsertData.EntityFullName[0].ToString().ToLower() + Service.UpsertData.EntityFullName.Substring(1);
+            field.Title = workflowEntityTypes.Single(t => t.Value == field.EntityFullName).Text;
+            field.FieldName = field.EntityFullName[0].ToString().ToLower() + field.EntityFullName.Substring(1);
         }
         else
         {
-            Service.UpsertData.Title = null;
-            Service.UpsertData.FieldName = null;
+            field.Title = null;
+            field.FieldName = null;
         }
     }
 

@@ -80,7 +80,7 @@
 
 <Window Title="City" @bind-Status="status" Style="width:400px;" OnOpen="async () => await firstControl.FocusAsync()">
     <Content>
-        <CaspianForm Model="city" OnValidSubmit="async t => await UpsertCity()">
+        <CaspianForm TEntity="City" Model="city" OnValidSubmit="async t => await UpsertCity()">
             <div class="row ps-3 pe-3 c-controls">
                 <div class="col-md-4">
                     <label>Title</label>

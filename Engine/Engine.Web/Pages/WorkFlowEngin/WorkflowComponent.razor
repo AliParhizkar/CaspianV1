@@ -30,7 +30,7 @@
 </div>
 
 <Window Service="Service" Title="گردش کار" Style="width:500px">
-    <CaspianForm Service="Service" OnSubmit="() => Service.UpsertData.WorkflowGroupId = GroupId">
+    <CaspianForm Service="Service" TEntity="Workflow" OnSubmit="workflow => workflow.WorkflowGroupId = GroupId">
         <div class="row ps-4 pe-4 c-controls">
             <div class="col-md-4">
                 <label>مدل داده ای</label>

@@ -31,8 +31,7 @@
         </div>
         <div class="col-md-7">
             <div class="params-title">Report Parameters</div>
-            <CaspianForm @ref="form" Model="report" OnValidSubmit="SaveData" Style="height:calc(100% - 12px)">
-                <CaspianValidationValidator ValidatorType="typeof(ReportService)" Source="report.ReportParams" />
+            <CaspianForm @ref="form" Model="report" TEntity="Report" OnValidSubmit="SaveData" Style="height:calc(100% - 12px)">
                 <div class="params-body ms-3">
                     <div class="engin-main">
                         <div class="c-alise-head @(className)">

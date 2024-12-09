@@ -132,7 +132,7 @@
                     </div>
                     <div class="col-md-7">
                         
-                        <CaspianForm Model="upsertData" OnSubmit="FormSubmit" OnReset="FormReset" OnInvalidSubmit="InvalidSubmit" OnValidSubmit="ValidSubmit" >
+                        <CaspianForm Model="upsertData" TEntity="Product" OnSubmit="FormSubmit" OnReset="FormReset" OnInvalidSubmit="InvalidSubmit" OnValidSubmit="ValidSubmit" >
                             <Content Context="product">
                                 <div class="data-form-container p-4">
                                     <div class="row c-controls">
@@ -217,7 +217,7 @@
         ShowMessage("Product is invalid");
     }
 
-    void ValidSubmit(EditContext context)
+    void ValidSubmit()
     {
         ShowMessage("product is Valid");
     }

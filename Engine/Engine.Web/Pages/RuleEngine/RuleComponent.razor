@@ -39,56 +39,58 @@
 </div>
 
 <Window Service="Service" Title="فرمول" Style="width:450px">
-    <CaspianForm  Service="Service" OnSubmit="() => Service.UpsertData.SystemKind = Subsystem">
-        @{
-            var disable = Service.UpsertData.Priority != null;
-        }
-        <div class="row c-controls ps-4 pe-4">
-            <div class="col-md-4">
-                <label>نوع فرمول</label>
-            </div>
-            <div class="col-md-8">
-                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="Service.UpsertData.TypeName"
-                          Disabled="disable" Source="RuleTypes" />
-            </div>
-            <div class="col-md-4">
-                <label>نوع خروجی</label>
-            </div>
-            <div class="col-md-8">
-                <DropdownList @bind-Value="Service.UpsertData.ResultType" Disabled="disable" />
-            </div>
-            @if (Service.UpsertData.ResultType == ValueTypeKind.Enum)
-            {
+    <CaspianForm  Service="Service" TEntity="Rule" OnSubmit="rule => rule.SystemKind = Subsystem">
+        <Content Context="rule">
+            @{
+                var disable = rule.Priority != null;
+            }
+            <div class="row c-controls ps-4 pe-4">
                 <div class="col-md-4">
-                    <label>نوع شمارشی</label>
+                    <label>نوع فرمول</label>
                 </div>
                 <div class="col-md-8">
-                    <DropdownList @bind-Value="Service.UpsertData.EnumTypeName" Source="modelEnums" Disabled="disable" />
+                    <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="rule.TypeName"
+                              Disabled="disable" Source="RuleTypes" />
                 </div>
-            }
-            <div class="col-md-4">
-                <label>قانون فرم</label>
+                <div class="col-md-4">
+                    <label>نوع خروجی</label>
+                </div>
+                <div class="col-md-8">
+                    <DropdownList @bind-Value="rule.ResultType" Disabled="disable" />
+                </div>
+                @if (rule.ResultType == ValueTypeKind.Enum)
+                {
+                    <div class="col-md-4">
+                        <label>نوع شمارشی</label>
+                    </div>
+                    <div class="col-md-8">
+                        <DropdownList @bind-Value="rule.EnumTypeName" Source="modelEnums" Disabled="disable" />
+                    </div>
+                }
+                <div class="col-md-4">
+                    <label>قانون فرم</label>
+                </div>
+                <div class="col-md-8">
+                    <CheckBox @bind-Value="rule.FormRule" Disabled="disable" />
+                </div>
+                <div class="col-md-4">
+                    <label>عنوان</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="rule.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>شرح</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="rule.Descript" MultiLine Rows="3" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
             </div>
-            <div class="col-md-8">
-                <CheckBox @bind-Value="Service.UpsertData.FormRule" Disabled="disable" />
-            </div>
-            <div class="col-md-4">
-                <label>عنوان</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Title" />
-            </div>
-            <div class="col-md-4">
-                <label>شرح</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Descript" MultiLine Rows="3" />
-            </div>
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
-                <FormCommandButton />
-            </div>
-        </div>
+        </Content>
     </CaspianForm>
 </Window>
 

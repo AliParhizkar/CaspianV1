@@ -10,8 +10,8 @@
 @{
     var detail = GetDetail();
 }
-<Caspian.UI.TabPanelItem Title="@Title">
-    <Caspian.UI.CaspianForm Model="detail" OnValidSubmit="OnValidSubmit">
+<Caspian.UI.TabPanelItem Title="@title" Disable="disabled">
+    <Caspian.UI.CaspianForm TEntity="TDetail" Model="detail" OnValidSubmit="OnValidSubmit">
         <Caspian.UI.CaspianValidationValidator ValidatorType="GetServiceType()" />
         @if (Content != null)
         {

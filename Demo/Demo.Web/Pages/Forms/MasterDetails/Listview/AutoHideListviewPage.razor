@@ -26,29 +26,31 @@
         </div>
         <div class="col-md-3 row">
             <CaspianForm Service="Service">
-                <div class="row c-controls">
-                    <div class="col-md-4">
-                        <label>Receipt date</label>
+                <Content Context="receipt">
+                    <div class="row c-controls">
+                        <div class="col-md-4">
+                            <label>Receipt date</label>
+                        </div>
+                        <div class="col-md-8">
+                            <DatePicker @bind-Value="receipt.Date" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Warehouse</label>
+                        </div>
+                        <div class="col-md-8">
+                            <ComboBox TEntity="Warehouse" TValue="int" @bind-Value="receipt.WarehouseId" TextExpression="t => t.Title" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Description</label>
+                        </div>
+                        <div class="col-md-8">
+                            <StringTextBox @bind-Value="receipt.Comment" MultiLine Rows="3" />
+                        </div>
+                        <div class="col-md-12">
+                            <FormCommandButton />
+                        </div>
                     </div>
-                    <div class="col-md-8">
-                        <DatePicker @bind-Value="Service.UpsertData.Date" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Warehouse</label>
-                    </div>
-                    <div class="col-md-8">
-                        <ComboBox TEntity="Warehouse" TValue="int" @bind-Value="Service.UpsertData.WarehouseId" TextExpression="t => t.Title" />
-                    </div>
-                    <div class="col-md-4">
-                        <label>Description</label>
-                    </div>
-                    <div class="col-md-8">
-                        <StringTextBox @bind-Value="Service.UpsertData.Comment" MultiLine Rows="3" />
-                    </div>
-                    <div class="col-md-12">
-                        <FormCommandButton />
-                    </div>
-                </div>
+                </Content>
             </CaspianForm>
         </div>
         <div class="col-md-9 ps-3">

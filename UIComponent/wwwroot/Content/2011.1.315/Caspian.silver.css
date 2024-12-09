@@ -271,9 +271,6 @@ html input[disabled], textarea[disabled] {
     display: inline-block;
     text-align: center
 }
-.t-reset .t-item:not(.t-state-selected):nth-child(2n+1) {
-    background-color: #f0f1f5;
-}
 .t-grid .t-loading {
     display: block;
     width: 50px;
@@ -443,8 +440,8 @@ button:disabled {
 
 .t-header .t-state-disabled,
 .t-header .t-state-disabled .t-link {
-    color: #577aac;
-    border-color: #7da5e0;
+    color: #7a7a7a;
+    cursor:not-allowed;
 }
 .t-grid tr td {
     font-family: iranyekan;

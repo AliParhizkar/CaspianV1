@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
@@ -13,8 +14,10 @@ namespace Demo.Model
 
         public string LName { get; set; }
 
+        [DisplayName("مشخصات خانوادگی")]
         public Family Family { get; set; }
 
+        [DisplayName("سوابق تحصیلی")]
         public virtual IList<CourseStudy> CourseStudies { get; set; }
     }
 
@@ -41,5 +44,8 @@ namespace Demo.Model
         public string WifeName { get; set; }
 
         public DateTime BirthDate { get; set; }
+
+        [ForeignKey(nameof(Id))]
+        public Employee Employee { get; set; }
     }
 }

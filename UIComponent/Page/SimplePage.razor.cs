@@ -53,15 +53,12 @@ namespace Caspian.UI
         {
             if (UpsertForm != null)
             {
-                //UpsertForm.OnInternalSubmit = EventCallback.Factory.Create<EditContext>(this, (EditContext context) =>
+                //UpsertForm.OnInternalSubmit = EventCallback.Factory.Create<TEntity>(this, entity =>
                 //{
-                //    if (context.Model != UpsertData)
+                //    if (entity != UpsertData)
                 //        throw new CaspianException("خطا: Model in Edit Context is changed only model properties can changed", null);
                 //});
-                UpsertForm.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (EditContext context) =>
-                {
-                    await UpsertAsync((TEntity)context.Model);
-                });
+                UpsertForm.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, UpsertAsync);
                 UpsertForm.OnInternalReset = EventCallback.Factory.Create(this, async () =>
                 {
                     var info = typeof(TEntity).GetPrimaryKey();

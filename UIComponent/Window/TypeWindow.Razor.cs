@@ -17,9 +17,9 @@ namespace Caspian.UI
         IList<TEntity> source;
         IDictionary<string, object> windowProperties;
 
-        void UpdateEntity(EditContext context)
+        void UpdateEntity(TEntity entity)
         {
-            (context.Model as TEntity).CopyEntity(newEntity);
+            entity.CopyEntity(newEntity);
         }
         
         [Parameter]

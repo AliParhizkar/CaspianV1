@@ -27,6 +27,9 @@ namespace Caspian.UI
         public RenderFragment<TEntity> Content { get; set; }
 
         [Parameter]
+        public RenderFragment<TEntity> ChildContent { get; set; }
+
+        [Parameter]
         public TEntity Model { get; set; }
 
         public EditContext EditContext { get; private set; }
@@ -35,22 +38,22 @@ namespace Caspian.UI
         public IUIService<TEntity> Service { get; set; }
 
         [Parameter]
-        public EventCallback<EditContext> OnInvalidSubmit { get; set; }
+        public EventCallback<TEntity> OnInvalidSubmit { get; set; }
 
         [Parameter]
-        public EventCallback<EditContext> OnSubmit { get; set; }
+        public EventCallback<TEntity> OnSubmit { get; set; }
 
         [Parameter]
-        public EventCallback OnReset { get; set; }
+        public EventCallback<TEntity> OnReset { get; set; }
 
         [Parameter]
-        public EventCallback<EditContext> OnValidSubmit { get; set; }
+        public EventCallback<TEntity> OnValidSubmit { get; set; }
 
-        internal EventCallback<EditContext> OnInternalSubmit { get; set; }
+        internal EventCallback<TEntity> OnInternalSubmit { get; set; }
 
-        internal EventCallback<EditContext> OnInternalValidSubmit { get; set; }
+        internal EventCallback<TEntity> OnInternalValidSubmit { get; set; }
 
-        public EventCallback<EditContext> OnInternalInvalidSubmit { get; set; }
+        public EventCallback<TEntity> OnInternalInvalidSubmit { get; set; }
 
         internal EventCallback OnInternalReset { get; set; }
 
@@ -121,9 +124,9 @@ namespace Caspian.UI
             await Task.Delay(10);
             addControls = false;
             if(OnSubmit.HasDelegate)
-                await OnSubmit.InvokeAsync(EditContext);
+                await OnSubmit.InvokeAsync(EditContext.Model as TEntity);
             if (OnInternalSubmit.HasDelegate)
-                await OnInternalSubmit.InvokeAsync(EditContext);
+                await OnInternalSubmit.InvokeAsync(EditContext.Model as TEntity);
             FormAppState.AllControlsIsValid = true;
             FormAppState.ErrorMessage = null;
             ErrorMessage = null;
@@ -153,9 +156,9 @@ namespace Caspian.UI
             if (result.IsValid)
             {
                 if (OnValidSubmit.HasDelegate)
-                    await OnValidSubmit.InvokeAsync(context);
+                    await OnValidSubmit.InvokeAsync(context.Model as TEntity);
                 if (OnInternalValidSubmit.HasDelegate)
-                    await OnInternalValidSubmit.InvokeAsync(context);
+                    await OnInternalValidSubmit.InvokeAsync(context.Model as TEntity);
             }
             else
             {
@@ -163,9 +166,9 @@ namespace Caspian.UI
                     ErrorMessage = EditContext.GetValidationMessages().First();
                 FormAppState.ValidationChecking = true;
                 if (OnInvalidSubmit.HasDelegate)
-                    await OnInvalidSubmit.InvokeAsync(EditContext);
+                    await OnInvalidSubmit.InvokeAsync(EditContext.Model as TEntity);
                 if (OnInternalInvalidSubmit.HasDelegate)
-                    await OnInternalInvalidSubmit.InvokeAsync(EditContext);
+                    await OnInternalInvalidSubmit.InvokeAsync(EditContext.Model as TEntity);
             }
         }
 
@@ -219,7 +222,7 @@ namespace Caspian.UI
         async void OnFormSubmit()
         {
             ErrorMessage = null;
-            await OnSubmit.InvokeAsync(EditContext);
+            await OnSubmit.InvokeAsync(EditContext.Model as TEntity);
             EditContext.Validate();
         }
 

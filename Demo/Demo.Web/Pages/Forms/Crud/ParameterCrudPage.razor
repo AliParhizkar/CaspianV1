@@ -55,24 +55,26 @@
                     </div>
                     <Window Service="Service" Title="Country" Style="width:450px">
                         <CaspianForm Service="Service">
-                            <div class="row c-controls ps-4 pe-4">
-                                <div class="col-md-4">
-                                    <label>Title</label>
+                           <Content Context="country">
+                                <div class="row c-controls ps-4 pe-4">
+                                    <div class="col-md-4">
+                                        <label>Title</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="country.Title" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Status</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <DropdownList @bind-Value="country.ActiveType" />
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-8 align-content-center">
+                                        <FormCommandButton />
+                                    </div>
                                 </div>
-                                <div class="col-md-8">
-                                    <StringTextBox @bind-Value="Service.UpsertData.Title" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Status</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
-                                </div>
-                                <div class="col-md-4"></div>
-                                <div class="col-md-8 align-content-center">
-                                    <FormCommandButton />
-                                </div>
-                            </div>
+                           </Content>
                         </CaspianForm>
                     </Window>
                 </div>

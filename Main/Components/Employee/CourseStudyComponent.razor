@@ -10,19 +10,21 @@
 </div>
 
 <Window Service="Service" Style="width:500px">
-    <CaspianForm Service="Service" Model="Service.UpsertData">
-        <div class="row ">
-            <div class="col-md-4">
-                <label>عنوان</label>
+    <CaspianForm Service="Service">
+        <Content Context="cource">
+            <div class="row ">
+                <div class="col-md-4">
+                    <label>عنوان</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="cource.Title" />
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
             </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Title" />
-            </div>
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
-                <FormCommandButton />
-            </div>
-        </div>
+        </Content>
     </CaspianForm>
 </Window>
 

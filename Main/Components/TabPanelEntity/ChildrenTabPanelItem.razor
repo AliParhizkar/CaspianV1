@@ -1,10 +1,13 @@
 ﻿@namespace Test
 @using System.Linq.Expressions
+@using Caspian.Common.Extension
 @using Caspian.UI
+@using System.Reflection
+@using System.ComponentModel
 @inject IServiceProvider ServiceProvider
 @typeparam TEntity where TEntity : class
 @typeparam TDetail where TDetail : class
-<Caspian.UI.TabPanelItem Title="@Title">
+<Caspian.UI.TabPanelItem Title="@title" Disable="disabled">
     @if (Content != null)
     {
         @Content(service)
@@ -13,12 +16,24 @@
 @code 
 {
     UIService<TDetail> service;
+    string title;
+    bool disabled;
 
     protected override void OnInitialized()
     {
         service = new UIService<TDetail>(ServiceProvider);
+        if (Children.Body.NodeType == ExpressionType.MemberAccess)
+        {
+            var info = (Children.Body as MemberExpression).Member as PropertyInfo;
+            title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName;
+        }
+        var id = typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData);
+        disabled = id.Equals(0);
         base.OnInitialized();
     }
+
+    [Parameter]
+    public bool Disabled  { get; set; }
 
     [Parameter]
     public Expression<Func<TEntity, IList<TDetail>>> Children { get; set; }
@@ -29,5 +44,14 @@
     [Parameter]
     public string Title { get; set; }
 
+    protected override void OnParametersSet()
+    {
+        if (Title != null)
+            title = Title;
 
+        base.OnParametersSet();
+    }
+
+    [CascadingParameter]
+    public TabPaneEntity<TEntity> TabPanel { get; set; }
 }

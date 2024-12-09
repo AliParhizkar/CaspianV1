@@ -8,7 +8,8 @@
 @using Microsoft.EntityFrameworkCore
 @inject IServiceProvider provider
 
-@inject UIService<City> Service
+@inject UIService<Employee> Service
+
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -47,7 +48,7 @@
 </div> *@
 
 <div style="width:80%;margin:10px auto">
-    <Test.TabPaneEntity TEntity="Employee">
+    <Test.TabPaneEntity TEntity="Employee" Service="Service">
         <Test.ChildTabPanelItem Child="t => t" Title="مشخصات اصلی">
             <Content Context="emp">
                 <Test.MainComponent Employee="emp" />
@@ -70,17 +71,8 @@
 
 @code 
 {
-    Employee employee;
-
     protected override void OnInitialized()
     {
-        employee = new Employee()
-        {
-            Family = new Family()
-            {
-                
-            }
-        };
         base.OnInitialized();
     }
 }

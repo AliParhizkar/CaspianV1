@@ -13,68 +13,70 @@
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="ps-3 pe-3">
-                <CaspianForm Service="Service" OnReset="() => Service.UpsertData.Image = null">
-                    <div class="row c-controls data-form-container mt-3 ps-3 pt-3 pb-3">
-                        <div class="col-md-5 pe-4">
-                            <div class="row align-items-center">
-                                <div class="col-md-4">
-                                    <label>Product category</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="Service.UpsertData.ProductCategoryId" TextExpression="t => t.Title"
-                                              OrderByExpression="t => t.Title" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Title</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <StringTextBox @bind-Value="Service.UpsertData.Title" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Meal</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <MultiSelectBox @bind-Value="Service.UpsertData.Meal" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Status</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="row align-items-center">
-                                <div class="col-md-4">
-                                    <label>Price</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <NumericTextBox @bind-Value="Service.UpsertData.Price" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Take out price</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <NumericTextBox @bind-Value="Service.UpsertData.TakeoutPrice" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Code</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <StringTextBox @bind-Value="Service.UpsertData.Code" />
-                                </div>
-                                <div class="col-md-8 align-content-center">
-                                    <FormCommandButton />
+                <CaspianForm Service="Service" TEntity="Product" OnReset="t => t.Image = null">
+                    <Content Context="product">
+                        <div class="row c-controls data-form-container mt-3 ps-3 pt-3 pb-3">
+                            <div class="col-md-5 pe-4">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <label>Product category</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="product.ProductCategoryId" TextExpression="t => t.Title"
+                                                  OrderByExpression="t => t.Title" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Title</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="product.Title" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Meal</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <MultiSelectBox @bind-Value="product.Meal" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Status</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <DropdownList @bind-Value="product.ActiveType" />
+                                    </div>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <label>Price</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <NumericTextBox @bind-Value="product.Price" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Take out price</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <NumericTextBox @bind-Value="product.TakeoutPrice" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <StringTextBox @bind-Value="product.Code" />
+                                    </div>
+                                    <div class="col-md-8 align-content-center">
+                                        <FormCommandButton />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 ps-4 align-content-center">
+                                <Fileupload OnChange="SetImage">
+                                    <PictureBox Data="product.Image" style="width:200px;height:200px" />
+                                </Fileupload>
+                            </div>
                         </div>
-                        <div class="col-md-3 ps-4 align-content-center">
-                            <Fileupload OnChange="SetImage">
-                                <PictureBox Data="Service.UpsertData.Image" style="width:200px;height:200px" />
-                            </Fileupload>
-                        </div>
-                    </div>
+                    </Content>
                 </CaspianForm>
                 <DataGrid Service="Service" TEntity="Product" ContentHeight="250">
                     <Columns>

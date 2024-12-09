@@ -63,10 +63,9 @@ namespace Caspian.UI
             if (DetailForm != null)
             {
                 DetailForm.OnInternalReset = EventCallback.Factory.Create(this, TypeWindow.Close);
-                DetailForm.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async context => 
+                DetailForm.OnInternalValidSubmit = EventCallback.Factory.Create<TDetail>(this, async detail => 
                 {
                     TypeWindow.Close();
-                    var detail = context.Model as TDetail;
                     if (DetailDataView.GetSource().Any(t => t == detail))
                         await DetailDataView.UpdateAsync(detail);
                     else
@@ -93,9 +92,9 @@ namespace Caspian.UI
 
         public Action<TMaster> OnUpsert { get; set; }
 
-        protected virtual async Task UpdateDatabaseAsync(EditContext context1)
+        protected virtual async Task UpdateDatabaseAsync(TMaster master)
         {
-            var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(context1.Model));
+            var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
             using var service = CreateScope().GetService<IMasterDetailsService<TMaster, TDetail>>();
             var result = await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
             await service.SaveChangesAsync();
@@ -148,7 +147,7 @@ namespace Caspian.UI
                 }
             });
 
-            Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, UpdateDatabaseAsync);
+            Form.OnInternalValidSubmit = EventCallback.Factory.Create<TMaster>(this, UpdateDatabaseAsync);
         }
 
         public void StateHasChanged()

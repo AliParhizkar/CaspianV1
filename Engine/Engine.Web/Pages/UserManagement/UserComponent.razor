@@ -49,7 +49,7 @@
 </DataGrid>
 
 <Window Service="Service" Title="User properties" Style="max-width:500px;" StatusChanged="WindowStatusChanged">
-    <CaspianForm Service="Service" OnSubmit="SetPasswordForUpdate" OnValidSubmit="RegisterUser">
+    <CaspianForm TEntity="User" Service="Service" OnSubmit="SetPasswordForUpdate" OnValidSubmit="RegisterUser">
         <div class="row c-controls ps-3 pe-3">
             <div class="col-md-4">
                 <label>First name</label>
@@ -132,17 +132,17 @@
         formData.Cancel = true;
     }
 
-    async Task<bool> RegisterUser(EditContext editContext)
+    async Task<bool> RegisterUser(User user)
     {
-        if (confirmPassword != Service.UpsertData.Password)
+        if (confirmPassword != user.Password)
         {
             ShowMessage("Password and Confirm password is not equal");
             StateHasChanged();
             return await Task.FromResult(false);
         }
 
-        await UserStore.SetUserNameAsync(Service.UpsertData, Service.UpsertData.UserName, CancellationToken.None);
-        var result = await UserManager.CreateAsync(Service.UpsertData, Service.UpsertData.Password);
+        await UserStore.SetUserNameAsync(user, user.UserName, CancellationToken.None);
+        var result = await UserManager.CreateAsync(user, user.Password);
 
         if (!result.Succeeded)
         {
@@ -156,15 +156,15 @@
         return await Task.FromResult(true);
     }
 
-    async Task SetPasswordForUpdate(EditContext context)
+    async Task SetPasswordForUpdate(User user)
     {
-        if (Service.UpsertData.Id > 0)
+        if (user.Id > 0)
         {
             var scope = CreateScope();
-            var old = await new UserService(scope.ServiceProvider).SingleAsync(Service.UpsertData.Id);
-            Service.UpsertData.UserName = old.UserName;
+            var old = await new UserService(scope.ServiceProvider).SingleAsync(user.Id);
+            user.UserName = old.UserName;
             ///In update password should be and in service not changed
-            Service.UpsertData.Password = null;
+            user.Password = null;
         }
     }
 }

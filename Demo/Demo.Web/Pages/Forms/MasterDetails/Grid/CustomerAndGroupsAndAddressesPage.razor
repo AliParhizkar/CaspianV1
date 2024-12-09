@@ -17,58 +17,60 @@
                     </Columns>
                 </DataGrid>
                 <Window Service="Service" Title="Customer Properties" Style="width:800px;">
-                    @{
-                        var customerType = Service.UpsertData.CustomerType;
-                    }
                     <CaspianForm Service="Service">
-                        <CaspianValidationValidator ValidatorType="typeof(CustomerGroupAddressService)" />
-                        <div class="c-controls row p-2  ">
-                            <div class="col-md-2">
-                                <label>Customer Type</label>
+                        <Content Context="customer">
+                            @{
+                                var customerType = customer.CustomerType;
+                            }
+                            <CaspianValidationValidator ValidatorType="typeof(CustomerGroupAddressService)" />
+                            <div class="c-controls row p-2  ">
+                                <div class="col-md-2">
+                                    <label>Customer Type</label>
+                                </div>
+                                <div class="col-md-4 pe-2">
+                                    <DropdownList @bind-Value="customer.CustomerType" />
+                                </div>
+                                <div class="col-md-2 ps-2">
+                                    <label>First Name</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <StringTextBox @bind-Value="customer.FName" Disabled="customerType == CustomerType.Legal" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Last Name</label>
+                                </div>
+                                <div class="col-md-4 pe-2">
+                                    <StringTextBox @bind-Value="customer.LName" Disabled="customerType == CustomerType.Legal" />
+                                </div>
+                                <div class="col-md-2 ps-2">
+                                    <label>Gender</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <DropdownList @bind-Value="customer.Gender" Disabled="customerType == CustomerType.Legal" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Company Name</label>
+                                </div>
+                                <div class="col-md-4 pe-2">
+                                    <StringTextBox @bind-Value="customer.CompanyName" Disabled="customerType == CustomerType.Real" />
+                                </div>
+                                <div class="col-md-2 ps-2">
+                                    <label>Mobile Number</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <StringTextBox @bind-Value="customer.MobileNumber" MaxLength="11" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Tel</label>
+                                </div>
+                                <div class="col-md-4 pe-2">
+                                    <StringTextBox @bind-Value="customer.Tel" MaxLength="11" />
+                                </div>
+                                <div class="col-md-6">
+                                    <FormCommandButton />
+                                </div>
                             </div>
-                            <div class="col-md-4 pe-2">
-                                <DropdownList @bind-Value="Service.UpsertData.CustomerType" />
-                            </div>
-                            <div class="col-md-2 ps-2">
-                                <label>First Name</label>
-                            </div>
-                            <div class="col-md-4">
-                                <StringTextBox @bind-Value="Service.UpsertData.FName" Disabled="customerType == CustomerType.Legal" />
-                            </div>
-                            <div class="col-md-2">
-                                <label>Last Name</label>
-                            </div>
-                            <div class="col-md-4 pe-2">
-                                <StringTextBox @bind-Value="Service.UpsertData.LName" Disabled="customerType == CustomerType.Legal" />
-                            </div>
-                            <div class="col-md-2 ps-2">
-                                <label>Gender</label>
-                            </div>
-                            <div class="col-md-4">
-                                <DropdownList @bind-Value="Service.UpsertData.Gender" Disabled="customerType == CustomerType.Legal" />
-                            </div>
-                            <div class="col-md-2">
-                                <label>Company Name</label>
-                            </div>
-                            <div class="col-md-4 pe-2">
-                                <StringTextBox @bind-Value="Service.UpsertData.CompanyName" Disabled="customerType == CustomerType.Real" />
-                            </div>
-                            <div class="col-md-2 ps-2">
-                                <label>Mobile Number</label>
-                            </div>
-                            <div class="col-md-4">
-                                <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" />
-                            </div>
-                            <div class="col-md-2">
-                                <label>Tel</label>
-                            </div>
-                            <div class="col-md-4 pe-2">
-                                <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" />
-                            </div>
-                            <div class="col-md-6">
-                                <FormCommandButton />
-                            </div>
-                        </div>
+                        </Content>
                     </CaspianForm>
                     <div class="p-2 pb-0">
                         <TabPanel>

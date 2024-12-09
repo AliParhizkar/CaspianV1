@@ -59,17 +59,11 @@ namespace Caspian.UI
                 {
                     if (!UpsertForm.OnInternalSubmit.HasDelegate)
                     {
-                        UpsertForm.OnInternalSubmit = EventCallback.Factory.Create<EditContext>(this, (context) =>
-                        {
-                            SetData(context);
-                        });
+                        UpsertForm.OnInternalSubmit = EventCallback.Factory.Create<TAccess>(this, SetData);
                     }
                     if (!UpsertForm.OnInternalValidSubmit.HasDelegate)
                     {
-                        UpsertForm.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async (context) =>
-                        {
-                            await UpsertAsync((TAccess)context.Model);
-                        });
+                        UpsertForm.OnInternalValidSubmit = EventCallback.Factory.Create<TAccess>(this, UpsertAsync);
                     }
                 }
             }
@@ -90,7 +84,7 @@ namespace Caspian.UI
             }
         }
 
-        void SetData(EditContext context)
+        void SetData()
         {
             var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
             var masterType = masterIdInfo.PropertyType.GetUnderlyingType();

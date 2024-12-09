@@ -639,7 +639,6 @@ input[type='range']::-webkit-slider-thumb {
         .t-tabstrip.t-vertical .t-tabstrip-items .t-link {
             display: inline-block;
             width: 153px;
-            cursor: pointer;
             height: 30px;
             padding: 3px 4px;
         }
@@ -648,7 +647,6 @@ input[type='range']::-webkit-slider-thumb {
             height: 39px;
             border-right: none;
             border-bottom: 1px solid #d6d6d6;
-            transition: background-color .4s cubic-bezier(0.35, 0, 0.25, 1) !important;
             padding:4px!important;
             margin:0!important;
         }
@@ -2488,15 +2486,18 @@ div.t-window {
         width: calc(100% - 12px);
     }
 }
+.t-state-active> .t-link{
+    color:darkred;
+}
 
 .t-tabstrip .c-selected-panel {
     background-color: red;
     display: block;
     height: 2px;
-    position:absolute;
-    width:0;
+    position: absolute;
+    width: 0;
     margin-top: -4px;
-    transition: left .2s cubic-bezier(0.35, 0, 0.25, 1),right .25s cubic-bezier(0.35, 0, 0.25, 1);
+    transition: left .2s cubic-bezier(0.35, 0, 0.25, 1), right .25s cubic-bezier(0.35, 0, 0.25, 1);
 }
 .t-tabstrip .t-tabstrip-items {
     overflow: hidden;
@@ -2529,9 +2530,10 @@ div.t-window {
     border-bottom-width: 0;
     font-size: 15px;
     vertical-align: top;
-    border-radius:4px;
-    padding:0 4px;
-    height:24px;
+    border-radius: 4px;
+    padding: 0 4px;
+    height: 24px;
+    transition: background-color .4s cubic-bezier(0.35, 0, 0.25, 1) !important;
 }
 
 .t-tabstrip-items .t-icon,

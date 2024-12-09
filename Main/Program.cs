@@ -23,7 +23,13 @@ namespace Main
     {
         static void Main(string[] args)
         {
+            //var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
+            //{ 
+            //    EnvironmentName = Environments.Staging,
+            //});
             var builder = WebApplication.CreateBuilder();
+
+
             ConfigureCulture();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()

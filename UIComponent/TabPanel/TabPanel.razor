@@ -15,10 +15,15 @@
                     @foreach (var item in tabPanels)
                     {
                         var className = "t-item ";
-                        if (index == TabIndex)
-                            className += "t-state-active";
+                        if (item.Disable)
+                            className += "t-state-disabled";
                         else
-                            className += "t-state-default";
+                        {
+                            if (index == TabIndex)
+                                className += "t-state-active";
+                            else
+                                className += "t-state-default";
+                        }
                         <li class="@className" >
                             @if (index == TabIndex)
                             {
@@ -30,9 +35,12 @@
                                 <span class="t-link"
                               @onclick="async () =>
                                               {
-                                                  TabIndex = tabIndex;
-                                                  CurentTabpanel = item;
-                                                  await this.TabIndexChanged.InvokeAsync(tabIndex);
+                                                  if (!item.Disable)
+                                                  {
+                                                        TabIndex = tabIndex;
+                                                        CurentTabpanel = item;
+                                                        await this.TabIndexChanged.InvokeAsync(tabIndex);
+                                                  }
                                               }">@((MarkupString)item.Title)</span>
                                 @if (item.Closeable)
                                 {

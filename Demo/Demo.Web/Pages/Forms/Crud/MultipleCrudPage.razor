@@ -38,24 +38,26 @@
                 </DataGrid>
                 <Window Title="Product Category" Service="CategoryService" Style="width:500px">
                     <CaspianForm Service="CategoryService">
-                        <div class="row c-controls ps-4 pe-4 pt-3 pb-2">
-                            <div class="col-md-4">
-                                <label>Title</label>
+                        <Content Context="category">
+                            <div class="row c-controls ps-4 pe-4 pt-3 pb-2">
+                                <div class="col-md-4">
+                                    <label>Title</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <StringTextBox @bind-Value="category.Title" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Status</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <DropdownList @bind-Value="category.ActiveType" />
+                                </div>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-8">
+                                    <WindowCommandButtons />
+                                </div>
                             </div>
-                            <div class="col-md-8">
-                                <StringTextBox @bind-Value="CategoryService.UpsertData.Title" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Status</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DropdownList @bind-Value="CategoryService.UpsertData.ActiveType" />
-                            </div>
-                            <div class="col-md-4"></div>
-                            <div class="col-md-8">
-                                <WindowCommandButtons />
-                            </div>
-                        </div>
+                        </Content>
                     </CaspianForm>
                 </Window>
                 @if (productcategoryId.HasValue)
@@ -91,66 +93,68 @@
                         </Columns>
                     </DataGrid>
                     <Window Service="ProductService" Title="Product" Style="width:650px">
-                        <CaspianForm Service="ProductService" OnSubmit="SetCategory">
-                            <div class="row c-controls pb-3">
-                                <div class="col-md-7">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <label>Title</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <StringTextBox @bind-Value="ProductService.UpsertData.Title" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Price</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <NumericTextBox @bind-Value="ProductService.UpsertData.Price" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Take out Price</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <NumericTextBox @bind-Value="ProductService.UpsertData.TakeoutPrice" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Meal</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <MultiSelectBox @bind-Value="ProductService.UpsertData.Meal" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Code</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <NumericTextBox @bind-Value="ProductService.UpsertData.Code" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Status</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <DropdownList @bind-Value="ProductService.UpsertData.ActiveType" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Discountable</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <CheckBox @bind-Value="ProductService.UpsertData.Discountable" />
+                        <CaspianForm TEntity="Product" Service="ProductService" OnSubmit="t => SetCategory(t)">
+                            <Content Context="product">
+                                <div class="row c-controls pb-3">
+                                    <div class="col-md-7">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>Title</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <StringTextBox @bind-Value="product.Title" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Price</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <NumericTextBox @bind-Value="product.Price" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Take out Price</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <NumericTextBox @bind-Value="product.TakeoutPrice" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Meal</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <MultiSelectBox @bind-Value="product.Meal" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Code</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <NumericTextBox @bind-Value="product.Code" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Status</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <DropdownList @bind-Value="product.ActiveType" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Discountable</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <CheckBox @bind-Value="product.Discountable" />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-5 ps-4">
-                                    <div class="col-md-12 justify-content-center d-flex">
-                                        <Fileupload OnChange="SetImage">
-                                            <PictureBox Data="ProductService.UpsertData.Image" style="width:200px;height:200px" />
-                                        </Fileupload>
+                                    <div class="col-md-5 ps-4">
+                                        <div class="col-md-12 justify-content-center d-flex">
+                                            <Fileupload OnChange="e => SetImage(e, product)">
+                                                <PictureBox Data="product.Image" style="width:200px;height:200px" />
+                                            </Fileupload>
+                                        </div>
+                                        <div class="justify-content-center d-flex pt-2">
+                                            <WindowCommandButtons />
+                                        </div>
                                     </div>
-                                    <div class="justify-content-center d-flex pt-2">
-                                        <WindowCommandButtons />
-                                    </div>
-                                </div>
 
-                            </div>
+                                </div>
+                            </Content>
                         </CaspianForm>
                     </Window>
                 }
@@ -176,14 +180,14 @@
 
     int? productcategoryId;
 
-    void SetCategory()
+    void SetCategory(Product product)
     {
-        ProductService.UpsertData.ProductCategoryId = productcategoryId.Value;
+        product.ProductCategoryId = productcategoryId.Value;
     }
 
-    async Task SetImage(InputFileChangeEventArgs e)
+    async Task SetImage(InputFileChangeEventArgs e, Product product)
     {
-        ProductService.UpsertData.Image = await e.File.GetByteArrayAsync();
+        product.Image = await e.File.GetByteArrayAsync();
     }
 
     async void ShowProductGrid(ProductCategory category)

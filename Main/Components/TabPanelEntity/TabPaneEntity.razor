@@ -2,10 +2,11 @@
 @using Demo.Service
 @typeparam TEntity where TEntity:class
 @attribute [CascadingTypeParameter(nameof(TEntity))]
-<Caspian.UI.TabPanel>
+
+<Caspian.UI.TabPanel Vertical="Vertical" Style="height:500px">
     <Tabs>
-        <CascadingValue Value="entity">
-            @ChildContent(entity)
+        <CascadingValue Value="this">
+            @ChildContent(Service.UpsertData)
         </CascadingValue>
     </Tabs>
 </Caspian.UI.TabPanel>
@@ -13,13 +14,19 @@
 
 @code 
 {
-    TEntity entity;
-    protected override void OnInitialized()
-    {
-        entity = Activator.CreateInstance<TEntity>();
-        base.OnInitialized();
-    }
+
 
     [Parameter]
     public RenderFragment<TEntity> ChildContent { get; set; }
+
+    [Parameter]
+    public IUIService<TEntity> Service { get; set; }
+
+    [Parameter]
+    public bool Vertical { get; set; }
+
+    public void ChangeState()
+    {
+        StateHasChanged();
+    }
 }

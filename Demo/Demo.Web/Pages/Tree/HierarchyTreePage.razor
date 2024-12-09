@@ -82,7 +82,7 @@
 </TabPanel>
 
 <Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()">
-    <CaspianForm Model="organUnit" OnValidSubmit="async t => await UpsertOrganUnit()">
+    <CaspianForm Model="organUnit" TEntity="OrganUnit" OnValidSubmit="UpsertOrganUnit">
         <div class="row c-controls ps-3 pe-3">
             <div class="col-md-3">
                 <label>Title</label>

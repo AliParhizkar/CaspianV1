@@ -20,8 +20,7 @@
         </div>
         @if (group != null)
         {
-            <CaspianForm @ref="form" Model="group" Style="height:calc(100% - 43px)" OnValidSubmit="ValidSubmit">
-                <CaspianValidationValidator ValidatorType="typeof(ReportGroupService)" Source="group.ReportGroupParameters" />         
+            <CaspianForm TEntity="ReportGroup" @ref="form" Model="group" Style="height:calc(100% - 43px)" OnValidSubmit="ValidSubmit">
                 <div class="c-engine-alise">
                     <div class="c-alise-head">
                         <div class="c-field-name">Field Name</div>

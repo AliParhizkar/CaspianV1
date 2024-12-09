@@ -58,14 +58,14 @@ namespace Caspian.UI
                     await Window?.Close();
                 StateHasChanged();
             });
-            Form.OnInternalValidSubmit = EventCallback.Factory.Create<EditContext>(this, async context =>
+            Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
                 var result = true;
                 if (OnUpsert != null)
                     result = await OnUpsert.Invoke(UpsertData);
                 if (!result)
                     return;
-                var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(context.Model));
+                var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
                 string message = null;
                 if (id == 0)

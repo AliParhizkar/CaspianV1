@@ -40,24 +40,26 @@
                     </div>
                     <Window Title="Customer Group" Service="Service" Style="width:400px">
                         <CaspianForm Service="Service">
-                            <div class="row c-controls ps-3 pe-3">
-                                <div class="col-md-3">
-                                    <label>Title</label>
+                            <Content Context="group">
+                                <div class="row c-controls ps-3 pe-3">
+                                    <div class="col-md-3">
+                                        <label>Title</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <StringTextBox @bind-Value="group.Title" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Status</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <DropdownList @bind-Value="group.ActiveType" />
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-9">
+                                        <FormCommandButton />
+                                    </div>
                                 </div>
-                                <div class="col-md-9">
-                                    <StringTextBox @bind-Value="Service.UpsertData.Title" />
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Status</label>
-                                </div>
-                                <div class="col-md-9">
-                                    <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
-                                </div>
-                                <div class="col-md-3"></div>
-                                <div class="col-md-9">
-                                    <FormCommandButton />
-                                </div>
-                            </div>
+                            </Content>
                         </CaspianForm>
                     </Window>
                 </div>

@@ -30,25 +30,27 @@
                 </DataGrid>
             </div>
             <Window Service="Service" Title="City" Style="width:450px">
-                <CaspianForm Service="Service" OnSubmit="SetCountryId">
-                    <div class="row c-controls ps-4 pe-4">
-                        <div class="col-md-3">
-                            <label>Title</label>
+                <CaspianForm TEntity="City" Service="Service" OnSubmit="SetCountryId">
+                    <Content Context="city">
+                        <div class="row c-controls ps-4 pe-4">
+                            <div class="col-md-3">
+                                <label>Title</label>
+                            </div>
+                            <div class="col-md-9">
+                                <StringTextBox @bind-Value="city.Title" />
+                            </div>
+                            <div class="col-md-3">
+                                <label>Status</label>
+                            </div>
+                            <div class="col-md-9">
+                                <DropdownList @bind-Value="city.ActiveType" />
+                            </div>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-9">
+                                <FormCommandButton />
+                            </div>
                         </div>
-                        <div class="col-md-9">
-                            <StringTextBox @bind-Value="Service.UpsertData.Title" />
-                        </div>
-                        <div class="col-md-3">
-                            <label>Status</label>
-                        </div>
-                        <div class="col-md-9">
-                            <DropdownList @bind-Value="Service.UpsertData.ActiveType" />
-                        </div>
-                        <div class="col-md-3"></div>
-                        <div class="col-md-9">
-                            <FormCommandButton />
-                        </div>
-                    </div>
+                    </Content>
                 </CaspianForm>
             </Window>
         </TabPanelItem>
@@ -60,9 +62,9 @@
 
 @code
 {
-    void SetCountryId()
+    void SetCountryId(City city)
     {
-        Service.UpsertData.CountryId = CountryId;
+        city.CountryId = CountryId;
     }
 
     [Parameter]

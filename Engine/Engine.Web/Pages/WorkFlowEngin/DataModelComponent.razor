@@ -40,33 +40,35 @@
     </DataGrid>
 </div>
 
-<Window Service="Service" Title="Data model" Style="width:500px" OnOpen="() => Service.UpsertData.WorkflowGroupId = GroupId">
-    <CaspianForm Service="Service">
-        <div class="ps-4 pe-4 row c-controls">
-            <div class="col-md-4">
-                <label>Name</label>
+<Window Service="Service" Title="Data model" Style="width:500px">
+    <CaspianForm Service="Service" TEntity="DataModel" OnSubmit="t => t.WorkflowGroupId = GroupId">
+        <Content Context="dataModel">
+            <div class="ps-4 pe-4 row c-controls">
+                <div class="col-md-4">
+                    <label>Name</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="dataModel.Name" Style="direction:ltr" />
+                </div>
+                <div class="col-md-4">
+                    <label>Title</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="dataModel.Title" />
+                </div>
+                <div class="col-md-4">
+                    <label>Description</label>
+                </div>
+                <div class="col-md-8">
+                    <StringTextBox @bind-Value="dataModel.Description" MultiLine Rows="3" />
+                </div>
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-8">
+                    <FormCommandButton />
+                </div>
             </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Name" Style="direction:ltr" />
-            </div>
-            <div class="col-md-4">
-                <label>Title</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Title" />
-            </div>
-            <div class="col-md-4">
-                <label>Description</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Description" MultiLine Rows="3" />
-            </div>
-            <div class="col-md-4">
-            </div>
-            <div class="col-md-8">
-                <FormCommandButton />
-            </div>
-        </div>
+        </Content>
     </CaspianForm>
 </Window>
 
