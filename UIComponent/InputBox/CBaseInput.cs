@@ -24,6 +24,9 @@ namespace Caspian.UI
         [Inject]
         public FormAppState FormAppState { get; set; }
 
+        [Parameter]
+        public int? RowSpan { get; set; }
+
         public string ErrorMessage { get; set; }
 
         [Parameter]

@@ -148,13 +148,15 @@
         public static bindTabpanel(tabpanel: HTMLElement) {
             let basePos = tabpanel.getBoundingClientRect();
             let activeTab = tabpanel.getElementsByClassName('t-state-active')[0];
-            let pos = activeTab.getBoundingClientRect();
-            if (tabpanel.classList.contains('t-vertical'))
-                (tabpanel.getElementsByClassName('c-selected-panel')[0] as HTMLElement).style.top = `${pos.top - basePos.top + 8}px`;
-            else {
-                let seledtedPanel = tabpanel.getElementsByClassName('c-selected-panel')[0] as HTMLElement;
-                seledtedPanel.style.left = `${pos.left - basePos.left + 3}px`;
-                seledtedPanel.style.width = `${pos.width - 8}px`;
+            if (activeTab) {
+                let pos = activeTab.getBoundingClientRect();
+                if (tabpanel.classList.contains('t-vertical'))
+                    (tabpanel.getElementsByClassName('c-selected-panel')[0] as HTMLElement).style.top = `${pos.top - basePos.top + 8}px`;
+                else {
+                    let seledtedPanel = tabpanel.getElementsByClassName('c-selected-panel')[0] as HTMLElement;
+                    seledtedPanel.style.left = `${pos.left - basePos.left + 3}px`;
+                    seledtedPanel.style.width = `${pos.width - 8}px`;
+                }
             }
         }
 

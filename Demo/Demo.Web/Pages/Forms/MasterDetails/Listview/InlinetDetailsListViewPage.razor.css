@@ -20,3 +20,7 @@
     height: 65px;
     visibility: visible;
 }
+
+.c-btn.c-info {
+    border-radius: 16px;
+}

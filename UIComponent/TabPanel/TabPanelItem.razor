@@ -1,15 +1,55 @@
 ﻿@namespace Caspian.UI
-    @{ParentTabPanel.AddTabData(this); }
+@implements IDisposable
+@{
+    var className = "t-item ";
+    if (Disable)
+        className += "t-state-disabled";
+    else
+    {
+        if (this == ParentTabPanel.CurentTabpanel)
+            className += "t-state-active";
+        else
+            className += "t-state-default";
+    }
+}
+
+<li class="@className">
     @if (this == ParentTabPanel.CurentTabpanel)
     {
-        <div class="t-content t-state-active">
-            @ChildContent
-        </div>
+        <span class="t-link">@((MarkupString)Title)</span>
     }
+    else
+    {
+        <span class="t-link" @onclick="SelectTabPanel">@((MarkupString)Title)</span>
+    }
+</li>
+
 @code
 {
+    async Task SelectTabPanel()
+    {
+        if (!Disable)
+            await ParentTabPanel.SelectTabPanel(this, TabIndex);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        TabIndex = ParentTabPanel.GetTabIndex();
+        if (TabIndex == ParentTabPanel.TabIndex)
+            await ParentTabPanel.SelectTabPanel(this, TabIndex);
+        await base.OnInitializedAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        ParentTabPanel.SetLastTabPanel(this);
+        base.OnParametersSet();
+    }
+
     [CascadingParameter(Name = "ParentTabPanel")]
     public TabPanel ParentTabPanel { get; set; }
+
+    internal int TabIndex { get; private set; }
 
     [Parameter]
     public string Title { get; set; }
@@ -23,5 +63,9 @@
     [Parameter]
     public bool Closeable { get; set; } = true;
 
-
+    public void Dispose()
+    {
+        if (ParentTabPanel.LastTabpanel != null && ParentTabPanel.CurentTabpanel.TabIndex == this.TabIndex)
+            ParentTabPanel.SelectTabPanel(ParentTabPanel.LastTabpanel, ParentTabPanel.LastTabpanel.TabIndex).Wait();
+    }
 }

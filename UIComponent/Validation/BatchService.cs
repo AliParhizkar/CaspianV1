@@ -7,7 +7,6 @@ using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
@@ -38,6 +37,11 @@ namespace Caspian.UI
         protected IServiceScope CreateScope()
         {
             return serviceProvider.CreateScope();
+        }
+
+        public void TabPanelInitialize()
+        {
+            throw new NotImplementedException();
         }
 
         public int MasterId { get; set; }
@@ -254,6 +258,8 @@ namespace Caspian.UI
 
     public interface IUIService<TEntity>: ISearchService<TEntity> where TEntity : class
     {
+        int MasterId { get; set; }
+
         CaspianForm<TEntity> Form { get; set; }
 
         void FormInitialize();
@@ -263,6 +269,8 @@ namespace Caspian.UI
         TEntity UpsertData { get; }
 
         void ClearForm();
+
+        void TabPanelInitialize();
     }
 
     public interface ISearchService<TEntity> where TEntity:class

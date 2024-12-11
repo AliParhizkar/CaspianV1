@@ -1,12 +1,13 @@
 ﻿using Caspian.Common;
-using System.Reflection;
-using System.ComponentModel;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel;
+using System.Reflection;
 
-namespace Test
+namespace Caspian.UI
 {
     public partial class ChildTabPanelItem<TEntity, TDetail> : ComponentBase where TEntity : class where TDetail : class
     {
@@ -21,18 +22,27 @@ namespace Test
         TDetail GetDetail()
         {
             var entity = TabPanel.Service.UpsertData;
+
+            //if (Child.Body.NodeType == ExpressionType.Parameter)
+            //{
+            //    return entity as TDetail;
+            //}
+            throw new NotImplementedException("خطای عدم پیاده سازی");
+        }
+
+        [Parameter]
+        public IUIService<TDetail> Service { get; set; }
+
+        protected override void OnInitialized()
+        {
             if (Child.Body.NodeType == ExpressionType.MemberAccess)
             {
                 var info = (Child.Body as MemberExpression).Member as PropertyInfo;
-                title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName;
-                var detail = info.GetValue(entity) as TDetail;
-                if (detail == null)
-                    detail = Activator.CreateInstance<TDetail>();
-                return detail;
+                title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? info.Name;
             }
-            if (Child.Body.NodeType == ExpressionType.Parameter)
-                return entity as TDetail;
-            throw new NotImplementedException("خطای عدم پیاده سازی");
+            var entity = TabPanel.Service.UpsertData;
+            Service.TabPanelInitialize();
+            base.OnInitialized();
         }
 
         async void OnValidSubmit()
@@ -40,20 +50,21 @@ namespace Test
             if (typeof(TEntity) == typeof(TDetail))
             {
                 var entity = TabPanel.Service.UpsertData;
-                using var scope = Factory.CreateScope();
-                var service = scope.GetService<IBaseService<TEntity>>();
+                using var service = Factory.CreateScope().GetService<IBaseService<TEntity>>();
                 var id = typeof(TEntity).GetPrimaryKey().GetValue(entity);
                 if (id.Equals(0))
                     await service.AddAsync(entity);
                 else
                     await service.UpdateAsync(entity);
                 await service.SaveChangesAsync();
+                
                 TabPanel.ChangeState();
             }
+            
         }
 
         [CascadingParameter]
-        public TabPaneEntity<TEntity> TabPanel { get; set; }
+        public TabPanelEntity<TEntity> TabPanel { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, TDetail>> Child { get; set; }
@@ -71,10 +82,22 @@ namespace Test
         {
             if (Title != null)
                 title = Title;
-            if (Child.Body.NodeType != ExpressionType.Parameter)
+            if (TabPanel.Service.MasterId > 0)
+            {
+                Service.MasterId = TabPanel.Service.MasterId;
+                var info = typeof(TDetail).GetPrimaryKey();
+                info.SetValue(Service.UpsertData, Convert.ChangeType(TabPanel.Service.MasterId, info.PropertyType));
+            }
+            if (typeof(TEntity) == typeof(TDetail))
             {
                 var id = typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData);
-                disabled = id.Equals(0);
+                Service.MasterId = Convert.ToInt32(id);
+                if (Service.MasterId > 0)
+                {
+                    var pKey = typeof(TDetail).GetPrimaryKey();
+                    pKey.SetValue(Service.UpsertData, Convert.ChangeType(Service.MasterId, pKey.PropertyType));
+                }
+                //disabled = id.Equals(0);
             }
             base.OnParametersSet();
         }

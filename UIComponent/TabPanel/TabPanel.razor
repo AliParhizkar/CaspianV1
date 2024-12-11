@@ -9,77 +9,32 @@
         <div class="t-widget t-header">
             <div class="c-tabstrip-items">
                 <ul class="t-reset t-tabstrip-items" >
-                    @{
-                        var index = 1;
-                    }
-                    @foreach (var item in tabPanels)
-                    {
-                        var className = "t-item ";
-                        if (item.Disable)
-                            className += "t-state-disabled";
-                        else
-                        {
-                            if (index == TabIndex)
-                                className += "t-state-active";
-                            else
-                                className += "t-state-default";
-                        }
-                        <li class="@className" >
-                            @if (index == TabIndex)
-                            {
-                                <span class="t-link">@((MarkupString)item.Title)</span>
-                            }
-                            else
-                            {
-                                int tabIndex = index;
-                                <span class="t-link"
-                              @onclick="async () =>
-                                              {
-                                                  if (!item.Disable)
-                                                  {
-                                                        TabIndex = tabIndex;
-                                                        CurentTabpanel = item;
-                                                        await this.TabIndexChanged.InvokeAsync(tabIndex);
-                                                  }
-                                              }">@((MarkupString)item.Title)</span>
-                                @if (item.Closeable)
-                                {
-                                    <span class="t-close"></span>
-                                }
-                            }
-
-                        </li>
-                        index++;
-                    }
+                    @Tabs
                 </ul>
                 <span class="c-selected-panel"></span>
             </div>
         </div>
-        @Tabs
+        <div class="t-content t-state-active">
+            @if (CurentTabpanel != null)
+            {
+                @CurentTabpanel.ChildContent
+            }
+        </div>
     </div>
 </CascadingValue>
 @code 
 {
-    IList<TabPanelItem> tabPanels;
-    internal TabPanelItem CurentTabpanel;
+    int tabIndex;
     ElementReference element;
 
-    internal void AddTabData(TabPanelItem tab)
-    {
-        if (!tabPanels.Contains(tab))
-        {
-            tabPanels.Add(tab);
-            if (tabPanels.Count >= TabIndex && TabIndex > 0)
-                CurentTabpanel = tabPanels[TabIndex - 1];
-            StateHasChanged();
-        }
-    }
+    internal TabPanelItem CurentTabpanel { get; private set; }
+    internal TabPanelItem LastTabpanel { get; private set; }
 
     [Parameter]
     public bool Vertical { get; set; }
 
     [Parameter]
-    public int TabIndex { get; set; }
+    public int TabIndex { get; set; } = 1;
 
     [Parameter]
     public string Style { get; set; }
@@ -96,31 +51,26 @@
     [Parameter]
     public bool AddButton { get; set; }
 
-
-    protected override void OnInitialized()
+    internal async Task SelectTabPanel(TabPanelItem item, int index)
     {
-        if (TabIndex == 0)
-            TabIndex = 1;
-        tabPanels = new List<TabPanelItem>();
-        base.OnInitialized();
+        CurentTabpanel = item;
+        TabIndex = index;
+        if (TabIndexChanged.HasDelegate)
+            await TabIndexChanged.InvokeAsync(index);
+        else
+            StateHasChanged();
     }
 
-    protected override void OnParametersSet()
+    internal void SetLastTabPanel(TabPanelItem item)
     {
-        var index = 1;
-        foreach(var tab in tabPanels)
-        {
-            if (index == TabIndex)
-                CurentTabpanel = tab;
-            index++;
-        }
-        
-        base.OnParametersSet();
+        if (CurentTabpanel.TabIndex != item.TabIndex)
+            LastTabpanel = item;
     }
 
-    public void ClearTabs()
+    internal int GetTabIndex()
     {
-        tabPanels.Clear();
+        tabIndex++;
+        return tabIndex;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

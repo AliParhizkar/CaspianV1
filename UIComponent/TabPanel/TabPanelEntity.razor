@@ -1,20 +1,23 @@
-﻿@namespace Test
-@using Demo.Service
-@typeparam TEntity where TEntity:class
+﻿@namespace Caspian.UI
+@typeparam TEntity where TEntity : class
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 
-<Caspian.UI.TabPanel Vertical="Vertical" Style="height:500px">
+<TabPanel Vertical="Vertical">
     <Tabs>
         <CascadingValue Value="this">
             @ChildContent(Service.UpsertData)
         </CascadingValue>
     </Tabs>
-</Caspian.UI.TabPanel>
+</TabPanel>
 
 
-@code 
+@code
 {
-
+    protected override void OnInitialized()
+    {
+        Service.TabPanelInitialize();
+        base.OnInitialized();
+    }
 
     [Parameter]
     public RenderFragment<TEntity> ChildContent { get; set; }

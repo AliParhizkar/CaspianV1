@@ -14,11 +14,14 @@ namespace Demo.Model
 
         public string LName { get; set; }
 
+        [DisplayName("سوابق تحصیلی")]
+        public IList<CourseStudy> CourseStudies { get; set; }
+
+        [DisplayName("آدرس")]
+        public Address Address { get; set; }
+
         [DisplayName("مشخصات خانوادگی")]
         public Family Family { get; set; }
-
-        [DisplayName("سوابق تحصیلی")]
-        public virtual IList<CourseStudy> CourseStudies { get; set; }
     }
 
     [Table("CourseStudies", Schema = "HR")]
@@ -32,10 +35,10 @@ namespace Demo.Model
         public int EmployeeId { get; set; }
 
         [ForeignKey(nameof(EmployeeId))]
-        public virtual Employee Employee { get; set; }
+        public Employee Employee { get; set; }
     }
 
-    [Table("Family", Schema = "HR")]
+    [Table("Families", Schema = "HR")]
     public class Family
     {
         [Key]
@@ -44,6 +47,18 @@ namespace Demo.Model
         public string WifeName { get; set; }
 
         public DateTime BirthDate { get; set; }
+
+        [ForeignKey(nameof(Id))]
+        public Employee Employee { get; set; }
+    }
+
+    [Table("Addresses", Schema = "HR")]
+    public class Address
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public string AddressName { get; set; }
 
         [ForeignKey(nameof(Id))]
         public Employee Employee { get; set; }

@@ -4,8 +4,8 @@ using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
@@ -20,6 +20,10 @@ namespace Caspian.UI
         {
             isLookup = true;
         }
+
+        public bool IsTabPanelService { get; private set; }
+
+        public int MasterId { get; set; }
 
         public UIService(IServiceProvider serviceProvider) 
         {
@@ -42,7 +46,25 @@ namespace Caspian.UI
 
         public async Task FetchAsync()
         {
-            
+            if (MasterId > 0)
+            {
+                using var service = CreateScope().GetService<IBaseService<TEntity>>();
+                if (IsTabPanelService)
+                {
+                    var old = await service.SingleOrDefaultAsync(MasterId);
+                    if (old != null)
+                        UpsertData.CopyEntity(old);
+                }
+                else
+                {
+                    UpsertData = await service.SingleAsync(MasterId);
+                }
+            }
+        }
+
+        public void TabPanelInitialize()
+        {
+            IsTabPanelService = true;
         }
 
         public Func<TEntity, Task<bool>> OnUpsert { get; set; }
@@ -68,7 +90,17 @@ namespace Caspian.UI
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
                 string message = null;
-                if (id == 0)
+                var isAdd = false   ;
+                if (IsTabPanelService)
+                {
+                    var pKeyName = typeof(TEntity).GetPrimaryKey().Name;
+                    if (typeof(TEntity).GetProperties().Any(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pKeyName))
+                    {
+                        var old = await service.SingleOrDefaultAsync(id);
+                        isAdd = old == null;
+                    }
+                }
+                if (id == 0 || isAdd)
                 {
                     await service.AddAsync(UpsertData);
                     message = "Registration was done successfully";
@@ -79,18 +111,26 @@ namespace Caspian.UI
                     message = "Updating was done successfully";
                 }
                 await service.SaveChangesAsync();
-                if (id == 0)
+                if (DataView != null)
                 {
-                    id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
-                    await DataView.SelectRowById(id);
+                    if (id == 0)
+                    {
+                        id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
+                            await DataView.SelectRowById(id);
+                    }
+                    else
+                        await DataView.ReloadAsync();
                 }
-                else
-                    await DataView.ReloadAsync();
                 await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
-                if (Window == null)
-                    await Form.ResetAsync();
-                else
-                    await Window.Close();
+                if (!IsTabPanelService)
+                {
+                    if (Window == null)
+                        await Form.ResetAsync();
+                    else
+                        await Window.Close();
+                }
+                //else 
+                //    TabPanel.ChangeState();
             });
         }
 
@@ -171,8 +211,8 @@ namespace Caspian.UI
         public void ClearForm()
         {
             Form = null;
-            UpsertData = null;
-            
+            if (!IsTabPanelService)
+                UpsertData = null;
         }
     }
 }

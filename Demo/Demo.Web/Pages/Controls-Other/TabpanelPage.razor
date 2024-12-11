@@ -1,142 +1,59 @@
 ﻿@page "/Demo/TabPanel"
 @namespace Demo.Web.Pages
-<h2>Tabpanel</h2>
-<p>
-    The tabpanel has <b>tabs and content</b>. You can <b>use Html</b> in tabs and content. We can add tabs <b>statically and dynamically</b>.
-</p>
-<h3 class="pt-3">Tabpanel-Static</h3>
 
-<TabPanel>
-    <Tabs>
-        <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
-            <div class="ps-4 pe-4 pt-4 pb-4">
-                <TabPanel>
-                    <Tabs>
-                        <TabPanelItem Title='<i class="fa fa-code"></i>Identity information'>
-                            <div class="text-center pt-4 pb-4">
-                                <h3>Identity information</h3>
-                            </div>
-                        </TabPanelItem>
-                        <TabPanelItem Title="Job specification">
-                            <div class="text-center pt-4 pb-4">
-                                <h3>Job specification</h3>
-                            </div>
-                        </TabPanelItem>
-                        <TabPanelItem Title="Children's profile">
-                            <div class="text-center pt-4 pb-4">
-                                <h3>Children's profile</h3>
-                            </div>
-                        </TabPanelItem>
-                    </Tabs>
-                </TabPanel>
-            </div>
-        </TabPanelItem>
-        <TabPanelItem Title='<i class="fa fa-code"></i>Razor'>
-            <Document FolderName="Tabpanel" FileName="Static" />
-        </TabPanelItem>
-    </Tabs>
-</TabPanel>
-<h3 class="pt-3">Tabpanel-Dynamic</h3>
-<TabPanel>
-    <Tabs>
-        <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
-            <div class="ps-4 pe-4 pt-4 pb-4">
-                <div class="row c-controls">
-                    <div class="col-md-3 ps-4">
-                        <label>Dynamic items</label>
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => { UpateList(t, 1, "Identity"); })" Title="Identity" />
-                            </div>
-                            <div class="col-md-3">
-                                <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => { UpateList(t, 2, "Job specification"); })" Title="Job" />
-                            </div>
-                            <div class="col-md-3">
-                                <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => { UpateList(t, 3, "Wife's profile"); })" Title="Wife" />
-                            </div>
-                            <div class="col-md-3">
-                                <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => { UpateList(t, 4, "Home Address"); })" Title="Home" />
-                            </div>
-                        </div>
-                    </div>
-                    @if (dic.Any())
-                    {
-                        if (tabIndex > dic.Count)
-                            tabIndex = dic.Count;
-                        <div class="col-md-3 ps-4">
-                            <label>Selected tab index</label>
-                        </div>
-                        <div class="col-md-8">
-                            <RadioList TValue="int" DefaultLayout="DefaultLayout.SpaceAround" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => { tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1; }">
-                                @foreach (var item in dic)
-                                {
-                                    <RadioItem Value="item.Key" Title="@(item.Value)" />
-                                }
-                            </RadioList>
+<div class="col-md-9">
+    <div class="row">
+        <div class="col-md-3">
+            <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => { UpateList(t, 1, "Identity"); })" Title="Identity" />
+        </div>
+        <div class="col-md-3">
+            <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => { UpateList(t, 2, "Job specification"); })" Title="Job" />
+        </div>
+        <div class="col-md-3">
+            <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => { UpateList(t, 3, "Wife's profile"); })" Title="Wife" />
+        </div>
+        <div class="col-md-3">
+            <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => { UpateList(t, 4, "Home Address"); })" Title="Home" />
+        </div>
+    </div>
+</div>
+@if (dic.Any())
+{
+    if (tabIndex > dic.Count)
+        tabIndex = dic.Count;
+    <div class="col-md-3 ps-4">
+        <label>Selected tab index</label>
+    </div>
+    <div class="col-md-8">
+        <RadioList TValue="int" DefaultLayout="DefaultLayout.SpaceAround" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => { tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1; }">
+            @foreach (var item in dic)
+            {
+                <RadioItem Value="item.Key" Title="@(item.Value)" />
+            }
+        </RadioList>
 
+    </div>
+    <div class="col-md-12 pt-4">
+        <TabPanel @ref="dynamicPanel" @bind-TabIndex="tabIndex">
+            <Tabs>
+                @foreach (var item in dic)
+                {
+                    <TabPanelItem @key="item.Key" Title="@(item.Value)">
+                        <div class="text-center pt-4 pb-4">
+                            <h3>@(item.Value)</h3>
                         </div>
-                        <div class="col-md-12 pt-4">
-                            <TabPanel @ref="dynamicPanel" @bind-TabIndex="tabIndex">
-                                <Tabs>
-                                    @foreach (var item in dic)
-                                    {
-                                        <TabPanelItem Title="@(item.Value)">
-                                            <div class="text-center pt-4 pb-4">
-                                                <h3>@(item.Value)</h3>
-                                            </div>
-                                        </TabPanelItem>
-                                    }
-                                </Tabs>
-                            </TabPanel>
-                        </div>
-                    }
-                    else
-                    {
-                        <div style="height:188px;" class="pt-5 text-center">
-                            <h5 style="color:palevioletred">Please select at least one item to display</h5>
-                        </div>
-                    }
-                </div>
-            </div>
-        </TabPanelItem>
-        <TabPanelItem Title='<i class="fa fa-code"></i>Razor'>
-            <Document FolderName="Tabpanel" FileName="Dynamic" />
-        </TabPanelItem>
-    </Tabs>
-</TabPanel>
-<h3 class="pt-3">Vertical Alignment</h3>
-<TabPanel>
-    <Tabs>
-        <TabPanelItem Title='<i class="fa fa-code"></i>Demo'>
-            <div class="ps-4 pe-4 pt-4 pb-4">
-                <TabPanel Vertical>
-                    <Tabs>
-                        <TabPanelItem Title="Panel 1">
-                            <div class="p-5 m-5 text-center">
-                                <h4>Tabpanel 1</h4>
-                            </div>
-                        </TabPanelItem>
-                        <TabPanelItem Title="Panel 2">
-                            <div class="p-5 m-5 text-center">
-                                <h4>Tabpanel 2</h4>
-                            </div>
-                        </TabPanelItem>
-                        <TabPanelItem Title="Panel 3">
-                            <div class="p-5 m-5 text-center">
-                                <h4>Tabpanel 3</h4>
-                            </div>
-                        </TabPanelItem>
-                    </Tabs>
-                </TabPanel>
-            </div>
-        </TabPanelItem>
-        <TabPanelItem Title='<i class="fa fa-code"></i>Razor'>
-            <Document FolderName="Tabpanel" FileName="Vertical" />
-        </TabPanelItem>
-    </Tabs>
-</TabPanel>
+                    </TabPanelItem>
+                }
+            </Tabs>
+        </TabPanel>
+    </div>
+}
+else
+{
+    <div style="height:188px;" class="pt-5 text-center">
+        <h5 style="color:palevioletred">Please select at least one item to display</h5>
+    </div>
+}
 
 
 @code
@@ -156,7 +73,6 @@
 
     void UpateList(bool flag, int value, string title)
     {
-        dynamicPanel.ClearTabs();
         if (flag)
             dic.Add(value, title);
         else

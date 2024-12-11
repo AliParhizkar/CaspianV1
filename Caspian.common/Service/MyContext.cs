@@ -1,7 +1,11 @@
-﻿using Caspian.Common.JsonValue;
+﻿using Caspian.Common.Extension;
+using Caspian.Common.JsonValue;
 using Caspian.Common.RowNumber;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 
 namespace Caspian.Common
 {
@@ -21,6 +25,23 @@ namespace Caspian.Common
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var types = this.GetType().Assembly.GetTypes();
+            foreach (var type in types)
+            {
+                var pKeyName = type.GetPrimaryKey(true)?.Name;
+                if (pKeyName != null)
+                {
+                    var fKeyInfo = type.GetProperties().SingleOrDefault(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pKeyName);
+                    if (fKeyInfo != null)
+                    {
+                        var info = fKeyInfo.PropertyType.GetProperties().Single(t => t.PropertyType == type);
+                        modelBuilder.Entity(fKeyInfo.PropertyType)
+                            .HasOne(info.Name)
+                            .WithOne(fKeyInfo.Name)
+                            .IsRequired(false);
+                    }
+                }
+            }
             modelBuilder.HasDbFunction(typeof(JsonExtensions).GetMethod(nameof(JsonExtensions.JsonValue)))
                .HasTranslation(e => new SqlFunctionExpression("JSON_VALUE", e, true, new[] { true, false }, typeof(String), null));
             base.OnModelCreating(modelBuilder);

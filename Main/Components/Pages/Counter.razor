@@ -9,6 +9,8 @@
 @inject IServiceProvider provider
 
 @inject UIService<Employee> Service
+@inject UIService<Family> FamilyService
+@inject UIService<Address> AddressService
 
 @inherits BasePage
 @{
@@ -46,25 +48,61 @@
         </div>
     </Slide>
 </div> *@
-
+<span>@(Service.UpsertData == null)</span>
 <div style="width:80%;margin:10px auto">
-    <Test.TabPaneEntity TEntity="Employee" Service="Service">
-        <Test.ChildTabPanelItem Child="t => t" Title="مشخصات اصلی">
-            <Content Context="emp">
-                <Test.MainComponent Employee="emp" />
+    <TabPanelEntity TEntity="Employee" Service="Service">
+        <ChildTabPanelItem Child="t => t" Service="Service" Title="مشخصات اصلی">
+            <Content Context="employee">
+                <div class="row p-3 c-controls">
+                    <div class="col-md-2">
+                        <label>First Name</label>
+                    </div>
+                    <div class="col-md-4">
+                        <StringTextBox @bind-Value="employee.FName" />
+                    </div>
+                    <div class="col-md-2 ps-3">
+                        <label>Last Name</label>
+                    </div>
+                    <div class="col-md-4">
+                        <StringTextBox @bind-Value="employee.LName" />
+                    </div>
+                    <div>
+                        <FormCommandButton />
+                    </div>
+                </div>
             </Content>
-        </Test.ChildTabPanelItem>
-        <Test.ChildTabPanelItem Child="t => t.Family" Title="مشخصات خانوادگی">
+        </ChildTabPanelItem>
+        <ChildTabPanelItem Child="t => t.Address" Service="AddressService">
+            <Content Context="address">
+                <div class="row c-controls p-3">
+                    <div class="col-md-4">
+                        <label>Address</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="address.AddressName" />
+                    </div>
+                </div>
+                <div>
+                    <FormCommandButton />
+                </div>
+            </Content>
+        </ChildTabPanelItem>
+        <ChildTabPanelItem Child="t => t.Family" Service="FamilyService" Title="مشخصات خانوادگی">
             <Content Context="family">
-                <Test.FamilyComponent Family="family" />
+                <div class="row c-controls p-3">
+                    <div class="col-md-4">
+                        <label>Wife Name</label>
+                    </div>
+                    <div class="col-md-8">
+                        <StringTextBox @bind-Value="family.WifeName" />
+                    </div>
+                </div>
+                <div>
+                    <FormCommandButton />
+                </div>
             </Content>
-        </Test.ChildTabPanelItem>
-        <Test.ChildrenTabPanelItem Children="t => t.CourseStudies" Title="تحصیلات">
-            <Content Context="service">
-                <Test.CourseStudyComponent Service="service" />
-            </Content>
-        </Test.ChildrenTabPanelItem>
-    </Test.TabPaneEntity>
+        </ChildTabPanelItem>
+    </TabPanelEntity>
 </div>
 
 
@@ -73,6 +111,7 @@
 {
     protected override void OnInitialized()
     {
+        Service.MasterId = 86;
         base.OnInitialized();
     }
 }

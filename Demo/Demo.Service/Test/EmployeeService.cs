@@ -1,7 +1,6 @@
 ﻿using System;
 using Demo.Model;
 using Caspian.Common;
-using FluentValidation;
 using Caspian.Common.Service;
 
 namespace Demo.Service
@@ -30,6 +29,15 @@ namespace Demo.Service
             base(provider)
         {
             RuleFor(t => t.WifeName).Required();
+        }
+    }
+
+    public class AddressService : BaseService<Address>, IBaseService<Address>
+    {
+        public AddressService(IServiceProvider provider) :
+            base(provider)
+        {
+            RuleFor(t => t.AddressName).Required();
         }
     }
 }

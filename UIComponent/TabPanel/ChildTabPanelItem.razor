@@ -1,0 +1,17 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity where TEntity : class
+@typeparam TDetail where TDetail : class
+@inject IServiceScopeFactory Factory
+
+@{
+    var detail = Service.UpsertData;
+}
+<TabPanelItem Title="@title" Disable="disabled">
+    <Caspian.UI.CaspianForm Service="Service" TEntity="TDetail" Model="detail">
+        <Caspian.UI.CaspianValidationValidator ValidatorType="GetServiceType()" />
+        @if (Content != null)
+        {
+            @Content(detail)
+        }
+    </Caspian.UI.CaspianForm>
+</TabPanelItem>

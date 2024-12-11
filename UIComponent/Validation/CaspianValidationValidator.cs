@@ -96,7 +96,6 @@ namespace Caspian.UI
                 dataService.Language = CaspianDataService.Language;
             }
             Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
-            var qqq = Validator.GetType().GetProperty("Rules", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).GetValue(Validator);
             (Validator as ICaspianValidator).BatchServiceData = BatchServiceData;
             if (Source != null)
                 (Validator as IBaseService).SetSource(Source);
