@@ -1,11 +1,11 @@
 ﻿using Caspian.Common;
+using System.Reflection;
+using System.ComponentModel;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel;
-using System.Reflection;
 
 namespace Caspian.UI
 {
@@ -19,16 +19,8 @@ namespace Caspian.UI
             return service?.GetType();
         }
 
-        TDetail GetDetail()
-        {
-            var entity = TabPanel.Service.UpsertData;
-
-            //if (Child.Body.NodeType == ExpressionType.Parameter)
-            //{
-            //    return entity as TDetail;
-            //}
-            throw new NotImplementedException("خطای عدم پیاده سازی");
-        }
+        [Parameter]
+        public int ColumnsCount { get; set; }
 
         [Parameter]
         public IUIService<TDetail> Service { get; set; }

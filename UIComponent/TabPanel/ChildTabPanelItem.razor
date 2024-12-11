@@ -7,7 +7,7 @@
     var detail = Service.UpsertData;
 }
 <TabPanelItem Title="@title" Disable="disabled">
-    <Caspian.UI.CaspianForm Service="Service" TEntity="TDetail" Model="detail">
+    <Caspian.UI.CaspianForm Service="Service" TEntity="TDetail" Model="detail" ColumnsCount="ColumnsCount">
         <Caspian.UI.CaspianValidationValidator ValidatorType="GetServiceType()" />
         @if (Content != null)
         {

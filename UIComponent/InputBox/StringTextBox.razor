@@ -1,27 +1,55 @@
 ﻿@namespace Caspian.UI
 @using System.Diagnostics
 @inherits CBaseInput<string>
-<div @attributes="GetAttributes()">
-    @if (MultiLine)
+
+@if (ColSpan.HasValue)
+{
+    var factor = 12 / ColumnsCount;
+    if (ColSpan >= factor)
+        factor = 12;
+    <div class="col-md-@(factor - ColSpan)">
+        <label>@title</label>
+    </div>
+    <div class="col-md-@(ColSpan)">
+        @RenderStringTextBox()
+    </div>
+}
+else
+{
+    @RenderStringTextBox()
+}
+
+
+@code 
+{
+    RenderFragment RenderStringTextBox() 
     {
-        @if (base.BindingType == BindingType.OnChange)
+        return __builder =>
         {
-            <textarea @ref="InputElement" @attributes="GetInputAttributes()" @onchange="ChangeValue">@Value</textarea>
-        }
-        else
-        {
-            <textarea @ref="InputElement" @attributes="GetInputAttributes()" @oninput="ChangeValue">@Value</textarea>
-        }
+            <div @attributes="GetAttributes()">
+                @if (MultiLine)
+                {
+                    @if (base.BindingType == BindingType.OnChange)
+                    {
+                        <textarea @ref="InputElement" @attributes="GetInputAttributes()" @onchange="ChangeValue">@Value</textarea>
+                    }
+                    else
+                    {
+                        <textarea @ref="InputElement" @attributes="GetInputAttributes()" @oninput="ChangeValue">@Value</textarea>
+                    }
+                }
+                else
+                {
+                    @if (base.BindingType == BindingType.OnChange)
+                    {
+                        <input value="@Value" @onchange="ChangeValue" @ref="InputElement" @attributes="GetInputAttributes()" />
+                    }
+                    else
+                    {
+                        <input value="@Value" @oninput="ChangeValue" @ref="InputElement" @attributes="GetInputAttributes()" />
+                    }
+                }
+            </div>
+        };
     }
-    else
-    {
-        @if (base.BindingType == BindingType.OnChange)
-        {
-            <input  value="@Value" @onchange="ChangeValue" @ref="InputElement" @attributes="GetInputAttributes()" />
-        }
-        else
-        {
-            <input value="@Value" @oninput="ChangeValue" @ref="InputElement" @attributes="GetInputAttributes()" />
-        }
-    }
-</div>
+}

@@ -64,6 +64,11 @@ namespace Caspian.UI
             
         }
 
+
+
+        [Parameter]
+        public int ColumnsCount { get; set; } = 1;
+
         public async Task FocusAsync()
         {
             if (firstControl != null) 

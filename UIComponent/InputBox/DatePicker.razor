@@ -3,34 +3,58 @@
 @using System.Threading;
 @typeparam TValue 
 @inherits CBaseInput<TValue>
-@{
-    var className = "t-picker-wrap";
-    if (disabled)
-        className += " t-state-disabled";
-    else if (ErrorMessage.HasValue())
-        className += " t-state-error";
-}
-<div @ref="element" class="t-widget t-datepicker" style="@Style" error-message="@ErrorMessage">
-    <div class="@(className)">
-        @if (DefaultMode)
-        {
-            <input type="date" value="@text" @attributes="@attrs" disabled="@disabled" class="t-input t-default-mode" autocomplete="off" @onchange="ChangeValue" />
-        }
-        else
-        {
-            <input @attributes="@attrs" disabled="@disabled" value="@text" @ref="InputElement" class="t-input" autocomplete="off" @onchange="ChangeValue" />
-            <span class="t-select" style="left:inherit" @onclick="OpenWindow">
-                <i class="t-icon t-icon-calendar fa fa-calendar" title="Calendar"></i>
-            </span>
-        }
-    </div>
-    @if (Status == WindowStatus.Open && !DefaultMode)
-    {
-        DateTime date = Value == null ? DateTime.Today : Convert.ToDateTime(Value);
-        <div class="t-animation-container">
-            <CalendarComponent PersianCalendar="PersianCalendar" Date="date" DateChanged="async d => await ChangeDate(d)" 
-                FromDate="FromDate" ToDate="ToDate"/>
-        </div>
-    }
-</div>
 
+@if (ColSpan.HasValue)
+{
+    var factor = 12 / ColumnsCount;
+    <div class="col-md-@(factor - ColSpan)">
+        <label>@title</label>
+    </div>
+    <div class="col-md-@(ColSpan)">
+        @RenderDatePicker()
+    </div>
+}
+else
+{
+    @RenderDatePicker()
+}
+
+
+@code 
+{
+    RenderFragment RenderDatePicker()
+    {
+        return __builder =>
+        {
+            var className = "t-picker-wrap";
+            if (disabled)
+                className += " t-state-disabled";
+            else if (ErrorMessage.HasValue())
+                className += " t-state-error";
+
+            <div @ref="element" class="t-widget t-datepicker" style="@Style" error-message="@ErrorMessage">
+                <div class="@(className)">
+                    @if (DefaultMode)
+                    {
+                        <input type="date" value="@text" @attributes="@attrs" disabled="@disabled" class="t-input t-default-mode" autocomplete="off" @onchange="ChangeValue" />
+                    }
+                    else
+                    {
+                        <input @attributes="@attrs" disabled="@disabled" value="@text" @ref="InputElement" class="t-input" autocomplete="off" @onchange="ChangeValue" />
+                        <span class="t-select" style="left:inherit" @onclick="OpenWindow">
+                            <i class="t-icon t-icon-calendar fa fa-calendar" title="Calendar"></i>
+                        </span>
+                    }
+                </div>
+                @if (Status == WindowStatus.Open && !DefaultMode)
+                {
+                    DateTime date = Value == null ? DateTime.Today : Convert.ToDateTime(Value);
+                    <div class="t-animation-container">
+                        <CalendarComponent PersianCalendar="PersianCalendar" Date="date" DateChanged="async d => await ChangeDate(d)"
+                                           FromDate="FromDate" ToDate="ToDate" />
+                    </div>
+                }
+            </div>
+        };
+    }
+}

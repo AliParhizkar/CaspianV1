@@ -18,6 +18,7 @@ namespace Caspian.UI
         bool reseting;
         EditContext oldContext;
         protected bool disabled, focuced;
+        protected string title;
 
         public ElementReference? InputElement { get; protected set; }
 
@@ -25,7 +26,10 @@ namespace Caspian.UI
         public FormAppState FormAppState { get; set; }
 
         [Parameter]
-        public int? RowSpan { get; set; }
+        public int? ColSpan { get; set; }
+
+        [CascadingParameter(Name = "ColumnsCount")]
+        public int ColumnsCount { get; set; } = 1;
 
         public string ErrorMessage { get; set; }
 
@@ -81,6 +85,11 @@ namespace Caspian.UI
         {
             if (Search)
                 BindingType = BindingType.OnInput;
+            if (ValueExpression != null)
+            {
+                var member = (ValueExpression.Body as MemberExpression).Member;
+                title = member.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? member.Name;
+            }
             base.OnInitialized();
         }
 
@@ -157,8 +166,13 @@ namespace Caspian.UI
         [CascadingParameter(Name = "Container")]
         internal IContainer Container { get; set; }
 
+        [Parameter]
+        public string Title { get; set; }
+
         protected override void OnParametersSet()
         {
+            if (Title != null)
+                title = Title;
             CaspianContainer?.SetControl(this);
             if (CaspianContainer == null)
                 disabled = Disabled;

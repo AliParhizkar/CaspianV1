@@ -23,6 +23,27 @@
             {
                 <CaspianValidationValidator ValidatorType="serviceType" />
             }
+            @if (ColumnsCount > 1)
+            {
+                <div class="c-container-@(ColumnsCount)">
+                    <CascadingValue Value="ColumnsCount" Name="ColumnsCount">
+                        @RenderContent()
+                    </CascadingValue>
+                </div>
+            }
+            else
+            {
+                @RenderContent()
+            }
+        </CascadingValue>
+    </EditForm>
+}
+@code
+{
+    RenderFragment RenderContent()
+    {
+        return __builder =>
+        {
             @if (Content != null)
             {
                 @Content(EditContext.Model as TEntity)
@@ -31,6 +52,6 @@
             {
                 @ChildContent(EditContext.Model as TEntity)
             }
-        </CascadingValue>
-    </EditForm>
+        };
+    }
 }

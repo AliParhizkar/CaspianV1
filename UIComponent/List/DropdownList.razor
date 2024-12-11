@@ -2,44 +2,64 @@
 @using System.ComponentModel.DataAnnotations
 @typeparam TValue
 @inherits CBaseInput<TValue>
-@{
-    var className = "t-dropdown-wrap";
-    if (disabled)
-        className += " t-state-disabled";
-    else if (ErrorMessage == null)
-        className += " t-state-default";
-    else
-        className += " t-state-error";
-    var index = 1;
-}
-<div @ref="InputElement" @onkeyup="OnkeyUp" @attributes="attrs" class="t-widget t-dropdown" error-message="@ErrorMessage">
-    <div class="@className" @onmousedown="OpenWindow">
-        <span class="t-input">@(text)</span>
-        <span class="t-t-select" >
-            <i class="t-icon t-arrow-down fa fa-caret-down"></i>
-        </span>
+
+@if (ColSpan.HasValue)
+{
+    var factor = 12 / ColumnsCount;
+
+    <div class="col-md-@(factor - ColSpan)">
+        <label>@title</label>
     </div>
-    @if (status == WindowStatus.Open)
-    {
-        <div class="t-animation-container">
-            <div class="t-popup t-group">
-                <ul class="t-reset">
-                    @foreach(var item in items)
-                    {
-                        string name = "t-item";
-                        if (index == selectedIndex)
-                            name += " t-state-selected";
-                        if (item.Disabled)
-                            name += " t-disable";
-                        <li @onmousedown="async () => await SetValueForActiveItem(item)" class="@name">@item.Text</li>
-                        index++;
-                    }
-                </ul>
-            </div>
-        </div>
-    }
-</div>
+    <div class="col-md-@(ColSpan)">
+        @RenderDropdownList()
+    </div>
+}
+else
+{
+    @RenderDropdownList()
+}
+
 @code
 {
-
+    RenderFragment RenderDropdownList()
+    {
+        return __builder =>
+        {
+            var className = "t-dropdown-wrap";
+            if (disabled)
+                className += " t-state-disabled";
+            else if (ErrorMessage == null)
+                className += " t-state-default";
+            else
+                className += " t-state-error";
+            var index = 1;
+            <div @ref="InputElement" @onkeyup="OnkeyUp" @attributes="attrs" class="t-widget t-dropdown" error-message="@ErrorMessage">
+                <div class="@className" @onmousedown="OpenWindow">
+                    <span class="t-input">@(text)</span>
+                    <span class="t-t-select">
+                        <i class="t-icon t-arrow-down fa fa-caret-down"></i>
+                    </span>
+                </div>
+                @if (status == WindowStatus.Open)
+                {
+                    <div class="t-animation-container">
+                        <div class="t-popup t-group">
+                            <ul class="t-reset">
+                                @foreach (var item in items)
+                                {
+                                    string name = "t-item";
+                                    if (index == selectedIndex)
+                                        name += " t-state-selected";
+                                    if (item.Disabled)
+                                        name += " t-disable";
+                                    <li @onmousedown="async () => await SetValueForActiveItem(item)" class="@name">@item.Text</li>
+                                    index++;
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+            </div>
+        };
+    }
 }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
 
 namespace Caspian.UI
 {
@@ -21,7 +22,7 @@ namespace Caspian.UI
         int pageNumber = 1;
         bool setToDefault;
         bool valueChanged;
-        string text;
+        string text, title;
         Expression cascadeExpression;
         Dictionary<string, object> attrs;
         WindowStatus? Status = WindowStatus.Close;
@@ -57,6 +58,12 @@ namespace Caspian.UI
 
         [CascadingParameter]
         public CaspianContainer Container { get; set; }
+
+        [CascadingParameter(Name = "ColumnsCount")]
+        public int ColumnsCount { get; set; } = 1;
+
+        [Parameter]
+        public int? ColSpan { get; set; }
 
         [Parameter]
         public bool Pageable { get; set; } = true;
@@ -105,6 +112,9 @@ namespace Caspian.UI
 
         [Parameter]
         public EventCallback OnChange { get; set; }
+
+        [Parameter]
+        public string Title { get; set; }
 
         public void Dispose()
         {
@@ -258,11 +268,18 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             text = "";
+            if (ValueExpression != null)
+            {
+                var info = (ValueExpression.Body as MemberExpression).Member;
+                title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? info.Name;
+            }
             base.OnInitialized();
         }
 
         protected override void OnParametersSet()
         {
+            if (Title != null)
+                title = Title;
             CaspianForm?.AddControl(this);
             Container?.SetControl(this);
             Disabled = Container?.Disabled == true;

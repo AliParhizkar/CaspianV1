@@ -8,16 +8,24 @@ namespace Demo.Model
     public class Employee
     {
         [Key]
-        public int Id { get; set; } 
+        public int Id { get; set; }
 
+        [DisplayName("First Name")]
         public string FName { get; set; }
 
+        [DisplayName("Last Name")]
         public string LName { get; set; }
 
+        [DisplayName("Gender")]
+        public Gender Gender { get; set; }
+
+        [DisplayName("Birth Date ")]
+        public DateTime? BirthDate { get; set; }
+        
         [DisplayName("سوابق تحصیلی")]
         public IList<CourseStudy> CourseStudies { get; set; }
 
-        [DisplayName("آدرس")]
+        [DisplayName("آدرس منزل/کار")]
         public Address Address { get; set; }
 
         [DisplayName("مشخصات خانوادگی")]
@@ -62,5 +70,11 @@ namespace Demo.Model
 
         [ForeignKey(nameof(Id))]
         public Employee Employee { get; set; }
+
+        [DisplayName("Country")]
+        public int CountryId { get; set; }
+
+        [ForeignKey(nameof(CountryId))]
+        public Country Country { get; set; }
     }
 }
