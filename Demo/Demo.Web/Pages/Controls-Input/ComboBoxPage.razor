@@ -2,7 +2,6 @@
 @namespace Demo.Web.Pages
 @using Caspian.Engine.Model
 @inherits BasePage
-@inject CascadeService service
 <h2>Combobox</h2>
 <p>
     This control is a <b>key-value control</b> that is <b>usually bind to entity</b> type, although it can use the <b>SelectListItem list as a resource</b>.
@@ -279,7 +278,7 @@
 </TabPanel>
 <h3 class="pt-3">Cascade combobox</h3>
 <p>
-    We can use <b>CascadeService</b> to <b>cascade two comboboxes</b>, it is a <b>transient service</b> and can be <b>injected into the page</b>.
+    We can use <b>CascadeService</b> to <b>cascade two or three comboboxes</b>, it is a <b>transient service</b> and can be <b>injected into the page</b>.
 </p>
 <TabPanel>
     <Tabs>
@@ -287,22 +286,50 @@
             <div class="d-content">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4>Cascade combobox</h4>
-                        <span class="c-demo-description">In this example we injected the CascadeService and used it to create the cascade combobox</span>
+                        <h4>Cascade combobox (Two combobox)</h4>
+                        <span class="c-demo-description">In this example we use productCascadeService CascadeService to create the cascade combobox</span>
                     </div>
                     <div class="col-md-6">
+                        <div class="row c-controls c-demo-control">
+                            <div class="col-md-4">
+                                <label>Product Category</label>
+                            </div>
+                            <div class="col-md-8">
+                                <ComboBox TEntity="ProductCategory" CascadeService="productCascadeService" TValue="int?" @bind-Value="productCategoryId" TextExpression="t => t.Title" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Product</label>
+                            </div>
+                            <div class="col-md-8">
+                                <ComboBox TEntity="Product" TValue="int?" CascadeService="productCascadeService" @bind-Value="productId" TextExpression="t => t.Title" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Cascade combobox (three combobox)</h4>
+                        <span class="c-demo-description">In this example we use CityCascadeService CascadeService to create the cascade combobox</span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
                         <div class="row c-controls c-demo-control">
                             <div class="col-md-4">
                                 <label>Country</label>
                             </div>
                             <div class="col-md-8">
-                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" CascadeService="service" />
+                                <ComboBox TEntity="Country" CascadeService="countryCascadeService " TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Province</label>
+                            </div>
+                            <div class="col-md-8">
+                                <ComboBox TEntity="Province" TValue="int?" CascadeService="countryCascadeService " @bind-Value="provinceId" TextExpression="t => t.Title" />
                             </div>
                             <div class="col-md-4">
                                 <label>City</label>
                             </div>
                             <div class="col-md-8">
-                                <ComboBox TEntity="City" TValue="int?" @ref="service.Cascade" @bind-Value="cityId" TextExpression="t => t.Title" />
+                                <ComboBox TEntity="City" TValue="int?" CascadeService="countryCascadeService " @bind-Value="cityId" TextExpression="t => t.Title" />
                             </div>
                         </div>
                     </div>
@@ -362,9 +389,14 @@
     CustomerType customerType = CustomerType.Real;
     int? customerId;
     int? countryId;
+    int? provinceId;
+    int? cityId;
+    int? productCategoryId;
+    int? productId;
     ComboBox<Country, int?> cmbCountry;
     ComboBox<Customer, int?> cmbCustomer;
-    int? cityId;
+    CascadeService<ProductCategory, Product> productCascadeService = new();
+    CascadeService<Country, Province, City> countryCascadeService = new();
 
     string GetStyle()
     {

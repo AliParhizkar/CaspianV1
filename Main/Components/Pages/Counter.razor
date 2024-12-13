@@ -11,6 +11,7 @@
 @inject UIService<Employee> Service
 @inject UIService<Family> FamilyService
 @inject UIService<Address> AddressService
+@inject UIService<IdentificationDetail> IdentificationDetailService
 
 @inherits BasePage
 @{
@@ -67,7 +68,7 @@
         <ChildTabPanelItem Child="t => t.Address" Service="AddressService" ColumnsCount="2">
             <Content Context="address">
                 <div class="row c-controls p-3">
-                    <ComboBox TValue="int" @bind-Value="address.CountryId" TEntity="Country" TextExpression="t => t.Title" ColSpan="4" />
+                    <StringTextBox @bind-Value="address.AddressName" ColSpan="8" />
                 </div>
                 <div>
                     <FormCommandButton />
@@ -89,6 +90,39 @@
                 </div>
             </Content>
         </ChildTabPanelItem>
+        <ChildTabPanelItem Child="t => t.IdentificationDetail" Service="IdentificationDetailService" ColumnsCount="2">
+            <Content Context="identification">
+                <div class="row c-controls p-3">
+                    <StringTextBox @bind-Value="identification.FatherName" ColSpan="4" />
+                    <StringTextBox @bind-Value="identification.IdentificationNo" Style="direction:ltr" ColSpan="4" />
+                    <StringTextBox @bind-Value="identification.IdentificationSerial" Style="direction:ltr" ColSpan="4" />
+                    <DatePicker @bind-Value="identification.BirthDate" ColSpan="4" />
+
+                    <ComboBox TValue="int?" TEntity="Country" CascadeService="birthCascadeService" @bind-Value="identification.BirthCountryId" 
+                            ColSpan="4" TextExpression="t => t.Title"  />
+
+                    <ComboBox TValue="int?" TEntity="Country" CascadeService="regCascadeService" @bind-Value="identification.RegCountryId"
+                              TextExpression="t => t.Title" ColSpan="4" />
+
+                    <ComboBox TValue="int?" TEntity="Province" CascadeService="birthCascadeService" @bind-Value="identification.BirthProvinceId"
+                            ColSpan="4" TextExpression="t => t.Title" />
+                    
+                    <ComboBox TValue="int?" TEntity="Province" CascadeService="regCascadeService" @bind-Value="identification.RegProvinceId"
+                              ColSpan="4" TextExpression="t => t.Title" />
+                    
+                    <ComboBox TValue="int?" TEntity="City" CascadeService="birthCascadeService" @bind-Value="identification.BirthCityId"
+                              ColSpan="4" TextExpression="t => t.Title" />
+
+                    <ComboBox TValue="int?" TEntity="City" CascadeService="regCascadeService" @bind-Value="identification.RegCityId"
+                              ColSpan="4" TextExpression="t => t.Title" />
+
+                    <StringTextBox @bind-Value="identification.Village" ColSpan="4" />
+                </div>
+                <div>
+                    <FormCommandButton />
+                </div>
+            </Content>
+        </ChildTabPanelItem>
     </TabPanelEntity>
 </div>
 
@@ -96,6 +130,8 @@
 
 @code 
 {
+    CascadeService<Country, Province, City> birthCascadeService = new();
+    CascadeService<Country, Province, City> regCascadeService = new();
     protected override void OnInitialized()
     {
         Service.MasterId = 86;

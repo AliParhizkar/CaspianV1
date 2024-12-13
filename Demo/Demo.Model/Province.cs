@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("Countries ", Schema = "demo")]
-    public class Country
+    [Table("Provinces", Schema = "demo")]
+    public class Province
     {
         [Key]
         public int Id { get; set; }
@@ -17,11 +17,13 @@ namespace Demo.Model
         [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
+        [DisplayName("کشور")]
+        public int CountryId { get; set; }
+
+        [ForeignKey(nameof(CountryId))]
+        public Country Country { get; set; }
+
         [CheckOnDelete("The country has Cities and can not removed")]
         public IList<City> Cities { get; set; }
-
-        [CheckOnDelete("The Country has Provinces and can not be removed")]
-        public IList<Province> Provinces { get; set; }  
-
     }
 }

@@ -14,7 +14,6 @@ namespace UIComponent
         public static IServiceCollection AddCaspianUIComponentsServices(this IServiceCollection services)
         {
             services.AddTransient<FileUploadService>();
-            services.AddTransient<CascadeService>();
             services.AddScoped<BatchServiceData>();
             services.AddScoped<BasePageService>();
 

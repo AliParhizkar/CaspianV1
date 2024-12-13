@@ -27,6 +27,8 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
+            if (Service == null)
+                throw new CaspianException($"خطا: Please specify service. You Should set \"Service\" Parameter by a service of type UIService<{typeof(TDetail).Name}>");
             if (Child.Body.NodeType == ExpressionType.MemberAccess)
             {
                 var info = (Child.Body as MemberExpression).Member as PropertyInfo;

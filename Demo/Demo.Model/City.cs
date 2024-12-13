@@ -17,8 +17,14 @@ namespace Demo.Model
         [DisplayName("Country")]
         public int CountryId { get; set; }
 
+        [DisplayName("استان")]
+        public int? ProvinceId { get; set; }
+
         [ForeignKey(nameof(CountryId))]
-        public virtual Country Country { get; set; }
+        public Country Country { get; set; }
+
+        [ForeignKey(nameof(ProvinceId))]
+        public Province Province { get; set; }
 
         [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }

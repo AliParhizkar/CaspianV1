@@ -6,13 +6,23 @@
 @using Stimulsoft.Report.Blazor
 @using Syncfusion.Blazor.DropDowns
 
-<button @onclick="OnClick">Test</button>
+<div style="width:350px;height:50px;margin:50px auto">
+    <span>@countryId</span>
+    
+    <ComboBox CascadeService="Service" TValue="int?" TEntity="Country" @bind-Value="countryId" TextExpression="t => t.Title"  />
+</div>
+<div style="width:350px;height:50px;margin:10px auto">
+    <span>@(provinceId?.ToString() ?? "---")</span>
+    
+    <ComboBox TValue="int?" CascadeService="Service" TEntity="Province" @bind-Value="provinceId" TextExpression="t => t.Title" />
+</div>
+<div style="width:350px;height:50px;margin:10px auto">
+    <span>@(cityId?.ToString() ?? "---")</span>
 
-
+    <ComboBox TValue="int?" CascadeService="Service" TEntity="City" @bind-Value="cityId" TextExpression="t => t.Title" />
+</div>
 @code
 {
-    void OnClick()
-    {
-        
-    }
+    CascadeService<Country, Province, City> Service = new();
+    int? countryId = 1, provinceId = 1, cityId = 1017;
 }

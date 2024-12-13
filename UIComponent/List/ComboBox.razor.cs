@@ -2,32 +2,31 @@
 using System.Reflection;
 using System.Collections;
 using Microsoft.JSInterop;
+using System.ComponentModel;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using System.Linq.Dynamic.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel;
 
 namespace Caspian.UI
 {
-    public partial class ComboBox<TEntity, TValue>: ComponentBase, ICascading, IControl, IListValueInitializer, 
+    public partial class ComboBox<TEntity, TValue>: ComponentBase, IComboBox<TEntity>, IControl, IListValueInitializer, 
         IEnableLoadData where TEntity: class
     {
         bool LoadData;
         int pageNumber = 1;
         bool setToDefault;
-        bool valueChanged;
         string text, title;
         Expression cascadeExpression;
         Dictionary<string, object> attrs;
         WindowStatus? Status = WindowStatus.Close;
         WindowStatus? oldStatus = WindowStatus.Close;
-        TValue OldValue;
+        TValue OldValue = default(TValue);
         string _FieldName;
         ValidationMessageStore _messageStore;
         IList items;
@@ -41,6 +40,11 @@ namespace Caspian.UI
         internal int SelectedIndex { get; set; }
 
         public ElementReference? InputElement { get; private set; }
+
+        [Parameter]
+        public ICascadeService<TEntity> CascadeService { get; set; }
+
+        public Expression<Func<TEntity, bool>> InternalConditionExpression { get; set; }
 
         [Parameter]
         public IEnumerable<SelectListItem> Source { get; set; }
@@ -76,12 +80,6 @@ namespace Caspian.UI
 
         [Parameter]
         public EventCallback OnChanged { get; set; }
-
-        [Parameter]
-        public EnableLoadContiner EnableLoadContiner { get; set; }
-
-        [Parameter]
-        public CascadeService CascadeService { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, object>> OrderByExpression { get; set; }
@@ -141,6 +139,8 @@ namespace Caspian.UI
                     Status = WindowStatus.Close;
             }
         }
+
+        public EventCallback<object> OnInternalValueChanged { get; set; }
 
         public void Enable()
         {
@@ -267,6 +267,7 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
+            CascadeService?.Initialize(this);
             text = "";
             if (ValueExpression != null)
             {
@@ -318,6 +319,9 @@ namespace Caspian.UI
                 }
                 else if (!Value.Equals(OldValue))
                 {
+                    var qqq = typeof(TEntity);
+                    if (OnInternalValueChanged.HasDelegate)
+                        await OnInternalValueChanged.InvokeAsync(Value);
                     OldValue = Value;
                     if (Source == null)
                     {
@@ -328,6 +332,7 @@ namespace Caspian.UI
                         expr = Expression.Equal(expr, Expression.Constant(Value));
                         expr = Expression.Lambda(expr, parameter);
                         query = query.Where(expr).OfType<TEntity>();
+                        string str = query.ToQueryString();
                         var list = new ExpressionSurvey().Survey(TextExpression);
                         var entity = (await query.GetValuesAsync(list)).FirstOrDefault();
                         if (entity == null)
@@ -517,6 +522,9 @@ namespace Caspian.UI
                     if (service == null)
                         throw new CaspianException($"Service of type IBaseService<{typeof(TEntity).Name}> not imilimented");
                     var query = service.GetAll(default(TEntity));
+                    var filterExpression = ConditionExpression;
+                    if (InternalConditionExpression != null)
+                        query = query.Where(InternalConditionExpression);
                     if (ConditionExpression != null)
                         query = query.Where(ConditionExpression);
                     if (OrderByExpression != null)
@@ -604,30 +612,6 @@ namespace Caspian.UI
             ErrorMessage = null;
         }
 
-        public void CascadeTo(Type masterType, object value)
-        {
-            Disabled = value == null;
-            if (value != null)
-            {
-                foreach (var info in typeof(TEntity).GetProperties())
-                {
-                    if (info.PropertyType == masterType)
-                    {
-                        var masterIdInfoName = info.GetCustomAttribute<ForeignKeyAttribute>().Name;
-                        var masterInfo = typeof(TEntity).GetProperty(masterIdInfoName);
-                        var param = Expression.Parameter(typeof(TEntity), "t");
-                        Expression expr = Expression.Property(param, masterInfo);
-                        expr = Expression.Equal(expr, Expression.Constant(value));
-                        cascadeExpression = Expression.Lambda(expr, param);
-                        LoadData = true;
-                        items = null;
-
-                        break;
-                    }
-                }
-            }
-        }
-
         public bool Validate()
         {
             return true;
@@ -668,12 +652,6 @@ namespace Caspian.UI
                 focused = false;
                 await InputElement.Value.FocusAsync();
             }
-            if (valueChanged)
-            {
-                valueChanged = false;
-                if (OnChanged.HasDelegate)
-                    await OnChanged.InvokeAsync();
-            }
             if (ErrorMessage != null && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
@@ -685,31 +663,31 @@ namespace Caspian.UI
 
         public async Task SetValue(object value)
         {
-            EnableLoadContiner?.Control?.EnableLoading();
+            var valueChanged = false;
             if (value != null)
             {
-                var type = typeof(TValue);
-                if (type.IsNullableType())
-                    type = Nullable.GetUnderlyingType(type);
+                var type = typeof(TValue).GetUnderlyingType();
                 var convertedValue = (TValue)Convert.ChangeType(value, type);
-                CascadeService?.Cascade?.CascadeTo(typeof(TEntity), convertedValue);
                 Value = convertedValue;
                 await ValueChanged.InvokeAsync(convertedValue);
                 valueChanged = true;
             }
             else
             {
-                CascadeService?.Cascade?.CascadeTo(typeof(TEntity), null);
                 Value = default(TValue);
                 await ValueChanged.InvokeAsync(default(TValue));
                 valueChanged = true;
             }
-            if (valueChanged && OnChange.HasDelegate)
-                await OnChange.InvokeAsync();
+            if (valueChanged)
+            {
+                if (OnChange.HasDelegate)
+                    await OnChange.InvokeAsync();
+                if (OnInternalValueChanged.HasDelegate)
+                    await OnInternalValueChanged.InvokeAsync(Value);
+            }
             if (CurrentEditContext != null && _FieldName.HasValue())
             {
                 var model = CurrentEditContext.Model;
-                //FormAppState.AllControlsIsValid = true;
                 var info = model.GetType().GetProperty(_FieldName);
                 if (info == null)
                     FormAppState.AllControlsIsValid = false;
@@ -722,10 +700,66 @@ namespace Caspian.UI
             }
         }
 
+        public async Task<int?> UpdateCascadeComboBox()
+        {
+            LoadData = true;
+            await DataBinding();
+            if (items.Count == 1)
+            {
+                var item = items[0] as SelectListItem;
+                text = item.Text;
+                Value = (TValue)Convert.ChangeType(item.Value, typeof(TValue).GetUnderlyingType());
+                if (!Value.Equals(OldValue))
+                {
+                    OldValue = Value;
+                    if (ValueChanged.HasDelegate)
+                        await ValueChanged.InvokeAsync(Value);
+                    if (OnChange.HasDelegate)
+                        await OnChange.InvokeAsync(Value);   
+                }
+                return Convert.ToInt32(Value);
+            }
+            text = "";
+            Value = default;
+            if (OldValue != null && !OldValue.Equals(0))
+            {
+                OldValue = Value;
+                if (ValueChanged.HasDelegate)
+                    await ValueChanged.InvokeAsync(Value);
+                if (OnChange.HasDelegate)
+                    await OnChange.InvokeAsync(Value);
+            }
+            return null;
+        }
+
         public void EnableLoading()
         {
             LoadData = true;
-            items = null;
+            items = null; 
+        }
+
+        public async void Clear()
+        {
+            items?.Clear();
+            text = "";
+            Value = default;
+            var isEqual = false;
+            if (OldValue ==  null)
+            {
+                if (Value ==  null) 
+                    isEqual = true;
+                else 
+                    isEqual = false;
+            }
+            else
+                isEqual = OldValue.Equals(Value);
+            if (!isEqual) 
+            { 
+                if (ValueChanged.HasDelegate)
+                    await ValueChanged.InvokeAsync(Value);
+                if (OnChange.HasDelegate)
+                    await OnChange.InvokeAsync();
+            }
         }
 
         [JSInvokable]

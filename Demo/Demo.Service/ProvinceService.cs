@@ -13,4 +13,13 @@ namespace Demo.Service
             RuleFor(t => t.Title).Required().UniqAsync("A country with this title is defined in the system");
         }
     }
+
+    public class ProvinceService : BaseService<Province>, IBaseService<Province>
+    {
+        public ProvinceService(IServiceProvider provider)
+            : base(provider)
+        {
+            RuleFor(t => t.Title).Required().UniqAsync("A country with this title is defined in the system");
+        }
+    }
 }

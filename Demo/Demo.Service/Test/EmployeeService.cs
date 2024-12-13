@@ -40,4 +40,13 @@ namespace Demo.Service
             RuleFor(t => t.AddressName).Required();
         }
     }
+
+    public class IdentificationDetailService: BaseService<IdentificationDetail>, IBaseService<IdentificationDetail>
+    {
+        public IdentificationDetailService(IServiceProvider provider) :
+            base(provider)
+        {
+
+        }
+    }
 }

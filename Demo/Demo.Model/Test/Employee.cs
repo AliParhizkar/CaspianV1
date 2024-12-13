@@ -30,6 +30,9 @@ namespace Demo.Model
 
         [DisplayName("مشخصات خانوادگی")]
         public Family Family { get; set; }
+
+        [DisplayName("مشخصات شناسنامه ای")]
+        public IdentificationDetail IdentificationDetail { get; set; }
     }
 
     [Table("CourseStudies", Schema = "HR")]
@@ -70,11 +73,66 @@ namespace Demo.Model
 
         [ForeignKey(nameof(Id))]
         public Employee Employee { get; set; }
+    }
 
-        [DisplayName("Country")]
-        public int CountryId { get; set; }
+    [Table("IdentificationDetails", Schema = "hr")]
+    public class IdentificationDetail
+    {
+        [Key]
+        public int Id { get; set; }
 
-        [ForeignKey(nameof(CountryId))]
-        public Country Country { get; set; }
+        [DisplayName("نام پدر")]
+        public string FatherName { get; set; }
+
+        [DisplayName("شماره شناسنامه")]
+        public string IdentificationNo { get; set; }
+
+        [DisplayName("شماره سریال")]
+        public string IdentificationSerial { get; set; }
+
+        [DisplayName("تاریخ تولد")]
+        public DateTime? BirthDate { get; set; }
+
+        [DisplayName("کشور محل تولد")]
+        public int? BirthCountryId { get; set; }
+
+        [DisplayName("استان محل تولد")]
+        public int? BirthProvinceId { get; set; }
+
+        [DisplayName("شهر محل تولد")]
+        public int? BirthCityId { get; set; }
+
+        [DisplayName("کشور محل صدور")]
+        public int? RegCountryId { get; set; }
+
+        [DisplayName("استان محل صدور")]
+        public int? RegProvinceId { get; set; }
+
+        [DisplayName("شهر محل صدور")]
+        public int? RegCityId { get; set; }
+
+        [ForeignKey(nameof(BirthCountryId))]
+        public Country BirthCountry { get; set; }
+
+        [ForeignKey(nameof(BirthProvinceId))]
+        public Province BirthProvince { get; set; }
+
+        [ForeignKey(nameof(BirthCityId))]
+        public City BirthCity { get; set; }
+
+        [ForeignKey(nameof(RegCountryId))]
+        public Country RegCountry { get; set; }
+
+        [ForeignKey(nameof(RegProvinceId))]
+        public Province RegProvince { get; set; }
+
+        [ForeignKey(nameof(RegCityId))]
+        public City RegCity { get; set; }
+
+        [DisplayName("دهستان")]
+        public string Village { get; set; }
+
+        [ForeignKey(nameof(Id))]
+        public Employee Employee { get; set; }
     }
 }
