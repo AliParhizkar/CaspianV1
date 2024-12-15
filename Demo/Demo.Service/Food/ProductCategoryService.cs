@@ -14,8 +14,8 @@ namespace Demo.Service
         public ProductCategoryService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("The title of the product category must be unique.");
-            RuleFor(t => t.Code).UniqAsync("The code of the product category must be unique.")
+            RuleFor(t => t.Title).Required().UniqueAsync("The title of the product category must be unique.");
+            RuleFor(t => t.Code).UniqueAsync("The code of the product category must be unique.")
             .CustomValue(code => 
             {
                 if (!code.HasValue())

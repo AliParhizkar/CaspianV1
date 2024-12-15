@@ -22,7 +22,7 @@ namespace Caspian.Common
                 Language = Language.En;
             else
                 Language= Language.Fa;
-            Context = provider.GetService(contextType) as MyContext;
+            Context = provider.GetService(contextType) as CaspianContext;
             var data = provider.GetService(typeof(CaspianDataService)) as CaspianDataService;
             UserId = data.UserId;
             if (!data.Language.HasValue)
@@ -113,6 +113,6 @@ namespace Caspian.Common
             base.OnRuleAdded(rule);
         }
 
-        public MyContext Context { get; private set; }
+        public CaspianContext Context { get; private set; }
     }
 }

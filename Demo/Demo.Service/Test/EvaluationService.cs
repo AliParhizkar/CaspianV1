@@ -13,7 +13,7 @@ namespace Demo.Service
         {
             RuleFor(t => t.Title).Required().UniqueAsync(t => t.ScopeId, t => t.Year, "سال ارزیابی با این عنوان تعریف شده است");
             RuleFor(t => t.Title).Required().Custom(t => Source != null && Source.Any(u => u != t && t.ScopeId == u.ScopeId && t.Title == u.Title && t.Year == u.Year), "سال ارزیابی با این عنوان تعریف شده است");
-            RuleFor(t => t.EnTitle).UniqAsync("عنوان لاتین سال ارزیابی تکراری است");
+            RuleFor(t => t.EnTitle).UniqueAsync("عنوان لاتین سال ارزیابی تکراری است");
             RuleFor(t => t.Year).Custom(t => t.Year < DateTime.Now.ToPersianDate().Year, "سال ارزیابی باید بزرگتر مساوی سال جاری باشد");
             RuleFor(t => t.EndDate).GreaterThanOrEqualTo(t => t.StartDate);
             RuleFor(t => t.EvalDateTo).GreaterThanOrEqualTo(t => t.EvalDateFrom);

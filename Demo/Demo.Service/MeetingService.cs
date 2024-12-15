@@ -12,7 +12,7 @@ namespace Demo.Service
         public MeetingService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Name).Required().UniqAsync("دوره ای با این عنوان ثبت شده است");
+            RuleFor(t => t.Name).Required().UniqueAsync("دوره ای با این عنوان ثبت شده است");
         }
 
         public override async Task UpdateAsync(Meeting meeting)

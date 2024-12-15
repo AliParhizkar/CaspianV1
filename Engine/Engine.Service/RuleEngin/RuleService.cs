@@ -9,7 +9,7 @@ namespace Caspian.Engine.Service
         public RuleService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("قانونی با این عنوان در سیستم ثبت شده است.");
+            RuleFor(t => t.Title).Required().UniqueAsync("قانونی با این عنوان در سیستم ثبت شده است.");
             RuleFor(t => t.TypeName).Required();
             RuleFor(t => t.EnumTypeName).Required(t => t.ResultType == ValueTypeKind.Enum);
             RuleFor(t => t.Id).CustomAsync(async t => 

@@ -39,6 +39,8 @@ namespace Caspian.UI
             return serviceProvider.CreateScope();
         }
 
+        public IEntityTabPanel EntityTabPanel { get; set; }
+
         public void TabPanelInitialize()
         {
             throw new NotImplementedException();
@@ -271,6 +273,8 @@ namespace Caspian.UI
         void ClearForm();
 
         void TabPanelInitialize();
+
+        IEntityTabPanel EntityTabPanel { get; set; }
     }
 
     public interface ISearchService<TEntity> where TEntity:class

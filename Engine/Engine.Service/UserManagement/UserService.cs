@@ -13,7 +13,7 @@ namespace Caspian.Engine.Service
         public UserService(IServiceProvider provider) :
             base(provider)
         {
-            RuleFor(t => t.UserName).Required().UniqAsync("نام کاربری با این عنوان در سیستم وجود دارد");
+            RuleFor(t => t.UserName).Required().UniqueAsync("نام کاربری با این عنوان در سیستم وجود دارد");
 
             RuleFor(t => t.LName).Required();
 
@@ -52,9 +52,9 @@ namespace Caspian.Engine.Service
                     return false;
                 }, "کلمه عبور باید شامل حروف کوچک و بزرگ لاتین و عدد باشد");
 
-            RuleFor(t => t.Email).UniqAsync("کاربری با این پست الکترونیکی در سیستم ثبت شده است");
+            RuleFor(t => t.Email).UniqueAsync("کاربری با این پست الکترونیکی در سیستم ثبت شده است");
 
-            RuleFor(t => t.MobileNumber).UniqAsync("کاربری با این شماره همراه در سیستم ثبت شده است");
+            RuleFor(t => t.MobileNumber).UniqueAsync("کاربری با این شماره همراه در سیستم ثبت شده است");
         }
 
         public async Task<User> GetGuest()

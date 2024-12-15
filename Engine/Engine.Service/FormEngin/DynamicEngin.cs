@@ -12,9 +12,9 @@ namespace Caspian.Engine
     public class DynamicFieldExpressionEngin
     {
         private ParameterExpression _ParamExpr;
-        private MyContext Context;
+        private CaspianContext Context;
 
-        public DynamicFieldExpressionEngin(MyContext context, ParameterExpression paramExpr)
+        public DynamicFieldExpressionEngin(CaspianContext context, ParameterExpression paramExpr)
         {
             Context = context;
             _ParamExpr = paramExpr;
@@ -37,13 +37,13 @@ namespace Caspian.Engine
             var controlType = GetControlType(value.ToString());
             if (controlType == ControlType.Integer)
             {
-                method = typeof(MyContext).GetMethod("ConvertToInteger");
+                method = typeof(CaspianContext).GetMethod("ConvertToInteger");
                 value = Convert.ToInt32(value);
             }
             else
                 if (controlType == ControlType.Numeric)
                 {
-                    method = typeof(MyContext).GetMethod("ConvertToDecimal");
+                    method = typeof(CaspianContext).GetMethod("ConvertToDecimal");
                     value = Convert.ToDecimal(value);
                 }
             if (controlType == ControlType.String)

@@ -11,7 +11,7 @@ namespace Demo.Service
         public CustomerGroupService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("مشتری با این عنوان در سیستم ثبت شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync("مشتری با این عنوان در سیستم ثبت شده است");
 
             
         }

@@ -1,0 +1,103 @@
+﻿@inject UIService<Family> FamilyService
+@inject UIService<Address> AddressService
+@inject UIService<IdentificationDetail> IdentificationDetailService
+@inject UIService<ReligionAndSubReligion> ReligionAndSubReligionService
+<EntityTabPanel TEntity="Employee" Service="Service">
+    <ChildTabPanelItem Child="t => t" Service="Service" Title="مشخصات اصلی" ColumnsCount="2">
+        <Content Context="employee">
+            <div style="height:280px;" class="row p-3 c-controls">
+                <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.ScopeId"
+                          ConditionExpression="t => t.DataType == SimpleDataType.Scope" ColSpan="4" />
+
+                <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.CostCenterId"
+                          ConditionExpression="t => t.DataType == SimpleDataType.CostCenter" ColSpan="4" />
+
+                <StringTextBox @bind-Value="employee.FName" ColSpan="4" />
+                <StringTextBox @bind-Value="employee.LName" ColSpan="4" />
+                <StringTextBox @bind-Value="employee.IdCard" ColSpan="4" />
+                <StringTextBox @bind-Value="employee.FileNo" ColSpan="4" />
+                <DropdownList @bind-Value="employee.Gender" ColSpan="4" />
+
+                <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.EmploymentTypeId"
+                          ConditionExpression="t => t.DataType == SimpleDataType.EmploymentType" ColSpan="4" />
+                <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.EmployeeTypeId"
+                          ConditionExpression="t => t.DataType == SimpleDataType.EmployeeType" ColSpan="4" />
+                <StringTextBox @bind-Value="employee.EmploymentNo" ColSpan="4" />
+            </div>
+            <div>
+                <FormCommandButton />
+            </div>
+        </Content>
+    </ChildTabPanelItem>
+    <ChildTabPanelItem Child="t => t.IdentificationDetail" Service="IdentificationDetailService" ColumnsCount="2">
+        <Content Context="identification">
+            <div style="height:280px" class="row c-controls p-3">
+                <StringTextBox @bind-Value="identification.FatherName" ColSpan="4" />
+                <StringTextBox @bind-Value="identification.IdentificationNo" Style="direction:ltr" ColSpan="4" />
+                <StringTextBox @bind-Value="identification.IdentificationSerial" Style="direction:ltr" ColSpan="4" />
+                <DatePicker @bind-Value="identification.BirthDate" ColSpan="4" />
+
+                <ComboBox TValue="int?" TEntity="Country" CascadeService="birthCascadeService" @bind-Value="identification.BirthCountryId"
+                          ColSpan="4" TextExpression="t => t.Title" />
+
+                <ComboBox TValue="int?" TEntity="Country" CascadeService="regCascadeService" @bind-Value="identification.RegCountryId"
+                          TextExpression="t => t.Title" ColSpan="4" />
+
+                <ComboBox TValue="int?" TEntity="Province" CascadeService="birthCascadeService" @bind-Value="identification.BirthProvinceId"
+                          ColSpan="4" TextExpression="t => t.Title" />
+
+                <ComboBox TValue="int?" TEntity="Province" CascadeService="regCascadeService" @bind-Value="identification.RegProvinceId"
+                          ColSpan="4" TextExpression="t => t.Title" />
+
+                <ComboBox TValue="int?" TEntity="City" CascadeService="birthCascadeService" @bind-Value="identification.BirthCityId"
+                          ColSpan="4" TextExpression="t => t.Title" />
+
+                <ComboBox TValue="int?" TEntity="City" CascadeService="regCascadeService" @bind-Value="identification.RegCityId"
+                          ColSpan="4" TextExpression="t => t.Title" />
+
+                <StringTextBox @bind-Value="identification.Village" ColSpan="4" />
+            </div>
+            <div>
+                <FormCommandButton />
+            </div>
+        </Content>
+    </ChildTabPanelItem>
+    <ChildTabPanelItem Child="t => t.Family" Service="FamilyService" Title="مشخصات خانوادگی" ColumnsCount="2">
+        <Content Context="family">
+            <div style="height:280px" class="row c-controls p-3">
+                <StringTextBox @bind-Value="family.WifeName" ColSpan="8" /><div></div><div></div>
+                <DatePicker @bind-Value="family.MariageDate" ColSpan="4" />
+
+                <ComboBox TEntity="SimpleData" TValue="int?" @bind-Value="family.WifeJobId" TextExpression="t => t.Title"
+                          ConditionExpression="t => t.DataType == SimpleDataType.Jobs" ColSpan="4" />
+            </div>
+            <div>
+                <FormCommandButton />
+            </div>
+        </Content>
+    </ChildTabPanelItem>
+    <ChildTabPanelItem Child="t => t.ReligionAndSubReligion" Service="ReligionAndSubReligionService" ColumnsCount="2">
+        <Content Context="religion">
+            <div style="height:280px;" class="row c-controls p-3">
+                <ComboBox TValue="int?" TEntity="SimpleData" @bind-Value="religion.ReligionId" TextExpression="t => t.Title" ColSpan="4"
+                          ConditionExpression="t => t.DataType == SimpleDataType.Religion" CascadeService="religionService" />
+
+                <ComboBox TValue="int?" TEntity="SubReligion" @bind-Value="religion.SubReligionId" TextExpression="t => t.Title" ColSpan="4"
+                          CascadeService="religionService" />
+            </div>
+            <div>
+                <FormCommandButton />
+            </div>
+        </Content>
+    </ChildTabPanelItem>
+</EntityTabPanel>
+
+@code 
+{
+    CascadeService<SimpleData, SubReligion> religionService = new();
+    CascadeService<Country, Province, City> birthCascadeService = new();
+    CascadeService<Country, Province, City> regCascadeService = new();
+
+    [Parameter]
+    public UIService<Employee> Service { get; set; }
+}

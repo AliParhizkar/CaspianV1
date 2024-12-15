@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
-using Demo.Service;
 
 namespace Main
 {
@@ -47,7 +46,6 @@ namespace Main
                 CS.Con = builder.Configuration.GetConnectionString("TestDB");
             else
                 CS.Con = builder.Configuration.GetConnectionString("ServerDb");
-
             var domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             builder.Services.ConfigureApplicationCookie(options =>
             {
@@ -129,6 +127,7 @@ namespace Main
                 app.Urls.Add("https://localhost:443");
                 app.Urls.Add("http://localhost:80");
             }
+
 
             app.Run();
         }

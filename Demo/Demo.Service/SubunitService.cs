@@ -10,7 +10,7 @@ namespace Demo.Service
         public SubunitService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("واحد اصلی با این عنوان در سیستم تعریف شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync("واحد اصلی با این عنوان در سیستم تعریف شده است");
             RuleFor(t => t.Factor).CustomValue(t => t <= 0, "ضریب باید بزرگتر از صفر باشد");
         }
     }

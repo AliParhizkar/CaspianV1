@@ -1,7 +1,7 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity where TEntity : class
 @attribute [CascadingTypeParameter(nameof(TEntity))]
-
+@implements IEntityTabPanel
 <TabPanel Vertical="Vertical">
     <Tabs>
         <CascadingValue Value="this">
@@ -10,11 +10,11 @@
     </Tabs>
 </TabPanel>
 
-
 @code
 {
     protected override void OnInitialized()
     {
+        Service.EntityTabPanel = this;
         Service.TabPanelInitialize();
         base.OnInitialized();
     }

@@ -11,7 +11,7 @@ namespace Caspian.Engine.Service
         public MenuCategoryService(IServiceProvider provider)
             :base(provider)
         {
-             RuleFor(t => t.Title).Required().UniqAsync("گروه منویی با این عنوان در سیستم ثبت شده است");
+             RuleFor(t => t.Title).Required().UniqueAsync("گروه منویی با این عنوان در سیستم ثبت شده است");
         }
 
         public async override Task<MenuCategory> AddAsync(MenuCategory entity)

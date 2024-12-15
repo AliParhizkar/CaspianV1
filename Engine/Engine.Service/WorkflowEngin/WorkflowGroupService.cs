@@ -9,7 +9,7 @@ namespace Caspian.Engine.Service
         public WorkflowGroupService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("گروهی با عنوان در سیستم ثبت شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync("گروهی با عنوان در سیستم ثبت شده است");
         }
     }
 }

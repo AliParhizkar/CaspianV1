@@ -10,7 +10,7 @@ namespace Demo.Service
         public MainUnitService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("Mainunit title should uniq");
+            RuleFor(t => t.Title).Required().UniqueAsync("Mainunit title should uniq");
         }
     }
 }

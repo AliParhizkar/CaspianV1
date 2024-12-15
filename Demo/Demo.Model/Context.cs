@@ -1,11 +1,11 @@
-﻿using Caspian.Common;
+﻿using Engine.Model;
+using Caspian.Common;
 using Caspian.Engine.Model;
-using Engine.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Model
 {
-    public class Context: MyContext
+    public class Context: CaspianContext
     {
         public DbSet<Menu> Menus { get; set; }
 
@@ -44,5 +44,9 @@ namespace Demo.Model
         public DbSet<Evaluation> Evaluations { get; set; }
 
         public DbSet<CourseStudy> CourseStudies { get; set; }
+
+        public DbSet<SimpleData> SimpleDatas { get; set; }
+
+        public DbSet<Employee> Employees { get; set; }
     }
 }

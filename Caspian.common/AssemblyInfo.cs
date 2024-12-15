@@ -32,7 +32,7 @@ namespace Caspian.Common
 
         public Type GetDbContextType(SubSystemKind subSystemKind)
         {
-            var contextType = GetModelTypes(subSystemKind).SingleOrDefault(t => t.BaseType == typeof(MyContext));
+            var contextType = GetModelTypes(subSystemKind).SingleOrDefault(t => t.BaseType == typeof(CaspianContext));
             if (contextType == null)
                 throw new CaspianException("خطا: Model must has DbContext that inhirite from MyContext");
             return contextType;
@@ -40,8 +40,8 @@ namespace Caspian.Common
 
         public Type GetDbContextType(Type type)
         {
-            var contextType = type.Assembly.GetTypes().SingleOrDefault(t => t.BaseType == typeof(MyContext) ||
-                t.BaseType?.BaseType == typeof(MyContext));
+            var contextType = type.Assembly.GetTypes().SingleOrDefault(t => t.BaseType == typeof(CaspianContext) ||
+                t.BaseType?.BaseType == typeof(CaspianContext));
             if (contextType == null)
                 throw new CaspianException("خطا: Model must has DbContext that inhirite from MyContext");
             return contextType;

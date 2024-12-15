@@ -10,7 +10,7 @@
 }
 @if (EditContext != null)
 {
-    <EditForm style="@Style" EditContext="EditContext"
+    <EditForm style="@Style" EditContext="EditContext" 
               OnSubmit="@(async context => await OnFormSubmitHandler(context))"
               @onreset="@(async (e) =>
                       {

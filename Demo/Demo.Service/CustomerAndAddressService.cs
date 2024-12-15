@@ -13,7 +13,7 @@ namespace Demo.Service
             RuleFor(t => t.CompanyName).Required(t => t.CustomerType == CustomerType.Legal);
             RuleFor(t => t.Gender).Required(t => t.CustomerType == CustomerType.Real);
             RuleFor(t => t.LName).Required(t => t.CustomerType == CustomerType.Real);
-            RuleFor(t => t.MobileNumber).Required().MobileNumber().UniqAsync("There is a customer with this mobile number");
+            RuleFor(t => t.MobileNumber).Required().MobileNumber().UniqueAsync("There is a customer with this mobile number");
             RuleFor(t => t.Tel).TelNumber();
             
             RuleForEach(t => t.CustomerAddresses).SetValidator(new CustomerAddressService(provider));

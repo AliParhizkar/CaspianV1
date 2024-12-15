@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Model
 {
-    public class Context: MyContext
+    public class Context: CaspianContext
     {
         public DbSet<Menu> Menus { get; set; }
 

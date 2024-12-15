@@ -34,31 +34,15 @@ namespace Caspian.UI
                 var info = (Child.Body as MemberExpression).Member as PropertyInfo;
                 title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? info.Name;
             }
+
             var entity = TabPanel.Service.UpsertData;
+            Service.EntityTabPanel = TabPanel;
             Service.TabPanelInitialize();
             base.OnInitialized();
         }
 
-        async void OnValidSubmit()
-        {
-            if (typeof(TEntity) == typeof(TDetail))
-            {
-                var entity = TabPanel.Service.UpsertData;
-                using var service = Factory.CreateScope().GetService<IBaseService<TEntity>>();
-                var id = typeof(TEntity).GetPrimaryKey().GetValue(entity);
-                if (id.Equals(0))
-                    await service.AddAsync(entity);
-                else
-                    await service.UpdateAsync(entity);
-                await service.SaveChangesAsync();
-                
-                TabPanel.ChangeState();
-            }
-            
-        }
-
         [CascadingParameter]
-        public TabPanelEntity<TEntity> TabPanel { get; set; }
+        public EntityTabPanel<TEntity> TabPanel { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, TDetail>> Child { get; set; }
@@ -91,8 +75,8 @@ namespace Caspian.UI
                     var pKey = typeof(TDetail).GetPrimaryKey();
                     pKey.SetValue(Service.UpsertData, Convert.ChangeType(Service.MasterId, pKey.PropertyType));
                 }
-                //disabled = id.Equals(0);
             }
+            disabled = Service.MasterId == 0 && typeof(TEntity) != typeof(TDetail);
             base.OnParametersSet();
         }
     }

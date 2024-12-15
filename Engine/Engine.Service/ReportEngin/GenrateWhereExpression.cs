@@ -10,10 +10,10 @@ namespace Caspian.Engine
     public class GenrateWhereExpression
     {
         private ParameterExpression paramExpr = null;
-        private MyContext Context = null;
+        private CaspianContext Context = null;
 
 
-        public GenrateWhereExpression(MyContext context, Type type)
+        public GenrateWhereExpression(CaspianContext context, Type type)
         {
             Context = context; 
             paramExpr = Expression.Parameter(type, "t");

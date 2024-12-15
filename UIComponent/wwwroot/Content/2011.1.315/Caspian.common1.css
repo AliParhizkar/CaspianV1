@@ -1126,7 +1126,8 @@ body {
     margin:0;
 }
 .c-controls {
-    align-items:center;
+    align-items: center;
+    align-content:start;
 }
 
 .c-tree-content .c-title {

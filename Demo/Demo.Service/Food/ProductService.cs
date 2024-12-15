@@ -15,11 +15,11 @@ namespace Demo.Service
         public ProductService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("A product has been defined with this title");
+            RuleFor(t => t.Title).Required().UniqueAsync("A product has been defined with this title");
             RuleFor(t => t.Price).CustomValue(t => t < 0, "The product price cannot be negative");
             RuleFor(t => t.TakeoutPrice).CustomValue(t => t < 0, "The take out price cannot be negative");
             RuleFor(t => t.Meal).CustomValue(t => t == 0, "At least one meal must be selected");
-            RuleFor(t => t.Code).UniqAsync("There is a product with this code in the system")
+            RuleFor(t => t.Code).UniqueAsync("There is a product with this code in the system")
                 .CustomValue(code => 
                 {
                     if (!code.HasValue())

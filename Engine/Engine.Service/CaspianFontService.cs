@@ -9,7 +9,7 @@ namespace Caspian.Engine.Service
         public CaspianFontService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Name).Required().UniqAsync("فونتی با این عنوان در سیستم ثبت شده است.");
+            RuleFor(t => t.Name).Required().UniqueAsync("فونتی با این عنوان در سیستم ثبت شده است.");
         }
     }
 }

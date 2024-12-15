@@ -1,15 +1,14 @@
-﻿using Caspian.Common.Extension;
+﻿using System.Reflection;
+using Caspian.Common.Extension;
 using Caspian.Common.JsonValue;
 using Caspian.Common.RowNumber;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Reflection;
 
 namespace Caspian.Common
 {
-    public class MyContext : DbContext
+    public class CaspianContext : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -38,7 +37,8 @@ namespace Caspian.Common
                         modelBuilder.Entity(fKeyInfo.PropertyType)
                             .HasOne(info.Name)
                             .WithOne(fKeyInfo.Name)
-                            .IsRequired(false);
+                            .IsRequired(false)
+                            .OnDelete(DeleteBehavior.Cascade);
                     }
                 }
             }

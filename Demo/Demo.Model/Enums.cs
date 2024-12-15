@@ -1,4 +1,5 @@
 ﻿using Caspian.Common.Attributes;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Demo.Model
@@ -104,5 +105,26 @@ namespace Demo.Model
 
         [Display(Name = "Big Blue Button")]
         BigBlueButton
+    }
+
+    public enum SimpleDataType: byte
+    {
+        [Display(Name = "حوزه")]
+        Scope = 1,
+
+        [Display(Name = "مرکز هزینه")]
+        CostCenter,
+
+        [Display(Name = "نوع استخدام")]
+        EmploymentType,
+
+        [Display(Name = "نوع کارمندی")]
+        EmployeeType,
+
+        [Display(Name = "مشاغل")]
+        Jobs,
+
+        [Display(Name = "دین")]
+        Religion,
     }
 }

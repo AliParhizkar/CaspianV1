@@ -9,7 +9,7 @@ namespace Caspian.Engine.Service
         public WorkflowService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("گردش کاری با این عنوان در سیستم تعریف شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync("گردش کاری با این عنوان در سیستم تعریف شده است");
         }
 
         public void CheckExist(int workflowId)

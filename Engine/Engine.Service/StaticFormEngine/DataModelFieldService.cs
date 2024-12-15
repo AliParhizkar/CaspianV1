@@ -11,7 +11,7 @@ namespace Caspian.Engine.Service
         {
             RuleFor(t => t.EntityFullName).Custom(t => t.EntityFullName.HasValue() && t.FieldType.HasValue, "نوع موجودیت و نوع فیلد فقط یکی می تواند پر باشد")
                 .Custom(t => !t.EntityFullName.HasValue() && t.FieldType == null, "نوع موجودیت و نوع فیلد یکی باید پر باشد")
-                .UniqAsync("پارامتری از نوع این موجودیت در مدل داده ای وجود دارد");
+                .UniqueAsync("پارامتری از نوع این موجودیت در مدل داده ای وجود دارد");
             
             
             RuleFor(t => t.FieldType).Custom(t => t.EntityFullName.HasValue() && t.FieldType.HasValue, "نوع موجودیت و نوع فیلد فقط یکی می تواند پر باشد")

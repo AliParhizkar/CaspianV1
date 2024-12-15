@@ -10,7 +10,7 @@ namespace Demo.Service
         public MaterialService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("محصولی با این عنوان تعریف شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync("محصولی با این عنوان تعریف شده است");
         }
     }
 }

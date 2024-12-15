@@ -1,0 +1,62 @@
+﻿@page "/Demo/SimpleData"
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+@inject UIService<SimpleData> Service
+<div class="d-main">
+    <div class="d-menu">
+        @foreach(var item in dictionary)
+        {
+            var className = "d-item";
+            if (item.Key == selectedDataType)
+                className += " d-selected";
+            <div class="@className" @onclick="() => SelectMenu(item.Key)">
+                <span>@item.Value</span>
+            </div>
+        }
+    </div>
+    <div class="d-body">
+        <div class="d-title-head">
+            <span>@selectedDataType.EnumText()</span>
+        </div>
+        <DataGrid TEntity="SimpleData" Service="Service" ConditionExpr="t => t.DataType == selectedDataType">
+            <Columns>
+                <GridColumn Field="t => t.Title" />
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+<Window Title="@(selectedDataType.EnumText())" Style="width:400px;" Service="Service">
+    <CaspianForm Service="Service" TEntity="SimpleData" OnSubmit="t => t.DataType = selectedDataType">
+        <Content Context="data">
+            <div class="row c-controls p-2 pt-1 pb-3">
+                <StringTextBox @bind-Value="data.Title" ColSpan="8" />
+
+            </div>
+            <div>
+                <FormCommandButton />
+            </div>
+        </Content>
+    </CaspianForm>
+</Window>
+
+@code 
+{
+    SimpleDataType selectedDataType = SimpleDataType.Scope;
+    IDictionary<SimpleDataType, string> dictionary;
+
+    void SelectMenu(SimpleDataType menu)
+    {
+        selectedDataType = menu;
+        Service.DataView.EnableLoading();
+    }
+
+    protected override void OnInitialized()
+    {
+        dictionary = SimpleDataType.Scope.GetEnumFields();
+        base.OnInitialized();
+    }
+}

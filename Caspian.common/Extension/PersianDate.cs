@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Caspian.Common
 {
@@ -90,6 +91,20 @@ namespace Caspian.Common
 
             }
             return false;
+        }
+
+        public static IList<DateTime?> GetDaysOfMonth(int persianYear,PersianMonth persianMonth)
+        {
+            var startDate = new PersianDate(persianYear, persianMonth, 1);
+            var dates = new List<DateTime?>();
+            for (var index = 1; index < startDate.FirstDayOfMonth().DayOfWeek.ConvertToInt().Value; index++)
+                dates.Add(null);
+            for (var date = startDate; date < startDate.AddMonth(1); date = date.AddDays(1))
+                dates.Add(date.MiladyDate);
+            var weeksCount = (dates.Count - 1) / 7 + 1;
+            for (var i = dates.Count; i < weeksCount * 7; i++)
+                dates.Add(null);
+            return dates;
         }
 
         public PersianDate FirstDayOfYear()

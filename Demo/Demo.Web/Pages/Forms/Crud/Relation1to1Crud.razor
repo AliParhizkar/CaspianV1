@@ -1,0 +1,77 @@
+﻿@page "/Demo/Relation1to1to1Crud"
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+@inject UIService<Employee> Service
+
+@inject NavigationManager NavigationManager
+<p>
+    In this example, CRUD has multiple <b>one-to-one</b> relationships. We use the <b>EntityTabPanel</b> component for this purpose
+</p>
+
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div style="width:450px;" class="ps-4 pt-3 align-center row c-controls">
+                <div class="col-md-5">
+                    <label>Tab Panel display type</label>
+                </div>
+                <div class="col-md-7">
+                    <RadioList @bind-Value="formType">
+                        <RadioItem Value="1" Title="Popup window" />
+                        <RadioItem Value="2" Title="New Page" />
+                    </RadioList>
+                </div>
+            </div>
+            <div class="row c-controls p-4 pt-1 pb-1">
+                <div class="row col-md-6 pe-2">
+                    <StringTextBox @bind-Value="Service.Search.FName" ColSpan="8" />
+                </div>
+                <div class="row col-md-6 ps-2">
+                    <StringTextBox @bind-Value="Service.Search.LName" ColSpan="8" />
+                </div>
+            </div>
+            <div class="p-4 pt-1">
+                <DataGrid Service="Service" TEntity="Employee" ShowInsertIcon="true" OnUpsert="OpenNewPage">
+                    <Columns>
+                        <GridColumn Field="t => t.EmploymentNo" Title="شماره مستخدم" />
+                        <GridColumn Field="t => t.FName + ' ' + t.LName" Title="نام نام خانوادگی" />
+                        <GridColumn Field="t => t.IdentificationDetail.FatherName" Title="نام پدر" />
+                        <GridColumn Field="t => t.IdCard" Title="کد ملی" />
+                        <GridColumn Field="t => t.Scope.Title" Title="حوزه" />
+                        <GridColumn Field="t => t.EmploymentType.Title" Title="نوع استخدام" />
+                        <GridCommandColumns />
+                    </Columns>
+                </DataGrid>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Crud" FileName="1to1Relationship" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+@if (formType == 1)
+{
+    <Window Service="Service" Title="Employee" Style="width:750px">
+        <div class="p-2">
+           <Relation1to1Component Service="Service" />
+        </div>
+    </Window>
+}
+
+
+@code 
+{
+    int? formType = 1;
+
+
+    void OpenNewPage(Employee employee)
+    {
+        if (formType == 2)
+        {
+            var url = $"/Demo/Relation1to1to1Crud/{employee.Id}";
+            NavigationManager.NavigateTo(url);
+        }
+    }
+}

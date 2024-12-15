@@ -10,7 +10,7 @@ namespace Demo.Service
         public ScopeService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("حوزه ای با این عنوان در سیستم تعریف شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync("حوزه ای با این عنوان در سیستم تعریف شده است");
             RuleForEach(t => t.Evaluations).SetValidator(t => new EvaluationService(provider));
         }
     }

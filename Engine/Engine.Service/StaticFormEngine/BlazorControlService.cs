@@ -10,7 +10,7 @@ namespace Caspian.Engine.Service
         public BlazorControlService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Caption).Required().UniqAsync("کنترلی با این عنوان در سیستم ثبت شده است");
+            RuleFor(t => t.Caption).Required().UniqueAsync("کنترلی با این عنوان در سیستم ثبت شده است");
         }
     }
 }

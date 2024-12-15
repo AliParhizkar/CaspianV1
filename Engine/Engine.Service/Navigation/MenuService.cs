@@ -11,7 +11,7 @@ namespace Caspian.Engine.Service
             :base(provider)
         {
             RuleFor(t => t.Title).Required(t => t.Id > 0).UniqueAsync(t => t.SubSystemKind, "منویی با این عنوان در سیستم تعریف شده است");
-            RuleFor(t => t.Source).Required().UniqAsync("صفحه ای با این آدرس در سیستم ثبت شده است");
+            RuleFor(t => t.Source).Required().UniqueAsync("صفحه ای با این آدرس در سیستم ثبت شده است");
             RuleFor(t => t.URL).Required(t => t.ShowonMenu && t.Id > 0);
             RuleFor(t => t.MenuCategoryId).Required(t => t.ShowonMenu && t.Id > 0)
                 .Custom(t => t.MenuCategoryId.HasValue && !t.ShowonMenu, "در صورت عدم نمایش منو نیازی به گروه آن نیست");

@@ -67,7 +67,7 @@ namespace Caspian.Common.RowNumber
             return rowNumberExpr;
         }
 
-        public async static Task<int?> GetRowNumber(this IQueryable query, MyContext context, int id)
+        public async static Task<int?> GetRowNumber(this IQueryable query, CaspianContext context, int id)
         {
             var selectQuery = CreateSelectExpr(query).Take(10_000_1000).ToQueryString();
             var index = selectQuery.LastIndexOf(";");

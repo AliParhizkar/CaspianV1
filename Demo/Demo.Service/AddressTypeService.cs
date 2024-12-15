@@ -10,7 +10,7 @@ namespace Demo.Service
         public AddressTypeService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("A type with this title is defined in the system");
+            RuleFor(t => t.Title).Required().UniqueAsync("A type with this title is defined in the system");
         }
     }
 }

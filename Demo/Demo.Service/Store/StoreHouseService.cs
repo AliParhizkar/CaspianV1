@@ -10,7 +10,7 @@ namespace Demo.Service
         public WareHouseService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("A warehouse with this title is defined in the system.");
+            RuleFor(t => t.Title).Required().UniqueAsync("A warehouse with this title is defined in the system.");
         }
     }
 }

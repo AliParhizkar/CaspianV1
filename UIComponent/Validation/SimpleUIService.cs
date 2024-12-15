@@ -6,6 +6,7 @@ using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.UI
 {
@@ -21,7 +22,7 @@ namespace Caspian.UI
             isLookup = true;
         }
 
-        public bool IsTabPanelService { get; private set; }
+        public bool Is1To1RelationshipService { get; private set; }
 
         public int MasterId { get; set; }
 
@@ -36,6 +37,8 @@ namespace Caspian.UI
 
         public Window Window { get; set; }
 
+        public IEntityTabPanel EntityTabPanel { get; set; }
+
         public DataView<TEntity> DataView { get; set; }
 
         public CaspianForm<TEntity> Form { get; set; }
@@ -49,7 +52,7 @@ namespace Caspian.UI
             if (MasterId > 0)
             {
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
-                if (IsTabPanelService)
+                if (Is1To1RelationshipService)
                 {
                     var old = await service.SingleOrDefaultAsync(MasterId);
                     if (old != null)
@@ -64,7 +67,7 @@ namespace Caspian.UI
 
         public void TabPanelInitialize()
         {
-            IsTabPanelService = true;
+            Is1To1RelationshipService = true;
         }
 
         public Func<TEntity, Task<bool>> OnUpsert { get; set; }
@@ -91,7 +94,7 @@ namespace Caspian.UI
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
                 string message = null;
                 var isAdd = false   ;
-                if (IsTabPanelService)
+                if (Is1To1RelationshipService)
                 {
                     var pKeyName = typeof(TEntity).GetPrimaryKey().Name;
                     if (typeof(TEntity).GetProperties().Any(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pKeyName))
@@ -122,15 +125,15 @@ namespace Caspian.UI
                         await DataView.ReloadAsync();
                 }
                 await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
-                if (!IsTabPanelService)
+                if (Is1To1RelationshipService)
+                    EntityTabPanel.ChangeState();
+                else
                 {
                     if (Window == null)
                         await Form.ResetAsync();
                     else
                         await Window.Close();
                 }
-                //else 
-                //    TabPanel.ChangeState();
             });
         }
 
@@ -138,7 +141,12 @@ namespace Caspian.UI
         {
             if (baseComponentService.Target == null)
                 throw new CaspianException("You must inherits from BasePage or configure page manioaly");
-            typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(baseComponentService.Target, null);
+            var method = typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (method == null)
+            {
+
+            }
+            method?.Invoke(baseComponentService.Target, null);
         }
 
         IServiceScope CreateScope()
@@ -154,6 +162,7 @@ namespace Caspian.UI
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
                 var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+                MasterId = value;
                 if (value != 0)
                 {
                     using var service = CreateScope().GetService<BaseService<TEntity>>();
@@ -175,7 +184,31 @@ namespace Caspian.UI
             {
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-                var old = await service.SingleAsync(id);
+                ///For 1to1 relationship we should include all 1to1 relationship to cascade remove 
+                var list = new List<string>();
+                /// find relationship and add them to list
+                foreach (var info in typeof(TEntity).GetProperties())
+                {
+                    var type = info.PropertyType.GetUnderlyingType();
+                    if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]) && info.GetCustomAttribute<ForeignKeyAttribute>() == null && !type.IsEnumerableType())
+                    {
+                        var pkeyName = type.GetPrimaryKey().Name;
+                        if (type.GetProperties().Single(t => t.PropertyType == typeof(TEntity) && t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pkeyName) != null)
+                            list.Add(info.Name);
+                    }
+                }
+                TEntity old = null;
+                if (list.Count > 0)
+                {
+                    ///Include all relationship 
+                    var query = service.GetAll();
+                    foreach (var item in list)
+                        query = query.Include(item);
+                    old = await query.SingleAsync(id);
+                }
+                else
+                    old = await service.SingleAsync(id);
+                    
                 var result = await service.ValidateRemoveAsync(old);
                 if (result.IsValid)
                 {
@@ -211,7 +244,7 @@ namespace Caspian.UI
         public void ClearForm()
         {
             Form = null;
-            if (!IsTabPanelService)
+            if (!Is1To1RelationshipService)
                 UpsertData = null;
         }
     }

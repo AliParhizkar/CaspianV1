@@ -1,13 +1,14 @@
 ﻿@page "/Demo/Test"
 @namespace Demo.Web.Pages
-<div class="row">
-    <div class="col-md-1">
+<div class="row c-controls ps-3 pe-3">
+    <div class="col-md-2">
         <label>سال</label>
     </div>
     <div class="col-md-3">
         <DropdownList @bind-Value="year" Source="years" OnChange="CreateMenus" />
     </div>
-    <div class="col-md-1">
+    <div class="col-md-2"></div>
+    <div class="col-md-2">
         <label>ماه</label>
     </div>
     <div class="col-md-3">
@@ -23,55 +24,71 @@
         }
     </div>
     <div class="weeks">
-        @{
-            <div class="weeks-title">
-                @for (var i = 0; i < weeksCount; i++)
+        <div class="weeks-title">
+            @for (var i = 0; i < weeksCount; i++)
+            {
+                <div class="week-title week-@(weeksCount)">هفته @weeksName[i]</div>
+            }
+        </div>
+        <div class="d-calendar">
+            @foreach (var date in dates)
+            {
+                var className = $"day-month week-{weeksCount}";
+                @if (date.HasValue)
                 {
-                    <div class="week-title week-@(weeksCount)">هفته @weeksName[i]</div>
+                    if (selectedDates.Contains(date.Value))
+                        className += " d-Selected";
+                    <div class="@className" @onclick="e => ToggleDate(e, date.Value)">
+                        <span>@date.ToPersianDateString()</span>
+                    </div>
                 }
-            </div>
-            <div class="d-calendar">
-                @foreach(var item in dates)
+                else
                 {
-                    <div class="day-month week-@(weeksCount)" @onclick="() => selectedDate = item">@item</div>
+                    <div class="@(className)"></div>
                 }
-            </div>
-        }
+            }
+        </div>
     </div>
 </div>
 
 
 @code
 {
-    WindowStatus status;
-    string selectedDate;
-    IList<SelectListItem> years;
+    List<DateTime> selectedDates = new ();
+    List<SelectListItem> years;
     int weeksCount, year = DateTime.Now.ToPersianDate().Year.Value;
     PersianMonth month = DateTime.Now.ToPersianDate().Month.Value;
     string[] weeksName = {"اول", "دوم", "سوم", "چهارم", "پنجم", "ششم"};
-    IList<string> dates = new List<string>();
+    IList<DateTime?> dates;
+
+    void ToggleDate(MouseEventArgs e, DateTime date)
+    {
+        if (e.CtrlKey)
+        {
+            if (selectedDates.Contains(date))
+                selectedDates.Remove(date);
+            else
+                selectedDates.Add(date);
+        }
+        else
+        {
+            selectedDates.Clear();
+            selectedDates.Add(date);
+        }
+    }
 
     protected override void OnInitialized()
     {
-        years = new List<SelectListItem>()
-        {
-            new SelectListItem("1403", "1403"),
-            new SelectListItem("1404", "1404"),
-        };
+        years = new();
+        for(int i = 1400; i <= 1410; i++)
+            years.Add(new SelectListItem(i.ToString(), i.ToString()));
         CreateMenus();
         base.OnInitialized();
     }
 
     void CreateMenus()
     {
-        var startDate = new PersianDate(year, month, 1);
-        dates = new List<string>();
-        for (var index = 1; index < startDate.FirstDayOfMonth().DayOfWeek.ConvertToInt().Value; index++)
-            dates.Add(null);
-        for (var date = startDate; date < startDate.AddMonth(1); date = date.AddDays(1))
-            dates.Add(date.ToString());
-        weeksCount = (dates.Count - 1) / 7 + 1;
-        for (var i = dates.Count; i < weeksCount * 7; i++)
-            dates.Add(null);
+        dates = PersianDate.GetDaysOfMonth(year, month);
+        weeksCount = dates.Count / 7;
     }
 }

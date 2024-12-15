@@ -5,6 +5,7 @@
 
 @{
     var detail = Service.UpsertData;
+    Console.WriteLine(typeof(TDetail).GetProperty("Id").GetValue(detail));
 }
 <TabPanelItem Title="@title" Disable="disabled">
     <Caspian.UI.CaspianForm Service="Service" TEntity="TDetail" Model="detail" ColumnsCount="ColumnsCount">

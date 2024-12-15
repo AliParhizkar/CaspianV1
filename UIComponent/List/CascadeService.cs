@@ -26,8 +26,11 @@ namespace Caspian.UI
             ///So we set "parentValue" to be used for the filter when creating the Child Combobox
             cmbParent.OnInternalValueChanged = EventCallback.Factory.Create<object>(this, value => 
             {
-                parentValue = value;
-                ChildService?.Update(true);
+                if (!(value ?? 0).Equals(parentValue ?? 0))
+                {
+                    parentValue = value;
+                    ChildService?.Update(true);
+                }
             });
         }
     }
@@ -48,8 +51,11 @@ namespace Caspian.UI
             ///So we set "childValue" to be used for the filter when creating the GrandChild Combobox
             cmbChild.OnInternalValueChanged = EventCallback.Factory.Create<object>(this, value => 
             {
-                childValue = value;
-                GrandChildService?.Update(false);
+                if (!(value ?? 0).Equals(childValue ?? 0))
+                {
+                    childValue = value;
+                    GrandChildService?.Update(false);
+                }
             });
         }
 
@@ -61,14 +67,14 @@ namespace Caspian.UI
 
         protected void SetInternalExpression(object value)
         {
+            value = value ?? 0;
             var parameter = Expression.Parameter(typeof(TChild), "t");
             var info = typeof(TChild).GetForeignKey(typeof(TParent));
             Expression expr = Expression.Property(parameter, info);
             if (info.PropertyType.IsNullableType())
                 expr = Expression.Property(expr, "Value");
-            else
-                value = value ?? 0;
-            value = Convert.ChangeType(value, info.PropertyType);
+                
+            value = Convert.ChangeType(value, info.PropertyType.GetUnderlyingType());
             expr = Expression.Equal(expr, Expression.Constant(value));
             expr = Expression.Lambda(expr, parameter);
             cmbChild.InternalConditionExpression = expr as Expression<Func<TChild, bool>>;

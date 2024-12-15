@@ -11,7 +11,7 @@ namespace Demo.Service
             : base(provider)
         {
             RuleFor(t => t.LName).Required();
-            RuleFor(t => t.Code).UniqAsync("Code should be uniq.");
+            RuleFor(t => t.Code).UniqueAsync("Code should be uniq.");
         }
     }
 }

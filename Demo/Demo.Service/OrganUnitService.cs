@@ -13,7 +13,7 @@ namespace Demo.Service
         public OrganUnitService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("سازمانی با این عنوان در سیستم وجود دارد");
+            RuleFor(t => t.Title).Required().UniqueAsync("سازمانی با این عنوان در سیستم وجود دارد");
             RuleFor(t => t.ActiveType).CustomAsync(async t =>
             {
                 if (t.ActiveType == ActiveType.Enable || t.Id == 0)

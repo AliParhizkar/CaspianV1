@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.IO;
 
 namespace Caspian.Common
 {
@@ -23,6 +25,99 @@ namespace Caspian.Common
                 if (func.Invoke((TModel)context.InstanceToValidate))
                     context.AddFailure(message);
             });
+        }
+
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> CheckCascadeAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+            Expression<Func<TModel, TProperty>> expr1, string message)
+        {
+            return ruleBuilder.CustomAsync(async (value, context, token) =>
+            {
+                if (value != null && !value.Equals(0))
+                {
+                    var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.PropertyPath);
+                    var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
+                    var provider = context.RootContextData["__ServiceScope"] as IServiceProvider;
+                    var service = provider.GetService(serviceType) as IBaseService;
+                    ///Create First Expression
+                    var parameter = Expression.Parameter(info.PropertyType, "t");
+                    Expression firstExpr = Expression.Property(parameter, info.PropertyType.GetPrimaryKey());
+                    firstExpr = Expression.Equal(firstExpr, Expression.Constant(value));
+                    var secondExpression = GetExpression(context, parameter, expr1, null);
+                    var expr = Expression.And(firstExpr, secondExpression);
+                    var lambda = Expression.Lambda(expr, parameter);
+                    var result = await service.GetAllRecords().Where(lambda).ToDynamicListAsync();
+                    if (result.Count == 0)
+                        context.AddFailure(message);
+                }
+            });
+        }
+
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> CheckCascadeAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+            Expression<Func<TModel, TProperty>> expr1, Expression<Func<TModel, TProperty>> expr2,
+            Expression<Func<TModel, TProperty>> path, string message)
+        {
+            return ruleBuilder.CustomAsync(async (value, context, token) =>
+            {
+                if (value != null && !value.Equals(0))
+                {
+                    var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.PropertyPath);
+                    var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
+                    var provider = context.RootContextData["__ServiceScope"] as IServiceProvider;
+                    var service = provider.GetService(serviceType) as IBaseService;
+                    ///Create First Expression
+                    var parameter = Expression.Parameter(info.PropertyType, "t");
+                    Expression firstExpr = Expression.Property(parameter, info.PropertyType.GetPrimaryKey());
+                    firstExpr = Expression.Equal(firstExpr, Expression.Constant(value));
+                    var secondExpression = GetExpression(context, parameter, expr1, null);
+                    var expr = Expression.And(firstExpr, secondExpression);
+                    var thirdExpression = GetExpression(context, parameter, expr2, path);
+                    expr = Expression.And(expr, thirdExpression);
+                    var lambda = Expression.Lambda(expr, parameter);
+                    var result = await service.GetAllRecords().Where(lambda).ToDynamicListAsync();
+                    if (result.Count == 0)
+                        context.AddFailure(message);
+                }
+            });
+        }
+
+        static Expression GetExpression<TModel>(ValidationContext<TModel> context, ParameterExpression parameter, LambdaExpression expression, LambdaExpression path)
+        {
+            var expr = expression.Body;
+            if (expr.NodeType == ExpressionType.Convert)
+                expr = (expr as UnaryExpression).Operand;
+            if (expr.NodeType == ExpressionType.MemberAccess)
+            {
+                var member = (expr as MemberExpression).Member as PropertyInfo;
+                var value = member.GetValue(context.InstanceToValidate);
+                if (path == null)
+                {
+                    var otherType = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == member.Name).PropertyType;
+                    var fKey = parameter.Type.GetForeignKey(otherType);
+                    expr = Expression.Property(parameter, fKey);
+                    if (fKey.IsNullableType())
+                        expr = Expression.Property(expr, "Value");
+                    return Expression.Equal(expr, Expression.Constant(value));
+                }
+                expr = path.Body;
+                if (expr.NodeType == ExpressionType.Convert)
+                    expr = (expr as UnaryExpression).Operand;
+                var str = expr.ToString();
+                str = str.Substring(str.IndexOf('.') + 1);
+                var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.PropertyPath);
+                if (!str.StartsWith(info.Name))
+                    throw new CaspianException($"خطا: PathExpression should started width {context.PropertyPath}");
+                str = str.Substring(str.IndexOf('.') + 1);
+                expr = parameter.CreateMemberExpresion(str);
+                info = (expr as MemberExpression).Member as PropertyInfo;
+                info = info.DeclaringType.GetProperties().SingleOrDefault(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name);
+                var info1 = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == member.Name);
+                if (info.PropertyType != info1.PropertyType)
+                    throw new CaspianException($"Error: Path is invalid: Path should be a ForeignKey for type {info1.PropertyType.Name} but it is a ForeignKey for type {info.PropertyType.Name}");
+                expr = Expression.Equal(expr, Expression.Constant(value));
+
+                return expr;
+            }
+            throw new NotImplementedException("خطای عدم پیاده سازی");
         }
 
         public static IRuleBuilderOptionsConditions<TModel, TProperty> CustomAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
@@ -124,11 +219,48 @@ namespace Caspian.Common
             });
         }
 
+        static bool CheckIdCard(this string idCard, char? delimiterChar)
+        {
+            if (delimiterChar.HasValue)
+            {
+                if (idCard[3] != delimiterChar || idCard[10] != delimiterChar)
+                    return false;
+                idCard = idCard.Replace(delimiterChar.ToString(), "");
+            }
+            if (idCard.Length != 10)
+                return false;
+            var sum = 0;
+            for (var i = 0; i < 9; i++)
+            {
+                int chrValue = 0;
+                if (int.TryParse(idCard[i].ToString(), out chrValue))
+                    sum += (10 - i) * chrValue;
+                else
+                    return false;
+            }
+            var rem = sum % 11;
+            if (rem >= 2)
+                rem = 11 - rem;
+            return rem == Convert.ToInt32(idCard[9]);
+        }
+
+        public static IRuleBuilderOptionsConditions<TModel, string> CheckIdCard<TModel>(this IRuleBuilder<TModel, string> ruleBuilder, char? delimiterChar = null)
+        {
+            return ruleBuilder.Custom((idCard, context) =>
+            {
+                if (idCard.HasValue())
+                {
+                    if (!idCard.CheckIdCard(delimiterChar))
+                        context.AddFailure("شماره کارت ملی نامعتبر است");
+                }
+            });
+        }
+
         public static IRuleBuilderOptionsConditions<TModel, string> TelNumber<TModel>(this IRuleBuilder<TModel, string> ruleBuilder)
         {
             return ruleBuilder.Custom((telNumber, context) =>
             {
-                if (telNumber != null)
+                if (telNumber.HasValue())
                 {
                     var strTelNumber = telNumber.ToString();
                     if (strTelNumber.Length != 11)
@@ -186,7 +318,7 @@ namespace Caspian.Common
             return result.FirstOrDefault();
         }
 
-        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> UniqueAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             string errorMessage) where TModel: class
         {
             return ruleBuilder.UniqueAsync(null, null, null, errorMessage);

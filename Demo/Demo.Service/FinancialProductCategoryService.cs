@@ -11,7 +11,7 @@ namespace Demo.Service
         public FinancialProductCategoryService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqAsync("گروه محصولی با این عنوان تعریف شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync("گروه محصولی با این عنوان تعریف شده است");
         }
     }
 }

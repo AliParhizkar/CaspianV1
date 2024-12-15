@@ -1,0 +1,27 @@
+﻿@page "/Demo/Relation1to1to1Crud/{EmployeeId:int}"
+@inject UIService<Employee> Service
+<p>
+    In this example, We use the <b>EntityTabPanel</b> component used in new page
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div style="width:850px;margin: 20px auto">
+                <Relation1to1Component Service="Service" />
+            </div>
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+
+@code 
+{
+    protected override void OnInitialized()
+    {
+        Service.MasterId = EmployeeId;
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public int EmployeeId { get; set; }
+}

@@ -3,29 +3,8 @@
 @namespace Demo.Web.Pages
 @using Caspian.UI;
 @using Demo.Model;
-<div class="c-lookup-page" style="width:380px;">
-    @if (Searchable)
-    {
-        <div style="padding:0 50px 5px 50px;">
-            <StringTextBox @bind-Value="SearchData.Title" placeholder="Title" />
-        </div>
-    }
-    <DataGrid Service="Service" TEntity="Product" Search="SearchData" ContentHeight="200" HidePageSize>
-        <Columns>
-            <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
-            <GridColumn Field="t => t.Title" />
-        </Columns>
-    </DataGrid>
-</div>
 
 @code
 {
-    protected override void OnInitialized()
-    {
-        InitialSearchExpression(t => LookupStringSearchValue == null || t.Title.Contains(LookupStringSearchValue) || t.Code.StartsWith(LookupStringSearchValue));
-        base.OnInitialized();
-    }
 
-    [Parameter]
-    public bool Searchable{ get; set; }
 }

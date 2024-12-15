@@ -49,92 +49,11 @@
         </div>
     </Slide>
 </div> *@
-<span>@(Service.UpsertData == null)</span>
-<div style="width:80%;margin:10px auto">
-    <TabPanelEntity TEntity="Employee" Service="Service">
-        <ChildTabPanelItem Child="t => t" Service="Service" Title="مشخصات اصلی" ColumnsCount="2">
-            <Content Context="employee">
-                <div class="row p-3 c-controls">
-                    <StringTextBox @bind-Value="employee.FName" ColSpan="4" />
-                    <StringTextBox @bind-Value="employee.LName" ColSpan="4" />
-                    <DropdownList @bind-Value="employee.Gender" ColSpan="4" />
-                    <DatePicker @bind-Value="employee.BirthDate" ColSpan="4" />
-                    <div>
-                        <FormCommandButton />
-                    </div>
-                </div>
-            </Content>
-        </ChildTabPanelItem>
-        <ChildTabPanelItem Child="t => t.Address" Service="AddressService" ColumnsCount="2">
-            <Content Context="address">
-                <div class="row c-controls p-3">
-                    <StringTextBox @bind-Value="address.AddressName" ColSpan="8" />
-                </div>
-                <div>
-                    <FormCommandButton />
-                </div>
-            </Content>
-        </ChildTabPanelItem>
-        <ChildTabPanelItem Child="t => t.Family" Service="FamilyService" Title="مشخصات خانوادگی">
-            <Content Context="family">
-                <div class="row c-controls p-3">
-                    <div class="col-md-4">
-                        <label>Wife Name</label>
-                    </div>
-                    <div class="col-md-8">
-                        <StringTextBox @bind-Value="family.WifeName" />
-                    </div>
-                </div>
-                <div>
-                    <FormCommandButton />
-                </div>
-            </Content>
-        </ChildTabPanelItem>
-        <ChildTabPanelItem Child="t => t.IdentificationDetail" Service="IdentificationDetailService" ColumnsCount="2">
-            <Content Context="identification">
-                <div class="row c-controls p-3">
-                    <StringTextBox @bind-Value="identification.FatherName" ColSpan="4" />
-                    <StringTextBox @bind-Value="identification.IdentificationNo" Style="direction:ltr" ColSpan="4" />
-                    <StringTextBox @bind-Value="identification.IdentificationSerial" Style="direction:ltr" ColSpan="4" />
-                    <DatePicker @bind-Value="identification.BirthDate" ColSpan="4" />
 
-                    <ComboBox TValue="int?" TEntity="Country" CascadeService="birthCascadeService" @bind-Value="identification.BirthCountryId" 
-                            ColSpan="4" TextExpression="t => t.Title"  />
-
-                    <ComboBox TValue="int?" TEntity="Country" CascadeService="regCascadeService" @bind-Value="identification.RegCountryId"
-                              TextExpression="t => t.Title" ColSpan="4" />
-
-                    <ComboBox TValue="int?" TEntity="Province" CascadeService="birthCascadeService" @bind-Value="identification.BirthProvinceId"
-                            ColSpan="4" TextExpression="t => t.Title" />
-                    
-                    <ComboBox TValue="int?" TEntity="Province" CascadeService="regCascadeService" @bind-Value="identification.RegProvinceId"
-                              ColSpan="4" TextExpression="t => t.Title" />
-                    
-                    <ComboBox TValue="int?" TEntity="City" CascadeService="birthCascadeService" @bind-Value="identification.BirthCityId"
-                              ColSpan="4" TextExpression="t => t.Title" />
-
-                    <ComboBox TValue="int?" TEntity="City" CascadeService="regCascadeService" @bind-Value="identification.RegCityId"
-                              ColSpan="4" TextExpression="t => t.Title" />
-
-                    <StringTextBox @bind-Value="identification.Village" ColSpan="4" />
-                </div>
-                <div>
-                    <FormCommandButton />
-                </div>
-            </Content>
-        </ChildTabPanelItem>
-    </TabPanelEntity>
-</div>
 
 
 
 @code 
 {
-    CascadeService<Country, Province, City> birthCascadeService = new();
-    CascadeService<Country, Province, City> regCascadeService = new();
-    protected override void OnInitialized()
-    {
-        Service.MasterId = 86;
-        base.OnInitialized();
-    }
+
 }

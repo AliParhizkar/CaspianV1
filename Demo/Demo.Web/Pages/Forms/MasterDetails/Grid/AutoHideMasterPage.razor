@@ -58,7 +58,7 @@
 
     void UpsertOrder(WarehouseReceipt receipt)
     {
-        string url = "Demo/Batch/AutoHide/" + (useListView ? "Listview" : "Grid") + $"/Details";
+        string url = "Demo/Batch/AutoHide/" + (useListView ? "ListView" : "Grid") + "/Details";
         if (receipt.Id > 0)
             url += $"/{receipt.Id}";
         navigationManager.NavigateTo(url);
