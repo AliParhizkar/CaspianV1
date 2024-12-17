@@ -6,7 +6,8 @@
 @if (ColSpan.HasValue)
 {
     var factor = 12 / ColumnsCount;
-
+    if (ColSpan > 6)
+        factor = 12;
     <div class="col-md-@(factor - ColSpan)">
         <label>@title</label>
     </div>

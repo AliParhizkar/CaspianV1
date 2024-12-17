@@ -10,8 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.IO;
 
 namespace Caspian.Common
 {
@@ -241,7 +239,7 @@ namespace Caspian.Common
             var rem = sum % 11;
             if (rem >= 2)
                 rem = 11 - rem;
-            return rem == Convert.ToInt32(idCard[9]);
+            return rem == Convert.ToInt32(idCard[9].ToString());
         }
 
         public static IRuleBuilderOptionsConditions<TModel, string> CheckIdCard<TModel>(this IRuleBuilder<TModel, string> ruleBuilder, char? delimiterChar = null)

@@ -52,16 +52,9 @@ namespace Caspian.UI
             if (MasterId > 0)
             {
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
-                if (Is1To1RelationshipService)
-                {
-                    var old = await service.SingleOrDefaultAsync(MasterId);
-                    if (old != null)
-                        UpsertData.CopyEntity(old);
-                }
-                else
-                {
-                    UpsertData = await service.SingleAsync(MasterId);
-                }
+                var old = await service.SingleOrDefaultAsync(MasterId);
+                if (old != null)
+                    UpsertData.CopyEntity(old);
             }
         }
 
@@ -85,6 +78,10 @@ namespace Caspian.UI
             });
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
+                if (UpsertData != entity)
+                {
+
+                }
                 var result = true;
                 if (OnUpsert != null)
                     result = await OnUpsert.Invoke(UpsertData);
@@ -233,7 +230,7 @@ namespace Caspian.UI
 
         public void WindowInitialize()
         {
-            Window.OnInternalClose = EventCallback.Factory.Create(this, () => StateHasChanged());
+            Window.OnInternalClose = EventCallback.Factory.Create(this, StateHasChanged);
             Window.OnInternalOpen = EventCallback.Factory.Create(this, async () => 
             {
                 await Task.Delay(100);

@@ -70,13 +70,13 @@ namespace Caspian.UI
             {
                 var id = typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData);
                 Service.MasterId = Convert.ToInt32(id);
-                if (Service.MasterId > 0)
+                if (TabPanel.Service.MasterId > 0)
                 {
                     var pKey = typeof(TDetail).GetPrimaryKey();
-                    pKey.SetValue(Service.UpsertData, Convert.ChangeType(Service.MasterId, pKey.PropertyType));
+                    pKey.SetValue(Service.UpsertData, Convert.ChangeType(TabPanel.Service.MasterId, pKey.PropertyType));
                 }
             }
-            disabled = Service.MasterId == 0 && typeof(TEntity) != typeof(TDetail);
+            disabled = TabPanel.Service.MasterId == 0 && typeof(TEntity) != typeof(TDetail);
             base.OnParametersSet();
         }
     }

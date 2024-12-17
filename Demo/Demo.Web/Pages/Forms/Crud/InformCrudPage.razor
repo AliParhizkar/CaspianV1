@@ -71,7 +71,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3 ps-4 align-content-center">
-                                <Fileupload OnChange="SetImage">
+                                <Fileupload OnChange="async e => await SetImage(e, product)">
                                     <PictureBox Data="product.Image" style="width:200px;height:200px" />
                                 </Fileupload>
                             </div>
@@ -101,8 +101,8 @@
 </TabPanel>
 @code
 {
-    async Task SetImage(InputFileChangeEventArgs e)
+    async Task SetImage(InputFileChangeEventArgs e, Product product)
     {
-        Service.UpsertData.Image = await e.File.GetByteArrayAsync();
+        product.Image = await e.File.GetByteArrayAsync();
     }
 }

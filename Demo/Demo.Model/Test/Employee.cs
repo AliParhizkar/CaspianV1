@@ -41,6 +41,9 @@ namespace Demo.Model
         [DisplayName("نام خانوادگی")]
         public string LName { get; set; }
 
+        [DisplayName("تصویر")]
+        public byte[] Image { get; set; }
+
         [DisplayName("جنسیت")]
         public Gender Gender { get; set; }
 
@@ -129,6 +132,7 @@ namespace Demo.Model
         [ForeignKey(nameof(ReligionId))]
         public SimpleData Religion { get; set; }
 
+        [DisplayName("مذهب")]
         public int? SubReligionId { get; set; }
 
         [ForeignKey(nameof(SubReligionId))]

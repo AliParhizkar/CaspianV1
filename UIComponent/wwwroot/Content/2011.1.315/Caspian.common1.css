@@ -5169,9 +5169,6 @@ div.t-slider {
         .t-upload .t-input::-webkit-file-upload-button {
             visibility:hidden;
         }
-    .t-upload .t-content {
-        display: table-cell;
-    }
     .t-upload button{
         width:40px;
         margin:0;

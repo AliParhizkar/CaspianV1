@@ -2,36 +2,47 @@
 @inject UIService<Address> AddressService
 @inject UIService<IdentificationDetail> IdentificationDetailService
 @inject UIService<ReligionAndSubReligion> ReligionAndSubReligionService
-<EntityTabPanel TEntity="Employee" Service="Service">
+<EntityTabPanel TEntity="Employee" Service="Service" Vertical>
     <ChildTabPanelItem Child="t => t" Service="Service" Title="مشخصات اصلی" ColumnsCount="2">
-        <Content Context="employee">
-            <div style="height:280px;" class="row p-3 c-controls">
-                <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.ScopeId"
-                          ConditionExpression="t => t.DataType == SimpleDataType.Scope" ColSpan="4" />
+        <Content Context="employee" >
+            <div style="height:335px;" class="row p-3 pt-1 c-controls">
+                <div class="row col-md-7 pe-3">
+                    <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.ScopeId"
+                              ConditionExpression="t => t.DataType == SimpleDataType.Scope" ColSpan="8" />
+                    <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.CostCenterId"
+                              ConditionExpression="t => t.DataType == SimpleDataType.CostCenter" ColSpan="8" />
+                    <StringTextBox @bind-Value="employee.FName" ColSpan="8" />
+                    <StringTextBox @bind-Value="employee.LName" ColSpan="8" />
+                </div>
+                <div class="row col-md-5 ps -3 justify-content-center">
+                    <Fileupload Accept="image/*" MaxAllowedSize="400_000" OnChange="SetImage" Title="Click for upload">
+                        <PictureBox NoContentTitle="Click for upload" Data="Service.UpsertData.Image" style="width:110px;height:135px;background-size:cover" />
+                    </Fileupload>
 
-                <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.CostCenterId"
-                          ConditionExpression="t => t.DataType == SimpleDataType.CostCenter" ColSpan="4" />
-
-                <StringTextBox @bind-Value="employee.FName" ColSpan="4" />
-                <StringTextBox @bind-Value="employee.LName" ColSpan="4" />
-                <StringTextBox @bind-Value="employee.IdCard" ColSpan="4" />
-                <StringTextBox @bind-Value="employee.FileNo" ColSpan="4" />
-                <DropdownList @bind-Value="employee.Gender" ColSpan="4" />
-
-                <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.EmploymentTypeId"
-                          ConditionExpression="t => t.DataType == SimpleDataType.EmploymentType" ColSpan="4" />
-                <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.EmployeeTypeId"
-                          ConditionExpression="t => t.DataType == SimpleDataType.EmployeeType" ColSpan="4" />
-                <StringTextBox @bind-Value="employee.EmploymentNo" ColSpan="4" />
-            </div>
-            <div>
-                <FormCommandButton />
+                </div>
+                <div class="col-md-7 pe-3 ps-0 ms-0 row">
+                    <DropdownList @bind-Value="employee.Gender" ColSpan="8" />
+                    <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.EmploymentTypeId"
+                              ConditionExpression="t => t.DataType == SimpleDataType.EmploymentType" ColSpan="8" />
+                    <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.EmployeeTypeId"
+                              ConditionExpression="t => t.DataType == SimpleDataType.EmployeeType" ColSpan="8" />
+                </div>
+                <div class="col-md-5 ps-3 row">
+                    <StringTextBox @bind-Value="employee.EmploymentNo" ColSpan="8" />
+                    <StringTextBox @bind-Value="employee.FileNo" ColSpan="8" />
+                    <StringTextBox @bind-Value="employee.IdCard" MaxLength="10" MaskedText="----------" ColSpan="8" />
+                </div>
+                <div class="row pb-3">
+                    <div>
+                        <FormCommandButton />
+                    </div>
+                </div>
             </div>
         </Content>
     </ChildTabPanelItem>
     <ChildTabPanelItem Child="t => t.IdentificationDetail" Service="IdentificationDetailService" ColumnsCount="2">
         <Content Context="identification">
-            <div style="height:280px" class="row c-controls p-3">
+            <div style="height:335px" class="row c-controls p-3">
                 <StringTextBox @bind-Value="identification.FatherName" ColSpan="4" />
                 <StringTextBox @bind-Value="identification.IdentificationNo" Style="direction:ltr" ColSpan="4" />
                 <StringTextBox @bind-Value="identification.IdentificationSerial" Style="direction:ltr" ColSpan="4" />
@@ -64,7 +75,7 @@
     </ChildTabPanelItem>
     <ChildTabPanelItem Child="t => t.Family" Service="FamilyService" Title="مشخصات خانوادگی" ColumnsCount="2">
         <Content Context="family">
-            <div style="height:280px" class="row c-controls p-3">
+            <div style="height:335px" class="row c-controls p-3">
                 <StringTextBox @bind-Value="family.WifeName" ColSpan="8" /><div></div><div></div>
                 <DatePicker @bind-Value="family.MariageDate" ColSpan="4" />
 
@@ -78,7 +89,7 @@
     </ChildTabPanelItem>
     <ChildTabPanelItem Child="t => t.ReligionAndSubReligion" Service="ReligionAndSubReligionService" ColumnsCount="2">
         <Content Context="religion">
-            <div style="height:280px;" class="row c-controls p-3">
+            <div style="height:335px;" class="row c-controls p-3">
                 <ComboBox TValue="int?" TEntity="SimpleData" @bind-Value="religion.ReligionId" TextExpression="t => t.Title" ColSpan="4"
                           ConditionExpression="t => t.DataType == SimpleDataType.Religion" CascadeService="religionService" />
 
@@ -97,6 +108,12 @@
     CascadeService<SimpleData, SubReligion> religionService = new();
     CascadeService<Country, Province, City> birthCascadeService = new();
     CascadeService<Country, Province, City> regCascadeService = new();
+
+    async Task SetImage(InputFileChangeEventArgs file)
+    {
+        Service.UpsertData.Image = await file.File.GetByteArrayAsync();
+        
+    }
 
     [Parameter]
     public UIService<Employee> Service { get; set; }
