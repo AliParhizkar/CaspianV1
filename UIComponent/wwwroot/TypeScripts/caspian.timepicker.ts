@@ -7,18 +7,18 @@
             let input = element.getElementsByTagName('input')[0];
             caspian.common.bindMask(input, '__:__');
             element.onmouseenter = () => {
-                let wrap = element.getElementsByClassName('t-picker-wrap')[0];
+                let wrap = element.getElementsByClassName('t-inputbox-wrap')[0];
                 if (!wrap.classList.contains('t-state-selected') && !wrap.classList.contains('t-state-disabled'))
                     wrap.classList.add('t-state-hover');
             }
             element.onmouseleave = () => {
-                element.getElementsByClassName('t-picker-wrap')[0].classList.remove('t-state-hover')
+                element.getElementsByClassName('t-inputbox-wrap')[0].classList.remove('t-state-hover')
             }
             input.onfocus = e => {
-                (e.target as HTMLElement).closest('.t-picker-wrap').classList.add('t-state-selected');
+                (e.target as HTMLElement).closest('.t-inputbox-wrap').classList.add('t-state-selected');
             }
             input.onblur = e => {
-                (e.target as HTMLElement).closest('.t-picker-wrap').classList.remove('t-state-selected');
+                (e.target as HTMLElement).closest('.t-inputbox-wrap').classList.remove('t-state-selected');
             }
             this.bindMutationObserver(element);
         }

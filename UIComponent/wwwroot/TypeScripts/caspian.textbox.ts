@@ -7,10 +7,24 @@
             this.input = input;
             this.total ||= 8; 
             input.onmouseenter = () => {
-                input.parentElement.classList.add('t-state-hover');
+                let list = input.parentElement.classList;
+                list.add('t-state-hover');
+                list.remove('t-state-default');
             }
             input.onmouseleave = () => {
-                input.parentElement.classList.remove('t-state-hover');
+                let list = input.parentElement.classList;
+                list.remove('t-state-hover');
+                list.add('t-state-default');
+            }
+            input.onfocus = () => {
+                let list = input.parentElement.classList;
+                list.add('t-state-focused');
+                list.remove('t-state-default');
+            }
+            input.onblur = () => {
+                let list = input.parentElement.classList;
+                list.remove('t-state-focused');
+                list.add('t-state-default');
             }
             this.readAttributes();
             this.bindAttributes();

@@ -2,7 +2,7 @@
     export class ComboBox {
         constructor(input: HTMLElement, Pageable: boolean, dotnet: dotnetInvoker) {
             this.bindObserver(input, Pageable, dotnet);
-            let control = input.closest('.t-combobox').getElementsByClassName('t-dropdown-wrap')[0] as HTMLElement;
+            let control = input.closest('.t-combobox').getElementsByClassName('t-inputbox-wrap')[0] as HTMLElement;
             input.onkeyup = e => {
                 if (e.key == 'ArrowDown' || e.key == 'ArrowUp') {
                     let selected = (e.target as HTMLElement).closest('.t-combobox').getElementsByClassName('t-state-selected')[0];

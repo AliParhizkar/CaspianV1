@@ -16,7 +16,7 @@ namespace Caspian.UI
             if (MultiLine)
                 className += " t-multitextbox";
             else
-                className += " t-stringtextbox";
+                className += " t-textbox";
             
             if (ErrorMessage.HasValue())
                 attributes["error-message"] = ErrorMessage;

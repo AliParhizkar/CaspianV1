@@ -22,11 +22,6 @@
     color: #ff6358;
     font-size:17px;
 }
-.t-state-error input {
-    border-style: solid !important;
-    border-color: rgba(255, 0, 0, 0.17) !important;
-    background-color: #ffe9ec !important;
-}
 .t-state-error textarea {
     border-style: solid !important;
     border-color: rgba(255, 0, 0, 0.17) !important;
@@ -39,8 +34,6 @@ fieldset.t-widget legend {
 }
 .t-small .t-numeric  {
     font-size: 10px !important;
-}
-.t-widget {
 }
     .t-widget.t-state-disabled .t-star {
         color: #ececec;
@@ -128,42 +121,15 @@ html input[disabled], textarea[disabled] {
         box-sizing:border-box;
     }
 
-.t-combobox .t-state-default .t-input{
-    border-color: rgba(0,0,0,0.12);
-}
-.t-combobox .t-state-default .t-select {
-    border-color: rgba(0,0,0,0.08);
-}
 .t-dropdown-wrap.t-state-hover .t-select {
     border-color: rgba(0,0,0,0.15);
-}
-.t-picker-wrap.t-state-hover .t-input {
-    border-color: rgba(0,0,0,0.24);
 }
 
 .t-picker-wrap.t-state-hover .t-select {
     background-image: linear-gradient(#00000010,#00000020);
     border-color: rgba(0,0,0,0.15);
 }
-
-.t-dropdown-wrap.t-state-hover  {
-    background-image: linear-gradient(#00000010,#00000020)!important;
-    border-color: rgba(0,0,0,0.24)!important;
-    background-color:white;
-}
-
-    .t-dropdown-wrap.t-state-hover .t-input {
-        border-color: rgba(0,0,0,0.24);
-    }
-
-.t-dropdown .t-dropdown-wrap:not(.t-state-disabled):hover {
-    background-image: linear-gradient(#00000010,#00000020);
-    border-color: rgba(0,0,0,0.24);
-}
-
-.t-dropdown-wrap.t-state-hover .t-select {
-    background-image: linear-gradient(#00000010,#00000020);
-}
+    
 
 .t-numerictextbox >.t-input {
     border-color: rgba(0,0,0,0.12);
@@ -187,14 +153,6 @@ html input[disabled], textarea[disabled] {
 .t-numerictextbox .t-input:focus {
     border-color: rgba(0,0,0,0.24);
     box-shadow: 0 0 3px 0 grey;
-}
-.t-dropdown .t-dropdown-wrap {
-    background-image: linear-gradient(#f6f6f6,#ebebeb);
-    border-color: rgba(0,0,0,0.12);
-    font-size: 0;
-    margin: 2px;
-    height: 30px;
-    box-sizing: border-box;
 }
     .t-dropdown .t-dropdown-wrap:focus {
         box-shadow: 0 0 3px 0 grey;
@@ -223,18 +181,6 @@ html input[disabled], textarea[disabled] {
     .t-picker-wrap.t-state-focused .t-input {
         border-color: rgba(0,0,0,0.24);
     }
-    .t-dropdown-wrap.t-state-focused {
-        box-shadow: 0 0 3px 0 grey;
-    }
-
-.t-combobox .t-state-focused .t-input {
-    border-color: rgba(0,0,0,0.24);
-}
-
-.t-dropdown .t-state-focused {
-    transition: box-shadow 0.15s ease-out 0s;
-    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3) !important;
-}
 
 
 .t-window-titlebar .fa-times {
@@ -303,23 +249,7 @@ html input[disabled], textarea[disabled] {
     width:100%;
     height:100%;
 }
-.t-grid a
-{
-    outline:none;
-}
-.t-widget.t-grid,
-.t-link:link,
-.t-link:active,
-.t-link:visited,
-.t-popup {
-    
-}
 
-.t-group,
-.t-content,
-.t-editable-area
-{
-}
 
 .t-alt{
     background-color:#585858;
@@ -336,15 +266,6 @@ html input[disabled], textarea[disabled] {
     background-color: #7e98bc;
 }
 
-.t-state-default
-{
-    
-}
-
-.t-active-filter
-{
-    background-color: #b6cef2;
-}
 
 .t-widget.t-message {
     width: 250PX;

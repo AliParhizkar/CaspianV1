@@ -11,9 +11,14 @@
         time = (TimeSpan)Convert.ChangeType(Value, typeof(TimeSpan));
         str = time.ShortString();
     }
-    string className = "t-picker-wrap";
+    string className = "t-inputbox-wrap";
     if (disabled)
         className += " t-state-disabled";
+    else
+    {
+        if (ErrorMessage != null)
+            className += " t-state-error";
+    }
 } 
 <div @ref="InputElement" class="t-widget t-timepicker" style="@(Style)">
     <div @attributes="attrs" class="@className">

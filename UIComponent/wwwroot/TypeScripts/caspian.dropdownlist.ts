@@ -3,25 +3,25 @@
         constructor(element: HTMLElement, dotnet: dotnetInvoker) {
             this.bindObserver(element, dotnet);
             element.onmouseenter = e => {
-                let ddl = (e.target as HTMLElement).getElementsByClassName('t-dropdown-wrap')[0];
+                let ddl = (e.target as HTMLElement).getElementsByClassName('t-inputbox-wrap')[0];
                 if (!ddl.classList.contains('t-state-disabled')) {
                     ddl.classList.remove('t-state-default');
                     ddl.classList.add('t-state-hover');
                 }
             }
             element.onmouseleave = e => {
-                let ddl = (e.target as HTMLElement).getElementsByClassName('t-dropdown-wrap')[0];
+                let ddl = (e.target as HTMLElement).getElementsByClassName('t-inputbox-wrap')[0];
                 ddl.classList.remove('t-state-hover');
                 ddl.classList.add('t-state-default');
             }
             element.onfocus = e => {
-                let ddl = (e.target as HTMLElement).getElementsByClassName('t-dropdown-wrap')[0];
+                let ddl = (e.target as HTMLElement).getElementsByClassName('t-inputbox-wrap')[0];
                 ddl.classList.remove('t-state-default');
                 ddl.classList.add('t-state-focused');
                 caspian.common.showErrorMessage(e.target as HTMLElement);
             }
             element.onblur = () => {
-                let ddl = element.getElementsByClassName('t-dropdown-wrap')[0];
+                let ddl = element.getElementsByClassName('t-inputbox-wrap')[0];
                 ddl.classList.remove('t-state-focused');
                 ddl.classList.add('t-state-default');
                 caspian.common.hideErrorMessage(element);

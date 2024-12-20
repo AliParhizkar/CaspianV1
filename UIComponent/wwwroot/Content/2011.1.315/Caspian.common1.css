@@ -1301,9 +1301,7 @@ body {
         border-color: #bd2130;
     }
 
-    .t-combobox .t-state-focused .t-select {
-        background-image: linear-gradient(#e6e6e6,#e1e1e1)
-    }
+    
 .c-multi-select.t-state-disabled {
     background-color: #eaeaea;
     cursor:not-allowed;
@@ -1976,10 +1974,6 @@ ul {
     padding: 2px 0;
     white-space:nowrap;
 }
-.t-stringtextbox{
-    height:34px;
-    overflow:visible;
-}
 
 .c-treeview .fa-chevron-right {
     cursor: pointer;
@@ -2070,10 +2064,6 @@ ul {
 .t-grid-add:hover {
     color: #026002;
 } 
-.t-dropdown {
-    border-width: 0;
-    height:32px;
-}
 
 ::-webkit-scrollbar {
     width: 11px;
@@ -2092,14 +2082,6 @@ ul {
     /* Handle on hover */
     ::-webkit-scrollbar-thumb:hover {
         background: #aaa;
-    }
-
-    .t-dropdown .t-dropdown-wrap {
-        border-width: 1px;
-        border-style: solid;
-        border-radius: 8px;
-        margin: 1px;
-        height: 34px;
     }
 
 .t-link {
@@ -2220,11 +2202,6 @@ html body .t-button-bare {
     background: none !important;
     border-width: 0;
     box-shadow:none!important;
-}
-
-.t-icon, .t-editor-button .t-tool-icon {
-    background-color: transparent;
-    background-repeat: no-repeat;
 }
 
 .t-header .t-link {
@@ -2450,11 +2427,7 @@ div.t-window {
     zoom: 1;
     overflow: hidden;
 }
-    .t-tabstrip .t-header {
-        background-color: #f0f0f0;
-        border-bottom: 1px solid #cdcdcd;
-        border-radius:8px 8px 0 0;
-    }
+    
 .c-tabstrip-items {
     position: relative;
     width: fit-content;
@@ -2788,9 +2761,6 @@ textarea[class="t-input"] {
     box-sizing: border-box;
 }
 
-div, input, textarea {
-    outline: none;
-}
 
 .t-grid-header .t-header .t-link {
     line-height: 25px; /* due to sorting icons*/
@@ -2877,7 +2847,7 @@ div.t-grid-footer {
         border-left-width: 0;
     }
     .t-grid-content .c-grid-items tr:not(.t-state-selected):hover {
-        background-color: #5e8f8f30 !important;
+        background-color: #e6e9f3d4 !important;
     }
     .t-grid-header table,
     .t-grid-content table,
@@ -3534,167 +3504,6 @@ html body .t-grid tbody .t-button-icon {
     pointer-events: none;
     opacity: 0.4;
 }
-
-
-
-/* ComboBox & Drop-down*/
-.t-combobox {
-    background-image: none !important;
-    background-color: transparent !important;
-    border-width: 0;
-    height:31px;
-    position:relative;
-}
-
-    .t-combobox .t-continer {
-        position: relative;
-        height: 300px;
-        border: 1px solid rgba(0,0,0,0.12);
-        margin: 2px;
-        background-color: white;
-        border-radius:8px;
-        overflow:auto;
-        /*        display:none;*/
-    }
-
-    .t-combobox > .t-dropdown-wrap {
-        border-radius: 8px;
-        margin: 2px;
-    }
-
-* html .t-combobox .t-dropdown-wrap {
-    height: 20px;
-}
-
-* html .t-picker-wrap {
-    height: 20px;
-    padding-right: 20px;
-}
-
-    .t-picker-wrap .t-input,
-    .t-combobox .t-input {
-        vertical-align: top;
-        width: calc(100% - 27px);
-        border-width:1px;
-        height:30px;
-        border-color:rgba(0, 0, 0, 0.12)
-    }
-.t-datepicker .fa-calendar {
-    vertical-align: middle;
-    line-height: 16px;
-    height: 16px;
-    font-size: 17px;
-    color: #656565;
-}
-
-.t-combobox .t-input {
-    outline: 0;
-    border: 0;
-}
-
-* + html .t-combobox .t-input {
-    margin: -1px 0;
-}
-
-* html .t-combobox .t-input {
-    margin: -1px 0;
-}
-
-* html {
-    position: absolute;
-    top: 0;
-}
-
-.t-picker-wrap .t-select,
-.t-dropdown-wrap .t-select {
-    vertical-align: top;
-    display: inline-block;
-}
-
-* html .t-picker-wrap .t-select,
-* html .t-dropdown-wrap .t-select {
-    top: 1px;
-    right: 1px;
-}
-
-.t-combobox .t-icon {
-    margin-top: 5px;
-}
-
-.t-dropdown .t-select,
-.t-selectbox .t-select {
-    border: 0;
-    text-decoration: none;
-    font: inherit;
-    color: inherit;
-    overflow: hidden;
-    cursor: default;
-}
-.t-dropdown-wrap .t-t-select {
-    line-height: 30px;
-    height:30px;
-    display: inline-block;
-    vertical-align: top;
-    width: 27px;
-    text-align:center;
-}
-
-.t-combobox .t-select {
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(0, 0, 0, .12);
-}
-
-.t-dropdown .t-input,
-.t-selectbox .t-input {
-    display: inline-block;
-    line-height: 26px;
-    padding: 1px 4px;
-    width: calc(100% - 27px);
-    font-size: 14px;
-    box-sizing: border-box;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow:hidden;
-}
-.t-dropdown .t-state-error {
-    border-color: rgba(255, 0, 0, 0.19) !important;
-    background-image: linear-gradient(#ffe9ec,#ffe3e3) !important;
-}
-
-.t-picker-wrap .t-icon,
-.t-dropdown-wrap .t-icon {
-    vertical-align: -webkit-baseline-middle;
-    line-height: 22px;
-    height:22px;
-    font-size: 17px;
-    color: #656565;
-    text-align: center;
-}
-.t-state-hover .fa-caret-down, .t-state-hover .fa-calendar, .t-state-hover .fa-clock-o {
-    color: #0c007f;
-}
-
-.t-dropdown-wrap.t-state-disabled span {
-    border-color: rgba(0,0,0,0.2) !important;
-}
-
-.t-dropdown-wrap {
-    margin: 2px;
-    height: 100%;
-    box-sizing: border-box;
-    font-size: 0;
-}
-.t-combobox .t-input {
-    height: 100%;
-    padding:0 4px;
-    width: calc(100% - 27px);
-    box-sizing: border-box;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 0 8px 8px 0;
-    font-size:14px;
-}
 .c-controls label {
     background-color: #efefef;
     border-radius: 8px;
@@ -3710,22 +3519,7 @@ html body .t-grid tbody .t-button-icon {
     padding-left:5px;
     display:inline-flex;
 }
-.c-action .c-primary{
-    min-width:70px;
-}
-.t-picker-wrap .t-select,
-.t-dropdown-wrap .t-select {
-    height: 100%;
-    line-height:30px;
-    width: 27px;
-    background-image: linear-gradient(#f6f6f6,#f1f1f1);
-    text-align: center;
-}
-.t-state-error .t-select {
-    background-image: linear-gradient(#ffecec,#fff0f0) !important;
-    border: 1px solid rgba(255, 0, 0, 0.2) !important;
-}
-}
+
 .t-state-disabled .t-select {
     cursor: not-allowed !important;
     background-image: none !important;
@@ -4121,38 +3915,7 @@ label{
     padding: 0 3px;
 }
 
-.t-stringtextbox .t-input /*alignment of arrows in WebKit*/ {
-    padding: 0 4px 0 4px;
-    width: calc(100% - 4px);
-    box-sizing: border-box;
-    margin: 2px;
-    border-radius: 8px;
-    border-style: solid;
-    border-width: 1px;
-    height: 30px;
-    border-color: rgba(0,0,0,0.12);
-}
 
-.t-stringtextbox.t-state-hover .t-input {
-    border-color: rgba(0,0,0,0.24)!important;
-}
-.t-stringtextbox .t-input:focus {
-    box-shadow: 0 0 3px 0 grey;
-}
-.t-stringtextbox.t-state-error .t-input:focus {
-    box-shadow: 0 0 3px 0 #ff8d8d !important;
-}
-
-.t-datepicker .t-input {
-    border-radius: 0 8px 8px 0;
-    border-width: 1px;
-    border-style: solid;
-    box-sizing: border-box;
-    height: 30px;
-    font-size: 15px;
-    padding-left: 5px;
-    border-color: rgba(0, 0, 0, 0.12);
-}
 
 .t-state-disabled input {
     background-color: #eaeaea !important;
@@ -5736,10 +5499,6 @@ fieldset.t-widget {
     border-top: 1px solid #a9a9a9 !important;
 }
 
-.t-input {
-    color: #191919;
-}
-
 .t-timepicker .input-group-addon {
     cursor: pointer;
 }
@@ -5764,12 +5523,6 @@ fieldset.t-widget {
 .clockpicker-align-bottom.popover > .arrow {
     top: auto;
     bottom: 6px;
-}
-.t-timepicker .t-input {
-    font-size:16px;
-    direction:ltr;
-    border-radius: 0 8px 8px 0;
-    padding-left:5px;
 }
 
 .clockpicker-popover .popover-title {
@@ -5944,7 +5697,7 @@ fieldset.t-widget {
     border-radius: 4px;
 }
 .t-grid-content tr:nth-child(2n) {
-    background-color: #f0f1f5;
+    background-color: #f9fafe;
 }
 .t-combobox .t-state-disabled span {
     background-image: none;

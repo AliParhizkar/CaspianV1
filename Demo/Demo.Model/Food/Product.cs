@@ -18,6 +18,10 @@ namespace Demo.Model
         [DisplayName("Code")]
         public string Code { get; set; }
 
+        public DateTime? CreatedDate { get; set; }
+
+        public TimeSpan? CreateTime { get; set; }
+
         [DisplayName("Product Category")]
         public int ProductCategoryId { get; set; }
 
@@ -46,9 +50,9 @@ namespace Demo.Model
         public byte[] Image { get; set; }
 
         [ForeignKey(nameof(ProductCategoryId))]
-        public virtual ProductCategory ProductCategory { get; set; }
+        public ProductCategory ProductCategory { get; set; }
 
         [CheckOnDelete("This product is ordered and cannot be removed")]
-        public virtual ICollection<OrderDeatil> OrderDeatils { get; set; }
+        public ICollection<OrderDeatil> OrderDeatils { get; set; }
     }
 }

@@ -24,7 +24,7 @@ namespace Main
         static void Main(string[] args)
         {
             //var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
-            //{ 
+            //{
             //    EnvironmentName = Environments.Staging,
             //});
             var builder = WebApplication.CreateBuilder();
@@ -127,8 +127,6 @@ namespace Main
                 app.Urls.Add("https://localhost:443");
                 app.Urls.Add("http://localhost:80");
             }
-
-
             app.Run();
         }
 

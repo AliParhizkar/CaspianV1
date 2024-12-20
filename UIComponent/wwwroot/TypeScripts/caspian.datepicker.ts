@@ -4,22 +4,22 @@
             element.focus
             let input = element.getElementsByTagName('input')[0] as HTMLInputElement;
             element.onmouseenter = e => {
-                let elem = (e.target as HTMLElement).getElementsByClassName('t-picker-wrap')[0] as HTMLElement;
+                let elem = (e.target as HTMLElement).getElementsByClassName('t-inputbox-wrap')[0] as HTMLElement;
                 if (!elem.classList.contains('t-state-selected') || !elem.classList.contains('t-state-disabled'))
                     elem.classList.add('t-state-hover');
             }
             element.onmouseleave = e => {
-                let elem = (e.target as HTMLElement).getElementsByClassName('t-picker-wrap')[0] as HTMLElement;
+                let elem = (e.target as HTMLElement).getElementsByClassName('t-inputbox-wrap')[0] as HTMLElement;
                 elem.classList.remove('t-state-hover');
             }
             input.onfocus = e => {
                 let elem = (e.target as HTMLElement);
-                elem.closest('.t-picker-wrap').classList.replace('t-state-hover', 't-state-selected');
+                elem.closest('.t-inputbox-wrap').classList.replace('t-state-hover', 't-state-selected');
                 caspian.common.showErrorMessage(elem.closest('.t-widget'));
             }
             input.onblur = e => {
                 let elem = (e.target as HTMLElement);
-                elem.closest('.t-picker-wrap').classList.remove('t-state-selected');
+                elem.closest('.t-inputbox-wrap').classList.remove('t-state-selected');
                 caspian.common.hideErrorMessage(elem.closest('.t-widget'));
             }
             this.bindObserver(element, dotnet);

@@ -1,0 +1,151 @@
+﻿input {
+    outline:none;
+    font-size:14px;
+}
+/*control icon*/
+/*default*/
+.t-select {
+    line-height: 30px;
+    height:31px;
+    display: inline-block;
+    vertical-align: top;
+    width: 30px;
+    text-align: center;
+}
+.t-ltr .t-inputbox-wrap .t-select {
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/*Hover and focused state*/
+.t-ltr .t-inputbox-wrap.t-state-hover .t-select, .t-ltr .t-inputbox-wrap.t-state-focused .t-select {
+    border-left-color: rgba(0, 0, 0, 0.24);
+}
+/*Error default state*/
+.t-ltr .t-inputbox-wrap.t-state-error .t-select {
+    border-left-color: rgba(255, 0, 0, 0.12);
+}
+.t-ltr .t-inputbox-wrap.t-state-error.t-state-hover .t-select, .t-ltr .t-inputbox-wrap.t-state-error.t-state-focused .t-select {
+    border-left-color: rgba(255, 0, 0, 0.24);
+}
+    /*control inputbox and textbox*/
+    /*default state*/
+    .t-inputbox-wrap, .t-textbox input {
+        box-sizing: border-box;
+        margin: 2px;
+        border-radius: 8px;
+        border-style: solid;
+        border-width: 1px;
+        height: 32px;
+        border-color: rgba(0,0,0,0.12);
+    }
+
+/*control textbox*/
+/*default state*/
+.t-textbox input {
+    width: calc(100% - 4px);
+}
+    /*Hover state*/
+    .t-textbox input:hover {
+        border-color: rgba(0,0,0,0.24);
+    }
+
+    /*Focus state*/
+    .t-textbox input:focus {
+        border-color: rgba(0,0,0,0.24);
+        box-shadow: 0 0 3px 0 grey;
+    }
+    /*Error default*/
+.t-textbox.t-state-error input {
+    border-color: rgba(255,0,0,0.12);
+    background-color: rgba(255, 0, 0, 0.025);
+}
+/*Error Hover*/
+.t-textbox.t-state-error input:hover {
+    border-color: rgba(255,0,0,0.24);
+}
+    /*Error Focus*/
+    .t-textbox.t-state-error input:focus {
+        border-color: rgba(255,0,0,0.24);
+        box-shadow: 0 0 4px 0 #ff9fb0;
+    }
+
+    /*control inputbox */
+    /*default state*/
+.t-inputbox-wrap {
+    overflow: hidden;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.025),rgba(0, 0, 0, 0.055));
+    font-size: 0;
+}
+    /*hover state*/
+    .t-inputbox-wrap.t-state-hover {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.045),rgba(0, 0, 0, 0.075));
+        border-color: rgba(0,0,0,0.24);
+    }
+    /*focus state*/
+        .t-inputbox-wrap.t-state-focused {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.045),rgba(0, 0, 0, 0.075));
+            box-shadow: 0 0 3px 0 grey;
+            border-color: rgba(0,0,0,0.24);
+        }
+    /*error-default*/
+    .t-inputbox-wrap.t-state-error {
+        background-image: linear-gradient(rgba(255, 0, 0, 0.02),rgba(255, 0, 0, 0.045));
+        border-color: rgba(255,0,0,0.12);
+    }
+    /*error-hover*/
+    .t-inputbox-wrap.t-state-error.t-state-hover {
+        background-image: linear-gradient(rgba(255, 0, 0, 0.04),rgba(255, 0, 0, 0.065));
+        border-color: rgba(255,0,0,0.24);
+    }
+        /*error-focused*/
+        .t-inputbox-wrap.t-state-error.t-state-focused {
+            background-image: linear-gradient(rgba(255, 0, 0, 0.06),rgba(255, 0, 0, 0.085))!important;
+            border-color: rgba(255,0,0,0.15);
+            box-shadow: 0 0 3px 0 pink;
+        }
+        /*input*/
+        .t-inputbox-wrap.t-state-error input {
+            background-color: #fff9f9;
+        }
+
+
+
+    .t-inputbox-wrap .t-icon {
+        vertical-align: middle;
+        line-height: 22px;
+        height: 19px;
+        font-size: 19px;
+        color: #909090;
+        text-align: center;
+    }
+
+
+
+.t-dropdown .t-input {
+    display: inline-block;
+    line-height: 28px;
+    width: calc(100% - 30px);
+    font-size: 14px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.t-ltr .t-textbox .t-input, .t-ltr .t-dropdown .t-dropdown-wrap {
+    padding-left: 4px;
+}
+.t-rtl .t-textbox .t-input, .t-rtl .t-dropdown .t-dropdown-wrap {
+    padding-right: 4px;
+}
+
+
+
+
+
+.t-inputbox-wrap .t-input {
+    padding: 0 4px;
+    width: calc(100% - 30px);
+    border:none;
+    height:31px;
+}

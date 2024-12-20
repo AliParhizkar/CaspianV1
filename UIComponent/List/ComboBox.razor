@@ -32,7 +32,7 @@ else
         Console.WriteLine(text);
         return __builder =>
         {
-            var className = "t-dropdown-wrap";
+            var className = "t-inputbox-wrap";
             if (Disabled)
                 className += " t-state-disabled";
             else
@@ -55,7 +55,7 @@ else
                 <div class="@className">
                     <input @ref="InputElement" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await OnNochangeKeyDown(arg)"
                            @oninput="async arg => await OnChangeValue(arg)" type="text" class="t-input" />
-                    <span @onmousedown="ToggelDropdownList" class="t-select t-header">
+                    <span @onmousedown="ToggelDropdownList" class="t-select">
                         <i class="t-icon t-arrow-down fa fa-caret-down"></i>
                     </span>
                 </div>

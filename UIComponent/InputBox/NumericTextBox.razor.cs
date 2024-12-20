@@ -22,7 +22,7 @@ namespace Caspian.UI
         Dictionary<string, object> GetAttributes()
         {
             var attributes = new Dictionary<string, object>();
-            var className = "t-widget t-numerictextbox";
+            var className = "t-widget t-textbox";
             if (disabled)
                 className += " t-state-disabled";
             if (!disabled && ErrorMessage.HasValue())

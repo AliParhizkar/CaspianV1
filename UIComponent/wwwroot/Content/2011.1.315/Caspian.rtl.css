@@ -35,18 +35,9 @@
     border-right: none !important;
 }
 
-.t-ltr .t-state-error .t-select {
-    border-left: none !important;
-}
-
 .t-rtl .t-state-error .t-select {
     border-right: 1px solid rgba(255, 0, 0, 0.19) !important;
 }
-
-.t-ltr .t-state-error .t-select {
-    border-right: 1px solid rgba(255, 0, 0, 0.19) !important;
-}
-
 .t-rtl
 {
     direction: rtl;
@@ -360,10 +351,6 @@
     background-position: 0 50% !important;
 }
 
-.t-ltr .t-combobox .t-input {
-    border-radius: 8px 0 0 8px;
-}
-
 
 
 * html .t-rtl .t-combobox .t-dropdown-wrap { padding-right: 0; padding-left: 16px; }
@@ -388,10 +375,6 @@ fieldset.t-widget table {
     border-right-style:none;
 }
 
-.t-ltr .t-combobox .t-select {
-    border-radius: 0 8px 8px 0;
-    border-left-style: none;
-}
 
 .t-rtl .t-tabstrip-items .t-item  {
     border-left: solid 1px grey;
@@ -578,9 +561,6 @@ fieldset.t-widget{
 .t-rtl .t-calendar .t-nav-fast {
     width:155px;
 }
-.t-ltr .t-datepicker .t-input:not(.t-rtl .t-input), .t-ltr .t-timepicker .t-input:not(.t-rtl .t-input) {
-    border-radius: 8px 0 0 8px;
-}
 
 .t-rtl .t-picker-wrap .t-select {
     border-radius: 8px 0 0 8px;
@@ -598,16 +578,10 @@ fieldset.t-widget{
     border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.t-ltr .t-dropdown-wrap .t-t-select {
-    border-left: 1px solid rgba(0, 0, 0, 0.12);
-}
 .t-rtl .t-state-error .t-t-select {
     border-right: 1px solid rgba(255, 0, 0, 0.12);
 }
 
-.t-ltr .t-state-error .t-t-select {
-    border-left: 1px solid rgba(255, 0, 0, 0.12);
-}
 .t-rtl ::-webkit-input-placeholder {
     text-align: right;
     direction: rtl;

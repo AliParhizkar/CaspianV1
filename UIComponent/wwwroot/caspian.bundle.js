@@ -12,7 +12,7 @@ var caspian;
     class ComboBox {
         constructor(input, Pageable, dotnet) {
             this.bindObserver(input, Pageable, dotnet);
-            let control = input.closest('.t-combobox').getElementsByClassName('t-dropdown-wrap')[0];
+            let control = input.closest('.t-combobox').getElementsByClassName('t-inputbox-wrap')[0];
             input.onkeyup = e => {
                 if (e.key == 'ArrowDown' || e.key == 'ArrowUp') {
                     let selected = e.target.closest('.t-combobox').getElementsByClassName('t-state-selected')[0];
@@ -902,25 +902,25 @@ var caspian;
         constructor(element, dotnet) {
             this.bindObserver(element, dotnet);
             element.onmouseenter = e => {
-                let ddl = e.target.getElementsByClassName('t-dropdown-wrap')[0];
+                let ddl = e.target.getElementsByClassName('t-inputbox-wrap')[0];
                 if (!ddl.classList.contains('t-state-disabled')) {
                     ddl.classList.remove('t-state-default');
                     ddl.classList.add('t-state-hover');
                 }
             };
             element.onmouseleave = e => {
-                let ddl = e.target.getElementsByClassName('t-dropdown-wrap')[0];
+                let ddl = e.target.getElementsByClassName('t-inputbox-wrap')[0];
                 ddl.classList.remove('t-state-hover');
                 ddl.classList.add('t-state-default');
             };
             element.onfocus = e => {
-                let ddl = e.target.getElementsByClassName('t-dropdown-wrap')[0];
+                let ddl = e.target.getElementsByClassName('t-inputbox-wrap')[0];
                 ddl.classList.remove('t-state-default');
                 ddl.classList.add('t-state-focused');
                 caspian.common.showErrorMessage(e.target);
             };
             element.onblur = () => {
-                let ddl = element.getElementsByClassName('t-dropdown-wrap')[0];
+                let ddl = element.getElementsByClassName('t-inputbox-wrap')[0];
                 ddl.classList.remove('t-state-focused');
                 ddl.classList.add('t-state-default');
                 caspian.common.hideErrorMessage(element);
@@ -969,18 +969,18 @@ var caspian;
             let input = element.getElementsByTagName('input')[0];
             caspian.common.bindMask(input, '__:__');
             element.onmouseenter = () => {
-                let wrap = element.getElementsByClassName('t-picker-wrap')[0];
+                let wrap = element.getElementsByClassName('t-inputbox-wrap')[0];
                 if (!wrap.classList.contains('t-state-selected') && !wrap.classList.contains('t-state-disabled'))
                     wrap.classList.add('t-state-hover');
             };
             element.onmouseleave = () => {
-                element.getElementsByClassName('t-picker-wrap')[0].classList.remove('t-state-hover');
+                element.getElementsByClassName('t-inputbox-wrap')[0].classList.remove('t-state-hover');
             };
             input.onfocus = e => {
-                e.target.closest('.t-picker-wrap').classList.add('t-state-selected');
+                e.target.closest('.t-inputbox-wrap').classList.add('t-state-selected');
             };
             input.onblur = e => {
-                e.target.closest('.t-picker-wrap').classList.remove('t-state-selected');
+                e.target.closest('.t-inputbox-wrap').classList.remove('t-state-selected');
             };
             this.bindMutationObserver(element);
         }
@@ -1104,22 +1104,22 @@ var caspian;
             element.focus;
             let input = element.getElementsByTagName('input')[0];
             element.onmouseenter = e => {
-                let elem = e.target.getElementsByClassName('t-picker-wrap')[0];
+                let elem = e.target.getElementsByClassName('t-inputbox-wrap')[0];
                 if (!elem.classList.contains('t-state-selected') || !elem.classList.contains('t-state-disabled'))
                     elem.classList.add('t-state-hover');
             };
             element.onmouseleave = e => {
-                let elem = e.target.getElementsByClassName('t-picker-wrap')[0];
+                let elem = e.target.getElementsByClassName('t-inputbox-wrap')[0];
                 elem.classList.remove('t-state-hover');
             };
             input.onfocus = e => {
                 let elem = e.target;
-                elem.closest('.t-picker-wrap').classList.replace('t-state-hover', 't-state-selected');
+                elem.closest('.t-inputbox-wrap').classList.replace('t-state-hover', 't-state-selected');
                 caspian.common.showErrorMessage(elem.closest('.t-widget'));
             };
             input.onblur = e => {
                 let elem = e.target;
-                elem.closest('.t-picker-wrap').classList.remove('t-state-selected');
+                elem.closest('.t-inputbox-wrap').classList.remove('t-state-selected');
                 caspian.common.hideErrorMessage(elem.closest('.t-widget'));
             };
             this.bindObserver(element, dotnet);
@@ -1213,10 +1213,24 @@ var caspian;
             this.input = input;
             this.total || (this.total = 8);
             input.onmouseenter = () => {
-                input.parentElement.classList.add('t-state-hover');
+                let list = input.parentElement.classList;
+                list.add('t-state-hover');
+                list.remove('t-state-default');
             };
             input.onmouseleave = () => {
-                input.parentElement.classList.remove('t-state-hover');
+                let list = input.parentElement.classList;
+                list.remove('t-state-hover');
+                list.add('t-state-default');
+            };
+            input.onfocus = () => {
+                let list = input.parentElement.classList;
+                list.add('t-state-focused');
+                list.remove('t-state-default');
+            };
+            input.onblur = () => {
+                let list = input.parentElement.classList;
+                list.remove('t-state-focused');
+                list.add('t-state-default');
             };
             this.readAttributes();
             this.bindAttributes();

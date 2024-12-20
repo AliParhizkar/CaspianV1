@@ -19,6 +19,8 @@ namespace Demo.Service
             RuleFor(t => t.Price).CustomValue(t => t < 0, "The product price cannot be negative");
             RuleFor(t => t.TakeoutPrice).CustomValue(t => t < 0, "The take out price cannot be negative");
             RuleFor(t => t.Meal).CustomValue(t => t == 0, "At least one meal must be selected");
+            RuleFor(t => t.CreatedDate).Required();
+            RuleFor(t => t.CreateTime).Required();
             RuleFor(t => t.Code).UniqueAsync("There is a product with this code in the system")
                 .CustomValue(code => 
                 {

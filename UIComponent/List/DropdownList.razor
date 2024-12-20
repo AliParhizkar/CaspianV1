@@ -26,7 +26,7 @@ else
     {
         return __builder =>
         {
-            var className = "t-dropdown-wrap";
+            var className = "t-inputbox-wrap";
             if (disabled)
                 className += " t-state-disabled";
             else if (ErrorMessage == null)
@@ -37,7 +37,7 @@ else
             <div @ref="InputElement" @onkeyup="OnkeyUp" @attributes="attrs" class="t-widget t-dropdown" error-message="@ErrorMessage">
                 <div class="@className" @onmousedown="OpenWindow">
                     <span class="t-input">@(text)</span>
-                    <span class="t-t-select">
+                    <span class="t-select">
                         <i class="t-icon t-arrow-down fa fa-caret-down"></i>
                     </span>
                 </div>
