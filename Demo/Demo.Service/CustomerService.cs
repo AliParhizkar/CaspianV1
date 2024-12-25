@@ -23,13 +23,6 @@ namespace Demo.Service
             //RuleFor(t => t.Tel).TelNumber();
             //RuleFor(t => t.CustomerGroupMemberships).Custom(t => t.CustomerGroupMemberships == null || t.CustomerGroupMemberships.Count == 0, "Customer should be member of a group");
             //RuleForEach(t => t.CustomerGroupMemberships).SetValidator(new CustomerGroupMembershipService(provider));
-            
-            RuleFor(t => t.CustomerGroup).ChildRules(x =>
-            {
-                x.RuleFor(u => u.Title).Required();
-                x.RuleFor(p => p.ActiveType >= ActiveType.Enable && p.ActiveType <= ActiveType.Disable);
-            });
-
         }
 
         void UpdateCustomer(Customer entity)

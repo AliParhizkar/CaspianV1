@@ -414,151 +414,6 @@ namespace Caspian.Engine
             return list;
         }
 
-        IList GetStimulData(IList firstLevelSource, Type mainType, Type type)
-        {
-            var newList = new ArrayList(firstLevelSource.Count);
-            foreach (var item in firstLevelSource)
-            {
-                var newItem = Activator.CreateInstance(type);
-                foreach (var property in mainType.GetProperties().Where(t => t.IsCollectible))
-                {
-                    object value = null;
-                    if (property.PropertyType.GetUnderlyingType().IsEnum)
-                        value = (property.GetValue(item) as Enum).EnumText();
-                    else
-                        value = property.GetValue(item);
-                    type.GetProperty(property.Name).SetValue(newItem, value);
-                }
-                newList.Add(newItem);
-            }
-            return newList;
-        }
-
-        object GetObjectFromData(Type type, IList secondLevelData, Type mainType, IList<ReportParam> reportParams)
-        {
-            var item = Activator.CreateInstance(type);
-            var old = secondLevelData[0];
-            var oldType = old.GetType();
-            foreach(var info in type.GetProperties().Where(t => t.IsCollectible))
-            {
-                var tempType = info.PropertyType;
-                if(info.Name == "Details" && tempType.IsCollectionType() && tempType != typeof(string) && tempType != typeof(byte[]))
-                {
-                    var detailsType = tempType.GenericTypeArguments[0];
-                    var details = Activator.CreateInstance(typeof(List<>).MakeGenericType(detailsType)) as IList;
-                    
-                    foreach(var oldDeatil in secondLevelData)
-                    {
-                        var detail = Activator.CreateInstance(detailsType);
-                        foreach (var info1 in detailsType.GetProperties().Where(t => t.IsCollectible))
-                        {
-                            tempType = info1.PropertyType;
-                            if (info1.Name == "Details" && tempType.IsCollectionType() && tempType != typeof(string) && tempType != typeof(byte[]))
-                            {
-                                PropertyInfo keyInfo = null;
-                                var secondLevelSource = GetDataOfLevel(secondLevelData, reportParams, mainType, 2, out keyInfo);
-                                var detailsType1 = tempType.GenericTypeArguments[0];
-                                var details1 = Activator.CreateInstance(typeof(List<>).MakeGenericType(detailsType1)) as IList;
-                                var keyValue = detailsType.GetProperty(keyInfo.Name).GetValue(detail);
-                                var oldDetails1 = secondLevelSource.Single(t => Convert.ToInt32(keyValue) == t.Key).Values;
-                                foreach (var oldDetail1  in oldDetails1)
-                                {
-                                    var detail2 = Activator.CreateInstance(detailsType1);
-                                    foreach (var info2 in detailsType1.GetProperties().Where(t => t.IsCollectible))
-                                    {
-                                        var tempInfo = oldType.GetProperty(info2.Name);
-                                        var value = oldType.GetProperty(info2.Name).GetValue(oldDetail1);
-                                        if (tempInfo.PropertyType.GetUnderlyingType().IsEnum)
-                                            value = (value as Enum).EnumText();
-                                        info2.SetValue(detail2, value);
-                                    }
-                                    details1.Add(detail2);
-                                }
-
-                                info1.SetValue(detail, details1);
-                            }
-                            else
-                            {
-                                var tempInfo = oldType.GetProperty(info1.Name);
-                                var value = oldType.GetProperty(info1.Name).GetValue(oldDeatil);
-                                if (tempInfo.PropertyType.GetUnderlyingType().IsEnum)
-                                    value = (value as Enum).EnumText();
-                                info1.SetValue(detail, value);
-                            }
-
-                        }
-                        details.Add(detail);
-                    }
-                    info.SetValue(item, details);
-                }
-                else
-                {
-                    var tempInfo = oldType.GetProperty(info.Name);
-                    var value = oldType.GetProperty(info.Name).GetValue(old);
-                    if (tempInfo.PropertyType.GetUnderlyingType().IsEnum)
-                        value = (value as Enum).EnumText();
-                    info.SetValue(item, value);
-                }
-            }
-            return item;
-        }
-
-        public IList GetStumlData(IList source, IList<ReportParam> reportParams, Type mainType, int level)
-        {
-            Type type = GetStimuType(mainType, reportParams, level);
-            if (level == 1)
-                return GetStimulData(source, mainType, type);
-            if (level == 2)
-            {
-                var secondLevelSource = GetDataOfLevel(source, reportParams, mainType, 2, out _);
-                IList list = new ArrayList();
-                foreach (var item in secondLevelSource)
-                {
-                    var value = GetObjectFromData(type, item.Values, null, null);
-                    list.Add(value);
-                }
-                return list;
-            }
-            
-            if (level == 3)
-            {
-                var thirdLevelSource = GetDataOfLevel(source, reportParams, mainType, 3, out _);
-                IList list = new ArrayList();
-                foreach (var item in thirdLevelSource)
-                {
-                    var value = GetObjectFromData(type, item.Values, mainType, reportParams);
-
-
-                    list.Add(value);
-                }
-                return list;
-            }
-            return null;
-        }
-
-        IList<ReportLevelDada> GetDataOfLevel(IList source,IList<ReportParam> reportParams, Type type, int level, out PropertyInfo keyInfo)
-        {
-            var keyparam = reportParams.Single(t => t.DataLevel == level && t.ReportGroupParameter.IsKey);
-            keyInfo = type.GetProperty(keyparam.ReportGroupParameter.TitleEn.Replace(".", ""));
-            var values = new List<ReportLevelDada>();
-            foreach (var item in source)
-            {
-                var keyvalue = (int?)keyInfo.GetValue(item);
-                var old = values.SingleOrDefault(t => t.Key == keyvalue);
-                if (old == null)
-                {
-                    values.Add(new ReportLevelDada()
-                    {
-                        Key = keyvalue,
-                        Values = new ArrayList() { item },
-                    });
-                }
-                else
-                    old.Values.Add(item);
-            }
-            return values;
-        }
-
         public Type GetStimuType(Type mainType, IList<ReportParam> reportParams, int level)
         {
             var list = new List<DynamicProperty>();
@@ -574,10 +429,9 @@ namespace Caspian.Engine
             {
                 var type = GetStimuType(mainType, reportParams, level - 1);
                 type = typeof(IList<>).MakeGenericType(type);
-                list.Add(new DynamicProperty("Details", type));
+                list.Add(new DynamicProperty("__Details", type));
             }
             return DynamicClassFactory.CreateType(list);
-
         }
 
 
@@ -670,10 +524,14 @@ namespace Caspian.Engine
         }
     }
 
-    public class ReportLevelDada
+    public class ReportLevelData
     {
         public int? Key { get; set; }
 
+        public object Master { get; set; }
+
         public IList Values { get; set; }
+
+        public IList<ReportLevelData> Details { get; set; }
     }
 }

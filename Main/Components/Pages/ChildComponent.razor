@@ -1,28 +1,32 @@
 ﻿@page "/Test111"
+@page "/Test111/{Id:int}"
 @using Caspian.UI
 @using Demo.Model
 @using Microsoft.EntityFrameworkCore
 @using Stimulsoft.Report
 @using Stimulsoft.Report.Blazor
 @using Syncfusion.Blazor.DropDowns
-
-<div style="width:350px;height:50px;margin:50px auto">
-    <span>@countryId</span>
-    
-    <ComboBox CascadeService="Service" TValue="int?" TEntity="Country" @bind-Value="countryId" TextExpression="t => t.Title"  />
-</div>
-<div style="width:350px;height:50px;margin:10px auto">
-    <span>@(provinceId?.ToString() ?? "---")</span>
-    
-    <ComboBox TValue="int?" CascadeService="Service" TEntity="Province" @bind-Value="provinceId" TextExpression="t => t.Title" />
-</div>
-<div style="width:350px;height:50px;margin:10px auto">
-    <span>@(cityId?.ToString() ?? "---")</span>
-
-    <ComboBox TValue="int?" CascadeService="Service" TEntity="City" @bind-Value="cityId" TextExpression="t => t.Title" />
-</div>
+@if (Id == 0)
+{
+    <StiBlazorDesigner Report="report" />
+}
+else
+{
+    <StiBlazorViewer Report="report" />
+}
 @code
 {
-    CascadeService<Country, Province, City> Service = new();
-    int? countryId = 1, provinceId = 1, cityId = 1017;
+    StiReport report;
+    protected override void OnInitialized()
+    {
+        report = new StiReport();
+        //report.Load("d:\\report.mrt");
+        var customers = new Demo.Model.Context().Customers.Where(t => t.Orders.Any()).ToList();
+        report.RegBusinessObject("List", customers);
+        report.Dictionary.SynchronizeBusinessObjects(2);
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public int Id { get; set; }
 }

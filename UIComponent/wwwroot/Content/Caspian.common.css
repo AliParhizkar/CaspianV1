@@ -149,3 +149,14 @@
     border:none;
     height:31px;
 }
+
+
+.t-tabstrip .t-header {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #cdcdcd;
+    border-radius: 8px 8px 0 0;
+}
+
+.t-reset .t-item:not(.t-state-selected):nth-child(2n+1) {
+    background-color: #f0f1f5;
+}

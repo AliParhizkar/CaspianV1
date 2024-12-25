@@ -126,5 +126,8 @@ namespace Demo.Model
 
         [Display(Name = "دین")]
         Religion,
+        
+        [Display(Name = "گروه کاری")]
+        WorkGroup
     }
 }

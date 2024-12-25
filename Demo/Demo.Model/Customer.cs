@@ -40,14 +40,12 @@ namespace Demo.Model
         public string Tel { get; set; }
 
         [CheckOnDelete("The customer has Orders and can not be removed")]
-        public virtual IList<Order> Orders { get; set; }
+        public IList<Order> Orders { get; set; }
 
         [CheckOnDelete("Customer is member of group and can not be removed")]
-        public virtual IList<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
+        public IList<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
 
         [CheckOnDelete("Customer has Address and can not be removed")]
-        public virtual IList<CustomerAddress> CustomerAddresses { get; set; }
-
-        public virtual CustomerGroup CustomerGroup { get; set; }
+        public IList<CustomerAddress> CustomerAddresses { get; set; }
     }
 }

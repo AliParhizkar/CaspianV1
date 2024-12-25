@@ -48,6 +48,18 @@
 		<Content Include="Help\**" CopyToPublishDirectory="PreserveNewest" />
 	</ItemGroup>
 	<ItemGroup>
+		<_CustomFiles Include="$(MSBuildProjectDirectory)/PersistKey/*" />
+		<DotNetPublishFiles Include="@(_CustomFiles)">
+			<DestinationRelativePath>PersistKey/%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
+		</DotNetPublishFiles>
+	</ItemGroup>
+	<ItemGroup>
+		<_CustomFiles Include="$(MSBuildProjectDirectory)/../Demo/Demo.web/Help/**" />
+		<DotNetPublishFiles Include="@(_CustomFiles)">
+			<DestinationRelativePath>Help/%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
+		</DotNetPublishFiles>
+	</ItemGroup>
+	<ItemGroup>
 		<Compile Remove="Data\**" />
 		<Compile Remove="PersistKey\**" />
 		<Content Remove="Data\**" />

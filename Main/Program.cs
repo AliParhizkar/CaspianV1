@@ -42,11 +42,18 @@ namespace Main
             builder.Services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
                 .SetApplicationName("SharedCookieApp");
+            string domain = null;
             if (!builder.Environment.IsProduction())
+            {
                 CS.Con = builder.Configuration.GetConnectionString("TestDB");
+                domain = ".localhost";
+            }
             else
+            {
                 CS.Con = builder.Configuration.GetConnectionString("ServerDb");
-            var domain = builder.Configuration.GetSection("Authentication:Domain").Value;
+                domain = builder.Configuration.GetSection("Authentication:Domain").Value;
+            }
+            if (builder.Environment.IsStaging())
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = ".AspNet.SharedCookie";
@@ -59,8 +66,8 @@ namespace Main
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             }).AddIdentityCookies();
+            Stimulsoft.Base.StiLicense.Key = builder.Configuration.GetSection("StiLicenseKey").Value;
 
-            
 
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
