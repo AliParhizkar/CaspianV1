@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
+using Demo.Service;
+using FluentValidation;
 
 namespace Main
 {
@@ -86,7 +88,10 @@ namespace Main
             });
 
             builder.Services.AddScoped<CaspianDataService>();
+            new EmployeeService(null).ValidateAsync(new Employee(), t =>
+            {
 
+            });
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ReportParamService).Assembly.InjectServices(builder.Services);
             builder.Services.AddControllers();

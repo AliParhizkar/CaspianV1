@@ -5,13 +5,9 @@
 @using Caspian.UI
 @using Demo.Model
 @using Demo.Service
+@using FluentValidation
 @using Microsoft.EntityFrameworkCore
 @inject IServiceProvider provider
-
-@inject UIService<Employee> Service
-@inject UIService<Family> FamilyService
-@inject UIService<Address> AddressService
-@inject UIService<IdentificationDetail> IdentificationDetailService
 
 @inherits BasePage
 @{
@@ -55,5 +51,34 @@
 
 @code 
 {
+    protected override async Task OnInitializedAsync()
+    {
+        var service = CreateScope().GetService<EmployeeService>();
+        Employee employee = new()
+            {
+                Family = new Family()
+                {
+                }
+            };
+        var qqq = await service.ValidateAsync(employee, t =>
+        {
+            t.IncludeProperties("Family.");
+        });
 
+
+        //var service = CreateScope().GetService<OrderService>();
+        // Order order = new();
+        // order.OrderDeatils = new List<OrderDeatil>()
+        // {
+        //     new OrderDeatil()
+        //     {
+        //         ProductId = 8
+        //     }
+        // };
+        // var qqq = await service.ValidateAsync(order, t =>
+        // {
+        //     t.IncludeProperties("OrderDeatils[]");
+        // });
+        await base.OnInitializedAsync();
+    }
 }

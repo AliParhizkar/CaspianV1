@@ -13,6 +13,17 @@ namespace Caspian.UI
     {
         string title;
         bool disabled;
+
+        TDetail GetDetail()
+        {
+            var entity = TabPanel.Service.UpsertData;
+            if (typeof(TEntity) == typeof(TDetail))
+                return entity as TDetail;
+            var detailInfo = typeof(TEntity).GetProperties().Single(t => t.PropertyType == typeof(TDetail)); 
+            var detail = detailInfo.GetValue(entity) as TDetail ?? Activator.CreateInstance<TDetail>();
+            return detail;
+        }
+
         Type GetServiceType()
         {
             using var service = Factory.CreateScope().ServiceProvider.GetService<IBaseService<TDetail>>();
@@ -22,22 +33,14 @@ namespace Caspian.UI
         [Parameter]
         public int ColumnsCount { get; set; }
 
-        [Parameter]
-        public IUIService<TDetail> Service { get; set; }
-
         protected override void OnInitialized()
         {
-            if (Service == null)
-                throw new CaspianException($"خطا: Please specify service. You Should set \"Service\" Parameter by a service of type UIService<{typeof(TDetail).Name}>");
-            if (Child.Body.NodeType == ExpressionType.MemberAccess)
+            if (typeof(TEntity) != typeof(TDetail))
             {
                 var info = (Child.Body as MemberExpression).Member as PropertyInfo;
                 title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? info.Name;
             }
-
-            var entity = TabPanel.Service.UpsertData;
-            Service.EntityTabPanel = TabPanel;
-            Service.TabPanelInitialize();
+            TabPanel.Service.TabPanelItemInitialize(typeof(TDetail));
             base.OnInitialized();
         }
 
@@ -46,6 +49,9 @@ namespace Caspian.UI
 
         [Parameter]
         public Expression<Func<TEntity, TDetail>> Child { get; set; }
+
+        [Parameter]
+        public bool? Disabled { get; set; }
 
         [Parameter]
         public RenderFragment<TDetail> Content { get; set; }
@@ -60,23 +66,19 @@ namespace Caspian.UI
         {
             if (Title != null)
                 title = Title;
-            if (TabPanel.Service.MasterId > 0)
-            {
-                Service.MasterId = TabPanel.Service.MasterId;
-                var info = typeof(TDetail).GetPrimaryKey();
-                info.SetValue(Service.UpsertData, Convert.ChangeType(TabPanel.Service.MasterId, info.PropertyType));
-            }
             if (typeof(TEntity) == typeof(TDetail))
             {
                 var id = typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData);
-                Service.MasterId = Convert.ToInt32(id);
+                TabPanel.Service.MasterId = Convert.ToInt32(id);
                 if (TabPanel.Service.MasterId > 0)
                 {
                     var pKey = typeof(TDetail).GetPrimaryKey();
-                    pKey.SetValue(Service.UpsertData, Convert.ChangeType(TabPanel.Service.MasterId, pKey.PropertyType));
+                    pKey.SetValue(TabPanel.Service.UpsertData, Convert.ChangeType(TabPanel.Service.MasterId, pKey.PropertyType));
                 }
             }
             disabled = TabPanel.Service.MasterId == 0 && typeof(TEntity) != typeof(TDetail);
+            if (Disabled.HasValue)
+                disabled = Disabled.Value;
             base.OnParametersSet();
         }
     }

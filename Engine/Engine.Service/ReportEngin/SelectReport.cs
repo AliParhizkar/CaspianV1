@@ -405,7 +405,7 @@ namespace Caspian.Engine
                     }
                     if (name.HasValue())
                     {
-                        var propertyInfo = type.GetProperty(name);
+                        var propertyInfo = type.GetProperty(name.Replace(".", ""));
                         propertyInfo.SetValue(obj, tempValue);
                     }
                 }

@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="p-4 pt-1">
-                <DataGrid Service="Service" TEntity="Employee" ShowInsertIcon="true" OnUpsert="OpenNewPage">
+                <DataGrid Service="Service" TEntity="Employee" OnUpsert="OpenNewPage">
                     <Columns>
                         <GridColumn Field="t => t.EmploymentNo" Title="شماره مستخدم" />
                         <GridColumn Field="t => t.FName + ' ' + t.LName" Title="نام نام خانوادگی" />

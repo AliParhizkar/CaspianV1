@@ -46,6 +46,11 @@ namespace Caspian.UI
             throw new NotImplementedException();
         }
 
+        public void TabPanelItemInitialize(Type detailType)
+        {
+            throw new NotImplementedException();
+        }
+
         public int MasterId { get; set; }
 
         public TMaster UpsertData { get; protected set; }
@@ -273,6 +278,8 @@ namespace Caspian.UI
         void ClearForm();
 
         void TabPanelInitialize();
+
+        void TabPanelItemInitialize(Type detailType);
 
         IEntityTabPanel EntityTabPanel { get; set; }
     }

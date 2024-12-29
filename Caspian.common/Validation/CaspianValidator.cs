@@ -104,15 +104,6 @@ namespace Caspian.Common
 
         public IServiceProvider ServiceProvider { get; private set; }
 
-        protected override void OnRuleAdded(IValidationRule<TModel> rule)
-        {
-            if (rule.PropertyName == "Family")
-            {
-                var method = rule.GetType().GetProperty("PropertyFunc", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).GetValue(rule);
-            }
-            base.OnRuleAdded(rule);
-        }
-
         public CaspianContext Context { get; private set; }
     }
 }

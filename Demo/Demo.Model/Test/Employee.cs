@@ -12,7 +12,7 @@ namespace Demo.Model
         public int Id { get; set; }
 
         [DisplayName("حوزه")]
-        public int? ScopeId { get; set; }
+        public int ScopeId { get; set; }
 
         [ForeignKey(nameof(ScopeId))]
         public SimpleData Scope { get; set; }

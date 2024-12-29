@@ -1,5 +1,7 @@
-﻿input {
-    outline:none;
+﻿input, div {
+    outline: none;
+}
+input {
     font-size:14px;
 }
 /*control icon*/

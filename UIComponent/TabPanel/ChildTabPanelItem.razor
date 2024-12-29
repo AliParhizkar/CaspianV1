@@ -4,15 +4,13 @@
 @inject IServiceScopeFactory Factory
 
 @{
-    var detail = Service.UpsertData;
-    Console.WriteLine(typeof(TDetail).GetProperty("Id").GetValue(detail));
+    var detail = GetDetail();
 }
 <TabPanelItem Title="@title" Disable="disabled">
-    <Caspian.UI.CaspianForm Service="Service" TEntity="TDetail" Model="detail" ColumnsCount="ColumnsCount">
-        <Caspian.UI.CaspianValidationValidator ValidatorType="GetServiceType()" />
+    <CaspianForm Service="TabPanel.Service" Model="TabPanel.Service.UpsertData">
         @if (Content != null)
         {
             @Content(detail)
         }
-    </Caspian.UI.CaspianForm>
+    </CaspianForm>
 </TabPanelItem>

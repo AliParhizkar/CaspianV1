@@ -1,11 +1,11 @@
-﻿using Caspian.Common;
+﻿using System.Data;
+using Caspian.Common;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using System.Data;
 
 namespace Caspian.UI
 {
@@ -63,8 +63,6 @@ namespace Caspian.UI
                 firstControl = control;
             
         }
-
-
 
         [Parameter]
         public int ColumnsCount { get; set; } = 1;

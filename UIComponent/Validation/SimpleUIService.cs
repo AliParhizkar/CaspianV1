@@ -3,19 +3,20 @@ using System.Reflection;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using Caspian.Common.Extension;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.UI
 {
     public class UIService<TEntity>: IUIService, IUIService<TEntity> where TEntity : class
     {
+        bool isLookup;
+        Type curentDetail;
+        IJSRuntime jSRuntime;
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
-        IJSRuntime jSRuntime;
-        bool isLookup;
 
         internal void IsLookup()
         {
@@ -33,6 +34,11 @@ namespace Caspian.UI
             this.serviceProvider = serviceProvider;
             Search = Activator.CreateInstance<TEntity>();
             UpsertData = Activator.CreateInstance<TEntity>();
+        }
+
+        public void TabPanelItemInitialize(Type detailType)
+        {
+            this.curentDetail = detailType;
         }
 
         public Window Window { get; set; }
@@ -63,6 +69,8 @@ namespace Caspian.UI
             Is1To1RelationshipService = true;
         }
 
+
+
         public Func<TEntity, Task<bool>> OnUpsert { get; set; }
 
         public void FormInitialize()
@@ -76,12 +84,15 @@ namespace Caspian.UI
                     await Window?.Close();
                 StateHasChanged();
             });
-            Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, async entity =>
+            Form.OnInternalSubmit = EventCallback.Factory.Create<TEntity>(this, entity =>
             {
-                if (UpsertData != entity)
+                if (curentDetail != typeof(TEntity))
                 {
 
                 }
+            });
+            Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, async entity =>
+            {
                 var result = true;
                 if (OnUpsert != null)
                     result = await OnUpsert.Invoke(UpsertData);
@@ -139,10 +150,6 @@ namespace Caspian.UI
             if (baseComponentService.Target == null)
                 throw new CaspianException("You must inherits from BasePage or configure page manioaly");
             var method = typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic);
-            if (method == null)
-            {
-
-            }
             method?.Invoke(baseComponentService.Target, null);
         }
 
