@@ -4,7 +4,7 @@
         <TabPanelItem Title="Customer">
             <CaspianForm Service="Service">
                 <Content Context="address">
-                    <CaspianValidationValidator ValidatorType="typeof(CustomerAndAddressService)" />
+                    <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerAndAddressService)" />
                     <div class="row p-4 c-controls">
                         <div class="col-md-4">
                             <label>Customer Type</label>

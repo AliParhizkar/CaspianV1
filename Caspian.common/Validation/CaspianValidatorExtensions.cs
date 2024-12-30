@@ -15,6 +15,18 @@ namespace Caspian.Common
 {
     public static class CaspianValidatorExtensions
     {
+        public static string GetPropertyPath<TModel>(this ValidationContext<TModel> context)
+        {
+            var propertyName = context.PropertyPath;
+            if (context.IsChildContext)
+            {
+                var basePath = context.PropertyChain.BuildPropertyPath("") + '.';
+                if (propertyName.StartsWith(basePath))
+                    propertyName = propertyName.Substring(basePath.Length);
+            }
+            return propertyName;
+        }
+
         public static IRuleBuilderOptionsConditions<TModel, TProperty> Custom<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
             Func<TModel, bool> func, string message)
         {
@@ -32,7 +44,7 @@ namespace Caspian.Common
             {
                 if (value != null && !value.Equals(0))
                 {
-                    var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.PropertyPath);
+                    var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.GetPropertyPath());
                     var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
                     var provider = context.RootContextData["__ServiceScope"] as IServiceProvider;
                     var service = provider.GetService(serviceType) as IBaseService;
@@ -58,7 +70,7 @@ namespace Caspian.Common
             {
                 if (value != null && !value.Equals(0))
                 {
-                    var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.PropertyPath);
+                    var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.GetPropertyPath());
                     var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
                     var provider = context.RootContextData["__ServiceScope"] as IServiceProvider;
                     var service = provider.GetService(serviceType) as IBaseService;
@@ -96,12 +108,12 @@ namespace Caspian.Common
                         expr = Expression.Property(expr, "Value");
                     return Expression.Equal(expr, Expression.Constant(value));
                 }
+                var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.GetPropertyPath());
                 expr = path.Body;
                 if (expr.NodeType == ExpressionType.Convert)
                     expr = (expr as UnaryExpression).Operand;
                 var str = expr.ToString();
                 str = str.Substring(str.IndexOf('.') + 1);
-                var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.PropertyPath);
                 if (!str.StartsWith(info.Name))
                     throw new CaspianException($"خطا: PathExpression should started width {context.PropertyPath}");
                 str = str.Substring(str.IndexOf('.') + 1);

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Caspian.UI
 {
-    public class CaspianValidationValidator: ComponentBase, IControlFocuseValidation
+    public class CaspianValidationValidator<TModel>: ComponentBase, IControlFocuseValidation where TModel : class
     {
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
@@ -32,7 +32,7 @@ namespace Caspian.UI
         private EditContext EditContext { get; set; }
 
         [CascadingParameter(Name = "ParentForm")]
-        private ICaspianForm CaspianForm { get; set; }
+        private ICaspianForm<TModel> CaspianForm { get; set; }
 
         [Parameter]
         public Type ValidatorType { get; set; }
@@ -48,7 +48,7 @@ namespace Caspian.UI
 
         public string MasterIdName { get; set; }
 
-        IValidator Validator;
+        IValidator<TModel> Validator;
         ValidationMessageStore ValidationMessageStore;
 
         public bool IsFirstInvalidControl { get; set; }
@@ -77,7 +77,7 @@ namespace Caspian.UI
                 dataService.UserId = CaspianDataService.UserId;
                 dataService.Language = CaspianDataService.Language;
             }
-            Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
+            Validator = (IValidator<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             var result = await Validator.ValidateAsync(context);
             AddValidationResult(EditContext.Model, result);
         }
@@ -93,11 +93,20 @@ namespace Caspian.UI
                 dataService.UserId = CaspianDataService.UserId;
                 dataService.Language = CaspianDataService.Language;
             }
-            Validator = (IValidator)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
+            Validator = (IValidator<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             (Validator as ICaspianValidator).BatchServiceData = BatchServiceData;
             if (Source != null)
                 (Validator as IBaseService).SetSource(Source);
-            var asyncValidationTask = Validator.ValidateAsync(context, );
+            Task<ValidationResult> asyncValidationTask;
+            if (EditContext.Properties.TryGetValue("DetailType", out _))
+            {
+                asyncValidationTask = Validator.ValidateAsync(EditContext.Model as TModel, t =>
+                {
+                    //t.IncludeRuleSets("default");
+                });
+            }
+            else
+                asyncValidationTask = Validator.ValidateAsync(EditContext.Model as TModel);
             EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
             var result = await asyncValidationTask;
 
@@ -128,7 +137,7 @@ namespace Caspian.UI
             var previousValidatorType = ValidatorType;
             await base.SetParametersAsync(parameters);
             if (EditContext == null)
-                throw new NullReferenceException($"{nameof(CaspianValidationValidator)} must be placed within an CaspianForm");
+                throw new NullReferenceException($"{nameof(CaspianValidationValidator<TModel>)} must be placed within an CaspianForm");
             if (ValidatorType == null)
                 throw new NullReferenceException($"{nameof(ValidatorType)} must be specified.");
             if (!typeof(IValidator).IsAssignableFrom(ValidatorType))
@@ -163,15 +172,21 @@ namespace Caspian.UI
                     FormAppState.ValidationChecking = false;
                     await control.FocusAsync();
                 }
-                else if (FormAppState.ErrorMessage !=  null)    
+                else if (FormAppState.ErrorMessage !=  null)
+                {
                     await JSRuntime.InvokeVoidAsync("caspian.common.showMessage", FormAppState.ErrorMessage);
+                    FormAppState.ErrorMessage = null;
+                }
             }
             if (CaspianForm == null && FormAppState.AllControlsIsValid)
             {
                 if (FormAppState.Control?.InputElement == null)
                 {
                     if (FormAppState.ErrorMessage.HasValue())
+                    {
                         await JSRuntime.InvokeVoidAsync("caspian.common.showMessage", FormAppState.ErrorMessage);
+                        FormAppState.ErrorMessage = null;
+                    }
                 }
                 else
                     await FormAppState.Control.FocusAsync();

@@ -13,15 +13,15 @@ namespace Caspian.UI
     {
         string title;
         bool disabled;
+        int tabIndex;
 
-        TDetail GetDetail()
+        bool CheckDetailIsNotEmpty()
         {
             var entity = TabPanel.Service.UpsertData;
             if (typeof(TEntity) == typeof(TDetail))
-                return entity as TDetail;
+                return true;
             var detailInfo = typeof(TEntity).GetProperties().Single(t => t.PropertyType == typeof(TDetail)); 
-            var detail = detailInfo.GetValue(entity) as TDetail ?? Activator.CreateInstance<TDetail>();
-            return detail;
+            return detailInfo.GetValue(entity)  != null;
         }
 
         Type GetServiceType()
@@ -31,18 +31,21 @@ namespace Caspian.UI
         }
 
         [Parameter]
-        public int ColumnsCount { get; set; }
+        public int ColumnsCount { get; set; } = 1;
 
         protected override void OnInitialized()
         {
+            tabIndex = TabPanel.GetTabIndex();
             if (typeof(TEntity) != typeof(TDetail))
             {
                 var info = (Child.Body as MemberExpression).Member as PropertyInfo;
                 title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? info.Name;
             }
-            TabPanel.Service.TabPanelItemInitialize(typeof(TDetail));
+            else
+                title = "مشخصات اصلی";
             base.OnInitialized();
         }
+
 
         [CascadingParameter]
         public EntityTabPanel<TEntity> TabPanel { get; set; }
@@ -54,21 +57,18 @@ namespace Caspian.UI
         public bool? Disabled { get; set; }
 
         [Parameter]
-        public RenderFragment<TDetail> Content { get; set; }
+        public RenderFragment ChildContent { get; set; }
 
         [Parameter]
         public string Title { get; set; }
-
-        [Parameter]
-        public RenderFragment Template { get; set; }
 
         protected override void OnParametersSet()
         {
             if (Title != null)
                 title = Title;
+            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData));
             if (typeof(TEntity) == typeof(TDetail))
             {
-                var id = typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData);
                 TabPanel.Service.MasterId = Convert.ToInt32(id);
                 if (TabPanel.Service.MasterId > 0)
                 {
@@ -76,10 +76,17 @@ namespace Caspian.UI
                     pKey.SetValue(TabPanel.Service.UpsertData, Convert.ChangeType(TabPanel.Service.MasterId, pKey.PropertyType));
                 }
             }
-            disabled = TabPanel.Service.MasterId == 0 && typeof(TEntity) != typeof(TDetail);
-            if (Disabled.HasValue)
-                disabled = Disabled.Value;
+            //disabled = TabPanel.Service.MasterId == 0 && typeof(TEntity) != typeof(TDetail);
+            //if (Disabled.HasValue)
+            //    disabled = Disabled.Value;
             base.OnParametersSet();
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            if (tabIndex == TabPanel.GetSelectedTabPanelIndex() && typeof(TEntity) != typeof(TDetail))
+                await TabPanel.Service.UpdateChildOfModelAsync(typeof(TDetail));
+            await base.OnParametersSetAsync();
         }
     }
 }

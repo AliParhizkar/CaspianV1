@@ -185,7 +185,22 @@ namespace Caspian.UI
                 InputAttributes["tabindex"] = TabIndex;
             if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
             {
-                _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
+                var expr = ValueExpression.Body;
+                string str = null;
+                while (expr.NodeType != ExpressionType.Constant)
+                {
+                    if (expr.NodeType == ExpressionType.MemberAccess)
+                    {
+                        if (str != null)
+                            str = $".{str}";
+                        str = (expr as MemberExpression).Member.Name + str;
+                        expr = (expr as MemberExpression).Expression;
+                    }
+                    else
+                        throw new NotImplementedException("خطای عدم پیاه سازی");
+                }
+                var index = str.IndexOf('.');
+                _FieldName = str.Substring(index + 1);
                 _messageStore = new ValidationMessageStore(CurrentEditContext);
                 // CurrentEditContext.OnValidationRequested -= CurrentEditContext_OnValidationRequested;
                 // CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;

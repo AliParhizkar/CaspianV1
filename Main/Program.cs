@@ -70,7 +70,6 @@ namespace Main
             }).AddIdentityCookies();
             Stimulsoft.Base.StiLicense.Key = builder.Configuration.GetSection("StiLicenseKey").Value;
 
-
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
@@ -88,10 +87,6 @@ namespace Main
             });
 
             builder.Services.AddScoped<CaspianDataService>();
-            new EmployeeService(null).ValidateAsync(new Employee(), t =>
-            {
-
-            });
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ReportParamService).Assembly.InjectServices(builder.Services);
             builder.Services.AddControllers();

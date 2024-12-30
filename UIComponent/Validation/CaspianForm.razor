@@ -21,7 +21,7 @@
         <CascadingValue Value="this" Name="ParentForm">
             @if (serviceType != null)
             {
-                <CaspianValidationValidator ValidatorType="serviceType" />
+                <CaspianValidationValidator TModel="TEntity" ValidatorType="serviceType" />
             }
             @if (ColumnsCount > 1)
             {

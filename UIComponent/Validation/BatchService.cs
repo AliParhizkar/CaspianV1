@@ -18,6 +18,11 @@ namespace Caspian.UI
         protected IJSRuntime jSRuntime;
         protected BatchServiceData batchServiceData;
 
+        public async Task UpdateChildOfModelAsync(Type type)
+        {
+            throw new NotImplementedException();
+        }
+
         public BatchService(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
@@ -50,6 +55,8 @@ namespace Caspian.UI
         {
             throw new NotImplementedException();
         }
+
+        public Type DetailType { get; private set; }
 
         public int MasterId { get; set; }
 
@@ -273,11 +280,15 @@ namespace Caspian.UI
 
         Task FetchAsync();
 
+        Task UpdateChildOfModelAsync(Type childType);
+
         TEntity UpsertData { get; }
 
         void ClearForm();
 
         void TabPanelInitialize();
+
+        Type DetailType { get;}
 
         void TabPanelItemInitialize(Type detailType);
 

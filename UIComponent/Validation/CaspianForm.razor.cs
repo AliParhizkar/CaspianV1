@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
-    public partial class CaspianForm<TEntity>: ICaspianForm where TEntity : class
+    public partial class CaspianForm<TEntity>: ICaspianForm<TEntity> where TEntity : class
     {
         string ErrorMessage;
         bool checkValidation;
@@ -83,7 +83,7 @@ namespace Caspian.UI
             }
         }
 
-        public CaspianValidationValidator ValidationValidator { get; set; }
+        public CaspianValidationValidator<TEntity> ValidationValidator { get; set; }
 
         public IControl GetFirstInvalidControl()
         {
@@ -122,6 +122,10 @@ namespace Caspian.UI
 
         async Task OnFormSubmitHandler(EditContext context)
         {
+            if (context.Model != Service.UpsertData)
+            {
+
+            }
             addControls = true;
             controls.Clear();
             await Task.Delay(10);
@@ -133,6 +137,8 @@ namespace Caspian.UI
             FormAppState.AllControlsIsValid = true;
             FormAppState.ErrorMessage = null;
             ErrorMessage = null;
+            if (Service.DetailType != null)
+                EditContext.Properties["DetailType"] = Service.DetailType;
             EditContext.Validate();
             EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
             if (ValidationValidator == null)

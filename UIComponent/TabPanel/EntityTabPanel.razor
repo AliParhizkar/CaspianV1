@@ -2,16 +2,21 @@
 @typeparam TEntity where TEntity : class
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 @implements IEntityTabPanel
-<TabPanel Vertical="Vertical">
+<TabPanel @ref="tabPanel" Vertical="Vertical">
     <Tabs>
         <CascadingValue Value="this">
-            @ChildContent(Service.UpsertData)
+            @if (Content != null)
+            {
+                @Content(Service.UpsertData)
+            }
         </CascadingValue>
     </Tabs>
 </TabPanel>
 
 @code
 {
+    int tabIndex;
+    TabPanel tabPanel;
     protected override void OnInitialized()
     {
         Service.EntityTabPanel = this;
@@ -19,8 +24,26 @@
         base.OnInitialized();
     }
 
+    void ChangeTabIndex(int tabIndex)
+    {
+        //TabPanelSelected?.Invoke(tabIndex);
+    }
+
+    internal int GetSelectedTabPanelIndex()
+    {
+        return tabPanel.TabIndex;
+    }
+
+    internal Action<int> TabPanelSelected { get; private set; }
+
+    internal int GetTabIndex()
+    {
+        tabIndex++;
+        return tabIndex;
+    }
+
     [Parameter]
-    public RenderFragment<TEntity> ChildContent { get; set; }
+    public RenderFragment<TEntity> Content { get; set; }
 
     [Parameter]
     public IUIService<TEntity> Service { get; set; }

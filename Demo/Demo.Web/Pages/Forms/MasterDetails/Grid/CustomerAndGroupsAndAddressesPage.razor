@@ -22,7 +22,7 @@
                             @{
                                 var customerType = customer.CustomerType;
                             }
-                            <CaspianValidationValidator ValidatorType="typeof(CustomerGroupAddressService)" />
+                            <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerGroupAddressService)" />
                             <div class="c-controls row p-2  ">
                                 <div class="col-md-2">
                                     <label>Customer Type</label>

@@ -1,8 +1,8 @@
 ﻿@namespace Caspian.UI
-@typeparam TEntity
+@typeparam TEntity where TEntity: class
 <div class="c-grid-inline">
     <CaspianForm Model="Entities">
-        <CaspianValidationValidator ValidatorType="ValidatorType" />
+        <CaspianValidationValidator TModel="TEntity" ValidatorType="ValidatorType" />
         <table>
             @foreach(var entity in Entities)
             {

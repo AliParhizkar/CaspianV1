@@ -21,12 +21,13 @@ namespace Caspian.Common.Service
 
         public void SetSource(object obj)
         {
-            var qqq = typeof(TEntity);
             if (obj != null &&  obj is ICollection<TEntity>)
             {
                 Source = (obj as List<TEntity>).AsReadOnly();
             }
         }
+
+        public Type DetailType { get; set; }
 
         public TService GetService<TService>() where TService : class 
         {
@@ -57,11 +58,16 @@ namespace Caspian.Common.Service
                 throw new CaspianException(result.Errors[0].ErrorMessage);
             if (Context.Entry(entity).State != EntityState.Modified)
             {
-                var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-                var info = typeof(TEntity).GetOneToOnePropertyInfo();
                 var query = GetAll();
-                if (info != null)
-                    query = query.Include(info.Name);
+                var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+                PropertyInfo info = null;
+                if (DetailType != null && DetailType != typeof(TEntity))
+                {
+                    info = typeof(TEntity).GetOneToOnePropertyInfo(DetailType);
+                    if (info != null)
+                        query = query.Include(info.Name);
+                }
+
                 var old = await query.SingleAsync(id);
                 if (info != null)
                 {

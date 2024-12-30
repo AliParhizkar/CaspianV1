@@ -30,7 +30,7 @@ namespace Caspian.UI
         protected IDictionary<string, LambdaExpression> expressionList;
         protected int pageNumber = 1;
         protected Type serviceType;
-        protected CaspianValidationValidator validator;
+        protected CaspianValidationValidator<TEntity> validator;
         protected IList<TEntity> items;
         protected bool disableInsertIcon;
         protected bool? showInsertIcon;

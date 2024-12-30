@@ -11,8 +11,6 @@ namespace Caspian.UI
 
         EditContext EditContext { get; }
 
-        CaspianValidationValidator ValidationValidator { get; set; }
-
         IControl GetFirstInvalidControl();
 
         string MasterIdName { get; set; }
@@ -20,8 +18,8 @@ namespace Caspian.UI
         bool IgnoreOnValidSubmit { get; set; }
     }
 
-    internal interface ICaspianForm<TEntity>
+    internal interface ICaspianForm<TEntity>: ICaspianForm where TEntity : class
     {
-        EventCallback<EditContext> OnInternalInvalidSubmit { get; set; }
+        CaspianValidationValidator<TEntity> ValidationValidator { get; set; }
     }
 }

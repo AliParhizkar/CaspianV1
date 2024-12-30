@@ -637,9 +637,6 @@ input[type='range']::-webkit-slider-thumb {
         border-radius: 8px 0 0 0;
         border-bottom: none;
     }
-    .t-tabstrip.t-vertical .t-content{
-        width:calc(100% - 160px);
-    }
     .t-tabstrip.t-vertical .t-tabstrip-items {
         width: 160px;
         height: auto;
@@ -658,6 +655,9 @@ input[type='range']::-webkit-slider-thumb {
             padding:4px!important;
             margin:0!important;
         }
+.t-tabstrip.t-vertical >.t-content{
+    width:calc(100% - 160px);
+}
 .c-form-action button {
     min-width: 65px;
 }

@@ -13,7 +13,7 @@ namespace Caspian.UI
     public class UIService<TEntity>: IUIService, IUIService<TEntity> where TEntity : class
     {
         bool isLookup;
-        Type curentDetail;
+        
         IJSRuntime jSRuntime;
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
@@ -23,9 +23,29 @@ namespace Caspian.UI
             isLookup = true;
         }
 
+        public Type DetailType { get; private set; }
+
         public bool Is1To1RelationshipService { get; private set; }
 
         public int MasterId { get; set; }
+
+        public async Task UpdateChildOfModelAsync(Type childType)
+        {
+            var info = typeof(TEntity).GetProperties().Single(t => t.PropertyType == childType);
+            var detail = info.GetValue(UpsertData);
+            if (detail == null)
+            {
+                if (MasterId > 0)
+                {
+                    using var service = CreateScope().GetService<IBaseService<TEntity>>();
+                    var old = await service.GetAll().Include(info.Name).SingleAsync(MasterId);
+                    detail = info.GetValue(old);
+                }
+                if (detail == null)
+                    detail = Activator.CreateInstance(childType);
+            }
+            info.SetValue(UpsertData, detail);
+        }
 
         public UIService(IServiceProvider serviceProvider) 
         {
@@ -38,7 +58,7 @@ namespace Caspian.UI
 
         public void TabPanelItemInitialize(Type detailType)
         {
-            this.curentDetail = detailType;
+            this.DetailType = detailType;
         }
 
         public Window Window { get; set; }
@@ -69,8 +89,6 @@ namespace Caspian.UI
             Is1To1RelationshipService = true;
         }
 
-
-
         public Func<TEntity, Task<bool>> OnUpsert { get; set; }
 
         public void FormInitialize()
@@ -86,10 +104,7 @@ namespace Caspian.UI
             });
             Form.OnInternalSubmit = EventCallback.Factory.Create<TEntity>(this, entity =>
             {
-                if (curentDetail != typeof(TEntity))
-                {
 
-                }
             });
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
@@ -104,6 +119,7 @@ namespace Caspian.UI
                 var isAdd = false   ;
                 if (Is1To1RelationshipService)
                 {
+                    service.DetailType = DetailType != typeof(TEntity) ? DetailType : null;
                     var pKeyName = typeof(TEntity).GetPrimaryKey().Name;
                     if (typeof(TEntity).GetProperties().Any(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pKeyName))
                     {
