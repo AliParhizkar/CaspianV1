@@ -19,7 +19,10 @@ namespace Caspian.Common.Service
                 BatchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
             var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetails));
             BatchServiceData.DetailPropertiesInfo.Add(detailsproperty);
+            Source = new List<TDetails>();
         }
+
+        protected internal IEnumerable<TDetails> Source { get; set; }
 
         protected override void OnRuleAdded(IValidationRule<TMaster> rule)
         {

@@ -38,7 +38,5 @@ namespace Caspian.Common.Service
         IQueryable GetAllRecords();
 
         Task<bool> AnyAsync(int id);
-
-        void SetSource(object source);
     }
 }

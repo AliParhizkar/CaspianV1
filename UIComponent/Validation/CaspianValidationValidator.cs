@@ -42,9 +42,6 @@ namespace Caspian.UI
         [Parameter]
         public bool OnlyValidateOnSubmit { get; set; } = true;
 
-        [Parameter]
-        public object Source { get; set; }
-
         [CascadingParameter]
         private Task<AuthenticationState> authenticationStateTask { get; set; }
 
@@ -97,8 +94,6 @@ namespace Caspian.UI
             }
             Validator = (IValidator<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             (Validator as ICaspianValidator).BatchServiceData = BatchServiceData;
-            if (Source != null)
-                (Validator as IBaseService).SetSource(Source);
             Task<ValidationResult> asyncValidationTask;
             if (EditContext.Properties.TryGetValue("DetailType", out var objeDetail) && objeDetail != null)
                 asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objeDetail);

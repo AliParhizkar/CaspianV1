@@ -1,12 +1,10 @@
 ﻿using System;
 using Demo.Model;
-using System.Linq;
 using Caspian.Common;
 using FluentValidation;
 using Caspian.Common.Service;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {
@@ -16,7 +14,7 @@ namespace Demo.Service
             : base(provider)
         {
             RuleFor(t => t.QuantityMain).Custom(t => t.QuantityMain == 0 && t.QuantitySub == null, "This parameter must be greater than zero.");
-            RuleFor(t => t.MaterialId).Custom(t=> Source != null && Source.Any(u => t.MaterialId == u.MaterialId && u != t), "This item is in the warehouse receipt.");
+            //RuleFor(t => t.MaterialId).Custom(t=> Source != null && Source.Any(u => t.MaterialId == u.MaterialId && u != t), "This item is in the warehouse receipt.");
             RuleFor(t => t.QuantitySub).CustomAsync(async t =>
             {
                 if (t.MaterialId > 0)

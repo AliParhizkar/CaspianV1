@@ -13,19 +13,11 @@ namespace Caspian.Common.Service
 {
     public class BaseService<TEntity> : CaspianValidator<TEntity>, IBaseService, IDisposable, IBaseService<TEntity> where TEntity : class
     {
-        protected ReadOnlyCollection<TEntity> Source;
+        
         public BaseService(IServiceProvider provider)
             :base(provider)
         {
             
-        }
-
-        public void SetSource(object obj)
-        {
-            if (obj != null &&  obj is ICollection<TEntity>)
-            {
-                Source = (obj as List<TEntity>).AsReadOnly();
-            }
         }
 
         public Type DetailType { get; set; }
