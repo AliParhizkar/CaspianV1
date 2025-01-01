@@ -140,7 +140,6 @@ namespace Caspian.UI
             if (Service.DetailType != null)
                 EditContext.Properties["DetailType"] = Service.DetailType;
             EditContext.Validate();
-            EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
             if (ValidationValidator == null)
             {
                 var services = provider.GetServices<IBaseService<TEntity>>();
@@ -161,6 +160,7 @@ namespace Caspian.UI
 
                 }
             }
+            EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
             var result = await (Task<ValidationResult>)asyncValidationTask;
             if (result.IsValid)
             {

@@ -286,8 +286,6 @@ namespace Caspian.UI
 
         void ClearForm();
 
-        void TabPanelInitialize();
-
         Type DetailType { get;}
 
         void TabPanelItemInitialize(Type detailType);

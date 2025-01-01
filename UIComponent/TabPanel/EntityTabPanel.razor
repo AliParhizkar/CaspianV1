@@ -2,7 +2,7 @@
 @typeparam TEntity where TEntity : class
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 @implements IEntityTabPanel
-<TabPanel @ref="tabPanel" Vertical="Vertical">
+<TabPanel @ref="tabPanel" TabIndexChanged="UpdateService" Vertical="Vertical">
     <Tabs>
         <CascadingValue Value="this">
             @if (Content != null)
@@ -17,27 +17,24 @@
 {
     int tabIndex;
     TabPanel tabPanel;
+    IList<Type> childTypes;
+
+    async Task UpdateService(int tabIndex)
+    {
+        var type = childTypes[tabIndex - 1];
+        await Service.UpdateChildOfModelAsync(type);
+    }
+
     protected override void OnInitialized()
     {
+        childTypes = new List<Type>();
         Service.EntityTabPanel = this;
-        Service.TabPanelInitialize();
         base.OnInitialized();
     }
 
-    void ChangeTabIndex(int tabIndex)
+    internal int GetTabIndex(Type childType)
     {
-        //TabPanelSelected?.Invoke(tabIndex);
-    }
-
-    internal int GetSelectedTabPanelIndex()
-    {
-        return tabPanel.TabIndex;
-    }
-
-    internal Action<int> TabPanelSelected { get; private set; }
-
-    internal int GetTabIndex()
-    {
+        childTypes.Add(childType);
         tabIndex++;
         return tabIndex;
     }

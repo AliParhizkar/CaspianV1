@@ -31,20 +31,24 @@ namespace Caspian.UI
 
         public async Task UpdateChildOfModelAsync(Type childType)
         {
-            var info = typeof(TEntity).GetProperties().Single(t => t.PropertyType == childType);
-            var detail = info.GetValue(UpsertData);
-            if (detail == null)
+            DetailType = childType;
+            if (childType != typeof(TEntity) && UpsertData != null)
             {
-                if (MasterId > 0)
-                {
-                    using var service = CreateScope().GetService<IBaseService<TEntity>>();
-                    var old = await service.GetAll().Include(info.Name).SingleAsync(MasterId);
-                    detail = info.GetValue(old);
-                }
+                var info = typeof(TEntity).GetProperties().Single(t => t.PropertyType == childType);
+                var detail = info.GetValue(UpsertData);
                 if (detail == null)
-                    detail = Activator.CreateInstance(childType);
+                {
+                    if (MasterId > 0)
+                    {
+                        using var service = CreateScope().GetService<IBaseService<TEntity>>();
+                        var old = await service.GetAll().Include(info.Name).SingleAsync(MasterId);
+                        detail = info.GetValue(old);
+                    }
+                    if (detail == null)
+                        detail = Activator.CreateInstance(childType);
+                }
+                info.SetValue(UpsertData, detail);
             }
-            info.SetValue(UpsertData, detail);
         }
 
         public UIService(IServiceProvider serviceProvider) 
@@ -115,6 +119,7 @@ namespace Caspian.UI
                     return;
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
+                service.DetailType = DetailType;
                 string message = null;
                 var isAdd = false   ;
                 if (Is1To1RelationshipService)

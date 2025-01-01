@@ -20,7 +20,16 @@ namespace Caspian.Common.Extension
         public static bool IsNumberType(this Type type)
         {
             return NumericTypes.Contains(type);
+        }
 
+        public static bool Is1To1Relation(this PropertyInfo info)
+        {
+            var type = info.PropertyType;
+            if (type.GetUnderlyingType().IsValueType || type == typeof(string) || type == typeof(byte[]) || type.IsCollectionType())
+                return false;
+            if (info.GetCustomAttribute<ForeignKeyAttribute>() != null)
+                return false;
+            return true;
         }
 
         public static bool IsNullableType(this PropertyInfo info)

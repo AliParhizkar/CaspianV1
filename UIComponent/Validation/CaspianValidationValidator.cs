@@ -2,12 +2,14 @@
 using FluentValidation;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
+using Caspian.Common.Extension;
 using FluentValidation.Results;
 using FluentValidation.Internal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
+using FluentValidation.Validators;
 
 namespace Caspian.UI
 {
@@ -98,18 +100,12 @@ namespace Caspian.UI
             if (Source != null)
                 (Validator as IBaseService).SetSource(Source);
             Task<ValidationResult> asyncValidationTask;
-            if (EditContext.Properties.TryGetValue("DetailType", out _))
-            {
-                asyncValidationTask = Validator.ValidateAsync(EditContext.Model as TModel, t =>
-                {
-                    //t.IncludeRuleSets("default");
-                });
-            }
+            if (EditContext.Properties.TryGetValue("DetailType", out var objeDetail) && objeDetail != null)
+                asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objeDetail);
             else
                 asyncValidationTask = Validator.ValidateAsync(EditContext.Model as TModel);
             EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
             var result = await asyncValidationTask;
-
             AddValidationResult(EditContext.Model, result);
         }
 

@@ -16,7 +16,7 @@ namespace Caspian.Common
         public CaspianValidator(IServiceProvider provider)
         {
             ServiceProvider = provider;
-
+            
             var contextType = new AssemblyInfo().GetDbContextType(typeof(TModel));
             if (contextType.Namespace == "Demo.Model")
                 Language = Language.En;
@@ -46,6 +46,37 @@ namespace Caspian.Common
                     expr = Expression.Convert(expr, typeof(object));
                     expr = Expression.Lambda(expr, param);
                     RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyAsync(info, infoId);
+                }
+            }
+            foreach (var info in typeof(TModel).GetProperties())
+            {
+                if (info.Is1To1Relation())
+                {
+                    RuleSet(info.Name, () =>
+                    {
+                        foreach (var info1 in info.PropertyType.GetProperties())
+                        {
+                            var type = info1.PropertyType;
+                            var param = Expression.Parameter(typeof(TModel), "t");
+                            Expression expr = Expression.Property(param, info.Name);
+                            if (type.IsEnum)
+                            {
+                                expr = Expression.Property(expr, info1);
+                                expr = Expression.Convert(expr, typeof(object));
+                                var lambda = Expression.Lambda(expr, param) as Expression<Func<TModel, object>>;
+                                RuleFor(lambda).CheckEnum(info1);
+                            }
+                            var attr = info1.GetCustomAttribute<ForeignKeyAttribute>();
+                            if (attr != null)
+                            {
+                                var infoId = info.PropertyType.GetProperty(attr.Name);
+                                expr = Expression.Property(expr, infoId);
+                                expr = Expression.Convert(expr, typeof(object));
+                                var lambda = Expression.Lambda(expr, param) as Expression<Func<TModel, object>>;
+                                RuleFor(lambda).CheckForeignKeyAsync(info1, infoId);
+                            }
+                        }
+                    });
                 }
             }
 

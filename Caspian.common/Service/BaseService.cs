@@ -3,6 +3,7 @@ using FluentValidation;
 using System.Reflection;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
+using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
@@ -53,7 +54,11 @@ namespace Caspian.Common.Service
 
         async public virtual Task UpdateAsync(TEntity entity)
         {
-            var result = await ValidateAsync(entity);
+            ValidationResult result = null;
+            if (DetailType == null || DetailType == typeof(TEntity))
+                result = await ValidateAsync(entity);
+            else
+                result = await this.ValidateAsync(entity, DetailType);
             if (result.Errors.Count > 0)
                 throw new CaspianException(result.Errors[0].ErrorMessage);
             if (Context.Entry(entity).State != EntityState.Modified)
