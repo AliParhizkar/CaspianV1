@@ -367,3 +367,4 @@ FodyWeavers.xsd
 /Demo/Demo.Web/Help/
 /Main/Model/TestModel.cs
 /Main/PersistKey
+/Demo/Demo.Web/Pages/Forms/MasterDetails/Listview/InlinetDetailsListViewPage.razor
