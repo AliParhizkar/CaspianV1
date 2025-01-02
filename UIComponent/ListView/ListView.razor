@@ -94,7 +94,7 @@
             @if (status == WindowStatus.Open)
             {
                 <CaspianForm Model="insertedEntity">
-                    <CaspianValidationValidator TModel="TEntity" ValidatorType="serviceType" />
+                    <CaspianValidationValidator Source="source" TModel="TEntity" ValidatorType="serviceType" />
                     <CascadingValue Value="this" Name="DataView">
                         <CascadingValue Value="insertedEntity" Name="RowData">
                             @Fields(insertedEntity)

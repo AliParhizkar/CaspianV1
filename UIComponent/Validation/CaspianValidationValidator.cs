@@ -30,6 +30,9 @@ namespace Caspian.UI
         [Inject]
         public CaspianDataService CaspianDataService { get; set; }
 
+        [Parameter]
+        public IEnumerable<TModel> Source { get; set; }
+
         [CascadingParameter]
         private EditContext EditContext { get; set; }
 
@@ -47,7 +50,7 @@ namespace Caspian.UI
 
         public string MasterIdName { get; set; }
 
-        IValidator<TModel> Validator;
+        IValidator Validator;
         ValidationMessageStore ValidationMessageStore;
 
         public bool IsFirstInvalidControl { get; set; }
@@ -94,11 +97,12 @@ namespace Caspian.UI
             }
             Validator = (IValidator<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             (Validator as ICaspianValidator).BatchServiceData = BatchServiceData;
+            
             Task<ValidationResult> asyncValidationTask;
             if (EditContext.Properties.TryGetValue("DetailType", out var objeDetail) && objeDetail != null)
-                asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objeDetail);
+                asyncValidationTask = (Validator as IValidator<TModel>).ValidateAsync((TModel)EditContext.Model, (Type)objeDetail);
             else
-                asyncValidationTask = Validator.ValidateAsync(EditContext.Model as TModel);
+                asyncValidationTask = Validator.ValidateAsync(context);
             EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
             var result = await asyncValidationTask;
             AddValidationResult(EditContext.Model, result);

@@ -22,14 +22,7 @@ namespace Demo.Service
             RuleFor(t => t.OrderDeatils).Custom(t => t.Id == 0 && (t.OrderDeatils == null || t.OrderDeatils.Count == 0), "The order must has at leasta products");
             RuleFor(t => t.OrderStatus).Custom(t => t.CourierId.HasValue && t.OrderStatus == OrderStatus.Canceled,
                 "The order has a courier and it is not possible to cancel it.");
-            
-            RuleForEach(t => t.OrderDeatils).ChildRules(u => 
-            {
-                u.RuleFor(t => t.Price).CustomValue(t => t < 0, "The price cannot be negative");
-                u.RuleFor(t => t.Quantity).CustomValue(t => t <= 0, "This must be greater than 0");
-                u.RuleFor(t => t.ProductId).Custom(t => Source.Any(u => u.ProductId == t.ProductId && t != u), "This product has been added to the invoice");
-            });
-
+            RuleForEach(t => t.OrderDeatils).SetValidator(new OrderDeatilService(provider));
         }
 
         public override async Task<Order> UpdateDatabaseAsync(Order order, IList<ChangedEntity<OrderDeatil>> changedEntities)
