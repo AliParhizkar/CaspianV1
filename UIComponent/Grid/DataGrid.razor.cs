@@ -18,7 +18,6 @@ namespace Caspian.UI
         string jsonOldSearch;
         bool mustRender = true;
         bool commandColumnAdded;
-        ElementReference mainDiv;
         int aggregateColumnIndex;
         IList<int> selectedIds;
         IList<object> DynamicData;
@@ -150,7 +149,6 @@ namespace Caspian.UI
                 await SetStateGridData();
             }
         }
-
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
@@ -359,6 +357,9 @@ namespace Caspian.UI
 
         [Parameter]
         public Func<IQueryable<TEntity>, IQueryable<TEntity>> OnDataBinding { get; set; }
+
+        [Parameter]
+        public Func<IServiceScope, IQueryable<TEntity>, IQueryable<TEntity>> OnDataBinding1 { get; set; } 
 
         [Parameter]
         public int? TableWidth { get; set; }

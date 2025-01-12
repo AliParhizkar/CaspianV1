@@ -25,7 +25,7 @@
 .t-state-error textarea {
     border-style: solid !important;
     border-color: rgba(255, 0, 0, 0.17) !important;
-    background-color: #ffe9ec !important;
+    background-color: #fffafb !important;
 }
 /* Outlook theme*/
 fieldset.t-widget legend {
@@ -302,7 +302,7 @@ html input[disabled], textarea[disabled] {
         border-color: #f85a00;
     }
 .t-grid .t-state-selected {
-    background-color: #5e8f8f50 !important;
+    background-color: #e1eaea !important;
 }
 
 .t-grid .t-selectable tr{

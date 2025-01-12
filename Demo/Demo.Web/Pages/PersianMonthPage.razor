@@ -1,0 +1,40 @@
+﻿@page "/Demo/PersianMonth"
+@namespace Demo.Web.Pages
+<div class="row c-controls">
+    <div class="col-md-1">
+        <label>سال</label>
+    </div>
+    <div class="col-md-3 pe-2">
+        <DropdownList @bind-Value="year" Source="years" />
+    </div>
+    <div class="col-md-1 9s- 2">
+        <label>ماه</label>
+    </div>
+    <div class="col-md-3">
+        <DropdownList @bind-Value="month" /> 
+    </div>
+    <div class="col-md-4">
+        <span></span>
+    </div>
+</div>
+
+<PersianMonthComponent Year="year" Month="month" >
+    <Template Context="date">
+        <span>@date.ToPersianDateString()</span>
+    </Template>
+</PersianMonthComponent>
+
+@code
+{
+    int year = DateTime.Now.ToPersianDate().Year.Value;
+    PersianMonth month = DateTime.Now.ToPersianDate().Month.Value;
+    List<SelectListItem> years;
+
+    protected override void OnInitialized()
+    {
+        years = new();
+        for (int i = 1400; i <= 1410; i++)
+            years.Add(new SelectListItem(i.ToString(), i.ToString()));
+        base.OnInitialized();
+    }
+}

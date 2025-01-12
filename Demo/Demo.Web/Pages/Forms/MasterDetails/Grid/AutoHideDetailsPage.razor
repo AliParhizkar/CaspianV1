@@ -92,28 +92,11 @@
                     <div class="col-md-3 row">
                         <CaspianForm Service="Service">
                             <Content Context="receipt">
-                                <div class="row c-controls">
-                                    <div class="col-md-4">
-                                        <label>Receipt date</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <DatePicker @bind-Value="receipt.Date" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Warehouse</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <ComboBox TEntity="Warehouse" TValue="int" @bind-Value="receipt.WarehouseId" TextExpression="t => t.Title" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Description</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <StringTextBox @bind-Value="receipt.Comment" MultiLine Rows="3" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <FormCommandButton />
-                                    </div>
+                                <DatePicker @bind-Value="receipt.Date" ColSpan="8" />
+                                <ComboBox TEntity="Warehouse" TValue="int" @bind-Value="receipt.WarehouseId" TextExpression="t => t.Title" ColSpan="8" />
+                                <StringTextBox @bind-Value="receipt.Comment" MultiLine Rows="3" ColSpan="8" />
+                                <div class="col-md-12">
+                                    <FormCommandButton />
                                 </div>
                             </Content>
                         </CaspianForm>

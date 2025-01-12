@@ -103,7 +103,7 @@
                                         {
                                             <CascadingValue Value="EditContext">
                                                 <CaspianValidationValidator TModel="TEntity" @ref="validator" ValidatorType="serviceType" />
-                                                <CaspianContainer @ref="updateContainer">
+                                                <CaspianContainer ColumnsCount="0" @ref="updateContainer">
                                                         @Columns(rowData)
                                                 </CaspianContainer>
                                             </CascadingValue>
@@ -153,7 +153,7 @@
                 <tr>
                     @if (selectedEntity == null)
                     {
-                        <CaspianContainer @ref="insertContainer">
+                        <CaspianContainer ColumnsCount="0" @ref="insertContainer">
                             <CascadingValue Value="InsertContext">
                                 <CaspianValidationValidator Source="source" TModel="TEntity" ValidatorType="serviceType" />
                                 <CascadingValue Value="insertedEntity" Name="RowData">
@@ -164,7 +164,7 @@
                     }
                     else
                     {
-                        <CaspianContainer Disabled>
+                        <CaspianContainer ColumnsCount="0" Disabled>
                             <CascadingValue Value="insertedEntity" Name="RowData">
                                 @Columns(insertedEntity)
                             </CascadingValue>

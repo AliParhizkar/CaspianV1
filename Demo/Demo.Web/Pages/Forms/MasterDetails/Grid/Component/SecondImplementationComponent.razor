@@ -7,48 +7,13 @@
     <div class="row p-2 c-controls" style="align-content:flex-start">
         <div class="row">
             <div class="row col-md-7">
-                <div class="col-md-4">
-                    <label>Customer Type</label>
-                </div>
-                <div class="col-md-8">
-                    <DropdownList @bind-Value="Service.UpsertData.CustomerType"  />
-                </div>
-                <div class="col-md-4">
-                    <label>First Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.FName" Disabled="customerType == CustomerType.Legal" />
-                </div>
-                <div class="col-md-4">
-                    <label>Last Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.LName" Disabled="customerType == CustomerType.Legal" />
-                </div>
-                <div class="col-md-4">
-                    <label>Gender</label>
-                </div>
-                <div class="col-md-8">
-                    <DropdownList @bind-Value="Service.UpsertData.Gender" Disabled="customerType == CustomerType.Legal" />
-                </div>
-                <div class="col-md-4">
-                    <label>Company Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.CompanyName" Disabled="customerType == CustomerType.Real" />
-                </div>
-                <div class="col-md-4">
-                    <label>Mobile Number</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" />
-                </div>
-                <div class="col-md-4">
-                    <label>Tel</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" />
-                </div>
+                <DropdownList @bind-Value="Service.UpsertData.CustomerType" ColSpan="8" />
+                <StringTextBox @bind-Value="Service.UpsertData.FName" Disabled="customerType == CustomerType.Legal" ColSpan="8" />
+                <StringTextBox @bind-Value="Service.UpsertData.LName" Disabled="customerType == CustomerType.Legal" ColSpan="8" />
+                <DropdownList @bind-Value="Service.UpsertData.Gender" Disabled="customerType == CustomerType.Legal" ColSpan="8" />
+                <StringTextBox @bind-Value="Service.UpsertData.CompanyName" Disabled="customerType == CustomerType.Real" ColSpan="8" />
+                <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" ColSpan="8" />
+                <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" ColSpan="8" />
             </div>
             <div class="col-md-5 ps-3">
                 <label style="justify-content:space-evenly">Customer Groups</label>

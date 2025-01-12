@@ -6,27 +6,21 @@
 @using Stimulsoft.Report
 @using Stimulsoft.Report.Blazor
 @using Syncfusion.Blazor.DropDowns
-@if (Id == 0)
-{
-    <StiBlazorDesigner Report="report" />
-}
-else
-{
-    <StiBlazorViewer Report="report" />
-}
+
+<div class="main t-rtl">
+    <div class="order-container">
+
+    </div>
+    <div class="col-spiliter">
+
+    </div>
+    <div class="product-container">
+
+    </div>
+</div>
+
+
 @code
 {
-    StiReport report;
-    protected override void OnInitialized()
-    {
-        report = new StiReport();
-        //report.Load("d:\\report.mrt");
-        var customers = new Demo.Model.Context().Customers.Where(t => t.Orders.Any()).ToList();
-        report.RegBusinessObject("List", customers);
-        report.Dictionary.SynchronizeBusinessObjects(2);
-        base.OnInitialized();
-    }
 
-    [Parameter]
-    public int Id { get; set; }
 }

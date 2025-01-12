@@ -3,54 +3,19 @@
     <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
     <div class="p-3">
         <div class="row c-controls" style="height:260px;align-content:flex-start">
-            <div class="col-md-4">
-                <label>Customer Type</label>
-            </div>
-            <div class="col-md-8">
-                <DropdownList @bind-Value="Service.UpsertData.CustomerType" />
-            </div>
+            <DropdownList @bind-Value="Service.UpsertData.CustomerType" ColSpan="8" />
             @if (Service.UpsertData.CustomerType == CustomerType.Real)
             {
-                <div class="col-md-4">
-                    <label>First Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.FName" />
-                </div>
-                <div class="col-md-4">
-                    <label>Last Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.LName" />
-                </div>
-                <div class="col-md-4">
-                    <label>Gender</label>
-                </div>
-                <div class="col-md-8">
-                    <DropdownList @bind-Value="Service.UpsertData.Gender" />
-                </div>
+                <StringTextBox @bind-Value="Service.UpsertData.FName" ColSpan="8" />
+                <StringTextBox @bind-Value="Service.UpsertData.LName" ColSpan="8" />
+                <DropdownList @bind-Value="Service.UpsertData.Gender" ColSpan="8" />
             }
             else if (Service.UpsertData.CustomerType == CustomerType.Legal)
             {
-                <div class="col-md-4">
-                    <label>Company Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.CompanyName" />
-                </div>
+                <StringTextBox @bind-Value="Service.UpsertData.CompanyName" ColSpan="8" />
             }
-            <div class="col-md-4">
-                <label>Mobile Number</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" />
-            </div>
-            <div class="col-md-4">
-                <label>Tel</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" />
-            </div>
+            <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" ColSpan="8" />
+            <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" ColSpan="8" />
             <div class="col-md-4">
                 <label>Customer Groups</label>
             </div>

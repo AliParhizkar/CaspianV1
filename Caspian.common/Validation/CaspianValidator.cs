@@ -38,14 +38,17 @@ namespace Caspian.Common
                     expr = Expression.Lambda(expr, param);
                     RuleFor(expr as Expression<Func<TModel, object>>).CheckEnum(info);
                 }
-                var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
-                if (attr != null)
+                if (type.Name != "PersianDateTable")
                 {
-                    var infoId = typeof(TModel).GetProperty(attr.Name);
-                    Expression expr = Expression.Property(param, infoId);
-                    expr = Expression.Convert(expr, typeof(object));
-                    expr = Expression.Lambda(expr, param);
-                    RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyAsync(info, infoId);
+                    var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
+                    if (attr != null)
+                    {
+                        var infoId = typeof(TModel).GetProperty(attr.Name);
+                        Expression expr = Expression.Property(param, infoId);
+                        expr = Expression.Convert(expr, typeof(object));
+                        expr = Expression.Lambda(expr, param);
+                        RuleFor(expr as Expression<Func<TModel, object>>).CheckForeignKeyAsync(info, infoId);
+                    }
                 }
             }
             foreach (var info in typeof(TModel).GetProperties())

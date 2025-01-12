@@ -16,7 +16,6 @@ namespace Caspian.UI
     {
         IList<Expression> fieldsExpression;
         WindowStatus status;
-        ElementReference element;
         bool shouldRender = true;
 
         public void OpenPopupWindow()
@@ -148,7 +147,7 @@ namespace Caspian.UI
             {
                 await DataBind();
                 StateHasChanged();
-                await jsRuntime.InvokeVoidAsync("caspian.common.bindListView", element);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindListView", mainDiv);
             }
             if (insertContainerHoldHasFocus)
             {

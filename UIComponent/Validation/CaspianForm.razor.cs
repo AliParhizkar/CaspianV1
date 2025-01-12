@@ -6,10 +6,11 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.Metrics;
 
 namespace Caspian.UI
 {
-    public partial class CaspianForm<TEntity>: ICaspianForm<TEntity> where TEntity : class
+    public partial class CaspianForm<TEntity>: ICaspianContainer, ICaspianForm<TEntity> where TEntity : class
     {
         string ErrorMessage;
         bool checkValidation;
@@ -57,11 +58,27 @@ namespace Caspian.UI
 
         internal EventCallback OnInternalReset { get; set; }
 
+        string ICaspianContainer.GetLableContainerCSSClassName(int colSpan)
+        {
+            string className = "ps-2 col-md-";
+            if (ColumnsCount == 1)
+                return className + (12 - colSpan);
+            if (colSpan < 6)
+                className += (6 - colSpan);
+            else
+                className += (12 - colSpan);
+            return className;
+        }
+
+        string ICaspianContainer.GetControlContainerCSSClassName(int colSpan)
+        {
+            return $"col-md-{colSpan} pe-2";
+        }
+
         public void SetFirstControl(IControl control)
         {
             if (firstControl == null || firstControl.InputElement == null) 
                 firstControl = control;
-            
         }
 
         [Parameter]
@@ -122,10 +139,6 @@ namespace Caspian.UI
 
         async Task OnFormSubmitHandler(EditContext context)
         {
-            if (context.Model != Service.UpsertData)
-            {
-
-            }
             addControls = true;
             controls.Clear();
             await Task.Delay(10);
@@ -137,7 +150,7 @@ namespace Caspian.UI
             FormAppState.AllControlsIsValid = true;
             FormAppState.ErrorMessage = null;
             ErrorMessage = null;
-            if (Service.DetailType != null)
+            if (Service?.DetailType != null)
                 EditContext.Properties["DetailType"] = Service.DetailType;
             EditContext.Validate();
             if (ValidationValidator == null)

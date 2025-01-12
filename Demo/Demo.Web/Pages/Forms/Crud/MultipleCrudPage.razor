@@ -20,13 +20,10 @@
                         We use the ShowProductGrid method for this, it sets the productcategoryId field to filter the product grid and reloads the product grid.
                     </span>
                 </div>
-                <div class="row c-controls">
-                    <div class="col-md-3 ps-4">
-                        <label>Title</label>
-                    </div>
-                    <div class="col-md-9 pe-4">
-                        <StringTextBox @bind-Value="CategoryService.Search.Title" Search />
-                    </div>
+                <div class="row c-controls ps-4 pe-4">
+                    <CaspianContainer>
+                        <StringTextBox @bind-Value="CategoryService.Search.Title" ColSpan="8" Search />
+                    </CaspianContainer>
                 </div>
                 <DataGrid TEntity="ProductCategory" Service="CategoryService" ContentHeight="208" OnRowSelect="ShowProductGrid">
                     <Columns>
@@ -40,19 +37,8 @@
                     <CaspianForm Service="CategoryService">
                         <Content Context="category">
                             <div class="row c-controls ps-4 pe-4 pt-3 pb-2">
-                                <div class="col-md-4">
-                                    <label>Title</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <StringTextBox @bind-Value="category.Title" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Status</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <DropdownList @bind-Value="category.ActiveType" />
-                                </div>
-                                <div class="col-md-4"></div>
+                                <StringTextBox @bind-Value="category.Title" ColSpan="8" />
+                                <DropdownList @bind-Value="category.ActiveType" ColSpan="8" />
                                 <div class="col-md-8">
                                     <WindowCommandButtons />
                                 </div>
@@ -74,13 +60,10 @@
                         </li>
                     </ul>
 
-                    <div class="row c-controls">
-                        <div class="col-md-3 ps-4">
-                            <label>Title</label>
-                        </div>
-                        <div class="col-md-9 pe-4">
-                            <StringTextBox @bind-Value="ProductService.Search.Title" Search />
-                        </div>
+                    <div class="row c-controls ps-4 pe-4">
+                        <CaspianContainer>
+                            <StringTextBox @bind-Value="ProductService.Search.Title" Search ColSpan="8" />
+                        </CaspianContainer>
                     </div>
                     <DataGrid Service="ProductService" TEntity="Product" ContentHeight="206" ConditionExpr="t => t.ProductCategoryId == productcategoryId">
                         <Columns>
@@ -95,52 +78,15 @@
                     <Window Service="ProductService" Title="Product" Style="width:650px">
                         <CaspianForm TEntity="Product" Service="ProductService" OnSubmit="t => SetCategory(t)">
                             <Content Context="product">
-                                <div class="row c-controls pb-3">
-                                    <div class="col-md-7">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <label>Title</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <StringTextBox @bind-Value="product.Title" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Price</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <NumericTextBox @bind-Value="product.Price" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Take out Price</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <NumericTextBox @bind-Value="product.TakeoutPrice" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Meal</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <MultiSelectBox @bind-Value="product.Meal" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Code</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <NumericTextBox @bind-Value="product.Code" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Status</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <DropdownList @bind-Value="product.ActiveType" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Discountable</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <CheckBox @bind-Value="product.Discountable" />
-                                            </div>
-                                        </div>
+                                <div class="row p-3 pe-0">
+                                    <div class="col-md-7 row c-controls ">
+                                        <StringTextBox @bind-Value="product.Title" ColSpan="8" />
+                                        <NumericTextBox @bind-Value="product.Price" ColSpan="8" />
+                                        <NumericTextBox @bind-Value="product.TakeoutPrice" ColSpan="8" />
+                                        <MultiSelectBox @bind-Value="product.Meal" ColSpan="8" />
+                                        <NumericTextBox @bind-Value="product.Code" ColSpan="8" />
+                                        <DropdownList @bind-Value="product.ActiveType" ColSpan="8" />
+                                        <CheckBox @bind-Value="product.Discountable" ColSpan="8" />
                                     </div>
                                     <div class="col-md-5 ps-4">
                                         <div class="col-md-12 justify-content-center d-flex">

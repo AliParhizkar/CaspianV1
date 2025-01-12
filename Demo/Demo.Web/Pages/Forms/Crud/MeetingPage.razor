@@ -70,39 +70,16 @@
         </div>
     </Fields>
 </ListView>
-<Window Service="Service" Style="width:500px">
+<Window Service="Service" Style="width:600px">
     <CaspianForm TEntity="Meeting" Service="Service" OnSubmit= "t => t.UserId = base.UserId">
         <Content Context="meeting">
-            <div class="row c-controls ps-3 pe-3">
-                <div class="col-md-3 pt-3">
-                    <label>عنوان</label>
-                </div>
-                <div class="col-md-9 pt-3">
-                    <StringTextBox MultiLine Rows="3" @bind-Value="meeting.Name" />
-                </div>
-                <div class="col-md-4 pt-3">
-                    <CheckBox @bind-Value="meeting.RecordingVideoIs" Title="ضبط فیلم" />
-                </div>
-                <div class="col-md-4 pt-3">
-                    <CheckBox @bind-Value="meeting.RecordingAudioIs" Title="ضبط صدا" />
-                </div>
-                <div class="col-md-4 pt-3">
-                    <CheckBox @bind-Value="meeting.ActiveIs" Title="فعال" />
-                </div>
-                <div class="col-md-4 pt-3">
-                    <label>حوزه آموزش</label>
-                </div>
-                <div class="col-md-8 pt-3">
-                    <DropdownList @bind-Value="meeting.LearningScope" />
-                </div>
-                <div class="col-md-4 pt-3">
-                    <label>سرور واسط</label>
-                </div>
-                <div class="col-md-8 pt-3">
-                    <DropdownList @bind-Value="meeting.ServerType" />
-                </div>
-                <div class="col-md-3 ">
-                </div>
+            <div class="row c-controls ps-2 pe-2">
+                <StringTextBox MultiLine Rows="3" @bind-Value="meeting.Name" ColSpan="9" />
+                <CheckBox @bind-Value="meeting.RecordingVideoIs" Title="ضبط فیلم" ColSpan="9" />
+                <CheckBox @bind-Value="meeting.RecordingAudioIs" Title="ضبط صدا" ColSpan="9" />
+                <CheckBox @bind-Value="meeting.ActiveIs" Title="فعال" ColSpan="9" />
+                <DropdownList @bind-Value="meeting.LearningScope" ColSpan="9" />
+                <DropdownList @bind-Value="meeting.ServerType" ColSpan="9" />
                 <div class="col-md-9 pt-3">
                     <FormCommandButton />
                 </div>

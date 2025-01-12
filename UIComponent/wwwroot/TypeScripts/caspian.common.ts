@@ -65,6 +65,12 @@
             //window.addEventListener('locationchange', () => window.removeEventListener('loc'))
         }
 
+        public static scrollIntoViewSelectedRow(grid: HTMLElement) {
+            let selectedRows = grid.getElementsByClassName('t-state-selected');
+            if (selectedRows.length == 1)
+                selectedRows[0].scrollIntoView();
+        }
+
         public static bindTree(tree: HTMLElement) {
         }
 

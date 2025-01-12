@@ -65,20 +65,12 @@
                 <div class="col-md-5">
                     <fieldset class="c-search-container">
                         <legend>Search parameters</legend>
-                        <div class="row c-controls">
-                            <div class="col-md-4 ps-3">
-                                <label>Name</label>
-                            </div>
-                            <div class="col-md-8 pe-3">
+                        <div class="row c-controls ps-3 pt-3">
+                            <CaspianContainer>
                                 <StringTextBox @bind-Value="name1" placeholder="First name/Last Name/Company name" Search
-                                                OnChange="() => MemberGrid.EnableLoading()" />
-                            </div>
-                            <div class="col-md-4 ps-3">
-                                <label>Mobile</label>
-                            </div>
-                            <div class="col-md-8 pe-3">
-                                <StringTextBox @bind-Value="MemberSearch.MobileNumber" />
-                            </div>
+                                               OnChange="() => MemberGrid.EnableLoading()" ColSpan="9" Title="Customer Name" />
+                                <StringTextBox @bind-Value="MemberSearch.MobileNumber" ColSpan="9" />
+                            </CaspianContainer>
                             <div class="col-md-12 text-center">
                                 <hr />
                                 <span class="d-membership">Others Customers</span>
@@ -110,20 +102,12 @@
                 <div class="col-md-6">
                     <fieldset class="c-search-container">
                         <legend>Search parameters</legend>
-                        <div class="row c-controls">
-                            <div class="col-md-4 ps-3">
-                                <label>Name</label>
-                            </div>
-                            <div class="col-md-8 pe-3">
-                                <StringTextBox @bind-Value="name2" placeholder="First name/Last name/Company name" Search
-                                                OnChange="() => CrudGrid.EnableLoading()" />
-                            </div>
-                            <div class="col-md-4 ps-3">
-                                <label>Mobile</label>
-                            </div>
-                            <div class="col-md-8 pe-3">
-                                <StringTextBox @bind-Value="SearchData.Customer.MobileNumber" />
-                            </div>
+                        <div class="row c-controls ps-3 pe-3 pt-3">
+                            <CaspianContainer>
+                                <StringTextBox @bind-Value="name2" placeholder="First name/Last name/Company name" Search Title="Customer Name"
+                                               OnChange="() => CrudGrid.EnableLoading()" ColSpan="9" />
+                                <StringTextBox @bind-Value="SearchData.Customer.MobileNumber" ColSpan="9" />
+                            </CaspianContainer>
                             <div class="col-md-12 text-center">
                                 <hr />
                                 <span class="d-membership">Members Customers</span>

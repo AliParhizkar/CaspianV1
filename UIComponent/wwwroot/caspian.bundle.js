@@ -571,6 +571,11 @@ var caspian;
                 //window.addEventListener('locationchange', () => window.removeEventListener('loc'))
             });
         }
+        static scrollIntoViewSelectedRow(grid) {
+            let selectedRows = grid.getElementsByClassName('t-state-selected');
+            if (selectedRows.length == 1)
+                selectedRows[0].scrollIntoView();
+        }
         static bindTree(tree) {
         }
         static bindTooltip() {
@@ -946,7 +951,7 @@ var caspian;
                     }
                     document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
                         if (e.target.closest('.t-animation-container') == null) {
-                            document.body.onclick = null;
+                            document.body.onmousedown = null;
                             yield dotnet.invokeMethodAsync('CloseWindow');
                         }
                     });

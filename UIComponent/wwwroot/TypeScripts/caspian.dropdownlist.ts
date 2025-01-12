@@ -48,7 +48,7 @@
                     }
                     document.body.onmousedown = async e => {
                         if ((e.target as HTMLElement).closest('.t-animation-container') == null) {
-                            document.body.onclick = null;
+                            document.body.onmousedown = null;
                             await dotnet.invokeMethodAsync('CloseWindow');
                         }
                     }

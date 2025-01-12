@@ -22,4 +22,11 @@ namespace Caspian.UI
     {
         CaspianValidationValidator<TEntity> ValidationValidator { get; set; }
     }
+
+    internal interface ICaspianContainer
+    {
+        string GetLableContainerCSSClassName(int colSpan);
+
+        string GetControlContainerCSSClassName(int colSpan);
+    }
 }

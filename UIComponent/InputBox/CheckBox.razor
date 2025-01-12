@@ -1,18 +1,43 @@
 ﻿@namespace Caspian.UI
 @typeparam TValue
 @inherits CBaseInput<TValue>
+@if (ColSpan.HasValue)
+{
+    var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer);
+    string lableContainerCSSClassName = container?.GetLableContainerCSSClassName(ColSpan.Value);
+    string controlContainerCSSClassName = container?.GetControlContainerCSSClassName(ColSpan.Value);
+    <div class="@(lableContainerCSSClassName)">
+        <label>@title</label>
+    </div>
+    <div class="@(controlContainerCSSClassName)">
+        @RenderCheckBox()
+    </div>
+}
+else
+{
+    @RenderCheckBox()
+}
 
-<span class="t-checkbox" @attributes="attrs">
-    <span class="t-icon" @onclick="ChangeValue">
-        <i @attributes="@iconAtttrs" aria-hidden="true"></i>
-    </span>
-    @if (Title.HasValue())
-    {
-        <span class="t-title" @onclick="ChangeValue">@Title</span>
-    }
-</span>
+
+
 @code
 {
+    RenderFragment RenderCheckBox()
+    {
+        return __builder =>
+        {
+            <span class="t-checkbox" @attributes="attrs">
+                <span class="t-icon" @onclick="ChangeValue">
+                    <i @attributes="@iconAtttrs" aria-hidden="true"></i>
+                </span>
+                @if (Title.HasValue() && ColSpan == null)
+                {
+                    <span class="t-title" @onclick="ChangeValue">@Title</span>
+                }
+            </span>
+        };
+    }
+
     ElementReference checkBox;
     TValue oldValue;
     IDictionary<string, object> iconAtttrs = new Dictionary<string, object>();

@@ -13,61 +13,21 @@
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="ps-3 pe-3">
-                <CaspianForm Service="Service" TEntity="Product" OnReset="t => t.Image = null">
+                <CaspianForm Service="Service" TEntity="Product" OnReset="t => t.Image = null" ColumnsCount="2">
                     <Content Context="product">
-                        <div class="row c-controls data-form-container mt-3 ps-3 pt-3 pb-3">
-                            <div class="col-md-5 pe-4">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4">
-                                        <label>Product category</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="product.ProductCategoryId" TextExpression="t => t.Title"
-                                                  OrderByExpression="t => t.Title" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Title</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <StringTextBox @bind-Value="product.Title" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Meal</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <MultiSelectBox @bind-Value="product.Meal" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Status</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <DropdownList @bind-Value="product.ActiveType" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4">
-                                        <label>Price</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <NumericTextBox @bind-Value="product.Price" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Take out price</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <NumericTextBox @bind-Value="product.TakeoutPrice" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Code</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <StringTextBox @bind-Value="product.Code" />
-                                    </div>
-                                    <div class="col-md-8 align-content-center">
-                                        <FormCommandButton />
-                                    </div>
+                        <div class="row pt-3">
+                            <div class="row col-md-9 c-controls align-content-start">
+                                <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="product.ProductCategoryId" TextExpression="t => t.Title"
+                                          OrderByExpression="t => t.Title" ColSpan="4" />
+                                <StringTextBox @bind-Value="product.Title" ColSpan="4" />
+                                <NumericTextBox @bind-Value="product.Price" ColSpan="4" />
+                                <NumericTextBox @bind-Value="product.TakeoutPrice" ColSpan="4" />
+                                <StringTextBox @bind-Value="product.Code" ColSpan="4" />
+                                <CheckBox @bind-Value="product.Discountable" ColSpan="4" />
+                                <MultiSelectBox @bind-Value="product.Meal" ColSpan="10" />
+                                <DropdownList @bind-Value="product.ActiveType" ColSpan="4" />
+                                <div class="col-md-6 align-content-center">
+                                    <FormCommandButton />
                                 </div>
                             </div>
                             <div class="col-md-3 ps-4 align-content-center">

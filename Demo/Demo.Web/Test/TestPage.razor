@@ -1,0 +1,17 @@
+﻿@page "/Demo/Test"
+<div style="background-color:white;" class="p-3">
+    <CaspianForm Model="employee" ColumnsCount="2" >
+        <StringTextBox @bind-Value="employee.FName" ColSpan="4" />
+        <StringTextBox @bind-Value="employee.LName" ColSpan="4" />
+        <StringTextBox @bind-Value="employee.Address.AddressName" ColSpan="10" />
+    </CaspianForm>
+
+</div>
+
+@code 
+{
+    Employee employee = new Employee()
+        {
+            Address = new Address()
+        };
+}

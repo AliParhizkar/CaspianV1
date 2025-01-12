@@ -982,7 +982,7 @@ input[type=time]{
     color:transparent;
 }
 .c-grid-insert {
-    background-color: #dae2f9;
+    background-color: #f1f5ff;
 }
 
     .c-progress-bar {
@@ -1126,7 +1126,6 @@ body {
     margin:0;
 }
 .c-controls {
-    align-items: center;
     align-content:start;
 }
 
@@ -1479,12 +1478,14 @@ form > tr {
         width: 100%
     }
 
-    .t-checkbox {
-        white-space: nowrap;
-        margin:2px;
-        height:20px;
-        line-height:19px;
-    }
+.t-checkbox {
+    white-space: nowrap;
+    height: 31px;
+    line-height: 25px;
+    display: inline-block;
+    vertical-align: middle;
+    margin:2px;
+}
 .c-grid-command {
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -1497,10 +1498,13 @@ form > tr {
     border-width: 1px;
     border-style: solid;
     border-color: rgba(0,0,0,0.12);
-    padding: 1px 7px;
+    padding: 0 7px;
     margin: 2px;
     border-radius: 8px;
 }
+    .c-multi-select .t-checkbox{
+        margin:0!important;
+    }
     .c-multi-select.t-state-error {
         border-color: rgba(255, 0, 0, 0.19) !important;
         background-color: #ffe9ec !important;
@@ -3505,19 +3509,18 @@ html body .t-grid tbody .t-button-icon {
     opacity: 0.4;
 }
 .c-controls label {
-    background-color: #efefef;
+    background-image: linear-gradient(90deg, #00000010, #dcdcdc20);
     border-radius: 8px;
     font-weight: bold;
     line-height: 30px;
-    height: 30px;
+    height: 32px;
     width: calc(100% - 4px);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     box-sizing: border-box;
-    margin: 5px 0;
-    padding-left:5px;
-    display:inline-flex;
+    margin: 2px 0;
+    padding-left: 5px;
 }
 
 .t-state-disabled .t-select {
@@ -3879,14 +3882,13 @@ div.t-numerictextbox {
     color: #cccccc;
 }
 .t-checkbox .t-icon {
-    display: inline-flex;
+    display: inline-block;
     border: 1px solid rgba(0,0,0,0.4);
     border-radius: 3px;
     width: 20px;
     height: 20px;
     box-sizing: border-box;
     text-align:center;
-    justify-content:center;
 }
     .t-checkbox .t-icon i {
         color: #ff6358;

@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
-using FluentValidation.Validators;
 
 namespace Caspian.UI
 {
@@ -31,7 +30,7 @@ namespace Caspian.UI
         public CaspianDataService CaspianDataService { get; set; }
 
         [Parameter]
-        public IEnumerable<TModel> Source { get; set; }
+        public IList<TModel> Source { get; set; }
 
         [CascadingParameter]
         private EditContext EditContext { get; set; }
@@ -50,7 +49,7 @@ namespace Caspian.UI
 
         public string MasterIdName { get; set; }
 
-        IValidator Validator;
+        IValidator<TModel> Validator;
         ValidationMessageStore ValidationMessageStore;
 
         public bool IsFirstInvalidControl { get; set; }
@@ -97,10 +96,11 @@ namespace Caspian.UI
             }
             Validator = (IValidator<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             (Validator as ICaspianValidator).BatchServiceData = BatchServiceData;
-            
+            if (Source != null && Source.Count() > 0)
+                (Validator as IBaseService<TModel>).SetSource(Source.AsReadOnly());
             Task<ValidationResult> asyncValidationTask;
             if (EditContext.Properties.TryGetValue("DetailType", out var objeDetail) && objeDetail != null)
-                asyncValidationTask = (Validator as IValidator<TModel>).ValidateAsync((TModel)EditContext.Model, (Type)objeDetail);
+                asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objeDetail);
             else
                 asyncValidationTask = Validator.ValidateAsync(context);
             EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
@@ -161,7 +161,7 @@ namespace Caspian.UI
         {
             if (FormAppState.ValidationChecking)
             {
-                var control = CaspianForm.GetFirstInvalidControl();
+                var control = CaspianForm?.GetFirstInvalidControl();
                 if (control != null)
                 {
                     FormAppState.ValidationChecking = false;

@@ -16,7 +16,7 @@ namespace Demo.Model
         public DateTime Date { get; set; }
 
         [ForeignKey(nameof(Date))]
-        public virtual PersianDateTable PersianDate { get; set; }
+        public PersianDateTable PersianDate { get; set; }
 
         [DisplayName("Customer")]
         public int? CustomerId { get; set; }
@@ -25,12 +25,12 @@ namespace Demo.Model
         public int? OrderNo { get; set; }
 
         [ForeignKey(nameof(CustomerId))]
-        public virtual Customer Customer { get; set; }
+        public Customer Customer { get; set; }
 
         public int? CourierId { get; set; }
 
         [ForeignKey(nameof(CourierId))]
-        public virtual Courier Courier { get; set; }
+        public Courier Courier { get; set; }
 
         [DisplayName("Order type")]
         public OrderType OrderType { get; set; }
@@ -44,6 +44,6 @@ namespace Demo.Model
         public string Description { get; set; }
 
         [CheckOnDelete("The order has details and can not remove")]
-        public virtual IList<OrderDeatil> OrderDeatils { get; set; }
+        public IList<OrderDeatil> OrderDeatils { get; set; }
     }
 }

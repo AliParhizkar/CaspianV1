@@ -23,18 +23,9 @@
             {
                 <CaspianValidationValidator TModel="TEntity" ValidatorType="serviceType" />
             }
-            @if (ColumnsCount > 1)
-            {
-                <div class="c-container-@(ColumnsCount)">
-                    <CascadingValue Value="ColumnsCount" Name="ColumnsCount">
-                        @RenderContent()
-                    </CascadingValue>
-                </div>
-            }
-            else
-            {
+            <div class="row c-controls">
                 @RenderContent()
-            }
+            </div>
         </CascadingValue>
     </EditForm>
 }

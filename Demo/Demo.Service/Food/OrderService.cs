@@ -22,6 +22,8 @@ namespace Demo.Service
             RuleFor(t => t.OrderDeatils).Custom(t => t.Id == 0 && (t.OrderDeatils == null || t.OrderDeatils.Count == 0), "The order must has at leasta products");
             RuleFor(t => t.OrderStatus).Custom(t => t.CourierId.HasValue && t.OrderStatus == OrderStatus.Canceled,
                 "The order has a courier and it is not possible to cancel it.");
+            RuleFor(t => t.CustomerId).Required();
+            RuleFor(t => t.OrderType).CustomValue(t => t == 0, "ssss");
             RuleForEach(t => t.OrderDeatils).SetValidator(new OrderDeatilService(provider));
         }
 

@@ -9,13 +9,13 @@
 
 @if (ColSpan.HasValue)
 {
-    var factor = 12 / ColumnsCount;
-    if (ColSpan >= factor)
-        factor = 12;
-    <div class="col-md-@(factor - ColSpan)">
+    var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer);
+    string lableContainerCSSClassName = container?.GetLableContainerCSSClassName(ColSpan.Value);
+    string controlContainerCSSClassName = container?.GetControlContainerCSSClassName(ColSpan.Value);
+    <div class="@(lableContainerCSSClassName)">
         <label>@title</label>
     </div>
-    <div class="col-md-@(ColSpan)">
+    <div class="@(controlContainerCSSClassName)">
         @RenderComboBox()
     </div>
 }

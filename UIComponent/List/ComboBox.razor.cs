@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
@@ -60,9 +61,6 @@ namespace Caspian.UI
         [CascadingParameter(Name = "ParentForm")]
         internal ICaspianForm CaspianForm { get; set; }
 
-        [CascadingParameter]
-        public CaspianContainer Container { get; set; }
-
         [CascadingParameter(Name = "ColumnsCount")]
         public int ColumnsCount { get; set; } = 1;
 
@@ -71,6 +69,9 @@ namespace Caspian.UI
 
         [Parameter]
         public bool Pageable { get; set; } = true;
+
+        [CascadingParameter]
+        public CaspianContainer CaspianContainer { get; set; }
 
         [Parameter]
         public int PageSize { get; set; } = 30;
@@ -282,8 +283,8 @@ namespace Caspian.UI
             if (Title != null)
                 title = Title;
             CaspianForm?.AddControl(this);
-            Container?.SetControl(this);
-            Disabled = Container?.Disabled == true;
+            CaspianContainer?.SetControl(this);
+            Disabled = CaspianContainer?.Disabled == true;
             base.OnParametersSet();
         }
 
@@ -295,10 +296,25 @@ namespace Caspian.UI
 
         protected async override Task OnParametersSetAsync()
         {
-            Container?.SetControl(this);
+            CaspianContainer?.SetControl(this);
             if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
             {
-                _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
+                var expr = ValueExpression.Body;
+                string str = "";
+                while (expr.NodeType == ExpressionType.MemberAccess)
+                {
+                    var memberExpr = expr as MemberExpression;
+                    if (memberExpr.Member.DeclaringType.GetCustomAttribute<TableAttribute>() == null)
+                        break;
+                    else
+                    {
+                        if (str.Length > 0)
+                            str = $".{str}";
+                        str = memberExpr.Member.Name + str;
+                        expr = memberExpr.Expression;
+                    }
+                }
+                _FieldName = str;
                 _messageStore = new ValidationMessageStore(CurrentEditContext);
                 CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
                 CurrentEditContext.OnFieldChanged += CurrentEditContext_OnFieldChanged;

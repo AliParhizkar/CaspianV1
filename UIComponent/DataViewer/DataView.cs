@@ -33,7 +33,8 @@ namespace Caspian.UI
         protected CaspianValidationValidator<TEntity> validator;
         protected IList<TEntity> items;
         protected bool disableInsertIcon;
-        protected bool? showInsertIcon;
+        protected bool? showInsertIcon; 
+        protected ElementReference mainDiv;
 
         internal EventCallback<TEntity> OnInternalUpsert { get; set; }
 
@@ -153,6 +154,12 @@ namespace Caspian.UI
                 DetailsService.DetailDataViewInitialize();
             }
             base.OnInitialized();
+        }
+
+        public async Task ScrollIntoViewSeledtedRow()
+        {
+            StateHasChanged();
+            await jsRuntime.InvokeVoidAsync("caspian.common.scrollIntoViewSelectedRow", mainDiv);
         }
 
         internal void InsertIconState(bool flag)

@@ -38,7 +38,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <DataGrid TEntity="City">
+                        <DataGrid TEntity="City" >
                             <Columns>
                                 <GridColumn Field="t => t.Country.Title" Title="Country" />
                                 <GridColumn Field="t => t.Title" />
@@ -103,7 +103,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <DataGrid TEntity="Customer" PageSize="6" ContentHeight="200">
+                        <DataGrid TEntity="Customer" PageSize="20" ContentHeight="200">
                             <Columns>
                                 <GridColumn Field="t => t.CustomerType.EnumText()" />
                                 <GridColumn Field="t => t.Gender">

@@ -128,6 +128,6 @@ namespace Demo.Model
         Religion,
         
         [Display(Name = "گروه کاری")]
-        WorkGroup
+        WorkGroup,
     }
 }

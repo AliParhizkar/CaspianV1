@@ -24,13 +24,11 @@
                     </RadioList>
                 </div>
             </div>
-            <div class="row c-controls p-4 pt-1 pb-1">
-                <div class="row col-md-6 pe-2">
-                    <StringTextBox @bind-Value="Service.Search.FName" ColSpan="8" />
-                </div>
-                <div class="row col-md-6 ps-2">
-                    <StringTextBox @bind-Value="Service.Search.LName" ColSpan="8" />
-                </div>
+            <div class="row p-4 c-controls pt-2 pb-0">
+                <CaspianContainer ColumnsCount="2">
+                    <StringTextBox @bind-Value="Service.Search.FName" ColSpan="4" />
+                    <StringTextBox @bind-Value="Service.Search.LName" ColSpan="4" />
+                </CaspianContainer>
             </div>
             <div class="p-4 pt-1">
                 <DataGrid Service="Service" TEntity="Employee" OnUpsert="OpenNewPage">

@@ -18,10 +18,6 @@ namespace Demo.Model
         [DisplayName("Code")]
         public string Code { get; set; }
 
-        public DateTime? CreatedDate { get; set; }
-
-        public TimeSpan? CreateTime { get; set; }
-
         [DisplayName("Product Category")]
         public int ProductCategoryId { get; set; }
 

@@ -26,40 +26,15 @@
                             <hr class="mt-2" />
                         </div>
                     </div>
-                    <div class="col-md-4 row pe-3">
+                    <div class="col-md-4">
                         <CaspianForm Service="Service">
-                            <div class="row c-controls">
-                                <div class="col-md-4">
-                                    <label>Order date</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <DatePicker @bind-Value="Service.UpsertData.Date" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Order type</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <DropdownList @bind-Value="Service.UpsertData.OrderType" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Customer</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="Service.UpsertData.CustomerId"
-                                              TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Courier</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <ComboBox TEntity="Courier" TValue="int?" @bind-Value="Service.UpsertData.CourierId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label>Description</label>
-                                </div>
-                                <div class="col-md-8">
-                                    <StringTextBox @bind-Value="Service.UpsertData.Description" MultiLine Rows="4" />
-                                </div>
+                            <div class=" row pe-3 c-controls">
+                                <DatePicker @bind-Value="Service.UpsertData.Date" ColSpan="8" />
+                                <DropdownList @bind-Value="Service.UpsertData.OrderType" ColSpan="8" />
+                                <ComboBox TEntity="Customer" TValue="int?" @bind-Value="Service.UpsertData.CustomerId" ColSpan="8"
+                                          TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+                                <ComboBox TEntity="Courier" TValue="int?" @bind-Value="Service.UpsertData.CourierId" ColSpan="8"
+                                          TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
                                 <div class="col-md-12">
                                     <FormCommandButton />
                                 </div>

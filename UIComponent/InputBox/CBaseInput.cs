@@ -7,6 +7,7 @@ using Caspian.Common.Extension;
 using System.Linq.Dynamic.Core;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
@@ -163,9 +164,6 @@ namespace Caspian.UI
         [Parameter]
         public EventCallback OnChange { get; set; }
 
-        [CascadingParameter(Name = "Container")]
-        internal IContainer Container { get; set; }
-
         [Parameter]
         public string Title { get; set; }
 
@@ -186,21 +184,21 @@ namespace Caspian.UI
             if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
             {
                 var expr = ValueExpression.Body;
-                string str = null;
-                while (expr.NodeType != ExpressionType.Constant)
+                string str = "";
+                while(expr.NodeType == ExpressionType.MemberAccess)
                 {
-                    if (expr.NodeType == ExpressionType.MemberAccess)
-                    {
-                        if (str != null)
-                            str = $".{str}";
-                        str = (expr as MemberExpression).Member.Name + str;
-                        expr = (expr as MemberExpression).Expression;
-                    }
+                    var memberExpr = expr as MemberExpression;
+                    if (memberExpr.Member.DeclaringType.GetCustomAttribute<TableAttribute>() == null)
+                        break;
                     else
-                        throw new NotImplementedException("خطای عدم پیاه سازی");
+                    {
+                        if (str.Length > 0)
+                            str = $".{str}";
+                        str = memberExpr.Member.Name + str;
+                        expr = memberExpr.Expression;
+                    }
                 }
-                var index = str.IndexOf('.');
-                _FieldName = str.Substring(index + 1);
+                _FieldName = str;
                 _messageStore = new ValidationMessageStore(CurrentEditContext);
                 // CurrentEditContext.OnValidationRequested -= CurrentEditContext_OnValidationRequested;
                 // CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;

@@ -1,6 +1,15 @@
-﻿.d-order {
+﻿.d-menu .d-search {
+    padding: 8px 4px 3px 8px;
+    border-bottom: 1px solid gray;
+    height: 60px;
+}
+
+.d-body .t-grid{
+    margin-top:-25px;
+}
+.d-order {
     flex-wrap: wrap;
-    width:100%;
+    width: 100%;
 }
 .d-details-title {
     font-weight: bold;

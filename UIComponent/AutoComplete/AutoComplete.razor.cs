@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using Caspian.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
@@ -31,7 +32,7 @@ namespace Caspian.UI
 
         IDictionary<string, object> GetMainAttribute()
         {
-            var className = "t-widget t-numerictextbox c-lookup";
+            var className = "t-widget t-textbox c-lookup";
             if (Disabled)
                 className += " t-state-disabled";
             if (ErrorMessage.HasValue())
@@ -400,7 +401,22 @@ namespace Caspian.UI
         {
             if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
             {
-                _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
+                var expr = ValueExpression.Body;
+                string str = "";
+                while(expr.NodeType == ExpressionType.MemberAccess)
+                {
+                    var memberExpr = expr as MemberExpression;
+                    if (memberExpr.Member.DeclaringType.GetCustomAttribute<TableAttribute>() == null)
+                        break;
+                    else
+                    {
+                        if (str.Length > 0)
+                            str = $".{str}";
+                        str = memberExpr.Member.Name + str;
+                        expr = memberExpr.Expression;
+                    }
+                }
+                _FieldName = str;
                 _messageStore = new ValidationMessageStore(CurrentEditContext);
                 CurrentEditContext.OnValidationRequested -= CurrentEditContext_OnValidationRequested;
                 CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;

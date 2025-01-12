@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
+using System.Collections.Generic;
 
 namespace Caspian.Common.Service
 {
@@ -28,6 +29,8 @@ namespace Caspian.Common.Service
         Task<TEntity> SingleAsync(int id);
 
         Task<TEntity> SingleOrDefaultAsync(int id);
+
+        void SetSource(IReadOnlyCollection<TEntity> source);
 
         Task<ValidationResult> ValidateRemoveAsync(TEntity entity);
         Type DetailType { get; set; }

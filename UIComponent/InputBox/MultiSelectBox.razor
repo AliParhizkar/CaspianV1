@@ -1,33 +1,58 @@
 ﻿@namespace Caspian.UI
 @typeparam TValue
 @inherits CBaseInput<TValue>
-@{
-    var className = $"t-widget c-multi-select justify-content-{DefaultLayout.GetCssClassName()}";
-    if (disabled)
-        className += " t-state-disabled";
-    else if (ErrorMessage.HasValue())
-        className += " t-state-error";
+@if (ColSpan.HasValue)
+{
+    var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer);
+    string lableContainerCSSClassName = container?.GetLableContainerCSSClassName(ColSpan.Value);
+    string controlContainerCSSClassName = container?.GetControlContainerCSSClassName(ColSpan.Value);
+    <div class="@(lableContainerCSSClassName)">
+        <label>@title</label>
+    </div>
+    <div class="@(controlContainerCSSClassName)">
+        @RenderMultiSelect()
+    </div>
 }
-<div @ref="InputElement" tabindex="@(TabIndex ?? 0)" class="@className" error-message="@ErrorMessage">
-    @{ 
-        var diabledValue = Convert.ToInt64(DisabledValue);
-    }
-    @foreach (var item in Items)
+else
+{
+    @RenderMultiSelect()
+}
+
+
+@code 
+{
+    RenderFragment RenderMultiSelect()
     {
-        var keyValue = Convert.ToInt64(item.Key);
-        if (!disabled)
+        return __builder =>
         {
-            if ((diabledValue & keyValue) == keyValue)
-                disabled = true;
-        }
-        var value = (keyValue & Convert.ToInt64(Value)) == keyValue;
-        <div>
-            <CheckBox Disabled="disabled" Title="@item.Value" Value="value"
-                  ValueChanged="@(async (bool flag) =>
+            var className = $"t-widget c-multi-select justify-content-{DefaultLayout.GetCssClassName()}";
+            if (disabled)
+                className += " t-state-disabled";
+            else if (ErrorMessage.HasValue())
+                className += " t-state-error";
+            <div @ref="InputElement" tabindex="@(TabIndex ?? 0)" class="@className" error-message="@ErrorMessage">
+                @{
+                    var diabledValue = Convert.ToInt64(DisabledValue);
+                }
+                @foreach (var item in Items)
+                {
+                    var keyValue = Convert.ToInt64(item.Key);
+                    if (!disabled)
+                    {
+                        if ((diabledValue & keyValue) == keyValue)
+                            disabled = true;
+                    }
+                    var value = (keyValue & Convert.ToInt64(Value)) == keyValue;
+                    <div>
+                        <CheckBox Disabled="disabled" Title="@item.Value" Value="value"
+                                  ValueChanged="@(async (bool flag) =>
                                   {
                                       if (flag || Convert.ToInt64(Value) > 0)
                                         await ChangValue(item.Key, flag);
                                   })" />
-        </div>
+                    </div>
+                }
+            </div>
+        };
     }
-</div>
+}

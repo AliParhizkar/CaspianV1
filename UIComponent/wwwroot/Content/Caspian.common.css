@@ -1,4 +1,4 @@
-﻿input, div {
+﻿input, div, textarea {
     outline: none;
 }
 input {
@@ -20,7 +20,7 @@ input {
 
 /*Hover and focused state*/
 .t-ltr .t-inputbox-wrap.t-state-hover .t-select, .t-ltr .t-inputbox-wrap.t-state-focused .t-select {
-    border-left-color: rgba(0, 0, 0, 0.24);
+    /*border-left-color: rgba(0, 0, 0, 0.24);*/
 }
 /*Error default state*/
 .t-ltr .t-inputbox-wrap.t-state-error .t-select {
@@ -54,12 +54,12 @@ input {
     /*Focus state*/
     .t-textbox input:focus {
         border-color: rgba(0,0,0,0.24);
-        box-shadow: 0 0 3px 0 grey;
+        box-shadow: 0 0 3px 0 #a6a6a6;
     }
     /*Error default*/
 .t-textbox.t-state-error input {
     border-color: rgba(255,0,0,0.12);
-    background-color: rgba(255, 0, 0, 0.025);
+    background-color: rgb(255 249 249);
 }
 /*Error Hover*/
 .t-textbox.t-state-error input:hover {
@@ -86,8 +86,8 @@ input {
     /*focus state*/
         .t-inputbox-wrap.t-state-focused {
             background-image: linear-gradient(rgba(0, 0, 0, 0.045),rgba(0, 0, 0, 0.075));
-            box-shadow: 0 0 3px 0 grey;
-            border-color: rgba(0,0,0,0.24);
+            box-shadow: 0 0 3px 0 #a6a6a6;
+            /*border-color: rgba(0,0,0,0.24);*/
         }
     /*error-default*/
     .t-inputbox-wrap.t-state-error {
