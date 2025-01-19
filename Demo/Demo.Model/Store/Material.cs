@@ -18,18 +18,18 @@ namespace Demo.Model
         public int MainUnitId { get; set; }
 
         [ForeignKey(nameof(MainUnitId))]
-        public virtual MainUnit MainUnit { get; set; }
+        public MainUnit MainUnit { get; set; }
 
         [DisplayName("Sub unit")]
         public int? SubunitId { get; set; }
 
         [ForeignKey(nameof(SubunitId))]
-        public virtual Subunit Subunit { get; set; }
+        public Subunit Subunit { get; set; }
 
         [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
         [CheckOnDelete("The material has receipt and can't be removed")]
-        public virtual IList<ReceiptDetail> ReceiptDetails { get; set; }
+        public IList<ReceiptDetail> ReceiptDetails { get; set; }
     }
 }

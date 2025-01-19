@@ -15,12 +15,12 @@ namespace Caspian.Engine
         public int WorkflowGroupId { get; set; }
 
         [ForeignKey(nameof(WorkflowGroupId))]
-        public virtual WorkflowGroup WorkflowGroup { get; set; }
+        public WorkflowGroup WorkflowGroup { get; set; }
 
         public int DataModelId { get; set; }
 
         [ForeignKey(nameof(DataModelId))]
-        public virtual DataModel DataModel { get; set; }
+        public DataModel DataModel { get; set; }
 
         public byte ColumnCount { get; set; }
 
@@ -32,6 +32,6 @@ namespace Caspian.Engine
         /// Rows of form
         /// </summary>
         [CheckOnDelete("فرم دااری ردیف می باشد و امکان حذف آن وجود ندادر")]
-        public virtual IList<HtmlRow> Rows { get; set; }
+        public IList<HtmlRow> Rows { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace Caspian.Engine
         public int FieldId { get; set; }
 
         [ForeignKey(nameof(FieldId))]
-        public virtual DataModelField Field { get; set; }
+        public DataModelField Field { get; set; }
 
         [DisplayName("Title")]
         public string Title { get; set; }

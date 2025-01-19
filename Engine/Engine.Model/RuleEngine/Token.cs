@@ -30,13 +30,13 @@ namespace Caspian.Engine
         public int? DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
-        public virtual DynamicParameter DynamicParameter { get; set; }
+        public DynamicParameter DynamicParameter { get; set; }
 
         [ForeignKey(nameof(RuleId))]
-        public virtual Rule Rule { get; set; }
+        public Rule Rule { get; set; }
 
         [ForeignKey(nameof(RuleIdValue))]
-        public virtual Rule RuleValue { get; set; }
+        public Rule RuleValue { get; set; }
 
         [NotMapped]
         public TokenKind TokenKind
@@ -69,8 +69,6 @@ namespace Caspian.Engine
                 return Engine.TokenKind.CloseBracket;
             }
         }
-
-
 
         public string GetEnTitle(OperatorType operatorType)
         {

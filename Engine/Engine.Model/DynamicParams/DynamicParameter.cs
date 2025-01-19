@@ -48,20 +48,20 @@ namespace Caspian.Engine
         /// 
         /// </summary>
         [CheckOnDelete("پارامتر دارای چندین انتخاب می باشد و امکان حذف آن وجود ندارد")]
-        public virtual IList<DynamicParameterOption> Options { get; set; }
+        public IList<DynamicParameterOption> Options { get; set; }
 
         /// <summary>
         /// مقادیر پارامتر
         /// </summary>
         [CheckOnDelete("پارامتر دارای مقدار می باشد و امکان حذف آن وجود ندارد")]
-        public virtual IList<DynamicParameterValue> Values { get; set; }
+        public IList<DynamicParameterValue> Values { get; set; }
 
         [InverseProperty("DynamicParameter")]
         [CheckOnDelete("پارامتر دارای پارامتر داده ای می باشد و امکان حذف آن وجود ندارد")]
-        public virtual IList<DataParameter> DataParameters { get; set; }
+        public IList<DataParameter> DataParameters { get; set; }
 
         [InverseProperty("ResultParameter")]
         [CheckOnDelete("پارامتر بعنوان پارامتر داده ای می باشد وامکان حذف آن وجود ندارد")]
-        public virtual IList<DataParameter> ResultParameters { get; set; }
+        public IList<DataParameter> ResultParameters { get; set; }
     }
 }

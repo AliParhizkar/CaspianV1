@@ -15,17 +15,17 @@ namespace Caspian.Engine
         public int? DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
-        public virtual DynamicParameter DynamicParameter { get; set; }
+        public DynamicParameter DynamicParameter { get; set; }
 
         public int? DynamicParameterOptionId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterOptionId))]
-        public virtual DynamicParameterOption DynamicParameterOption { get; set; }
+        public DynamicParameterOption DynamicParameterOption { get; set; }
 
         public int? RuleId { get; set; }
 
         [ForeignKey(nameof(RuleId))]
-        public virtual Rule Rule { get; set; }
+        public Rule Rule { get; set; }
 
         public decimal? Value { get; set; }
     }

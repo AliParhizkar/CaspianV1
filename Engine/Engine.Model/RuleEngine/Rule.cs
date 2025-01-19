@@ -63,6 +63,6 @@ namespace Caspian.Engine
         /// </summary>
         [CheckOnDelete("این Rule دارای توکن است و امکان حذف آن وجود ندارد")]
         [InverseProperty("Rule")]
-        public virtual IList<Token> Tokens { get; set; }
+        public IList<Token> Tokens { get; set; }
     }
 }

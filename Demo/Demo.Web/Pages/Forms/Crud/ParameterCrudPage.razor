@@ -51,12 +51,10 @@
                     <Window Service="Service" Title="Country" Style="width:450px">
                         <CaspianForm Service="Service">
                            <Content Context="country">
-                                <div class="row c-controls ps-4 pe-4">
-                                    <StringTextBox @bind-Value="country.Title" ColSpan="8" />
-                                    <DropdownList @bind-Value="country.ActiveType" ColSpan="8" />
-                                    <div class="col-md-8 align-content-center">
-                                        <FormCommandButton />
-                                    </div>
+                                <StringTextBox @bind-Value="country.Title" ColSpan="8" />
+                                <DropdownList @bind-Value="country.ActiveType" ColSpan="8" />
+                                <div class="col-md-8 align-content-center">
+                                    <FormCommandButton />
                                 </div>
                            </Content>
                         </CaspianForm>

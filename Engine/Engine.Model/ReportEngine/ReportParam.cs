@@ -43,22 +43,22 @@ namespace Caspian.Engine.Model
         public int? RuleId { get; set; }
 
         [ForeignKey(nameof(RuleId))]
-        public virtual Rule Rule { get; set; }
+        public Rule Rule { get; set; }
 
         public int ReportGroupParameterId {  get; set; }
 
         [ForeignKey(nameof(ReportGroupParameterId))]
-        public virtual ReportGroupParameter ReportGroupParameter { get; set; }
+        public ReportGroupParameter ReportGroupParameter { get; set; }
 
         public int? DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
-        public virtual DynamicParameter DynamicParameter { get; set; }
+        public DynamicParameter DynamicParameter { get; set; }
 
         [DisplayName("گزارش")]
         public int ReportId { get; set; }
 
         [ForeignKey(nameof(ReportId))]
-        public virtual Report Report { get; set; }
+        public Report Report { get; set; }
     }
 }

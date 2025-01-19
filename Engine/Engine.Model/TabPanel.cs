@@ -14,8 +14,8 @@ namespace Caspian.Engine.Model
         public int? ReportId { get; set; }
 
         [ForeignKey("ReportId")]
-        public virtual Report Report { get; set; }
+        public Report Report { get; set; }
 
-        //public virtual IList<ReportControlModel> Controls { get; set; } 
+        //public IList<ReportControlModel> Controls { get; set; } 
     }
 }

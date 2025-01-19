@@ -24,7 +24,7 @@ namespace Caspian.Engine
         /// control can bind to properties of this field 
         /// </summary>
         [ForeignKey(nameof(DataModelFieldId))]
-        public virtual DataModelField DataModelField { get; set; }
+        public DataModelField DataModelField { get; set; }
 
         /// <summary>
         /// The property name of entity that control bind to it
@@ -34,7 +34,7 @@ namespace Caspian.Engine
         //public int? DynamicParameterId { get; set; }
 
         //[ForeignKey(nameof(DynamicParameterId))]
-        //public virtual DynamicParameter DynamicParameter { get; set; }
+        //public DynamicParameter DynamicParameter { get; set; }
 
         public string TextExpression { get; set; }
 
@@ -46,11 +46,11 @@ namespace Caspian.Engine
 
         public string OnChange { get; set; }
 
-        public virtual HtmlColumn HtmlColumn { get; set; }
+        public HtmlColumn HtmlColumn { get; set; }
 
         public int? LookupTypeId { get; set; }
 
         [ForeignKey(nameof(LookupTypeId))]
-        public virtual LookupType LookupType { get; set; } 
+        public LookupType LookupType { get; set; } 
     }
 }

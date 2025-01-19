@@ -31,7 +31,7 @@ namespace Caspian.Engine
         public int? WorkflowFormId { get; set; }
 
         [ForeignKey(nameof(WorkflowFormId))]
-        public virtual WorkflowForm WorkflowForm { get; set; }
+        public WorkflowForm WorkflowForm { get; set; }
 
         public double Left { get; set; }
 
@@ -51,12 +51,12 @@ namespace Caspian.Engine
         public int WorkflowId { get; set; }
 
         [ForeignKey(nameof(WorkflowId))]
-        public virtual Workflow Workflow { get; set; }
+        public Workflow Workflow { get; set; }
 
         [InverseProperty(nameof(NodeConnector.Activity))]
-        public virtual IList<NodeConnector> OutConnectors { get; set; }
+        public IList<NodeConnector> OutConnectors { get; set; }
 
         [InverseProperty(nameof(NodeConnector.ToActivity))]
-        public virtual IList<NodeConnector> InConnectors { get; set; }
+        public IList<NodeConnector> InConnectors { get; set; }
     }
 }

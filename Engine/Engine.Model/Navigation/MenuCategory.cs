@@ -19,6 +19,6 @@ namespace Caspian.Engine.Model
         public int Ordering { get; set; }
 
         [CheckOnDelete("منوی اصلی دارای منوی فرعی می باشد و امکان حذف آن وجود ندارد")]
-        public virtual IList<Menu> Menus { get; set; }
+        public IList<Menu> Menus { get; set; }
     }
 }

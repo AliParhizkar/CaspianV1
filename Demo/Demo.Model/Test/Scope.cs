@@ -18,6 +18,6 @@ namespace Demo.Model
         public string EnTitle { get; set; }
 
         [CheckOnDelete("حوزه دارای اعتبارسنجی می باشد و امکان حذف آن وجود ندارد")]
-        public virtual IList<Evaluation> Evaluations { get; set; }  
+        public IList<Evaluation> Evaluations { get; set; }  
     }
 }

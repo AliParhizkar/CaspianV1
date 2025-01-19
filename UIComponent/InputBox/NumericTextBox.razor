@@ -38,11 +38,11 @@ else
                 }
                 @if (BindingType == BindingType.OnChange)
                 {
-                    <input @ref="InputElement" @attributes="InputAttributes" value="@text" @onchange="onChangeValue" class="t-input" />
+                    <input @ref="InputElement" @attributes="InputAttributes" value="@text" @onchange="OnChangeValue" class="t-input" />
                 }
                 else
                 {
-                    <input @ref="InputElement" value="@text" @attributes="InputAttributes" @oninput="onChangeValue" class="t-input" />
+                    <input @ref="InputElement" value="@text" @attributes="InputAttributes" @oninput="OnChangeValue" class="t-input" />
                 }
             </div>
 

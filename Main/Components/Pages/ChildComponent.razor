@@ -1,26 +1,201 @@
 ﻿@page "/Test111"
-@page "/Test111/{Id:int}"
+@inherits BasePage
 @using Caspian.UI
 @using Demo.Model
+@using Demo.Service
+@using Demo.Web.Pages
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using Microsoft.EntityFrameworkCore
 @using Stimulsoft.Report
 @using Stimulsoft.Report.Blazor
 @using Syncfusion.Blazor.DropDowns
-
-<div class="main t-rtl">
-    <div class="order-container">
-
+@inject ProtectedSessionStorage Storage
+@inject BatchService<Order, OrderDeatil> Service
+@{
+    var className = "main t-rtl";
+    if (colapsed)
+        className += " colapssed";
+}
+<div class="@(className)">
+    <div class="product-container">
+        <div class="product-categories">
+            @if (productCategories != null)
+            {
+                foreach (var category in productCategories)
+                {
+                    className = "product-category";
+                    if (category.Id == selectedCategoryId)
+                        className += " selected";
+                    <div @onclick="async () => await LoadProductsOfcategory(category.Id)" class="@(className)">@category.Title</div>
+                }
+            }
+        </div>
+        <div class="products">
+            @if (products != null)
+            {
+                foreach(var product in products)
+                {
+                    <div @onclick="async () => await AddProductToOrderDetails(product.Id)" class="product">@product.Title</div>
+                }
+            }
+        </div>
     </div>
     <div class="col-spiliter">
-
+        <span @onclick="async () => await ToggeleMenu()" class="fa fa-chevron-circle-right"></span>
     </div>
-    <div class="product-container">
-
+    <div class="order-container">
+        <DataGrid TEntity="OrderDeatil" DetailsService="Service" PageSize="20" ContentHeight="200" ShowInsertIcon="false" Batch>
+            <Columns>
+                <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
+                <GridColumn Field="t => t.Product.Title" Title="Product" />
+                <GridColumn Field="t => t.Price.Seprate3Digit()" Title="Price" />
+                <GridColumn Field="t => t.Quantity" Title="Quantity" style="width:140px;">
+                    <Template>
+                        <div class="inc-dec-container">
+                            <IconButton IconType="IconType.Plus" @onclick="async () => await IncQuantity(context.Data)" />
+                            <NumericTextBox TValue="int" Value="@context.Data.Quantity" ValueChanged="async value => await UpdateGridAfterQuantityChanged(value, context.Data)" />
+                            <IconButton IconType="IconType.Minus" @onclick="async () => await DecQuantity(context.Data)" />
+                        </div>
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="t => t.Descript" Title="Comment" style="width:60px;">
+                    <Template>
+                        <button @onclick="async () => await ShowDesccription(context.Data)" class="c-btn c-primary">...</button>
+                    </Template>
+                </GridColumn>
+            </Columns>
+        </DataGrid>
     </div>
 </div>
+<span>@GetSumOrderDetails()</span>
 
+<CaspianForm Service="Service">
+    <Content Context="order">
+        <div class="row c-controls ps-3 pe-3">
+            <DatePicker @bind-Value="order.Date" ColSpan="8" />
+            <DropdownList @bind-Value="order.OrderType" ColSpan="8" />
+            <div class="col-md-12">
+                <FormCommandButton />
+            </div>
+        </div>
+    </Content>
+</CaspianForm>
 
+<PopupWindow @bind-Status="status" Top="100" Left="60">
+    <div style="width:400px;" class="row p-3 text-center">
+        <div class="col-md-6">@selectedOrderDeatil.Product?.Title</div>
+        <div class="col-md-2">@selectedOrderDeatil.Quantity</div>
+        <div class="col-md-4">@selectedOrderDeatil.Price.Seprate3Digit()</div>
+    </div>
+    <div style="width:400px;" class="row p-3">
+        <StringTextBox @ref="txtDescript" @bind-Value="selectedOrderDeatil.Descript" MultiLine Rows="3" />
+    </div>
+</PopupWindow>
 @code
 {
+    WindowStatus status;
+    IList<ProductCategory> productCategories;
+    IList<Product> products;
+    bool colapsed;
+    int selectedCategoryId, orderId;
+    OrderDeatil selectedOrderDeatil;
+    StringTextBox txtDescript;
 
+    int GetSumOrderDetails()
+    {
+        if (Service.DetailDataView == null)
+            return 0;
+        return Service.DetailDataView.GetBatchEntities().Sum(u => u.Quantity * u.Price);
+    }
+
+    async Task UpdateGridAfterQuantityChanged(int newValue, OrderDeatil orderDeatil)
+    {
+        if (newValue < 0)
+            ShowMessage("تعداد نمی تواند منفی باشد");
+        else if (newValue == 0)
+            await Service.DetailDataView.RemoveAsync(orderDeatil);
+        else
+        {
+            orderDeatil.Quantity = newValue;
+            await Service.DetailDataView.UpdateAsync(orderDeatil);
+        }
+    }
+
+    async Task ShowDesccription(OrderDeatil orderDeatil)
+    {
+        selectedOrderDeatil = orderDeatil;
+        status = WindowStatus.Open;
+        await Task.Delay(300);
+        if (txtDescript != null)
+            await txtDescript.FocusAsync();
+    }
+
+    async Task ToggeleMenu()
+    {
+        colapsed = !colapsed;
+        await Storage.SetAsync("product-menu-status", colapsed);
+    }
+
+    async Task IncQuantity(OrderDeatil orderDeatil)
+    {
+        orderDeatil.Quantity++;
+        await Service.DetailDataView.UpdateAsync(orderDeatil);
+    }
+
+    async Task DecQuantity(OrderDeatil orderDeatil)
+    {
+        orderDeatil.Quantity--;
+        if (orderDeatil.Quantity == 0)
+            await Service.DetailDataView.RemoveAsync(orderDeatil);
+    }
+
+    async Task LoadProductsOfcategory(int categoryId)
+    {
+        selectedCategoryId = categoryId;
+        using var service = CreateScope().GetService<ProductService>();
+        products = await service.GetAll().Where(t => t.ProductCategoryId == categoryId).ToListAsync();
+    }
+
+    async Task AddProductToOrderDetails(int productId)
+    {
+        using var service = CreateScope().GetService<ProductService>();
+        var product = await service.SingleAsync(productId);
+        var old = Service.ChangedEntities.SingleOrDefault(t => t.Entity.ProductId == productId)?.Entity;
+        var grid = Service.DetailDataView;
+        if (old == null)
+        {
+            await grid.InsertAsync(new OrderDeatil()
+                {
+                    Quantity = 1,
+                    Price = product.Price,
+                    ProductId = productId,
+                    OrderId = orderId
+                });
+        }
+        else
+        {
+            old.Quantity = old.Quantity + 1;
+            await grid.UpdateAsync(old);
+        }
+        await grid.ScrollIntoViewSeledtedRow();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<ProductCategoryService>();
+        productCategories = await service.GetAll().ToListAsync();
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var state = await Storage.GetAsync<bool>("product-menu-status");
+            colapsed = state.Success && state.Value;
+            if (colapsed)
+                StateHasChanged();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }

@@ -20,11 +20,11 @@ namespace Demo.Model
         public int WarehouseId { get; set; }
 
         [ForeignKey(nameof(WarehouseId))]
-        public virtual Warehouse Warehouse { get; set; }
+        public Warehouse Warehouse { get; set; }
 
         public string Comment { get; set; }
 
         [CheckOnDelete("The warehouse receipt contains the goods and cannot be deleted.")]
-        public virtual IList<ReceiptDetail> ReceiptDetails { get; set; }
+        public IList<ReceiptDetail> ReceiptDetails { get; set; }
     }
 }

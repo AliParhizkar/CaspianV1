@@ -15,9 +15,9 @@ namespace Caspian.Engine
         public int HtmlColumnId { get; set; }
 
         [ForeignKey(nameof(HtmlColumnId))]
-        public virtual HtmlColumn HtmlColumn { get; set; }
+        public HtmlColumn HtmlColumn { get; set; }
 
         [CheckOnDelete(false)]
-        public virtual IList<HtmlColumn> HtmlColumns { get; set; }
+        public IList<HtmlColumn> HtmlColumns { get; set; }
     }
 }

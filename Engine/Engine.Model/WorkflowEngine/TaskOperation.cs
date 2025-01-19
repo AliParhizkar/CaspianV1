@@ -26,7 +26,7 @@ namespace Caspian.Engine
         /// مشخصات حالت عملیات
         /// </summary>
         [ForeignKey(nameof(ActivityId))]
-        public virtual Activity Activity { get; set; }
+        public Activity Activity { get; set; }
 
         /// <summary>
         /// کد عملیات انجام شده
@@ -37,7 +37,7 @@ namespace Caspian.Engine
         /// مشخصات عملیات انجام شده
         /// </summary>
         [ForeignKey(nameof(ConnectorId))]
-        public virtual NodeConnector Connector { get; set; }
+        public NodeConnector Connector { get; set; }
 
         public int No { get; set; }
 

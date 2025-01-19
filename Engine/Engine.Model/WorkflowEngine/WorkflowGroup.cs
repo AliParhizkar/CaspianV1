@@ -21,9 +21,9 @@ namespace Caspian.Engine
         public string Description { get; set; }
 
         [CheckOnDelete("This group has Data model and can not removed")]
-        public virtual IList<DataModel> DataModels { get; set; }
+        public IList<DataModel> DataModels { get; set; }
 
         [CheckOnDelete("This group has Workflow and can not removed")]
-        public virtual IList<Workflow> Workflows { get; set; }
+        public IList<Workflow> Workflows { get; set; }
     }
 }

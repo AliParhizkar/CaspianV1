@@ -6,11 +6,11 @@
         curent: HTMLElement;
         curentWidth: number;
         gridStatus: number;
-        other: HTMLElement;
+        other: HTMLElement;sss
         otherWidth: number;
         xStart: number;
         header: HTMLElement;
-        headerColumns: HTMLElement[];
+        headerColumns: HTMLElement[]; 
 
         constructor(grv: HTMLElement) {
             this.grid = grv;
@@ -79,18 +79,10 @@
                         if (table) {
                             let tableHeight = table.getBoundingClientRect().height;
                             let header = grv.getElementsByClassName('t-grid-header')[0] as HTMLElement;
-                            if (contentHeight < tableHeight) {
-                                if (caspian.common.RightToLeft())
-                                    header.style.paddingLeft = '11px';
-                                else
-                                    header.style.paddingRight = '11px';
-                            }
-                            else {
-                                if (caspian.common.RightToLeft())
-                                    header.style.paddingLeft = '0';
-                                else
-                                    header.style.paddingRight = '0';
-                            }
+                            if (contentHeight < tableHeight) 
+                                header.style.overflowY = 'scroll';
+                            else 
+                                header.style.overflowY = 'hidden';
                         }
                     }
                 }

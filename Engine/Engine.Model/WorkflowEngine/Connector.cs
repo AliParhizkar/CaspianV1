@@ -29,7 +29,7 @@ namespace Caspian.Engine
         public int ActivityId { get; set; }
 
         [ForeignKey(nameof(ActivityId)), InverseProperty("OutConnectors")]
-        public virtual Activity Activity { get; set; }
+        public Activity Activity { get; set; }
 
         public ConnectorPortType PortType { get; set; }
 
@@ -54,7 +54,7 @@ namespace Caspian.Engine
         public int ToActivityId { get; set; }
 
         [ForeignKey(nameof(ToActivityId))]
-        public virtual Activity ToActivity { get; set; }
+        public Activity ToActivity { get; set; }
 
         public ConnectorPortType ToPortType { get; set; }
     }

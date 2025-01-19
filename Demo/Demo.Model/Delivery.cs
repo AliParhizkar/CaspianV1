@@ -21,6 +21,6 @@ namespace Demo.Model
         public string Code { get; set; }
 
         [CheckOnDelete("courier has Orders and can not removed")]
-        public virtual IList<Order> Orders { get; set; }    
+        public IList<Order> Orders { get; set; }    
     }
 }

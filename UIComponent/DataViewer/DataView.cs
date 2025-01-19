@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.ObjectModel;
 
 namespace Caspian.UI
 {
@@ -113,6 +114,17 @@ namespace Caspian.UI
         internal EventCallback<TEntity> OnInternalDelete { get; set; }
 
         public abstract Task<TEntity> SelectRowById(int id);
+
+        /// <summary>
+        /// Return entities in batch state
+        /// </summary>
+        /// <returns></returns>
+        public ReadOnlyCollection<TEntity> GetBatchEntities()
+        {
+            if (source == null)
+                return new List<TEntity>().AsReadOnly();
+            return source.AsReadOnly();
+        }
 
         public abstract Task DataBind();
 

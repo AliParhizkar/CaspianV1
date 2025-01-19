@@ -18,6 +18,6 @@ namespace Demo.Model
         /// رسیدهای انبار
         /// </summary>
         [CheckOnDelete("برای انبار رسید صادر شده و امکان حذف آن وجود ندارد")]
-        public virtual ICollection<WarehouseReceipt> WarehouseReceipt { get; set; }
+        public ICollection<WarehouseReceipt> WarehouseReceipt { get; set; }
     }
 }

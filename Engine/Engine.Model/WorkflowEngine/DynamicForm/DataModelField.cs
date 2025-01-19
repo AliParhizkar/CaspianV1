@@ -18,7 +18,7 @@ namespace Caspian.Engine
         public int? DataModelId { get; set; }
 
         [ForeignKey(nameof(DataModelId))]
-        public virtual DataModel DataModel { get; set; }
+        public DataModel DataModel { get; set; }
 
         /// <summary>
         /// Entity type fulle name that bind in forms control 
@@ -46,7 +46,7 @@ namespace Caspian.Engine
         public int? EntityTypeId { get; set; }
 
         [ForeignKey(nameof(EntityTypeId))]
-        public virtual EntityType EntityType { get; set; }
+        public EntityType EntityType { get; set; }
 
         /// <summary>
         /// Check Entity type can be as Details
@@ -54,9 +54,9 @@ namespace Caspian.Engine
         public bool IsDetails { get; set; }
 
         [CheckOnDelete("The field set bind to control and can not be removed")]
-        public virtual IList<BlazorControl> BlazorControls { get; set; }
+        public IList<BlazorControl> BlazorControls { get; set; }
 
         [CheckOnDelete("The field has option(s) and can not be removed")]
-        public virtual IList<DataModelOption> DataModelOptions { get; set; } 
+        public IList<DataModelOption> DataModelOptions { get; set; } 
     }
 }

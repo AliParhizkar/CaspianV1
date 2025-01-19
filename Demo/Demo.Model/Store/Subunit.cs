@@ -21,12 +21,12 @@ namespace Demo.Model
         public int Factor { get; set; }
 
         [ForeignKey(nameof(MainUnitId))]
-        public virtual MainUnit MainUnit { get; set; }
+        public MainUnit MainUnit { get; set; }
 
         [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
         [CheckOnDelete("Sub unit has material")]
-        public virtual IList<Material> Materials { get; set; }
+        public IList<Material> Materials { get; set; }
     }
 }

@@ -2840,6 +2840,7 @@ div.t-grid-footer {
     border-style: solid;
     border-color: rgba(0,0,0,0.2);
     background-color: white;
+    scroll-behavior: smooth;
 }
 .t-grid-content td, .c-grid-inline td {
     border-width: 0 1px 1px 0;

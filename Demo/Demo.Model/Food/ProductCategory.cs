@@ -25,6 +25,6 @@ namespace Demo.Model
         public ActiveType ActiveType { get; set; }
 
         [CheckOnDelete("This product Category has Product and can not be removed")]
-        public virtual IList<Product> Products { get; set; }
+        public IList<Product> Products { get; set; }
     }
 }

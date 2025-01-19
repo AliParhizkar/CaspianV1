@@ -14,7 +14,7 @@ namespace Caspian.Engine.Model
         public int ReportGroupId { get; set; }
 
         [ForeignKey(nameof(ReportGroupId))]
-        public virtual ReportGroup ReportGroup { get; set; }
+        public ReportGroup ReportGroup { get; set; }
 
         /// <summary>
         /// عنوان لاتین فیلد

@@ -14,7 +14,7 @@ namespace Demo.Model
         public int? ParentOrganId { get; set; }
 
         [ForeignKey(nameof(ParentOrganId))]
-        public virtual OrganUnit ParentOrgan { get; set; }
+        public OrganUnit ParentOrgan { get; set; }
 
         [DisplayName("Title")]
         public string Title { get; set; }
@@ -22,7 +22,7 @@ namespace Demo.Model
         public ActiveType ActiveType { get; set; }
 
         [CheckOnDelete("Organ unit has subunit and can not be removed")]
-        public virtual ICollection<OrganUnit> SuborganUnits { get; set; }
+        public ICollection<OrganUnit> SuborganUnits { get; set; }
     }
 
     [Table("Test", Schema = "demo")]

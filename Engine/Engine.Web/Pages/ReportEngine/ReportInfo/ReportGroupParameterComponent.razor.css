@@ -1,4 +1,7 @@
-﻿.e-main, .e-tree, .e-component {
+﻿::deep form >div{
+    height:100%;
+}
+.e-main, .e-tree, .e-component {
     height: 100%;
 }
 .e-head {

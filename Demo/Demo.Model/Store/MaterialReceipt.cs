@@ -16,10 +16,10 @@ namespace Demo.Model
         public int MaterialId { get; set; }
 
         [ForeignKey(nameof(ReceiptId))]
-        public virtual WarehouseReceipt Receipt { get; set; }
+        public WarehouseReceipt Receipt { get; set; }
 
         [ForeignKey(nameof(MaterialId))]
-        public virtual Material Material { get; set; }
+        public Material Material { get; set; }
 
         [DisplayName("Quantity-main")]
         public int QuantityMain { get; set; }

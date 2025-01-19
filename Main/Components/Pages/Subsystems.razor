@@ -1,15 +1,33 @@
-﻿@inject IJSRuntime jsRuntime
-@inherits BasePage
+﻿@inherits BasePage
 @page "/Default"
 @using Caspian.UI
 @using Demo.Model
 @using Demo.Service
 @using Microsoft.EntityFrameworkCore
-
-
+@{
+    var className = "t-main-component";
+}
+@if (flag)
+{
+    <div style="height:@(height)px" class="@className">
+    </div>
+}
+<button @onclick="async () => await Toggle()">Toggle</button>
 @code 
 {
-
-
-
+    bool flag;
+    int height;
+    async Task Toggle()
+    {
+        if(flag)
+            flag = false;
+        else
+        {
+            height = 0;
+            flag = true;
+            await Task.Delay(1);
+            height = 300;
+            StateHasChanged();
+        }
+    }
 }

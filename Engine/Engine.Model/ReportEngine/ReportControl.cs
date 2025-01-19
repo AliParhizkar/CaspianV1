@@ -24,6 +24,6 @@ namespace Caspian.Engine.Model
         public int TabPanelId { get; set; }
 
         [ForeignKey("TabPanelId")]
-        public virtual TabPanel TabPanel { get; set; }
+        public TabPanel TabPanel { get; set; }
     }
 }

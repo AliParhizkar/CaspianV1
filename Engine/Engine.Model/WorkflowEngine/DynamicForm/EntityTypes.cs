@@ -21,6 +21,6 @@ namespace Caspian.Engine
         public string Title { get; set; }
 
         [CheckOnDelete("نوع موجودیت دارای فیلد می باشد و امکان حذف آن وجود ندارد")]
-        public virtual IList<DataModelField> DataModelFields { get; set; }
+        public IList<DataModelField> DataModelFields { get; set; }
     }
 }

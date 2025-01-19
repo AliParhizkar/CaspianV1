@@ -21,12 +21,12 @@ namespace Demo.Model
         /// Subunits of unit
         /// </summary>
         [CheckOnDelete("Unit has subunit and can not removed")]
-        public virtual IList<Subunit> Subunits { get; set; }
+        public IList<Subunit> Subunits { get; set; }
 
         /// <summary>
         /// Materials of unit
         /// </summary>
         [CheckOnDelete("Unit has materials and can not removed")]
-        public virtual IList<Material> Materials { get; set; }
+        public IList<Material> Materials { get; set; }
     }
 }

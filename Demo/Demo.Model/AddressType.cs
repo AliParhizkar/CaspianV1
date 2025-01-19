@@ -13,6 +13,6 @@ namespace Demo.Model
         public string Title { get; set; }
 
         [CheckOnDelete("Address type has address and can not be removed")]
-        public virtual IList<CustomerAddress> AddressTypes { get; set; }
+        public IList<CustomerAddress> AddressTypes { get; set; }
     }
 }

@@ -26,6 +26,6 @@ namespace Demo.Model
         /// لیست محصولات گروه محصول
         /// </summary>
         [CheckOnDelete("برای گروه محصول محصول تعریف شده است و امکان حذف آن وجود ندارد")]
-        public virtual IList<Product> Products { get; set; }
+        public IList<Product> Products { get; set; }
     }
 }

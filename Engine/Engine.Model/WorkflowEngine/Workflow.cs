@@ -14,7 +14,7 @@ namespace Caspian.Engine
         public int WorkflowGroupId { get; set; }
 
         [ForeignKey(nameof(WorkflowGroupId))]
-        public virtual WorkflowGroup WorkflowGroup { get; set; }
+        public WorkflowGroup WorkflowGroup { get; set; }
 
         /// <summary>
         /// عنوان گردش کار
@@ -25,7 +25,7 @@ namespace Caspian.Engine
         public int DataModelId { get; set; }
 
         [ForeignKey(nameof(DataModelId))]
-        public virtual DataModel DataModel { get; set; }
+        public DataModel DataModel { get; set; }
 
         /// <summary>
         /// توضیحات
@@ -34,6 +34,6 @@ namespace Caspian.Engine
         public string Descript { get; set; }
 
         [InverseProperty(nameof(Workflow)), CheckOnDelete("گردش دارای وضعیت می باشد و امکان حذف آن وجود ندارد.")]
-        public virtual IList<Activity> Activities { get; set; }
+        public IList<Activity> Activities { get; set; }
     }
 }

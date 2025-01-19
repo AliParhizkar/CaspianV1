@@ -17,17 +17,17 @@ namespace Caspian.Engine
         public int? RowId { get; set; }
 
         [ForeignKey(nameof(RowId))]
-        public virtual HtmlRow Row { get; set; }
+        public HtmlRow Row { get; set; }
 
         public int? InnerRowId { get; set; }   
 
         [ForeignKey(nameof(InnerRowId))]
-        public virtual InnerRow InnerRow { get; set; }
+        public InnerRow InnerRow { get; set; }
 
         [CheckOnDelete(false)]
         [InverseProperty("HtmlColumn")]
-        public virtual IList<InnerRow> InnerRows { get; set; }
+        public IList<InnerRow> InnerRows { get; set; }
 
-        public virtual BlazorControl Component { get; set; }
+        public BlazorControl Component { get; set; }
     }
 }

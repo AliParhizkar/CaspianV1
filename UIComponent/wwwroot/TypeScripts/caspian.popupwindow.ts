@@ -6,7 +6,8 @@
             let className = element.className;
             element.className = 'auto-hide c-popup-window';
             let loc = element.getBoundingClientRect();
-            let mainLoc = document.getElementsByClassName('c-content-main')[0].getBoundingClientRect();
+            let main = document.getElementsByClassName('c-content-main')[0] || document.body;
+            let mainLoc = main.getBoundingClientRect();
             element.className = className;
             if (target)
                 this.bindTarget(element, target, data)
@@ -37,6 +38,7 @@
         }
 
         bindTarget(element: HTMLInputElement, target: HTMLElement, data: popupWindowData) {
+            debugger;
             element.className = 'auto-hide c-popup-window';
             let targetLoc = target.getBoundingClientRect();
             let leftT = targetLoc.left, topT = targetLoc.top;

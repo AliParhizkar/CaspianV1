@@ -21,18 +21,18 @@ namespace Caspian.Engine
         public int WorkflowGroupId { get; set; }
 
         [ForeignKey(nameof(WorkflowGroupId))]
-        public virtual WorkflowGroup WorkflowGroup { get; set; }
+        public WorkflowGroup WorkflowGroup { get; set; }
 
         [DisplayName("Description")]
         public string Description { get; set; }
 
         [CheckOnDelete("Data model has Workflow(s) and can not removed")]
-        public virtual IList<Workflow> Workflows { get; set; }
+        public IList<Workflow> Workflows { get; set; }
 
         [CheckOnDelete("Data model has field(s) and can not removed")]
-        public virtual IList<DataModelField> Fields { get; set; }
+        public IList<DataModelField> Fields { get; set; }
 
         [CheckOnDelete("Data model has forms(s) and can not removed")]
-        public virtual IList<WorkflowForm> WorkflowForms { get;set; }
+        public IList<WorkflowForm> WorkflowForms { get;set; }
     }
 }

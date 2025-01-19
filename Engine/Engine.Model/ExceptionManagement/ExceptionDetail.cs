@@ -12,12 +12,12 @@ namespace Caspian.Engine.Model
         public int ExceptionDataId { get; set; }
 
         [ForeignKey(nameof(ExceptionDataId))]
-        public virtual ExceptionData ExceptionData { get; set; }
+        public ExceptionData ExceptionData { get; set; }
 
         public int UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
-        public virtual User User { get; set; }
+        public User User { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime RegisterDate { get; set; }

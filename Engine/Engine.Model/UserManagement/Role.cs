@@ -16,9 +16,9 @@ namespace Caspian.Engine.Model
         public override string Name { get; set; }
 
         [CheckOnDelete("The role has members and it is not possible to delete it")]
-        public virtual ICollection<UserMembership> Memberships { get; set; }
+        public ICollection<UserMembership> Memberships { get; set; }
 
         [CheckOnDelete("The role has menus and it is not possible to delete it")]
-        public virtual ICollection<MenuAccessibility> MenuAccessibilities { get; set; }
+        public ICollection<MenuAccessibility> MenuAccessibilities { get; set; }
     }
 }

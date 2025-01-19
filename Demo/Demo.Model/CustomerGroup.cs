@@ -18,6 +18,6 @@ namespace Demo.Model
         public ActiveType ActiveType { get; set; }
 
         [CheckOnDelete("Customer Group has Memberships and can not Removed")]
-        public virtual IList<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
+        public IList<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
     }
 }

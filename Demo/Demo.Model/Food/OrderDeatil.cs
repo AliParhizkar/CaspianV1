@@ -15,7 +15,7 @@ namespace Demo.Model
         public int OrderId { get; set; }
 
         [ForeignKey(nameof(OrderId))]
-        public virtual Order Order { get; set; }
+        public Order Order { get; set; }
 
         [DisplayName("Descript")]
         public string Descript { get; set; }
@@ -23,7 +23,7 @@ namespace Demo.Model
         public int ProductId { get; set; }
 
         [ForeignKey(nameof(ProductId))]
-        public virtual Product Product { get; set; }
+        public Product Product { get; set; }
 
         [DisplayName("Price")]
         public int Price { get; set; }

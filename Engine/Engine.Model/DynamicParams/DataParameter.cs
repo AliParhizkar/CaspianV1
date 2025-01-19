@@ -14,7 +14,7 @@ namespace Caspian.Engine
         public int ResultParameterId { get; set; }
 
         [ForeignKey(nameof(ResultParameterId))]
-        public virtual DynamicParameter ResultParameter { get; set; }
+        public DynamicParameter ResultParameter { get; set; }
 
         [DisplayName("نوع پارامتر")]
         public DataParameterType ParameterType { get; set; }
@@ -26,11 +26,11 @@ namespace Caspian.Engine
         public int? DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
-        public virtual DynamicParameter DynamicParameter { get; set; }
+        public DynamicParameter DynamicParameter { get; set; }
 
         public int? RuleId { get; set; }
 
         [ForeignKey(nameof(RuleId))]
-        public virtual Rule Rule { get; set; }
+        public Rule Rule { get; set; }
     }
 }

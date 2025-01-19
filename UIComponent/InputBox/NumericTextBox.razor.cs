@@ -39,7 +39,7 @@ namespace Caspian.UI
             return attributes;
         }
 
-        async Task onChangeValue(ChangeEventArgs arg)
+        async Task OnChangeValue(ChangeEventArgs arg)
         {
             var str = arg.Value.ToString().Replace(",", "");
             if (str == "-" || str == ".-" || str == "-.")

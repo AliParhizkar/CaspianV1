@@ -17,6 +17,6 @@ namespace Caspian.Engine
         public string LookupTypeName { get; set; }
 
         [CheckOnDelete("این نوع دارای کنترل می باشد و امکان حذف آن وجود ندارد.")]
-        public virtual IList<BlazorControl> BlazorControls { get; set;}
+        public IList<BlazorControl> BlazorControls { get; set;}
     }
 }

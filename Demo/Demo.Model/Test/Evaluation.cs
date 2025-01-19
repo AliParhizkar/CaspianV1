@@ -14,7 +14,7 @@ namespace Demo.Model
         public int ScopeId { get; set; }
 
         [ForeignKey(nameof(ScopeId))]
-        public virtual Scope Scope { get; set; }
+        public Scope Scope { get; set; }
 
         [DisplayName("عنوان سال ارزیابی")]
         public string Title { get; set; }

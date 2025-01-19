@@ -119,7 +119,7 @@
                                         <Template>
                                             <div class="d-icons">
                                                 <IconButton IconType="IconType.Plus" @onclick="async () => await IncQuantity(context.Data)" />
-                                                <NumericTextBox @bind-Value="@context.Data.Quantity" />
+                                                <NumericTextBox TValue="int" Value="@context.Data.Quantity" ValueChanged="value => UpdateGridAfterQuantityChanged(value, context.Data)" />
                                                 <IconButton IconType="IconType.Minus" @onclick="async () => await DecQuantity(context.Data)" />
                                             </div>
                                         </Template>
@@ -144,6 +144,20 @@
 
     [Parameter]
     public int OrderId { get; set; }
+
+    async void UpdateGridAfterQuantityChanged(int newValue, OrderDeatil orderDeatil)
+    {
+        if (newValue < 0)
+            ShowMessage("تعداد نمی تواند منفی باشد");
+        else if (newValue == 0)
+            await Service.DetailDataView.RemoveAsync(orderDeatil);
+        else
+        {
+            orderDeatil.Quantity = newValue;
+            await Service.DetailDataView.UpdateAsync(orderDeatil);
+        }
+
+    }
 
     protected override void OnInitialized()
     {

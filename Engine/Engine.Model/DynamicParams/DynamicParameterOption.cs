@@ -16,7 +16,7 @@ namespace Caspian.Engine
         public int DynamicParameterId { get; set; }
 
         [ForeignKey(nameof(DynamicParameterId))]
-        public virtual DynamicParameter DynamicParameter { get; set; }
+        public DynamicParameter DynamicParameter { get; set; }
 
         [DisplayName("عنوان فارسی")]
         public string FaTitle { get; set; }

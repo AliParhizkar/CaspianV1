@@ -26,6 +26,6 @@ namespace Caspian.Engine.Model
         public DateTime RegisterDate { get; set; }
 
         [CheckOnDelete(false)]
-        public virtual IList<ExceptionDetail> Details { get; set; }
+        public IList<ExceptionDetail> Details { get; set; }
     }
 }

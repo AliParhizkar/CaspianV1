@@ -16,7 +16,7 @@ namespace Caspian.Engine.Model
         public int? ParentParameterId { get; set; }
 
         [ForeignKey(nameof(ParentParameterId))]
-        public virtual AggregateReportGroupParameter ParentParameter { get; set; }
+        public AggregateReportGroupParameter ParentParameter { get; set; }
 
         public AggregateParameterType AggregateParameterType { get; set; }
 
@@ -25,7 +25,7 @@ namespace Caspian.Engine.Model
         public int ReportGroupId {  get; set; }
 
         [ForeignKey(nameof(ReportGroupId))]
-        public virtual ReportGroup ReportGroup { get; set; }
+        public ReportGroup ReportGroup { get; set; }
 
         public virtual IList<AggregateReportGroupParameter> Parameters { get; set; }
     }

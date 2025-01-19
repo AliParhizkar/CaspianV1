@@ -36,12 +36,12 @@ namespace Caspian.Engine.Model
         public DateTime? ExpireDate { get; set; }
 
         [CheckOnDelete("The user is member of role and can not be removed")]
-        public virtual ICollection<UserMembership> Memberships { get; set; }
+        public ICollection<UserMembership> Memberships { get; set; }
 
         [CheckOnDelete("Th user has access to menus and can not be removed")]
-        public virtual ICollection<MenuAccessibility> Accessibilities { get; set; }
+        public ICollection<MenuAccessibility> Accessibilities { get; set; }
 
         [CheckOnDelete("The user has some errors and can not be remoed")]
-        public virtual ICollection<ExceptionDetail> ExceptionDetails { get; set; }
+        public ICollection<ExceptionDetail> ExceptionDetails { get; set; }
     }
 }

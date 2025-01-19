@@ -53,12 +53,12 @@ namespace Caspian.Engine.Model
         /// گزارش های این گروه
         /// </summary>
         [CheckOnDelete("گروه دارای گزارش می باشد و امکان حذف آن وجود ندارد")]
-        public virtual IList<Report> Reports { get; set; }
+        public IList<Report> Reports { get; set; }
 
         [CheckOnDelete("گروه دارای گزارش می باشد و امکان حذف آن وجود ندارد")]
-        public virtual IList<ReportGroupParameter> ReportGroupParameters { get; set; }
+        public IList<ReportGroupParameter> ReportGroupParameters { get; set; }
 
         [CheckOnDelete("گروه دارای پارامتر تجمیعی می باشد و امکان حذف آن وجود ندارد.")]
-        public virtual IList<AggregateReportGroupParameter> AggregateReportGroupParameters { get; set; }
+        public IList<AggregateReportGroupParameter> AggregateReportGroupParameters { get; set; }
     }
 }
