@@ -1,9 +1,9 @@
 ﻿using Caspian.Common;
 using Microsoft.JSInterop;
 using Caspian.Engine.Model;
+using Caspian.Engine.Service;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
-using Caspian.Engine.Service;
 
 namespace Caspian.Engine.Navigation
 {
@@ -53,12 +53,8 @@ namespace Caspian.Engine.Navigation
         }
         protected override async Task OnInitializedAsync()
         {
-            var item = await Storege.GetAsync<string>("CurentShowUrl");
-            if (item.Success)
-            {
-                sholdRender = true;
-                curentUrl = item.Value;
-            }
+            
+
             await base.OnInitializedAsync();
         }
 
@@ -83,7 +79,21 @@ namespace Caspian.Engine.Navigation
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
+            if (firstRender)
+            {
+                var item = await Storege.GetAsync<string>("CurentShowUrl");
+                if (item.Success)
+                {
+                    sholdRender = true;
+                    if (curentUrl != item.Value)
+                    {
+                        curentUrl = item.Value;
+                        StateHasChanged();
+                    }
+                }
+            }
             await jSRuntime.InvokeVoidAsync("caspian.common.bindMenu", elm);
+
             await base.OnAfterRenderAsync(firstRender);
         }
     }
