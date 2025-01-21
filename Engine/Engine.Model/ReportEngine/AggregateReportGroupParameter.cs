@@ -27,6 +27,6 @@ namespace Caspian.Engine.Model
         [ForeignKey(nameof(ReportGroupId))]
         public ReportGroup ReportGroup { get; set; }
 
-        public virtual IList<AggregateReportGroupParameter> Parameters { get; set; }
+        public IList<AggregateReportGroupParameter> Parameters { get; set; }
     }
 }

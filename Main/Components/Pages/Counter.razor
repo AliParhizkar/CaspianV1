@@ -10,75 +10,19 @@
 @inject IServiceProvider provider
 
 @inherits BasePage
-@{
-    base.BuildRenderTree(__builder);
-}
 
 
 
 
 
 
-@* <div style="margin:10px auto;width:70%;">
-    <Slide TEntity="Product" ConditionExpression="t => t.Image != null && t.Id < 8" >
-        <div class="d-slider">
-            <div>
-                <TextField DataField Field="t => t.Id.ToString()" />
-                <img width="180" height="180" src="/api/Product/GetImage?id=@(context?.Id)" />
-            </div>
-            <div>
-                <TextField Field="t => t.Id.ToString()" />
-            </div>
-        </div>
-    </Slide>
-</div>
-<div style="margin:10px auto;width:90%;">
-    <Slide TEntity="Product" ConditionExpression="t => t.Image != null && t.Id < 8">
-        <div class="d-slider">
-            <div>
-                <TextField DataField Field="t => t.Id.ToString()" />
-                <img width="180" height="180" src="/api/Product/GetImage?id=@(context?.Id)" />
-            </div>
-            <div>
-                <TextField Field="t => t.Id.ToString()" />
-            </div>
-        </div>
-    </Slide>
-</div> *@
+
+
 
 
 
 
 @code 
 {
-    protected override async Task OnInitializedAsync()
-    {
-        var service = CreateScope().GetService<EmployeeService>();
-        Employee employee = new()
-            {
-                Family = new Family()
-                {
-                }
-            };
-        var qqq = await service.ValidateAsync(employee, t =>
-        {
-            t.IncludeProperties("Family.");
-        });
 
-
-        //var service = CreateScope().GetService<OrderService>();
-        // Order order = new();
-        // order.OrderDeatils = new List<OrderDeatil>()
-        // {
-        //     new OrderDeatil()
-        //     {
-        //         ProductId = 8
-        //     }
-        // };
-        // var qqq = await service.ValidateAsync(order, t =>
-        // {
-        //     t.IncludeProperties("OrderDeatils[]");
-        // });
-        await base.OnInitializedAsync();
-    }
 }

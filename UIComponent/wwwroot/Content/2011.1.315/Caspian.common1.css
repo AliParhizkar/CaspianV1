@@ -88,14 +88,26 @@ fieldset.c-container {
 textarea {
     line-height: normal !important;
 }
-.c-slider-arrow .fa {
-    font-size: 40px;
-    color: #dae2f9;
-    cursor: pointer;
+
+
+button:disabled {
+    background-color: #ececec !important;
+    box-shadow: none;
+    color: #c3c3c3 !important;
+    border-color: #c3c3c3 !important;
+    cursor: not-allowed;
+    border: 1px solid lightgray;
 }
     .c-slider-arrow .fa:hover {
         color: #97a7d4;
     }
+.c-slider-arrow button {
+    font-size: 40px;
+    color: #dae2f9;
+    cursor: pointer;
+    background-color: transparent!important;
+    border: none!important;
+}
 .c-slider-body {
     overflow: hidden;
     transition: width .4s cubic-bezier(0.35, 0, 0.25, 1);

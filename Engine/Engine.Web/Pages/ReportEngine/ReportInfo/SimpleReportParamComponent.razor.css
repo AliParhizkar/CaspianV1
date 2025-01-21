@@ -14,10 +14,10 @@
     align-items: center;
 }
     .row{
-        height:calc(100% - 30px);
+        height:calc(100% - 35px);
     }
-.col-md-7{
-    height:calc(100% - 20px);
+.col-md-7, .col-md-5 {
+    height: calc(100% - 20px);
 }
 .e-head label {
     font-weight: bold;

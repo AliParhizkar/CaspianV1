@@ -1,0 +1,46 @@
+﻿@page "/Demo/Slider"
+@namespace Demo.Web.Pages
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<h2>Slider</h2>
+<p>
+    We can use slider to show slide
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div style="margin:10px auto;width:70%;">
+                <Slider TEntity="Product" ConditionExpression="t => t.Image != null && t.Id < 8" Interval="7_000">
+                    <div class="d-slider">
+                        <div>
+                            <TextField DataField Field="t => t.Id.ToString()" />
+                            <img width="180" height="180" src="/api/Product/GetImage?id=@(context?.Id)" />
+                        </div>
+                        <div>
+                            <TextField Field="t => t.Id.ToString()" />
+                        </div>
+                    </div>
+                </Slider>
+            </div>
+            <div style="margin:10px auto;width:90%;">
+                <Slider TEntity="Product" ConditionExpression="t => t.Image != null && t.Id < 8">
+                    <div class="d-slider">
+                        <div>
+                            <TextField DataField Field="t => t.Id.ToString()" />
+                            <img width="180" height="180" src="/api/Product/GetImage?id=@(context?.Id)" />
+                        </div>
+                        <div>
+                            <TextField Field="t => t.Id.ToString()" />
+                        </div>
+                    </div>
+                </Slider>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Slider" FileName="Default" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>

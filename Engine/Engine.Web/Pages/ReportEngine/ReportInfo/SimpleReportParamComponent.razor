@@ -27,12 +27,12 @@
         <div class="col-md-5">
             <div class="params-title">Group Parameters</div>
             <CheckedListbox TEntity="ReportGroupParameter" TDetails="int" Values="selectedParameters" TextExpression="t => t.Alias" 
-                            OnChange="OnChange" ConditionExpression="t => t.ReportGroupId == report.ReportGroupId && !t.IsKey" Filterable Style="height:calc(100% - 52px)" />
+                            OnChange="OnChange" ConditionExpression="t => t.ReportGroupId == report.ReportGroupId && !t.IsKey" Filterable Style="height:calc(100% - 2px)" />
         </div>
-        <div class="col-md-7">
+        <div class="col-md-7 ps-3">
             <div class="params-title">Report Parameters</div>
             <CaspianForm @ref="form" Model="report" TEntity="Report" OnValidSubmit="SaveData" Style="height:calc(100% - 12px)">
-                <div class="params-body ms-3">
+                <div class="params-body">
                     <div class="engin-main">
                         <div class="c-alise-head @(className)">
                             <div class="c-field-name">عنوان فیلد گزارش</div>

@@ -56,7 +56,7 @@
                             <StringTextBox @bind-Value="@organSearchCustomTemplate" OnChange="async () => await customTemplateTree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
                         </div>
                         <div>
-                            <TreeView @ref="customTemplateTree" TEntity="OrganUnit" style="height:500px"
+                            <TreeView @ref="customTemplateTree" TEntity="OrganUnit" style="height:500px" 
                                       TextFunc="t => t.Title" FilterFunc="t => (!organSearchCustomTemplate.HasValue() || t.Title.StartsWith(organSearchCustomTemplate)) && t.ActiveType == activeType">
                                 <AfterNodeTemplate>
                                     <span class="d-tree-icon">
@@ -83,23 +83,10 @@
 
 <Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()">
     <CaspianForm Model="organUnit" TEntity="OrganUnit" OnValidSubmit="UpsertOrganUnit">
-        <div class="row c-controls ps-3 pe-3">
-            <div class="col-md-3">
-                <label>Title</label>
-            </div>
-            <div class="col-md-9">
-                <StringTextBox @ref="firstControl" @bind-Value="organUnit.Title" />
-            </div>
-            <div class="col-md-3">
-                <label>Status</label>
-            </div>
-            <div class="col-md-9">
-                <DropdownList @bind-Value="organUnit.ActiveType" />
-            </div>
-            <div class="col-md-3"></div>
-            <div class="col-md-9 text-ce">
-                <WindowCommandButtons />
-            </div>
+        <StringTextBox @ref="firstControl" @bind-Value="organUnit.Title" ColSpan="9" />
+        <DropdownList @bind-Value="organUnit.ActiveType" ColSpan="9" />
+        <div class="col-md-9 text-center">
+            <WindowCommandButtons />
         </div>
     </CaspianForm>
 </Window>

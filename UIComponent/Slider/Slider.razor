@@ -19,7 +19,7 @@
             style1 += "transition:none;";
         <div @ref="element" class="c-slider-main">
             <div class="c-slider-arrow">
-                <span @onmousedown="ShiftLeft" class="fa fa-chevron-left"></span>
+                <button disabled="@(shift == 1)" @onmousedown="LeftButtonClicked" class="fa fa-chevron-left"></button>
             </div>
             <div style="@style" class="c-slider-body">
                 <div class="c-slider-content" style="@style1">
@@ -54,7 +54,7 @@
                 </div>
             </div>
             <div class="c-slider-arrow">
-                <span class="fa fa-chevron-right" @onmousedown="ShiftRight"></span>
+                <button disabled="@(shift == -1)" class="fa fa-chevron-right" @onmousedown="RightButtonClicked"></button>
             </div>
         </div>
     }

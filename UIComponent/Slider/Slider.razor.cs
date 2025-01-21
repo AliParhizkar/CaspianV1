@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class Slide<TEntity> : ComponentBase, IDisposable where TEntity : class
+    public partial class Slider<TEntity> : ComponentBase, IDisposable where TEntity : class
     {
         IList<TEntity> items;
-        Timer timer;
+        System.Timers.Timer timer;
         int pageSize = 1;
         IList<Expression> fieldsExpression;
         ElementReference element;
@@ -30,7 +30,16 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            
+            timer = new System.Timers.Timer();
+            timer.Enabled = !DisabledTimer;
+            timer.Interval = Math.MaxMagnitude(5_000, Interval);
+            timer.Elapsed += async (sender, e) =>
+            {
+                ShiftLeft();
+                await base.InvokeAsync(StateHasChanged);
+            };
+            if (!DisabledTimer)
+                timer.Start();
             base.OnInitialized();
         }
 
@@ -39,6 +48,12 @@ namespace Caspian.UI
             items = await Binddata(1);
             await base.OnInitializedAsync();
         }
+
+        [Parameter]
+        public bool DisabledTimer { get; set; }
+
+        [Parameter]
+        public int Interval { get; set; } = 10_000;
 
         [Parameter]
         public Expression<Func<TEntity, bool>> ConditionExpression { get; set; }
@@ -85,6 +100,24 @@ namespace Caspian.UI
                 return false;
             }
             return base.ShouldRender();
+        }
+
+        void Cancel()
+        {
+            timer.Stop();
+            timer.Start();
+        }
+
+        void RightButtonClicked()
+        {
+            Cancel();
+            ShiftRight();
+        }
+
+        void LeftButtonClicked()
+        {
+            Cancel();
+            ShiftLeft();
         }
 
         void ShiftRight()
@@ -165,8 +198,7 @@ namespace Caspian.UI
 
         public void Dispose()
         {
-            if (timer != null)
-                timer.Dispose();
+            timer?.Dispose();
         }
     }
 }

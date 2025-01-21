@@ -54,12 +54,12 @@
                             @if (context.Depth == 1)
                             {
                                 <span class=" d-tree-icon d-tree-add">
-                                    <span @onclick="() => ShowEditForm(context, false)" class="fa fa-plus"></span>
+                                    <span @onclick="() => ShowUpsertForm(context, false)" class="fa fa-plus"></span>
                                 </span>
                             }
                             else
                             {
-                                <span class="d-tree-icon d-tree-edit" @onclick="() => ShowEditForm(context, true)">
+                                <span class="d-tree-icon d-tree-edit" @onclick="() => ShowUpsertForm(context, true)">
                                     <span class="fa fa-pencil"></span>
                                 </span>
                                 <span class="d-tree-icon d-tree-delete" @onclick="async () => await DeleteCity(context)">
@@ -79,22 +79,12 @@
 
 
 <Window Title="City" @bind-Status="status" Style="width:400px;" OnOpen="async () => await firstControl.FocusAsync()">
-    <Content>
-        <CaspianForm TEntity="City" Model="city" OnValidSubmit="async t => await UpsertCity()">
-            <div class="row ps-3 pe-3 c-controls">
-                <div class="col-md-4">
-                    <label>Title</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @ref="firstControl" @bind-Value="city.Title" />
-                </div>
-                <div class="col-md-4"></div>
-                <div class="text-center col-md-8">
-                    <WindowCommandButtons />
-                </div>
-            </div>
-        </CaspianForm>
-    </Content>
+    <CaspianForm TEntity="City" Model="city" OnValidSubmit="async t => await UpsertCity()">
+        <StringTextBox @ref="firstControl" @bind-Value="city.Title" ColSpan="8" />
+        <div class="text-center col-md-8">
+            <WindowCommandButtons />
+        </div>
+    </CaspianForm>
 </Window>
 
 @code
@@ -205,7 +195,7 @@
                 }).ToListAsync();
     }
 
-    async Task ShowEditForm(NodeView nodeView, bool isUpdate)
+    async Task ShowUpsertForm(NodeView nodeView, bool isUpdate)
     {
         ///window opening
         city = new City();

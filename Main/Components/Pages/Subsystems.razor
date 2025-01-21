@@ -4,30 +4,42 @@
 @using Demo.Model
 @using Demo.Service
 @using Microsoft.EntityFrameworkCore
-@{
-    var className = "t-main-component";
-}
-@if (flag)
-{
-    <div style="height:@(height)px" class="@className">
-    </div>
-}
-<button @onclick="async () => await Toggle()">Toggle</button>
+@implements IDisposable
+
+<button @onclick="Cancel">Operate</button>
+
 @code 
 {
-    bool flag;
-    int height;
-    async Task Toggle()
+    System.Timers.Timer timer;
+
+    protected override void OnInitialized()
     {
-        if(flag)
-            flag = false;
-        else
+        if (timer == null)
         {
-            height = 0;
-            flag = true;
-            await Task.Delay(1);
-            height = 300;
-            StateHasChanged();
+            timer = new System.Timers.Timer();
+            timer.Interval = 10_000;
+            timer.Enabled = true;
+
+            timer.Elapsed += (sender, e) =>
+            {
+                Console.WriteLine(DateTime.Now.TimeOfDay.ToString());
+            };
+            timer.Start();
         }
+
+        base.OnInitialized();
+    }
+
+
+
+    void Cancel()
+    {
+        timer.Stop();
+        timer.Start();
+    }
+
+    void IDisposable.Dispose()
+    {
+        timer?.Dispose();
     }
 }

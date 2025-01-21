@@ -20,11 +20,9 @@
                         We use the ShowProductGrid method for this, it sets the productcategoryId field to filter the product grid and reloads the product grid.
                     </span>
                 </div>
-                <div class="row c-controls ps-4 pe-4">
-                    <CaspianContainer>
-                        <StringTextBox @bind-Value="CategoryService.Search.Title" ColSpan="8" Search />
-                    </CaspianContainer>
-                </div>
+                <CaspianContainer>
+                    <StringTextBox @bind-Value="CategoryService.Search.Title" ColSpan="8" Search />
+                </CaspianContainer>
                 <DataGrid TEntity="ProductCategory" Service="CategoryService" ContentHeight="208" OnRowSelect="ShowProductGrid">
                     <Columns>
                         <GridColumn Field="t => t.Title" />
@@ -36,12 +34,10 @@
                 <Window Title="Product Category" Service="CategoryService" Style="width:500px">
                     <CaspianForm Service="CategoryService">
                         <Content Context="category">
-                            <div class="row c-controls ps-4 pe-4 pt-3 pb-2">
-                                <StringTextBox @bind-Value="category.Title" ColSpan="8" />
-                                <DropdownList @bind-Value="category.ActiveType" ColSpan="8" />
-                                <div class="col-md-8">
-                                    <WindowCommandButtons />
-                                </div>
+                            <StringTextBox @bind-Value="category.Title" ColSpan="8" />
+                            <DropdownList @bind-Value="category.ActiveType" ColSpan="8" />
+                            <div class="col-md-8">
+                                <WindowCommandButtons />
                             </div>
                         </Content>
                     </CaspianForm>
