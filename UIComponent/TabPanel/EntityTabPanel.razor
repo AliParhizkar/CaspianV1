@@ -22,13 +22,15 @@
     async Task UpdateService(int tabIndex)
     {
         var type = childTypes[tabIndex - 1];
-        await Service.UpdateChildOfModelAsync(type);
+        if (type != null)
+            await Service.UpdateChildOfModelAsync(type);
     }
 
     protected override void OnInitialized()
     {
         childTypes = new List<Type>();
         Service.EntityTabPanel = this;
+        Service.TabPanelInitialize();
         base.OnInitialized();
     }
 

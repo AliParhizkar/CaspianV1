@@ -94,7 +94,6 @@ namespace Main
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
             builder.Services.AddScoped<BaseComponentService>();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
-
             builder.Services.AddAuthenticationCore();
 
             builder.Services.AddIdentityCore<User>(options => options.Password.RequireNonAlphanumeric = false)

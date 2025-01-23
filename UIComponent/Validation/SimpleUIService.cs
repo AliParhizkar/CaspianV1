@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 
 namespace Caspian.UI
 {
@@ -15,12 +16,28 @@ namespace Caspian.UI
         bool isLookup;
         
         IJSRuntime jSRuntime;
-        IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
+        BasePageService basePageService;
+        public IServiceProvider ServiceProvider { get; private set; }
 
         internal void IsLookup()
         {
             isLookup = true;
+        }
+
+        public void Dispose()
+        {
+            isLookup = default;
+            DetailType = default;
+            Is1To1RelationshipService = default;
+            MasterId = default;
+            Window = default;
+            EntityTabPanel = default;
+            DataView = default;
+            Form = default;
+            Search = Activator.CreateInstance<TEntity>();
+            UpsertData = Activator.CreateInstance<TEntity>();
+            OnUpsert = default;
         }
 
         public Type DetailType { get; private set; }
@@ -28,6 +45,8 @@ namespace Caspian.UI
         public bool Is1To1RelationshipService { get; private set; }
 
         public int MasterId { get; set; }
+
+        internal Type MasterType { get; set; }
 
         public async Task UpdateChildOfModelAsync(Type childType)
         {
@@ -54,13 +73,14 @@ namespace Caspian.UI
         public UIService(IServiceProvider serviceProvider) 
         {
             baseComponentService = serviceProvider.GetService<BaseComponentService>();
+            basePageService = serviceProvider.GetService<BasePageService>();
             jSRuntime = serviceProvider.GetService<IJSRuntime>();
-            this.serviceProvider = serviceProvider;
+            this.ServiceProvider = serviceProvider;
             Search = Activator.CreateInstance<TEntity>();
             UpsertData = Activator.CreateInstance<TEntity>();
         }
 
-        public void TabPanelItemInitialize(Type detailType)
+        public void ChildTabPanelItemInitialize(Type detailType)
         {
             this.DetailType = detailType;
         }
@@ -79,7 +99,7 @@ namespace Caspian.UI
 
         public async Task FetchAsync()
         {
-            if (MasterId > 0)
+            if (MasterId > 0 && MasterType == null)
             {
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
                 var old = await service.SingleOrDefaultAsync(MasterId);
@@ -149,6 +169,10 @@ namespace Caspian.UI
                     {
                         id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
                             await DataView.SelectRowById(id);
+                        if (Window == null)
+                            StateHasChanged();
+                        if (MasterType != null)
+                            DataView.ChangeState();
                     }
                     else
                         await DataView.ReloadAsync();
@@ -168,15 +192,22 @@ namespace Caspian.UI
 
         public void StateHasChanged()
         {
-            if (baseComponentService.Target == null)
+            var page = baseComponentService.Target as BasePage;
+            if (page == null)
                 throw new CaspianException("You must inherits from BasePage or configure page manioaly");
-            var method = typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic);
-            method?.Invoke(baseComponentService.Target, null);
+            page.ChangeState();
+            //if (qqqq == "Employee")
+            //{
+            //    method = baseComponentService.Target.GetType().GetMethod("ForTest");
+
+            //    method.Invoke(baseComponentService.Target, null);
+            //}
+
         }
 
         IServiceScope CreateScope()
         {
-            return serviceProvider.CreateScope();
+            return ServiceProvider.CreateScope();
         }
 
         public void DataViewInitialize()
@@ -184,17 +215,40 @@ namespace Caspian.UI
             DataView.Search = Search;
             if (!isLookup)
                 DataView.InsertIconState(true);
+            if (MasterType != null && MasterId > 0)
+            {
+                var param = Expression.Parameter(typeof(TEntity), "t");
+                var foreignKey = typeof(TEntity).GetForeignKey(MasterType);
+                Expression expr = Expression.Property(param, foreignKey);
+                var foreignKeyType = foreignKey.PropertyType;
+
+                if (foreignKey.PropertyType.IsNullableType())
+                {
+                    expr = Expression.Property(expr, "Value");
+                    foreignKeyType = foreignKeyType.GetUnderlyingType();
+                }
+                expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(MasterId, foreignKeyType)));
+                DataView.InternalConditionExpr = expr;
+            }
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
                 var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-                MasterId = value;
+                if (MasterType == null)
+                    MasterId = value;
                 if (value != 0)
                 {
                     using var service = CreateScope().GetService<BaseService<TEntity>>();
                     UpsertData = await service.GetAll().SingleAsync(value);
                 }
                 else
+                {
                     UpsertData = Activator.CreateInstance<TEntity>();
+                    if (MasterType != null)
+                    {
+                        var foreignKey = typeof(TEntity).GetForeignKey(MasterType);
+                        foreignKey.SetValue(UpsertData, MasterId);
+                    }
+                }
                 if (Form != null)
                     Form.Model = UpsertData;
                 if (Window != null)
@@ -237,6 +291,7 @@ namespace Caspian.UI
                 var result = await service.ValidateRemoveAsync(old);
                 if (result.IsValid)
                 {
+                    
                     if (!DataView.DeleteMessage.HasValue() || await Confirm(DataView.DeleteMessage))
                     {
                         await service.RemoveAsync(old);

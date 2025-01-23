@@ -67,7 +67,7 @@ input {
 }
     /*Error Focus*/
     .t-textbox.t-state-error input:focus {
-        border-color: rgba(255,0,0,0.24);
+        border-color: rgba(255,0,0,0.18);
         box-shadow: 0 0 4px 0 #ff9fb0;
     }
 

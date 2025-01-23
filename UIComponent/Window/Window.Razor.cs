@@ -134,6 +134,7 @@ namespace Caspian.UI
                 PageService.Pop();
                 messageBox = null;
             }
+            var qqqq = Title;
             oldStatus = Status;
             await base.OnParametersSetAsync();
         }

@@ -81,7 +81,7 @@ namespace Caspian.Engine.Service
                                 var interfaceType = typeof(IMasterDetailsService<,,>).MakeGenericType(type1, type2, type3);
                                 services.AddScoped(interfaceType, provider => Activator.CreateInstance(type, provider));
                                 var batchServiceType = typeof(BatchService<,,>).MakeGenericType(baseType.GenericTypeArguments);
-                                services.AddTransient(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
+                                services.AddScoped(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
                             }
                         }
                         else if (baseType.GenericTypeArguments.Length == 2)
@@ -92,7 +92,7 @@ namespace Caspian.Engine.Service
                                 var interfaceType = typeof(IMasterDetailsService<, >).MakeGenericType(type1, type2);
                                 services.AddScoped(interfaceType, provider => Activator.CreateInstance(type, provider));
                                 var batchServiceType = typeof(BatchService<,>).MakeGenericType(baseType.GenericTypeArguments);
-                                services.AddTransient(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
+                                services.AddScoped(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
                             }
                         }
                         else if (baseType.GenericTypeArguments.Length == 1)

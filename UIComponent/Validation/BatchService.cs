@@ -51,7 +51,7 @@ namespace Caspian.UI
             throw new NotImplementedException();
         }
 
-        public void TabPanelItemInitialize(Type detailType)
+        public void ChildrenTabPanelItemInitialize(Type masterType)
         {
             throw new NotImplementedException();
         }
@@ -75,6 +75,19 @@ namespace Caspian.UI
         public CaspianForm<TMaster> Form { get; set; }
 
         public CaspianForm<TDetail> DetailForm { get; set; }
+
+        public void Dispose()
+        {
+            DetailType = default;
+            MasterId = default;
+            Window = default;
+            EntityTabPanel = default;
+            DataView = default;
+            DetailDataView = default;
+            Form = default;
+            Search = Activator.CreateInstance<TMaster>();
+            UpsertData = Activator.CreateInstance<TMaster>();
+        }
 
         public void DetailFormInitialize()
         {
@@ -288,9 +301,9 @@ namespace Caspian.UI
 
         Type DetailType { get;}
 
-        void TabPanelItemInitialize(Type detailType);
-
         IEntityTabPanel EntityTabPanel { get; set; }
+
+        void TabPanelInitialize();
     }
 
     public interface ISearchService<TEntity> where TEntity:class
@@ -332,5 +345,7 @@ namespace Caspian.UI
         {
             Window = null;
         }
+
+        void Dispose();
     }
 }

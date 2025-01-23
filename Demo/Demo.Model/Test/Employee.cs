@@ -72,20 +72,6 @@ namespace Demo.Model
         public ReligionAndSubReligion ReligionAndSubReligion { get; set; }
     }
 
-    [Table("CourseStudies", Schema = "HR")]
-    public class CourseStudy
-    {
-        [Key]
-        public int Id { get; set; }
-
-        public string Title { get; set; }
-
-        public int EmployeeId { get; set; }
-
-        [ForeignKey(nameof(EmployeeId))]
-        public Employee Employee { get; set; }
-    }
-
     [Table("Families", Schema = "HR")]
     public class Family
     {

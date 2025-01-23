@@ -53,7 +53,7 @@
 {
     <Window Service="Service" Title="Employee" Style="width:900px">
         <div class="p-2">
-           <Relation1to1Component Service="Service" />
+            <Relation1to1Component />
         </div>
     </Window>
 }
@@ -71,5 +71,11 @@
             var url = $"/Demo/Relation1to1to1Crud/{employee.Id}";
             NavigationManager.NavigateTo(url);
         }
+    }
+
+    protected override void ChangeState()
+    {
+
+        base.ChangeState();
     }
 }

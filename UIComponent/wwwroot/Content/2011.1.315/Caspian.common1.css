@@ -1601,8 +1601,8 @@ span, label, td, th {
     animation-duration: .5s;
     top: 120px;
 }
-    .c-messagebox .c-danger{
-        min-width:70px;
+    .c-messagebox .c-btn {
+        min-width: 70px;
     }
     @keyframes messagebox {
         0% {

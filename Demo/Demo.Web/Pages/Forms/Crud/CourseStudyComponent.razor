@@ -1,0 +1,31 @@
+﻿@* @inject UIService<CourseStudy> Service
+<CaspianContainer ColumnsCount="2">
+    <StringTextBox @bind-Value="Service.Search.Title" ColSpan="4" />
+</CaspianContainer>
+<div class="p-2">
+    <DataGrid TEntity="CourseStudy" Service="Service" ContentHeight="200">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="Course Study" Style="width:450px">
+    <CaspianForm TEntity="CourseStudy" Service="Service">
+        <Content Context="course">
+            <StringTextBox @bind-Value="course.Title" ColSpan="8" />
+            <div class="col-md-9 align-content-center">
+                <FormCommandButton />
+            </div>
+        </Content>
+    </CaspianForm>
+</Window> *@
+
+@code 
+{
+    protected override void OnInitialized()
+    {
+        // var id = Service.MasterId;
+        // base.OnInitialized();
+    }
+}

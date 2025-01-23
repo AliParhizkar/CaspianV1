@@ -66,7 +66,7 @@ namespace Caspian.UI
 
         public async Task Alert(string message)
         {
-            var window = Service.Peek();
+            var window = PageService.Peek();
             if (window != null)
                 await window.GetMessageBox().Alert(message);
             else
@@ -75,10 +75,15 @@ namespace Caspian.UI
 
         public async Task<bool> Confirm(string message)
         {
-            var window = Service.Peek();
+            var window = PageService.Peek();
             if (window != null)
                 return await window.GetMessageBox().Confirm(message);
             return await MessageBox.Confirm(message);
+        }
+
+        virtual internal protected void ChangeState()
+        {
+            StateHasChanged();
         }
 
         protected IList<SelectListItem> GetSelectList(params string[] array)
@@ -113,11 +118,12 @@ namespace Caspian.UI
             await jsRuntime.InvokeVoidAsync("caspian.common.bindFileDownload", fileName, streamRef);
         }
 
-        protected override void OnInitialized()
+        protected override void OnParametersSet()
         {
-            BaseService.Target = this;
-            base.OnInitialized();
+            ComponentService.Target = this;
+            base.OnParametersSet();
         }
+
 
         [JSInvokable]
         public void WindowClick()
@@ -147,12 +153,17 @@ namespace Caspian.UI
                 await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
                 message = null;
             }
+            ComponentService.Target = this;
             await base.OnAfterRenderAsync(firstRender);
         }
 
         public void Dispose()
         {
-            
+            foreach(var info in this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic))
+            {
+                if (info.PropertyType.GetInterfaces().Contains(typeof(IUIService)))
+                    (info.GetValue(this) as IUIService).Dispose();
+            }
         }
     }
 }

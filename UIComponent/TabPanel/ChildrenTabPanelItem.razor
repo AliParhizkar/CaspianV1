@@ -1,39 +1,41 @@
 ﻿@namespace Caspian.UI
-
+@* @inject UIService<TDetail> Service *@
 @inject IServiceProvider ServiceProvider
 @typeparam TEntity where TEntity : class
 @typeparam TDetail where TDetail : class
 <Caspian.UI.TabPanelItem Title="@title" Disable="disabled">
-    @if (Content != null)
+    @if (ChildContent != null)
     {
-        @Content(service)
+        @ChildContent
     }
 </Caspian.UI.TabPanelItem>
+
 @code
 {
-    UIService<TDetail> service;
     string title;
     bool disabled;
+    int tabIndex;
 
     protected override void OnInitialized()
     {
-        service = new UIService<TDetail>(ServiceProvider);
+        tabIndex = TabPanel.GetTabIndex(null);
         if (Children.Body.NodeType == ExpressionType.MemberAccess)
         {
             var info = (Children.Body as MemberExpression).Member as PropertyInfo;
             title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName;
         }
+        // var masterId = TabPanel.Service.MasterId;
+        // disabled = masterId == 0;
+        // Service.MasterId = masterId;
+        // Service.MasterType = typeof(TEntity);
         base.OnInitialized();
     }
 
     [Parameter]
-    public bool Disabled { get; set; }
+    public Expression<Func<TEntity, IEnumerable<TDetail>>> Children { get; set; }
 
     [Parameter]
-    public Expression<Func<TEntity, IList<TDetail>>> Children { get; set; }
-
-    [Parameter]
-    public RenderFragment<UIService<TDetail>> Content { get; set; }
+    public RenderFragment ChildContent { get; set; }
 
     [Parameter]
     public string Title { get; set; }
@@ -42,8 +44,6 @@
     {
         if (Title != null)
             title = Title;
-        var id = typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData);
-        disabled = id.Equals(0);
         base.OnParametersSet();
     }
 

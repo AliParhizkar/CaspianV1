@@ -168,6 +168,11 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
+        internal void ChangeState()
+        {
+            StateHasChanged();
+        }
+
         public async Task ScrollIntoViewSeledtedRow()
         {
             StateHasChanged();
