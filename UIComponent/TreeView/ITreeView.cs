@@ -16,6 +16,8 @@ namespace Caspian.UI
 
         bool MultiSelectable { get; set; }
 
+        TreeNode ClickedNode { get; set; }
+
         RenderFragment<NodeView> BeforeNodeTemplate { get; set; }
 
         RenderFragment<NodeView> AfterNodeTemplate { get; set; }

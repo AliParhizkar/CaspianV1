@@ -54,7 +54,7 @@
                 var old = await service.SingleAsync(id);
                 oldIds.Remove(id);
                 activity.Id = id;
-                old.CopyEntity(activity);
+                // old.CopyEntity(activity);
             }
             else
                 await service.AddAsync(activity);
@@ -84,7 +84,7 @@
                 var old = await connectorService.SingleAsync(id);
                 oldIds.Remove(id);
                 con.Id = id;
-                old.CopyEntity(con);
+                //old.CopyEntity(con);
             }
             else
                 await connectorService.AddAsync(con);

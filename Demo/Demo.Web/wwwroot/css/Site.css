@@ -11,8 +11,9 @@
     flex-wrap: wrap;
     width: 100%;
 }
-.d-slider-title{
-
+.c-treeview .fa-pencil, .c-treeview .fa-trash {
+    color: #423d96;
+    font-size: 14px;
 }
 .d-details-title {
     font-weight: bold;

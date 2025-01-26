@@ -1,61 +1,32 @@
 ﻿@inject IJSRuntime JSRuntime
 @namespace Caspian.UI
-<li @ref="Node" class="@(Item.Expanded ? "c-expand" : "c-collaps")">
+@{
+    var className = Item.Expanded ? "c-expand" : "c-collaps";
+    if (IsLast)
+        className += " c-node-last";
+    var titleClassName = "c-title";
+    if (TreeView.ClickedNode == this)
+        titleClassName += " c-node-clicked";
+}
+<li @ref="Node" class="@(className)">
     <div class="c-node-template">
         @if (Item.Collabsable)
         {
             <span class="c-icon">
-                <i @onclick="async () =>
-                         {
-                             if (Item.Expanded)
-                             {
-                                 Item.Expanded = false;
-                                 if (OnCollapsed.HasDelegate)
-                                     await OnCollapsed.InvokeAsync(Item);
-                             }
-                             else
-                             {
-                                 Item.Expanded = true;
-                                 if (OnExpanded.HasDelegate)
-                                     await OnExpanded.InvokeAsync(Item);
-                             }
-                             Collapsed = !Item.Expanded;
-                         }" class="fa fa-chevron-right"></i>
+                <i @onclick="async () => await ToggleNode()" class="fa fa-chevron-right"></i>
             </span>
         }
         @if (Item.Selectable)
         {
-            <CheckBox Value="Item.Selected" Disabled="Item.Disabled" TwoState
-                  ValueChanged="async (bool? value) =>
-                           {
-                               Item.Selected = value;
-                               if (value == true)
-                                   await OnSelected.InvokeAsync(Item);
-                               await OnChanged.InvokeAsync(Item);
-                           }" />
+            <CheckBox TValue="bool?" Value="Item.Selected" Disabled="Item.Disabled" TwoState ValueChanged="async value => await ValueChanged(value)" />
         }
-        @if (CascadeData?.BeforeNodeTemplate != null)
+        @if (TreeView?.BeforeNodeTemplate != null)
         {
             <div class="c-node-before-template">
-                @CascadeData.BeforeNodeTemplate(Item)
+                @TreeView.BeforeNodeTemplate(Item)
             </div>
         }
-        <span class="c-title" @onclick="async () =>
-                                    {
-                                        if (!Item.Disabled)
-                                        {
-                                            if (Item.Selectable && !Item.Disabled)
-                                            {
-                                                Item.Selected = !Item.Selected;
-                                                if (Item.Selected == true)
-                                                    await OnSelected.InvokeAsync(Item);
-                                                await OnChanged.InvokeAsync(Item);
-                                            }
-                                            if (OnClick.HasDelegate)
-                                                await OnClick.InvokeAsync(Item);
-                                        }
-
-                                    }">
+        <span @attributes="GetTitleAttributes()">
             @Item.Text
         </span>
         @if (Item.Depth == null)
@@ -65,44 +36,23 @@
             else
                 Item.Depth = Convert.ToByte(Item.Parent.Depth.Value + 1);
         }
-        @if (CascadeData?.AfterNodeTemplate != null)
+        @if (TreeView?.AfterNodeTemplate != null)
         {
             <CascadingValue Value="Item.Depth" Name="NodeDepthOnTree">
-                @CascadeData.AfterNodeTemplate(Item)
+                @TreeView.AfterNodeTemplate(Item)
             </CascadingValue>
         }
     </div>
     @if (Item.Children != null && Item.Expanded)
     {
+        var index = 0;
         <ul class="c-subtree">
             @foreach (var item in Item.Children)
             {
+                index++;
                 if (item.Parent == null)
                     item.Parent = Item;
-                <TreeNode OnCollapsed="async node =>
-                                   {
-                                        if (OnCollapsed.HasDelegate)
-                                            await OnCollapsed.InvokeAsync(node);
-                                   }"
-                          OnExpanded="async node =>
-                                   {
-                                       if (OnExpanded.HasDelegate)
-                                           await OnExpanded.InvokeAsync(node);
-                                   }"
-                          OnSelected="async node =>
-                                           {
-                                               await OnSelected.InvokeAsync(node);
-                                           }"
-                          OnClick="async node => 
-                                        {
-                                            if (OnClick.HasDelegate)
-                                                await OnClick.InvokeAsync(node);
-                                        }"
-                          OnChanged="async node =>
-                                     {
-                                         await OnChanged.InvokeAsync(node);
-                                     }"
-                          Item="item"/>
+                <TreeNode @attributes="GetNodeAttributes(item, index == Item.Children.Count)" />
             }
         </ul>
     }
@@ -113,8 +63,108 @@
     bool? Collapsed;
     ElementReference Node;
 
+    IDictionary<string, object> GetTitleAttributes()
+    {
+        var dic = new Dictionary<string, object>();
+        var className = "c-title";
+        if (TreeView.ClickedNode == this)
+            className += " c-node-clicked";
+        dic.Add("class", className);
+        if (!Item.Disabled)
+        {
+            if (Item.Selectable)
+            {
+                dic.Add("onclick", EventCallback.Factory.Create<MouseEventArgs>(this,async e => 
+                    {
+                        Item.Selected = !Item.Selected;
+                        if (Item.Selected == true && OnSelected.HasDelegate)
+                            await OnSelected.InvokeAsync(Item);
+                        if (OnChanged.HasDelegate)
+                            await OnChanged.InvokeAsync(Item);
+                        if (OnClick.HasDelegate)
+                            await ClickEventhandler(e);
+                    }));
+            }
+            else if (OnClick.HasDelegate)
+                dic.Add("onclick", EventCallback.Factory.Create<MouseEventArgs>(this, async e => await ClickEventhandler(e)));
+            if (OnRightClick.HasDelegate)
+            {
+                dic.Add("oncontextmenu", "return false");
+                dic.Add("onmouseup", EventCallback.Factory.Create<MouseEventArgs>(this, async e =>
+                    {
+                        if (e.Button == 2)
+                        {
+                            TreeView.ClickedNode = this;
+                            await OnRightClick.InvokeAsync(new NodeMouseEventArg(e, Item));
+                        }
+                    }));
+            }
+        }
+        return dic;
+    }
+
+    async Task ClickEventhandler(MouseEventArgs e)
+    {
+        TreeView.ClickedNode = this;
+        await OnClick.InvokeAsync(new NodeMouseEventArg(e, Item));
+    }
+
+    async Task ToggleNode()
+    {
+        if (Item.Expanded)
+        {
+            Item.Expanded = false;
+            if (OnCollapsed.HasDelegate)
+                await OnCollapsed.InvokeAsync(Item);
+        }
+        else
+        {
+            Item.Expanded = true;
+            if (OnExpanded.HasDelegate)
+                await OnExpanded.InvokeAsync(Item);
+        }
+        Collapsed = !Item.Expanded;
+    }
+
+    async Task ValueChanged(bool? value)
+    {
+        Item.Selected = value;
+        if (value == true)
+            await OnSelected.InvokeAsync(Item);
+        await OnChanged.InvokeAsync(Item);
+    }
+
+    IDictionary<string, object> GetNodeAttributes(NodeView node, bool isLast)
+    {
+        var attrs = new Dictionary<string, object>();
+        if (node.Collabsable)
+        {
+            if (OnCollapsed.HasDelegate)
+                attrs.Add("OnCollapsed", EventCallback.Factory.Create<NodeView>(this, async node =>  await OnCollapsed.InvokeAsync(node)));
+            if (OnExpanded.HasDelegate)
+                attrs.Add("OnExpanded", EventCallback.Factory.Create<NodeView>(this, async node => await OnExpanded.InvokeAsync(node)));
+        }
+        if (node.Selectable)
+        {
+            if (OnSelected.HasDelegate)
+                attrs.Add("OnSelected", EventCallback.Factory.Create<NodeView>(this, async node => await OnSelected.InvokeAsync(node)));
+            if (OnChanged.HasDelegate)
+                attrs.Add("OnChanged", EventCallback.Factory.Create<NodeView>(this, async node => await OnChanged.InvokeAsync(node)));
+        }
+        if (OnClick.HasDelegate)
+            attrs.Add("OnClick", EventCallback.Factory.Create<NodeMouseEventArg>(this, async nodeArgs => await OnClick.InvokeAsync(nodeArgs)));
+        if (OnRightClick.HasDelegate)
+            attrs.Add("OnRightClick", EventCallback.Factory.Create<NodeMouseEventArg>(this, async nodeArgs => await OnRightClick.InvokeAsync(nodeArgs)));
+        attrs.Add("Item", node);
+        attrs.Add("IsLast", isLast);
+        return attrs;
+    }
+
     [Parameter]
     public bool? Selected { get; set; } = false;
+
+    [Parameter]
+    public bool IsLast{ get; set; }
 
     [Parameter]
     public EventCallback<bool?> SelectedChanged { get; set; }
@@ -123,13 +173,16 @@
     public EventCallback<NodeView> OnExpanded { get; set; }
 
     [Parameter]
-    public EventCallback<NodeView> OnClick { get; set; }
+    public EventCallback<NodeMouseEventArg> OnClick { get; set; }
+
+    [Parameter]
+    public EventCallback<NodeMouseEventArg> OnRightClick { get; set; }
 
     [Parameter]
     public EventCallback<NodeView> OnCollapsed { get; set; }
 
     [CascadingParameter]
-    public ITreeView CascadeData { get; set; }
+    public ITreeView TreeView { get; set; }
 
     [Parameter]
     public EventCallback<NodeView> OnSelected { get; set; }

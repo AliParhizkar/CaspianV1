@@ -5,7 +5,11 @@
     padding-left: 12px;
 }
 
-
+.c-node-clicked {
+    background-color: #dae2f9;
+    border-radius:8px;
+    padding:0 10px;
+}
 fieldset.c-container {
     border: 1px solid #bbbbbb;
     border-radius: 8px;
@@ -1798,10 +1802,11 @@ span, label, td, th {
         color: #aaaaaa;
         cursor:not-allowed;
     }
-.c-treeview .fa {
-    color: #423d96;
+.c-treeview .fa-chevron-right {
+    color: #9ca2b2;
     font-size: 14px;
 }
+
 .t-checkbox.t-disabled .t-icon {
     background-color: #eaeaea;
     border-color: #bebebe;
@@ -1982,14 +1987,22 @@ ul {
     padding: 0;
 }
 .c-treeview .c-subtree{
-    padding-bottom:5px;
     width:fit-content;
 }
 
 .c-treeview li {
     padding: 2px 0;
-    white-space:nowrap;
+    white-space: nowrap;
+    padding-left: 25px;
 }
+.c-treeview .c-subtree li:not(.c-node-last) {
+    background: url(/_content/UIComponent/Content/2011.1.315/Outlook/left-node.png) no-repeat left top;
+    background-position: 8px 5px;
+}
+
+    .c-node-last {
+        background: white url(/_content/UIComponent/Content/2011.1.315/Outlook/last-node.png) no-repeat left top !important;
+    }
 
 .c-treeview .fa-chevron-right {
     cursor: pointer;

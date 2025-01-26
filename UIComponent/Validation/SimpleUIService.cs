@@ -194,15 +194,8 @@ namespace Caspian.UI
         {
             var page = baseComponentService.Target as BasePage;
             if (page == null)
-                throw new CaspianException("You must inherits from BasePage or configure page manioaly");
+                throw new CaspianException("Caspian Exception: You must inherits from BasePage or configure page manioaly");
             page.ChangeState();
-            //if (qqqq == "Employee")
-            //{
-            //    method = baseComponentService.Target.GetType().GetMethod("ForTest");
-
-            //    method.Invoke(baseComponentService.Target, null);
-            //}
-
         }
 
         IServiceScope CreateScope()
@@ -296,7 +289,9 @@ namespace Caspian.UI
                     {
                         await service.RemoveAsync(old);
                         await service.SaveChangesAsync();
+                        await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
                         await DataView.ReloadAsync();
+
                     }
                 }
                 else
@@ -308,6 +303,9 @@ namespace Caspian.UI
         {
             if (baseComponentService.MessageBox == null)
                 throw new CaspianException("لطفا صفحه ی پایه را به این صفحه اضافه کنید");
+            var window = basePageService.Peek();
+            if (window !=  null) 
+                return await window.GetMessageBox().Confirm(message);
             return await baseComponentService.MessageBox.Confirm(message);
         }
 

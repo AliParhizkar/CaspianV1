@@ -74,21 +74,25 @@
         padding-left: 5px;
     }
 
-.t-rtl .c-treeview  .c-subtree {
-    padding-right: 35px;
-}
 
-.t-ltr .c-treeview  .c-subtree {
-    padding-left: 35px;
-}
 
     .t-rtl .c-treeview > .c-subtree {
         padding-right: 8px;
     }
 
-.t-ltr .c-treeview > .c-subtree {
-    padding: 10px 20px;
+.t-ltr .c-treeview ul {
+    background: url(/_content/UIComponent/Content/2011.1.315/Outlook/node.png)repeat-y left top;
+    background-position-x: 2px;
+}
 
+.t-rtl .c-treeview .c-subtree ul {
+    background: url(/_content/UIComponent/Content/2011.1.315/Outlook/node.png)repeat-y left top;
+}
+
+
+
+.t-ltr .c-treeview {
+    padding: 0px 10px;
 }
 
     .t-rtl .accordion li.default .submenu {

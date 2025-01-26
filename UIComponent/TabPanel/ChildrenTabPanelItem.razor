@@ -1,5 +1,5 @@
 ﻿@namespace Caspian.UI
-@* @inject UIService<TDetail> Service *@
+@inject UIService<TDetail> Service 
 @inject IServiceProvider ServiceProvider
 @typeparam TEntity where TEntity : class
 @typeparam TDetail where TDetail : class
@@ -24,10 +24,8 @@
             var info = (Children.Body as MemberExpression).Member as PropertyInfo;
             title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName;
         }
-        // var masterId = TabPanel.Service.MasterId;
-        // disabled = masterId == 0;
-        // Service.MasterId = masterId;
-        // Service.MasterType = typeof(TEntity);
+        Service.MasterId = TabPanel.Service.MasterId;
+        Service.MasterType = typeof(TEntity);
         base.OnInitialized();
     }
 
@@ -44,6 +42,11 @@
     {
         if (Title != null)
             title = Title;
+        var value = typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData);
+        var masterId = Convert.ToInt32(value);
+        Service.MasterId = masterId;
+        disabled = masterId == 0;
+
         base.OnParametersSet();
     }
 

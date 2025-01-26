@@ -63,9 +63,9 @@
                 <FormCommandButton />
             </div>
         </ChildTabPanelItem>
-@*         <ChildrenTabPanelItem Children="t => t.CourseStudies" >
+        <ChildrenTabPanelItem Children="t => t.CourseStudies" >
             <CourseStudyComponent />
-        </ChildrenTabPanelItem> *@
+        </ChildrenTabPanelItem>
         <ChildTabPanelItem Child="t => t.ReligionAndSubReligion" ColumnsCount="2">
             <div style="height:350px" class="row p-3 c-controls align-content-start">
                 <ComboBox TValue="int?" TEntity="SimpleData" @bind-Value="employee.ReligionAndSubReligion.ReligionId" 

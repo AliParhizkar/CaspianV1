@@ -106,44 +106,6 @@ namespace Demo.Model
         public Employee Employee { get; set; }
     }
 
-    [Table("ReligionAndSubReligion", Schema = "HR")]
-    public class ReligionAndSubReligion
-    {
-        [Key]
-        public int Id { get; set; }
-
-        [DisplayName("دین")]
-        public int? ReligionId { get; set; }
-
-        [ForeignKey(nameof(ReligionId))]
-        public SimpleData Religion { get; set; }
-
-        [DisplayName("مذهب")]
-        public int? SubReligionId { get; set; }
-
-        [ForeignKey(nameof(SubReligionId))]
-        public SubReligion SubReligion { get; set; }
-
-        [ForeignKey(nameof(Id))]
-        public Employee Employee { get; set; }
-    }
-
-    [Table("SubReligions", Schema = "HR")]
-    public class SubReligion
-    {
-        [Key]
-        public int Id { get; set; }
-
-        [DisplayName("مذهب")]
-        public int ReligionId { get; set; }
-
-        [DisplayName("عنوان")]
-        public string Title { get; set; }
-
-        [ForeignKey(nameof(ReligionId))]
-        public SimpleData Religion { get; set; }
-    }
-
     [Table("IdentificationDetails", Schema = "hr")]
     public class IdentificationDetail
     {
@@ -203,5 +165,43 @@ namespace Demo.Model
 
         [ForeignKey(nameof(Id))]
         public Employee Employee { get; set; }
+    }
+
+    [Table("ReligionAndSubReligion", Schema = "HR")]
+    public class ReligionAndSubReligion
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [DisplayName("دین")]
+        public int? ReligionId { get; set; }
+
+        [ForeignKey(nameof(ReligionId))]
+        public SimpleData Religion { get; set; }
+
+        [DisplayName("مذهب")]
+        public int? SubReligionId { get; set; }
+
+        [ForeignKey(nameof(SubReligionId))]
+        public SubReligion SubReligion { get; set; }
+
+        [ForeignKey(nameof(Id))]
+        public Employee Employee { get; set; }
+    }
+
+    [Table("SubReligions", Schema = "HR")]
+    public class SubReligion
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [DisplayName("مذهب")]
+        public int ReligionId { get; set; }
+
+        [DisplayName("عنوان")]
+        public string Title { get; set; }
+
+        [ForeignKey(nameof(ReligionId))]
+        public SimpleData Religion { get; set; }
     }
 }

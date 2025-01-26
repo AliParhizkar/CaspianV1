@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 
+
 namespace Caspian.Common
 {
     public static class OtherExtension
@@ -37,7 +38,7 @@ namespace Caspian.Common
             return Convert.ToInt32(curentEnum);
         }
 
-        public static void FullCopy<TModel>(this TModel model, TModel newModel)
+        internal static void FullCopy<TModel>(this TModel model, TModel newModel)
         {
             foreach (var info in model.GetType().GetProperties())
             {

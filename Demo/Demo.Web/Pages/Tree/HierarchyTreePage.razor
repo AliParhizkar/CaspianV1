@@ -33,7 +33,7 @@
                 <div class="col-md-6">
                     <StringTextBox @bind-Value="@organSearch" OnChange="async () => await databindingTree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
                     <TreeView @ref="databindingTree" TEntity="OrganUnit" style="height:500px" TextFunc="t => t.Title"
-                            FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType" />
+                    FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType" />
                 </div>
                 <div class="col-md-6">
                     <hr />
@@ -56,8 +56,8 @@
                             <StringTextBox @bind-Value="@organSearchCustomTemplate" OnChange="async () => await customTemplateTree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
                         </div>
                         <div>
-                            <TreeView @ref="customTemplateTree" TEntity="OrganUnit" style="height:500px" 
-                                      TextFunc="t => t.Title" FilterFunc="t => (!organSearchCustomTemplate.HasValue() || t.Title.StartsWith(organSearchCustomTemplate)) && t.ActiveType == activeType">
+                            <TreeView @ref="customTemplateTree" TEntity="OrganUnit" style="height:500px" OnRightClick="ShowContextMenu"
+                            TextFunc="t => t.Title" FilterFunc="t => (!organSearchCustomTemplate.HasValue() || t.Title.StartsWith(organSearchCustomTemplate)) && t.ActiveType == activeType">
                                 <AfterNodeTemplate>
                                     <span class="d-tree-icon">
                                         <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
@@ -90,9 +90,15 @@
         </div>
     </CaspianForm>
 </Window>
+<ContextMenu @bind-Status="contextMenuStatus" Left="left" Top="top" >
+    <ContextMenuItem Title="ایجاد شاخه" />
+    <ContextMenuItem Title="ایجاد زیر شاخه" />
+</ContextMenu>
 
 @code
 {
+    double left, top;
+    bool contextMenuStatus;
     ActiveType activeType = ActiveType.Enable;
     string organSearch;
     string organSearchCustomTemplate;
@@ -101,6 +107,16 @@
     TreeView<OrganUnit> databindingTree;
     TreeView<OrganUnit> customTemplateTree;
     IControl firstControl;
+
+    void ShowContextMenu(NodeMouseEventArg e)
+    {
+        if (e.MouseEventArgs.Button == 2)
+        {
+            contextMenuStatus = true;
+            left = e.MouseEventArgs.ClientX - 10;
+            top = e.MouseEventArgs.ClientY - 10;
+        }
+    }
 
     async Task DeleteOrganUnit(NodeView node)
     {

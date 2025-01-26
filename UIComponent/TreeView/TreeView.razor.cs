@@ -6,6 +6,7 @@ using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Caspian.UI
 {
@@ -14,6 +15,33 @@ namespace Caspian.UI
         ElementReference tree;
         IList<NodeView> treeNodes;
         Func<TEntity, bool> parentNodeFilterFunc;
+        
+        IDictionary<string, object> GetNodeAttributes(NodeView node, bool isLastNode)
+        {
+            var attrs = new Dictionary<string, object>();
+            if (node.Collabsable)
+            {
+                if (OnCollapsed.HasDelegate)
+                    attrs.Add("OnCollapsed", EventCallback.Factory.Create<NodeView>(this, NodeCollapsed));
+                if (OnExpanded.HasDelegate)
+                    attrs.Add("OnExpanded", EventCallback.Factory.Create<NodeView>(this, NodeExpanded));
+            }
+            if (node.Selectable)
+            {
+                if (OnSelected.HasDelegate)
+                    attrs.Add("OnSelected", EventCallback.Factory.Create<NodeView>(this, NodeSelected));
+                if (OnChange.HasDelegate)
+                    attrs.Add("OnChanged", EventCallback.Factory.Create<NodeView>(this, OnNodeChanged));
+            }
+            if (OnClick.HasDelegate)
+                attrs.Add("OnClick", EventCallback.Factory.Create<NodeMouseEventArg>(this, NodeClicked));
+            if (OnRightClick.HasDelegate)
+                attrs.Add("OnRightClick", EventCallback.Factory.Create<NodeMouseEventArg>(this, NodeRightClicked));
+
+            attrs.Add("Item", node);
+            attrs.Add("IsLast", isLastNode);
+            return attrs;
+        }
 
         public EventCallback<NodeView> OnInternalCHanged { get; set; }
 
@@ -24,6 +52,8 @@ namespace Caspian.UI
 
         [Parameter]
         public RenderFragment<NodeView> BeforeNodeTemplate { get; set; }
+
+        public TreeNode ClickedNode { get; set; }
 
         [Parameter]
         public RenderFragment<NodeView> AfterNodeTemplate { get; set; }
@@ -66,6 +96,12 @@ namespace Caspian.UI
 
         [Parameter]
         public EventCallback<NodeView> OnChange { get; set; }
+
+        [Parameter]
+        public EventCallback<NodeMouseEventArg> OnClick { get; set; }
+
+        [Parameter]
+        public EventCallback<NodeMouseEventArg> OnRightClick { get; set; }
 
         [Parameter]
         public bool SingleSelectOnTree { get; set; }
@@ -195,10 +231,21 @@ namespace Caspian.UI
             await OnInternalCHanged.InvokeAsync(node);
         }
 
-        async Task NodeClicked(NodeView node)
+        async Task NodeRightClicked(NodeMouseEventArg eventArg)
         {
-            await OnInternalClicked.InvokeAsync(node);
+            if (OnRightClick.HasDelegate)
+                await OnRightClick.InvokeAsync(eventArg);
         }
+
+        async Task NodeClicked(NodeMouseEventArg nodeArg)
+        {
+            if (OnClick.HasDelegate)
+                await OnClick.InvokeAsync(nodeArg);
+            if (OnInternalClicked.HasDelegate)
+                await OnInternalClicked.InvokeAsync(nodeArg.NodeView);
+        }
+
+
 
         protected override void OnInitialized()
         {

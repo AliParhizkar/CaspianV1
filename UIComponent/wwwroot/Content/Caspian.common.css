@@ -1,4 +1,7 @@
-﻿input, div, textarea {
+﻿.t-textbox{
+    text-align:left;
+}
+input, div, textarea {
     outline: none;
 }
 input {
@@ -101,7 +104,7 @@ input {
     }
         /*error-focused*/
         .t-inputbox-wrap.t-state-error.t-state-focused {
-            background-image: linear-gradient(rgba(255, 0, 0, 0.06),rgba(255, 0, 0, 0.085))!important;
+            background-image: linear-gradient(rgba(255, 0, 0, 0.02),rgba(255, 0, 0, 0.05)) !important;
             border-color: rgba(255,0,0,0.15);
             box-shadow: 0 0 3px 0 pink;
         }

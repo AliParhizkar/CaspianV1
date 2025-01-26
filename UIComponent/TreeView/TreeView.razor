@@ -4,29 +4,19 @@
 @inject IServiceScopeFactory ServiceScopeFactory
 
     @if (Source == null)
-    {
-        <div @ref="tree" @attributes="Attrs" class="c-treeview">
-            <CascadingValue Value="this" >
-                <ul class="c-subtree">
+{
+    <div @ref="tree" @attributes="Attrs" class="c-treeview">
+        <CascadingValue Value="this" >
+            <ul class="c-subtree">
                 @if (treeNodes != null)
                 {
+                    var index = 0;
                     foreach (var item in treeNodes)
                     {
+                        index++;
                         if (ChildContent == null)
                         {
-                            <TreeNode @bind-Selected="item.Selected" Item="item" 
-                                OnClick="async node => await NodeClicked(node)"
-                                OnChanged="async node => await SelectStateChanged(node)"
-                                OnSelected="async (node) =>
-                                           {
-                                               if (SingleSelectOnTree)
-                                               {
-                                                   UnselectTree(Source);
-                                                   node.Selected = true;
-                                               }
-                                               await OnSelected.InvokeAsync(node);
-                                               
-                                           }" />
+                            <TreeNode @bind-Selected="item.Selected" @attributes="GetNodeAttributes(item, index == treeNodes.Count)" />
                         }
                         else if (item.Expanded)
                         {
@@ -36,25 +26,22 @@
                         }
                     }
                 }
-                </ul>
-            </CascadingValue>
-        </div>
-    }
-    else 
-    {
-        <div @ref="tree" @attributes="Attrs" class="c-treeview">
-            <CascadingValue Value="this">
-                <ul class="c-subtree">
-                    @foreach (var item in Source)
-                    {
-                    <TreeNode OnCollapsed="async node => await NodeCollapsed(node)"
-                            OnExpanded="async node => await NodeExpanded(node)"
-                            OnSelected="async (node) => await NodeSelected(node)"
-                            OnChanged="async node => await OnNodeChanged(node)"
-                            OnClick="async node => await OnInternalClicked.InvokeAsync(node)"
-                            Item="item" />
-                    }
-                </ul>
-            </CascadingValue>
+            </ul>
+        </CascadingValue>
+    </div>
+}
+else 
+{
+    var index = 0;
+    <div @ref="tree" @attributes="Attrs" class="c-treeview">
+        <CascadingValue Value="this">
+            <ul class="c-subtree">
+                @foreach (var item in Source)
+                {
+                    index++;
+                    <TreeNode @attributes="GetNodeAttributes(item, Source.Count == index)" />
+                }
+            </ul>
+        </CascadingValue>
         </div>
     }

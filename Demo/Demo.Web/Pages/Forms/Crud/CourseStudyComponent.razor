@@ -1,4 +1,4 @@
-﻿@* @inject UIService<CourseStudy> Service
+﻿@inject UIService<CourseStudy> Service
 <CaspianContainer ColumnsCount="2">
     <StringTextBox @bind-Value="Service.Search.Title" ColSpan="4" />
 </CaspianContainer>
@@ -19,13 +19,9 @@
             </div>
         </Content>
     </CaspianForm>
-</Window> *@
+</Window>
 
 @code 
 {
-    protected override void OnInitialized()
-    {
-        // var id = Service.MasterId;
-        // base.OnInitialized();
-    }
+
 }

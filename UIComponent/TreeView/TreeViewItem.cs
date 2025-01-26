@@ -1,4 +1,6 @@
-﻿namespace Caspian.UI
+﻿using Microsoft.AspNetCore.Components.Web;
+
+namespace Caspian.UI
 {
     public class NodeView
     {
@@ -36,5 +38,17 @@
         public NodeView Parent { get; set; }
 
         public IList<NodeView> Children { get; set; }
+    }
+
+    public class NodeMouseEventArg
+    {
+        public NodeMouseEventArg(MouseEventArgs mouseEventArgs, NodeView nodeView) 
+        {
+            NodeView = nodeView;
+            MouseEventArgs = mouseEventArgs;
+        }
+
+        public MouseEventArgs MouseEventArgs { get; set; }
+        public NodeView NodeView{ get; set; }
     }
 }
