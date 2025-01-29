@@ -38,7 +38,6 @@
         }
 
         bindTarget(element: HTMLInputElement, target: HTMLElement, data: popupWindowData) {
-            debugger;
             element.className = 'auto-hide c-popup-window';
             let targetLoc = target.getBoundingClientRect();
             let leftT = targetLoc.left, topT = targetLoc.top;

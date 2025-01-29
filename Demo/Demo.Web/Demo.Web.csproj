@@ -46,6 +46,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Pages\GridListView\" />
+	  <Folder Include="Properties\" />
 	</ItemGroup>
 	<Target Name="CreateDataFolder" AfterTargets="AfterPublish">
 		<MakeDir Directories="$(PublishUrl)Data" Condition="!Exists('$(PublishUrl)Data')" />

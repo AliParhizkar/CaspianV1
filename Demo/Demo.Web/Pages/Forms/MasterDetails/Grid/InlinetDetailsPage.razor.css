@@ -1,0 +1,16 @@
+﻿.d-description {
+    border: 1px solid #b9bece;
+    padding: 3px;
+    border-radius: 8px;
+    margin: 5px;
+    height: 100px;
+    overflow: auto;
+}
+    .d-description span {
+        padding: 0 2px;
+        margin: 2px;
+        border: 1px solid #b1b9ce;
+        border-radius: 4px;
+        display: inline-block;
+        cursor:pointer;
+    }

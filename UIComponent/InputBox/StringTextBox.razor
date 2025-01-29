@@ -31,11 +31,11 @@ else
                 {
                     @if (base.BindingType == BindingType.OnChange)
                     {
-                        <textarea @ref="InputElement" @attributes="GetInputAttributes()" @onchange="ChangeValue">@Value</textarea>
+                        <textarea value="@Value" @ref="InputElement" @attributes="GetInputAttributes()" @onchange="ChangeValue">@Value</textarea>
                     }
                     else
                     {
-                        <textarea @ref="InputElement" @attributes="GetInputAttributes()" @oninput="ChangeValue">@Value</textarea>
+                        <textarea value="@Value" @ref="InputElement" @attributes="GetInputAttributes()" @oninput="ChangeValue">@Value</textarea>
                     }
                 }
                 else

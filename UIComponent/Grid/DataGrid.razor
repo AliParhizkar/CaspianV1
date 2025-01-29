@@ -138,8 +138,11 @@
                 <span class="t-loading"></span>
             }
         </div>
-        <DataPager HidePageSize="HidePageSize" PageSize="PageSize" PageNumber="pageNumber" TotalRecord="Total" PageSizeChanged="ChangePageSize"
-                   PageNumberChanged="ChangePageNumber" />
+        @if (!HideFooter)
+        {
+            <DataPager HidePageSize="HidePageSize" PageSize="PageSize" PageNumber="pageNumber" TotalRecord="Total" PageSizeChanged="ChangePageSize"
+                        PageNumberChanged="ChangePageNumber" />
+        }
     </div>
     }
 </CascadingValue>

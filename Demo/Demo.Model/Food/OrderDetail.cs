@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("OrderDeatil", Schema = "demo")]
-    public class OrderDeatil
+    [Table("OrderDetail", Schema = "demo")]
+    public class OrderDetail
     {
         [Key]
         public int Id { get; set; }

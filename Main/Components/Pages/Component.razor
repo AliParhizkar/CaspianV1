@@ -67,7 +67,7 @@
     IList<SelectListItem> source;
     int? parameterId;
     bool disabled, constValueDisabled;
-    Type mainType = typeof(OrderDeatil);
+    Type mainType = typeof(OrderDetail);
     ValueTypeKind valueTypeKind;
     Type enumType;
     object enumValue;
@@ -162,7 +162,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var service = CreateScope().GetService<ReportParamService>();
-        reportParams = await service.GetAll().Where(t => t.ReportId == 1).ToListAsync();
+        reportParams = await service.GetAll().Include(t => t.ReportGroupParameter).Where(t => t.ReportId == 1).ToListAsync();
         source = reportParams.Select(t => new SelectListItem()
         {
             Text = t.ReportGroupParameter.Alias,

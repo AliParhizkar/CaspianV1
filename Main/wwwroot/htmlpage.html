@@ -18,22 +18,21 @@
     </style>
     <link href="" rel="stylesheet" />
     <script type="text/javascript">
-        function mouseMove() {
-            console.log('move')
+        function oninput1() {
+            let value = document.getElementById('txtDescript').value;
+            console.log(value);
         }
-        function mouseOut() {
-            console.log('out')
-        }
-        function mouseLeave() {
-            console.log('leave')
+        function onkeyup1() {
+            console.log('keyup')
+            let value = document.getElementById('txtDescript').value;
+            console.log(value);
         }
     </script>
 </head>
 <body style="direction:rtl">
-    <div onmousemove="mouseMove()" onmouseout="mouseOut()" onmouseover="mouseLeave" class="main-div">
-        <div class="child-div">
-
-        </div>
-    </div>
-</body>
+<button onclick="test()">Test</button>
+    <textarea oninput="oninput1()" onkeyup="onkeyup1()" id="txtDescript">
+        
+</textarea>
+ </body>
 </html>

@@ -8,9 +8,9 @@ using Caspian.Common.Service;
 namespace Demo.Service
 {
     [ReportClass]
-    public class OrderDeatilService : BaseService<OrderDeatil>, IBaseService<OrderDeatil>
+    public class OrderDetailService : BaseService<OrderDetail>, IBaseService<OrderDetail>
     {
-        public OrderDeatilService(IServiceProvider provider)
+        public OrderDetailService(IServiceProvider provider)
             :base(provider)
         {
             RuleFor(t => t.Price).CustomValue(t => t < 0, "The price cannot be negative");
@@ -18,7 +18,7 @@ namespace Demo.Service
             RuleFor(t => t.ProductId).Custom(t => Source.Any(u => u.ProductId == t.ProductId && t != u), "This product has been added to the invoice");
         }
 
-        public IQueryable<OrderDeatil> GetReportOrderDeatils(OrderDeatil orderDeatil)
+        public IQueryable<OrderDetail> GetReportOrderDetails(OrderDetail orderDetail)
         {
             return GetAll();
         }

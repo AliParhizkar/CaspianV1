@@ -2,7 +2,7 @@
 @page "/Demo/Batch/Inline/Listview/Details/{OrderId:int}"
 @namespace Demo.Web.Pages
 @inherits BasePage
-@inject BatchService<Order, OrderDeatil> Service
+@inject BatchService<Order, OrderDetail> Service
 
 <TabPanel>
     <Tabs>
@@ -42,7 +42,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                        <ListView TEntity="OrderDeatil" DetailsService="Service" ContentHeight="250" Inline PageSize="8"
+                        <ListView TEntity="OrderDetail" DetailsService="Service" ContentHeight="250" Inline PageSize="8"
                                   OnCancel="HideDescription" OnUpsert="HideDescription" OnSave="HideDescription">
                             <HeaderTempalte>
                                 <div class="d-listview-col-1">Product</div>
@@ -53,7 +53,7 @@
                             </HeaderTempalte>
                             <Fields Context="detail">
                                 @{
-                                    var showDescription = ShowDescriptionStatuse && selectedDeatil == detail.Data;
+                                    var showDescription = ShowDescriptionStatus && selectedDetail == detail.Data;
                                     var className = showDescription ? "d-main d-open-form" : "d-main";
                                 }
                                 <div class="@(className)">
@@ -121,8 +121,8 @@
 {
     StringTextBox txtDescription;
     NumericTextBox<int> txtQuantity;
-    bool ShowDescriptionStatuse;
-    OrderDeatil selectedDeatil;
+    bool ShowDescriptionStatus;
+    OrderDetail selectedDetail;
     UpsertMode upsertMode;
 
     protected override void OnInitialized()
@@ -134,22 +134,22 @@
 
     void HideDescription()
     {
-        ShowDescriptionStatuse = false;
-        selectedDeatil = null;
+        ShowDescriptionStatus = false;
+        selectedDetail = null;
     }
 
-    async Task ShowDescription(RowData<OrderDeatil> rowData)
+    async Task ShowDescription(RowData<OrderDetail> rowData)
     {
         var detail = rowData.Data;
         if (rowData.UpsertMode.HasValue)
         {
-            selectedDeatil = detail;
-            ShowDescriptionStatuse = !ShowDescriptionStatuse;
-            if (ShowDescriptionStatuse)
+            selectedDetail = detail;
+            ShowDescriptionStatus = !ShowDescriptionStatus;
+            if (ShowDescriptionStatus)
             {
                 if (detail.Id > 0 && !detail.Descript.HasValue())
                 {
-                    using var service = CreateScope().GetService<OrderDeatilService>();
+                    using var service = CreateScope().GetService<OrderDetailService>();
                     var old = await service.SingleAsync(detail.Id);
                     detail.Descript = old.Descript;
                 }
@@ -159,7 +159,7 @@
         }
     }
 
-    async Task SetPrice(OrderDeatil detail)
+    async Task SetPrice(OrderDetail detail)
     {
         if (detail.ProductId > 0)
         {

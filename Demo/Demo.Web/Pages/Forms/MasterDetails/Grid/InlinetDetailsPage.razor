@@ -2,7 +2,7 @@
 @page "/Demo/Batch/Inline/Details/{OrderId:int}"
 @namespace Demo.Web.Pages
 @inherits BasePage
-@inject BatchService<Order, OrderDeatil> Service
+@inject BatchService<Order, OrderDetail> Service
 <h2>Batch operation</h2>
 <h3>Order</h3>
 <p>
@@ -12,8 +12,8 @@
     <li>
         <b>Order insert:</b> It includes the following operations, these operations are performed together and transactionally:
         <ul class="d-demo-inner-list">
-            <li><b>Inser order</b>: There must be a order to insert.</li>
-            <li><b>Insert orderdetail(s)</b>: There must be one or more orderdetail(s) for insert.</li>
+            <li><b>Insert order</b>: There must be a order to insert.</li>
+            <li><b>Insert order detail(s)</b>: There must be one or more order detail(s) for insert.</li>
         </ul>
     </li>
     <li>
@@ -21,9 +21,9 @@
         these operations are performed together and transactionally:
         <ul class="d-demo-inner-list">
             <li><b>Update order:</b> There may be no update to receipt.</li>
-            <li><b>Insert orderdetail(s):</b> There may be no, one or more receipt details to insert.</li>
-            <li><b>Update orderdetail(s):</b> There may be no, one or more receipt details to update.</li>
-            <li><b>delete orderdetail(s):</b> There may be no, one or more receipt details to update.</li>
+            <li><b>Insert order detail(s):</b> There may be no, one or more receipt details to insert.</li>
+            <li><b>Update order detail(s):</b> There may be no, one or more receipt details to update.</li>
+            <li><b>delete order detail(s):</b> There may be no, one or more receipt details to update.</li>
         </ul>
     </li>
 </ul>
@@ -100,7 +100,7 @@
                     </div>
                     <div class="col-md-4 row pe-3">
                         <CaspianForm Service="Service">
-                           <Content Context="order">
+                            <Content Context="order">
                                 <div class="row c-controls">
                                     <div class="col-md-4">
                                         <label>Order date</label>
@@ -119,7 +119,7 @@
                                     </div>
                                     <div class="col-md-8">
                                         <ComboBox TEntity="Customer" TValue="int?" @bind-Value="order.CustomerId"
-                                                  TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+                                        TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
                                     </div>
                                     <div class="col-md-4">
                                         <label>Courier</label>
@@ -137,18 +137,18 @@
                                         <FormCommandButton />
                                     </div>
                                 </div>
-                           </Content>
+                            </Content>
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                         <DataGrid DetailsService="Service" TEntity="OrderDeatil" ContentHeight="250" Inline>
+                        <DataGrid DetailsService="Service" TEntity="OrderDetail" ContentHeight="250" Inline>
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Product.Discount" DataField />
                                 <GridColumn Field="t => t.Product.Title" Title="Product">
                                     <EditTemplate>
-                                         <AutoComplete TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId"
-                                                        HideHeader AutoHide TextExpression="t => t.Title"
-                                                        OnChange="async () => await SetPrice(con.Data)">
+                                        <AutoComplete TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId"
+                                        HideHeader AutoHide TextExpression="t => t.Title"
+                                        OnChange="async () => await SetPrice(con.Data)">
                                             <ProductLookupWindow />
                                         </AutoComplete>
                                     </EditTemplate>
@@ -165,7 +165,7 @@
                                 <GridColumn Field="t => t.Quantity" style="width:100px">
                                     <EditTemplate>
                                         <NumericTextBox @ref="txtQuantity" @bind-Value="con.Data.Quantity"
-                                                        @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
+                                        @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
                                     </EditTemplate>
                                 </GridColumn>
                                 <GridColumn Field="t => t.Descript" Title="Comment" style="width:60px">
@@ -209,36 +209,67 @@
 
 </div>
 <PopupWindow @bind-Status="status" TargetElement="targetElement" TargetHorizontalAnchor="HorizontalAnchor.Left" OffsetLeft="-1"
-             TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right" VerticalAnchor="VerticalAnchor.Middle">
-    <div style="width:400px;" class="row p-3 text-center">
-        <div class="col-md-6">@selectedOrderDeatil.Product?.Title</div>
-        <div class="col-md-2">@selectedOrderDeatil.Quantity</div>
-        <div class="col-md-4">@selectedOrderDeatil.Price.Seprate3Digit()</div>
+TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right" VerticalAnchor="VerticalAnchor.Middle">
+    <div class="d-description">
+        @if(descriptions != null)
+        {
+            foreach (var description in descriptions.Where(t => !descriptionSearch.HasValue() || t.Contains(descriptionSearch)))
+            {
+                <span @onclick="async () => await AddText(description)">@description</span>
+            }
+        }
     </div>
     <div style="width:400px;" class="row p-3">
-        <StringTextBox @ref="txtDescript" @bind-Value="selectedOrderDeatil.Descript" MultiLine Rows="3" />
+        <StringTextBox @ref="txtDescript" BindingType="BindingType.OnInput" @onEkeyup="SearchDescription" @bind-Value="selectedOrderDetail.Descript" MultiLine Rows="2" />
     </div>
 </PopupWindow>
 @code
 {
     WindowStatus status;
+    IList<string> descriptions;
     StringTextBox txtDescript;
-    OrderDeatil selectedOrderDeatil;
+    OrderDetail selectedOrderDetail;
     NumericTextBox<int> txtQuantity;
     ElementReference? targetElement, btnDescripOninsert, btnDescripOnEdit;
+    string descriptionSearch;
+    int selectionStart;
 
-    async Task ShowDesccription(OrderDeatil detail, UpsertMode upsertMode)
+    async Task AddText(string text)
+    {
+        var str = selectedOrderDetail.Descript.Substring(0, selectionStart);
+        var index = str.LastIndexOf(' ') + 1;
+        str = str.Substring(0, index) + text + selectedOrderDetail.Descript.Substring(selectionStart);
+        selectedOrderDetail.Descript = str;
+
+        await txtDescript.SetSelection(selectionStart + text.Length - 1);
+    }
+
+    void SearchDescription(EKeyboardEventArgs e)
+    {
+        if (selectedOrderDetail.Descript != null)
+        {
+            selectionStart = e.SelectionStart;
+            var str = selectedOrderDetail.Descript.Substring(0, selectionStart);
+            var index = str.LastIndexOf(' ') + 1;
+            descriptionSearch = str.Substring(index, selectionStart - index);
+        }
+    }
+
+    async Task ShowDesccription(OrderDetail detail, UpsertMode upsertMode)
     {
         status = WindowStatus.Open;
-        selectedOrderDeatil = detail;
+        selectedOrderDetail = detail;
         if (upsertMode == UpsertMode.Insert)
             targetElement = btnDescripOninsert;
         else
             targetElement = btnDescripOnEdit;
-        if (detail.Id == 0 && detail.ProductId > 0)
+        if (detail.ProductId > 0)
         {
-            using var service = CreateScope().GetService<ProductService>();
-            detail.Product = await service.SingleAsync(detail.ProductId);
+            using var scope = CreateScope();
+            if (detail.Id == 0)
+                detail.Product = await scope.GetService<ProductService>().SingleAsync(detail.ProductId);
+            descriptions = await scope.GetService<ProductDescriptionService>().GetAll().Where(t => t.ProductId == detail.ProductId)
+                    .Select(t => t.Description).ToListAsync();
         }
         else
             await Task.Delay(10);
@@ -262,7 +293,7 @@
     }
 
 
-    async Task SetPrice(OrderDeatil detail)
+    async Task SetPrice(OrderDetail detail)
     {
         if (detail.ProductId > 0)
         {

@@ -88,31 +88,24 @@ namespace Caspian.UI
                     treeView.SetSelectedNodesValue(selectedNodesValue);
                 StateHasChanged();
             }
-            treeView.OnInternalCHanged = EventCallback.Factory.Create<NodeView>(this, node =>
-            {
-                SetSelectedNodesValue(node);
-            });
+            if (multiSelectable)
+                treeView.OnInternalCHanged = EventCallback.Factory.Create<NodeView>(this, SetSelectedNodesValue);
+            else
+                treeView.OnInternalClicked = EventCallback.Factory.Create<NodeView>(this, SetValueAsync);
 
-            treeView.OnInternalClicked = EventCallback.Factory.Create<NodeView>(this, async node =>
-            {
-                await SetValueAsync(node);
-            });
         }
 
         public async Task SetValueAsync(NodeView node)
         {
-            if (!multiSelectable)
-            {
-                var type = typeof(TValue).GetUnderlyingType();
-                Value = (TValue)Convert.ChangeType(node.Value, type);
-                searchText = node.Text;
-                valueIsUpdated = true;
-                if (ValueChanged.HasDelegate)
-                    await ValueChanged.InvokeAsync(Value);
-                if (OnChanged.HasDelegate)
-                    await OnChanged.InvokeAsync();
-                show = false;
-            }
+            var type = typeof(TValue).GetUnderlyingType();
+            Value = (TValue)Convert.ChangeType(node.Value, type);
+            searchText = node.Text;
+            valueIsUpdated = true;
+            if (ValueChanged.HasDelegate)
+                await ValueChanged.InvokeAsync(Value);
+            if (OnChanged.HasDelegate)
+                await OnChanged.InvokeAsync();
+            show = false;
         }
 
         public void SetSelectedNodesValue(NodeView node)

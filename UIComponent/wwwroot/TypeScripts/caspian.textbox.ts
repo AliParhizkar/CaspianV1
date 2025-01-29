@@ -31,7 +31,7 @@
             if (type != 'string')
                 input.onkeypress = e => this.bindKeypress(e);
             input.onfocus = () => {
-                this.input.select();
+                //this.input.select();
                 caspian.common.showErrorMessage(this.input.closest('.t-widget'));
             }
             input.onblur = () => {

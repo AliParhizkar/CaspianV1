@@ -19,7 +19,7 @@ namespace Demo.Model
 
         public DbSet<Order> Orders { get; set; }
 
-        public DbSet<OrderDeatil> OrderDeatils { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
 
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
 
@@ -50,5 +50,7 @@ namespace Demo.Model
         public DbSet<SimpleData> SimpleDatas { get; set; }
 
         public DbSet<Employee> Employees { get; set; }
+
+        public DbSet<ProductDescription> ProductDescriptions { get; set; }
     }
 }

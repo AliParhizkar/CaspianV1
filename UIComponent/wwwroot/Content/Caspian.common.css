@@ -7,11 +7,18 @@ input, div, textarea {
 input {
     font-size:14px;
 }
+.c-node-template .t-checkbox{
+    line-height:18px;
+}
+.t-ltr .c-node-template .t-checkbox {
+    margin-left:8px;
+}
+
 /*control icon*/
 /*default*/
 .t-select {
     line-height: 30px;
-    height:31px;
+    height: 31px;
     display: inline-block;
     vertical-align: top;
     width: 30px;
@@ -20,6 +27,10 @@ input {
 .t-ltr .t-inputbox-wrap .t-select {
     border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
+.t-rtl .t-inputbox-wrap .t-select {
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+
 
 /*Hover and focused state*/
 .t-ltr .t-inputbox-wrap.t-state-hover .t-select, .t-ltr .t-inputbox-wrap.t-state-focused .t-select {

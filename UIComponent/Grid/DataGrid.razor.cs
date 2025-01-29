@@ -178,6 +178,9 @@ namespace Caspian.UI
             return aggregateColumnIndex++;
         }
 
+        [Parameter]
+        public bool HideFooter { get; set; }
+
         internal void AddCommandColumn(string title, string width)
         {
             if (!commandColumnAdded)

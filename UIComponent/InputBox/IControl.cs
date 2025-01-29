@@ -14,4 +14,11 @@ namespace Caspian.UI
 
         bool HasError();
     }
+
+    public class Selection
+    {
+        public int Start { get; set; }
+
+        public int End { get; set; }
+    }
 }

@@ -1,0 +1,11 @@
+﻿@page "/Marketing/UserManagement/UserAccessTree/{UserId:int}"
+
+<div class="p-3">
+    <UserAccessTreeComponent AccessUserId="UserId" SubSystem="SubSystemKind.Marketing" />
+</div>
+
+@code 
+{
+    [Parameter]
+    public int UserId { get; set; }
+}

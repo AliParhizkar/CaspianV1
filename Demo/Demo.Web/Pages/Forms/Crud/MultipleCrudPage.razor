@@ -3,6 +3,7 @@
 @inherits BasePage
 @inject UIService<ProductCategory> CategoryService
 @inject UIService<Product> ProductService
+@inject UIService<ProductDescription> DescriptionService
 @{
     base.BuildRenderTree(__builder);
 }
@@ -68,6 +69,11 @@
                             <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
                             <GridColumn Field="t => t.Code" />
                             <GridColumn Field="t => t.ActiveType.EnumText()" />
+                            <GridColumn Title="شرح پیشفرض" style="width:80px">
+                                <Template>
+                                    <button class="c-btn c-primary" @onclick="() => OpenDescriptionWindow(context.Data.Id)">...</button>
+                                </Template>
+                            </GridColumn>
                             <GridCommandColumns />
                         </Columns>
                     </DataGrid>
@@ -115,12 +121,32 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-
+<Window @bind-Status="status" Title="شرح های پیش فرض" Style="width:550px">
+    <CaspianForm TEntity="ProductDescription" Service="DescriptionService" OnSubmit="t => t.ProductId = productId">
+        <StringTextBox @bind-Value="context.Description" MultiLine Rows="2" ColSpan="8" />
+        <div class="text-center col-md-9">
+            <FormCommandButton />
+        </div>
+    </CaspianForm>
+    <DataGrid TEntity="ProductDescription" Service="DescriptionService" ConditionExpr="t => t.ProductId == productId" ContentHeight="200">
+        <Columns>
+            <GridColumn Field="t => t.Description" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</Window>
 @code 
 {
+    WindowStatus status;
     string productTitle;
-
+    int productId;
     int? productcategoryId;
+
+    void OpenDescriptionWindow(int productId)
+    {
+        this.productId = productId;
+        status = WindowStatus.Open;
+    }
 
     void SetCategory(Product product)
     {

@@ -43,7 +43,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <DataGrid TEntity="OrderDeatil">
+                        <DataGrid TEntity="OrderDetail">
                             <Columns>
                                 <GridColumn AggregateField="t => t.Key.Product.Title" Title="Product" />
                                 <GridColumn AggregateField="t => t.Sum(u => u.Quantity)" Title="Quantity" />

@@ -37,7 +37,6 @@ namespace Caspian.UI
                 attrs.Add("OnClick", EventCallback.Factory.Create<NodeMouseEventArg>(this, NodeClicked));
             if (OnRightClick.HasDelegate)
                 attrs.Add("OnRightClick", EventCallback.Factory.Create<NodeMouseEventArg>(this, NodeRightClicked));
-
             attrs.Add("Item", node);
             attrs.Add("IsLast", isLastNode);
             return attrs;
@@ -241,8 +240,6 @@ namespace Caspian.UI
         {
             if (OnClick.HasDelegate)
                 await OnClick.InvokeAsync(nodeArg);
-            if (OnInternalClicked.HasDelegate)
-                await OnInternalClicked.InvokeAsync(nodeArg.NodeView);
         }
 
 

@@ -20,7 +20,6 @@ namespace Caspian.Common.Extension
                     AddPropetiesToList(detailType, propertyName, list);
                 }
                 t.IncludeProperties(list.ToArray());
-                t.IncludeRuleSets("__ReligionAndSubReligion");
             });
         }
 

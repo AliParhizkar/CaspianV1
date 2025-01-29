@@ -1,6 +1,6 @@
 ﻿@page "/Demo/Batch/Custom/Details"
 @page "/Demo/Batch/Custom/Details/{OrderId:int}"
-@inject BatchService<Order, OrderDeatil> Service
+@inject BatchService<Order, OrderDetail> Service
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -110,7 +110,7 @@
                             </div>
                         }
                         <div class="pt-4">
-                            <DataGrid TEntity="OrderDeatil" DetailsService="Service" PageSize="20" ContentHeight="200" ShowInsertIcon="false" Batch>
+                            <DataGrid TEntity="OrderDetail" DetailsService="Service" PageSize="20" ContentHeight="200" ShowInsertIcon="false" Batch>
                                 <Columns>
                                     <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                                     <GridColumn Field="t => t.Product.Title" Title="Product" />
@@ -145,16 +145,16 @@
     [Parameter]
     public int OrderId { get; set; }
 
-    async void UpdateGridAfterQuantityChanged(int newValue, OrderDeatil orderDeatil)
+    async void UpdateGridAfterQuantityChanged(int newValue, OrderDetail orderDetail)
     {
         if (newValue < 0)
             ShowMessage("تعداد نمی تواند منفی باشد");
         else if (newValue == 0)
-            await Service.DetailDataView.RemoveAsync(orderDeatil);
+            await Service.DetailDataView.RemoveAsync(orderDetail);
         else
         {
-            orderDeatil.Quantity = newValue;
-            await Service.DetailDataView.UpdateAsync(orderDeatil);
+            orderDetail.Quantity = newValue;
+            await Service.DetailDataView.UpdateAsync(orderDetail);
         }
 
     }
@@ -244,7 +244,7 @@
         var grid = Service.DetailDataView;
         if (old == null)
         {
-            await grid.InsertAsync(new OrderDeatil()
+            await grid.InsertAsync(new OrderDetail()
                 {
                     Quantity = 1,
                     Price = product.Price,
@@ -260,13 +260,13 @@
         await grid.ScrollIntoViewSeledtedRow();
     }
 
-    async Task IncQuantity(OrderDeatil detail)
+    async Task IncQuantity(OrderDetail detail)
     {
         detail.Quantity++;
         await Service.DetailDataView.UpdateAsync(detail);
     }
 
-    async Task DecQuantity(OrderDeatil detail)
+    async Task DecQuantity(OrderDetail detail)
     {
         detail.Quantity--;
         if (detail.Quantity == 0)

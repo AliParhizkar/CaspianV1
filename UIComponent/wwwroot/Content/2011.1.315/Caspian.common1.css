@@ -1802,7 +1802,7 @@ span, label, td, th {
         color: #aaaaaa;
         cursor:not-allowed;
     }
-.c-treeview .fa-chevron-right {
+.c-treeview .fa-chevron-right, .c-treeview .fa-chevron-left {
     color: #9ca2b2;
     font-size: 14px;
 }
@@ -1993,29 +1993,53 @@ ul {
 .c-treeview li {
     padding: 2px 0;
     white-space: nowrap;
-    padding-left: 25px;
 }
-.c-treeview .c-subtree li:not(.c-node-last) {
+.t-ltr .c-treeview li {
+    padding-left: 25px;
+    padding-right:0;
+}
+
+.t-rtl .c-treeview li {
+    padding-left: 0;
+    padding-right: 25px;
+}
+
+.t-ltr .c-treeview .c-subtree li:not(.c-node-last) {
     background: url(/_content/UIComponent/Content/2011.1.315/Outlook/left-node.png) no-repeat left top;
     background-position: 8px 5px;
 }
+.t-rtl .c-treeview .c-subtree li:not(.c-node-last) {
+    background-image: url(/_content/UIComponent/Content/2011.1.315/Outlook/left-node.png);
+    background-repeat: no-repeat;
+    background-position: calc(100% - 5px) 5px;
+}
 
-    .c-node-last {
-        background: white url(/_content/UIComponent/Content/2011.1.315/Outlook/last-node.png) no-repeat left top !important;
+    .t-ltr .c-node-last {
+        background: white url(/_content/UIComponent/Content/2011.1.315/Outlook/left-last-node.png) no-repeat left top !important;
     }
+.t-rtl .c-node-last {
+    background: white url(/_content/UIComponent/Content/2011.1.315/Outlook/right-last-node.png) no-repeat right top !important;
+}
 
-.c-treeview .fa-chevron-right {
+.c-treeview .fa-chevron-right, .c-treeview .fa-chevron-left {
     cursor: pointer;
     vertical-align: middle;
     transition: transform .4s ease;
 }
 
-.c-expand .fa-chevron-right {
+.c-expand .fa-chevron-right{
     transform: rotate(90deg);
 }
-.c-collaps .fa-chevron-right {
-    transform: rotate(0);
+.c-expand .fa-chevron-left {
+    transform: rotate(-90deg)!important;
 }
+    .c-collaps .fa-chevron-right{
+        transform: rotate(0);
+    }
+.c-collaps .fa-chevron-left {
+    transform: rotate(0)!important;
+}
+
 .errorMessage .c-pointer {
     border-radius: 0 0 7px 0;
     left: 20px;
@@ -2071,10 +2095,10 @@ ul {
 }
 
 .t-grid-add {
-    height: 39px;
-    width: 39px;
+    height: 0;
+    width: 0;
     display: inline-block;
-    border: 4px solid #63c7c7;
+    border: 0 solid #63c7c7;
     border-radius: 20px;
     position: relative;
     top: 3px;
@@ -3231,7 +3255,7 @@ div.t-grid-footer {
 
 .t-grouping-header,
 .t-grid-toolbar {
-    height:30px;
+    height:20px;
 }
 .fa-plus-square {
     font-size:25px!important;

@@ -13,21 +13,20 @@ using Microsoft.EntityFrameworkCore;
 namespace Demo.Service
 {
     [ReportClass]
-    public class OrderService : MasterDetailsService<Order, OrderDeatil>, IBaseService<Order>
+    public class OrderService : MasterDetailsService<Order, OrderDetail>, IBaseService<Order>
     {
         public OrderService(IServiceProvider provider)
             :base(provider)
         {
             RuleFor(t => t.Date).CustomValue(t => t == default, "Please specify the order date");
-            RuleFor(t => t.OrderDeatils).Custom(t => t.Id == 0 && (t.OrderDeatils == null || t.OrderDeatils.Count == 0), "The order must has at leasta products");
+            RuleFor(t => t.OrderDetails).Custom(t => t.Id == 0 && (t.OrderDetails == null || t.OrderDetails.Count == 0), "The order must has at least products");
             RuleFor(t => t.OrderStatus).Custom(t => t.CourierId.HasValue && t.OrderStatus == OrderStatus.Canceled,
                 "The order has a courier and it is not possible to cancel it.");
             RuleFor(t => t.CustomerId).Required();
-            RuleFor(t => t.OrderType).CustomValue(t => t == 0, "ssss");
-            RuleForEach(t => t.OrderDeatils).SetValidator(new OrderDeatilService(provider));
+            RuleForEach(t => t.OrderDetails).SetValidator(new OrderDetailService(provider));
         }
 
-        public override async Task<Order> UpdateDatabaseAsync(Order order, IList<ChangedEntity<OrderDeatil>> changedEntities)
+        public override async Task<Order> UpdateDatabaseAsync(Order order, IList<ChangedEntity<OrderDetail>> changedEntities)
         {
             /// Add to factor
             var sum = changedEntities.Where(t => t.ChangeStatus == ChangeStatus.Added).Sum(t => t.Entity.Price * t.Entity.Quantity);
@@ -38,7 +37,7 @@ namespace Demo.Service
             }
             else
             {
-                var details = await GetService<OrderDeatilService>().GetAll().Where(t => t.OrderId == order.Id).AsNoTracking().ToListAsync();
+                var details = await GetService<OrderDetailService>().GetAll().Where(t => t.OrderId == order.Id).AsNoTracking().ToListAsync();
                 foreach (var detail in details)
                 {
                     var changed = changedEntities.SingleOrDefault(t => t.Entity.Id == detail.Id);

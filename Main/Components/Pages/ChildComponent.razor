@@ -10,7 +10,7 @@
 @using Stimulsoft.Report.Blazor
 @using Syncfusion.Blazor.DropDowns
 @inject ProtectedSessionStorage Storage
-@inject BatchService<Order, OrderDeatil> Service
+@inject BatchService<Order, OrderDetail> Service
 @{
     var className = "main t-rtl";
     if (colapsed)
@@ -26,7 +26,7 @@
                     className = "product-category";
                     if (category.Id == selectedCategoryId)
                         className += " selected";
-                    <div @onclick="async () => await LoadProductsOfcategory(category.Id)" class="@(className)">@category.Title</div>
+                    <div @onclick="async () => await LoadProductsOfCategory(category.Id)" class="@(className)">@category.Title</div>
                 }
             }
         </div>
@@ -41,10 +41,10 @@
         </div>
     </div>
     <div class="col-spiliter">
-        <span @onclick="async () => await ToggeleMenu()" class="fa fa-chevron-circle-right"></span>
+        <span @onclick="async () => await ToggleMenu()" class="fa fa-chevron-circle-right"></span>
     </div>
     <div class="order-container">
-        <DataGrid TEntity="OrderDeatil" DetailsService="Service" PageSize="20" ContentHeight="200" ShowInsertIcon="false" Batch>
+        <DataGrid TEntity="OrderDetail" DetailsService="Service" PageSize="20" HideFooter ContentHeight="200" ShowInsertIcon="false" Batch>
             <Columns>
                 <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                 <GridColumn Field="t => t.Product.Title" Title="Product" />
@@ -83,12 +83,12 @@
 
 <PopupWindow @bind-Status="status" Top="100" Left="60">
     <div style="width:400px;" class="row p-3 text-center">
-        <div class="col-md-6">@selectedOrderDeatil.Product?.Title</div>
-        <div class="col-md-2">@selectedOrderDeatil.Quantity</div>
-        <div class="col-md-4">@selectedOrderDeatil.Price.Seprate3Digit()</div>
+        <div class="col-md-6">@selectedOrderDetail.Product?.Title</div>
+        <div class="col-md-2">@selectedOrderDetail.Quantity</div>
+        <div class="col-md-4">@selectedOrderDetail.Price.Seprate3Digit()</div>
     </div>
     <div style="width:400px;" class="row p-3">
-        <StringTextBox @ref="txtDescript" @bind-Value="selectedOrderDeatil.Descript" MultiLine Rows="3" />
+        <StringTextBox @ref="txtDescript" @bind-Value="selectedOrderDetail.Descript" MultiLine Rows="3" />
     </div>
 </PopupWindow>
 @code
@@ -98,7 +98,7 @@
     IList<Product> products;
     bool colapsed;
     int selectedCategoryId, orderId;
-    OrderDeatil selectedOrderDeatil;
+    OrderDetail selectedOrderDetail;
     StringTextBox txtDescript;
 
     int GetSumOrderDetails()
@@ -108,48 +108,48 @@
         return Service.DetailDataView.GetBatchEntities().Sum(u => u.Quantity * u.Price);
     }
 
-    async Task UpdateGridAfterQuantityChanged(int newValue, OrderDeatil orderDeatil)
+    async Task UpdateGridAfterQuantityChanged(int newValue, OrderDetail orderDetail)
     {
         if (newValue < 0)
             ShowMessage("تعداد نمی تواند منفی باشد");
         else if (newValue == 0)
-            await Service.DetailDataView.RemoveAsync(orderDeatil);
+            await Service.DetailDataView.RemoveAsync(orderDetail);
         else
         {
-            orderDeatil.Quantity = newValue;
-            await Service.DetailDataView.UpdateAsync(orderDeatil);
+            orderDetail.Quantity = newValue;
+            await Service.DetailDataView.UpdateAsync(orderDetail);
         }
     }
 
-    async Task ShowDesccription(OrderDeatil orderDeatil)
+    async Task ShowDesccription(OrderDetail orderDetail)
     {
-        selectedOrderDeatil = orderDeatil;
+        selectedOrderDetail = orderDetail;
         status = WindowStatus.Open;
         await Task.Delay(300);
         if (txtDescript != null)
             await txtDescript.FocusAsync();
     }
 
-    async Task ToggeleMenu()
+    async Task ToggleMenu()
     {
         colapsed = !colapsed;
         await Storage.SetAsync("product-menu-status", colapsed);
     }
 
-    async Task IncQuantity(OrderDeatil orderDeatil)
+    async Task IncQuantity(OrderDetail orderDetail)
     {
-        orderDeatil.Quantity++;
-        await Service.DetailDataView.UpdateAsync(orderDeatil);
+        orderDetail.Quantity++;
+        await Service.DetailDataView.UpdateAsync(orderDetail);
     }
 
-    async Task DecQuantity(OrderDeatil orderDeatil)
+    async Task DecQuantity(OrderDetail orderDetail)
     {
-        orderDeatil.Quantity--;
-        if (orderDeatil.Quantity == 0)
-            await Service.DetailDataView.RemoveAsync(orderDeatil);
+        orderDetail.Quantity--;
+        if (orderDetail.Quantity == 0)
+            await Service.DetailDataView.RemoveAsync(orderDetail);
     }
 
-    async Task LoadProductsOfcategory(int categoryId)
+    async Task LoadProductsOfCategory(int categoryId)
     {
         selectedCategoryId = categoryId;
         using var service = CreateScope().GetService<ProductService>();
@@ -164,7 +164,7 @@
         var grid = Service.DetailDataView;
         if (old == null)
         {
-            await grid.InsertAsync(new OrderDeatil()
+            await grid.InsertAsync(new OrderDetail()
                 {
                     Quantity = 1,
                     Price = product.Price,

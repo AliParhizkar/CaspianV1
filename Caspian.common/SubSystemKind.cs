@@ -17,23 +17,8 @@ namespace Caspian.Common
         [Display(Name = "دمو")]
         Demo,
 
-        /// <summary>
-        /// کارگزینی
-        /// </summary>
-        [Display(Name = "کارگزینی")]
-        Employment,
-
-        /// <summary>
-        /// کارتابل
-        /// </summary>
-        [Display(Name = "کارتابل")]
-        Kartable,
-
-        /// <summary>
-        /// حقوق و دستمزد
-        /// </summary>
-        [Display(Name = "حقوق و دستمزد")]
-        Payment
+        [Display(Name = "فروش")]
+        Marketing,
     }
 
     public static class SubSystemExt

@@ -1,0 +1,16 @@
+﻿@namespace Marketing.Web
+@inherits LayoutComponentBase
+@using Caspian.Engine.Shared
+<MainLayoutComponent RightToLeft PageTypeName="@pageTypeName">
+    @Body
+</MainLayoutComponent>
+@code 
+{
+    string pageTypeName;
+    protected override void OnParametersSet()
+    {
+        pageTypeName = (Body.Target as RouteView)?.RouteData.PageType.FullName;
+        
+        base.OnParametersSet();
+    }
+}

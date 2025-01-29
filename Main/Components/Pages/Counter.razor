@@ -1,28 +1,15 @@
 ﻿@page "/counter"
-@using Caspian.Common
-@using Caspian.Common.Extension
-@using Caspian.Engine.Service
-@using Caspian.UI
-@using Demo.Model
-@using Demo.Service
-@using FluentValidation
-@using Microsoft.EntityFrameworkCore
-@inject IServiceProvider provider
-
-@inherits BasePage
-
-
-
-
-
-
-
-
-
-
-
-
+<div style="width:350px;margin: 5px auto; height:150px">
+    <StringTextBox @bind-Value="str" MultiLine Rows="3" />
+</div>
+<button @onclick="() => IncCounter()">Inc</button>
 @code 
 {
-
+    string str;
+    int counter;
+    void IncCounter()
+    {
+        counter++;
+        str = counter.ToString();
+    }
 }

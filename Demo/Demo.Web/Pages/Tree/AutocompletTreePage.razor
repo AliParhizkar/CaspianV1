@@ -18,7 +18,7 @@
                     <div class="row c-controls">
                         <div class="col-md-12">
                             <AutoCompleteTree @bind-Value="value" OnChanged="SetOrganTitle">
-                                <TreeView TEntity="OrganUnit" TextFunc="t => t.Title" Selectable
+                                <TreeView TEntity="OrganUnit" TextFunc="t => t.Title" Selectable 
                                           FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
                             </AutoCompleteTree>
                         </div>

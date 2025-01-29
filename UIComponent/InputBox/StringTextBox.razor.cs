@@ -62,6 +62,15 @@ namespace Caspian.UI
             return InputAttributes;
         }
 
+        async Task ChangeValue(string value)
+        {
+            Value = value;
+            if (ValueChanged.HasDelegate)
+                await ValueChanged.InvokeAsync(Value);
+            if (OnChange.HasDelegate)
+                await OnChange.InvokeAsync();
+        }
+
         async Task ChangeValue(ChangeEventArgs arg)
         {
             var readOnly = false;
@@ -96,6 +105,16 @@ namespace Caspian.UI
                 }
             }
             base.OnInitialized();
+        }
+
+        public async Task<Selection> GetSelectionAsync()
+        {
+            return await jsRuntime.InvokeAsync<Selection>("caspian.common.getSelection", InputElement);
+        }
+
+        public async Task SetSelection(int start, int? end = null)
+        {
+            await jsRuntime.InvokeVoidAsync("caspian.common.setSelection", InputElement, start, end);
         }
 
         [Parameter]

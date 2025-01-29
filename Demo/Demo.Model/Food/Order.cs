@@ -44,6 +44,6 @@ namespace Demo.Model
         public string Description { get; set; }
 
         [CheckOnDelete("The order has details and can not remove")]
-        public IList<OrderDeatil> OrderDeatils { get; set; }
+        public IList<OrderDetail> OrderDetails { get; set; }
     }
 }

@@ -1,6 +1,15 @@
+.t-rtl .c-controls label {
+    background-image: linear-gradient(-90deg, #00000010, #dcdcdc20);
+    padding-left:0;
+    padding-right:5px;
+}
+.t-rtl .pe-4 {
+    padding-left: 1.5rem !important;
+    padding-right: 0 !important;
+}
 /* base stylesheet */
-.t-rtl .t-checkbox-list{
-    padding-right:6px;
+.t-rtl .t-checkbox-list {
+    padding-right: 6px;
 }
 .t-ltr .t-checkbox-list {
     padding-left:6px;
@@ -74,26 +83,21 @@
         padding-left: 5px;
     }
 
-
-
-    .t-rtl .c-treeview > .c-subtree {
-        padding-right: 8px;
-    }
-
 .t-ltr .c-treeview ul {
     background: url(/_content/UIComponent/Content/2011.1.315/Outlook/node.png)repeat-y left top;
     background-position-x: 2px;
 }
 
-.t-rtl .c-treeview .c-subtree ul {
-    background: url(/_content/UIComponent/Content/2011.1.315/Outlook/node.png)repeat-y left top;
+.t-rtl .c-treeview ul {
+    background: url(/_content/UIComponent/Content/2011.1.315/Outlook/node.png)repeat-y right top;
 }
 
 
 
-.t-ltr .c-treeview {
+.c-treeview {
     padding: 0px 10px;
 }
+
 
     .t-rtl .accordion li.default .submenu {
         background-image: linear-gradient(-90deg, #353535, #818181);
@@ -376,7 +380,6 @@ fieldset.t-widget table {
 }
 .t-rtl .t-combobox .t-select {
     border-radius: 8px 0 0 8px;
-    border-right-style:none;
 }
 
 

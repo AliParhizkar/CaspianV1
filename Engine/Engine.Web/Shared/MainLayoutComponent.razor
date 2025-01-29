@@ -77,7 +77,9 @@
                         </div>
                         <div class="c-content-main">
                             <CaspianExceptionComponent SystemKind="systemKind" @ref="exceptionComponent" UserId="userId">
-                                @ChildContent
+                                <CascadingValue Name="CSS-Right-To-Left" Value="RightToLeft">
+                                    @ChildContent
+                                </CascadingValue>
                             </CaspianExceptionComponent>
                         </div>
                     }
@@ -119,6 +121,9 @@
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 
+    [Parameter]
+    public bool RightToLeft { get; set; }
+
     [CascadingParameter]
     public Task<AuthenticationState> authenticationStateTask { get; set; }
 
@@ -134,13 +139,6 @@
     {
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.LocationChanged += OnLocationChanged;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var menuStatus = await storage.GetAsync<bool>("menu-status");
-        hideMenu = menuStatus.Success && menuStatus.Value;
-        await base.OnInitializedAsync();
     }
 
     private void OnLocationChanged(object sender, LocationChangedEventArgs e)
@@ -216,6 +214,18 @@
             }
         }
         await base.OnParametersSetAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var menuStatus = await storage.GetAsync<bool>("menu-status");
+        var status = menuStatus.Success && menuStatus.Value;
+        if (status && !hideMenu)
+        {
+            hideMenu = true;
+            StateHasChanged();
+        }
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     void MainMenu()

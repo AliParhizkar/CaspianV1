@@ -168,6 +168,8 @@
             let dif = this.xStart - e.clientX;
             if (this.gridStatus == 2)
                 dif = -dif;
+            if (caspian.common.RightToLeft())
+                dif = -dif;
             let curentWidth = this.curentWidth;
             let otherWidth = this.otherWidth - 1;
             let curentResult = curentWidth - dif, otherResult = otherWidth + dif;
@@ -197,14 +199,9 @@
                 (insertColumns.item(otherIndex) as HTMLElement).style.width = `${otherResult}px`;
             }
             if (contentHeight < tableHeight) {
-                if (caspian.common.RightToLeft())
-                    header.style.paddingLeft = '11px';
-                else
-                    header.style.paddingRight = '11px';
+
             }
             else {
-                header.style.paddingLeft = '0';
-                header.style.paddingRight = '0';
             }
         }
 

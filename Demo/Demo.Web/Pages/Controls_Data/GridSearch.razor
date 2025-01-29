@@ -170,7 +170,7 @@
                                 <DatePicker @bind-Value="toDate" />
                             </div>
                         </div>
-                        <DataGrid TEntity="OrderDeatil">
+                        <DataGrid TEntity="OrderDetail">
                             <Columns>
                                 <GridColumn Field="t => t.Order.Date" Title="Order date" @bind-From="fromDate" @bind-To="toDate" />
                                 <GridColumn Field="t => t.Product.Title" />

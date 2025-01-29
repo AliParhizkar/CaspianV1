@@ -6,8 +6,14 @@ namespace Caspian.UI
     {
         Task ReloadAsync();
 
+        /// <summary>
+        /// Use For multi select nodes
+        /// </summary>
         EventCallback<NodeView> OnInternalCHanged { get; set; }
 
+        /// <summary>
+        /// Use For single select nodes
+        /// </summary>
         EventCallback<NodeView> OnInternalClicked { get; set; }
 
         IList<NodeView> GetSeletcedItems();

@@ -1,10 +1,20 @@
 ﻿namespace caspian {
     export class common {
         static RightToLeft(): boolean {
-            return document.getElementsByTagName('body')[0].classList.contains('t-rtl');
+            return document.body.classList.contains('t-rtl');
         }
 
         static infoTimer;
+
+        public static getSelection(input: HTMLInputElement) {
+            let data = { start: input.selectionStart, end: input.selectionEnd };
+            return data;
+        }
+
+        public static setSelection(input: HTMLInputElement, start: number, end: number) {
+            input.focus();
+            setTimeout(() => input.setSelectionRange(start, end || start), 40);
+        }
 
         public static bindCheclistDropdown(element: HTMLElement, dotnet: dotnetInvoker) {
             const mutationObserver = new MutationObserver(t => {
@@ -72,6 +82,7 @@
         }
 
         public static bindTree(tree: HTMLElement) {
+
         }
 
         public static bindTooltip() {

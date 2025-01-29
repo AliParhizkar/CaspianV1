@@ -189,7 +189,7 @@
                                                     <div>Order Details</div>
                                                 </div>
                                                 <div class="d-details-content ps-4 pe-3">
-                                                    <DataGrid TEntity="OrderDeatil" ContentHeight="200" ConditionExpr="t => t.OrderId == context.Data.Id">
+                                                    <DataGrid TEntity="OrderDetail" ContentHeight="200" ConditionExpr="t => t.OrderId == context.Data.Id">
                                                         <Columns Context="con">
                                                             <GridColumn Field="t => t.Product.Title" Title="Product" />
                                                             <GridColumn Field="t => t.Price" />

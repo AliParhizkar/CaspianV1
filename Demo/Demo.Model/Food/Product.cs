@@ -49,6 +49,6 @@ namespace Demo.Model
         public ProductCategory ProductCategory { get; set; }
 
         [CheckOnDelete("This product is ordered and cannot be removed")]
-        public ICollection<OrderDeatil> OrderDeatils { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

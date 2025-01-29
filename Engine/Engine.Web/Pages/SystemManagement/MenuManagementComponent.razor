@@ -49,7 +49,7 @@
     <div class="pt-4">
         <DataGrid TEntity="Menu" Service="Service" ContentHeight="300" ShowInsertIcon="false" ConditionExpr='t => (isDropped == null || t.IsDropped == isDropped) && (showInMenu == null || t.ShowonMenu == showInMenu.Value) && (!onlyUntitledMenus || t.Title == null) && t.SubSystemKind == Subsystem'>
             <Columns>
-                <GridColumn Field="t => t.Id" Title="Id" />
+                <GridColumn Field="t => t.Id" Title="Id" style="width:50px;" />
                 <GridColumn Field="t => t.MenuCategory.Title" Title="main menu" />
                 <GridColumn Field="t => t.Title" />
                 <GridColumn Field="t => t.Source" />
