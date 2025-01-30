@@ -4,7 +4,7 @@
 <div class="row e-main">
     <div class="col-md-4 e-tree">
         <TreeView @ref="tree" OnExpanded="LoadNodeChildren" style="max-width:400px;height:100%;padding:5px 10px 0 0" TEntity="NodeView" Source="nodes"
-                  OnChange="Change" />
+        OnChange="Change" />
     </div>
     <div class="col-md-8 ps-3 e-component">
         <div class="e-head">
@@ -121,6 +121,7 @@
     {
         using var service = CreateScope().GetService<ReportGroupService>();
         group = await service.GetAll().Include(t => t.ReportGroupParameters).AsNoTracking().SingleAsync(GroupId);
+        group.ReportGroupParameters = group.ReportGroupParameters.Where(t => !t.IsKey).ToList();
         foreach (var parameter in group.ReportGroupParameters)
             parameter.ReportGroup = null;
         removedParamters = new List<ReportGroupParameter>();

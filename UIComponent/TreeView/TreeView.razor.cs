@@ -19,24 +19,6 @@ namespace Caspian.UI
         IDictionary<string, object> GetNodeAttributes(NodeView node, bool isLastNode)
         {
             var attrs = new Dictionary<string, object>();
-            if (node.Collabsable)
-            {
-                if (OnCollapsed.HasDelegate)
-                    attrs.Add("OnCollapsed", EventCallback.Factory.Create<NodeView>(this, NodeCollapsed));
-                if (OnExpanded.HasDelegate)
-                    attrs.Add("OnExpanded", EventCallback.Factory.Create<NodeView>(this, NodeExpanded));
-            }
-            if (node.Selectable)
-            {
-                if (OnSelected.HasDelegate)
-                    attrs.Add("OnSelected", EventCallback.Factory.Create<NodeView>(this, NodeSelected));
-                if (OnChange.HasDelegate)
-                    attrs.Add("OnChanged", EventCallback.Factory.Create<NodeView>(this, OnNodeChanged));
-            }
-            if (OnClick.HasDelegate)
-                attrs.Add("OnClick", EventCallback.Factory.Create<NodeMouseEventArg>(this, NodeClicked));
-            if (OnRightClick.HasDelegate)
-                attrs.Add("OnRightClick", EventCallback.Factory.Create<NodeMouseEventArg>(this, NodeRightClicked));
             attrs.Add("Item", node);
             attrs.Add("IsLast", isLastNode);
             return attrs;

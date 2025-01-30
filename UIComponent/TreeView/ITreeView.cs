@@ -16,6 +16,18 @@ namespace Caspian.UI
         /// </summary>
         EventCallback<NodeView> OnInternalClicked { get; set; }
 
+        EventCallback<NodeView> OnSelected { get; set; }
+
+        EventCallback<NodeView> OnChange { get; set; }
+
+        EventCallback<NodeView> OnExpanded { get; set; }
+
+        EventCallback<NodeView> OnCollapsed { get; set; }
+
+        EventCallback<NodeMouseEventArg> OnClick { get; set; }
+
+        EventCallback<NodeMouseEventArg> OnRightClick { get; set; }
+
         IList<NodeView> GetSeletcedItems();
 
         void SetSelectedNodesValue(IList<string> values);
