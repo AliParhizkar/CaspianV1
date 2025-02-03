@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using Caspian.Engine.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -63,5 +64,9 @@ namespace Caspian.Engine
         [InverseProperty("ResultParameter")]
         [CheckOnDelete("پارامتر بعنوان پارامتر داده ای می باشد وامکان حذف آن وجود ندارد")]
         public IList<DataParameter> ResultParameters { get; set; }
+
+        public IList<ReportParam> ReportParams { get; set; } 
+
+        public IList<Token> Tokens { get; set; }
     }
 }

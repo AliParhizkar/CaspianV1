@@ -1522,8 +1522,8 @@ form > tr {
         margin:0!important;
     }
     .c-multi-select.t-state-error {
-        border-color: rgba(255, 0, 0, 0.19) !important;
-        background-color: #ffe9ec !important;
+        border-color: rgba(255, 0, 0, 0.16) !important;
+        background-color: #fff9f9 !important;
     }
 .c-multi-select:not(.t-state-disabled):hover {
     border-color: rgba(0,0,0,0.24);
@@ -2093,30 +2093,6 @@ ul {
 .t-floatwrap {
     display: block;
 }
-
-.t-grid-add {
-    height: 0;
-    width: 0;
-    display: inline-block;
-    border: 0 solid #63c7c7;
-    border-radius: 20px;
-    position: relative;
-    top: 3px;
-    cursor: pointer;
-    background-color:white;
-}
-    .t-grid-add.c-disabled{
-        border-color: #d0d0d0;
-        cursor:not-allowed;
-    }
-        .t-grid-add.c-disabled .fa-plus {
-            background-color: #d0d0d0;
-            
-        }
-
-.t-grid-add:hover {
-    color: #026002;
-} 
 
 ::-webkit-scrollbar {
     width: 11px;
@@ -2942,33 +2918,38 @@ div.t-grid-footer {
     background-color: rgba(255,99,88,0.08);
 }
 
-.t-grid-toolbar .t-icon {
-    width: 27px;
-    height: 27px;
+.t-grid-add {
+    border: none;
+    background-color: transparent;
     position: relative;
-    top: 2px;
-    border-radius: 18px;
-    z-index: 10;
-    color: #423d96;
-    background-color: #e9ebee;
-    border: 1px solid rgba(0,0,0,0.12);
-    text-align: center;
-    padding-top: 5px;
-    font-size: 18px;
+    width:35px
 }
-    .t-grid-toolbar .t-icon .fa:before {
-        content: "";
-        position: absolute;
-        height: 20px;
-        height: 20px;
-        background: #F00;
-        z-index: 1000000;
-    }
+
+.t-rtl .t-grid-add{
+    margin-left:calc(100% - 80px);
+}
+
+.t-ltr .t-grid-add {
+    margin-left: calc(100% - 60px);
+}
+
+.t-grid-toolbar .t-icon {
+    width: 38px;
+    height: 38px;
+    color: #423d96;
+    border-radius: 50% 50% 0 0;
+    background: url(/_Content/UIComponent/Content/half-cycle.png) no-repeat #e9ebee;
+    text-align: center;
+    padding-top: 7px;
+    font-size: 22px;
+    clip-path: circle(560px at left);
+}
 
 
-    .t-grid-toolbar .t-grid-add .t-icon {
+
+/*    .t-grid-toolbar .t-grid-add .t-icon {
         display: inline-block;
-    }
+    }*/
 
 .t-grid .t-grid-toolbar .t-grid-excel .t-icon {
     background-position: -18px -683px;

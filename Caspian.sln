@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Main", "Main\Main.csproj", "{EFC63321-9E4F-488C-8583-DC950EBF38D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caspian.common", "Caspian.common\Caspian.common.csproj", "{94C3373E-5F00-436E-9AAB-CF221D35CE4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caspian.Common", "Caspian.common\Caspian.Common.csproj", "{94C3373E-5F00-436E-9AAB-CF221D35CE4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIComponent", "UIComponent\UIComponent.csproj", "{269C0CD5-CB56-421C-B88D-C4B2368AB838}"
 EndProject

@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
+    <ProjectReference Include="..\..\Caspian.common\Caspian.Common.csproj" />
     <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
     <ProjectReference Include="..\..\Engine\Engine.Service\Engine.Service.csproj" />
     <ProjectReference Include="..\..\Engine\Engine.Web\Engine.Web.csproj" />

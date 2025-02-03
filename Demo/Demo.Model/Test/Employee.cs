@@ -82,7 +82,7 @@ namespace Demo.Model
         public string WifeName { get; set; }
 
         [DisplayName("تاریخ ازدواج")]
-        public DateTime? MariageDate { get; set; }
+        public DateOnly? MariageDate { get; set; }
 
         [DisplayName("شغل همسر")]
         public int? WifeJobId { get; set; }
@@ -122,7 +122,7 @@ namespace Demo.Model
         public string IdentificationSerial { get; set; }
 
         [DisplayName("تاریخ تولد")]
-        public DateTime? BirthDate { get; set; }
+        public DateOnly? BirthDate { get; set; }
 
         [DisplayName("کشور محل تولد")]
         public int? BirthCountryId { get; set; }
@@ -203,5 +203,8 @@ namespace Demo.Model
 
         [ForeignKey(nameof(ReligionId))]
         public SimpleData Religion { get; set; }
+
+        [CheckOnDelete("کارمندی با این مذهب ثبت شده و امکان حذف آن وجود ندارد")]
+        public ICollection<ReligionAndSubReligion> ReligionAndSubReligions { get; set; }
     }
 }

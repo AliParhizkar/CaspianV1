@@ -2,6 +2,7 @@
 using System.Globalization;
 using Caspian.Common.Extension;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 namespace Caspian.Common
 {
@@ -130,11 +131,52 @@ namespace Caspian.Common
                 date.Minute, date.Second);
         }
 
+        public static DateOnly ToDateOnly(this DateTime date)
+        {
+            return new DateOnly(date.Year, date.Month, date.Day);
+        }
+
+        public static PersianDate ToPersianDate(this DateOnly date)
+        {
+            return date.ToDateTime(new TimeOnly()).ToPersianDate();
+        }
+
+        public static PersianDate ToPersianDate(this DateOnly? date)
+        {
+            if (date.HasValue)
+                return date.Value.ToPersianDate();
+            return null;
+        }
+
+        public static string ToPersianDateString(this DateOnly date)
+        {
+            return date.ToPersianDate().ToShortDateString();
+        }
+
+        public static string ToPersianDateString(this DateOnly? date)
+        {
+            if (date == null)
+                return null;
+            return date.ToPersianDate().ToShortDateString();
+        }
+
         public static PersianDate ToPersianDate(this DateTime? date)
         {
             if (date == null)
                 return null;
             return date.Value.ToPersianDate();
+        }
+
+        public static DateOnly GetDateOnly(this DateTime date)
+        {
+            return new DateOnly(date.Year, date.Month, date.Day);
+        }
+
+        public static DateOnly? GetDateOnly(this DateTime? date)
+        {
+            if (date == null)
+                return null;
+            return date.Value.GetDateOnly();
         }
 
         public static string ToPersianDateString(this DateTime date)

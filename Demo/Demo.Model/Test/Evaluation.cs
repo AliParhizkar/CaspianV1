@@ -29,28 +29,28 @@ namespace Demo.Model
         public EvaluationTurn? EvaluationTurn { get; set; }
 
         [DisplayName("تاریخ شروع سال ارزیابی")]
-        public DateTime? StartDate { get; set; }
+        public DateOnly? StartDate { get; set; }
 
         [DisplayName("تاریخ پایان سال ارزیابی")]
-        public DateTime? EndDate { get; set; }
+        public DateOnly? EndDate { get; set; }
 
         [DisplayName("تاریخ گردش ارزیابی از")]
-        public DateTime? EvalDateFrom { get; set; }
+        public DateOnly? EvalDateFrom { get; set; }
 
         [DisplayName("تاریخ گردش ارزیابی تا")]
-        public DateTime? EvalDateTo { get; set; }
+        public DateOnly? EvalDateTo { get; set; }
 
         [DisplayName("تاریخ اعتراض از")]
-        public DateTime? ReviewDateFrom { get; set; }
+        public DateOnly? ReviewDateFrom { get; set; }
 
         [DisplayName("تاریخ اعتراض تا")]
-        public DateTime? ReviewDateTo { get;set; }
+        public DateOnly? ReviewDateTo { get;set; }
 
         [DisplayName("تاریخ ابلاغ از")]
-        public DateTime? NotificationDateFrom { get; set; }
+        public DateOnly? NotificationDateFrom { get; set; }
 
         [DisplayName("تاریخ ابلاغ تا")]
-        public DateTime? NotificationDateTo { get; set; }
+        public DateOnly? NotificationDateTo { get; set; }
     }
 
     public enum EvaluationTurn: byte

@@ -26,5 +26,7 @@ namespace Caspian.Engine
 
         [DisplayName("مقدار")]
         public long Value { get; set; }
+
+        public IList<DynamicParameterValue> DataParameterValues { get; set; }
     }
 }

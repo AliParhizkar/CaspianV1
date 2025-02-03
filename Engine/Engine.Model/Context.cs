@@ -59,6 +59,8 @@ namespace Caspian.Engine.Model
 
         public DbSet<CaspianFont> CaspianFonts { get; set; }
 
-        public DbSet<PersianDateTable> PersianDateTables { get; set; }
+        public DbSet<AggregateReportGroupParameter> AggregateReportGroupParameters { get; set; }
+
+        public DbSet<BlazorControl> BlazorControls { get; set; }
     }
 }

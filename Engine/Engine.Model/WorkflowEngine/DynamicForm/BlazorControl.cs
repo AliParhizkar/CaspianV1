@@ -6,7 +6,7 @@ namespace Caspian.Engine
     [Table("BlazorControls", Schema = "cmn")]
     public class BlazorControl
     {
-        [Key, ForeignKey(nameof(HtmlColumn))]
+        [Key]
         public int Id { get; set; }
 
         public string Caption { get; set; }
@@ -30,11 +30,6 @@ namespace Caspian.Engine
         /// The property name of entity that control bind to it
         /// </summary>
         public string PropertyName { get; set; }
-
-        //public int? DynamicParameterId { get; set; }
-
-        //[ForeignKey(nameof(DynamicParameterId))]
-        //public DynamicParameter DynamicParameter { get; set; }
 
         public string TextExpression { get; set; }
 

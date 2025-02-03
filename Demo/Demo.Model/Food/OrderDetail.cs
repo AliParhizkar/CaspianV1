@@ -1,4 +1,4 @@
-﻿using Caspian.Engine;
+﻿using Caspian.Common;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,7 +17,7 @@ namespace Demo.Model
         [ForeignKey(nameof(OrderId))]
         public Order Order { get; set; }
 
-        [DisplayName("Descript")]
+        [DisplayName("Descript"), MaxLength(50)]
         public string Descript { get; set; }
 
         public int ProductId { get; set; }
@@ -31,7 +31,7 @@ namespace Demo.Model
         [DisplayName("Quantity")]
         public int Quantity { get; set; }
 
-        [DisplayName("Sum"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DisplayName("Sum"), DatabaseGenerated(DatabaseGeneratedOption.Computed), ComputedColumnSql("[Price] * [Quantity]")]
         public int Result { get;set; }
     }
 }

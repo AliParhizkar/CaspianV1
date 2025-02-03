@@ -33,5 +33,8 @@ namespace Caspian.Engine
         /// </summary>
         [CheckOnDelete("فرم دااری ردیف می باشد و امکان حذف آن وجود ندادر")]
         public IList<HtmlRow> Rows { get; set; }
+
+        [CheckOnDelete("گردش دارای فعالیت می باشد و امکان حذف آن وجود ندارد.")]
+        public IList<Activity> Activities { get; set; }
     }
 }

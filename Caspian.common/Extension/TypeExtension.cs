@@ -151,7 +151,7 @@ namespace Caspian.Common.Extension
         {
             if (type == typeof(string))
                 return false;
-            return (type.GetInterface(nameof(IEnumerable)) != null);
+            return type.GetInterface(nameof(IEnumerable)) != null;
         }
 
         public static bool IsCollectionType(this Type type, Type collectionType)

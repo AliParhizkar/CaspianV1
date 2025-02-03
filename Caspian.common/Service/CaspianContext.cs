@@ -2,9 +2,12 @@
 using Caspian.Common.Extension;
 using Caspian.Common.JsonValue;
 using Caspian.Common.RowNumber;
+using Caspian.Common.Migrations;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.EntityFrameworkCore.Migrations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Castle.Core.Logging;
 
 namespace Caspian.Common
 {
@@ -16,32 +19,86 @@ namespace Caspian.Common
             optionsBuilder.UseSqlServer(CS.Con, t =>
             {
                 t.AddRowNumberSupport();
-
-            }).EnableSensitiveDataLogging();
+            }).ReplaceService<IMigrationsSqlGenerator, CaspianMigrationsSqlGenerator>()
+                .EnableSensitiveDataLogging();
             optionsBuilder.UseLazyLoadingProxies(false);
             base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var types = this.GetType().Assembly.GetTypes();
+            
+            var types = modelBuilder.Model.GetEntityTypes().Select(t => t.ClrType);
+            var assemblyName = this.GetType().Assembly.GetName().Name;
             foreach (var type in types)
             {
                 var pKeyName = type.GetPrimaryKey(true)?.Name;
-                if (pKeyName != null)
+                foreach (var property in type.GetProperties())
                 {
-                    var fKeyInfo = type.GetProperties().SingleOrDefault(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pKeyName);
-                    if (fKeyInfo != null)
+                    var foreignKey = property.GetCustomAttribute<ForeignKeyAttribute>();
+                    if (foreignKey != null)
                     {
-                        var info = fKeyInfo.PropertyType.GetProperties().Single(t => t.PropertyType == type);
-                        modelBuilder.Entity(fKeyInfo.PropertyType)
-                            .HasOne(info.Name)
-                            .WithOne(fKeyInfo.Name)
-                            .IsRequired(false)
-                            .OnDelete(DeleteBehavior.Cascade);
+                        if (foreignKey.Name == pKeyName)
+                        {
+                            var info = property.PropertyType.GetProperties().Single(t => t.PropertyType == type);
+                            modelBuilder.Entity(property.PropertyType)
+                                .HasOne(info.Name)
+                                .WithOne(property.Name)
+                                .IsRequired(false)
+                                .OnDelete(DeleteBehavior.Cascade);
+                        }
+                        else
+                        {
+                            var mainyproperties = property.PropertyType.GetProperties().Where(t => t.PropertyType.IsCollectionType(type));
+                            var count = mainyproperties.Count();
+                            var relationsCount = count;
+                            if (count > 1)
+                            {
+                                mainyproperties = mainyproperties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>()?.Property == property.Name);
+                                count = mainyproperties.Count();
+                            }
+
+                            if (count != 1)
+                            {
+                                if (relationsCount == 0)
+                                    throw new CaspianException($"On Type {property.PropertyType} we shoul have a property of type ICollection<{type.Name}>");
+                                else
+                                    throw new CaspianException($"On Type {property.PropertyType} we have many properties of type ICollection<{type.Name}> and we should use InverseProperty({property.Name}) Relation Coun:{relationsCount}");
+                            }
+
+                            modelBuilder.Entity(type)
+                                .HasOne(property.Name)
+                                .WithMany(mainyproperties.Single().Name)
+                                .OnDelete(DeleteBehavior.NoAction);
+
+                        }
+                    }
+                }
+
+                
+                if (!assemblyName.Equals("Engine.Model", StringComparison.OrdinalIgnoreCase))
+                {
+                    TableAttribute tableAttribute = type.GetCustomAttribute<TableAttribute>();
+                    if (tableAttribute?.Schema == "cmn")
+                    {
+                        modelBuilder.Entity(type).ToTable(tableAttribute.Name, tableAttribute.Schema, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                    }
+                }
+
+                foreach (var property in type.GetProperties())
+                {
+                    var attr = property.GetCustomAttribute<ComputedColumnSqlAttribute>();
+                    if (attr != null)
+                    {
+                        var sql = attr.GetSql();
+                        modelBuilder.Entity(type).Property(property.Name).HasComputedColumnSql(sql);
                     }
                 }
             }
+
             modelBuilder.HasDbFunction(typeof(JsonExtensions).GetMethod(nameof(JsonExtensions.JsonValue)))
                .HasTranslation(e => new SqlFunctionExpression("JSON_VALUE", e, true, new[] { true, false }, typeof(String), null));
             base.OnModelCreating(modelBuilder);

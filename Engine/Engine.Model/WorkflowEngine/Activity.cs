@@ -58,5 +58,7 @@ namespace Caspian.Engine
 
         [InverseProperty(nameof(NodeConnector.ToActivity))]
         public IList<NodeConnector> InConnectors { get; set; }
+
+        public ICollection<TaskOperation> TaskOperations { get; set; }
     }
 }

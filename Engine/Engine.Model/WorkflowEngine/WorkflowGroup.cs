@@ -25,5 +25,7 @@ namespace Caspian.Engine
 
         [CheckOnDelete("This group has Workflow and can not removed")]
         public IList<Workflow> Workflows { get; set; }
+
+        public ICollection<WorkflowForm> workflowForms { get; set; }
     }
 }

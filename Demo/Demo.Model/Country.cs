@@ -21,7 +21,15 @@ namespace Demo.Model
         public IList<City> Cities { get; set; }
 
         [CheckOnDelete("The Country has Provinces and can not be removed")]
-        public IList<Province> Provinces { get; set; }  
+        public IList<Province> Provinces { get; set; }
 
+        [InverseProperty("BirthCountry")]
+        [CheckOnDelete("کشور بعنوان محل تولد کارمند ثبت شده و امکان حذف آن وجود ندارد")]
+        public IList<IdentificationDetail> IdentificationDetailsBirthCountry { get; set; }
+
+
+        [InverseProperty("RegCountry")]
+        [CheckOnDelete("کشور بعنوان محل صدور شناسنامه کارمند ثبت شده و امکان حذف آن وجود ندارد")]
+        public IList<IdentificationDetail> IdentificationDetailsRegCountry { get; set; }
     }
 }

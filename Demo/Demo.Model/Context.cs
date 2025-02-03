@@ -1,16 +1,10 @@
-﻿using Engine.Model;
-using Caspian.Common;
-using Caspian.Engine.Model;
+﻿using Caspian.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Model
 {
     public class Context: CaspianContext
     {
-        public DbSet<Menu> Menus { get; set; }
-
-        public DbSet<MenuCategory> MenuCategories { get; set; }
-
         public DbSet<Product> Products { get; set; }
 
         public DbSet<ProductCategory> ProductCategories { get; set; }
@@ -35,13 +29,11 @@ namespace Demo.Model
 
         public DbSet<OrganUnit> OrganUnits { get; set; }
 
-        public DbSet<PersianDateConvertor> PersianDatesConvertor { get; set; }
-
-        public DbSet<Meeting> Lectures { get; set; }    
+        public DbSet<Meeting> Lectures { get; set; }
 
         public DbSet<Test> Tests { get; set; }
 
-        public DbSet<Scope> Scopes { get; set; } 
+        public DbSet<Scope> Scopes { get; set; }
 
         public DbSet<Evaluation> Evaluations { get; set; }
 

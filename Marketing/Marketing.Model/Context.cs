@@ -5,6 +5,6 @@ namespace Marketing.Model
 {
     public class Context : CaspianContext
     {
-        public DbSet<OrganUnit> OrganUnits { get; set; }
+        public DbSet<Secretariat> Secretariats { get; set; }
     }
 }

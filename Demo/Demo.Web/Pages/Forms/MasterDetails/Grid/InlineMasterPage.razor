@@ -56,7 +56,7 @@
 @code
 {
     bool onlyThisDay = true;
-    DateTime date = DateTime.Now.Date;
+    DateOnly date = DateTime.Now.ToDateOnly();
     DataGrid<Order> Grid;
     bool useListView;
 

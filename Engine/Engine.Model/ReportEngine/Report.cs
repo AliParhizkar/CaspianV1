@@ -40,5 +40,7 @@ namespace Caspian.Engine.Model
 
         [CheckOnDelete("The report has parameter(s) and can not be removed")]
         public IList<ReportParam> ReportParams { get; set; }
+
+        public ICollection<TabPanel> TabPanels { get; set; }
     }
 }

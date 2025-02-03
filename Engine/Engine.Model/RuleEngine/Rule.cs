@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using Caspian.Engine.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -64,5 +65,15 @@ namespace Caspian.Engine
         [CheckOnDelete("این Rule دارای توکن است و امکان حذف آن وجود ندارد")]
         [InverseProperty("Rule")]
         public IList<Token> Tokens { get; set; }
+
+        [InverseProperty("RuleValue")]
+        public IList<Token> TokensValue { get; set; }
+
+        [CheckOnDelete("قانون دارای پارامتر است و امکان حذف آن وجود ندارد.")]
+        public ICollection<DataParameter> DataParameters { get; set; }
+
+        public ICollection<DynamicParameterValue> DynamicParameterValues { get; set; }
+
+        public ICollection<ReportParam> ReportParams { get; set; }
     }
 }

@@ -30,5 +30,7 @@ namespace Caspian.Engine.Model
         /// </summary>
         [DisplayName("Is key")]
         public bool IsKey { get; set; }
+
+        public IList<ReportParam> ReportParams { get; set; }
     }
 }

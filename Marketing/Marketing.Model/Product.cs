@@ -21,5 +21,7 @@ namespace Marketing.Model
 
         [ForeignKey(nameof(CategoryId))]
         public ProductCategory Category { get; set; }
+
+
     }
 }

@@ -215,7 +215,7 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
         Service.MasterId = ReceiptId;
         Service.OnCreate = t =>
         {
-            t.Date = DateTime.Now;
+            t.Date = DateTime.Now.ToDateOnly();
         };
         Service.OnUpsert = t =>
         {

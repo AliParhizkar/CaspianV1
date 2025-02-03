@@ -1,5 +1,4 @@
 ﻿using Caspian.Common;
-using Caspian.Engine.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,10 +12,10 @@ namespace Demo.Model
         public int Id { get; set; }
 
         [DisplayName("Order date")]
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
 
-        [ForeignKey(nameof(Date))]
-        public PersianDateTable PersianDate { get; set; }
+        //[ForeignKey(nameof(Date))]
+        //public PersianDateTable PersianDate { get; set; }
 
         [DisplayName("Customer")]
         public int? CustomerId { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -47,7 +48,7 @@ namespace Caspian.Engine
         /// <summary>
         /// مقدار مقایسه در حالت انشعاب شرطی
         /// </summary>
-        [DisplayName("ارزش")]
+        [DisplayName("ارزش"), Precision(10, 2)]
         public decimal? Value { get; set; }
 
         [DisplayName("گره مقصد")]
@@ -57,5 +58,7 @@ namespace Caspian.Engine
         public Activity ToActivity { get; set; }
 
         public ConnectorPortType ToPortType { get; set; }
+
+        public IList<TaskOperation> TaskOperations { get; set; }
     }
 }

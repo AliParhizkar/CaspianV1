@@ -45,11 +45,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
+		<ProjectReference Include="..\Caspian.common\Caspian.Common.csproj" />
 		<ProjectReference Include="..\Engine\Engine.Model\Engine.Model.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.5.3">
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.6.2">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

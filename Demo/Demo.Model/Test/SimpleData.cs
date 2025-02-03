@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,5 +16,30 @@ namespace Demo.Model
 
         [DisplayName("نوع")]
         public SimpleDataType DataType { get; set; }
+
+        [InverseProperty("Scope")]
+        [CheckOnDelete("حوزه دارای استخدام می باشد و امکان حذف آن وجود ندارد.")]
+        public ICollection<Employee> EmployeesScope { get; set; }
+
+        [InverseProperty("CostCenter")]
+        [CheckOnDelete("مرکز هزینه دارای استخدام می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<Employee> EmployeesCostCenter { get; set; }
+
+        [InverseProperty("EmployeeType")]
+        [CheckOnDelete("نوع کارمند دارای استخدام می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<Employee> EmployeesEmployeeType { get; set; }
+
+        [InverseProperty("EmploymentType")]
+        [CheckOnDelete("نوع استخدام دارای استخدام می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<Employee> EmployeesEmploymentType { get; set; }
+
+        [CheckOnDelete("عنوان شغل همسر دارای استخدام می باشد و امکان حذف آن وجود ندارد.")]
+        public ICollection<Family> Families { get; set; }
+
+        [CheckOnDelete("کارمندی با این دین ثبت شده و امکان حذف آن وجود ندارد")]
+        public ICollection<ReligionAndSubReligion> ReligionAndSubReligions { get; set; }
+
+        [CheckOnDelete("دین دارای مذهب می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<SubReligion> SubReligions { get; set; } 
     }
 }

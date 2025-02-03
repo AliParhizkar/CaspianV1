@@ -15,7 +15,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
+		<ProjectReference Include="..\..\Caspian.common\Caspian.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Migrations\" />
 	</ItemGroup>
 
 </Project>

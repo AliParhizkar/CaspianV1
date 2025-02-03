@@ -198,62 +198,64 @@ namespace ReportUiModels
 
         void ForeignKeyNodes(Type type, IList<NodeView> nodes, string path)
         {
-            if (path != null)
-                path += '.';
-            foreach(var info in type.GetProperties())
-            {
-                var fKey = info.GetCustomAttribute<ForeignKeyAttribute>();
-                if (fKey != null && info.PropertyType != typeof(PersianDateTable))
-                {
-                    var stringProperties = info.PropertyType.GetProperties().Where(t => t.PropertyType == typeof(string));
-                    if (stringProperties.Any())
-                    {
-                        var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>();
-                        if (displayAttr == null)
-                            displayAttr = info.DeclaringType.GetProperty(fKey.Name).GetCustomAttribute<DisplayNameAttribute>();
-                        var node = new NodeView(path + info.Name, displayAttr?.DisplayName ?? info.Name);
-                        node.Children = stringProperties.Select(t => new NodeView()
-                        { 
-                            Value = node.Value + '.' + t.Name,
-                            Text = t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? t.Name,
-                            Collabsable = false,
-                            Selectable = true
-                        }).ToList();
-                        node.Expanded = true;
-                        nodes.Add(node);
-                    }
-                    ForeignKeyNodes(info.PropertyType, nodes, path + info.Name);
-                }
-            }
+            throw new NotImplementedException("خطای عدم پیاده سازی");
+            //if (path != null)
+            //    path += '.';
+            //foreach(var info in type.GetProperties())
+            //{
+            //    var fKey = info.GetCustomAttribute<ForeignKeyAttribute>();
+            //    if (fKey != null && info.PropertyType != typeof(PersianDateTable))
+            //    {
+            //        var stringProperties = info.PropertyType.GetProperties().Where(t => t.PropertyType == typeof(string));
+            //        if (stringProperties.Any())
+            //        {
+            //            var displayAttr = info.GetCustomAttribute<DisplayNameAttribute>();
+            //            if (displayAttr == null)
+            //                displayAttr = info.DeclaringType.GetProperty(fKey.Name).GetCustomAttribute<DisplayNameAttribute>();
+            //            var node = new NodeView(path + info.Name, displayAttr?.DisplayName ?? info.Name);
+            //            node.Children = stringProperties.Select(t => new NodeView()
+            //            { 
+            //                Value = node.Value + '.' + t.Name,
+            //                Text = t.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? t.Name,
+            //                Collabsable = false,
+            //                Selectable = true
+            //            }).ToList();
+            //            node.Expanded = true;
+            //            nodes.Add(node);
+            //        }
+            //        ForeignKeyNodes(info.PropertyType, nodes, path + info.Name);
+            //    }
+            //}
         }
 
         void DateAndEnumNodes(Type type, IList<NodeView> nodes, string path) 
         {
-            if (path != null)
-                path += '.';
-            foreach(var info  in type.GetProperties())
-            {
-                var propertyType = info.PropertyType.GetUnderlyingType();
-                if (propertyType == typeof(DateTime) || propertyType.IsEnumType())
-                {
-                    var attr = info.GetCustomAttribute<DisplayNameAttribute>();
-                    var node = new NodeView()
-                    {
-                        Value = path + info.Name,
-                        Text = attr?.DisplayName ?? path + info.Name, 
-                        Collabsable = false,
-                        Selectable = true
-                    };
-                    nodes.Add(node);
-                }
-                else if (!propertyType.IsValueType && !propertyType.IsCollectionType() && propertyType != typeof(PersianDateTable)) 
-                {
-                    var fKey = info.GetCustomAttribute<ForeignKeyAttribute>();
-                    if (fKey != null)
-                        DateAndEnumNodes(info.PropertyType, nodes, path + info.Name);
-                }
+            throw new NotImplementedException("خطای عدم پیاده سازی");
+            //if (path != null)
+            //    path += '.';
+            //foreach(var info  in type.GetProperties())
+            //{
+            //    var propertyType = info.PropertyType.GetUnderlyingType();
+            //    if (propertyType == typeof(DateTime) || propertyType.IsEnumType())
+            //    {
+            //        var attr = info.GetCustomAttribute<DisplayNameAttribute>();
+            //        var node = new NodeView()
+            //        {
+            //            Value = path + info.Name,
+            //            Text = attr?.DisplayName ?? path + info.Name, 
+            //            Collabsable = false,
+            //            Selectable = true
+            //        };
+            //        nodes.Add(node);
+            //    }
+            //    else if (!propertyType.IsValueType && !propertyType.IsCollectionType() && propertyType != typeof(PersianDateTable)) 
+            //    {
+            //        var fKey = info.GetCustomAttribute<ForeignKeyAttribute>();
+            //        if (fKey != null)
+            //            DateAndEnumNodes(info.PropertyType, nodes, path + info.Name);
+            //    }
 
-            }
+            //}
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        public DateTime? Date { get; set; }
+        public DateOnly Date { get; set; }
 
         [DisplayName("Warehouse")]
         public int WarehouseId { get; set; }

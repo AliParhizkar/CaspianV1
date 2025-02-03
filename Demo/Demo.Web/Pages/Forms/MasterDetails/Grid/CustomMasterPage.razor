@@ -17,7 +17,7 @@
     </div>
     <div class="p-4 pt-0">
         <DataGrid @ref="Grid" TEntity="Order" OnUpsert="t => UpsertOrder(t)" ContentHeight="300" ShowInsertIcon="true"
-                ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
+                ConditionExpr="t => !onlyThisDay || t.Date >= date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
             <Columns>
                 <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />
                 <GridColumn Field="t => t.OrderType.EnumText()" />
@@ -38,7 +38,7 @@
 @code
 {
     bool onlyThisDay = true;
-    DateTime date = DateTime.Now.Date;
+    DateOnly date = DateTime.Now.AddHours(-2).Date.ToDateOnly();
     DataGrid<Order> Grid;
 
     void UpsertOrder(Order order)

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine
@@ -27,6 +28,7 @@ namespace Caspian.Engine
         [ForeignKey(nameof(RuleId))]
         public Rule Rule { get; set; }
 
+        [Precision(10, 2)]
         public decimal? Value { get; set; }
     }
 }

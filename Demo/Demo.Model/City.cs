@@ -28,5 +28,13 @@ namespace Demo.Model
 
         [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
+
+        [InverseProperty("BirthCity")]
+        [CheckOnDelete("شهر محل تولد کارمند می باشد و امکان حذف آن وجود ندارد")]
+        public IList<IdentificationDetail> IdentificationDetailsBirthBirthCity { get; set; }
+
+        [InverseProperty("RegCity")]
+        [CheckOnDelete("شهر محل صدور شناسنامه کارکند می باشد و امکان حذف آن وجود ندارد")]
+        public IList<IdentificationDetail> IdentificationDetailsRegCity { get; set; }
     }
 }

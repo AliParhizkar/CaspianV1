@@ -282,7 +282,7 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
     protected override void OnInitialized()
     {
         Service.MasterId = OrderId;
-        Service.OnCreate = t => t.Date = DateTime.Now;
+        Service.OnCreate = t => t.Date = DateTime.Now.ToDateOnly();
         base.OnInitialized();
     }
 

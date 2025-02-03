@@ -50,5 +50,8 @@ namespace Demo.Model
 
         [CheckOnDelete("This product is ordered and cannot be removed")]
         public ICollection<OrderDetail> OrderDetails { get; set; }
+
+        [CheckOnDelete("محصول دارای توضیحات می باشد و امکان حذف آن وجود ندارد.")]
+        public ICollection<ProductDescription> ProductDescriptions { get; set; }
     }
 }

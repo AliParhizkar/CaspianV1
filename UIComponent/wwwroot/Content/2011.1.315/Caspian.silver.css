@@ -594,12 +594,7 @@ html input[disabled], textarea[disabled] {
 .t-reset .t-state-selected {
     background-color: #ff6358!important;
 }
-.t-grid-addTab
-{
-    width:34px;
-    text-align:center;
-    line-height:1.4em;
-}
+
 
 .m-loading {
     position: absolute;

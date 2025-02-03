@@ -149,7 +149,7 @@
         Service.OnCreate = t =>
         {
             if (t.Id == 0)
-                t.Date = DateTime.Now;
+                t.Date = DateTime.Now.ToDateOnly();
         };
         base.OnInitialized();
     }
