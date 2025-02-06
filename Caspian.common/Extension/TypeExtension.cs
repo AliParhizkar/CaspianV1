@@ -81,16 +81,24 @@ namespace Caspian.Common.Extension
             return type.GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == detailType && t.PropertyType.IsCollectionType());
         }
 
-        public static PropertyInfo GetForeignKey(this Type type, Type foreignKeyType)
+        public static PropertyInfo GetForeignKey(this Type type, Type foreignKeyType, string inverseProperty = null)
         {
-            var info = type.GetProperties().SingleOrDefault(t => t.PropertyType == foreignKeyType);
-            if (info == null)
+            var infos = type.GetProperties().Where(t => t.PropertyType == foreignKeyType);
+            if (infos.Count() == 0)
                 throw new CaspianException($"Type {type.Name} must a foreign key of type {foreignKeyType.Name}");
+            PropertyInfo info = null;
+            if (infos.Count()  > 1)
+            {
+                if (inverseProperty == null)
+                    throw new CaspianException($"Type {type.Name} has {infos.Count()} foreign key of type {foreignKeyType.Name} and hasnt InversePropertyAttribute");
+                info = infos.Single(t => t.Name == inverseProperty);
+            }
+            else
+                info = infos.Single();
             var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
             if (attr == null)
-                throw new CaspianException($"Property {info.Name} must have  a ForeignKey Attribute of type {foreignKeyType.Name}"); ;
-            var foreignKeyName = info.GetCustomAttribute<ForeignKeyAttribute>().Name;
-            return type.GetProperty(foreignKeyName);
+                throw new CaspianException($"Property {info.Name} must have  a ForeignKey Attribute of type {foreignKeyType.Name}");
+            return type.GetProperty(attr.Name);
         }
 
         public static PropertyInfo GetOneToOnePropertyInfo(this Type type, Type detailType)

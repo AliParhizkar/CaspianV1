@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Caspian.Common;
+using System.Reflection;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
@@ -8,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
-using Caspian.Common;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
@@ -81,6 +81,9 @@ namespace Caspian.UI
 
         [Parameter]
         public bool AutoHide { get; set; }
+
+        [CascadingParameter]
+        internal IEntitySearch EntitySearch { get; set; }
 
         public void Focus()
         {
@@ -508,6 +511,7 @@ namespace Caspian.UI
                     if (OnChange.HasDelegate)
                         await OnChange.InvokeAsync();
                 }
+                EntitySearch?.EnableLoadData();
             }
         }
 

@@ -1,13 +1,9 @@
 ﻿using Caspian.Engine.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    public class DemoUser: User
+    public class ChildUser: User
     {
         public IList<Meeting> Meetings { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿@inject UIService<CourseStudy> Service
-<CaspianContainer ColumnsCount="2">
-    <StringTextBox @bind-Value="Service.Search.Title" ColSpan="4" />
-</CaspianContainer>
+<EntitySearch Service="Service" ColumnsCount="2">
+    <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+</EntitySearch>
 <div class="p-2">
     <DataGrid TEntity="CourseStudy" Service="Service" ContentHeight="200">
         <Columns>

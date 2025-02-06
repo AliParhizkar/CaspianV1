@@ -17,15 +17,17 @@
         <label>Last name</label>
     </div>
     <div class="col-md-4 pe-3">
-        <StringTextBox @bind-Value="Service.Search.LName" />
     </div>
     <div class="col-md-2 ps-3">
         <label>Username</label>
     </div>
     <div class="col-md-4">
-        <StringTextBox @bind-Value="Service.Search.UserName" />
     </div>
 </div>
+<EntitySearch Service="Service">
+    <StringTextBox @bind-Value="context.LName" ColSpan="9" />
+    <StringTextBox @bind-Value="context.UserName" ColSpan="9" />
+</EntitySearch>
 
 <DataGrid Service="Service" TEntity="User" ContentHeight="400">
     <Columns>
@@ -50,56 +52,18 @@
 
 <Window Service="Service" Title="User properties" Style="max-width:500px;" StatusChanged="WindowStatusChanged">
     <CaspianForm TEntity="User" Service="Service" OnSubmit="SetPasswordForUpdate" OnValidSubmit="RegisterUser">
-        <div class="row c-controls ps-3 pe-3">
-            <div class="col-md-4">
-                <label>First name</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.FName" />
-            </div>
-            <div class="col-md-4">
-                <label>Last name</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.LName" />
-            </div>
-            <div class="col-md-4">
-                <label>User name</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.UserName" Disabled="Service.UpsertData.Id > 0" />
-            </div>
-            @if (Service.UpsertData.Id == 0)
-            {
-                <div class="col-md-4">
-                    <label>Password</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.Password" type="password" />
-                </div>
-                <div class="col-md-4">
-                    <label>Confirm password</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="confirmPassword" type="password" />
-                </div>
-            }
-            <div class="col-md-4">
-                <label>Email</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Email" />
-            </div>
-            <div class="col-md-4">
-                <label>Mobile number</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" />
-            </div>
-            <div class="col-md-4"></div>
-            <div class="col-md-8 text">
-                <FormCommandButton />
-            </div>
+        <StringTextBox @bind-Value="context.FName" ColSpan="9" />
+        <StringTextBox @bind-Value="context.LName" ColSpan="9" />
+        <StringTextBox @bind-Value="context.UserName" Disabled="context.Id > 0" ColSpan="9" />
+        @if (context.Id == 0)
+        {
+            <StringTextBox @bind-Value="context.Password" type="password" ColSpan="9" />
+            <StringTextBox @bind-Value="confirmPassword" type="password" ColSpan="9" />
+        }
+        <StringTextBox @bind-Value="context.Email" ColSpan="9" />
+        <StringTextBox @bind-Value="context.MobileNumber" ColSpan="9" />
+        <div class="col-md-8 text">
+            <FormCommandButton />
         </div>
     </CaspianForm>
 </Window>

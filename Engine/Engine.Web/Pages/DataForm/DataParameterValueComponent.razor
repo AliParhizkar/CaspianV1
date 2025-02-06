@@ -7,29 +7,32 @@
 }
 @if (titleArray[0].HasValue())
 {
-    <table style="margin:10px auto">
-        <tr>
-        @if (controlsType[0] == ControlType.DropdownList)
-        {
-            <td style="width:150px;">
-                <label>@titleArray[0]</label>
-            </td>
-            <td style="width:300px">
-                <DropdownList @bind-Value="Service.Search.Value1" Source="sourceArray[0]" />
-            </td>
-        }
-        <td style="width:80px;"></td>
-        @if (titleArray[1].HasValue())
-        {
-            <td style="width:150px;">
-                <label>@titleArray[1]</label>
-            </td>
-            <td style="width:300px">
-                <DropdownList @bind-Value="Service.Search.Value2" Source="sourceArray[1]" />
-            </td>
-        }
-        </tr>
-    </table>
+    <EntitySearch Service="Service">
+        <table style="margin:10px auto">
+            <tr>
+                @if (controlsType[0] == ControlType.DropdownList)
+                {
+                    <td style="width:150px;">
+                        <label>@titleArray[0]</label>
+                    </td>
+                    <td style="width:300px">
+                        <DropdownList @bind-Value="context.Value1" Source="sourceArray[0]" />
+                    </td>
+                }
+                <td style="width:80px;"></td>
+                @if (titleArray[1].HasValue())
+                {
+                    <td style="width:150px;">
+                        <label>@titleArray[1]</label>
+                    </td>
+                    <td style="width:300px">
+                        <DropdownList @bind-Value="context.Value2" Source="sourceArray[1]" />
+                    </td>
+                }
+            </tr>
+        </table>
+    </EntitySearch>
+
     <div style="width:90%;margin:5px auto">
     <DataGrid TEntity="DataParameterValue" Service="Service" ConditionExpr="t => t.Parameter1.ResultParameterId == ParameterId" ContentHeight="300">
         <Columns>
@@ -110,61 +113,61 @@
                                     case 0:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="Service.UpsertData.Value1" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="context.Value1" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="Service.UpsertData.Value1" />
+                                            <NumericTextBox @bind-Value="context.Value1" />
                                         }
                                         break;
                                     case 1:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="Service.UpsertData.Value2" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="context.Value2" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="Service.UpsertData.Value2" />
+                                            <NumericTextBox @bind-Value="context.Value2" />
                                         }
                                         break;
                                     case 2:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="Service.UpsertData.Value3" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="context.Value3" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="Service.UpsertData.Value3" />
+                                            <NumericTextBox @bind-Value="context.Value3" />
                                         }
                                         break;
                                     case 3:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="Service.UpsertData.Value4" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="context.Value4" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="Service.UpsertData.Value4" />
+                                            <NumericTextBox @bind-Value="context.Value4" />
                                         }
                                         break;
                                     case 4:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="Service.UpsertData.Value5" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="context.Value5" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="Service.UpsertData.Value5" />
+                                            <NumericTextBox @bind-Value="context.Value5" />
                                         }
                                         break;
                                     case 5:
                                         if (controlsType[index] == ControlType.DropdownList)
                                         {
-                                            <DropdownList @bind-Value="Service.UpsertData.Value6" Source="sourceArray[index]" />
+                                            <DropdownList @bind-Value="context.Value6" Source="sourceArray[index]" />
                                         }
                                         else
                                         {
-                                            <NumericTextBox @bind-Value="Service.UpsertData.Value6" />
+                                            <NumericTextBox @bind-Value="context.Value6" />
                                         }
                                         break;
                                 }

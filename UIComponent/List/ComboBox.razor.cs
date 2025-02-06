@@ -537,7 +537,7 @@ namespace Caspian.UI
                     var service = scope.GetService<BaseService<TEntity>>();
                     if (service == null)
                         throw new CaspianException($"Service of type IBaseService<{typeof(TEntity).Name}> not imilimented");
-                    var query = service.GetAll(default(TEntity));
+                    var query = service.GetAll();
                     var filterExpression = ConditionExpression;
                     if (InternalConditionExpression != null)
                         query = query.Where(InternalConditionExpression);

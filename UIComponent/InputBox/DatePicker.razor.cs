@@ -1,6 +1,7 @@
 ﻿using Caspian.Common;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
+using Caspian.Common.Extension;
 
 namespace Caspian.UI
 {
@@ -10,6 +11,7 @@ namespace Caspian.UI
         Dictionary<string, object> attrs;
         string text;
         ElementReference element;
+        bool isDateOnly;
 
         void OpenWindow()
         {
@@ -21,7 +23,13 @@ namespace Caspian.UI
         {
             if (!disabled)
             {
-                Value = (TValue)Convert.ChangeType(date, typeof(DateTime));
+                if (typeof(TValue).GetUnderlyingType() == typeof(DateTime))
+                    Value = (TValue)Convert.ChangeType(date, typeof(TValue));
+                else
+                {
+                    var dateOnly = new DateOnly(date.Year, date.Month, date.Day);
+                    Value = (TValue)Convert.ChangeType(dateOnly, typeof(TValue));
+                }
                 text = date.ToShortDateString();
                 if (ValueChanged.HasDelegate)
                     await ValueChanged.InvokeAsync(Value);
@@ -64,6 +72,7 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             attrs = new Dictionary<string, object>();
+            isDateOnly = typeof(TValue).GetUnderlyingType() == typeof(DateOnly);
             base.OnInitialized();
         }
 
@@ -83,16 +92,23 @@ namespace Caspian.UI
             }
             else
                 attrs.Remove("onfocus");
-            if (Value == null || Convert.ToDateTime(Value) == default(DateTime))
+
+            if (Value == null || Value.Equals(default(TValue)))
                 text = "";
             else
             {
-                var date = Convert.ToDateTime(Value);
+                DateTime date = default;
+                if (isDateOnly)
+                {
+                    var dateOnly = (DateOnly)Convert.ChangeType(Value, typeof(DateOnly));
+                    date = dateOnly.ToDateTime(new TimeOnly());
+                }
+                else
+                    date = Convert.ToDateTime(Value);
                 if (DefaultMode)
                     text = date.ConvertToBrowserDate();
                 else
                     text = date.ToShortDateString();
-
             }
             base.OnParametersSet();
         }

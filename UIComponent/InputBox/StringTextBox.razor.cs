@@ -90,20 +90,31 @@ namespace Caspian.UI
         {
             if (Id == null)
                 Id = "";
-            if (ValueExpression != null)
+            if (EntitySearch != null)
             {
-                var expr = ValueExpression.Body;
-                while (expr.NodeType == ExpressionType.MemberAccess)
+                Search = true;
+                if (ValueExpression != null && SearchType != SearchType.Contain)
                 {
-                    var property = (expr as MemberExpression).Member as PropertyInfo;
-                    if (property?.Name == "Search")
+                    var expr = ValueExpression.Body;
+                    var path = "";
+                    while (expr.NodeType == ExpressionType.MemberAccess)
                     {
-                        Search = property.DeclaringType.GetInterfaces().Any(t => t == typeof(IUIService));
-                        break;
+
+                        var property = (expr as MemberExpression).Member as PropertyInfo;
+                        if (expr.Type == EntitySearch.EntityType)
+                            break;
+                        else if (property !=  null)
+                        {
+                            if (path.HasValue())
+                                path = $".{path}";
+                            path = property.Name + path;
+                        }
+                        expr = (expr as MemberExpression).Expression;
                     }
-                    expr = (expr as MemberExpression).Expression;
+                    EntitySearch.SetSearchKind(path, SearchType);
                 }
             }
+
             base.OnInitialized();
         }
 
@@ -128,6 +139,9 @@ namespace Caspian.UI
 
         [Parameter]
         public int? Cols { get; set; }
+
+        [Parameter]
+        public SearchType SearchType { get; set; }
 
         [Parameter]
         public int? Rows { get; set; }

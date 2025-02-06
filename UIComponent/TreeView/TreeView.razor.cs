@@ -160,7 +160,7 @@ namespace Caspian.UI
                 using var scope = ServiceScopeFactory.CreateScope();
                 var service = new BaseService<TEntity>(scope.ServiceProvider);
                 var contextType = new AssemblyInfo().GetDbContextType(typeof(TEntity));
-                var query = service.GetAll(default(TEntity));
+                var query = service.GetAll();
                 if (ConditionExpression != null)
                     query = query.Where(ConditionExpression);
                 var dataList = await query.ToListAsync();

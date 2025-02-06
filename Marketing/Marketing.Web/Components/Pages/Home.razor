@@ -1,7 +1,9 @@
 ﻿@page "/Marketing"
 
-<PageTitle>Home</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<DataGrid TEntity="ProductCategory">
+    <Columns>
+        <GridColumn Field="t => t.Title" />
+        <GridColumn Field="t => t.ActiveType.EnumText()" />
+        <GridColumn Field='t => t.User.FName + " " + t.User.LName' Title="کاربر ثبت کننده" />
+    </Columns>
+</DataGrid>

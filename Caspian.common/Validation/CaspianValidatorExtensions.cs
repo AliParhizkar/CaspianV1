@@ -418,10 +418,10 @@ namespace Caspian.Common
                     using var scope = ((IServiceScopeFactory)context.RootContextData["__ServiceScopeFactory"])
                         .CreateScope();
                     var service = scope.GetService<BaseService<TModel>>();
-                    isValid = !await service.GetAll(default(TModel)).AnyAsync(lambda);
+                    isValid = !await service.GetAll().AnyAsync(lambda);
                 }
                 var service1 = scope1.GetService<BaseService<TModel>>();
-                isValid = !await service1.GetAll(default(TModel)).AnyAsync(lambda);
+                isValid = !await service1.GetAll().AnyAsync(lambda);
                 if (!isValid)
                     context.AddFailure(errorMessage);
             });
@@ -454,7 +454,8 @@ namespace Caspian.Common
                         }
                         else
                         {
-                            var info1 = type.GetForeignKey(typeof(TModel));
+                            var inverseProperty = info.GetCustomAttribute<InversePropertyAttribute>()?.Property;
+                            var info1 = type.GetForeignKey(typeof(TModel), inverseProperty);
                             var paramExpr = Expression.Parameter(type);
                             Expression expr = Expression.Property(paramExpr, info1);
                             if (info1.PropertyType.IsNullableType())

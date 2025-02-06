@@ -6,14 +6,9 @@
     base.BuildRenderTree(__builder);
 }
 <div class="p-4">
-    <div class="row c-controls ps-4 pe-4">
-        <div class="col-md-4">
-            <label>عنوان</label>
-        </div>
-        <div class="col-md-8">
-            <StringTextBox @bind-Value="Service.Search.Title" />
-        </div>
-    </div>
+    <EntitySearch Service="Service">
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+    </EntitySearch>
     <DataGrid Service="Service" TEntity="Workflow" ContentHeight="300" ConditionExpr="t => t.WorkflowGroupId == GroupId">
         <Columns>
             <GridColumn Field="t => t.Title" />
@@ -31,30 +26,12 @@
 
 <Window Service="Service" Title="گردش کار" Style="width:500px">
     <CaspianForm Service="Service" TEntity="Workflow" OnSubmit="workflow => workflow.WorkflowGroupId = GroupId">
-        <div class="row ps-4 pe-4 c-controls">
-            <div class="col-md-4">
-                <label>مدل داده ای</label>
-            </div>
-            <div class="col-md-8">
-                <ComboBox TEntity="DataModel" TValue="int" @bind-Value="Service.UpsertData.DataModelId"
-                          TextExpression="t => t.Title" ConditionExpression="t => t.WorkflowGroupId == GroupId" />
-            </div>
-            <div class="col-md-4">
-                <label>عنوان</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Title" />
-            </div>
-            <div class="col-md-4">
-                <label>شرح</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Descript" MultiLine Rows="3" />
-            </div>
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
-                <FormCommandButton />
-            </div>
+        <ComboBox TEntity="DataModel" TValue="int" @bind-Value="context.DataModelId" ColSpan="8"
+                  TextExpression="t => t.Title" ConditionExpression="t => t.WorkflowGroupId == GroupId" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Descript" MultiLine Rows="3" ColSpan="8" />
+        <div class="col-md-8 center-align">
+            <FormCommandButton />
         </div>
     </CaspianForm>
 </Window>

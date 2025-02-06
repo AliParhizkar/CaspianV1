@@ -19,9 +19,9 @@
                 </div>
                 <div class="col-md-7 p-3">
                     <div class="row c-controls">
-                        <CaspianContainer>
-                            <StringTextBox @bind-Value="Service.Search.Title" Search ColSpan="9" />
-                        </CaspianContainer>
+                        <EntitySearch Service="Service">
+                            <StringTextBox @bind-Value="context.Title" Search ColSpan="9" />
+                        </EntitySearch>
                     </div>
                     <DataGrid TEntity="CustomerGroup" Service="Service" ContentHeight="300">
                         <Columns>

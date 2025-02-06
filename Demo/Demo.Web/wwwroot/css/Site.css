@@ -4,9 +4,6 @@
     height: 60px;
 }
 
-.d-body .t-grid{
-    margin-top:-25px;
-}
 .d-order {
     flex-wrap: wrap;
     width: 100%;

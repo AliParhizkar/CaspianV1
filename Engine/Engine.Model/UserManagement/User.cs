@@ -32,8 +32,8 @@ namespace Caspian.Engine.Model
         [DisplayName("Mobile number")]
         public string MobileNumber { get; set; }
 
-        [NotMapped]
-        public DateTime? ExpireDate { get; set; }
+        //[NotMapped]
+        //public DateTime? ExpireDate { get; set; }
 
         [CheckOnDelete("The user is member of role and can not be removed")]
         public ICollection<UserMembership> Memberships { get; set; }

@@ -6,7 +6,6 @@ using System.Linq.Dynamic.Core;
 using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common.Service
@@ -46,9 +45,14 @@ namespace Caspian.Common.Service
             return GetAll().Any(expr);
         }
 
-        public virtual IQueryable<TEntity> GetAll(TEntity search = null)
+        public virtual IQueryable<TEntity> Search(TEntity entity, IDictionary<string, SearchType> searchData)
         {
-            return Context.Set<TEntity>().Search(search);
+            return GetAll().Search(entity, searchData);
+        }
+
+        public virtual IQueryable<TEntity> GetAll()
+        {
+            return Context.Set<TEntity>();
         }
 
         async public virtual Task UpdateAsync(TEntity entity)

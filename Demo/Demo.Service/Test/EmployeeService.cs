@@ -3,7 +3,6 @@ using Demo.Model;
 using Caspian.Common;
 using FluentValidation;
 using Caspian.Common.Service;
-using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Service

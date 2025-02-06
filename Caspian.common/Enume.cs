@@ -5,4 +5,11 @@
         Fa = 1,
         En
     }
+
+    public enum SearchType
+    {
+        Contain,
+        StartWith,
+        EndWith
+    }
 }

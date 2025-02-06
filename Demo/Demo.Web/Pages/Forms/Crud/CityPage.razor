@@ -13,10 +13,10 @@
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="row c-controls p-4 pb-0">
-                <CaspianContainer ColumnsCount="2">
-                    <StringTextBox @bind-Value="Service.Search.Title" ColSpan="4" />
-                    <DropdownList @bind-Value="Service.Search.ActiveType" ColSpan="4" />
-                </CaspianContainer>
+                <EntitySearch Service="Service" ColumnsCount="2">
+                    <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+                    <DropdownList @bind-Value="context.ActiveType" ColSpan="4" />
+                </EntitySearch>
             </div>
             <div class="p-4 pt-1">
                 <DataGrid TEntity="City" Service="Service" ConditionExpr="t => t.CountryId == CountryId" ContentHeight="350">

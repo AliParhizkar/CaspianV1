@@ -2,44 +2,17 @@
 @inherits BasePage
 @inject SingletonMenuService service
 @inject UIService<Menu> Service
+<EntitySearch Service="Service">
+    <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" ColSpan="4"
+              TextExpression="t => t.Title" ConditionExpression="t => t.SubSystemKind == Subsystem" OrderByExpression="t => t.Ordering" />
+    <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+    <CheckBox @bind-Value="onlyUntitledMenus" ColSpan="4" />
+    <CheckBox @bind-Value="isDropped" ColSpan="4" />
+    <CheckBox @bind-Value="showInMenu" ColSpan="4" />
+    <StringTextBox @bind-Value="context.Source" ColSpan="4" />
+</EntitySearch>
+
 <div class="row c-controls">
-    <div class="col-md-2">
-        <label>Main menu</label>
-    </div>
-    <div class="col-md-4 pe-4">
-        <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="Service.Search.MenuCategoryId"
-                  TextExpression="t => t.Title" ConditionExpression="t => t.SubSystemKind == Subsystem" OrderByExpression="t => t.Ordering" />
-    </div>
-    <div class="col-md-2 ps-4">
-        <label>Menu</label>
-    </div>
-    <div class="col-md-4 pe-4">
-        <StringTextBox @bind-Value="Service.Search.Title" />
-    </div>
-    <div class="col-md-2">
-        <label>Only untitled menus</label>
-    </div>
-    <div class="col-md-2">
-        <CheckBox @bind-Value="onlyUntitledMenus" OnChange="() => Service.DataView.EnableLoading()" />
-    </div>
-    <div class="col-md-2">
-        <label>Show in menu</label>
-    </div>
-    <div class="col-md-2">
-        <CheckBox @bind-Value="showInMenu" OnChange="() => Service.DataView.EnableLoading()" />
-    </div>
-    <div class="col-md-2">
-        <label>Invalid address</label>
-    </div>
-    <div class="col-md-2">
-        <CheckBox @bind-Value="isDropped" OnChange="() => Service.DataView.EnableLoading()" />
-    </div>
-    <div class="col-md-2">
-        <label>Source</label>
-    </div>
-    <div class="col-md-4 pe-4">
-        <StringTextBox @bind-Value="Service.Search.Source" />
-    </div>
     <div class="col-md-3 text-center">
         <IconButton @onclick="async () => await UpdateMenus()" IconType="IconType.Refresh" title="Update menus" />
     </div>
@@ -63,44 +36,17 @@
         <CaspianForm Service="Service">
             @{
                 var path = $"/{Subsystem}/Engin";
-                var disable = Service.UpsertData.Source?.StartsWith(path) == true;
+                var disable = context.Source?.StartsWith(path) == true;
             }
-            <div class="row c-controls ps-4 pe-4">
-                <div class="col-md-4">
-                    <label>Source</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.Source" readonly Disabled="disable" />
-                </div>
-                <div class="col-md-4">
-                    <label>Menu category</label>
-                </div>
-                <div class="col-md-8">
-                    <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="Service.UpsertData.MenuCategoryId"
-                              TextExpression="t => t.Title" Disabled="disable"
-                              ConditionExpression='t => t.SubSystemKind == Subsystem && t.Title != "Engin"' />
-                </div>
-                <div class="col-md-4">
-                    <label>Title</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="Service.UpsertData.Title" Disabled="disable" />
-                </div>
-                <div class="col-md-4">
-                    <label>Show on Menu</label>
-                </div>
-                <div class="col-md-8 ps-2">
-                    <CheckBox @bind-Value="Service.UpsertData.ShowonMenu" Disabled="disable" OnChange="FillUrls" />
-                </div>
-                <div class="col-md-4">
-                    <label>URL</label>
-                </div>
-                <div class="col-md-8">
-                    <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="Service.UpsertData.URL" Source="source" />
-                </div>
-                <div class="col-md-12 ps-5 text-center">
-                    <FormCommandButton disabled="@disable" />
-                </div>
+            <StringTextBox @bind-Value="context.Source" readonly Disabled="disable" ColSpan="8" />
+            <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" 
+                      TextExpression="t => t.Title" Disabled="disable" ColSpan="8"
+                      ConditionExpression='t => t.SubSystemKind == Subsystem && t.Title != "Engin"' />
+            <StringTextBox @bind-Value="Service.UpsertData.Title" Disabled="disable" ColSpan="8" />
+            <CheckBox @bind-Value="context.ShowonMenu" Disabled="disable" OnChange="FillUrls" ColSpan="8" />
+            <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="context.URL" Source="source" ColSpan="8" />
+            <div class="col-md-12 ps-5 text-center">
+                <FormCommandButton disabled="@disable" />
             </div>
         </CaspianForm>
     </Window>

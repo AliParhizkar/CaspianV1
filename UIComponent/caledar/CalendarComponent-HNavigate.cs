@@ -1,7 +1,4 @@
-﻿using Caspian.Common;
-using System.Threading.Tasks;
-
-namespace Caspian.UI
+﻿namespace Caspian.UI
 {
     public partial class CalendarComponent
     {

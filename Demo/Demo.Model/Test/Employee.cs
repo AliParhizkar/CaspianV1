@@ -20,7 +20,7 @@ namespace Demo.Model
         [DisplayName("مرکز هزینه")]
         public int? CostCenterId { get; set; }
 
-        [ForeignKey(nameof(CostCenterId))]
+        [ForeignKey(nameof(CostCenterId))] 
         public SimpleData CostCenter { get; set; }
 
         [DisplayName("نوع استخدام")]
@@ -57,7 +57,7 @@ namespace Demo.Model
         public string EmploymentNo { get; set; }
 
         [DisplayName("مشخصات شناسنامه ای")]
-        public IdentificationDetail IdentificationDetail { get; set; }
+        public IdentificationDetail IdentificationDetail { get; set; } //Children
 
         [DisplayName("سوابق تحصیلی"), CheckOnDelete("کارمند دارای سابقه ی تحصیلی می باشد و امکان حذف وی وجود ندارد.")]
         public IList<CourseStudy> CourseStudies { get; set; }

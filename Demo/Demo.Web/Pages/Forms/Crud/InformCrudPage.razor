@@ -14,29 +14,27 @@
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="ps-3 pe-3">
                 <CaspianForm Service="Service" TEntity="Product" OnReset="t => t.Image = null" ColumnsCount="2">
-                    <Content Context="product">
-                        <div class="row pt-3">
-                            <div class="row col-md-9 c-controls align-content-start">
-                                <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="product.ProductCategoryId" TextExpression="t => t.Title"
-                                          OrderByExpression="t => t.Title" ColSpan="4" />
-                                <StringTextBox @bind-Value="product.Title" ColSpan="4" />
-                                <NumericTextBox @bind-Value="product.Price" ColSpan="4" />
-                                <NumericTextBox @bind-Value="product.TakeoutPrice" ColSpan="4" />
-                                <StringTextBox @bind-Value="product.Code" ColSpan="4" />
-                                <CheckBox @bind-Value="product.Discountable" ColSpan="4" />
-                                <MultiSelectBox @bind-Value="product.Meal" ColSpan="10" />
-                                <DropdownList @bind-Value="product.ActiveType" ColSpan="4" />
-                                <div class="col-md-6 align-content-center">
-                                    <FormCommandButton />
-                                </div>
-                            </div>
-                            <div class="col-md-3 ps-4 align-content-center">
-                                <Fileupload OnChange="async e => await SetImage(e, product)">
-                                    <PictureBox Data="product.Image" style="width:200px;height:200px" />
-                                </Fileupload>
+                    <div class="row pt-3">
+                        <div class="row col-md-9 c-controls align-content-start">
+                            <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="context.ProductCategoryId" TextExpression="t => t.Title"
+                                      OrderByExpression="t => t.Title" ColSpan="4" />
+                            <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+                            <NumericTextBox @bind-Value="context.Price" ColSpan="4" />
+                            <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="4" />
+                            <StringTextBox @bind-Value="context.Code" ColSpan="4" />
+                            <CheckBox @bind-Value="context.Discountable" ColSpan="4" />
+                            <MultiSelectBox @bind-Value="context.Meal" ColSpan="10" />
+                            <DropdownList @bind-Value="context.ActiveType" ColSpan="4" />
+                            <div class="col-md-6 align-content-center">
+                                <FormCommandButton />
                             </div>
                         </div>
-                    </Content>
+                        <div class="col-md-3 ps-4 align-content-center">
+                            <Fileupload OnChange="async e => await SetImage(e, context)">
+                                <PictureBox Data="context.Image" style="width:200px;height:200px" />
+                            </Fileupload>
+                        </div>
+                    </div>
                 </CaspianForm>
                 <DataGrid Service="Service" TEntity="Product" ContentHeight="250">
                     <Columns>

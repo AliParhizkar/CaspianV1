@@ -2,12 +2,12 @@
 using System.Reflection;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
+using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq.Expressions;
 
 namespace Caspian.UI
 {
@@ -18,11 +18,18 @@ namespace Caspian.UI
         IJSRuntime jSRuntime;
         BaseComponentService baseComponentService;
         BasePageService basePageService;
+        IDictionary<string, SearchType> searchData;
+
         public IServiceProvider ServiceProvider { get; private set; }
 
         internal void IsLookup()
         {
             isLookup = true;
+        }
+
+        internal IDictionary<string, SearchType> GetSearchData()
+        {
+            return searchData;
         }
 
         public void Dispose()
@@ -38,6 +45,11 @@ namespace Caspian.UI
             Search = Activator.CreateInstance<TEntity>();
             UpsertData = Activator.CreateInstance<TEntity>();
             OnUpsert = default;
+        }
+
+        public void SetSearchType(IDictionary<string, SearchType> types)
+        {
+            searchData = types;
         }
 
         public Type DetailType { get; private set; }

@@ -73,7 +73,7 @@ namespace Demo.Service
         [ReportMethod("محصولات")]
         public IQueryable<Product> GetReportProducts(Product product)
         {
-            return GetAll(product);
+            return GetAll();
         }
 
         [Task("بررسی محصول")]

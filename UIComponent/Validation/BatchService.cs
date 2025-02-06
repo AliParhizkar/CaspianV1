@@ -17,6 +17,7 @@ namespace Caspian.UI
         BaseComponentService baseComponentService;
         protected IJSRuntime jSRuntime;
         protected BatchServiceData batchServiceData;
+        protected IDictionary<string, SearchType> searchData;
 
         public async Task UpdateChildOfModelAsync(Type type)
         {
@@ -37,6 +38,11 @@ namespace Caspian.UI
             batchServiceData.DetailPropertiesInfo.Add(detailsproperty);
             baseComponentService = serviceProvider.GetService<BaseComponentService>();
             Search = Activator.CreateInstance<TMaster>();
+        }
+
+        public void SetSearchType(IDictionary<string, SearchType> types)
+        {
+            searchData = types;
         }
 
         protected IServiceScope CreateScope()
@@ -310,7 +316,11 @@ namespace Caspian.UI
     {
         DataView<TEntity> DataView { get; set; }
 
+        TEntity Search { get; }
+
         void DataViewInitialize();
+
+        void SetSearchType(IDictionary<string, SearchType> types);
     }
 
     public interface ISimpleBatchService<TDetail>

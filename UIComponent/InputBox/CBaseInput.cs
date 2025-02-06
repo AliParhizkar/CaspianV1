@@ -26,6 +26,9 @@ namespace Caspian.UI
         [Inject]
         public FormAppState FormAppState { get; set; }
 
+        [CascadingParameter]
+        internal IEntitySearch EntitySearch { get; set; }
+
         [Parameter]
         public int? ColSpan { get; set; }
 
@@ -158,6 +161,7 @@ namespace Caspian.UI
                 await ValueChanged.InvokeAsync(Value);
                 if (OnChange.HasDelegate)
                     await OnChange.InvokeAsync();
+                EntitySearch?.EnableLoadData();
             }
         }
 

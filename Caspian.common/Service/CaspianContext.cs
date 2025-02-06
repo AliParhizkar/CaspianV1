@@ -4,10 +4,10 @@ using Caspian.Common.JsonValue;
 using Caspian.Common.RowNumber;
 using Caspian.Common.Migrations;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Castle.Core.Logging;
 
 namespace Caspian.Common
 {
@@ -27,7 +27,6 @@ namespace Caspian.Common
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
             var types = modelBuilder.Model.GetEntityTypes().Select(t => t.ClrType);
             var assemblyName = this.GetType().Assembly.GetName().Name;
             foreach (var type in types)
@@ -84,12 +83,45 @@ namespace Caspian.Common
                         modelBuilder.Entity(type).ToTable(tableAttribute.Name, tableAttribute.Schema, t =>
                         {
                             t.ExcludeFromMigrations();
+                            
                         });
                     }
                 }
 
                 foreach (var property in type.GetProperties())
                 {
+                    if (property.PropertyType == typeof(string))
+                    {
+                        var maxLength = property.GetCustomAttribute<MaxLengthAttribute>();
+                        if (maxLength == null)
+                        {
+                            var columnAttribute = type.GetCustomAttribute<ColumnAttribute>();
+                            if (columnAttribute?.TypeName == null)
+                                modelBuilder.Entity(type).Property(property.Name).HasMaxLength(50);
+                        }
+                    }
+                    else
+                    {
+                        var propertyType = property.PropertyType.GetUnderlyingType();
+                        var floatTypes = new Type[] { typeof(float), typeof(double), typeof(decimal) };
+                        if (floatTypes.Contains(propertyType))
+                        {
+                            var precisionAttribute = property.GetCustomAttribute<PrecisionAttribute>();
+                            if (precisionAttribute == null)
+                            {
+                                var columnAttribute = type.GetCustomAttribute<ColumnAttribute>();
+                                if (columnAttribute?.TypeName == null)
+                                    modelBuilder.Entity(type).Property(property.Name).HasPrecision(10, 2);
+                            }
+                        }
+                        else if (propertyType == typeof(DateTime))
+                        {
+                                                            var columnAttribute = type.GetCustomAttribute<ColumnAttribute>();
+                                if (columnAttribute?.TypeName == null)
+                                    modelBuilder.Entity(type).Property(property.Name).HasColumnType("datetime(2)");
+                        }
+                    }
+                    
                     var attr = property.GetCustomAttribute<ComputedColumnSqlAttribute>();
                     if (attr != null)
                     {

@@ -109,7 +109,7 @@ namespace Caspian.UI
             if (LoadData)
             {
                 using var service = ScopeFactory.CreateScope().GetService<IBaseService<TEntity>>();
-                var query = service.GetAll(default(TEntity));
+                var query = service.GetAll();
                 if (ConditionExpression != null)
                     query = query.Where(ConditionExpression);
                 if (OrderByExpression != null)

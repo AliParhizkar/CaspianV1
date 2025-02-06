@@ -35,7 +35,10 @@
             {
                 foreach(var product in products)
                 {
-                    <div @onclick="async () => await AddProductToOrderDetails(product.Id)" class="product">@product.Title</div>
+                    className = "product";
+                    if (product.Id == selectedProductId)
+                        className += " selected";
+                    <div @onclick="async () => await AddProductToOrderDetails(product.Id)" class="@className">@product.Title</div>
                 }
             }
         </div>
@@ -97,7 +100,7 @@
     IList<ProductCategory> productCategories;
     IList<Product> products;
     bool colapsed;
-    int selectedCategoryId, orderId;
+    int selectedCategoryId, selectedProductId, orderId;
     OrderDetail selectedOrderDetail;
     StringTextBox txtDescript;
 
@@ -158,6 +161,7 @@
 
     async Task AddProductToOrderDetails(int productId)
     {
+        selectedProductId = productId;
         using var service = CreateScope().GetService<ProductService>();
         var product = await service.SingleAsync(productId);
         var old = Service.ChangedEntities.SingleOrDefault(t => t.Entity.ProductId == productId)?.Entity;

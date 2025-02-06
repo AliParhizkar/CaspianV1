@@ -4,7 +4,7 @@
 
 @if (ColSpan.HasValue)
 {
-    var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer);
+    var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer);
     string lableContainerCSSClassName = container.GetLableContainerCSSClassName(ColSpan.Value);
     string controlContainerCSSClassName = container.GetControlContainerCSSClassName(ColSpan.Value);
     <div class="@(lableContainerCSSClassName)">

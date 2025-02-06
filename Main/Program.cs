@@ -31,7 +31,6 @@ namespace Main
             //});
             var builder = WebApplication.CreateBuilder();
 
-
             ConfigureCulture();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
@@ -90,6 +89,7 @@ namespace Main
             builder.Services.AddScoped<CaspianDataService>();
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ReportParamService).Assembly.InjectServices(builder.Services);
+            typeof(Marketing.Service.ProductCategoryService).Assembly.InjectServices(builder.Services);
             builder.Services.AddControllers();
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Marketing.Model.Context>();

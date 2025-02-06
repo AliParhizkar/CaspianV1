@@ -5,7 +5,6 @@
 }
 @inject UIService<Employee> Service
 
-@inject NavigationManager NavigationManager
 <p>
     In this example, CRUD has multiple <b>one-to-one</b> relationships. We use the <b>EntityTabPanel</b> component for this purpose
 </p>
@@ -25,10 +24,14 @@
                 </div>
             </div>
             <div class="row p-4 c-controls pt-2 pb-0">
-                <CaspianContainer ColumnsCount="2">
-                    <StringTextBox @bind-Value="Service.Search.FName" ColSpan="4" />
-                    <StringTextBox @bind-Value="Service.Search.LName" ColSpan="4" />
-                </CaspianContainer>
+                <EntitySearch ColumnsCount="2" Service="Service">
+                    @{
+                        context.IdentificationDetail = new IdentificationDetail();
+                    }
+                    <StringTextBox @bind-Value="context.FName" ColSpan="4" />
+                    <StringTextBox @bind-Value="context.LName" ColSpan="4" />
+                    <StringTextBox @bind-Value="context.IdentificationDetail.Village" ColSpan="4" />
+                </EntitySearch>
             </div>
             <div class="p-4 pt-1">
                 <DataGrid Service="Service" TEntity="Employee" OnUpsert="OpenNewPage">
@@ -45,7 +48,19 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="Crud" FileName="1to1Relationship" />
+            <Document FolderName="Crud/1to1" FileName="1to1RelationCrud" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Tab Panel">
+            <Document FolderName="Crud/1to1" FileName="Relation1to1Component" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Course Study">
+            <Document FolderName="Crud/1to1" FileName="CourseStudy" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Service">
+            <Document FolderName="Service/Services" FileName="EmployeeService" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Model">
+            <Document FolderName="Service/Model" FileName="Employee" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -63,7 +78,6 @@
 {
     int? formType = 1;
 
-
     void OpenNewPage(Employee employee)
     {
         if (formType == 2)
@@ -71,11 +85,5 @@
             var url = $"/Demo/Relation1to1to1Crud/{employee.Id}";
             NavigationManager.NavigateTo(url);
         }
-    }
-
-    protected override void ChangeState()
-    {
-
-        base.ChangeState();
     }
 }

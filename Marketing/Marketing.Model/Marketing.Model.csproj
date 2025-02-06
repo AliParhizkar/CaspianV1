@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Caspian.common\Caspian.Common.csproj" />
+    <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
   </ItemGroup>
 
 </Project>

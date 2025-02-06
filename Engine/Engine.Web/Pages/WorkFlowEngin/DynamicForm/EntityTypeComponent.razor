@@ -58,29 +58,11 @@
 </div>
 <Window Service="Service" Title="موجودیت ها" Style="width:500px">
     <CaspianForm TEntity="EntityType" Service="Service" OnSubmit="UpdateModel">
-        <div class="row c-controls ps-4 pe-4">
-            <div class="col-md-3">
-                <label>زیرسیستم</label>
-            </div>
-            <div class="col-md-9">
-                <DropdownList @bind-Value="subSystem" FilterFunc="t => t != SubSystemKind.Engine" OnChange="UpdateSource" />
-            </div>
-            <div class="col-md-3">
-                <label>موجودیت</label>
-            </div>
-            <div class="col-md-9">
-                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="typeName" Source="source" />
-            </div>
-            <div class="col-md-3">
-                <label>عنوان فارسی </label>
-            </div>
-            <div class="col-md-9">
-                <StringTextBox @bind-Value="Service.UpsertData.Title" />
-            </div>
-            <div class="col-md-3"></div>
-            <div class="col-md-9">
-                <FormCommandButton />
-            </div>
+        <DropdownList @bind-Value="subSystem" FilterFunc="t => t != SubSystemKind.Engine" OnChange="UpdateSource" ColSpan="9" />
+        <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="typeName" Source="source" ColSpan="9" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="9" />
+        <div class="col-md-9">
+            <FormCommandButton />
         </div>
     </CaspianForm>
 </Window>

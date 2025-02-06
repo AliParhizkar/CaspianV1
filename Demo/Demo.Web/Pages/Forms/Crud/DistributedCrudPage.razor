@@ -1,6 +1,7 @@
 ﻿@page "/Demo/DistributedCrud"
 @namespace Demo.Web.Pages
 @inherits BasePage
+@inject UIService<ProductCategory> CategoryService
 @inject UIService<Product> Service
 @{
     base.BuildRenderTree(__builder);
@@ -23,7 +24,7 @@
                     <div class="c-controls c-header row align-items-center">
                         <CaspianContainer>
                             <ComboBox TEntity="ProductCategory" TValue="int?" @bind-Value="categoryId" TextExpression="t => t.Title"
-                                OnChanged="() => Service.DataView?.EnableLoading()" ColSpan="8" />
+                                 ColSpan="8" />
                         </CaspianContainer>
                     </div>
                     <div class="c-body ps-3 pe-3">

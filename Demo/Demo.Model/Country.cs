@@ -27,7 +27,6 @@ namespace Demo.Model
         [CheckOnDelete("کشور بعنوان محل تولد کارمند ثبت شده و امکان حذف آن وجود ندارد")]
         public IList<IdentificationDetail> IdentificationDetailsBirthCountry { get; set; }
 
-
         [InverseProperty("RegCountry")]
         [CheckOnDelete("کشور بعنوان محل صدور شناسنامه کارمند ثبت شده و امکان حذف آن وجود ندارد")]
         public IList<IdentificationDetail> IdentificationDetailsRegCountry { get; set; }

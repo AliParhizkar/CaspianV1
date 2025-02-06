@@ -251,7 +251,7 @@ namespace Caspian.Common.Extension
             return list;
         }
 
-        internal static IQueryable<TEntity> Search<TEntity>(this IQueryable<TEntity> source, TEntity search) where TEntity : class
+        internal static IQueryable<TEntity> Search<TEntity>(this IQueryable<TEntity> source, TEntity search, IDictionary<string, SearchType> searchs = null) where TEntity : class
         {
             if (search == null)
                 return source;

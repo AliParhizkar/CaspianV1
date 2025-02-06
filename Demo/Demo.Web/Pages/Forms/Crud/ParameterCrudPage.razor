@@ -29,9 +29,9 @@
                     </div>
                 </div>
                 <div class="col-md-7 ps-1 pe-1 pb-2">
-                    <CaspianContainer>
-                        <StringTextBox @bind-Value="Service.Search.Title" ColSpan="8" />
-                    </CaspianContainer>
+                    <EntitySearch Service="Service">
+                        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                    </EntitySearch>
                     <div class="ps-1 pe-1 pb-4">
                         <GridStateProvider>
                             <DataGrid TEntity="Country" PersistState Service="Service">
@@ -50,13 +50,11 @@
                     </div>
                     <Window Service="Service" Title="Country" Style="width:450px">
                         <CaspianForm Service="Service">
-                           <Content Context="country">
-                                <StringTextBox @bind-Value="country.Title" ColSpan="8" />
-                                <DropdownList @bind-Value="country.ActiveType" ColSpan="8" />
-                                <div class="col-md-8 align-content-center">
-                                    <FormCommandButton />
-                                </div>
-                           </Content>
+                            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                            <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
+                            <div class="col-md-8 align-content-center">
+                                <FormCommandButton />
+                            </div>
                         </CaspianForm>
                     </Window>
                 </div>

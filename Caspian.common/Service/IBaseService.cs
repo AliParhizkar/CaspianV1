@@ -16,7 +16,7 @@ namespace Caspian.Common.Service
 
     public interface IBaseService<TEntity>: IEntity, IValidator<TEntity>, IDisposable
     {
-        IQueryable<TEntity> GetAll(TEntity entity = default);
+        IQueryable<TEntity> GetAll();
 
         Task UpdateAsync(TEntity entity);
 

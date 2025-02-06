@@ -5,14 +5,9 @@
     base.BuildRenderTree(__builder);
 }
 <div class="p-4">
-    <div class="row c-controls ps-4 pe-4">
-        <div class="col-md-4">
-            <label>Title</label>
-        </div>
-        <div class="col-md-8">
-            <StringTextBox @bind-Value="Service.Search.Title" />
-        </div>
-    </div>
+    <EntitySearch Service="Service">
+        <StringTextBox @bind-Value="context.Title" ColSpan="9" />
+    </EntitySearch>
     <DataGrid Service="Service" TEntity="WorkflowForm" ContentHeight="300">
         <Columns>
             <GridColumn Field="t => t.DataModel.Title" Title="Data model" />
@@ -32,37 +27,12 @@
 
 <Window Service="Service" Title="Form " Style="width:500px" OnOpen="FormOpen">
     <CaspianForm Service="Service">
-        <div class="row reportSelect ps-2 pe-2 c-controls">
-            <div class="col-md-4">
-                <label>Data model</label>
-            </div>
-            <div class="col-md-8">
-                <ComboBox TEntity="DataModel" TValue="int" @bind-Value="Service.UpsertData.DataModelId"
-                          TextExpression="t => t.Title" />
-            </div>
-            <div class="col-md-4">
-                <label>Title</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Title" />
-            </div>
-            <div class="col-md-4">
-                <label>Column count</label>
-            </div>
-            <div class="col-md-8">
-                <NumericTextBox @bind-Value="Service.UpsertData.ColumnCount" />
-            </div>
-            <div class="col-md-4">
-                <label>Name</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="Service.UpsertData.Name" Style="text-align:left" />
-            </div>
-            <div class="col-md-4">
-            </div>
-            <div class="col-md-8">
-                <FormCommandButton />
-            </div>
+        <ComboBox TEntity="DataModel" TValue="int" @bind-Value="context.DataModelId" ColSpan="9" TextExpression="t => t.Title" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="9" />
+        <NumericTextBox @bind-Value="context.ColumnCount" ColSpan="9" />
+        <StringTextBox @bind-Value="context.Name" Style="text-align:left" ColSpan="9" />
+        <div class="col-md-8">
+            <FormCommandButton />
         </div>
     </CaspianForm>
 </Window>

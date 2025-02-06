@@ -6,24 +6,13 @@
 @{
     base.BuildRenderTree(__builder);
     string reportUrl = Host.IsProduction() ? "https://report.caspiansoftco.com/" : "https://localhost:7284/";
-    Report search = Service.Search, report = Service.UpsertData;
 }
 <div style="background-color:white" class="p-4 pt-2">
-    <div class="row c-controls">
-        <div class="col-md-2">
-            <label>Title</label>
-        </div>
-        <div class="col-md-4 pe-4">
-            <StringTextBox @bind-Value="search.Title" />
-        </div>
-        <div class="col-md-2 ps-4">
-            <label>Report group </label>
-        </div>
-        <div class="col-md-4">
-            <ComboBox TEntity="ReportGroup" TValue="int" @bind-Value="search.ReportGroupId" TextExpression="t => t.Title"
-                      ConditionExpression="t => t.SubSystem == Subsystem" />
-        </div>
-    </div>
+    <EntitySearch Service="Service">
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <ComboBox TEntity="ReportGroup" TValue="int" @bind-Value="context.ReportGroupId" TextExpression="t => t.Title"
+                  ConditionExpression="t => t.SubSystem == Subsystem" ColSpan="4" />
+    </EntitySearch>
     <DataGrid TEntity="Report" ConditionExpr="t => t.ReportGroup.SubSystem == Subsystem" Service="Service" ContentHeight="300">
         <Columns>
             <GridColumn Field="t => t.ReportGroup.Title" Title="Report group" />
@@ -46,36 +35,13 @@
 
 <Window Style="width:450px" Title="Report" Service="Service">
     <CaspianForm Service="Service">
-        <div class="row ps-4 pe-4 c-controls">
-            <div class="col-md-4">
-                <label>Report group</label>
-            </div>
-            <div class="col-md-8">
-                <ComboBox TEntity="ReportGroup" TValue="int" @bind-Value="report.ReportGroupId" TextExpression="t => t.Title"
-                          ConditionExpression="t => t.SubSystem == Subsystem" />
-            </div>
-            <div class="col-md-4">
-                <label>Report Type</label>
-            </div>
-            <div class="col-md-8">
-                <DropdownList @bind-Value="report.ReportType" />
-            </div>
-            <div class="col-md-4">
-                <label>Title</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="report.Title" />
-            </div>
-            <div class="col-md-4">
-                <label>Description</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="report.Descript" MultiLine Rows="3" />
-            </div>
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
-                <WindowCommandButtons />
-            </div>
+        <ComboBox TEntity="ReportGroup" TValue="int" @bind-Value="context.ReportGroupId" TextExpression="t => t.Title"
+                  ConditionExpression="t => t.SubSystem == Subsystem" ColSpan="8" />
+        <DropdownList @bind-Value="context.ReportType" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Descript" MultiLine Rows="3" ColSpan="8" />
+        <div class="col-md-8">
+            <WindowCommandButtons />
         </div>
     </CaspianForm>
 </Window>

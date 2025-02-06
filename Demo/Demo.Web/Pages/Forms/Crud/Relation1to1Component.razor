@@ -12,7 +12,7 @@
                     <StringTextBox @bind-Value="employee.LName" ColSpan="8" />
                 </div>
                 <div class="row col-md-5 p-3 justify-content-center">
-                    <Fileupload Accept="image/*" MaxAllowedSize="400_000" OnChange="SetImage" Title="Click for upload">
+                    <Fileupload Accept="image/*" MaxAllowedSize="400_000" OnChange="e => SetImage(employee, e)" Title="Click for upload">
                         <PictureBox NoContentTitle="Click for upload" Data="Service.UpsertData.Image" style="width:110px;height:135px;background-size:cover" />
                     </Fileupload>
                 </div>
@@ -38,17 +38,17 @@
                 <StringTextBox @bind-Value="employee.IdentificationDetail.IdentificationSerial" Style="direction:ltr" ColSpan="4" />
                 <DatePicker @bind-Value="employee.IdentificationDetail.BirthDate" ColSpan="4" />
                 <ComboBox TValue="int?" TEntity="Country" @bind-Value="employee.IdentificationDetail.BirthCountryId"
-                TextExpression="t => t.Title" CascadeService="birthService" ColSpan="4" />
+                            TextExpression="t => t.Title" CascadeService="birthService" ColSpan="4" />
                 <ComboBox TValue="int?" TEntity="Country" @bind-Value="employee.IdentificationDetail.RegCountryId"
-                TextExpression="t => t.Title" CascadeService="regService" ColSpan="4" />
+                            TextExpression="t => t.Title" CascadeService="regService" ColSpan="4" />
                 <ComboBox TValue="int?" TEntity="Province" @bind-Value="employee.IdentificationDetail.BirthProvinceId"
-                TextExpression="t => t.Title" CascadeService="birthService" ColSpan="4" />
+                            TextExpression="t => t.Title" CascadeService="birthService" ColSpan="4" />
                 <ComboBox TValue="int?" TEntity="Province" @bind-Value="employee.IdentificationDetail.RegProvinceId"
-                TextExpression="t => t.Title" CascadeService="regService" ColSpan="4" />
-                <ComboBox TValue="int?" TEntity="City" @bind-Value="employee.IdentificationDetail.BirthCityId" TextExpression="t => t.Title"
-                CascadeService="birthService" ColSpan="4" />
-                <ComboBox TValue="int?" TEntity="City" @bind-Value="employee.IdentificationDetail.RegCityId" TextExpression="t => t.Title"
-                CascadeService="regService" ColSpan="4" />
+                            TextExpression="t => t.Title" CascadeService="regService" ColSpan="4" />
+                <ComboBox TValue="int?" TEntity="City" @bind-Value="employee.IdentificationDetail.BirthCityId" 
+                            TextExpression="t => t.Title" CascadeService="birthService" ColSpan="4" />
+                <ComboBox TValue="int?" TEntity="City" @bind-Value="employee.IdentificationDetail.RegCityId" 
+                            TextExpression="t => t.Title" CascadeService="regService" ColSpan="4" />
                 <StringTextBox @bind-Value="employee.IdentificationDetail.Village" ColSpan="10" />
             </div>
             <div>
@@ -98,8 +98,8 @@
     CascadeService<Country, Province, City> birthService = new();
     CascadeService<Country, Province, City> regService = new();
 
-    async Task SetImage(InputFileChangeEventArgs file)
+    async Task SetImage(Employee employee, InputFileChangeEventArgs file)
     {
-        Service.UpsertData.Image = await file.File.GetByteArrayAsync();
+        employee.Image = await file.File.GetByteArrayAsync();
     }
 }

@@ -43,9 +43,9 @@
                     </span>
                 </div>
                 <div class="col-md-7">
-                    <CaspianContainer>
-                        <StringTextBox @bind-Value="CountryService.Search.Title" BindingType="BindingType.OnInput" ColSpan="8" />
-                    </CaspianContainer>
+                    <EntitySearch Service="CountryService">
+                        <StringTextBox @bind-Value="context.Title" BindingType="BindingType.OnInput" ColSpan="8" />
+                    </EntitySearch>
                     <DataGrid TEntity="Country" Service="CountryService">
                         <Columns>
                             <GridColumn Field="t => t.Title" />
@@ -55,13 +55,11 @@
                     </DataGrid>
                     <Window Service="CountryService" Title="Country" Style="width:450px;">
                         <CaspianForm Service="CountryService">
-                            <Content Context="country">
-                                <StringTextBox @bind-Value="country.Title" ColSpan="8" />
-                                <DropdownList @bind-Value="country.ActiveType" ColSpan="8" />
-                                <div class="col-md-9 text-center">
-                                    <WindowCommandButtons />
-                                </div>
-                            </Content>
+                            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                            <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
+                            <div class="col-md-9 text-center">
+                                <WindowCommandButtons />
+                            </div>
                         </CaspianForm>
                     </Window>
                 </div>
@@ -104,9 +102,12 @@
                         <label>Title</label>
                     </div>
                     <div class="col-md-6">
-                        <StringTextBox @bind-Value="ProductService.Search.Title" Search />
                     </div>
                 </div>
+                <EntitySearch Service="ProductService">
+                    <StringTextBox @bind-Value="context.Title" Search ColSpan="8" />
+                </EntitySearch>
+
                 <DataGrid TEntity="Product" Service="ProductService">
                     <Columns>
                         <GridColumn Field="t => t.Title" />
@@ -116,28 +117,27 @@
                         <GridCommandColumns />
                     </Columns>
                 </DataGrid>
+
                 <Window Service="ProductService" Title="Product" Style="width:650px;">
                     <CaspianForm Service="ProductService" ColumnsCount="2">
-                        <Content Context="product">
-                            <div class="col-md-7 row pb-3">
-                                <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="product.ProductCategoryId" TextExpression="t => t.Title" ColSpan="8" />
-                                <StringTextBox @bind-Value="product.Title" ColSpan="8" />
-                                <NumericTextBox @bind-Value="product.Price" OnChange="() => SetOuterPrice(product)" ColSpan="8" />
-                                <NumericTextBox @bind-Value="product.TakeoutPrice" ColSpan="8" />
-                                <NumericTextBox @bind-Value="product.Discount" ColSpan="8" />
-                            </div>
-                            <div class="col-md-5 row pb-3 justify-content-center">
-                                <Fileupload OnChange="e => SetImage(e, product)" Accept="image/*">
-                                    <PictureBox Data="product.Image" style="width:200px;height:200px" />
-                                </Fileupload>
-                            </div>
-                            <MultiSelectBox @bind-Value="product.Meal" ColSpan="10" />
-                            <DropdownList @bind-Value="product.ActiveType" ColSpan="4" />
-                            <CheckBox @bind-Value="product.Discountable" ColSpan="4" />
-                            <div class="col-md-8 text-center">
-                                <WindowCommandButtons />
-                            </div>
-                        </Content>
+                        <div class="col-md-7 row pb-3">
+                            <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="context.ProductCategoryId" TextExpression="t => t.Title" ColSpan="8" />
+                            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                            <NumericTextBox @bind-Value="context.Price" OnChange="() => SetOuterPrice(context)" ColSpan="8" />
+                            <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="8" />
+                            <NumericTextBox @bind-Value="context.Discount" ColSpan="8" />
+                        </div>
+                        <div class="col-md-5 row pb-3 justify-content-center">
+                            <Fileupload OnChange="e => SetImage(e, context)" Accept="image/*">
+                                <PictureBox Data="context.Image" style="width:200px;height:200px" />
+                            </Fileupload>
+                        </div>
+                        <MultiSelectBox @bind-Value="context.Meal" ColSpan="10" />
+                        <DropdownList @bind-Value="context.ActiveType" ColSpan="4" />
+                        <CheckBox @bind-Value="context.Discountable" ColSpan="4" />
+                        <div class="col-md-8 text-center">
+                            <WindowCommandButtons />
+                        </div>
                     </CaspianForm>
                 </Window>
             </div>

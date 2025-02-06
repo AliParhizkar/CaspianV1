@@ -29,10 +29,10 @@
                     </li>
                 </ul>
                 <div class="c-controls row ps-2 pe-2">
-                    <CaspianContainer>
-                        <StringTextBox @bind-Value="Service.Search.LName" ColSpan="8" />
-                        <StringTextBox @bind-Value="Service.Search.MobileNumber" ColSpan="8" />
-                    </CaspianContainer>
+                    <EntitySearch Service="Service">
+                        <StringTextBox @bind-Value="context.LName" ColSpan="8" />
+                        <StringTextBox @bind-Value="context.MobileNumber" ColSpan="8" />
+                    </EntitySearch>
                 </div>
                 <DataGrid TEntity="Customer" Service="Service" ContentHeight="350">
                     <Columns>
