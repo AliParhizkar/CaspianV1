@@ -19,7 +19,8 @@
                 this.bindObserverForInsertTable();
             this.bindResizeForHeight();
             this.header = this.grid.getElementsByClassName('t-grid-header-wrap')[0] as HTMLElement;
-            this.headerColumns = Array.from(this.header.querySelectorAll('table thead tr th'));
+            this.headerColumns = [];
+            this.header.querySelectorAll('table thead tr th').forEach(t => this.headerColumns.push(t as HTMLElement));
             this.headerColumns.forEach(t => {
                 t.attributes['default-size'] = t.style.width;
             });
