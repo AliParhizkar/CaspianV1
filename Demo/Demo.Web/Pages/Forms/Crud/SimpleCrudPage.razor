@@ -1,8 +1,8 @@
 ﻿@page "/Demo/SimpleCrud"
 @namespace Demo.Web
 @inherits BasePage
-@inject UIService<Country> CountryService
-@inject UIService<Product> ProductService
+@inject IUIService<Country> CountryService
+@inject IUIService<Product> ProductService
 @{
     base.BuildRenderTree(__builder);
     
@@ -44,7 +44,7 @@
                 </div>
                 <div class="col-md-7">
                     <EntitySearch Service="CountryService">
-                        <StringTextBox @bind-Value="context.Title" BindingType="BindingType.OnInput" ColSpan="8" />
+                        <StringTextBox @bind-Value="context.Title" SearchType="SearchType.StartWith" ColSpan="8" />
                     </EntitySearch>
                     <DataGrid TEntity="Country" Service="CountryService">
                         <Columns>

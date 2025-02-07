@@ -10,7 +10,7 @@
                 <label>Last name</label>
             </div>
             <div class="col-md-8">
-                <StringTextBox @bind-Value="MemberSearch.LName" Search OnChange="() => MemberGrid.EnableLoading()" />
+                <StringTextBox @bind-Value="MemberSearch.LName" OnChange="() => MemberGrid.EnableLoading()" />
             </div>
             <div class="col-md-4">
                 <label>Username</label>

@@ -24,6 +24,13 @@ namespace Caspian.UI
             throw new NotImplementedException();
         }
 
+        public IDictionary<string, SearchType> GetSearchData()
+        {
+            return searchData;
+        }
+
+        public Func<TMaster, Task<bool>> OnUpsert { get; set; }
+
         public BatchService(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
@@ -126,8 +133,6 @@ namespace Caspian.UI
         }
 
         public Action<TMaster> OnCreate { get; set; }
-
-        public Action<TMaster> OnUpsert { get; set; }
 
         protected virtual async Task UpdateDatabaseAsync(TMaster master)
         {
@@ -289,7 +294,7 @@ namespace Caspian.UI
         }
     }
 
-    public interface IUIService<TEntity>: ISearchService<TEntity> where TEntity : class
+    public interface IUIService<TEntity>: IUIService, ISearchService<TEntity> where TEntity : class
     {
         int MasterId { get; set; }
 
@@ -309,6 +314,8 @@ namespace Caspian.UI
 
         IEntityTabPanel EntityTabPanel { get; set; }
 
+        Func<TEntity, Task<bool>> OnUpsert { get; set; }
+
         void TabPanelInitialize();
     }
 
@@ -321,6 +328,8 @@ namespace Caspian.UI
         void DataViewInitialize();
 
         void SetSearchType(IDictionary<string, SearchType> types);
+
+        IDictionary<string, SearchType> GetSearchData();
     }
 
     public interface ISimpleBatchService<TDetail>

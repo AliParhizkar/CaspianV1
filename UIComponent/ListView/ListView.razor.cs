@@ -27,7 +27,7 @@ namespace Caspian.UI
         public override async Task<TEntity> SelectRowById(int id)
         {
             using var scope = ServiceScopeFactory.CreateScope();
-            var query = GetGuery(scope);
+            var query = GetQuery(scope);
             var rowId = await query.GetRowNumber(scope.GetService<BaseService<TEntity>>().Context, id);
             if (rowId.HasValue)
             {
@@ -40,9 +40,9 @@ namespace Caspian.UI
             return default(TEntity);
         }
 
-        IQueryable<TEntity> GetGuery(IServiceScope scope)
+        IQueryable<TEntity> GetQuery(IServiceScope scope)
         {
-            var query = scope.GetService<BaseService<TEntity>>().GetAll();
+            var query = scope.GetService<BaseService<TEntity>>().Search(Search, Service?.GetSearchData());
             var param = Expression.Parameter(typeof(TEntity), "t");
             Expression condExr = null;
             if (ConditionExpr != null)
@@ -69,7 +69,7 @@ namespace Caspian.UI
             {
                 shouldFetchData = false;
                 using var scope = ServiceScopeFactory.CreateScope();
-                var query = GetGuery(scope);
+                var query = GetQuery(scope);
 
                 //shouldRender = false;
                 Total = await query.CountAsync();

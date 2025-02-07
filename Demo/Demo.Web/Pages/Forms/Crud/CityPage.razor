@@ -1,7 +1,7 @@
 ﻿@page "/Demo/City/{CountryId:int}"
 @namespace Demo.Web.Pages
 @inherits BasePage
-@inject UIService<City> Service
+@inject IUIService<City> Service
 
 @{
     base.BuildRenderTree(__builder);
@@ -12,12 +12,10 @@
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
-            <div class="row c-controls p-4 pb-0">
-                <EntitySearch Service="Service" ColumnsCount="2">
-                    <StringTextBox @bind-Value="context.Title" ColSpan="4" />
-                    <DropdownList @bind-Value="context.ActiveType" ColSpan="4" />
-                </EntitySearch>
-            </div>
+            <EntitySearch Service="Service" ColumnsCount="2">
+                <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+                <DropdownList @bind-Value="context.ActiveType" ColSpan="4" />
+            </EntitySearch>
             <div class="p-4 pt-1">
                 <DataGrid TEntity="City" Service="Service" ConditionExpr="t => t.CountryId == CountryId" ContentHeight="350">
                     <Columns>

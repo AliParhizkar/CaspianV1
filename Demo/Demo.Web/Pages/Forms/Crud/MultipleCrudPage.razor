@@ -59,7 +59,7 @@
 
                     <div class="row c-controls ps-4 pe-4">
                         <EntitySearch Service="ProductService">
-                            <StringTextBox @bind-Value="context.Title" Search ColSpan="8" />
+                            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
                         </EntitySearch>
                     </div>
                     <DataGrid Service="ProductService" TEntity="Product" ContentHeight="206" ConditionExpr="t => t.ProductCategoryId == productcategoryId">

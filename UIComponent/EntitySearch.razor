@@ -17,6 +17,7 @@
     protected override void OnInitialized()
     {
         searchTypes = new Dictionary<string, SearchType>();
+        Service.SetSearchType(searchTypes);
         base.OnInitialized();
     }
 
@@ -52,7 +53,7 @@
 
     void IEntitySearch.SetSearchKind(string path, SearchType searchType)
     {
-        if (searchTypes.ContainsKey(path))
+        if (!searchTypes.ContainsKey(path))
             searchTypes.Add(path, searchType);
     }
 

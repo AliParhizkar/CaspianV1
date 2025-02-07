@@ -221,6 +221,7 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
         {
             receiptId = t.Id;
             StateHasChanged();
+            return Task.FromResult(true);
         };
         base.OnInitialized();
     }

@@ -283,7 +283,17 @@ namespace Caspian.Common.Extension
                     right = Expression.Equal(propertyExpr, constant);
                 else
                 {
-                    var method = typeof(string).GetMethod("Contains", new Type[] { typeof(string) });
+                    string methodName = null;
+                    if (searchs?.ContainsKey(fieldName) == true)
+                    {
+                        var searchType = searchs[fieldName];
+                        if (searchType == SearchType.StartWith)
+                            methodName = "StartsWith";
+                        else if (searchType == SearchType.EndWith)
+                            methodName = "EndsWith";
+                    }
+                    methodName = methodName ?? "Contains";
+                    var method = typeof(string).GetMethod(methodName, new Type[] { typeof(string) });
                     right = Expression.Call(propertyExpr, method, constant);
                 }
                 if (left == null)

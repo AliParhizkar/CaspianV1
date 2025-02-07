@@ -2,6 +2,8 @@
 @page "/Demo/Grid-Search"
 <h2>Grid-Searching</h2>
 @inject UIService<Customer> Service
+@inject UIService<City> CityService
+@inject UIService<OrderDetail> OrderDetailService
 <p>
     We can search in the grid in the <b>three Modes</b>
     In this page we <b>describe this modes</b>.
@@ -21,7 +23,7 @@
                     </div>
                     <div class="col-md-6">
                         <EntitySearch TEntity="Customer" Service="Service">
-                            <StringTextBox Search @bind-Value="context.FName" ColSpan="8" />
+                            <StringTextBox @bind-Value="context.FName" ColSpan="8" />
                             <StringTextBox Search @bind-Value="context.LName" ColSpan="8" />
                             <StringTextBox Search @bind-Value="context.CompanyName" ColSpan="8" />
                         </EntitySearch>
@@ -66,15 +68,10 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <div class="row pb-3 c-controls ps-3 pe-3">
-                            <div class="col-md-4">
-                                <label>Country id</label>
-                            </div>
-                            <div class="col-md-8">
-                                 <ComboBox TEntity="Country" TValue="int" @bind-Value="citySearch.CountryId" TextExpression="t => t.Title" />
-                            </div>
-                        </div>
-                        <DataGrid TEntity="City" Search="citySearch">
+                        <EntitySearch Service="CityService">
+                            <ComboBox TEntity="Country" TValue="int" @bind-Value="context.CountryId" TextExpression="t => t.Title" />
+                        </EntitySearch>
+                        <DataGrid TEntity="City" Service="CityService">
                             <Columns>
                                 <GridColumn Field="t => t.Country.Title" Title="Country" />
                                 <GridColumn Field="t => t.Title" />
@@ -117,7 +114,7 @@
                                 <NumericTextBox @bind-Value="toPrice" />
                             </div>
                         </div>
-                        <DataGrid TEntity="Product">
+                        <DataGrid TEntity="Product" >
                             <Columns>
                                 <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                                 <GridColumn Field="t => t.Title" />
@@ -132,7 +129,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <div class="row pb-3 c-controls ps-3 pe-3">
+                        <EntitySearch Service="OrderDetailService">
                             <div class="col-md-4">
                                 <label>From date</label>
                             </div>
@@ -145,7 +142,7 @@
                             <div class="col-md-8">
                                 <DatePicker @bind-Value="toDate" />
                             </div>
-                        </div>
+                        </EntitySearch>
                         <DataGrid TEntity="OrderDetail">
                             <Columns>
                                 <GridColumn Field="t => t.Order.Date" Title="Order date" @bind-From="fromDate" @bind-To="toDate" />
