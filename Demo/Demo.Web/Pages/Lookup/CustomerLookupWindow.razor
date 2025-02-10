@@ -28,7 +28,7 @@
 {
     protected override void OnInitialized()
     {
-        InitialSearchExpression(t => LookupStringSearchValue == null || t.FName.Contains(LookupStringSearchValue) || t.LName.Contains(LookupStringSearchValue) || t.MobileNumber.Contains(LookupStringSearchValue));
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.MobileNumber.StartsWith(LookupStringSearchValue));
         base.OnInitialized();
     }
 }

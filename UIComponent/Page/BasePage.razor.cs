@@ -1,9 +1,9 @@
 ﻿using Caspian.Common;
+using System.Reflection;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Reflection;
 
 namespace Caspian.UI
 {
@@ -16,11 +16,11 @@ namespace Caspian.UI
         
         public static bool IsStarted { get; set; }
 
-        //[CascadingParameter]
-        //public ClassNameContainner ClassNameContainner { get; set; }
-
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
+
+        [Inject]
+        public IServiceProvider ServiceProvider { get; set; }
 
         [Inject]
         public CaspianDataService DataService { get; set; }
@@ -35,6 +35,7 @@ namespace Caspian.UI
         private Task<AuthenticationState> authenticationStateTask { get; set; }
 
         public int UserId { get; private set; }
+
 
         protected async override Task OnInitializedAsync()
         {

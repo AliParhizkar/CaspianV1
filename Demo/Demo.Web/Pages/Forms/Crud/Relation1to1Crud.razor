@@ -3,7 +3,7 @@
 @{
     base.BuildRenderTree(__builder);
 }
-@inject UIService<Employee> Service
+@inject IUIService<Employee> Service
 
 <p>
     In this example, CRUD has multiple <b>one-to-one</b> relationships. We use the <b>EntityTabPanel</b> component for this purpose
@@ -25,13 +25,8 @@
             </div>
             <div class="row p-4 c-controls pt-2 pb-0">
                 <EntitySearch ColumnsCount="2" Service="Service">
-                    @{
-                        if (context.IdentificationDetail == null)
-                            context.IdentificationDetail = new IdentificationDetail();
-                    }
                     <StringTextBox @bind-Value="context.FName" ColSpan="4" SearchType="SearchType.StartWith" />
                     <StringTextBox @bind-Value="context.LName" ColSpan="4" />
-                    <StringTextBox @bind-Value="context.IdentificationDetail.Village" ColSpan="4" />
                 </EntitySearch>
             </div>
             <div class="p-4 pt-1">

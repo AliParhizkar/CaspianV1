@@ -1,8 +1,8 @@
 ﻿@page "/Demo/DistributedCrud"
 @namespace Demo.Web.Pages
 @inherits BasePage
-@inject UIService<ProductCategory> CategoryService
-@inject UIService<Product> Service
+@inject IUIService<ProductCategory> CategoryService
+@inject IUIService<Product> Service
 @{
     base.BuildRenderTree(__builder);
 }

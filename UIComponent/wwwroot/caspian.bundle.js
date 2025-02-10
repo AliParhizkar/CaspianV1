@@ -1041,7 +1041,8 @@ var caspian;
                         setTimeout(() => group.style.top = '0', 30);
                     }
                     document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
-                        if (e.target.closest('.t-animation-container') == null) {
+                        let container = e.target.closest('.t-animation-container');
+                        if (container == null || container.firstElementChild != null && container.firstElementChild.className == 't-HelpWindow') {
                             document.body.onmousedown = null;
                             yield dotnet.invokeMethodAsync('CloseWindow');
                         }
@@ -1146,7 +1147,7 @@ var caspian;
                     let left = (locHelpWindow.width - locTarget.width) / 2;
                     let posTarget = target.getPosition();
                     if (posTarget.left - left + locHelpWindow.width > window.innerWidth)
-                        left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 20;
+                        left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 26;
                     animate.style.marginLeft = `${-left}px`;
                     animate.style.width = `${locHelpWindow.width + 10}px`;
                     animate.style.height = `${locHelpWindow.height + 5}px`;
@@ -1159,9 +1160,9 @@ var caspian;
                         animate.classList.add('c-animate-up');
                         setTimeout(() => helpWindow.style.bottom = '0', 25);
                     }
-                    else {
+                    else
                         helpWindow.style.top = `${-locHelpWindow.height}`;
-                    }
+                    setTimeout(() => animate.style.overflow = 'visible', 500);
                     if (lookup.attributes['autoHide']) {
                         window.onclick = function (e) {
                             return __awaiter(this, void 0, void 0, function* () {

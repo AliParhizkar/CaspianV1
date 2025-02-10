@@ -1,9 +1,9 @@
 ﻿@namespace Demo.Web
 @page "/Demo/Grid-Search"
 <h2>Grid-Searching</h2>
-@inject UIService<Customer> Service
-@inject UIService<City> CityService
-@inject UIService<OrderDetail> OrderDetailService
+@inject ISearchService<Customer> Service
+@inject ISearchService<City> CityService
+@inject ISearchService<OrderDetail> OrderDetailService
 <p>
     We can search in the grid in the <b>three Modes</b>
     In this page we <b>describe this modes</b>.
@@ -24,8 +24,8 @@
                     <div class="col-md-6">
                         <EntitySearch TEntity="Customer" Service="Service">
                             <StringTextBox @bind-Value="context.FName" ColSpan="8" />
-                            <StringTextBox Search @bind-Value="context.LName" ColSpan="8" />
-                            <StringTextBox Search @bind-Value="context.CompanyName" ColSpan="8" />
+                            <StringTextBox @bind-Value="context.LName" ColSpan="8" />
+                            <StringTextBox @bind-Value="context.CompanyName" ColSpan="8" />
                         </EntitySearch>
                         <DataGrid TEntity="Customer" Service="Service">
                             <Columns>
@@ -46,7 +46,7 @@
                     <div class="col-md-6">
                         <hr />
                         <CaspianContainer>
-                            <DropdownList Search @bind-Value="customerEnumSearch.CustomerType" ColSpan="8" />
+                            <DropdownList @bind-Value="customerEnumSearch.CustomerType" ColSpan="8" />
                             <DropdownList @bind-Value="customerEnumSearch.Gender" ColSpan="8" />
                         </CaspianContainer>
                         <DataGrid TEntity="Customer" Search="customerEnumSearch">

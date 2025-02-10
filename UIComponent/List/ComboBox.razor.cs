@@ -45,6 +45,9 @@ namespace Caspian.UI
         [Parameter]
         public ICascadeService<TEntity> CascadeService { get; set; }
 
+        [CascadingParameter]
+        internal IEntitySearch EntitySearch { get; set; }
+
         public Expression<Func<TEntity, bool>> InternalConditionExpression { get; set; }
 
         [Parameter]

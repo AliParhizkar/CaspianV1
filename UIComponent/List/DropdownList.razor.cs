@@ -113,26 +113,6 @@ namespace Caspian.UI
                 await OnChange.InvokeAsync();
         }
 
-        protected override void OnInitialized()
-        {
-            if (ValueExpression != null)
-            {
-                var expr = ValueExpression.Body;
-                while (expr.NodeType == ExpressionType.MemberAccess)
-                {
-                    var property = (expr as MemberExpression).Member;
-                    if (property.Name == "SearchData")
-                    {
-                        var type = property.DeclaringType;
-                        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SimplePage<>))
-                            Search = true;
-                    }
-                    expr = (expr as MemberExpression).Expression;
-                }
-            }
-            base.OnInitialized();
-        }
-
         [Parameter]
         public IList<SelectListItem> Source { get; set; }
 
@@ -151,7 +131,7 @@ namespace Caspian.UI
                 items = new ();
                 if (typeof(TValue).IsNullableType())
                     items.Add(new SelectListItem(null, str));
-                else if (Search)
+                else if (search)
                     items.Add(new SelectListItem("0", str));
                 var fields = GetFields();
                 foreach (var field in fields.Where(t => !t.IsSpecialName))

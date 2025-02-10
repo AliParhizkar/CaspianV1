@@ -83,6 +83,7 @@ namespace Caspian.UI
                     await ValueChanged.InvokeAsync(Value);
                 if (OnChange.HasDelegate)
                     await OnChange.InvokeAsync();
+                EntitySearch?.EnableLoadData();
             }
         }
 
@@ -92,7 +93,7 @@ namespace Caspian.UI
                 Id = "";
             if (EntitySearch != null)
             {
-                Search = true;
+                search = true;
                 if (ValueExpression != null && SearchType != SearchType.Contain)
                 {
                     var expr = ValueExpression.Body;

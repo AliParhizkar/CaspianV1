@@ -15,10 +15,9 @@ namespace Caspian.UI
     {
         string _FieldName;
         ValidationMessageStore _messageStore;
-        bool valueIsChanged;
-        bool reseting;
+        bool valueIsChanged, reseting;
         EditContext oldContext;
-        protected bool disabled, focuced;
+        protected bool disabled, focuced, search;
         protected string title;
 
         public ElementReference? InputElement { get; protected set; }
@@ -65,9 +64,6 @@ namespace Caspian.UI
         public bool Disabled { get; set; }
 
         [Parameter]
-        public bool Search { get; set; }
-
-        [Parameter]
         public TValue Value { get; set; }
 
         [Parameter]
@@ -87,8 +83,6 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (Search)
-                BindingType = BindingType.OnInput;
             if (ValueExpression != null)
             {
                 var member = (ValueExpression.Body as MemberExpression).Member;

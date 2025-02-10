@@ -97,15 +97,8 @@
                         this is an <b>EventCallback</b>, we can use it's input parameter to <b>cancel the upsert</b>.
                     </span>
                 </div>
-                <div class="row c-controls">
-                    <div class="col-md-3 ps-4">
-                        <label>Title</label>
-                    </div>
-                    <div class="col-md-6">
-                    </div>
-                </div>
                 <EntitySearch Service="ProductService">
-                    <StringTextBox @bind-Value="context.Title" Search ColSpan="8" />
+                    <StringTextBox @bind-Value="context.Title" ColSpan="8" />
                 </EntitySearch>
 
                 <DataGrid TEntity="Product" Service="ProductService">
@@ -165,8 +158,6 @@
 
     async Task SetImage(InputFileChangeEventArgs e, Product product)
     {
-        using var service = CreateScope().GetService<ProductService>();
-
         product.Image = await e.File.GetByteArrayAsync();
     }
 

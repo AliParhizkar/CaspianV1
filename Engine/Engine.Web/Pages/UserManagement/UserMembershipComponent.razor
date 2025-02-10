@@ -1,29 +1,19 @@
 ﻿@namespace Caspian.Engine.UserManagement
-@inherits AccessPage<Role, UserMembership, User>
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
 <div class="row">
     <div class="col-md-5">
-        <div class="row c-controls">
-            <div class="col-md-4">
-                <label>Last name</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="MemberSearch.LName" OnChange="() => MemberGrid.EnableLoading()" />
-            </div>
-            <div class="col-md-4">
-                <label>Username</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="MemberSearch.UserName" />
-            </div>
-            <div class="col-md-12 text-center">
-                <hr />
-                <span class="d-membership">Other users</span>
-            </div>
+        <EntitySearch TEntity="User" Service="Service">
+            <StringTextBox @bind-Value="context.LName" ColSpan="8" />
+            <StringTextBox @bind-Value="context.UserName" ColSpan="8" />
+        </EntitySearch>
+        <div class="col-md-12 text-center">
+            <hr class="mb-0" />
+            <span class="d-membership">Other users</span>
         </div>
-         <DataGrid @ref="MemberGrid" TEntity="User" Search="MemberSearch" ContentHeight="335">
+        <DataGrid Service="Service" TEntity="User" ContentHeight="335">
             <Columns>
                 <GridColumn Field="@(t => t.FName + " " + t.LName )" Title="User" />
                 <GridColumn Field="t => t.UserName" style="width:100px" />
@@ -33,38 +23,27 @@
     </div>
     <div class="col-md-1">
         <div class="row align-content-center h-100">
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+            <CaspianForm Service="Service">
                 <div class="d-btn-container">
                     <IconButton IconType="IconType.AngleRight" />
                     <div>
-                        <IconButton type="button" @onclick="async () => await base.DeleteAsync()"
-                                    IconType="IconType.AngleLeft" />
+                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()"
+                        IconType="IconType.AngleLeft" />
                     </div>
                 </div>
             </CaspianForm>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="row c-controls">
-            <div class="col-md-4">
-                <label>Last name</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="SearchData.User.LName" Search OnChange="() => CrudGrid.EnableLoading()" />
-            </div>
-            <div class="col-md-4">
-                <label>Username</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="SearchData.User.UserName" />
-            </div>
-            <div class="col-md-12 text-center">
-                <hr />
-                <span class="d-membership">Member users</span>
-            </div>
+        <EntitySearch TEntity="UserMembership" Service="Service">
+            <StringTextBox @bind-Value="context.User.LName" ColSpan="8" />
+            <StringTextBox @bind-Value="context.User.UserName" ColSpan="8" />
+        </EntitySearch>
+        <div class="col-md-12 text-center">
+            <hr class="mb-0" />
+            <span class="d-membership">Member users</span>
         </div>
-
-         <DataGrid @ref="CrudGrid" TEntity="UserMembership" Search="SearchData" ContentHeight="335">
+        <DataGrid Service="Service" TEntity="UserMembership" ContentHeight="335">
             <Columns>
                 <GridColumn Field="@(t => t.User.FName + " " + t.User.LName)" Title="User" />
                 <GridColumn Field="t => t.User.UserName" style="width:100px" />
@@ -78,5 +57,15 @@
 
 @code
 {
+    MembershipService<Role, UserMembership, User> Service;
 
+    protected override void OnInitialized()
+    {
+        Service = new MembershipService<Role, UserMembership, User>(ServiceProvider);
+        Service.MasterId = RoleId;
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public int RoleId { get; set; }
 }

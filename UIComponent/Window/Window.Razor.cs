@@ -156,7 +156,8 @@ namespace Caspian.UI
 
         public void Dispose()
         {
-            Service?.ClearWindow();
+            if (Service != null) 
+                Service.Window = null;
         }
     }
 }

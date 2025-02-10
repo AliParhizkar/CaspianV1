@@ -1700,8 +1700,8 @@ span, label, td, th {
     display: inline-block;
     width: calc(100% - 20px);
     white-space:nowrap;
-    overflow:hidden;
     text-overflow:ellipsis;
+    font-size:14px;
 }
 .c-messagebox .c-question {
     border: 3px solid #facea8;
@@ -2252,7 +2252,8 @@ html body .t-button-bare {
 }
 
 .t-animation-container .t-state-hover {
-    border-radius: 4px;
+    /*commontfor dropdown hover*/
+    /*border-radius: 4px;*/
 }
 
 .t-icon, .t-sprite, .t-editor-button .t-tool-icon {
@@ -3704,8 +3705,8 @@ html body .t-grid tbody .t-button-icon {
 }
 
 .errorMessage .c-icon {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     line-height: 31px;
     background-color: #FFA300;
     vertical-align: middle;
@@ -3716,7 +3717,7 @@ html body .t-grid tbody .t-button-icon {
 }
 .errorMessage .fa-info {
     color: white;
-    font-size: 16px;
+    font-size: 14px;
     vertical-align: text-top;
     font-weight: normal;
     padding: 0;

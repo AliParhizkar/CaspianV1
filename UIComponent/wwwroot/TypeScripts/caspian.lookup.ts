@@ -24,13 +24,13 @@
                 let helpWindow = target.getElementsByClassName('t-HelpWindow')[0] as HTMLElement;
                 if (helpWindow != null) {
                     let animate = target.getElementsByClassName('t-animation-container')[0] as HTMLElement;
+
                     let locTarget = target.getBoundingClientRect();
                     let locHelpWindow = helpWindow.getBoundingClientRect();
                     let left = (locHelpWindow.width - locTarget.width) / 2;
                     let posTarget = target.getPosition();
-
                     if (posTarget.left - left + locHelpWindow.width > window.innerWidth)
-                        left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 20;
+                        left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 26;
                     animate.style.marginLeft = `${-left}px`;
                     animate.style.width = `${locHelpWindow.width + 10}px`;
                     animate.style.height = `${locHelpWindow.height + 5}px`;
@@ -44,9 +44,9 @@
                         animate.classList.add('c-animate-up');
                         setTimeout(() => helpWindow.style.bottom = '0', 25);
                     }
-                    else {
+                    else 
                         helpWindow.style.top = `${-locHelpWindow.height}`;
-                    }
+                    setTimeout(() => animate.style.overflow = 'visible', 500);
                     if (lookup.attributes['autoHide']) {
                         window.onclick = async function (e: MouseEvent) {
                             if (!(e.target as HTMLElement).closest('.c-lookup'))

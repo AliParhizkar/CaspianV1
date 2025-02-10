@@ -1,18 +1,14 @@
 ﻿@namespace Caspian.Engine.WorkflowEngine
-@inherits SimplePage<DynamicParameter>
+@inject IUIService<DynamicParameter> Service
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
 <div class="p-4">
-    <div class="row c-controls ps-4 pe-4">
-        <div class="col-md-4">
-            <label>روش محاسبه</label>
-        </div>
-        <div class="col-md-8">
-            <DropdownList @bind-Value="SearchData.CalculationType" />
-        </div>
-    </div>
-    <DataGrid @ref="CrudGrid" TEntity="DynamicParameter" PersistState @bind-Search="SearchData">
+    <EntitySearch Service="Service">
+        <DropdownList @bind-Value="context.CalculationType" ColSpan="8" />
+    </EntitySearch>
+    <DataGrid TEntity="DynamicParameter" Service="Service" PersistState>
         <Columns Context="con">
             <GridColumn Field="t => t.EntityName">
                 <Template>
@@ -55,76 +51,28 @@
         </Columns>
     </DataGrid>
 </div>
-<Window @ref="UpsertWindow" Title="تعریف پارامتر" Style="width:500px"
-        OnOpen="() =>
-                    {
-                        if (UpsertData.Id == 0)
-                        {
-                            UpsertData.CalculationType = CalculationType.UserData;
-                            UpsertData.SubSystem = SubSystem;
-                        }
-                    }">
-    <Content>
-        <CaspianForm @ref="UpsertForm" Model="UpsertData">
-            <div class="row c-controls ps-4 pe-4">
-                <div class="col-md-4">
-                    <label>نظام پرداخت حقوق</label>
-                </div>
-                <div class="col-md-8">
-                    <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="UpsertData.EntityName" Source="entities" />
-                </div>
-                <div class="col-md-4">
-                    <label>عنوان فارسی پارامتر</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.Title" />
-                </div>
-                <div class="col-md-4">
-                    <label>عنوان لاتین پارامتر</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.EnTitle" />
-                </div>
-                <div class="col-md-4">
-                    <label>روش محاسبه</label>
-                </div>
-                <div class="col-md-8">
-                    <RadioList Style="width:100%" @bind-Value="UpsertData.CalculationType" />
-                </div>
-                @if (UpsertData.CalculationType == CalculationType.UserData)
-                {
-                    <div class="col-md-4">
-                        <label>نوع کنترل</label>
-                    </div>
-                    <div class="col-md-8">
-                        <DropdownList @bind-Value="UpsertData.ControlType" FilterFunc="t => ControlsType.Contains(t)" />
-                    </div>
-                }
-                else
-                {
-                    <div class="col-md-4">
-                        <label>نوع خروجی</label>
-                    </div>
-                    <div class="col-md-8">
-                        <DropdownList @bind-Value="UpsertData.ResultType" />
-                    </div>
-                }
-                @if (UpsertData.CalculationType == CalculationType.UserData && UpsertData.ControlType == ControlType.Numeric || UpsertData.CalculationType != CalculationType.UserData && UpsertData.ResultType == ResultType.Numeric)
-                {
-                    <div class="col-md-4">
-                        <label>تعداد ارقام اعشار</label>
-                    </div>
-                    <div class="col-md-8">
-                        <NumericTextBox @bind-Value="UpsertData.DecimalNumber" />
-                    </div>
-                }
-                <div class="col-md-4"></div>
-                <div class="col-md-8">
-                    <FormCommandButton />
-                </div>
-            </div>
-        </CaspianForm>
-    </Content>
+<Window Title="تعریف پارامتر" Service="Service" Style="width:500px" OnOpen="OnWindowOpen">
+    <CaspianForm Service="Service">
+        <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="context.EntityName" Source="entities" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <StringTextBox Style="direction:ltr" @bind-Value="context.EnTitle" ColSpan="8" />
+        <RadioList Style="width:100%" @bind-Value="context.CalculationType" />
+        @if (context.CalculationType == CalculationType.UserData)
+        {
+            <DropdownList @bind-Value="context.ControlType" FilterFunc="t => ControlsType.Contains(t)" ColSpan="8" />
+        }
+        else
+        {
+            <DropdownList @bind-Value="context.ResultType" ColSpan="8" />
+        }
+        @if (context.CalculationType == CalculationType.UserData && context.ControlType == ControlType.Numeric || context.CalculationType != CalculationType.UserData && context.ResultType == ResultType.Numeric)
+        {
+            <NumericTextBox @bind-Value="context.DecimalNumber" ColSpan="8" />
+        }
+        <div class="col-md-8">
+            <FormCommandButton />
+        </div>
+    </CaspianForm>
 </Window>
 
 
@@ -132,6 +80,16 @@
 {
     IList<SelectListItem> entities;
     IList<ControlType?> ControlsType;
+
+    void OnWindowOpen()
+    {
+        if (Service.UpsertData.Id == 0)
+        {
+            Service.UpsertData.CalculationType = CalculationType.UserData;
+            Service.UpsertData.SubSystem = SubSystem;
+        }
+    }
+
 
     protected override void OnInitialized()
     {
@@ -151,7 +109,7 @@
             .Include("ResultParameters.Rule").SingleAsync(id);
         param.Priority = service.CalculatePriority(param);
         await service.SaveChangesAsync();
-        await CrudGrid.ReloadAsync();
+        await Service.DataView.ReloadAsync();
     }
 
     [Parameter]

@@ -196,13 +196,13 @@ namespace Caspian.UI
 
         async Task ResetFormAsync()
         {
-            //firstControl = null;
-            //foreach (var control in controls)
-            //{
-            //    await control.ResetAsync();
-            //}
-            //if (OnReset.HasDelegate)
-            //    await OnReset.InvokeAsync();
+            firstControl = null;
+            foreach (var control in controls)
+            {
+                await control.ResetAsync();
+            }
+            if (OnReset.HasDelegate)
+                await OnReset.InvokeAsync();
         }
 
         protected override void OnParametersSet()

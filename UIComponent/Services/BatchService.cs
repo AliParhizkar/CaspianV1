@@ -18,10 +18,17 @@ namespace Caspian.UI
         protected IJSRuntime jSRuntime;
         protected BatchServiceData batchServiceData;
         protected IDictionary<string, SearchType> searchData;
+        bool onlyForSearch;
+
 
         public async Task UpdateChildOfModelAsync(Type type)
         {
             throw new NotImplementedException();
+        }
+
+        public void OnlyForSearch()
+        {
+            onlyForSearch = true;
         }
 
         public IDictionary<string, SearchType> GetSearchData()
@@ -202,7 +209,7 @@ namespace Caspian.UI
         public void DataViewInitialize()
         {
             DataView.Search = Search;
-            DataView.InsertIconState(true);
+            DataView.InsertIconState(!onlyForSearch);
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TMaster>(this, async master =>
             {
                 if (Window != null)
@@ -292,79 +299,5 @@ namespace Caspian.UI
             //UpsertData = null;
             //ChangedEntities = null;
         }
-    }
-
-    public interface IUIService<TEntity>: IUIService, ISearchService<TEntity> where TEntity : class
-    {
-        int MasterId { get; set; }
-
-        CaspianForm<TEntity> Form { get; set; }
-
-        void FormInitialize();
-
-        Task FetchAsync();
-
-        Task UpdateChildOfModelAsync(Type childType);
-
-        TEntity UpsertData { get; }
-
-        void ClearForm();
-
-        Type DetailType { get;}
-
-        IEntityTabPanel EntityTabPanel { get; set; }
-
-        Func<TEntity, Task<bool>> OnUpsert { get; set; }
-
-        void TabPanelInitialize();
-    }
-
-    public interface ISearchService<TEntity> where TEntity:class
-    {
-        DataView<TEntity> DataView { get; set; }
-
-        TEntity Search { get; }
-
-        void DataViewInitialize();
-
-        void SetSearchType(IDictionary<string, SearchType> types);
-
-        IDictionary<string, SearchType> GetSearchData();
-    }
-
-    public interface ISimpleBatchService<TDetail>
-    {
-        int MasterId { get; }
-
-        IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
-
-        void DetailDataViewInitialize();
-    }
-
-    public interface IDetailBatchService<TDetail>: ISimpleBatchService<TDetail> where TDetail : class
-    {
-        DataView<TDetail> DetailDataView { get; set; }
-
-        TypeWindow<TDetail> TypeWindow { get; set; }
-
-        CaspianForm<TDetail> DetailForm { get; set; }
-
-        void DetailTypwWindowInitialize();
-
-        void DetailFormInitialize();
-    }
-
-    public interface IUIService
-    {
-        Window Window { get; set; }
-
-        void WindowInitialize();
-
-        void ClearWindow()
-        {
-            Window = null;
-        }
-
-        void Dispose();
     }
 }

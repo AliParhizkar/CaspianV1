@@ -7,6 +7,7 @@ using Caspian.Common.Extension;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
 using Caspian.UI;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Caspian.Engine.Service
 {
@@ -82,6 +83,8 @@ namespace Caspian.Engine.Service
                                 services.AddScoped(interfaceType, provider => Activator.CreateInstance(type, provider));
                                 var batchServiceType = typeof(BatchService<,,>).MakeGenericType(baseType.GenericTypeArguments);
                                 services.AddScoped(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
+                                var searchType = typeof(ISearchService<>).MakeGenericType(type1);
+                                services.TryAddTransient(searchType, provider => Activator.CreateInstance(batchServiceType, provider));
                             }
                         }
                         else if (baseType.GenericTypeArguments.Length == 2)
@@ -91,8 +94,10 @@ namespace Caspian.Engine.Service
                             {
                                 var interfaceType = typeof(IMasterDetailsService<, >).MakeGenericType(type1, type2);
                                 services.AddScoped(interfaceType, provider => Activator.CreateInstance(type, provider));
+                                var searchType = typeof(ISearchService<>).MakeGenericType(type1);
                                 var batchServiceType = typeof(BatchService<,>).MakeGenericType(baseType.GenericTypeArguments);
                                 services.AddScoped(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
+                                services.TryAddTransient(searchType, provider => Activator.CreateInstance(batchServiceType, provider));
                             }
                         }
                         else if (baseType.GenericTypeArguments.Length == 1)
@@ -103,8 +108,10 @@ namespace Caspian.Engine.Service
                             {
                                 services.AddScoped(typeof(IBaseService<>).MakeGenericType(genericType), provider => Activator.CreateInstance(type, provider));
                                 var simpleInterfaceService = typeof(IUIService<>).MakeGenericType(genericType);
+                                var searchType = typeof(ISearchService<>).MakeGenericType(genericType);
                                 var simpleServiceType = typeof(UIService<>).MakeGenericType(genericType);
                                 services.AddScoped(simpleInterfaceService, provider => Activator.CreateInstance(simpleServiceType, provider));
+                                services.TryAddTransient(searchType, provider => Activator.CreateInstance(simpleServiceType, provider));
                                 break;
                             }
                             else

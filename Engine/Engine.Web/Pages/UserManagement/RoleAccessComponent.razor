@@ -1,32 +1,21 @@
 ﻿@namespace Caspian.Engine.UserManagement
-@inherits AccessPage<Role, MenuAccessibility, Menu>
+
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
 <div class="row">
     <div class="col-md-5">
-        <div class="row c-controls">
-            <div class="col-md-4">
-                <label>Menu category</label>
-            </div>
-            <div class="col-md-8">
-                <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="MemberSearch.MenuCategoryId"
-                            ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title"
-                            OnChange="() => MemberGrid.EnableLoading()" />
-            </div>
-            <div class="col-md-4">
-                <label>Menu</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="MemberSearch.Title" OnChange="() => MemberGrid.EnableLoading()" />
-            </div>
-            <div class="col-md-12 text-center">
-                <hr />
-                <span class="d-membership">Inaccessible menus</span>
-            </div>
+        <EntitySearch TEntity="Menu" Service="Service">
+            <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" ColSpan="8"
+                      ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title" />
+            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        </EntitySearch>
+        <div class="col-md-12 text-center">
+            <hr class="m-0 mt-3" />
+            <span class="d-membership">Inaccessible menus</span>
         </div>
-        <DataGrid @ref="MemberGrid" TEntity="Menu" Search="MemberSearch" 
-                    ConditionExpr="t => t.SubSystemKind == SubSystem && t.Title != null" ContentHeight="330">
+        <DataGrid TEntity="Menu" Service="Service" ConditionExpr="t => t.SubSystemKind == SubSystem && t.Title != null" ContentHeight="330">
             <Columns>
                 <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
                 <GridColumn Field="t => t.Title" style="width:150px" />
@@ -35,40 +24,29 @@
     </div>
     <div class="col-md-1">
         <div class="row align-content-center h-100">
-            <CaspianForm @ref="UpsertForm" Model="UpsertData">
+            <CaspianForm  Service="Service">
                 <div class="d-btn-container">
                     <IconButton IconType="IconType.AngleRight" />
                     <div>
-                        <IconButton type="button" @onclick="async () => await base.DeleteAsync()"
-                                    IconType="IconType.AngleLeft" />
+                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()"
+                        IconType="IconType.AngleLeft" />
                     </div>
                 </div>
             </CaspianForm>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="row c-controls">
-            <div class="col-md-4">
-                <label>Menu category</label>
-            </div>
-            <div class="col-md-8">
-                <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="SearchData.Menu.MenuCategoryId"
-                          ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title"
-                          OnChange="() => MemberGrid.EnableLoading()" />
-            </div>
-            <div class="col-md-4">
-                <label>Menu</label>
-            </div>
-            <div class="col-md-8">
-                <StringTextBox @bind-Value="SearchData.Menu.Title" />
-            </div>
-            <div class="col-md-12 text-center">
-                <hr />
-                <span class="d-membership">Accessible menus</span>
-            </div>
+        <EntitySearch Service="Service" TEntity="MenuAccessibility">
+            <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.Menu.MenuCategoryId"
+                      ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title" ColSpan="8" />
+            <StringTextBox @bind-Value="context.Menu.Title" ColSpan="8" />
+
+        </EntitySearch>
+        <div class="col-md-12 text-center">
+            <hr class="m-0 mt-3" />
+            <span class="d-membership">Accessible menus</span>
         </div>
-        <DataGrid @ref="CrudGrid" TEntity="MenuAccessibility" Search="SearchData" ContentHeight="330"
-                  ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" >
+        <DataGrid TEntity="MenuAccessibility" Service="Service" ContentHeight="330" ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" >
             <Columns>
                 <GridColumn Field="t => t.Menu.MenuCategory.Title" Title="Menu category" />
                 <GridColumn Field="t => t.Menu.Title" />
@@ -80,6 +58,18 @@
 
 @code
 {
+    MembershipService<Role, MenuAccessibility, Menu> Service;
+
     [Parameter]
     public SubSystemKind SubSystem { get; set; }
+
+    [Parameter]
+    public int RoldId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Service = new MembershipService<Role, MenuAccessibility, Menu>(base.ServiceProvider);
+        Service.MasterId = RoldId;
+        base.OnInitialized();
+    }
 }

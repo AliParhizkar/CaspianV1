@@ -73,7 +73,7 @@ namespace Caspian.UI
         public bool? ShowInsertIcon { get; set; }
 
         [Parameter]
-        public IUIService<TEntity> Service { get; set; }
+        public ISearchService<TEntity> Service { get; set; }
 
         [Parameter]
         public IDetailBatchService<TEntity> DetailsService { get; set; }
@@ -114,6 +114,13 @@ namespace Caspian.UI
         internal EventCallback<TEntity> OnInternalDelete { get; set; }
 
         public abstract Task<TEntity> SelectRowById(int id);
+
+        public TEntity GetSelectedData()
+        {
+            if (SelectedRowIndex == null || items == null || items.Count < SelectedRowIndex.Value || SelectedRowIndex == -1)
+                return null;
+            return items.ElementAt(SelectedRowIndex.Value);
+        }
 
         /// <summary>
         /// Return entities in batch state
@@ -173,6 +180,10 @@ namespace Caspian.UI
             StateHasChanged();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task ScrollIntoViewSeledtedRow()
         {
             StateHasChanged();

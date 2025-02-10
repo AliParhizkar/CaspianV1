@@ -356,8 +356,6 @@ namespace Caspian.UI
             }
         }
 
-        public Window Control { get; set; }
-
         [Parameter]
         public Func<IQueryable<TEntity>, IQueryable<TEntity>> OnDataBinding { get; set; }
 
@@ -386,13 +384,6 @@ namespace Caspian.UI
             shouldFetchData = true;
             await OnParametersSetAsync();
             StateHasChanged();
-        }
-
-        public TEntity GetSelectedData()
-        {
-            if (SelectedRowIndex == null || items == null || items.Count < SelectedRowIndex.Value || SelectedRowIndex == -1)
-                return null;
-            return items.ElementAt(SelectedRowIndex.Value);
         }
 
         public async Task ResetGrid()

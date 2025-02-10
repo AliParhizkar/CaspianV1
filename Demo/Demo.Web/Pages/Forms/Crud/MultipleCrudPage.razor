@@ -1,9 +1,9 @@
 ﻿@page "/Demo/MultipleCrud"
 @namespace Demo.Web
 @inherits BasePage
-@inject UIService<ProductCategory> CategoryService
-@inject UIService<Product> ProductService
-@inject UIService<ProductDescription> DescriptionService
+@inject IUIService<ProductCategory> CategoryService
+@inject IUIService<Product> ProductService
+@inject IUIService<ProductDescription> DescriptionService
 @{
     base.BuildRenderTree(__builder);
 }
@@ -22,7 +22,7 @@
                     </span>
                 </div>
                 <EntitySearch Service="CategoryService">
-                    <StringTextBox @bind-Value="context.Title" ColSpan="8" Search />
+                    <StringTextBox @bind-Value="context.Title" ColSpan="8" />
                 </EntitySearch>
                 <DataGrid TEntity="ProductCategory" Service="CategoryService" ContentHeight="208" OnRowSelect="ShowProductGrid">
                     <Columns>

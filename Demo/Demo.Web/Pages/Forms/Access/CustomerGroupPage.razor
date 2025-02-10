@@ -1,6 +1,6 @@
 ﻿@page "/Demo/CustomerGroup"
 @namespace Demo.Web.Pages
-@inject UIService<CustomerGroup> Service
+@inject IUIService<CustomerGroup> Service
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -20,7 +20,7 @@
                 <div class="col-md-7 p-3">
                     <div class="row c-controls">
                         <EntitySearch Service="Service">
-                            <StringTextBox @bind-Value="context.Title" Search ColSpan="9" />
+                            <StringTextBox @bind-Value="context.Title" ColSpan="9" />
                         </EntitySearch>
                     </div>
                     <DataGrid TEntity="CustomerGroup" Service="Service" ContentHeight="300">
@@ -37,15 +37,13 @@
                     </DataGrid>
                     <Window Title="Customer Group" Service="Service" Style="width:400px">
                         <CaspianForm Service="Service">
-                            <Content Context="group">
-                                <div class="row c-controls ps-3 pe-3">
-                                    <StringTextBox @bind-Value="group.Title" ColSpan="9" />
-                                    <DropdownList @bind-Value="group.ActiveType" ColSpan="9" />
-                                    <div class="col-md-9">
-                                        <FormCommandButton />
-                                    </div>
+                            <div class="row c-controls ps-3 pe-3">
+                                <StringTextBox @bind-Value="context.Title" ColSpan="9" />
+                                <DropdownList @bind-Value="context.ActiveType" ColSpan="9" />
+                                <div class="col-md-9">
+                                    <FormCommandButton />
                                 </div>
-                            </Content>
+                            </div>
                         </CaspianForm>
                     </Window>
                 </div>

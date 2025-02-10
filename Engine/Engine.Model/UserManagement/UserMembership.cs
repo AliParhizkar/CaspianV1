@@ -10,14 +10,14 @@ namespace Caspian.Engine.Model
         [Key]
         public int Id { get; set; }
 
-        //public override int UserId { get; set; }
+        public override int UserId { get; set; }
 
-        //[ForeignKey(nameof(UserId))]
+        [ForeignKey(nameof(UserId))]
         public User User { get; set; }
 
-        //public override int RoleId { get; set; }
+        public override int RoleId { get; set; }
 
-        //[ForeignKey(nameof(RoleId))]
-        //public Role Role { get; set; }
+        [ForeignKey(nameof(RoleId))]
+        public Role Role { get; set; }
     }
 }

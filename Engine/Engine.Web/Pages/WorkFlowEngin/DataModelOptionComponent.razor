@@ -1,10 +1,10 @@
 ﻿@namespace Caspian.Engine.WorkFlow
-@inherits SimplePage<DataModelOption>
+@inject IUIService<DataModelOption> Service
 @{
     base.BuildRenderTree(__builder);
 }
 <div class="p-4">
-    <DataGrid @ref="CrudGrid" TEntity="DataModelOption" ContentHeight="300" ConditionExpr="t => t.FieldId == FieldId">
+    <DataGrid Service="Service" TEntity="DataModelOption" ContentHeight="300" ConditionExpr="t => t.FieldId == FieldId">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Name" />
@@ -13,29 +13,14 @@
     </DataGrid>
 </div>
 
-<Window @ref="UpsertWindow" Title="Options" Style="width:500px">
-    <Content>
-        <CaspianForm TEntity="DataModelOption" @ref="UpsertForm" Model="UpsertData" OnSubmit="() => UpsertData.FieldId = FieldId">
-            <div class="row ps-4 pe-4 c-controls">
-                <div class="col-md-4">
-                    <label>Title</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox @bind-Value="UpsertData.Title" />
-                </div>
-                <div class="col-md-4">
-                    <label>Name</label>
-                </div>
-                <div class="col-md-8">
-                    <StringTextBox Style="direction:ltr" @bind-Value="UpsertData.Name" />
-                </div>
-                <div class="col-md-4"></div>
-                <div class="col-md-8">
-                    <FormCommandButton />
-                </div>
-            </div>
-        </CaspianForm>
-    </Content>
+<Window Service="Service" Title="Options" Style="width:500px">
+    <CaspianForm TEntity="DataModelOption" Service="Service" OnSubmit="data => data.FieldId = FieldId">
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <StringTextBox Style="direction:ltr" @bind-Value="context.Name" ColSpan="8" />
+        <div class="col-md-8">
+            <FormCommandButton />
+        </div>
+    </CaspianForm>
 </Window>
 @code 
 {

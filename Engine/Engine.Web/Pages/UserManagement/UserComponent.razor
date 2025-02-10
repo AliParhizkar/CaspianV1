@@ -7,7 +7,7 @@
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject UserManager<User> UserManager
 @inject IUserStore<User> UserStore
-@inject UIService<User> Service
+@inject IUIService<User> Service
 
 @{
     base.BuildRenderTree(__builder);
@@ -50,7 +50,7 @@
     </Columns>
 </DataGrid>
 
-<Window Service="Service" Title="User properties" Style="max-width:500px;" StatusChanged="WindowStatusChanged">
+<Window Service="Service" Title="User properties" Style="max-width:500px;" OnOpen="() => confirmPassword = string.Empty">
     <CaspianForm TEntity="User" Service="Service" OnSubmit="SetPasswordForUpdate" OnValidSubmit="RegisterUser">
         <StringTextBox @bind-Value="context.FName" ColSpan="9" />
         <StringTextBox @bind-Value="context.LName" ColSpan="9" />
@@ -70,8 +70,8 @@
 @code
 {
     string confirmPassword;
-    private IEnumerable<Microsoft.AspNetCore.Identity.IdentityError> identityErrors;
-    private string Message => identityErrors is null 
+    IEnumerable<Microsoft.AspNetCore.Identity.IdentityError> identityErrors;
+    string Message => identityErrors is null 
                   ? null
                   : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
@@ -85,11 +85,6 @@
         base.OnParametersSet();
     }
 
-    void WindowStatusChanged(WindowStatus status)
-    {
-        if (status == WindowStatus.Close)
-            confirmPassword = string.Empty;
-    }
     
     void OnUpsert(FormData<User> formData)
     {
@@ -124,8 +119,8 @@
     {
         if (user.Id > 0)
         {
-            var scope = CreateScope();
-            var old = await new UserService(scope.ServiceProvider).SingleAsync(user.Id);
+            using var service = CreateScope().GetService<UserService>();
+            var old = await service.SingleAsync(user.Id);
             user.UserName = old.UserName;
             ///In update password should be and in service not changed
             user.Password = null;

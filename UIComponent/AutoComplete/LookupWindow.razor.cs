@@ -18,7 +18,7 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             SearchData = Activator.CreateInstance<TEntity>();
-            Service?.IsLookup();
+            Service?.OnlyForSearch();
             base.OnInitialized();
             
         }
@@ -30,7 +30,7 @@ namespace Caspian.UI
         public IAutoComplete<TEntity> AutoComplete { get; set; }
 
         [Inject]
-        public UIService<TEntity> Service { get; set; }
+        public ISearchService<TEntity> Service { get; set; }
 
         protected override async Task OnParametersSetAsync()
         {

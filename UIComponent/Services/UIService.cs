@@ -13,28 +13,25 @@ namespace Caspian.UI
 {
     public class UIService<TEntity>: IUIService<TEntity> where TEntity : class
     {
-        bool isLookup;
-        
-        IJSRuntime jSRuntime;
+        protected IJSRuntime jSRuntime;
         BaseComponentService baseComponentService;
         BasePageService basePageService;
         IDictionary<string, SearchType> searchData;
 
         public IServiceProvider ServiceProvider { get; private set; }
 
-        internal void IsLookup()
-        {
-            isLookup = true;
-        }
-
         public IDictionary<string, SearchType> GetSearchData()
         {
             return searchData;
         }
 
+        public void OnlyForSearch()
+        {
+
+        }
+
         public void Dispose()
         {
-            isLookup = default;
             DetailType = default;
             Is1To1RelationshipService = default;
             MasterId = default;
@@ -103,6 +100,8 @@ namespace Caspian.UI
 
         public DataView<TEntity> DataView { get; set; }
 
+        protected bool HideInsertIcon { get; set; }
+
         public CaspianForm<TEntity> Form { get; set; }
 
         public TEntity UpsertData { get; private set; }
@@ -127,6 +126,12 @@ namespace Caspian.UI
 
         public Func<TEntity, Task<bool>> OnUpsert { get; set; }
 
+        protected Action<TEntity> OnFormSubmit { get; set; }
+
+        protected Action<TEntity> OnFormValidSubmit { get; set; }
+
+        protected Action<TEntity> OnAfterDelete { get; set; }
+
         public void FormInitialize()
         {
             if (UpsertData == null)
@@ -140,7 +145,7 @@ namespace Caspian.UI
             });
             Form.OnInternalSubmit = EventCallback.Factory.Create<TEntity>(this, entity =>
             {
-
+                OnFormSubmit?.Invoke(entity);
             });
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
@@ -175,6 +180,8 @@ namespace Caspian.UI
                     message = "Updating was done successfully";
                 }
                 await service.SaveChangesAsync();
+                OnFormValidSubmit?.Invoke(entity);
+
                 if (DataView != null)
                 {
                     if (id == 0)
@@ -210,7 +217,7 @@ namespace Caspian.UI
             page.ChangeState();
         }
 
-        IServiceScope CreateScope()
+        protected IServiceScope CreateScope()
         {
             return ServiceProvider.CreateScope();
         }
@@ -218,8 +225,6 @@ namespace Caspian.UI
         public void DataViewInitialize()
         {
             DataView.Search = Search;
-            if (!isLookup)
-                DataView.InsertIconState(true);
             if (MasterType != null && MasterId > 0)
             {
                 var param = Expression.Parameter(typeof(TEntity), "t");
@@ -296,14 +301,13 @@ namespace Caspian.UI
                 var result = await service.ValidateRemoveAsync(old);
                 if (result.IsValid)
                 {
-                    
                     if (!DataView.DeleteMessage.HasValue() || await Confirm(DataView.DeleteMessage))
                     {
                         await service.RemoveAsync(old);
                         await service.SaveChangesAsync();
                         await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
                         await DataView.ReloadAsync();
-
+                        OnAfterDelete?.Invoke(old);
                     }
                 }
                 else
