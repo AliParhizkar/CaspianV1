@@ -198,11 +198,6 @@ namespace Caspian.UI
                         item.Depth = (byte)(node.Depth.Value + 1);
                 }
             }
-            if (AutoSelectable) 
-            {
-                UpdateSelectionForChilren(node);
-                UpdateSelectionForParent(node);
-            }
             await OnChange.InvokeAsync(node);
             await OnInternalCHanged.InvokeAsync(node);
         }
@@ -239,6 +234,14 @@ namespace Caspian.UI
                         return info.GetValue(entity) == null;
                     };
                 }
+            }
+            if (AutoSelectable)
+            {
+                OnInternalCHanged = EventCallback.Factory.Create<NodeView>(this, node =>
+                {
+                    UpdateSelectionForChilren(node);
+                    UpdateSelectionForParent(node);
+                });
             }
             base.OnInitialized();
         }

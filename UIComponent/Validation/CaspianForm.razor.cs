@@ -1,12 +1,10 @@
-﻿using System.Data;
-using Caspian.Common;
+﻿using Caspian.Common;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics.Metrics;
 
 namespace Caspian.UI
 {
@@ -58,9 +56,15 @@ namespace Caspian.UI
 
         internal EventCallback OnInternalReset { get; set; }
 
-        string ICaspianContainer.GetLableContainerCSSClassName(int colSpan)
+        [CascadingParameter(Name = "CSS-Right-To-Left")]
+        internal bool RightToLeft { get; set; }
+
+        string ICaspianContainer.GetLableContainerCSSClassName(int colSpan, int? totalSpan)
         {
-            string className = "ps-2 col-md-";
+            var className = RightToLeft ? "pe-2" : "ps-2";
+            className += " col-md-";
+            if (totalSpan.HasValue)
+                return className + (totalSpan.Value - colSpan);
             if (ColumnsCount == 1)
                 return className + (12 - colSpan);
             if (colSpan < 6)
@@ -70,9 +74,10 @@ namespace Caspian.UI
             return className;
         }
 
-        string ICaspianContainer.GetControlContainerCSSClassName(int colSpan)
+        string ICaspianContainer.GetControlContainerCSSClassName(int colSpan, int? totalSpan)
         {
-            return $"col-md-{colSpan} pe-2";
+            var str = $"col-md-{colSpan} ";
+            return str + (RightToLeft ? "ps-2" : "pe-2");
         }
 
         public void SetFirstControl(IControl control)

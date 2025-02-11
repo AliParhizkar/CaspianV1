@@ -225,6 +225,7 @@ namespace Caspian.UI
         public void DataViewInitialize()
         {
             DataView.Search = Search;
+            DataView.ShowInsertIcon = DataView.ShowInsertIcon ?? true;
             if (MasterType != null && MasterId > 0)
             {
                 var param = Expression.Parameter(typeof(TEntity), "t");

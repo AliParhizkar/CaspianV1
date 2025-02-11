@@ -1141,28 +1141,29 @@ var caspian;
                 let target = list[0].target;
                 let helpWindow = target.getElementsByClassName('t-HelpWindow')[0];
                 if (helpWindow != null) {
-                    let animate = target.getElementsByClassName('t-animation-container')[0];
                     let locTarget = target.getBoundingClientRect();
                     let locHelpWindow = helpWindow.getBoundingClientRect();
                     let left = (locHelpWindow.width - locTarget.width) / 2;
                     let posTarget = target.getPosition();
                     if (posTarget.left - left + locHelpWindow.width > window.innerWidth)
                         left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 26;
-                    animate.style.marginLeft = `${-left}px`;
-                    animate.style.width = `${locHelpWindow.width + 10}px`;
-                    animate.style.height = `${locHelpWindow.height + 5}px`;
-                    if (locTarget.bottom + locHelpWindow.height - 30 <= window.innerHeight) {
-                        animate.classList.add('c-animate-down');
-                        setTimeout(() => helpWindow.style.top = '0', 25);
-                    }
-                    else if (locTarget.top >= locHelpWindow.height - 30) {
-                        animate.style.marginTop = `${-locHelpWindow.height - 43}px`;
-                        animate.classList.add('c-animate-up');
-                        setTimeout(() => helpWindow.style.bottom = '0', 25);
-                    }
-                    else
-                        helpWindow.style.top = `${-locHelpWindow.height}`;
-                    setTimeout(() => animate.style.overflow = 'visible', 500);
+                    if (locTarget.top >= locHelpWindow.height - 30)
+                        helpWindow.style.marginTop = `${-locHelpWindow.height - 38}px`;
+                    helpWindow.style.marginLeft = `${-left}px`;
+                    helpWindow.style.transform = 'scale(0)';
+                    setTimeout(() => {
+                        helpWindow.style.transition = '0.2s transform ease';
+                        helpWindow.style.transform = 'scale(100%)';
+                    }, 25);
+                    //if (locTarget.bottom + locHelpWindow.height - 30 <= window.innerHeight) {
+                    //    //setTimeout(() => helpWindow.style.top = '0', 25);
+                    //}
+                    //else if (locTarget.top >= locHelpWindow.height - 30) {
+                    //    helpWindow.style.marginTop = `${-locHelpWindow.height - 35}px`;
+                    //    //setTimeout(() => helpWindow.style.bottom = '0', 25);
+                    //}
+                    //else 
+                    //    helpWindow.style.top = `${-locHelpWindow.height}`;
                     if (lookup.attributes['autoHide']) {
                         window.onclick = function (e) {
                             return __awaiter(this, void 0, void 0, function* () {

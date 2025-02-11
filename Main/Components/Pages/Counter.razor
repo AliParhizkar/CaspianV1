@@ -1,15 +1,11 @@
 ﻿@page "/counter"
-<div style="width:350px;margin: 5px auto; height:150px">
-    <StringTextBox @bind-Value="str" MultiLine Rows="3" />
+
+<div style="width:350px;margin:10px auto">
+    <DropdownList @bind-Value="orderType" />
 </div>
-<button @onclick="() => IncCounter()">Inc</button>
+
+<span>@orderType</span>
 @code 
 {
-    string str;
-    int counter;
-    void IncCounter()
-    {
-        counter++;
-        str = counter.ToString();
-    }
+    OrderType orderType;
 }

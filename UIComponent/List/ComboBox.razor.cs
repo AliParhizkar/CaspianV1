@@ -19,23 +19,17 @@ namespace Caspian.UI
     public partial class ComboBox<TEntity, TValue>: ComponentBase, IComboBox<TEntity>, IControl, IListValueInitializer, 
         IEnableLoadData where TEntity: class
     {
-        bool LoadData;
+        bool LoadData, setToDefault, shouldRender = true, focused, fieldsAdd, disabled;
         int pageNumber = 1;
-        bool setToDefault;
-        string text, title;
+        string text, title, _FieldName;
         Expression cascadeExpression;
         Dictionary<string, object> attrs;
         WindowStatus? Status = WindowStatus.Close;
         WindowStatus? oldStatus = WindowStatus.Close;
         TValue OldValue = default(TValue);
-        string _FieldName;
         ValidationMessageStore _messageStore;
         IList items;
-        bool shouldRender = true;
-        bool focused;
-
         IList<Expression> fieldsExpression;
-        bool fieldsAdd;
         EditContext oldContext;
 
         internal int SelectedIndex { get; set; }
@@ -64,11 +58,11 @@ namespace Caspian.UI
         [CascadingParameter(Name = "ParentForm")]
         internal ICaspianForm CaspianForm { get; set; }
 
-        [CascadingParameter(Name = "ColumnsCount")]
-        public int ColumnsCount { get; set; } = 1;
-
         [Parameter]
         public int? ColSpan { get; set; }
+
+        [Parameter]
+        public int? TotalSpan { get; set; }
 
         [Parameter]
         public bool Pageable { get; set; } = true;
@@ -125,7 +119,7 @@ namespace Caspian.UI
 
         async Task ToggelDropdownList()
         {
-            if (!Disabled)
+            if (!disabled)
             {
                 if (Status == WindowStatus.Close)
                 {
@@ -146,15 +140,6 @@ namespace Caspian.UI
 
         public EventCallback<object> OnInternalValueChanged { get; set; }
 
-        public void Enable()
-        {
-            Disabled = false;
-        }
-
-        public void Disable()
-        {
-            Disabled = true;
-        }
 
         public bool HasError()
         {
@@ -287,7 +272,7 @@ namespace Caspian.UI
                 title = Title;
             CaspianForm?.AddControl(this);
             CaspianContainer?.SetControl(this);
-            Disabled = CaspianContainer?.Disabled == true;
+            disabled = CaspianContainer?.Disabled == true ? true : Disabled;
             base.OnParametersSet();
         }
 
@@ -325,7 +310,7 @@ namespace Caspian.UI
                 oldContext = CurrentEditContext;
             }
             attrs = new Dictionary<string, object>();
-            if (Disabled)
+            if (disabled)
                 attrs.Add("disabled", "disabled");
             if (Source != null)
                 items = Source.ToList();

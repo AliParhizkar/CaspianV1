@@ -199,7 +199,7 @@ namespace Caspian.Common
             return ruleBuilder.Custom((value, context) =>
             {
                 var language = context.GetLanguage();
-                if (value != null && (value.CompareTo(min) == -1 || value.CompareTo(max) == 1))
+                if (value != null && (value.CompareTo(min) < 0  || value.CompareTo(max) > 0))
                 {
                     if (language == Language.Fa)
                         message = message ?? "مقدار " + context.DisplayName + " باید بین {0} و {1} باشد";

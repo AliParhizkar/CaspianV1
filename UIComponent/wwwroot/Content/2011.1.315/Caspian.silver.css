@@ -588,8 +588,8 @@ html input[disabled], textarea[disabled] {
     position: absolute;
     z-index: 10000000;
     background-color: white;
-    border-radius:8px 8px 4px 4px;
-    border:1px solid gray;
+    border-radius: 8px 8px 4px 4px;
+    border: 1px solid gray;
 }
 .t-reset .t-state-selected {
     background-color: #ff6358!important;

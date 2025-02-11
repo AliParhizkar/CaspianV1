@@ -83,8 +83,8 @@
 
 <Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()">
     <CaspianForm Model="organUnit" TEntity="OrganUnit" OnValidSubmit="UpsertOrganUnit">
-        <StringTextBox @ref="firstControl" @bind-Value="organUnit.Title" ColSpan="9" />
-        <DropdownList @bind-Value="organUnit.ActiveType" ColSpan="9" />
+        <StringTextBox @ref="firstControl" @bind-Value="context.Title" ColSpan="9" />
+        <DropdownList @bind-Value="context.ActiveType" ColSpan="9" />
         <div class="col-md-9 text-center">
             <WindowCommandButtons />
         </div>

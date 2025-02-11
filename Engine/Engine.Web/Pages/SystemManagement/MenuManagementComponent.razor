@@ -1,24 +1,25 @@
 ﻿@namespace Caspian.Engine.SystemManagement
 @inherits BasePage
 @inject SingletonMenuService service
-@inject UIService<Menu> Service
-<EntitySearch Service="Service">
+@inject IUIService<Menu> Service
+<EntitySearch Service="Service" ColumnsCount="2">
     <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" ColSpan="4"
               TextExpression="t => t.Title" ConditionExpression="t => t.SubSystemKind == Subsystem" OrderByExpression="t => t.Ordering" />
     <StringTextBox @bind-Value="context.Title" ColSpan="4" />
-    <CheckBox @bind-Value="onlyUntitledMenus" ColSpan="4" />
-    <CheckBox @bind-Value="isDropped" ColSpan="4" />
-    <CheckBox @bind-Value="showInMenu" ColSpan="4" />
+    <CheckBox @bind-Value="onlyUntitledMenus" ColSpan="2" TotalSpan="4" />
+    <CheckBox @bind-Value="isDropped" ColSpan="2" TotalSpan="4" />
+    <CheckBox @bind-Value="showInMenu" ColSpan="2" TotalSpan="4" />
     <StringTextBox @bind-Value="context.Source" ColSpan="4" />
-</EntitySearch>
-
-<div class="row c-controls">
     <div class="col-md-3 text-center">
         <IconButton @onclick="async () => await UpdateMenus()" IconType="IconType.Refresh" title="Update menus" />
     </div>
     <div class="col-md-3 text-center">
         <IconButton @onclick="async () => await LoadMenus()" IconType="IconType.Refresh" title="Load menus" />
     </div>
+</EntitySearch>
+
+<div class="row c-controls">
+
     <div class="pt-4">
         <DataGrid TEntity="Menu" Service="Service" ContentHeight="300" ShowInsertIcon="false" ConditionExpr='t => (isDropped == null || t.IsDropped == isDropped) && (showInMenu == null || t.ShowonMenu == showInMenu.Value) && (!onlyUntitledMenus || t.Title == null) && t.SubSystemKind == Subsystem'>
             <Columns>

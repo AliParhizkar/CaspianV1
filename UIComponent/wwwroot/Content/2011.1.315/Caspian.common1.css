@@ -5,6 +5,17 @@
     padding-left: 12px;
 }
 
+.c-window-action button{
+    min-width:60px;
+}
+
+.page .content {
+    width: calc(100% - 160px);
+    transition: width .4s ease;
+}
+.page {
+    display: flex;
+}
 .c-node-clicked {
     background-color: #dae2f9;
     border-radius:8px;
@@ -447,9 +458,6 @@ input[type='range']::-webkit-slider-thumb {
     display: flex;
     align-items: center;
     color: #656565;
-}
-.c-checkbox-list .c-item{
-    padding:2px 0;
 }
 .c-listview-insert {
     width: 100%;
@@ -1496,11 +1504,10 @@ form > tr {
 
 .t-checkbox {
     white-space: nowrap;
-    height: 31px;
     line-height: 25px;
     display: inline-block;
     vertical-align: middle;
-    margin:2px;
+    margin:0 2px;
 }
 .c-grid-command {
     white-space: nowrap;
@@ -2252,8 +2259,7 @@ html body .t-button-bare {
 }
 
 .t-animation-container .t-state-hover {
-    /*commontfor dropdown hover*/
-    /*border-radius: 4px;*/
+    border-radius: 4px;
 }
 
 .t-icon, .t-sprite, .t-editor-button .t-tool-icon {

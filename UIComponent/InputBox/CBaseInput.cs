@@ -31,8 +31,8 @@ namespace Caspian.UI
         [Parameter]
         public int? ColSpan { get; set; }
 
-        [CascadingParameter(Name = "ColumnsCount")]
-        public int ColumnsCount { get; set; } = 1;
+        [Parameter]
+        public int? TotalSpan { get; set; }
 
         public string ErrorMessage { get; set; }
 

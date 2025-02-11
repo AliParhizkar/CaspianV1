@@ -7,7 +7,7 @@ namespace Caspian.Common
 {
     public static class OtherExtension
     {
-        public static void CopySimpleProperty<TModel>(this TModel model, TModel newModel)
+        internal static void CopySimpleProperty<TModel>(this TModel model, TModel newModel)
         {
             foreach (var info in typeof(TModel).GetProperties())
             {

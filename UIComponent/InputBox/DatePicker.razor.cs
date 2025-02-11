@@ -23,8 +23,9 @@ namespace Caspian.UI
         {
             if (!disabled)
             {
-                if (typeof(TValue).GetUnderlyingType() == typeof(DateTime))
-                    Value = (TValue)Convert.ChangeType(date, typeof(TValue));
+                var type = typeof(DateTime).GetUnderlyingType();
+                if (type == typeof(DateTime))
+                    Value = (TValue)Convert.ChangeType(date, type);
                 else
                 {
                     var dateOnly = new DateOnly(date.Year, date.Month, date.Day);

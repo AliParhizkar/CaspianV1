@@ -318,14 +318,8 @@ html, body {
         right: 0.75rem;
         top: 0.5rem;
     }
-.page {
-    display:flex;
-}
 
-.page .content {
-    width: calc(100% - 160px);
-    transition: width .4s ease;
-}
+
 
 .sys-page {
     display:flex;

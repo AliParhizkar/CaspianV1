@@ -99,6 +99,8 @@ namespace Caspian.Common
                             if (columnAttribute?.TypeName == null)
                                 modelBuilder.Entity(type).Property(property.Name).HasMaxLength(50);
                         }
+                        var requiredAttribute = property.GetCustomAttribute<RequiredAttribute>();
+                        modelBuilder.Entity(type).Property(property.Name).IsRequired(requiredAttribute != null);
                     }
                     else
                     {
@@ -116,9 +118,9 @@ namespace Caspian.Common
                         }
                         else if (propertyType == typeof(DateTime))
                         {
-                                                            var columnAttribute = type.GetCustomAttribute<ColumnAttribute>();
-                                if (columnAttribute?.TypeName == null)
-                                    modelBuilder.Entity(type).Property(property.Name).HasColumnType("datetime(2)");
+                            var columnAttribute = type.GetCustomAttribute<ColumnAttribute>();
+                            if (columnAttribute?.TypeName == null)
+                                modelBuilder.Entity(type).Property(property.Name).HasColumnType("datetime(2)");
                         }
                     }
                     

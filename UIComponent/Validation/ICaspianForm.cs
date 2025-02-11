@@ -25,8 +25,8 @@ namespace Caspian.UI
 
     internal interface ICaspianContainer
     {
-        string GetLableContainerCSSClassName(int colSpan);
+        string GetLableContainerCSSClassName(int colSpan, int? totalSpan);
 
-        string GetControlContainerCSSClassName(int colSpan);
+        string GetControlContainerCSSClassName(int colSpan, int? totalSpan);
     }
 }
