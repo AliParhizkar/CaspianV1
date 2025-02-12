@@ -36,7 +36,7 @@ namespace Caspian.UI
             return searchData;
         }
 
-        public Func<TMaster, Task<bool>> OnUpsert { get; set; }
+        public Func<IServiceProvider, TMaster, Task<bool>> OnUpsert { get; set; }
 
         public BatchService(IServiceProvider serviceProvider)
         {
@@ -144,7 +144,8 @@ namespace Caspian.UI
         protected virtual async Task UpdateDatabaseAsync(TMaster master)
         {
             var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
-            using var service = CreateScope().GetService<IMasterDetailsService<TMaster, TDetail>>();
+            using var scope = CreateScope();
+            var service = scope.GetService<IMasterDetailsService<TMaster, TDetail>>();
             var result = await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
             await service.SaveChangesAsync();
             ChangedEntities.Clear();
@@ -176,7 +177,7 @@ namespace Caspian.UI
                 await Window?.Close();
             StateHasChanged();
             if (OnUpsert != null)
-                OnUpsert.Invoke(result);
+                await OnUpsert.Invoke(scope.ServiceProvider, result);
         }
 
         public void FormInitialize()

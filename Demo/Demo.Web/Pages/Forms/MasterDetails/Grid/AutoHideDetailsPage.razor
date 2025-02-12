@@ -217,7 +217,7 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
         {
             t.Date = DateTime.Now.ToDateOnly();
         };
-        Service.OnUpsert = t =>
+        Service.OnUpsert = (p, t) =>
         {
             receiptId = t.Id;
             StateHasChanged();

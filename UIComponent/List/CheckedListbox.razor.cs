@@ -104,11 +104,16 @@ namespace Caspian.UI
         [Parameter]
         public EventCallback<ChangedEntity<TDetails>> OnChange {  get; set; }
 
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
+
         async Task DataBinding()
         {
             if (LoadData)
             {
-                using var service = ScopeFactory.CreateScope().GetService<IBaseService<TEntity>>();
+                using var scope = ScopeFactory.CreateScope();
+                scope.SetUserId(PageData);
+                var service = scope.GetService<IBaseService<TEntity>>();
                 var query = service.GetAll();
                 if (ConditionExpression != null)
                     query = query.Where(ConditionExpression);

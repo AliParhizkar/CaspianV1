@@ -1,5 +1,5 @@
 ﻿@using System.Drawing.Text
-@inject UIService<CaspianFont> Service
+@inject IUIService<CaspianFont> Service
 @inherits BasePage
 <EntitySearch Service="Service">
     <StringTextBox @bind-Value="context.Name" ColSpan="8" />

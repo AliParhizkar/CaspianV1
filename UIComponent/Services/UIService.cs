@@ -51,6 +51,8 @@ namespace Caspian.UI
 
         public Type DetailType { get; private set; }
 
+        internal int UserId { get; private set; }
+
         public bool Is1To1RelationshipService { get; private set; }
 
         public int MasterId { get; set; }
@@ -124,7 +126,7 @@ namespace Caspian.UI
             Is1To1RelationshipService = true;
         }
 
-        public Func<TEntity, Task<bool>> OnUpsert { get; set; }
+        public Func<IServiceProvider, TEntity, Task<bool>> OnUpsert { get; set; }
 
         protected Action<TEntity> OnFormSubmit { get; set; }
 
@@ -134,6 +136,7 @@ namespace Caspian.UI
 
         public void FormInitialize()
         {
+            UserId = ServiceProvider.GetService<CaspianDataService>().UserId;
             if (UpsertData == null)
                 UpsertData = Activator.CreateInstance<TEntity>();
             Form.Model = UpsertData;
@@ -150,12 +153,15 @@ namespace Caspian.UI
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
                 var result = true;
+                var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+                using var scope = CreateScope();
+                scope.SetUserId(UserId);
+                var service = scope.GetService<IBaseService<TEntity>>();
                 if (OnUpsert != null)
-                    result = await OnUpsert.Invoke(UpsertData);
+                    result = await OnUpsert.Invoke(scope.ServiceProvider, UpsertData);
                 if (!result)
                     return;
-                var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-                using var service = CreateScope().GetService<IBaseService<TEntity>>();
+
                 service.DetailType = DetailType;
                 string message = null;
                 var isAdd = false   ;
@@ -219,7 +225,10 @@ namespace Caspian.UI
 
         protected IServiceScope CreateScope()
         {
-            return ServiceProvider.CreateScope();
+            var scope = ServiceProvider.CreateScope();
+            UserId = ServiceProvider.GetService<CaspianDataService>().UserId;
+            scope.SetUserId(UserId);
+            return scope;
         }
 
         public void DataViewInitialize()
@@ -272,7 +281,9 @@ namespace Caspian.UI
 
             DataView.OnInternalDelete = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
-                using var service = CreateScope().GetService<IBaseService<TEntity>>();
+                using var scope = CreateScope();
+                scope.SetUserId(UserId);
+                var service = scope.GetService<IBaseService<TEntity>>();
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
                 ///For 1to1 relationship we should include all 1to1 relationship to cascade remove 
                 var list = new List<string>();

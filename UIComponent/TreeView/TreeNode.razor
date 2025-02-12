@@ -12,7 +12,7 @@
     <div class="c-node-template">
         @if (Item.Collabsable)
         {
-            var iconClassName = "fa fa-chevron-" + (RightToLeft ? "left" : "right");
+            var iconClassName = "fa fa-chevron-" + (PageData?.RightToLeft == true ? "left" : "right");
             <span class="c-icon">
                 <i @onclick="async () => await ToggleNode()" class="@(iconClassName)"></i>
             </span>
@@ -64,8 +64,8 @@
     bool? Collapsed;
     ElementReference Node;
 
-    [CascadingParameter(Name = "CSS-Right-To-Left")]
-    public bool RightToLeft { get; set; }
+    [CascadingParameter]
+    public PageData PageData { get; set; }
 
     IDictionary<string, object> GetTitleAttributes()
     {

@@ -284,13 +284,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        using var scope = ServiceScopeFactory.CreateScope();
+        using var scope = CreateScope();
         var service = scope.GetService<CityService>();
-        service.UserId = UserId;
         var city = await service.GetAll().FirstOrDefaultAsync();
         countryId = city?.CountryId;
         cityTitle = city?.Title;
-        countries = await new CountryService(scope.ServiceProvider).GetAll().Take(5)
+        countries = await scope.GetService<CountryService>().GetAll().Take(5)
         .Select(t => new SelectListItem()
         {
             Text = t.Title,

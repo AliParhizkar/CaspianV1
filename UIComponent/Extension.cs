@@ -1,5 +1,6 @@
 ﻿using Caspian.Common;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
@@ -9,6 +10,20 @@ namespace Caspian.UI
         {
             var item = items.SingleOrDefault(t => t.Value == value);
             return item?.Text;
+        }
+
+        internal static void SetUserId(this IServiceScope scope, int userId)
+        {
+            scope.GetService<CaspianDataService>().UserId = userId;
+        }
+
+        internal static void SetUserId(this IServiceScope scope, PageData pageData)
+        {
+            if (pageData != null)
+            {
+                var service = scope.GetService<CaspianDataService>();
+                service.UserId = pageData.UserId;
+            }
         }
 
         public static string GetCssClassName(this DefaultLayout layout)

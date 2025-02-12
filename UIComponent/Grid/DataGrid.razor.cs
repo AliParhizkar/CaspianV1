@@ -56,6 +56,7 @@ namespace Caspian.UI
             {
                 shouldFetchData = false;
                 using var scope = ServiceScopeFactory.CreateScope();
+                scope.SetUserId(PageData);
                 var query = GetQuery(scope);
                 var exprList = new List<MemberExpression>();
                 if (columnsData.Any(t => t.AggregateExpression != null))
@@ -464,6 +465,7 @@ namespace Caspian.UI
         public override async Task<TEntity> SelectRowById(int id)
         {
             using var scope = ServiceScopeFactory.CreateScope();
+            scope.SetUserId(PageData);
             var query = GetQuery(scope);
             query = GetOrderByQuery(query);
             var rowId = await query.GetRowNumber(scope.GetService<BaseService<TEntity>>().Context, id);

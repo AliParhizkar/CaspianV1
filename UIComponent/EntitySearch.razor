@@ -26,12 +26,12 @@
         Service.DataView.EnableLoading();
     }
 
-    [CascadingParameter(Name = "CSS-Right-To-Left")]
-    internal bool RightToLeft { get; set; }
+    [CascadingParameter]
+    internal PageData PageData { get; set; }
 
     string ICaspianContainer.GetLableContainerCSSClassName(int colSpan, int? totalSpan)
     {
-        var className = RightToLeft ? "ps-2" : "pe-2";
+        var className = PageData?.RightToLeft == true ? "ps-2" : "pe-2";
         className += " col-md-";
         if (totalSpan.HasValue)
             return className + (totalSpan.Value - colSpan);
@@ -47,7 +47,7 @@
     string ICaspianContainer.GetControlContainerCSSClassName(int colSpan, int? totalSpan)
     {
         var str = $"col-md-{colSpan} ";
-        return str + (RightToLeft ? "ps-2" : "pe-2");
+        return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
     }
 
 

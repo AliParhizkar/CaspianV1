@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
+@using Caspian.UI
 
 @inject SignInManager<User> SignInManager
 @inject ILogger<Login> Logger
@@ -128,7 +129,10 @@
         {
             Logger.LogInformation("User logged in.");
             using var scope = Scopefactory.CreateScope();
+
             var user = await scope.GetService<UserService>().GetAll().SingleAsync(t => t.UserName == Input.Username);
+            var dataService = scope.GetService<CaspianDataService>();
+            dataService.UserId = user.Id;
             string ip = null, agent = null;
             if (HttpContext != null)
             {

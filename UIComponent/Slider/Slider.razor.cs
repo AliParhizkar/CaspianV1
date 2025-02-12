@@ -158,9 +158,14 @@ namespace Caspian.UI
             StateHasChanged();
         }
 
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
+
         async Task<IList<TEntity>> Binddata(int size)
         {
-            using var service = scopeFactory.CreateScope().GetService<BaseService<TEntity>>();
+            using var scope = scopeFactory.CreateScope();
+            scope.SetUserId(PageData);
+            var service = scope.GetService<BaseService<TEntity>>();
             var query = service.GetAll();
             if (ConditionExpression != null)
                 query = query.Where(ConditionExpression);

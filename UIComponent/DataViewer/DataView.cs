@@ -151,12 +151,14 @@ namespace Caspian.UI
             }
         }
 
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
+
         protected override void OnInitialized()
         {
             var type = typeof(IBaseService<TEntity>);
             using var scope = ServiceScopeFactory.CreateScope();
-            var dataService = scope.ServiceProvider.GetService(typeof(CaspianDataService)) as CaspianDataService;
-            dataService.UserId = CaspianDataService.UserId;
+            scope.SetUserId(PageData);
             serviceType = scope.ServiceProvider.GetService(type)?.GetType();
             if (serviceType == null)
                 throw new CaspianException($"Service of type {type} not impilimented");

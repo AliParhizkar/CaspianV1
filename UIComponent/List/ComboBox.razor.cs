@@ -513,6 +513,9 @@ namespace Caspian.UI
             }
         }
 
+        [CascadingParameter]
+        public PageData PageData { get; set; }
+
         async Task DataBinding()
         {
             if (LoadData)
@@ -522,6 +525,7 @@ namespace Caspian.UI
                 if (Source == null)
                 {
                     using var scope = ServiceScopeFactory.CreateScope();
+                    scope.SetUserId(PageData);
                     var service = scope.GetService<BaseService<TEntity>>();
                     if (service == null)
                         throw new CaspianException($"Service of type IBaseService<{typeof(TEntity).Name}> not imilimented");

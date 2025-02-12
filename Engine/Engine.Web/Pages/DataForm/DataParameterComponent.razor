@@ -3,7 +3,7 @@
 @{
     base.BuildRenderTree(__builder);
 }
-@inject UIService<DataParameter> Service
+@inject IUIService<DataParameter> Service
 <div class="p-4">
     <DataGrid TEntity="DataParameter" Service="Service" ConditionExpr="t => t.ResultParameterId == ParameterId">
         <Columns>

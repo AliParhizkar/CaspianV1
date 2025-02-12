@@ -46,7 +46,7 @@ namespace Caspian.UI
 
         IEntityTabPanel EntityTabPanel { get; set; }
 
-        Func<TEntity, Task<bool>> OnUpsert { get; set; }
+        Func<IServiceProvider, TEntity, Task<bool>> OnUpsert { get; set; }
 
         void TabPanelInitialize();
     }

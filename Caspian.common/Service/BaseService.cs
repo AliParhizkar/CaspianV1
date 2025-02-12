@@ -17,6 +17,7 @@ namespace Caspian.Common.Service
             :base(provider)
         {
             Source = new List<TEntity>();
+            
         }
 
         internal protected IReadOnlyCollection<TEntity> Source { get; set; }

@@ -3,7 +3,6 @@ using System.Reflection;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Caspian.UI
 {
@@ -32,31 +31,29 @@ namespace Caspian.UI
         protected IJSRuntime jsRuntime { get; set; }
 
         [CascadingParameter]
-        private Task<AuthenticationState> authenticationStateTask { get; set; }
+        public PageData PageData { get; set; }
 
-        public int UserId { get; private set; }
-
-
-        protected async override Task OnInitializedAsync()
-        {
-            if (authenticationStateTask != null)
+        public int UserId 
+        { 
+            get
             {
-                var result = await authenticationStateTask;
-                UserId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
-                var path = new Uri(NavigationManager.Uri).AbsolutePath;
-                if (path.StartsWith("/Demo", StringComparison.OrdinalIgnoreCase))
-                    DataService.Language = Language.En;
-                else
-                    DataService.Language = Language.Fa;
-                DataService.UserId = UserId;
+                if (PageData == null)
+                    return 0;
+                return PageData.UserId;
             }
-            await base.OnInitializedAsync();
+                
+        }
+
+        protected override void OnInitialized()
+        {
+            ServiceProvider.GetService<CaspianDataService>().UserId = UserId;
+            base.OnInitialized();
         }
 
         protected IServiceScope CreateScope()
         {
             var scope = ServiceScopeFactory.CreateScope();
-            scope.GetService<CaspianDataService>().UserId = UserId;
+            scope.SetUserId(UserId);
             return scope;
         }
 

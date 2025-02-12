@@ -77,8 +77,10 @@
                         </div>
                         <div class="c-content-main">
                             <CaspianExceptionComponent SystemKind="systemKind" @ref="exceptionComponent" UserId="userId">
-                                <CascadingValue Name="CSS-Right-To-Left" Value="RightToLeft">
-                                    @ChildContent
+                                <CascadingValue Value="pageData">
+                                    <CascadingValue Name="CaspianUserId" Value="@(userId)">
+                                        @ChildContent
+                                    </CascadingValue>
                                 </CascadingValue>
                             </CaspianExceptionComponent>
                         </div>
@@ -117,6 +119,7 @@
     bool userIsAuthenticated;
     SubSystemKind systemKind;
     string currentUrl;
+    PageData pageData;
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
@@ -139,6 +142,7 @@
     {
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.LocationChanged += OnLocationChanged;
+        pageData = new PageData();
     }
 
     private void OnLocationChanged(object sender, LocationChangedEventArgs e)
@@ -149,6 +153,8 @@
             if (userId.HasValue)
             {
                 using var scope = ServiceScopeFactory.CreateScope();
+                var dataService = scope.GetService<CaspianDataService>();
+                dataService.UserId = userId.Value;
                 var service = scope.GetService<UserLoginService>();
                 await service.AddAsync(new UserLogin()
                     {
@@ -167,6 +173,7 @@
     {
         date = DateTime.Now.Date.ToShortDateString();
         time = DateTime.Now.TimeOfDay.ShortString();
+        pageData.RightToLeft = RightToLeft;
         var uri = new Uri(navigationManager.Uri);
         var url = uri.AbsolutePath;
         if (url.StartsWith("/"))
@@ -202,10 +209,13 @@
                 var claim = result.User.Claims.FirstOrDefault()?.Value;
                 if (claim.HasValue())
                 {
-                    userId = Convert.ToInt32(result.User.Claims.FirstOrDefault()?.Value);
+                    userId = Convert.ToInt32(claim);
+                    pageData.UserId = userId.Value;
                     if (!userName.HasValue())
                     {
                         using var scope = ServiceScopeFactory.CreateScope();
+                        var service = scope.GetService<CaspianDataService>();
+                        service.UserId = userId.Value;
                         var user = await scope.GetService<UserService>().SingleAsync(userId.Value);
                         userName = user.FName + " " + user.LName;
                         menusId = await scope.GetService<MenuAccessibilityService>().GetUserMenus(userId.Value);

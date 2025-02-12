@@ -5,7 +5,7 @@
 @inject IUIService<Product> ProductService
 @{
     base.BuildRenderTree(__builder);
-    
+
 }
 <h2>Simple crud</h2>
 <p>
@@ -152,8 +152,9 @@
 
     protected override void OnInitialized()
     {
-        ProductService.OnUpsert = async t => (t.Price > 0 && t.TakeoutPrice > 0) || t.Id > 0 || await base.Confirm("آیا با ثبت محصول با قیمت صفر موافقید؟");
+        ProductService.OnUpsert = async (p, t) => (t.Price > 0 && t.TakeoutPrice > 0) || t.Id > 0 || await base.Confirm("آیا با ثبت محصول با قیمت صفر موافقید؟");
         base.OnInitialized();
+        
     }
 
     async Task SetImage(InputFileChangeEventArgs e, Product product)

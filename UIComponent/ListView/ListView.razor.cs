@@ -69,6 +69,7 @@ namespace Caspian.UI
             {
                 shouldFetchData = false;
                 using var scope = ServiceScopeFactory.CreateScope();
+                scope.SetUserId(PageData);
                 var query = GetQuery(scope);
 
                 //shouldRender = false;

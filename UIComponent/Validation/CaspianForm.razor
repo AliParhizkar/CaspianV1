@@ -5,8 +5,7 @@
 @inject IServiceProvider provider
 @typeparam TEntity
 @{
-    var services = provider.GetServices<IBaseService<TEntity>>();
-    var serviceType = services.Count() == 1 ? services.SingleOrDefault()?.GetType() : null;
+    var serviceType = GetServiceType();
 }
 @if (EditContext != null)
 {

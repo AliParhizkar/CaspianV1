@@ -1,7 +1,7 @@
 ﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @namespace Caspian.Engine.WorkFlow
 @inherits BasePage
-@inject UIService<DataModelField> Service
+@inject IUIService<DataModelField> Service
 @{
     base.BuildRenderTree(__builder);
     if (Service.UpsertData.EntityFullName.HasValue())

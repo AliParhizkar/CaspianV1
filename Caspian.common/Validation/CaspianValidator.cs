@@ -25,6 +25,10 @@ namespace Caspian.Common
             Context = provider.GetService(contextType) as CaspianContext;
             var data = provider.GetService(typeof(CaspianDataService)) as CaspianDataService;
             UserId = data.UserId;
+            if (UserId == 0)
+            {
+
+            }
             if (!data.Language.HasValue)
                 data.Language = Language;
             foreach (var info in typeof(TModel).GetProperties())

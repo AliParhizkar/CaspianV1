@@ -56,12 +56,20 @@ namespace Caspian.UI
 
         internal EventCallback OnInternalReset { get; set; }
 
-        [CascadingParameter(Name = "CSS-Right-To-Left")]
-        internal bool RightToLeft { get; set; }
+        Type GetServiceType()
+        {
+            if (PageData != null)
+                provider.GetService<CaspianDataService>().UserId = PageData.UserId;
+            var services = provider.GetServices<IBaseService<TEntity>>();
+            return services.Count() == 1 ? services.SingleOrDefault()?.GetType() : null;
+        }
+
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
 
         string ICaspianContainer.GetLableContainerCSSClassName(int colSpan, int? totalSpan)
         {
-            var className = RightToLeft ? "pe-2" : "ps-2";
+            var className = PageData?.RightToLeft == true ? "pe-2" : "ps-2";
             className += " col-md-";
             if (totalSpan.HasValue)
                 return className + (totalSpan.Value - colSpan);
@@ -77,7 +85,7 @@ namespace Caspian.UI
         string ICaspianContainer.GetControlContainerCSSClassName(int colSpan, int? totalSpan)
         {
             var str = $"col-md-{colSpan} ";
-            return str + (RightToLeft ? "ps-2" : "pe-2");
+            return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
         }
 
         public void SetFirstControl(IControl control)

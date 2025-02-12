@@ -153,11 +153,15 @@ namespace Caspian.UI
             await OnSelected.InvokeAsync(node);
         }
 
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
+
         async Task DataBindingAsync()
         {
             if (Source == null && typeof(TEntity) != typeof(NodeView))
             {
                 using var scope = ServiceScopeFactory.CreateScope();
+                scope.SetUserId(PageData);
                 var service = new BaseService<TEntity>(scope.ServiceProvider);
                 var contextType = new AssemblyInfo().GetDbContextType(typeof(TEntity));
                 var query = service.GetAll();
