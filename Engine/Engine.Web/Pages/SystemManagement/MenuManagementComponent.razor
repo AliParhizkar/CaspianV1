@@ -9,7 +9,7 @@
     <CheckBox @bind-Value="onlyUntitledMenus" ColSpan="2" TotalSpan="4" />
     <CheckBox @bind-Value="isDropped" ColSpan="2" TotalSpan="4" />
     <CheckBox @bind-Value="showInMenu" ColSpan="2" TotalSpan="4" />
-    <StringTextBox @bind-Value="context.Source" ColSpan="4" />
+    <StringTextBox Id="Test1" @bind-Value="context.Source" ColSpan="4" />
     <div class="col-md-3 text-center">
         <IconButton @onclick="async () => await UpdateMenus()" IconType="IconType.Refresh" title="Update menus" />
     </div>

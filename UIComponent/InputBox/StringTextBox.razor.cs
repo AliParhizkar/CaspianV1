@@ -94,7 +94,8 @@ namespace Caspian.UI
             if (EntitySearch != null)
             {
                 search = true;
-                if (ValueExpression != null && SearchType != SearchType.Contain)
+                BindingType = BindingType.OnInput;
+                if (ValueExpression != null)
                 {
                     var expr = ValueExpression.Body;
                     var path = "";

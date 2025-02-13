@@ -31,7 +31,7 @@
 
     string ICaspianContainer.GetLableContainerCSSClassName(int colSpan, int? totalSpan)
     {
-        var className = PageData?.RightToLeft == true ? "ps-2" : "pe-2";
+        var className = PageData?.RightToLeft == true ? "pe-2" : "ps-2";
         className += " col-md-";
         if (totalSpan.HasValue)
             return className + (totalSpan.Value - colSpan);

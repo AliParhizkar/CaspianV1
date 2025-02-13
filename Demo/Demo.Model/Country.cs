@@ -1,7 +1,6 @@
 ﻿using Caspian.Common;
 using Caspian.Engine.Model;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model

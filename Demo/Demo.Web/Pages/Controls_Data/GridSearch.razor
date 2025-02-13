@@ -2,6 +2,7 @@
 @page "/Demo/Grid-Search"
 <h2>Grid-Searching</h2>
 @inject ISearchService<Customer> Service
+@inject ISearchService<Customer> StringService
 @inject ISearchService<City> CityService
 @inject ISearchService<OrderDetail> OrderDetailService
 <p>
@@ -18,23 +19,33 @@
             <div class="d-content">
                 <div class="row">
                     <div class="col-md-6 pe-4">
-                        <h4>Search on string type</h4>
-                        <span class="c-demo-description">In this example, we define a variable of <b>Customer type</b> and <b>bind first name, last name and company name</b> for search. </span>
+                        <h4>Search on string type(Start-with, Contain, End-with)</h4>
+                        <span class="c-demo-description">In this example, we define a variable of <b>Customer type</b> and <b>bind first name, last name and company name and mobile numer</b> for search. </span>
+                        <span class="fa fa-info">Note: </span>
+                        <span><b>Mobie number</b> search is <b>Start-with</b> search other serahc is <b>Contain</b></span>
                     </div>
                     <div class="col-md-6">
                         <EntitySearch TEntity="Customer" Service="Service">
                             <StringTextBox @bind-Value="context.FName" ColSpan="8" />
                             <StringTextBox @bind-Value="context.LName" ColSpan="8" />
                             <StringTextBox @bind-Value="context.CompanyName" ColSpan="8" />
+                            <StringTextBox @bind-Value="context.MobileNumber" SearchType="SearchType.StartWith" ColSpan="5" TotalSpan="9" />
+                            <div class="col-md-2">
+                                <span class="fa fa-info ps-1"></span>
+                                <span>Start-with</span>
+                            </div>
                         </EntitySearch>
-                        <DataGrid TEntity="Customer" Service="Service">
-                            <Columns>
-                                <GridColumn Field="t => t.CustomerType.EnumText()" />
-                                <GridColumn Field="t => t.FName" />
-                                <GridColumn Field="t => t.LName" />
-                                <GridColumn Field="t => t.CompanyName" />
-                            </Columns>
-                        </DataGrid>
+                        <div class="pt-3">
+                            <DataGrid TEntity="Customer" Service="Service" ShowInsertIcon="false">
+                                <Columns>
+                                    <GridColumn Field="t => t.CustomerType.EnumText()" />
+                                    <GridColumn Field="t => t.FName" />
+                                    <GridColumn Field="t => t.LName" />
+                                    <GridColumn Field="t => t.CompanyName" />
+                                </Columns>
+                            </DataGrid>
+                        </div>
+
                     </div>
                     <div class="col-md-6">
                         <hr />
@@ -45,17 +56,19 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <CaspianContainer>
-                            <DropdownList @bind-Value="customerEnumSearch.CustomerType" ColSpan="8" />
-                            <DropdownList @bind-Value="customerEnumSearch.Gender" ColSpan="8" />
-                        </CaspianContainer>
-                        <DataGrid TEntity="Customer" Search="customerEnumSearch">
-                            <Columns>
-                                <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
-                                <GridColumn Field="t => t.CustomerType.EnumText()" />
-                                <GridColumn Field="t => t.Gender.EnumText()" />
-                            </Columns>
-                        </DataGrid>
+                        <EntitySearch Service="StringService">
+                            <DropdownList @bind-Value="context.CustomerType" ColSpan="8" />
+                            <DropdownList @bind-Value="context.Gender" ColSpan="8" />
+                        </EntitySearch>
+                        <div class="pt-3">
+                            <DataGrid TEntity="Customer" Service="StringService" ShowInsertIcon="false">
+                                <Columns>
+                                    <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+                                    <GridColumn Field="t => t.CustomerType.EnumText()" />
+                                    <GridColumn Field="t => t.Gender.EnumText()" />
+                                </Columns>
+                            </DataGrid>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <hr />
@@ -69,14 +82,16 @@
                     <div class="col-md-6">
                         <hr />
                         <EntitySearch Service="CityService">
-                            <ComboBox TEntity="Country" TValue="int" @bind-Value="context.CountryId" TextExpression="t => t.Title" />
+                            <ComboBox TEntity="Country" TValue="int" @bind-Value="context.CountryId" TextExpression="t => t.Title" ColSpan="8" />
                         </EntitySearch>
-                        <DataGrid TEntity="City" Service="CityService">
-                            <Columns>
-                                <GridColumn Field="t => t.Country.Title" Title="Country" />
-                                <GridColumn Field="t => t.Title" />
-                            </Columns>
-                        </DataGrid>
+                        <div class="pt-3">
+                            <DataGrid TEntity="City" Service="CityService" ShowInsertIcon="false">
+                                <Columns>
+                                    <GridColumn Field="t => t.Country.Title" Title="Country" />
+                                    <GridColumn Field="t => t.Title" />
+                                </Columns>
+                            </DataGrid>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -203,8 +218,7 @@
     //Default search
     City citySearch = new City();
     Customer customerStringSearch = new Customer();
-    Customer customerEnumSearch = new Customer();
-    //
+    
     object fromPrice;
     object toPrice;
     object fromDate;

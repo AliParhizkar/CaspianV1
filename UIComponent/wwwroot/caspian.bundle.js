@@ -1367,7 +1367,7 @@ var caspian;
                 let list = input.parentElement.classList;
                 list.remove('t-state-focused');
                 list.add('t-state-default');
-                //caspian.common.hideErrorMessage(this.input.closest('.t-widget'));
+                caspian.common.hideErrorMessage(this.input.closest('.t-widget'));
             };
             this.readAttributes();
             this.bindAttributes();
