@@ -1,6 +1,7 @@
 ﻿using Caspian.Common;
 using System.Reflection;
 using Microsoft.JSInterop;
+using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
@@ -148,6 +149,11 @@ namespace Caspian.UI
             });
             Form.OnInternalSubmit = EventCallback.Factory.Create<TEntity>(this, entity =>
             {
+                if (entity is BaseEntity baseEntity)
+                {
+                    baseEntity.UpsertUserId = UserId;
+                    baseEntity.UpsertDate = DateTime.Now;
+                }
                 OnFormSubmit?.Invoke(entity);
             });
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, async entity =>

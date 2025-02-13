@@ -31,7 +31,7 @@ namespace Caspian.UI
         protected IJSRuntime jsRuntime { get; set; }
 
         [CascadingParameter]
-        public PageData PageData { get; set; }
+        internal PageData PageData { get; set; }
 
         public int UserId 
         { 

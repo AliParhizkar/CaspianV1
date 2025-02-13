@@ -49,6 +49,7 @@
                     <DataGrid TEntity="Country" Service="CountryService">
                         <Columns>
                             <GridColumn Field="t => t.Title" />
+                            <GridColumn Field="t => t.UpsertUser.LName" />
                             <GridColumn Field="t => t.ActiveType.EnumText()" style="width:60px" />
                             <GridCommandColumns />
                         </Columns>

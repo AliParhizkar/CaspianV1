@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using Caspian.Engine.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,11 +7,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Demo.Model
 {
     [Table("Countries ", Schema = "demo")]
-    public class Country
+    public class Country: BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         [DisplayName("Title")]
         public string Title { get; set; }
 

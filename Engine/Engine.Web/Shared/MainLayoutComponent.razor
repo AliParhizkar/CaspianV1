@@ -76,13 +76,13 @@
                             </div>
                         </div>
                         <div class="c-content-main">
-                            <CaspianExceptionComponent SystemKind="systemKind" @ref="exceptionComponent" UserId="userId">
-                                <CascadingValue Value="pageData">
+                            <CascadingValue Value="pageData">
+                                <CaspianExceptionComponent SystemKind="systemKind" @ref="exceptionComponent" UserId="userId">
                                     <CascadingValue Name="CaspianUserId" Value="@(userId)">
                                         @ChildContent
                                     </CascadingValue>
-                                </CascadingValue>
-                            </CaspianExceptionComponent>
+                                </CaspianExceptionComponent>
+                            </CascadingValue>
                         </div>
                     }
                     else

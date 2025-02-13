@@ -34,6 +34,10 @@ namespace Caspian.Common
                 var pKeyName = type.GetPrimaryKey(true)?.Name;
                 foreach (var property in type.GetProperties())
                 {
+                    if (property.PropertyType.FullName == "Caspian.Engine.Model.User")
+                    {
+                        continue;
+                    }
                     var foreignKey = property.GetCustomAttribute<ForeignKeyAttribute>();
                     if (foreignKey != null)
                     {

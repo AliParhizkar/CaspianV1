@@ -1,5 +1,6 @@
 ﻿@using System.Diagnostics;
 @using System.Xml.Linq;
+@using Caspian.UI
 @namespace Caspian.Engine.Shared
 @inject IServiceScopeFactory factory 
 @inherits ErrorBoundary
@@ -138,6 +139,9 @@
         return st.GetFrames().FirstOrDefault(t => t.HasSource());
     }
 
+    [CascadingParameter]
+    public PageData PageData { get; set; }
+
     async Task SaveError(Exception exception)
     {
         var ex = exception;
@@ -145,6 +149,8 @@
             ex = ex.InnerException;
         var frame = GetFrame(ex);
         using var scope = factory.CreateScope();
+        if (PageData != null)
+            scope.GetService<CaspianDataService>().UserId = PageData.UserId;
         var service = scope.GetService<ExceptionDataService>();
         var detailService = scope.GetService<ExceptionDetailService>();
         ExceptionData old = null;

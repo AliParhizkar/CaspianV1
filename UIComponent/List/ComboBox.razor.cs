@@ -514,7 +514,7 @@ namespace Caspian.UI
         }
 
         [CascadingParameter]
-        public PageData PageData { get; set; }
+        internal PageData PageData { get; set; }
 
         async Task DataBinding()
         {

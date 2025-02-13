@@ -1361,23 +1361,18 @@ var caspian;
                 let list = input.parentElement.classList;
                 list.add('t-state-focused');
                 list.remove('t-state-default');
+                caspian.common.showErrorMessage(this.input.closest('.t-widget'));
             };
             input.onblur = () => {
                 let list = input.parentElement.classList;
                 list.remove('t-state-focused');
                 list.add('t-state-default');
+                //caspian.common.hideErrorMessage(this.input.closest('.t-widget'));
             };
             this.readAttributes();
             this.bindAttributes();
             if (type != 'string')
                 input.onkeypress = e => this.bindKeypress(e);
-            input.onfocus = () => {
-                //this.input.select();
-                caspian.common.showErrorMessage(this.input.closest('.t-widget'));
-            };
-            input.onblur = () => {
-                caspian.common.hideErrorMessage(this.input.closest('.t-widget'));
-            };
         }
         bindKeypress(e) {
             let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
