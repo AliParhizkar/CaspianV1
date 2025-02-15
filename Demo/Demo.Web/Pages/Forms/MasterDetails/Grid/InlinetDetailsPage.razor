@@ -146,11 +146,11 @@
                                 <GridColumn Field="t => t.Product.Discount" DataField />
                                 <GridColumn Field="t => t.Product.Title" Title="Product">
                                     <EditTemplate>
-                                        <AutoComplete TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId"
+                                        <Lookup TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId"
                                         HideHeader AutoHide TextExpression="t => t.Title"
                                         OnChange="async () => await SetPrice(con.Data)">
                                             <ProductLookupWindow />
-                                        </AutoComplete>
+                                        </Lookup>
                                     </EditTemplate>
                                 </GridColumn>
                                 <GridColumn Field="t => t.Price.Seprate3Digit()" style="width:100px" >

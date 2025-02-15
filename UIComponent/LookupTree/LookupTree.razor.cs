@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class AutoCompleteTree<TValue>: ComponentBase 
+    public partial class LookupTree<TValue>: ComponentBase, ILookupTree
     {
         bool show;
         bool multiSelectable;
@@ -51,7 +51,7 @@ namespace Caspian.UI
         }
 
         [Parameter]
-        public EventCallback OnChanged { get; set; }
+        public EventCallback OnChange { get; set; }
 
         public EventCallback<string> OnInternalChanged { get; set; }
 
@@ -103,8 +103,8 @@ namespace Caspian.UI
             valueIsUpdated = true;
             if (ValueChanged.HasDelegate)
                 await ValueChanged.InvokeAsync(Value);
-            if (OnChanged.HasDelegate)
-                await OnChanged.InvokeAsync();
+            if (OnChange.HasDelegate)
+                await OnChange.InvokeAsync();
             show = false;
         }
 

@@ -3,6 +3,12 @@
 @namespace Demo.Web.Pages
 
 <div class="c-lookup-page" style="width:750px;">
+    @if (CustomerType.HasValue)
+    {
+        <div class="pb-1 text-center">
+            <span class="fs-8">Filtered by: </span><span class="fs-6" style="color:#ffad8e"> @(CustomerType.EnumText())</span>
+        </div>
+    }
     <DataGrid Service="Service" TEntity="Customer" ContentHeight="150" ConditionExpr="t => CustomerType == null || t.CustomerType == CustomerType" HidePageSize>
        <Columns Context="customer">
             <GridColumn Field="t => t.CustomerType" Title="Customer type" />

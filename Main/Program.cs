@@ -114,8 +114,6 @@ namespace Main
             app.UseRouting();
             app.UseAntiforgery();
 
-            var context = new Demo.Model.Context();
-            context.Database.Migrate();
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 

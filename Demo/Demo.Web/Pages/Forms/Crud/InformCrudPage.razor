@@ -12,12 +12,12 @@
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
-            <div class="ps-3 pe-3">
-                <CaspianForm Service="Service" TEntity="Product" OnReset="t => t.Image = null" ColumnsCount="2">
+            <div class="ps-3 pe-3 pb-2">
+                <CaspianForm Service="Service" TEntity="Product" OnReset="ResetForm" ColumnsCount="2">
                     <div class="row pt-3">
                         <div class="row col-md-9 c-controls align-content-start">
                             <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="context.ProductCategoryId" TextExpression="t => t.Title"
-                                      OrderByExpression="t => t.Title" ColSpan="4" />
+                            OrderByExpression="t => t.Title" ColSpan="4" />
                             <StringTextBox @bind-Value="context.Title" ColSpan="4" />
                             <NumericTextBox @bind-Value="context.Price" ColSpan="4" />
                             <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="4" />
@@ -25,9 +25,7 @@
                             <CheckBox @bind-Value="context.Discountable" ColSpan="4" />
                             <MultiSelectBox @bind-Value="context.Meal" ColSpan="10" />
                             <DropdownList @bind-Value="context.ActiveType" ColSpan="4" />
-                            <div class="col-md-6 align-content-center">
-                                <FormCommandButton />
-                            </div>
+                            <FormCommandButton ColSpan="6" TotalSpan="6" />
                         </div>
                         <div class="col-md-3 ps-4 align-content-center">
                             <Fileupload OnChange="async e => await SetImage(e, context)">
@@ -59,6 +57,12 @@
 </TabPanel>
 @code
 {
+    void ResetForm(Product product)
+    {
+        if (product != null)
+            product.Image = null;
+    }
+
     async Task SetImage(InputFileChangeEventArgs e, Product product)
     {
         product.Image = await e.File.GetByteArrayAsync();

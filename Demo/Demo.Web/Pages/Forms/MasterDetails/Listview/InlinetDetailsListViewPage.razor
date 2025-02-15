@@ -61,11 +61,11 @@
                                     <div class="d-listview-col-1">
                                         <TextField Field="t => t.Product.Title">
                                             <EditTemplate>
-                                                <AutoComplete TEntity="Product" TValue="int" @bind-Value="detail.Data.ProductId"
+                                                <Lookup TEntity="Product" TValue="int" @bind-Value="detail.Data.ProductId"
                                                               HideHeader AutoHide TextExpression="t => t.Title"
                                                               OnChange="async () => await SetPrice(detail.Data)">
                                                     <ProductLookupWindow />
-                                                </AutoComplete>
+                                                </Lookup>
                                             </EditTemplate>
                                         </TextField>
                                     </div>

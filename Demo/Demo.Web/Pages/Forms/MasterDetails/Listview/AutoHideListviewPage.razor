@@ -74,10 +74,10 @@
                         <div class="d-lst-1">
                             <TextField Field="t => t.Material.Title">
                                 <EditTemplate>
-                                    <AutoComplete TEntity="Material" TValue="int" @bind-Value="detail.Data.MaterialId"
+                                    <Lookup TEntity="Material" TValue="int" @bind-Value="detail.Data.MaterialId"
                                                   HideHeader AutoHide TextExpression="t => t.Title" OnChange="async () => await UpdateMaterialReceipt(detail.Data)">
                                         <MaterialLookupWindow />
-                                    </AutoComplete>
+                                    </Lookup>
                                 </EditTemplate>
                             </TextField>
                         </div>

@@ -138,7 +138,7 @@
                 <span class="t-loading"></span>
             }
         </div>
-        @if (!HideFooter)
+        @if (HideFooter != true)
         {
             <DataPager HidePageSize="HidePageSize" PageSize="PageSize" PageNumber="pageNumber" TotalRecord="Total" PageSizeChanged="ChangePageSize"
                         PageNumberChanged="ChangePageNumber" />

@@ -17,10 +17,10 @@
                 <div class="col-md-6 ps-3 pe-3">
                     <div class="row c-controls">
                         <div class="col-md-12">
-                            <AutoCompleteTree @bind-Value="value" OnChanged="SetOrganTitle">
+                            <LookupTree @bind-Value="value" OnChanged="SetOrganTitle">
                                 <TreeView TEntity="OrganUnit" TextFunc="t => t.Title" Selectable 
                                           FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
-                            </AutoCompleteTree>
+                            </LookupTree>
                         </div>
                         <div class="col-md-4">
                             <label>Value: </label>
@@ -48,11 +48,11 @@
                     <hr />
                     <div class="row c-controls ps-3 pe-3">
                         <div class="col-md-12">
-                            <AutoCompleteTree @bind-Value="values">
+                            <LookupTree @bind-Value="values">
                                 <TreeView TEntity="OrganUnit" TextFunc="t => t.Title"
                                           ParentNodeFilterFunc="t => t.ParentOrganId == null"
                                           FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
-                            </AutoCompleteTree>
+                            </LookupTree>
                         </div>
                         <div class="col-md-4">
                             <label>number of organizations:</label>

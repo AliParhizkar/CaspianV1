@@ -1,4 +1,21 @@
-.fa-plus {
+.c-header {
+    border: 1px solid #bdbdbd;
+    margin: 5px;
+    border-radius: 8px;
+    padding: 10px 15px;
+    width:700px;
+    margin:10px auto!important;
+}
+
+.c-body {
+    border: 1px solid #bdbdbd;
+    height: calc(100vh - 105px);
+    border-radius: 8px;
+    width: 700px;
+    overflow: auto;
+    margin: 0 auto !important;
+}
+.d-tree-icon .fa-plus {
     color: #0dcaf0 !important;
     vertical-align: middle;
     font-size:18px;

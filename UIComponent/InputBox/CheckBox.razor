@@ -115,6 +115,7 @@ else
                 await ValueChanged.InvokeAsync(Value);
             if (OnChange.HasDelegate)
                 await OnChange.InvokeAsync(Value);
+            EntitySearch?.EnableLoadData();
         }
     }
 }

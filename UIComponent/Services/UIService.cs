@@ -18,12 +18,18 @@ namespace Caspian.UI
         BaseComponentService baseComponentService;
         BasePageService basePageService;
         IDictionary<string, SearchType> searchData;
+        protected bool hideFooter;
 
         public IServiceProvider ServiceProvider { get; private set; }
 
         public IDictionary<string, SearchType> GetSearchData()
         {
             return searchData;
+        }
+
+        public void HideFooter()
+        {
+            hideFooter = true;
         }
 
         public void OnlyForSearch()
@@ -241,6 +247,7 @@ namespace Caspian.UI
         {
             DataView.Search = Search;
             DataView.ShowInsertIcon = DataView.ShowInsertIcon ?? true;
+            DataView.HideFooter = DataView.HideFooter ?? hideFooter;
             if (MasterType != null && MasterId > 0)
             {
                 var param = Expression.Parameter(typeof(TEntity), "t");

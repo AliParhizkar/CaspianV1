@@ -47,7 +47,7 @@
         <span @onclick="async () => await ToggleMenu()" class="fa fa-chevron-circle-right"></span>
     </div>
     <div class="order-container">
-        <DataGrid TEntity="OrderDetail" DetailsService="Service" PageSize="20" HideFooter ContentHeight="200" ShowInsertIcon="false" Batch>
+        <DataGrid TEntity="OrderDetail" DetailsService="Service" PageSize="20" HideFooter="true" ContentHeight="200" ShowInsertIcon="false" Batch>
             <Columns>
                 <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                 <GridColumn Field="t => t.Product.Title" Title="Product" />

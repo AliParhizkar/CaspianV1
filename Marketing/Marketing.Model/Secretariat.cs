@@ -42,5 +42,8 @@ namespace Marketing.Model
 
         [CheckOnDelete("دبیرخانه دارای زیرمجموعه می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<Secretariat> Children { get;set; }
+
+        [CheckOnDelete("دبیرخانه دارای بایگانی می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<Archive> Archives { get; set; }
     }
 }

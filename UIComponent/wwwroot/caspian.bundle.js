@@ -411,20 +411,21 @@ var caspian;
         static bindDatePicker(element, dotnet) {
             new caspian.DatePicker(element, dotnet);
         }
-        static showErrorMessage(element, marginTop) {
+        static showErrorMessage(element) {
             let error = element.getElementsByClassName('errorMessage')[0];
             if (error)
                 error.remove();
             let msg = element.attributes['error-message'];
             if (msg) {
-                let htmlString = '<div class="errorMessage"></div>';
                 var messageBox = document.createElement('div');
-                if (marginTop)
-                    messageBox.style.marginTop = `${marginTop}px`;
                 messageBox.classList.add('errorMessage');
                 messageBox.innerHTML = '<span class="c-icon"><i class="fa fa-info" aria-hidden="true"></i></span><Span class="c-content">'
                     + msg.value + '</Span><span class="c-pointer"></span>';
                 element.append(messageBox);
+                let height = messageBox.getBoundingClientRect().height;
+                messageBox.style.marginTop = `${-height - 43}px`;
+                let pointer = messageBox.getElementsByClassName('c-pointer')[0];
+                pointer.style.top = `${height - 6}px`;
             }
         }
         static hideErrorMessage(element) {
@@ -511,7 +512,7 @@ var caspian;
         }
         static bindMultiSelect(element) {
             element.onfocus = () => {
-                this.showErrorMessage(element, 32);
+                this.showErrorMessage(element);
             };
             element.onblur = () => {
                 this.hideErrorMessage(element);

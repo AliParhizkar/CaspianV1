@@ -24,7 +24,7 @@
 }
 .t-state-error textarea {
     border-style: solid !important;
-    border-color: rgba(255, 0, 0, 0.17) !important;
+    border-color: rgba(255, 0, 0, 0.12) !important;
     background-color: #fffafb !important;
 }
 /* Outlook theme*/
@@ -71,6 +71,7 @@ html input[disabled], textarea[disabled] {
 .t-widget.t-grid 
 {
     font-size:14px;
+    border-bottom:1px solid #c5c5c5
 }
 
 .t-picker-wrap.t-state-selected  {

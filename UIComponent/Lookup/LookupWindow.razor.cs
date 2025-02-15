@@ -19,8 +19,8 @@ namespace Caspian.UI
         {
             SearchData = Activator.CreateInstance<TEntity>();
             Service?.OnlyForSearch();
+            Service?.HideFooter();
             base.OnInitialized();
-            
         }
 
         [CascadingParameter(Name = "LookupStringSearchValue")]

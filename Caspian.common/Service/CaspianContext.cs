@@ -124,7 +124,7 @@ namespace Caspian.Common
                         {
                             var columnAttribute = type.GetCustomAttribute<ColumnAttribute>();
                             if (columnAttribute?.TypeName == null)
-                                modelBuilder.Entity(type).Property(property.Name).HasColumnType("datetime(2)");
+                                modelBuilder.Entity(type).Property(property.Name).HasColumnType("datetime2").HasPrecision(2);
                         }
                     }
                     

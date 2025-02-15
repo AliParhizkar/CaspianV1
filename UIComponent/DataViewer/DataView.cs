@@ -58,6 +58,9 @@ namespace Caspian.UI
         public TEntity Search { get; set; }
 
         [Parameter]
+        public bool? HideFooter { get; set; }
+
+        [Parameter]
         public SelectType SelectType { get; set; } = SelectType.Single;
 
         [Parameter]

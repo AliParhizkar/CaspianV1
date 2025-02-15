@@ -37,9 +37,7 @@
                         <Content Context="category">
                             <StringTextBox @bind-Value="category.Title" ColSpan="8" />
                             <DropdownList @bind-Value="category.ActiveType" ColSpan="8" />
-                            <div class="col-md-8">
-                                <WindowCommandButtons />
-                            </div>
+                            <WindowCommandButtons ColSpan="8" />
                         </Content>
                     </CaspianForm>
                 </Window>
@@ -80,7 +78,7 @@
                     <Window Service="ProductService" Title="Product" Style="width:650px">
                         <CaspianForm TEntity="Product" Service="ProductService" OnSubmit="t => SetCategory(t)">
                             <Content Context="product">
-                                <div class="row p-3 pe-0">
+                                <div class="row pt-1">
                                     <div class="col-md-7 row c-controls ">
                                         <StringTextBox @bind-Value="product.Title" ColSpan="8" />
                                         <NumericTextBox @bind-Value="product.Price" ColSpan="8" />
@@ -90,17 +88,14 @@
                                         <DropdownList @bind-Value="product.ActiveType" ColSpan="8" />
                                         <CheckBox @bind-Value="product.Discountable" ColSpan="8" />
                                     </div>
-                                    <div class="col-md-5 ps-4">
+                                    <div class="col-md-5 ps-4 pt-4">
                                         <div class="col-md-12 justify-content-center d-flex">
                                             <Fileupload OnChange="e => SetImage(e, product)">
                                                 <PictureBox Data="product.Image" style="width:200px;height:200px" />
                                             </Fileupload>
                                         </div>
-                                        <div class="justify-content-center d-flex pt-2">
-                                            <WindowCommandButtons />
-                                        </div>
+                                        <WindowCommandButtons ColSpan="12" TotalSpan="12" />
                                     </div>
-
                                 </div>
                             </Content>
                         </CaspianForm>
@@ -124,9 +119,7 @@
 <Window @bind-Status="status" Title="شرح های پیش فرض" Style="width:550px">
     <CaspianForm TEntity="ProductDescription" Service="DescriptionService" OnSubmit="t => t.ProductId = productId">
         <StringTextBox @bind-Value="context.Description" MultiLine Rows="2" ColSpan="8" />
-        <div class="text-center col-md-9">
-            <FormCommandButton />
-        </div>
+        <FormCommandButton ColSpan="9" />
     </CaspianForm>
     <DataGrid TEntity="ProductDescription" Service="DescriptionService" ConditionExpr="t => t.ProductId == productId" ContentHeight="200">
         <Columns>

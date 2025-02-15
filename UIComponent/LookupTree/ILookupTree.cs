@@ -1,10 +1,8 @@
-﻿using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    internal interface IAutoCompleteTree
+    internal interface ILookupTree
     {
         Task SetValueAsync(NodeView node);
 

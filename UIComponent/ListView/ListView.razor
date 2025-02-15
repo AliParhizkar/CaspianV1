@@ -80,7 +80,10 @@
                     }
                 }
             </div>
-            <DataPager PageNumber="pageNumber" PageNumberChanged="async t => await ChangePageNumber(t)" TotalRecord="Total" PageSize="PageSize" />
+            @if (HideFooter != true)
+            {
+                <DataPager PageNumber="pageNumber" PageNumberChanged="async t => await ChangePageNumber(t)" TotalRecord="Total" PageSize="PageSize" />
+            }
         }
     </div>
 

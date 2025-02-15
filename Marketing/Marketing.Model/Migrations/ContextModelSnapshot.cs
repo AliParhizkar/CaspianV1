@@ -39,7 +39,8 @@ namespace Marketing.Model.Migrations
 
                     b.Property<DateTime>("RegisterDate")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime(2)");
+                        .HasPrecision(2)
+                        .HasColumnType("datetime2");
 
                     b.Property<short>("RepetitionTimes")
                         .HasColumnType("smallint");
@@ -76,7 +77,8 @@ namespace Marketing.Model.Migrations
 
                     b.Property<DateTime>("RegisterDate")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime(2)");
+                        .HasPrecision(2)
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -344,6 +346,49 @@ namespace Marketing.Model.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Marketing.Model.Archive", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SecretariatId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpsertDate")
+                        .HasPrecision(2)
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UpsertUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("SecretariatId");
+
+                    b.HasIndex("UpsertUserId");
+
+                    b.ToTable("Archives", "Hr");
+                });
+
             modelBuilder.Entity("Marketing.Model.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -359,7 +404,6 @@ namespace Marketing.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -382,7 +426,6 @@ namespace Marketing.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Code")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -390,7 +433,6 @@ namespace Marketing.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -413,7 +455,6 @@ namespace Marketing.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Descript")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
@@ -435,17 +476,14 @@ namespace Marketing.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("PreCodeReceivedLetter")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PreCodeSendedLetter")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PreCodeTempLetter")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -479,7 +517,7 @@ namespace Marketing.Model.Migrations
                     b.HasOne("Caspian.Engine.Model.User", "User")
                         .WithMany("ExceptionDetails")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ExceptionData");
@@ -512,8 +550,7 @@ namespace Marketing.Model.Migrations
 
                     b.HasOne("Caspian.Engine.Model.User", "User")
                         .WithMany("Accessibilities")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Menu");
 
@@ -533,12 +570,38 @@ namespace Marketing.Model.Migrations
                     b.HasOne("Caspian.Engine.Model.User", "User")
                         .WithMany("Memberships")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Marketing.Model.Archive", b =>
+                {
+                    b.HasOne("Marketing.Model.Archive", "Parent")
+                        .WithMany("Archives")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Marketing.Model.Secretariat", "Secretariat")
+                        .WithMany("Archives")
+                        .HasForeignKey("SecretariatId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Caspian.Engine.Model.User", "UpsertUser")
+                        .WithMany()
+                        .HasForeignKey("UpsertUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("Secretariat");
+
+                    b.Navigation("UpsertUser");
                 });
 
             modelBuilder.Entity("Marketing.Model.Product", b =>
@@ -604,6 +667,11 @@ namespace Marketing.Model.Migrations
                     b.Navigation("Memberships");
                 });
 
+            modelBuilder.Entity("Marketing.Model.Archive", b =>
+                {
+                    b.Navigation("Archives");
+                });
+
             modelBuilder.Entity("Marketing.Model.ProductCategory", b =>
                 {
                     b.Navigation("Products");
@@ -611,6 +679,8 @@ namespace Marketing.Model.Migrations
 
             modelBuilder.Entity("Marketing.Model.Secretariat", b =>
                 {
+                    b.Navigation("Archives");
+
                     b.Navigation("Children");
                 });
 

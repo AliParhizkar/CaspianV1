@@ -24,6 +24,8 @@ namespace Caspian.UI
 
         IDictionary<string, SearchType> GetSearchData();
         void OnlyForSearch();
+
+        void HideFooter();
     }
 
     public interface IUIService<TEntity> : IUIService, ISearchService<TEntity> where TEntity : class

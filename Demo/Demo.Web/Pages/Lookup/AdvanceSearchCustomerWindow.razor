@@ -1,36 +1,20 @@
 ﻿@typeparam TValue
 @inherits LookupWindow<Customer, TValue>
 @namespace Demo.Web.Pages
-<div class="p-2 row">
-    <div class="col-md-2">
-        <label>Customer type</label>
-    </div>
-    <div class="col-md-4 pe-5">
-        <DropdownList @bind-Value="SearchData.CustomerType" />
-    </div>
-    <div class="col-md-2">
-        @if (SearchData.CustomerType == CustomerType.Legal)
-        {
-            <label>Company name </label>
-        }
-        else
-        {
-            <label>Last name</label>
-        }
-    </div>
-    <div class="col-md-4">
-        @if (SearchData.CustomerType == CustomerType.Legal)
-        {
-            <StringTextBox @bind-Value="SearchData.CompanyName" />
-        }
-        else
-        {
-            <StringTextBox @bind-Value="SearchData.LName" />
-        }
-    </div>
-</div>
+
 <div class="c-lookup-page" style="width:750px;">
-    <DataGrid Service="Service" TEntity="Customer" ContentHeight="150" Search="SearchData" HidePageSize>
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <DropdownList @bind-Value="context.CustomerType" ColSpan="4" />
+        @if (context.CustomerType == CustomerType.Legal)
+        {
+            <StringTextBox @bind-Value="context.CompanyName" ColSpan="4" />
+        }
+        else
+        {
+            <StringTextBox @bind-Value="context.LName" ColSpan="4" />
+        }
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="Customer" ContentHeight="150">
         <Columns Context="customer">
             <GridColumn Field="t => t.CustomerType" Title="Customer type" />
             <GridColumn Field='t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Customer Name" />
@@ -50,7 +34,6 @@
         </Columns>
     </DataGrid>
 </div>
-
 
 @code
 {

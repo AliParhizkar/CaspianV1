@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
-    public partial class AutoComplete<TEntity, TValue> : ComponentBase, IControl, IAutoComplete<TEntity> where TEntity: class
+    public partial class Lookup<TEntity, TValue> : ComponentBase, IControl, IAutoComplete<TEntity> where TEntity: class
     {
         string Text;
         string oldText;

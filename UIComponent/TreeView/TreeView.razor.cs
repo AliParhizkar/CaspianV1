@@ -29,7 +29,7 @@ namespace Caspian.UI
         public EventCallback<NodeView> OnInternalClicked { get; set; }
 
         [CascadingParameter]
-        internal IAutoCompleteTree AutoComplete { get; set; }
+        internal ILookupTree Lookup { get; set; }
 
         [Parameter]
         public RenderFragment<NodeView> BeforeNodeTemplate { get; set; }
@@ -172,8 +172,8 @@ namespace Caspian.UI
                 var tree = new HierarchyTree<TEntity>();
                 tree.TextFunc = TextFunc;
                 var multSelect = false;
-                if (AutoComplete != null)
-                    multSelect = AutoComplete.MultiSelecable();
+                if (Lookup != null)
+                    multSelect = Lookup.MultiSelecable();
                 if (FilterFunc == null)
                     treeNodes = tree.CreateTree(items, multSelect);
                 else
@@ -227,7 +227,7 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            AutoComplete?.SetTreeView(this);
+            Lookup?.SetTreeView(this);
             if (typeof(TEntity) != typeof(NodeView))
             {
                 var info = typeof(TEntity).GetForeignKey(typeof(TEntity));

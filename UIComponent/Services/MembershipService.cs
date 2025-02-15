@@ -36,6 +36,7 @@ namespace Caspian.UI
         public void DataViewInitialize()
         {
             DataView.Search = Search;
+            
             DataView.InsertIconState(!onlyForSearch);
             var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
             var u = Expression.Parameter(typeof(TAccess), "u");

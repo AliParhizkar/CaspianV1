@@ -1,16 +1,37 @@
 ﻿@namespace Caspian.UI
 @inject CaspianDataService service
-@{
-    string submitTitle = SubmitButtonTitle ?? (service.Language == Language.Fa ? "ثـبـت" : "Save");
-    string resetButtonTitle = ResetButtonTitle ?? (service.Language == Language.Fa ? "بازنشانی" : "Reset");
+
+@if (ColSpan.HasValue)
+{
+    @if (TotalSpan != ColSpan)
+    {
+        <div class="col-md-@(TotalSpan - ColSpan)"></div>
+    }
+    <div class="text-center col-md-@(ColSpan)">
+        @RenderButtons()
+    </div>
 }
-<div  class="c-form-action">
-    <button class="c-btn c-primary" @attributes="Attributes" type="submit">@submitTitle</button>
-    <button class="c-btn c-danger" type="reset">@resetButtonTitle</button>
-</div>
+else
+{
+    @RenderButtons()
+}
+
+
 
 @code
 {
+    RenderFragment RenderButtons()
+    {
+        string submitTitle = SubmitButtonTitle ?? (service.Language == Language.Fa ? "ثـبـت" : "Save");
+        string resetButtonTitle = ResetButtonTitle ?? (service.Language == Language.Fa ? "بازنشانی" : "Reset");
+        return __builder =>
+        {
+            <div class="c-form-action">
+                <button class="c-btn c-primary" @attributes="Attributes" type="submit">@submitTitle</button>
+                <button class="c-btn c-danger" type="reset">@resetButtonTitle</button>
+            </div>
+        };
+    }
 
     [Parameter]
     public string SubmitButtonTitle { get; set; }
@@ -20,4 +41,10 @@
 
     [Parameter]
     public string ResetButtonTitle { get; set; }
+
+    [Parameter]
+    public int? ColSpan { get; set; }
+
+    [Parameter]
+    public int? TotalSpan { get; set; } = 12;
 }

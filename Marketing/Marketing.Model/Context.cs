@@ -8,5 +8,7 @@ namespace Marketing.Model
         public DbSet<Secretariat> Secretariats { get; set; }
 
         public DbSet<ProductCategory> ProductCategories { get; set; }
+
+        public DbSet<Archive> Archives { get; set; }
     }
 }

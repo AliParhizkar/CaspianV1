@@ -2,7 +2,6 @@
 @typeparam TValue
 @inject IJSRuntime jSRuntime
 @inject CaspianDataService service
-@implements IAutoCompleteTree
 <div class="auto-hide c-lookup-tree" multiselect="@multiSelectable">
     <div class="c-content" >
         <input @ref="input" value="@searchText" @oninput="async e => await Search(e)" />

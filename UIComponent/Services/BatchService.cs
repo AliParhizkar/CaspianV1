@@ -18,7 +18,7 @@ namespace Caspian.UI
         protected IJSRuntime jSRuntime;
         protected BatchServiceData batchServiceData;
         protected IDictionary<string, SearchType> searchData;
-        bool onlyForSearch;
+        bool onlyForSearch, hideFooter;
 
 
         public async Task UpdateChildOfModelAsync(Type type)
@@ -29,6 +29,11 @@ namespace Caspian.UI
         public void OnlyForSearch()
         {
             onlyForSearch = true;
+        }
+
+        public void HideFooter()
+        {
+            hideFooter = true;
         }
 
         public IDictionary<string, SearchType> GetSearchData()
@@ -210,6 +215,7 @@ namespace Caspian.UI
         public void DataViewInitialize()
         {
             DataView.Search = Search;
+            DataView.HideFooter = DataView.HideFooter ?? hideFooter;
             DataView.InsertIconState(!onlyForSearch);
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TMaster>(this, async master =>
             {

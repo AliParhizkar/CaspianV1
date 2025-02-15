@@ -1,12 +1,34 @@
 ﻿@namespace Caspian.UI
 @inject CaspianDataService DataService
-<div class="c-window-action">
-    <button class="c-btn c-primary" type="submit">@SubmitButtonTitle</button>
-    <button class="c-btn c-danger" type="button" @onclick="CloseWindow">@CancelButtonTitle</button>
-</div>
+
+@if (ColSpan.HasValue)
+{
+    @if (TotalSpan != ColSpan)
+    {
+        <div class="col-md-@(TotalSpan - ColSpan)"></div>
+    }
+    <div class="text-center col-md-@(ColSpan)">
+        @RenderButtons()
+    </div>
+}
+else
+{
+    @RenderButtons()
+}
 
 @code 
 {
+    RenderFragment RenderButtons()
+    {
+        return __builder =>
+        {
+            <div class="c-window-action">
+                <button class="c-btn c-primary" type="submit">@SubmitButtonTitle</button>
+                <button class="c-btn c-danger" type="button" @onclick="CloseWindow">@CancelButtonTitle</button>
+            </div>
+        };
+    }
+
     protected override void OnInitialized()
     {
         if (DataService.Language == Language.Fa)
@@ -26,6 +48,12 @@
     {
         Window.Close();
     }
+
+    [Parameter]
+    public int? ColSpan { get; set; }
+
+    [Parameter]
+    public int? TotalSpan { get; set; } = 12;
 
     [CascadingParameter(Name = "ParentWindow")]
     public IWindow Window { get; set; }
