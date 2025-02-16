@@ -226,6 +226,11 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
         base.OnInitialized();
     }
 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
     async Task MainUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")

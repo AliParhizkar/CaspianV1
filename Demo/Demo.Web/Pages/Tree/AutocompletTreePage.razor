@@ -17,7 +17,7 @@
                 <div class="col-md-6 ps-3 pe-3">
                     <div class="row c-controls">
                         <div class="col-md-12">
-                            <LookupTree @bind-Value="value" OnChanged="SetOrganTitle">
+                            <LookupTree @bind-Value="value" OnChange ="SetOrganTitle">
                                 <TreeView TEntity="OrganUnit" TextFunc="t => t.Title" Selectable 
                                           FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
                             </LookupTree>

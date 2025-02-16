@@ -75,7 +75,6 @@
                             <span class="d-membership">Others Customers</span>
                         </div>
                     </div>
-
                     <DataGrid TEntity="Customer" ContentHeight="250" Service="Service" 
                     ConditionExpr="t => name1 == null || t.FName.Contains(name1) || t.LName.Contains(name1) || t.CompanyName.Contains(name1)">
                         <Columns>
@@ -134,7 +133,7 @@
     protected override void OnInitialized()
     {
         Service = new MembershipService<CustomerGroup, CustomerGroupMembership, Customer>(base.ServiceProvider);
-        Service.MasterId = GroupId;
+        Service.MasterId = GroupId;/// Set Group Id for service
         base.OnInitialized();
     }
 

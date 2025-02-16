@@ -22,6 +22,7 @@ namespace Caspian.UI
             property.SetValue(base.Search, Activator.CreateInstance<TOther>());
             Search = Activator.CreateInstance<TOther>();
             MasterType = typeof(TMaster);
+            base.HideInsertIcon = true;
         }
 
         public DataView<TOther> DataView { get; set; }
@@ -36,7 +37,7 @@ namespace Caspian.UI
         public void DataViewInitialize()
         {
             DataView.Search = Search;
-            
+            DataView.ShowInsertIcon = false;
             DataView.InsertIconState(!onlyForSearch);
             var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
             var u = Expression.Parameter(typeof(TAccess), "u");

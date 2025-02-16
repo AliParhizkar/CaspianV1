@@ -104,7 +104,10 @@ namespace Caspian.UI
         public void Dispose()
         {
             DetailType = default;
-            MasterId = default;
+            /// On Master Details Service We Set MasterId on OnInitialized but it reset here because page disposed 
+            /// on another page created
+            
+            //MasterId = default;
             Window = default;
             EntityTabPanel = default;
             DataView = default;

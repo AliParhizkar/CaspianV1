@@ -246,7 +246,7 @@ namespace Caspian.UI
         public void DataViewInitialize()
         {
             DataView.Search = Search;
-            DataView.ShowInsertIcon = DataView.ShowInsertIcon ?? true;
+            DataView.ShowInsertIcon = DataView.ShowInsertIcon ?? !HideInsertIcon;
             DataView.HideFooter = DataView.HideFooter ?? hideFooter;
             if (MasterType != null && MasterId > 0)
             {
