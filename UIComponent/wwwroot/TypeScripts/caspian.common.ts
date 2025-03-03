@@ -11,6 +11,22 @@
             return data;
         }
 
+        public static bindErrorMessage(target: HTMLElement, activeElement: HTMLElement, top:number = 0) {
+            const mutationObserver = new MutationObserver(t => {
+                t.forEach(u => {
+                    if (u.type == 'attributes' && u.attributeName == 'error-message') {
+                        if (document.activeElement == activeElement)
+                            caspian.common.showErrorMessage(target, top);
+                    }
+                });
+            });
+            mutationObserver.observe(target, {
+                attributes: true,
+                childList: false,
+                subtree: false
+            });
+        }
+
         public static setSelection(input: HTMLInputElement, start: number, end: number) {
             input.focus();
             setTimeout(() => input.setSelectionRange(start, end || start), 40);
@@ -109,7 +125,7 @@
             new DatePicker(element, dotnet);
         }
 
-        public static showErrorMessage(element: HTMLElement) {
+        public static showErrorMessage(element: HTMLElement, top: number = 0) {
             let error = element.getElementsByClassName('errorMessage')[0];
             if (error)
                 error.remove();
@@ -121,9 +137,10 @@
                     + msg.value + '</Span><span class="c-pointer"></span>';
                 element.append(messageBox);
                 let height = messageBox.getBoundingClientRect().height;
-                messageBox.style.marginTop = `${-height - 43}px`;
-                let pointer = messageBox.getElementsByClassName('c-pointer')[0] as HTMLElement;
-                pointer.style.top = `${height - 6}px`;
+                if (top > 0)
+                    messageBox.style.marginTop = `${top + 6}px`;
+                //let pointer = messageBox.getElementsByClassName('c-pointer')[0] as HTMLElement;
+                //pointer.style.top = `${height - 6}px`;
             }
         }
 
@@ -223,8 +240,9 @@
         }
 
         public static bindMultiSelect(element: HTMLElement) {
+            caspian.common.bindErrorMessage(element, element, 33);
             element.onfocus = () => {
-                this.showErrorMessage(element);
+                this.showErrorMessage(element, 33);
             }
             element.onblur = () => {
                 this.hideErrorMessage(element);

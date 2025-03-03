@@ -8,7 +8,7 @@ input {
     font-size:14px;
 }
 .c-node-template .t-checkbox{
-    line-height:18px;
+    line-height:23px;
 }
 .t-ltr .c-node-template .t-checkbox {
     margin-left:8px;
@@ -154,11 +154,44 @@ input {
 .t-rtl .t-textbox .t-input, .t-rtl .t-dropdown .t-dropdown-wrap {
     padding-right: 4px;
 }
+.c-multi-select {
+    display: flex;
+    flex-wrap: wrap;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0,0,0,0.12);
+    padding: 0 7px;
+    margin: 2px;
+    border-radius: 8px;
+    height: 32px;
+}
+
+    .c-multi-select:not(.t-state-disabled):hover {
+        border-color: rgba(0,0,0,0.24);
+    }
+
+    .c-multi-select:not(.t-state-disabled):focus {
+        box-shadow: 0 0 3px 0 grey;
+    }
+
+    .c-multi-select.t-state-error {
+        border-color: rgba(255, 0, 0, 0.12) ;
+        background-color: #fff9f9 ;
+    }
+
+        .c-multi-select.t-state-error:hover {
+            border-color: rgba(255, 0, 0, 0.24);
+        }
+        .c-multi-select.t-state-error:focus {
+            border-color: rgba(255, 0, 0, 0.24);
+            box-shadow: 0 0 4px 0 #ff9fb0;
+        }
 
 
-
-
-
+    .c-multi-select.t-state-disabled {
+        background-color: #eaeaea;
+        cursor: not-allowed;
+    }
 .t-inputbox-wrap .t-input {
     padding: 0 4px;
     width: calc(100% - 30px);

@@ -1,11 +1,11 @@
 ﻿using Caspian.Common;
 using System.Reflection;
 using Microsoft.JSInterop;
-using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 namespace Caspian.UI
 {
@@ -17,6 +17,22 @@ namespace Caspian.UI
         WindowStatus status;
         List<SelectListItem> items;
         int? selectedIndex = null;
+        IList<object> values;
+        string propertyPath;
+
+        protected override void OnInitialized()
+        {
+            values = new List<object>();
+            base.OnInitialized();
+        }
+
+        void UpdateValues(bool flag, object value)
+        {
+            if (flag)
+                values.Add(value);
+            else
+                values.Remove(value);
+        }
 
         bool IsEqual(string value1, TValue value2)
         {
@@ -55,7 +71,7 @@ namespace Caspian.UI
                         break;
                     case "Enter":
                     case "NumpadEnter":
-                        if (selectedIndex.GetValueOrDefault() > 0)
+                        if (selectedIndex.GetValueOrDefault() > 0 && EntitySearch == null)
                         {
                             status = WindowStatus.Close;
                             await SetValueForActiveItem(items[selectedIndex.Value - 1]);
@@ -88,7 +104,7 @@ namespace Caspian.UI
         {
             if (!item.Disabled && !disabled)
             {
-                await SetValue(item.Value);
+                await base.SetValue(item.Value);
                 status = WindowStatus.Close;
             }
         }
@@ -104,8 +120,7 @@ namespace Caspian.UI
                 else if (str.HasValue())
                     value = (TValue)Enum.Parse(typeof(TValue).GetUnderlyingType(), str);
             }
-            else
-                if (str.HasValue())
+            else if (str.HasValue())
                 value = (TValue)Convert.ChangeType(str, typeof(TValue).GetUnderlyingType());
             Value = value;
             await ValueChanged.InvokeAsync(Value);
@@ -127,7 +142,7 @@ namespace Caspian.UI
             if (Source == null)
             {
                 //string str = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
-                string str = "Please select ...";
+                string str = "Please Select ...";
                 items = new ();
                 if (typeof(TValue).IsNullableType())
                     items.Add(new SelectListItem(null, str));
@@ -164,7 +179,7 @@ namespace Caspian.UI
                 }
             }
             //text = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
-            text = "Please select ...";
+            text = "Please Select ...";
             if (Value != null && !Value.Equals(default(TValue)))
             {
                 if (Source == null)
@@ -184,6 +199,25 @@ namespace Caspian.UI
                     else
                         strValue = Convert.ToString(Convert.ToInt32(Value));
                     text = Source.SingleOrDefault(t => t.Value == strValue)?.Text;
+                }
+            }
+            if (EntitySearch != null)
+            {
+                var path = GetProppertyPath();
+                if (path != null)
+                {
+                    var values = EntitySearch.GetFieldValues(path);
+                    if (values != null && values.Count() > 0)
+                    {
+                        var str = string.Empty;
+                        foreach ( var value in values)
+                        {
+                            if (str != string.Empty)
+                                str += ", ";
+                            str += items.Single(t => t.Value == value.ToString()).Text;
+                        }
+                        text = str;
+                    }
                 }
             }
             attrs = new Dictionary<string, object>();
@@ -235,10 +269,53 @@ namespace Caspian.UI
         }
 
         [JSInvokable]
-        public void CloseWindow()
+        public async Task CloseWindow()
         {
             status = WindowStatus.Close;
+            if (EntitySearch != null)
+            {
+                text = string.Empty;
+                foreach (var value in values)
+                {
+                    if (text != string.Empty)
+                        text += ", ";
+                    text += items.Single(t => t.Value == value.ToString()).Text;
+                }
+            }
+            if (text == string.Empty)
+                text = "Please Select ...";
+            if (EntitySearch != null)
+            {
+                var path = GetProppertyPath();
+                var type = typeof(TValue).GetUnderlyingType();
+                await EntitySearch.UpsertEnumValues(path, values.Select(t => Enum.Parse(type, t.ToString())).ToArray());
+            }
             StateHasChanged();
+        }
+
+        string GetProppertyPath()
+        {
+            if (propertyPath == null)
+            {
+                var path = "";
+                var expr = ValueExpression.Body;
+                while (expr.NodeType == ExpressionType.MemberAccess)
+                {
+
+                    var property = (expr as MemberExpression).Member as PropertyInfo;
+                    if (expr.Type == EntitySearch.EntityType)
+                        break;
+                    else if (property != null)
+                    {
+                        if (path.HasValue())
+                            path = $".{path}";
+                        path = property.Name + path;
+                    }
+                    expr = (expr as MemberExpression).Expression;
+                }
+                propertyPath = path;
+            }
+            return propertyPath;
         }
 
     }

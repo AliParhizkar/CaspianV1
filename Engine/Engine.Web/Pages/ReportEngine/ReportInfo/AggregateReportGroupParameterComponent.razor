@@ -40,7 +40,7 @@
 
 
 <Window Title="Update Allis" @bind-Status="windowStatus" Style="width:400px;">
-    <div class="row c-controls ps-3 pe-3">
+    <div class="row c-controls">
         <div class="col-md-3">
             <label>Path</label>
         </div>
@@ -54,7 +54,7 @@
             <StringTextBox @bind-Value="allis" />
         </div>
         <div class="col-md-3"></div>
-        <div class="col-md-9 c-window-action pt-3 pb-3">
+        <div class="col-md-9 c-window-action pt-1 pb-1">
             <button class="c-btn c-primary" type="button" @onclick="() => UpdateAllis(selectedParameter.Path, allis)">Save</button>
             <button class="c-btn c-danger" type="button" @onclick="() => windowStatus = WindowStatus.Close">Close</button>
         </div>

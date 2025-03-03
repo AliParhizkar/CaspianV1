@@ -1,6 +1,8 @@
 ﻿using Caspian.Common;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections;
+using System.Reflection;
 
 namespace Caspian.UI
 {
@@ -56,6 +58,24 @@ namespace Caspian.UI
                 count = await stream.ReadAsync(buffer, sum, remine);
             }
             return buffer;
+        }
+
+        internal static void RemoveFieldState(this EditContext editContext, string fieldName)
+        {
+            var field = editContext.GetType().GetField("_fieldStates", BindingFlags.NonPublic | BindingFlags.Instance);
+            var states = (field.GetValue(editContext) as System.Collections.IDictionary);
+            DictionaryEntry? old = null;
+            foreach (DictionaryEntry state in states)
+            {
+                var fieldName1 = (state.Key as dynamic).FieldName as string;
+                if (fieldName1 == fieldName)
+                {
+                    old = state;
+                    break;
+                }
+            }
+            if (old.HasValue)
+                states.Remove(old.Value.Key);
         }
     }
 }

@@ -26,6 +26,7 @@
                 ddl.classList.add('t-state-default');
                 caspian.common.hideErrorMessage(element);
             }
+            caspian.common.bindErrorMessage(element, element);
         }
 
         bindObserver(element: HTMLElement, dotnet: dotnetInvoker) {

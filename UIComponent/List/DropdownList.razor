@@ -53,7 +53,17 @@ else
                                         name += " t-state-selected";
                                     if (item.Disabled)
                                         name += " t-disable";
-                                    <li @onmousedown="async () => await SetValueForActiveItem(item)" class="@name">@item.Text</li>
+                                    @if (EntitySearch == null)
+                                    {
+                                        <li @onmousedown="async () => await SetValueForActiveItem(item)" class="@name">@item.Text</li>
+                                    }
+                                    else if (item.Value != null)
+                                    {
+                                        <li class="c-multi-select-drowp">
+
+                                            <CheckBox Title="@(item.Text)" Value="values.Contains(item.Value)" ValueChanged="e => UpdateValues(e, item.Value)" TValue="bool"  />
+                                        </li>
+                                    }
                                     index++;
                                 }
                             </ul>

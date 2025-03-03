@@ -4,6 +4,7 @@
         total: number;
         numberDigit: number;
         constructor(input: HTMLInputElement, type: string) {
+            caspian.common.bindErrorMessage(input.parentElement, input);
             this.input = input;
             this.total ||= 8; 
             input.onmouseenter = () => {
@@ -21,7 +22,6 @@
                 list.add('t-state-focused');
                 list.remove('t-state-default');
                 caspian.common.showErrorMessage(this.input.closest('.t-widget'));
-
             }
             input.onblur = () => {
                 let list = input.parentElement.classList;

@@ -8,6 +8,7 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections;
 
 namespace Caspian.UI
 {
@@ -18,6 +19,7 @@ namespace Caspian.UI
         protected IJSRuntime jSRuntime;
         protected BatchServiceData batchServiceData;
         protected IDictionary<string, SearchType> searchData;
+        protected IDictionary<string, ICollection> enumValues;
         bool onlyForSearch, hideFooter;
 
 
@@ -39,6 +41,16 @@ namespace Caspian.UI
         public IDictionary<string, SearchType> GetSearchData()
         {
             return searchData;
+        }
+
+        public IDictionary<string, ICollection> GetEnumFields()
+        {
+            return enumValues;
+        }
+
+        public void SetEnumFields(IDictionary<string, ICollection> enumFields)
+        {
+            this.enumValues = enumFields;
         }
 
         public Func<IServiceProvider, TMaster, Task<bool>> OnUpsert { get; set; }

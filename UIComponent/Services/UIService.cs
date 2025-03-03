@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections;
 
 namespace Caspian.UI
 {
@@ -18,6 +19,7 @@ namespace Caspian.UI
         BaseComponentService baseComponentService;
         BasePageService basePageService;
         IDictionary<string, SearchType> searchData;
+        IDictionary<string, ICollection> enumValues;
         protected bool hideFooter;
 
         public IServiceProvider ServiceProvider { get; private set; }
@@ -34,7 +36,7 @@ namespace Caspian.UI
 
         public void OnlyForSearch()
         {
-
+            HideInsertIcon = true;
         }
 
         public void Dispose()
@@ -86,6 +88,11 @@ namespace Caspian.UI
                 }
                 info.SetValue(UpsertData, detail);
             }
+        }
+
+        public void SetEnumFields(IDictionary<string, ICollection> enumFields)
+        {
+            this.enumValues = enumFields;
         }
 
         public UIService(IServiceProvider serviceProvider) 
@@ -365,6 +372,11 @@ namespace Caspian.UI
             Form = null;
             if (!Is1To1RelationshipService)
                 UpsertData = null;
+        }
+
+        IDictionary<string, ICollection> ISearchService<TEntity>.GetEnumFields()
+        {
+            return enumValues;
         }
     }
 }

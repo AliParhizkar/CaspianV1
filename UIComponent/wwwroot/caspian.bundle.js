@@ -323,6 +323,21 @@ var caspian;
             let data = { start: input.selectionStart, end: input.selectionEnd };
             return data;
         }
+        static bindErrorMessage(target, activeElement, top = 0) {
+            const mutationObserver = new MutationObserver(t => {
+                t.forEach(u => {
+                    if (u.type == 'attributes' && u.attributeName == 'error-message') {
+                        if (document.activeElement == activeElement)
+                            caspian.common.showErrorMessage(target, top);
+                    }
+                });
+            });
+            mutationObserver.observe(target, {
+                attributes: true,
+                childList: false,
+                subtree: false
+            });
+        }
         static setSelection(input, start, end) {
             input.focus();
             setTimeout(() => input.setSelectionRange(start, end || start), 40);
@@ -411,7 +426,7 @@ var caspian;
         static bindDatePicker(element, dotnet) {
             new caspian.DatePicker(element, dotnet);
         }
-        static showErrorMessage(element) {
+        static showErrorMessage(element, top = 0) {
             let error = element.getElementsByClassName('errorMessage')[0];
             if (error)
                 error.remove();
@@ -423,9 +438,10 @@ var caspian;
                     + msg.value + '</Span><span class="c-pointer"></span>';
                 element.append(messageBox);
                 let height = messageBox.getBoundingClientRect().height;
-                messageBox.style.marginTop = `${-height - 43}px`;
-                let pointer = messageBox.getElementsByClassName('c-pointer')[0];
-                pointer.style.top = `${height - 6}px`;
+                if (top > 0)
+                    messageBox.style.marginTop = `${top + 6}px`;
+                //let pointer = messageBox.getElementsByClassName('c-pointer')[0] as HTMLElement;
+                //pointer.style.top = `${height - 6}px`;
             }
         }
         static hideErrorMessage(element) {
@@ -511,8 +527,9 @@ var caspian;
             new caspian.DropdownList(element, dotnet);
         }
         static bindMultiSelect(element) {
+            caspian.common.bindErrorMessage(element, element, 33);
             element.onfocus = () => {
-                this.showErrorMessage(element);
+                this.showErrorMessage(element, 33);
             };
             element.onblur = () => {
                 this.hideErrorMessage(element);
@@ -1022,6 +1039,7 @@ var caspian;
                 ddl.classList.add('t-state-default');
                 caspian.common.hideErrorMessage(element);
             };
+            caspian.common.bindErrorMessage(element, element);
         }
         bindObserver(element, dotnet) {
             const mutationObserver = new MutationObserver(t => {
@@ -1346,6 +1364,7 @@ var caspian;
 (function (caspian) {
     class TextBox {
         constructor(input, type) {
+            caspian.common.bindErrorMessage(input.parentElement, input);
             this.input = input;
             this.total || (this.total = 8);
             input.onmouseenter = () => {

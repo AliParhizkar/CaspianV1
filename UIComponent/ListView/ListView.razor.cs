@@ -42,7 +42,7 @@ namespace Caspian.UI
 
         IQueryable<TEntity> GetQuery(IServiceScope scope)
         {
-            var query = scope.GetService<BaseService<TEntity>>().Search(Search, Service?.GetSearchData());
+            var query = scope.GetService<BaseService<TEntity>>().Search(Search, Service?.GetSearchData(), Service?.GetEnumFields());
             var param = Expression.Parameter(typeof(TEntity), "t");
             Expression condExr = null;
             if (ConditionExpr != null)

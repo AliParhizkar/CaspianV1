@@ -147,8 +147,7 @@
                                 <GridColumn Field="t => t.Product.Title" Title="Product">
                                     <EditTemplate>
                                         <Lookup TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId"
-                                        HideHeader AutoHide TextExpression="t => t.Title"
-                                        OnChange="async () => await SetPrice(con.Data)">
+                                        HideHeader AutoHide TextExpression="t => t.Title" OnChange="async () => await SetPrice(con.Data)">
                                             <ProductLookupWindow />
                                         </Lookup>
                                     </EditTemplate>

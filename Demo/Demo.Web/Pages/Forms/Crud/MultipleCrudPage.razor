@@ -134,9 +134,11 @@
     string productTitle;
     int productId;
     int? productcategoryId;
+    ElementReference reference;
 
     void OpenDescriptionWindow(int productId)
     {
+        
         this.productId = productId;
         status = WindowStatus.Open;
     }

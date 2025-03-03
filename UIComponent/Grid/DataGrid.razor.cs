@@ -10,6 +10,7 @@ using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Encodings.Web;
 
 namespace Caspian.UI
 {
@@ -207,7 +208,7 @@ namespace Caspian.UI
         IQueryable<TEntity> GetQuery(IServiceScope scope)
         {
             var service = scope.GetService<BaseService<TEntity>>();
-            var query = service.Search(Search, Service?.GetSearchData());
+            var query = service.Search(Search, Service?.GetSearchData(), Service?.GetEnumFields());
             Expression expr = null;
             var parameter = Expression.Parameter(typeof(TEntity), "t");
             Expression expression = null;

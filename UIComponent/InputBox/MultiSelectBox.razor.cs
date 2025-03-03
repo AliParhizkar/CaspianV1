@@ -22,8 +22,9 @@ namespace Caspian.UI
                 var tempValue = typeof(TValue).GetField(value.ToString()).GetValue(null);
                 Value = (TValue)((dynamic)Value - (dynamic)tempValue);
             }
-            if (ValueChanged.HasDelegate)
-                await ValueChanged.InvokeAsync(Value);
+            //if (ValueChanged.HasDelegate)
+            //    await ValueChanged.InvokeAsync(Value);
+            await base.SetValue(Value, true);
         }
 
         [Parameter]

@@ -172,23 +172,22 @@ namespace Caspian.Engine.ReportGenerator
                 ReportGroupId = GroupId,
                 Path = node.Value
             };
-            if (type == typeof(DateTime))
+            if (type == typeof(DateOnly))
             {
-                throw new InvalidOperationException("خطای عدم پیاده سازی");
-                //parameter.AggregateParameterType = AggregateParameterType.Parent;
-                //string[] dateFields = null;
-                //if (info.DeclaringType.GetProperties().Any(t => t.PropertyType == typeof(PersianDateTable) && t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name))
-                //    dateFields = ReportTree.TotalDateFields;
-                //else
-                //    dateFields = ReportTree.DateFields;
-                //parameter.Parameters = dateFields.Select(t => new AggregateReportGroupParameter()
-                //{
-                //    AggregateParameterType = AggregateParameterType.Grouping,
-                //    Path = t,
-                //    Allis = ReportTree.DateFieldsDictionary[t],
-                //    ReportGroupId = GroupId,
-                //    ParentParameterId = parameter.Id
-                //}).ToList();
+                parameter.AggregateParameterType = AggregateParameterType.Parent;
+                string[] dateFields = null;
+                if (info.DeclaringType.GetProperties().Any(t => t.PropertyType == typeof(PersianDateTable) && t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name))
+                    dateFields = ReportTree.TotalDateFields;
+                else
+                    dateFields = ReportTree.DateFields;
+                parameter.Parameters = dateFields.Select(t => new AggregateReportGroupParameter()
+                {
+                    AggregateParameterType = AggregateParameterType.Grouping,
+                    Path = t,
+                    Allis = ReportTree.DateFieldsDictionary[t],
+                    ReportGroupId = GroupId,
+                    ParentParameterId = parameter.Id
+                }).ToList();
             }
             else
                 parameter.AggregateParameterType = AggregateParameterType.Grouping;

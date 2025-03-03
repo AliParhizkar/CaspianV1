@@ -303,7 +303,7 @@ html input[disabled], textarea[disabled] {
         border-color: #f85a00;
     }
 .t-grid .t-state-selected {
-    background-color: #e1eaea !important;
+    background-color: #D6E3FF !important;
 }
 
 .t-grid .t-selectable tr{

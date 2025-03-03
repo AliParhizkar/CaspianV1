@@ -11,6 +11,7 @@ namespace Demo.Service
             : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqueAsync("A country with this title is defined in the system");
+            RuleFor(t => t.ActiveType).Custom(t => t.Id == 0 && t.ActiveType != ActiveType.Enable, "In Insert Country should be Active");
         }
     }
 

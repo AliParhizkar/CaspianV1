@@ -4,15 +4,16 @@ using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using Caspian.Common.Extension;
 using FluentValidation.Results;
-using FluentValidation.Internal;
+using System.Linq.Dynamic.Core;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Caspian.UI
 {
-    public class CaspianValidationValidator<TModel>: ComponentBase, IControlFocuseValidation where TModel : class
+    public class CaspianValidationValidator<TModel>: ComponentBase, IDisposable, IControlFocuseValidation where TModel : class
     {
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
@@ -56,21 +57,15 @@ namespace Caspian.UI
 
         private void HookUpEditContextEvents()
         {
-            EditContext.OnValidationRequested -= async (sender, args) => await ValidationRequested(sender, args);
-            EditContext.OnValidationRequested += async (sender, args) => await ValidationRequested(sender, args);
-            //EditContext.OnFieldChanged += async (sender, args) => await FieldChanged(sender, args);
+            EditContext.OnValidationRequested -= ValidationRequested;
+            EditContext.OnValidationRequested += ValidationRequested;
+            EditContext.OnFieldChanged -= FieldChanged;
+            EditContext.OnFieldChanged += FieldChanged;
         }
 
-        async Task FieldChanged(object sender, FieldChangedEventArgs args)
+        async void FieldChanged(object sender, FieldChangedEventArgs args)
         {
-            ValidationMessageStore.Clear();
-            var list = new List<string>
-            {
-                "default"
-            };
-            var chain = new PropertyChain();
-            chain.Add(args.FieldIdentifier.FieldName);
-            var context = new ValidationContext<object>(EditContext.Model, chain, new RulesetValidatorSelector(list));
+            //ValidationMessageStore.Clear();
             using var scope = ServiceScopeFactory.CreateScope();
             if (CaspianDataService != null)
             {
@@ -78,15 +73,36 @@ namespace Caspian.UI
                 dataService.UserId = CaspianDataService.UserId;
                 dataService.Language = CaspianDataService.Language;
             }
-            Validator = (IValidator<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
-            var result = await Validator.ValidateAsync(context);
-            AddValidationResult(EditContext.Model, result);
+            var validator = (CaspianValidator<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
+            
+            var validationResult = validator.ValidateAsync(EditContext.Model as TModel, option => 
+            {
+                option.IncludeProperties(args.FieldIdentifier.FieldName);
+            });
+            EditContext.Properties["FieldChangeAsyncTask"] = validationResult;
+            var result = await validationResult;
+            if (result.IsValid)
+            {
+                EditContext.RemoveFieldState(args.FieldIdentifier.FieldName);
+                EditContext.Properties["PropertyName"] = args.FieldIdentifier.FieldName;
+            }
+            else
+            {
+                var error = result.Errors.First();
+                var fieldIdentifier = EditContext.Field(error.PropertyName);
+                EditContext.Properties["PropertyName"] = error.PropertyName;
+                ValidationMessageStore.Clear();
+                ValidationMessageStore.Add(fieldIdentifier, error.ErrorMessage);
+                var qqq = EditContext.GetValidationMessages(fieldIdentifier).First();
+            }
+            EditContext.Properties["ValidationType"] = "FieldChanged";
+            EditContext.NotifyValidationStateChanged();
         }
 
-        async Task ValidationRequested(object sender, ValidationRequestedEventArgs args)
+        async void ValidationRequested(object sender, ValidationRequestedEventArgs args)
         {
             ValidationMessageStore.Clear();
-            var context = new ValidationContext<Object>(EditContext.Model);
+            var context = new ValidationContext<object>(EditContext.Model);
             using var scope = ServiceScopeFactory.CreateScope();
             if (CaspianDataService != null)
             {
@@ -105,6 +121,7 @@ namespace Caspian.UI
                 asyncValidationTask = Validator.ValidateAsync(context);
             EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
             var result = await asyncValidationTask;
+            EditContext.Properties["ValidationType"] = "FormSubmited";
             AddValidationResult(EditContext.Model, result);
         }
 
@@ -187,6 +204,11 @@ namespace Caspian.UI
                     await FormAppState.Control.FocusAsync();
             }
             await base.OnAfterRenderAsync(firstRender);
+        }
+
+        void IDisposable.Dispose()
+        {
+
         }
     }
 }

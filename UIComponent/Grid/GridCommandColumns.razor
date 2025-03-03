@@ -13,7 +13,7 @@
         <span class="c-check @(className)">
             <span class="t-icon fa fa-check" @onclick="Check"></span>
         </span>
-        <span class="c-bar @(className)" @onclick="cancel">
+        <span class="c-bar @(className)" @onclick="Cancel">
             <span class="t-icon fa fa-ban"></span>
         </span>
     }
@@ -41,10 +41,10 @@
             await DataView.ValidateAndUpsert(RowData.UpsertMode.Value);
     }
 
-    async Task cancel()
+    async Task Cancel()
     {
         if (CaspianContainer?.Disabled != true)
-            await DataView.CalcelUpsert(RowData.UpsertMode.Value);
+            await DataView.CancelUpsert(RowData.UpsertMode.Value);
     }
 
     [Parameter]

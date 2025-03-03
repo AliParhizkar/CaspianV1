@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Caspian.Common.Extension
 {
@@ -251,16 +252,26 @@ namespace Caspian.Common.Extension
             return list;
         }
 
-        internal static IQueryable<TEntity> Search<TEntity>(this IQueryable<TEntity> source, TEntity search, IDictionary<string, SearchType> searchs = null) where TEntity : class
+        internal static IQueryable<TEntity> Search<TEntity>(this IQueryable<TEntity> source, TEntity search, IDictionary<string, SearchType> searchs, IDictionary<string, ICollection> enumValues) where TEntity : class
         {
             if (search == null)
                 return source;
             var list = new List<string>();
             GetSearchFieldsName(list, search, null);
-            if (list.Count == 0)
+            if (list.Count == 0 && (enumValues == null || enumValues.Count == 0))
                 return source;
             ParameterExpression parameter = Expression.Parameter(typeof(TEntity), "t");
             Expression left = null;
+            if (enumValues != null && enumValues.Count > 0)
+            {
+                foreach (var enumValue in enumValues)
+                {
+                    var propertyExpr = parameter.CreateMemberExpresion(enumValue.Key);
+                    var constantExpr = Expression.Constant(enumValue.Value);
+                    var method = typeof(Enumerable).GetMethods().First(t => t.Name == "Contains").MakeGenericMethod(propertyExpr.Type);
+                    var callExpr = Expression.Call(null, method, constantExpr, propertyExpr);
+                }
+            }
             foreach (var fieldName in list)
             {
                 var type = search.GetType();

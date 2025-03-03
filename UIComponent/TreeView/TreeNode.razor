@@ -2,6 +2,8 @@
 @namespace Caspian.UI
 @{
     var className = Item.Expanded ? "c-expand" : "c-collaps";
+    if (Item.Disabled)
+        className += " c-disabled";
     if (IsLast)
         className += " c-node-last";
     var titleClassName = "c-title";
@@ -155,9 +157,11 @@
 
     IDictionary<string, object> GetNodeAttributes(NodeView node, bool isLast)
     {
-        var attrs = new Dictionary<string, object>();
-        attrs.Add("Item", node);
-        attrs.Add("IsLast", isLast);
+        var attrs = new Dictionary<string, object>()
+        {
+            {"Item", node},
+            {"IsLast", isLast}
+        };
         return attrs;
     }
 

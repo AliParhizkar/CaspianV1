@@ -2,6 +2,7 @@
 using Caspian.Common.Extension;
 using Caspian.Common.Service;
 using Microsoft.JSInterop;
+using System.Collections;
 using System.Linq.Expressions;
 
 namespace Caspian.UI
@@ -9,6 +10,7 @@ namespace Caspian.UI
     public class MembershipService<TMaster, TAccess, TOther>:UIService<TAccess>, ISearchService<TOther> where TAccess : class where TOther : class
     {
         protected IDictionary<string, SearchType> searchData;
+        protected IDictionary<string, ICollection> enumValues;
         bool onlyForSearch;
         public MembershipService(IServiceProvider provider)
             :base(provider)
@@ -23,6 +25,16 @@ namespace Caspian.UI
             Search = Activator.CreateInstance<TOther>();
             MasterType = typeof(TMaster);
             base.HideInsertIcon = true;
+        }
+
+        public void SetEnumFields(IDictionary<string, ICollection> enumFields)
+        {
+            this.enumValues = enumFields;
+        }
+
+        public IDictionary<string, ICollection> GetEnumFields()
+        {
+            return enumValues;
         }
 
         public DataView<TOther> DataView { get; set; }
@@ -80,21 +92,26 @@ namespace Caspian.UI
         public async Task RemoveAsync()
         {
             var item = base.DataView.GetSelectedData();
-            var id = Convert.ToInt32(typeof(TAccess).GetPrimaryKey().GetValue(item));
-            using var service = CreateScope().GetService<IBaseService<TAccess>>();
-            var old = await service.SingleAsync(id);
-            var result = await service.ValidateRemoveAsync(old);
-            if (result.IsValid)
+            if (item != null)
             {
-                await service.RemoveAsync(old);
-                await service.SaveChangesAsync();
-                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
-                await base.DataView.ReloadAsync();
-                var otherIdInfo = typeof(TAccess).GetForeignKey(typeof(TOther));
-                var otherKey = otherIdInfo.GetValue(old);
-                await DataView.SelectRowById(Convert.ToInt32(otherKey));
-                StateHasChanged();
+                var id = Convert.ToInt32(typeof(TAccess).GetPrimaryKey().GetValue(item));
+                using var service = CreateScope().GetService<IBaseService<TAccess>>();
+                var old = await service.SingleAsync(id);
+                var result = await service.ValidateRemoveAsync(old);
+                if (result.IsValid)
+                {
+                    await service.RemoveAsync(old);
+                    await service.SaveChangesAsync();
+                    await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
+                    await base.DataView.ReloadAsync();
+                    var otherIdInfo = typeof(TAccess).GetForeignKey(typeof(TOther));
+                    var otherKey = otherIdInfo.GetValue(old);
+                    await DataView.SelectRowById(Convert.ToInt32(otherKey));
+                    StateHasChanged();
+                }
             }
+            else
+                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "لطفا یک ردیف را انتخاب نمائید.");
         }
 
         public void SetSearchType(IDictionary<string, SearchType> types)

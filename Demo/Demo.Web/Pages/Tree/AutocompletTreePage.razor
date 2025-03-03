@@ -19,7 +19,7 @@
                         <div class="col-md-12">
                             <LookupTree @bind-Value="value" OnChange ="SetOrganTitle">
                                 <TreeView TEntity="OrganUnit" TextFunc="t => t.Title" Selectable 
-                                          FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
+                                FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
                             </LookupTree>
                         </div>
                         <div class="col-md-4">
@@ -49,9 +49,9 @@
                     <div class="row c-controls ps-3 pe-3">
                         <div class="col-md-12">
                             <LookupTree @bind-Value="values">
-                                <TreeView TEntity="OrganUnit" TextFunc="t => t.Title"
-                                          ParentNodeFilterFunc="t => t.ParentOrganId == null"
-                                          FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
+                                <TreeView TEntity="OrganUnit" TextFunc="t => t.Title" SelectableFund="ForTest"
+                                ParentNodeFilterFunc="t => t.ParentOrganId == null" 
+                                FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
                             </LookupTree>
                         </div>
                         <div class="col-md-4">
@@ -76,6 +76,13 @@
     int? value;
     int[] values;
     string OrganTitle;
+
+    bool ForTest(OrganUnit organUnit)
+    {
+        if (organUnit.SuborganUnits == null || organUnit.SuborganUnits.Count() == 0)
+            return true;
+        return false;
+    }
 
     async Task SetOrganTitle()
     {

@@ -1,5 +1,6 @@
 ﻿
 using Caspian.Common;
+using System.Collections;
 
 namespace Caspian.UI
 {
@@ -22,7 +23,12 @@ namespace Caspian.UI
 
         void SetSearchType(IDictionary<string, SearchType> types);
 
+        void SetEnumFields(IDictionary<string, ICollection> enumFields);
+
+        IDictionary<string, ICollection> GetEnumFields();
+
         IDictionary<string, SearchType> GetSearchData();
+
         void OnlyForSearch();
 
         void HideFooter();

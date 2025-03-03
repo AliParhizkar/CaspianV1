@@ -1,0 +1,91 @@
+﻿@namespace Caspian.Engine.ReportGenerator
+@inherits BasePage
+
+<TreeView style="height:calc(100% - 47px)" TEntity="NodeView" Source="source" OnChange="NodeChanged">
+    <BeforeNodeTemplate Context="node">
+        @if (IsIdentityNode(node))
+        {
+            <span class="fa fa-key"></span>
+        }
+    </BeforeNodeTemplate>
+</TreeView>
+
+@code
+{
+    Type type;
+    IList<NodeView> source;
+    IList<AggregateReportGroupParameter> parameters;
+
+    void NodeChanged(NodeView node)
+    {
+        if (node.Children != null)
+        {
+            foreach (var child in node.Children)
+                child.Selected = node.Selected;
+        }
+        var parent = node.Parent;
+        if (parent != null)
+        {
+            var sibling = parent.Children;
+            foreach (var item in sibling)
+            {
+                if (IsIdentityNode(item))
+                {
+                    item.Selected = sibling.Where(t => t != item).Any(t => t.Selected == true);
+                    break;
+                }
+            }
+            if (sibling.All(t => t.Selected == true))
+                parent.Selected = true;
+            else if (!sibling.Any(t => t.Selected == true))
+                parent.Selected = false;
+            else
+                parent.Selected = null;
+
+        }
+    }
+
+    bool IsIdentityNode(NodeView node)
+    {
+        var parent = node.Parent;
+        if (parent == null || parameters == null || node.Value == null)
+            return false;
+        var child = parameters.Single(t => t.Path == parent.Value).Parameters.Single(t => t.Path == node.Value);
+        return child?.AggregateParameterType == AggregateParameterType.Identity;
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<AggregateReportGroupParameterService>();
+        parameters = await service.GetAll().Where(t => t.ReportGroupId == GroupId).ToListAsync();
+        source = parameters.Where(t => t.ParentParameterId == null).Select(t => new NodeView()
+            {
+                Value = t.Path,
+                Text = t.Allis,
+                Collabsable = t.Parameters?.Any() == true,
+                Expanded = t.Parameters?.Any() == true,
+                Selectable = true,
+                Children = t.Parameters == null ? null : t.Parameters.Select(u => new NodeView()
+                {
+                    Value = u.Path,
+                    Text = u.Allis,
+                    Collabsable = false,
+                    Selectable = true,
+                }).ToList()
+            }).ToList();
+        foreach(var node in source.Where(t => t.Children != null))
+            foreach(var child in node.Children)
+            {
+                child.Parent = node;
+                if (IsIdentityNode(child))
+                {
+                    child.Disabled = true;
+                    break;
+                }
+            }
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter]
+    public int GroupId { get; set; }
+}

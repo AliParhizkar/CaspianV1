@@ -7,6 +7,7 @@ using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections;
 
 namespace Caspian.Common.Service
 {
@@ -46,9 +47,9 @@ namespace Caspian.Common.Service
             return GetAll().Any(expr);
         }
 
-        public virtual IQueryable<TEntity> Search(TEntity entity, IDictionary<string, SearchType> searchData)
+        public virtual IQueryable<TEntity> Search(TEntity entity, IDictionary<string, SearchType> searchData, IDictionary<string, ICollection> enumValues)
         {
-            return GetAll().Search(entity, searchData);
+            return GetAll().Search(entity, searchData, enumValues);
         }
 
         public virtual IQueryable<TEntity> GetAll()

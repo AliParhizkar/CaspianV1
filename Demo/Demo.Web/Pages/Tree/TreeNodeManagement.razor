@@ -85,6 +85,8 @@
                     Selectable = true,
                 }).ToList()
             }).ToListAsync();
+        foreach (var item in source)
+            item.Collabsable = item.Children.Any();
         await base.OnInitializedAsync();
     }
 }

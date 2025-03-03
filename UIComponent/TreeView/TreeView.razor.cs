@@ -18,9 +18,11 @@ namespace Caspian.UI
         
         IDictionary<string, object> GetNodeAttributes(NodeView node, bool isLastNode)
         {
-            var attrs = new Dictionary<string, object>();
-            attrs.Add("Item", node);
-            attrs.Add("IsLast", isLastNode);
+            var attrs = new Dictionary<string, object>()
+            {
+                { "Item", node},
+                { "IsLast", isLastNode}
+            };
             return attrs;
         }
 
@@ -89,6 +91,9 @@ namespace Caspian.UI
 
         [Parameter]
         public Func<TEntity, bool> ParentNodeFilterFunc { get; set; }
+
+        [Parameter]
+        public Func<TEntity, bool> SelectableFund { get; set; }
 
         [Parameter]
         public bool AutoSelectable { get; set; }
@@ -175,11 +180,11 @@ namespace Caspian.UI
                 if (Lookup != null)
                     multSelect = Lookup.MultiSelecable();
                 if (FilterFunc == null)
-                    treeNodes = tree.CreateTree(items, multSelect);
+                    treeNodes = tree.CreateTree(items, multSelect, SelectableFund);
                 else
                 {
                     tree.FilterFunc = FilterFunc;
-                    treeNodes = tree.FilterTree(items, multSelect);
+                    treeNodes = tree.FilterTree(items, multSelect, SelectableFund);
                 }
                 if (SelectedNodesValue != null)
                     tree.UpdateSelectedState(treeNodes, SelectedNodesValue);

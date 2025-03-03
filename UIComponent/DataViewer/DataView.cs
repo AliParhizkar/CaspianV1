@@ -34,8 +34,9 @@ namespace Caspian.UI
         protected CaspianValidationValidator<TEntity> validator;
         protected IList<TEntity> items;
         protected bool disableInsertIcon;
-        protected bool? showInsertIcon; 
+        protected bool? showInsertIcon;
         protected ElementReference mainDiv;
+        protected ElementReference? inertButton;
 
         internal EventCallback<TEntity> OnInternalUpsert { get; set; }
 
@@ -123,6 +124,12 @@ namespace Caspian.UI
             if (SelectedRowIndex == null || items == null || items.Count < SelectedRowIndex.Value || SelectedRowIndex == -1)
                 return null;
             return items.ElementAt(SelectedRowIndex.Value);
+        }
+
+        public async Task FocusInsertButtonAsync()
+        {
+            if (inertButton.HasValue)
+                await inertButton.Value.FocusAsync();
         }
 
         /// <summary>
@@ -315,6 +322,7 @@ namespace Caspian.UI
                 }
             }
             StateHasChanged();
+            await FocusInsertButtonAsync();
         }
 
         internal IList<TEntity>  GetSource()
@@ -347,7 +355,7 @@ namespace Caspian.UI
             }
         }
 
-        public async Task CalcelUpsert(UpsertMode upsertMode)
+        public async Task CancelUpsert(UpsertMode upsertMode)
         {
             if (upsertMode == UpsertMode.Edit)
             {
@@ -362,6 +370,7 @@ namespace Caspian.UI
                 await ReadyToInsert();
             if (OnCancel.HasDelegate)
                 await OnCancel.InvokeAsync(upsertMode);
+
             StateHasChanged();
         }
 

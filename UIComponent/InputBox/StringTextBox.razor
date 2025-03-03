@@ -31,22 +31,22 @@ else
                 {
                     @if (base.BindingType == BindingType.OnChange)
                     {
-                        <textarea value="@Value" @ref="InputElement" @attributes="GetInputAttributes()" @onchange="ChangeValue">@Value</textarea>
+                        <textarea value="@Value" @ref="InputElement" @attributes="GetInputAttributes()" @onchange="async e => await ChangeValue(e)">@Value</textarea>
                     }
                     else
                     {
-                        <textarea value="@Value" @ref="InputElement" @attributes="GetInputAttributes()" @oninput="ChangeValue">@Value</textarea>
+                        <textarea value="@Value" @ref="InputElement" @attributes="GetInputAttributes()" @oninput="async e => await ChangeValue(e)">@Value</textarea>
                     }
                 }
                 else
                 {
                     @if (base.BindingType == BindingType.OnChange)
                     {
-                        <input value="@Value" @onchange="ChangeValue" @ref="InputElement" @attributes="GetInputAttributes()" />
+                        <input value="@Value" @onchange="async e => await ChangeValue(e)" @ref="InputElement" @attributes="GetInputAttributes()" />
                     }
                     else
                     {
-                        <input value="@Value" @oninput="ChangeValue" @ref="InputElement" @attributes="GetInputAttributes()" />
+                        <input value="@Value" @oninput="async e => await ChangeValue(e)" @ref="InputElement" @attributes="GetInputAttributes()" />
                     }
                 }
             </div>

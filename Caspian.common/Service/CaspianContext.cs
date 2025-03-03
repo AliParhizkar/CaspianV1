@@ -34,7 +34,7 @@ namespace Caspian.Common
                 var pKeyName = type.GetPrimaryKey(true)?.Name;
                 foreach (var property in type.GetProperties())
                 {
-                    if (property.PropertyType.FullName == "Caspian.Engine.Model.User")
+                    if (property.PropertyType.FullName == "Caspian.Engine.Model.User" || property.PropertyType.Name == "PersianDateTable")
                     {
                         continue;
                     }
@@ -87,7 +87,6 @@ namespace Caspian.Common
                         modelBuilder.Entity(type).ToTable(tableAttribute.Name, tableAttribute.Schema, t =>
                         {
                             t.ExcludeFromMigrations();
-                            
                         });
                     }
                 }

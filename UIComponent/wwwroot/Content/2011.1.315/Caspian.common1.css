@@ -8,6 +8,9 @@
 .c-window-action button{
     min-width:60px;
 }
+.c-disabled .c-title {
+    color: #c0c0c0;
+}
 
 .page .content {
     width: calc(100% - 160px);
@@ -37,18 +40,25 @@ fieldset.c-container {
     color: #63c7c7;
     margin-left: calc(100% - 39px);
     font-size: 18px;
-    line-height: 21px;
+    line-height: 20px;
+    width: 28px;
+    height: 28px;
     border: 3px solid #63c7c7;
     border-radius: 50%;
     text-align: center;
-    margin-top: 3px;
-    margin-right: 14px;
+    margin-top: 8px;
     cursor: pointer;
+    background-color: transparent;
+    padding-left: 4px;
+    padding-top: 2px;
 }
-.c-select-all .t-title {
-    font-weight: 700;
-    color: #828282;
-}
+    .t-grid-inline-insert:focus{
+        outline:1px dotted gray!important;
+    }
+    .c-select-all .t-title {
+        font-weight: 700;
+        color: #828282;
+    }
 .c-checkbox-list {
     display: flex;
     flex-wrap: wrap;
@@ -1325,10 +1335,7 @@ body {
     }
 
     
-.c-multi-select.t-state-disabled {
-    background-color: #eaeaea;
-    cursor:not-allowed;
-}
+
 .c-multiselect-autocomplete {
     border: 1px solid rgba(0,0,0,0.25);
     border-radius: 8px;
@@ -1501,13 +1508,19 @@ form > tr {
         display: table;
         width: 100%
     }
-
+.c-multi-select-drowp:last-child{
+    padding-bottom:4px;
+}
+.t-ltr .c-multi-select-drowp {
+    padding-left: 5px;
+}
 .t-checkbox {
     white-space: nowrap;
-    line-height: 25px;
+    line-height: 28px;
     display: inline-block;
     vertical-align: middle;
-    margin:0 2px;
+    margin: 0 2px;
+    overflow: hidden;
 }
 .c-grid-command {
     white-space: nowrap;
@@ -1515,33 +1528,8 @@ form > tr {
     overflow: hidden;
     vertical-align: middle;
 }
-.c-multi-select {
-    display:flex;
-    flex-wrap:wrap;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(0,0,0,0.12);
-    padding: 0 7px;
-    margin: 2px;
-    border-radius: 8px;
-}
-    .c-multi-select .t-checkbox{
-        margin:0!important;
-    }
-    .c-multi-select.t-state-error {
-        border-color: rgba(255, 0, 0, 0.16) !important;
-        background-color: #fff9f9 !important;
-    }
-.c-multi-select:not(.t-state-disabled):hover {
-    border-color: rgba(0,0,0,0.24);
-}
-    .c-multi-select:not(.t-state-disabled):focus {
-        box-shadow: 0 0 3px 0 grey;
-    }
-    .t-window-content {
-/*        max-height: calc(100vh - 65px);
-        overflow: auto;*/
-    }
+
+
 span, label, td, th {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -1978,13 +1966,14 @@ span, label, td, th {
     color: #635145;
     z-index: 99999999;
     border-radius: 8px;
-    box-shadow: 3px -2px 5px 1px rgb(0 0 0 / 20%);
+    box-shadow: 3px 2px 5px 1px rgb(0 0 0 / 20%);
     position: absolute;
     font-weight: bold;
     padding: 4px 7px;
     font-size: 14px;
     margin: 2px;
     border: 1px solid #bbbbbb;
+    margin-top:6px;
 }
 .c-node-template {
     height:27px;
@@ -2049,15 +2038,15 @@ ul {
 
 .errorMessage .c-pointer {
     border-radius: 0 0 7px 0;
-    top: 29px;
+    top: -6px;
     border-style: solid;
     border-width: 1px 0 0 1px;
     height: 10px;
     position: absolute;
     width: 10px;
-    transform: rotate(225deg);
+    transform: rotate(45deg);
     background-color: white;
-    border-color: #bbbbbb;
+    border-color: #a2a2a2;
 }
 .t-ltr .errorMessage .c-pointer {
     left: 14px;
@@ -2877,7 +2866,7 @@ div.t-grid-footer {
         border-left-width: 0;
     }
     .t-grid-content .c-grid-items tr:not(.t-state-selected):hover {
-        background-color: #e6e9f3d4 !important;
+        background-color: #E5F3FF !important;
     }
     .t-grid-header table,
     .t-grid-content table,

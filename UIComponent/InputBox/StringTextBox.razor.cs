@@ -8,7 +8,6 @@ namespace Caspian.UI
 {
     public partial class StringTextBox: CBaseInput<string>
     {
-
         IDictionary<string, object> GetAttributes()
         {
             var attributes = new Dictionary<string, object>();
@@ -62,29 +61,12 @@ namespace Caspian.UI
             return InputAttributes;
         }
 
-        async Task ChangeValue(string value)
-        {
-            Value = value;
-            if (ValueChanged.HasDelegate)
-                await ValueChanged.InvokeAsync(Value);
-            if (OnChange.HasDelegate)
-                await OnChange.InvokeAsync();
-        }
-
         async Task ChangeValue(ChangeEventArgs arg)
         {
             var readOnly = false;
             if (InputAttributes.ContainsKey("readonly"))
                 readOnly = Convert.ToBoolean(InputAttributes["readonly"]);
-            if (!readOnly && !disabled)
-            {
-                Value = arg.Value.ToString();
-                if (ValueChanged.HasDelegate)
-                    await ValueChanged.InvokeAsync(Value);
-                if (OnChange.HasDelegate)
-                    await OnChange.InvokeAsync();
-                EntitySearch?.EnableLoadData();
-            }
+            await base.SetValue(arg.Value);
         }
 
         protected override void OnInitialized()
@@ -116,7 +98,6 @@ namespace Caspian.UI
                     EntitySearch.SetSearchKind(path, SearchType);
                 }
             }
-
             base.OnInitialized();
         }
 

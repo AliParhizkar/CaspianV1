@@ -23,32 +23,32 @@
     }
     else
     {
-    <div @ref="mainDiv" class="t-widget t-grid">
-        @if (!Inline)
-        {
-            if (ToolsBar == null)
+        <div @ref="mainDiv" class="t-widget t-grid">
+            @if (!Inline)
             {
-                <DataToolsBar TEntity="TEntity" ShowInsertIcon="(ShowInsertIcon ?? showInsertIcon) == true" DisableInsertIcon="disableInsertIcon" 
-                            OnInsertButoonClicked="CreateInsert" />
+                if (ToolsBar == null)
+                {
+                    <DataToolsBar TEntity="TEntity" ShowInsertIcon="(ShowInsertIcon ?? showInsertIcon) == true" DisableInsertIcon="disableInsertIcon" 
+                    OnInsertButoonClicked="CreateInsert" />
+                }
+                else
+                    @ToolsBar
             }
-            else
-                @ToolsBar
-        }
 
-        <GridHeader TableWidth="TableWidth" ColumnsData="columnsData" OnOrderingChanged="async () =>
+            <GridHeader TableWidth="TableWidth" ColumnsData="columnsData" OnOrderingChanged="async () =>
                                                 {
                                                     await ChangePageNumber(pageNumber);
                                                 }" />
 
             <div class="@className" style="@(style)">
-            @if (Inline && !AutoHide)
-            {
+                @if (Inline && !AutoHide)
+                {
                     CreateInsertSection(__builder2);
-            }
-            @if (items != null)
-            {
-                <table @attributes="tableAttrs" class="c-grid-items">
-                    <tbody>
+                }
+                @if (items != null)
+                {
+                    <table @attributes="tableAttrs" class="c-grid-items">
+                        <tbody>
                             @{
                                 int index = 0;
                                 var pkey = typeof(TEntity).GetPrimaryKey();
@@ -87,49 +87,48 @@
                                                 await OnInternalRowSelect.InvokeAsync(id);
                                             await SetStateGridData();
 
-                                    }));
-                                }
-                                index++;
-                                var rowData = new RowData<TEntity>()
+                                        }));
+                                    }
+                                    index++;
+                                    var rowData = new RowData<TEntity>()
                                 {
                                     Data = item,
                                     RowIndex = rowIndex,
                                     DynamicData = DynamicData == null ? null : DynamicData[rowIndex],
                                     UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
                                 };
-                                <tr @attributes="attrs">
-                                    <CascadingValue Name="RowData" Value="rowData">
-                                        @if (item == selectedEntity)
-                                        {
-                                            <CascadingValue Value="EditContext">
-                                                <CaspianValidationValidator TModel="TEntity" @ref="validator" ValidatorType="serviceType" />
-                                                <CaspianContainer ColumnsCount="0" @ref="updateContainer">
+                                    <tr @attributes="attrs">
+                                        <CascadingValue Name="RowData" Value="rowData">
+                                            @if (item == selectedEntity)
+                                            {
+                                                <CascadingValue Value="EditContext">
+                                                    <CaspianValidationValidator TModel="TEntity" @ref="validator" ValidatorType="serviceType" />
+                                                    <CaspianContainer ColumnsCount="0" @ref="updateContainer">
                                                         @Columns(rowData)
-                                                </CaspianContainer>
-                                            </CascadingValue>
-                                        }
-                                        else
-                                        {
-                                            @Columns(rowData)
-                                        }
-                                    </CascadingValue>
-                                </tr>
+                                                    </CaspianContainer>
+                                                </CascadingValue>
+                                            }
+                                            else
+                                            {
+                                                @Columns(rowData)
+                                            }
+                                        </CascadingValue>
+                                    </tr>
+                                }
                             }
-                        }
-                    </tbody>
+                        </tbody>
                     </table>
                     if (Inline && AutoHide)
                     {
+                        var buttonClassName = "t-grid-inline-insert";
                         if (insertedEntity?.UpsertMode != null)
                         {
                             CreateInsertSection(__builder2);
+                            buttonClassName += " c-hidden";
                         }
-                        else if (selectedEntity == null)
-                        {
-                            <div class="t-grid-inline-insert" @onclick="CreateInsert">
-                                <span class="fa fa-plus"></span>
-                            </div>
-                        }
+                        <button onfocus="console.log('125')" @ref="inertButton" type="button" class="@buttonClassName" @onclick="CreateInsert">
+                            <span class="fa fa-plus"></span>
+                        </button>
 
                 }
             }

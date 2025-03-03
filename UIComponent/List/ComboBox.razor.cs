@@ -304,8 +304,7 @@ namespace Caspian.UI
                 }
                 _FieldName = str;
                 _messageStore = new ValidationMessageStore(CurrentEditContext);
-                CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
-                CurrentEditContext.OnFieldChanged += CurrentEditContext_OnFieldChanged;
+                CurrentEditContext.OnValidationStateChanged -= CurrentEditContext_OnValidationStateChanged;
                 CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
                 oldContext = CurrentEditContext;
             }
@@ -382,53 +381,30 @@ namespace Caspian.UI
 
         private void CurrentEditContext_OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
         {
-            _messageStore = new ValidationMessageStore(CurrentEditContext);
-            var field = CurrentEditContext.GetType().GetField("_fieldStates", BindingFlags.NonPublic | BindingFlags.Instance);
-            var states = (field.GetValue(CurrentEditContext) as System.Collections.IDictionary);
-            foreach (dynamic state in states)
+            if (_FieldName != null)
             {
-                var fieldName = state.Key.FieldName as string;
-                if (fieldName == _FieldName)
+                if (CurrentEditContext.Properties["ValidationType"].ToString() == "FieldChanged")
                 {
-                    var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, fieldName);
-                    var list = CurrentEditContext.GetValidationMessages();
-                    var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                    ErrorMessage = result.FirstOrDefault();
+                    object obj;
+                    if (CurrentEditContext.Properties.TryGetValue("PropertyName", out obj))
+                    {
+                        var propertyName = obj.ToString();
+                        if (propertyName != null && propertyName == _FieldName)
+                        {
+                            var identifire = CurrentEditContext.Field(propertyName);
+                            var errorMessage = CurrentEditContext.GetValidationMessages(identifire).FirstOrDefault();
+                            if (ErrorMessage != errorMessage)
+                            {
+                                ErrorMessage = errorMessage;
+                                StateHasChanged();
+                            }
+                        }
+                    }
                 }
-                else if (fieldName.EndsWith("]." + _FieldName))
+                else
                 {
-                    var mainField = fieldName.Substring(0, fieldName.Length - _FieldName.Length);
-                    mainField = mainField.Split('[')[0];
-                    var model = CurrentEditContext.Model;
-                    var details = model.GetType().GetProperty(mainField).GetValue(model) as System.Collections.IEnumerable;
-                    var expr = ValueExpression.Body;
-                    FieldInfo info = null;
-                    while (expr.NodeType != ExpressionType.Constant)
-                    {
-                        if (expr.NodeType == ExpressionType.MemberAccess)
-                        {
-                            var member = (expr as MemberExpression).Member;
-                            if (member.MemberType == MemberTypes.Field)
-                                info = member as FieldInfo;
-                            expr = (expr as MemberExpression).Expression;
-                        }
-                    }
-                    var value = info.GetValue((expr as ConstantExpression).Value);
-                    if (info.FieldType == typeof(RowData<>).MakeGenericType(details.ToDynamicList()[0].GetType()))
-                        value = value.GetType().GetProperty("Data").GetValue(value);
-                    var index = 0;
-                    foreach (var detail in details)
-                    {
-                        if (detail == value)
-                        {
-                            var str = index == 0 ? fieldName : fieldName.Replace("[0]", '[' + index.ToString() + ']');
-                            var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
-                            var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                            ErrorMessage = result.FirstOrDefault();
-                        }
-                        index++;
-                    }
-                    break;
+                    var identifire = CurrentEditContext.Field(_FieldName);
+                    ErrorMessage = CurrentEditContext.GetValidationMessages(identifire).FirstOrDefault();
                 }
             }
             if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
@@ -444,73 +420,6 @@ namespace Caspian.UI
             if (firstRender)
                 CaspianForm?.SetFirstControl(this);
             base.OnAfterRender(firstRender);
-        }
-
-        private void CurrentEditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
-        {
-            
-        }
-
-        private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
-        {
-            _messageStore = new ValidationMessageStore(CurrentEditContext);
-            var field = CurrentEditContext.GetType().GetField("_fieldStates", BindingFlags.NonPublic | BindingFlags.Instance);
-            var states = (field.GetValue(CurrentEditContext) as System.Collections.IDictionary);
-            foreach (dynamic state in states)
-            {
-                var fieldName = state.Key.FieldName as string;
-                if (fieldName == _FieldName)
-                {
-                    var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, fieldName);
-                    var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                    ErrorMessage = result.FirstOrDefault();
-                    if (ErrorMessage == null)
-                        break;
-                }
-                else if (fieldName.EndsWith("]." + _FieldName))
-                {
-                    var mainField = fieldName.Substring(0, fieldName.Length - _FieldName.Length);
-                    mainField = mainField.Split('[')[0];
-                    var model = CurrentEditContext.Model;
-                    var details = model.GetType().GetProperty(mainField).GetValue(model) as System.Collections.IEnumerable;
-                    var expr = ValueExpression.Body;
-                    FieldInfo info = null;
-                    while (expr.NodeType != ExpressionType.Constant)
-                    {
-                        if (expr.NodeType == ExpressionType.MemberAccess)
-                        {
-                            var member = (expr as MemberExpression).Member;
-                            if (member.MemberType == MemberTypes.Field)
-                                info = member as FieldInfo;
-                            expr = (expr as MemberExpression).Expression;
-                        }
-                    }
-                    var value = info.GetValue((expr as ConstantExpression).Value);
-                    var index = 0;
-                    foreach (var detail in details)
-                    {
-                        if (detail == value)
-                        {
-                            var str = index == 0 ? fieldName : fieldName.Replace("[0]", '[' + index.ToString() + ']');
-                            var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
-                            var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                            ErrorMessage = result.FirstOrDefault();
-                        }
-                        index++;
-                    }
-                    break;
-                }
-            }
-            if (ErrorMessage == null && !Validate())
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Control = this;
-            }
-            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Control = this;
-            }
         }
 
         [CascadingParameter]
@@ -692,6 +601,7 @@ namespace Caspian.UI
                     await OnChange.InvokeAsync();
                 if (OnInternalValueChanged.HasDelegate)
                     await OnInternalValueChanged.InvokeAsync(Value);
+
             }
             if (CurrentEditContext != null && _FieldName.HasValue())
             {
