@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.UI
+@using System.Collections
 @typeparam TEntity where TEntity: class
 @implements IEntitySearch
 @implements ICaspianContainer
@@ -13,12 +14,12 @@
 @code 
 {
     IDictionary<string, SearchType> searchTypes;
-    IDictionary<string, object[]> enumValues;
+    IDictionary<string, ICollection> enumValues;
 
     protected override void OnInitialized()
     {
         searchTypes = new Dictionary<string, SearchType>();
-        enumValues = new Dictionary<string, object[]>();
+        enumValues = new Dictionary<string, ICollection>();
         Service.SetSearchType(searchTypes);
         base.OnInitialized();
     }
@@ -28,31 +29,31 @@
         Service.DataView.EnableLoading();
     }
 
-    object[] IEntitySearch.GetFieldValues(string path)
+    ICollection IEntitySearch.GetFieldValues(string path)
     {
         if (enumValues.ContainsKey(path))
             return enumValues[path];
         return null;
     }
 
-    async Task IEntitySearch.UpsertEnumValues(string path, object[] values)
+    async Task<bool> IEntitySearch.UpsertEnumValues(string path, ICollection values)
     {
-        object[] oldValues = new object[0];
+        ICollection oldValues = new object[0];
         if (enumValues.ContainsKey(path))
             oldValues = enumValues[path];
-        if (values.Length == 0)
+        if (values.Count == 0)
             enumValues.Remove(path);
         else
             enumValues[path] = values;
         var isEqual = true;
-        var oldCount = oldValues?.Count() ?? 0;
-        if (oldCount == values.Count())
+        var oldCount = oldValues?.Count ?? 0;
+        if (oldCount == values.Count)
         {
             if (oldValues != null)
             {
                 foreach (var value in values)
                 {
-                    if (!oldValues.Contains(value))
+                    if (!oldValues.ToDynamicList().Contains(value))
                     {
                         isEqual = false;
                         break;
@@ -64,10 +65,10 @@
             isEqual = false;
         if (!isEqual)
         {
-            Service.SetEnumFields(enumValues.ToList());
-            Service.DataView.EnableLoading();
-            await Service.DataView.DataBind();
+            Service.SetEnumFields(enumValues);
+            await Service.DataView.ReloadAsync();
         }
+        return !isEqual;
     }
 
     [CascadingParameter]

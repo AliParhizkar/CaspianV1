@@ -46,9 +46,9 @@ namespace Caspian.Engine
 
         public LambdaExpression SimpleSelect(IList<ReportParam> reportParams, out Type dynamicType)
         {
-            var flag = reportParams.Any(t => t.RuleId.HasValue || t.DynamicParameterId.HasValue);
-            var fields = ComplexTypeFilter(reportParams.Where(t => t.RuleId == null && t.DynamicParameterId == null)).ToArray();
-            var dynamicFields = reportParams.Where(t => t.RuleId.HasValue || t.DynamicParameterId.HasValue);
+            var flag = reportParams.Any(t => t.RuleId.HasValue);
+            var fields = ComplexTypeFilter(reportParams.Where(t => t.RuleId == null)).ToArray();
+            var dynamicFields = reportParams.Where(t => t.RuleId.HasValue);
             Type dynamicItemType = null, dynamicTypeOfDynamicItem = null;
             if (flag)
             {
@@ -329,7 +329,7 @@ namespace Caspian.Engine
         public IList GetValues(IQueryable values, IList<ReportParam> reportParams, Type type)
         {
             IList list = new ArrayList();
-            var flag = reportParams.Any(t => t.RuleId.HasValue || t.DynamicParameterId.HasValue);
+            var flag = reportParams.Any(t => t.RuleId.HasValue);
             var result = values.ToDynamicList();
             foreach (var value in values.AsQueryable().ToIList())
             {
@@ -341,7 +341,7 @@ namespace Caspian.Engine
                 {
                     string name = null;
                     object tempValue = null;
-                    if (param.RuleId.HasValue || param.DynamicParameterId.HasValue)
+                    if (param.RuleId.HasValue)
                     {
                         foreach (var dynamicItem in dynamicItemsValue)
                         {
@@ -360,33 +360,6 @@ namespace Caspian.Engine
                             }
                             else
                             {
-                                if (Convert.ToInt32(dynamicItem.GetMyValue("DynamicParameterId")) == param.DynamicParameterId.Value)
-                                {
-                                    //var text = Convert.ToString(dynamicItem.GetMyValue("Text"));
-                                    //if (text.HasValue())
-                                    //    tempValue = text;
-                                    //else
-                                    var optionTitle = dynamicItem.GetMyValue("OptionTitle");
-                                    if (optionTitle == null)
-                                    {
-                                        var decimalValue = dynamicItem.GetMyValue("Value");
-                                        if (decimalValue != null)
-                                        {
-                                            if (param.DynamicParameter.ControlType == ControlType.CheckBox)
-                                            {
-                                                if (Convert.ToDecimal(decimalValue) == 0)
-                                                    tempValue = "خیر";
-                                                else
-                                                    tempValue = "بله";
-                                            }
-                                            else
-                                                tempValue = Convert.ToDecimal(decimalValue).Seprate3Digit();
-                                        }
-                                    }
-                                    else
-                                        tempValue = optionTitle ?? dynamicItem.GetMyValue("Value");
-                                    name = "DynamicParam" + param.DynamicParameterId.Value;
-                                }
                             }
                         }
                     }
@@ -457,32 +430,34 @@ namespace Caspian.Engine
 
         public LambdaExpression DynamicItemSelect()
         {
-            using var context = new Context();
-            var expr = context.DynamicParametersValues.Select(u => new
-            {
-                u.DynamicParameterId,
-                u.RuleId,
-                OptionTitle = u.DynamicParameterOption.FaTitle,
-                u.Value,
-                Text = u.RuleId.HasValue ? u.Rule.Title : u.DynamicParameter.Title
-            }).Expression;
-            expr = (expr as MethodCallExpression).Arguments[1];
-            return (expr as UnaryExpression).Operand as LambdaExpression;
+            //using var context = new Context();
+            //var expr = context.DynamicParametersValues.Select(u => new
+            //{
+            //    u.DynamicParameterId,
+            //    u.RuleId,
+            //    OptionTitle = u.DynamicParameterOption.FaTitle,
+            //    u.Value,
+            //    Text = u.RuleId.HasValue ? u.Rule.Title : u.DynamicParameter.Title
+            //}).Expression;
+            //expr = (expr as MethodCallExpression).Arguments[1];
+            //return (expr as UnaryExpression).Operand as LambdaExpression;
+            throw new NotImplementedException();
         }
 
         private Expression DynamicItemSelectExpr(Type dynamicItemType, string enTitle)
         {
-            var type = GetDynamicItemProperty(dynamicItemType, enTitle);
-            Expression expr = paramExpr;
-            if (enTitle.HasValue())
-                expr = Expression.Property(paramExpr, enTitle);
-            Expression expr1 = Expression.MakeMemberAccess(expr, type);
-            var oftypeMethod = typeof(Enumerable).GetMethod("OfType").MakeGenericMethod(typeof(DynamicParameterValue));
-            expr1 = Expression.Call(null, oftypeMethod, new Expression[] { expr1 });
-            var method = typeof(Enumerable).GetMethods().Where(t => t.Name == "Select").ElementAt(0);
-            var expr2 = DynamicItemSelect();
-            method = method.MakeGenericMethod(new Type[] { typeof(DynamicParameterValue), expr2.Body.Type });
-            return Expression.Call(null, method, new Expression[] { expr1, expr2 });
+            //var type = GetDynamicItemProperty(dynamicItemType, enTitle);
+            //Expression expr = paramExpr;
+            //if (enTitle.HasValue())
+            //    expr = Expression.Property(paramExpr, enTitle);
+            //Expression expr1 = Expression.MakeMemberAccess(expr, type);
+            //var oftypeMethod = typeof(Enumerable).GetMethod("OfType").MakeGenericMethod(typeof(DynamicParameterValue));
+            //expr1 = Expression.Call(null, oftypeMethod, new Expression[] { expr1 });
+            //var method = typeof(Enumerable).GetMethods().Where(t => t.Name == "Select").ElementAt(0);
+            //var expr2 = DynamicItemSelect();
+            //method = method.MakeGenericMethod(new Type[] { typeof(DynamicParameterValue), expr2.Body.Type });
+            //return Expression.Call(null, method, new Expression[] { expr1, expr2 });
+            throw new NotImplementedException();
         }
 
 

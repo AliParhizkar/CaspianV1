@@ -72,8 +72,6 @@ namespace Caspian.Engine
         [CheckOnDelete("قانون دارای پارامتر است و امکان حذف آن وجود ندارد.")]
         public ICollection<DataParameter> DataParameters { get; set; }
 
-        public ICollection<DynamicParameterValue> DynamicParameterValues { get; set; }
-
         public ICollection<ReportParam> ReportParams { get; set; }
     }
 }

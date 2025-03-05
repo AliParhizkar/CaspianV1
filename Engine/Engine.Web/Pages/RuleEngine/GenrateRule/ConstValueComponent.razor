@@ -183,26 +183,6 @@
                         else
                             valueTypeKind = ValueTypeKind.Double;
                         break;
-                    case ParameterType.DaynamicParameter:
-                        var id = beforeLastToken.DynamicParameterId.Value;
-                        var param = await new DynamicParameterService(scope.ServiceProvider).SingleAsync(id);
-                        switch(param.ControlType.Value)
-                        {
-                            case ControlType.CheckBox:
-                                valueTypeKind = ValueTypeKind.Bool;
-                                break;
-                            case ControlType.DropdownList:
-                                valueTypeKind = ValueTypeKind.Enum;
-                                enumType = null;
-                                dynamicOptions = await new DynamicParameterOptionService(scope.ServiceProvider).GetAll().Where(t => t.DynamicParameterId == id)
-                                .Select(t => new SelectListItem() 
-                                {
-                                    Value = t.Value.ToString(),
-                                    Text = t.FaTitle
-                                }).ToListAsync();
-                                break;
-                        }
-                        break;
                     case ParameterType.RuleParameter:
                         if (beforeLastToken.RuleValue == null && beforeLastToken.RuleIdValue.HasValue)
                             beforeLastToken.RuleValue = await new RuleService(scope.ServiceProvider).SingleAsync(beforeLastToken.RuleIdValue.Value);
@@ -225,9 +205,6 @@
                         var info = Type.GetProperty(beforeLastToken.EnTitle);
                         if (info.PropertyType.GetUnderlyingType().IsEnum)
                             valueTypeKind = ValueTypeKind.Int;
-                        break;
-                    case ParameterType.DaynamicParameter:
-                        valueTypeKind = ValueTypeKind.Int;
                         break;
                     case ParameterType.RuleParameter:
                         var rule = await new RuleService(scope.ServiceProvider).SingleAsync(beforeLastToken.RuleId.Value);

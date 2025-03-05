@@ -1,0 +1,33 @@
+﻿.fa-key {
+    color: red !important;
+    transform: rotate(135deg);
+    margin-left:4px;
+    margin-top:5px;
+}
+.e-head {
+    display: flex;
+    border: 1px solid #c7c7c7;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    padding: 4px 10px;
+    background-color: #f4f7ff;
+    align-items: center;
+}
+
+.fa-arrow-left {
+    color: brown !important;
+    font-size: 28px;
+    vertical-align: middle;
+    margin-right: 15px;
+}
+
+.e-head label {
+    font-weight: bold;
+    color: #4e4e4e;
+    padding-bottom: 5px;
+}
+
+.group-title {
+    font-size: 15px;
+    color: brown;
+}

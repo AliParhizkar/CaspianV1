@@ -1,24 +1,19 @@
 ﻿@page "/counter"
-@inject ISearchService<Customer> Service
+@using Caspian.Engine.Service
+@using Demo.Service
+@inherits BasePage
 
-<div style="width:600px;margin:0 auto">
-    <div style="padding-bottom:50px">
-        <DropdownList @bind-Value="customerType" ColSpan="8" />
-    </div>
-    <EntitySearch Service="Service">
-        <DropdownList @bind-Value="context.CustomerType" ColSpan="8" />
-        <DropdownList @bind-Value="context.Gender" ColSpan="8" />
-    </EntitySearch>
-    <DataGrid TEntity="Customer" Service="Service" ShowInsertIcon="false">
-        <Columns>
-            <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
-            <GridColumn Field="t => t.CustomerType.EnumText()" />
-            <GridColumn Field="t => t.Gender.EnumText()" />
-        </Columns>
-    </DataGrid>
-</div>
+
 
 @code 
 {
     CustomerType customerType;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = CreateScope();
+        var query = scope.GetService<OrderDetailService>().GetAll().Where(t => t.Order.CustomerId != null);
+        var list = await new ReportPrintEngine(scope.ServiceProvider).GetData(2, query);
+        await base.OnInitializedAsync();
+    }
 }

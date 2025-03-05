@@ -58,7 +58,7 @@ namespace Caspian.Engine.Model
         [NotMapped, CheckOnDelete("گروه دارای گزارش می باشد و امکان حذف آن وجود ندارد")]
         public IList<ReportGroupParameter> ReportGroupParameters { get; set; }
 
-        [NotMapped, CheckOnDelete("گروه دارای پارامتر تجمیعی می باشد و امکان حذف آن وجود ندارد.")]
+        [CheckOnDelete("گروه دارای پارامتر تجمیعی می باشد و امکان حذف آن وجود ندارد.")]
         public IList<AggregateReportGroupParameter> AggregateReportGroupParameters { get; set; }
     }
 }

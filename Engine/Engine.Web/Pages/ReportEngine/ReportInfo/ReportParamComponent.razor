@@ -2,7 +2,7 @@
 @inherits BasePage
 @if (report?.ReportType == ReportType.Aggregate)
 {
-    <AggregateReportParameterComponent GroupId="report.ReportGroupId"  />
+    <AggregateReportParameterComponent ReportId="ReportId"  />
 }
 else
 {
@@ -11,18 +11,12 @@ else
 
 @code 
 {
-    IList<NodeView> nodes;
 
     Report report;
     protected override async Task OnParametersSetAsync()
     {
         using var service = CreateScope().GetService<ReportService>();
-        report = await service.GetAll().Include(t => t.ReportGroup).SingleAsync(ReportId);
-        if (report.ReportType == ReportType.Aggregate)
-        {
-            var type = new AssemblyInfo().GetReturnType(report.ReportGroup);
-            nodes = new ReportTree().CreateNodesForGroupBySelect(type);
-        }
+        report = await service.SingleAsync(ReportId);
         await base.OnParametersSetAsync();
     }
 

@@ -15,7 +15,6 @@ else
 @code 
 {
     Rule rule;
-    DynamicParameter Parameter;
     int? formParameterId;
     Stack<Token> stack;
 
@@ -56,8 +55,6 @@ else
             RuleId = token.RuleIdValue;
             if (RuleId.HasValue)
                 rule = Rules.Single(t => t.Id == RuleId);
-            Parameter = token.DynamicParameter;
-            formParameterId = token.DynamicParameterId;
         }
     }
 
@@ -66,14 +63,10 @@ else
         stack.Push(new Token()
             {
                 RuleIdValue = RuleId,
-                DynamicParameterId = formParameterId,
-                DynamicParameter = Parameter
             });
         RuleId = parameter.RuleId;
-        Parameter = parameter.DynamicParameter;
         if (RuleId.HasValue)
             rule = Rules.Single(t => t.Id == RuleId);
-        formParameterId = parameter.DynamicParameterId;
     }
 
     void SelectToken(Token token)
@@ -81,13 +74,9 @@ else
         stack.Push(new Token()
         {
             RuleIdValue = RuleId,
-            DynamicParameterId = formParameterId,
-            DynamicParameter = Parameter
         });
         RuleId = token.RuleIdValue;
-        Parameter = token.DynamicParameter;
         if (RuleId.HasValue)
             rule = Rules.Single(t => t.Id == RuleId);
-        formParameterId = token.DynamicParameterId;
     }
 }

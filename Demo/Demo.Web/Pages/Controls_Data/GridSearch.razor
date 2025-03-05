@@ -57,7 +57,7 @@
                     <div class="col-md-6">
                         <hr />
                         <EntitySearch Service="StringService">
-                            <DropdownList @bind-Value="context.CustomerType" ColSpan="8" />
+                            <DropdownList @bind-Value="context.CustomerType" ColSpan="8"  />
                             <DropdownList @bind-Value="context.Gender" ColSpan="8" />
                         </EntitySearch>
                         <div class="pt-3">
@@ -214,11 +214,12 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-@code {
+@code 
+{
     //Default search
     City citySearch = new City();
-    Customer customerStringSearch = new Customer();
-    
+    Customer customerStringSearch = new ();
+
     object fromPrice;
     object toPrice;
     object fromDate;

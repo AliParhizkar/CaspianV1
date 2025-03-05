@@ -113,16 +113,6 @@
             case ParameterType.RuleParameter:
                 isComplex = true;
                 return RulesValue.Single(t => t.Key == token.RuleIdValue.Value).Value.ToString();
-            case ParameterType.DaynamicParameter:
-                isComplex = token.DynamicParameter.CalculationType == CalculationType.FormData;
-                var value = GetValue(token.DynamicParameter);
-                switch(token.DynamicParameter.ResultType)
-                {
-                    case ResultType.Integer:
-                        return Convert.ToInt32(value).Seprate3Digit();
-                    default:
-                        return value.ToString();
-                }
         }
         return null;
     }
@@ -153,12 +143,5 @@
                 break;
         }
         base.OnParametersSet();
-    }
-
-    object GetValue(DynamicParameter param)
-    {
-        if (param.CalculationType == CalculationType.UserData)
-            return ruleEngine.GetUserdata(param);
-        return ruleEngine.GetFormData(param.Id);
     }
 }

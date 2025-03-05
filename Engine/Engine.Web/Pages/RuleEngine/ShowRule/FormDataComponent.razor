@@ -5,7 +5,6 @@
         <span></span>
     </div>
     <div style="width:450px;text-align:center">
-        <label>@DynamicParameter.Title</label>
     </div>
     <div style="width:calc(50% - 225px);text-align:left;padding-left:73px">
         <span class="c-rule-back" @onclick="async () => await OnBack.InvokeAsync()" title="برگشت">
@@ -14,20 +13,6 @@
     </div>
 </div>
 <div class="r-parameter">
-    @foreach(var param in DynamicParameter.ResultParameters)
-    {
-        <div style="width:30px">
-            <span>
-                <i @onclick="@(async () => await OnSelected.InvokeAsync(param))" class="@GetClassName(param)"></i>
-            </span>
-        </div>
-        <div style="width:250px">
-            <span>@GetTitle(param)</span>
-        </div>
-        <div class="r-value">
-            <span>@GetValue(param)</span>
-        </div>
-    }
     <div style="width:30px">
         <span>
             <i class="fa fa-sign-out"></i>
@@ -35,9 +20,6 @@
     </div>
     <div style="width:250px">
         <span>مقدار خروجی</span>
-    </div>
-    <div style="width:120px;color:#ff6358">
-        <span>@ruleEngine.GetFormData(DynamicParameter.Id)</span>
     </div>
 </div>
 @code 
@@ -49,9 +31,6 @@
 
     [Parameter]
     public EventCallback<DataParameter> OnSelected{ get; set; }
-
-    [Parameter]
-    public DynamicParameter DynamicParameter { get; set; }
 
     [Parameter]
     public IDictionary<int, object> UserParametersValue { get; set; }
@@ -79,10 +58,6 @@
     {
         switch (parameter.ParameterType)
         {
-            case DataParameterType.DynamicParameters:
-                if (parameter.DynamicParameter.CalculationType == CalculationType.FormData)
-                    return "fa fa-table";
-                return "fa fa-user";
             case DataParameterType.EntityProperties:
                 return "fa fa-user";
             case DataParameterType.FormRule:
@@ -96,8 +71,6 @@
     {
         switch(parameter.ParameterType)
         {
-            case DataParameterType.DynamicParameters:
-                return parameter.DynamicParameter.Title;
             case DataParameterType.EntityProperties:
                 var info = Model.GetType().GetProperty(parameter.PropertyName);
                 var attr = info.GetCustomAttribute<DisplayNameAttribute>();
@@ -115,10 +88,6 @@
     {
         switch(param.ParameterType)
         {
-            case DataParameterType.DynamicParameters:
-                if (param.DynamicParameter.CalculationType == CalculationType.UserData)
-                    return ruleEngine.GetUserdata(param.DynamicParameter);
-                return ruleEngine.GetFormData(param.Id);
             case DataParameterType.EntityProperties:
                 var info = Model.GetType().GetProperty(param.PropertyName);
                 return info.GetValue(Model);

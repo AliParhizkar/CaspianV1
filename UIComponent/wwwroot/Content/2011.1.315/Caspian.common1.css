@@ -1062,11 +1062,9 @@ progress::-webkit-progress-value {
 .sidebar .c-container {
     width: 24px;
     border-radius: 12px;
-    vertical-align: middle;
     box-sizing:border-box;
     padding-top:1px;
     height: 24px;
-    margin-top: -2px;
 }
     .sidebar .c-container:hover {
         padding-top:0;

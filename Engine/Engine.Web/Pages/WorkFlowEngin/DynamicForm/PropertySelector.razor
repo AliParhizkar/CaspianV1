@@ -19,23 +19,6 @@
                         @if (showEntityProperties && item.FieldName == SelectedFieldName)
                         {
                             <ul class="c-property">
-                                @if (dynamicParameters != null && dynamicParameters.Count > 0)
-                                {
-                                    className = showParameter ? "c-selected" : null;
-                                    <li class="@className" @onclick="ShowDynamicParameter">
-                                        پارامترهای پویا
-                                        @if (showParameter)
-                                        {
-                                            <ul class="dynamic-parameter">
-                                                @foreach(var param in dynamicParameters)
-                                                {
-                                                    className = selectedDynamicParameterId == param.Id ? "c-selected" : null;
-                                                    <li class="@className" @onclick="() => SelecteDynamicParameter(param.Id, item.Id)" @onclick:preventDefault @onclick:stopPropagation>@param.Title</li>
-                                                }
-                                            </ul>
-                                        }
-                                    </li>
-                                }
                                 @foreach(var info in workflowEntityProperties)
                                 {
                                     className = info == selectedPropertyInfo ? "c-selected" : null;
@@ -62,7 +45,6 @@
     IList<PropertyInfo> workflowEntityProperties;
     SubSystemKind subSystemKind;
     int? DataModelFieldId;
-    IList<DynamicParameter> dynamicParameters;
     int? selectedDynamicParameterId;
     bool showParameter;
 
@@ -86,12 +68,10 @@
         base.OnWindowClick();
     }
 
-    async Task SelecteDynamicParameter(int parameterId, int dataModelFieldId)
+    void SelecteDynamicParameter(int parameterId, int dataModelFieldId)
     {
         selectedDynamicParameterId = parameterId;
         this.DataModelFieldId = dataModelFieldId;
-        var param = dynamicParameters.Single(t => t.Id == parameterId);
-        await OnDynamicParameterSelect.InvokeAsync(param);
         HideSelector();
     }
 
@@ -107,12 +87,10 @@
                 .Where(t => !t.CustomAttributes.Any(t => t.AttributeType == typeof(KeyAttribute) ||
                 t.AttributeType == typeof(ForeignKeyAttribute)) || t.PropertyType.IsCollectionType()).ToList();
             var scope = CreateScope();
-            dynamicParameters = await new DynamicParameterService(scope.ServiceProvider).GetAll().Where(t => t.EntityName == entityName).ToListAsync();
         }
         else
         {
             showEntityProperties = false;
-            dynamicParameters = null;
             HideSelector();
             await OnFieldSelect.InvokeAsync(field);
         }
@@ -157,7 +135,4 @@
 
     [Parameter]
     public EventCallback<DataModelField> OnFieldSelect { get; set; }
-
-    [Parameter]
-    public EventCallback<DynamicParameter> OnDynamicParameterSelect{ get; set; }
 }

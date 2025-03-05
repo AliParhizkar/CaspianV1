@@ -70,41 +70,6 @@ namespace ReportUiModels
                             });
                         }
                         break;
-                    case DynamicParameterType.User:
-                        result = await context.DynamicParameters
-                            .Where(t => t.CalculationType == CalculationType.UserData).Select(t => new
-                            {
-                                t.Id,
-                                Title = t.Title,
-                            }).ToListAsync();
-                        foreach (var item in result)
-                        {
-                            list.Add(new ReportNode()
-                            {
-                                DynamicParameterId = item.Id,
-                                DynamicParameterType = DynamicParameterType.User,
-                                TitleEn = enTitle,
-                                Selected = selectedNodes.Any(u => u.DynamicParameterId == item.Id)
-                            });
-                        }
-                        break;
-                    case DynamicParameterType.Form:
-                        result = await context.DynamicParameters.Where(t => t.CalculationType == CalculationType.FormData).Select(t => new
-                        {
-                            t.Id,
-                            Title = t.Title,
-                        }).ToListAsync();
-                        foreach (var item in result)
-                        {
-                            list.Add(new ReportNode()
-                            {
-                                DynamicParameterId = item.Id,
-                                DynamicParameterType = DynamicParameterType.User,
-                                TitleEn = enTitle,
-                                Selected = selectedNodes.Any(u => u.DynamicParameterId == item.Id)
-                            });
-                        }
-                        break;
                 }
                 return list;
             }

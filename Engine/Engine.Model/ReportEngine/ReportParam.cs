@@ -50,11 +50,6 @@ namespace Caspian.Engine.Model
         [ForeignKey(nameof(ReportGroupParameterId))]
         public ReportGroupParameter ReportGroupParameter { get; set; }
 
-        public int? DynamicParameterId { get; set; }
-
-        [ForeignKey(nameof(DynamicParameterId))]
-        public DynamicParameter DynamicParameter { get; set; }
-
         [DisplayName("گزارش")]
         public int ReportId { get; set; }
 

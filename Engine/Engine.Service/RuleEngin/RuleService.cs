@@ -69,25 +69,11 @@ namespace Caspian.Engine.Service
                     case null:
                     case ParameterType.MainParameter:
                         break;
-                    case ParameterType.DaynamicParameter:
-                        var param = token.DynamicParameter;
-                        switch(param.CalculationType)
-                        {
-                            case CalculationType.UserData:
-                                break;
-                            case CalculationType.FormData:
-                                if (token.DynamicParameter.Priority == null)
-                                    return null;
-                                if (token.DynamicParameter.Priority.Value > maxPriority.GetValueOrDefault(0))
-                                    maxPriority = token.DynamicParameter.Priority.Value; 
-                                break;
-                        }
-                        break;
                     case ParameterType.RuleParameter:
                         if (token.RuleValue.Priority == null)
                             return null;
                         if (token.RuleValue.Priority.Value > maxPriority.GetValueOrDefault(0))
-                            maxPriority = (int)token.RuleValue.Priority.Value;
+                            maxPriority = token.RuleValue.Priority.Value;
                         break;
 
                 }

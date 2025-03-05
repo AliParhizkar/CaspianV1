@@ -24,14 +24,14 @@
                     <div class="c-controls c-header row align-items-center">
                         <CaspianContainer>
                             <ComboBox TEntity="ProductCategory" TValue="int?" @bind-Value="categoryId" TextExpression="t => t.Title"
-                                 ColSpan="8" />
+                            ColSpan="8" OnChange="() => Service.DataView?.EnableLoading()" />
                         </CaspianContainer>
                     </div>
                     <div class="c-body ps-3 pe-3">
                         @if (categoryId.HasValue)
                         {
                             <DataGrid TEntity="Product" Service="Service" ContentHeight="350"
-                                      ConditionExpr="@(t => t.ProductCategoryId == categoryId)">
+                            ConditionExpr="@(t => t.ProductCategoryId == categoryId)">
                                 <Columns>
                                     <GridColumn Field="t => t.Title" />
                                     <GridColumn Field="t => t.ActiveType.EnumText()" />
@@ -40,7 +40,7 @@
                                     <GridCommandColumns />
                                 </Columns>
                             </DataGrid>
-                            <Window Service="Service" Title="Product" Style="width:500px;">
+                            <Window Service="Service" Title="Product" Style="width:500px;" OnOpen="Test">
                                 <CaspianForm TEntity="Product" Service="Service" OnSubmit="t => t.ProductCategoryId = categoryId.Value">
                                     <Content Context="product">
                                         <div class="row c-controls ps-3 pe-3">
@@ -70,4 +70,8 @@
 @code
 {
     int? categoryId;
+    async Task Test()
+    {
+        throw new NotImplementedException("sss");
+    }
 }

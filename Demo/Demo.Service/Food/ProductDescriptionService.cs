@@ -10,7 +10,7 @@ namespace Demo.Service
         public ProductDescriptionService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Description).Required().UniqueAsync("This product has description width this context");
+            RuleFor(t => t.Description).Required().UniqueAsync(t => t.ProductId, "This product has description width this context");
         }
     }
 }

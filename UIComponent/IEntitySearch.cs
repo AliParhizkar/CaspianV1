@@ -1,5 +1,6 @@
 ﻿
 using Caspian.Common;
+using System.Collections;
 
 namespace Caspian.UI
 {
@@ -11,9 +12,9 @@ namespace Caspian.UI
 
         void SetSearchKind(string path, SearchType searchType);
 
-        Task UpsertEnumValues(string path, object[] values);
+        Task<bool> UpsertEnumValues(string path, ICollection values);
 
-        object[] GetFieldValues(string propertyPath);
+        ICollection GetFieldValues(string propertyPath);
     }
 }
 

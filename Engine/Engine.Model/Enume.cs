@@ -4,15 +4,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Engine
 {
-    public enum CalculationType: byte
-    {
-        [Display( Name = "کاربر")]
-        UserData = 1,
-
-        [Display(Name = "فرم")]
-        FormData
-    }
-
     public enum DataParameterType: byte
     {
         [Display(Name = "پارامترهای پویا")]

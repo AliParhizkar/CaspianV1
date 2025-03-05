@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Linq.Dynamic.Core;
+﻿using Caspian.Common;
 using System.Reflection;
-using Caspian.Common;
-using Caspian.Common.Extension;
+using System.Collections;
 using Caspian.Engine.Model;
+using Caspian.Common.Extension;
+using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Caspian.Engine.Service
 {
@@ -23,7 +22,7 @@ namespace Caspian.Engine.Service
         public async Task<IList> GetData(int reportId, IQueryable data)
         {
             var service = ServiceProvider.GetService<ReportParamService>();
-            var reportParams = await service.GetAll().Include(t => t.DynamicParameter).Include(t => t.Rule)
+            var reportParams = await service.GetAll().Include(t => t.Rule)
                 .Include(t => t.ReportGroupParameter).Where(t => t.ReportId == reportId).ToListAsync();
             var report = new SelectReport(data.ElementType);
             Type type = null;

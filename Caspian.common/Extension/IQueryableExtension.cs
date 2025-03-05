@@ -5,6 +5,7 @@ using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Linq;
 
 namespace Caspian.Common.Extension
 {
@@ -270,6 +271,10 @@ namespace Caspian.Common.Extension
                     var constantExpr = Expression.Constant(enumValue.Value);
                     var method = typeof(Enumerable).GetMethods().First(t => t.Name == "Contains").MakeGenericMethod(propertyExpr.Type);
                     var callExpr = Expression.Call(null, method, constantExpr, propertyExpr);
+                    if (left == null)
+                        left = callExpr;
+                    else
+                        left = Expression.AndAlso(left, callExpr);
                 }
             }
             foreach (var fieldName in list)

@@ -28,6 +28,11 @@ namespace Caspian.UI
             throw new NotImplementedException();
         }
 
+        public IEnumerable<TValue> GetSearchEnumValues<TValue>(Expression<Func<TDetail, TValue>> expression) where TValue : Enum
+        {
+            throw new NotImplementedException();
+        }
+
         public void OnlyForSearch()
         {
             onlyForSearch = true;

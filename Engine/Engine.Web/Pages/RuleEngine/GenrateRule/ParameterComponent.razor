@@ -22,16 +22,6 @@
                 </td>
             </tr>
             break;
-        case ParameterType.DaynamicParameter:
-            <tr>
-                <td style="width:85px">
-                    <label>پارامتر پویا</label>
-                </td>
-                <td>
-                    <ComboBox TEntity="DynamicParameter" TValue="int?" @bind-Value="dynamicParameterId" TextExpression="t => t.Title" />
-                </td>
-            </tr>
-            break;
         case ParameterType.RuleParameter:
             <tr>
                 <td style="width:85px">
@@ -119,24 +109,6 @@
                     RuleIdValue = ruleIdValue.Value,
                     TokenType = TokenType.Oprand,
                     parameterType = ParameterType.RuleParameter,
-                });
-            await tokenService.SaveChangesAsync();
-            Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
-            Tokens = new RuleEngine().UpdateTokens(Tokens);
-            var result = new Parser(Tokens).ValidTokenKinds();
-            await OnAfterAdd.InvokeAsync(result);
-            await StatusChanged.InvokeAsync(WindowStatus.Close);
-        }
-        else if (dynamicParameterId.HasValue)
-        {
-            var dynamicParameter = await new DynamicParameterService(scope.ServiceProvider).SingleAsync(dynamicParameterId.Value);
-            await tokenService.AddAsync(new Token()
-                {
-                    FaTitle = dynamicParameter.Title,
-                    RuleId = RuleId,
-                    DynamicParameterId = dynamicParameterId.Value,
-                    parameterType = ParameterType.DaynamicParameter,
-                    TokenType = TokenType.Oprand,
                 });
             await tokenService.SaveChangesAsync();
             Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();

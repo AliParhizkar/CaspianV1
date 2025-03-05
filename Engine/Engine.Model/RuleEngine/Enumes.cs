@@ -253,12 +253,6 @@ namespace Caspian.Engine
         MainParameter = 1,
 
         /// <summary>
-        /// پارامتر پویا
-        /// </summary>
-        [Display(Name = "پارامتر پویا")]
-        DaynamicParameter,
-
-        /// <summary>
         /// قانون
         /// </summary>
         [Display(Name = "قانون")]

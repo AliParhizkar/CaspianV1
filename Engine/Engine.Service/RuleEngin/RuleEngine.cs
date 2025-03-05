@@ -11,7 +11,6 @@ namespace Caspian.Engine.Service
         object model;
         IDictionary<int, object> userParametersValue;
         IList<DataParameter> formParameters;
-        IList<DataParameterValue> parameterValues;
 
         public RuleEngine()
         {
@@ -25,83 +24,6 @@ namespace Caspian.Engine.Service
             this.model = model;
             this.userParametersValue = userParametersValue;
             this.formParameters = formParameters;
-            this.parameterValues = parameterValues;
-        }
-
-        public object GetUserdata(DynamicParameter param)
-        {
-            var value = userParametersValue[param.Id];
-            switch (param.ControlType)
-            {
-                case ControlType.CheckBox:
-                    if (param.CalculationType == CalculationType.UserData)
-                        return Convert.ToBoolean(value) ? "درست" : "نادرست";
-                    throw new NotImplementedException("عدم پیاده سازی");
-                case ControlType.DropdownList:
-                    return param.Options.Single(t => t.Value == Convert.ToInt64(value)).FaTitle;
-                case ControlType.Integer:
-                    return Convert.ToInt32(value);
-                case ControlType.Numeric:
-                    return Convert.ToDecimal(value);
-                default:
-                    throw new NotImplementedException("خطای عدم پیاده سازی");
-            }
-        }
-
-        public object GetFormData(int parameterId)
-        {
-            var dic = new Dictionary<int, int>();
-            foreach (var param in formParameters.Where(t => t.ResultParameterId == parameterId))
-            {
-                var value = GetDataParameterValue(param);
-                dic.Add(param.Id, Convert.ToInt32(value));
-            }
-            return parameterValues.SingleOrDefault(GetFunc(dic))?.ResultValue;
-        }
-
-        public object GetDataParameterValue(DataParameter formParameter)
-        {
-            switch (formParameter.ParameterType)
-            {
-                case DataParameterType.EntityProperties:
-                    if (model != null)
-                    {
-                        var info = model.GetType().GetProperty(formParameter.PropertyName);
-                        return info.GetValue(model);
-                    }
-                    return null;
-                case DataParameterType.DynamicParameters:
-                    if (userParametersValue.ContainsKey(formParameter.DynamicParameterId.Value))
-                        return userParametersValue[formParameter.DynamicParameterId.Value];
-                    return null;
-                case DataParameterType.FormRule:
-                    return Rulesvalue[formParameter.RuleId.Value];
-                default:
-                    throw new NotImplementedException("خطای عدم پیاده سازی");
-            }
-        }
-
-        Func<DataParameterValue, bool> GetFunc(IDictionary<int, int> dic)
-        {
-            switch (dic.Count)
-            {
-                case 1:
-                    return t => t.Parameter1Id == dic.ElementAt(0).Key && t.Value1 == dic.ElementAt(0).Value;
-                case 2:
-                    return t => t.Parameter1Id == dic.ElementAt(0).Key && t.Value1 == dic.ElementAt(0).Value &&
-                        t.Parameter2Id == dic.ElementAt(1).Key && t.Value2 == dic.ElementAt(1).Value;
-                case 3:
-                    return t => t.Parameter1Id == dic.ElementAt(0).Key && t.Value1 == dic.ElementAt(0).Value &&
-                        t.Parameter2Id == dic.ElementAt(1).Key && t.Value2 == dic.ElementAt(1).Value &&
-                        t.Parameter3Id == dic.ElementAt(2).Key && t.Value3 == dic.ElementAt(2).Value;
-                case 4:
-                    return t => t.Parameter1Id == dic.ElementAt(0).Key && t.Value1 == dic.ElementAt(0).Value &&
-                        t.Parameter2Id == dic.ElementAt(1).Key && t.Value2 == dic.ElementAt(1).Value &&
-                        t.Parameter3Id == dic.ElementAt(2).Key && t.Value3 == dic.ElementAt(2).Value &&
-                        t.Parameter4Id == dic.ElementAt(3).Key && t.Value4 == dic.ElementAt(3).Value;
-                default:
-                    throw new NotImplementedException("خطای عدم پیاده سازی");
-            }
         }
 
         public IList<Token> GetObjectTokens(Type type)
@@ -276,13 +198,6 @@ namespace Caspian.Engine.Service
                         value = model.GetMyValue(item.EnTitle, false);
                     if (value != null && value.GetType().IsEnum)
                         value = Convert.ToInt32(value);
-                    if (item.DynamicParameterId.HasValue)
-                    {
-                        if (item.DynamicParameter.CalculationType == CalculationType.UserData)
-                            value = userParametersValue.Single(t => t.Key == item.DynamicParameterId).Value;
-                        else
-                            value = GetFormData(item.DynamicParameterId.Value);
-                    }
                     if (item.RuleIdValue.HasValue)
                         value = Rulesvalue[item.RuleIdValue.Value];
                 }

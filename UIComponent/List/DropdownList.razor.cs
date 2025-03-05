@@ -207,14 +207,14 @@ namespace Caspian.UI
                 if (path != null)
                 {
                     var values = EntitySearch.GetFieldValues(path);
-                    if (values != null && values.Count() > 0)
+                    if (values != null && values.Count > 0)
                     {
                         var str = string.Empty;
                         foreach ( var value in values)
                         {
                             if (str != string.Empty)
                                 str += ", ";
-                            str += items.Single(t => t.Value == value.ToString()).Text;
+                            str += items.Single(t => t.Value == Convert.ToInt32(value).ToString()).Text;
                         }
                         text = str;
                     }
@@ -288,10 +288,16 @@ namespace Caspian.UI
             {
                 var path = GetProppertyPath();
                 var type = typeof(TValue).GetUnderlyingType();
-                await EntitySearch.UpsertEnumValues(path, values.Select(t => Enum.Parse(type, t.ToString())).ToArray());
+                var enumValues = values.Select(t => (TValue)Enum.Parse(type, t.ToString())).ToList();
+                var changed = await EntitySearch.UpsertEnumValues(path, enumValues);
+                if (changed && OnSearch.HasDelegate)
+                    await OnSearch.InvokeAsync(enumValues);
             }
             StateHasChanged();
         }
+
+        [Parameter]
+        public EventCallback<IEnumerable<TValue>> OnSearch {  get; set; }
 
         string GetProppertyPath()
         {

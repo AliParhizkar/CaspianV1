@@ -27,11 +27,6 @@ namespace Caspian.Engine
 
         public ParameterType? parameterType { get; set; }
 
-        public int? DynamicParameterId { get; set; }
-
-        [ForeignKey(nameof(DynamicParameterId))]
-        public DynamicParameter DynamicParameter { get; set; }
-
         [ForeignKey(nameof(RuleId))]
         public Rule Rule { get; set; }
 
