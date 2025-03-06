@@ -13,7 +13,7 @@
     {
         using var scope = CreateScope();
         var query = scope.GetService<OrderDetailService>().GetAll().Where(t => t.Order.CustomerId != null);
-        var list = await new ReportPrintEngine(scope.ServiceProvider).GetData(2, query);
+        var list = await new ReportEngine(scope).GetData(2, query);
         await base.OnInitializedAsync();
     }
 }

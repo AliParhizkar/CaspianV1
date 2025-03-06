@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine.Model
 {
-    [Table("Reports", Schema = "cmn")]
+    [Table("PersianDatesTable", Schema = "cmn")]
     public class PersianDateTable
     {
         [Key]

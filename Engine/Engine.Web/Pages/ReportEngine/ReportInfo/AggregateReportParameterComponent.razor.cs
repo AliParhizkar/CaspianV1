@@ -5,15 +5,23 @@ using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics;
 
 namespace Caspian.Engine.ReportGenerator
 {
     public partial class AggregateReportParameterComponent:BasePage
     {
         Type type;
-        IList<NodeView> source;
-        IList<AggregateReportGroupParameter> parameters;
         Report report;
+        IList<NodeView> source;
+        TreeView<NodeView> tree;
+        IList<AggregateReportGroupParameter> parameters;
+
+        async Task SaveParameters()
+        {
+            var parameters = tree.GetSeletcedItems();
+
+        }
 
         void NodeChanged(NodeView node)
         {

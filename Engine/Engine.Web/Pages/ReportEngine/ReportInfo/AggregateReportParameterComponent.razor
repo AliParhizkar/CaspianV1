@@ -17,12 +17,12 @@
             <span class="group-title">@(report.Title)</span>
         </div>
         <div class="col-md-1 text-center">
-            <button class="c-btn c-primary">Save</button>
+            <button @onclick="async () => await SaveParameters()" class="c-btn c-primary">Save</button>
         </div>
     </div>
 }
 
-<TreeView style="height:calc(100% - 47px)" TEntity="NodeView" Source="source" OnChange="NodeChanged">
+<TreeView @ref="tree" style="height:calc(100% - 47px)" TEntity="NodeView" Source="source" OnChange="NodeChanged">
     <BeforeNodeTemplate Context="node">
         @if (IsIdentityNode(node))
         {

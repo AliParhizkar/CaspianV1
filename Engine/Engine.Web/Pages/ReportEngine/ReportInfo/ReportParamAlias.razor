@@ -13,7 +13,7 @@
             @foreach (var param in reportParams)
             {
                 <tr>
-                    <td>@param.ReportGroupParameter.TitleEn</td>
+                    <td>@param.ReportGroupParameter.PropertyPath</td>
                     <td>
                         <StringTextBox @bind-Value="param.ReportGroupParameter.Alias" />
                     </td>

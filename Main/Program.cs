@@ -51,6 +51,7 @@ namespace Main
                 CS.Con = builder.Configuration.GetConnectionString("ServerDb");
                 domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             }
+
             if (builder.Environment.IsStaging())
             builder.Services.ConfigureApplicationCookie(options =>
             {

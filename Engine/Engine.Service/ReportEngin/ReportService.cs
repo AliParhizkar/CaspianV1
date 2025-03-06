@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Caspian.Engine.Service
 {
-    public class ReportService : MasterDetailsService<Report, ReportParam>
+    public class ReportService : MasterDetailsService<Report, ReportParam, AggregateReportParameter>
     {
         public ReportService(IServiceProvider provider)
             :base(provider)

@@ -23,18 +23,6 @@ namespace Caspian.Engine.Model
         public byte DataLevel { get; set; }
 
         /// <summary>
-        /// ترتیب در مرتب سازی
-        /// </summary>
-        [DisplayName("ترتیب")]
-        public int? Order_ { get; set; }
-
-        /// <summary>
-        /// نوع مرتب سازی 
-        /// </summary>
-        [DisplayName("ترتیب")]
-        public SortType? SortType { get; set; }
-
-        /// <summary>
         /// نوع متد در گروهبندی پایگاه داده ای
         /// </summary>
         public CompositionMethodType? CompositionMethodType { get; set; }

@@ -56,7 +56,15 @@ namespace Caspian.Common.Extension
                         var tempType = expr.Member.DeclaringType.GetProperty(attr.Name).PropertyType;
                         if (tempType.IsNullableType())
                         {
-                            foreignkeyId = attr.Name;
+                            var expr1 = expr.Expression;
+                            var str = "";
+                            while(expr1.NodeType == ExpressionType.MemberAccess)
+                            {
+                                var temp = expr1 as MemberExpression;
+                                str += $"{temp.Member.Name}.";
+                                expr1 = temp.Expression;
+                            }
+                            foreignkeyId = str + attr.Name;
                             return true;
                         }
                     }

@@ -17,19 +17,19 @@ namespace ReportUiModels
     /// </summary>
     public class ReportTree
     {
-        public static string[] DateFields = { "Date", "DayOfWeek" };
+        public static string[] DateFields = { "PersianDate", "DayOfPersianWeek" };
         public static string[] AggregateFunctionsName = {"Sum", "Average", "Maximum", "Minimum" };
         public static string[] AggregateDateFunctionsName = {"First", "Last"};
         public static IDictionary<string, string> DateFieldsDictionary;
         public static IDictionary<string, string> AggregateFunctionsDictionary;
         public static IDictionary<string, string> AggregateDateFunctionsNameDictionary;
-        public static string[] TotalDateFields = { "Date", "Year", "Month", "Day", "DayOfWeek" };
+        public static string[] TotalDateFields = { "PersianDate", "Year", "Month", "Day", "DayOfPersianWeek" };
 
         static ReportTree()
         {
             DateFieldsDictionary = new Dictionary<string, string>()
             {
-                { "Date", "تاریخ"}, {"Year", "سال"}, {"Month", "ماه"}, {"Day", "روز"}, {"DayOfWeek", "روز هفته"}
+                { "PersianDate", "تاریخ"}, {"Year", "سال"}, {"Month", "ماه"}, {"Day", "روز"}, {"DayOfPersianWeek", "روز هفته"}
             };
             AggregateFunctionsDictionary = new Dictionary<string, string>()
             {
@@ -122,7 +122,7 @@ namespace ReportUiModels
                     singleRelation = keyInfo.GetCustomAttribute<ForeignKeyAttribute>() != null;
                 node.Grouping = info.GetCustomAttribute<ForeignKeyAttribute>() != null || complexAttr != null || singleRelation;
                 if (!node.Grouping)
-                    node.Selected = selectedNodes.Any(t => t.ReportGroupParameter.TitleEn == str);
+                    node.Selected = selectedNodes.Any(t => t.ReportGroupParameter.PropertyPath == str);
                 node.IsKey = info.IsForeignKey();
                 list.Add(node);
             }

@@ -23,6 +23,10 @@ namespace Caspian.Engine.Model
 
         public DbSet<Token> Tokens { get; set; }
 
+        public DbSet<PersianDateTable> PersianDates { get; set; }
+
+        public DbSet<AggregateReportParameter> AggregateReportParameters { get; set; }
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<UserLogin> UsersLogins { get; set; }

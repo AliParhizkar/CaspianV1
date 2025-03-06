@@ -143,11 +143,11 @@ namespace Caspian.Engine.ReportGenerator
             var entityPathList = new List<string>();
             foreach (var param in reportParams)
             {
-                var key = GetKeyEntityPath(param.ReportGroupParameter.TitleEn);
+                var key = GetKeyEntityPath(param.ReportGroupParameter.PropertyPath);
                 if (!list.Contains(key))
                 {
                     list.Add(key);
-                    entityPathList.Add(GetEntityPath(param.ReportGroupParameter.TitleEn));
+                    entityPathList.Add(GetEntityPath(param.ReportGroupParameter.PropertyPath));
                 }
             }
             entityPathList = entityPathList.OrderBy(t => t.Split('.').Length).ToList();
@@ -156,7 +156,7 @@ namespace Caspian.Engine.ReportGenerator
                 if (!entityPath.StartsWith(first))
                     throw new CaspianException($"بیش از یک نوع گروه بندی تعریف شده است:\n {first}, {entityPath}");
             var firstKey = list.OrderBy(t => t.Split('.').Length).First();
-            return keies.Single(t => t.TitleEn == firstKey).Id;
+            return keies.Single(t => t.PropertyPath == firstKey).Id;
         }
 
         string GetEntityPath(string fullPath)

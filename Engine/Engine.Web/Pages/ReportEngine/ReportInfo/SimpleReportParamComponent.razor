@@ -59,7 +59,7 @@
                                     </div>
                                     @if (report.ReportType != ReportType.Simple)
                                     {
-                                        var maxDataLevel = MaxdataLevel(report.ReportParams[index].ReportGroupParameter.TitleEn);
+                                        var maxDataLevel = MaxdataLevel(report.ReportParams[index].ReportGroupParameter.PropertyPath);
                                         <div class="c-field-level">
                                             <DropdownList @bind-Value="report.ReportParams[index].DataLevel" Disabled="maxDataLevel == 1" Source="dataLevels" FilterFunc="t => t <= maxDataLevel" />
                                         </div>

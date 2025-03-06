@@ -21,204 +21,40 @@ namespace Caspian.Engine
             paramExpr = Expression.Parameter(type, "t");
         }
 
-        IEnumerable<ReportParam> ComplexTypeFilter(IEnumerable<ReportParam> fields)
+        public LambdaExpression GroupBy(Type mainType, IList<AggregateReportGroupParameter> parameters)
         {
-            var list = new List<ReportParam>();
-            foreach (var field in fields)
+            var paramExpr = Expression.Parameter(mainType, "t");
+            IList<MemberExpression> list = new List<MemberExpression>();
+            foreach (var parameter in parameters)
             {
-                var type = paramExpr.Type;
-                string str = "";
-                foreach (var item in field.ReportGroupParameter.TitleEn.Split('.'))
+                if (parameter.AggregateParameterType == AggregateParameterType.Grouping)
                 {
-                    if (type.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
-                        break;
-                    if (str != "")
-                        str += '.';
-                    str += item;
-                    var info = type.GetProperty(item);
-                    type = info.PropertyType;
-                }
-                if (!list.Any(t => t.ReportGroupParameter.TitleEn == str))
-                    list.Add(field);
-            }
-            return list;
-        }
-
-        public LambdaExpression SimpleSelect(IList<ReportParam> reportParams, out Type dynamicType)
-        {
-            var flag = reportParams.Any(t => t.RuleId.HasValue);
-            var fields = ComplexTypeFilter(reportParams.Where(t => t.RuleId == null)).ToArray();
-            var dynamicFields = reportParams.Where(t => t.RuleId.HasValue);
-            Type dynamicItemType = null, dynamicTypeOfDynamicItem = null;
-            if (flag)
-            {
-                var enTitle = dynamicFields.First().ReportGroupParameter.TitleEn;
-                dynamicItemType = GetDynamicItemType(enTitle);
-                dynamicTypeOfDynamicItem = GetDynamicTypeOfDynamicItem(enTitle);
-            }
-            dynamicType = GetDynamicType(fields, dynamicTypeOfDynamicItem);
-            int i = 0;
-            var list = new List<MemberBinding>();
-            foreach (var info in dynamicType.GetProperties())
-            {
-                if (info.Name != "DynamicItems" && i < fields.Length)
-                {
-                    var name = fields[i].ReportGroupParameter.TitleEn;
-                    list.Add(Expression.Bind(info, GetMemberExpr(name)));
-                }
-                i++;
-            }
-            if (flag)
-            {
-                var info = dynamicType.GetMember("DynamicItems")[0];
-                var titleEn = dynamicFields.First().ReportGroupParameter.TitleEn;
-                var tempExpr = DynamicItemSelectExpr(dynamicItemType, titleEn);
-                list.Add(Expression.Bind(info, tempExpr));
-            }
-            var expr = Expression.MemberInit(Expression.New(dynamicType), list);
-            return Expression.Lambda(expr, new ParameterExpression[] { paramExpr });
-        }
-
-        private Expression GetMemberExpr(string field)
-        {
-            Expression expr = paramExpr;
-            var type = expr.Type;
-            foreach (var item in field.Split('.'))
-            {
-                var info = type.GetProperty(item);
-                
-                //if (info.DeclaringType.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
-                //{
-                //    var attr = info.GetCustomAttribute<ReportFieldAttribute>();
-                //    int startIndex = attr.StartIndex, length = attr.Length;
-                //    info = info.DeclaringType.GetProperties().Single(t => t.CanWrite);
-                //    expr = Expression.Property(expr, info);
-                //    var method = typeof(string).GetMethod("Substring", new Type[] { typeof(int), typeof(int) });
-                //    expr = Expression.Call(expr, method, Expression.Constant(startIndex), Expression.Constant(length));
-                //}
-                //else
-                    expr = Expression.Property(expr, info);
-                type = info.PropertyType;
-            }
-            if (type.IsValueType && !type.IsNullableType())
-            {
-                bool canbeNull = false;
-                var tempType = paramExpr.Type;
-                foreach (var item in field.Split("."))
-                {
-                    var info = tempType.GetProperty(item);
-                    var attr = info.GetCustomAttribute<ForeignKeyAttribute>();
-                    if (attr != null)
+                    if (parameter.ParentParameterId.HasValue)
                     {
-                        var propertyType = tempType.GetProperty(attr.Name).PropertyType;
-                        if (propertyType.IsNullableType())
-                        { 
-                            canbeNull = true; 
-                            break;
-                        }
+                        ///Group by with Persian Date items
+                        parameter.Path = GetDatePath(mainType, parameter);
                     }
-                    tempType = info.PropertyType;
+                    list.Add(paramExpr.CreateMemberExpresion(parameter.Path));
                 }
-                if (canbeNull)
-                    expr = Expression.Convert(expr, typeof(Nullable<>).MakeGenericType(type));
             }
-            return expr;
+            return paramExpr.CreateLambdaExpresion(list);
         }
 
-        public Type GetDynamicType(IEnumerable<ReportParam> fields, Type dynamicTypeOfDynamicItem)
+        string GetDatePath(Type entityType, AggregateReportGroupParameter parameter)
         {
-            var list = new List<DynamicProperty>();
-            foreach (var field in fields)
-            {
-                Type tempType = null;
-                string name = GetEqualFieldName(field.ReportGroupParameter.TitleEn, field.CompositionMethodType);
-                var info = paramExpr.Type.GetMyProperty(field.ReportGroupParameter.TitleEn);
-                if (info.DeclaringType.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
-                    tempType = typeof(string);
-                else
-                    tempType = info.PropertyType;
-                if (tempType.IsValueType && !tempType.IsNullableType() && TypeMaybeWasNull(paramExpr.Type, name))
-                    tempType = typeof(Nullable<>).MakeGenericType(tempType);
-                list.Add(new DynamicProperty(name.Replace(".", ""), tempType));
-            }
-            if (dynamicTypeOfDynamicItem != null)
-            {
-                var type = typeof(IEnumerable<>);
-                type = type.MakeGenericType(new Type[] { dynamicTypeOfDynamicItem });
-                list.Add(new DynamicProperty("DynamicItems", type));
-            }
-            return DynamicClassFactory.CreateType(list, false);
+            var path = parameter.ParentParameter.Path;
+
+            var propertyInfo = entityType.GetMyProperty(path);
+            propertyInfo = propertyInfo.DeclaringType.GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == propertyInfo.Name);
+            var index = path.LastIndexOf(".");
+            if (index != -1)
+                path = path.Substring(0, index);
+            return $"{path}.{propertyInfo.Name}.{parameter.Path}";
         }
 
-        bool TypeMaybeWasNull(Type type, string path)
+        public LambdaExpression SelectForGroupBy(Type mainType, Type type)
         {
-            var tempType = type;
-            foreach(var section in path.Split('.'))
-            {
-                var property = tempType.GetProperty(section);
-                var attr = property.GetCustomAttribute<ForeignKeyAttribute>();
-                if (attr != null)
-                {
-                    var info = tempType.GetProperty(attr.Name);
-                    if (info.PropertyType.IsNullableType())
-                        return true;
-                }
-                tempType = property.PropertyType;
-            }
-            return false;
-        }
-
-        public LambdaExpression GroupBy(IList<ReportParam> reportParams)
-        {
-            reportParams = reportParams.Where(t => !t.ReportGroupParameter.IsKey && !t.CompositionMethodType.HasValue).ToArray();
-            var type = GetTSourceType(paramExpr.Type, reportParams);
-            Expression parameterExpr = Expression.Parameter(paramExpr.Type, "t");
-            var index = 0;
-            var members = new List<MemberAssignment>();
-            foreach (var info in type.GetProperties())
-            {
-                if (info.Name == "Item")
-                    continue;
-                members.Add(Expression.Bind(info, PropertyExpr(parameterExpr, reportParams[index].ReportGroupParameter.TitleEn)));
-                index++;
-            }
-            var expr = Expression.MemberInit(Expression.New(type), members);
-            return Expression.Lambda(expr, new ParameterExpression[] { parameterExpr as ParameterExpression });
-        }
-
-        public LambdaExpression SelectForGroupBy(IList<ReportParam> reportParams)
-        {
-            var sourceType = GetTSourceType(paramExpr.Type, reportParams.Where(t => !t.CompositionMethodType.HasValue).ToList());
-            var type = typeof(IGrouping<,>).MakeGenericType(sourceType, paramExpr.Type);
-            sourceType = GetTSourceType(paramExpr.Type, reportParams);
-            Expression parameterExpr = Expression.Parameter(type, "t");
-            var members = new List<MemberAssignment>();
-            foreach (var param in reportParams)
-            {
-                Expression expr = null;
-                var name = param.ReportGroupParameter.TitleEn.Replace('.', '_');
-                if (param.CompositionMethodType.HasValue)
-                {
-                    switch (param.CompositionMethodType.Value)
-                    {
-                        case CompositionMethodType.Sum: name = "Sum_" + name; break;
-                        case CompositionMethodType.Avg: name = "Avg_" + name; break;
-                        case CompositionMethodType.Max: name = "Max_" + name; break;
-                        case CompositionMethodType.Min: name = "Min_" + name; break;
-                    }
-                    expr = MethodExpr(paramExpr.Type, parameterExpr, param);
-                }
-                else
-                {
-                    expr = parameterExpr;
-                    expr = Expression.Property(expr, "Key");
-                    expr = Expression.Property(expr, name);
-                }
-                var info = sourceType.GetProperty(name);
-                members.Add(Expression.Bind(info, expr));
-            }
-            var memberExpr = Expression.MemberInit(Expression.New(sourceType), members);
-            return Expression.Lambda(memberExpr, new ParameterExpression[] { parameterExpr as ParameterExpression });
+            throw new NotImplementedException();
         }
 
         Type GetTSourceType(Type mainType, IList<ReportParam> reportParams)
@@ -226,10 +62,10 @@ namespace Caspian.Engine
             var list = new List<DynamicProperty>();
             foreach (var param in reportParams)
             {
-                var info = mainType.GetMyProperty(param.ReportGroupParameter.TitleEn);
+                var info = mainType.GetMyProperty(param.ReportGroupParameter.PropertyPath);
                 var type = info.PropertyType;
                 
-                var name = param.ReportGroupParameter.TitleEn.Replace('.', '_');
+                var name = param.ReportGroupParameter.PropertyPath.Replace('.', '_');
                 switch (param.CompositionMethodType)
                 {
                     case CompositionMethodType.Sum: name = "Sum_" + name; break;
@@ -273,11 +109,11 @@ namespace Caspian.Engine
             return expr;
         }
 
-        MethodInfo GetMethodInfo(Type mainType, ReportParam param)
+        MethodInfo GetMethodInfo(Type mainType, AggregateReportGroupParameter param)
         {
-            var tempType  = mainType.GetMyProperty(param.ReportGroupParameter.TitleEn).PropertyType;
+            var tempType  = mainType.GetMyProperty(param.Path).PropertyType;
             var type = tempType;
-            if (param.CompositionMethodType == CompositionMethodType.Avg)
+            if (param.AggregateFunctionType == AggregateFunctionType.Average)
             {
                 if (type == typeof(int) || type == typeof(long))
                     type = typeof(double);
@@ -285,15 +121,15 @@ namespace Caspian.Engine
                     type = typeof(double?);
             }
             string methodName = null;
-            switch (param.CompositionMethodType.Value)
+            switch (param.AggregateFunctionType.Value)
             {
-                case CompositionMethodType.Sum:
+                case AggregateFunctionType.Sum:
                     methodName = "Sum"; break;
-                case CompositionMethodType.Avg:
+                case AggregateFunctionType.Average:
                     methodName = "Average"; break;
-                case CompositionMethodType.Max:
+                case AggregateFunctionType.Maximum:
                     methodName = "Max"; break;
-                case CompositionMethodType.Min:
+                case AggregateFunctionType.Minimum:
                     methodName = "Min"; break;
             }
             var methods = typeof(Enumerable).GetMethods().Where(t => t.Name == methodName && t.IsGenericMethod);
@@ -319,10 +155,10 @@ namespace Caspian.Engine
         {
             var u = Expression.Parameter(mainType, "u");
             Expression expr = u;
-            foreach (var str in param.ReportGroupParameter.TitleEn.Split('.'))
+            foreach (var str in param.ReportGroupParameter.PropertyPath.Split('.'))
                 expr = Expression.Property(u, str);
             expr = Expression.Lambda(expr, u);
-            var method = GetMethodInfo(mainType, param);
+            var method = GetMethodInfo(mainType, null);
             return Expression.Call(null, method, parameter, expr);
         }
 
@@ -334,8 +170,6 @@ namespace Caspian.Engine
             foreach (var value in values.AsQueryable().ToIList())
             {
                 IEnumerable<object> dynamicItemsValue = new List<object>();
-                if (value.GetType().GetProperty("DynamicItems") != null)
-                    dynamicItemsValue = (IEnumerable<object>)value.GetMyValue("DynamicItems");
                 var obj = Activator.CreateInstance(type);
                 foreach (var param in reportParams)
                 {
@@ -365,7 +199,7 @@ namespace Caspian.Engine
                     }
                     else
                     {
-                        name = GetEqualFieldName(param.ReportGroupParameter.TitleEn);
+                        name = GetEqualFieldName(param.ReportGroupParameter.PropertyPath);
                         switch(param.CompositionMethodType)
                         {
                             case CompositionMethodType.Sum: name = "Sum_" + name; break;
@@ -392,7 +226,7 @@ namespace Caspian.Engine
             var list = new List<DynamicProperty>();
             foreach (var param in reportParams.Where(t => t.DataLevel == level))
             {
-                var name = param.ReportGroupParameter.TitleEn.Replace(".", "");
+                var name = param.ReportGroupParameter.PropertyPath.Replace(".", "");
                 var type = mainType.GetProperty(name).PropertyType;
                 if (type.GetUnderlyingType().IsEnum)
                     type = typeof(string);

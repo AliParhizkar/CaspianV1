@@ -32,7 +32,7 @@
                         {
                             var index = i;
                             <div class="c-field-name">
-                                @group.ReportGroupParameters[index].TitleEn
+                                @group.ReportGroupParameters[index].PropertyPath
                             </div>
                             <div class="c-field-alise">
                                 <StringTextBox @bind-Value="group.ReportGroupParameters[index].Alias" />
@@ -80,13 +80,13 @@
         var data = System.Text.Json.JsonSerializer.Deserialize<ReportNode>(node.Value);
         if (node.Selected.Value)
         {
-            var old = removedParamters.SingleOrDefault(t => t.TitleEn == data.TitleEn);
+            var old = removedParamters.SingleOrDefault(t => t.PropertyPath == data.TitleEn);
             if (old == null)
             {
                 old = new ReportGroupParameter()
                     {
                         ReportGroupId = GroupId,
-                        TitleEn = data.TitleEn,
+                        PropertyPath = data.TitleEn,
                     };
             }
             else
@@ -95,7 +95,7 @@
         }
         else
         {
-            var removed = group.ReportGroupParameters.SingleOrDefault(t => t.TitleEn == data.TitleEn);
+            var removed = group.ReportGroupParameters.SingleOrDefault(t => t.PropertyPath == data.TitleEn);
             group.ReportGroupParameters.Remove(removed);
             removedParamters.Add(removed);
         }
@@ -108,7 +108,7 @@
         node.Children = tempItems.Select(t => new NodeView()
             {
                 Value = System.Text.Json.JsonSerializer.Serialize(t),
-                Selected = group.ReportGroupParameters.Any(u => u.TitleEn == t.TitleEn),
+                Selected = group.ReportGroupParameters.Any(u => u.PropertyPath == t.TitleEn),
                 Selectable = !t.Grouping,
                 Expanded = false,
                 Collabsable = t.Grouping,
@@ -130,7 +130,7 @@
         nodes = nodes1.Select(t => new NodeView()
             {
                 Value = System.Text.Json.JsonSerializer.Serialize(t),
-                Selected = group.ReportGroupParameters.Any(u => u.TitleEn == t.TitleEn),
+                Selected = group.ReportGroupParameters.Any(u => u.PropertyPath == t.TitleEn),
                 Selectable = !t.Grouping,
                 Expanded = false,
                 Collabsable = t.Grouping,

@@ -20,7 +20,7 @@ namespace Caspian.Engine.Model
         /// عنوان لاتین فیلد
         /// </summary>
         [DisplayName("عنوان لاتین")]
-        public string TitleEn { get; set; }
+        public string PropertyPath { get; set; }
 
         [DisplayName("Alias")]
         public string Alias { get; set; }
