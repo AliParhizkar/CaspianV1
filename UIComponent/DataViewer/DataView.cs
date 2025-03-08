@@ -265,7 +265,7 @@ namespace Caspian.UI
                     var newExpr = param.CreateMemberExpresion(str);
                     exprList.Add(newExpr);
                 }
-                var lambda = param.CreateLambdaExpresion(exprList);
+                var lambda = param.CreateLambdaExpresion(exprList, false);
                 expressionList.Add(item.Key, lambda);
             }
         }

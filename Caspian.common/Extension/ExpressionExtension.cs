@@ -1,31 +1,31 @@
-﻿using System.Linq;
+﻿using System.Reflection;
 using System.Linq.Expressions;
-using System.Collections.Generic;
-using System;
-using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common.Extension
 {
     public static class ExpressionExtension
     {
-        public static LambdaExpression CreateLambdaExpresion(this ParameterExpression param,params MemberExpression[] array)
+        public const char SpilitChar = '_';
+
+        public static LambdaExpression CreateLambdaExpresion(this ParameterExpression param, bool isReport, params MemberExpression[] array)
         {
-            return CreateLambdaExpresion(param, array.ToList());
+            return CreateLambdaExpresion(param, array.ToList(), isReport);
         }
 
 
 
-        public static LambdaExpression CreateLambdaExpresion(this ParameterExpression param, IList<MemberExpression> list)
+        public static LambdaExpression CreateLambdaExpresion(this ParameterExpression param, IList<MemberExpression> list, bool isReport)
         {
-            var type = param.Type.CreateDynamicType(list);
+            var type = param.Type.CreateDynamicType(list, isReport);
             var memberExprList = new List<MemberAssignment>();
             foreach (var expr in list)
             {
-                var str = expr.ToString();
-                str = str.Substring(str.IndexOf('.') + 1);
+                var pathProperty = expr.ToString();
+                pathProperty = pathProperty.Substring(pathProperty.IndexOf('.') + 1);
+                var str = pathProperty.NormalizePropertyPath(isReport);
                 var info = type.GetProperty(str);
-                Expression memberExpr = param.CreateMemberExpresion(str);
+                Expression memberExpr = param.CreateMemberExpresion(pathProperty);
                 string foreignkeyId;
                 if (expr.CheckConfilictByNullValue(out foreignkeyId))
                 {

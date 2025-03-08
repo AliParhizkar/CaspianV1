@@ -1690,11 +1690,11 @@ span, label, td, th {
 }
 
 .t-window-title {
-    display: inline-block;
-    width: calc(100% - 20px);
+    width: calc(100% - 35px);
     white-space:nowrap;
     text-overflow:ellipsis;
     font-size:14px;
+    padding-top:3px;
 }
 .c-messagebox .c-question {
     border: 3px solid #facea8;
@@ -2292,9 +2292,6 @@ div.t-window {
     left: 5px;
     display: none;
     box-shadow: 3px 3px 5px 0 slategrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(0,0,0,0.12);
     background-color:white;
 }
 
@@ -2317,14 +2314,26 @@ div.t-window {
 .t-window-titlebar .t-window-action {
     vertical-align: middle;
     line-height: 30px;
-    height: 31px;
-    display: inline-block;
-    padding-top:5px;
+    height: 30px;
+    width:35px;
+    border-radius:0 8px 0 0;
+    text-align:center;
 }
+    .t-window-titlebar .t-window-action .fa {
+        width: 35px;
+        height: 30px;
+        padding-top:4px;
+    }
+    .t-window-titlebar .t-window-action:hover {
+        background-color: #dc3545;
+    }
+    .t-window-titlebar .t-window-action :hover {
+        color: white;
+    }
 
-.t-window-action .t-icon {
-    vertical-align: top;
-}
+        .t-window-action .t-icon {
+            vertical-align: top;
+        }
 
 .t-window .t-resize-handle {
     position: absolute;
@@ -2467,14 +2476,17 @@ div.t-window {
     border-radius: 8px 8px 0 0;
 }
 .t-window >.t-header {
-    padding: 0 8px;
+    display:flex;
     background-color: #e6e7e8;
     border-radius:8px 8px 0 0;
     height:30px;
 }
-.t-window .fa-close{
-    vertical-align:super;
-}
+    .t-ltr .t-window > .t-header{
+        padding-left:8px;
+    }
+    .t-window .fa-close {
+        vertical-align: super;
+    }
 @keyframes tabstripwidth {
     0% {
         width: 20%;

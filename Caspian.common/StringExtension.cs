@@ -14,5 +14,12 @@ namespace Caspian.Common
         {
             return !string.IsNullOrEmpty(str);
         }
+
+        public static string NormalizePropertyPath(this string str, bool isReport)
+        {
+            if (isReport)
+                return str.Replace(".", "");
+            return str;
+        }
     }
 }

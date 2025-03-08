@@ -14,17 +14,8 @@ namespace Caspian.Common.Extension
         public static IQueryable Select(this IQueryable source, IList<MemberExpression> exprList)
         {
             var parameter = Expression.Parameter(source.ElementType, "x");
-            var lambda = parameter.CreateLambdaExpresion(exprList);
+            var lambda = parameter.CreateLambdaExpresion(exprList, false);
             return source.Select(lambda);
-        }
-
-        public static void ForTest<TEntity, TResult>(this IQueryable<TEntity> query, Expression<Func<TEntity, TResult>> expr)
-        {
-            var param  = expr.Parameters.Single();
-            var body = expr.Body as NewExpression;
-            var q = Expression.MemberInit(Expression.New(body.Type));
-            //Expression.MemberInit(q, param)
-            //var lambda = Expression.Lambda(body, param);
         }
 
         public async static Task<TEntity> SingleAsync<TEntity>(this IQueryable<TEntity> query, int id) where TEntity : class
@@ -56,7 +47,7 @@ namespace Caspian.Common.Extension
             foreach(var value in values)
             {
                 var entity = Activator.CreateInstance<TEntity>();
-                foreach(var info in value.GetType().GetProperties().Where(t => t.Name != "Item"))
+                foreach (var info in value.GetType().GetProperties().Where(t => t.Name != "Item"))
                     UpdateEntity(entity, info.Name, info.GetValue(value));
                 list.Add(entity);
             }
@@ -166,7 +157,7 @@ namespace Caspian.Common.Extension
                 properties.Add(new DynamicProperty(path, type));
                 list.Add(param.CreateMemberExpresion(path));
             }
-            var lambda = param.CreateLambdaExpresion(list);
+            var lambda = param.CreateLambdaExpresion(list, false);
             var groupByQuery = query.GroupBy(lambda);
             /// Select Expresion
             var memberExprList = new List<MemberAssignment>();

@@ -1,13 +1,13 @@
 ﻿@inject IUIService<Employee> Service
 <EntityTabPanel TEntity="Employee" Service="Service" Vertical>
     <Content Context="employee">
-        <ChildTabPanelItem Child="t => t" ColumnsCount="2">
+        <ChildTabPanelItem Child="t => t" ColumnsCount="2" >
             <div style="height:350px" class="row c-controls pt-3 align-content-start">
                 <div class="row col-md-7">
                     <ComboBox TValue="int" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.ScopeId"
-                    ConditionExpression="t => t.DataType == SimpleDataType.Scope" ColSpan="8" />
+                                ConditionExpression="t => t.DataType == SimpleDataType.Scope" ColSpan="8" />
                     <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.CostCenterId"
-                    ConditionExpression="t => t.DataType == SimpleDataType.CostCenter" ColSpan="8" />
+                                ConditionExpression="t => t.DataType == SimpleDataType.CostCenter" ColSpan="8" />
                     <StringTextBox @bind-Value="employee.FName" ColSpan="8" />
                     <StringTextBox @bind-Value="employee.LName" ColSpan="8" />
                 </div>
@@ -20,10 +20,10 @@
                     <DropdownList @bind-Value="employee.Gender" ColSpan="4" />
                     <StringTextBox @bind-Value="employee.EmploymentNo" ColSpan="4" />
                     <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.EmploymentTypeId"
-                    ConditionExpression="t => t.DataType == SimpleDataType.EmploymentType" ColSpan="4" />
+                                ConditionExpression="t => t.DataType == SimpleDataType.EmploymentType" ColSpan="4" />
                     <StringTextBox @bind-Value="employee.FileNo" ColSpan="4" />
                     <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.EmployeeTypeId"
-                    ConditionExpression="t => t.DataType == SimpleDataType.EmployeeType" ColSpan="4" />
+                                ConditionExpression="t => t.DataType == SimpleDataType.EmployeeType" ColSpan="4" />
                     <StringTextBox @bind-Value="employee.IdCard" MaxLength="10" MaskedText="----------" ColSpan="4" />
                 </div>
             </div>

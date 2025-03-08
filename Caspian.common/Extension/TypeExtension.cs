@@ -135,7 +135,7 @@ namespace Caspian.Common.Extension
             return propertyInfo;
         }
 
-        public static Type CreateDynamicType(this Type mainType, IList<MemberExpression> exprList)
+        public static Type CreateDynamicType(this Type mainType, IList<MemberExpression> exprList, bool isReport)
         {
             var properties = new List<DynamicProperty>();
             foreach (var expr in exprList)
@@ -144,7 +144,7 @@ namespace Caspian.Common.Extension
                 var type = expr.Type;
                 if (expr.CheckConfilictByNullValue(out _))
                     type = typeof(Nullable<>).MakeGenericType(expr.Type);
-                str = str.Substring(str.IndexOf('.') + 1);
+                str = str.Substring(str.IndexOf('.') + 1).NormalizePropertyPath(isReport);
                 properties.Add(new DynamicProperty(str, type));
             }
             return DynamicClassFactory.CreateType(properties, false);

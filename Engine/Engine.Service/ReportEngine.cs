@@ -22,17 +22,11 @@ namespace Caspian.Engine.Service
         public async Task<IList> GetData(int reportId, IQueryable data)
         {
             var report = await ServiceScope.GetService<ReportService>().SingleAsync(reportId);
-
-            var reportEngine = new SelectReport(data.ElementType);
-            Type type = null;
             
             if (report.ReportType == ReportType.Aggregate)
             {
                 var parameters = await ServiceScope.GetService<AggregateReportGroupParameterService>().GetAll().Where(t => t.AggregateReportParameters.Any(u => u.ReportId == reportId)).Include(t => t.ParentParameter).ToListAsync();
-                var groupByLambda = reportEngine.GroupBy(data.ElementType, parameters);
-                var query = data.GroupBy(groupByLambda);
-
-                //data = data.GroupBy(report.GroupBy(reportParams)).Select(lambda);
+                return await data.CreateGroupByQuery(parameters).ToDynamicArrayAsync();
             }
             else
             {
@@ -43,8 +37,8 @@ namespace Caspian.Engine.Service
                 var maxLevel = reportParams.Max(t => t.DataLevel);
                 if (maxLevel == 1)
                     return list;
-                var multiLevelType = GetMultiLevelType(type, reportParams, maxLevel);
-                var multiLevelsData = GetDataOfLevel(list, reportParams, type, maxLevel);
+                var multiLevelType = GetMultiLevelType(data.ElementType, reportParams, maxLevel);
+                var multiLevelsData = GetDataOfLevel(list, reportParams, data.ElementType, maxLevel);
                 var items = new ArrayList();
                 foreach (var item in multiLevelsData)
                 {
