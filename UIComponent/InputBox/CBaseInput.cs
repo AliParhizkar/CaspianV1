@@ -316,7 +316,7 @@ namespace Caspian.UI
             }
         }
 
-        public async void Dispose()
+        public virtual async void Dispose()
         {
             InputElement = null;
             if (CurrentEditContext != null) 

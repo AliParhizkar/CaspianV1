@@ -3,13 +3,8 @@
 @inject IServiceScopeFactory ScopeFactory
 
 <Window @bind-Status="status" @attributes="windowProperties" >
-    <CaspianForm @ref="form" TEntity="TEntity" Model="entity" OnSubmit="UpdateEntity">
+    <CaspianForm @ref="form" TEntity="TEntity" Model="entity" ColumnsCount="ColumnsCount" OnSubmit="UpdateEntity">
         <CaspianValidationValidator TModel="TEntity" ValidatorType="serviceType" />
-        @Content(newEntity)
+        @ChildContent(newEntity)
    </CaspianForm>
 </Window>
-
-@code 
-{
-
-}

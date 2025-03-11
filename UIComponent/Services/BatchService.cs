@@ -33,6 +33,11 @@ namespace Caspian.UI
             throw new NotImplementedException();
         }
 
+        public IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TMaster, TValue>> expression) where TValue : Enum
+        {
+            return new EnumSearch<TValue>(expression.Body, enumValues);
+        }
+
         public void OnlyForSearch()
         {
             onlyForSearch = true;
@@ -59,6 +64,7 @@ namespace Caspian.UI
         }
 
         public Func<IServiceProvider, TMaster, Task<bool>> OnUpsert { get; set; }
+
 
         public BatchService(IServiceProvider serviceProvider)
         {
@@ -132,6 +138,7 @@ namespace Caspian.UI
             Form = default;
             Search = Activator.CreateInstance<TMaster>();
             UpsertData = Activator.CreateInstance<TMaster>();
+            batchServiceData.DetailPropertiesInfo.Clear();
         }
 
         public void DetailFormInitialize()
@@ -207,6 +214,10 @@ namespace Caspian.UI
 
         public void FormInitialize()
         {
+            batchServiceData.MasterType = typeof(TMaster);
+            var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
+            if (!batchServiceData.DetailPropertiesInfo.Contains(detailsproperty))
+                batchServiceData.DetailPropertiesInfo.Add(detailsproperty);
             if (UpsertData == null)
                 UpsertData = Activator.CreateInstance<TMaster>();
             if (OnCreate != null)
@@ -256,6 +267,8 @@ namespace Caspian.UI
                     MasterId = value;
                     await Window.Open();
                     StateHasChanged();
+                    await Task.Delay(100);
+                    await Form.FocusAsync();
                 }
             });
             DataView.OnInternalDelete = EventCallback.Factory.Create<TMaster>(this, async master =>
@@ -290,6 +303,10 @@ namespace Caspian.UI
                     info.SetValue(detail, value);
                 }
                 await TypeWindow.OpenAsync(detail, DetailDataView.GetSource().ToList());
+                StateHasChanged();
+                await Task.Delay(100);
+                if (DetailForm != null)
+                    await DetailForm.FocusAsync();
             });
         }
 

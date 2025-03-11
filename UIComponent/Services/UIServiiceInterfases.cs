@@ -14,9 +14,16 @@ namespace Caspian.UI
         void Dispose();
     }
 
+    public interface IEnumSearch<TValue> where TValue : Enum
+    {
+        void SetValues(params TValue[] values);
+    }
+
+
     public interface ISearchService<TEntity> where TEntity : class
     {
         DataView<TEntity> DataView { get; set; }
+
 
         TEntity Search { get; }
 
@@ -27,6 +34,8 @@ namespace Caspian.UI
         void SetEnumFields(IDictionary<string, ICollection> enumFields);
 
         IDictionary<string, ICollection> GetEnumFields();
+
+        IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TEntity, TValue>> expression)where TValue:Enum;
 
         IDictionary<string, SearchType> GetSearchData();
 

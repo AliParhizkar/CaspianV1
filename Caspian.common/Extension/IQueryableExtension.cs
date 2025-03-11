@@ -4,8 +4,6 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.Linq;
 
 namespace Caspian.Common.Extension
 {

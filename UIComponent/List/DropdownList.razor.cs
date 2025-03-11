@@ -287,11 +287,18 @@ namespace Caspian.UI
             if (EntitySearch != null)
             {
                 var path = GetProppertyPath();
-                var type = typeof(TValue).GetUnderlyingType();
-                var enumValues = values.Select(t => (TValue)Enum.Parse(type, t.ToString())).ToList();
-                var changed = await EntitySearch.UpsertEnumValues(path, enumValues);
-                if (changed && OnSearch.HasDelegate)
-                    await OnSearch.InvokeAsync(enumValues);
+                if (path != null)
+                {
+                    var type = typeof(TValue).GetUnderlyingType();
+                    var enumValues = values.Select(t => (TValue)Enum.Parse(type, t.ToString())).ToList();
+                    var changed = EntitySearch.ChangEnumValues(path, enumValues);
+                    if (changed)
+                    {
+                        if (OnSearch.HasDelegate)
+                            await OnSearch.InvokeAsync(enumValues);
+                        await EntitySearch.SearchAsync();
+                    }
+                }
             }
             StateHasChanged();
         }
@@ -324,5 +331,15 @@ namespace Caspian.UI
             return propertyPath;
         }
 
+        public override void Dispose()
+        {
+            if (EntitySearch != null)
+            {
+                var path = GetProppertyPath();
+                if (path != null)
+                    EntitySearch.ChangEnumValues(path, new object[] { });
+            }
+            base.Dispose();
+        }
     }
 }

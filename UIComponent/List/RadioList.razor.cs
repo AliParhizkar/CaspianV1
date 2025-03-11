@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.UI
 {
-    public partial class RadioList<TValue> : ComponentBase, IRadioList
+    public partial class RadioList<TValue> : CBaseInput<TValue>, IRadioList
     {
         string className;
         Dictionary<TValue, string> dic;
@@ -19,9 +19,6 @@ namespace Caspian.UI
             if (OnChange.HasDelegate)
                 await OnChange.InvokeAsync();
         }
-
-        [Parameter]
-        public EventCallback OnChange { get; set; }
 
         [Parameter]
         public DefaultLayout DefaultLayout { get; set; } = DefaultLayout.SpaceBetween;
@@ -66,22 +63,6 @@ namespace Caspian.UI
 
         [Parameter]
         public EventCallback OnChangeValue { get; set; }
-
-        [Parameter]
-        public bool Disabled { get; set; }
-
-
-        [Parameter]
-        public string Style { get; set; }
-
-        [Parameter]
-        public TValue Value { get; set; }
-
-        [Parameter]
-        public EventCallback<TValue> ValueChanged { get; set; }
-
-        [Parameter]
-        public Expression<Func<TValue>> ValueExpression { get; set; }
 
         [Parameter]
         public IList<SelectListItem> Source { get; set; }

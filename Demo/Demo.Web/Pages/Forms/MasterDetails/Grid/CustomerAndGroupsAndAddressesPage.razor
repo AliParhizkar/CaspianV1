@@ -17,60 +17,19 @@
                     </Columns>
                 </DataGrid>
                 <Window Service="Service" Title="Customer Properties" Style="width:800px;">
-                    <CaspianForm Service="Service">
-                        <Content Context="customer">
-                            @{
-                                var customerType = customer.CustomerType;
-                            }
-                            <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerGroupAddressService)" />
-                            <div class="c-controls row p-2  ">
-                                <div class="col-md-2">
-                                    <label>Customer Type</label>
-                                </div>
-                                <div class="col-md-4 pe-2">
-                                    <DropdownList @bind-Value="customer.CustomerType" />
-                                </div>
-                                <div class="col-md-2 ps-2">
-                                    <label>First Name</label>
-                                </div>
-                                <div class="col-md-4">
-                                    <StringTextBox @bind-Value="customer.FName" Disabled="customerType == CustomerType.Legal" />
-                                </div>
-                                <div class="col-md-2">
-                                    <label>Last Name</label>
-                                </div>
-                                <div class="col-md-4 pe-2">
-                                    <StringTextBox @bind-Value="customer.LName" Disabled="customerType == CustomerType.Legal" />
-                                </div>
-                                <div class="col-md-2 ps-2">
-                                    <label>Gender</label>
-                                </div>
-                                <div class="col-md-4">
-                                    <DropdownList @bind-Value="customer.Gender" Disabled="customerType == CustomerType.Legal" />
-                                </div>
-                                <div class="col-md-2">
-                                    <label>Company Name</label>
-                                </div>
-                                <div class="col-md-4 pe-2">
-                                    <StringTextBox @bind-Value="customer.CompanyName" Disabled="customerType == CustomerType.Real" />
-                                </div>
-                                <div class="col-md-2 ps-2">
-                                    <label>Mobile Number</label>
-                                </div>
-                                <div class="col-md-4">
-                                    <StringTextBox @bind-Value="customer.MobileNumber" MaxLength="11" />
-                                </div>
-                                <div class="col-md-2">
-                                    <label>Tel</label>
-                                </div>
-                                <div class="col-md-4 pe-2">
-                                    <StringTextBox @bind-Value="customer.Tel" MaxLength="11" />
-                                </div>
-                                <div class="col-md-6">
-                                    <FormCommandButton />
-                                </div>
-                            </div>
-                        </Content>
+                    <CaspianForm Service="Service" ColumnsCount="2">
+                        @{
+                            var customerType = context.CustomerType;
+                        }
+                        <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerGroupAddressService)" />
+                        <DropdownList @bind-Value="context.CustomerType" ColSpan="4" />
+                        <StringTextBox @bind-Value="context.FName" Disabled="customerType == CustomerType.Legal" ColSpan="4" />
+                        <StringTextBox @bind-Value="context.LName" Disabled="customerType == CustomerType.Legal" ColSpan="4"/>
+                        <DropdownList @bind-Value="context.Gender" Disabled="customerType == CustomerType.Legal" ColSpan="4" />
+                        <StringTextBox @bind-Value="context.CompanyName" Disabled="customerType == CustomerType.Real" ColSpan="4" />
+                        <StringTextBox @bind-Value="context.MobileNumber" MaxLength="11" ColSpan="4" />
+                        <StringTextBox @bind-Value="context.Tel" MaxLength="11" ColSpan="4" />
+                        <FormCommandButton ColSpan="6" TotalSpan="6" />
                     </CaspianForm>
                     <div class="p-2 pb-0">
                         <TabPanel>

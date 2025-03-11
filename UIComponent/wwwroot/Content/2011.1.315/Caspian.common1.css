@@ -1690,11 +1690,10 @@ span, label, td, th {
 }
 
 .t-window-title {
-    width: calc(100% - 35px);
+    width: calc(100% - 30px);
     white-space:nowrap;
     text-overflow:ellipsis;
     font-size:14px;
-    padding-top:3px;
 }
 .c-messagebox .c-question {
     border: 3px solid #facea8;
@@ -2114,16 +2113,6 @@ ul {
         background: #aaa;
     }
 
-.t-link {
-    cursor: pointer;
-    outline: none;
-}
-
-.t-dropdown .t-star {
-    position: absolute;
-    top: 3px;
-    left: -8px;
-}
 
 html body .t-button {
     text-decoration: none; /*Site.css*/
@@ -2234,17 +2223,28 @@ html body .t-button-bare {
     box-shadow:none!important;
 }
 
-.t-header .t-link {
-    text-decoration: none;
+.t-header .t-window-action {
+    width: 30px;
+    text-align: center;
+    color: #ff6358;
+    cursor:pointer;
 }
 
-.t-animation-container .t-popup {
-    border-radius: 8px;
-    overflow: hidden;
-    position: absolute;
-    width: calc(100% - 15px);
-    box-sizing: border-box;
+.t-header .t-window-action:hover {
+    background-color: red;
+    color:white;
+
 }
+    .t-header .t-window-action .fa{
+        color:inherit;
+    }
+    .t-animation-container .t-popup {
+        border-radius: 8px;
+        overflow: hidden;
+        position: absolute;
+        width: calc(100% - 15px);
+        box-sizing: border-box;
+    }
 
 .t-state-disabled,
 .t-state-disabled .t-link {
@@ -2322,7 +2322,7 @@ div.t-window {
     .t-window-titlebar .t-window-action .fa {
         width: 35px;
         height: 30px;
-        padding-top:4px;
+        padding-top:5px;
     }
     .t-window-titlebar .t-window-action:hover {
         background-color: #dc3545;
@@ -2480,6 +2480,7 @@ div.t-window {
     background-color: #e6e7e8;
     border-radius:8px 8px 0 0;
     height:30px;
+    align-items:center;
 }
     .t-ltr .t-window > .t-header{
         padding-left:8px;
@@ -3973,9 +3974,7 @@ label{
     background-color: #eaeaea !important;
     cursor: not-allowed;
 }
-.t-state-disabled .t-star {
-    color: #a9a9a9 !important;
-}
+
 .t-panelbar .t-state-selected {
         border-radius: 0 !important;
     }
@@ -5462,25 +5461,6 @@ html input.t-breadcrumbs-input {
     background-position: -53px -258px;
 }
 
-.t-star {
-    color: red;
-    display: inline-block;
-}
-.t-timepicker .t-star {
-    margin-top: 3px;
-    margin-right: 26px;
-}
-
-.t-datepicker .t-star {
-    margin-top: 3px;
-    margin-right: 27px;
-    position: absolute;
-}
-
-.t-numerictextbox .t-star {
-    margin-right: 3px;
-}
-
 .t-tabstrip .item-add {
     display: inline-block;
     margin: 0.1em 0 0 0.3em;
@@ -5541,10 +5521,6 @@ html input.t-breadcrumbs-input {
     background-position: 20px -162px;
 }
 
-.t-combobox .t-star {
-    padding: 3px 4px 0 0;
-    position: relative;
-}
 fieldset.t-widget {
     border-radius:5px;
 }

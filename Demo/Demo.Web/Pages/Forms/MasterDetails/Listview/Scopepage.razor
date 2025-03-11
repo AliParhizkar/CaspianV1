@@ -16,28 +16,20 @@
 <Window Service="Service" Title="Scope & Evaluations" Style="width:750px;">
     <CaspianForm Service="Service">
         <fieldset class="c-container">
-            <legend>مشخصات حوزه</legend>
+            <legend>Scope Properties</legend>
             <div class="row ps-3 pe-3 c-controls">
-                <div class="col-md-2">
-                    <label>عنوان</label>
-                </div>
-                <div class="col-md-10">
-                    <StringTextBox @bind-Value="Service.UpsertData.Title" />
-                </div>
-                <div class="col-md-2">
-                    <label>عنوان لاتین</label>
-                </div>
-                <div class="col-md-6">
-                    <StringTextBox @bind-Value="Service.UpsertData.EnTitle" />
-                </div>
+                <StringTextBox @bind-Value="Service.UpsertData.Title" ColSpan="10" />
+                <StringTextBox @bind-Value="Service.UpsertData.EnTitle" ColSpan="6" TotalSpan="8" />
                 <div class="col-md-4 text-center">
                     <FormCommandButton ResetButtonTitle="Close" />
                 </div>
             </div>
         </fieldset>
-
     </CaspianForm>
-    <DataGrid TEntity="Evaluation" DetailsService="Service" PageSize="5" ContentHeight="275">
+    <div style="margin-bottom:-20px;" class="p-3 pb-0 text-center">
+        <span class="d-membership">Evaluations Of Scope</span>
+    </div>
+    <DataGrid TEntity="Evaluation" DetailsService="Service" PageSize="5" ContentHeight="200">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Year" />
@@ -47,105 +39,27 @@
         </Columns>
     </DataGrid>
     <TypeWindow TEntity="Evaluation" Service="Service" Title="Evaluation" Style="width:650px" OnOpen="InitializeOnEvaluationCreate">
-        <Content Context="evaluation">
-            <div class="row ps-3 pe-3 c-controls">
-                <div class="col-md-3">
-                    <label>عنوان</label>
-                </div>
-                <div class="col-md-7">
-                    <StringTextBox @bind-Value="evaluation.Title" />
-                </div>
-                <div class="col-md-2 text-center">
-                    <button class="c-btn c-primary"  type="submit">Save</button>
-                </div>
-                <div class="col-md-3">
-                    <label>عنوان لاتین</label>
-                </div>
-                <div class="col-md-7">
-                    <StringTextBox @bind-Value="evaluation.EnTitle" />
-                </div>
-                <div class="col-md-2 text-center">
-                    <button class="c-btn c-danger" type="reset">Close</button>
-                </div>
-                <div class="col-md-3">
-                    <label>سال ارزیابی</label>
-                </div>
-                <div class="col-md-3 pe-2">
-                    <NumericTextBox @bind-Value="evaluation.Year" />
-                </div>
-                <div class="col-md-3 ps-2">
-                    <label>نوبت ارزیابی</label>
-                </div>
-                <div class="col-md-3">
-                    <DropdownList @bind-Value="evaluation.EvaluationTurn" />
-                </div>
-                <div class="col-md-3">
-                    <label>تاریخ شروع سال ارزیابی</label>
-                </div>
-                <div class="col-md-3 pe-2">
-                    <DatePicker @bind-Value="evaluation.StartDate" />
-                </div>
-                <div class="col-md-3 ps-2">
-                    <label>تاریخ پایان سال ارزیابی</label>
-                </div>
-                <div class="col-md-3">
-                    <DatePicker @bind-Value="evaluation.EndDate" />
-                </div>
-                <div class="col-md-3">
-                    <label>تاریخ گردش ارزیابی از</label>
-                </div>
-                <div class="col-md-3 pe-2">
-                    <DatePicker @bind-Value="evaluation.EvalDateFrom" />
-                </div>
-                <div class="col-md-3 ps-2">
-                    <label>تاریخ گردش ارزیابی تا</label>
-                </div>
-                <div class="col-md-3">
-                    <DatePicker @bind-Value="evaluation.EvalDateTo" />
-                </div>
-                <div class="col-md-3">
-                    <label>تاریخ اعتراض از</label>
-                </div>
-                <div class="col-md-3 pe-2">
-                    <DatePicker @bind-Value="evaluation.ReviewDateFrom" />
-                </div>
-                <div class="col-md-3 ps-2">
-                    <label>تاریخ اعتراض تا</label>
-                </div>
-                <div class="col-md-3">
-                    <DatePicker @bind-Value="evaluation.ReviewDateTo" />
-                </div>
-                <div class="col-md-3">
-                    <label>تاریخ ابلاغ از</label>
-                </div>
-                <div class="col-md-3 pe-2">
-                    <DatePicker @bind-Value="evaluation.NotificationDateFrom" />
-                </div>
-                <div class="col-md-3 ps-2">
-                    <label>تاریخ ابلاغ تا</label>
-                </div>
-                <div class="col-md-3">
-                    <DatePicker @bind-Value="evaluation.NotificationDateTo" />
-                </div>
-            </div>
-        </Content>
+        <StringTextBox @bind-Value="context.Title" ColSpan="6" TotalSpan="9" />
+        <div class="col-md-3 text-center">
+            <button class="c-btn c-primary" type="submit">Save</button>
+            <button class="c-btn c-danger" type="reset">Close</button>
+        </div>
+        <StringTextBox @bind-Value="context.EnTitle" ColSpan="9" TotalSpan="12" />
+        <NumericTextBox @bind-Value="context.Year" ColSpan="3" />
+        <DropdownList @bind-Value="context.EvaluationTurn" ColSpan="3" />
+        <DatePicker @bind-Value="context.StartDate" ColSpan="3" />
+        <DatePicker @bind-Value="context.EndDate" ColSpan="3" />
+        <DatePicker @bind-Value="context.EvalDateFrom" ColSpan="3" />
+        <DatePicker @bind-Value="context.EvalDateTo" ColSpan="3" />
+        <DatePicker @bind-Value="context.ReviewDateFrom" ColSpan="3" />
+        <DatePicker @bind-Value="context.ReviewDateTo" ColSpan="3" />
+        <DatePicker @bind-Value="context.NotificationDateFrom" ColSpan="3" />
+        <DatePicker @bind-Value="context.NotificationDateTo" ColSpan="3" />
     </TypeWindow>
 </Window>
 
-
-
 @code 
 {
-    protected override void OnInitialized()
-    {
-        int year = 1400;
-        var month = PersianMonth.Tear;
-        var startDate = new PersianDate(year, month, 1).ToShortDateString();
-        var endDate = new PersianDate(startDate).AddMonth(1).ToShortDateString();
-
-        base.OnInitialized();
-    }
-
     void InitializeOnEvaluationCreate(Evaluation evaluation)
     {
         if (evaluation.Id == 0)

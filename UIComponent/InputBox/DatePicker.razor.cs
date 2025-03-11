@@ -23,13 +23,13 @@ namespace Caspian.UI
         {
             if (!disabled)
             {
-                var type = typeof(DateTime).GetUnderlyingType();
+                var type = typeof(TValue).GetUnderlyingType();
                 if (type == typeof(DateTime))
                     Value = (TValue)Convert.ChangeType(date, type);
                 else
                 {
                     var dateOnly = new DateOnly(date.Year, date.Month, date.Day);
-                    Value = (TValue)Convert.ChangeType(dateOnly, typeof(TValue));
+                    Value = (TValue)Convert.ChangeType(dateOnly, type);
                 }
                 text = date.ToShortDateString();
                 if (ValueChanged.HasDelegate)

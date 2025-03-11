@@ -2,7 +2,6 @@
 using Caspian.Common.Extension;
 using Caspian.Common.Service;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
@@ -26,7 +25,10 @@ namespace Caspian.UI
         public IDetailBatchService<TEntity> Service { get; set; }
 
         [Parameter]
-        public RenderFragment<TEntity> Content { get; set; }
+        public int ColumnsCount { get; set; }
+
+        [Parameter]
+        public RenderFragment<TEntity> ChildContent { get; set; }
 
         [Parameter]
         public string Title { get; set; }

@@ -2,34 +2,62 @@
 @using System.ComponentModel.DataAnnotations;
 @typeparam TValue
 @attribute [CascadingTypeParameter(nameof(TValue))]
+@inherits CBaseInput<TValue>
 @implements IRadioList
 @inject IJSRuntime JSRuntime
 <CascadingValue Value="this" Name="RadioLis">
-    <div class="t-radios @(className)" style="@Style">
-        @if (dic != null)
+    @if(ColSpan.HasValue)
+    {
+        var container = CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer;
+        string lableContainerCSSClassName = container?.GetLableContainerCSSClassName(ColSpan.Value, TotalSpan);
+        string controlContainerCSSClassName = container?.GetControlContainerCSSClassName(ColSpan.Value, TotalSpan);
+        <div class="@(lableContainerCSSClassName)">
+            <label>@title</label>
+        </div>
+        <div class="@(controlContainerCSSClassName)">
+            @RenderRadioList()
+        </div>
+        
+    }
+    else
+    {
+        @RenderRadioList();
+    }
+</CascadingValue>
+
+@code 
+{
+    RenderFragment RenderRadioList()
+    {
+        return __builder =>
         {
-            foreach (var item in dic)
-            {
-                <RadioItem ValueChanged="(TValue value) =>
+            <div class="t-radios @(className)" style="@Style">
+                @if (dic != null)
+                {
+                    foreach (var item in dic)
+                    {
+                        <RadioItem ValueChanged="(TValue value) =>
                                      {
                                          UpdateValue(value);
                                      }" Value="item.Key" Disabled="Disabled" Title="@item.Value" />
-            }
-        }
-        else if (Source != null)
-        {
-            var type = typeof(TValue).GetUnderlyingType();
-            foreach (var item in Source)
-            {
-                <RadioItem ValueChanged="(TValue value) =>
+                    }
+                }
+                else if (Source != null)
+                {
+                    var type = typeof(TValue).GetUnderlyingType();
+                    foreach (var item in Source)
+                    {
+                        <RadioItem ValueChanged="(TValue value) =>
                                      {
                                          UpdateValue(value);
                                      }" Disabled="Disabled" Value="(TValue)Convert.ChangeType(item.Value, type)" Title="@item.Text" />
-            }
-        }
-        else
-        {
-            @ChildContent
-        }
-    </div>
-</CascadingValue>
+                    }
+                }
+                else
+                {
+                    @ChildContent
+                }
+            </div>
+        };
+    }
+}

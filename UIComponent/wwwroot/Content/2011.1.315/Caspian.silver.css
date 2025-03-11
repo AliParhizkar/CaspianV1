@@ -35,9 +35,6 @@ fieldset.t-widget legend {
 .t-small .t-numeric  {
     font-size: 10px !important;
 }
-    .t-widget.t-state-disabled .t-star {
-        color: #ececec;
-    }
     .t-widget.t-state-disabled .t-select {
         background-image: none;
         cursor: not-allowed;
@@ -509,8 +506,6 @@ html input[disabled], textarea[disabled] {
     color: #003db2;
 }
 
-.t-breadcrumbs .t-first,
-.t-breadcrumbs .t-first:hover,
 .t-search-wrap label
 {
     color: #6c7a8c;
@@ -518,9 +513,8 @@ html input[disabled], textarea[disabled] {
 .t-HelpWindow > .t-header {
     height: 25px;
     background-image: linear-gradient(#f6f6f6, #dae2f9);
-    padding: 0 8px;
-    border-radius: 8px 8px 0 0;
     border-bottom: 1px solid #b4b4b4;
+   display:flex;
 }
 .t-HelpWindow .t-grid-header .t-header {
     height: 30px;
@@ -591,6 +585,7 @@ html input[disabled], textarea[disabled] {
     background-color: white;
     border-radius: 8px 8px 4px 4px;
     border: 1px solid #bbbbbb;
+    overflow:hidden;
 }
 .t-reset .t-state-selected {
     background-color: #ff6358!important;

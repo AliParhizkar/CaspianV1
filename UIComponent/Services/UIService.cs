@@ -29,6 +29,11 @@ namespace Caspian.UI
             return searchData;
         }
 
+        public IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TEntity, TValue>> lambda) where TValue : Enum
+        {
+            return new EnumSearch<TValue>(lambda.Body, enumValues);
+        }
+
         public void HideFooter()
         {
             hideFooter = true;
@@ -377,6 +382,44 @@ namespace Caspian.UI
         IDictionary<string, ICollection> ISearchService<TEntity>.GetEnumFields()
         {
             return enumValues;
+        }
+    }
+
+    public class EnumSearch<TValue>:IEnumSearch<TValue> where TValue:Enum
+    {
+        string propertyPath;
+        IDictionary<string, ICollection> dictionary;
+        public EnumSearch(Expression expression, IDictionary<string, ICollection> dictionary)
+        {
+            this.dictionary = dictionary;
+            var propertyPath = "";
+            var expr = expression;
+            while (expr.NodeType == ExpressionType.MemberAccess)
+            {
+                var memberExpr = expr as MemberExpression;
+                if (propertyPath.HasValue())
+                    propertyPath = $".{propertyPath}";
+                if (!memberExpr.Member.DeclaringType.IsNullableType())
+                    propertyPath += memberExpr.Member.Name;
+                expr = memberExpr.Expression;
+            }
+            this.propertyPath = propertyPath;
+        }
+
+        public void SetValues(params TValue[] values)
+        {
+            if (dictionary == null || !dictionary.ContainsKey(propertyPath))
+            {
+                if (values != null && values.Length > 0) 
+                    dictionary.Add(propertyPath, values);
+            }
+            else
+            {
+                if (values == null || values.Length == 0)
+                    dictionary.Remove(propertyPath);
+                else
+                    dictionary[propertyPath] = values;
+            }
         }
     }
 }

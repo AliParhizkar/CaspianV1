@@ -27,6 +27,11 @@ namespace Caspian.UI
             base.HideInsertIcon = true;
         }
 
+        public IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TOther, TValue>> expression) where TValue : Enum
+        {
+            return new EnumSearch<TValue>(expression.Body, enumValues);
+        }
+
         public void SetEnumFields(IDictionary<string, ICollection> enumFields)
         {
             this.enumValues = enumFields;

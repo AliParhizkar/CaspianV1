@@ -2,7 +2,6 @@
 @page "/Demo/Grid-Search"
 <h2>Grid-Searching</h2>
 @inject ISearchService<Customer> Service
-@inject ISearchService<Customer> StringService
 @inject ISearchService<City> CityService
 @inject ISearchService<OrderDetail> OrderDetailService
 <p>
@@ -56,12 +55,27 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <EntitySearch Service="StringService">
-                            <DropdownList @bind-Value="context.CustomerType" ColSpan="8"  />
-                            <DropdownList @bind-Value="context.Gender" ColSpan="8" />
+                        <div class="row c-controls">
+                            <div class="ps-2 col-md-4">
+                                <label>Selection Type</label>
+                            </div>
+                            <div class="pe-2 col-md-8">
+                                <RadioList @bind-Value="genderSelectionType">
+                                    <RadioItem Value="0" Title="Hide Gender" />
+                                    <RadioItem Value="1" Title="Clear Gender" />
+                                </RadioList>
+                            </div>
+                        </div>
+
+                        <EntitySearch Service="Service">
+                            <DropdownList TValue="CustomerType" @bind-Value="context.CustomerType" ColSpan="8" OnSearch="SearchOnCustomerType" />
+                            @if (showGender || genderSelectionType == 1)
+                            {
+                                <DropdownList @bind-Value="context.Gender" ColSpan="8" />
+                            }
                         </EntitySearch>
                         <div class="pt-3">
-                            <DataGrid TEntity="Customer" Service="StringService" ShowInsertIcon="false">
+                            <DataGrid TEntity="Customer" Service="Service" ShowInsertIcon="false">
                                 <Columns>
                                     <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
                                     <GridColumn Field="t => t.CustomerType.EnumText()" />
@@ -217,8 +231,21 @@
 @code 
 {
     //Default search
+    bool showGender;
+    int genderSelectionType;
     City citySearch = new City();
     Customer customerStringSearch = new ();
+
+    void SearchOnCustomerType(IEnumerable<CustomerType> customerTypes)
+    {
+        if (genderSelectionType == 0) ///Hide Gender
+            showGender = customerTypes.Contains(CustomerType.Real);
+        else ///Clear Gender
+        {
+            if (!customerTypes.Contains(CustomerType.Real))
+                Service.GetEnumField(t => t.Gender.Value).SetValues();
+        }
+    }
 
     object fromPrice;
     object toPrice;

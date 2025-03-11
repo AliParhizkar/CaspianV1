@@ -12,7 +12,9 @@ namespace Caspian.UI
 
         void SetSearchKind(string path, SearchType searchType);
 
-        Task<bool> UpsertEnumValues(string path, ICollection values);
+        bool ChangEnumValues(string path, ICollection values);
+
+        Task SearchAsync();
 
         ICollection GetFieldValues(string propertyPath);
     }

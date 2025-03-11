@@ -26,10 +26,10 @@
             @if (!HideHeader)
             {
                 <div class="t-header">
-                    <span class="t-window-title">@(Title)</span>
-                    <span class="t-window-action t-link" @onclick="() => CloseHelpForm()">
+                    <div class="t-window-title">@(Title)</div>
+                    <div class="t-window-action t-link" @onclick="() => CloseHelpForm()">
                         <i class="fa fa-close"></i>
-                    </span>
+                    </div>
                 </div>
             }
             <div class="t-content">

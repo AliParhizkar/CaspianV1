@@ -1,60 +1,24 @@
 ﻿@namespace Demo.Web.Pages
+@inject BatchService<Customer, CustomerAddress> Service
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="Customer">
-            <CaspianForm Service="Service">
-                <Content Context="address">
+            <div class="pt-3">
+                <CaspianForm Service="Service">
+                    @{
+                        var customerType = context.CustomerType;
+                    }
                     <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerAndAddressService)" />
-                    <div class="row p-4 c-controls">
-                        <div class="col-md-4">
-                            <label>Customer Type</label>
-                        </div>
-                        <div class="col-md-8">
-                            <DropdownList @bind-Value="address.CustomerType" />
-                        </div>
-                        <div class="col-md-4">
-                            <label>First Name</label>
-                        </div>
-                        <div class="col-md-8">
-                            <StringTextBox @bind-Value="address.FName" Disabled="address.CustomerType == CustomerType.Legal" />
-                        </div>
-                        <div class="col-md-4">
-                            <label>Last Name</label>
-                        </div>
-                        <div class="col-md-8">
-                            <StringTextBox @bind-Value="address.LName" Disabled="address.CustomerType == CustomerType.Legal" />
-                        </div>
-                        <div class="col-md-4">
-                            <label>Gender</label>
-                        </div>
-                        <div class="col-md-8">
-                            <DropdownList @bind-Value="address.Gender" Disabled="address.CustomerType == CustomerType.Legal" />
-                        </div>
-                        <div class="col-md-4">
-                            <label>Company Name</label>
-                        </div>
-                        <div class="col-md-8">
-                            <StringTextBox @bind-Value="address.CompanyName" Disabled="address.CustomerType == CustomerType.Real" />
-                        </div>
-                        <div class="col-md-4">
-                            <label>Mobile Number</label>
-                        </div>
-                        <div class="col-md-8">
-                            <StringTextBox @bind-Value="address.MobileNumber" MaxLength="11" />
-                        </div>
-                        <div class="col-md-4">
-                            <label>Tel</label>
-                        </div>
-                        <div class="col-md-8">
-                            <StringTextBox @bind-Value="address.Tel" MaxLength="11" />
-                        </div>
-                        <div class="col-md-4"></div>
-                        <div class="col-md-8">
-                            <FormCommandButton />
-                        </div>
-                    </div>
-                </Content>
-            </CaspianForm>
+                    <DropdownList @bind-Value="context.CustomerType" ColSpan="8" />
+                    <StringTextBox @bind-Value="context.FName" Disabled="customerType == CustomerType.Legal" ColSpan="8" />
+                    <StringTextBox @bind-Value="context.LName" Disabled="customerType == CustomerType.Legal" ColSpan="8" />
+                    <DropdownList @bind-Value="context.Gender" Disabled="customerType == CustomerType.Legal" ColSpan="8" />
+                    <StringTextBox @bind-Value="context.CompanyName" Disabled="customerType == CustomerType.Real" ColSpan="8" />
+                    <StringTextBox @bind-Value="context.MobileNumber" MaxLength="11" ColSpan="8" />
+                    <StringTextBox @bind-Value="context.Tel" MaxLength="11" ColSpan="8" />
+                    <FormCommandButton ColSpan="8" />
+                </CaspianForm>
+            </div>
         </TabPanelItem>
         <TabPanelItem Title="Addresses">
             <div class="p-2">
@@ -85,6 +49,5 @@
 
 @code 
 {
-    [Parameter]
-    public BatchService<Customer, CustomerAddress> Service { get; set; }
+
 }

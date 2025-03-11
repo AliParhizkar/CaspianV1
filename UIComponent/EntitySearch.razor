@@ -36,7 +36,7 @@
         return null;
     }
 
-    async Task<bool> IEntitySearch.UpsertEnumValues(string path, ICollection values)
+    bool IEntitySearch.ChangEnumValues(string path, System.Collections.ICollection values)
     {
         ICollection oldValues = new object[0];
         if (enumValues.ContainsKey(path))
@@ -64,11 +64,13 @@
         else
             isEqual = false;
         if (!isEqual)
-        {
             Service.SetEnumFields(enumValues);
-            await Service.DataView.ReloadAsync();
-        }
         return !isEqual;
+    }
+
+    async Task IEntitySearch.SearchAsync()
+    {
+        await Service.DataView.ReloadAsync();
     }
 
     [CascadingParameter]
