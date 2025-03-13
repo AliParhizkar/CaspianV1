@@ -127,11 +127,11 @@ namespace Caspian.Common
                         }
                     }
                     
-                    var attr = property.GetCustomAttribute<ComputedColumnSqlAttribute>();
+                    var attr = property.GetCustomAttribute<ComputedSqlColumnAttribute>();
                     if (attr != null)
                     {
                         var sql = attr.GetSql();
-                        modelBuilder.Entity(type).Property(property.Name).HasComputedColumnSql(sql);
+                        var entityProperty = modelBuilder.Entity(type).Property(property.Name).HasComputedColumnSql(sql);
                     }
                 }
             }

@@ -6,11 +6,63 @@
 @using Microsoft.EntityFrameworkCore
 @using System.Linq.Expressions
 @inherits BasePage
+@inject BatchService<Customer, CustomerGroupMembership> Service
+<div style="width:800px;margin:10px auto">
+    <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
+        <DropdownList TValue="CustomerType" @bind-Value="context.CustomerType" ColSpan="4" 
+                OnSearch="types => showGender = types.Contains(CustomerType.Real)" />
+        @if (showGender)
+        {
+            <DropdownList @bind-Value="context.Gender" ColSpan="4" />
+        }
+        <StringTextBox @bind-Value="context.FName" ColSpan="4" />
+        <StringTextBox @bind-Value="context.LName" ColSpan="4" />
+        <StringTextBox @bind-Value="context.MobileNumber" ColSpan="4" SearchType="SearchType.StartWith" />
+    </EntitySearch>
 
+    <DataGrid TEntity="Customer" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.CustomerType.EnumText()" />
+            <GridColumn Field="t => t.CustomerName" Title="Customer Name"  />
+            <GridColumn Field="t => t.Gender" >
+                <Template>
+                    @if(context.Data.Gender == Gender.Male)
+                    {
+                        <span class="fa fa-male"></span>
+                    }
+                    else if (context.Data.Gender == Gender.Female)
+                    {
+                        <span class="fa fa-female"></span>
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
 
-
+<Window Service="Service" Title="Customer" Style="width:500px;">
+    <CaspianForm Service="Service" TEntity="Customer">
+        <div class="col-md-9 row">
+            <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
+            <DropdownList @bind-Value="context.CustomerType" ColSpan="8" />
+            <StringTextBox @bind-Value="context.FName" Disabled="context.CustomerType == CustomerType.Legal" ColSpan="8" />
+            <StringTextBox @bind-Value="context.LName" Disabled="context.CustomerType == CustomerType.Legal" ColSpan="8" />
+            <DropdownList @bind-Value="context.Gender" Disabled="context.CustomerType == CustomerType.Legal" ColSpan="8" />
+            <StringTextBox @bind-Value="context.CompanyName" Disabled="context.CustomerType != CustomerType.Legal" ColSpan="8" />
+            <NumericTextBox @bind-Value="context.CustomerNumber" ColSpan="8" />
+            <StringTextBox @bind-Value="context.MobileNumber" MaxLength="11" ColSpan="8" />
+            <StringTextBox @bind-Value="context.Tel" MaxLength="11" ColSpan="8" />
+        </div>
+        <div class="col-md-3">
+            <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" TextExpression="t => t.Title" Service="Service" />
+        </div>
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
 
 @code 
 {
-    Customer customer = new Customer();
+    bool showGender;    
 }

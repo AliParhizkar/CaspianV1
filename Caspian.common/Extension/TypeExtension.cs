@@ -114,6 +114,24 @@ namespace Caspian.Common.Extension
             throw new InvalidProgramException("");
         }
 
+        public static IList<PropertyInfo> GetOneToOnePropertyInfos(this Type entityType)
+        {
+            var list = new List<PropertyInfo>();
+            foreach (var info in entityType.GetProperties())
+            {
+                var type = info.PropertyType;
+                if (!type.IsValueType && !type.IsGenericType && type != typeof(string) && type != typeof(byte[]))
+                {
+                    if (info.GetCustomAttribute<ForeignKeyAttribute>() == null)
+                    {
+                        if (info.PropertyType.GetProperties().Any(t => t.PropertyType == entityType))
+                            list.Add(info);
+                    }
+                }
+            }
+            return list;
+        }
+
         public static PropertyInfo GetPrimaryKey(this Type type, bool checkAnyType = false)
         {
             var keys = type.GetProperties().Where(t => t.CustomAttributes.Any(u => u.AttributeType == typeof(KeyAttribute))).ToList();

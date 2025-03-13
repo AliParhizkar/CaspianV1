@@ -1,10 +1,10 @@
 ﻿
 namespace Caspian.Common
 {
-    public class ComputedColumnSqlAttribute : Attribute
+    public class ComputedSqlColumnAttribute : Attribute
     {
         string sql;
-        public ComputedColumnSqlAttribute(string sql) 
+        public ComputedSqlColumnAttribute(string sql) 
         {
             this.sql = sql;
         }

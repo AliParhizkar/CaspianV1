@@ -31,7 +31,7 @@ namespace Demo.Model
         [DisplayName("Quantity")]
         public int Quantity { get; set; }
 
-        [DisplayName("Sum"), DatabaseGenerated(DatabaseGeneratedOption.Computed), ComputedColumnSql("[Price] * [Quantity]")]
+        [DisplayName("Sum"), ComputedSqlColumn("[Price] * [Quantity]")]
         public int Result { get;set; }
     }
 }

@@ -27,7 +27,7 @@ namespace Demo.Model
         [DisplayName("Company name")]
         public string CompanyName { get; set; }
 
-        [DisplayName("Customer name"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DisplayName("Customer name"), ComputedSqlColumn("(case when [CustomerType]=(1) then ([FName]+' ')+[LName] else [CompanyName] end)")]
         public string CustomerName { get; set; }
 
         [DisplayName("Customer number")]

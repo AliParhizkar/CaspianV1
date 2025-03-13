@@ -40,7 +40,7 @@
                                     <GridCommandColumns />
                                 </Columns>
                             </DataGrid>
-                            <Window Service="Service" Title="Product" Style="width:500px;" OnOpen="Test">
+                            <Window Service="Service" Title="Product" Style="width:500px;">
                                 <CaspianForm TEntity="Product" Service="Service" OnSubmit="t => t.ProductCategoryId = categoryId.Value">
                                     <Content Context="product">
                                         <div class="row c-controls ps-3 pe-3">
@@ -70,8 +70,4 @@
 @code
 {
     int? categoryId;
-    async Task Test()
-    {
-        throw new NotImplementedException("sss");
-    }
 }

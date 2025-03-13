@@ -17,7 +17,7 @@ namespace Demo.Model
         public int UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
-        public ChildUser User { get; set; }
+        public User User { get; set; }
 
         public bool RecordingVideoIs {  get; set; }
 

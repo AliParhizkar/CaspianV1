@@ -23,11 +23,6 @@ namespace Marketing.Model
         [DisplayName("Status")]
         public ActiveType ActiveType { get; set; }
 
-        public int UserId { get; set; }
-
-        [ForeignKey(nameof(UserId))]
-        public ChildUser User { get; set; }
-
         [CheckOnDelete("گروه دارای محصول می باشد و امکان حذف آن وجود ندارد")]
         public IList<Product> Products { get; set; }
     }

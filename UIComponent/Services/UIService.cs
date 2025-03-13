@@ -1,5 +1,6 @@
 ﻿using Caspian.Common;
 using System.Reflection;
+using System.Collections;
 using Microsoft.JSInterop;
 using Caspian.Engine.Model;
 using Caspian.Common.Service;
@@ -9,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections;
 
 namespace Caspian.UI
 {
@@ -188,15 +188,20 @@ namespace Caspian.UI
 
                 service.DetailType = DetailType;
                 string message = null;
-                var isAdd = false   ;
+                var isAdd = false;
+                IList<PropertyInfo> infos = null;
+                TEntity tempEntity = default;
                 if (Is1To1RelationshipService)
                 {
+                    infos = typeof(TEntity).GetOneToOnePropertyInfos();
                     service.DetailType = DetailType != typeof(TEntity) ? DetailType : null;
-                    var pKeyName = typeof(TEntity).GetPrimaryKey().Name;
-                    if (typeof(TEntity).GetProperties().Any(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pKeyName))
+                    tempEntity = Activator.CreateInstance<TEntity>();
+                    foreach (var info in infos)
                     {
-                        var old = await service.SingleOrDefaultAsync(id);
-                        isAdd = old == null;
+                        var value = info.GetValue(entity);
+                        info.SetValue(tempEntity, value);
+                        if (info.PropertyType != DetailType)
+                            info.SetValue(entity, null);
                     }
                 }
                 if (id == 0 || isAdd)
@@ -210,6 +215,14 @@ namespace Caspian.UI
                     message = "Updating was done successfully";
                 }
                 await service.SaveChangesAsync();
+                if (infos != null)
+                {
+                    foreach (var info in infos)
+                    {
+                        var value = info.GetValue(tempEntity);
+                        info.SetValue(entity, value);
+                    }
+                }
                 OnFormValidSubmit?.Invoke(entity);
 
                 if (DataView != null)
