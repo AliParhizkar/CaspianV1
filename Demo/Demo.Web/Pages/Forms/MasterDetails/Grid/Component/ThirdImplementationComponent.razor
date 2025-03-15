@@ -1,36 +1,32 @@
 @namespace Demo.Web.Pages
+@inject BatchService<Customer, CustomerGroupMembership> Service
 <CaspianForm Service="Service">
     <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
-    <div class="p-3">
-        <div class="row c-controls" style="height:260px;align-content:flex-start">
-            <DropdownList @bind-Value="Service.UpsertData.CustomerType" ColSpan="8" />
-            @if (Service.UpsertData.CustomerType == CustomerType.Real)
-            {
-                <StringTextBox @bind-Value="Service.UpsertData.FName" ColSpan="8" />
-                <StringTextBox @bind-Value="Service.UpsertData.LName" ColSpan="8" />
-                <DropdownList @bind-Value="Service.UpsertData.Gender" ColSpan="8" />
-            }
-            else if (Service.UpsertData.CustomerType == CustomerType.Legal)
-            {
-                <StringTextBox @bind-Value="Service.UpsertData.CompanyName" ColSpan="8" />
-            }
-            <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" ColSpan="8" />
-            <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" ColSpan="8" />
-            <div class="col-md-4">
-                <label>Customer Groups</label>
-            </div>
-            <div class="col-md-8">
-                <CheckedDropdownList TEntity="CustomerGroup" Service="Service" TDetails="CustomerGroupMembership" TextExpression="t => t.Title" />
-            </div>
+    <div class="row" style="height:260px;align-content:flex-start">
+        <DropdownList @bind-Value="Service.UpsertData.CustomerType" ColSpan="8" />
+        @if (Service.UpsertData.CustomerType == CustomerType.Real)
+        {
+            <StringTextBox @bind-Value="Service.UpsertData.FName" ColSpan="8" />
+            <StringTextBox @bind-Value="Service.UpsertData.LName" ColSpan="8" />
+            <DropdownList @bind-Value="Service.UpsertData.Gender" ColSpan="8" />
+        }
+        else if (Service.UpsertData.CustomerType == CustomerType.Legal)
+        {
+            <StringTextBox @bind-Value="Service.UpsertData.CompanyName" ColSpan="8" />
+        }
+        <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" ColSpan="8" />
+        <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" ColSpan="8" />
+        <div class="col-md-4">
+            <label>Customer Groups</label>
+        </div>
+        <div class="col-md-8">
+            <CheckedDropdownList TEntity="CustomerGroup" Service="Service" TDetails="CustomerGroupMembership" TextExpression="t => t.Title" />
         </div>
     </div>
-    <div class="p-3">
-        <FormCommandButton />
-    </div>
+    <FormCommandButton ColSpan="8" />
 </CaspianForm>
 
 @code
 {
-    [Parameter]
-    public BatchService<Customer, CustomerGroupMembership> Service { get; set; }
+
 }

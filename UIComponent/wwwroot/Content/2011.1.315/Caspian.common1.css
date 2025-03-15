@@ -1062,12 +1062,11 @@ progress::-webkit-progress-value {
 .sidebar .c-container {
     width: 24px;
     border-radius: 12px;
-    box-sizing:border-box;
-    padding-top:1px;
+    box-sizing: border-box;
     height: 24px;
+    border: 1px solid transparent;
 }
     .sidebar .c-container:hover {
-        padding-top:0;
         border:1px solid #898989;
         background-color: #d1d1d1;
     }
@@ -1081,7 +1080,7 @@ progress::-webkit-progress-value {
             cursor: pointer;
         }
     .c-menu-icon div {
-        width:27px;
+        width:24px;
         text-align:center;
     }
 .c-menu-icon .fa-th {

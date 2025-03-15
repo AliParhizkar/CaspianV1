@@ -15,10 +15,10 @@ namespace Demo.Service
             //RuleFor(t => t.Title).Required().Custom(t => Source != null && Source.Any(u => u != t && t.ScopeId == u.ScopeId && t.Title == u.Title && t.Year == u.Year), "سال ارزیابی با این عنوان تعریف شده است");
             RuleFor(t => t.EnTitle).UniqueAsync("عنوان لاتین سال ارزیابی تکراری است");
             RuleFor(t => t.Year).Custom(t => t.Year < DateTime.Now.ToPersianDate().Year, "سال ارزیابی باید بزرگتر مساوی سال جاری باشد");
-            RuleFor(t => t.EndDate).LessThan(t => t.StartDate).WithMessage("تاریخ پایان نمی تواند قبل از تاریخ شروع باشد");
-            RuleFor(t => t.EvalDateTo).LessThan(t => t.EvalDateFrom).WithMessage("تاریخ پایان نمی تواند قبل از تاریخ شروع باشد");
-            RuleFor(t => t.NotificationDateTo).LessThan(t => t.NotificationDateFrom).WithMessage("تاریخ پایان نمی تواند قبل از تاریخ شروع باشد");
-            RuleFor(t => t.ReviewDateTo).LessThan(t => t.ReviewDateFrom).WithMessage("تاریخ پایان نمی تواند قبل از تاریخ شروع باشد");
+            RuleFor(t => t.EndDate).GreaterThan(t => t.StartDate).WithMessage("تاریخ پایان نمی تواند قبل از تاریخ شروع باشد");
+            RuleFor(t => t.EvalDateTo).GreaterThan(t => t.EvalDateFrom).WithMessage("تاریخ پایان نمی تواند قبل از تاریخ شروع باشد");
+            RuleFor(t => t.NotificationDateTo).GreaterThan(t => t.NotificationDateFrom).WithMessage("تاریخ پایان نمی تواند قبل از تاریخ شروع باشد");
+            RuleFor(t => t.ReviewDateTo).GreaterThan(t => t.ReviewDateFrom).WithMessage("تاریخ پایان نمی تواند قبل از تاریخ شروع باشد");
         }
 
         public EvaluationService(IServiceProvider provider)

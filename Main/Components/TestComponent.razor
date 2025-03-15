@@ -6,11 +6,15 @@
 @using Microsoft.EntityFrameworkCore
 @using System.Linq.Expressions
 @inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
 @inject BatchService<Customer, CustomerGroupMembership> Service
 <div style="width:800px;margin:10px auto">
     <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
         <DropdownList TValue="CustomerType" @bind-Value="context.CustomerType" ColSpan="4" 
-                OnSearch="types => showGender = types.Contains(CustomerType.Real)" />
+        OnSearch="types => showGender = types.Contains(CustomerType.Real)" />
         @if (showGender)
         {
             <DropdownList @bind-Value="context.Gender" ColSpan="4" />
@@ -42,9 +46,9 @@
     </DataGrid>
 </div>
 
-<Window Service="Service" Title="Customer" Style="width:500px;">
-    <CaspianForm Service="Service" TEntity="Customer">
-        <div class="col-md-9 row">
+<Window Service="Service" Title="Customer" Style="width:600px;" OnOpen="OnWindowOpen">
+    <CaspianForm TEntity="Customer" Service="Service" OnSubmit="SetData">
+        <div class="col-md-8 row">
             <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
             <DropdownList @bind-Value="context.CustomerType" ColSpan="8" />
             <StringTextBox @bind-Value="context.FName" Disabled="context.CustomerType == CustomerType.Legal" ColSpan="8" />
@@ -55,8 +59,9 @@
             <StringTextBox @bind-Value="context.MobileNumber" MaxLength="11" ColSpan="8" />
             <StringTextBox @bind-Value="context.Tel" MaxLength="11" ColSpan="8" />
         </div>
-        <div class="col-md-3">
-            <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" TextExpression="t => t.Title" Service="Service" />
+        <div class="col-md-4 text-center">
+            <label>Customer Groups</label>
+            <CheckedListbox TEntity="CustomerGroup" Style="height:290px" TDetails="CustomerGroupMembership" TextExpression="t => t.Title" Service="Service" />
         </div>
         <FormCommandButton ColSpan="8" />
     </CaspianForm>
@@ -64,5 +69,32 @@
 
 @code 
 {
-    bool showGender;    
+    bool showGender;
+    async Task SetData(Customer customer)
+    {
+        IList<short> groupsId = new List<short>();
+        if (customer.Id > 0)
+        {
+            using var service = CreateScope().GetService<CustomerGroupMembershipService>();
+            groupsId = await service.GetAll().Where(t => t.CustomerId == customer.Id).Select(t => t.CustomerGroupId).ToListAsync();
+            foreach (var item in Service.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Deleted))
+                groupsId.Remove(item.Entity.CustomerGroupId);
+        }
+        groupsId.AddRange(Service.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Added).Select(t => t.Entity.CustomerGroupId).ToArray());
+        customer.CustomerGroupMemberships = groupsId.Select(t => new CustomerGroupMembership()
+            {
+                CustomerGroupId = t,
+                CustomerId = customer.Id,
+            }).ToList();
+    }
+
+    void OnWindowOpen()
+    {
+        // var a = Service.UpsertData;
+        // a.CustomerType = CustomerType.Real;
+        // a.FName = "Ali";
+        // a.LName = "Parhizkar";
+        // a.Gender = Gender.Male;
+        // a.MobileNumber = "09123658984";
+    }
 }

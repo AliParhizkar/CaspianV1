@@ -21,18 +21,12 @@
                     </DataGrid>
                     <Window Service="Service" Title="Product CRUD" Style="width:500px">
                         <CaspianForm TEntity="Product" Service="Service" OnSubmit="SetCategory">
-                            <Content Context="product">
-                                <div class="row c-controls p-3">
-                                    <StringTextBox @bind-Value="product.Title" ColSpan="8" />
-                                    <NumericTextBox @bind-Value="product.Price" ColSpan="8" />
-                                    <NumericTextBox @bind-Value="product.TakeoutPrice" ColSpan="8" />
-                                    <MultiSelectBox @bind-Value="product.Meal" ColSpan="8" />
-                                    <DropdownList @bind-Value="product.ActiveType" ColSpan="8" />
-                                    <div class="col-md-8 align-content-center">
-                                        <WindowCommandButtons />
-                                    </div>
-                                </div>
-                            </Content>
+                            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                            <NumericTextBox @bind-Value="context.Price" ColSpan="8" />
+                            <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="8" />
+                            <MultiSelectBox @bind-Value="context.Meal" ColSpan="8" />
+                            <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
+                            <WindowCommandButtons ColSpan="8" />
                         </CaspianForm>
                     </Window>
                 </div>

@@ -1,17 +1,13 @@
 ﻿@namespace Demo.Web.Pages
+@inject BatchService<Customer, CustomerGroupMembership> Service
 <CaspianForm Service="Service">
     <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
     <div class="p-4 pt-3 pb-0">
         <TabPanel>
             <Tabs>
                 <TabPanelItem Title="Customer">
-                    <div class="row p-4 pt-2 pb-2 c-controls" style="height:260px;align-content:flex-start">
-                        <div class="col-md-4">
-                            <label>Customer Type</label>
-                        </div>
-                        <div class="col-md-8">
-                            <DropdownList @bind-Value="Service.UpsertData.CustomerType" />
-                        </div>
+                    <div class="row p-4 pt-2 pb-2" style="height:260px;align-content:flex-start">
+                        <DropdownList @bind-Value="Service.UpsertData.CustomerType" ColSpan="8" />
                         @if (Service.UpsertData.CustomerType == CustomerType.Real)
                         {
                             <StringTextBox @bind-Value="Service.UpsertData.FName" ColSpan="8" />
@@ -42,6 +38,5 @@
 
 @code 
 {
-    [Parameter]
-    public BatchService<Customer, CustomerGroupMembership> Service { get; set; }
+    
 }

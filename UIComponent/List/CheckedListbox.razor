@@ -31,9 +31,27 @@
             {
                 var value = Convert.ChangeType(item.Value, type);
                 <div class="c-item">
-                    <CheckBox TValue="bool" Value="@SelectedIds.Contains(value)" ValueChanged="check => UpdateSelectedIds(check, value)" Title="@item.Text" />
+                    @RenderCheckBox(item.Text, value)
                 </div>
             }
         }
     </div>
 </div>
+
+@code
+{
+    RenderFragment RenderCheckBox(string title, object value)
+    {
+        var flag = SelectedIds.Contains(value);
+        var className = flag ? "fa fa-check" : "";
+        return __builder =>
+        {
+            <span class="t-checkbox" @onclick="() => UpdateSelectedIds(!flag, value)">
+                <span class="t-icon">
+                    <i aria-hidden="true" class="@className"></i>
+                </span>
+                <span class="t-title">@title</span>
+            </span>
+        };
+    }
+}

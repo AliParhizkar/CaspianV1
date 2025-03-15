@@ -14,6 +14,11 @@ namespace Caspian.UI
         void Dispose();
     }
 
+    internal interface IInternalUIService: IUIService
+    {
+
+    }
+
     public interface IEnumSearch<TValue> where TValue : Enum
     {
         void SetValues(params TValue[] values);

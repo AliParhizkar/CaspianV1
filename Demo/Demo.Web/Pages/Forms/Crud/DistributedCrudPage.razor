@@ -34,9 +34,9 @@
                             ConditionExpr="@(t => t.ProductCategoryId == categoryId)">
                                 <Columns>
                                     <GridColumn Field="t => t.Title" />
-                                    <GridColumn Field="t => t.ActiveType.EnumText()" />
-                                    <GridColumn Field="t => t.Price.Seprate3Digit()" />
-                                    <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
+                                    <GridColumn Field="t => t.ActiveType.EnumText()" style="width:80px;" />
+                                    <GridColumn Field="t => t.Price.Seprate3Digit()" style="width:110px" />
+                                    <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" style="width:110px" />
                                     <GridCommandColumns />
                                 </Columns>
                             </DataGrid>

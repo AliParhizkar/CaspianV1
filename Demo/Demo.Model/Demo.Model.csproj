@@ -14,11 +14,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Migrations\" />
+	  <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
+	  <Folder Include="Migrations\" />
 	</ItemGroup>
 
 </Project>
