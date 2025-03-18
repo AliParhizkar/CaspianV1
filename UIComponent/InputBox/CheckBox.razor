@@ -26,7 +26,7 @@ else
     {
         return __builder =>
         {
-            <span class="t-checkbox" @attributes="attrs">
+            <span @ref="InputElement" class="t-checkbox" @attributes="attrs">
                 <span class="t-icon" @onclick="ChangeValue">
                     <i @attributes="@iconAtttrs" aria-hidden="true"></i>
                 </span>
@@ -58,6 +58,15 @@ else
         var className = "t-widget t-checkbox";
         if (disabled)
             className += " t-disabled";
+        else
+        {
+            if (ErrorMessage.HasValue())
+            {
+                attrs.Add("error-message", ErrorMessage);
+                attrs.Add("tabindex", TabIndex ?? 0);
+                className += " t-state-error";
+            }
+        }
         if (Value == null)
         {
             className += " t-bufferd";
@@ -117,5 +126,12 @@ else
                 await OnChange.InvokeAsync(Value);
             EntitySearch?.EnableLoadData();
         }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await jsRuntime.InvokeVoidAsync("caspian.common.bindCheckbox", InputElement);
+        await base.OnAfterRenderAsync(firstRender);
     }
 }

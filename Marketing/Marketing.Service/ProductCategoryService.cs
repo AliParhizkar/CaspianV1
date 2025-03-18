@@ -4,13 +4,19 @@ using Caspian.Common.Service;
 
 namespace Marketing.Service
 {
-    public class SecretariatService : BaseService<Secretariat>, IBaseService<Secretariat>
+    public class ProductCategoryService : BaseService<ProductCategory>, IBaseService<ProductCategory>
     {
-        public SecretariatService(IServiceProvider provider)
+        public ProductCategoryService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Name).Required().UniqueAsync("The title of the product category must be unique.");
-            RuleFor(t => t.Periority).Range((byte)0, (byte)20, "فقط مقادیر 0 تا 20 معتبر است");
+            RuleFor(t => t.Name).Required().UniqueAsync("گروه محصولی با این عنوان در سیستم ثبت شده است");
+            RuleFor(t => t.Code).UniqueAsync("گروه محصولی با این کد در سیستم ثبت شده است")
+            .CustomValue(code =>
+            {
+                if (!code.HasValue())
+                    return false;
+                return code.Length > 2;
+            }, "کد گروه محصول باید بیش از دو کاراکتر باشد");
         }
     }
 }

@@ -15,6 +15,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<TypeScriptModuleKind>none</TypeScriptModuleKind>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="Data\**" />

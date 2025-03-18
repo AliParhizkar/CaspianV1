@@ -15,7 +15,11 @@ namespace Demo.Service
             : base(provider)
         {
             RuleFor(t => t.QuantityMain).Custom(t => t.QuantityMain == 0 && t.QuantitySub == null, "This parameter must be greater than zero.");
-            RuleFor(t => t.MaterialId).Custom(t=> Source != null && Source.Any(u => t.MaterialId == u.MaterialId && u != t), "This item is in the warehouse receipt.");
+            RuleFor(t => t.MaterialId).Custom(t=> 
+            {
+                var result = Source.Any(u => t.MaterialId == u.MaterialId && u != t);
+                return result;
+            }, "This item is in the warehouse receipt.");
             RuleFor(t => t.QuantitySub).CustomAsync(async t =>
             {
                 if (t.MaterialId > 0)
@@ -33,7 +37,6 @@ namespace Demo.Service
                             return true;
                     }
                 }
-
                 return false;
             }, "The value of sub-unit is invalid").Custom(t => t.QuantityMain == 0 && t.QuantitySub == 0, "This parameter must be greater than zero.");
         }

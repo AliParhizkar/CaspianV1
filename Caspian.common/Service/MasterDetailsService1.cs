@@ -54,6 +54,8 @@ namespace Caspian.Common.Service
             var deletedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Deleted).Select(t => t.Entity);
             if (deletedItems.Any())
                 Context.Set<TDetails1>().RemoveRange(deletedItems);
+            if (changedEntities == null)
+                return entity;
             return await base.UpdateDatabaseAsync(entity, changedEntities);
         }
     }

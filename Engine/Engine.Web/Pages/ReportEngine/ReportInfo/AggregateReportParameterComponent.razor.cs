@@ -5,7 +5,7 @@ using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
-using System.Diagnostics;
+using Castle.Components.DictionaryAdapter.Xml;
 
 namespace Caspian.Engine.ReportGenerator
 {
@@ -15,12 +15,60 @@ namespace Caspian.Engine.ReportGenerator
         Report report;
         IList<NodeView> source;
         TreeView<NodeView> tree;
-        IList<AggregateReportGroupParameter> parameters;
+        IList<AggregateReportGroupParameter> reportGroupparameters;
+        IList<AggregateReportParameter> reportParameters;
 
         async Task SaveParameters()
         {
             var parameters = tree.GetSeletcedItems();
-
+            var list = new List<AggregateReportParameter>();
+            foreach (var item in parameters )
+            {
+                int parameterId = 0;
+                if (item.Parent == null)
+                    parameterId = reportGroupparameters.Single(t => t.Path == item.Value).Id;
+                else
+                {
+                    var parent = reportGroupparameters.Single(t => t.Path == item.Parent.Value);
+                    int aggregateFunctionType = 0;
+                    if (int.TryParse(item.Value, out aggregateFunctionType))
+                        parameterId = parent.Parameters.Single(t => t.AggregateFunctionType.ConvertToInt() == aggregateFunctionType).Id;
+                    else
+                        parameterId = parent.Parameters.Single(t => t.Path == item.Value).Id;
+                }
+                list.Add(new AggregateReportParameter()
+                {
+                    AggregateReportGroupParameterId = parameterId,
+                    ReportId = ReportId
+                });
+            }
+            var changedEntities = new List<ChangedEntity<AggregateReportParameter>>();
+            foreach (var item in list)
+            {
+                if (!reportParameters.Any(t => t.AggregateReportGroupParameterId == item.AggregateReportGroupParameterId))
+                {
+                    changedEntities.Add(new ChangedEntity<AggregateReportParameter>()
+                    {
+                        ChangeStatus = ChangeStatus.Added,
+                        Entity = item
+                    });
+                }
+            }
+            foreach (var item in reportParameters)
+            {
+                if (!list.Any(t => t.AggregateReportGroupParameterId == item.AggregateReportGroupParameterId))
+                {
+                    changedEntities.Add(new ChangedEntity<AggregateReportParameter>()
+                    {
+                        ChangeStatus = ChangeStatus.Deleted,
+                        Entity = item
+                    });
+                }
+            }
+            using var service = CreateScope().GetService<ReportService>();
+            var old = await service.SingleAsync(ReportId);
+            await service.UpdateDatabaseAsync(old, null, changedEntities);
+            await service.SaveChangesAsync();
         }
 
         void NodeChanged(NodeView node)
@@ -54,9 +102,9 @@ namespace Caspian.Engine.ReportGenerator
         bool IsIdentityNode(NodeView node)
         {
             var parent = node.Parent;
-            if (parent == null || parameters == null || node.Value == null)
+            if (parent == null || reportGroupparameters == null || int.TryParse(node.Value, out _))
                 return false;
-            var child = parameters.Single(t => t.Path == parent.Value).Parameters.Single(t => t.Path == node.Value);
+            var child = reportGroupparameters.Single(t => t.Path == parent.Value).Parameters.Single(t => t.Path == node.Value);
             return child?.AggregateParameterType == AggregateParameterType.Identity;
         }
 
@@ -64,19 +112,21 @@ namespace Caspian.Engine.ReportGenerator
         {
             using var scope = CreateScope();
             report = await scope.GetService<ReportService>().GetAll().Include(t => t.ReportGroup).SingleAsync(ReportId);
-            var service = scope.GetService<AggregateReportGroupParameterService>();
-            parameters = await service.GetAll().Where(t => t.ReportGroupId == report.ReportGroupId).ToListAsync();
-            source = parameters.Where(t => t.ParentParameterId == null).Select(t => new NodeView()
+            reportGroupparameters = await scope.GetService<AggregateReportGroupParameterService>().GetAll().Where(t => t.ReportGroupId == report.ReportGroupId).ToListAsync();
+            reportParameters = await scope.GetService<AggregateReportParameterService>().GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
+            source = reportGroupparameters.Where(t => t.ParentParameterId == null).Select(t => new NodeView()
             {
                 Value = t.Path,
                 Text = t.Allis,
                 Collabsable = t.Parameters?.Any() == true,
                 Expanded = t.Parameters?.Any() == true,
                 Selectable = true,
+                Selected = reportParameters.Any(u => u.AggregateReportGroupParameterId == t.Id),
                 Children = t.Parameters == null ? null : t.Parameters.Select(u => new NodeView()
                 {
-                    Value = u.Path,
+                    Value = u.Path ?? Convert.ToInt32(u.AggregateFunctionType).ToString(),
                     Text = u.Allis,
+                    Selected = reportParameters.Any(x => x.AggregateReportGroupParameterId == u.Id),
                     Collabsable = false,
                     Selectable = true,
                 }).ToList()

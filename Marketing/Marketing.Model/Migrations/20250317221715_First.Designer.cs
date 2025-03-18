@@ -4,6 +4,7 @@ using Marketing.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketing.Model.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250317221715_First")]
+    partial class First
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,17 +33,6 @@ namespace Marketing.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address1")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Address2")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<string>("MobileNumber")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -50,8 +42,6 @@ namespace Marketing.Model.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
 
                     b.ToTable("Customer", "mrk");
                 });
@@ -71,9 +61,6 @@ namespace Marketing.Model.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -89,59 +76,18 @@ namespace Marketing.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CustomerGroups", "mrk");
-                });
-
-            modelBuilder.Entity("Marketing.Model.CustomerGroupMemberShip", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("CustomersGroupMemberShip", "mrk");
-                });
-
-            modelBuilder.Entity("Marketing.Model.MerchantConfig", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("CustomerHasManyAddresses")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CustomerIsMemberOfGroups")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MerchantsConfig");
+                    b.ToTable("CustomerGroups", "mrk");
                 });
 
             modelBuilder.Entity("Marketing.Model.Order", b =>
@@ -221,10 +167,6 @@ namespace Marketing.Model.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Code")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("Description")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -298,16 +240,6 @@ namespace Marketing.Model.Migrations
                     b.ToTable("ProductDescriptions", "mrk");
                 });
 
-            modelBuilder.Entity("Marketing.Model.Customer", b =>
-                {
-                    b.HasOne("Marketing.Model.CustomerGroup", "CustomerGroup")
-                        .WithMany("Customers")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("CustomerGroup");
-                });
-
             modelBuilder.Entity("Marketing.Model.CustomerAddress", b =>
                 {
                     b.HasOne("Marketing.Model.Customer", "Customer")
@@ -319,7 +251,7 @@ namespace Marketing.Model.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Marketing.Model.CustomerGroupMemberShip", b =>
+            modelBuilder.Entity("Marketing.Model.CustomerGroup", b =>
                 {
                     b.HasOne("Marketing.Model.Customer", "Customer")
                         .WithMany("CustomerGroups")
@@ -327,15 +259,7 @@ namespace Marketing.Model.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Marketing.Model.CustomerGroup", "Group")
-                        .WithMany("CustomerGroupMemberShips")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Customer");
-
-                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("Marketing.Model.Order", b =>
@@ -418,13 +342,6 @@ namespace Marketing.Model.Migrations
             modelBuilder.Entity("Marketing.Model.CustomerAddress", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("Marketing.Model.CustomerGroup", b =>
-                {
-                    b.Navigation("CustomerGroupMemberShips");
-
-                    b.Navigation("Customers");
                 });
 
             modelBuilder.Entity("Marketing.Model.Order", b =>

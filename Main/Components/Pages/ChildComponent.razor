@@ -85,10 +85,14 @@
 </CaspianForm>
 
 <PopupWindow @bind-Status="status" Top="100" Left="60">
-    <div style="width:400px;" class="row p-3 text-center">
-        <div class="col-md-6">@selectedOrderDetail.Product?.Title</div>
-        <div class="col-md-2">@selectedOrderDetail.Quantity</div>
-        <div class="col-md-4">@selectedOrderDetail.Price.Seprate3Digit()</div>
+    <div style="width:400px;" class="products-descriptions p-3 pt-2 text-center">
+        @if (productsDescription != null)
+        {
+            foreach (var description in productsDescription)
+            {
+                <div class="">@description</div>
+            }
+        }
     </div>
     <div style="width:400px;" class="row p-3">
         <StringTextBox @ref="txtDescript" @bind-Value="selectedOrderDetail.Descript" MultiLine Rows="3" />
@@ -104,6 +108,7 @@
     int selectedCategoryId, selectedProductId, orderId;
     OrderDetail selectedOrderDetail;
     StringTextBox txtDescript;
+    IList<string> productsDescription;
 
     int GetSumOrderDetails()
     {
@@ -129,6 +134,8 @@
     {
         selectedOrderDetail = orderDetail;
         status = WindowStatus.Open;
+        using var service = CreateScope().GetService<ProductDescriptionService>();
+        productsDescription = await service.GetAll().Where(t => t.ProductId == orderDetail.ProductId).Select(t => t.Description).ToListAsync();
         await Task.Delay(300);
         if (txtDescript != null)
             await txtDescript.FocusAsync();

@@ -8,7 +8,7 @@
     string reportUrl = Host.IsProduction() ? "https://report.caspiansoftco.com/" : "https://localhost:7284/";
 }
 <div style="background-color:white" class="p-4 pt-2">
-    <EntitySearch Service="Service">
+    <EntitySearch Service="Service" ColumnsCount="2">
         <StringTextBox @bind-Value="context.Title" ColSpan="4" />
         <ComboBox TEntity="ReportGroup" TValue="int" @bind-Value="context.ReportGroupId" TextExpression="t => t.Title"
                   ConditionExpression="t => t.SubSystem == Subsystem" ColSpan="4" />

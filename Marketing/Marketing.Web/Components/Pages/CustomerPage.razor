@@ -1,0 +1,56 @@
+﻿@inject BatchService<Customer, CustomerAddress> Service
+@page "/Marketing/Customer"
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:50%;margin:10px auto">
+    <ComboBox @bind-Value="customerId" TEntity="Customer" TValue="int?" TextExpression="t => t.Name" />
+</div>
+<button @onclick="OpenWindow">Open</button>
+<Window @bind-Status="status" Title="مشتری" Style="width:700px;">
+    <CaspianForm Service="Service" TEntity="Customer" ColumnsCount="2" OnReset="() => status = WindowStatus.Close">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.MobileNumber" ColSpan="4" Style="direction:ltr" MaxLength="11" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+    <div style="margin-bottom:-20px;" class="p-3 pb-0 text-center">
+        <span class="d-membership">Customer Addresses</span>
+    </div>
+    <DataGrid TEntity="CustomerAddress" DetailsService="Service" ContentHeight="200">
+        <Columns>
+            <GridColumn Field="t => t.Address" />
+            <GridColumn Field="t => t.IsDefault" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <TypeWindow TEntity="CustomerAddress" Service="Service" Title="آدرس" Style="width:400px;">
+        <StringTextBox @bind-Value="context.Address" Rows="3" MultiLine ColSpan="8" />
+        <CheckBox @bind-Value="context.IsDefault" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </TypeWindow>
+</Window>
+
+@code
+{
+    WindowStatus status;
+    int? customerId;
+
+    void OpenWindow()
+    {
+        status = WindowStatus.Open;
+        Service.MasterId = customerId ?? 0;
+    }
+
+    protected override void OnInitialized()
+    {
+        Service.OnUpsert = async Task<bool> (IServiceProvider provider, Customer customer) =>
+        {
+            ShowMessage("ثبت با موفقیت انجام شد");
+            status = WindowStatus.Close;
+            StateHasChanged();
+            return await Task.FromResult<bool>(true);
+        };
+        base.OnInitialized();
+    }
+}

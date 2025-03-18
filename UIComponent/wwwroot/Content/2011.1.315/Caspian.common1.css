@@ -1693,6 +1693,7 @@ span, label, td, th {
     white-space:nowrap;
     text-overflow:ellipsis;
     font-size:14px;
+    padding:0 8px;
 }
 .c-messagebox .c-question {
     border: 3px solid #facea8;
@@ -2229,11 +2230,10 @@ html body .t-button-bare {
     cursor:pointer;
 }
 
-.t-header .t-window-action:hover {
-    background-color: red;
-    color:white;
-
-}
+    .t-header .t-window-action:hover {
+        background-color: #dc3545;
+        color: white;
+    }
     .t-header .t-window-action .fa{
         color:inherit;
     }
@@ -2315,7 +2315,6 @@ div.t-window {
     line-height: 30px;
     height: 30px;
     width:35px;
-    border-radius:0 8px 0 0;
     text-align:center;
 }
     .t-window-titlebar .t-window-action .fa {
@@ -2323,12 +2322,7 @@ div.t-window {
         height: 30px;
         padding-top:5px;
     }
-    .t-window-titlebar .t-window-action:hover {
-        background-color: #dc3545;
-    }
-    .t-window-titlebar .t-window-action :hover {
-        color: white;
-    }
+
 
         .t-window-action .t-icon {
             vertical-align: top;
@@ -2480,6 +2474,7 @@ div.t-window {
     border-radius:8px 8px 0 0;
     height:30px;
     align-items:center;
+    overflow:hidden;
 }
     .t-ltr .t-window > .t-header{
         padding-left:8px;

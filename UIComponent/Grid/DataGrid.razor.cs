@@ -10,7 +10,6 @@ using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text.Encodings.Web;
 
 namespace Caspian.UI
 {

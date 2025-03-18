@@ -75,6 +75,24 @@
         background-color: #fde5ff;
     }
 
-        .product.selected {
+        .product.selected { 
             background-color: #e5fcff;
         }
+
+.products-descriptions{
+    display:flex;
+    
+}
+
+.products-descriptions div{
+    padding: 0 5px;
+    border:1px solid gray;
+    margin:3px;
+    border-radius:16px;
+    cursor:pointer;
+    max-width:120px;
+    text-overflow:ellipsis;
+    min-width:80px;
+    height:30px;
+
+}

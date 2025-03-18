@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,6 +14,9 @@ namespace Marketing.Model
         [DisplayName("عنوان")]
         public string Title { get; set; }
 
+        [DisplayName("کد")]
+        public string Code { get; set; }
+
         [DisplayName("قیمت")]
         public int Price { get; set; }
 
@@ -22,6 +26,13 @@ namespace Marketing.Model
         [ForeignKey(nameof(CategoryId))]
         public ProductCategory Category { get; set; }
 
+        [DisplayName("توضیحات"), MaxLength(255)]
+        public string Description { get; set; }
 
+        [CheckOnDelete("محصول داری توضیحات می باشد و امکان حذف آن وجود ندارد.")]
+        public ICollection<ProductDescription> ProductDescriptions { get; set; }
+
+        [CheckOnDelete("این محصول سفارش داده شده و امکان حذف آن وجود ندارد")]
+        public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

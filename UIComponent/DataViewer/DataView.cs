@@ -478,9 +478,9 @@ namespace Caspian.UI
                             var list = await query.Select(selectExpr).ToDynamicListAsync();
                             var result = list.SingleOrDefault();
                             var foreignKeyValue = Activator.CreateInstance(info.PropertyType);
-                            foreach (var info1 in result.GetType().GetProperties())
+                            foreach (PropertyInfo info1 in result.GetType().GetProperties())
                             {
-                                if (info1.Name != "Item")
+                                if (info1.IsCollectible)
                                     IQueryableExtension.UpdateEntity(foreignKeyValue, info1.Name, info1.GetValue(result));
                             }
                             info.SetValue(entity, foreignKeyValue);

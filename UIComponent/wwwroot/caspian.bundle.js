@@ -342,6 +342,14 @@ var caspian;
             input.focus();
             setTimeout(() => input.setSelectionRange(start, end || start), 40);
         }
+        static bindCheckbox(element) {
+            element.onfocus = e => {
+                caspian.common.showErrorMessage(e.target);
+            };
+            element.onblur = e => {
+                caspian.common.hideErrorMessage(e.target);
+            };
+        }
         static bindCheclistDropdown(element, dotnet) {
             const mutationObserver = new MutationObserver(t => {
                 let element = t[0].target;

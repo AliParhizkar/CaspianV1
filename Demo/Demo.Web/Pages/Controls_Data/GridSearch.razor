@@ -235,6 +235,13 @@
     int genderSelectionType;
     City citySearch = new City();
     Customer customerStringSearch = new ();
+    object fromPrice;
+    object toPrice;
+    object fromDate;
+    object toDate;
+    //
+    bool? isOutOfStock;
+    DataGrid<Product> gridProduct;
 
     void SearchOnCustomerType(IEnumerable<CustomerType> customerTypes)
     {
@@ -246,12 +253,4 @@
                 Service.GetEnumField(t => t.Gender.Value).SetValues();
         }
     }
-
-    object fromPrice;
-    object toPrice;
-    object fromDate;
-    object toDate;
-    //
-    bool? isOutOfStock;
-    DataGrid<Product> gridProduct;
 }

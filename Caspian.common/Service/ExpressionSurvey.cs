@@ -111,6 +111,7 @@ namespace Caspian.Common
                     case ExpressionType.GreaterThanOrEqual:
                     case ExpressionType.LessThan:
                     case ExpressionType.LessThanOrEqual:
+                    case ExpressionType.Coalesce:
                         var binaryExpr = expr as BinaryExpression;
                         Survey(binaryExpr.Left, list);
                         Survey(binaryExpr.Right, list);

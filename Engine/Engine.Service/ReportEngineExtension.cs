@@ -38,6 +38,8 @@ namespace Caspian.Engine
                     }
                     list.Add(paramExpr.CreateMemberExpresion(parameter.Path));
                 }
+                else if (parameter.AggregateParameterType != AggregateParameterType.AggregateFunction)
+                    list.Add(paramExpr.CreateMemberExpresion(parameter.Path));
             }
             var lambda = paramExpr.CreateLambdaExpresion(list, true);
             return query.GroupBy(lambda).CreateSelectForGroupBy(parameters, paramExpr.Type);
@@ -51,12 +53,18 @@ namespace Caspian.Engine
             var extendedType = type.ExtendTypeForAggrigateParameter(mainType, parameters.Where(t => t.AggregateParameterType == AggregateParameterType.AggregateFunction));
             foreach (var parameter in parameters)
             {
-                if (parameter.AggregateParameterType == AggregateParameterType.Grouping)
+                if (parameter.AggregateParameterType != AggregateParameterType.AggregateFunction)
                 {
                     var path = parameter.Path.NormalizePropertyPath(true);
                     Expression expr = Expression.Property(paramExpr, "Key");
                     expr = Expression.Property(expr, path);
                     var property = extendedType.GetProperty(path);
+                    if (mainType.GetMyProperty(parameter.Path).PropertyType.GetUnderlyingType().IsEnum)
+                    {
+                        var method = typeof(Common.OtherExtension).GetMethod("EnumText");
+                        expr = Expression.Convert(expr, typeof(Enum));
+                        expr = Expression.Call(null, method, expr);
+                    }
                     list.Add(Expression.Bind(property, expr));
                 }
                 else if (parameter.AggregateParameterType == AggregateParameterType.AggregateFunction)
@@ -76,7 +84,12 @@ namespace Caspian.Engine
             var list = new List<DynamicProperty>();
             foreach (var property in type.GetProperties())
                 if (property.IsCollectible)
-                    list.Add(new DynamicProperty(property.Name, property.PropertyType));
+                {
+                    var type1 = property.PropertyType;
+                    if (type1.GetUnderlyingType().IsEnum) 
+                        type1 = typeof(string);
+                    list.Add(new DynamicProperty(property.Name, type1));
+                }
             foreach (var parameter in parameters)
             {
                 var propertyPath = parameter.ParentParameter.Path;
