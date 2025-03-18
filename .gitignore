@@ -368,3 +368,4 @@ FodyWeavers.xsd
 /Main/Model/TestModel.cs
 /Main/PersistKey
 /Demo/Demo.Web/Pages/Forms/MasterDetails/Listview/InlinetDetailsListViewPage.razor
+/UIComponent/wwwroot/caspian.bundle.js
