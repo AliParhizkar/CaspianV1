@@ -102,7 +102,7 @@
                                             @if (item == selectedEntity)
                                             {
                                                 <CascadingValue Value="EditContext">
-                                                    <CaspianValidationValidator TModel="TEntity" @ref="validator" ValidatorType="serviceType" />
+                                                    <CaspianValidationValidator TModel="TEntity" @ref="validator" Source="source" ValidatorType="serviceType" />
                                                     <CaspianContainer ColumnsCount="0" @ref="updateContainer">
                                                         @Columns(rowData)
                                                     </CaspianContainer>

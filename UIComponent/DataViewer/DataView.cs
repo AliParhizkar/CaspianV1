@@ -393,7 +393,8 @@ namespace Caspian.UI
         public async Task InsertAsync(TEntity entity)
         {
             var type = typeof(TEntity);
-            type.GetPrimaryKey().SetValue(entity, 0);
+            var pKey = type.GetPrimaryKey();
+            pKey.SetValue(entity, 0);
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
             await service.AddAsync(entity);
@@ -403,6 +404,14 @@ namespace Caspian.UI
                 ChangeStatus = ChangeStatus.Added 
             });
             await UpdateEntityForForeignKey(entity);
+            var minId = 0;
+            foreach(var item in source)
+            {
+                var minValue = Convert.ToInt32(pKey.GetValue(item));
+                if (minValue < minId)
+                    minId = minValue;
+            }
+            pKey.SetValue(entity, minId - 1);
             source.Add(entity);
             Total = source.Count;
             var index = 1;
