@@ -145,7 +145,7 @@ namespace Caspian.UI
                         else if (info != null)
                         {
                             var field = new FieldIdentifier(CurrentEditContext.Model, _FieldName);
-                            //info.SetValue(model, Value);
+                            info.SetValue(model, Value);
                             CurrentEditContext.NotifyFieldChanged(field);
                         }
                     }

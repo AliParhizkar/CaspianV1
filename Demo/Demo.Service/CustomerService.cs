@@ -16,7 +16,6 @@ namespace Demo.Service
         public CustomerService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.CompanyName).Required(t => t.CustomerType == CustomerType.Legal);
             RuleFor(t => t.Gender).Required(t => t.CustomerType == CustomerType.Real);
             RuleFor(t => t.FName).Custom(t => t.CustomerType == CustomerType.Legal && t.FName.HasValue(), "First Name is invalid");
             RuleFor(t => t.LName).Required(t => t.CustomerType == CustomerType.Real);

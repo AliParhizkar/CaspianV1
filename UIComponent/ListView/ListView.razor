@@ -44,24 +44,28 @@
                 @if (items != null)
                 {
                     var index = 0;
+                    var pKey = typeof(TEntity).GetPrimaryKey();
+                    object selectId = selectedEntity != null ? pKey.GetValue(selectedEntity) : null;
                     foreach (var item in items)
                     {
+                        var id = Convert.ToInt32(pKey.GetValue(item));
                         var rowIndex = index;
                         var className = $"c-listview-row";
                         if (item == selectedEntity)
                             SelectedRowIndex = rowIndex;
                         if (rowIndex == SelectedRowIndex && SelectType == SelectType.Single)
-                            className += " c-selected"; 
+                            className += " c-selected";
+                        var isUpdateing = selectId != null && selectId.Equals(id);
                         var rowData = new RowData<TEntity>()
                             {
-                                Data = item,
+                                Data = isUpdateing ? selectedEntity : item,
                                 RowIndex = rowIndex,
-                                UpsertMode = item == selectedEntity ? UpsertMode.Edit : null
+                                UpsertMode = isUpdateing ? UpsertMode.Edit : null
                             };
                         index++;
                         <div class="@className" @onclick="() => SelectedRowIndex = rowIndex">
                             <CascadingValue Value="rowData" Name="RowData">
-                                @if (item == selectedEntity)
+                                @if (isUpdateing)
                                 {
                                     <CascadingValue Value="EditContext">
                                         <CaspianValidationValidator Source="source" TModel="TEntity" @ref="validator" ValidatorType="serviceType" />
@@ -69,7 +73,6 @@
                                             @Fields(rowData)
                                         </CaspianContainer>
                                     </CascadingValue>
-
                                 }
                                 else
                                 {

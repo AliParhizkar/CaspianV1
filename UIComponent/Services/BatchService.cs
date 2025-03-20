@@ -149,10 +149,11 @@ namespace Caspian.UI
                 DetailForm.OnInternalValidSubmit = EventCallback.Factory.Create<TDetail>(this, async detail => 
                 {
                     TypeWindow.Close();
-                    if (DetailDataView.GetSource().Any(t => t == detail))
-                        await DetailDataView.UpdateAsync(detail);
-                    else
+                    var id = Convert.ToInt32(typeof(TDetail).GetPrimaryKey().GetValue(detail));
+                    if (id == 0)
                         await DetailDataView.InsertAsync(detail);   
+                    else
+                        await DetailDataView.UpdateAsync(detail);
                     StateHasChanged();
                 });
             }
@@ -177,6 +178,11 @@ namespace Caspian.UI
         {
             var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
             using var scope = CreateScope();
+            if (OnUpsert != null)
+            {
+                if (!await OnUpsert.Invoke(scope.ServiceProvider, master))
+                    return;
+            }
             var service = scope.GetService<IMasterDetailsService<TMaster, TDetail>>();
             var result = await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
             await service.SaveChangesAsync();
@@ -208,8 +214,6 @@ namespace Caspian.UI
             if (Window != null)
                 await Window?.Close();
             StateHasChanged();
-            if (OnUpsert != null)
-                await OnUpsert.Invoke(scope.ServiceProvider, result);
         }
 
         public void FormInitialize()

@@ -99,7 +99,16 @@ namespace Caspian.Common.Service
             }
             var insertedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Added).Select(t => t.Entity);
             if (insertedItems.Any())
+            {
+                var detailsKey = typeof(TDetails).GetPrimaryKey();
+                foreach(var item in insertedItems)
+                {
+                    var id = Convert.ToInt32(detailsKey.GetValue(item));
+                    if (id <  0)
+                        detailsKey.SetValue(item, 0);
+                }
                 await Context.Set<TDetails>().AddRangeAsync(insertedItems);
+            }
             var updatedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Updated).Select(t => t.Entity);
             if (updatedItems.Any())
                 Context.Set<TDetails>().UpdateRange(updatedItems);

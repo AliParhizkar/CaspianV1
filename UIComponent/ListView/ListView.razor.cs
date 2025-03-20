@@ -155,7 +155,7 @@ namespace Caspian.UI
                 insertContainerHoldHasFocus = false;
                 await insertContainer.FocusAsync();
             }
-            if (shouldSetFocuc)
+            if (shouldSetFocuc && updateContainer != null)
             {
                 shouldSetFocuc = false;
                 await updateContainer.FocusAsync();

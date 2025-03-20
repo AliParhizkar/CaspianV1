@@ -18,6 +18,7 @@
                 list.add('t-state-default');
             }
             input.onfocus = () => {
+                input.select();
                 let list = input.parentElement.classList;
                 list.add('t-state-focused');
                 list.remove('t-state-default');

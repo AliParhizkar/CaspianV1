@@ -4,12 +4,31 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:50%;margin:10px auto">
-    <ComboBox @bind-Value="customerId" TEntity="Customer" TValue="int?" TextExpression="t => t.Name" />
+
+<div style="width:75%;margin: 10px auto">
+    <div class="row c-controls">
+        <div class="col-md-4">
+            <label>روش مدیریت آدرس پیشفرض</label>
+        </div>
+        <div class="col-md-8">
+            <RadioList @bind-Value="defaultAddressManagementType">
+                <RadioItem Title="مدیریت کاربر" Value="1" />
+                <RadioItem Title="پرسیده شود" Value="2" />
+                <RadioItem Title="مدیریت سیستم" Value="3" />
+            </RadioList>
+        </div>
+    </div>
+    <DataGrid TEntity="Customer" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
 </div>
-<button @onclick="OpenWindow">Open</button>
-<Window @bind-Status="status" Title="مشتری" Style="width:700px;">
-    <CaspianForm Service="Service" TEntity="Customer" ColumnsCount="2" OnReset="() => status = WindowStatus.Close">
+
+<Window Service="Service" Title="مشتری" Style="width:700px;">
+    <CaspianForm Service="Service" TEntity="Customer" ColumnsCount="2" >
         <StringTextBox @bind-Value="context.Name" ColSpan="4" />
         <StringTextBox @bind-Value="context.MobileNumber" ColSpan="4" Style="direction:ltr" MaxLength="11" />
         <FormCommandButton ColSpan="8" />
@@ -24,7 +43,7 @@
             <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <TypeWindow TEntity="CustomerAddress" Service="Service" Title="آدرس" Style="width:400px;">
+    <TypeWindow TEntity="CustomerAddress" Service="Service" Title="آدرس" Style="width:400px;" OnSubmit="FormSubmit">
         <StringTextBox @bind-Value="context.Address" Rows="3" MultiLine ColSpan="8" />
         <CheckBox @bind-Value="context.IsDefault" ColSpan="8" />
         <FormCommandButton ColSpan="8" />
@@ -33,23 +52,31 @@
 
 @code
 {
-    WindowStatus status;
-    int? customerId;
+    int defaultAddressManagementType = 1;
 
-    void OpenWindow()
+    async Task FormSubmit(CustomerAddress address)
     {
-        status = WindowStatus.Open;
-        Service.MasterId = customerId ?? 0;
+        if (address.IsDefault && defaultAddressManagementType > 1)
+        {
+            var old = Service.DetailDataView.GetBatchEntities().SingleOrDefault(t => t.IsDefault);
+            if (old != null)
+            {
+                if (defaultAddressManagementType == 3 || await Confirm("آیا می خواهید آدرس جاری بعنوان آدرس پیشفرض انتخاب شود."))
+                {
+                    old.IsDefault = false;
+                    await Service.DetailDataView.UpdateAsync(old);
+                }
+            }
+        }
     }
 
     protected override void OnInitialized()
     {
         Service.OnUpsert = async Task<bool> (IServiceProvider provider, Customer customer) =>
         {
-            ShowMessage("ثبت با موفقیت انجام شد");
-            status = WindowStatus.Close;
-            StateHasChanged();
-            return await Task.FromResult<bool>(true);
+            if (Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault) || await Confirm("هیچ آدرسی بعنوان آدرس پیشفرض انتخاب نشده است آیا با ثبت موافقید؟"))
+                return true;
+            return false;
         };
         base.OnInitialized();
     }

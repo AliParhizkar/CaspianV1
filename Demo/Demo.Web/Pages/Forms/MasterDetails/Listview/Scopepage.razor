@@ -6,12 +6,24 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<DataGrid TEntity="Scope" Service="Service" ContentHeight="300" DeleteMessage="با حذف حوزه اعتبارسنجی های آن نیز حذف می شود آیا با حذف موافقید؟">
-    <Columns>
-        <GridColumn Field="t => t.Title" />
-        <GridCommandColumns />
-    </Columns>
-</DataGrid>
+
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <DataGrid TEntity="Scope" Service="Service" ContentHeight="300" DeleteMessage="با حذف حوزه اعتبارسنجی های آن نیز حذف می شود آیا با حذف موافقید؟">
+                <Columns>
+                    <GridColumn Field="t => t.Title" />
+                    <GridCommandColumns />
+                </Columns>
+            </DataGrid>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
+            <Document FolderName="Batch" FileName="Batch-popup" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+
 
 <Window Service="Service" Title="Scope & Evaluations" Style="width:750px;">
     <CaspianForm Service="Service">

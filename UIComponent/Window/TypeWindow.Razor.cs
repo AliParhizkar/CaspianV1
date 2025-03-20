@@ -10,16 +10,20 @@ namespace Caspian.UI
     {
         Type serviceType;
         WindowStatus status;
-        TEntity entity;
         TEntity newEntity;
         CaspianForm<TEntity> form;
         IList<TEntity> source;
         IDictionary<string, object> windowProperties;
 
-        void UpdateEntity(TEntity entity)
+        async Task UpdateEntity(TEntity entity)
         {
             entity.CopyEntity(newEntity);
+            if (OnSubmit.HasDelegate)
+                await OnSubmit.InvokeAsync(entity);
         }
+
+        [Parameter]
+        public EventCallback<TEntity> OnSubmit {  get; set; }
         
         [Parameter]
         public IDetailBatchService<TEntity> Service { get; set; }
@@ -47,10 +51,7 @@ namespace Caspian.UI
             serviceType = service.GetType();
             if (OnOpen.HasDelegate)
                 await OnOpen.InvokeAsync(entity);
-            StateHasChanged();
-            this.entity = entity;
-            newEntity = Activator.CreateInstance<TEntity>();
-            newEntity.CopyEntity(entity);
+            newEntity = entity.CreateNewEntity(); ;
         }
 
         public void Close()

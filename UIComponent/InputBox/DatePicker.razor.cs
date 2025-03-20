@@ -46,8 +46,14 @@ namespace Caspian.UI
                 var strValue = Convert.ToString(arg.Value);
                 if (strValue.HasValue())
                 {
-                    if (DateTime.TryParse(strValue, out _))
+                    if (typeof(TValue).GetUnderlyingType() == typeof(DateTime))
                         Value = (TValue)Convert.ChangeType(strValue, typeof(DateTime));
+                    else
+                    {
+                        var value = (DateTime)Convert.ChangeType(strValue, typeof(DateTime));
+                        Value = (TValue)(object)value.ToDateOnly();
+                    }
+
                 }
                 if (DefaultMode)
                     text = strValue;

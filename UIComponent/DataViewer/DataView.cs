@@ -21,7 +21,6 @@ namespace Caspian.UI
         protected bool insertContainerHoldHasFocus;
         protected TEntity selectedEntity;
         protected IList<TEntity> source;
-        protected TEntity unchangedEntity;
         protected EditContext EditContext;
         protected bool shouldSetFocuc;
         protected IList<TEntity> deletedEntities;
@@ -432,31 +431,28 @@ namespace Caspian.UI
         {
             var pkey = typeof(TEntity).GetPrimaryKey();
             var id = Convert.ToInt32(pkey.GetValue(entity));
-            if (id > 0)
+            var isExist = false;
+            foreach (var item in DetailsService.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
             {
-                var isExist = false;
-                foreach(var item in DetailsService.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
+                var newId = Convert.ToInt32(pkey.GetValue(item.Entity));
+                if (id == newId)
                 {
-                    var newId = Convert.ToInt32(pkey.GetValue(item.Entity));
-                    if (id == newId)
-                    {
-                        isExist = true;
-                        break;
-                    }
+                    isExist = true;
+                    break;
                 }
-                if (!isExist)
+            }
+            if (!isExist)
+            {
+                DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>()
                 {
-                    DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>()
-                    {
-                        ChangeStatus = ChangeStatus.Updated,
-                        Entity = entity
-                    });
-                }
+                    ChangeStatus = ChangeStatus.Updated,
+                    Entity = entity
+                });
             }
             await UpdateEntityForForeignKey(entity);
             for (var index = 0; index < source.Count; index++)
             {
-                if (source[index] == entity)
+                if (pkey.GetValue(source[index]).Equals(id))
                 {
                     source[index] = entity;
                     var pageNumber = index / PageSize + 1;
@@ -642,27 +638,27 @@ namespace Caspian.UI
             {
                 if (source == null)
                 {
-                    foreach (var info in typeof(TEntity).GetProperties())
-                    {
-                        var value = info.GetValue(unchangedEntity);
-                        info.SetValue(selectedEntity, value);
-                    }
+                    //foreach (var info in typeof(TEntity).GetProperties())
+                    //{
+                    //    var value = info.GetValue(unchangedEntity);
+                    //    info.SetValue(selectedEntity, value);
+                    //}
                 }
                 else 
                 {
-                    for (var i = 0; i < source.Count; i++)
-                    {
-                        var sourceItem = source[i];
-                        if (sourceItem.Equals(selectedEntity))
-                        {
-                            foreach (var info in typeof(TEntity).GetProperties())
-                            {
-                                var value = info.GetValue(unchangedEntity);
-                                info.SetValue(sourceItem, value);
-                            }
-                            break;
-                        }
-                    }
+                    //for (var i = 0; i < source.Count; i++)
+                    //{
+                    //    var sourceItem = source[i];
+                    //    if (sourceItem.Equals(selectedEntity))
+                    //    {
+                    //        foreach (var info in typeof(TEntity).GetProperties())
+                    //        {
+                    //            var value = info.GetValue(unchangedEntity);
+                    //            info.SetValue(sourceItem, value);
+                    //        }
+                    //        break;
+                    //    }
+                    //}
                 }
             }
         }
@@ -671,10 +667,10 @@ namespace Caspian.UI
         {
             disableInsertIcon = true;
             RollBackEntity();
-            EditContext = new EditContext(entity);
-            selectedEntity = entity;
+            selectedEntity = entity.CreateNewEntity();
+            EditContext = new EditContext(selectedEntity);
             shouldSetFocuc = true;
-            unchangedEntity = entity.CreateNewEntity();
+            //unchangedEntity = entity.CreateNewEntity();
             StateHasChanged();
         }
 
