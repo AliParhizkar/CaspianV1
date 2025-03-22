@@ -48,8 +48,8 @@
                         setTimeout(() => group.style.top = '0', 30);
                     }
                     document.body.onmousedown = async e => {
-                        let container = (e.target as HTMLElement).closest('.t-animation-container');
-                        if (container == null || container.firstElementChild != null && container.firstElementChild.className == 't-HelpWindow') {
+                        let dropdown = (e.target as HTMLElement).closest('.t-dropdown');
+                        if (dropdown == null || dropdown != element) {
                             document.body.onmousedown = null;
                             await dotnet.invokeMethodAsync('CloseWindow');
                         }

@@ -12,8 +12,6 @@ namespace Caspian.UI
         protected MessageBox MessageBox;
         bool sholdRender = true;
         BasePage child;
-        
-        public static bool IsStarted { get; set; }
 
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
@@ -41,11 +39,18 @@ namespace Caspian.UI
                     return 0;
                 return PageData.UserId;
             }
-                
         }
 
         protected override void OnInitialized()
         {
+            var type = GetType();
+            var assemblyName = type.Assembly.GetName().Name;
+            if (assemblyName != "Engine.Web")
+            {
+                var attr = type.GetCustomAttribute<RouteAttribute>();
+                if (attr == null)
+                    throw new CaspianException($"Only Page can Inherite from BasePage Class. \"{type.Name}\": is not page(hasn't RouteAttribute)");
+            }
             ServiceProvider.GetService<CaspianDataService>().UserId = UserId;
             base.OnInitialized();
         }
@@ -157,7 +162,6 @@ namespace Caspian.UI
 
         public void Dispose()
         {
-
             foreach (var info in this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic))
             {
                 if (info.PropertyType.GetInterfaces().Contains(typeof(IUIService)))

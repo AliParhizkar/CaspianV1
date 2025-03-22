@@ -195,14 +195,14 @@ namespace Caspian.Common.Service
             return entity;
         }
 
-        async public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expr = null)
+        public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expr = null)
         {
             if (expr == null)
                 return await GetAll().AnyAsync();
             return await GetAll().AnyAsync(expr);
         }
 
-        public async void RemoveRange(IEnumerable<TEntity> entities)
+        public async Task RemoveRange(IEnumerable<TEntity> entities)
         {
             if (entities == null || !entities.Any())
                 return;
@@ -238,6 +238,10 @@ namespace Caspian.Common.Service
         {
             if (Context != null)
                 Context.Dispose();
+            if (Context.GetType().Namespace == "Marketing.Model")
+            {
+
+            }
         }
     }
 }

@@ -176,20 +176,22 @@ namespace Caspian.UI
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (FormAppState.ValidationChecking)
-            {
-                var control = CaspianForm?.GetFirstInvalidControl();
-                if (control != null)
-                {
-                    FormAppState.ValidationChecking = false;
-                    await control.FocusAsync();
-                }
-                else if (FormAppState.ErrorMessage !=  null)
-                {
-                    await JSRuntime.InvokeVoidAsync("caspian.common.showMessage", FormAppState.ErrorMessage);
-                    FormAppState.ErrorMessage = null;
-                }
-            }
+            ///For Master Deatils form this code is not working
+            ///We Use Caspian Form instate of this
+            //if (FormAppState.ValidationChecking)
+            //{
+            //    var control = CaspianForm?.GetFirstInvalidControl();
+            //    if (control != null)
+            //    {
+            //        FormAppState.ValidationChecking = false;
+            //        await control.FocusAsync();
+            //    }
+            //    else if (FormAppState.ErrorMessage !=  null)
+            //    {
+            //        await JSRuntime.InvokeVoidAsync("caspian.common.showMessage", FormAppState.ErrorMessage);
+            //        FormAppState.ErrorMessage = null;
+            //    }
+            //}
             if (CaspianForm == null && FormAppState.AllControlsIsValid)
             {
                 if (FormAppState.Control?.InputElement == null)

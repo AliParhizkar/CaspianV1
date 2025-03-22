@@ -462,9 +462,11 @@ namespace Caspian.Common
                                 expr = Expression.Property(expr, "Value");
                             expr = Expression.Equal(expr, Expression.Constant(value));
                             var lambda = Expression.Lambda(expr, paramExpr);
-                            var serviceType = typeof(BaseService<>).MakeGenericType(type);
-                            var scope1 = (IServiceScope)context.RootContextData["__ServiceScope"];
-                            var service = Activator.CreateInstance(serviceType, scope1.ServiceProvider) as IBaseService;
+                            var serviceType = typeof(IBaseService<>).MakeGenericType(type);
+                            var scope1 = (IServiceScope)context.RootContextData["__ServiceProvider"];
+                            var service = scope1.ServiceProvider.GetService(serviceType) as IBaseService;
+                            if (service == null)
+                                throw new CaspianException($"Service of Type IBaseService<{type}> not injected");
                             var hasDetails = await service.GetAllRecords().Where(lambda).OfType<object>().AnyAsync();
                             if (hasDetails)
                             {

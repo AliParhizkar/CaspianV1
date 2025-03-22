@@ -1068,8 +1068,8 @@ var caspian;
                         setTimeout(() => group.style.top = '0', 30);
                     }
                     document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
-                        let container = e.target.closest('.t-animation-container');
-                        if (container == null || container.firstElementChild != null && container.firstElementChild.className == 't-HelpWindow') {
+                        let dropdown = e.target.closest('.t-dropdown');
+                        if (dropdown == null || dropdown != element) {
                             document.body.onmousedown = null;
                             yield dotnet.invokeMethodAsync('CloseWindow');
                         }

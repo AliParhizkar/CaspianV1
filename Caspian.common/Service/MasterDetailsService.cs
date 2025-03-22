@@ -48,6 +48,7 @@ namespace Caspian.Common.Service
             var newEntity = entity.CreateNewSimpleEntity();
             var detailsList = new List<TDetails>();
             detailsInfo.SetValue(newEntity, detailsList);
+            var detailsPKey = typeof(TDetails).GetPrimaryKey();
             foreach (var detail in details)
             {
                 var item = Activator.CreateInstance<TDetails>();
@@ -57,6 +58,9 @@ namespace Caspian.Common.Service
                     if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
                         info.SetValue(item, info.GetValue(detail));
                 }
+                var id = Convert.ToInt32(detailsPKey.GetValue(item));
+                if (id < 0)
+                    detailsPKey.SetValue(item, 0);
                 detailsList.Add(item);
             }
 
@@ -129,7 +133,7 @@ namespace Caspian.Common.Service
             var lambda = Expression.Lambda(expr, paraameter);
             var service = GetService<BaseService<TDetails>>();
             var details = await service.GetAll().Where(lambda).ToListAsync();
-            service.RemoveRange(details);
+            await service.RemoveRange(details);
             await base.RemoveAsync(master);
         }
     }

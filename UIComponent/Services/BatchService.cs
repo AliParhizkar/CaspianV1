@@ -242,9 +242,10 @@ namespace Caspian.UI
 
         public void StateHasChanged()
         {
+            baseComponentService = serviceProvider.GetService<BaseComponentService>();
             if (baseComponentService.Target == null)
                 throw new CaspianException("You must inherits from BasePage or configure page manioaly");
-            typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(baseComponentService.Target, null);
+            (baseComponentService.Target as BasePage).ChangeState();
         }
 
         public void DataViewInitialize()
@@ -272,7 +273,8 @@ namespace Caspian.UI
                     await Window.Open();
                     StateHasChanged();
                     await Task.Delay(100);
-                    await Form.FocusAsync();
+                    if (Form != null)
+                        await Form.FocusAsync();
                 }
             });
             DataView.OnInternalDelete = EventCallback.Factory.Create<TMaster>(this, async master =>

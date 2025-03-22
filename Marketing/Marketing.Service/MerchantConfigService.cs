@@ -1,8 +1,6 @@
 ﻿using Caspian.Common;
 using Marketing.Model;
 using Caspian.Common.Service;
-using Caspian.Common.Extension;
-using Microsoft.EntityFrameworkCore;
 
 namespace Marketing.Service
 {

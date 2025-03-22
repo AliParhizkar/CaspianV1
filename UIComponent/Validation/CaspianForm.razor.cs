@@ -13,7 +13,7 @@ namespace Caspian.UI
         string ErrorMessage;
         bool checkValidation;
         IList<IControl> controls;
-        bool addControls;
+        bool addControls, formSubmited;
         string ICaspianForm.MasterIdName { get; set; }
         bool ICaspianForm.IgnoreOnValidSubmit { get; set; }
         TEntity oldModel;
@@ -156,7 +156,7 @@ namespace Caspian.UI
             controls.Clear();
             await Task.Delay(10);
             addControls = false;
-            if(OnSubmit.HasDelegate)
+            if (OnSubmit.HasDelegate)
                 await OnSubmit.InvokeAsync(EditContext.Model as TEntity);
             if (OnInternalSubmit.HasDelegate)
                 await OnInternalSubmit.InvokeAsync(EditContext.Model as TEntity);
@@ -181,13 +181,10 @@ namespace Caspian.UI
                     message = $"Caspian Exception: {message} Types impiliment IBaseService<{typeof(TEntity).Name}> so you should specify service with CaspianValidationValidator component on CaspianForm component";
                     throw new CaspianException(message);
                 }
-                else if (services.Count()  == 0)
-                {
-
-                }
             }
             EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
             var result = await (Task<ValidationResult>)asyncValidationTask;
+            formSubmited = true;
             if (result.IsValid)
             {
                 if (OnValidSubmit.HasDelegate)
@@ -243,9 +240,15 @@ namespace Caspian.UI
                 ErrorMessage = null;
                 await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
             }
-            //var ctr = controls.FirstOrDefault(t => t.HasError());
-            //if (ctr != null)
-            //    await ctr.FocusAsync();
+            if (formSubmited)
+            {
+                formSubmited = false;
+                var ctr = controls.FirstOrDefault(t => t.HasError());
+                if (ctr != null)
+                {
+                    await ctr.FocusAsync();
+                }
+            }
             await base.OnAfterRenderAsync(firstRender);
         }
 

@@ -47,11 +47,11 @@ namespace Caspian.Engine.Service
             return str.ToString();
         }
 
-        public void RemoverWorkflowActivities(int workflowId)
-        {
-            var activities = GetAll().Where(t => t.WorkflowId == workflowId);
-            RemoveRange(activities);
-        }
+        //public void RemoverWorkflowActivities(int workflowId)
+        //{
+        //    var activities = GetAll().Where(t => t.WorkflowId == workflowId);
+        //    RemoveRange(activities);
+        //}
 
         public IQueryable<Activity> GetActivities(int workflowId)
         {

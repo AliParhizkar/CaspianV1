@@ -111,7 +111,7 @@ namespace Caspian.Common
 
         public override Task<ValidationResult> ValidateAsync(ValidationContext<TModel> context, CancellationToken cancellation = default)
         {
-            context.RootContextData["__ServiceScope"] = ServiceProvider;
+            context.RootContextData["__ServiceProvider"] = ServiceProvider;
             
             if (BatchServiceData != null)
             {

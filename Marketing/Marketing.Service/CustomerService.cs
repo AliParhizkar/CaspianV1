@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Marketing.Service
 {
-    public class CustomerService: MasterDetailsService<Customer, CustomerAddress>, IMasterDetailsService<Customer, CustomerAddress>
+    public class CustomerService: MasterDetailsService<Customer, CustomerAddress>, IBaseService<Customer>
     {
         public CustomerService(IServiceProvider provider)
             :base(provider) 
