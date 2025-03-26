@@ -234,21 +234,25 @@ namespace Caspian.UI
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
+            if (formSubmited)
+            {
+                formSubmited = false;
+                var ctr = controls.FirstOrDefault(t => t.HasError());
+                if (ctr == null)
+                {
+                    if (FormAppState.ErrorMessage.HasValue())
+                        ErrorMessage = FormAppState.ErrorMessage;
+                }
+                else
+                    await ctr.FocusAsync();
+            }
             if (ErrorMessage.HasValue())
             {
                 var message = ErrorMessage;
                 ErrorMessage = null;
                 await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
             }
-            if (formSubmited)
-            {
-                formSubmited = false;
-                var ctr = controls.FirstOrDefault(t => t.HasError());
-                if (ctr != null)
-                {
-                    await ctr.FocusAsync();
-                }
-            }
+
             await base.OnAfterRenderAsync(firstRender);
         }
 

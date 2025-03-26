@@ -16,12 +16,8 @@
         }
         <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" ColSpan="8" />
         <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" ColSpan="8" />
-        <div class="col-md-4">
-            <label>Customer Groups</label>
-        </div>
-        <div class="col-md-8">
-            <CheckedDropdownList TEntity="CustomerGroup" Service="Service" TDetails="CustomerGroupMembership" TextExpression="t => t.Title" />
-        </div>
+        <CheckedDropdownList TEntity="CustomerGroup" Service="Service" TDetails="CustomerGroupMembership" TextExpression="t => t.Title"
+                             ColSpan="8" Title="Customer Groups" />
     </div>
     <FormCommandButton ColSpan="8" />
 </CaspianForm>

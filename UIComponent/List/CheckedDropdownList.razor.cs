@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
+using System.Reflection.Metadata;
 
 namespace Caspian.UI
 {
@@ -21,10 +22,64 @@ namespace Caspian.UI
             if (ValuesChanged.HasDelegate)
                 await ValuesChanged.InvokeAsync(details);
         }
+       
+
+        [Parameter]
+        public string Title { get; set; }
+
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            if (Service != null)
+            if (Service == null)
+            {
+                if (Values != null && Values.Count > 0)
+                {
+                    using var scope = ScopeFactory.CreateScope();
+                    scope.SetUserId(PageData);
+                    var service = scope.GetService<IBaseService<TEntity>>();
+                    var query = service.GetAll();
+                    if (ConditionExpression != null)
+                        query = query.Where(ConditionExpression);
+                    var list = new ExpressionSurvey().Survey(TextExpression);
+                    var type = typeof(TEntity);
+                    var parameter = Expression.Parameter(type, "t");
+                    list = list.Select(t => parameter.ReplaceParameter(t)).ToList();
+                    var pkey = type.GetPrimaryKey();
+                    var pKeyExpr = Expression.Property(parameter, pkey);
+                    var pkeyAdded = false;
+                    foreach (var expr1 in list)
+                    {
+                        if (expr1.Member == pkey)
+                            pkeyAdded = true;
+                    }
+                    if (!pkeyAdded)
+                        list.Add(pKeyExpr);
+                    foreach (var expr1 in list)
+                    {
+                        if (expr1.Member == pkey)
+                            pkeyAdded = true;
+                    }
+                    if (!pkeyAdded)
+                        list.Add(pKeyExpr);
+                    var dataList = await query.GetValuesAsync(list);
+                    var displayFunc = TextExpression.Compile();
+                    var info = typeof(TEntity).GetPrimaryKey();
+                    var str = string.Empty;
+                    foreach (var item in dataList)
+                    {
+                        var text = Convert.ToString(displayFunc.DynamicInvoke(item));
+                        var value = (TDetails)Convert.ChangeType(info.GetValue(item), typeof(TDetails));
+                        if (str != string.Empty)
+                            str += ", ";
+                        if (Values.Contains(value))
+                            str += text;
+                    }
+                    text = str;
+                }
+            }
+            else
             {
                 var detailIdInfo = typeof(TDetails).GetForeignKey(typeof(TEntity));
                 var selectedIds = new List<dynamic>();
@@ -108,6 +163,21 @@ namespace Caspian.UI
         {
             status = WindowStatus.Open;
         }
+
+        [Parameter]
+        public int? TotalSpan { get; set; }
+
+        [CascadingParameter]
+        internal IEntitySearch EntitySearch { get; set; }
+
+        [CascadingParameter(Name = "ParentForm")]
+        internal ICaspianForm CaspianForm { get; set; }
+
+        [CascadingParameter]
+        internal CaspianContainer CaspianContainer { get; set; }
+
+        [Parameter]
+        public int? ColSpan { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, string>> TextExpression { get; set; }

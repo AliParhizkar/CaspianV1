@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketing.Model.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250321222038_Forth")]
+    [Migration("20250323232844_Forth")]
     partial class Forth
     {
         /// <inheritdoc />
@@ -24,6 +24,32 @@ namespace Marketing.Model.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Marketing.Model.Config", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("CustomerHasManyAddresses")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CustomerIsMemberOfGroups")
+                        .HasColumnType("bit");
+
+                    b.Property<byte>("DefaultAddressManagment")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Configs");
+                });
 
             modelBuilder.Entity("Marketing.Model.Customer", b =>
                 {
@@ -122,29 +148,6 @@ namespace Marketing.Model.Migrations
                     b.HasIndex("GroupId");
 
                     b.ToTable("CustomersGroupMemberShip", "mrk");
-                });
-
-            modelBuilder.Entity("Marketing.Model.MerchantConfig", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("CustomerHasManyAddresses")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("CustomerIsMemberOfGroups")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MerchantsConfig");
                 });
 
             modelBuilder.Entity("Marketing.Model.Order", b =>

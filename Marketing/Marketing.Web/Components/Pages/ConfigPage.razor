@@ -1,0 +1,40 @@
+﻿@page "/Marketing/Config"
+@using Microsoft.EntityFrameworkCore
+@inherits BasePage
+@if (config != null)
+{
+    <CaspianForm Model="config" TEntity="Config" OnValidSubmit="SaveConfig" ColumnsCount="2">
+        <StringTextBox @bind-Value="config.Name" ColSpan="4" />
+        <DropdownList @bind-Value="config.DefaultAddressManagment" ColSpan="4" />
+        <CheckBox @bind-Value="config.CustomerHasManyAddresses" ColSpan="2" TotalSpan="6" />
+        <CheckBox @bind-Value="config.CustomerIsMemberOfGroups" ColSpan="2" TotalSpan="6" />
+        <FormCommandButton TotalSpan="6" HideResetButton />
+    </CaspianForm>
+}
+
+
+@code 
+{
+    Config config;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<ConfigService>();
+        config = await service.GetAll().SingleOrDefaultAsync();
+        if (config == null)
+            config = new Config();
+        await base.OnInitializedAsync();
+    }
+
+    async Task SaveConfig(Config con)
+    {
+        using var service = CreateScope().GetService<ConfigService>();
+        if (con.Id == 0)
+            await service.AddAsync(con);
+        else
+            await service.UpdateAsync(con);
+        await service.SaveChangesAsync();
+        ShowMessage("ثبت با موفقیت انجام شد.");
+        ConfigService.Config = await service.GetAll().AsNoTracking().SingleAsync();
+    }
+}

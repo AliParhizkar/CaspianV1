@@ -33,7 +33,7 @@
                 <div class="col-md-6">
                     <StringTextBox @bind-Value="@organSearch" OnChange="async () => await databindingTree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
                     <TreeView @ref="databindingTree" TEntity="OrganUnit" style="height:500px" TextFunc="t => t.Title"
-                    FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == activeType" />
+                    FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == ActiveType.Enable" />
                 </div>
                 <div class="col-md-6">
                     <hr />
@@ -57,7 +57,7 @@
                         </div>
                         <div>
                             <TreeView @ref="customTemplateTree" TEntity="OrganUnit" style="height:500px" OnRightClick="ShowContextMenu"
-                            TextFunc="t => t.Title" FilterFunc="t => (!organSearchCustomTemplate.HasValue() || t.Title.StartsWith(organSearchCustomTemplate)) && t.ActiveType == activeType">
+                            TextFunc="t => t.Title" FilterFunc="t => !organSearchCustomTemplate.HasValue() || t.Title.StartsWith(organSearchCustomTemplate)">
                                 <AfterNodeTemplate>
                                     <span class="d-tree-icon">
                                         <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
@@ -85,9 +85,7 @@
     <CaspianForm Model="organUnit" TEntity="OrganUnit" OnValidSubmit="UpsertOrganUnit">
         <StringTextBox @ref="firstControl" @bind-Value="context.Title" ColSpan="9" />
         <DropdownList @bind-Value="context.ActiveType" ColSpan="9" />
-        <div class="col-md-9 text-center">
-            <WindowCommandButtons />
-        </div>
+        <WindowCommandButtons ColSpan="9" />
     </CaspianForm>
 </Window>
 <ContextMenu @bind-Status="contextMenuStatus" Left="left" Top="top" >
@@ -99,7 +97,6 @@
 {
     double left, top;
     bool contextMenuStatus;
-    ActiveType activeType = ActiveType.Enable;
     string organSearch;
     string organSearchCustomTemplate;
     WindowStatus status;

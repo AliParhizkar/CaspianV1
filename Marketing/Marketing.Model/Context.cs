@@ -13,7 +13,7 @@ namespace Marketing.Model
         
         public DbSet<CustomerGroupMemberShip> CustomerGroupMemberShips { get; set; }
         
-        public DbSet<MerchantConfig> MerchantConfigs { get; set; }
+        public DbSet<Config> MerchantConfigs { get; set; }
 
         public DbSet<Order> Orders { get; set; }
         

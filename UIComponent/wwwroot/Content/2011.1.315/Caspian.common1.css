@@ -52,8 +52,11 @@ fieldset.c-container {
     padding-left: 4px;
     padding-top: 2px;
 }
-    .t-grid-inline-insert:focus{
-        outline:1px dotted gray!important;
+    .t-grid-inline-insert:hover {
+        background-color: #F0EEF2;
+    }
+    .t-grid-inline-insert:focus {
+        outline: 1px dotted gray !important;
     }
     .c-select-all .t-title {
         font-weight: 700;
@@ -1622,20 +1625,25 @@ span, label, td, th {
 .t-grid-pager .t-state-disabled .fa {
     color: #adb6b9;
 }
-.t-grid-edit .fa {
-    color: #423d96;
-    font-size: 20px;
-    cursor:pointer;
-}
-.t-grid-delete .fa {
+.t-grid-edit .fa, .t-grid-delete .fa {
     color: #423d96;
     font-size: 20px;
     cursor: pointer;
+    height: 30px;
+    width: 30px;
+    display: inline-block;
+    border: 1px solid transparent;
+    padding-top: 4px;
+    border-radius: 14px;
+}
+.t-grid-edit .fa:hover, .t-grid-delete .fa:hover {
+    border: 1px solid #d0d0d0;
+    background-color: #F0EEF2;
 }
 .t-grid-header .fa {
     color: #423d96;
     font-size: 12px;
-    margin-right:5px;
+    margin-right: 5px;
 }
 .c-form-action {
     text-align: center;

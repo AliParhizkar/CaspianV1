@@ -14,7 +14,7 @@
         <GridCommandColumns />
     </Columns>
 </DataGrid>
-<TypeWindow TEntity="CustomerAddress" Service="Service" Title="آدرس" Style="width:400px;" OnSubmit="FormSubmit">
+<TypeWindow TEntity="CustomerAddress" Service="Service" Title="آدرس" Style="width:400px;" OnSubmit="async t => await FormSubmit(t)">
     <StringTextBox @bind-Value="context.Address" Rows="3" MultiLine ColSpan="8" />
     <CheckBox @bind-Value="context.IsDefault" ColSpan="8" />
     <FormCommandButton ColSpan="8" />
@@ -24,25 +24,23 @@
 {
     async Task FormSubmit(CustomerAddress address)
     {
-        if (address.IsDefault && DefaultAddressManagementType > 1)
+        DefaultAddressManagment addressManagment = ConfigService.Config.DefaultAddressManagment;
+        if (address.IsDefault && addressManagment > DefaultAddressManagment.User)
         {
             var old = Service.DetailDataView.GetBatchEntities().SingleOrDefault(t => t.IsDefault);
             if (old != null)
             {
-                if (DefaultAddressManagementType == 3 || await Page.Confirm("آیا می خواهید این آدرس بعنوان آدرس پیشفرض انتخاب شود؟"))
+                if (addressManagment == DefaultAddressManagment.System || await Page.Confirm("آیا می خواهید این آدرس بعنوان آدرس پیشفرض انتخاب شود؟"))
                 {
                     old.IsDefault = false;
                     await Service.DetailDataView.UpdateAsync(old);
+                    if (addressManagment == DefaultAddressManagment.System)
+                        Page.ShowMessage("آدرس جاری بعنوان آدرس پیشفرض انتخاب شد.");
                 }
             }
         }
     }
 
     [Parameter]
-    public BasePage Page { get; set; }
-
-    [Parameter]
-    public int DefaultAddressManagementType { get; set; }
-
- 
+    public BasePage Page { get; set; } 
 }

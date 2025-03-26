@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class LookupWindow<TEntity, TValue>: BasePage where TEntity:class
+    public partial class LookupWindow<TEntity, TValue> where TEntity:class
     {
         string oldSerachStringValue;
         Expression<Func<TEntity, bool>> SearchExpression;

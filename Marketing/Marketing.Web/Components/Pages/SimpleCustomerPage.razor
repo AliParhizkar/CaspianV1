@@ -1,0 +1,37 @@
+﻿@page "/Marketing/SimpleCustomer"
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+@inject IUIService<Customer> Service
+<div style="width:80%;margin:5px auto">
+    <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.MobileNumber" SearchType="SearchType.StartWith" ColSpan="4" Style="direction:ltr" MaxLength="11" />
+        <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="Customer" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridColumn Field="t => t.CustomerGroup.Name" Title="گروه" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Style="width:600px;" Title="مشتری" Service="Service">
+        <CaspianForm TEntity="Customer" Service="Service">
+            <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+            <StringTextBox @bind-Value="context.MobileNumber" ColSpan="8" Style="direction:ltr" MaxLength="11" />
+            <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="8" />
+            <StringTextBox @bind-Value="context.Address1" ColSpan="8" MultiLine Cols="3" />
+            <StringTextBox @bind-Value="context.Address2" ColSpan="8" MultiLine Cols="3" />
+            <FormCommandButton ColSpan="8" />
+        </CaspianForm>
+    </Window>
+</div>
+
+
+@code 
+{
+
+}

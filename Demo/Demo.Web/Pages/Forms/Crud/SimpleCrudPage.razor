@@ -96,12 +96,14 @@
                         this is an <b>EventCallback</b>, we can use it's input parameter to <b>cancel the upsert</b>.
                     </span>
                 </div>
-                <EntitySearch Service="ProductService">
-                    <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                <EntitySearch Service="ProductService" ColumnsCount="2">
+                    <ComboBox TValue="int" TEntity="ProductCategory" @bind-Value="context.ProductCategoryId" TextExpression="t => t.Title" ColSpan="4" />
+                    <StringTextBox @bind-Value="context.Title" ColSpan="4" />
                 </EntitySearch>
 
                 <DataGrid TEntity="Product" Service="ProductService">
                     <Columns>
+                        <GridColumn Field="t => t.ProductCategory.Title" Title="گروه محصول" />
                         <GridColumn Field="t => t.Title" />
                         <GridColumn Field="t => t.Price.Seprate3Digit()" />
                         <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />

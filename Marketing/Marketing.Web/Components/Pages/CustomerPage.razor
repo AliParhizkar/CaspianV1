@@ -7,19 +7,7 @@
 }
 
 <div style="width:75%;margin: 10px auto">
-    <div class="row c-controls">
-        <div class="col-md-4">
-            <label>روش مدیریت آدرس پیشفرض</label>
-        </div>
-        <div class="col-md-8">
-            <RadioList @bind-Value="defaultAddressManagementType">
-                <RadioItem Title="توسط کاربر" Value="1" />
-                <RadioItem Title="پرسیده شود" Value="2" />
-                <RadioItem Title="توسط سیستم" Value="3" />
-            </RadioList>
-        </div>
-    </div>
-    <DataGrid TEntity="Customer" Service="Service" DeleteMessage="می خواهید حذف شود">
+    <DataGrid TEntity="Customer" Service="Service" DeleteMessage="با حذف مشتری آدرس های وی نیز حذف می شود آیا با حذف موافقید؟">
         <Columns>
             <GridColumn Field="t => t.Name" />
             <GridColumn Field="t => t.MobileNumber" />
@@ -27,17 +15,26 @@
         </Columns>
     </DataGrid>
 </div>
-<Window Service="Service" Title="Customer" Style="width:600px">
-    <Marketing.Web.Components.Customer.CustomerComponent Page="this" DefaultAddressManagementType="defaultAddressManagementType" />
+<Window Service="Service" Title="مشتری" Style="width:600px">
+    <Marketing.Web.Components.Customer.CustomerComponent Page="this" />
 </Window>
 @code
 {
-    int defaultAddressManagementType = 1;
-
     protected override void OnInitialized()
     {
+        Service.OnUpsert = async (IServiceProvider provider, Customer customer) =>
+        {
+            if (!Service.DetailDataView.GetBatchEntities().Any())
+                return await Confirm("برای مشتری آدرس تعریف نشده است آیا با ثبت موافقید؟");
+            if (!Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault))
+                return await Confirm("هیچکدام از آدرس ها بعنوان آدرس پیش فرض تعیین نشده اند آیا با ثبت موافقید؟");
+            return true;
+        };
         base.OnInitialized();
     }
 
-
+    public override void ChangeState()
+    {
+        StateHasChanged();
+    }
 }

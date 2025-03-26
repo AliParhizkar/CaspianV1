@@ -94,7 +94,7 @@
                                     var isUpdateing = selectId != null && selectId.Equals(id);
                                     var rowData = new RowData<TEntity>()
                                     {
-                                Data = isUpdateing ? selectedEntity : item,
+                                        Data = isUpdateing ? selectedEntity : item,
                                         RowIndex = rowIndex,
                                         DynamicData = DynamicData == null ? null : DynamicData[rowIndex],
                                         UpsertMode = isUpdateing ? UpsertMode.Edit : null
@@ -128,7 +128,7 @@
                             CreateInsertSection(__builder2);
                             buttonClassName += " c-hidden";
                         }
-                        <button @ref="inertButton" type="button" class="@buttonClassName" @onclick="CreateInsert">
+                        <button disabled="@disableInsertIcon" @ref="inertButton" type="button" class="@buttonClassName" @onclick="CreateInsert">
                             <span class="fa fa-plus"></span>
                         </button>
 

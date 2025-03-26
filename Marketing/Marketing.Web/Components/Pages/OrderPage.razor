@@ -4,14 +4,77 @@
 @{
     base.BuildRenderTree(__builder);
 }
-
-<ComboBox @bind-Value="customerId" TValue="int?" TEntity="Customer" TextExpression="t => t.Name" />
-<button @onclick="OpenCustomerWindow">Customer</button>
+<div class="m-categories">
+    @if(categories != null)
+    {
+        foreach(var category in categories)
+        {
+            var className = category.Id == categoryId ? "m-category m-selected" : "m-category";
+            <div class="@className" @onclick="e => SelectCategory(e, category)">
+                @if (category.Categories != null && category.Categories.Count > 0)
+                {
+                    <span>@category.Name</span>
+                    <i class="c-icon fa fa-chevron-left"></i>
+                }
+                else
+                {
+                    <span>@category.Name</span>
+                }
+            </div>
+        }
+    }
+</div>
+<div class="m-products">
+    
+</div>
+<div style="width:50%;margin: 5px auto">
+    <ComboBox @bind-Value="customerId" TValue="int?" TEntity="Customer" TextExpression="t => t.Name" />
+</div>
+<button @onclick="OpenCustomerWindow">
+    Customer
+    <i class="c-icon fa fa-chevron-left"></i>
+</button>
 <Window @bind-Status="status" Style="width:600px;" Title="مشتری">
-    <Marketing.Web.Components.Customer.CustomerComponent DefaultAddressManagementType="3" Page="this" />
+    <Marketing.Web.Components.Customer.CustomerComponent Page="this" />
 </Window>
+<PopupWindow Top="top" Left="left" @bind-Status="popupStatus" Style="min-width:200px;min-height:50px">
+    <div class="m-subcategories">
+        @foreach (var category in categories.Single(t => t.Id == categoryId).Categories)
+        {
+            var className = category.Id == categoryId ? "m-subcategory m-selected" : "m-subcategory";
+            <div class="@className" @onclick="() => SelectCategory(category)">@category.Name</div>
+        }
+    </div>
+
+</PopupWindow>
 @code 
 {
+    WindowStatus status, popupStatus;
+
+    IList<ProductCategory> categories;
+    int? categoryId, selectedCategoryId, selectedProductId, left, top;
+
+    void SelectCategory(ProductCategory category)
+    {
+        selectedCategoryId = category.Id;
+    }
+
+    void SelectCategory(MouseEventArgs args, ProductCategory category)
+    {
+        categoryId = category.Id;
+        if (category.Categories != null)
+        {
+            popupStatus = WindowStatus.Open;
+            left = (int)(args.PageX - args.OffsetX - 205);
+            top = (int)(args.PageY - args.OffsetY);
+        }
+        else
+        {
+            popupStatus = WindowStatus.Close;
+            selectedCategoryId = category.Id;
+        }
+    }
+
     protected override void OnInitialized()
     {
         Service.OnUpsert = async (IServiceProvider provider, Customer customer) =>
@@ -27,11 +90,18 @@
         };
         base.OnInitialized();
     }
-    WindowStatus status;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<ProductCategoryService>();
+        categories = (await service.GetAll().ToListAsync()).Where(t => t.CategoryId == null).ToList();
+        await base.OnInitializedAsync();
+    }
+
     void OpenCustomerWindow()
     {
         status = WindowStatus.Open;
-        Service.MasterId = customerId ?? 1;
+        Service.MasterId = customerId ?? 0;
     }
     int? customerId;
 }

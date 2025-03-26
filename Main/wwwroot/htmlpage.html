@@ -4,57 +4,49 @@
     <meta charset="utf-8" />
     <title></title>
     <style type="text/css">
-        .main-div {
-            padding: 50px 100px;
-            border: 1px solid gray;
-            display:flex;
+        .modal{
+            position:fixed;
+            left:0;
+            right:0;
+            top:0;
+            bottom:0;
+            background-color:rgba(0, 0, 0, 0.12);
+            z-index:10000000;
+            pointer-events:none;
+            overflow:hidden;
         }
-
-        .child-div {
-            width: 500px;
-            height: 500px;
-            margin: 0 auto;
-            background-color: red;
-            border-radius: 50%;
-            background-origin: border-box;
-            border: double 1em transparent;
-            background-clip: content-box, border-box;
-            background-image: linear-gradient(#e6e3e3, #e6e3e3), linear-gradient(to bottom, gray, gray 50%, white 50%, white 100%);
-            text-align:center;
-        }
-        .child-div span{
-            margin-top:20px;
-        }
-
     </style>
+    <script type="text/javascript">
+        function test() {
+            let el = document.getElementById('test');
+            let rec = el.getBoundingClientRect();
+            let target = document.getElementById('target');
+            target.style.left = rec.left + 'px';
+            target.style.top = rec.top + 'px';
+            var div = document.createElement('div');
+            div.className = 'modal';
+            document.body.appendChild(div)
+        }
+    </script>
 
 </head>
 <body style="direction:rtl">
-    <div style="border:1px solid red;padding:5px;overflow:hidden">
-        <select style="width:100%">
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-            <option value="1">One</option>
-        </select>
-    </div>
+    <div style="height:350px;border:1px solid gray"></div>
+    <div style="height:350px;border:1px solid gray"></div>
+    <div style="height:250px;border:1px solid gray;overflow:auto">
+        <div style="height:350px;border:1px solid red"></div>
+        <div id="test" style="height:30px;width:300px;margin:0 auto;border:1px solid blue">
+            <button onclick="test()">Test</button>
+        </div>
+        <div style="height:300px;width:300px;margin:0 auto;border:1px solid blue">
 
+        </div>
+    </div>
+    <div style="height:600px;">
+
+    </div>
+    <div id="target" style="width:200px;height:250px;position:fixed;background-color:aqua">
+
+    </div>
 </body>
 </html>

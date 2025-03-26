@@ -1,0 +1,22 @@
+﻿@typeparam TValue
+<ComboBox TValue="TValue" TEntity="SimpleData" @bind-Value="Value" ColSpan="ColSpan" TotalSpan="TotalSpan" TextExpression="t => t.Title"
+ConditionExpression="t => t.DataType == DataType" />
+
+
+@code 
+{
+    [Parameter]
+    public TValue Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TValue> ValueChanged {get;set;}
+
+    [Parameter]
+    public SimpleDataType DataType { get; set; }
+
+    [Parameter]
+    public int ColSpan { get; set; }
+
+    [Parameter]
+    public int TotalSpan { get; set; }
+}

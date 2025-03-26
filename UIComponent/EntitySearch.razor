@@ -20,6 +20,8 @@
     {
         searchTypes = new Dictionary<string, SearchType>();
         enumValues = new Dictionary<string, ICollection>();
+        if (Service == null)
+            throw new CaspianException($"خطا:EntitySearch Component should have a service of type ISearchService<{typeof(TEntity)}>");
         Service.SetSearchType(searchTypes);
         base.OnInitialized();
     }

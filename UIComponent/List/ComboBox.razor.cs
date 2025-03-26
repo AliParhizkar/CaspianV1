@@ -68,7 +68,7 @@ namespace Caspian.UI
         public bool Pageable { get; set; } = true;
 
         [CascadingParameter]
-        public CaspianContainer CaspianContainer { get; set; }
+        internal CaspianContainer CaspianContainer { get; set; }
 
         [Parameter]
         public int PageSize { get; set; } = 30;

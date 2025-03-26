@@ -1,42 +1,17 @@
 ﻿@page "/counter"
 @using Caspian.Engine.Service
 @using Demo.Service
-@inherits BasePage
-@inject IUIService<City> Service
 
+<button @onclick="() => flag = true">Show</button>
 
+@if (flag)
+{
+    <MyComponent StartNumber="5" />
+}
 
-<div style="width:600px;margin:0 auto">
-    <EntitySearch TEntity="City" Service="Service" ColumnsCount="2">
-        <ComboBox TEntity="Country" CascadeService="Cascade" TValue="int" @bind-Value="context.CountryId" ColSpan="4" TextExpression="t => t.Title" />
-        <ComboBox TEntity="Province" TValue="int?" CascadeService="Cascade" @bind-Value="context.ProvinceId" ColSpan="4" TextExpression="t => t.Title" />
-        <StringTextBox @bind-Value="context.Title" ColSpan="10" />
-    </EntitySearch>
-    <DataGrid TEntity="City" Service="Service">
-        <Columns>
-            <GridColumn Field="t => t.Country.Title" Title="کشور" />
-            <GridColumn Field="t => t.Province.Title" Title="استان" />
-            <GridColumn Field="t => t.Title" Title="شهر" />
-            <GridColumn Field="t => t.ActiveType.EnumText()"  />
-            <GridCommandColumns />
-        </Columns>
-    </DataGrid>
-</div>
-
-<Window Service="Service" Title="Country" Style="width:450px">
-    <CaspianForm Service="Service">
-        <ComboBox TEntity="Country" CascadeService="upsertCascade" TValue="int" @bind-Value="context.CountryId" ColSpan="8" TextExpression="t => t.Title" />
-        <ComboBox TEntity="Province" TValue="int?" CascadeService="upsertCascade" @bind-Value="context.ProvinceId" ColSpan="8" TextExpression="t => t.Title" />
-        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
-        <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
-        <FormCommandButton ColSpan="8" />
-    </CaspianForm>
-</Window>
 
 
 @code 
 {
-    CascadeService<Country, Province> Cascade = new();
-    CascadeService<Country, Province> upsertCascade = new();
-
+    bool flag;
 }

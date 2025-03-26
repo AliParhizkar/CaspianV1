@@ -47,8 +47,8 @@ namespace Caspian.UI
             var assemblyName = type.Assembly.GetName().Name;
             if (assemblyName != "Engine.Web")
             {
-                var attr = type.GetCustomAttribute<RouteAttribute>();
-                if (attr == null)
+                var hasRout = type.GetCustomAttributes<RouteAttribute>().Any();
+                if (!hasRout)
                     throw new CaspianException($"Only Page can Inherite from BasePage Class. \"{type.Name}\": is not page(hasn't RouteAttribute)");
             }
             ServiceProvider.GetService<CaspianDataService>().UserId = UserId;
@@ -62,10 +62,14 @@ namespace Caspian.UI
             return scope;
         }
 
+
+
         public void ShowMessage(string msg)
         {
             message = msg;
         }
+
+
 
         public async Task Alert(string message)
         {
@@ -84,7 +88,7 @@ namespace Caspian.UI
             return await MessageBox.Confirm(message);
         }
 
-        virtual internal protected void ChangeState()
+        virtual public void ChangeState()
         {
             StateHasChanged();
         }

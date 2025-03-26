@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Marketing.Model
 {
-    [Table("MerchantsConfig")]
-    public class MerchantConfig
+    [Table("Configs")]
+    public class Config
     {
         [Key]
         public int Id { get; set; }
@@ -19,5 +19,8 @@ namespace Marketing.Model
 
         [DisplayName("مشتری عضو چندین گروه است")]
         public bool CustomerIsMemberOfGroups { get; set; }
+
+        [DisplayName("روش مدیریت آدرس پیشفرض")]
+        public DefaultAddressManagment DefaultAddressManagment { get; set; }
     }
 }

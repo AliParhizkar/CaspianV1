@@ -195,8 +195,10 @@ input {
 .t-inputbox-wrap .t-input {
     padding: 0 4px;
     width: calc(100% - 30px);
-    border:none;
-    height:31px;
+    border: none;
+    height: 31px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 

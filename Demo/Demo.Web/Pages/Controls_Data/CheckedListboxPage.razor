@@ -115,7 +115,7 @@
 </TabPanel>
 @code 
 {
-    IList<int> customerGroupsId, otherCustomerGroupsId;
+    IList<int> customerGroupsId, otherCustomerGroupsId = new List<int>(){1, 2, 3, 4, 5, 6, 7, 8, 9, 25, 26, 27};
     bool filterable, showSelectAll;
     string selectAllText = "Select all text", placeHolder = "Search";
 }

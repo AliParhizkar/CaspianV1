@@ -10,4 +10,16 @@ namespace Marketing.Model
         [Display(Name = "غیرفعال")]
         DeActive
     }
+
+    public enum DefaultAddressManagment: byte
+    {
+        [Display(Name = "کاربر")]
+        User = 1,
+        
+        [Display(Name = "پرسیده شود")]
+        Confirm,
+        
+        [Display(Name = "سیستم")]
+        System
+    }
 }

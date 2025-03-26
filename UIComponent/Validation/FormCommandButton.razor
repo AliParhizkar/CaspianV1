@@ -28,7 +28,10 @@ else
         {
             <div class="c-form-action">
                 <button class="c-btn c-primary" @attributes="Attributes" type="submit">@submitTitle</button>
-                <button class="c-btn c-danger" type="reset">@resetButtonTitle</button>
+                @if (!HideResetButton)
+                {
+                    <button class="c-btn c-danger" type="reset">@resetButtonTitle</button>
+                }
             </div>
         };
     }
@@ -41,6 +44,9 @@ else
 
     [Parameter]
     public string ResetButtonTitle { get; set; }
+
+    [Parameter]
+    public bool HideResetButton { get; set; }
 
     [Parameter]
     public int? ColSpan { get; set; }

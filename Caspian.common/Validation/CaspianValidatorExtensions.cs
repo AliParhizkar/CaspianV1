@@ -294,7 +294,7 @@ namespace Caspian.Common
             });
         }
 
-        static async Task<object> GetValue<TModel>(TModel model, MemberExpression expr, IServiceScope scope)
+        static async Task<object> GetValue<TModel>(TModel model, MemberExpression expr, IServiceProvider provider)
         {
             var str = expr.ToString();
             str = str.Substring(str.IndexOf('.') + 1);
@@ -320,7 +320,7 @@ namespace Caspian.Common
             Expression memberExpr = param.CreateMemberExpresion(str.Substring(str.IndexOf('.') + 1));
             var selectExpr = Expression.Lambda(memberExpr, param);
             var serviceType = typeof(BaseService<>).MakeGenericType(info.PropertyType);
-            var service = Activator.CreateInstance(serviceType, scope) as IBaseService;
+            var service = Activator.CreateInstance(serviceType, provider) as IBaseService;
             var query = service.GetAllRecords();
             if (conditionExpr != null)
                 query = query.Where(conditionExpr);
@@ -346,7 +346,7 @@ namespace Caspian.Common
             return ruleBuilder.UniqueAsync(expr1, expr2, null, errorMessage);
         }
 
-        static async Task<Expression> CreateExpression<TModel>(ParameterExpression param, TModel model, Expression expr, IServiceScope scope)
+        static async Task<Expression> CreateExpression<TModel>(ParameterExpression param, TModel model, Expression expr, IServiceProvider provider)
         {
             if (expr == null)
                 return null;
@@ -357,7 +357,7 @@ namespace Caspian.Common
             var info = (expr as MemberExpression).Member as PropertyInfo;
             if (info.PropertyType.IsNullableType())
                 expr = Expression.Property(expr, "Value");
-            var value = await GetValue<TModel>(model, expr as MemberExpression, scope);
+            var value = await GetValue<TModel>(model, expr as MemberExpression, provider);
             if (value != null)
                 return Expression.Equal(param.ReplaceParameter(expr), Expression.Constant(value));
             return null;
@@ -373,14 +373,14 @@ namespace Caspian.Common
                     return;
                 var model = context.InstanceToValidate;
                 
-                var scope1 = (IServiceScope)context.RootContextData["__ServiceScope"];
+                var provider = (IServiceProvider)context.RootContextData["__ServiceProvider"];
                 var param = Expression.Parameter(typeof(TModel), "t");
                 var path = context.PropertyPath;
                 if (context.PropertyChain.Count > 0)
                     path = path.Substring(context.PropertyChain.ToString().Length + 1);
                 Expression expr = param.CreateMemberExpresion(path);
-                Expression left = await CreateExpression(param, model, expr, scope1);
-                var tempexpr = await CreateExpression(param, model, expr1, scope1);
+                Expression left = await CreateExpression(param, model, expr, provider);
+                var tempexpr = await CreateExpression(param, model, expr1, provider);
                 if (tempexpr != null)
                 {
                     if (left == null)
@@ -388,7 +388,7 @@ namespace Caspian.Common
                     else
                         left = Expression.And(left, tempexpr);
                 }
-                tempexpr = await CreateExpression(param, model, expr2, scope1);
+                tempexpr = await CreateExpression(param, model, expr2, provider);
                 if (tempexpr != null)
                 {
                     if (left == null)
@@ -396,7 +396,7 @@ namespace Caspian.Common
                     else
                         left = Expression.And(left, tempexpr);
                 }
-                tempexpr = await CreateExpression(param, model, expr3, scope1);
+                tempexpr = await CreateExpression(param, model, expr3, provider);
                 if (tempexpr != null)
                 {
                     if (left == null)
@@ -420,7 +420,7 @@ namespace Caspian.Common
                     var service = scope.GetService<BaseService<TModel>>();
                     isValid = !await service.GetAll().AnyAsync(lambda);
                 }
-                var service1 = scope1.GetService<BaseService<TModel>>();
+                var service1 = provider.GetService<IBaseService<TModel>>();
                 isValid = !await service1.GetAll().AnyAsync(lambda);
                 if (!isValid)
                     context.AddFailure(errorMessage);
@@ -463,8 +463,8 @@ namespace Caspian.Common
                             expr = Expression.Equal(expr, Expression.Constant(value));
                             var lambda = Expression.Lambda(expr, paramExpr);
                             var serviceType = typeof(IBaseService<>).MakeGenericType(type);
-                            var scope1 = (IServiceScope)context.RootContextData["__ServiceProvider"];
-                            var service = scope1.ServiceProvider.GetService(serviceType) as IBaseService;
+                            var provider = (IServiceProvider)context.RootContextData["__ServiceProvider"];
+                            var service = provider.GetService(serviceType) as IBaseService;
                             if (service == null)
                                 throw new CaspianException($"Service of Type IBaseService<{type}> not injected");
                             var hasDetails = await service.GetAllRecords().Where(lambda).OfType<object>().AnyAsync();
@@ -571,9 +571,9 @@ namespace Caspian.Common
                         }
                         else
                         {
-                            var scope = (IServiceScope)context.RootContextData["__ServiceScope"];
+                            var provider = (IServiceProvider)context.RootContextData["__ServiceProvider"];
                             var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
-                            var service = scope.ServiceProvider.GetService(serviceType) as IBaseService;
+                            var service = provider.GetService(serviceType) as IBaseService;
                             result = await service.AnyAsync(Convert.ToInt32(value));
                         }
                         if (!result)

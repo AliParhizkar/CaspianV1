@@ -20,7 +20,7 @@ namespace Marketing.Model.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "Name",
-                table: "MerchantsConfig",
+                table: "Configs",
                 type: "nvarchar(50)",
                 maxLength: 50,
                 nullable: true);
@@ -44,12 +44,12 @@ namespace Marketing.Model.Migrations
 
             migrationBuilder.DropColumn(
                 name: "Name",
-                table: "MerchantsConfig");
+                table: "Configs");
 
             migrationBuilder.DropColumn(
                 name: "IsDefault",
                 schema: "mrk",
-                table: "CustomersAddress");
+                table: "CustomersAddress"); 
         }
     }
 }

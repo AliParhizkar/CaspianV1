@@ -1,7 +1,45 @@
-﻿@page "/MyPage"
-<h3>MyComponent</h3>
-
+﻿@{
+    var counter = 125;
+}
+<button @onclick="() => counter++">Add</button>
+<span>@counter</span>
 @code 
 {
+    int counter;
 
+    [Parameter]
+    public int StartNumber { get; set; }
+
+    protected override void OnInitialized()
+    {
+        counter = StartNumber;
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1_000);
+        await base.OnInitializedAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Task.Delay(1_000);
+        await base.OnParametersSetAsync();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
 }

@@ -163,9 +163,9 @@ namespace Caspian.UI
 
         public async Task FetchAsync()
         {
+            batchServiceData.MasterId = MasterId;
             if (MasterId > 0)
             {
-                batchServiceData.MasterId = MasterId;
                 using var service = CreateScope().GetService<IBaseService<TMaster>>();
                 UpsertData = await service.SingleAsync(MasterId);
                 Form.SetModel(UpsertData);
@@ -279,18 +279,37 @@ namespace Caspian.UI
             });
             DataView.OnInternalDelete = EventCallback.Factory.Create<TMaster>(this, async master =>
             {
-                using var service = CreateScope().GetService<MasterDetailsService<TMaster, TDetail>>();
+                using var scope = CreateScope();
+                using var service = scope.GetService<MasterDetailsService<TMaster, TDetail>>();
                 var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
-                var old = await service.SingleAsync(id);
+                var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+                var old = await service.GetAll().Include(detailsProperty.Name).SingleAsync(id);
                 var result = await service.ValidateRemoveAsync(old);
                 if (result.IsValid)
                 {
-                    if (!DataView.DeleteMessage.HasValue() || await Confirm(DataView.DeleteMessage))
+                    var details = detailsProperty.GetValue(old) as IEnumerable<TDetail>;
+                    string errorMessage = null;
+                    var detailService = scope.GetService<IBaseService<TDetail>>();
+                    foreach (var item in details) 
                     {
-                        await service.DeleteMasterAndDetails(old);
-                        await service.SaveChangesAsync();
-                        await DataView.ReloadAsync();
+                        var result1 = await detailService.ValidateRemoveAsync(item);
+                        if (!result1.IsValid)
+                        {
+                            errorMessage = result1.Errors.First().ErrorMessage;
+                            break;
+                        }
                     }
+                    if (errorMessage == null)
+                    {
+                        if (!DataView.DeleteMessage.HasValue() || await Confirm(DataView.DeleteMessage))
+                        {
+                            await service.DeleteMasterAndDetails(old);
+                            await service.SaveChangesAsync();
+                            await DataView.ReloadAsync();
+                        }
+                    }
+                    else
+                        await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", errorMessage);
                 }
                 else
                     await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", result.Errors[0].ErrorMessage);

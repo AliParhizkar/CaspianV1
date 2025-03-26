@@ -431,17 +431,23 @@ namespace Caspian.UI
         {
             var pkey = typeof(TEntity).GetPrimaryKey();
             var id = Convert.ToInt32(pkey.GetValue(entity));
-            var isExist = false;
-            foreach (var item in DetailsService.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated))
+            TEntity old = null;
+            foreach (var item in DetailsService.ChangedEntities.Where(t => t.ChangeStatus != ChangeStatus.Deleted))
             {
                 var newId = Convert.ToInt32(pkey.GetValue(item.Entity));
                 if (id == newId)
                 {
-                    isExist = true;
+                    old = item.Entity;
                     break;
                 }
             }
-            if (!isExist)
+            if (old != null)
+            {
+                ///Entity add already and only should updated on memory
+                old.CopyEntity(entity);
+            }
+            ///Entity exist in database and should be updated on database
+            if (id > 0)
             {
                 DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>()
                 {
@@ -531,26 +537,23 @@ namespace Caspian.UI
                 var pageNumber = (index - 1) / PageSize + 1;
                 SelectedRowIndex = (index - 1) % PageSize;
                 await ChangePageNumber(pageNumber);
+                foreach (var item in DetailsService.ChangedEntities)
+                {
+                    var newId = Convert.ToInt32(pKey.GetValue(item.Entity));
+                    if (newId == id)
+                    {
+                        DetailsService.ChangedEntities.Remove(item);
+                        break;
+                    }
+                }
                 if (id > 0)
                 {
-                    foreach (var item in DetailsService.ChangedEntities)
-                    {
-                        var newId = Convert.ToInt32(pKey.GetValue(item.Entity));
-                        if (newId == id)
-                        {
-                            DetailsService.ChangedEntities.Remove(item);
-                            break;
-                        }
-                    }
                     DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
                     deletedEntities.Add(entity);
                 }
-                else
-                {
-                    var old = DetailsService.ChangedEntities.Single(t => t.Entity == entity);
-                    DetailsService.ChangedEntities.Remove(old);
-                }
             }
+            else
+                await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", result.Errors.First().ErrorMessage);
             StateHasChanged();
         }
 
@@ -676,14 +679,17 @@ namespace Caspian.UI
 
         public void CreateInsert()
         {
-            insertedEntity = new RowData<TEntity>();
-            insertedEntity.UpsertMode = UpsertMode.Insert;
-            insertedEntity.Data = Activator.CreateInstance<TEntity>();
-            if (BatchServiceData.MasterId > 0)
-                BatchServiceData.GetMasterInfo(typeof(TEntity)).SetValue(insertedEntity.Data, BatchServiceData.MasterId);
-            InsertContext = new EditContext(insertedEntity.Data);
-            insertContainerHoldHasFocus = AutoHide;
-            StateHasChanged();
+            if (!disableInsertIcon)
+            {
+                insertedEntity = new RowData<TEntity>();
+                insertedEntity.UpsertMode = UpsertMode.Insert;
+                insertedEntity.Data = Activator.CreateInstance<TEntity>();
+                if (BatchServiceData.MasterId > 0)
+                    BatchServiceData.GetMasterInfo(typeof(TEntity)).SetValue(insertedEntity.Data, BatchServiceData.MasterId);
+                InsertContext = new EditContext(insertedEntity.Data);
+                insertContainerHoldHasFocus = AutoHide;
+                StateHasChanged();
+            }
         }
 
         public void Dispose()

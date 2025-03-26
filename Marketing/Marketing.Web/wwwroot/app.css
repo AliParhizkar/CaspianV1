@@ -20,22 +20,29 @@
     vertical-align: middle;
     font-size:18px;
 }
-.d-tree-icon {
-    padding-right: 8px;
-}
 
     .d-tree-icon .fa {
         font-size: 18px !important;
     }
 .c-treeview .fa-pencil, .c-treeview .fa-trash {
     color: #423d96;
+    padding-top:5px;
 }
 
 .d-tree-icon {
     vertical-align: middle;
     cursor: pointer;
+    border:1px solid transparent;
+    display:inline-block;
+    width:29px;
+    height:29px;
+    text-align:center;
+    border-radius:15px;
 }
-
+    .d-tree-icon:hover {
+        border: 1px solid #d0d0d0;
+        background-color: #F0EEF2;
+    }
 
 .c-node-template {
     height: 27px;
