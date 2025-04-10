@@ -67,12 +67,10 @@ namespace Caspian.UI
         [CascadingParameter]
         internal PageData PageData { get; set; }
 
-        string ICaspianContainer.GetLableContainerCSSClassName(int colSpan, int? totalSpan)
+        string ICaspianContainer.GetLabelContainerCSSClassName(int colSpan)
         {
             var className = PageData?.RightToLeft == true ? "pe-2" : "ps-2";
             className += " col-md-";
-            if (totalSpan.HasValue)
-                return className + (totalSpan.Value - colSpan);
             if (ColumnsCount == 1)
                 return className + (12 - colSpan);
             if (colSpan < 6)
@@ -80,12 +78,6 @@ namespace Caspian.UI
             else
                 className += (12 - colSpan);
             return className;
-        }
-
-        string ICaspianContainer.GetControlContainerCSSClassName(int colSpan, int? totalSpan)
-        {
-            var str = $"col-md-{colSpan} ";
-            return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
         }
 
         public void SetFirstControl(IControl control)

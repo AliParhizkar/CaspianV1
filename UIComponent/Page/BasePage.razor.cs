@@ -12,6 +12,7 @@ namespace Caspian.UI
         protected MessageBox MessageBox;
         bool sholdRender = true;
         BasePage child;
+        ElementReference shadowDiv;
 
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
@@ -31,6 +32,11 @@ namespace Caspian.UI
         [CascadingParameter]
         internal PageData PageData { get; set; }
 
+        protected ElementReference GetElementReference(string id)
+        {
+            return new ElementReference(id, shadowDiv.Context);
+        }
+
         public int UserId 
         { 
             get
@@ -49,7 +55,7 @@ namespace Caspian.UI
             {
                 var hasRout = type.GetCustomAttributes<RouteAttribute>().Any();
                 if (!hasRout)
-                    throw new CaspianException($"Only Page can Inherite from BasePage Class. \"{type.Name}\": is not page(hasn't RouteAttribute)");
+                    throw new CaspianException($"Only Page can inherited from BasePage Class. \"{type.Name}\": is not page(hasn't RouteAttribute)");
             }
             ServiceProvider.GetService<CaspianDataService>().UserId = UserId;
             base.OnInitialized();

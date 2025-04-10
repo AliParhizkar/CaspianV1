@@ -14,13 +14,16 @@
             border: 1px solid gray;
         }
     </style>
+    <script type="text/javascript">
+        function onKeyDown(e) {
+            debugger;
+        }
+    </script>
     <link href="" rel="stylesheet" />
 </head>
 <body style="direction:rtl">
-    <div class="main-div">
-        <div class="child-div">
-
-        </div>
+    <div class="child-div">
+        <input onkeydown="onKeyDown(event)" />
     </div>
 </body>
 </html>

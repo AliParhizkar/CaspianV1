@@ -48,6 +48,7 @@ namespace Caspian.UI
                 oldSerachStringValue = LookupStringSearchValue;
                 grid.EnableLoading();
                 await grid.DataBind();
+                
             }
         }
 

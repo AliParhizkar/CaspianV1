@@ -9,13 +9,10 @@
 
 @if (ColSpan.HasValue)
 {
-    var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer);
-    string lableContainerCSSClassName = container?.GetLableContainerCSSClassName(ColSpan.Value, TotalSpan);
-    string controlContainerCSSClassName = container?.GetControlContainerCSSClassName(ColSpan.Value, TotalSpan);
-    <div class="@(lableContainerCSSClassName)">
+    <div class="@(GetLabelCSSClassName())">
         <label>@title</label>
     </div>
-    <div class="@(controlContainerCSSClassName)">
+    <div class="@(GetControlCSSClassName())">
         @RenderComboBox()
     </div>
 }
@@ -54,7 +51,7 @@ else
                 <div class="@className">
                     <input @ref="InputElement" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await OnNochangeKeyDown(arg)"
                            @oninput="async arg => await OnChangeValue(arg)" type="text" class="t-input" />
-                    <span @onmousedown="ToggelDropdownList" class="t-select">
+                    <span @onmousedown="ToggleDropdownList" class="t-select">
                         <i class="t-icon t-arrow-down fa fa-caret-down"></i>
                     </span>
                 </div>

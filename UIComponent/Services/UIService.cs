@@ -256,7 +256,7 @@ namespace Caspian.UI
         {
             var page = baseComponentService.Target as BasePage;
             if (page == null)
-                throw new CaspianException("Caspian Exception: You must inherits from BasePage or configure page manioaly");
+                throw new CaspianException("Caspian Exception: You must inherits from BasePage and add this code to page: base.BuildRenderTree(__builder);");
             page.ChangeState();
         }
 

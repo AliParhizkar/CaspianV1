@@ -117,7 +117,25 @@ namespace Caspian.UI
             InputElement = null;
         }
 
-        async Task ToggelDropdownList()
+        string GetLabelCSSClassName()
+        {
+            if (TotalSpan.HasValue)
+            {
+                var className = PageData?.RightToLeft == true ? "ps-2" : "pe-2";
+                className += " col-md-";
+                return className + (TotalSpan.Value - ColSpan);
+            }
+            var container = CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer;
+            return container.GetLabelContainerCSSClassName(ColSpan.Value);
+        }
+
+        string GetControlCSSClassName()
+        {
+            var str = $"col-md-{ColSpan} ";
+            return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
+        }
+
+        async Task ToggleDropdownList()
         {
             if (!disabled)
             {

@@ -25,7 +25,7 @@
                     <div class="c-menu-icon">
                         <div>
                             <span class="c-container">
-                                <i @onclick="ToggeleMenu" class="fa fa-bars" />
+                                <i @onclick="ToggleMenu" class="fa fa-bars" />
                             </span>
                         </div>
                         <div style="width:100px">
@@ -130,7 +130,7 @@
     [CascadingParameter]
     public Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    async Task ToggeleMenu()
+    async Task ToggleMenu()
     {
         hideMenu = !hideMenu;
         await storage.SetAsync("menu-status", hideMenu);
@@ -216,6 +216,7 @@
                         using var scope = ServiceScopeFactory.CreateScope();
                         var service = scope.GetService<CaspianDataService>();
                         service.UserId = userId.Value;
+                        service.Language = RightToLeft ? Language.Fa : Language.En;
                         var user = await scope.GetService<UserService>().SingleAsync(userId.Value);
                         userName = user.FName + " " + user.LName;
                         menusId = await scope.GetService<MenuAccessibilityService>().GetUserMenus(userId.Value);

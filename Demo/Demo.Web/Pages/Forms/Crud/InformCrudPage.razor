@@ -39,8 +39,8 @@
                         <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                         <GridColumn Field="t => t.Title" />
                         <GridColumn Field="t => t.ActiveType.EnumText()" />
-                        <GridColumn Field="t => t.Price.Seprate3Digit()" />
-                        <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
+                        <GridColumn Field="t => t.Price.DigitGrouping()" />
+                        <GridColumn Field="t => t.TakeoutPrice.DigitGrouping()" />
                         <GridColumn Field="t => t.Discountable.ToString()" />
                         <GridCommandColumns />
                     </Columns>

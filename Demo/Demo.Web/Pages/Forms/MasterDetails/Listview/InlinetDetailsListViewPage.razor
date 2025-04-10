@@ -70,13 +70,13 @@
                                         </TextField>
                                     </div>
                                     <div class="d-listview-col-2">
-                                        <TextField Field="t => t.Price.Seprate3Digit()">
+                                        <TextField Field="t => t.Price.DigitGrouping()">
                                             <Template>
                                                 @if (detail.Data.Product?.Discount > 0)
                                                 {
                                                     <div class="d-price d-discount">@(detail.Data.Price + detail.Data.Product.Discount)</div>
                                                 }
-                                                <div class="d-price">@(detail.Data.Price.Seprate3Digit())</div>
+                                                <div class="d-price">@(detail.Data.Price.DigitGrouping())</div>
                                             </Template>
                                         </TextField>
                                     </div>

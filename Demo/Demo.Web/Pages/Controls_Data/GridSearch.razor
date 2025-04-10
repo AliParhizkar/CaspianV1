@@ -1,9 +1,11 @@
 ﻿@namespace Demo.Web
 @page "/Demo/Grid-Search"
 <h2>Grid-Searching</h2>
+@inherits BasePage
 @inject ISearchService<Customer> Service
 @inject ISearchService<City> CityService
 @inject ISearchService<OrderDetail> OrderDetailService
+
 <p>
     We can search in the grid in the <b>three Modes</b>
     In this page we <b>describe this modes</b>.
@@ -21,7 +23,7 @@
                         <h4>Search on string type(Start-with, Contain, End-with)</h4>
                         <span class="c-demo-description">In this example, we define a variable of <b>Customer type</b> and <b>bind first name, last name and company name and mobile numer</b> for search. </span>
                         <span class="fa fa-info">Note: </span>
-                        <span><b>Mobie number</b> search is <b>Start-with</b> search other serahc is <b>Contain</b></span>
+                        <span><b>Mobile number</b> search is <b>Start-with</b> search other search is <b>Contain</b></span>
                     </div>
                     <div class="col-md-6">
                         <EntitySearch TEntity="Customer" Service="Service">
@@ -67,7 +69,7 @@
                             </div>
                         </div>
 
-                        <EntitySearch Service="Service">
+                        <EntitySearch Service="enumSearchService">
                             <DropdownList TValue="CustomerType" @bind-Value="context.CustomerType" ColSpan="8" OnSearch="SearchOnCustomerType" />
                             @if (showGender || genderSelectionType == 1)
                             {
@@ -75,7 +77,7 @@
                             }
                         </EntitySearch>
                         <div class="pt-3">
-                            <DataGrid TEntity="Customer" Service="Service" ShowInsertIcon="false">
+                            <DataGrid TEntity="Customer" Service="enumSearchService" ShowInsertIcon="false">
                                 <Columns>
                                     <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
                                     <GridColumn Field="t => t.CustomerType.EnumText()" />
@@ -147,7 +149,7 @@
                             <Columns>
                                 <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                                 <GridColumn Field="t => t.Title" />
-                                <GridColumn Field="t => t.Price.Seprate3Digit()" @bind-From="fromPrice" @bind-To="toPrice" />
+                                <GridColumn Field="t => t.Price.DigitGrouping()" @bind-From="fromPrice" @bind-To="toPrice" />
                             </Columns>
                         </DataGrid>
                     </div>
@@ -215,7 +217,7 @@
                         <DataGrid @ref="gridProduct" TEntity="Product" ConditionExpr="t => isOutOfStock == null || t.OutofStock == isOutOfStock">
                             <Columns>
                                 <GridColumn Field="t => t.Title" />
-                                <GridColumn Field="t => t.Price.Seprate3Digit()" />
+                                <GridColumn Field="t => t.Price.DigitGrouping()" />
                                 <GridColumn Field="t => t.OutofStock" />
                             </Columns>
                         </DataGrid>
@@ -235,6 +237,7 @@
     int genderSelectionType;
     City citySearch = new City();
     Customer customerStringSearch = new ();
+    ISearchService<Customer> enumSearchService;
     object fromPrice;
     object toPrice;
     object fromDate;
@@ -242,6 +245,12 @@
     //
     bool? isOutOfStock;
     DataGrid<Product> gridProduct;
+
+    protected override void OnInitialized()
+    {
+        enumSearchService = ServiceProvider.GetService<ISearchService<Customer>>();
+        base.OnInitialized();
+    }
 
     void SearchOnCustomerType(IEnumerable<CustomerType> customerTypes)
     {
@@ -252,5 +261,7 @@
             if (!customerTypes.Contains(CustomerType.Real))
                 Service.GetEnumField(t => t.Gender.Value).SetValues();
         }
+        
+         
     }
 }

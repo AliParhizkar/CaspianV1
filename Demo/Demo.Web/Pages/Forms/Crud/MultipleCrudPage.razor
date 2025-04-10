@@ -63,8 +63,8 @@
                     <DataGrid Service="ProductService" TEntity="Product" ContentHeight="206" ConditionExpr="t => t.ProductCategoryId == productcategoryId">
                         <Columns>
                             <GridColumn Field="t => t.Title" />
-                            <GridColumn Field="t => t.Price.Seprate3Digit()" />
-                            <GridColumn Field="t => t.TakeoutPrice.Seprate3Digit()" />
+                            <GridColumn Field="t => t.Price.DigitGrouping()" />
+                            <GridColumn Field="t => t.TakeoutPrice.DigitGrouping()" />
                             <GridColumn Field="t => t.Code" />
                             <GridColumn Field="t => t.ActiveType.EnumText()" />
                             <GridColumn Title="شرح پیشفرض" style="width:80px">

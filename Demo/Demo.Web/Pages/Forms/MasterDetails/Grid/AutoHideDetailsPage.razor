@@ -178,9 +178,9 @@
 TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right"VerticalAnchor="VerticalAnchor.Middle">
     <div style="width:450px;" class="row p-3 text-center">
         <div class="col-md-4">@selectedReceiptDetail.Material?.Title</div>
-        <div class="col-md-1">@selectedReceiptDetail.QuantityMain.Seprate3Digit()</div>
+        <div class="col-md-1">@selectedReceiptDetail.QuantityMain.DigitGrouping()</div>
         <div class="col-md-3">@selectedReceiptDetail.Material?.MainUnit?.Title</div>
-        <div class="col-md-1">@selectedReceiptDetail.QuantitySub.Seprate3Digit()</div>
+        <div class="col-md-1">@selectedReceiptDetail.QuantitySub.DigitGrouping()</div>
         <div class="col-md-3">@selectedReceiptDetail.Material?.Subunit?.Title</div>
     </div>
     <div style="width:450px;" class="row p-3">

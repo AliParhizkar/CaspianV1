@@ -1,6 +1,13 @@
 ﻿@page "/Marketing"
+<div @ref="element"></div>
+
 
 @code 
 {
+    ElementReference element;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
 }

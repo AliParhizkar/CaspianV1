@@ -56,13 +56,13 @@
                                                 <label>Price</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <TextField Field="t => t.Price.Seprate3Digit()" />
+                                                <TextField Field="t => t.Price.DigitGrouping()" />
                                             </div>
                                             <div class="col-md-4">
                                                 <label>Takeout Price</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <TextField Field="t => t.TakeoutPrice.Seprate3Digit()" />
+                                                <TextField Field="t => t.TakeoutPrice.DigitGrouping()" />
                                             </div>
                                         </div>
                                         <div class="justify-content-center d-flex p-2" style="width:279px;">
@@ -117,7 +117,7 @@
                                                 <label>Price</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <TextField Field="t => t.Price.Seprate3Digit()">
+                                                <TextField Field="t => t.Price.DigitGrouping()">
                                                     <EditTemplate>
                                                         <NumericTextBox @bind-Value="context.Data.Price" />
                                                     </EditTemplate>
@@ -127,7 +127,7 @@
                                                 <label>Takeout Price</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <TextField Field="t => t.TakeoutPrice.Seprate3Digit()">
+                                                <TextField Field="t => t.TakeoutPrice.DigitGrouping()">
                                                     <EditTemplate>
                                                         <NumericTextBox @bind-Value="context.Data.TakeoutPrice" />
                                                     </EditTemplate>
@@ -174,7 +174,7 @@
                                             <TextField Field="t => t.Date.ToShortDateString()" />
                                         </div>
                                         <div class="justify-content-center d-border-right" style="width:75px">
-                                            <TextField Field="t => t.OrderNo.Seprate3Digit()" />
+                                            <TextField Field="t => t.OrderNo.DigitGrouping()" />
                                         </div>
                                         <div class="justify-content-center d-border-right" style="width:calc(100% - 250px)">
                                             <TextField Field="t => t.Customer.CustomerType == CustomerType.Real ? t.Customer.FName + ' ' + t.Customer.LName : t.Customer.CompanyName" />

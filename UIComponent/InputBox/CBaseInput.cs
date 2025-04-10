@@ -91,6 +91,28 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
+
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
+
+        protected string GetLabelCSSClassName()
+        {
+            if (TotalSpan.HasValue)
+            {
+                var className = PageData?.RightToLeft == true ? "ps-2" : "pe-2";
+                className += " col-md-";
+                return className + (TotalSpan.Value - ColSpan);
+            }
+            var container = CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer;
+            return container.GetLabelContainerCSSClassName(ColSpan.Value);
+        }
+
+        protected string GetControlCSSClassName()
+        {
+            var str = $"col-md-{ColSpan} ";
+            return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
+        }
+
         public bool Validate()
         {
             if (Required && (Value == null || Value.ToString() == ""))

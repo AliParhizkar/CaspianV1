@@ -139,7 +139,7 @@
                 }
                 break;
             case ValueTypeKind.Int:
-                ruleValue = Convert.ToInt32(value).Seprate3Digit();
+                ruleValue = Convert.ToInt32(value).DigitGrouping();
                 break;
         }
         base.OnParametersSet();

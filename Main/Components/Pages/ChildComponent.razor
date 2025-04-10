@@ -51,7 +51,7 @@
             <Columns>
                 <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                 <GridColumn Field="t => t.Product.Title" Title="Product" />
-                <GridColumn Field="t => t.Price.Seprate3Digit()" Title="Price" />
+                <GridColumn Field="t => t.Price.DigitGrouping()" Title="Price" />
                 <GridColumn Field="t => t.Quantity" Title="Quantity" style="width:140px;">
                     <Template>
                         <div class="inc-dec-container">

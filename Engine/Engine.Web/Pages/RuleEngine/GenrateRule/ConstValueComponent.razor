@@ -98,7 +98,7 @@
                 else
                 {
                     constValue = decimalConstValue;
-                    faTitle = decimalConstValue.Seprate3Digit();
+                    faTitle = decimalConstValue.DigitGrouping();
                     valueTypeKind = int.TryParse(faTitle, out _) ? ValueTypeKind.Int : ValueTypeKind.Double;
                 }
                 break;

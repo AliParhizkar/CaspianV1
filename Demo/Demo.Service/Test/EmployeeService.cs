@@ -63,6 +63,7 @@ namespace Demo.Service
                 x.RuleFor(t => t.BirthProvinceId).CheckCascadeAsync(t => t.BirthCountryId, "استان و کشور محل تولد درست انتخاب نشده اند");
                 x.RuleFor(t => t.RegProvinceId).CheckCascadeAsync(t => t.RegCountryId, "استان و کشور محل ثبت شناسنامه درست انتخاب نشده اند");
             });
+            //RuleFor(t => t.IdentificationDetail.BirthCountryId.Value == )
         }
     }
 

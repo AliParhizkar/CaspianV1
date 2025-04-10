@@ -6,6 +6,10 @@ namespace Caspian.UI;
 [EventHandler("onEkeydown", typeof(EKeyboardEventArgs), enableStopPropagation: true, enablePreventDefault: true)]
 [EventHandler("onEkeypress", typeof(EKeyboardEventArgs), enableStopPropagation: true, enablePreventDefault: true)]
 [EventHandler("onEkeyup", typeof(EKeyboardEventArgs), enableStopPropagation: true, enablePreventDefault: true)]
+[EventHandler("onEclick", typeof(EMouseEventArgs), enableStopPropagation: true, enablePreventDefault: true)]
+[EventHandler("onEdblclick", typeof(EMouseEventArgs), enableStopPropagation: true, enablePreventDefault: true)]
+[EventHandler("onEmousedown", typeof(EMouseEventArgs), enableStopPropagation: true, enablePreventDefault: true)]
+[EventHandler("onEmouseup", typeof(EMouseEventArgs), enableStopPropagation: true, enablePreventDefault: true)]
 public static class EventHandlers
 {
     // This static class doesn't need to contain any members. It's just a place where we can put
@@ -21,3 +25,7 @@ public class EKeyboardEventArgs : KeyboardEventArgs
     public int SelectionEnd { get; set; }
 }
 
+public class EMouseEventArgs : MouseEventArgs
+{
+    public string Identifire { get; set; }
+}

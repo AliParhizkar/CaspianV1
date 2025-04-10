@@ -152,13 +152,13 @@
                                         </Lookup>
                                     </EditTemplate>
                                 </GridColumn>
-                                <GridColumn Field="t => t.Price.Seprate3Digit()" style="width:100px" >
+                                <GridColumn Field="t => t.Price.DigitGrouping()" style="width:100px" >
                                     <Template>
                                         @if (con.Data.Product?.Discount > 0)
                                         {
                                             <div class="d-price d-discount">@(con.Data.Product.Discount + con.Data.Price)$</div>
                                         }
-                                        <div class="d-price">@(con.Data.Price.Seprate3Digit())$</div>
+                                        <div class="d-price">@(con.Data.Price.DigitGrouping())$</div>
                                     </Template>
                                 </GridColumn>
                                 <GridColumn Field="t => t.Quantity" style="width:100px">

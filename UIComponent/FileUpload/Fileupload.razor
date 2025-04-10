@@ -99,8 +99,8 @@
                         if (arg.File.Size > MaxAllowedSize)
                         {
                             var message = dataService.Language == Language.Fa ? 
-                                $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.Seprate3Digit()} می باشد." : 
-                                $"The maximum size allowed for uploading is{MaxAllowedSize.Seprate3Digit()}";
+                                $"حداکثر مجاز برای حجم فایل برابر {MaxAllowedSize.DigitGrouping()} می باشد." : 
+                                $"The maximum size allowed for uploading is{MaxAllowedSize.DigitGrouping()}";
                             await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
                         }
                         else
@@ -126,7 +126,7 @@
                                 if (file.Size > MaxAllowedSize)
                                 {
                                     flag = false;
-                                    await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", $" حجم فایل {file.Name} بیش از حجم مجاز ({MaxAllowedSize.Seprate3Digit()}) می باشد.");
+                                    await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", $" حجم فایل {file.Name} بیش از حجم مجاز ({MaxAllowedSize.DigitGrouping()}) می باشد.");
                                     break;
                                 }
                             if (flag)

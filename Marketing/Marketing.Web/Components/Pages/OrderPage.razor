@@ -10,7 +10,7 @@
         foreach(var category in categories)
         {
             var className = category.Id == categoryId ? "m-category m-selected" : "m-category";
-            <div class="@className" @onclick="e => SelectCategory(e, category)">
+            <div class="@className" @onclick="async e => await SelectCategory(e, category)">
                 @if (category.Categories != null && category.Categories.Count > 0)
                 {
                     <span>@category.Name</span>
@@ -25,7 +25,14 @@
     }
 </div>
 <div class="m-products">
-    
+    @if(products != null)
+    {
+        foreach(var product in products)
+        {
+            var className = product.Id == selectedProductId ? "m-product m-selected" : "m-product";
+            <div class="@className">@product.Title</div>
+        }
+    }
 </div>
 <div style="width:50%;margin: 5px auto">
     <ComboBox @bind-Value="customerId" TValue="int?" TEntity="Customer" TextExpression="t => t.Name" />
@@ -41,8 +48,8 @@
     <div class="m-subcategories">
         @foreach (var category in categories.Single(t => t.Id == categoryId).Categories)
         {
-            var className = category.Id == categoryId ? "m-subcategory m-selected" : "m-subcategory";
-            <div class="@className" @onclick="() => SelectCategory(category)">@category.Name</div>
+            var className = category.Id == subCategoryId ? "m-subcategory m-selected" : "m-subcategory";
+            <div class="@className" @onclick="async() =>await SelectCategory(category)" @onclick:stopPropagation>@category.Name</div>
         }
     </div>
 
@@ -52,14 +59,23 @@
     WindowStatus status, popupStatus;
 
     IList<ProductCategory> categories;
-    int? categoryId, selectedCategoryId, selectedProductId, left, top;
+    IList<Product> products;
+    int? categoryId, subCategoryId, selectedProductId, left, top;
 
-    void SelectCategory(ProductCategory category)
+    async Task SelectCategory(ProductCategory category)
     {
-        selectedCategoryId = category.Id;
+        subCategoryId = category.Id;
+        popupStatus = WindowStatus.Close;
+        await GetProducts(category.Id);
     }
 
-    void SelectCategory(MouseEventArgs args, ProductCategory category)
+    async Task GetProducts(int productId)
+    {
+        using var service = CreateScope().GetService<ProductService>();
+        products = await service.GetAll().Where(t => t.CategoryId == productId).ToListAsync();
+    }
+
+    async Task SelectCategory(MouseEventArgs args, ProductCategory category)
     {
         categoryId = category.Id;
         if (category.Categories != null)
@@ -70,8 +86,8 @@
         }
         else
         {
-            popupStatus = WindowStatus.Close;
-            selectedCategoryId = category.Id;
+            subCategoryId = category.Id;
+            await GetProducts(category.Id);
         }
     }
 

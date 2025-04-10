@@ -4,8 +4,8 @@ using Caspian.Common.Service;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
-using Microsoft.AspNetCore.Components;
 using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
@@ -16,19 +16,36 @@ namespace Caspian.UI
         ElementReference element;
         string text;
 
+        [Parameter]
+        public string Title { get; set; }
+
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
+
         async Task ValuesChangedHandler(IList<TDetails> details)
         {
             text = checkboxList.SelectedItemsText();
             if (ValuesChanged.HasDelegate)
                 await ValuesChanged.InvokeAsync(details);
         }
-       
 
-        [Parameter]
-        public string Title { get; set; }
+        string GetLabelCSSClassName()
+        {
+            if (TotalSpan.HasValue)
+            {
+                var className = PageData?.RightToLeft == true ? "ps-2" : "pe-2";
+                className += " col-md-";
+                return className + (TotalSpan.Value - ColSpan);
+            }
+            var container = CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer;
+            return container.GetLabelContainerCSSClassName(ColSpan.Value);
+        }
 
-        [CascadingParameter]
-        internal PageData PageData { get; set; }
+        string GetControlCSSClassName()
+        {
+            var str = $"col-md-{ColSpan} ";
+            return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
+        }
 
         protected override async Task OnInitializedAsync()
         {

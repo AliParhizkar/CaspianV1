@@ -7,8 +7,6 @@ namespace Caspian.UI
 {
     public partial class NumericTextBox<TValue>: CBaseInput<TValue>
     {
-        int? maxLength = 8;
-
         [Parameter]
         public int Total { get; set; } = 8;
 
@@ -16,7 +14,18 @@ namespace Caspian.UI
         public int? NumberDigit { get; set; } = 2;
 
         [Parameter]
-        public bool DigitGrouping { get; set; } = true;
+        public bool DigitGrouping { get; set; }
+
+        string GetDigitGrouping(string digit)
+        {
+            if (!digit.HasValue())
+                return "";
+            var array = digit.Split('.');
+            var str = Convert.ToInt64(array[0]).DigitGrouping();
+            if (array.Length > 1)
+                str += '.' + array[1];
+            return str;
+        }
 
         Dictionary<string, object> GetAttributes()
         {
@@ -31,6 +40,8 @@ namespace Caspian.UI
             }
             attributes["class"] = className;
             attributes["total"] = Total;
+            if (DigitGrouping)
+                attributes["digit-grouping"] = true;
             if (NumberDigit.HasValue)
                 attributes["number-digit"] = NumberDigit.Value;
             if (Style.HasValue())
@@ -71,10 +82,6 @@ namespace Caspian.UI
                 InputAttributes["id"] = Id.Replace('.', '_');
                 InputAttributes["name"] = Id.Replace('.', '_');
             }
-            if (NumberDigit == 0)
-                maxLength = Total;
-            else
-                maxLength = null;
             base.OnParametersSet();
         }
 

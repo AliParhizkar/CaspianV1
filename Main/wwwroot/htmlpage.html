@@ -4,49 +4,68 @@
     <meta charset="utf-8" />
     <title></title>
     <style type="text/css">
-        .modal{
-            position:fixed;
-            left:0;
-            right:0;
-            top:0;
-            bottom:0;
-            background-color:rgba(0, 0, 0, 0.12);
-            z-index:10000000;
-            pointer-events:none;
-            overflow:hidden;
+        .main-div {
+            margin: 50px 100px;
+            border: 1px solid gray;
+        }
+
+        .child-div {
+            width: 300px;
+            height: 150px;
+            border: 1px solid gray;
+            margin:0 auto;
         }
     </style>
     <script type="text/javascript">
-        function test() {
-            let el = document.getElementById('test');
-            let rec = el.getBoundingClientRect();
-            let target = document.getElementById('target');
-            target.style.left = rec.left + 'px';
-            target.style.top = rec.top + 'px';
-            var div = document.createElement('div');
-            div.className = 'modal';
-            document.body.appendChild(div)
+        var oldStart, oldEnd
+        function onKeyDown(e) {
+            let keyCode = e.keyCode;
+            let isValid = false;
+            if (keyCode >= 48 && keyCode <= 57 || keyCode >= 96 && keyCode <= 105)
+                isValid = true;
+
+            let array = [8, 9, 37, 38, 39, 40, 46];
+            if (array.indexOf(keyCode) != -1)
+                isValid = true;
+            console.log(keyCode);
+            console.log(isValid);
+            if (!isValid) 
+                e.preventDefault();
+        }
+        function onInput(e) {
+            let input = e.target, start = input.selectionStart, end = input.selectionEnd;
+            let count = input.value.substring(0, start).split(',').length - 1;
+            input.value = sepreate3Digit(input.value);
+            let count1 = input.value.substring(0, start).split(',').length - 1;
+            if (count != count1) {
+                input.selectionStart = start + 1;
+                input.selectionEnd = end + 1;
+            }
+            else {
+                input.selectionStart = start;
+                input.selectionEnd = end;
+            }
+            console.log('count: ' + count + ' -- count1: ' + count1);
+            console.log(input.selectionStart + '--' + start);
+        }
+        function sepreate3Digit(value) {
+            value = value.replace(/,/g, '');
+            let str = '', counter = 3 - value.length % 3;
+            for (let index in value) {
+                str += value[index];
+                counter++;
+                if (counter % 3 == 0 && counter <= value.length) {
+                    str += ',';
+                }
+            }
+            return str;
         }
     </script>
-
+    <link href="" rel="stylesheet" />
 </head>
-<body style="direction:rtl">
-    <div style="height:350px;border:1px solid gray"></div>
-    <div style="height:350px;border:1px solid gray"></div>
-    <div style="height:250px;border:1px solid gray;overflow:auto">
-        <div style="height:350px;border:1px solid red"></div>
-        <div id="test" style="height:30px;width:300px;margin:0 auto;border:1px solid blue">
-            <button onclick="test()">Test</button>
-        </div>
-        <div style="height:300px;width:300px;margin:0 auto;border:1px solid blue">
-
-        </div>
-    </div>
-    <div style="height:600px;">
-
-    </div>
-    <div id="target" style="width:200px;height:250px;position:fixed;background-color:aqua">
-
+<body style="">
+    <div class="child-div">
+        <input onkeydown="onKeyDown(event)" oninput="onInput(event)" />
     </div>
 </body>
 </html>

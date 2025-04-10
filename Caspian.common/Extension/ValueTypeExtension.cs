@@ -8,17 +8,17 @@ namespace Caspian.Common
 {
     public static class ValueTypeExtension
     {
-        public static string Seprate3Digit(this int value)
+        public static string DigitGrouping(this int value)
         {
             return string.Format("{0:#,0}", value);
         }
 
-        public static string Seprate3Digit(this long value)
+        public static string DigitGrouping(this long value)
         {
             return string.Format("{0:#,0}", value);
         }
 
-        public static string Seprate3Digit(this int? value)
+        public static string DigitGrouping(this int? value)
         {
             if (value.HasValue)
                 return string.Format("{0:#,0}", value);
@@ -51,7 +51,7 @@ namespace Caspian.Common
             return str;
         }
 
-        public static string Seprate3Digit(this long? value)
+        public static string DigitGrouping(this long? value)
         {
             if (value.HasValue)
                 return string.Format("{0:#,0}", value);
@@ -90,7 +90,7 @@ namespace Caspian.Common
             return str;
         }
 
-        public static string Seprate3Digit(this decimal value)
+        public static string DigitGrouping(this decimal value)
         {
             if (value == 0)
                 return "0";
@@ -117,10 +117,10 @@ namespace Caspian.Common
             return date.AddDays(-day);
         }
 
-        public static string Seprate3Digit(this decimal? value)
+        public static string DigitGrouping(this decimal? value)
         {
             if (value.HasValue)
-                return value.Value.Seprate3Digit();
+                return value.Value.DigitGrouping();
             return "";
         }
 

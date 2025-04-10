@@ -84,7 +84,7 @@ namespace Caspian.Engine.Service
                                 var batchServiceType = typeof(BatchService<,,>).MakeGenericType(baseType.GenericTypeArguments);
                                 services.AddScoped(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
                                 var searchType = typeof(ISearchService<>).MakeGenericType(type1);
-                                services.TryAddTransient(searchType, provider => Activator.CreateInstance(batchServiceType, provider));
+                                services.AddScoped(searchType, provider => Activator.CreateInstance(batchServiceType, provider));
                             }
                         }
                         else if (baseType.GenericTypeArguments.Length == 2)
@@ -97,7 +97,7 @@ namespace Caspian.Engine.Service
                                 var searchType = typeof(ISearchService<>).MakeGenericType(type1);
                                 var batchServiceType = typeof(BatchService<,>).MakeGenericType(baseType.GenericTypeArguments);
                                 services.AddScoped(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
-                                services.TryAddTransient(searchType, provider => Activator.CreateInstance(batchServiceType, provider));
+                                services.AddScoped(searchType, provider => Activator.CreateInstance(batchServiceType, provider));
                             }
                         }
                         else if (baseType.GenericTypeArguments.Length == 1)
@@ -111,13 +111,13 @@ namespace Caspian.Engine.Service
                                 var searchType = typeof(ISearchService<>).MakeGenericType(genericType);
                                 var simpleServiceType = typeof(UIService<>).MakeGenericType(genericType);
                                 services.AddScoped(simpleInterfaceService, provider => Activator.CreateInstance(simpleServiceType, provider));
-                                services.TryAddTransient(searchType, provider => Activator.CreateInstance(simpleServiceType, provider));
+                                services.AddScoped(searchType, provider => Activator.CreateInstance(simpleServiceType, provider));
                                 break;
                             }
                             else
                             {
-                                var validatoeType = typeof(AbstractValidator<>).MakeGenericType(genericType);
-                                if (baseType == validatoeType)
+                                var validatorType = typeof(AbstractValidator<>).MakeGenericType(genericType);
+                                if (baseType == validatorType)
                                 {
                                     services.AddScoped(typeof(IValidator<>).MakeGenericType(genericType), provider => Activator.CreateInstance(type, provider));
                                     break;

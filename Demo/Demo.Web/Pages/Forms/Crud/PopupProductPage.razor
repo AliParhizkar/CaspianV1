@@ -11,7 +11,7 @@
                     <DataGrid TEntity="Product" Service="Service" ConditionExpr="t => t.ProductCategoryId == CategoryId" ContentHeight="300">
                         <Columns>
                             <GridColumn Field="t => t.Title" />
-                            <GridColumn Field="t => t.Price.Seprate3Digit()" />
+                            <GridColumn Field="t => t.Price.DigitGrouping()" />
                             <GridCommandColumns />
                         </Columns>
                     </DataGrid>

@@ -153,9 +153,9 @@ namespace Caspian.Common
         public static Language GetLanguage<TModel>(this ValidationContext<TModel> context)
         {
             Language language = Language.En;
-            if (context.RootContextData.ContainsKey("__ServiceScope"))
+            if (context.RootContextData.ContainsKey("__ServiceProvider"))
             {
-                var provider = context.RootContextData["__ServiceScope"] as IServiceProvider;
+                var provider = context.RootContextData["__ServiceProvider"] as IServiceProvider;
                 var service = provider.GetService<CaspianDataService>();
                 language = service.Language ?? Language.Fa;
             }
@@ -167,7 +167,6 @@ namespace Caspian.Common
         {
             return ruleBuilder.Custom((value, context) =>
             {
-                
                 var language = context.GetLanguage();
                 if (value is string && Convert.ToString(value) == "")
                     value = default(TProperty);
@@ -446,27 +445,46 @@ namespace Caspian.Common
                         if (batchService != null && batchService.DetailPropertiesInfo.Contains(info))
                             continue;
                         var type = info.PropertyType.GetGenericArguments()[0];
-                        var pkey = type.GetPrimaryKey();
-                        var foreignKey = pkey.GetCustomAttribute<ForeignKeyAttribute>();
+                        var key = type.GetPrimaryKey();
+                        var foreignKey = key.GetCustomAttribute<ForeignKeyAttribute>();
                         if (foreignKey != null)
                         {
                             type = type.GetProperty(foreignKey.Name).PropertyType;
                         }
                         else
                         {
+                            var serviceType = typeof(IBaseService<>).MakeGenericType(type);
+                            var provider = (IServiceProvider)context.RootContextData["__ServiceProvider"];
+                            var service = provider.GetService(serviceType) as IBaseService;
+                            ParameterExpression paramExpr = null;
+                            Expression expr = null;
                             var inverseProperty = info.GetCustomAttribute<InversePropertyAttribute>()?.Property;
                             var info1 = type.GetForeignKey(typeof(TModel), inverseProperty);
-                            var paramExpr = Expression.Parameter(type);
-                            Expression expr = Expression.Property(paramExpr, info1);
+                            if (service == null)
+                            {
+                                var pKeyName = type.GetPrimaryKey().Name;
+                                var oneToOne = type.GetProperties().SingleOrDefault(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pKeyName);
+                                serviceType = typeof(IBaseService<>).MakeGenericType(oneToOne.PropertyType);
+                                service = provider.GetService(serviceType) as IBaseService;
+                                if (service == null)
+                                    throw new CaspianException($"Service of Type IBaseService<{(oneToOne?.PropertyType ?? type).Name}> not injected");
+                                paramExpr = Expression.Parameter(oneToOne.PropertyType, "t");
+                                var info2 = oneToOne.PropertyType.GetProperties().Single(t => t.PropertyType == type);
+                                expr = Expression.Property(paramExpr, info2);
+                                expr = Expression.Property(expr, info1);
+                            }
+                            else
+                            {
+                                paramExpr = Expression.Parameter(type, "t");
+                                expr = Expression.Property(paramExpr, info1);
+                            }
+
+                            
                             if (info1.PropertyType.IsNullableType())
                                 expr = Expression.Property(expr, "Value");
                             expr = Expression.Equal(expr, Expression.Constant(value));
                             var lambda = Expression.Lambda(expr, paramExpr);
-                            var serviceType = typeof(IBaseService<>).MakeGenericType(type);
-                            var provider = (IServiceProvider)context.RootContextData["__ServiceProvider"];
-                            var service = provider.GetService(serviceType) as IBaseService;
-                            if (service == null)
-                                throw new CaspianException($"Service of Type IBaseService<{type}> not injected");
+
                             var hasDetails = await service.GetAllRecords().Where(lambda).OfType<object>().AnyAsync();
                             if (hasDetails)
                             {

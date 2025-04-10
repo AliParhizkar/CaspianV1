@@ -29,7 +29,7 @@
                                 <label>value</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;">@intValue.Seprate3Digit()</label>
+                                <label style="color:red;">@intValue.DigitGrouping()</label>
                             </div>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                                 <label>Value</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;">@(intNullableValue == null ? "---" : intNullableValue.Seprate3Digit())</label>
+                                <label style="color:red;">@(intNullableValue == null ? "---" : intNullableValue.DigitGrouping())</label>
                             </div>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                                 <label>Value</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <label style="color:red;">@(decimalValue.Seprate3Digit())</label>
+                                <label style="color:red;">@(decimalValue.DigitGrouping())</label>
                             </div>
                         </div>
                     </div>
@@ -146,6 +146,17 @@
                             <div class="ps-5 pe-5 col-md-12">
                                 <NumericTextBox @ref="control" @bind-Value="intValue" Disabled="disable" />
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Digit Grouping</h4>
+                        <span class="c-demo-description"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="ps-5 pe-5">
+                            <NumericTextBox TValue="long" Total="12" DigitGrouping />
                         </div>
                     </div>
                 </div>

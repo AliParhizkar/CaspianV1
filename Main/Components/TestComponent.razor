@@ -6,18 +6,11 @@
 @using Engine.Model
 @using Microsoft.EntityFrameworkCore
 @using System.Linq.Expressions
-@inherits BasePage
-@{
-    base.BuildRenderTree(__builder);
-}
+<div style="width:300px;margin:10px auto">
+    <NumericTextBox @bind-Value="id" Total="15" DigitGrouping />
+</div>
 
 @code 
 {
-    protected override async Task OnInitializedAsync()
-    {
-        using var scope = CreateScope();
-        var query = scope.GetService<OrderDetailService>().GetAll();
-        var result = await new ReportEngine(scope).GetData(1007, query);
-        await base.OnInitializedAsync();
-    }
+    int id;
 }

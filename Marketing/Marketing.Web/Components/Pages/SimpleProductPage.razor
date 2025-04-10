@@ -1,0 +1,55 @@
+﻿@page "/Marketing/SimpleProduct"
+@inject IUIService<Product> Service
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pt-2 pb-2">
+    <EntitySearch TEntity="Product" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <ComboBox TEntity="ProductCategory" TValue="int" TextExpression="t => t.Name" @bind-Value="context.CategoryId" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="Product" Service="Service">
+        <Columns>
+            <GridColumn Field="t=> t.Category.Category.Name ?? t.Category.Name" Title="گروه اصلی" />
+            <GridColumn Field="t=> t.Category.Name" Title="گروه فرعی" />
+            <GridColumn Field="t=> t.Title" Title="عنوان" />
+            <GridColumn Field="t=> t.Price" />
+            <GridColumn Field="t=> t.Code" />
+                <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Style="width:450px" Service="Service" Title="محصول">
+        <CaspianForm TEntity="Product" Service="Service" OnSubmit="FormSubmitted">
+            <ComboBox  @bind-Value="parentCategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == null"
+            ColSpan="9" Title="گروه اصلی" OnChange="() => cmbCategory.EnableLoading()" />
+            <ComboBox @ref="cmbCategory" TValue="int" @bind-Value="categoryId" TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == parentCategoryId"
+            ColSpan="9" Title="گروه فرعی" />
+            <NumericTextBox @bind-Value="context.Price" />
+            <StringTextBox @bind-Value="context.Title" ColSpan="9" />
+            <StringTextBox @bind-Value="context.Code" ColSpan="9" />
+            <FormCommandButton ColSpan="9" />
+        </CaspianForm>
+    </Window>
+</div>
+
+@code
+{
+    ComboBox<ProductCategory, int> cmbCategory;
+    int parentCategoryId, categoryId;
+
+    async Task FormSubmitted(Product product)
+    {
+        using var service = CreateScope().GetService<ProductCategoryService>();
+        if (await service.AnyAsync (t => t.CategoryId == product.CategoryId))
+            product.CategoryId = categoryId;
+        else
+            product.CategoryId = parentCategoryId;
+    }
+
+    void ParentCategoryChanged()
+    {
+        cmbCategory.EnableLoading();
+        categoryId = 0;
+    }
+}

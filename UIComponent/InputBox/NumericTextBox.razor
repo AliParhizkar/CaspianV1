@@ -4,13 +4,10 @@
 @inherits CBaseInput<TValue>
 @if (ColSpan.HasValue)
 {
-    var container = CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer;
-    string lableContainerCSSClassName = container?.GetLableContainerCSSClassName(ColSpan.Value, TotalSpan);
-    string controlContainerCSSClassName = container?.GetControlContainerCSSClassName(ColSpan.Value, TotalSpan);
-    <div class="@(lableContainerCSSClassName)">
+    <div class="@(base.GetLabelCSSClassName())">
         <label>@title</label>
     </div>
-    <div class="@(controlContainerCSSClassName)">
+    <div class="@(base.GetControlCSSClassName())">
         @RenderNumericTextBox()
     </div>
 }
@@ -26,16 +23,16 @@ else
     {
         return __builder =>
         {
+            var text = Convert.ToString(Value);
+            var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+            text = text.Replace(decimalDigits, '.');
+            if (DigitGrouping)
+                text = GetDigitGrouping(text);
             if (disabled)
                 InputAttributes["disabled"] = "disabled";
             else
                 InputAttributes.Remove("disabled");
             <div @attributes="GetAttributes()">
-                @{
-                    var text = Convert.ToString(Value);
-                    var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
-                    text = text.Replace(decimalDigits, '.');
-                }
                 @if (BindingType == BindingType.OnChange)
                 {
                     <input @ref="InputElement" @attributes="InputAttributes" value="@text" @onchange="OnChangeValue" class="t-input" />

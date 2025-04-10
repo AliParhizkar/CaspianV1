@@ -1,7 +1,7 @@
 ﻿.d-detail
 {
     display:flex;
-    width:100%;
+    width:calc(100% - 2px);
     flex-wrap:wrap;
 }
 .fa-chevron-up{

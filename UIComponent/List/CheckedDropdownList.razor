@@ -6,13 +6,10 @@
 @inject IServiceScopeFactory ScopeFactory
 @if (ColSpan.HasValue)
 {
-    var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer);
-    string lableContainerCSSClassName = container.GetLableContainerCSSClassName(ColSpan.Value, TotalSpan);
-    string controlContainerCSSClassName = container.GetControlContainerCSSClassName(ColSpan.Value, TotalSpan);
-    <div class="@(lableContainerCSSClassName)">
+    <div class="@(GetLabelCSSClassName())">
         <label>@Title</label>
     </div>
-    <div class="@(controlContainerCSSClassName)">
+    <div class="@(GetControlCSSClassName())">
         @RenderControl()
     </div>
 }

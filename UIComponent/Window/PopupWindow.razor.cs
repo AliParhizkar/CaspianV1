@@ -74,11 +74,7 @@ namespace Caspian.UI
         public async Task Close()
         {
             if (AutoHide && StatusChanged.HasDelegate)
-            {
-                //Delay to Value of control set in binding after change
-                await Task.Delay(100);
                 await StatusChanged.InvokeAsync(WindowStatus.Close);
-            }
         }
 
         protected override void OnParametersSet()

@@ -1400,8 +1400,40 @@ var caspian;
             };
             this.readAttributes();
             this.bindAttributes();
-            if (type != 'string')
+            if (type != 'string') {
                 input.onkeypress = e => this.bindKeypress(e);
+                if (this.digitGrouping)
+                    input.oninput = e => this.bindOnInput(e);
+            }
+        }
+        bindOnInput(e) {
+            let input = e.target, start = input.selectionStart, end = input.selectionEnd;
+            let count = input.value.substring(0, start).split(',').length - 1;
+            input.value = this.sepreate3Digit(input.value);
+            let count1 = input.value.substring(0, start).split(',').length - 1;
+            if (count != count1) {
+                input.selectionStart = start + 1;
+                input.selectionEnd = end + 1;
+            }
+            else {
+                input.selectionStart = start;
+                input.selectionEnd = end;
+            }
+        }
+        sepreate3Digit(value) {
+            let isNegativ = value.length > 0 && value[0] == '-';
+            if (isNegativ)
+                value = value.replace('-', '');
+            value = value.replace(/,/g, '');
+            let str = isNegativ ? '-' : '', counter = 3 - value.length % 3;
+            for (let index in value) {
+                str += value[index];
+                counter++;
+                if (counter % 3 == 0 && counter <= value.length) {
+                    str += ',';
+                }
+            }
+            return str;
         }
         bindKeypress(e) {
             let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
@@ -1419,8 +1451,8 @@ var caspian;
                 isValid = false;
             if (start == 0 && end == 0 && value.length > 0 && value[0] == '-' && code >= 48 && code <= 57)
                 isValid = false;
-            let len = value.replace('-', '').replace('.', '').length;
-            if (len == this.total && start == end && code != 45 && code != 46)
+            let len = value.replace('-', '').replace('.', '').replace(/,/g, '').length;
+            if (len >= this.total && start == end && code != 45 && code != 46)
                 isValid = false;
             if (!isValid)
                 e.preventDefault();
@@ -1446,6 +1478,7 @@ var caspian;
                 this.total = attrs['total'].value;
             if (attrs['number-digit'] != null)
                 this.numberDigit = attrs['number-digit'].value;
+            this.digitGrouping = attrs['digit-grouping'] != null;
         }
     }
     caspian.TextBox = TextBox;

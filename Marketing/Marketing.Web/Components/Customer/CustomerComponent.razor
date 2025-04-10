@@ -14,27 +14,34 @@
         <GridCommandColumns />
     </Columns>
 </DataGrid>
-<TypeWindow TEntity="CustomerAddress" Service="Service" Title="آدرس" Style="width:400px;" OnSubmit="async t => await FormSubmit(t)">
+<TypeWindow TEntity="CustomerAddress" Service="Service" Title="آدرس" OnOpen="SetDefaultAddress" Style="width:400px;" OnSubmit="async t => await FormSubmit(t)">
     <StringTextBox @bind-Value="context.Address" Rows="3" MultiLine ColSpan="8" />
     <CheckBox @bind-Value="context.IsDefault" ColSpan="8" />
     <FormCommandButton ColSpan="8" />
 </TypeWindow>
 
+
 @code 
 {
+    void SetDefaultAddress(CustomerAddress address)
+    {
+        if (address.Id == 0)
+            address.IsDefault = !Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault);
+    }
+
     async Task FormSubmit(CustomerAddress address)
     {
-        DefaultAddressManagment addressManagment = ConfigService.Config.DefaultAddressManagment;
-        if (address.IsDefault && addressManagment > DefaultAddressManagment.User)
+        DefaultAddressManagment addressManagement = ConfigService.Config.DefaultAddressManagment;
+        if (address.IsDefault && addressManagement > DefaultAddressManagment.User)
         {
             var old = Service.DetailDataView.GetBatchEntities().SingleOrDefault(t => t.IsDefault);
             if (old != null)
             {
-                if (addressManagment == DefaultAddressManagment.System || await Page.Confirm("آیا می خواهید این آدرس بعنوان آدرس پیشفرض انتخاب شود؟"))
+                if (addressManagement == DefaultAddressManagment.System || await Page.Confirm("آیا می خواهید این آدرس بعنوان آدرس پیشفرض انتخاب شود؟"))
                 {
                     old.IsDefault = false;
                     await Service.DetailDataView.UpdateAsync(old);
-                    if (addressManagment == DefaultAddressManagment.System)
+                    if (addressManagement == DefaultAddressManagment.System)
                         Page.ShowMessage("آدرس جاری بعنوان آدرس پیشفرض انتخاب شد.");
                 }
             }

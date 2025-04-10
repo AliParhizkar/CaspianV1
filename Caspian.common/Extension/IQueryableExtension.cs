@@ -242,7 +242,7 @@ namespace Caspian.Common.Extension
             return list;
         }
 
-        internal static IQueryable<TEntity> Search<TEntity>(this IQueryable<TEntity> source, TEntity search, IDictionary<string, SearchType> searchs, IDictionary<string, ICollection> enumValues) where TEntity : class
+        internal static IQueryable<TEntity> Search<TEntity>(this IQueryable<TEntity> source, TEntity search, IDictionary<string, SearchType> searches, IDictionary<string, ICollection> enumValues) where TEntity : class
         {
             if (search == null)
                 return source;
@@ -289,9 +289,9 @@ namespace Caspian.Common.Extension
                 else
                 {
                     string methodName = null;
-                    if (searchs?.ContainsKey(fieldName) == true)
+                    if (searches?.ContainsKey(fieldName) == true)
                     {
-                        var searchType = searchs[fieldName];
+                        var searchType = searches[fieldName];
                         if (searchType == SearchType.StartWith)
                             methodName = "StartsWith";
                         else if (searchType == SearchType.EndWith)

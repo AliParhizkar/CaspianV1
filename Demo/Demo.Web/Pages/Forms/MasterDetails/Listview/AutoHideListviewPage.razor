@@ -82,7 +82,7 @@
                             </TextField>
                         </div>
                         <div class="d-lst-2">
-                            <TextField Field="t => t.QuantityMain.Seprate3Digit()">
+                            <TextField Field="t => t.QuantityMain.DigitGrouping()">
                                 <EditTemplate>
                                     <NumericTextBox @ref="txtMainUnit" @bind-Value="detail.Data.QuantityMain" @onkeyup="async e =>  await MainUnitChanged(e, detail.Data, detail.UpsertMode.Value)" />
                                 </EditTemplate>
@@ -98,7 +98,7 @@
                         <div class="d-lst-4">
                             @if (detail?.Data?.Material?.SubunitId != null || detail?.Data?.Material?.Subunit?.Title != null)
                             {
-                                <TextField Field="t => t.QuantitySub.Seprate3Digit()">
+                                <TextField Field="t => t.QuantitySub.DigitGrouping()">
                                     <EditTemplate>
                                         <NumericTextBox @ref="txtSubunit" @onkeyup="async e =>  await SubUnitChanged(e, detail.Data, detail.UpsertMode.Value)" @bind-Value="detail.Data.QuantitySub" />
                                     </EditTemplate>

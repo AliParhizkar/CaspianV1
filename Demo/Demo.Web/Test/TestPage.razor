@@ -1,17 +1,69 @@
 ﻿@page "/Demo/Test"
-<div style="background-color:white;" class="p-3">
-    <CaspianForm Model="employee" ColumnsCount="2" >
-        <StringTextBox @bind-Value="employee.FName" ColSpan="4" />
-        <StringTextBox @bind-Value="employee.LName" ColSpan="4" />
-        <StringTextBox @bind-Value="employee.Address.AddressName" ColSpan="10" />
-    </CaspianForm>
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+@inject IUIService<Employee> Service
 
+<div style="width:800px;margin:10px auto">
+    <EntitySearch TEntity="Employee" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.IdCard" ColSpan="4" MaxLength="10" SearchType="SearchType.StartWith" />
+        <StringTextBox @bind-Value="context.LName" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="Employee" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.EmploymentNo" />
+            <GridColumn Field="t => t.FName + ' ' + t.LName" Title="نام نام خانوادگی" />
+            <GridColumn Field="t => t.IdentificationDetail.FatherName" />
+            <GridColumn Field="t => t.IdCard" />
+            <GridColumn Field="t => t.Scope.Title" Title="حوزه" />
+            <GridColumn Field="t => t.EmployeeType.Title" Title="نوع استخدام" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Style="width:900px" Title="Employee" Service="Service">
+        <EntityTabPanel TEntity="Employee" Service="Service" Vertical>
+            <Content Context="employee">
+                <ChildTabPanelItem Child="t => t" Title="مشخصات اصلی" ColumnsCount="2" >
+                    <div class="row">
+                        <div class="col-md-7 row pb-2">
+                            <ComboBox TValue="int" TEntity="SimpleData" @bind-Value="employee.ScopeId" TextExpression="t => t.Title" 
+                            ConditionExpression="t => t.DataType == SimpleDataType.Scope" ColSpan="8"  />
+                            <ComboBox TValue="int?" TEntity="SimpleData" @bind-Value="employee.CostCenterId" TextExpression="t => t.Title"
+                            ConditionExpression="t => t.DataType == SimpleDataType.CostCenter" ColSpan="8" />
+                            <StringTextBox @bind-Value="employee.FName" ColSpan="8" />
+                            <StringTextBox @bind-Value="employee.LName" ColSpan="8" />
+                        </div>
+                        <div class="col-md-5 justify-content-center row pb-2 pt-2">
+                            <Fileupload OnChange="e => SetImage(e, employee)" Accept="image/*"
+                            Title="Click for upload" MaxAllowedSize="60_000">
+                                <PictureBox Data="employee.Image" NoContentTitle="Click for upload"
+                                style="width:120px;height:150px;background-size:cover" />
+                            </Fileupload>
+                        </div>
+                        <DropdownList @bind-Value="employee.Gender" ColSpan="4" />
+                        <StringTextBox @bind-Value="employee.EmploymentNo" ColSpan="4" />
+                        <ComboBox TValue="int?" TEntity="SimpleData" @bind-Value="employee.EmploymentTypeId" TextExpression="t => t.Title"
+                                  ConditionExpression="t => t.DataType == SimpleDataType.EmploymentType" ColSpan="4" />
+                        <StringTextBox @bind-Value="employee.FileNo" ColSpan="4" />
+                        <ComboBox TValue="int?" TEntity="SimpleData" @bind-Value="employee.EmployeeTypeId" TextExpression="t => t.Title"
+                                  ConditionExpression="t => t.DataType == SimpleDataType.EmployeeType" ColSpan="4" />
+                        <StringTextBox @bind-Value="employee.IdCard" Style="direction:ltr" MaxLength="10" ColSpan="4"  />
+                    </div>
+                    <FormCommandButton ColSpan="12" />
+                </ChildTabPanelItem>
+                <ChildTabPanelItem Child="t => t.IdentificationDetail">
+                    
+                </ChildTabPanelItem>
+            </Content>
+        </EntityTabPanel>
+    </Window>
 </div>
 
 @code 
 {
-    Employee employee = new Employee()
-        {
-            Address = new Address()
-        };
+    async void SetImage(InputFileChangeEventArgs args, Employee employee)
+    {
+        employee.Image = await args.File.GetByteArrayAsync();
+    }
 }

@@ -148,7 +148,7 @@ namespace Caspian.UI
                     {
                         var tempValue = info.GetValue(RowData.DynamicData);
                         if (tempValue != null)
-                            value = Convert.ToInt32(tempValue).Seprate3Digit();
+                            value = Convert.ToInt32(tempValue).DigitGrouping();
                     }
                     
                 }
