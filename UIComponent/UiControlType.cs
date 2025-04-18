@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.UI
 {

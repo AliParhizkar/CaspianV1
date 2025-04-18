@@ -34,23 +34,23 @@ fieldset.c-container {
     font-size: 12px;
     color: gray;
     margin-bottom:0;
-    margin-left:12px;
+    margin:0 15px;
 }
 .t-grid-inline-insert {
     color: #63c7c7;
     margin-left: calc(100% - 39px);
     font-size: 18px;
     line-height: 20px;
-    width: 28px;
-    height: 28px;
+    width: 29px;
+    height: 29px;
     border: 3px solid #63c7c7;
     border-radius: 50%;
     text-align: center;
     margin-top: 8px;
     cursor: pointer;
     background-color: transparent;
-    padding-left: 4px;
-    padding-top: 2px;
+    padding: 3px 5px;
+    margin-right:7px;
 }
     .t-grid-inline-insert:hover {
         background-color: #F0EEF2;
@@ -1008,12 +1008,12 @@ input[type=time]{
     color: #8c1111;
     white-space:nowrap;
 }
-    .c-menu-icon {
-        height: 25px;
-        background-color: #e5e5e5;
-        overflow: hidden;
-        display: flex;
-    }
+.c-menu-icon {
+    height: 25px;
+    background-color: #e5e5e5;
+    overflow: hidden;
+    display: flex;
+}
 .c-hidden {
     visibility:hidden;
     color:transparent;
@@ -1204,7 +1204,7 @@ body {
     transition: bottom .2s ease;
 }
 
-.c-lookup-tree .c-content {
+.c-lookup-tree >.c-content {
     border-width: 1px;
     border-style: solid;
     border-color: rgba(0,0,0,0.12);
@@ -1215,7 +1215,6 @@ body {
     .c-lookup-tree .fa-search {
         color: #423d96;
         font-size:18px;
-        vertical-align:middle;
         cursor:pointer;
     }
     .c-lookup-tree .c-content:hover {
@@ -1408,13 +1407,19 @@ body {
     color: #34b8f9;
     font-size: 23px;
     cursor: pointer;
+}
+.t-ltr .c-check .fa {
     margin-right: 12px;
 }
-.c-cancel-icon .fa {
-    color: #da1b54;
-    font-size: 23px;
-    cursor: pointer;
-}
+    .t-rtl .c-check .fa{
+        margin-left:12px;
+    }
+
+    .c-cancel-icon .fa {
+        color: #da1b54;
+        font-size: 23px;
+        cursor: pointer;
+    }
 .t-window-content {
     padding: 8px;
 }
@@ -2915,6 +2920,7 @@ div.t-grid-footer {
     overflow: hidden;
     display:flex;
     justify-content:space-between;
+    border-bottom:none;
 }
 .t-grid-pager .t-numeric a:hover {
     background-color: rgba(255,99,88,0.08);

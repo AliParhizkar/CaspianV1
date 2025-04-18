@@ -17,7 +17,7 @@
 {
     IControl Control;
     IList<IControl> Controls;
-    bool hasFocuce;
+    bool hasFocus;
 
     internal void SetControl(IControl control)
     {
@@ -37,7 +37,7 @@
 
     public void Focus()
     {
-        hasFocuce = true;
+        hasFocus = true;
     }
 
     public async Task ResetAsync()
@@ -50,10 +50,8 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (hasFocuce && Control != null)
-        {
-            hasFocuce = false;
-        }
+        if (hasFocus && Control != null)
+            hasFocus = false;
         await base.OnAfterRenderAsync(firstRender);
     }
 

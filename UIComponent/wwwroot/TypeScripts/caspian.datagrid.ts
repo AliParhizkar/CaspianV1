@@ -57,7 +57,6 @@
         bindObserverForContentTable(element: HTMLElement) {
             const mutationObserver = new MutationObserver(list => {
                 let table = ((list[0].target as HTMLElement).closest('table') as HTMLTableElement);
-                debugger
                 if (table.rows.length == 1) {
                     for (let index = 0; index < this.headerColumns.length; index++)
                         table.rows[0].cells[index].style.width = `${this.headerColumns[index].getBoundingClientRect().width}px`    

@@ -67,8 +67,8 @@ namespace Caspian.UI
             {
                 if (DataView.OnInternalUpsert.HasDelegate)
                     await DataView.OnInternalUpsert.InvokeAsync(RowData.Data);
-                if (DataView.OnUpsert.HasDelegate)
-                    await DataView.OnUpsert.InvokeAsync(RowData.Data);
+                if (DataView.OnOpen.HasDelegate)
+                    await DataView.OnOpen.InvokeAsync(RowData.Data);
                 if (DataView.Inline)
                     DataView.SetSelectedEntity(RowData.Data);
             }
@@ -78,12 +78,12 @@ namespace Caspian.UI
         {
             if (!disabledDelete)
             {
-                var sholdDeletd = true;
+                var shouldDeleted = true;
                 if (DataView.OnDelete != null)
-                    sholdDeletd = await DataView.OnDelete(RowData.Data);
-                if (sholdDeletd && DataView.OnInternalDelete.HasDelegate)
+                    shouldDeleted = await DataView.OnDelete(RowData.Data);
+                if (shouldDeleted && DataView.OnInternalDelete.HasDelegate)
                     await DataView.OnInternalDelete.InvokeAsync(RowData.Data);
-                if (sholdDeletd && DataView.Batch)
+                if (shouldDeleted && DataView.Batch)
                     await DataView.RemoveAsync(RowData.Data);
             }
         }

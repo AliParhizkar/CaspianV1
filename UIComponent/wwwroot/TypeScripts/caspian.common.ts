@@ -333,8 +333,13 @@
                 subtree: false
             });
             let lookup = input.closest('.c-content');
-            input.onfocus = () => {
-                lookup.classList.add('c-state-focus')
+            input.onfocus = e => {
+                lookup.classList.add('c-state-focus');
+                caspian.common.showErrorMessage((e.target as HTMLElement).parentElement.parentElement);
+            }
+            input.onblur = e => {
+                lookup.classList.remove('c-state-focus');
+                caspian.common.hideErrorMessage((e.target as HTMLElement).parentElement.parentElement);
             }
         }
 

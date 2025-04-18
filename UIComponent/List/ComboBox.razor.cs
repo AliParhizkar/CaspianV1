@@ -184,7 +184,7 @@ namespace Caspian.UI
             Status = WindowStatus.Close;
         }
 
-        async Task OnNochangeKeyDown(KeyboardEventArgs e)
+        async Task NoChangeKeyDown(KeyboardEventArgs e)
         {
             shouldRender = false;
             if (e.Code == "ArrowDown" || e.Code == "ArrowUp")
@@ -267,11 +267,6 @@ namespace Caspian.UI
             await DataBinding();
         }
 
-        public void Focus()
-        {
-            focused = true;
-        }
-
         protected override void OnInitialized()
         {
             CascadeService?.Initialize(this);
@@ -340,7 +335,6 @@ namespace Caspian.UI
                 }
                 else if (!Value.Equals(OldValue))
                 {
-                    var qqq = typeof(TEntity);
                     if (OnInternalValueChanged.HasDelegate)
                         await OnInternalValueChanged.InvokeAsync(Value);
                     OldValue = Value;
@@ -409,8 +403,9 @@ namespace Caspian.UI
                         var propertyName = obj.ToString();
                         if (propertyName != null && propertyName == _FieldName)
                         {
-                            var identifire = CurrentEditContext.Field(propertyName);
-                            var errorMessage = CurrentEditContext.GetValidationMessages(identifire).FirstOrDefault();
+
+                            var identifier = CurrentEditContext.Field(propertyName);
+                            var errorMessage = CurrentEditContext.GetValidationMessages(identifier).FirstOrDefault();
                             if (ErrorMessage != errorMessage)
                             {
                                 ErrorMessage = errorMessage;
@@ -425,7 +420,14 @@ namespace Caspian.UI
                     ErrorMessage = CurrentEditContext.GetValidationMessages(identifire).FirstOrDefault();
                 }
             }
-            if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
+            if (Validate != null )
+            {
+                if (Validate != null)
+                    ErrorMessage = Validate();
+                if (!ErrorMessage.HasValue())
+                    ErrorMessage = null;
+            }
+            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
             {
                 FormAppState.AllControlsIsValid = false;
                 FormAppState.Control = this;
@@ -547,10 +549,8 @@ namespace Caspian.UI
             ErrorMessage = null;
         }
 
-        public bool Validate()
-        {
-            return true;
-        }
+        [Parameter]
+        public Func<string> Validate { get; set; }
 
         public async Task FocusAsync()
         {

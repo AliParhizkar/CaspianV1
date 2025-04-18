@@ -1,53 +1,34 @@
-﻿@inject BatchService<Customer, CustomerAddress> Service
-<CaspianForm Service="Service" TEntity="Customer" ColumnsCount="2">
+﻿@namespace Marketing.Web
+
+<EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
     <StringTextBox @bind-Value="context.Name" ColSpan="4" />
-    <StringTextBox @bind-Value="context.MobileNumber" ColSpan="4" Style="direction:ltr" MaxLength="11" />
-    <FormCommandButton ColSpan="8" />
-</CaspianForm>
-<div style="margin-bottom:-20px;" class="p-3 pb-0 text-center">
-    <span class="d-membership">Customer Addresses</span>
-</div>
-<DataGrid TEntity="CustomerAddress" DetailsService="Service" ContentHeight="200">
+    <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
+    <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="4" />
+</EntitySearch>
+
+<DataGrid TEntity="Customer" Service="Service" >
     <Columns>
-        <GridColumn Field="t => t.Address" />
-        <GridColumn Field="t => t.IsDefault" />
+        <GridColumn Field="t => t.Name" />
+        <GridColumn Field="t => t.MobileNumber" />
+        <GridColumn Field="t => t.CustomerGroup.Name" Title="گروه مشتری" />
         <GridCommandColumns />
     </Columns>
 </DataGrid>
-<TypeWindow TEntity="CustomerAddress" Service="Service" Title="آدرس" OnOpen="SetDefaultAddress" Style="width:400px;" OnSubmit="async t => await FormSubmit(t)">
-    <StringTextBox @bind-Value="context.Address" Rows="3" MultiLine ColSpan="8" />
-    <CheckBox @bind-Value="context.IsDefault" ColSpan="8" />
-    <FormCommandButton ColSpan="8" />
-</TypeWindow>
 
+<Window Style="width:550px;" Service="Service" Title="مشتری">
+    <CaspianForm Service="Service" TEntity="Customer">
+        <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <StringTextBox @bind-Value="context.MobileNumber" ColSpan="8" Style="direction:ltr" MaxLength="11" />
+        <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Address1" ColSpan="8" MultiLine Rows="3" />
+        <StringTextBox @bind-Value="context.Address2" ColSpan="8" MultiLine Rows="3" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
 
 @code 
 {
-    void SetDefaultAddress(CustomerAddress address)
-    {
-        if (address.Id == 0)
-            address.IsDefault = !Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault);
-    }
-
-    async Task FormSubmit(CustomerAddress address)
-    {
-        DefaultAddressManagment addressManagement = ConfigService.Config.DefaultAddressManagment;
-        if (address.IsDefault && addressManagement > DefaultAddressManagment.User)
-        {
-            var old = Service.DetailDataView.GetBatchEntities().SingleOrDefault(t => t.IsDefault);
-            if (old != null)
-            {
-                if (addressManagement == DefaultAddressManagment.System || await Page.Confirm("آیا می خواهید این آدرس بعنوان آدرس پیشفرض انتخاب شود؟"))
-                {
-                    old.IsDefault = false;
-                    await Service.DetailDataView.UpdateAsync(old);
-                    if (addressManagement == DefaultAddressManagment.System)
-                        Page.ShowMessage("آدرس جاری بعنوان آدرس پیشفرض انتخاب شد.");
-                }
-            }
-        }
-    }
-
     [Parameter]
-    public BasePage Page { get; set; } 
+    public IUIService<Customer> Service { get; set; }
 }

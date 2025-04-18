@@ -1,0 +1,36 @@
+﻿@namespace Marketing.Web
+
+<EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
+    <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+    <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
+</EntitySearch>
+<DataGrid TEntity="Customer" Service="Service">
+    <Columns>
+        <GridColumn Field="t => t.Name" />
+        <GridColumn Field="t => t.MobileNumber" />
+        <GridCommandColumns />
+    </Columns>
+</DataGrid>
+<Window Style="width:700px" Title="مشتری و گروههای مشتری" Service="Service">
+    <CaspianForm Service="Service">
+        <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerGroupsService)" />
+        <div class="col-md-8 row ">
+            <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+            <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="8" />
+            <StringTextBox @bind-Value="context.Address1" Rows="3" MultiLine ColSpan="8" />
+            <StringTextBox @bind-Value="context.Address2" Rows="3" MultiLine ColSpan="8" />
+            <FormCommandButton ColSpan="8" TotalSpan="12" />
+        </div>
+        <div class="col-md-4 pe-3">
+            <label style="justify-content:space-evenly">گروههای مشتری</label>
+            <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:250px;flex-wrap:nowrap"
+                            TextExpression="t => t.Name" />
+        </div>
+    </CaspianForm>
+</Window>
+
+@code 
+{
+    [Parameter]
+    public BatchService<Customer, CustomerGroupMembership> Service { get; set; }
+}

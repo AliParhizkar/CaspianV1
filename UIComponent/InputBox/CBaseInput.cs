@@ -231,11 +231,6 @@ namespace Caspian.UI
                 await InputElement.Value.FocusAsync();
         }
 
-        public void Focus()
-        {
-            focuced = true;
-        }
-
         public virtual async Task ResetAsync()
         {
             reseting = true;

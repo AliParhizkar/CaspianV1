@@ -2,21 +2,51 @@
 @typeparam TValue
 @inject IJSRuntime jSRuntime
 @inject CaspianDataService service
-<div class="auto-hide c-lookup-tree" multiselect="@multiSelectable">
-    <div class="c-content" >
-        <input @ref="input" value="@searchText" @oninput="async e => await Search(e)" />
-        <span @onclick="async () => await ShowTree()" class="fa fa-search"></span>
-    </div>
-    @if (show)
-    {
-        <div class="auto-hide c-tree-content">
-            <CascadingValue Value="this">
-                @ChildContent(searchText)
-            </CascadingValue>
-        </div>
-    }
-</div>
+@inject FormAppState FormAppState
 
+@if (ColSpan.HasValue)
+{
+    <div class="@(GetLabelCSSClassName())">
+        <label>@(Title ?? title)</label>
+    </div>
+    <div class="@(GetControlCSSClassName())">
+        @RenderLookup()
+    </div>
+}
+else
+{
+    @RenderLookup()
+}
 @code 
 {
+    RenderFragment RenderLookup()
+    {
+        var className = "c-content";
+        if (Disabled)
+            className += " t-state-disabled";
+        else
+        {
+            if (ErrorMessage.HasValue())
+                className += " t-state-error";
+            else
+                className += " t-state-default";
+        }
+        return __builder =>
+        {
+            <div class="auto-hide c-lookup-tree" error-message="@ErrorMessage" multiselect="@multiSelectable">
+                <div class="@className">
+                    <input @ref="InputElement" value="@searchText" @oninput="async e => await Search(e)" />
+                    <span @onclick="async () => await ShowTree()" class="fa fa-search"></span>
+                </div>
+                @if (show)
+                {
+                    <div class="auto-hide c-tree-content">
+                        <CascadingValue Value="this">
+                            @ChildContent(searchText)
+                        </CascadingValue>
+                    </div>
+                }
+            </div>
+        };
+    }
 }

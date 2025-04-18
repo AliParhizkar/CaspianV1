@@ -52,6 +52,7 @@ input {
         border-style: solid;
         border-width: 1px;
         height: 32px;
+        line-height:32px;
         border-color: rgba(0,0,0,0.12);
     }
 
@@ -71,18 +72,18 @@ input {
         box-shadow: 0 0 3px 0 #a6a6a6;
     }
     /*Error default*/
-.t-textbox.t-state-error input {
+.t-textbox.t-state-error input, .c-lookup-tree .t-state-error, .c-lookup-tree .t-state-error input {
     border-color: rgba(255,0,0,0.12);
     background-color: rgb(255 249 249);
 }
 /*Error Hover*/
-.t-textbox.t-state-error input:hover {
-    border-color: rgba(255,0,0,0.24);
-}
+    .t-textbox.t-state-error input:hover, .c-lookup-tree .t-state-error:hover {
+        border-color: rgba(255,0,0,0.24);
+    }
     /*Error Focus*/
-    .t-textbox.t-state-error input:focus {
-        border-color: rgba(255,0,0,0.18);
-        box-shadow: 0 0 4px 0 #ff9fb0;
+    .t-textbox.t-state-error input:focus, .c-lookup-tree .t-state-error.c-state-focus {
+        border-color: rgba(255,0,0,0.18) !important;
+        box-shadow: 0 0 4px 0 #ff9fb0 !important;
     }
 
     /*control inputbox */
@@ -154,17 +155,21 @@ input {
 .t-rtl .t-textbox .t-input, .t-rtl .t-dropdown .t-dropdown-wrap {
     padding-right: 4px;
 }
-.c-multi-select {
-    display: flex;
-    flex-wrap: wrap;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(0,0,0,0.12);
-    padding: 0 7px;
-    margin: 2px;
-    border-radius: 8px;
-    height: 32px;
+.t-rtl .t-textbox .t-numeric {
+    direction: ltr;
+    padding-left:5px;
 }
+    .c-multi-select {
+        display: flex;
+        flex-wrap: wrap;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(0,0,0,0.12);
+        padding: 0 7px;
+        margin: 2px;
+        border-radius: 8px;
+        height: 32px;
+    }
 
     .c-multi-select:not(.t-state-disabled):hover {
         border-color: rgba(0,0,0,0.24);

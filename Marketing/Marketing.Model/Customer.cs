@@ -17,10 +17,10 @@ namespace Marketing.Model
         [DisplayName("همراه")]
         public string MobileNumber { get; set; }
 
-        [DisplayName("آدرس 1")]
+        [DisplayName("آدرس اول")]
         public string Address1 { get; set; }
 
-        [DisplayName("آدرس 2")]
+        [DisplayName("آدرس دوم")]
         public string Address2 { get; set; }
 
         [DisplayName("گروه")]
@@ -36,6 +36,6 @@ namespace Marketing.Model
         public ICollection<Order> Orders { get; set; }
 
         [CheckOnDelete("مشتری عضو گروه می باشد و امکان حذف وی وجود ندارد")]
-        public ICollection<CustomerGroupMemberShip> CustomerGroups { get; set; }
+        public ICollection<CustomerGroupMembership> CustomerGroups { get; set; }
     }
 }

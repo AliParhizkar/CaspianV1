@@ -49,7 +49,7 @@ else
             }
             <div style="@Style" class="t-widget t-combobox" error-message="@ErrorMessage">
                 <div class="@className">
-                    <input @ref="InputElement" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await OnNochangeKeyDown(arg)"
+                    <input @ref="InputElement" @attributes="attrs" value="@text" @onkeydown:stopPropagation @onkeydown="async arg => await NoChangeKeyDown(arg)"
                            @oninput="async arg => await OnChangeValue(arg)" type="text" class="t-input" />
                     <span @onmousedown="ToggleDropdownList" class="t-select">
                         <i class="t-icon t-arrow-down fa fa-caret-down"></i>

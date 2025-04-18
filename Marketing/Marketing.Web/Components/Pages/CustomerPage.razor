@@ -1,5 +1,10 @@
 ﻿@page "/Marketing/Customer"
-@inject BatchService<Customer, CustomerAddress> Service
+@inject IUIService<Customer> CustomerService
+@inject BatchService<Customer, CustomerAddress> CustomerAddressService
+@inject BatchService<Customer, CustomerGroupMembership> CustomerGroupService
+@inject BatchService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService
+
+@namespace Marketing.Web
 
 @inherits BasePage
 @{
@@ -7,29 +12,48 @@
 }
 
 <div style="width:75%;margin: 10px auto">
-    <DataGrid TEntity="Customer" Service="Service" DeleteMessage="با حذف مشتری آدرس های وی نیز حذف می شود آیا با حذف موافقید؟">
-        <Columns>
-            <GridColumn Field="t => t.Name" />
-            <GridColumn Field="t => t.MobileNumber" />
-            <GridCommandColumns />
-        </Columns>
-    </DataGrid>
+    @if(ConfigService.Config.CustomerHasManyAddresses)
+    {
+        if (ConfigService.Config.CustomerIsMemberOfGroups)
+        {
+            <CustomerAddressGroupsComponent Service="CustomerAddressGroupsService" Page="this" />
+        }
+        else
+        {
+            <CustomerAddressComponent Service="CustomerAddressService" Page="this" />
+        }
+    }
+    else
+    {
+        if (ConfigService.Config.CustomerIsMemberOfGroups)
+        {
+            <CustomerGroupsComponent Service="CustomerGroupService" />
+        }
+        else
+        {
+            <CustomerComponent Service="CustomerService" />
+        }
+    }
 </div>
-<Window Service="Service" Title="مشتری" Style="width:600px">
-    <Marketing.Web.Components.Customer.CustomerComponent Page="this" />
-</Window>
+
 @code
 {
+    IUIService<Customer> service;
     protected override void OnInitialized()
     {
-        Service.OnUpsert = async (IServiceProvider provider, Customer customer) =>
+        if (ConfigService.Config.CustomerHasManyAddresses)
         {
-            if (!Service.DetailDataView.GetBatchEntities().Any())
-                return await Confirm("برای مشتری آدرس تعریف نشده است آیا با ثبت موافقید؟");
-            if (!Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault))
-                return await Confirm("هیچکدام از آدرس ها بعنوان آدرس پیش فرض تعیین نشده اند آیا با ثبت موافقید؟");
-            return true;
-        };
+            service = CustomerAddressService;
+            service.OnUpsert = async (IServiceProvider provider, Customer customer) =>
+            {
+                var dataView = CustomerAddressService.DetailDataView;
+                if (!dataView.GetBatchEntities().Any())
+                    return await Confirm("برای مشتری آدرس تعریف نشده است آیا با ثبت موافقید؟");
+                if (!dataView.GetBatchEntities().Any(t => t.IsDefault))
+                    return await Confirm("هیچکدام از آدرس ها بعنوان آدرس پیش فرض تعیین نشده اند آیا با ثبت موافقید؟");
+                return true;
+            };
+        }
         base.OnInitialized();
     }
 

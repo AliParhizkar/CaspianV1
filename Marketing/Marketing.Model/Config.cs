@@ -21,6 +21,12 @@ namespace Marketing.Model
         public bool CustomerIsMemberOfGroups { get; set; }
 
         [DisplayName("روش مدیریت آدرس پیشفرض")]
-        public DefaultAddressManagment DefaultAddressManagment { get; set; }
+        public DefaultAddressManagement DefaultAddressManagement { get; set; }
+
+        /// <summary>
+        /// Category Display type in product page
+        /// </summary>
+        [DisplayName("نوع نمایش گروه محصول")]
+        public CategoryType CategoryType { get; set; }
     }
 }

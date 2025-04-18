@@ -6,8 +6,6 @@ namespace Caspian.UI
     {
         Task FocusAsync();
 
-        void Focus();
-
         ElementReference? InputElement { get; }
 
         Task ResetAsync();

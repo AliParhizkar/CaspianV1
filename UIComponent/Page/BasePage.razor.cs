@@ -70,12 +70,15 @@ namespace Caspian.UI
 
 
 
-        public void ShowMessage(string msg)
+        //public void ShowMessage(string msg)
+        //{
+        //    message = msg;
+        //}
+
+        public async void ShowMessage(string message)
         {
-            message = msg;
+            await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
         }
-
-
 
         public async Task Alert(string message)
         {

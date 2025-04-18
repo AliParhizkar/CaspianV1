@@ -18,6 +18,7 @@ namespace Caspian.UI
         protected IJSRuntime jSRuntime;
         BaseComponentService baseComponentService;
         BasePageService basePageService;
+        CaspianDataService CaspianDataService;
         IDictionary<string, SearchType> searchData;
         IDictionary<string, ICollection> enumValues;
         protected bool hideFooter;
@@ -104,6 +105,7 @@ namespace Caspian.UI
         {
             baseComponentService = serviceProvider.GetService<BaseComponentService>();
             basePageService = serviceProvider.GetService<BasePageService>();
+            CaspianDataService = serviceProvider.GetService<CaspianDataService>();
             jSRuntime = serviceProvider.GetService<IJSRuntime>();
             this.ServiceProvider = serviceProvider;
             Search = Activator.CreateInstance<TEntity>();
@@ -207,12 +209,18 @@ namespace Caspian.UI
                 if (id == 0 || isAdd)
                 {
                     await service.AddAsync(UpsertData);
-                    message = "Registration was done successfully";
+                    if (CaspianDataService.Language == Language.En)
+                        message = "Registration was done successfully";
+                    else
+                        message = "ثبت با موفقیت انجام شد.";
                 }
                 else
                 {
                     await service.UpdateAsync(UpsertData);
-                    message = "Updating was done successfully";
+                    if (CaspianDataService.Language == Language.En)
+                        message = "Updating was done successfully";
+                    else
+                        message = "بروزرسانی با موفقیت انجام شد";
                 }
                 await service.SaveChangesAsync();
                 if (infos != null)
@@ -256,7 +264,7 @@ namespace Caspian.UI
         {
             var page = baseComponentService.Target as BasePage;
             if (page == null)
-                throw new CaspianException("Caspian Exception: You must inherits from BasePage and add this code to page: base.BuildRenderTree(__builder);");
+                throw new CaspianException("You must inherits from BasePage and add this code to page: base.BuildRenderTree(__builder);");
             page.ChangeState();
         }
 
@@ -331,8 +339,8 @@ namespace Caspian.UI
                     var type = info.PropertyType.GetUnderlyingType();
                     if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]) && info.GetCustomAttribute<ForeignKeyAttribute>() == null && !type.IsEnumerableType())
                     {
-                        var pkeyName = type.GetPrimaryKey().Name;
-                        if (type.GetProperties().Single(t => t.PropertyType == typeof(TEntity) && t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pkeyName) != null)
+                        var pKeyName = type.GetPrimaryKey().Name;
+                        if (type.GetProperties().Single(t => t.PropertyType == typeof(TEntity) && t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pKeyName) != null)
                             list.Add(info.Name);
                     }
                 }
@@ -368,7 +376,7 @@ namespace Caspian.UI
         async Task<bool> Confirm(string message)
         {
             if (baseComponentService.MessageBox == null)
-                throw new CaspianException("لطفا صفحه ی پایه را به این صفحه اضافه کنید");
+                throw new CaspianException("You must inherits from BasePage and add this code to page: base.BuildRenderTree(__builder);");
             var window = basePageService.Peek();
             if (window !=  null) 
                 return await window.GetMessageBox().Confirm(message);

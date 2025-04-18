@@ -23,13 +23,13 @@ namespace Caspian.UI
                 var entity = Activator.CreateInstance<TEntity>();
                 if (DataView.OnInternalUpsert.HasDelegate)
                     await DataView.OnInternalUpsert.InvokeAsync(entity);
-                if (DataView.OnUpsert.HasDelegate)
-                    await DataView.OnUpsert.InvokeAsync(entity);
+                if (DataView.OnOpen.HasDelegate)
+                    await DataView.OnOpen.InvokeAsync(entity);
                 if (DataView.Inline && OnInsertButoonClicked.HasDelegate)
                     await OnInsertButoonClicked.InvokeAsync(entity);
                     //DataView.CreateInsert();
                 if (DataView is ListView<TEntity> listView && listView.UpsertType != UpsertType.Inline)
-                    listView.OpenPopupWindow();
+                    await listView.OpenPopupWindow();
             }
         }
     }

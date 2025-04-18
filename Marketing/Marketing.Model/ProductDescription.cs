@@ -7,6 +7,7 @@ namespace Marketing.Model
     [Table("ProductDescriptions", Schema = "mrk")]
     public class ProductDescription
     {
+        [Key]
         public int Id { get; set; }
 
         [DisplayName("توضیحات"), MaxLength(255)]

@@ -1,0 +1,30 @@
+﻿@page "/Marketing/CustomerGroup"
+@inject IUIService<CustomerGroup> Service
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:800px;margin:10px auto">
+    <EntitySearch TEntity="CustomerGroup" Service="Service">
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+    </EntitySearch>
+
+    <DataGrid TEntity="CustomerGroup" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+<Window Style="width:450px;" Service="Service" Title="گروه مشتری">
+    <CaspianForm TEntity="CustomerGroup" Service="Service">
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code 
+{
+
+}

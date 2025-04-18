@@ -11,12 +11,13 @@ namespace Marketing.Model
         [Key]
         public int Id { get; set; }
 
+        [DisplayName("نام")]
         public string Name { get; set; }
 
         [CheckOnDelete("گروه دارای مشتری می باشد و امکان حذف آن وجود ندارد.")]
         public IList<Customer> Customers { get; set; }
 
         [CheckOnDelete("گروه دارای مشتری می باشد و امکان حذف آن وجود ندارد.")]
-        public IList<CustomerGroupMemberShip> CustomerGroupMemberShips { get; set; }
+        public IList<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
     }
 }

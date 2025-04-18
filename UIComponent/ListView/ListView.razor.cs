@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Caspian.Common.RowNumber;
+using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -18,10 +19,10 @@ namespace Caspian.UI
         WindowStatus status;
         bool shouldRender = true;
 
-        public void OpenPopupWindow()
+        public async Task OpenPopupWindow()
         {
             status = WindowStatus.Open;
-            CreateInsert();
+            await CreateInsert();
         }
 
         public override async Task<TEntity> SelectRowById(int id)
@@ -155,9 +156,9 @@ namespace Caspian.UI
                 insertContainerHoldHasFocus = false;
                 await insertContainer.FocusAsync();
             }
-            if (shouldSetFocuc && updateContainer != null)
+            if (shouldSetFocus && updateContainer != null)
             {
-                shouldSetFocuc = false;
+                shouldSetFocus = false;
                 await updateContainer.FocusAsync();
             }
             else if (FormAppState.Control != null)

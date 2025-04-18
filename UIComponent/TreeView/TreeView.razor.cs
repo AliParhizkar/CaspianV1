@@ -178,7 +178,7 @@ namespace Caspian.UI
                 tree.TextFunc = TextFunc;
                 var multSelect = false;
                 if (Lookup != null)
-                    multSelect = Lookup.MultiSelecable();
+                    multSelect = Lookup.MultiSelectable();
                 if (FilterFunc == null)
                     treeNodes = tree.CreateTree(items, multSelect, SelectableFund);
                 else

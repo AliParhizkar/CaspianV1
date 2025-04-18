@@ -176,7 +176,7 @@ namespace Caspian.UI
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            ///For Master Deatils form this code is not working
+            ///For Master Details form this code is not working
             ///We Use Caspian Form instate of this
             //if (FormAppState.ValidationChecking)
             //{

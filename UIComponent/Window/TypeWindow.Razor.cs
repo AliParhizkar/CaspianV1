@@ -1,6 +1,6 @@
 ﻿using Caspian.Common;
-using Caspian.Common.Extension;
 using Caspian.Common.Service;
+using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,7 +24,7 @@ namespace Caspian.UI
 
         [Parameter]
         public EventCallback<TEntity> OnSubmit {  get; set; }
-        
+
         [Parameter]
         public IDetailBatchService<TEntity> Service { get; set; }
 
@@ -75,7 +75,7 @@ namespace Caspian.UI
             if (Service != null)
             {
                 Service.TypeWindow = this;
-                Service.DetailTypwWindowInitialize();
+                Service.DetailTypeWindowInitialize();
             }
             base.OnInitialized();
         }

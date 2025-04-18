@@ -5,7 +5,6 @@ using Caspian.Engine;
 using Caspian.Common;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {

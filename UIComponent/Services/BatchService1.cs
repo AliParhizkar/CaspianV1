@@ -3,18 +3,21 @@ using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
     public class BatchService<TMaster, TDetail, TDetail1> : BatchService<TMaster, TDetail>, IDetailBatchService<TDetail1>
         where TMaster : class where TDetail : class where TDetail1 : class
     {
+        CaspianDataService caspianDataService;
         public BatchService(IServiceProvider provider):
             base(provider)
         {
-            var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail1));
-            batchServiceData.DetailPropertiesInfo.Add(detailsproperty);
+            var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail1));
+            batchServiceData.DetailPropertiesInfo.Add(detailsProperty);
             ChangedEntities = new List<ChangedEntity<TDetail1>>();
+            caspianDataService = provider.GetService<CaspianDataService>();
         }
 
         public DataView<TDetail1> DetailDataView { get; set; }
@@ -53,6 +56,7 @@ namespace Caspian.UI
             var result = await service.UpdateDatabaseAsync(UpsertData, base.ChangedEntities, ChangedEntities);
             await service.SaveChangesAsync();
             ChangedEntities.Clear();
+            base.ChangedEntities.Clear();
             if (id == 0)
             {
                 DetailDataView?.ClearSource();
@@ -66,7 +70,8 @@ namespace Caspian.UI
                     var newId = (int)typeof(TMaster).GetPrimaryKey().GetValue(result);
                     await (DataView as DataGrid<TMaster>).SelectRowById(newId);
                 }
-                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "Registration was done successfully");
+                var message = caspianDataService.Language == Language.Fa ? "ثبت با موفقیت انجام شد" : "Registration was done successfully";
+                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
             }
             else
             {
@@ -76,7 +81,8 @@ namespace Caspian.UI
                     await base.DetailDataView.ReloadAsync();
                 if (DataView != null)
                     await DataView.ReloadAsync();
-                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "Updating was done successfully");
+                var message = caspianDataService.Language == Language.Fa ? "بروزرسانی با موفقیت انجام شد" : "Updating was done successfully";
+                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
                 DetailDataView?.CancelInternalUpdate();
                 base.DetailDataView?.CancelInternalUpdate();
             }

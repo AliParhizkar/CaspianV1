@@ -1,0 +1,37 @@
+﻿@namespace Marketing.Web
+<EntitySearch TEntity="ProductCategory" Service="Service" ColumnsCount="2">
+    <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+    <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
+</EntitySearch>
+<DataGrid TEntity="ProductCategory" Service="Service">
+    <Columns>
+        @if (ConfigService.Config.CategoryType == CategoryType.Couple)
+        {
+            <GridColumn Field="t => t.Category.Name" Title="عنوان گروه اصلی" />
+            <GridColumn Field="t => t.Category.Code" Title="کد گروه اصلی" />
+        }
+        <GridColumn Field="t => t.Name" />
+        <GridColumn Field="t => t.Code" />
+        <GridColumn Field="t => t.ActiveType.EnumText()" />
+        <GridCommandColumns />
+    </Columns>
+</DataGrid>
+<Window Style="width:400px;" Title="گروه" Service="Service">
+    <CaspianForm Service="Service">
+        @if (ConfigService.Config.CategoryType == CategoryType.Couple)
+        {
+            <ComboBox TValue="int?" TEntity="ProductCategory" @bind-Value="context.CategoryId" TextExpression="t => t.Name" ColSpan="8" />
+        }
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Code" Style="direction:ltr" ColSpan="8" />
+        <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
+        <FormCommandButton />
+    </CaspianForm>
+</Window>
+
+
+@code 
+{
+    [Parameter]
+    public IUIService<ProductCategory> Service { get; set; }
+}

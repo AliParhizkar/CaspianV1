@@ -127,6 +127,9 @@
     [Parameter]
     public bool RightToLeft { get; set; }
 
+    [Parameter]
+    public Language Language { get; set; }
+
     [CascadingParameter]
     public Task<AuthenticationState> authenticationStateTask { get; set; }
 
@@ -153,8 +156,6 @@
             if (userId.HasValue)
             {
                 using var scope = ServiceScopeFactory.CreateScope();
-                var dataService = scope.GetService<CaspianDataService>();
-                dataService.UserId = userId.Value;
                 var service = scope.GetService<UserLoginService>();
                 await service.AddAsync(new UserLogin()
                     {
@@ -174,6 +175,8 @@
         date = DateTime.Now.Date.ToShortDateString();
         time = DateTime.Now.TimeOfDay.ShortString();
         pageData.RightToLeft = RightToLeft;
+        pageData.Language = RightToLeft ? Language.Fa : Language.En;
+
         var uri = new Uri(navigationManager.Uri);
         var url = uri.AbsolutePath;
         if (url.StartsWith("/"))
@@ -214,9 +217,8 @@
                     if (!userName.HasValue())
                     {
                         using var scope = ServiceScopeFactory.CreateScope();
-                        var service = scope.GetService<CaspianDataService>();
-                        service.UserId = userId.Value;
-                        service.Language = RightToLeft ? Language.Fa : Language.En;
+                        dataService.UserId = userId.Value;
+                        dataService.Language = RightToLeft ? Language.Fa : Language.En;
                         var user = await scope.GetService<UserService>().SingleAsync(userId.Value);
                         userName = user.FName + " " + user.LName;
                         menusId = await scope.GetService<MenuAccessibilityService>().GetUserMenus(userId.Value);

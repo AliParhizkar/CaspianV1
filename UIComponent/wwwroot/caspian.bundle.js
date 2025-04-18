@@ -615,8 +615,13 @@ var caspian;
                 subtree: false
             });
             let lookup = input.closest('.c-content');
-            input.onfocus = () => {
+            input.onfocus = e => {
                 lookup.classList.add('c-state-focus');
+                caspian.common.showErrorMessage(e.target.parentElement.parentElement);
+            };
+            input.onblur = e => {
+                lookup.classList.remove('c-state-focus');
+                caspian.common.hideErrorMessage(e.target.parentElement.parentElement);
             };
         }
         static bindMenu() {
@@ -760,7 +765,6 @@ var caspian;
         bindObserverForContentTable(element) {
             const mutationObserver = new MutationObserver(list => {
                 let table = list[0].target.closest('table');
-                debugger;
                 if (table.rows.length == 1) {
                     for (let index = 0; index < this.headerColumns.length; index++)
                         table.rows[0].cells[index].style.width = `${this.headerColumns[index].getBoundingClientRect().width}px`;

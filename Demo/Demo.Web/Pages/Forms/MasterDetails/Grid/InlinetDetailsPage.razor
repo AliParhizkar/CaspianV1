@@ -272,7 +272,7 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
         }
         else
             await Task.Delay(10);
-        txtDescript.Focus();
+        await txtDescript.FocusAsync();
     }
 
     [Parameter]

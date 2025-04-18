@@ -1,0 +1,95 @@
+﻿@namespace Marketing.Web
+
+<EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
+    <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+    <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
+</EntitySearch>
+
+<DataGrid TEntity="Customer" Service="Service" DeleteMessage="با حذف مشتری آدرس ها و گروههای وی نیز حذف می شود آیا با حذف موافقید؟">
+    <Columns>
+        <GridColumn Field="t => t.Name" />
+        <GridColumn Field="t => t.MobileNumber" />
+        <GridCommandColumns />
+    </Columns>
+</DataGrid>
+<Window Title="مشتری-آدرسهای مشتری-گروههای مشتری" Style="width:800px;" Service="Service">
+    <CaspianForm Service="Service" ColumnsCount="2">
+        <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerAddressGroupsService)" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" TotalSpan="5" />
+        <StringTextBox @bind-Value="context.MobileNumber" ColSpan="3" TotalSpan="4" MaxLength="11" Style="direction:ltr" />
+        <div class="col-md-3">
+            <FormCommandButton />
+        </div>
+    </CaspianForm>
+    <div class="row">
+        <div class="col-md-9 text-center ps-2">
+            <span>آدرسهای مشتری</span>
+            <div class="text-end">
+                <DataGrid TEntity="CustomerAddress" DetailsService="Service" ContentHeight="250" Inline AutoHide OnOpen="SetAddressAsDefault" 
+                OnUpsertAsync="OnAddressInserted">
+                    <Columns Context="address">
+                        <GridColumn Field="t => t.Address" Title="آدرس">
+                            <EditTemplate>
+                                <StringTextBox MultiLine Rows="2" @bind-Value="address.Data.Address" />
+                            </EditTemplate>
+                        </GridColumn>
+                        <GridColumn Field="t => t.IsDefault" Title="پیشفرض" style="width:70px">
+                            <EditTemplate>
+                                <CheckBox @bind-Value="address.Data.IsDefault" />
+                            </EditTemplate>
+                        </GridColumn>
+                        <GridCommandColumns />
+                    </Columns>
+                </DataGrid>
+            </div>
+
+        </div>
+        <div class="col-md-3 text-center pe-2">
+            <span>گروههای مشتری</span>
+            <div class="text-end">
+                <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:324px;"
+                TextExpression="t => t.Name" />
+            </div>
+        </div>
+    </div>
+</Window>
+
+@code 
+{
+    void SetAddressAsDefault(CustomerAddress address)
+    {
+        if (address.Id == 0)
+            address.IsDefault = !Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault);
+    }
+
+    async Task<bool> OnAddressInserted(CustomerAddress address)
+    {
+        if (!address.IsDefault || !Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault))
+            return true;
+        switch (ConfigService.Config.DefaultAddressManagement)
+        {
+            case DefaultAddressManagement.User:
+                return true;
+            case DefaultAddressManagement.System:
+                var defaultAddress = Service.DetailDataView.GetBatchEntities().Single(t => t.IsDefault);
+                defaultAddress.IsDefault = false;
+                Page.ShowMessage("آدرس جاری بعنوان آدرس پیشفرض انتخاب شد.");
+                return true;
+            case DefaultAddressManagement.Confirm:
+                if (await Page.Confirm("آیا می خواهید آدرس جاری بعنوان آدرس پیشفرض انتخاب شود"))
+                {
+                    defaultAddress = Service.DetailDataView.GetBatchEntities().Single(t => t.IsDefault);
+                    defaultAddress.IsDefault = false;
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
+    [Parameter]
+    public BatchService<Customer, CustomerGroupMembership, CustomerAddress> Service { get; set; }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+}

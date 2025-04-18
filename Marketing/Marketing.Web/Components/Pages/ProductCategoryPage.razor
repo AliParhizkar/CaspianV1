@@ -1,46 +1,63 @@
 ﻿@page "/Marketing/ProductCategory"
 @inherits BasePage
-@using Caspian.UI
+
+@inject IUIService<ProductCategory> Service
+@inject IUIService<Product> Service1
+
 @{
     base.BuildRenderTree(__builder);
 }
 
-<div style="width:600px;margin:5px auto" class="row">
-    <div class="col-md-1 text-center pt-1">
-        <span class="d-tree-icon" @onclick="async () => await ShowEditForm(null, false)">
-            <span class="fa fa-plus"></span>
-        </span>
+@if (ConfigService.Config.CategoryType == CategoryType.Multiple)
+{
+    <div style="width:600px;margin:5px auto" class="row">
+        <div class="col-md-1 text-center pt-1">
+            <span class="d-tree-icon" @onclick="async () => await ShowEditForm(null, false)">
+                <span class="fa fa-plus"></span>
+            </span>
+        </div>
+        <div class="col-md-11 pb-1">
+            <StringTextBox @bind-Value="@categorySearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو گروه محصول" />
+        </div>
+        <TreeView @ref="tree" TEntity="ProductCategory" style="height:500px" TextFunc="t => t.Name"
+        FilterFunc="t => (!categorySearch.HasValue() || t.Name.StartsWith(categorySearch)) && t.ActiveType == ActiveType.Active">
+            <AfterNodeTemplate>
+                <span class="d-tree-icon">
+                    <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
+                </span>
+                <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
+                    <span class="fa fa-pencil"></span>
+                </span>
+                <span class="d-tree-icon" @onclick="async () => await DeleteCategory(context)">
+                    <span class="fa fa-trash"></span>
+                </span>
+            </AfterNodeTemplate>
+        </TreeView>
     </div>
-    <div class="col-md-11 pb-1">
-        <StringTextBox @bind-Value="@categrySearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو گروه محصول" />
-    </div>
-    <TreeView @ref="tree" TEntity="ProductCategory" style="height:500px" TextFunc="t => t.Name"
-    FilterFunc="t => (!categrySearch.HasValue() || t.Name.StartsWith(categrySearch)) && t.ActiveType == ActiveType.Active">
-        <AfterNodeTemplate>
-            <span class="d-tree-icon">
-                <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
-            </span>
-            <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
-                <span class="fa fa-pencil"></span>
-            </span>
-            <span class="d-tree-icon" @onclick="async () => await DeleteCategory(context)">
-                <span class="fa fa-trash"></span>
-            </span>
-        </AfterNodeTemplate>
-    </TreeView>
-</div>
 
-<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="گروه محصول">
-    <CaspianForm Model="category" TEntity="ProductCategory" OnValidSubmit="UpsertCategory">
-        <StringTextBox @ref="firstControl" @bind-Value="context.Name" ColSpan="9" />
-        <DropdownList @bind-Value="context.ActiveType" ColSpan="9" />
-        <WindowCommandButtons ColSpan="9" />
-    </CaspianForm>
-</Window>
+    <Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="گروه محصول">
+        <CaspianForm Model="category" TEntity="ProductCategory" OnValidSubmit="UpsertCategory">
+            @if(title.HasValue())
+            {
+                <StringTextBox @bind-Value="title" ColSpan="9" Title="گروه اصلی" Disabled />
+            }
+            <StringTextBox @ref="firstControl" @bind-Value="context.Name" ColSpan="9" />
+            <DropdownList @bind-Value="context.ActiveType" ColSpan="9" />
+            <WindowCommandButtons ColSpan="9" />
+        </CaspianForm>
+    </Window>
+}
+else
+{
+    <div style="width:800px;margin:10px auto">
+        <Marketing.Web.ProductCategoryComponent Service="Service" />
+    </div>
+}
 
 @code 
 {
-    string categrySearch;
+    string title;
+    string categorySearch;
     TreeView<ProductCategory> tree;
     ProductCategory category;
     WindowStatus status;
@@ -48,18 +65,20 @@
 
     async Task ShowEditForm(NodeView nodeView, bool isUpdate)
     {
+        using var service = CreateScope().GetService<ProductCategoryService>();
         if (isUpdate)
         {
             //For Edit
             var categoryId = Convert.ToInt32(nodeView.Value);
-            using var service = CreateScope().GetService<ProductCategoryService>();
             category = await service.SingleAsync(categoryId);
+            title = null;
         }
         else
         {
             category = new ProductCategory();
             category.ActiveType = ActiveType.Active;
             category.CategoryId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+            title = nodeView?.Text;
         }
         status = WindowStatus.Open;
     }
@@ -72,9 +91,12 @@
         var result = await service.ValidateRemoveAsync(category);
         if (result.IsValid)
         {
-            await service.RemoveAsync(category);
-            await service.SaveChangesAsync();
-            tree.RemoveFromTree(category);
+            if (await Confirm("آیا با حذف گروه محصول موافقید؟"))
+            {
+                await service.RemoveAsync(category);
+                await service.SaveChangesAsync();
+                tree.RemoveFromTree(category);
+            }
         }
         else
             ShowMessage(result.Errors.First().ErrorMessage);

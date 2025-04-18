@@ -224,8 +224,8 @@ namespace Caspian.UI
                     var fromValue = GetFromToValue(col.FromExpression);
                     if (fromValue != null)
                     {
-                        var covertedValue = Convert.ChangeType(fromValue, memberExpr.Type.GetUnderlyingType());
-                        var compareExpr = Expression.GreaterThanOrEqual(memberExpr, Expression.Constant(covertedValue));
+                        var convertedValue = Convert.ChangeType(fromValue, memberExpr.Type.GetUnderlyingType());
+                        var compareExpr = Expression.GreaterThanOrEqual(memberExpr, Expression.Constant(convertedValue));
                         if (expression == null)
                             expression = compareExpr;
                         else
@@ -237,8 +237,8 @@ namespace Caspian.UI
                     var toValue = GetFromToValue(col.ToExpression);
                     if (toValue != null)
                     {
-                        var covertedValue = Convert.ChangeType(toValue, memberExpr.Type.GetUnderlyingType());
-                        var compareExpr = Expression.LessThanOrEqual(memberExpr, Expression.Constant(covertedValue));
+                        var convertedValue = Convert.ChangeType(toValue, memberExpr.Type.GetUnderlyingType());
+                        var compareExpr = Expression.LessThanOrEqual(memberExpr, Expression.Constant(convertedValue));
                         if (expression == null)
                             expression = compareExpr;
                         else

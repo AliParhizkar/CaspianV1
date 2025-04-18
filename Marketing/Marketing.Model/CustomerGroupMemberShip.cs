@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Marketing.Model
 {
-    [Table("CustomersGroupMemberShip", Schema = "mrk")]
-    public class CustomerGroupMemberShip
+    [Table("CustomersGroupMembership", Schema = "mrk")]
+    public class CustomerGroupMembership
     {
         [Key]
         public int Id { get; set; }

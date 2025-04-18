@@ -6,7 +6,7 @@ namespace Caspian.UI
     {
         Task SetValueAsync(NodeView node);
 
-        bool MultiSelecable();
+        bool MultiSelectable();
 
         IList<string> SelectedNodesValue();
 

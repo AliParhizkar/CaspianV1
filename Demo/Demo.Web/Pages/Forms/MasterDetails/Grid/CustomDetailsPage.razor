@@ -257,7 +257,7 @@
             old.Quantity = old.Quantity + 1;
             await grid.UpdateAsync(old);
         }
-        await grid.ScrollIntoViewSeledtedRow();
+        await grid.ScrollIntoViewSelectedRow();
     }
 
     async Task IncQuantity(OrderDetail detail)

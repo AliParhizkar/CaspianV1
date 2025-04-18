@@ -72,5 +72,7 @@ namespace Caspian.UI
         Func<IServiceProvider, TEntity, Task<bool>> OnUpsert { get; set; }
 
         void TabPanelInitialize();
+
+        void StateHasChanged();
     }
 }

@@ -54,3 +54,10 @@
     width: 16px;
     display: inline-block;
 }
+
+.d-membership {
+    text-align: center;
+    color: #4f9995;
+    font-weight: bold;
+    font-size: 25px;
+}

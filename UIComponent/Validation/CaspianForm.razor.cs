@@ -11,9 +11,8 @@ namespace Caspian.UI
     public partial class CaspianForm<TEntity>: ICaspianContainer, ICaspianForm<TEntity> where TEntity : class
     {
         string ErrorMessage;
-        bool checkValidation;
         IList<IControl> controls;
-        bool addControls, formSubmited;
+        bool addControls, formSubmitted;
         string ICaspianForm.MasterIdName { get; set; }
         bool ICaspianForm.IgnoreOnValidSubmit { get; set; }
         TEntity oldModel;
@@ -176,7 +175,7 @@ namespace Caspian.UI
             }
             EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
             var result = await (Task<ValidationResult>)asyncValidationTask;
-            formSubmited = true;
+            formSubmitted = true;
             if (result.IsValid)
             {
                 if (OnValidSubmit.HasDelegate)
@@ -226,9 +225,9 @@ namespace Caspian.UI
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            if (formSubmited)
+            if (formSubmitted)
             {
-                formSubmited = false;
+                formSubmitted = false;
                 var ctr = controls.FirstOrDefault(t => t.HasError());
                 if (ctr == null)
                 {

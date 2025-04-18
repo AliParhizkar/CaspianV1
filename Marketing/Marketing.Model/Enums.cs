@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Marketing.Model
 {
@@ -11,7 +12,7 @@ namespace Marketing.Model
         DeActive
     }
 
-    public enum DefaultAddressManagment: byte
+    public enum DefaultAddressManagement: byte
     {
         [Display(Name = "کاربر")]
         User = 1,
@@ -21,5 +22,17 @@ namespace Marketing.Model
         
         [Display(Name = "سیستم")]
         System
+    }
+
+    public enum CategoryType: byte
+    {
+        [Display(Name = "تکی")]
+        Single = 1,
+
+        [Display(Name = "دو تایی")]
+        Couple,
+
+        [Display(Name = "چند تایی")]
+        Multiple
     }
 }

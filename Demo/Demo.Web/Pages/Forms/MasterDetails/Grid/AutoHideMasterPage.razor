@@ -34,7 +34,7 @@
                             <RadioItem Title="List View" Value="true" />
                         </RadioList>
                     </div>
-                    <DataGrid Service="Service" DeleteMessage="Do you want delete recipet and details" TEntity="WarehouseReceipt" OnUpsert="t => UpsertOrder(t)" ContentHeight="300" ShowInsertIcon="true"
+                    <DataGrid Service="Service" DeleteMessage="Do you want delete recipet and details" TEntity="WarehouseReceipt" OnOpen="t => UpsertOrder(t)" ContentHeight="300" ShowInsertIcon="true"
                             ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
                         <Columns>
                             <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />

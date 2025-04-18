@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -22,7 +23,7 @@ namespace Caspian.UI
         protected TEntity selectedEntity;
         protected IList<TEntity> source;
         protected EditContext EditContext;
-        protected bool shouldSetFocuc;
+        protected bool shouldSetFocus;
         protected IList<TEntity> deletedEntities;
         protected bool shouldFetchData = true;
         protected CaspianContainer insertContainer;
@@ -85,7 +86,10 @@ namespace Caspian.UI
         public Expression<Func<TEntity, bool>> ConditionExpr { get; set; }
 
         [Parameter]
-        public EventCallback<TEntity> OnUpsert { get; set; }
+        public Func<TEntity, Task<bool>> OnUpsertAsync { get; set; }
+
+        [Parameter]
+        public EventCallback<TEntity> OnOpen { get; set; }
 
         [Parameter]
         public EventCallback OnSave { get; set; }
@@ -99,12 +103,18 @@ namespace Caspian.UI
         [Inject]
         public BatchServiceData BatchServiceData { get; set; }
 
+        /// <summary>
+        /// Hide after Upsert
+        /// </summary>
         [Parameter]
         public bool AutoHide { get; set; }
 
         [Parameter]
         public bool Batch { get; set; }
 
+        /// <summary>
+        /// On Delete Button Clicked(both simple & Master-Details state)
+        /// </summary>
         [Parameter]
         public Func<TEntity, Task<bool>> OnDelete { get; set; }
 
@@ -171,8 +181,7 @@ namespace Caspian.UI
             serviceType = scope.ServiceProvider.GetService(type)?.GetType();
             if (serviceType == null)
                 throw new CaspianException($"Service of type {type} not impilimented");
-            if (!AutoHide && Inline)
-                CreateInsert();
+
             if (Service != null)
             {
                 Service.DataView = this;
@@ -186,6 +195,13 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
+        protected override async Task OnInitializedAsync()
+        {
+            if (!AutoHide && Inline)
+                await CreateInsert();
+            await base.OnInitializedAsync();
+        }
+
         internal void ChangeState()
         {
             StateHasChanged();
@@ -195,7 +211,7 @@ namespace Caspian.UI
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task ScrollIntoViewSeledtedRow()
+        public async Task ScrollIntoViewSelectedRow()
         {
             StateHasChanged();
             await jsRuntime.InvokeVoidAsync("caspian.common.scrollIntoViewSelectedRow", mainDiv);
@@ -211,7 +227,7 @@ namespace Caspian.UI
         {
             if (DeleteMessage == null)
             {
-                if (CaspianDataService.Language == Language.Fa)
+                if (PageData.Language == Language.Fa)
                     DeleteMessage = "آیا با حذف موافقید؟";
                 else
                     DeleteMessage = "Do you agree to delete?";
@@ -273,6 +289,8 @@ namespace Caspian.UI
         {
             if (upsertMode == UpsertMode.Edit)
             {
+                if (OnUpsertAsync != null && !await OnUpsertAsync(EditContext.Model as TEntity))
+                    return;
                 disableInsertIcon = false;
                 FormAppState.AllControlsIsValid = true;
                 //FormAppState.Control = null;
@@ -299,6 +317,8 @@ namespace Caspian.UI
             }
             else
             {
+                if (OnUpsertAsync != null && !await OnUpsertAsync(InsertContext.Model as TEntity))
+                    return;
                 FormAppState.AllControlsIsValid = true;
                 FormAppState.ErrorMessage = null;
                 //FormAppState.Control = null;
@@ -322,6 +342,7 @@ namespace Caspian.UI
             }
             StateHasChanged();
             await FocusInsertButtonAsync();
+            
         }
 
         internal IList<TEntity>  GetSource()
@@ -429,12 +450,12 @@ namespace Caspian.UI
 
         public async Task UpdateAsync(TEntity entity)
         {
-            var pkey = typeof(TEntity).GetPrimaryKey();
-            var id = Convert.ToInt32(pkey.GetValue(entity));
+            var key = typeof(TEntity).GetPrimaryKey();
+            var id = Convert.ToInt32(key.GetValue(entity));
             TEntity old = null;
             foreach (var item in DetailsService.ChangedEntities.Where(t => t.ChangeStatus != ChangeStatus.Deleted))
             {
-                var newId = Convert.ToInt32(pkey.GetValue(item.Entity));
+                var newId = Convert.ToInt32(key.GetValue(item.Entity));
                 if (id == newId)
                 {
                     old = item.Entity;
@@ -458,7 +479,7 @@ namespace Caspian.UI
             await UpdateEntityForForeignKey(entity);
             for (var index = 0; index < source.Count; index++)
             {
-                if (pkey.GetValue(source[index]).Equals(id))
+                if (key.GetValue(source[index]).Equals(id))
                 {
                     source[index] = entity;
                     var pageNumber = index / PageSize + 1;
@@ -672,12 +693,12 @@ namespace Caspian.UI
             RollBackEntity();
             selectedEntity = entity.CreateNewEntity();
             EditContext = new EditContext(selectedEntity);
-            shouldSetFocuc = true;
+            shouldSetFocus = true;
             //unchangedEntity = entity.CreateNewEntity();
             StateHasChanged();
         }
 
-        public void CreateInsert()
+        public async Task CreateInsert()
         {
             if (!disableInsertIcon)
             {
@@ -686,6 +707,8 @@ namespace Caspian.UI
                 insertedEntity.Data = Activator.CreateInstance<TEntity>();
                 if (BatchServiceData.MasterId > 0)
                     BatchServiceData.GetMasterInfo(typeof(TEntity)).SetValue(insertedEntity.Data, BatchServiceData.MasterId);
+                if (OnOpen.HasDelegate)
+                    await OnOpen.InvokeAsync(insertedEntity.Data);
                 InsertContext = new EditContext(insertedEntity.Data);
                 insertContainerHoldHasFocus = AutoHide;
                 StateHasChanged();

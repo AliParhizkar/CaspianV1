@@ -182,7 +182,7 @@ namespace Caspian.Common
                     var index = path.IndexOf(']');
                     if (index >= 0)
                         path = path.Substring(index + 2);
-                    //typeof(TModel).GetMyProperty(path).GetCustomAttribute<DisplayNameAttribute>();
+                    attr = typeof(TModel).GetMyProperty(path).GetCustomAttribute<DisplayNameAttribute>();
                     var name = attr == null ? context.DisplayName : attr.DisplayName;
                     if (language == Language.Fa)
                         message = message ?? $"لطفا {name} را مشخص نمایید";
@@ -464,8 +464,11 @@ namespace Caspian.Common
                             {
                                 var pKeyName = type.GetPrimaryKey().Name;
                                 var oneToOne = type.GetProperties().SingleOrDefault(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pKeyName);
-                                serviceType = typeof(IBaseService<>).MakeGenericType(oneToOne.PropertyType);
-                                service = provider.GetService(serviceType) as IBaseService;
+                                if (oneToOne != null)
+                                {
+                                    serviceType = typeof(IBaseService<>).MakeGenericType(oneToOne.PropertyType);
+                                    service = provider.GetService(serviceType) as IBaseService;
+                                }
                                 if (service == null)
                                     throw new CaspianException($"Service of Type IBaseService<{(oneToOne?.PropertyType ?? type).Name}> not injected");
                                 paramExpr = Expression.Parameter(oneToOne.PropertyType, "t");

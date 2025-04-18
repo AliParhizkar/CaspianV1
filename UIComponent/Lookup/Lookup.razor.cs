@@ -85,11 +85,6 @@ namespace Caspian.UI
         [CascadingParameter]
         internal IEntitySearch EntitySearch { get; set; }
 
-        public void Focus()
-        {
-
-        }
-
         public bool HasError()
         {
             return ErrorMessage != null;

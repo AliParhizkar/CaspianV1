@@ -37,7 +37,7 @@
                 RoleId = RoleId
             }));
         var query = service.GetAll().Where(t => menusShouldRemoved.Contains(t.MenuId) && t.RoleId == RoleId);
-        service.RemoveRange(query);
+        await service.RemoveRange(query);
         await service.SaveChangesAsync();
         ShowMessage("Registration was done successfully");
     }

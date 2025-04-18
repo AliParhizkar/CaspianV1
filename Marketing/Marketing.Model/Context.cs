@@ -11,7 +11,7 @@ namespace Marketing.Model
 
         public DbSet<CustomerGroup> CustomerGroups { get; set; }
         
-        public DbSet<CustomerGroupMemberShip> CustomerGroupMemberShips { get; set; }
+        public DbSet<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
         
         public DbSet<Config> MerchantConfigs { get; set; }
 

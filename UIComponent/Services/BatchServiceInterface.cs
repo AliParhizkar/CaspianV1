@@ -19,7 +19,7 @@ namespace Caspian.UI
 
         CaspianForm<TDetail> DetailForm { get; set; }
 
-        void DetailTypwWindowInitialize();
+        void DetailTypeWindowInitialize();
 
         void DetailFormInitialize();
     }
