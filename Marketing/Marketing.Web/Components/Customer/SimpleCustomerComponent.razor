@@ -1,0 +1,96 @@
+﻿@namespace Marketing.Web
+
+@if (ConfigService.Config.CustomerHasManyAddresses)
+{
+    if (ConfigService.Config.CustomerIsMemberOfGroups)
+    {
+        <CustomerAddressGroupsComponent Page="Page" Service="CustomerAddressGroupsService" SimpleMode />
+    }
+    else
+    {
+        <CustomerAddressComponent Page="Page" Service="CustomerAddressService" SimpleMode />
+    }
+}
+else
+{
+    if (ConfigService.Config.CustomerIsMemberOfGroups)
+    {
+        <CustomerGroupsComponent Page="Page" Service="CustomerGroupService" SimpleMode />
+    }
+    else
+    {
+        <CustomerComponent Page="Page" Service="CustomerService" SimpleMode />
+    }
+}
+
+
+@code
+{
+    async Task<bool> ConfirmOnUpsert(IServiceProvider provider, Customer customer)
+    {
+        var hasAddress = CustomerAddressService.DetailDataView.GetBatchEntities().Any();
+        if (hasAddress)
+        {
+            var hasDefaultAddress = CustomerAddressService.DetailDataView.GetBatchEntities().Any(t => t.IsDefault);
+            if (hasDefaultAddress || await Page.Confirm("هیچ آدرسی بعنوان آدرس پیشفرض انتخاب نشده است آیا با ثبت موافقید؟"))
+                return true;
+            return false;
+        }
+        return await Page.Confirm("مشتری فاقد آدرس می باشد آیا با ثبت موافقید؟");
+    }
+
+    protected override void OnInitialized()
+    {
+        if (ConfigService.Config.CustomerHasManyAddresses)
+        {
+            if (ConfigService.Config.CustomerIsMemberOfGroups)
+                CustomerAddressGroupsService.OnUpsert = ConfirmOnUpsert;
+            else
+                CustomerAddressService.OnUpsert = ConfirmOnUpsert;
+        }
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        CustomerService.MasterId = CustomerGroupService.MasterId = CustomerAddressService.MasterId = CustomerAddressGroupsService.MasterId
+            = CustomerId;
+        base.OnParametersSet();
+    }
+
+    [Parameter]
+    public int CustomerId { get; set; }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+
+    [Parameter]
+    public IUIService<Customer> CustomerService { get; set; }
+
+    [Parameter]
+    public BatchService<Customer, CustomerAddress> CustomerAddressService { get; set; }
+
+    [Parameter]
+    public BatchService<Customer, CustomerGroupMembership> CustomerGroupService { get; set; }
+
+    [Parameter]
+    public BatchService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService { get; set; }
+
+    public async Task OpenWindowAsync()
+    {
+        if (ConfigService.Config.CustomerHasManyAddresses)
+        {
+            if (ConfigService.Config.CustomerIsMemberOfGroups)
+                await CustomerAddressGroupsService.OpenWindow(CustomerId);
+            else
+                await CustomerAddressService.OpenWindow(CustomerId);
+        }
+        else
+        {
+            if (ConfigService.Config.CustomerIsMemberOfGroups)
+                await CustomerGroupService.OpenWindow(CustomerId);
+            else
+                await CustomerService.OpenWindow(CustomerId);
+        }
+    }
+}

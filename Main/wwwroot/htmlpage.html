@@ -4,17 +4,44 @@
     <meta charset="utf-8" />
     <title></title>
     <style type="text/css">
-        .main-div {
-            margin: 50px 100px;
-            border: 1px solid gray;
+        .active {
+            border: 1px solid red;
+            border-bottom: 0;
+            width: 154px;
+            height: 35px;
+            margin: 4px 52px 17px;
+            position: relative;
+            border-radius: 10px 10px 0 0;
+            background-color:white;
         }
 
-        .child-div {
-            width: 300px;
-            height: 150px;
-            border: 1px solid gray;
-            margin:0 auto;
-        }
+            .active:after,
+            .active:before {
+                content: '';
+                width: 20px;
+                height: 20px;
+                border: 1px solid red;
+                position: absolute;
+                bottom: -12px;
+                border-top: 0;
+                background-color: white;
+            }
+
+            .active:after {
+                border-left: 0;
+                -moz-border-radius: 0 0 15px 0;
+                -webkit-border-radius: 0 0 15px 0;
+                border-radius: 0 0 15px 0;
+                left: -21px;
+            }
+
+            .active:before {
+                border-right: 0;
+                -moz-border-radius: 0 0 0 15px;
+                -webkit-border-radius: 0 0 0 15px;
+                border-radius: 0 0 0 15px;
+                right: -21px;
+            }
     </style>
     <script type="text/javascript">
         var oldStart, oldEnd
@@ -64,8 +91,8 @@
     <link href="" rel="stylesheet" />
 </head>
 <body style="">
-    <div class="child-div">
-        <input onkeydown="onKeyDown(event)" oninput="onInput(event)" />
+    <div style="background-color: #dae2f9;height:55px;padding-top:3px;">
+        <div class="active">hi</div>
     </div>
 </body>
 </html>

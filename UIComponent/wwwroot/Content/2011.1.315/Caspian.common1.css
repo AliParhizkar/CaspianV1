@@ -362,6 +362,8 @@ input[type='range']::-webkit-slider-thumb {
     border-radius: 50%;
 }
 
+
+
 .c-colors-hue {
     border-radius: 6px;
     background-image: linear-gradient(to right, red 0%, #ff0 17%, lime 33%, cyan 50%, blue 66%, #f0f 83%, red 100%);
@@ -1652,7 +1654,6 @@ span, label, td, th {
 }
 .c-form-action {
     text-align: center;
-    line-height: 45px;
 }
 .c-form-content {
     padding-top: 8px;
@@ -2438,15 +2439,21 @@ div.t-window {
     text-align:justify;
     min-height:100px;
     background-color:white;
-    
 }
 #outMessage {
     border: 1px solid #c3c3c3;
 }
-/* TabStrip */
-.c-tabstrip-items .t-state-default .t-link:hover {
-    background-color: #c2bfde;
-}
+
+    #outMessage .c-progress{
+        height:6px;
+        background-color:blue;
+        float:right;
+        border-radius:3px 0 0 3px;
+    }
+    /* TabStrip */
+    .c-tabstrip-items .t-state-default .t-link:hover {
+        background-color: #c2bfde;
+    }
 
 .t-item.t-state-default:first-child:hover, .t-item.t-state-active:first-child:hover {
     border-radius: 6px 0 0 0;
@@ -2472,7 +2479,7 @@ div.t-window {
 #outMessage .t-window-titlebar {
     padding: 5px 10px;
 }
-#outMessage 
+#outMessage
 .t-window-titlebar {
     white-space: nowrap;
     border-bottom: 1px solid;
@@ -2480,6 +2487,7 @@ div.t-window {
     font-weight: bold;
     overflow: visible;
     border-radius: 8px 8px 0 0;
+    background-color: #eff1f5;
 }
 .t-window >.t-header {
     display:flex;

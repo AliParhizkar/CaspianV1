@@ -14,7 +14,7 @@
 </div>
 
 <Window Service="Service" Title="Options" Style="width:500px">
-    <CaspianForm TEntity="DataModelOption" Service="Service" OnSubmit="data => data.FieldId = FieldId">
+    <CaspianForm TEntity="DataModelOption" Service="Service" OnSubmit="e => e.Entity.FieldId = FieldId">
         <StringTextBox @bind-Value="context.Title" ColSpan="8" />
         <StringTextBox Style="direction:ltr" @bind-Value="context.Name" ColSpan="8" />
         <div class="col-md-8">

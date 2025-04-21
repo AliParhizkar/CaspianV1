@@ -15,15 +15,8 @@ namespace Caspian.UI
         IList<TEntity> source;
         IDictionary<string, object> windowProperties;
 
-        async Task UpdateEntity(TEntity entity)
-        {
-            entity.CopyEntity(newEntity);
-            if (OnSubmit.HasDelegate)
-                await OnSubmit.InvokeAsync(entity);
-        }
-
         [Parameter]
-        public EventCallback<TEntity> OnSubmit {  get; set; }
+        public EventCallback<CancelableEvent<TEntity>> OnSubmit {  get; set; }
 
         [Parameter]
         public IDetailBatchService<TEntity> Service { get; set; }

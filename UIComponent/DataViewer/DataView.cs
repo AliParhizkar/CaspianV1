@@ -227,7 +227,7 @@ namespace Caspian.UI
         {
             if (DeleteMessage == null)
             {
-                if (PageData.Language == Language.Fa)
+                if (PageData?.Language != Language.En)
                     DeleteMessage = "آیا با حذف موافقید؟";
                 else
                     DeleteMessage = "Do you agree to delete?";

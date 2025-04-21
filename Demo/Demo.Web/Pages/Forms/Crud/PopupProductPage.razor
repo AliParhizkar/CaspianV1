@@ -40,8 +40,8 @@
     [Parameter]
     public int CategoryId { get; set; }
 
-    void SetCategory(Product product)
+    void SetCategory(CancelableEvent<Product> e)
     {
-        product.ProductCategoryId = CategoryId;
+        e.Entity.ProductCategoryId = CategoryId;
     }
 }

@@ -1,25 +1,35 @@
 ﻿@namespace Marketing.Web
 
-<EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
-    <StringTextBox @bind-Value="context.Name" ColSpan="4" />
-    <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
-    <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="4" />
-</EntitySearch>
+@if (!SimpleMode)
+{
+    <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
+        <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="4" />
+    </EntitySearch>
 
-<DataGrid TEntity="Customer" Service="Service" >
-    <Columns>
-        <GridColumn Field="t => t.Name" />
-        <GridColumn Field="t => t.MobileNumber" />
-        <GridColumn Field="t => t.CustomerGroup.Name" Title="گروه مشتری" />
-        <GridCommandColumns />
-    </Columns>
-</DataGrid>
+    <DataGrid TEntity="Customer" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridColumn Field="t => t.CustomerNumber.DigitGrouping()" Title="شماره مشتری" />
+            <GridColumn Field="t => t.CustomerGroup.Name" Title="گروه مشتری" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+}
 
-<Window Style="width:550px;" Service="Service" Title="مشتری">
-    <CaspianForm Service="Service" TEntity="Customer">
+<Window Style="width:550px;" Service="Service" Title="مشتری" OnOpen="SetCustomerNumber">
+    <CaspianForm Service="Service" TEntity="Customer" OnSubmit="SetCustomerId">
         <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
         <StringTextBox @bind-Value="context.Name" ColSpan="8" />
         <StringTextBox @bind-Value="context.MobileNumber" ColSpan="8" Style="direction:ltr" MaxLength="11" />
+        <NumericTextBox @bind-Value="context.CustomerNumber" ColSpan="7" TotalSpan="11" Disabled />
+        <div class="col-md-1 text-center">
+            <button type="button" @onclick="SetCustomerNumber" class="c-icon-button c-title" title="برای دریافت شماره مشتری کلیک کنید">
+                <i class="fa fa-refresh" />
+            </button>
+        </div>
         <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="8" />
         <StringTextBox @bind-Value="context.Address1" ColSpan="8" MultiLine Rows="3" />
         <StringTextBox @bind-Value="context.Address2" ColSpan="8" MultiLine Rows="3" />
@@ -27,8 +37,30 @@
     </CaspianForm>
 </Window>
 
-@code 
+@code
 {
     [Parameter]
     public IUIService<Customer> Service { get; set; }
+
+    void SetCustomerId(CancelableEvent<Customer> e)
+    {
+        if (SimpleMode)
+            e.Entity.Id = Service.MasterId;
+    }
+
+    async Task SetCustomerNumber()
+    {
+        if (Service.UpsertData != null && Service.UpsertData.Id == 0)
+        {
+            using var service = Page.CreateScope().GetService<CustomerService>();
+            var max = (await service.GetAll().MaxAsync(t => (int?)t.CustomerNumber)).GetValueOrDefault() + 1;
+            Service.UpsertData.CustomerNumber = max;
+        }
+    }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+
+    [Parameter]
+    public bool SimpleMode { get; set; }
 }

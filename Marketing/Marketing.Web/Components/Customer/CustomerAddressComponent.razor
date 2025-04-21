@@ -1,29 +1,39 @@
 ﻿@namespace Marketing.Web
+@if (!SimpleMode)
+{
+    <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
+        <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="4" />
+    </EntitySearch>
 
-<EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
-    <StringTextBox @bind-Value="context.Name" ColSpan="4" />
-    <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
-    <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="4" />
-</EntitySearch>
+    <DataGrid TEntity="Customer" Service="Service" DeleteMessage="با حذف مشتری آدرس های وی نیز حذف می شود آیا با حذف موافقید؟">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridColumn Field="t => t.CustomerGroup.Name" Title="گروه مشتری" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+}
 
-<DataGrid TEntity="Customer" Service="Service" DeleteMessage="با حذف مشتری آدرس های وی نیز حذف می شود آیا با حذف موافقید؟">
-    <Columns>
-        <GridColumn Field="t => t.Name" />
-        <GridColumn Field="t => t.MobileNumber" />
-        <GridColumn Field="t => t.CustomerGroup.Name" Title="گروه مشتری" />
-        <GridCommandColumns />
-    </Columns>
-</DataGrid>
 
-<Window Service="Service" Title="مشتری و آدرسهای مشتری" Style="width:750px">
+<Window Service="Service" Title="مشتری و آدرسهای مشتری" Style="width:750px" OnOpen="SetCustomerNumber">
     <CaspianForm Service="Service" TEntity="Customer" ColumnsCount="2">
+        <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
         <fieldset class="c-container">
             <legend>مشخصات مشتری</legend>
             <div class="row ps-3 pe-3">
                 <StringTextBox @bind-Value="context.Name" ColSpan="4" />
-                <StringTextBox @bind-Value="context.MobileNumber" ColSpan="4" Style="direction:ltr" MaxLength="11" />
                 <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="4" />
-                <FormCommandButton ColSpan="6" TotalSpan="6" />
+                <StringTextBox @bind-Value="context.MobileNumber" ColSpan="2" TotalSpan="4" Style="direction:ltr" MaxLength="11" />
+                <NumericTextBox @bind-Value="context.CustomerNumber" ColSpan="2" TotalSpan="4" Style="direction:ltr" Disabled />
+                <div class="col-md-1 text-center">
+                    <button type="button" @onclick="SetCustomerNumber" class="c-icon-button c-title" title="برای دریافت شماره مشتری کلیک کنید">
+                        <i class="fa fa-refresh" />
+                    </button>
+                </div>
+                <FormCommandButton ColSpan="3" TotalSpan="3" />
             </div>
         </fieldset>
     </CaspianForm>
@@ -37,43 +47,67 @@
             <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <TypeWindow TEntity="CustomerAddress" Service="Service" Title="آدرس" OnOpen="SetDefaultAddress" Style="width:400px;" OnSubmit="async t => await FormSubmit(t)">
+    <TypeWindow TEntity="CustomerAddress" Service="Service" Title="آدرس" OnOpen="SetDefaultAddress" Style="width:400px;" OnSubmit="FormSubmit">
         <StringTextBox @bind-Value="context.Address" Rows="3" MultiLine ColSpan="8" />
         <CheckBox @bind-Value="context.IsDefault" ColSpan="8" />
         <FormCommandButton ColSpan="8" />
     </TypeWindow>
 </Window>
 
-@code 
+@code
 {
+    async Task SetCustomerNumber()
+    {
+        if (Service.UpsertData.Id == 0)
+        {
+            using var service = Page.CreateScope().GetService<CustomerService>();
+            var max = (await service.GetAll().MaxAsync(t => (int?)t.CustomerNumber)).GetValueOrDefault() + 1;
+            Service.UpsertData.CustomerNumber = max;
+        }
+    }
+
     void SetDefaultAddress(CustomerAddress address)
     {
         if (address.Id == 0)
             address.IsDefault = !Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault);
     }
 
-    async Task FormSubmit(CustomerAddress address)
+    async Task FormSubmit(CancelableEvent<CustomerAddress> e)
     {
+        var address = e.Entity;
         DefaultAddressManagement addressManagement = ConfigService.Config.DefaultAddressManagement;
         if (address.IsDefault && addressManagement > DefaultAddressManagement.User)
         {
             var old = Service.DetailDataView.GetBatchEntities().SingleOrDefault(t => t.IsDefault);
             if (old != null)
             {
-                if (addressManagement == DefaultAddressManagement.System || await Page.Confirm("آیا می خواهید این آدرس بعنوان آدرس پیشفرض انتخاب شود؟"))
+                if (addressManagement == DefaultAddressManagement.System)
                 {
                     old.IsDefault = false;
-                    //await Service.DetailDataView.UpdateAsync(old);
+                    await Service.DetailDataView.UpdateAsync(old);
                     if (addressManagement == DefaultAddressManagement.System)
                         Page.ShowMessage("آدرس جاری بعنوان آدرس پیشفرض انتخاب شد.");
+                }
+                else
+                {
+                    if (await Page.Confirm("آیا می خواهید این آدرس بعنوان آدرس پیشفرض انتخاب شود؟"))
+                    {
+                        old.IsDefault = false;
+                        await Service.DetailDataView.UpdateAsync(old);
+                    }
+                    else
+                        e.Cancel = true;
                 }
             }
         }
     }
 
     [Parameter]
-    public BasePage Page { get; set; } 
+    public BasePage Page { get; set; }
 
     [Parameter]
     public BatchService<Customer, CustomerAddress> Service { get; set; }
+
+    [Parameter]
+    public bool SimpleMode { get; set; }
 }

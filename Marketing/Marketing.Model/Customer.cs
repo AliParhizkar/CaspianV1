@@ -17,6 +17,9 @@ namespace Marketing.Model
         [DisplayName("همراه")]
         public string MobileNumber { get; set; }
 
+        [DisplayName("شماره مشتری")]
+        public int CustomerNumber { get; set; }
+
         [DisplayName("آدرس اول")]
         public string Address1 { get; set; }
 

@@ -51,8 +51,15 @@ namespace Caspian.UI
 
         protected override async Task UpdateDatabaseAsync(TMaster master)
         {
+            
             var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
-            using var service = CreateScope().GetService<IMasterDetailsService<TMaster, TDetail, TDetail1>>();
+            using var scope = CreateScope();
+            if (OnUpsert != null)
+            {
+                if (!await OnUpsert.Invoke(scope.ServiceProvider, master))
+                    return;
+            }
+            var service = scope.GetService<IMasterDetailsService<TMaster, TDetail, TDetail1>>();
             var result = await service.UpdateDatabaseAsync(UpsertData, base.ChangedEntities, ChangedEntities);
             await service.SaveChangesAsync();
             ChangedEntities.Clear();

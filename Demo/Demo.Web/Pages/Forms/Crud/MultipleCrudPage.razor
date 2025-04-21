@@ -76,7 +76,7 @@
                         </Columns>
                     </DataGrid>
                     <Window Service="ProductService" Title="Product" Style="width:650px">
-                        <CaspianForm TEntity="Product" Service="ProductService" OnSubmit="t => SetCategory(t)">
+                        <CaspianForm TEntity="Product" Service="ProductService" OnSubmit="t => SetCategory(t.Entity)">
                             <Content Context="product">
                                 <div class="row pt-1">
                                     <div class="col-md-7 row c-controls ">
@@ -117,7 +117,7 @@
     </Tabs>
 </TabPanel>
 <Window @bind-Status="status" Title="شرح های پیش فرض" Style="width:550px">
-    <CaspianForm TEntity="ProductDescription" Service="DescriptionService" OnSubmit="t => t.ProductId = productId">
+    <CaspianForm TEntity="ProductDescription" Service="DescriptionService" OnSubmit="t => t.Entity.ProductId = productId">
         <StringTextBox @bind-Value="context.Description" MultiLine Rows="2" ColSpan="8" />
         <FormCommandButton ColSpan="9" />
     </CaspianForm>

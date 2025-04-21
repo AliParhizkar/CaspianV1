@@ -41,7 +41,7 @@
                                 </Columns>
                             </DataGrid>
                             <Window Service="Service" Title="Product" Style="width:500px;">
-                                <CaspianForm TEntity="Product" Service="Service" OnSubmit="t => t.ProductCategoryId = categoryId.Value">
+                                <CaspianForm TEntity="Product" Service="Service" OnSubmit="t => t.Entity.ProductCategoryId = categoryId.Value">
                                     <Content Context="product">
                                         <div class="row c-controls ps-3 pe-3">
                                             <StringTextBox @bind-Value="product.Title" ColSpan="8" />

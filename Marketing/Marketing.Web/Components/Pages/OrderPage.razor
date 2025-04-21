@@ -1,13 +1,17 @@
 ﻿@page "/Marketing/Order"
-@inject BatchService<Customer, CustomerAddress> Service
+@inject IUIService<Customer> CustomerService
+@inject BatchService<Customer, CustomerAddress> CustomerAddressService
+@inject BatchService<Customer, CustomerGroupMembership> CustomerGroupService
+@inject BatchService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService
+
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
 <div class="m-categories">
-    @if(categories != null)
+    @if (categories != null)
     {
-        foreach(var category in categories)
+        foreach (var category in categories)
         {
             var className = category.Id == categoryId ? "m-category m-selected" : "m-category";
             <div class="@className" @onclick="async e => await SelectCategory(e, category)">
@@ -25,9 +29,9 @@
     }
 </div>
 <div class="m-products">
-    @if(products != null)
+    @if (products != null)
     {
-        foreach(var product in products)
+        foreach (var product in products)
         {
             var className = product.Id == selectedProductId ? "m-product m-selected" : "m-product";
             <div class="@className">@product.Title</div>
@@ -35,15 +39,16 @@
     }
 </div>
 <div style="width:50%;margin: 5px auto">
-    <ComboBox @bind-Value="customerId" TValue="int?" TEntity="Customer" TextExpression="t => t.Name" />
+    <ComboBox @bind-Value="customerId" TValue="int" TEntity="Customer" TextExpression="t => t.Name" />
 </div>
 <button @onclick="OpenCustomerWindow">
     Customer
     <i class="c-icon fa fa-chevron-left"></i>
 </button>
-<Window @bind-Status="status" Style="width:600px;" Title="مشتری">
-    <Marketing.Web.Components.Customer.CustomerComponent Page="this" />
-</Window>
+<SimpleCustomerComponent @ref="customerComponent" Page="this" CustomerId="customerId" CustomerService="CustomerService"
+                         CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService" 
+                         CustomerAddressGroupsService="CustomerAddressGroupsService"/>
+
 <PopupWindow Top="top" Left="left" @bind-Status="popupStatus" Style="min-width:200px;min-height:50px">
     <div class="m-subcategories">
         @foreach (var category in categories.Single(t => t.Id == categoryId).Categories)
@@ -54,9 +59,11 @@
     </div>
 
 </PopupWindow>
-@code 
+@code
 {
-    WindowStatus status, popupStatus;
+    WindowStatus popupStatus;
+    int customerId;
+    SimpleCustomerComponent customerComponent;
 
     IList<ProductCategory> categories;
     IList<Product> products;
@@ -91,22 +98,6 @@
         }
     }
 
-    protected override void OnInitialized()
-    {
-        Service.OnUpsert = async (IServiceProvider provider, Customer customer) =>
-        {
-            var hasDefaultAddress = Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault);
-            if (hasDefaultAddress || await Confirm("هیچ آدرسی بعنوان آدرس پیشفرض انتخاب نشده است آیا با ثبت موافقید؟"))
-            {
-                status = WindowStatus.Close;
-                StateHasChanged();
-                return await Task.FromResult(true);
-            }
-            return await Task.FromResult(false);
-        };
-        base.OnInitialized();
-    }
-
     protected override async Task OnInitializedAsync()
     {
         using var service = CreateScope().GetService<ProductCategoryService>();
@@ -114,10 +105,8 @@
         await base.OnInitializedAsync();
     }
 
-    void OpenCustomerWindow()
+    async Task OpenCustomerWindow()
     {
-        status = WindowStatus.Open;
-        Service.MasterId = customerId ?? 0;
+        await customerComponent.OpenWindowAsync();
     }
-    int? customerId;
 }

@@ -30,7 +30,7 @@
 </div>
 
 <Window Service="Service" Title="Data model fields" Style="width:500px">
-    <CaspianForm TEntity="DataModelField" Service="Service" OnSubmit="t => t.DataModelId = DataModelId">
+    <CaspianForm TEntity="DataModelField" Service="Service" OnSubmit="t => t.Entity.DataModelId = DataModelId">
         <Content Context="field">
             <div class="row ps-4 pe-4 c-controls">
                 <div class="col-md-4">

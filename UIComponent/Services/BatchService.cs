@@ -118,6 +118,27 @@ namespace Caspian.UI
 
         public Window Window { get; set; }
 
+        /// <summary>
+        /// Open Window to validate and upsert the entity. In this case window has form that bind to entity
+        /// </summary>
+        /// <param name="id">key of entity</param>
+        /// <returns>Task</returns>
+        public async Task OpenWindow(int id)
+        {
+            if (id == 0)
+                UpsertData = Activator.CreateInstance<TMaster>();
+            else
+            {
+                using var service = CreateScope().GetService<IBaseService<TMaster>>();
+                UpsertData = await service.SingleAsync(id);
+            }
+            await Window.Open();
+            StateHasChanged();
+            await Task.Delay(100);
+            if (Form != null)
+                await Form.FocusAsync();
+        }
+
         public DataView<TDetail> DetailDataView { get; set; }
 
         public TypeWindow<TDetail> TypeWindow { get; set; }
@@ -310,6 +331,7 @@ namespace Caspian.UI
                             await service.DeleteMasterAndDetails(old);
                             await service.SaveChangesAsync();
                             await DataView.ReloadAsync();
+                            await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
                         }
                     }
                     else

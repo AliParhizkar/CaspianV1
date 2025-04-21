@@ -12,6 +12,8 @@ namespace Caspian.UI
         void WindowInitialize();
 
         void Dispose();
+
+        Task OpenWindow(int id);
     }
 
     internal interface IInternalUIService: IUIService
@@ -48,6 +50,12 @@ namespace Caspian.UI
 
         void HideFooter();
     }
+
+    internal interface IUIService<TEntity>
+    {
+
+    }
+
 
     public interface IUIService<TEntity> : IUIService, ISearchService<TEntity> where TEntity : class
     {

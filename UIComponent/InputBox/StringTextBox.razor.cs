@@ -135,9 +135,9 @@ namespace Caspian.UI
         {
             if (firstRender)
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindStringbox", InputElement);
-            if (focuced)
+            if (focused)
             {
-                focuced = false;
+                focused = false;
                 await jsRuntime.InvokeVoidAsync("caspian.common.focus", InputElement);
             }
             await base.OnAfterRenderAsync(firstRender);

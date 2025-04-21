@@ -1,32 +1,46 @@
 ﻿@namespace Marketing.Web
+@if (!SimpleMode)
+{
+    <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
+    </EntitySearch>
 
-<EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
-    <StringTextBox @bind-Value="context.Name" ColSpan="4" />
-    <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
-</EntitySearch>
+    <DataGrid TEntity="Customer" Service="Service" DeleteMessage="با حذف مشتری آدرس ها و گروههای وی نیز حذف می شود آیا با حذف موافقید؟">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridColumn Field="t => t.CustomerNumber.DigitGrouping()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+}
 
-<DataGrid TEntity="Customer" Service="Service" DeleteMessage="با حذف مشتری آدرس ها و گروههای وی نیز حذف می شود آیا با حذف موافقید؟">
-    <Columns>
-        <GridColumn Field="t => t.Name" />
-        <GridColumn Field="t => t.MobileNumber" />
-        <GridCommandColumns />
-    </Columns>
-</DataGrid>
-<Window Title="مشتری-آدرسهای مشتری-گروههای مشتری" Style="width:800px;" Service="Service">
+
+<Window Title="مشتری-آدرسهای مشتری-گروههای مشتری" Style="width:800px;" Service="Service" OnOpen="SetCustomerNumber">
     <CaspianForm Service="Service" ColumnsCount="2">
         <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerAddressGroupsService)" />
-        <StringTextBox @bind-Value="context.Name" ColSpan="4" TotalSpan="5" />
-        <StringTextBox @bind-Value="context.MobileNumber" ColSpan="3" TotalSpan="4" MaxLength="11" Style="direction:ltr" />
-        <div class="col-md-3">
-            <FormCommandButton />
-        </div>
+        <fieldset class="c-container">
+            <legend>مشخصات مشتری</legend>
+            <div class="row">
+                <StringTextBox @bind-Value="context.Name" ColSpan="4" TotalSpan="6" />
+                <StringTextBox @bind-Value="context.MobileNumber" ColSpan="2" TotalSpan="3" MaxLength="11" Style="direction:ltr" />
+                <FormCommandButton TotalSpan="3" ColSpan="3" />
+                <NumericTextBox @bind-Value="context.CustomerNumber" Disabled DigitGrouping ColSpan="3" TotalSpan="5" />
+                <div class="col-md-1 text-center">
+                    <button type="button" @onclick="SetCustomerNumber" class="c-icon-button c-title" title="برای دریافت شماره مشتری کلیک کنید">
+                        <i class="fa fa-refresh" />
+                    </button>
+                </div>
+            </div>
+        </fieldset>
     </CaspianForm>
-    <div class="row">
+    <div class="row pt-2">
         <div class="col-md-9 text-center ps-2">
-            <span>آدرسهای مشتری</span>
+            <span class="d-membership">آدرسهای مشتری</span>
             <div class="text-end">
-                <DataGrid TEntity="CustomerAddress" DetailsService="Service" ContentHeight="250" Inline AutoHide OnOpen="SetAddressAsDefault" 
-                OnUpsertAsync="OnAddressInserted">
+                <DataGrid TEntity="CustomerAddress" DetailsService="Service" ContentHeight="250" Inline AutoHide OnOpen="SetAddressAsDefault"
+                          OnUpsertAsync="OnAddressInserted">
                     <Columns Context="address">
                         <GridColumn Field="t => t.Address" Title="آدرس">
                             <EditTemplate>
@@ -45,17 +59,27 @@
 
         </div>
         <div class="col-md-3 text-center pe-2">
-            <span>گروههای مشتری</span>
+            <span class="d-membership">گروههای مشتری</span>
             <div class="text-end">
                 <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:324px;"
-                TextExpression="t => t.Name" />
+                                TextExpression="t => t.Name" />
             </div>
         </div>
     </div>
 </Window>
 
-@code 
+@code
 {
+    async Task SetCustomerNumber()
+    {
+        if (Service.UpsertData.Id == 0)
+        {
+            using var service = Page.CreateScope().GetService<CustomerService>();
+            var max = (await service.GetAll().MaxAsync(t => (int?)t.CustomerNumber)).GetValueOrDefault() + 1;
+            Service.UpsertData.CustomerNumber = max;
+        }
+    }
+
     void SetAddressAsDefault(CustomerAddress address)
     {
         if (address.Id == 0)
@@ -92,4 +116,7 @@
 
     [Parameter]
     public BasePage Page { get; set; }
+
+    [Parameter]
+    public bool SimpleMode { get; set; }
 }

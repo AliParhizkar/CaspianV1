@@ -35,6 +35,27 @@ namespace Caspian.UI
             return new EnumSearch<TValue>(lambda.Body, enumValues);
         }
 
+        /// <summary>
+        /// Open Window to validate and upsert the entity. In this case window has form that bind to entity
+        /// </summary>
+        /// <param name="id">key of entity</param>
+        /// <returns>Task</returns>
+        public async Task OpenWindow(int id)
+        {
+            if (id == 0)
+                UpsertData = Activator.CreateInstance<TEntity>();
+            else
+            {
+                using var service = CreateScope().GetService<IBaseService<TEntity>>();
+                UpsertData = await service.SingleAsync(id);
+            }
+            await Window.Open();
+            StateHasChanged();
+            await Task.Delay(100);
+            if (Form != null)
+                await Form.FocusAsync();
+        }
+
         public void HideFooter()
         {
             hideFooter = true;

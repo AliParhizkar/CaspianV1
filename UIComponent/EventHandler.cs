@@ -27,5 +27,5 @@ public class EKeyboardEventArgs : KeyboardEventArgs
 
 public class EMouseEventArgs : MouseEventArgs
 {
-    public string Identifire { get; set; }
+    public string Identifier { get; set; }
 }

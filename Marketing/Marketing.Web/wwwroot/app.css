@@ -59,5 +59,11 @@
     text-align: center;
     color: #4f9995;
     font-weight: bold;
-    font-size: 25px;
+    font-size: 15px;
+}
+
+.c-icon-button.c-title{
+    min-width:30px;
+    margin-top:2px;
+    border-radius:15px!important;
 }

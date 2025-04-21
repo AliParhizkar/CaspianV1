@@ -25,7 +25,7 @@
 </div>
 
 <Window Service="Service" Title="گردش کار" Style="width:500px">
-    <CaspianForm Service="Service" TEntity="Workflow" OnSubmit="workflow => workflow.WorkflowGroupId = GroupId">
+    <CaspianForm Service="Service" TEntity="Workflow" OnSubmit="e => e.Entity.WorkflowGroupId = GroupId">
         <ComboBox TEntity="DataModel" TValue="int" @bind-Value="context.DataModelId" ColSpan="8"
                   TextExpression="t => t.Title" ConditionExpression="t => t.WorkflowGroupId == GroupId" />
         <StringTextBox @bind-Value="context.Title" ColSpan="8" />

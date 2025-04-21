@@ -272,14 +272,14 @@ html input[disabled], textarea[disabled] {
     z-index: 999999999;
     overflow: hidden;
     color: #757575;
-    border-radius: 8px;
+    border-radius: 8px 8px 3px 3px;
     border: 1px solid;
     border-color: rgba(0, 0, 0, .12);
-    background-color: #eff1f5;
     box-shadow: -4px 4px 6px 0 slategrey;
     font-size: 14px;
     top:-120px;
     transition:.4s top ease;
+    background-color:white;
 }
 #outMessage .t-title {
     display:inline-block;

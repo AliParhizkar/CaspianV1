@@ -20,6 +20,15 @@ namespace Caspian.UI
         Minus,
     }
 
+    public enum BindingType
+    {
+        [Display(Name = "On change")]
+        OnChange = 1,
+
+        [Display(Name = "On input")]
+        OnInput
+    }
+
     public enum CommandButtonType
     {
         Default,

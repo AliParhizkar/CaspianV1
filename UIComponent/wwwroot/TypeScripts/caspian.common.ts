@@ -1,10 +1,53 @@
 ﻿namespace caspian {
     export class common {
+        public static showMessage(message: string) {
+            if (this.infoTimer)
+                clearTimeout(this.infoTimer);
+            let box = document.getElementById('outMessage');
+            if (box)
+                box.remove();
+            let odv = document.createElement('div');
+            odv.id = 'outMessage';
+            odv.className = 't-widget t-message';
+            odv.innerHTML = `<div class="t-window-titlebar"><span class="t-title">Info</span><span class="t-close"><i class="fa fa-close"></i></span></div><div class="c-content">${message}</div><div class="c-progress"></div>`;
+            (odv.getElementsByClassName('t-close')[0] as HTMLElement).onclick = () => {
+                this.hideMessage();
+            }
+            let main = document.getElementsByClassName('c-content-main')[0];
+            if (main == null)
+                document.body.appendChild(odv);
+            else
+                main.appendChild(odv);
+            setTimeout(() => {
+                odv.style.top = '30px';
+            }, 5);
+            this.infoTimer = setTimeout(() => {
+                this.hideMessage();
+            }, 5_500);
+            if (this.intervalId)
+                clearInterval(this.intervalId);
+            let value = 250;
+            this.intervalId = setInterval(() => {
+                let progress = odv.lastElementChild as HTMLDivElement;
+                progress.style.width = value + 'px';
+                value -= 0.5;
+            }, 11);
+        }
+
+        public static hideMessage() {
+            if (this.infoTimer)
+                clearTimeout(this.infoTimer);
+            setTimeout(() => {
+                document.getElementById('outMessage').remove();
+            }, 300);
+        }
+
         static RightToLeft(): boolean {
             return document.body.classList.contains('t-rtl');
         }
 
         static infoTimer;
+        static intervalId;
 
         public static getSelection(input: HTMLInputElement) {
             let data = { start: input.selectionStart, end: input.selectionEnd };
@@ -401,44 +444,8 @@
             el.addEventListener("blur", () => el.value === pattern && (el.value = ""));
         }
 
-        public static showMessage(message: string) {
-            if (this.infoTimer)
-                clearTimeout(this.infoTimer);
-            let box = document.getElementById('outMessage');
-            if (box)
-                box.remove();
-            let odv = document.createElement('div');
-            odv.id = 'outMessage';
-            odv.className = 't-widget t-message';
-            odv.innerHTML = `<div class="t-window-titlebar"><span class="t-title">Info</span><span class="t-close"><i class="fa fa-close"></i></span></div><div class="c-content">${message}</div>`;
-            (odv.getElementsByClassName('t-close')[0] as HTMLElement).onclick = () => {
-                this.hideMessage();
-            }
-            let main = document.getElementsByClassName('c-content-main')[0];
-            if (main == null)
-                document.body.appendChild(odv);
-            else
-                main.appendChild(odv);
-            setTimeout(() => {
-                odv.style.top = '30px';
-            }, 5);
-            this.infoTimer = setTimeout(() => {
-                this.hideMessage();
-            }, 4_000);
-        }
-
         public static focus(element: HTMLElement) {
             element.focus();
-        }
-
-        public static hideMessage() {
-            if (this.infoTimer)
-                clearTimeout(this.infoTimer);
-            let box =
-                document.getElementById('outMessage').style.top = '-130px';
-            setTimeout(() => {
-                document.getElementById('outMessage').remove();
-            }, 300);
         }
 
         public static async bindImage(pic: HTMLImageElement, imageStream) {

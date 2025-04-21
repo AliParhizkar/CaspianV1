@@ -74,15 +74,15 @@
         return null;
     }
 
-    async Task FormSubmitted(Product product)
+    async Task FormSubmitted(CancelableEvent<Product> e)
     {
         if (ConfigService.Config.CategoryType == CategoryType.Couple)
         {
             using var service = CreateScope().GetService<ProductCategoryService>();
             if (await service.AnyAsync(t => t.CategoryId == parentCategoryId))
-                product.CategoryId = categoryId;
+                e.Entity.CategoryId = categoryId;
             else
-                product.CategoryId = parentCategoryId;
+                e.Entity.CategoryId = parentCategoryId;
         }
     }
 

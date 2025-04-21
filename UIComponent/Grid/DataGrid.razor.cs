@@ -548,7 +548,7 @@ namespace Caspian.UI
             }
             if (columnsData != null && !Batch)
                 await DataBind();
-            if (shouldFetchData && columnsData != null && Batch)
+            if (shouldFetchData && columnsData?.Count > 0 && Batch)
             {
                 await DataBind();
                 if (DetailsService.ChangedEntities == null)

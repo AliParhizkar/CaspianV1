@@ -1,22 +1,31 @@
 ﻿@namespace Marketing.Web
+@if (!SimpleMode)
+{
+    <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="Customer" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.MobileNumber" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+}
 
-<EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
-    <StringTextBox @bind-Value="context.Name" ColSpan="4" />
-    <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
-</EntitySearch>
-<DataGrid TEntity="Customer" Service="Service">
-    <Columns>
-        <GridColumn Field="t => t.Name" />
-        <GridColumn Field="t => t.MobileNumber" />
-        <GridCommandColumns />
-    </Columns>
-</DataGrid>
-<Window Style="width:700px" Title="مشتری و گروههای مشتری" Service="Service">
+<Window Style="width:700px" Title="مشتری و گروههای مشتری" Service="Service" OnOpen="SetCustomerNumber">
     <CaspianForm Service="Service">
         <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerGroupsService)" />
         <div class="col-md-8 row ">
             <StringTextBox @bind-Value="context.Name" ColSpan="8" />
             <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="8" />
+            <NumericTextBox @bind-Value="context.CustomerNumber" Disabled ColSpan="6" TotalSpan="10" />
+            <div class="col-md-2 text-center">
+                <button type="button" @onclick="SetCustomerNumber" class="c-icon-button c-title" title="برای دریافت شماره مشتری کلیک کنید">
+                    <i class="fa fa-refresh" />
+                </button>
+            </div>
             <StringTextBox @bind-Value="context.Address1" Rows="3" MultiLine ColSpan="8" />
             <StringTextBox @bind-Value="context.Address2" Rows="3" MultiLine ColSpan="8" />
             <FormCommandButton ColSpan="8" TotalSpan="12" />
@@ -29,8 +38,24 @@
     </CaspianForm>
 </Window>
 
-@code 
+@code
 {
     [Parameter]
     public BatchService<Customer, CustomerGroupMembership> Service { get; set; }
+
+    async Task SetCustomerNumber()
+    {
+        if (Service.UpsertData.Id == 0)
+        {
+            using var service = Page.CreateScope().GetService<CustomerService>();
+            var max = (await service.GetAll().MaxAsync(t => (int?)t.CustomerNumber)).GetValueOrDefault() + 1;
+            Service.UpsertData.CustomerNumber = max;
+        }
+    }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+
+    [Parameter]
+    public bool SimpleMode { get; set; }
 }

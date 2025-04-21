@@ -45,9 +45,9 @@
 
 @code
 {
-    void SetCountryId(City city)
+    void SetCountryId(CancelableEvent<City> e)
     {
-        city.CountryId = CountryId;
+        e.Entity.CountryId = CountryId;
     }
 
     [Parameter]

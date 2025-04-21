@@ -85,7 +85,7 @@
         base.OnParametersSet();
     }
 
-    
+
     void OnUpsert(FormData<User> formData)
     {
         formData.Cancel = true;
@@ -115,8 +115,9 @@
         return await Task.FromResult(true);
     }
 
-    async Task SetPasswordForUpdate(User user)
+    async Task SetPasswordForUpdate(CancelableEvent<User> e)
     {
+        var user = e.Entity;
         if (user.Id > 0)
         {
             using var service = CreateScope().GetService<UserService>();

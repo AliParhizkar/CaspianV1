@@ -31,7 +31,7 @@
 </div>
 
 <Window Service="Service" Title="Data model" Style="width:500px">
-    <CaspianForm Service="Service" TEntity="DataModel" OnSubmit="t => t.WorkflowGroupId = GroupId">
+    <CaspianForm Service="Service" TEntity="DataModel" OnSubmit="t => t.Entity.WorkflowGroupId = GroupId">
         <StringTextBox @bind-Value="context.Name" Style="direction:ltr" ColSpan="8" />
         <StringTextBox @bind-Value="context.Title" ColSpan="8" />
         <StringTextBox @bind-Value="context.Description" MultiLine Rows="3" ColSpan="8" />

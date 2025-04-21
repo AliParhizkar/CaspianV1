@@ -27,34 +27,37 @@
     {
         if (ConfigService.Config.CustomerIsMemberOfGroups)
         {
-            <CustomerGroupsComponent Service="CustomerGroupService" />
+            <CustomerGroupsComponent Service="CustomerGroupService" Page="this" />
         }
         else
         {
-            <CustomerComponent Service="CustomerService" />
+            <CustomerComponent Service="CustomerService" Page="this" />
         }
     }
 </div>
 
 @code
 {
-    IUIService<Customer> service;
     protected override void OnInitialized()
     {
         if (ConfigService.Config.CustomerHasManyAddresses)
         {
-            service = CustomerAddressService;
-            service.OnUpsert = async (IServiceProvider provider, Customer customer) =>
-            {
-                var dataView = CustomerAddressService.DetailDataView;
-                if (!dataView.GetBatchEntities().Any())
-                    return await Confirm("برای مشتری آدرس تعریف نشده است آیا با ثبت موافقید؟");
-                if (!dataView.GetBatchEntities().Any(t => t.IsDefault))
-                    return await Confirm("هیچکدام از آدرس ها بعنوان آدرس پیش فرض تعیین نشده اند آیا با ثبت موافقید؟");
-                return true;
-            };
+            if (ConfigService.Config.CustomerIsMemberOfGroups)
+                CustomerAddressGroupsService.OnUpsert = ConfirmForAddress;
+            else
+                CustomerAddressService.OnUpsert = ConfirmForAddress;
         }
         base.OnInitialized();
+    }
+
+    async Task<bool> ConfirmForAddress(IServiceProvider provider, Customer customer)
+    {
+        var dataView = CustomerAddressGroupsService.DetailDataView ?? CustomerAddressService.DetailDataView;
+        if (!dataView.GetBatchEntities().Any())
+            return await Confirm("برای مشتری آدرس تعریف نشده است آیا با ثبت موافقید؟");
+        if (!dataView.GetBatchEntities().Any(t => t.IsDefault))
+            return await Confirm("هیچکدام از آدرس ها بعنوان آدرس پیش فرض تعیین نشده اند آیا با ثبت موافقید؟");
+        return true;
     }
 
     public override void ChangeState()

@@ -5,10 +5,11 @@
 {
     <CaspianForm Model="config" TEntity="Config" OnValidSubmit="SaveConfig" ColumnsCount="2">
         <StringTextBox @bind-Value="config.Name" ColSpan="4" />
-        <DropdownList @bind-Value="config.DefaultAddressManagement" ColSpan="4" />
         <DropdownList @bind-Value="config.CategoryType" ColSpan="4" />
         <CheckBox @bind-Value="config.CustomerHasManyAddresses" ColSpan="2" TotalSpan="6" />
         <CheckBox @bind-Value="config.CustomerIsMemberOfGroups" ColSpan="2" TotalSpan="6" />
+        <DropdownList @bind-Value="config.DefaultAddressManagement" Disabled="!config.CustomerHasManyAddresses" ColSpan="4" />
+
         <FormCommandButton TotalSpan="6" HideResetButton />
     </CaspianForm>
 }

@@ -34,7 +34,7 @@
 </div>
 
 <Window Service="Service" Title="فرمول" Style="width:450px">
-    <CaspianForm  Service="Service" TEntity="Rule" OnSubmit="rule => rule.SystemKind = Subsystem">
+    <CaspianForm  Service="Service" TEntity="Rule" OnSubmit="e => e.Entity.SystemKind = Subsystem">
         @{
             var disable = context.Priority != null;
         }

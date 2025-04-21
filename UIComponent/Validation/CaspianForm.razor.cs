@@ -39,7 +39,7 @@ namespace Caspian.UI
         public EventCallback<TEntity> OnInvalidSubmit { get; set; }
 
         [Parameter]
-        public EventCallback<TEntity> OnSubmit { get; set; }
+        public EventCallback<CancelableEvent<TEntity>> OnSubmit { get; set; }
 
         [Parameter]
         public EventCallback<TEntity> OnReset { get; set; }
@@ -147,8 +147,15 @@ namespace Caspian.UI
             controls.Clear();
             await Task.Delay(10);
             addControls = false;
+            var cancel = false;
             if (OnSubmit.HasDelegate)
-                await OnSubmit.InvokeAsync(EditContext.Model as TEntity);
+            {
+                var cancelableEvent = new CancelableEvent<TEntity>(EditContext.Model as TEntity);
+                await OnSubmit.InvokeAsync(cancelableEvent);
+                cancel = cancelableEvent.Cancel;
+            }
+            if (cancel)
+                return;
             if (OnInternalSubmit.HasDelegate)
                 await OnInternalSubmit.InvokeAsync(EditContext.Model as TEntity);
             FormAppState.AllControlsIsValid = true;
@@ -250,13 +257,6 @@ namespace Caspian.UI
         public async Task ResetAsync()
         {
             await ResetFormAsync();
-        }
-
-        async void OnFormSubmit()
-        {
-            ErrorMessage = null;
-            await OnSubmit.InvokeAsync(EditContext.Model as TEntity);
-            EditContext.Validate();
         }
 
         public void Dispose()

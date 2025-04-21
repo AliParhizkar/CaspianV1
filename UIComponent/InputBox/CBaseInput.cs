@@ -17,7 +17,7 @@ namespace Caspian.UI
         ValidationMessageStore _messageStore;
         bool valueIsChanged, reseting;
         EditContext oldContext;
-        protected bool disabled, focuced, search;
+        protected bool disabled, focused, search;
         protected string title;
 
         public ElementReference? InputElement { get; protected set; }
@@ -262,8 +262,8 @@ namespace Caspian.UI
                 }
                 else
                 {
-                    var identifire = CurrentEditContext.Field(_FieldName);
-                    ErrorMessage = CurrentEditContext.GetValidationMessages(identifire).FirstOrDefault();
+                    var identifyer = CurrentEditContext.Field(_FieldName);
+                    ErrorMessage = CurrentEditContext.GetValidationMessages(identifyer).FirstOrDefault();
                 }
             }
 
@@ -323,7 +323,7 @@ namespace Caspian.UI
             //}
             if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
             {
-                if (InputElement != null)
+                if (InputElement != null && !Disabled)
                 {
                     FormAppState.AllControlsIsValid = false;
                     FormAppState.Control = this;

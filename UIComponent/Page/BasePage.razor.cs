@@ -10,7 +10,7 @@ namespace Caspian.UI
     {
         string message;
         protected MessageBox MessageBox;
-        bool sholdRender = true;
+        bool shouldRender = true;
         BasePage child;
         ElementReference shadowDiv;
 
@@ -61,7 +61,7 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
-        protected IServiceScope CreateScope()
+        public IServiceScope CreateScope()
         {
             var scope = ServiceScopeFactory.CreateScope();
             scope.SetUserId(UserId);
@@ -116,9 +116,9 @@ namespace Caspian.UI
 
         protected override bool ShouldRender()
         {
-            if (sholdRender)
+            if (shouldRender)
                 return true;
-            sholdRender = true;
+            shouldRender = true;
             return false;
         }
 
