@@ -177,8 +177,8 @@ namespace Caspian.UI
         {
             foreach (var info in this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic))
             {
-                if (info.PropertyType.GetInterfaces().Contains(typeof(IUIService)))
-                    (info.GetValue(this) as IUIService).Dispose();
+                if (info.PropertyType.GetInterfaces().Contains(typeof(IInternalUIService)))
+                    (info.GetValue(this) as IInternalUIService).Dispose();
             }
         }
     }

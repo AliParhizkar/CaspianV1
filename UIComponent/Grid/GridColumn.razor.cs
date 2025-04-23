@@ -32,10 +32,13 @@ namespace Caspian.UI
         public RenderFragment Template { get; set; }
 
         [Parameter]
+        public RenderFragment<object> ValueTemplate { get; set; }
+
+        [Parameter]
         public RenderFragment EditTemplate { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public IDictionary<string, object> Attributs { get; set; }
+        public IDictionary<string, object> Attributes { get; set; }
 
         [Parameter]
         public string Title { get; set; }
@@ -69,9 +72,9 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (Attributs != null && Attributs.ContainsKey("style"))
+            if (Attributes != null && Attributes.ContainsKey("style"))
             {
-                var array = Attributs["style"].ToString().Split(";");
+                var array = Attributes["style"].ToString().Split(";");
                 Width = "";
                 foreach (var item in array)
                 {

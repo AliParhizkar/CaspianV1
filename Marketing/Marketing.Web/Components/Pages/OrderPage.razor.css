@@ -1,10 +1,83 @@
-﻿
+﻿.m-main{
+    display:flex;
+    flex-direction:row-reverse;
+}
+.m-order-details{
+    width:40%;
+    padding:5px;
+}
+.m-product-panel {
+    width: 60%;
+}
+::deep .t-grid tr td {
+    line-height: 15px!important;
+}
+.m-counter-icon {
+    border: 1px solid #c9c9c9;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    border-radius: 15px;
+    padding-top: 6px;
+    background-color: white;
+}
+    .m-counter-icon:hover {
+        background-color: #F0EEF2;
+    }
+.m-counter-icon .fa {
+    color: #423d96 !important;
+    vertical-align: middle;
+    font-size: 18px;
+}
+
+.m-price-discount {
+    text-decoration-line: line-through;
+    text-decoration-color: red;
+}
+.m-price, .m-price-discount {
+    font-weight: bold;
+    display:block;
+}
+.m-products {
+    display: flex;
+    border: 1px solid #c4c4c4;
+    padding: 5px 3px;
+    margin: 5px;
+    border-radius: 8px;
+    height: calc(60% - 15px);
+}
+.m-product {
+    padding: 0 5px;
+    border: 1px solid #c4c4c4;
+    margin: 0 5px;
+    height: 30px;
+    line-height: 25px;
+    color: dimgray;
+    border-radius: 6px;
+    cursor:default;
+}
+    .m-product:active, .fa-plus:active, .fa-minus:active {
+        animation: gradient 100ms;
+    }
+.m-quantity {
+    display: flex;
+    align-items: center;
+}
+::deep .m-quantity input{
+    height:30px!important;
+    border-radius:15px;
+    text-align:center;
+}
+::deep .t-grid .t-header {
+    padding: 0 3px;
+}
 .m-categories {
     display: flex;
     border: 1px solid #c4c4c4;
-    padding:5px;
-    margin:5px;
-    border-radius:8px;
+    padding: 5px 3px;
+    margin: 5px;
+    border-radius: 8px;
+    height:40%;
 }
 .m-category {
     padding: 0 5px;
@@ -15,12 +88,13 @@
     color:dimgray;
     border-radius:6px;
 }
-    .m-category:hover{
-        background-color:aliceblue;
+    .m-category:hover, .m-product:hover {
+        background-color: aliceblue;
     }
-    .m-category .fa-chevron-left {
-        color: lightgray;
-    }
+
+.m-category .fa-chevron-left {
+    color: lightgray;
+}
 
 .m-subcategories{
     padding:5px 0;
@@ -28,6 +102,7 @@
     .m-subcategories .m-subcategory{
         height:30px;
         padding-right:5px;
+        cursor:default;
     }
         .m-subcategories .m-subcategory:nth-child(2n+1) {
             background-color: #f1f1f1;

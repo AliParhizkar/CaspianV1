@@ -1,0 +1,22 @@
+﻿@namespace Marketing.Web
+@typeparam TValue
+@inherits LookupWindow<Customer, TValue>
+<div class="c-lookup-page" style="width:500px;">
+    <DataGrid Service="Service" TEntity="Customer" ContentHeight="200">
+        <Columns Context="customer">
+            <GridColumn Field='t => t.Name' Title="نام مشتری" />
+            <GridColumn Field="t => t.MobileNumber.CallFormat('-')" />
+            <GridColumn Field="t => t.CustomerNumber" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.MobileNumber.StartsWith(LookupStringSearchValue) || 
+            t.CustomerNumber.ToString().StartsWith(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

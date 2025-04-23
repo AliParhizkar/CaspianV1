@@ -25,6 +25,25 @@ namespace Caspian.Common
             return "";
         }
 
+        public static string DigitGrouping(this long? value)
+        {
+            if (value.HasValue)
+                return string.Format("{0:#,0}", value);
+            return "";
+        }
+
+        public static string DigitGrouping(this double value)
+        {
+            return string.Format("{0:#,0}", value);
+        }
+
+        public static string DigitGrouping(this double? value)
+        {
+            if (value.HasValue)
+                return string.Format("{0:#,0}", value);
+            return "";
+        }
+
         public static string ToStringValue(this int? value)
         {
             if (value.HasValue)
@@ -49,13 +68,6 @@ namespace Caspian.Common
                 str += "0";
             str += date.Day.ToString();
             return str;
-        }
-
-        public static string DigitGrouping(this long? value)
-        {
-            if (value.HasValue)
-                return string.Format("{0:#,0}", value);
-            return "";
         }
 
         public static string LongString(this TimeSpan time)

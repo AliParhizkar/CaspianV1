@@ -168,26 +168,24 @@
 }
 
 .t-ltr .c-lookup .fa-search {
-    margin-left: -24px;
+    left: calc(100% - 27px);
 }
 .t-rtl .c-lookup .fa-search {
-    left:24px;
+    left:7px;
 }
 
-.t-ltr .c-lookup >input {
-}
-.t-rtl .c-lookup > input {
-    padding-left: 25px !important;
-    direction:rtl!important;
-}
+    .t-rtl .c-lookup input{
+        padding-left:24px;
+    }
 
-.t-rtl .t-panelbar .t-image,
-.t-rtl .t-panelbar .t-sprite
-{
-    margin-right: 0;
-    margin-left: 5px;
-    float: right;
-}
+
+
+    .t-rtl .t-panelbar .t-image,
+    .t-rtl .t-panelbar .t-sprite {
+        margin-right: 0;
+        margin-left: 5px;
+        float: right;
+    }
 
 .t-rtl .t-panelbar .t-arrow-up,
 .t-rtl .t-panelbar .t-arrow-down

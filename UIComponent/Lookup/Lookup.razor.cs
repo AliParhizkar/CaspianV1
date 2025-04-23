@@ -17,7 +17,7 @@ namespace Caspian.UI
     {
         string Text;
         string oldText;
-        TValue Oldvalue;
+        TValue oldValue;
         bool mustClear;
         string SearchStr;
         bool shouldRender;
@@ -137,6 +137,9 @@ namespace Caspian.UI
 
         [Parameter]
         public EventCallback OnChange { get; set; }
+
+        [Parameter]
+        public string PlaceHolder { get; set; }
 
         protected override void OnInitialized()
         {
@@ -345,7 +348,7 @@ namespace Caspian.UI
                         CloseHelpForm();
                         await SetValue(value, false);
                         valueUpdated = true;
-                        Oldvalue = Value;
+                        oldValue = Value;
                         Text = await GetText(value);
                         oldText = Text;
                     }
@@ -357,7 +360,7 @@ namespace Caspian.UI
                     if (!Value.Equals(default(TValue)))
                     {
                         Value = default(TValue);
-                        Oldvalue = Value;
+                        oldValue = Value;
                         await ValueChanged.InvokeAsync(default(TValue));
                         if (OnChange.HasDelegate)
                             await OnChange.InvokeAsync();
@@ -424,6 +427,8 @@ namespace Caspian.UI
             }
             inputAttrs = new Dictionary<string, object>();
             inputAttrs["class"] = AutoHide ? "t-input auto-hide" : "t-input";
+            if (PlaceHolder.HasValue())
+                inputAttrs.Add("placeholder", PlaceHolder);
             if (Container?.Disabled == true)
                 Disabled = true;
             Container?.SetControl(this);
@@ -477,9 +482,9 @@ namespace Caspian.UI
         {
             if (Value == null || Value.Equals(0))
                 Text = "";
-            else if (!Value.Equals(Oldvalue))
+            else if (!Value.Equals(oldValue))
             {
-                Oldvalue = Value;
+                oldValue = Value;
                 Text = await GetText(Convert.ToInt32(Value));
                 oldText = Text;
             }

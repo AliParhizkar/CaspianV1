@@ -20,6 +20,9 @@ namespace Marketing.Model
         [DisplayName("قیمت")]
         public int Price { get; set; }
 
+        [DisplayName("تخفیف")]
+        public int Discount { get; set; }
+
         [DisplayName("گروه محصول")]
         public int CategoryId { get; set; }
 

@@ -1451,9 +1451,11 @@ form > tr {
     bottom:0;
     background-color:transparent;
 }
-
+.t-widget.c-lookup{
+    height:34px;
+}
 .t-multitextbox {
-    height:100%;
+    height: 100%;
 }
 
     .t-multitextbox textarea{
@@ -1468,6 +1470,9 @@ form > tr {
     color: #423d96;
     font-size: 18px;
     cursor: pointer;
+    position: relative;
+    top: -31px;
+}
 }
 .c-page-size {
     width: 100px;

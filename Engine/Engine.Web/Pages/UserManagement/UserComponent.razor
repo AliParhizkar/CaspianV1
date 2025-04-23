@@ -109,8 +109,7 @@
             return await Task.FromResult(false);
         }
 
-        if (Service.Window is not null)
-            await Service.Window.Close();
+        await Service.CloseWindow();
 
         return await Task.FromResult(true);
     }

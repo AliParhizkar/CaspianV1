@@ -31,7 +31,7 @@
                     if (posTarget.left - left + locHelpWindow.width > window.innerWidth)
                         left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 26;
                     if (locTarget.top >= locHelpWindow.height - 30)
-                        helpWindow.style.marginTop = `${-locHelpWindow.height - 38}px`;
+                        helpWindow.style.marginTop = `${-locHelpWindow.height - 60}px`;
                     helpWindow.style.marginLeft = `${-left}px`;
                     helpWindow.style.transform = 'scale(0)';
                     setTimeout(() => {

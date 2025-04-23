@@ -28,14 +28,18 @@ else
 {
     async Task<bool> ConfirmOnUpsert(IServiceProvider provider, Customer customer)
     {
-        var hasAddress = CustomerAddressService.DetailDataView.GetBatchEntities().Any();
-        if (hasAddress)
+        ///base on config DataView of a service is null
+        var dataView = CustomerAddressService.DetailDataView ?? CustomerAddressGroupsService.DetailDataView;
+        /// If Customer has address
+        if (dataView.GetBatchEntities().Any())
         {
-            var hasDefaultAddress = CustomerAddressService.DetailDataView.GetBatchEntities().Any(t => t.IsDefault);
-            if (hasDefaultAddress || await Page.Confirm("هیچ آدرسی بعنوان آدرس پیشفرض انتخاب نشده است آیا با ثبت موافقید؟"))
+            /// If customer has default address
+            if (dataView.GetBatchEntities().Any(t => t.IsDefault))
                 return true;
-            return false;
+            /// If customer hasnt any default address confirm from user
+            return await Page.Confirm("هیچ آدرسی بعنوان آدرس پیشفرض انتخاب نشده است آیا با ثبت موافقید؟");
         }
+        /// If customer hasnt any address confirm from user
         return await Page.Confirm("مشتری فاقد آدرس می باشد آیا با ثبت موافقید؟");
     }
 

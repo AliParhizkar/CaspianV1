@@ -19,7 +19,7 @@
         <div class="col-md-11 pb-1">
             <StringTextBox @bind-Value="@categorySearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو گروه محصول" />
         </div>
-        <TreeView @ref="tree" TEntity="ProductCategory" style="height:500px" TextFunc="t => t.Name"
+        <TreeView @ref="tree" TEntity="ProductCategory" style="height:500px" TextFunc="t => t.Name" 
         FilterFunc="t => (!categorySearch.HasValue() || t.Name.StartsWith(categorySearch)) && t.ActiveType == ActiveType.Active">
             <AfterNodeTemplate>
                 <span class="d-tree-icon">
@@ -31,6 +31,14 @@
                 <span class="d-tree-icon" @onclick="async () => await DeleteCategory(context)">
                     <span class="fa fa-trash"></span>
                 </span>
+                @if (context.Children == null || context.Children.Count == 0)
+                {
+                    <span class="d-tree-icon">
+                        <a href="/Marketing/Product/@(context.Value)">
+                            <span class="fa fa-wpforms"></span>
+                        </a>
+                    </span>
+                }
             </AfterNodeTemplate>
         </TreeView>
     </div>
@@ -50,7 +58,7 @@
 else
 {
     <div style="width:800px;margin:10px auto">
-        <Marketing.Web.ProductCategoryComponent Service="Service" />
+        <ProductCategoryComponent Service="Service" />
     </div>
 }
 

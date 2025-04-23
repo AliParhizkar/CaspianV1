@@ -93,8 +93,8 @@ namespace Caspian.UI
                 DetailDataView?.CancelInternalUpdate();
                 base.DetailDataView?.CancelInternalUpdate();
             }
-            if (Window != null)
-                await Window?.Close();
+            if ((this as IInternalUIService).Window != null)
+                await (this as IInternalUIService).Window?.Close();
             StateHasChanged();
         }
     }

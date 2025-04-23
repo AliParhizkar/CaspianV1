@@ -6,12 +6,12 @@
 }
 @if (RowData != null && !DataField) 
 {
-    <td @attributes="Attributs">
+    <td @attributes="Attributes">
         @if (RowData.UpsertMode.HasValue && EditTemplate != null)
         {
             @EditTemplate
-        } 
-        else if (Template == null)
+        }
+        else if (Template == null && ValueTemplate == null)
         {
             if (IsCheckBox)
             {
@@ -23,9 +23,16 @@
                 @value
             }
         }
-        else 
+        else
         {
-            @Template
+            if (Template != null)
+            {
+                @Template
+            }
+            else
+            {
+                @ValueTemplate(value)
+            }
         }
     </td>
 }

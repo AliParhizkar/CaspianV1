@@ -85,7 +85,7 @@ namespace Caspian.Common.Extension
         public static void CopyEntity<TEntity>(this TEntity entity, TEntity newObject)
         {
             var keyName = typeof(TEntity).GetPrimaryKey().Name;
-            foreach (var info in typeof(TEntity).GetProperties().Where(t => t.Name != keyName))
+            foreach (var info in typeof(TEntity).GetProperties().Where(t => t.Name != keyName && t.CanWrite))
             {
                 var value = info.GetValue(newObject);
                 var type = info.PropertyType;

@@ -17,6 +17,9 @@ namespace Marketing.Service
                     return false;
                 return code.Length > 2;
             }, "کد باید بیش از دو کاراکتر باشد");
+            RuleFor(t => t.Price).CustomValue(t => t < 0, "قیمت محصول نمی تواند منفی باشد");
+            RuleFor(t => t.Discount).Custom(t => t.Discount > t.Price, "تخفیف نمی تواند از قیمت محصول بیشتر باشد")
+                .CustomValue(t => t < 0, "تخفیف نمی تواند منفی باشد");
             RuleFor(t => t.CategoryId).CustomAsync(async t =>
             {
                 return await provider.GetCaspianService<ProductCategoryService>().AnyAsync(u => u.CategoryId == t.CategoryId);

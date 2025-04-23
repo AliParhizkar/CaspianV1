@@ -1,17 +1,15 @@
 ﻿@page "/counter"
+@inherits BasePage
 @using Caspian.Engine.Service
 @using Demo.Service
 
-<button @onclick="() => flag = true">Show</button>
-
-@if (flag)
-{
-    <MyComponent StartNumber="5" />
-}
-
+<button @onclick="Test">Show</button>
 
 
 @code 
 {
-    bool flag;
+    void Test()
+    {
+
+    }
 }

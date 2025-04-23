@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
-    public class UIService<TEntity>: IUIService<TEntity> where TEntity : class
+    public class UIService<TEntity>: IUIService<TEntity>, IInternalUIService where TEntity : class
     {
         protected IJSRuntime jSRuntime;
         BaseComponentService baseComponentService;
@@ -28,6 +28,12 @@ namespace Caspian.UI
         public IDictionary<string, SearchType> GetSearchData()
         {
             return searchData;
+        }
+
+        public async Task CloseWindow()
+        {
+            if (Window != null) 
+                await Window.Close();
         }
 
         public IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TEntity, TValue>> lambda) where TValue : Enum
@@ -66,7 +72,7 @@ namespace Caspian.UI
             HideInsertIcon = true;
         }
 
-        public void Dispose()
+        void IInternalUIService.Dispose()
         {
             DetailType = default;
             Is1To1RelationshipService = default;
@@ -404,7 +410,7 @@ namespace Caspian.UI
             return await baseComponentService.MessageBox.Confirm(message);
         }
 
-        public void WindowInitialize()
+        void IInternalUIService.WindowInitialize()
         {
             Window.OnInternalClose = EventCallback.Factory.Create(this, StateHasChanged);
             Window.OnInternalOpen = EventCallback.Factory.Create(this, async () => 

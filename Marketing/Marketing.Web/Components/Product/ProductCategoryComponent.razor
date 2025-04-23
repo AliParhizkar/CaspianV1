@@ -11,8 +11,20 @@
             <GridColumn Field="t => t.Category.Code" Title="کد گروه اصلی" />
         }
         <GridColumn Field="t => t.Name" />
-        <GridColumn Field="t => t.Code" />
-        <GridColumn Field="t => t.ActiveType.EnumText()" />
+        <GridColumn Field="t => t.Code" style="max-width:80px;" />
+        <GridColumn Field="t => t.ActiveType.EnumText()" style="max-width:80px" />
+        <GridColumn Field="t => t.Categories.Any()" Title="محصولات" style="max-width:70px">
+            <ValueTemplate Context="hasCategories">
+                @if (!(bool)hasCategories)
+                {
+                    <span class="d-tree-icon">
+                        <a href="/Marketing/Product/@(context.Data.Id)">
+                            <span class="fa fa-wpforms"></span>
+                        </a>
+                    </span>
+                }
+            </ValueTemplate>
+        </GridColumn>
         <GridCommandColumns />
     </Columns>
 </DataGrid>

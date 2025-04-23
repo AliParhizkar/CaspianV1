@@ -7,18 +7,18 @@ namespace Caspian.UI
 {
     public interface IUIService
     {
-        Window Window { get; set; }
-
-        void WindowInitialize();
-
-        void Dispose();
-
         Task OpenWindow(int id);
+
+        Task CloseWindow();
     }
 
     internal interface IInternalUIService: IUIService
     {
+        void WindowInitialize();
 
+        void Dispose();
+
+        Window Window { get; set; }
     }
 
     public interface IEnumSearch<TValue> where TValue : Enum
@@ -51,10 +51,6 @@ namespace Caspian.UI
         void HideFooter();
     }
 
-    internal interface IUIService<TEntity>
-    {
-
-    }
 
 
     public interface IUIService<TEntity> : IUIService, ISearchService<TEntity> where TEntity : class

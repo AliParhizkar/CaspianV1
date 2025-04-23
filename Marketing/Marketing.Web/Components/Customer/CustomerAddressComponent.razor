@@ -5,12 +5,14 @@
         <StringTextBox @bind-Value="context.Name" ColSpan="4" />
         <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
         <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="customerNumber" ColSpan="4" TotalSpan="6" Title="شماره مشتری" Style="direction:ltr" />
     </EntitySearch>
 
-    <DataGrid TEntity="Customer" Service="Service" DeleteMessage="با حذف مشتری آدرس های وی نیز حذف می شود آیا با حذف موافقید؟">
+    <DataGrid TEntity="Customer" Service="Service" ConditionExpr="t => customerNumber == null || t.CustomerNumber.ToString().StartsWith(customerNumber)">
         <Columns>
             <GridColumn Field="t => t.Name" />
             <GridColumn Field="t => t.MobileNumber" />
+            <GridColumn Field="t => t.CustomerNumber" />
             <GridColumn Field="t => t.CustomerGroup.Name" Title="گروه مشتری" />
             <GridCommandColumns />
         </Columns>
@@ -56,9 +58,10 @@
 
 @code
 {
+    string customerNumber;
     async Task SetCustomerNumber()
     {
-        if (Service.UpsertData.Id == 0)
+        if (SimpleMode && Service.MasterId == 0 || Service.UpsertData.Id == 0)
         {
             using var service = Page.CreateScope().GetService<CustomerService>();
             var max = (await service.GetAll().MaxAsync(t => (int?)t.CustomerNumber)).GetValueOrDefault() + 1;

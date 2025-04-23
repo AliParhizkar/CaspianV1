@@ -12,7 +12,7 @@ using System.Collections;
 
 namespace Caspian.UI
 {
-    public class BatchService<TMaster, TDetail>: IUIService, IUIService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
+    public class BatchService<TMaster, TDetail>: IInternalUIService, IUIService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
     {
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
@@ -23,6 +23,10 @@ namespace Caspian.UI
         bool onlyForSearch, hideFooter;
         CaspianDataService CaspianDataService;
 
+        public async Task CloseWindow()
+        {
+            
+        }
 
         public async Task UpdateChildOfModelAsync(Type type)
         {
@@ -116,7 +120,7 @@ namespace Caspian.UI
 
         public DataView<TMaster> DataView { get; set; }
 
-        public Window Window { get; set; }
+        Window IInternalUIService.Window { get; set; }
 
         /// <summary>
         /// Open Window to validate and upsert the entity. In this case window has form that bind to entity
@@ -132,7 +136,7 @@ namespace Caspian.UI
                 using var service = CreateScope().GetService<IBaseService<TMaster>>();
                 UpsertData = await service.SingleAsync(id);
             }
-            await Window.Open();
+            await (this as IInternalUIService).Window.Open();
             StateHasChanged();
             await Task.Delay(100);
             if (Form != null)
@@ -147,14 +151,14 @@ namespace Caspian.UI
 
         public CaspianForm<TDetail> DetailForm { get; set; }
 
-        public void Dispose()
+        void IInternalUIService.Dispose()
         {
             DetailType = default;
             /// On Master Details Service We Set MasterId on OnInitialized but it reset here because page disposed 
             /// on another page created
-            
+
             //MasterId = default;
-            Window = default;
+            (this as IInternalUIService).Window = default;
             EntityTabPanel = default;
             DataView = default;
             DetailDataView = default;
@@ -236,8 +240,8 @@ namespace Caspian.UI
             }
             if (DetailDataView != null)
                 DetailDataView.CancelInternalUpdate();
-            if (Window != null)
-                await Window?.Close();
+            if ((this as IInternalUIService).Window != null)
+                await (this as IInternalUIService).Window?.Close();
             StateHasChanged();
         }
 
@@ -255,9 +259,9 @@ namespace Caspian.UI
             Form.OnInternalReset = EventCallback.Factory.Create(this, async () =>
             {
                 DetailDataView?.ClearSource();
-                if (Window != null)
+                if ((this as IInternalUIService).Window != null)
                 {
-                    await Window?.Close();
+                    await (this as IInternalUIService).Window?.Close();
                     StateHasChanged();
                 }
             });
@@ -280,7 +284,7 @@ namespace Caspian.UI
             DataView.InsertIconState(!onlyForSearch);
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TMaster>(this, async master =>
             {
-                if (Window != null)
+                if ((this as IInternalUIService).Window != null)
                 {
                     var value = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
                     if (value != 0)
@@ -295,7 +299,7 @@ namespace Caspian.UI
                         ChangedEntities.Clear();
                     }
                     MasterId = value;
-                    await Window.Open();
+                    await (this as IInternalUIService).Window.Open();
                     StateHasChanged();
                     await Task.Delay(100);
                     if (Form != null)
@@ -374,9 +378,9 @@ namespace Caspian.UI
             DetailDataView.InternalConditionExpr = expr;
         }
 
-        public void WindowInitialize()
+        void IInternalUIService.WindowInitialize()
         {
-            Window.OnInternalOpen = EventCallback.Factory.Create(this, () =>
+            (this as IInternalUIService).Window.OnInternalOpen = EventCallback.Factory.Create(this, () =>
             {
                 MasterId = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(UpsertData));
                 batchServiceData.MasterId = MasterId;

@@ -6,9 +6,10 @@
         <StringTextBox @bind-Value="context.Name" ColSpan="4" />
         <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
         <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="customerNumber" ColSpan="4" TotalSpan="6" Title="شماره مشتری" Style="direction:ltr" />
     </EntitySearch>
 
-    <DataGrid TEntity="Customer" Service="Service">
+    <DataGrid TEntity="Customer" Service="Service" ConditionExpr="t => customerNumber == null || t.CustomerNumber.ToString().StartsWith(customerNumber)">
         <Columns>
             <GridColumn Field="t => t.Name" />
             <GridColumn Field="t => t.MobileNumber" />
@@ -39,6 +40,7 @@
 
 @code
 {
+    string customerNumber;
     [Parameter]
     public IUIService<Customer> Service { get; set; }
 
