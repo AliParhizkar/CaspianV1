@@ -48,7 +48,7 @@
 
         bindDragAndDrop(dragableDom: HTMLElement, header: HTMLElement) {
             header.onmousedown = e => {
-                let loc = (e.target as HTMLElement).getBoundingClientRect();
+                let loc = (e.target as HTMLElement).closest('.t-window').getBoundingClientRect();
                 let xStart = e.clientX, yStart = e.clientY, leftStart = loc.left, topStart = loc.top;
                 document.onmouseup = () => {
                     document.onmouseup = null;

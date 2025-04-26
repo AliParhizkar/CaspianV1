@@ -335,7 +335,11 @@
         }
 
         public static bindPopupWindow(element: HTMLInputElement, target: HTMLElement, json: string, dotnet: dotnetInvoker) {
-            new PopupWindow(element, target, json, dotnet);
+            (element as any).popupWindow = new PopupWindow(element, target, json, dotnet);
+        }
+
+        public static updatePopupWindow(element: HTMLInputElement, json: string) {
+            ((element as any).popupWindow as PopupWindow).updateLocation(element, json,);
         }
 
         public static bindComboBox(input: HTMLElement, pageable: boolean, dotnet: dotnetInvoker) {
@@ -461,7 +465,7 @@
 
     export interface dotnetInvoker {
         invokeMethodAsync(methodName: string);
-
+        _id: string;
         invokeMethodAsync(methodName: string, argr: any);
         invokeMethodAsync(methodName: string, argr: any, arg1:any);
     }

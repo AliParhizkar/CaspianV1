@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class PopupWindow: ComponentBase
+    public partial class PopupWindow : ComponentBase
     {
         string className;
         ElementReference element;
+        bool isRendered;
+        string oldJson;
 
         protected override void OnInitialized()
         {
@@ -44,16 +46,16 @@ namespace Caspian.UI
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public int? Left { get; set; }
+        public double? Left { get; set; }
 
         [Parameter]
-        public int? Right { get; set; }
+        public double? Right { get; set; }
 
         [Parameter]
-        public int? Top { get; set; }
+        public double? Top { get; set; }
 
         [Parameter]
-        public int? Bottom { get; set; }
+        public double? Bottom { get; set; }
 
         [Parameter]
         public string Style { get; set; }
@@ -73,6 +75,7 @@ namespace Caspian.UI
         [JSInvokable]
         public async Task Close()
         {
+            isRendered = false;
             if (AutoHide && StatusChanged.HasDelegate)
                 await StatusChanged.InvokeAsync(WindowStatus.Close);
         }
@@ -124,9 +127,21 @@ namespace Caspian.UI
                     offsetLeft = OffsetLeft,
                     offsetTop = OffsetTop
                 });
-                await jSRuntime.InvokeVoidAsync("caspian.common.bindPopupWindow", element, TargetElement, json, DotNetObjectReference.Create(this));
+                if (isRendered)
+                {
+                    if (json != oldJson)
+                    {
+                        oldJson = json;
+                        await jSRuntime.InvokeVoidAsync("caspian.common.updatePopupWindow", element, json);
+                    }
+                }
+                else
+                {
+                    isRendered = true;
+                    await jSRuntime.InvokeVoidAsync("caspian.common.bindPopupWindow", element, TargetElement, json, DotNetObjectReference.Create(this));
+                }
+                await base.OnAfterRenderAsync(firstRender);
             }
-            await base.OnAfterRenderAsync(firstRender);
         }
     }
 }

@@ -30,9 +30,7 @@
                 <FormCommandButton TotalSpan="3" ColSpan="3" />
                 <NumericTextBox @bind-Value="context.CustomerNumber" Disabled DigitGrouping ColSpan="3" TotalSpan="5" />
                 <div class="col-md-1 text-center">
-                    <button type="button" @onclick="SetCustomerNumber" class="c-icon-button c-title" title="برای دریافت شماره مشتری کلیک کنید">
-                        <i class="fa fa-refresh" />
-                    </button>
+                    <span class="c-small-icon fa fa-refresh" @onclick="SetCustomerNumber" title="برای دریافت شماره مشتری کلیک کنید"></span>
                 </div>
             </div>
         </fieldset>

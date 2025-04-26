@@ -1,4 +1,5 @@
 ﻿@page "/Marketing/Order"
+@using Marketing.Web.Order;
 @inject IUIService<Customer> CustomerService
 @inject BatchService<Customer, CustomerAddress> CustomerAddressService
 @inject BatchService<Customer, CustomerGroupMembership> CustomerGroupService
@@ -8,202 +9,57 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div class="m-main">
-    <div class="m-order-details">
-        <DataGrid PageSize="100" DetailsService="OrderService" TEntity="OrderDetail" ConditionExpr="t => t.Id == orderId" HideFooter="true" ShowInsertIcon="false" Batch>
-            <Columns>
-                <GridColumn Field="t => t.Product.Title" />
-                <GridColumn Field="t => t.Quantity" Title="تعداد" >
-                    <Template>
-                        <div class="m-quantity">
-                            <div class="m-counter-icon" @onclick="async async => await UpdateQuantity(context.Data.ProductId, 1)">
-                                <span class="fa fa-plus"></span>
-                            </div>
-                            <NumericTextBox TValue="double" Value="context.Data.Quantity" ValueChanged="async value => await ChangeQuantity(context.Data.ProductId, value)"  Style="width:50px;" maxlength="3" />
-                            <div class="m-counter-icon" @onclick="async async => await UpdateQuantity(context.Data.ProductId, -1)">
-                                <span class="fa fa-minus"></span>
-                            </div>
-                        </div>
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="t => t.Price - t.Discount" Title="قیمت">
-                    <Template>
-                        @if (context.Data.Discount == 0)
-                        {
-                            <span class="m-price">@context.Data.Price.DigitGrouping()</span>
-                        }
-                        else
-                        {
-                            <span class="m-price-discount">@context.Data.Price.DigitGrouping()</span>
-                            <span class="m-price">@((context.Data.Price - context.Data.Discount).DigitGrouping())</span>
-                        }
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="t => ((t.Price - t.Discount) * t.Quantity).DigitGrouping()" Title="قیمت کل" />
-            </Columns>
-        </DataGrid>
-    </div>
-    <div class="m-product-panel">
-        <div class="m-categories">
-            @if (categories != null)
-            {
-                foreach (var category in categories)
-                {
-                    var className = category.Id == categoryId ? "m-category m-selected" : "m-category";
-                    <div class="@className" @onclick="async e => await SelectCategory(e, category)">
-                        @if (category.Categories != null && category.Categories.Count > 0)
-                        {
-                            <span>@category.Name</span>
-                            <i class="c-icon fa fa-chevron-left"></i>
-                        }
-                        else
-                        {
-                            <span>@category.Name</span>
-                        }
-                    </div>
-                }
-            }
-        </div>
-        <div class="m-products">
-            @if (products != null)
-            {
-                foreach (var product in products)
-                {
-                    var className = product.Id == selectedProductId ? "m-product m-selected" : "m-product";
-                    <div @onclick="async () => await AddToOrder(product)" class="@className">@product.Title</div>
-                }
-            }
-        </div>
-    </div>
-</div>
+<OrderComponent />
+<ProductComponent Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" />
 
-<div style="width:50%;margin: 5px auto">
-    <Lookup TValue="int" TEntity="Customer" @bind-Value="customerId" HideHeader TextExpression="t => t.Name" PlaceHolder="جستجو با شماره همراه/مشتری">
-        <CustomerLookupWindow />
-    </Lookup>
-</div>
-<button @onclick="OpenCustomerWindow">
-    Customer
-    <i class="c-icon fa fa-chevron-left"></i>
-</button>
-
-
-<PopupWindow Top="top" Left="left" @bind-Status="popupStatus" Style="min-width:200px;min-height:50px">
-    <div class="m-subcategories">
-        @foreach (var category in categories.Single(t => t.Id == categoryId).Categories)
-        {
-            var className = category.Id == subCategoryId ? "m-subcategory m-selected" : "m-subcategory";
-            <div class="@className" @onclick="async() =>await SelectCategory(category)" @onclick:stopPropagation>@category.Name</div>
-        }
-    </div>
-
-</PopupWindow>
-
-
-
-<SimpleCustomerComponent @ref="customerComponent" Page="this" CustomerId="customerId" CustomerService="CustomerService"
+<SimpleCustomerComponent Page="this" CustomerId="customerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
                          CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
                          CustomerAddressGroupsService="CustomerAddressGroupsService" />
+<CaspianForm Service="OrderService">
+    <button>ثبت</button>
+</CaspianForm>
 
 @code
 {
-    int orderId;
-    WindowStatus popupStatus;
+    WindowStatus status;
     int customerId;
-    SimpleCustomerComponent customerComponent;
-
-    IList<ProductCategory> categories;
+    Customer customer;
     IList<Product> products;
-    int? categoryId, subCategoryId, selectedProductId, left, top;
 
-    async Task AddToOrder(Product product)
+    async Task ChangeCustomer(int customerId)
     {
-        var grid = OrderService.DetailDataView;
-        var old = grid.GetBatchEntities().SingleOrDefault(t => t.ProductId == product.Id);
-        if (old == null)
-        {
-            await grid.InsertAsync(new OrderDetail()
-            {
-                OrderId = orderId,
-                ProductId = product.Id,
-                Quantity = 1,
-                Price = product.Price,
-                Discount = product.Discount
-            });
-        }
-        else
-        {
-            old.Quantity++;
-            await grid.UpdateAsync(old);
-        }
-        await grid.ScrollIntoViewSelectedRow();
+        using var service = CreateScope().GetService<CustomerService>();
+        this.customerId = customerId;
+        if (customerId > 0)
+            customer = await service.SingleAsync(customerId);
+        customer = null;
     }
 
-    async Task SelectCategory(ProductCategory category)
+    void ChangeOnOrderDetails(IList<OrderDetail> orderDetails)
     {
-        subCategoryId = category.Id;
-        popupStatus = WindowStatus.Close;
-        await GetProducts(category.Id);
+
     }
 
-    async Task GetProducts(int productId)
+    protected override void OnInitialized()
     {
-        using var service = CreateScope().GetService<ProductService>();
-        products = await service.GetAll().Where(t => t.CategoryId == productId).ToListAsync();
-    }
+        OrderService.MasterId = 3;
+        OrderService.OnUpsert = async (provider, order) =>
+        {
+            await provider.GetCaspianService<OrderService>().Context.Database.BeginTransactionAsync();
+            return true;
+        };
+        OrderService.OnAfterOpsertAsync = async (provider, order) =>
+        {
 
-    async Task SelectCategory(MouseEventArgs args, ProductCategory category)
-    {
-        categoryId = category.Id;
-        if (category.Categories != null)
-        {
-            popupStatus = WindowStatus.Open;
-            left = (int)(args.PageX - args.OffsetX - 205);
-            top = (int)(args.PageY - args.OffsetY);
-        }
-        else
-        {
-            subCategoryId = category.Id;
-            await GetProducts(category.Id);
-        }
+        };
+
+        base.OnInitialized();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        using var service = CreateScope().GetService<ProductCategoryService>();
-        categories = (await service.GetAll().ToListAsync()).Where(t => t.CategoryId == null).ToList();
+        using var service = CreateScope().GetService<ProductService>();
+        products = await service.GetAll().ToListAsync();
         await base.OnInitializedAsync();
-    }
-
-    async Task OpenCustomerWindow()
-    {
-        await customerComponent.OpenWindowAsync();
-    }
-
-    async Task UpdateQuantity(int productId, int value)
-    {
-        var grid = OrderService.DetailDataView;
-        var old = grid.GetBatchEntities().SingleOrDefault(t => t.ProductId == productId);
-        old.Quantity = old.Quantity + value;
-        if (old.Quantity == 0)
-            await grid.RemoveAsync(old);
-        else
-            await grid.UpdateAsync(old);
-    }
-
-    async Task ChangeQuantity(int productId, double value)
-    {
-        if (value >= 0)
-        {
-            var grid = OrderService.DetailDataView;
-            var old = grid.GetBatchEntities().SingleOrDefault(t => t.ProductId == productId);
-            old.Quantity = value;
-            if (old.Quantity == 0)
-                await grid.RemoveAsync(old);
-            else
-                await grid.UpdateAsync(old);
-        }
-        else
-            ShowMessage("تعداد نمی تواند منفی باشد");
     }
 }

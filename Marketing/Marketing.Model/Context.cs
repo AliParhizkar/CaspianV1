@@ -23,6 +23,12 @@ namespace Marketing.Model
 
         public DbSet<ProductCategory> ProductCategories { get; set; }
 
-        public DbSet<ProductDescription> ProductDescriptions { get; set; }  
+        public DbSet<ProductDescription> ProductDescriptions { get; set; } 
+        
+        public DbSet<Topping> Toppings { get; set; }
+
+        public DbSet<ProductTopping> ProductToppings { get; set; }
+
+        public DbSet<OrderDetailTopping> GetOrderDetailToppings {  get; set; }
     }
 }

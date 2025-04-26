@@ -616,7 +616,10 @@ var caspian;
             });
         }
         static bindPopupWindow(element, target, json, dotnet) {
-            new caspian.PopupWindow(element, target, json, dotnet);
+            element.popupWindow = new caspian.PopupWindow(element, target, json, dotnet);
+        }
+        static updatePopupWindow(element, json) {
+            element.popupWindow.updateLocation(element, json);
         }
         static bindComboBox(input, pageable, dotnet) {
             new caspian.ComboBox(input, pageable, dotnet);
@@ -1179,33 +1182,43 @@ var caspian;
                 let target = list[0].target;
                 let helpWindow = target.getElementsByClassName('t-HelpWindow')[0];
                 if (helpWindow != null) {
-                    let locTarget = target.getBoundingClientRect();
-                    let locHelpWindow = helpWindow.getBoundingClientRect();
-                    let left = (locHelpWindow.width - locTarget.width) / 2;
-                    let posTarget = target.getPosition();
-                    if (posTarget.left - left + locHelpWindow.width > window.innerWidth)
-                        left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 26;
-                    if (locTarget.top >= locHelpWindow.height - 30)
-                        helpWindow.style.marginTop = `${-locHelpWindow.height - 60}px`;
-                    helpWindow.style.marginLeft = `${-left}px`;
+                    helpWindow.classList.remove('c-advance-search');
+                    if (target.getAttribute('advanceSearch') == null) {
+                        let locTarget = target.getBoundingClientRect();
+                        let locHelpWindow = helpWindow.getBoundingClientRect();
+                        let posTarget = target.getPosition();
+                        if (locTarget.top >= locHelpWindow.height - 30)
+                            helpWindow.style.marginTop = `${-locHelpWindow.height - 60}px`;
+                        if (caspian.common.RightToLeft()) {
+                            let right = 0;
+                            if (locHelpWindow.width + 8 > locTarget.right)
+                                right = locTarget.right - locHelpWindow.width - 4;
+                            helpWindow.style.marginRight = `${right}px`;
+                        }
+                        else {
+                            let left = (locHelpWindow.width - locTarget.width) / 2;
+                            if (posTarget.left - left + locHelpWindow.width > window.innerWidth)
+                                left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 26;
+                            helpWindow.style.marginLeft = `${-left}px`;
+                        }
+                    }
+                    else {
+                        let loc = helpWindow.getBoundingClientRect();
+                        helpWindow.style.width = `${loc.width}px`;
+                        helpWindow.style.height = `${loc.height}px`;
+                        helpWindow.classList.add('c-advance-search');
+                        helpWindow.style.marginTop = helpWindow.style.marginLeft = helpWindow.style.marginRight =
+                            helpWindow.style.marginBottom = 'auto';
+                    }
                     helpWindow.style.transform = 'scale(0)';
                     setTimeout(() => {
                         helpWindow.style.transition = '0.2s transform ease';
                         helpWindow.style.transform = 'scale(100%)';
                     }, 25);
-                    //if (locTarget.bottom + locHelpWindow.height - 30 <= window.innerHeight) {
-                    //    //setTimeout(() => helpWindow.style.top = '0', 25);
-                    //}
-                    //else if (locTarget.top >= locHelpWindow.height - 30) {
-                    //    helpWindow.style.marginTop = `${-locHelpWindow.height - 35}px`;
-                    //    //setTimeout(() => helpWindow.style.bottom = '0', 25);
-                    //}
-                    //else 
-                    //    helpWindow.style.top = `${-locHelpWindow.height}`;
                     if (lookup.attributes['autoHide']) {
                         window.onclick = function (e) {
                             return __awaiter(this, void 0, void 0, function* () {
-                                if (!e.target.closest('.c-lookup'))
+                                if (e.target.closest('.c-lookup') == null)
                                     yield dotnet.invokeMethodAsync('Close');
                             });
                         };
@@ -1215,7 +1228,7 @@ var caspian;
                     window.onclick = null;
             });
             mutationObserver.observe(lookup, {
-                attributes: false,
+                attributes: true,
                 childList: true,
                 subtree: false
             });
@@ -1288,26 +1301,46 @@ var caspian;
 (function (caspian) {
     class PopupWindow {
         constructor(element, target, json, dotnet) {
-            let data = JSON.parse(json);
+            caspian.PopupWindow.dotnets.push(dotnet);
+            this.target = target;
             element.style.display = 'block';
             let className = element.className;
             element.className = 'auto-hide c-popup-window';
-            let loc = element.getBoundingClientRect();
-            let main = document.getElementsByClassName('c-content-main')[0] || document.body;
-            let mainLoc = main.getBoundingClientRect();
             element.className = className;
-            if (target)
-                this.bindTarget(element, target, data);
+            this.updateLocation(element, json);
+            document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
+                if (e.target.closest('.auto-hide') == null) {
+                    document.body.onmousedown = null;
+                    caspian.PopupWindow.dotnets.forEach((dotnet) => __awaiter(this, void 0, void 0, function* () {
+                        yield dotnet.invokeMethodAsync('Close');
+                    }));
+                    caspian.PopupWindow.dotnets = [];
+                }
+            });
+        }
+        updateLocation(element, json) {
+            let data = JSON.parse(json);
+            if (this.target)
+                this.bindTarget(element, this.target, data);
             else {
+                let sidebarWidth = 0;
+                if (document.getElementsByClassName('sidebar').length > 0)
+                    sidebarWidth = document.getElementsByClassName('sidebar')[0].getBoundingClientRect().width;
                 if (data.left != null) {
-                    element.style.left = `${data.left}px`;
+                    if (caspian.common.RightToLeft())
+                        element.style.left = `${data.left}px`;
+                    else
+                        element.style.left = `${data.left + sidebarWidth}px`;
                     element.style.right = 'auto';
                 }
                 else if (data.right != null) {
                     element.style.left = 'auto';
-                    element.style.right = `${data.right}px`;
+                    if (caspian.common.RightToLeft())
+                        element.style.right = `${data.right + sidebarWidth}px`;
+                    else
+                        element.style.right = `${data.right}px`;
                 }
-                else if (data.top != null) {
+                if (data.top != null) {
                     element.style.top = `${data.top}px`;
                     element.style.bottom = 'auto';
                 }
@@ -1316,12 +1349,6 @@ var caspian;
                     element.style.bottom = `${data.bottom}px`;
                 }
             }
-            document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
-                if (e.target.closest('.auto-hide') == null) {
-                    document.body.onmousedown = null;
-                    yield dotnet.invokeMethodAsync('Close');
-                }
-            });
         }
         bindTarget(element, target, data) {
             element.className = 'auto-hide c-popup-window';
@@ -1365,6 +1392,7 @@ var caspian;
             element.style.top = `${topT}px`;
         }
     }
+    PopupWindow.dotnets = [];
     caspian.PopupWindow = PopupWindow;
     let HorizontalAnchor;
     (function (HorizontalAnchor) {
@@ -1679,7 +1707,7 @@ var caspian;
         }
         bindDragAndDrop(dragableDom, header) {
             header.onmousedown = e => {
-                let loc = e.target.getBoundingClientRect();
+                let loc = e.target.closest('.t-window').getBoundingClientRect();
                 let xStart = e.clientX, yStart = e.clientY, leftStart = loc.left, topStart = loc.top;
                 document.onmouseup = () => {
                     document.onmouseup = null;

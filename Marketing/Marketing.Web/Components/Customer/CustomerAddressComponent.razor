@@ -31,9 +31,7 @@
                 <StringTextBox @bind-Value="context.MobileNumber" ColSpan="2" TotalSpan="4" Style="direction:ltr" MaxLength="11" />
                 <NumericTextBox @bind-Value="context.CustomerNumber" ColSpan="2" TotalSpan="4" Style="direction:ltr" Disabled />
                 <div class="col-md-1 text-center">
-                    <button type="button" @onclick="SetCustomerNumber" class="c-icon-button c-title" title="برای دریافت شماره مشتری کلیک کنید">
-                        <i class="fa fa-refresh" />
-                    </button>
+                    <span class="c-small-icon fa fa-refresh" @onclick="SetCustomerNumber" title="برای دریافت شماره مشتری کلیک کنید"></span>
                 </div>
                 <FormCommandButton ColSpan="3" TotalSpan="3" />
             </div>

@@ -17,8 +17,8 @@ namespace Caspian.Common.Service
             BatchServiceData.MasterType = typeof(TMaster);
             if (BatchServiceData.DetailPropertiesInfo == null)
                 BatchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
-            var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetails));
-            BatchServiceData.DetailPropertiesInfo.Add(detailsproperty);
+            var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetails));
+            BatchServiceData.DetailPropertiesInfo.Add(detailsProperty);
         }
 
         public async override Task<TMaster> AddAsync(TMaster entity)
@@ -52,7 +52,7 @@ namespace Caspian.Common.Service
             foreach (var detail in details)
             {
                 var item = Activator.CreateInstance<TDetails>();
-                foreach (var info in typeof(TDetails).GetProperties())
+                foreach (var info in typeof(TDetails).GetProperties().Where(t => t.CanWrite))
                 {
                     var type = info.PropertyType;
                     if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
@@ -77,7 +77,7 @@ namespace Caspian.Common.Service
                 var changedDetail = new ChangedEntity<TDetails>();
                 changedDetail.ChangeStatus = changedEntity.ChangeStatus;
                 changedDetail.Entity = Activator.CreateInstance<TDetails>();
-                foreach (var info in typeof (TDetails).GetProperties())
+                foreach (var info in typeof (TDetails).GetProperties().Where(t => t.CanWrite))
                 {
                     var type = info.PropertyType;
                     if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))

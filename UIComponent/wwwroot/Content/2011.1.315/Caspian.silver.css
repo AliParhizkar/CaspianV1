@@ -517,14 +517,18 @@ html input[disabled], textarea[disabled] {
    display:flex;
 }
 .t-HelpWindow .t-grid-header .t-header {
-    height: 30px;
-    padding: 2px 0 !important;
-    line-height:30px;
-
+    height: 25px;
+    line-height:25px;
 }
-.t-HelpWindow .t-grid-bottom{
-    padding:3px 10px;
-}
+    .t-HelpWindow .t-grid-header .t-header span {
+        line-height: 20px;
+        height: 25px;
+        display: block;
+        vertical-align: baseline;
+    }
+    .t-HelpWindow .t-grid-bottom {
+        padding: 3px 10px;
+    }
 .t-HelpWindow > .t-header a {
     position: absolute;
     left: 4px;
@@ -583,9 +587,10 @@ html input[disabled], textarea[disabled] {
     position: absolute;
     z-index: 10000000;
     background-color: white;
-    border-radius: 8px 8px 4px 4px;
+    border-radius: 4px;
     border: 1px solid #bbbbbb;
-    overflow:hidden;
+    overflow: hidden;
+    box-shadow: 0px 0px 8px 2px #a09f9f;
 }
 .t-reset .t-state-selected {
     background-color: #ff6358!important;

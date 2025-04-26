@@ -45,7 +45,7 @@ namespace Caspian.Common.Extension
             foreach(var value in values)
             {
                 var entity = Activator.CreateInstance<TEntity>();
-                foreach (var info in value.GetType().GetProperties().Where(t => t.Name != "Item"))
+                foreach (var info in value.GetType().GetProperties().Where(t => t.IsCollectible && t.CanWrite))
                     UpdateEntity(entity, info.Name, info.GetValue(value));
                 list.Add(entity);
             }
@@ -196,11 +196,14 @@ namespace Caspian.Common.Extension
             foreach(var str in array)
             {
                 var info = obj.GetType().GetProperty(str);
-                if (array.Length == index)
-                    info.SetValue(obj, value);
-                else if (info.GetValue(obj) == null)
-                    info.SetValue(obj, Activator.CreateInstance(info.PropertyType));
-                obj = info.GetValue(obj);
+                if (info.CanWrite)
+                {
+                    if (array.Length == index)
+                        info.SetValue(obj, value);
+                    else if (info.GetValue(obj) == null)
+                        info.SetValue(obj, Activator.CreateInstance(info.PropertyType));
+                    obj = info.GetValue(obj);
+                }
                 index++;
             }
         }

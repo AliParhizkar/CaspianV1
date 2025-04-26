@@ -37,5 +37,8 @@ namespace Marketing.Model
 
         [CheckOnDelete("این محصول سفارش داده شده و امکان حذف آن وجود ندارد")]
         public ICollection<OrderDetail> OrderDetails { get; set; }
+
+        [CheckOnDelete("محصول دارای تاپینگ می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<ProductTopping> ProductToppings { get; set; }
     }
 }

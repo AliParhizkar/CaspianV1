@@ -30,10 +30,13 @@ namespace Marketing.Model
         [DisplayName("تخفیف")]
         public int Discount { get; set; }
 
-        [ComputedSqlColumn("[Quantity] * [Price]"), DisplayName("قیمت کل")]
+        [ComputedSqlColumn("[Quantity] * [Price] - [Discount]"), DisplayName("قیمت کل")]
         public double PriceTotal { get;}
 
         [MaxLength(255)]
         public string Description { get; set; }
+
+        [CheckOnDelete("این آیتم سفارش دارای تاپینگ است و نمی توان آن را حذف کرد")]
+        public ICollection<OrderDetailTopping> OrderDetailToppings { get; set; }
     }
 }

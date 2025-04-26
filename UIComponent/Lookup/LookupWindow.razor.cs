@@ -5,7 +5,7 @@ namespace Caspian.UI
 {
     public partial class LookupWindow<TEntity, TValue> where TEntity:class
     {
-        string oldSerachStringValue;
+        string oldSearchStringValue;
         Expression<Func<TEntity, bool>> SearchExpression;
         protected TEntity SearchData;
         DataGrid<TEntity> grid;
@@ -27,7 +27,7 @@ namespace Caspian.UI
         public string LookupStringSearchValue { get; set; }
 
         [CascadingParameter]
-        public IAutoComplete<TEntity> AutoComplete { get; set; }
+        ILookup<TEntity> Lookup { get; set; }
 
         [Inject]
         public ISearchService<TEntity> Service { get; set; }
@@ -43,9 +43,9 @@ namespace Caspian.UI
         {
             if (grid.SelectedRowId == null)
                 grid.SelectFirstRow();
-            if (oldSerachStringValue != LookupStringSearchValue)
+            if (oldSearchStringValue != LookupStringSearchValue)
             {
-                oldSerachStringValue = LookupStringSearchValue;
+                oldSearchStringValue = LookupStringSearchValue;
                 grid.EnableLoading();
                 await grid.DataBind();
                 
@@ -55,7 +55,7 @@ namespace Caspian.UI
         void BindGrid()
         {
             grid.InternalConditionExpr = SearchExpression.Body;
-            AutoComplete.SetAndInitializeGrid(grid);
+            Lookup.SetAndInitializeGrid(grid);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

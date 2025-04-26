@@ -1,17 +1,21 @@
 ﻿@namespace Caspian.UI
 @using System.Collections
-@typeparam TEntity where TEntity: class
+@typeparam TEntity where TEntity : class
 @implements IEntitySearch
 @implements ICaspianContainer
-<CascadingValue Value="this">
-    <div class="row c-controls">
-        @if (ChildContent != null)
-        {
-            @ChildContent(Service.Search)
-        }
-    </div>
-</CascadingValue>
-@code 
+@if (Lookup?.AdvanceSearch == true)
+{
+    <CascadingValue Value="this">
+        <div class="row c-controls">
+            @if (ChildContent != null)
+            {
+                @ChildContent(Service.Search)
+            }
+        </div>
+    </CascadingValue>
+}
+
+@code
 {
     IDictionary<string, SearchType> searchTypes;
     IDictionary<string, ICollection> enumValues;
@@ -25,6 +29,9 @@
         Service.SetSearchType(searchTypes);
         base.OnInitialized();
     }
+
+    [CascadingParameter]
+    internal ILookup<TEntity> Lookup { get; set; }
 
     void IEntitySearch.EnableLoadData()
     {
@@ -91,7 +98,7 @@
         return className;
     }
 
-    Type IEntitySearch.EntityType 
+    Type IEntitySearch.EntityType
     {
         get
         {

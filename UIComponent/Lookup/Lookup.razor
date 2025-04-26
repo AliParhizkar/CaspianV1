@@ -11,14 +11,7 @@
            @attributes="inputAttrs" @onkeyup="@(async e => await OnKeyUp(e))"  />
     @if (!HideIcon)
     {
-        <span class="fa fa-search"
-              @onclick="@(() =>
-                        {
-                            if (!Disabled)
-                            {
-                                status = WindowStatus.Open;
-                            }
-                        })"></span>
+        <span class="fa fa-search" @onclick="() => OpenWindow(true)"></span>
     }
     @if (status == WindowStatus.Open)
     {
@@ -33,7 +26,7 @@
                 </div>
             }
             <div class="t-content">
-                <CascadingValue Name="LookupStringSearchValue" Value="SearchStr">
+                <CascadingValue Name="LookupStringSearchValue" Value="SearchStr" IsFixed>
                     <CascadingValue Value=this>
                         @ChildContent
                     </CascadingValue>

@@ -1,38 +1,56 @@
 ﻿namespace caspian {
     export class PopupWindow {
+        static dotnets: dotnetInvoker[] = [];
+        target: HTMLElement;
         constructor(element: HTMLInputElement, target: HTMLElement, json: string, dotnet: dotnetInvoker) {
-            let data = JSON.parse(json) as popupWindowData;
+            caspian.PopupWindow.dotnets.push(dotnet);
+            
+            this.target = target
             element.style.display = 'block';
             let className = element.className;
             element.className = 'auto-hide c-popup-window';
-            let loc = element.getBoundingClientRect();
-            let main = document.getElementsByClassName('c-content-main')[0] || document.body;
-            let mainLoc = main.getBoundingClientRect();
             element.className = className;
-            if (target)
-                this.bindTarget(element, target, data)
+            this.updateLocation(element, json);
+            document.body.onmousedown = async e => {
+                if ((e.target as HTMLElement).closest('.auto-hide') == null) {
+                    document.body.onmousedown = null;
+                    caspian.PopupWindow.dotnets.forEach(async dotnet => {
+                        await dotnet.invokeMethodAsync('Close');
+                    });
+                    caspian.PopupWindow.dotnets = [];
+                }
+            }
+        }
+
+        updateLocation(element: HTMLInputElement, json: string) {
+            let data = JSON.parse(json) as popupWindowData;
+            if (this.target)
+                this.bindTarget(element, this.target, data);
             else {
+                let sidebarWidth = 0;
+                if (document.getElementsByClassName('sidebar').length > 0)
+                    sidebarWidth = document.getElementsByClassName('sidebar')[0].getBoundingClientRect().width;
                 if (data.left != null) {
-                    element.style.left = `${data.left}px`;
+                    if (caspian.common.RightToLeft())
+                        element.style.left = `${data.left}px`;
+                    else
+                        element.style.left = `${data.left + sidebarWidth}px`;
                     element.style.right = 'auto';
                 }
                 else if (data.right != null) {
                     element.style.left = 'auto';
-                    element.style.right = `${data.right}px`;
+                    if (caspian.common.RightToLeft())
+                        element.style.right = `${data.right + sidebarWidth}px`;
+                    else
+                        element.style.right = `${data.right}px`;
                 }
-                else if (data.top != null) {
+                if (data.top != null) {
                     element.style.top = `${data.top}px`;
                     element.style.bottom = 'auto';
                 }
                 else if (data.bottom != null) {
                     element.style.top = 'auto';
                     element.style.bottom = `${data.bottom}px`;
-                }
-            }
-            document.body.onmousedown = async e => {
-                if ((e.target as HTMLElement).closest('.auto-hide') == null) {
-                    document.body.onmousedown = null;
-                    await dotnet.invokeMethodAsync('Close');
                 }
             }
         }

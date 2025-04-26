@@ -23,8 +23,13 @@
         browserEventName: 'mousedown',
         createEventArgs: e => createMouseData(e)
     });
+    blazor.registerCustomEventType('Emouseenter', {
+        browserEventName: 'mouseenter',
+        createEventArgs: e => createMouseData(e)
+    });
 }
 function createMouseData(e) {
+    let loc = e.target.getBoundingClientRect();
     return {
         altKey: e.altKey,
         button: e.button,
@@ -43,7 +48,9 @@ function createMouseData(e) {
         screenX: e.screenX,
         screenY: e.screenY,
         shiftKey: e.shiftKey,
-        type: e.type
+        type: e.type,
+        width: loc.width,
+        height: loc.height
     }
 }
 

@@ -176,7 +176,7 @@ namespace Caspian.UI
                             message += " and ";
                         message += service.GetType().Name;
                     }
-                    message = $"Caspian Exception: {message} Types impiliment IBaseService<{typeof(TEntity).Name}> so you should specify service with CaspianValidationValidator component on CaspianForm component";
+                    message = $"Caspian Exception: {message} Types implement IBaseService<{typeof(TEntity).Name}> so you should specify service with CaspianValidationValidator component on CaspianForm component";
                     throw new CaspianException(message);
                 }
             }

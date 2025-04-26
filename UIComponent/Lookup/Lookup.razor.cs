@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
-    public partial class Lookup<TEntity, TValue> : ComponentBase, IControl, IAutoComplete<TEntity> where TEntity: class
+    public partial class Lookup<TEntity, TValue> : ComponentBase, IControl, ILookup<TEntity> where TEntity: class
     {
         string Text;
         string oldText;
@@ -27,8 +27,7 @@ namespace Caspian.UI
         ValidationMessageStore _messageStore;
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
         WindowStatus status;
-        bool valueUpdated;
-
+        bool valueUpdated, advanceSearch;
 
         IDictionary<string, object> GetMainAttribute()
         {
@@ -40,15 +39,24 @@ namespace Caspian.UI
             var dic = new Dictionary<string, object>()
             {
                 {"style", Style }, {"closeOnBlur", CloseOnBlur}, {"error-message", ErrorMessage}, {"class", className}, 
-                {"autoHide", AutoHide}
+                {"autoHide", AutoHide}, {"advanceSearch", advanceSearch}
             };
             return dic;
         }
 
+        void OpenWindow(bool advanceSearch = false)
+        {
+            if (!Disabled)
+            {
+                if (status == WindowStatus.Close)
+                    status = WindowStatus.Open;
+                this.advanceSearch = advanceSearch;
+            }
+        }
+
         void SetSearchValue(ChangeEventArgs e)
         {
-            if (status == WindowStatus.Close)
-                status = WindowStatus.Open;
+            OpenWindow();
             if (mustClear)
             {
                 Text = "";
@@ -292,10 +300,10 @@ namespace Caspian.UI
             return false;
         }
 
-        public void CloseHelpForm(bool sholdRender = false)
+        public void CloseHelpForm(bool shouldRender = false)
         {
             status = WindowStatus.Close;
-            if (sholdRender)
+            if (shouldRender)
                 StateHasChanged();
         }
 
@@ -382,7 +390,7 @@ namespace Caspian.UI
             await SetValue(0);
         }
 
-        public void SetAndInitializeGrid(DataGrid<TEntity> grid)
+        void ILookup<TEntity>.SetAndInitializeGrid(DataGrid<TEntity> grid)
         {
             this.grid = grid;
             grid.SelectFirstRow();
@@ -392,6 +400,10 @@ namespace Caspian.UI
                 await SetValue(id);
             });
         }
+
+        
+
+        bool ILookup<TEntity>.AdvanceSearch{get{ return advanceSearch; }}
 
         public async Task FocusAsync()
         {
@@ -436,7 +448,7 @@ namespace Caspian.UI
             {
                 inputAttrs.Add("onfocus", new Action(() =>
                 {
-                    status = WindowStatus.Open;
+                    OpenWindow();
                     SearchStr = "";
                 }));
             }
@@ -527,8 +539,10 @@ namespace Caspian.UI
         }
     }
 
-    public interface IAutoComplete<TEntity> where TEntity : class
+    internal interface ILookup<TEntity> where TEntity : class
     {
         void SetAndInitializeGrid(DataGrid<TEntity> grid);
+
+        bool AdvanceSearch { get; }
     }
 }

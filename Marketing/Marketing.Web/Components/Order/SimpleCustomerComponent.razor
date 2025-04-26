@@ -1,4 +1,21 @@
-﻿@namespace Marketing.Web
+﻿@namespace Marketing.Web.Order
+
+<div style="width: 340px; display: flex; justify-content:flex-end">
+    <Lookup TValue="int" TEntity="Customer" Value="CustomerId" ValueChanged="CustomerIdChanged" HideHeader OpenOnFocus 
+            TextExpression="t => t.Name" Style="width:260px" PlaceHolder="جستجو با شماره همراه/شماره مشتری">
+        <CustomerLookupWindow />
+    </Lookup>
+    <div class="m-counter-icon" @onclick="OpenWindowAsync">
+        @if (CustomerId == 0)
+        {
+            <span class="me-2 fa fa-plus c-small-icon"></span>
+        }
+        else
+        {
+            <span class="me-2 fa fa-pencil c-small-icon"></span>
+        }
+    </div>
+</div>
 
 @if (ConfigService.Config.CustomerHasManyAddresses)
 {
@@ -66,6 +83,9 @@ else
     public int CustomerId { get; set; }
 
     [Parameter]
+    public EventCallback<int> CustomerIdChanged { get; set; }
+
+    [Parameter]
     public BasePage Page { get; set; }
 
     [Parameter]
@@ -80,7 +100,7 @@ else
     [Parameter]
     public BatchService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService { get; set; }
 
-    public async Task OpenWindowAsync()
+    async Task OpenWindowAsync()
     {
         if (ConfigService.Config.CustomerHasManyAddresses)
         {

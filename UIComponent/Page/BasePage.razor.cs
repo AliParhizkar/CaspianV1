@@ -32,7 +32,7 @@ namespace Caspian.UI
         [CascadingParameter]
         internal PageData PageData { get; set; }
 
-        protected ElementReference GetElementReference(string id)
+        public ElementReference GetElementReference(string id)
         {
             return new ElementReference(id, shadowDiv.Context);
         }
