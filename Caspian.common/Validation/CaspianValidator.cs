@@ -25,10 +25,6 @@ namespace Caspian.Common
             Context = provider.GetService(contextType) as CaspianContext;
             var data = provider.GetService(typeof(CaspianDataService)) as CaspianDataService;
             UserId = data.UserId;
-            if (UserId == 0)
-            {
-
-            }
             if (!data.Language.HasValue)
                 data.Language = Language;
             foreach (var info in typeof(TModel).GetProperties())
@@ -107,6 +103,15 @@ namespace Caspian.Common
             };
             var result = await ValidateAsync(new ValidationContext<TModel>(model, new PropertyChain(), new RulesetValidatorSelector(list)));
             return result;
+        }
+
+        public void Dispose()
+        {
+            if (Context != null)
+            {
+                Context.Dispose();
+                Context = null;
+            }
         }
 
         public override Task<ValidationResult> ValidateAsync(ValidationContext<TModel> context, CancellationToken cancellation = default)

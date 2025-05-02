@@ -6,7 +6,6 @@ using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace Caspian.UI
 {
@@ -15,7 +14,8 @@ namespace Caspian.UI
         ElementReference tree;
         IList<NodeView> treeNodes;
         Func<TEntity, bool> parentNodeFilterFunc;
-        
+        IList<NodeView> filteredSource;
+
         IDictionary<string, object> GetNodeAttributes(NodeView node, bool isLastNode)
         {
             var attrs = new Dictionary<string, object>()
@@ -23,6 +23,8 @@ namespace Caspian.UI
                 { "Item", node},
                 { "IsLast", isLastNode}
             };
+            if (typeof(TEntity) == typeof(NodeView))
+                attrs.Add("FilterFunc", FilterFunc);
             return attrs;
         }
 
@@ -98,14 +100,14 @@ namespace Caspian.UI
         [Parameter]
         public bool AutoSelectable { get; set; }
 
-        void UpdateSelectionForChilren(NodeView node)
+        void UpdateSelectionForChildren(NodeView node)
         {
             if (node.Children != null)
             {
                 foreach(var child in node.Children)
                 {
                     child.Selected = node.Selected;
-                    UpdateSelectionForChilren(child);
+                    UpdateSelectionForChildren(child);
                 }
             }
         }
@@ -176,15 +178,15 @@ namespace Caspian.UI
                 var items = dataList.Where(parentNodeFilterFunc).ToList();
                 var tree = new HierarchyTree<TEntity>();
                 tree.TextFunc = TextFunc;
-                var multSelect = false;
+                var multiSelect = false;
                 if (Lookup != null)
-                    multSelect = Lookup.MultiSelectable();
+                    multiSelect = Lookup.MultiSelectable();
                 if (FilterFunc == null)
-                    treeNodes = tree.CreateTree(items, multSelect, SelectableFund);
+                    treeNodes = tree.CreateTree(items, multiSelect, SelectableFund);
                 else
                 {
                     tree.FilterFunc = FilterFunc;
-                    treeNodes = tree.FilterTree(items, multSelect, SelectableFund);
+                    treeNodes = tree.FilterTree(items, multiSelect, SelectableFund);
                 }
                 if (SelectedNodesValue != null)
                     tree.UpdateSelectedState(treeNodes, SelectedNodesValue);
@@ -248,7 +250,7 @@ namespace Caspian.UI
             {
                 OnInternalCHanged = EventCallback.Factory.Create<NodeView>(this, node =>
                 {
-                    UpdateSelectionForChilren(node);
+                    UpdateSelectionForChildren(node);
                     UpdateSelectionForParent(node);
                 });
             }
@@ -307,34 +309,61 @@ namespace Caspian.UI
                 node.Text = TextFunc.Invoke(entity);//Ä
         }
 
+        public bool NodeExistInFilteredSource(NodeView node)
+        {
+            foreach (var item in filteredSource)
+            {
+                var result = CheckExistInFilteredNode(node.Value, item);
+                if (result)
+                    return true; 
+            }
+            return false;
+        }
+
+        bool CheckExistInFilteredNode(string value, NodeView node)
+        {
+            if (node.Value == value)
+                return true;
+            if (node.Children !=  null)
+            {
+                foreach(var child in node.Children)
+                {
+                    var result = CheckExistInFilteredNode(value, child);
+                    if (result) 
+                        return true;
+                }
+            }
+            return false;
+        }
+
         public async Task ReloadAsync()
         {
             await DataBindingAsync();
         }
 
-        void GetSeletcedItems(NodeView node, IList<NodeView> list)
+        void GetSelectedItems(NodeView node, IList<NodeView> list)
         {
             if (node.Selected == true)
                 list.Add(node);
             if (node.Children != null)
             {
                 foreach (var child in node.Children)
-                    GetSeletcedItems(child, list);
+                    GetSelectedItems(child, list);
             }
         }
 
-        public IList<NodeView> GetSeletcedItems()
+        public IList<NodeView> GetSelectedItems()
         {
             var nodes = new List<NodeView>();
             if (Source != null)
             {
                 foreach (var item in Source)
-                    GetSeletcedItems(item, nodes);
+                    GetSelectedItems(item, nodes);
             }
             else if (treeNodes != null)
             {
                 foreach (var item in treeNodes)
-                    GetSeletcedItems(item, nodes);
+                    GetSelectedItems(item, nodes);
             }
             return nodes;
         }
@@ -349,7 +378,47 @@ namespace Caspian.UI
         {
             if (ParentNodeFilterFunc != null)
                 parentNodeFilterFunc = ParentNodeFilterFunc;
+            if (Source != null && FilterFunc != null)
+            {
+                filteredSource = new List<NodeView>();
+                foreach (var node in Source)
+                {
+                    var item = FilterSource(node);
+                    if (item != null) 
+                        filteredSource.Add(item);
+                }
+            }
             base.OnParametersSet();
+        }
+
+        NodeView FilterSource(NodeView item)
+        {
+            var list = new List<NodeView>();
+            if (item.Children != null)
+            {
+                foreach(var child in item.Children)
+                {
+                    var newNode = FilterSource(child);
+                    if (newNode != null)
+                        list.Add(newNode);
+                }
+            }
+            if (list.Any() || FilterFunc.Invoke(item as TEntity))
+            {
+                var newChild = CreateNode(item);
+                if (list.Any())
+                    newChild.Children = list;
+                return newChild;
+            }
+            return null;
+        }
+
+        NodeView CreateNode(NodeView node)
+        {
+            return new NodeView()
+            {
+                Value = node.Value,
+            };
         }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)

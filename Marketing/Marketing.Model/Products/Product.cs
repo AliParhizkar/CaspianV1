@@ -40,5 +40,8 @@ namespace Marketing.Model
 
         [CheckOnDelete("محصول دارای تاپینگ می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<ProductTopping> ProductToppings { get; set; }
+
+        [CheckOnDelete("محصول دارای پرینتر می باشد و امکان حذف آن وجود ندارد.")]
+        public ICollection<PrinterProduct> PrinterProducts { get; set; }
     }
 }

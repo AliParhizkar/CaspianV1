@@ -52,10 +52,13 @@
         <ul class="c-subtree">
             @foreach (var item in Item.Children)
             {
-                index++;
-                if (item.Parent == null)
-                    item.Parent = Item;
-                <TreeNode @attributes="GetNodeAttributes(item, index == Item.Children.Count)" />
+                if (FilterFunc == null || TreeView.NodeExistInFilteredSource(item))
+                {
+                    index++;
+                    if (item.Parent == null)
+                        item.Parent = Item;
+                    <TreeNode @attributes="GetNodeAttributes(item, index == Item.Children.Count)" />
+                }
             }
         </ul>
     }
@@ -81,17 +84,17 @@
 
             if (Item.Selectable)
             {
-                dic.Add("onclick", EventCallback.Factory.Create<MouseEventArgs>(this,async e => 
-                    {
-                        Item.Selected = !Item.Selected;
-                        if (Item.Selected == true && TreeView.OnSelected.HasDelegate)
-                            await TreeView.OnSelected.InvokeAsync(Item);
-                        if (TreeView.OnChange.HasDelegate)
-                            await TreeView.OnChange.InvokeAsync(Item);
-                        if (TreeView.OnClick.HasDelegate)
-                            await ClickEventhandler(e);
-                        await BindInternalEvents();
-                    }));
+                dic.Add("onclick", EventCallback.Factory.Create<MouseEventArgs>(this,async e =>
+                {
+                    Item.Selected = !Item.Selected;
+                    if (Item.Selected == true && TreeView.OnSelected.HasDelegate)
+                        await TreeView.OnSelected.InvokeAsync(Item);
+                    if (TreeView.OnChange.HasDelegate)
+                        await TreeView.OnChange.InvokeAsync(Item);
+                    if (TreeView.OnClick.HasDelegate)
+                        await ClickEventhandler(e);
+                    await BindInternalEvents();
+                }));
             }
             else if (TreeView.OnClick.HasDelegate || TreeView?.OnInternalClicked.HasDelegate == true || TreeView?.OnInternalCHanged.HasDelegate == true)
                 dic.Add("onclick", EventCallback.Factory.Create<MouseEventArgs>(this, async e => await ClickEventhandler(e)));
@@ -99,13 +102,13 @@
             {
                 dic.Add("oncontextmenu", "return false");
                 dic.Add("onmouseup", EventCallback.Factory.Create<MouseEventArgs>(this, async e =>
+                {
+                    if (e.Button == 2)
                     {
-                        if (e.Button == 2)
-                        {
-                            TreeView.ClickedNode = this;
-                            await TreeView.OnRightClick.InvokeAsync(new NodeMouseEventArg(e, Item));
-                        }
-                    }));
+                        TreeView.ClickedNode = this;
+                        await TreeView.OnRightClick.InvokeAsync(new NodeMouseEventArg(e, Item));
+                    }
+                }));
             }
         }
         return dic;
@@ -160,7 +163,8 @@
         var attrs = new Dictionary<string, object>()
         {
             {"Item", node},
-            {"IsLast", isLast}
+            {"IsLast", isLast},
+            {"FilterFunc", FilterFunc }
         };
         return attrs;
     }
@@ -179,4 +183,7 @@
 
     [Parameter]
     public NodeView Item { get; set; }
+
+    [Parameter]
+    public Func<NodeView, bool> FilterFunc { get; set; }
 }

@@ -34,6 +34,8 @@ namespace Caspian.Common.Service
 
         Task<ValidationResult> ValidateRemoveAsync(TEntity entity);
         Type DetailType { get; set; }
+
+        
     }
 
     public interface IBaseService

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Marketing.Model.Migrations
 {
-    [DbContext(typeof(Context))]
+    [DbContext(typeof(MarketingContext))]
     partial class ContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -170,6 +170,12 @@ namespace Marketing.Model.Migrations
                     b.Property<DateOnly>("OrderDate")
                         .HasColumnType("date");
 
+                    b.Property<int>("OrderNumber")
+                        .HasColumnType("int");
+
+                    b.Property<byte?>("SettleType")
+                        .HasColumnType("tinyint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
@@ -200,18 +206,18 @@ namespace Marketing.Model.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<double>("PriceTotal")
+                    b.Property<decimal>("PriceTotal")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasPrecision(10, 2)
-                        .HasColumnType("float(10)")
-                        .HasComputedColumnSql("[Quantity] * [Price]");
+                        .HasColumnType("decimal(10,2)")
+                        .HasComputedColumnSql("([Price] - [Discount]) * [Quantity]");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Quantity")
+                    b.Property<decimal>("Quantity")
                         .HasPrecision(10, 2)
-                        .HasColumnType("float(10)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
 
@@ -236,9 +242,15 @@ namespace Marketing.Model.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<double>("Quantity")
+                    b.Property<decimal>("PriceTotal")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasPrecision(10, 2)
-                        .HasColumnType("float(10)");
+                        .HasColumnType("decimal(10,2)")
+                        .HasComputedColumnSql("[Price] * [Quantity]");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("ToppingId")
                         .HasColumnType("int");
@@ -250,6 +262,49 @@ namespace Marketing.Model.Migrations
                     b.HasIndex("ToppingId");
 
                     b.ToTable("OrderDetailToppings", "mrk");
+                });
+
+            modelBuilder.Entity("Marketing.Model.PrinterLocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte>("ActiveType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PrinterLocations", "mrk");
+                });
+
+            modelBuilder.Entity("Marketing.Model.PrinterProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PrinterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrinterId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("PrinterProduct", "mrk");
                 });
 
             modelBuilder.Entity("Marketing.Model.Product", b =>
@@ -363,7 +418,7 @@ namespace Marketing.Model.Migrations
 
                     b.HasIndex("ToppingId");
 
-                    b.ToTable("ProductToppings");
+                    b.ToTable("ProductToppings", "mrk");
                 });
 
             modelBuilder.Entity("Marketing.Model.Topping", b =>
@@ -481,6 +536,25 @@ namespace Marketing.Model.Migrations
                     b.Navigation("Topping");
                 });
 
+            modelBuilder.Entity("Marketing.Model.PrinterProduct", b =>
+                {
+                    b.HasOne("Marketing.Model.PrinterLocation", "Printer")
+                        .WithMany("PrinterProducts")
+                        .HasForeignKey("PrinterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Marketing.Model.Product", "Product")
+                        .WithMany("PrinterProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Printer");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Marketing.Model.Product", b =>
                 {
                     b.HasOne("Marketing.Model.ProductCategory", "Category")
@@ -563,9 +637,16 @@ namespace Marketing.Model.Migrations
                     b.Navigation("OrderDetailToppings");
                 });
 
+            modelBuilder.Entity("Marketing.Model.PrinterLocation", b =>
+                {
+                    b.Navigation("PrinterProducts");
+                });
+
             modelBuilder.Entity("Marketing.Model.Product", b =>
                 {
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("PrinterProducts");
 
                     b.Navigation("ProductDescriptions");
 

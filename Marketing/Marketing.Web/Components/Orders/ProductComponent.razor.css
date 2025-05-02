@@ -1,4 +1,8 @@
-﻿.m-main {
+﻿::deep .m-topping-main {
+    width: 600px;
+    padding:3px;
+}
+.m-main {
     display: flex;
     flex-direction: row-reverse;
 }
@@ -41,16 +45,19 @@
     display: block;
 }
 
-.m-products {
+.m-products, ::deep .m-topping-container {
     display: flex;
     border: 1px solid #c4c4c4;
     padding: 5px 3px;
     margin: 5px;
     border-radius: 8px;
-    height: calc(60% - 15px);
+    height: calc(60% - 15px);    
+    min-height:60px;
 }
-
-.m-product {
+::deep .m-topping-details{
+    padding:8px 5px;
+}
+.m-product, ::deep .m-topping {
     padding: 0 5px;
     border: 1px solid #c4c4c4;
     margin: 0 5px;
@@ -61,20 +68,18 @@
     cursor: default;
 }
 
-    .m-product:active, .fa-plus:active, .fa-minus:active {
+    .m-product:active, .fa-plus:active, .fa-minus:active, ::deep .m-topping:active, ::deep .fa-plus:active, ::deep .fa-minus:active {
         animation: gradient 100ms;
     }
 
-.m-quantity {
+.m-quantity, ::deep .m-quantity {
     display: flex;
     align-items: center;
 }
 
-
 ::deep .t-grid tr td {
     line-height: 15px !important;
 }
-
 
 ::deep .m-quantity input {
     height: 30px !important;
@@ -106,7 +111,7 @@
     border-radius: 6px;
 }
 
-    .m-category:hover, .m-product:hover {
+    .m-category:hover, .m-product:hover, ::deep .m-topping:hover {
         background-color: aliceblue;
     }
 

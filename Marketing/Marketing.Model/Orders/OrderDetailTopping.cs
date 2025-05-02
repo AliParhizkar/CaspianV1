@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,6 +25,9 @@ namespace Marketing.Model
         public int Price { get; set; }
 
         [DisplayName("تعداد")]
-        public double Quantity { get; set; }
+        public decimal Quantity { get; set; }
+
+        [ComputedSqlColumn("[Price] * [Quantity]"), DisplayName("قیمت کل")]
+        public decimal PriceTotal { get; }
     }
 }

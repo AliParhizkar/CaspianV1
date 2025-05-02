@@ -1,5 +1,5 @@
 ﻿@page "/Marketing/Order"
-@using Marketing.Web.Order;
+@using Marketing.Web.OrderComponents;
 @inject IUIService<Customer> CustomerService
 @inject BatchService<Customer, CustomerAddress> CustomerAddressService
 @inject BatchService<Customer, CustomerGroupMembership> CustomerGroupService
@@ -9,8 +9,8 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<OrderComponent />
-<ProductComponent Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" />
+<OrderComponent Page="this" />
+<ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" />
 
 <SimpleCustomerComponent Page="this" CustomerId="customerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
                          CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
@@ -25,6 +25,7 @@
     int customerId;
     Customer customer;
     IList<Product> products;
+    ProductComponent productComponent;
 
     async Task ChangeCustomer(int customerId)
     {
@@ -43,14 +44,49 @@
     protected override void OnInitialized()
     {
         OrderService.MasterId = 3;
+        OrderService.ThirdDataLevelToIgnoreOnRemove(t => t.OrderDetailToppings);
         OrderService.OnUpsert = async (provider, order) =>
         {
-            await provider.GetCaspianService<OrderService>().Context.Database.BeginTransactionAsync();
+            await provider.GetCaspianService<MarketingContext>().Database.BeginTransactionAsync();
+            var deletedToppings = productComponent.GetDeletedToppings();
+            ///Delete Topping 
+            var service = provider.GetCaspianService<OrderDetailToppingService>();
+            foreach (var topping in deletedToppings)
+            {
+                await service.RemoveAsync(topping);
+                await service.SaveChangesAsync();
+            }
             return true;
         };
         OrderService.OnAfterOpsertAsync = async (provider, order) =>
         {
+            var service = provider.GetCaspianService<OrderDetailToppingService>();
+            var toppingsChange = productComponent.GetToppingsChange();
+            /// Updated Toppings
+            foreach(var topping in toppingsChange.Where(t => t.Id > 0))
+            {
+                await service.UpdateAsync(topping);
+                await service.SaveChangesAsync();
+            }
+            /// Insert Toppings 
+            /// using Distinct is very impotant to uniqu OrderDetailId
+            var insertedItemsId = toppingsChange.Where(t => t.OrderDetailId < 0).Select(t => t.OrderDetailId).Distinct().ToList();
+            foreach (var topping in toppingsChange.Where(t => t.Id < 0))
+            {
+                topping.Id = 0;
+                /// Order-details that inserted now
+                if (topping.OrderDetailId < 0)
+                {
+                    /// In this case we should Obtain Order-detail-id after insert
+                    var index = insertedItemsId.IndexOf(topping.OrderDetailId);
+                    // Set OrderDetailId by Id that create after OrderDetail insert 
+                    topping.OrderDetailId = order.OrderDetails.ElementAt(index).Id;
+                }
+                await service.AddAsync(topping);
+                await service.SaveChangesAsync();
+            }
 
+            await service.Context.Database.CurrentTransaction.CommitAsync();
         };
 
         base.OnInitialized();

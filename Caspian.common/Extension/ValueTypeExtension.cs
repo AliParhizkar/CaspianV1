@@ -136,6 +136,17 @@ namespace Caspian.Common
             return "";
         }
 
+        public static string DigitGrouping(this Single value)
+        {
+            return String.Format("{0:#,#.###}", value);
+        }
+        public static string DigitGrouping(this Single? value)
+        {
+            if (value.HasValue)
+                return String.Format("{0:#,#.###}", value);
+            return "";
+        }
+
         public static PersianDate ToPersianDate(this DateTime date)
         {
             var calendar = new PersianCalendar();

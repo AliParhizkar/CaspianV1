@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Marketing.Model
 {
+    [Table("ProductToppings", Schema = "mrk")]
     public class ProductTopping
     {
         [Key]

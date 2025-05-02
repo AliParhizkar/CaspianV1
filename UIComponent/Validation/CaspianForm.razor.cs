@@ -114,10 +114,7 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             if (Service != null)
-            {
-                Service.Form = this;
-                Service.FormInitialize();
-            }
+                Service.FormInitialize(this);
             controls = new List<IControl>();
             if (FormAppState == null)
                 FormAppState = new FormAppState();

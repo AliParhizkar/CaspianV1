@@ -10,10 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace Caspian.UI
 {
-    public class UIService<TEntity>: IUIService<TEntity>, IInternalUIService where TEntity : class
+    public class UIService<TEntity>: IInternalUIService, IUIService<TEntity>, IInternalSearchService<TEntity> where TEntity : class
     {
         protected IJSRuntime jSRuntime;
         BaseComponentService baseComponentService;
@@ -148,7 +149,7 @@ namespace Caspian.UI
 
         public IEntityTabPanel EntityTabPanel { get; set; }
 
-        public DataView<TEntity> DataView { get; set; }
+        public DataView<TEntity> DataView { get; private set; }
 
         protected bool HideInsertIcon { get; set; }
 
@@ -182,8 +183,9 @@ namespace Caspian.UI
 
         protected Action<TEntity> OnAfterDelete { get; set; }
 
-        public void FormInitialize()
+        public void FormInitialize(CaspianForm<TEntity> form)
         {
+            Form = form;
             UserId = ServiceProvider.GetService<CaspianDataService>().UserId;
             if (UpsertData == null)
                 UpsertData = Activator.CreateInstance<TEntity>();
@@ -303,8 +305,11 @@ namespace Caspian.UI
             return scope;
         }
 
-        public void DataViewInitialize()
+        public void DataViewInitialize(DataView<TEntity> dataView)
         {
+            DataView = dataView;
+            if (DataView == null)
+                return;
             DataView.Search = Search;
             DataView.ShowInsertIcon = DataView.ShowInsertIcon ?? !HideInsertIcon;
             DataView.HideFooter = DataView.HideFooter ?? hideFooter;
@@ -427,7 +432,7 @@ namespace Caspian.UI
                 UpsertData = null;
         }
 
-        IDictionary<string, ICollection> ISearchService<TEntity>.GetEnumFields()
+        public IDictionary<string, ICollection> GetEnumFields()
         {
             return enumValues;
         }

@@ -56,6 +56,7 @@ namespace Marketing.Model.Migrations
 
             migrationBuilder.CreateTable(
                 name: "ProductToppings",
+                 schema: "mrk",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)

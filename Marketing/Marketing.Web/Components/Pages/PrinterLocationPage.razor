@@ -1,0 +1,109 @@
+﻿@page "/Marketing/ProductPrinter/{PrinterLocationId:int}"
+@inherits BasePage 
+<StringTextBox @bind-Value="search" placeholder="جستجو" BindingType="BindingType.OnInput" />
+<TreeView @ref="tree" TEntity="NodeView" Source="source" AutoSelectable FilterFunc="t => search == null || t.Text.Contains(search)"  />
+<button @onclick="SaveData">ثبت</button>
+
+@code 
+{ 
+    IList<NodeView> source;
+    IList<Product> products;
+    TreeView<NodeView> tree;
+    IList<int> selectedProductsId;
+    char productDelimiter;
+    string search;
+
+    async Task SaveData()
+    {
+        var selectedProductsValues = tree.GetSelectedItems().Where(t => t.Value.StartsWith(productDelimiter)).Select(t => Convert.ToInt32(t.Value.Substring(1)));
+        using var service = CreateScope().GetService<PrinterProductService>();
+        /// Products selected curently(should be inserted)
+        var insertedProducts = selectedProductsValues.Where(t => !selectedProductsId.Contains(t)).Select(t => new PrinterProduct()
+        {
+            PrinterId = PrinterLocationId,
+            ProductId = t
+        });
+        await service.AddRangeAsync(insertedProducts);
+        /// Products unseleted(shoul be delted)
+        var oldItems = await service.GetAll().Where(t => t.PrinterId == PrinterLocationId).ToListAsync();
+        var deltedProducts = oldItems.Where(t => !selectedProductsValues.Contains(t.ProductId));
+        await service.RemoveRange(deltedProducts);
+        await service.SaveChangesAsync();
+        await LoadTree();
+        ShowMessage("ثبت با موفقیت انجام شد.");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTree();
+        await base.OnInitializedAsync();
+    }
+
+    async Task LoadTree()
+    {
+        source = new List<NodeView>();
+        using var scope = CreateScope();
+        var categories = await scope.GetService<ProductCategoryService>().GetAll().ToListAsync();
+        products = await scope.GetService<ProductService>().GetAll().ToListAsync();
+        selectedProductsId = await scope.GetService<PrinterProductService>().GetAll()
+            .Where(t => t.PrinterId == PrinterLocationId).Select(t => t.ProductId).ToListAsync();
+        foreach (var category in categories.Where(t => t.CategoryId == null))
+        {
+            var node = CreateTree(category);
+            source.Add(node);
+        }
+    }
+
+    NodeView CreateTree(ProductCategory category)
+    {
+        var node = new NodeView()
+        {
+            Collabsable = category.Categories != null || products.Any(t => t.CategoryId == category.Id),
+            Expanded = true,
+            Selectable = true,
+            Text = category.Name,
+            Value = category.Id.ToString()
+        };
+        if (category.Categories != null)
+        {
+            node.Children = new List<NodeView>();
+            foreach (var child in category.Categories)
+                node.Children.Add(CreateTree(child));
+            SelectParentInNode(node);
+        }
+        else
+        {
+            var list = products.Where(t => t.CategoryId == category.Id);
+            if (list.Any())
+            {
+                node.Children = new List<NodeView>();
+                foreach (var product in list)
+                {
+                    node.Children.Add(new NodeView()
+                    {
+                        Selected = selectedProductsId.Contains(product.Id),
+                        Selectable = true,
+                        Collabsable = false,
+                        Text = product.Title,
+                        Value = productDelimiter + product.Id.ToString()
+                    });
+                }
+                SelectParentInNode(node);
+            }
+        }
+        return node;
+    }
+
+    void SelectParentInNode(NodeView node)
+    {
+        if (node.Children.All(t => t.Selected == true))
+            node.Selected = true;
+        else if (node.Children.All(t => t.Selected == false))
+            node.Selected = false;
+        else
+            node.Selected = null;
+    }
+
+    [Parameter]
+    public int PrinterLocationId { get; set; }
+}

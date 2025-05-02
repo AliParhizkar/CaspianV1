@@ -1,4 +1,5 @@
-﻿.m-orders {
+﻿
+.m-orders {
     width: 300px;
     padding: 5px 3px;
     overflow: auto;
@@ -12,7 +13,7 @@
 }
 
 .selected {
-    background-color: wheat;
+    background-color: #d6e3ff;
 }
 
 .m-orders-step1 {

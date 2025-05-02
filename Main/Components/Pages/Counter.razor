@@ -2,14 +2,26 @@
 @inherits BasePage
 @using Caspian.Engine.Service
 @using Demo.Service
-
-<button @onclick="Test">Show</button>
+@using Microsoft.EntityFrameworkCore;
+<button @onclick="async() => await Test()">Show</button>
 
 
 @code 
 {
-    void Test()
+    async Task Test()
     {
+        using var service = CreateScope().GetService<CustomerService>();
+        await CreateTransaction(service.Context);
+        var first = await service.SingleAsync(30);
+        first.FName = "Zahra ";
+        await service.SaveChangesAsync();
+       
+        var qqq = 0;
+        var qqqqq = 5 / qqq;
+    }
 
+    async Task CreateTransaction(CaspianContext context)
+    {
+        await context.Database.BeginTransactionAsync();
     }
 }

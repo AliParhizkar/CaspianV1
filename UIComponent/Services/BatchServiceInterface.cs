@@ -1,4 +1,6 @@
 ﻿using Caspian.Common;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Reflection;
 
 namespace Caspian.UI
 {
@@ -22,5 +24,7 @@ namespace Caspian.UI
         void DetailTypeWindowInitialize();
 
         void DetailFormInitialize();
+
+        PropertyInfo ThirdLevelProperty { get; }
     }
 }

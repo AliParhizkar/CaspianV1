@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Marketing.Model.Migrations
 {
-    [DbContext(typeof(Context))]
+    [DbContext(typeof(MarketingContext))]
     [Migration("20250420200401_Sixth")]
     partial class Sixth
     {

@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace Caspian.UI
 {
-    public class MembershipService<TMaster, TAccess, TOther>:UIService<TAccess>, ISearchService<TOther> where TAccess : class where TOther : class
+    public class MembershipService<TMaster, TAccess, TOther>:UIService<TAccess>, IInternalSearchService<TOther> where TAccess : class where TOther : class
     {
         protected IDictionary<string, SearchType> searchData;
         protected IDictionary<string, ICollection> enumValues;
@@ -51,7 +51,7 @@ namespace Caspian.UI
             onlyForSearch = true;
         }
 
-        public void DataViewInitialize()
+        void IInternalSearchService<TOther>.DataViewInitialize(DataView<TOther> dataView)
         {
             DataView.Search = Search;
             DataView.ShowInsertIcon = false;

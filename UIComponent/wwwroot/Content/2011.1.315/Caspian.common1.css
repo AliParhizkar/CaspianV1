@@ -2935,9 +2935,6 @@ div.t-grid-footer {
     border-color: rgba(0,0,0,0.2);
     box-sizing:border-box;
 }
-.t-inline-content{
-    overflow-y:visible!important;
-}
 
 .t-grid-content {
     overflow-y: auto;

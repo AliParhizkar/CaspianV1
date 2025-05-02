@@ -20,6 +20,12 @@ namespace Marketing.Model
         [ForeignKey(nameof(CustomerId))]
         public Customer Customer { get; set; }
 
+        [DisplayName("نوع پرداخت")]
+        public SettleType? SettleType { get; set; }
+
+        [DisplayName("شماره سفارش")]
+        public int OrderNumber { get; set; }
+
         [DisplayName("آدرس مشتری")]
         public int? AddressId { get; set; }
 

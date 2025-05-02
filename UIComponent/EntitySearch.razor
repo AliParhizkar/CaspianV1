@@ -26,7 +26,7 @@
         enumValues = new Dictionary<string, ICollection>();
         if (Service == null)
             throw new CaspianException($"خطا:EntitySearch Component should have a service of type ISearchService<{typeof(TEntity)}>");
-        Service.SetSearchType(searchTypes);
+        (Service as IInternalSearchService<TEntity>).SetSearchType(searchTypes);
         base.OnInitialized();
     }
 
@@ -73,7 +73,7 @@
         else
             isEqual = false;
         if (!isEqual)
-            Service.SetEnumFields(enumValues);
+            (Service as IInternalSearchService<TEntity>).SetEnumFields(enumValues);
         return !isEqual;
     }
 

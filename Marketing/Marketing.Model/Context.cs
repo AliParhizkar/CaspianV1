@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Marketing.Model
 {
-    public class Context : CaspianContext
+    public class MarketingContext : CaspianContext
     {
         public DbSet<Customer> Customers { get; set; }
         
@@ -30,5 +30,9 @@ namespace Marketing.Model
         public DbSet<ProductTopping> ProductToppings { get; set; }
 
         public DbSet<OrderDetailTopping> GetOrderDetailToppings {  get; set; }
+
+        public DbSet<PrinterLocation> PrinterLocations { get; set; }
+
+        public DbSet<PrinterProduct> PrinterProducts { get; set; }  
     }
 }

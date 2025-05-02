@@ -106,8 +106,8 @@
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material" style="min-width:180px">
                                     <EditTemplate>
-                                        <Lookup TEntity="Material" TValue="int" @bind-Value="con.Data.MaterialId"
-                                        HideHeader AutoHide Title="Material" TextExpression="t => t.Title"
+                                        <Lookup TEntity="Material" TValue="int" @bind-Value="con.Data.MaterialId" 
+                                        HideHeader AutoHide Title="Material" TextExpression="t => t.Title" HideIcon OpenOnFocus
                                         OnChange="async () => await UpdateMaterialReceipt(con.Data.MaterialId, con.Data)">
                                             <MaterialLookupWindow />
                                         </Lookup>

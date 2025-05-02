@@ -12,7 +12,7 @@ using System.Collections;
 
 namespace Caspian.UI
 {
-    public class BatchService<TMaster, TDetail>: IInternalUIService, IUIService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
+    public class BatchService<TMaster, TDetail>: IInternalUIService, IUIService<TMaster>, IInternalSearchService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
     {
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
@@ -42,6 +42,8 @@ namespace Caspian.UI
         {
             return new EnumSearch<TValue>(expression.Body, enumValues);
         }
+
+        public IServiceProvider Provider { get { return serviceProvider; } }
 
         public void OnlyForSearch()
         {
@@ -92,6 +94,13 @@ namespace Caspian.UI
             searchData = types;
         }
 
+        public PropertyInfo ThirdLevelProperty { get; private set; }
+
+        public void ThirdDataLevelToIgnoreOnRemove<TProperty>(Expression<Func<TDetail, ICollection<TProperty>>> expression)
+        {
+            ThirdLevelProperty = (expression.Body as MemberExpression).Member as PropertyInfo;
+        }
+
         protected IServiceScope CreateScope()
         {
             return serviceProvider.CreateScope();
@@ -117,7 +126,7 @@ namespace Caspian.UI
 
         public TMaster Search {  get; set; }
 
-        public DataView<TMaster> DataView { get; set; }
+        public DataView<TMaster> DataView { get; private set; }
 
         Window IInternalUIService.Window { get; set; }
 
@@ -146,7 +155,7 @@ namespace Caspian.UI
 
         public TypeWindow<TDetail> TypeWindow { get; set; }
 
-        public CaspianForm<TMaster> Form { get; set; }
+        public CaspianForm<TMaster> Form { get; private set; }
 
         public CaspianForm<TDetail> DetailForm { get; set; }
 
@@ -194,7 +203,7 @@ namespace Caspian.UI
             {
                 using var service = CreateScope().GetService<IBaseService<TMaster>>();
                 UpsertData = await service.SingleAsync(MasterId);
-                Form.SetModel(UpsertData);
+                Form?.SetModel(UpsertData);
             }
         }
 
@@ -217,6 +226,13 @@ namespace Caspian.UI
             if (OnAfterOpsertAsync != null)
                 await OnAfterOpsertAsync(scope.ServiceProvider, result);
             ChangedEntities.Clear();
+            if (service.Context?.Database?.CurrentTransaction != null)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Warning: Transaction Rollbacked by Caspian infrastructure");
+                Console.ResetColor();
+                service.Context.Database.CurrentTransaction.Rollback();
+            }
             if (id == 0)
             {
                 DetailDataView?.ClearSource();
@@ -248,12 +264,13 @@ namespace Caspian.UI
             StateHasChanged();
         }
 
-        public void FormInitialize()
+        public void FormInitialize(CaspianForm<TMaster> form)
         {
+            Form = form;
             batchServiceData.MasterType = typeof(TMaster);
-            var detailsproperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
-            if (!batchServiceData.DetailPropertiesInfo.Contains(detailsproperty))
-                batchServiceData.DetailPropertiesInfo.Add(detailsproperty);
+            var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
+            if (!batchServiceData.DetailPropertiesInfo.Contains(detailsProperty))
+                batchServiceData.DetailPropertiesInfo.Add(detailsProperty);
             if (UpsertData == null)
                 UpsertData = Activator.CreateInstance<TMaster>();
             if (OnCreate != null)
@@ -280,8 +297,11 @@ namespace Caspian.UI
             (baseComponentService.Target as BasePage).ChangeState();
         }
 
-        public void DataViewInitialize()
+        public void DataViewInitialize(DataView<TMaster> dataView)
         {
+            DataView = dataView;
+            if (dataView == null)
+                return;
             DataView.Search = Search;
             DataView.HideFooter = DataView.HideFooter ?? hideFooter;
             DataView.InsertIconState(!onlyForSearch);

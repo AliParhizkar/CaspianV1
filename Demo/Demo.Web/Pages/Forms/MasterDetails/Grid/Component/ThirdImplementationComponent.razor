@@ -2,7 +2,7 @@
 @inject BatchService<Customer, CustomerGroupMembership> Service
 <CaspianForm Service="Service">
     <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
-    <div class="row" style="height:260px;align-content:flex-start">
+    <div class="row" style="align-content:flex-start">
         <DropdownList @bind-Value="Service.UpsertData.CustomerType" ColSpan="8" />
         @if (Service.UpsertData.CustomerType == CustomerType.Real)
         {
@@ -18,8 +18,8 @@
         <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" ColSpan="8" />
         <CheckedDropdownList TEntity="CustomerGroup" Service="Service" TDetails="CustomerGroupMembership" TextExpression="t => t.Title"
                              ColSpan="8" Title="Customer Groups" />
+        <FormCommandButton ColSpan="8" />
     </div>
-    <FormCommandButton ColSpan="8" />
 </CaspianForm>
 
 @code

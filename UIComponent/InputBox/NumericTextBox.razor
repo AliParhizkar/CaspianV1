@@ -23,9 +23,7 @@ else
     {
         return __builder =>
         {
-            var text = Convert.ToString(Value);
-            var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
-            text = text.Replace(decimalDigits, '.');
+            var text = string.Format(Thread.CurrentThread.CurrentCulture, "{0:0.###}", Value);
             if (DigitGrouping)
                 text = GetDigitGrouping(text);
             if (disabled)

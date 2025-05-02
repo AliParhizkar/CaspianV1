@@ -4,12 +4,10 @@ using Caspian.Common.Service;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
+using Caspian.Common.RowNumber;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Caspian.Common.RowNumber;
-using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -43,7 +41,7 @@ namespace Caspian.UI
 
         IQueryable<TEntity> GetQuery(IServiceScope scope)
         {
-            var query = scope.GetService<BaseService<TEntity>>().Search(Search, Service?.GetSearchData(), Service?.GetEnumFields());
+            var query = scope.GetService<BaseService<TEntity>>().Search(Search, (Service as IInternalSearchService<TEntity>)?.GetSearchData(), (Service as IInternalSearchService<TEntity>)?.GetEnumFields());
             var param = Expression.Parameter(typeof(TEntity), "t");
             Expression condExr = null;
             if (ConditionExpr != null)

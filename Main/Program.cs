@@ -91,7 +91,7 @@ namespace Main
             typeof(Marketing.Service.ProductCategoryService).Assembly.InjectServices(builder.Services);
             builder.Services.AddControllers();
             builder.Services.AddScoped<Demo.Model.Context>();
-            builder.Services.AddScoped<Marketing.Model.Context>();
+            builder.Services.AddScoped<Marketing.Model.MarketingContext>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
             builder.Services.AddScoped<BaseComponentService>();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));

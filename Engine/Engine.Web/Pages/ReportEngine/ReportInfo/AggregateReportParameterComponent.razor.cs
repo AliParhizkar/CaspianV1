@@ -20,7 +20,7 @@ namespace Caspian.Engine.ReportGenerator
 
         async Task SaveParameters()
         {
-            var parameters = tree.GetSeletcedItems();
+            var parameters = tree.GetSelectedItems();
             var list = new List<AggregateReportParameter>();
             foreach (var item in parameters )
             {

@@ -14,7 +14,7 @@
         <StringTextBox @bind-Value="Service.UpsertData.MobileNumber" MaxLength="11" ColSpan="8" />
         <StringTextBox @bind-Value="Service.UpsertData.Tel" MaxLength="11" ColSpan="8" />
     </div>
-    <div class="col-md-5 ps-3">
+    <div class="col-md-5 ps-3 mb-3">
         <label style="justify-content:space-evenly">Customer Groups</label>
         <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:250px;flex-wrap:nowrap"
                         TextExpression="t => t.Title" />

@@ -3,7 +3,7 @@
 @inject IJSRuntime JSRuntime
 @inject IServiceScopeFactory ServiceScopeFactory
 
-    @if (Source == null)
+@if (Source == null)
 {
     <div @ref="tree" @attributes="Attrs" class="c-treeview">
         <CascadingValue Value="this" >
@@ -30,7 +30,7 @@
         </CascadingValue>
     </div>
 }
-else 
+else
 {
     var index = 0;
     <div @ref="tree" @attributes="Attrs" class="c-treeview">
@@ -38,10 +38,13 @@ else
             <ul class="c-subtree">
                 @foreach (var item in Source)
                 {
-                    index++;
-                    <TreeNode @attributes="GetNodeAttributes(item, Source.Count == index)" />
+                    if (filteredSource == null || filteredSource.Any(u => u.Value == item.Value))
+                    {
+                        index++;
+                        <TreeNode @attributes="GetNodeAttributes(item, (filteredSource ?? Source).Count == index)" />
+                    }
                 }
             </ul>
         </CascadingValue>
-        </div>
-    }
+    </div>
+}

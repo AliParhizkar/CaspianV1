@@ -1,13 +1,17 @@
 ﻿@page "/Marketing"
-<div @ref="element"></div>
+@inherits BasePage
+<button @onclick="Test">Test</button>
 
 
 @code 
 {
-    ElementReference element;
-
-    protected override void OnInitialized()
+    async Task Test()
     {
-        base.OnInitialized();
+        using var service = CreateScope().GetService<OrderDetailToppingService>();
+        var data = await service.GetAll().GroupBy(t => t.OrderDetailId).Select(t => new 
+        {
+            t.Key,
+            Sum = t.Sum(u => u.Quantity)
+        }).ToListAsync();
     }
 }

@@ -1,0 +1,125 @@
+﻿@namespace Marketing.Web.OrderComponents
+
+<div class="m-topping-main">
+    <div class="m-topping-container">
+        @if( toppings != null)
+        {
+            foreach(var topping in toppings)
+            {
+                var className = selectedToppingId == topping.Id ? "m-topping m-selected" : "m-topping";
+                <div @onclick="async() => await AddToOrder(topping)"  class="@className">@topping.Name</div>
+            }
+        }
+    </div>
+    <div class="m-topping-details">
+        <DataGrid PageSize="100" ContentHeight="200" DetailsService="Service" TEntity="OrderDetailTopping" HideFooter="true" ShowInsertIcon="false" Batch>
+            <Columns>
+                <GridColumn Field="t => t.Topping.Name" />
+                <GridColumn Field="t => t.Quantity" Title="تعداد" style="width:125px">
+                    <Template>
+                        <div class="m-quantity">
+                            <span @onclick="async async => await UpdateQuantity(context.Data.ToppingId, 1)" class="fa fa-plus c-small-icon ms-1"></span>
+                            <NumericTextBox TValue="decimal" Value="context.Data.Quantity" ValueChanged="async value => await ChangeQuantity(context.Data.OrderDetailId, value)" Style="width:50px;" maxlength="3" />
+                            <span @onclick="async async => await UpdateQuantity(context.Data.ToppingId, -1)" class="fa fa-minus c-small-icon me-1"></span>
+                        </div>
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="t => t.Price.DigitGrouping()" Title="قیمت" style="width:125px" />
+                <GridColumn Field="t => (t.Price * t.Quantity).DigitGrouping()" Title="جمع" style="width:125px" />
+            </Columns>
+        </DataGrid>
+        <div class="m-tooping-footer">
+            <div class="c-controls">
+                <lable>جمع کل:</lable>
+            </div>
+            <div class="c-sum-price">
+                <span>@Service.DetailDataView?.GetBatchEntities()?.Sum(t => t.Price * t.Quantity).DigitGrouping()</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code
+{
+    IList<Topping> toppings;
+    int selectedToppingId;
+
+    [Parameter]
+    public BatchService<OrderDetail, OrderDetailTopping> Service { get; set; }
+
+    [Parameter]
+    public int ProductId { get; set; }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var service = Page.CreateScope().GetService<ToppingService>();
+        toppings = await service.GetAll().Where(t => t.ProductToppings.Any(u => u.ProductId == ProductId)).ToListAsync();
+        await base.OnInitializedAsync();
+    }
+
+    async Task AddToOrder(Topping topping)
+    {
+        var grid = Service.DetailDataView;
+
+        var old = grid.GetBatchEntities().SingleOrDefault(t => t.ToppingId == topping.Id);
+        if (old == null)
+        {
+            await grid.InsertAsync(new OrderDetailTopping()
+            {
+                OrderDetailId = Service.MasterId,
+                Price = topping.Price,
+                Quantity = 1,
+                ToppingId = topping.Id
+            });
+        }
+        else
+        {
+            old.Quantity++;
+            await grid.UpdateAsync(old);
+        }
+        await grid.ScrollIntoViewSelectedRow();
+        await CallBackForChange();
+    }
+
+    async Task UpdateQuantity(int toppingId, int value)
+    {
+        var grid = Service.DetailDataView;
+        var old = grid.GetBatchEntities().SingleOrDefault(t => t.ToppingId == toppingId);
+        old.Quantity = old.Quantity + value;
+        if (old.Quantity == 0)
+            await grid.RemoveAsync(old);
+        else
+            await grid.UpdateAsync(old);
+        await CallBackForChange();
+    }
+
+    async Task ChangeQuantity(int toppingId, decimal value)
+    {
+        if (value >= 0)
+        {
+            var grid = Service.DetailDataView;
+            var old = grid.GetBatchEntities().SingleOrDefault(t => t.ToppingId == toppingId);
+            old.Quantity = value;
+            if (old.Quantity == 0)
+                await grid.RemoveAsync(old);
+            else
+                await grid.UpdateAsync(old);
+            await CallBackForChange();
+        }
+        else
+            Page.ShowMessage("تعداد نمی تواند منفی باشد");
+    }
+
+    [Parameter]
+    public EventCallback<float> OnChange { get; set; }
+
+    async Task CallBackForChange()
+    {
+        var sum = (float)Service.DetailDataView.GetBatchEntities().Sum(t => t.Price * t.Quantity);
+        await OnChange.InvokeAsync(sum);
+    }
+}

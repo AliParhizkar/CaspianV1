@@ -140,5 +140,21 @@ namespace Caspian.Common
                .HasTranslation(e => new SqlFunctionExpression("JSON_VALUE", e, true, new[] { true, false }, typeof(String), null));
             base.OnModelCreating(modelBuilder);
         }
+
+        public override void Dispose()
+        {
+            try
+            {
+                if (Database?.CurrentTransaction != null)
+                {
+                    Database.CurrentTransaction.Rollback();
+                }
+            }
+            catch (ObjectDisposedException ex)
+            {
+
+            }
+            base.Dispose();
+        }
     }
 }

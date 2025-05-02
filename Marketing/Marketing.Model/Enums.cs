@@ -24,6 +24,21 @@ namespace Marketing.Model
         System
     }
 
+    public enum SettleType: byte
+    {
+        [Display(Name = "کارت")]
+        Card,
+
+        [Display(Name = "نقد")]
+        Cash,
+
+        [Display(Name = "کارت و نقد")] 
+        CardAndCash,
+
+        [Display(Name = "اعتباری")] 
+        Accounting 
+    }
+
     public enum CategoryType: byte
     {
         [Display(Name = "تکی")]

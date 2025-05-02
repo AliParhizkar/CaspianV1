@@ -26,40 +26,35 @@ namespace Caspian.UI
         void SetValues(params TValue[] values);
     }
 
+    internal interface IInternalSearchService<TEntity>: ISearchService<TEntity> where TEntity : class
+    {
+        void DataViewInitialize(DataView<TEntity> dataView);
+        void SetSearchType(IDictionary<string, SearchType> types);
+        void SetEnumFields(IDictionary<string, ICollection> enumFields);
+        IDictionary<string, ICollection> GetEnumFields();
+        IDictionary<string, SearchType> GetSearchData();
+    }
 
     public interface ISearchService<TEntity> where TEntity : class
     {
-        DataView<TEntity> DataView { get; set; }
-
+        DataView<TEntity> DataView { get; }
 
         TEntity Search { get; }
 
-        void DataViewInitialize();
-
-        void SetSearchType(IDictionary<string, SearchType> types);
-
-        void SetEnumFields(IDictionary<string, ICollection> enumFields);
-
-        IDictionary<string, ICollection> GetEnumFields();
-
-        IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TEntity, TValue>> expression)where TValue:Enum;
-
-        IDictionary<string, SearchType> GetSearchData();
+        IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TEntity, TValue>> expression) where TValue : Enum;
 
         void OnlyForSearch();
 
         void HideFooter();
     }
 
-
-
     public interface IUIService<TEntity> : IUIService, ISearchService<TEntity> where TEntity : class
     {
         int MasterId { get; set; }
 
-        CaspianForm<TEntity> Form { get; set; }
+        CaspianForm<TEntity> Form { get;}
 
-        void FormInitialize();
+        void FormInitialize(CaspianForm<TEntity> form);
 
         Task FetchAsync();
 

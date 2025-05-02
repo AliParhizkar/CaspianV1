@@ -1,0 +1,26 @@
+﻿@namespace Marketing.Web.OrderComponents
+<button @onclick="OpenLevel1">Orders</button>
+
+<PopupWindow @bind-Status="statusLevel1" Right="50" Top="60">
+    <div class="m-orders">
+        @foreach (var order in orders)
+        {
+            var className = order.Id == selectedOrderId? "m-order-item selected" : "m-order-item";
+            <div @onmouseenter="e => OpenLevel2(e, order.Id)" class="@className">@order.OrderNumber</div>
+        }
+    </div>
+</PopupWindow>
+
+<PopupWindow @bind-Status="statusLevel2" Right="360" Top="Level2Top" Style="transform:translateY(calc(-50% + 25px))">
+    <div class="m-orders-step1">
+        <span>@selectedOrderId</span>
+        <button class="m-action">Click</button>
+        <button class="m-action">Click</button>
+        <button class="m-action">Click</button>
+    </div>
+</PopupWindow>
+
+@code 
+{
+    
+}

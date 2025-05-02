@@ -290,11 +290,14 @@ var caspian;
                     if (loc.top > window.innerHeight / 2) {
                         animate.classList.add('c-animate-up');
                         setTimeout(() => group.style.bottom = '0', 10);
-                        animate.style.marginTop = `${-height - 42}px`;
+                        let dif = animate.getBoundingClientRect().top - loc.top;
+                        animate.style.marginTop = `${-height - dif - 10}px`;
                     }
                     else {
                         animate.classList.add('c-animate-down');
                         setTimeout(() => group.style.top = '0', 10);
+                        let dif = animate.getBoundingClientRect().top - loc.top - 35;
+                        animate.style.marginTop = `${-dif}px`;
                     }
                     document.body.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
                         if (e.target.closest('.t-group') == null)
@@ -734,6 +737,8 @@ var caspian;
 (function (caspian) {
     class DataGrid {
         constructor(grv) {
+            if (grv == null)
+                return;
             this.grid = grv;
             this.content = grv.getElementsByClassName('t-grid-content')[0];
             if (this.content.classList.contains('t-inline-content'))
@@ -1188,7 +1193,7 @@ var caspian;
                         let locHelpWindow = helpWindow.getBoundingClientRect();
                         let posTarget = target.getPosition();
                         if (locTarget.top >= locHelpWindow.height - 30)
-                            helpWindow.style.marginTop = `${-locHelpWindow.height - 60}px`;
+                            helpWindow.style.marginTop = `${-locHelpWindow.height - 40}px`;
                         if (caspian.common.RightToLeft()) {
                             let right = 0;
                             if (locHelpWindow.width + 8 > locTarget.right)

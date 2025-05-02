@@ -9,7 +9,7 @@ namespace Caspian.Common
     {
         internal static void CopySimpleProperty<TModel>(this TModel model, TModel newModel)
         {
-            foreach (var info in typeof(TModel).GetProperties())
+            foreach (var info in typeof(TModel).GetProperties().Where(t => t.CanWrite))
             {
                 var type = info.PropertyType;
                 if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))

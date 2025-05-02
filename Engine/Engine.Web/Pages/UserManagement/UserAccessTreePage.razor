@@ -31,7 +31,7 @@
     async Task SaveData()
     {
         using var scope = CreateScope();
-        var ids = tree.GetSeletcedItems().Select(t => Convert.ToInt32(t.Value)).ToList();
+        var ids = tree.GetSelectedItems().Select(t => Convert.ToInt32(t.Value)).ToList();
         var service = new MenuAccessibilityService(scope.ServiceProvider);
         ///منوهایی که در پایگاه داده به کاربر تخصیص داده شده اند
         var oldMenusId = await service.GetAll().Where(t => t.UserId == AccessUserId && t.Menu.MenuCategory.SubSystemKind == SubSystem).Select(t => t.MenuId).ToListAsync();
@@ -45,7 +45,7 @@
                 UserId = AccessUserId
             }));
         var query = service.GetAll().Where(t => menusShouldRemoved.Contains(t.MenuId) && t.UserId == AccessUserId);
-        service.RemoveRange(query);
+        await service.RemoveRange(query);
         await service.SaveChangesAsync();
         ShowMessage("ثبت با موفقیت انجام شد");
     }

@@ -13,7 +13,6 @@ namespace Caspian.Common.Service
 {
     public class BaseService<TEntity> : CaspianValidator<TEntity>, IBaseService, IDisposable, IBaseService<TEntity> where TEntity : class
     {
-        
         public BaseService(IServiceProvider provider)
             :base(provider)
         {
@@ -232,16 +231,6 @@ namespace Caspian.Common.Service
             Expression expr = Expression.Property(param, pKey);
             expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(id, pKey.PropertyType)));
             return await GetAll().Where(Expression.Lambda(expr, param)).AnyAsync();
-        }
-
-        public void Dispose()
-        {
-            if (Context != null)
-                Context.Dispose();
-            if (Context.GetType().Namespace == "Marketing.Model")
-            {
-
-            }
         }
     }
 }

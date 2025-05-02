@@ -183,10 +183,7 @@ namespace Caspian.UI
                 throw new CaspianException($"Service of type {type} not impilimented");
 
             if (Service != null)
-            {
-                Service.DataView = this;
-                Service.DataViewInitialize();
-            }
+                (Service as IInternalSearchService<TEntity>).DataViewInitialize(this);
             if (DetailsService != null)
             {
                 DetailsService.DetailDataView = this;
@@ -535,12 +532,20 @@ namespace Caspian.UI
             return query.Where(lambda);
         }
 
-        public async Task RemoveAsync(TEntity entity)
+        public async Task<bool> RemoveAsync(TEntity entity)
         {
             var pKey = typeof(TEntity).GetPrimaryKey();
             var id = Convert.ToInt32(pKey.GetValue(entity));
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
+            if (DetailsService != null && DetailsService.ThirdLevelProperty != null)
+            {
+                if (service.BatchServiceData == null)
+                    service.BatchServiceData = new BatchServiceData();
+                if (service.BatchServiceData.DetailPropertiesInfo == null)
+                    service.BatchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
+                service.BatchServiceData.DetailPropertiesInfo.Add(DetailsService.ThirdLevelProperty);
+            }
             var result = await service.ValidateRemoveAsync(entity);
             if (result.IsValid)
             {
@@ -576,6 +581,7 @@ namespace Caspian.UI
             else
                 await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", result.Errors.First().ErrorMessage);
             StateHasChanged();
+            return result.IsValid;
         }
 
         protected async Task ChangePageNumber(int pageNumber)
@@ -718,7 +724,7 @@ namespace Caspian.UI
         public void Dispose()
         {
             if (Service != null)
-                Service.DataView = null; 
+                (Service as IInternalSearchService<TEntity>).DataViewInitialize(null); 
             if (DetailsService != null)
                 DetailsService.DetailDataView = null;
         }

@@ -259,7 +259,7 @@
         else ///Clear Gender
         {
             if (!customerTypes.Contains(CustomerType.Real))
-                Service.GetEnumField(t => t.Gender.Value).SetValues();
+                (Service ).GetEnumField(t => t.Gender.Value).SetValues();
         }
         
          

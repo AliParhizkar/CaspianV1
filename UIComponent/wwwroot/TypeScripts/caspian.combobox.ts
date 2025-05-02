@@ -49,6 +49,8 @@
         bindObserver(input: HTMLElement, pageable: boolean, dotnet: dotnetInvoker) {
             const mutationObserver = new MutationObserver(t => {
                 let ctr = t[0].target as HTMLElement;
+                
+                
                 let group = ctr.getElementsByClassName('t-group')[0] as HTMLElement;
                 if (group) {
                     if (pageable) {
@@ -66,15 +68,18 @@
                     if (loc.top > window.innerHeight / 2) {
                         animate.classList.add('c-animate-up');
                         setTimeout(() => group.style.bottom = '0', 10);
-                        animate.style.marginTop = `${-height - 42}px`;
+                        let dif = animate.getBoundingClientRect().top - loc.top;
+                        animate.style.marginTop = `${-height - dif - 10}px`;
                     }
                     else {
                         animate.classList.add('c-animate-down');
-                        setTimeout(() => group.style.top = '0', 10)
+                        setTimeout(() => group.style.top = '0', 10);
+                        let dif = animate.getBoundingClientRect().top - loc.top - 35;
+                        animate.style.marginTop = `${-dif}px`;
                     }
                     document.body.onmousedown = async e => {
                         if ((e.target as HTMLElement).closest('.t-group') == null)
-                            await dotnet.invokeMethodAsync('CloseInvokable')
+                            await dotnet.invokeMethodAsync('CloseInvokable');
                     }
                 }
                 else

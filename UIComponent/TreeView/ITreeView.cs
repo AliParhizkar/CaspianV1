@@ -28,7 +28,7 @@ namespace Caspian.UI
 
         EventCallback<NodeMouseEventArg> OnRightClick { get; set; }
 
-        IList<NodeView> GetSeletcedItems();
+        IList<NodeView> GetSelectedItems();
 
         void SetSelectedNodesValue(IList<string> values);
 
@@ -39,5 +39,7 @@ namespace Caspian.UI
         RenderFragment<NodeView> BeforeNodeTemplate { get; set; }
 
         RenderFragment<NodeView> AfterNodeTemplate { get; set; }
+
+        bool NodeExistInFilteredSource(NodeView node);
     }
 }

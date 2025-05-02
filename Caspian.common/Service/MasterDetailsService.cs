@@ -101,7 +101,7 @@ namespace Caspian.Common.Service
                 }
                 return await AddAsync(entity);
             }
-            var insertedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Added).Select(t => t.Entity);
+            var insertedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Added).Select(t => t.Entity).ToArray();
             if (insertedItems.Any())
             {
                 var detailsKey = typeof(TDetails).GetPrimaryKey();
@@ -120,6 +120,7 @@ namespace Caspian.Common.Service
             if (deletedItems.Any())
                 Context.Set<TDetails>().RemoveRange(deletedItems);
             await UpdateAsync(entity);
+            typeof(TMaster).GetDetailsProperty(typeof(TDetails)).SetValue(entity, insertedItems);
             return entity;
         }
 

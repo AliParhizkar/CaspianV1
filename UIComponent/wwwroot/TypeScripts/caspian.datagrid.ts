@@ -13,6 +13,8 @@
         headerColumns: HTMLElement[]; 
 
         constructor(grv: HTMLElement) {
+            if (grv == null)
+                return;
             this.grid = grv;
             this.content = (grv.getElementsByClassName('t-grid-content')[0] as HTMLDivElement);
             if (this.content.classList.contains('t-inline-content'))
