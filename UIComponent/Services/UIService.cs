@@ -47,14 +47,14 @@ namespace Caspian.UI
         /// </summary>
         /// <param name="id">key of entity</param>
         /// <returns>Task</returns>
-        public async Task OpenWindow(int id)
+        public async Task OpenWindow(int? id)
         {
-            if (id == 0)
+            if (id == null)
                 UpsertData = Activator.CreateInstance<TEntity>();
             else
             {
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
-                UpsertData = await service.SingleAsync(id);
+                UpsertData = await service.SingleAsync(id.Value);
             }
             await Window.Open();
             StateHasChanged();

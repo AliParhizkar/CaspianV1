@@ -4,6 +4,7 @@ using Marketing.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketing.Model.Migrations
 {
     [DbContext(typeof(MarketingContext))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250503195922_Twelews")]
+    partial class Twelews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,25 +45,12 @@ namespace Marketing.Model.Migrations
                     b.Property<byte>("DefaultAddressManagement")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte>("DiscountType")
-                        .HasColumnType("tinyint");
-
                     b.Property<string>("Name")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<TimeOnly>("OpenTime")
                         .HasColumnType("time");
-
-                    b.Property<decimal>("PercentDiscount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int?>("RoundAmount")
-                        .HasColumnType("int");
-
-                    b.Property<byte?>("RoundType")
-                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
@@ -180,30 +170,14 @@ namespace Marketing.Model.Migrations
                     b.Property<int?>("AddressId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AmountDiscount")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
-
-                    b.Property<byte>("DiscountType")
-                        .HasColumnType("tinyint");
 
                     b.Property<DateOnly>("OrderDate")
                         .HasColumnType("date");
 
                     b.Property<int>("OrderNumber")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("PercentDiscount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int?>("RoundAmount")
-                        .HasColumnType("int");
-
-                    b.Property<byte?>("RoundType")
-                        .HasColumnType("tinyint");
 
                     b.Property<byte?>("SettleType")
                         .HasColumnType("tinyint");
@@ -360,9 +334,6 @@ namespace Marketing.Model.Migrations
 
                     b.Property<int>("Discount")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Discountable")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");

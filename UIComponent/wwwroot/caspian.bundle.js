@@ -1193,7 +1193,7 @@ var caspian;
                         let locHelpWindow = helpWindow.getBoundingClientRect();
                         let posTarget = target.getPosition();
                         if (locTarget.top >= locHelpWindow.height - 30)
-                            helpWindow.style.marginTop = `${-locHelpWindow.height - 40}px`;
+                            helpWindow.style.marginTop = `${-locHelpWindow.height - 35}px`;
                         if (caspian.common.RightToLeft()) {
                             let right = 0;
                             if (locHelpWindow.width + 8 > locTarget.right)

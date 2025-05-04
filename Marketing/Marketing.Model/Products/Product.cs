@@ -32,6 +32,9 @@ namespace Marketing.Model
         [DisplayName("توضیحات"), MaxLength(255)]
         public string Description { get; set; }
 
+        [DisplayName("تخفیف پذیر")]
+        public bool Discountable { get; set; }
+
         [CheckOnDelete("محصول داری توضیحات می باشد و امکان حذف آن وجود ندارد.")]
         public ICollection<ProductDescription> ProductDescriptions { get; set; }
 

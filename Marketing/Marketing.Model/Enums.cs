@@ -50,4 +50,25 @@ namespace Marketing.Model
         [Display(Name = "چند تایی")]
         Multiple
     }
+
+    public enum DiscountType:byte
+    {
+        [Display(Name = "درصدی")]
+        Percent,
+
+        [Display(Name = "مبلغی")]
+        Amount
+    }
+
+    public enum RoundType:byte
+    {
+        [Display(Name = "رند استاندارد")]
+        Standard,
+
+        [Display(Name = "رند به بالا")]
+        ToUp,
+
+        [Display(Name = "رند به پایین")]
+        ToDown
+    }
 }

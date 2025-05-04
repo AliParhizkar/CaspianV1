@@ -3,7 +3,7 @@
 @typeparam TEntity where TEntity : class
 @implements IEntitySearch
 @implements ICaspianContainer
-@if (Lookup?.AdvanceSearch == true)
+@if (Lookup?.AdvanceSearch != false)
 {
     <CascadingValue Value="this">
         <div class="row c-controls">

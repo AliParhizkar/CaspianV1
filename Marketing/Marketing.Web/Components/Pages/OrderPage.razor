@@ -9,31 +9,42 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<OrderComponent Page="this" />
-<ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" />
 
-<SimpleCustomerComponent Page="this" CustomerId="customerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
-                         CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
-                         CustomerAddressGroupsService="CustomerAddressGroupsService" />
-<CaspianForm Service="OrderService">
-    <button>ثبت</button>
-</CaspianForm>
+<ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" />
+<div class="pe-2" style="display:flex;">
+    <OrderComponent Page="this" />
+    @if (order != null)
+    {
+        <SimpleCustomerComponent Page="this" CustomerId="order.CustomerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
+                                 CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
+                                 CustomerAddressGroupsService="CustomerAddressGroupsService" />
+    }
+</div>
+@if (order != null)
+{
+    <OtherCostComponent Order="order" />
+}
+
+@*<CaspianForm Service="OrderService">
+        <button>ثبت</button>
+    </CaspianForm>*@
 
 @code
 {
     WindowStatus status;
-    int customerId;
     Customer customer;
     IList<Product> products;
     ProductComponent productComponent;
+    Order order;
 
-    async Task ChangeCustomer(int customerId)
+    async Task ChangeCustomer(int? customerId)
     {
         using var service = CreateScope().GetService<CustomerService>();
-        this.customerId = customerId;
+        order.CustomerId = customerId;
         if (customerId > 0)
-            customer = await service.SingleAsync(customerId);
-        customer = null;
+            customer = await service.SingleAsync(customerId.Value);
+        else
+            customer = null;
     }
 
     void ChangeOnOrderDetails(IList<OrderDetail> orderDetails)
@@ -43,13 +54,12 @@
 
     protected override void OnInitialized()
     {
-        OrderService.MasterId = 3;
         OrderService.ThirdDataLevelToIgnoreOnRemove(t => t.OrderDetailToppings);
         OrderService.OnUpsert = async (provider, order) =>
         {
             await provider.GetCaspianService<MarketingContext>().Database.BeginTransactionAsync();
             var deletedToppings = productComponent.GetDeletedToppings();
-            ///Delete Topping 
+            ///Delete Topping
             var service = provider.GetCaspianService<OrderDetailToppingService>();
             foreach (var topping in deletedToppings)
             {
@@ -63,12 +73,12 @@
             var service = provider.GetCaspianService<OrderDetailToppingService>();
             var toppingsChange = productComponent.GetToppingsChange();
             /// Updated Toppings
-            foreach(var topping in toppingsChange.Where(t => t.Id > 0))
+            foreach (var topping in toppingsChange.Where(t => t.Id > 0))
             {
                 await service.UpdateAsync(topping);
                 await service.SaveChangesAsync();
             }
-            /// Insert Toppings 
+            /// Insert Toppings
             /// using Distinct is very impotant to uniqu OrderDetailId
             var insertedItemsId = toppingsChange.Where(t => t.OrderDetailId < 0).Select(t => t.OrderDetailId).Distinct().ToList();
             foreach (var topping in toppingsChange.Where(t => t.Id < 0))
@@ -79,7 +89,7 @@
                 {
                     /// In this case we should Obtain Order-detail-id after insert
                     var index = insertedItemsId.IndexOf(topping.OrderDetailId);
-                    // Set OrderDetailId by Id that create after OrderDetail insert 
+                    // Set OrderDetailId by Id that create after OrderDetail insert
                     topping.OrderDetailId = order.OrderDetails.ElementAt(index).Id;
                 }
                 await service.AddAsync(topping);
@@ -88,14 +98,36 @@
 
             await service.Context.Database.CurrentTransaction.CommitAsync();
         };
-
         base.OnInitialized();
+    }
+
+    async Task InitializeOrderAsync(int orderId)
+    {
+        OrderService.MasterId = orderId;
+        if (orderId == 0)
+        {
+            customer = null;
+            order = new Order()
+            {
+                Id = orderId,
+                DiscountType = ConfigService.Config.DiscountType,
+                PercentDiscount = ConfigService.Config.PercentDiscount,
+                RoundType = ConfigService.Config.RoundType,
+                RoundAmount = ConfigService.Config.RoundAmount
+            };
+        }
+        else
+        {
+            using var service = CreateScope().GetService<OrderService>();
+            order = await service.SingleAsync(orderId);
+        }
     }
 
     protected override async Task OnInitializedAsync()
     {
         using var service = CreateScope().GetService<ProductService>();
         products = await service.GetAll().ToListAsync();
+        await InitializeOrderAsync(0);
         await base.OnInitializedAsync();
     }
 }

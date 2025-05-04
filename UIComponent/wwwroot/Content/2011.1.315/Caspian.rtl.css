@@ -170,9 +170,6 @@
 .t-ltr .c-lookup .fa-search {
     left: calc(100% - 27px);
 }
-.t-rtl .c-lookup .fa-search {
-    left: calc(-100% + 26px);
-}
 
     .t-rtl .c-lookup input{
         padding-left:24px;

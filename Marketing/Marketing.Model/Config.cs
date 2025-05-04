@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,10 +22,25 @@ namespace Marketing.Model
         [DisplayName("روش مدیریت آدرس پیشفرض")]
         public DefaultAddressManagement DefaultAddressManagement { get; set; }
 
+        [DisplayName("زمان بازگشایی")]
+        public TimeOnly OpenTime { get; set; }
+
         /// <summary>
         /// Category Display type in product page
         /// </summary>
         [DisplayName("نوع نمایش گروه محصول")]
         public CategoryType CategoryType { get; set; }
+
+        [DisplayName("نوع تخفیف")]
+        public DiscountType DiscountType { get; set; }
+
+        [DisplayName("درصد تخفیف")]
+        public decimal PercentDiscount { get; set; }
+
+        [DisplayName("روش رند کردن")]
+        public RoundType? RoundType { get; set; }
+
+        [DisplayName("مبلغ رند")]
+        public int? RoundAmount { get; set; }
     }
 }

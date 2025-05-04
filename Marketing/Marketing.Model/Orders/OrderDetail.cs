@@ -24,6 +24,9 @@ namespace Marketing.Model
         [DisplayName("تعداد/مقدار")]
         public decimal Quantity { get; set; }
 
+        [DisplayName("تاپینگ")]
+        public decimal ToppingAmount { get; set; }
+
         [DisplayName("مبلغ")]
         public int Price { get; set; }
 

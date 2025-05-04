@@ -7,7 +7,7 @@ namespace Caspian.UI
 {
     public interface IUIService
     {
-        Task OpenWindow(int id);
+        Task OpenWindow(int? id);
 
         Task CloseWindow();
     }

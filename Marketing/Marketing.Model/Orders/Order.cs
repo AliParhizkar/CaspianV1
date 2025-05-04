@@ -26,6 +26,21 @@ namespace Marketing.Model
         [DisplayName("شماره سفارش")]
         public int OrderNumber { get; set; }
 
+        [DisplayName("نوع تخفیف")]
+        public DiscountType DiscountType { get; set; }
+
+        [DisplayName("درصد تخفیف")]
+        public decimal PercentDiscount { get; set; }
+
+        [DisplayName("مبلغ تخفیف")]
+        public int AmountDiscount { get; set; }
+
+        [DisplayName("روش رند کردن")]
+        public RoundType? RoundType { get; set; }
+
+        [DisplayName("مبلغ رند")]
+        public int? RoundAmount { get; set; }
+
         [DisplayName("آدرس مشتری")]
         public int? AddressId { get; set; }
 

@@ -1530,9 +1530,9 @@ form > tr {
     color: #423d96;
     font-size: 18px;
     cursor: pointer;
-    position: relative;
-    top: -31px;
-}
+    position: absolute;
+    margin-right: -26px;
+    margin-top: 9px;
 }
 .c-page-size {
     width: 100px;

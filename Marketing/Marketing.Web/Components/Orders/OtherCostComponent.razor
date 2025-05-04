@@ -1,0 +1,23 @@
+﻿@namespace Marketing.Web.OrderComponents
+<div class="row c-controls" style="width:300px;">
+    <NumericTextBox Value="Order.RoundAmount" ColSpan="7" TotalSpan="12" Title="مبلغ رند" />
+    <RadioList @bind-Value="Order.DiscountType" ColSpan="7" TotalSpan="12" />
+    @if (Order.DiscountType == DiscountType.Amount)
+    {
+        <NumericTextBox @bind-Value="Order.AmountDiscount" ColSpan="7" TotalSpan="12" />
+    }
+    else
+    {
+        <NumericTextBox @bind-Value="Order.PercentDiscount" BindingType="BindingType.OnInput" ColSpan="3" TotalSpan="8" Total="4" />
+        <div class="col-md-4 ">@Order.AmountDiscount</div>
+    }
+</div>
+
+
+@code
+{
+    [Parameter]
+    public Order Order { get; set; }
+
+
+}
