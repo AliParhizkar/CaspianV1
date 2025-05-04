@@ -1,5 +1,6 @@
 ﻿using Caspian.Common;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Caspian.UI
@@ -26,5 +27,9 @@ namespace Caspian.UI
         void DetailFormInitialize();
 
         PropertyInfo ThirdLevelProperty { get; }
+
+        void SetDetails(IList<TDetail> details);
+
+        Expression GetDetailsFilterExpression();
     }
 }

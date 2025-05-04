@@ -26,13 +26,18 @@ namespace Marketing.Web.OrderComponents
             return sumToppings[orderDetailId].DigitGrouping();
         }
 
+        void ToppingChanged(decimal sum)
+        {
+
+        }
+
         protected override void OnInitialized()
         {
             toppingServices = new Dictionary<int, BatchService<OrderDetail, OrderDetailTopping>>();
             base.OnInitialized();
         }
 
-        void OpenTooping(int detailId, int productId)
+        void OpenTopping(int detailId, int productId)
         {
             selectedDetailId = detailId;
             toppingService = toppingServices.SingleOrDefault(t => t.Key == detailId).Value;

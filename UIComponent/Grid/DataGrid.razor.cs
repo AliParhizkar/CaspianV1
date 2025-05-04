@@ -377,13 +377,6 @@ namespace Caspian.UI
         [Parameter]
         public RenderFragment SearchTemplate { get; set; }
 
-        async Task UpdateOrder()
-        {
-            shouldFetchData = true;
-            await OnParametersSetAsync();
-            StateHasChanged();
-        }
-
         public async Task ResetGrid()
         {
             SelectedRowIndex = 0;
@@ -550,6 +543,14 @@ namespace Caspian.UI
                 await DataBind();
             if (shouldFetchData && columnsData?.Count > 0 && Batch)
             {
+                /// Set InternalConditionExpr to Filter DataGrid
+                var param = Expression.Parameter(typeof(TEntity), "t");
+                var pKey = typeof(TEntity).GetPrimaryKey();
+                Expression expr = Expression.Property(param, pKey);
+                var masterId = Convert.ChangeType(DetailsService.MasterId, pKey.PropertyType);
+                expr = Expression.Equal(expr, Expression.Constant(masterId));
+                InternalConditionExpr = DetailsService.GetDetailsFilterExpression();
+                /// -----------------------
                 await DataBind();
                 if (DetailsService.ChangedEntities == null)
                     throw new CaspianException($"Caspian Exception: please specify ChangedEntities parameter in DataGrid<{typeof(TEntity).Name}>");
@@ -559,7 +560,6 @@ namespace Caspian.UI
                         source.Add(entity.Entity);
                     else 
                     {
-                        var pKey = typeof(TEntity).GetPrimaryKey();
                         var id = Convert.ToInt32(pKey.GetValue(entity.Entity));
                         if (id > 0)
                         {
@@ -583,6 +583,7 @@ namespace Caspian.UI
                     }
                 }
                 items = source.Take(PageSize).ToList();
+                DetailsService?.SetDetails(source);
             }
             await base.OnParametersSetAsync();
         }

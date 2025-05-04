@@ -28,6 +28,21 @@ namespace Caspian.UI
             
         }
 
+        public Expression GetDetailsFilterExpression()
+        {
+            var param = Expression.Parameter(typeof(TDetail), "t");
+            var masterInfo = typeof(TDetail).GetForeignKey(typeof(TMaster));
+            Expression expr = Expression.Property(param, masterInfo);
+            var masterId = Convert.ChangeType(MasterId, masterInfo.PropertyType);
+            return Expression.Equal(expr, Expression.Constant(masterId));
+        }
+
+        public void SetDetails(IList<TDetail> details)
+        {
+            var detailInfo = batchServiceData.DetailPropertiesInfo.First(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
+            detailInfo.SetValue(UpsertData, details);
+        }
+
         public async Task UpdateChildOfModelAsync(Type type)
         {
             throw new NotImplementedException();

@@ -12,22 +12,17 @@
 
 <ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" />
 <div class="pe-2" style="display:flex;">
-    <OrderComponent Page="this" />
-    @if (order != null)
-    {
-        <SimpleCustomerComponent Page="this" CustomerId="order.CustomerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
-                                 CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
-                                 CustomerAddressGroupsService="CustomerAddressGroupsService" />
-    }
+    <OrderComponent Page="this" OnChange="InitializeOrder" />
+    <SimpleCustomerComponent Page="this" CustomerId="OrderService.UpsertData.CustomerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
+                             CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
+                             CustomerAddressGroupsService="CustomerAddressGroupsService" />
 </div>
-@if (order != null)
-{
-    <OtherCostComponent Order="order" />
-}
+<OtherCostComponent Order="OrderService.UpsertData" />
 
-@*<CaspianForm Service="OrderService">
-        <button>ثبت</button>
-    </CaspianForm>*@
+<span>@OrderService.UpsertData.Id</span>
+<CaspianForm Service="OrderService">
+    <button>ثبت</button>
+</CaspianForm>
 
 @code
 {
@@ -35,12 +30,11 @@
     Customer customer;
     IList<Product> products;
     ProductComponent productComponent;
-    Order order;
 
     async Task ChangeCustomer(int? customerId)
     {
         using var service = CreateScope().GetService<CustomerService>();
-        order.CustomerId = customerId;
+        OrderService.UpsertData.CustomerId = customerId;
         if (customerId > 0)
             customer = await service.SingleAsync(customerId.Value);
         else
@@ -55,6 +49,13 @@
     protected override void OnInitialized()
     {
         OrderService.ThirdDataLevelToIgnoreOnRemove(t => t.OrderDetailToppings);
+        OrderService.OnCreate = order =>
+        {
+            order.DiscountType = ConfigService.Config.DiscountType;
+            order.PercentDiscount = ConfigService.Config.PercentDiscount;
+            order.RoundType = ConfigService.Config.RoundType;
+            order.RoundAmount = ConfigService.Config.RoundAmount;
+        };
         OrderService.OnUpsert = async (provider, order) =>
         {
             await provider.GetCaspianService<MarketingContext>().Database.BeginTransactionAsync();
@@ -95,39 +96,22 @@
                 await service.AddAsync(topping);
                 await service.SaveChangesAsync();
             }
-
             await service.Context.Database.CurrentTransaction.CommitAsync();
         };
         base.OnInitialized();
     }
 
-    async Task InitializeOrderAsync(int orderId)
+    async Task InitializeOrder(int orderId)
     {
         OrderService.MasterId = orderId;
-        if (orderId == 0)
-        {
-            customer = null;
-            order = new Order()
-            {
-                Id = orderId,
-                DiscountType = ConfigService.Config.DiscountType,
-                PercentDiscount = ConfigService.Config.PercentDiscount,
-                RoundType = ConfigService.Config.RoundType,
-                RoundAmount = ConfigService.Config.RoundAmount
-            };
-        }
-        else
-        {
-            using var service = CreateScope().GetService<OrderService>();
-            order = await service.SingleAsync(orderId);
-        }
+        OrderService.DetailDataView.EnableLoading();
+        await OrderService.FetchAsync();
     }
 
     protected override async Task OnInitializedAsync()
     {
         using var service = CreateScope().GetService<ProductService>();
         products = await service.GetAll().ToListAsync();
-        await InitializeOrderAsync(0);
         await base.OnInitializedAsync();
     }
 }

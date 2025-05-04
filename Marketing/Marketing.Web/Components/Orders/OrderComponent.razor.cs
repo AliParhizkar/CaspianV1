@@ -2,9 +2,9 @@
 using Caspian.Common;
 using Marketing.Model;
 using Marketing.Service;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.EntityFrameworkCore;
 
 namespace Marketing.Web.OrderComponents
 {
@@ -34,6 +34,9 @@ namespace Marketing.Web.OrderComponents
             orders = await service.GetAll().Where(t => t.SettleType == null).ToListAsync();
             await base.OnInitializedAsync();
         }
+
+        [Parameter]
+        public EventCallback<int> OnChange { get; set; }
 
         [Parameter]
         public BasePage Page { get; set; }

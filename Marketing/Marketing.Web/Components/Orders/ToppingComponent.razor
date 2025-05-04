@@ -115,11 +115,11 @@
     }
 
     [Parameter]
-    public EventCallback<float> OnChange { get; set; }
+    public EventCallback<decimal> OnChange { get; set; }
 
     async Task CallBackForChange()
     {
-        var sum = (float)Service.DetailDataView.GetBatchEntities().Sum(t => t.Price * t.Quantity);
+        var sum = Service.DetailDataView.GetBatchEntities().Sum(t => t.Price * t.Quantity);
         await OnChange.InvokeAsync(sum);
     }
 }

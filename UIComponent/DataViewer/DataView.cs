@@ -464,15 +464,16 @@ namespace Caspian.UI
                 ///Entity add already and only should updated on memory
                 old.CopyEntity(entity);
             }
-            ///Entity exist in database and should be updated on database
-            if (id > 0)
+            else if (id > 0)
             {
+                ///Entity exist in database and should be updated on database
                 DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>()
                 {
                     ChangeStatus = ChangeStatus.Updated,
                     Entity = entity
                 });
             }
+
             await UpdateEntityForForeignKey(entity);
             for (var index = 0; index < source.Count; index++)
             {

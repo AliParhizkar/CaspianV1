@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using System.Collections.Generic;
 
 namespace Caspian.Common.Service
 {
