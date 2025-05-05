@@ -141,6 +141,13 @@ namespace Caspian.UI
                 await inertButton.Value.FocusAsync();
         }
 
+        public async Task ResetGrid()
+        {
+            SelectedRowIndex = 0;
+            shouldFetchData = true;
+            await ChangePageNumber(1);
+        }
+
         /// <summary>
         /// Return entities in batch state
         /// </summary>

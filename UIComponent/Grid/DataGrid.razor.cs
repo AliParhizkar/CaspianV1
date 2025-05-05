@@ -377,13 +377,6 @@ namespace Caspian.UI
         [Parameter]
         public RenderFragment SearchTemplate { get; set; }
 
-        public async Task ResetGrid()
-        {
-            SelectedRowIndex = 0;
-            shouldFetchData = true;
-            await ChangePageNumber(1);
-        }
-
         public void SelectRow(int rowIndex)
         {
             SelectedRowIndex = rowIndex;

@@ -1,7 +1,7 @@
 ﻿@namespace Caspian.UI
 @using System.Collections
 @typeparam TEntity where TEntity : class
-@typeparam TDetails 
+@typeparam TDetails where TDetails : class
 @inject IJSRuntime jSRuntime
 @inject IServiceScopeFactory ScopeFactory
 @if (ColSpan.HasValue)

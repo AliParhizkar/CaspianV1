@@ -18,8 +18,9 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             SearchData = Activator.CreateInstance<TEntity>();
-            Service?.OnlyForSearch();
-            Service?.HideFooter();
+            var service = Service as IInternalSearchService<TEntity>;
+            service?.OnlyForSearch();
+            service?.HideFooter();
             base.OnInitialized();
         }
 

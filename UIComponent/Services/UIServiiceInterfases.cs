@@ -33,6 +33,9 @@ namespace Caspian.UI
         void SetEnumFields(IDictionary<string, ICollection> enumFields);
         IDictionary<string, ICollection> GetEnumFields();
         IDictionary<string, SearchType> GetSearchData();
+        void OnlyForSearch();
+        void HideFooter();
+
     }
 
     public interface ISearchService<TEntity> where TEntity : class
@@ -42,10 +45,20 @@ namespace Caspian.UI
         TEntity Search { get; }
 
         IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TEntity, TValue>> expression) where TValue : Enum;
+    }
 
-        void OnlyForSearch();
+    internal interface IInternalUIService<TEntity> : IUIService<TEntity>  where TEntity : class
+    {
+        void FormInitialize(CaspianForm<TEntity> form);
+        
+        Task UpdateChildOfModelAsync(Type childType);
+        
+        void TabPanelInitialize(IEntityTabPanel tabPanel);
+     
+        Task FetchAsync();
+        void ClearForm();
+        void StateHasChanged();
 
-        void HideFooter();
     }
 
     public interface IUIService<TEntity> : IUIService, ISearchService<TEntity> where TEntity : class
@@ -54,24 +67,13 @@ namespace Caspian.UI
 
         CaspianForm<TEntity> Form { get;}
 
-        void FormInitialize(CaspianForm<TEntity> form);
-
-        Task FetchAsync();
-
-        Task UpdateChildOfModelAsync(Type childType);
-
         TEntity UpsertData { get; }
-
-        void ClearForm();
 
         Type DetailType { get; }
 
-        IEntityTabPanel EntityTabPanel { get; set; }
+        IEntityTabPanel EntityTabPanel { get; }
 
         Func<IServiceProvider, TEntity, Task<bool>> OnUpsert { get; set; }
 
-        void TabPanelInitialize();
-
-        void StateHasChanged();
     }
 }

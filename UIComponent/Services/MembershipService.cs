@@ -1,9 +1,9 @@
 ﻿using Caspian.Common;
-using Caspian.Common.Extension;
-using Caspian.Common.Service;
-using Microsoft.JSInterop;
 using System.Collections;
+using Microsoft.JSInterop;
+using Caspian.Common.Service;
 using System.Linq.Expressions;
+using Caspian.Common.Extension;
 
 namespace Caspian.UI
 {
@@ -32,21 +32,26 @@ namespace Caspian.UI
             return new EnumSearch<TValue>(expression.Body, enumValues);
         }
 
-        public void SetEnumFields(IDictionary<string, ICollection> enumFields)
+        void IInternalSearchService<TOther>.HideFooter() 
+        {
+            hideFooter = true;
+        }
+
+        void IInternalSearchService<TOther>.SetEnumFields(IDictionary<string, ICollection> enumFields)
         {
             this.enumValues = enumFields;
         }
 
-        public IDictionary<string, ICollection> GetEnumFields()
+        IDictionary<string, ICollection> IInternalSearchService<TOther>.GetEnumFields()
         {
             return enumValues;
         }
 
-        public DataView<TOther> DataView { get; set; }
+        public DataView<TOther> DataView { get; }
 
         public TOther Search { get; set; }
 
-        public void OnlyForSearch()
+        void IInternalSearchService<TOther>.OnlyForSearch()
         {
             onlyForSearch = true;
         }
@@ -119,12 +124,12 @@ namespace Caspian.UI
                 await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "لطفا یک ردیف را انتخاب نمائید.");
         }
 
-        public void SetSearchType(IDictionary<string, SearchType> types)
+        void IInternalSearchService<TOther>.SetSearchType(IDictionary<string, SearchType> types)
         {
             searchData = new Dictionary<string, SearchType>();
         }
 
-        public IDictionary<string, SearchType> GetSearchData()
+        IDictionary<string, SearchType> IInternalSearchService<TOther>.GetSearchData()
         {
             return searchData;
         }

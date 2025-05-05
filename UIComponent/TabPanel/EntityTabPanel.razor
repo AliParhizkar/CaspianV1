@@ -23,14 +23,13 @@
     {
         var type = childTypes[tabIndex - 1];
         if (type != null)
-            await Service.UpdateChildOfModelAsync(type);
+            await (Service as IInternalUIService<TEntity>).UpdateChildOfModelAsync(type);
     }
 
     protected override void OnInitialized()
     {
         childTypes = new List<Type>();
-        Service.EntityTabPanel = this;
-        Service.TabPanelInitialize();
+        (Service as IInternalUIService<TEntity>).TabPanelInitialize(this);
         base.OnInitialized();
     }
 

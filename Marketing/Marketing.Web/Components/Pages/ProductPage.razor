@@ -1,7 +1,7 @@
 ﻿@page "/Marketing/Product"
 @page  "/Marketing/Product/{CategoryId:int}"
 
-@inject IUIService<Product> Service
+@inject BatchService<Product, ProductTopping> Service
 @inherits BasePage
 @{
         base.BuildRenderTree(__builder);
@@ -48,38 +48,47 @@
             <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window Style="width:450px" Service="Service" Title="محصول" OnOpen="OnOpen">
+    <Window Style="width:600px" Service="Service" Title="محصول" OnOpen="OnOpen">
         <CaspianForm TEntity="Product" Service="Service" OnSubmit="FormSubmitted">
-            @if (CategoryId == 0)
-            {
-                switch (ConfigService.Config.CategoryType)
-                {
-                    case CategoryType.Single:
-                        <ComboBox @bind-Value="context.CategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == null"
-                                    ColSpan="9" />
-                        break;
-                    case CategoryType.Couple:
-                        <ComboBox @bind-Value="parentCategoryId" TValue="int" Validate='() => parentCategoryId == 0 ? "لطفا گروه اصلی را مشخص نمایید" : null' TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == null"
-                                    ColSpan="9" Title="گروه اصلی" OnChange="() => cmbCategory.EnableLoading()" />
-                        <ComboBox @ref="cmbCategory" Validate="ValidateSubCategory" TValue="int" @bind-Value="categoryId" TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == parentCategoryId"
-                                    ColSpan="9" Title="گروه فرعی" />
-                        break;
-                    case CategoryType.Multiple:
-                        <LookupTree @bind-Value="context.CategoryId" ColSpan="9">
-                            <ChildContent Context="search">
-                                <TreeView TEntity="ProductCategory" TextFunc="t => t.Name"
-                                            ParentNodeFilterFunc="t => t.Category == null"
-                                            FilterFunc="t => (!search.HasValue() || t.Name.StartsWith(search))" />
-                            </ChildContent>
-                        </LookupTree>
-                        break;
-                }
-            }
-            <StringTextBox @bind-Value="context.Title" ColSpan="9" />
-            <NumericTextBox @bind-Value="context.Price" ColSpan="9" DigitGrouping />
-            <NumericTextBox @bind-Value="context.Discount" ColSpan="9" DigitGrouping />
-            <StringTextBox @bind-Value="context.Code" ColSpan="9" Style="direction:ltr" />
-            <FormCommandButton ColSpan="9" />
+            <div class="row">
+                <div class="col-md-8 row">
+                    @if (CategoryId == 0)
+                    {
+                        switch (ConfigService.Config.CategoryType)
+                        {
+                            case CategoryType.Single:
+                                <ComboBox @bind-Value="context.CategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == null"
+                                          ColSpan="9" />
+                                break;
+                            case CategoryType.Couple:
+                                <ComboBox @bind-Value="parentCategoryId" TValue="int" Validate='() => parentCategoryId == 0 ? "لطفا گروه اصلی را مشخص نمایید" : null' TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == null"
+                                          ColSpan="9" Title="گروه اصلی" OnChange="() => cmbCategory.EnableLoading()" />
+                                <ComboBox @ref="cmbCategory" Validate="ValidateSubCategory" TValue="int" @bind-Value="categoryId" TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == parentCategoryId"
+                                          ColSpan="9" Title="گروه فرعی" />
+                                break;
+                            case CategoryType.Multiple:
+                                <LookupTree @bind-Value="context.CategoryId" ColSpan="9">
+                                    <ChildContent Context="search">
+                                        <TreeView TEntity="ProductCategory" TextFunc="t => t.Name"
+                                                  ParentNodeFilterFunc="t => t.Category == null"
+                                                  FilterFunc="t => (!search.HasValue() || t.Name.StartsWith(search))" />
+                                    </ChildContent>
+                                </LookupTree>
+                                break;
+                        }
+                    }
+                    <StringTextBox @bind-Value="context.Title" ColSpan="9" />
+                    <NumericTextBox @bind-Value="context.Price" ColSpan="9" DigitGrouping />
+                    <NumericTextBox @bind-Value="context.Discount" ColSpan="9" DigitGrouping />
+                    <StringTextBox @bind-Value="context.Code" ColSpan="9" Style="direction:ltr" />
+                    <FormCommandButton ColSpan="9"  />
+                </div>
+                <div class="col-md-4 pe-3">
+                    <label style="justify-content:space-evenly">تاپینکهای محصول</label>
+                    <CheckedListbox TEntity="Topping" TDetails="ProductTopping" Service="Service" Style="height:250px;flex-wrap:nowrap"
+                                    TextExpression="t => t.Name" />
+                </div>
+            </div>
         </CaspianForm>
     </Window>
 </div>

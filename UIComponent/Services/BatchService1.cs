@@ -20,10 +20,10 @@ namespace Caspian.UI
             caspianDataService = provider.GetService<CaspianDataService>();
         }
 
-        public Expression GetDetailsFilterExpression()
+        Expression IDetailBatchService<TDetail1>.GetDetailsFilterExpression()
         {
-            var param = Expression.Parameter(typeof(TDetail), "t");
-            var masterInfo = typeof(TDetail1).GetForeignKey(typeof(TMaster));
+            var param = Expression.Parameter(typeof(TDetail1), "t");
+            var masterInfo = param.Type.GetForeignKey(typeof(TMaster));
             Expression expr = Expression.Property(param, masterInfo);
             var masterId = Convert.ChangeType(MasterId, masterInfo.PropertyType);
             return Expression.Equal(expr, Expression.Constant(masterId));
@@ -40,7 +40,7 @@ namespace Caspian.UI
 
         public CaspianForm<TDetail1> DetailForm { get; set; }
 
-        public void DetailFormInitialize()
+        void IDetailBatchService<TDetail1>.DetailFormInitialize()
         {
 
         }
@@ -54,7 +54,7 @@ namespace Caspian.UI
             else
             {
                 DetailDataView.Batch = true;
-                DetailDataView.InternalConditionExpr = GetDetailsFilterExpression();
+                DetailDataView.InternalConditionExpr = (this as IDetailBatchService<TDetail1>).GetDetailsFilterExpression();
             }
         }
 
@@ -104,7 +104,7 @@ namespace Caspian.UI
             }
             if ((this as IInternalUIService).Window != null)
                 await (this as IInternalUIService).Window?.Close();
-            StateHasChanged();
+            (this as IInternalUIService<TMaster>).StateHasChanged();
         }
     }
 }

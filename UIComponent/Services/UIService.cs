@@ -1,4 +1,5 @@
-﻿using Caspian.Common;
+﻿using System.Data;
+using Caspian.Common;
 using System.Reflection;
 using System.Collections;
 using Microsoft.JSInterop;
@@ -10,11 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
 
 namespace Caspian.UI
 {
-    public class UIService<TEntity>: IInternalUIService, IUIService<TEntity>, IInternalSearchService<TEntity> where TEntity : class
+    public class UIService<TEntity>: IInternalUIService, IInternalUIService<TEntity>, IInternalSearchService<TEntity> where TEntity : class
     {
         protected IJSRuntime jSRuntime;
         BaseComponentService baseComponentService;
@@ -26,7 +26,7 @@ namespace Caspian.UI
 
         public IServiceProvider ServiceProvider { get; private set; }
 
-        public IDictionary<string, SearchType> GetSearchData()
+        IDictionary<string, SearchType> IInternalSearchService<TEntity>.GetSearchData()
         {
             return searchData;
         }
@@ -63,12 +63,12 @@ namespace Caspian.UI
                 await Form.FocusAsync();
         }
 
-        public void HideFooter()
+        void IInternalSearchService<TEntity>.HideFooter()
         {
             hideFooter = true;
         }
 
-        public void OnlyForSearch()
+        void IInternalSearchService<TEntity>.OnlyForSearch()
         {
             HideInsertIcon = true;
         }
@@ -87,7 +87,7 @@ namespace Caspian.UI
             OnUpsert = default;
         }
 
-        public void SetSearchType(IDictionary<string, SearchType> types)
+        void IInternalSearchService<TEntity>.SetSearchType(IDictionary<string, SearchType> types)
         {
             searchData = types;
         }
@@ -102,7 +102,7 @@ namespace Caspian.UI
 
         internal Type MasterType { get; set; }
 
-        public async Task UpdateChildOfModelAsync(Type childType)
+        async Task IInternalUIService<TEntity>.UpdateChildOfModelAsync(Type childType)
         {
             DetailType = childType;
             if (childType != typeof(TEntity) && UpsertData != null)
@@ -124,7 +124,7 @@ namespace Caspian.UI
             }
         }
 
-        public void SetEnumFields(IDictionary<string, ICollection> enumFields)
+        void IInternalSearchService<TEntity>.SetEnumFields(IDictionary<string, ICollection> enumFields)
         {
             this.enumValues = enumFields;
         }
@@ -159,7 +159,7 @@ namespace Caspian.UI
 
         public TEntity Search { get; private set; }
 
-        public async Task FetchAsync()
+        async Task IInternalUIService<TEntity>.FetchAsync()
         {
             if (MasterId > 0 && MasterType == null)
             {
@@ -170,8 +170,9 @@ namespace Caspian.UI
             }
         }
 
-        public void TabPanelInitialize()
+        void IInternalUIService<TEntity>.TabPanelInitialize(IEntityTabPanel tabPanel)
         {
+            EntityTabPanel = tabPanel;
             Is1To1RelationshipService = true;
         }
 
@@ -183,7 +184,7 @@ namespace Caspian.UI
 
         protected Action<TEntity> OnAfterDelete { get; set; }
 
-        public void FormInitialize(CaspianForm<TEntity> form)
+        void IInternalUIService<TEntity>.FormInitialize(CaspianForm<TEntity> form)
         {
             Form = form;
             UserId = ServiceProvider.GetService<CaspianDataService>().UserId;
@@ -305,7 +306,7 @@ namespace Caspian.UI
             return scope;
         }
 
-        public void DataViewInitialize(DataView<TEntity> dataView)
+        void IInternalSearchService<TEntity>.DataViewInitialize(DataView<TEntity> dataView)
         {
             DataView = dataView;
             if (DataView == null)
@@ -425,14 +426,14 @@ namespace Caspian.UI
             });
         }
 
-        public void ClearForm()
+        void IInternalUIService<TEntity>.ClearForm()
         {
             Form = null;
             if (!Is1To1RelationshipService)
                 UpsertData = null;
         }
 
-        public IDictionary<string, ICollection> GetEnumFields()
+        IDictionary<string, ICollection> IInternalSearchService<TEntity>.GetEnumFields()
         {
             return enumValues;
         }

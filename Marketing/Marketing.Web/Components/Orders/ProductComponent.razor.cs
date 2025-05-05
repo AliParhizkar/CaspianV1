@@ -19,16 +19,11 @@ namespace Marketing.Web.OrderComponents
         IDictionary<int, double> sumToppings;
         int? selectedDetailId;
 
-        string GetSumTopping(int orderDetailId)
+        async Task ToppingChanged(decimal sum)
         {
-            if (sumToppings == null || !sumToppings.ContainsKey(orderDetailId))
-                return "---";
-            return sumToppings[orderDetailId].DigitGrouping();
-        }
-
-        void ToppingChanged(decimal sum)
-        {
-
+            var old = OrderService.DetailDataView.GetBatchEntities().Single(t => t.Id == selectedDetailId.Value);
+            old.ToppingAmount = sum;
+            await OrderService.DetailDataView.UpdateAsync(old);
         }
 
         protected override void OnInitialized()

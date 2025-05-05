@@ -19,7 +19,7 @@
 <Window Style="width:700px" Title="مشتری و گروههای مشتری" Service="Service" OnOpen="SetCustomerNumber">
     <CaspianForm Service="Service">
         <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerGroupsService)" />
-        <div class="col-md-8 row ">
+        <div class="col-md-8 row">
             <StringTextBox @bind-Value="context.Name" ColSpan="8" />
             <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="8" />
             <NumericTextBox @bind-Value="context.CustomerNumber" Disabled ColSpan="6" TotalSpan="10" />

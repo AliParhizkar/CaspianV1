@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public partial class CheckedDropdownList<TEntity, TDetails> where TEntity : class
+    public partial class CheckedDropdownList<TEntity, TDetails> where TEntity : class where TDetails : class
     {
         CheckedListbox<TEntity, TDetails> checkboxList;
         WindowStatus status;

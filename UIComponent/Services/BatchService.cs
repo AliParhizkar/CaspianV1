@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Caspian.Common;
 using System.Reflection;
+using System.Collections;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
@@ -8,11 +9,11 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace Caspian.UI
 {
-    public class BatchService<TMaster, TDetail>: IInternalUIService, IUIService<TMaster>, IInternalSearchService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
+    public class BatchService<TMaster, TDetail>: IInternalUIService, IInternalUIService<TMaster>, IInternalSearchService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
     {
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
@@ -28,7 +29,7 @@ namespace Caspian.UI
             
         }
 
-        public Expression GetDetailsFilterExpression()
+        Expression IDetailBatchService<TDetail>.GetDetailsFilterExpression()
         {
             var param = Expression.Parameter(typeof(TDetail), "t");
             var masterInfo = typeof(TDetail).GetForeignKey(typeof(TMaster));
@@ -43,8 +44,9 @@ namespace Caspian.UI
             detailInfo.SetValue(UpsertData, details);
         }
 
-        public async Task UpdateChildOfModelAsync(Type type)
+        async Task IInternalUIService<TMaster>.UpdateChildOfModelAsync(Type type)
         {
+            await Task.Delay(1);
             throw new NotImplementedException();
         }
 
@@ -60,27 +62,27 @@ namespace Caspian.UI
 
         public IServiceProvider Provider { get { return serviceProvider; } }
 
-        public void OnlyForSearch()
+        void IInternalSearchService<TMaster>.OnlyForSearch()
         {
             onlyForSearch = true;
         }
 
-        public void HideFooter()
+        void IInternalSearchService<TMaster>.HideFooter()
         {
             hideFooter = true;
         }
 
-        public IDictionary<string, SearchType> GetSearchData()
+        IDictionary<string, SearchType> IInternalSearchService<TMaster>.GetSearchData()
         {
             return searchData;
         }
 
-        public IDictionary<string, ICollection> GetEnumFields()
+        IDictionary<string, ICollection> IInternalSearchService<TMaster>.GetEnumFields()
         {
             return enumValues;
         }
 
-        public void SetEnumFields(IDictionary<string, ICollection> enumFields)
+        void IInternalSearchService<TMaster>.SetEnumFields(IDictionary<string, ICollection> enumFields)
         {
             this.enumValues = enumFields;
         }
@@ -104,7 +106,7 @@ namespace Caspian.UI
             Search = Activator.CreateInstance<TMaster>();
         }
 
-        public void SetSearchType(IDictionary<string, SearchType> types)
+        void IInternalSearchService<TMaster>.SetSearchType(IDictionary<string, SearchType> types)
         {
             searchData = types;
         }
@@ -121,17 +123,17 @@ namespace Caspian.UI
             return serviceProvider.CreateScope();
         }
 
-        public IEntityTabPanel EntityTabPanel { get; set; }
+        public IEntityTabPanel EntityTabPanel { get; private set; }
 
-        public void TabPanelInitialize()
+        void IInternalUIService<TMaster>.TabPanelInitialize(IEntityTabPanel tabPanel)
         {
-            throw new NotImplementedException();
+            EntityTabPanel = tabPanel;
         }
 
-        public void ChildrenTabPanelItemInitialize(Type masterType)
-        {
-            throw new NotImplementedException();
-        }
+        //public void ChildrenTabPanelItemInitialize(Type masterType)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public Type DetailType { get; private set; }
 
@@ -160,7 +162,7 @@ namespace Caspian.UI
                 UpsertData = await service.SingleAsync(id.Value);
             }
             await (this as IInternalUIService).Window.Open();
-            StateHasChanged();
+            (this as IInternalUIService<TMaster>).StateHasChanged();
             await Task.Delay(100);
             if (Form != null)
                 await Form.FocusAsync();
@@ -191,7 +193,7 @@ namespace Caspian.UI
             batchServiceData.DetailPropertiesInfo.Clear();
         }
 
-        public void DetailFormInitialize()
+        void IDetailBatchService<TDetail>.DetailFormInitialize()
         {
             if (DetailForm != null)
             {
@@ -204,14 +206,14 @@ namespace Caspian.UI
                         await DetailDataView.InsertAsync(detail);   
                     else
                         await DetailDataView.UpdateAsync(detail);
-                    StateHasChanged();
+                    (this as IInternalUIService<TMaster>).StateHasChanged();
                 });
             }
 ;        }
 
         public IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
 
-        public async Task FetchAsync()
+        async Task IInternalUIService<TMaster>.FetchAsync()
         {
             batchServiceData.MasterId = MasterId;
             if (MasterId > 0)
@@ -276,10 +278,10 @@ namespace Caspian.UI
                 DetailDataView.CancelInternalUpdate();
             if ((this as IInternalUIService).Window != null)
                 await (this as IInternalUIService).Window?.Close();
-            StateHasChanged();
+            (this as IInternalUIService<TMaster>).StateHasChanged();
         }
 
-        public void FormInitialize(CaspianForm<TMaster> form)
+        void IInternalUIService<TMaster>.FormInitialize(CaspianForm<TMaster> form)
         {
             Form = form;
             batchServiceData.MasterType = typeof(TMaster);
@@ -297,14 +299,14 @@ namespace Caspian.UI
                 if ((this as IInternalUIService).Window != null)
                 {
                     await (this as IInternalUIService).Window?.Close();
-                    StateHasChanged();
+                    (this as IInternalUIService<TMaster>).StateHasChanged();
                 }
             });
 
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TMaster>(this, UpdateDatabaseAsync);
         }
 
-        public void StateHasChanged()
+        void IInternalUIService<TMaster>.StateHasChanged()
         {
             baseComponentService = serviceProvider.GetService<BaseComponentService>();
             if (baseComponentService.Target == null)
@@ -312,7 +314,7 @@ namespace Caspian.UI
             (baseComponentService.Target as BasePage).ChangeState();
         }
 
-        public void DataViewInitialize(DataView<TMaster> dataView)
+        void IInternalSearchService<TMaster>.DataViewInitialize(DataView<TMaster> dataView)
         {
             DataView = dataView;
             if (dataView == null)
@@ -338,7 +340,7 @@ namespace Caspian.UI
                     }
                     MasterId = value;
                     await (this as IInternalUIService).Window.Open();
-                    StateHasChanged();
+                    (this as IInternalUIService<TMaster>).StateHasChanged();
                     await Task.Delay(100);
                     if (Form != null)
                         await Form.FocusAsync();
@@ -396,14 +398,14 @@ namespace Caspian.UI
                     info.SetValue(detail, value);
                 }
                 await TypeWindow.OpenAsync(detail, DetailDataView.GetSource().ToList());
-                StateHasChanged();
+                (this as IInternalUIService<TMaster>).StateHasChanged();
                 await Task.Delay(100);
                 if (DetailForm != null)
                     await DetailForm.FocusAsync();
             });
         }
 
-        public virtual void DetailDataViewInitialize()
+        virtual void DetailDataViewInitialize()
         {
             if (DetailDataView.Inline)
                 DetailDataView.Batch = true;
@@ -430,7 +432,7 @@ namespace Caspian.UI
             return await baseComponentService.MessageBox.Confirm(message);
         }
 
-        public void ClearForm()
+        void IInternalUIService<TMaster>.ClearForm()
         {
             //Form = null;
             //UpsertData = null;

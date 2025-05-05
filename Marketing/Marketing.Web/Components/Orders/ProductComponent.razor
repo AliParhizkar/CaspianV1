@@ -14,10 +14,10 @@
                         </div>
                     </Template>
                 </GridColumn>
-                <GridColumn Title="تاپینگ">
+                <GridColumn Field="t => t.ToppingAmount" Title="تاپینگ">
                     <Template>
                         @{var className = context.Data?.Id != selectedDetailId ? "c-btn c-primary" : "c-btn c-secondary"; }
-                        <button @onclick="() => OpenTopping(context.Data.Id, context.Data.ProductId)" class="@className">@(GetSumTopping(context.Data.Id))</button>
+                        <button @onclick="() => OpenTopping(context.Data.Id, context.Data.ProductId)" class="@className">@(context.Data.ToppingAmount.DigitGrouping())</button>
                     </Template>
                 </GridColumn>
                 <GridColumn Field="t => ((t.Price - t.Discount) * t.Quantity).DigitGrouping()" Title="قیمت کل" />
@@ -70,7 +70,9 @@
     </PopupWindow>
 </div>
 
+
+
 @code 
 {
-
+    
 }

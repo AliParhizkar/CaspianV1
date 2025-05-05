@@ -105,7 +105,7 @@
     {
         OrderService.MasterId = orderId;
         OrderService.DetailDataView.EnableLoading();
-        await OrderService.FetchAsync();
+        OrderService.DetailDataViewInitialize
     }
 
     protected override async Task OnInitializedAsync()

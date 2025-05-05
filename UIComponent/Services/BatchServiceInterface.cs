@@ -1,17 +1,16 @@
 ﻿using Caspian.Common;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Linq.Expressions;
 using System.Reflection;
+using System.Linq.Expressions;
 
 namespace Caspian.UI
 {
-    public interface ISimpleBatchService<TDetail>
+    public interface ISimpleBatchService<TDetail> where TDetail : class
     {
         int MasterId { get; }
 
         IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
 
-        void DetailDataViewInitialize();
+        void DetailDataViewInitialize(DataView<TDetail> dataView);
     }
 
     public interface IDetailBatchService<TDetail> : ISimpleBatchService<TDetail> where TDetail : class

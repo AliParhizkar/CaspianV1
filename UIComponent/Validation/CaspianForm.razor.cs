@@ -114,7 +114,7 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             if (Service != null)
-                Service.FormInitialize(this);
+                (Service as IInternalUIService<TEntity>).FormInitialize(this);
             controls = new List<IControl>();
             if (FormAppState == null)
                 FormAppState = new FormAppState();
@@ -127,7 +127,7 @@ namespace Caspian.UI
         {
             if (Service != null)
             {
-                await Service.FetchAsync();
+                await (Service as IInternalUIService<TEntity>).FetchAsync();
                 EditContext = new EditContext(Service.UpsertData);
             }
             await base.OnInitializedAsync();
@@ -258,7 +258,7 @@ namespace Caspian.UI
 
         public void Dispose()
         {
-            Service?.ClearForm();
+            (Service as IInternalUIService<TEntity>)?.ClearForm();
         }
 
     }
