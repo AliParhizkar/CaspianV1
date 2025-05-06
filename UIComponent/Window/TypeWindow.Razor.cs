@@ -19,7 +19,7 @@ namespace Caspian.UI
         public EventCallback<CancelableEvent<TEntity>> OnSubmit {  get; set; }
 
         [Parameter]
-        public IDetailBatchService<TEntity> Service { get; set; }
+        public IBatchService<TEntity> Service { get; set; }
 
         [Parameter]
         public int ColumnsCount { get; set; }
@@ -50,7 +50,7 @@ namespace Caspian.UI
         public void Close()
         {
             status = WindowStatus.Close;
-            Service.DetailForm = null;
+            (Service as IInternalBatchService<TEntity>).DetailFormInitialize(null);
         }
 
         protected override void OnParametersSet()
@@ -66,20 +66,14 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             if (Service != null)
-            {
-                Service.TypeWindow = this;
-                Service.DetailTypeWindowInitialize();
-            }
+                (Service as IInternalBatchService<TEntity>).DetailTypeWindowInitialize(this);
             base.OnInitialized();
         }
 
         protected override void OnAfterRender(bool firstRender)
         {
             if (form != Service.DetailForm)
-            {
-                Service.DetailForm = form;
-                Service.DetailFormInitialize();
-            }
+                (Service as IInternalBatchService<TEntity>).DetailFormInitialize(form);
             base.OnAfterRender(firstRender);
         }
     }

@@ -1,0 +1,57 @@
+﻿@namespace Marketing.Web.OrderComponents
+<div class="m-description">
+    @if (descriptions != null)
+    {
+        foreach (var description in descriptions.Where(t => !descriptionSearch.HasValue() || t.Contains(descriptionSearch)))
+        {
+            <span @onclick="async () => await AddText(description + ' ')">@description</span>
+        }
+    }
+</div>
+<div class="p-1">
+    <StringTextBox @ref="txtDescript" BindingType="BindingType.OnInput" @onEkeyup="SearchDescription" @bind-Value="OrderDetail.Description" MultiLine Rows="4" />
+</div>
+
+@code
+{
+    IList<string> descriptions;
+    StringTextBox txtDescript;
+    int selectionStart;
+    string descriptionSearch;
+
+    async Task AddText(string text)
+    {
+        selectionStart = (await txtDescript.GetSelectionAsync()).Start;
+        OrderDetail.Description = OrderDetail.Description ?? "";
+        var str = OrderDetail.Description.Substring(0, selectionStart);
+        var index = str.LastIndexOf(' ') + 1;
+        str = str.Substring(0, index) + text + OrderDetail.Description.Substring(selectionStart);
+        OrderDetail.Description = str;
+        await txtDescript.SetSelection(selectionStart + text.Length);
+        descriptionSearch = "";
+    }
+
+    void SearchDescription(EKeyboardEventArgs e)
+    {
+        if (OrderDetail.Description != null)
+        {
+            selectionStart = e.SelectionStart;
+            var str = OrderDetail.Description.Substring(0, selectionStart);
+            var index = str.LastIndexOf(' ') + 1;
+            descriptionSearch = str.Substring(index, selectionStart - index);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = Page.CreateScope().GetService<ProductDescriptionService>();
+        descriptions = await service.GetAll().Where(t => t.ProductId == OrderDetail.ProductId).Select(t => t.Description).ToListAsync();
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+
+    [Parameter]
+    public OrderDetail OrderDetail { get; set; }
+}

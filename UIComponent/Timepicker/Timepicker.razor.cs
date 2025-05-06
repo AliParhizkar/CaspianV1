@@ -1,0 +1,93 @@
+﻿using Microsoft.JSInterop;
+using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Components;
+using Caspian.Common.Extension;
+
+namespace Caspian.UI
+{
+    public partial class Timepicker<TValue> : CBaseInput<TValue>
+    {
+        WindowStatus status;
+
+        async Task Change(TimeSpan? time)
+        {
+            if (time.HasValue && !disabled)
+            {
+                var value = (TValue)Convert.ChangeType(time, typeof(TimeSpan));
+                Value = value;
+                if (ValueChanged.HasDelegate)
+                    await ValueChanged.InvokeAsync(value);
+            }
+            status = WindowStatus.Close;
+        }
+
+        void OpenTimePanel()
+        {
+            if (!disabled)
+                status = WindowStatus.Open;
+        }
+
+        [Parameter]
+        public bool AutoSelect { get; set; }
+
+        [Parameter]
+        public bool DefaultMode { get; set; }
+
+        [Parameter]
+        public TimeSpan? FromTime { get; set; }
+
+        [Parameter]
+        public TimeSpan? ToTime { get; set; }
+
+        async void ChangeValue(ChangeEventArgs arg)
+        {
+            TValue value = default;
+            var isValid = false;
+            var str = Convert.ToString(arg.Value);
+            if (!disabled && str.IndexOf('_') == -1)
+            {
+                if (Regex.IsMatch(str, "^[0,1][0-9]|2[0-3]:[0-5][0-9]$"))
+                {
+                    var time = TimeSpan.Parse(str);
+                    isValid = true;
+                    if (FromTime.HasValue && FromTime.Value < time)
+                        isValid = false;
+                    if (ToTime.HasValue && ToTime.Value > time)
+                        isValid = false;
+                    if (isValid)
+                    {
+                        if (typeof(TValue).GetUnderlyingType() == typeof(TimeOnly))
+                            value = (TValue)Convert.ChangeType(TimeOnly.FromTimeSpan(time), typeof(TValue).GetUnderlyingType());
+                        else
+                            value = (TValue)Convert.ChangeType(time, typeof(TimeSpan));
+                    }
+                }
+            }
+            if (isValid)
+            {
+                Value = value;
+                if (ValueChanged.HasDelegate)
+                    await ValueChanged.InvokeAsync(value);
+            }
+        }
+
+        IDictionary<string, object> attrs = new Dictionary<string, object>();
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                var dotnet = DotNetObjectReference.Create(this);
+                await JSRuntime.InvokeVoidAsync("caspian.common.bindTimepicker", InputElement, dotnet);
+            }
+            await base.OnAfterRenderAsync(firstRender);
+        }
+
+        [JSInvokable]
+        public void Close()
+        {
+            status = WindowStatus.Close;
+            StateHasChanged();
+        }
+    }
+}

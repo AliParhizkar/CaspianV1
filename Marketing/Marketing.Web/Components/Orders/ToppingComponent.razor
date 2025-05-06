@@ -12,7 +12,7 @@
         }
     </div>
     <div class="m-topping-details">
-        <DataGrid PageSize="100" ContentHeight="200" DetailsService="Service" TEntity="OrderDetailTopping" HideFooter="true" ShowInsertIcon="false" Batch>
+        <DataGrid PageSize="100" ContentHeight="180" DetailsService="Service" TEntity="OrderDetailTopping" HideFooter="true" ShowInsertIcon="false" Batch>
             <Columns>
                 <GridColumn Field="t => t.Topping.Name" />
                 <GridColumn Field="t => t.Quantity" Title="تعداد" style="width:125px">
@@ -28,14 +28,6 @@
                 <GridColumn Field="t => (t.Price * t.Quantity).DigitGrouping()" Title="جمع" style="width:125px" />
             </Columns>
         </DataGrid>
-        <div class="m-tooping-footer">
-            <div class="c-controls">
-                <lable>جمع کل:</lable>
-            </div>
-            <div class="c-sum-price">
-                <span>@Service.DetailDataView?.GetBatchEntities()?.Sum(t => t.Price * t.Quantity).DigitGrouping()</span>
-            </div>
-        </div>
     </div>
 </div>
 

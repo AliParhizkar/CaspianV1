@@ -1,23 +1,84 @@
 ﻿@namespace Marketing.Web.OrderComponents
 <div class="row c-controls" style="width:300px;">
-    <NumericTextBox Value="Order.RoundAmount" ColSpan="7" TotalSpan="12" Title="مبلغ رند" />
-    <RadioList @bind-Value="Order.DiscountType" ColSpan="7" TotalSpan="12" />
-    @if (Order.DiscountType == DiscountType.Amount)
+    <NumericTextBox Value="order.RoundAmount" ColSpan="7" TotalSpan="12" Title="مبلغ رند" />
+    <RadioList @bind-Value="order.DiscountType" ColSpan="7" TotalSpan="12" />
+    @if (order.DiscountType == DiscountType.Amount)
     {
-        <NumericTextBox @bind-Value="Order.AmountDiscount" ColSpan="7" TotalSpan="12" />
+        <NumericTextBox @bind-Value="order.DiscountAmount" ColSpan="7" TotalSpan="12" />
     }
     else
     {
-        <NumericTextBox @bind-Value="Order.PercentDiscount" BindingType="BindingType.OnInput" ColSpan="3" TotalSpan="8" Total="4" />
-        <div class="col-md-4 ">@Order.AmountDiscount</div>
+        <NumericTextBox TValue="decimal" Value="order.PercentDiscount" ValueChanged="ChangePercentDiscount" BindingType="BindingType.OnInput" ColSpan="3" TotalSpan="8" Total="3" Title="درصد تخفیف" />
+        <NumericTextBox Value="order.DiscountAmount" ColSpan="4" TotalSpan="4" DigitGrouping readonly />
     }
+    <NumericTextBox Value="order.ProductAmount"  ColSpan="7" TotalSpan="12" Title="مبلغ غذا" readonly DigitGrouping  />
+    <NumericTextBox Value="order.PaymentAmount"  ColSpan="7" TotalSpan="12" Title="جمع کل" readonly DigitGrouping />
 </div>
 
 
 @code
 {
+    Order order;
     [Parameter]
-    public Order Order { get; set; }
+    public BatchService<Order, OrderDetail> OrderService { get; set; }
 
+    void ChangePercentDiscount(decimal discount)
+    {
+        order.PercentDiscount = discount;
+        order.DiscountAmount = GetDiscount();
+    }
 
+    protected override void OnParametersSet()
+    {
+        order = OrderService.UpsertData;
+        order.ProductAmount = GetSumProductAmount();
+        order.RoundAmount = GetRoundAmount();
+        order.DiscountAmount = GetDiscount();
+        order.PaymentAmount = order.ProductAmount - order.DiscountAmount + order.RoundAmount.Value;
+        base.OnParametersSet();
+    }
+
+    [Parameter]
+    public IList<Product> Products { get; set; }
+
+    decimal GetSumProductAmount()
+    {
+        return OrderService.DetailDataView.GetBatchEntities().Sum(t => t.ToppingAmount + t.Quantity * (t.Price - t.Discount));
+    }
+
+    decimal GetDiscount()
+    {
+        if (order.DiscountType == DiscountType.Amount)
+            return order.DiscountAmount;
+        if (order.PercentDiscount > 0)
+        {
+            var topingsAmount = OrderService.DetailDataView.GetBatchEntities().Sum(t => t.ToppingAmount);
+            var sumProductsAmount = OrderService.DetailDataView.GetBatchEntities().Where(t => Products.Single(u => u.Id ==
+                t.ProductId).Discountable).Sum(t => (t.Price - t.Discount)* t.Quantity);
+            return order.PercentDiscount * (topingsAmount + sumProductsAmount) / 100;
+        }
+        return 0;
+    }
+
+    decimal GetRoundAmount()
+    {
+        if (ConfigService.Config.RoundAmount == null)
+            return 0;
+        var amount = GetSumProductAmount() - GetDiscount();
+        var roundValue = amount % ConfigService.Config.RoundAmount.Value;
+        if (roundValue == ConfigService.Config.RoundAmount.Value || roundValue == 0)
+            return 0;
+        switch(ConfigService.Config.RoundType)
+        {
+            case RoundType.ToDown:
+                return -roundValue;
+            case RoundType.ToUp:
+                return ConfigService.Config.RoundAmount.Value - roundValue;
+            case RoundType.Standard:
+                if (roundValue * 2 > ConfigService.Config.RoundAmount.Value)
+                    return ConfigService.Config.RoundAmount.Value - roundValue;
+                return -roundValue;
+        }
+        throw new NotImplementedException();
+    }
 }

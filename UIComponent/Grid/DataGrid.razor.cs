@@ -147,6 +147,8 @@ namespace Caspian.UI
                     else
                         items = await query.Take(PageSize).GetValuesAsync<TEntity>(exprList);
                 }
+                if (OnLoaded != null)
+                    OnLoaded();
                 await SetStateGridData();
             }
         }
@@ -542,7 +544,7 @@ namespace Caspian.UI
                 Expression expr = Expression.Property(param, pKey);
                 var masterId = Convert.ChangeType(DetailsService.MasterId, pKey.PropertyType);
                 expr = Expression.Equal(expr, Expression.Constant(masterId));
-                InternalConditionExpr = DetailsService.GetDetailsFilterExpression();
+                InternalConditionExpr = (DetailsService as IInternalBatchService<TEntity>).GetDetailsFilterExpression();
                 /// -----------------------
                 await DataBind();
                 if (DetailsService.ChangedEntities == null)
@@ -576,7 +578,7 @@ namespace Caspian.UI
                     }
                 }
                 items = source.Take(PageSize).ToList();
-                DetailsService?.SetDetails(source);
+                (DetailsService as IInternalBatchService<TEntity>)?.SetDetails(source);
             }
             await base.OnParametersSetAsync();
         }

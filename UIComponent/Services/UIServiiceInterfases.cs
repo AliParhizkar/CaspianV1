@@ -58,6 +58,7 @@ namespace Caspian.UI
         Task FetchAsync();
         void ClearForm();
         void StateHasChanged();
+        Type DetailType { get; set; }
 
     }
 
@@ -68,8 +69,6 @@ namespace Caspian.UI
         CaspianForm<TEntity> Form { get;}
 
         TEntity UpsertData { get; }
-
-        Type DetailType { get; }
 
         IEntityTabPanel EntityTabPanel { get; }
 

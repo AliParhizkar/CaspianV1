@@ -3,15 +3,22 @@
 @inherits BasePage
 @if (config != null)
 {
-    <CaspianForm Model="config" TEntity="Config" OnValidSubmit="SaveConfig" ColumnsCount="2">
-        <StringTextBox @bind-Value="config.Name" ColSpan="4" />
-        <DropdownList @bind-Value="config.CategoryType" ColSpan="4" />
-        <CheckBox @bind-Value="config.CustomerHasManyAddresses" ColSpan="2" TotalSpan="6" />
-        <CheckBox @bind-Value="config.CustomerIsMemberOfGroups" ColSpan="2" TotalSpan="6" />
-        <DropdownList @bind-Value="config.DefaultAddressManagement" Disabled="!config.CustomerHasManyAddresses" ColSpan="4" />
-
-        <FormCommandButton TotalSpan="6" HideResetButton />
-    </CaspianForm>
+    <div class="p-3">
+        <CaspianForm Model="config" TEntity="Config" OnValidSubmit="SaveConfig" ColumnsCount="2">
+            <StringTextBox @bind-Value="config.Name" ColSpan="4" />
+            <DropdownList @bind-Value="config.CategoryType" ColSpan="4" />
+            <CheckBox @bind-Value="config.CustomerHasManyAddresses" ColSpan="2" TotalSpan="6" />
+            <CheckBox @bind-Value="config.CustomerIsMemberOfGroups" ColSpan="2" TotalSpan="6" />
+            <DropdownList @bind-Value="config.DefaultAddressManagement" Disabled="!config.CustomerHasManyAddresses" ColSpan="4" />
+            <Timepicker @bind-Value="config.OpenTime" ColSpan="4"  />
+            <DropdownList @bind-Value="config.DiscountType" ColSpan="4" />
+            <NumericTextBox @bind-Value="config.PercentDiscount" Disabled="config.DiscountType == DiscountType.Amount"  ColSpan="4"/>
+            <DropdownList @bind-Value="config.RoundType" ColSpan="4" />
+            <NumericTextBox @bind-Value="config.RoundAmount" Disabled="config.RoundType == null" ColSpan="4" DigitGrouping />
+            <DropdownList @bind-Value="config.DefaultOrderType" ColSpan="4" />
+            <FormCommandButton TotalSpan="6" HideResetButton />
+        </CaspianForm>
+    </div>
 }
 
 

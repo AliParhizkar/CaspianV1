@@ -32,6 +32,9 @@ namespace Caspian.UI
         public RenderFragment Template { get; set; }
 
         [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
         public RenderFragment<object> ValueTemplate { get; set; }
 
         [Parameter]

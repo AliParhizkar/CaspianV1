@@ -1,7 +1,35 @@
-﻿::deep .m-topping-main {
-    width: 600px;
-    padding:3px;
+﻿::deep .m-description {
+    border: 1px solid #b9bece;
+    padding: 3px;
+    border-radius: 8px;
+    margin: 5px;
+    height: 100px;
+    overflow: auto;
+    width:500px;
 }
+    ::deep .m-description span {
+        padding: 0 5px;
+        margin: 5px;
+        border: 1px solid #b1b9ce;
+        border-radius: 8px;
+        display: inline-block;
+        cursor: pointer;
+        height: 32px;
+        line-height: 20px;
+        min-width:60px;
+    }
+        ::deep .m-description span:hover {
+            background-color: aliceblue;
+        }
+        ::deep .m-description span:active {
+            animation: gradient 100ms;
+        }
+
+
+        ::deep .m-topping-main {
+            width: 600px;
+            padding: 3px;
+        }
 .m-main {
     display: flex;
     flex-direction: row-reverse;
@@ -35,12 +63,12 @@
         font-size: 18px;
     }
 
-.m-price-discount {
+::deep .m-price-discount {
     text-decoration-line: line-through;
     text-decoration-color: red;
 }
 
-.m-price, .m-price-discount {
+::deep .m-price, ::deep .m-price-discount {
     font-weight: bold;
     display: block;
 }
@@ -48,11 +76,12 @@
 .m-products, ::deep .m-topping-container {
     display: flex;
     border: 1px solid #c4c4c4;
-    padding: 5px 3px;
     margin: 5px;
     border-radius: 8px;
-    height: calc(60% - 15px);    
-    min-height:60px;
+    height: calc(60% - 15px);
+    min-height: 60px;
+    flex-wrap: wrap;
+    align-content: flex-start;
 }
 ::deep .m-topping-details{
     padding:8px 5px;
@@ -60,18 +89,22 @@
 .m-product, ::deep .m-topping {
     padding: 0 5px;
     border: 1px solid #c4c4c4;
-    margin: 0 5px;
+    margin: 5px;
     height: 30px;
     line-height: 25px;
     color: dimgray;
     border-radius: 6px;
     cursor: default;
+    overflow:hidden;
+    white-space:nowrap;
 }
 
     .m-product:active, .fa-plus:active, .fa-minus:active, ::deep .m-topping:active, ::deep .fa-plus:active, ::deep .fa-minus:active {
         animation: gradient 100ms;
     }
-
+::deep .m-selected {
+    background-color: aqua !important;
+}
 .m-quantity, ::deep .m-quantity {
     display: flex;
     align-items: center;

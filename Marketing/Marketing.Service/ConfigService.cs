@@ -11,6 +11,8 @@ namespace Marketing.Service
             : base(provider)
         {
             RuleFor(t => t.Name).Required();
+            RuleFor(t => t.RoundAmount).CustomValue(t => t == 0, "مبلغ رند نمی تواند صفر باشد");
+            RuleFor(t => t.PercentDiscount).CustomValue(t => t < 0 || t > 100, "تخفیف باید بین صفر تا صد باشد");
         }
         static Config merchantConfig;
 

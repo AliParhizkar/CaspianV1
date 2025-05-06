@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using System.Reflection;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
-    public class BatchService<TMaster, TDetail, TDetail1> : BatchService<TMaster, TDetail>, IDetailBatchService<TDetail1>
+    public class BatchService<TMaster, TDetail, TDetail1> : BatchService<TMaster, TDetail>, IInternalBatchService<TDetail1>
         where TMaster : class where TDetail : class where TDetail1 : class
     {
         CaspianDataService caspianDataService;
@@ -20,7 +21,7 @@ namespace Caspian.UI
             caspianDataService = provider.GetService<CaspianDataService>();
         }
 
-        Expression IDetailBatchService<TDetail1>.GetDetailsFilterExpression()
+        Expression IInternalBatchService<TDetail1>.GetDetailsFilterExpression()
         {
             var param = Expression.Parameter(typeof(TDetail1), "t");
             var masterInfo = param.Type.GetForeignKey(typeof(TMaster));
@@ -28,33 +29,38 @@ namespace Caspian.UI
             var masterId = Convert.ChangeType(MasterId, masterInfo.PropertyType);
             return Expression.Equal(expr, Expression.Constant(masterId));
         }
-
-        public void SetDetails(IList<TDetail1> details)
+        void IInternalBatchService<TDetail1>.SetDetails(IList<TDetail1> details)
         {
-
+            
         }
 
-        public DataView<TDetail1> DetailDataView { get; set; }
+        PropertyInfo IInternalBatchService<TDetail1>.ThirdLevelProperty { get; set; }
 
-        public TypeWindow<TDetail1> TypeWindow { get; set; }
+        public DataView<TDetail1> DetailDataView { get; private set; }
 
-        public CaspianForm<TDetail1> DetailForm { get; set; }
+        public TypeWindow<TDetail1> TypeWindow { get; private set; }
 
-        void IDetailBatchService<TDetail1>.DetailFormInitialize()
+        public CaspianForm<TDetail1> DetailForm { get; private set; }
+
+        void IInternalBatchService<TDetail1>.DetailFormInitialize(CaspianForm<TDetail1> caspianForm)
         {
+            DetailForm = caspianForm;
+        }
 
+        void IInternalBatchService<TDetail1>.DetailTypeWindowInitialize(TypeWindow<TDetail1> window)
+        {
+            
         }
 
         public IList<ChangedEntity<TDetail1>> ChangedEntities { get; set; }
 
-        public override void DetailDataViewInitialize()
+        void IInternalBatchService<TDetail1>.DetailDataViewInitialize(DataView<TDetail1> dataView)
         {
-            if (DetailDataView ==  null)
-                base.DetailDataViewInitialize();
-            else
+            if (dataView != null)
             {
+                DetailDataView = dataView;
                 DetailDataView.Batch = true;
-                DetailDataView.InternalConditionExpr = (this as IDetailBatchService<TDetail1>).GetDetailsFilterExpression();
+                DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail1>).GetDetailsFilterExpression();
             }
         }
 

@@ -11,7 +11,7 @@
         {
             @EditTemplate
         }
-        else if (Template == null && ValueTemplate == null)
+        else if (Template == null && ValueTemplate == null && ChildContent == null)
         {
             if (IsCheckBox)
             {
@@ -25,9 +25,13 @@
         }
         else
         {
-            if (Template != null)
+            if (Template != null )
             {
                 @Template
+            }
+            else if (ChildContent != null)
+            {
+                @ChildContent
             }
             else
             {

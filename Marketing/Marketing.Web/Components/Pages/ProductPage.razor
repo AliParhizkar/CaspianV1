@@ -58,16 +58,16 @@
                         {
                             case CategoryType.Single:
                                 <ComboBox @bind-Value="context.CategoryId" TValue="int" TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == null"
-                                          ColSpan="9" />
+                                          ColSpan="8" />
                                 break;
                             case CategoryType.Couple:
                                 <ComboBox @bind-Value="parentCategoryId" TValue="int" Validate='() => parentCategoryId == 0 ? "لطفا گروه اصلی را مشخص نمایید" : null' TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == null"
-                                          ColSpan="9" Title="گروه اصلی" OnChange="() => cmbCategory.EnableLoading()" />
+                                          ColSpan="8" Title="گروه اصلی" OnChange="() => cmbCategory.EnableLoading()" />
                                 <ComboBox @ref="cmbCategory" Validate="ValidateSubCategory" TValue="int" @bind-Value="categoryId" TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == parentCategoryId"
-                                          ColSpan="9" Title="گروه فرعی" />
+                                          ColSpan="8" Title="گروه فرعی" />
                                 break;
                             case CategoryType.Multiple:
-                                <LookupTree @bind-Value="context.CategoryId" ColSpan="9">
+                                <LookupTree @bind-Value="context.CategoryId" ColSpan="8">
                                     <ChildContent Context="search">
                                         <TreeView TEntity="ProductCategory" TextFunc="t => t.Name"
                                                   ParentNodeFilterFunc="t => t.Category == null"
@@ -77,11 +77,13 @@
                                 break;
                         }
                     }
-                    <StringTextBox @bind-Value="context.Title" ColSpan="9" />
-                    <NumericTextBox @bind-Value="context.Price" ColSpan="9" DigitGrouping />
-                    <NumericTextBox @bind-Value="context.Discount" ColSpan="9" DigitGrouping />
-                    <StringTextBox @bind-Value="context.Code" ColSpan="9" Style="direction:ltr" />
-                    <FormCommandButton ColSpan="9"  />
+                    <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                    <NumericTextBox @bind-Value="context.Price" ColSpan="8" OnChange="() => PriceChanged(context)" DigitGrouping />
+                    <NumericTextBox @bind-Value="context.TakeOutPrice" ColSpan="8" DigitGrouping />
+                    <NumericTextBox @bind-Value="context.SpecialCustomerPrice" ColSpan="8" DigitGrouping />
+                    <NumericTextBox @bind-Value="context.Discount" ColSpan="8" DigitGrouping />
+                    <StringTextBox @bind-Value="context.Code" ColSpan="8" Style="direction:ltr" />
+                    <FormCommandButton ColSpan="8" />
                 </div>
                 <div class="col-md-4 pe-3">
                     <label style="justify-content:space-evenly">تاپینکهای محصول</label>
@@ -99,11 +101,17 @@
     ComboBox<ProductCategory, int> cmbCategory;
     int parentCategoryId, categoryId;
 
+    void PriceChanged(Product product)
+    {
+        if (product.Id == 0 && product.TakeOutPrice == 0)
+            product.TakeOutPrice = product.Price;
+    }
+
     protected override void OnInitialized()
     {
         Service.OnUpsert = async (IServiceProvider provider, Product product) =>
         {
-            if (product.Id == 0 && product.Price == 0)
+            if (product.Id == 0 && (product.Price == 0 || product.TakeOutPrice == 0))
                 return await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟");
             return true;
         };

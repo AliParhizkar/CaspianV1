@@ -23,6 +23,9 @@ namespace Marketing.Model
         [DisplayName("نوع پرداخت")]
         public SettleType? SettleType { get; set; }
 
+        [DisplayName("نوع سفارش")]
+        public OrderType OrderType { get; set; }
+
         [DisplayName("شماره سفارش")]
         public int OrderNumber { get; set; }
 
@@ -33,13 +36,19 @@ namespace Marketing.Model
         public decimal PercentDiscount { get; set; }
 
         [DisplayName("مبلغ تخفیف")]
-        public int AmountDiscount { get; set; }
+        public decimal DiscountAmount { get; set; }
+
+        [DisplayName("قیمت محصولات")]
+        public decimal ProductAmount { get; set; }
+
+        [DisplayName("مبلغ قابل پرداخت")]
+        public decimal PaymentAmount { get; set; }
 
         [DisplayName("روش رند کردن")]
         public RoundType? RoundType { get; set; }
 
         [DisplayName("مبلغ رند")]
-        public int? RoundAmount { get; set; }
+        public decimal? RoundAmount { get; set; }
 
         [DisplayName("آدرس مشتری")]
         public int? AddressId { get; set; }

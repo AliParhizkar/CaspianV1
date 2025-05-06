@@ -28,7 +28,7 @@ namespace Caspian.UI
 
         IDictionary<string, SearchType> IInternalSearchService<TEntity>.GetSearchData()
         {
-            return searchData;
+            return searchData; 
         }
 
         public async Task CloseWindow()
@@ -75,7 +75,7 @@ namespace Caspian.UI
 
         void IInternalUIService.Dispose()
         {
-            DetailType = default;
+            (this as IInternalUIService<TEntity>).DetailType = default;
             Is1To1RelationshipService = default;
             MasterId = default;
             Window = default;
@@ -92,7 +92,7 @@ namespace Caspian.UI
             searchData = types;
         }
 
-        public Type DetailType { get; private set; }
+        Type IInternalUIService<TEntity>.DetailType { get; set; }
 
         internal int UserId { get; private set; }
 
@@ -104,7 +104,7 @@ namespace Caspian.UI
 
         async Task IInternalUIService<TEntity>.UpdateChildOfModelAsync(Type childType)
         {
-            DetailType = childType;
+            (this as IInternalUIService<TEntity>).DetailType = childType;
             if (childType != typeof(TEntity) && UpsertData != null)
             {
                 var info = typeof(TEntity).GetProperties().Single(t => t.PropertyType == childType);
@@ -142,7 +142,7 @@ namespace Caspian.UI
 
         public void ChildTabPanelItemInitialize(Type detailType)
         {
-            this.DetailType = detailType;
+            (this as IInternalUIService<TEntity>).DetailType = detailType;
         }
 
         public Window Window { get; set; }
@@ -218,7 +218,7 @@ namespace Caspian.UI
                 if (!result)
                     return;
 
-                service.DetailType = DetailType;
+                service.DetailType = (this as IInternalUIService<TEntity>).DetailType;
                 string message = null;
                 var isAdd = false;
                 IList<PropertyInfo> infos = null;
@@ -226,13 +226,13 @@ namespace Caspian.UI
                 if (Is1To1RelationshipService)
                 {
                     infos = typeof(TEntity).GetOneToOnePropertyInfos();
-                    service.DetailType = DetailType != typeof(TEntity) ? DetailType : null;
+                    service.DetailType = (this as IInternalUIService<TEntity>).DetailType != typeof(TEntity) ? (this as IInternalUIService<TEntity>).DetailType : null;
                     tempEntity = Activator.CreateInstance<TEntity>();
                     foreach (var info in infos)
                     {
                         var value = info.GetValue(entity);
                         info.SetValue(tempEntity, value);
-                        if (info.PropertyType != DetailType)
+                        if (info.PropertyType != (this as IInternalUIService<TEntity>).DetailType)
                             info.SetValue(entity, null);
                     }
                 }

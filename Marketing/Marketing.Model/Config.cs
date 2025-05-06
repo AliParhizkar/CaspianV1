@@ -42,5 +42,8 @@ namespace Marketing.Model
 
         [DisplayName("مبلغ رند")]
         public int? RoundAmount { get; set; }
+
+        [DisplayName("نوع سفارش پیشفرض")]
+        public OrderType DefaultOrderType { get; set; }
     }
 }

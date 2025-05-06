@@ -6,12 +6,11 @@ using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using FluentValidation.Results;
 using System.Linq.Dynamic.Core;
+using System.Collections.ObjectModel;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -37,7 +36,6 @@ namespace Caspian.UI
         protected bool? showInsertIcon;
         protected ElementReference mainDiv;
         protected ElementReference? inertButton;
-
         internal EventCallback<TEntity> OnInternalUpsert { get; set; }
 
         internal Expression InternalConditionExpr { get; set; }
@@ -80,7 +78,7 @@ namespace Caspian.UI
         public ISearchService<TEntity> Service { get; set; }
 
         [Parameter]
-        public IDetailBatchService<TEntity> DetailsService { get; set; }
+        public IBatchService<TEntity> DetailsService { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, bool>> ConditionExpr { get; set; }
@@ -90,6 +88,8 @@ namespace Caspian.UI
 
         [Parameter]
         public EventCallback<TEntity> OnOpen { get; set; }
+
+        internal Action OnLoaded { get; set; }
 
         [Parameter]
         public EventCallback OnSave { get; set; }
@@ -187,15 +187,12 @@ namespace Caspian.UI
             scope.SetUserId(PageData);
             serviceType = scope.ServiceProvider.GetService(type)?.GetType();
             if (serviceType == null)
-                throw new CaspianException($"Service of type {type} not impilimented");
+                throw new CaspianException($"Service of type {type} not implemented");
 
             if (Service != null)
                 (Service as IInternalSearchService<TEntity>).DataViewInitialize(this);
             if (DetailsService != null)
-            {
-                DetailsService.DetailDataView = this;
-                DetailsService.DetailDataViewInitialize();
-            }
+                (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitialize(this);
             base.OnInitialized();
         }
 
@@ -224,7 +221,7 @@ namespace Caspian.UI
         internal void InsertIconState(bool flag)
         {
             if (AutoHide || !Inline)
-                showInsertIcon = flag;
+                showInsertIcon = flag;UpdateEntityForForeignKey
         }
 
         protected override void OnParametersSet()
@@ -546,13 +543,13 @@ namespace Caspian.UI
             var id = Convert.ToInt32(pKey.GetValue(entity));
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
-            if (DetailsService != null && DetailsService.ThirdLevelProperty != null)
+            if (DetailsService != null && (DetailsService as IInternalBatchService<TEntity>).ThirdLevelProperty != null)
             {
                 if (service.BatchServiceData == null)
                     service.BatchServiceData = new BatchServiceData();
                 if (service.BatchServiceData.DetailPropertiesInfo == null)
                     service.BatchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
-                service.BatchServiceData.DetailPropertiesInfo.Add(DetailsService.ThirdLevelProperty);
+                service.BatchServiceData.DetailPropertiesInfo.Add((DetailsService as IInternalBatchService<TEntity>).ThirdLevelProperty);
             }
             var result = await service.ValidateRemoveAsync(entity);
             if (result.IsValid)
@@ -734,7 +731,7 @@ namespace Caspian.UI
             if (Service != null)
                 (Service as IInternalSearchService<TEntity>).DataViewInitialize(null); 
             if (DetailsService != null)
-                DetailsService.DetailDataView = null;
+                (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitialize(null);
         }
     }
 }

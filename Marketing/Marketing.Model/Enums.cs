@@ -71,4 +71,19 @@ namespace Marketing.Model
         [Display(Name = "رند به پایین")]
         ToDown
     }
+
+    public enum OrderType: byte
+    {
+        [Display(Name = "سالن")]
+        Salon,
+
+        [Display(Name = "بیرون بر")]
+        Takeout,
+
+        [Display(Name = "تلفن")]
+        Tel,
+
+        [Display(Name = "اینترنتی")]
+        Internet
+    }
 }

@@ -158,8 +158,8 @@ namespace Caspian.UI
             FormAppState.AllControlsIsValid = true;
             FormAppState.ErrorMessage = null;
             ErrorMessage = null;
-            if (Service?.DetailType != null)
-                EditContext.Properties["DetailType"] = Service.DetailType;
+            if ((Service as IInternalUIService<TEntity>)?.DetailType != null)
+                EditContext.Properties["DetailType"] = (Service as IInternalUIService<TEntity>).DetailType;
             EditContext.Validate();
             if (ValidationValidator == null)
             {

@@ -1,0 +1,51 @@
+﻿@namespace Marketing.Web.OrderComponents
+
+<DataGrid PageSize="100" DetailsService="OrderService" TEntity="OrderDetail" HideFooter="true" ShowInsertIcon="false" Batch>
+    <Columns>
+        <GridColumn Field="t => t.Product.Title" />
+        <GridColumn Field="t => t.Quantity" Title="تعداد" style="width:125px">
+            <Template>
+                <div class="m-quantity">
+                    <span @onclick="async async => await UpdateQuantity(context.Data, context.Data.Quantity + 1)" class="fa fa-plus c-small-icon ms-1"></span>
+                    <NumericTextBox TValue="decimal" Value="context.Data.Quantity" ValueChanged="async value => await UpdateQuantity(context.Data, value)" Style="width:50px;" maxlength="3" />
+                    <span @onclick="async async => await UpdateQuantity(context.Data, context.Data.Quantity - 1)" class="fa fa-minus c-small-icon me-1"></span>
+                </div>
+            </Template>
+        </GridColumn>
+        <GridColumn Field="t => t.Price - t.Discount" Title="قیمت">
+            @if (context.Data.Discount > 0)
+            {
+                <span class="m-price-discount">@((context.Data.Price).DigitGrouping())</span>
+                <span class="m-price">@((context.Data.Price - context.Data.Discount).DigitGrouping())</span>
+            }
+            else
+            {
+                <span class="m-price">@(context.Data.Price.DigitGrouping())</span>
+            }
+        </GridColumn>
+        <GridColumn Field="t => t.ToppingAmount" Title="تاپینگ">
+            <Template>
+                @{var className = context.Data?.Id == selectedDetailId ? "c-btn c-secondary" : "c-btn c-primary"; }
+                <button @onEclick="e => OpenTopping(e, context.Data)" class="@className">@(context.Data.ToppingAmount.DigitGrouping())</button>
+            </Template>
+        </GridColumn>
+        <GridColumn Title="شرح" style="width:40px;">
+            <Template>
+                @{var className = context.Data == selectedOrderDetail ? "m-selected" : ""; }
+                <span @onEclick="e => OpenDescription(e, context.Data)" class="fa fa-comment c-small-icon @(className)"></span>
+            </Template>
+        </GridColumn>
+        <GridColumn Field="t => ((t.Price - t.Discount) * t.Quantity).DigitGrouping()" Title="قیمت کل" />
+    </Columns>
+</DataGrid>
+<PopupWindow Top="top" Left="left" Status="toppingStatus" StatusChanged="status => { toppingStatus = status; selectedDetailId = null; }">
+    <ToppingComponent Service="toppingService" Page="Page" ProductId="toppingProductId.Value" OnChange="ToppingChanged" />
+</PopupWindow>
+<PopupWindow Top="top" Left="left" Status="descriptStatus" StatusChanged="status => { descriptStatus = status; selectedOrderDetail = null; }">
+    <DescriptionComponent OrderDetail="selectedOrderDetail" Page="Page" />
+</PopupWindow>
+
+@code
+{
+    
+}

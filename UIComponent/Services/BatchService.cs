@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 
 namespace Caspian.UI
 {
-    public class BatchService<TMaster, TDetail>: IInternalUIService, IInternalUIService<TMaster>, IInternalSearchService<TMaster>, IDetailBatchService<TDetail> where TMaster : class where TDetail : class
+    public class BatchService<TMaster, TDetail>: IInternalUIService, IInternalUIService<TMaster>, IInternalSearchService<TMaster>, IInternalBatchService<TDetail> where TMaster : class where TDetail : class
     {
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
@@ -29,7 +29,7 @@ namespace Caspian.UI
             
         }
 
-        Expression IDetailBatchService<TDetail>.GetDetailsFilterExpression()
+        Expression IInternalBatchService<TDetail>.GetDetailsFilterExpression()
         {
             var param = Expression.Parameter(typeof(TDetail), "t");
             var masterInfo = typeof(TDetail).GetForeignKey(typeof(TMaster));
@@ -38,7 +38,7 @@ namespace Caspian.UI
             return Expression.Equal(expr, Expression.Constant(masterId));
         }
 
-        public void SetDetails(IList<TDetail> details)
+        void IInternalBatchService<TDetail>.SetDetails(IList<TDetail> details)
         {
             var detailInfo = batchServiceData.DetailPropertiesInfo.First(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
             detailInfo.SetValue(UpsertData, details);
@@ -111,11 +111,34 @@ namespace Caspian.UI
             searchData = types;
         }
 
-        public PropertyInfo ThirdLevelProperty { get; private set; }
+        PropertyInfo IInternalBatchService<TDetail>.ThirdLevelProperty { get; set; }
 
         public void ThirdDataLevelToIgnoreOnRemove<TProperty>(Expression<Func<TDetail, ICollection<TProperty>>> expression)
         {
-            ThirdLevelProperty = (expression.Body as MemberExpression).Member as PropertyInfo;
+            (this as IInternalBatchService<TDetail>).ThirdLevelProperty = (expression.Body as MemberExpression).Member as PropertyInfo;
+        }
+
+        /// <summary>
+        /// This method reload data for update
+        /// </summary>
+        /// <param name="masterId">The id of "TMaster"</param>
+        public async Task ReloadForUpdate(int masterId)
+        {
+            MasterId = masterId;
+            await (this as IInternalUIService<TMaster>).FetchAsync();
+            if (DetailDataView != null)
+            {
+                bool dataIsLoaded = false;
+                DetailDataView?.EnableLoading();
+                DetailDataView.OnLoaded = () =>
+                {
+                    dataIsLoaded = true;
+                };
+                if (!dataIsLoaded)
+                    await Task.Delay(100);
+            }
+            ChangedEntities?.Clear();
+            
         }
 
         protected IServiceScope CreateScope()
@@ -135,7 +158,7 @@ namespace Caspian.UI
         //    throw new NotImplementedException();
         //}
 
-        public Type DetailType { get; private set; }
+         Type IInternalUIService<TMaster>.DetailType { get; set; }
 
         public int MasterId { get; set; }
 
@@ -178,7 +201,7 @@ namespace Caspian.UI
 
         void IInternalUIService.Dispose()
         {
-            DetailType = default;
+            (this as IInternalUIService<TMaster>).DetailType = default;
             /// On Master Details Service We Set MasterId on OnInitialized but it reset here because page disposed 
             /// on another page created
 
@@ -193,8 +216,9 @@ namespace Caspian.UI
             batchServiceData.DetailPropertiesInfo.Clear();
         }
 
-        void IDetailBatchService<TDetail>.DetailFormInitialize()
+        void IInternalBatchService<TDetail>.DetailFormInitialize(CaspianForm<TDetail> caspianForm)
         {
+            DetailForm = caspianForm;
             if (DetailForm != null)
             {
                 DetailForm.OnInternalReset = EventCallback.Factory.Create(this, TypeWindow.Close);
@@ -386,8 +410,9 @@ namespace Caspian.UI
             });
         }
 
-        public void DetailTypeWindowInitialize()
+        void IInternalBatchService<TDetail>.DetailTypeWindowInitialize(TypeWindow<TDetail> window)
         {
+            TypeWindow = window;
             DetailDataView.Batch = true;
             DetailDataView.OnInternalUpsert = EventCallback.Factory.Create<TDetail>(this, async detail => 
             {
@@ -405,17 +430,16 @@ namespace Caspian.UI
             });
         }
 
-        virtual void DetailDataViewInitialize()
+        void IInternalBatchService<TDetail>.DetailDataViewInitialize(DataView<TDetail> dataView)
         {
-            if (DetailDataView.Inline)
-                DetailDataView.Batch = true;
-            DetailDataView.InsertIconState(true);
-            var param = Expression.Parameter(typeof(TDetail), "t");
-            var masterInfo = typeof(TDetail).GetForeignKey(typeof(TMaster));
-            Expression expr = Expression.Property(param, masterInfo);
-            var masterId = Convert.ChangeType(MasterId, masterInfo.PropertyType);
-            expr = Expression.Equal(expr, Expression.Constant(masterId));
-            DetailDataView.InternalConditionExpr = expr;
+            DetailDataView = dataView;
+            if (dataView != null)
+            {
+                if (DetailDataView.Inline)
+                    DetailDataView.Batch = true;
+                DetailDataView.InsertIconState(true);
+                DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail>).GetDetailsFilterExpression();
+            }
         }
 
         void IInternalUIService.WindowInitialize()

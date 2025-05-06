@@ -15,6 +15,12 @@ namespace Marketing.Web.OrderComponents
         int? selectedOrderId;
         IList<Order> orders;
 
+        async Task SelectOrder(Order order)
+        {
+            statusLevel1 = statusLevel2 = WindowStatus.Close;
+            await OnChange.InvokeAsync(order.Id);
+        }
+
         void OpenLevel1(MouseEventArgs e)
         {
             statusLevel1 = WindowStatus.Open;
@@ -22,7 +28,6 @@ namespace Marketing.Web.OrderComponents
 
         void OpenLevel2(MouseEventArgs e, int orderId)
         {
-            Console.WriteLine(orderId);
             Level2Top = e.ClientY - e.OffsetY;
             statusLevel2 = WindowStatus.Open;
             selectedOrderId = orderId;

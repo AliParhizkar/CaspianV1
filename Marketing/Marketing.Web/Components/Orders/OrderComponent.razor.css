@@ -4,12 +4,24 @@
     padding: 5px 3px;
     overflow: auto;
     height: calc(100vh - 80px);
-    direction: ltr;
 }
 
 .m-order-item {
-    height: 50px;
+    padding:4px 0;
     border-bottom: 1px solid #d8d8d8;
+}
+.m-order-item span{
+    text-align: center;
+    display: inline-block;
+}
+.m-order-number{
+    width:32px;
+}
+.m-total-amount{
+    width:125px;
+}
+.m-order-type {
+    width: 50px;
 }
 
 .selected {

@@ -3,123 +3,71 @@
 @inject IJSRuntime JSRuntime
 @inherits CBaseInput<TValue>
 @using System.Text.RegularExpressions
-@{
-    string str = "";
-    TimeSpan time = default(TimeSpan);
-    if (Value != null)
-    {
-        time = (TimeSpan)Convert.ChangeType(Value, typeof(TimeSpan));
-        str = time.ShortString();
-    }
-    string className = "t-inputbox-wrap";
-    if (disabled)
-        className += " t-state-disabled";
-    else
-    {
-        if (ErrorMessage != null)
-            className += " t-state-error";
-    }
-} 
-<div @ref="InputElement" class="t-widget t-timepicker" style="@(Style)">
-    <div @attributes="attrs" class="@className">
-        @if (DefaultMode)
-        {
-            <input disabled="@disabled" type="time" value="@str" class="t-input t-default-mode" @onchange="ChangeValue" />
-        }
-        else
-        {
-            <input disabled="@disabled" value="@str" class="t-input" @onchange="ChangeValue" />
-            <span @onclick="OpenTimePanel" class="t-select">
-                <span class="t-icon t-icon-clock fa fa-clock-o"></span>
-            </span>
-        }
 
+@if (ColSpan.HasValue)
+{
+    var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer);
+    string labelContainerCSSClassName = base.GetLabelCSSClassName();
+    string controlContainerCSSClassName = base.GetControlCSSClassName();
+    <div class="@(labelContainerCSSClassName)">
+        <label>@title</label>
     </div>
-    @if (status == WindowStatus.Open && !DefaultMode)
-    {
-        <div class="t-animation-container">
-            <TimePanel OnChange="Change" FromTime="FromTime" ToTime="ToTime" AutoSelect="AutoSelect" Hour="time.Hours" Minute="time.Minutes" />
-        </div>
-    }
-</div>
+    <div class="@(controlContainerCSSClassName)">
+        @RenderTimePicker()
+    </div>
+}
+else
+{
+    @RenderTimePicker()
+}
+
 
 @code
 {
-    WindowStatus status;
-
-    async Task Change(TimeSpan? time)
+    RenderFragment RenderTimePicker()
     {
-        if (time.HasValue && !disabled)
+        return __builder =>
         {
-            var value = (TValue)Convert.ChangeType(time, typeof(TimeSpan));
-            Value = value;
-            if (ValueChanged.HasDelegate)
-                await ValueChanged.InvokeAsync(value);
-        }
-        status = WindowStatus.Close;
-    }
-
-    void OpenTimePanel()
-    {
-        if (!disabled)
-            status = WindowStatus.Open;    
-    }
-
-    [Parameter]
-    public bool AutoSelect { get; set; }
-
-    [Parameter]
-    public bool DefaultMode { get; set; }
-
-    [Parameter]
-    public TimeSpan? FromTime { get; set; }
-
-    [Parameter]
-    public TimeSpan? ToTime { get; set; }
-
-    async void ChangeValue(ChangeEventArgs arg)
-    {
-        TValue value = default;
-        var isValid = false;
-        var str = Convert.ToString(arg.Value);
-        if (!disabled && str.IndexOf('_') == -1)
-        {
-            if (Regex.IsMatch(str, "^[0,1][0-9]|2[0-3]:[0-5][0-9]$"))
+            string str = "";
+            TimeSpan time = default(TimeSpan);
+            if (Value != null)
             {
-                var time = TimeSpan.Parse(str);
-                isValid = true;
-                if (FromTime.HasValue && FromTime.Value < time)
-                    isValid = false;
-                if (ToTime.HasValue && ToTime.Value > time)
-                    isValid = false;
-                if (isValid)
-                    value = (TValue)Convert.ChangeType(time, typeof(TimeSpan));
+                if (typeof(TValue).GetUnderlyingType() == typeof(TimeOnly))
+                    time = ((TimeOnly)Convert.ChangeType(Value, typeof(TimeOnly))).ToTimeSpan();
+                else
+                    time = (TimeSpan)Convert.ChangeType(Value, typeof(TimeSpan));
+                str = time.ShortString();
             }
-        }
-        if (isValid)
-        {
-            Value = value;
-            if (ValueChanged.HasDelegate)
-                await ValueChanged.InvokeAsync(value);
-        }
-    }
+            string className = "t-inputbox-wrap";
+            if (disabled)
+                className += " t-state-disabled";
+            else
+            {
+                if (ErrorMessage != null)
+                    className += " t-state-error";
+            }
+            <div @ref="InputElement" class="t-widget t-timepicker" style="@(Style)">
+                <div @attributes="attrs" class="@className">
+                    @if (DefaultMode)
+                    {
+                        <input disabled="@disabled" type="time" value="@str" class="t-input t-default-mode" @onchange="ChangeValue" />
+                    }
+                    else
+                    {
+                        <input disabled="@disabled" value="@str" class="t-input" @onchange="ChangeValue" />
+                        <span @onclick="OpenTimePanel" class="t-select">
+                            <span class="t-icon t-icon-clock fa fa-clock-o"></span>
+                        </span>
+                    }
 
-    IDictionary<string, object> attrs = new Dictionary<string, object>();
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            var dotnet = DotNetObjectReference.Create(this);
-            await JSRuntime.InvokeVoidAsync("caspian.common.bindTimepicker", InputElement, dotnet);
-        }
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    [JSInvokable]
-    public void Close()
-    {
-        status = WindowStatus.Close;
-        StateHasChanged();
+                </div>
+                @if (status == WindowStatus.Open && !DefaultMode)
+                {
+                    <div class="t-animation-container">
+                        <TimePanel OnChange="Change" FromTime="FromTime" ToTime="ToTime" AutoSelect="AutoSelect" Hour="time.Hours" Minute="time.Minutes" />
+                    </div>
+                }
+            </div>
+        };
     }
 }

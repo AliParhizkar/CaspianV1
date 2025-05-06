@@ -20,6 +20,12 @@ namespace Marketing.Model
         [DisplayName("قیمت")]
         public int Price { get; set; }
 
+        [DisplayName("قیمت بیرون بر")]
+        public int TakeOutPrice { get; set; }
+
+        [DisplayName("قیمت مشتری خاص")]
+        public int? SpecialCustomerPrice { get; set; }
+
         [DisplayName("تخفیف")]
         public int Discount { get; set; }
 

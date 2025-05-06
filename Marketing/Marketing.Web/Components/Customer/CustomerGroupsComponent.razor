@@ -28,13 +28,14 @@
                     <i class="fa fa-refresh" />
                 </button>
             </div>
+            <CheckBox @bind-Value="context.IsSpecial" ColSpan="8"  />
             <StringTextBox @bind-Value="context.Address1" Rows="3" MultiLine ColSpan="8" />
             <StringTextBox @bind-Value="context.Address2" Rows="3" MultiLine ColSpan="8" />
             <FormCommandButton ColSpan="8" TotalSpan="12" />
         </div>
         <div class="col-md-4 pe-3">
             <label style="justify-content:space-evenly">گروههای مشتری</label>
-            <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:250px;flex-wrap:nowrap"
+            <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:280px;flex-wrap:nowrap"
                             TextExpression="t => t.Name" />
         </div>
     </CaspianForm>

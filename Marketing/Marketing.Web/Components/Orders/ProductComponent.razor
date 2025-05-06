@@ -2,27 +2,8 @@
 
 <div class="m-main">
     <div class="m-order-details">
-        <DataGrid PageSize="100" DetailsService="OrderService" TEntity="OrderDetail" HideFooter="true" ShowInsertIcon="false" Batch>
-            <Columns>
-                <GridColumn Field="t => t.Product.Title" />
-                <GridColumn Field="t => t.Quantity" Title="تعداد" style="width:125px">
-                    <Template>
-                        <div class="m-quantity">
-                            <span @onclick="async async => await UpdateQuantity(context.Data, context.Data.Quantity + 1)" class="fa fa-plus c-small-icon ms-1"></span>
-                            <NumericTextBox TValue="decimal" Value="context.Data.Quantity" ValueChanged="async value => await UpdateQuantity(context.Data, value)" Style="width:50px;" maxlength="3" />
-                            <span @onclick="async async => await UpdateQuantity(context.Data, context.Data.Quantity - 1)" class="fa fa-minus c-small-icon me-1"></span>
-                        </div>
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="t => t.ToppingAmount" Title="تاپینگ">
-                    <Template>
-                        @{var className = context.Data?.Id != selectedDetailId ? "c-btn c-primary" : "c-btn c-secondary"; }
-                        <button @onclick="() => OpenTopping(context.Data.Id, context.Data.ProductId)" class="@className">@(context.Data.ToppingAmount.DigitGrouping())</button>
-                    </Template>
-                </GridColumn>
-                <GridColumn Field="t => ((t.Price - t.Discount) * t.Quantity).DigitGrouping()" Title="قیمت کل" />
-            </Columns>
-        </DataGrid>
+       <FactorComponent @ref="factor" OrderService="OrderService" Page="Page" OnChange="CallbackForChange" Products="Products"
+                        OrderType="OrderService.UpsertData.OrderType" IsSpecialCustomer="Customer?.IsSpecial" />
     </div>
     <div class="m-product-panel">
         <div class="m-categories">
@@ -51,7 +32,7 @@
                 foreach (var product in products)
                 {
                     var className = product.Id == selectedProductId ? "m-product m-selected" : "m-product";
-                    <div @onclick="async () => await AddToOrder(product)" class="@className">@product.Title</div>
+                    <div @onclick="async () => await factor.AddToOrder(product)" class="@className">@product.Title</div>
                 }
             }
         </div>
@@ -65,14 +46,5 @@
             }
         </div>
     </PopupWindow>
-    <PopupWindow Top="10" Left="350" Status="toppingStatus" StatusChanged="status => { toppingStatus = status; selectedDetailId = null; }" >
-        <ToppingComponent Service="toppingService" Page="Page" ProductId="toppingProductId.Value" OnChange="ToppingChanged" />
-    </PopupWindow>
+
 </div>
-
-
-
-@code 
-{
-    
-}

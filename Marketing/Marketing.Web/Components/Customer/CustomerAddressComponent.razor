@@ -28,12 +28,13 @@
             <div class="row ps-3 pe-3">
                 <StringTextBox @bind-Value="context.Name" ColSpan="4" />
                 <ComboBox TValue="int?" TEntity="CustomerGroup" @bind-Value="context.GroupId" TextExpression="t => t.Name" ColSpan="4" />
-                <StringTextBox @bind-Value="context.MobileNumber" ColSpan="2" TotalSpan="4" Style="direction:ltr" MaxLength="11" />
-                <NumericTextBox @bind-Value="context.CustomerNumber" ColSpan="2" TotalSpan="4" Style="direction:ltr" Disabled />
+                <StringTextBox @bind-Value="context.MobileNumber" ColSpan="4" TotalSpan="6" Style="direction:ltr" MaxLength="11" />
+                <NumericTextBox @bind-Value="context.CustomerNumber" ColSpan="3" TotalSpan="5" Style="direction:ltr" Disabled />
                 <div class="col-md-1 text-center">
                     <span class="c-small-icon fa fa-refresh" @onclick="SetCustomerNumber" title="برای دریافت شماره مشتری کلیک کنید"></span>
                 </div>
-                <FormCommandButton ColSpan="3" TotalSpan="3" />
+                <CheckBox @bind-Value="context.IsSpecial" ColSpan="4" TotalSpan="6" />
+                <FormCommandButton ColSpan="6" TotalSpan="6" />
             </div>
         </fieldset>
     </CaspianForm>

@@ -26,6 +26,9 @@ namespace Marketing.Model
         [DisplayName("آدرس دوم")]
         public string Address2 { get; set; }
 
+        [DisplayName("مشتری خاص")]
+        public bool IsSpecial { get; set; }
+
         [DisplayName("گروه")]
         public int? GroupId { get; set; }
 

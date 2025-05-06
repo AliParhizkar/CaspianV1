@@ -4,6 +4,7 @@ using Marketing.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketing.Model.Migrations
 {
     [DbContext(typeof(MarketingContext))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250505205140_Seventeenth")]
+    partial class Seventeenth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,9 +43,6 @@ namespace Marketing.Model.Migrations
                         .HasColumnType("bit");
 
                     b.Property<byte>("DefaultAddressManagement")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte>("DefaultOrderType")
                         .HasColumnType("tinyint");
 
                     b.Property<byte>("DiscountType")
@@ -91,9 +91,6 @@ namespace Marketing.Model.Migrations
 
                     b.Property<int?>("GroupId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsSpecial")
-                        .HasColumnType("bit");
 
                     b.Property<string>("MobileNumber")
                         .HasMaxLength(50)
@@ -202,18 +199,7 @@ namespace Marketing.Model.Migrations
                     b.Property<int>("OrderNumber")
                         .HasColumnType("int");
 
-                    b.Property<byte>("OrderType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<decimal>("PaymentAmount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<decimal>("PercentDiscount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal>("ProductAmount")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
@@ -388,12 +374,6 @@ namespace Marketing.Model.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SpecialCustomerPrice")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TakeOutPrice")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")

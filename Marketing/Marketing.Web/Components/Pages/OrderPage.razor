@@ -10,16 +10,26 @@
     base.BuildRenderTree(__builder);
 }
 
-<ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" />
-<div class="pe-2" style="display:flex;">
-    <OrderComponent Page="this" OnChange="InitializeOrder" />
-    <SimpleCustomerComponent Page="this" CustomerId="OrderService.UpsertData.CustomerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
-                             CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
-                             CustomerAddressGroupsService="CustomerAddressGroupsService" />
+<ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" Customer="customer" Products="products"/>
+<div class="pe-2 row">
+    <div class="col-md-3">
+        @if (OrderService.DetailDataView != null)
+        {
+            <OtherCostComponent OrderService="OrderService" Products="products" />
+        }
+    </div>
+    <div class="col-md-4 row c-controls">
+        <SimpleCustomerComponent Page="this" CustomerId="OrderService.UpsertData.CustomerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
+                                 CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
+                                 CustomerAddressGroupsService="CustomerAddressGroupsService" />
+        <RadioList @bind-Value="OrderService.UpsertData.OrderType" ColSpan="9" TotalSpan="12" />
+    </div>
+    <div class="col-md-1">
+        <OrderComponent Page="this" OnChange="InitializeOrder" />
+    </div>
 </div>
-<OtherCostComponent Order="OrderService.UpsertData" />
 
-<span>@OrderService.UpsertData.Id</span>
+
 <CaspianForm Service="OrderService">
     <button>ثبت</button>
 </CaspianForm>
@@ -55,11 +65,12 @@
             order.PercentDiscount = ConfigService.Config.PercentDiscount;
             order.RoundType = ConfigService.Config.RoundType;
             order.RoundAmount = ConfigService.Config.RoundAmount;
+            order.OrderType = ConfigService.Config.DefaultOrderType;
         };
         OrderService.OnUpsert = async (provider, order) =>
         {
             await provider.GetCaspianService<MarketingContext>().Database.BeginTransactionAsync();
-            var deletedToppings = productComponent.GetDeletedToppings();
+            var deletedToppings = productComponent.DeletedToppings;
             ///Delete Topping
             var service = provider.GetCaspianService<OrderDetailToppingService>();
             foreach (var topping in deletedToppings)
@@ -72,7 +83,7 @@
         OrderService.OnAfterOpsertAsync = async (provider, order) =>
         {
             var service = provider.GetCaspianService<OrderDetailToppingService>();
-            var toppingsChange = productComponent.GetToppingsChange();
+            var toppingsChange = productComponent.ChangedToppings;
             /// Updated Toppings
             foreach (var topping in toppingsChange.Where(t => t.Id > 0))
             {
@@ -103,9 +114,7 @@
 
     async Task InitializeOrder(int orderId)
     {
-        OrderService.MasterId = orderId;
-        OrderService.DetailDataView.EnableLoading();
-        OrderService.DetailDataViewInitialize
+        await OrderService.ReloadForUpdate(orderId);
     }
 
     protected override async Task OnInitializedAsync()

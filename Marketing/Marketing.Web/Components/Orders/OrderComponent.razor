@@ -6,7 +6,13 @@
         @foreach (var order in orders)
         {
             var className = order.Id == selectedOrderId? "m-order-item selected" : "m-order-item";
-            <div @onclick="async () => await OnChange.InvokeAsync(order.Id)" @onmouseenter="e => OpenLevel2(e, order.Id)" class="@className">@order.OrderNumber</div>
+            <div @onmouseenter="e => OpenLevel2(e, order.Id)" class="@className">
+                <span class="m-order-number">@order.OrderNumber</span>
+                <span @onclick="async () => await SelectOrder(order)" class="fa fa-pencil c-small-icon"></span>
+                <span class="m-order-type">@order.OrderType.EnumText()</span>
+                <span class="m-total-amount">@(order.ProductAmount.DigitGrouping())</span>
+                <span  class="fa fa-print c-small-icon"></span>
+            </div>
         }
     </div>
 </PopupWindow>
