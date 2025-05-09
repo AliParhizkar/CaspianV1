@@ -22,7 +22,6 @@ namespace Marketing.Web.OrderComponents
             var service = scope.GetService<ProductCategoryService>();
             categories = (await service.GetAll().ToListAsync()).Where(t => t.CategoryId == null).ToList();
             await base.OnInitializedAsync();
-
         }
 
         async Task CallbackForChange()
@@ -60,6 +59,8 @@ namespace Marketing.Web.OrderComponents
             }
         }
 
+        public IList<OrderDetailTopping> GetOrderDetailToppings(int orderDetailId) => factor.GetOrderDetailToppings(orderDetailId);
+
         public IList<OrderDetailTopping> DeletedToppings => factor.GetDeletedToppings();
 
         public IList<OrderDetailTopping> ChangedToppings => factor.GetToppingsChange();
@@ -75,7 +76,7 @@ namespace Marketing.Web.OrderComponents
         public BasePage Page { get; set; }
 
         [Parameter]
-        public EventCallback<IList<OrderDetail>> OnChange { get; set; }
+        public EventCallback<ICollection<OrderDetail>> OnChange { get; set; }
 
         [Parameter]
         public IList<Product> Products { get; set; }

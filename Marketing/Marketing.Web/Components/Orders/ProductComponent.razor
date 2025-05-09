@@ -12,7 +12,7 @@
                 foreach (var category in categories)
                 {
                     var className = category.Id == categoryId ? "m-category m-selected" : "m-category";
-                    <div class="@className" @onclick="async e => await SelectCategory(e, category)">
+                    <div class="@className" @onmousedown="async e => await SelectCategory(e, category)">
                         @if (category.Categories != null && category.Categories.Count > 0)
                         {
                             <span>@category.Name</span>
@@ -46,5 +46,4 @@
             }
         </div>
     </PopupWindow>
-
 </div>

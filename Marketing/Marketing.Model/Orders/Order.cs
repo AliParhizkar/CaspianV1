@@ -26,6 +26,18 @@ namespace Marketing.Model
         [DisplayName("نوع سفارش")]
         public OrderType OrderType { get; set; }
 
+        [DisplayName("پرداخت شده")]
+        public bool IsSettled { get; set; }
+
+        [DisplayName("مبلغ نقد")]
+        public decimal CashAmount { get; set; }
+
+        [DisplayName("مبلغ کارت")]
+        public decimal CardAmount {  get; set; }
+
+        [DisplayName("مبلغ حساب")]
+        public decimal AccountingAmount { get; set; }
+
         [DisplayName("شماره سفارش")]
         public int OrderNumber { get; set; }
 

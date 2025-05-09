@@ -106,6 +106,8 @@ namespace Caspian.UI
                         items = source.Skip(skip).Take(PageSize).ToList();
                     }
                     ManageExpressionForUpsert(exprList);
+                    if (DetailsService != null)
+                        (DetailsService as IInternalBatchService<TEntity>).SetDetails(source);
                 }
                 else
                 {

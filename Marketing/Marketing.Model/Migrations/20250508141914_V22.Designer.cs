@@ -4,6 +4,7 @@ using Marketing.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketing.Model.Migrations
 {
     [DbContext(typeof(MarketingContext))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250508141914_V22")]
+    partial class V22
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,9 +216,6 @@ namespace Marketing.Model.Migrations
 
                     b.Property<byte>("DiscountType")
                         .HasColumnType("tinyint");
-
-                    b.Property<bool>("IsSettled")
-                        .HasColumnType("bit");
 
                     b.Property<DateOnly>("OrderDate")
                         .HasColumnType("date");

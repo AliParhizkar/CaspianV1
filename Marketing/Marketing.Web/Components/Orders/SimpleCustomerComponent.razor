@@ -1,20 +1,23 @@
 ﻿@namespace Marketing.Web.OrderComponents
 
-<div style="width: 340px; display: flex; justify-content:flex-end">
-    <Lookup TValue="int?" TEntity="Customer" Value="CustomerId" ValueChanged="CustomerIdChanged" HideHeader OpenOnFocus 
-            TextExpression="t => t.Name" Style="width:260px" PlaceHolder="جستجو با شماره همراه/شماره مشتری">
+<div class="col-md-3">
+    <label>مشتری</label>
+</div>
+<div class="col-md-8">
+    <Lookup TValue="int?" TEntity="Customer" Value="CustomerId" ValueChanged="CustomerIdChanged" HideHeader OpenOnFocus
+            TextExpression="t => t.Name" PlaceHolder="جستجو با شماره همراه/شماره مشتری">
         <CustomerLookupWindow />
     </Lookup>
-    <div class="m-counter-icon" @onclick="OpenWindowAsync">
-        @if (CustomerId == null)
-        {
-            <span class="me-2 fa fa-plus c-small-icon"></span>
-        }
-        else
-        {
-            <span class="me-2 fa fa-pencil c-small-icon"></span>
-        }
-    </div>
+</div>
+<div class="col-md-1">
+    @if (CustomerId == null)
+    {
+        <span @onclick="OpenWindowAsync" class="me-2 fa fa-plus c-small-icon"></span>
+    }
+    else
+    {
+        <span @onclick="OpenWindowAsync" class="me-2 fa fa-pencil c-small-icon"></span>
+    }
 </div>
 
 @if (ConfigService.Config.CustomerHasManyAddresses)

@@ -29,7 +29,7 @@
                 <button @onEclick="e => OpenTopping(e, context.Data)" class="@className">@(context.Data.ToppingAmount.DigitGrouping())</button>
             </Template>
         </GridColumn>
-        <GridColumn Title="شرح" style="width:40px;">
+        <GridColumn Field="t => t.Description" Title="شرح" style="width:40px;">
             <Template>
                 @{var className = context.Data == selectedOrderDetail ? "m-selected" : ""; }
                 <span @onEclick="e => OpenDescription(e, context.Data)" class="fa fa-comment c-small-icon @(className)"></span>
@@ -41,7 +41,7 @@
 <PopupWindow Top="top" Left="left" Status="toppingStatus" StatusChanged="status => { toppingStatus = status; selectedDetailId = null; }">
     <ToppingComponent Service="toppingService" Page="Page" ProductId="toppingProductId.Value" OnChange="ToppingChanged" />
 </PopupWindow>
-<PopupWindow Top="top" Left="left" Status="descriptStatus" StatusChanged="status => { descriptStatus = status; selectedOrderDetail = null; }">
+<PopupWindow Top="top" Left="left" Status="descriptStatus" StatusChanged="ChangeDescription">
     <DescriptionComponent OrderDetail="selectedOrderDetail" Page="Page" />
 </PopupWindow>
 

@@ -9,7 +9,42 @@ namespace Marketing.Service
         public OrderService(IServiceProvider provider)
             :base(provider) 
         {
-            RuleForEach(t => t.OrderDetails).SetValidator(new OrderDetailService(provider));
+            RuleForEach(t => t.OrderDetails).SetValidator(t => new OrderDetailService(provider));
+            RuleFor(t => t.OrderDetails).Custom(t => t.OrderDetails == null || !t.OrderDetails.Any(), "سفارش باید حداقل یک محصول داشته باشد.");
+            RuleFor(t => t.ProductAmount).Custom(t =>
+            {
+                if (t.OrderDetails == null)
+                    return false;
+                return t.OrderDetails.Sum(u => u.Quantity * (u.Price - u.Discount + u.ToppingAmount)) != t.ProductAmount;
+            }, "جمع محصول درست محاسبه نشده است");
+            RuleFor(t => t.DiscountAmount).Custom(t =>
+            {
+                if (t.DiscountType == DiscountType.Amount)
+                    return false;
+                return t.DiscountAmount != t.PercentDiscount * t.ProductAmount / 100;
+            }, "تخفیف درصدی درست محاسبه نشده است");
+            RuleFor(t => t.RoundAmount).Custom(t =>
+            {
+                if (ConfigService.Config.RoundType == null)
+                    return false;
+                return t.RoundAmount != ConfigService.GetRoundValue(t.ProductAmount - t.DiscountAmount);
+            }, "مبلغ رند درست محاسبه نشده است");
+            RuleFor(t => t.PaymentAmount).Custom(t =>
+            {
+                return t.PaymentAmount != t.ProductAmount - t.DiscountAmount + t.RoundAmount.GetValueOrDefault();
+            }, "جمع کل پرداختی درست محاسبه نشده است");
+            RuleFor(t => t.PaymentAmount).Custom(t =>
+            {
+                if (!t.IsSettled)
+                    return false;
+                return t.PaymentAmount != t.CardAmount + t.CashAmount + t.AccountingAmount;
+            }, "پرداخت بصورت کامل انجام نشده است");
+        }
+
+        public override Task<Order> UpdateDatabaseAsync(Order entity, IList<ChangedEntity<OrderDetail>> changedEntities)
+        {
+            return base.UpdateDatabaseAsync(entity, changedEntities);
+
         }
 
         public override Task<Order> AddAsync(Order entity)

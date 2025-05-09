@@ -43,25 +43,6 @@
 .m-product-panel {
     width: 50%;
 }
-.m-counter-icon {
-    border: 1px solid #c9c9c9;
-    width: 30px;
-    height: 30px;
-    display: inline-block;
-    border-radius: 15px;
-    padding-top: 6px;
-    background-color: white;
-}
-
-    .m-counter-icon:hover {
-        background-color: #F0EEF2;
-    }
-
-    .m-counter-icon .fa {
-        color: #423d96 !important;
-        vertical-align: middle;
-        font-size: 18px;
-    }
 
 ::deep .m-price-discount {
     text-decoration-line: line-through;
@@ -86,23 +67,11 @@
 ::deep .m-topping-details{
     padding:8px 5px;
 }
-.m-product, ::deep .m-topping {
-    padding: 0 5px;
-    border: 1px solid #c4c4c4;
-    margin: 5px;
-    height: 30px;
-    line-height: 25px;
-    color: dimgray;
-    border-radius: 6px;
-    cursor: default;
-    overflow:hidden;
-    white-space:nowrap;
-}
 
-    .m-product:active, .fa-plus:active, .fa-minus:active, ::deep .m-topping:active, ::deep .fa-plus:active, ::deep .fa-minus:active {
+    .fa-plus:active, .fa-minus:active, ::deep .fa-plus:active, ::deep .fa-minus:active {
         animation: gradient 100ms;
     }
-::deep .m-selected {
+::deep .m-selected:not(.m-category) {
     background-color: aqua !important;
 }
 .m-quantity, ::deep .m-quantity {
@@ -134,18 +103,29 @@
     height: 40%;
 }
 
-.m-category {
-    padding: 0 5px;
-    border: 1px solid #c4c4c4;
-    margin: 0 5px;
+.m-product, .m-category, ::deep .m-topping {
+    background-color: #8d6e63;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 6px 0px #6d4c41;
+    display: inline-block;
+    transition: all .2s;
+    position: relative;
+    top: 0;
+    padding: 0 8px;
+    cursor: pointer;
+    margin: 5px;
     height: 30px;
-    line-height: 25px;
-    color: dimgray;
-    border-radius: 6px;
 }
-
-    .m-category:hover, .m-product:hover, ::deep .m-topping:hover {
-        background-color: aliceblue;
+    .m-product:active, .m-category:active, ::deep .m-topping:active {
+        transition: all .2s;
+        top: 2px;
+        box-shadow: 0 3px 0px #6d4c41;
+    }
+    .m-category.m-selected {
+        transition: all .2s;
+        top: 2px;
+        box-shadow: 0 3px 0px #6d4c41;
     }
 
     .m-category .fa-chevron-left {
@@ -170,6 +150,3 @@
             background-color: aliceblue;
         }
 
-.m-selected {
-    background-color: aqua !important;
-}

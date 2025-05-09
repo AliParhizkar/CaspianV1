@@ -1,10 +1,10 @@
 ﻿@namespace Marketing.Web.OrderComponents
-<div class="row c-controls" style="width:300px;">
-    <NumericTextBox Value="order.RoundAmount" ColSpan="7" TotalSpan="12" Title="مبلغ رند" />
+<div class="row c-controls" >
+    <NumericTextBox Value="order.RoundAmount" ColSpan="7" TotalSpan="12" Title="مبلغ رند" DigitGrouping />
     <RadioList @bind-Value="order.DiscountType" ColSpan="7" TotalSpan="12" />
     @if (order.DiscountType == DiscountType.Amount)
     {
-        <NumericTextBox @bind-Value="order.DiscountAmount" ColSpan="7" TotalSpan="12" />
+        <NumericTextBox @bind-Value="order.DiscountAmount" OnChange="OnChange" ColSpan="7" TotalSpan="12" DigitGrouping />
     }
     else
     {
@@ -22,10 +22,11 @@
     [Parameter]
     public BatchService<Order, OrderDetail> OrderService { get; set; }
 
-    void ChangePercentDiscount(decimal discount)
+    async Task ChangePercentDiscount(decimal discount)
     {
         order.PercentDiscount = discount;
         order.DiscountAmount = GetDiscount();
+        await OnChange.InvokeAsync();
     }
 
     protected override void OnParametersSet()
@@ -43,8 +44,11 @@
 
     decimal GetSumProductAmount()
     {
-        return OrderService.DetailDataView.GetBatchEntities().Sum(t => t.ToppingAmount + t.Quantity * (t.Price - t.Discount));
+        return OrderService.DetailDataView.GetBatchEntities().Sum(t => t.Quantity * (t.ToppingAmount + t.Price - t.Discount));
     }
+
+    [Parameter]
+    public EventCallback OnChange { get; set; }
 
     decimal GetDiscount()
     {
@@ -62,23 +66,6 @@
 
     decimal GetRoundAmount()
     {
-        if (ConfigService.Config.RoundAmount == null)
-            return 0;
-        var amount = GetSumProductAmount() - GetDiscount();
-        var roundValue = amount % ConfigService.Config.RoundAmount.Value;
-        if (roundValue == ConfigService.Config.RoundAmount.Value || roundValue == 0)
-            return 0;
-        switch(ConfigService.Config.RoundType)
-        {
-            case RoundType.ToDown:
-                return -roundValue;
-            case RoundType.ToUp:
-                return ConfigService.Config.RoundAmount.Value - roundValue;
-            case RoundType.Standard:
-                if (roundValue * 2 > ConfigService.Config.RoundAmount.Value)
-                    return ConfigService.Config.RoundAmount.Value - roundValue;
-                return -roundValue;
-        }
-        throw new NotImplementedException();
+        return ConfigService.GetRoundValue(GetSumProductAmount() - GetDiscount());
     }
 }

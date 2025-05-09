@@ -1,6 +1,6 @@
 ﻿
 .m-orders {
-    width: 300px;
+    width: 310px;
     padding: 5px 3px;
     overflow: auto;
     height: calc(100vh - 80px);
@@ -18,10 +18,10 @@
     width:32px;
 }
 .m-total-amount{
-    width:125px;
+    width:130px;
 }
 .m-order-type {
-    width: 50px;
+    width: 60px;
 }
 
 .selected {

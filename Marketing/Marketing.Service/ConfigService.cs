@@ -32,5 +32,26 @@ namespace Marketing.Service
                 merchantConfig = value;
             }
         }
+
+        public static decimal GetRoundValue(decimal amount)
+        {
+            if (Config.RoundAmount == null)
+                return 0;
+            var roundValue = amount % Config.RoundAmount.Value;
+            if (roundValue == Config.RoundAmount.Value || roundValue == 0)
+                return 0;
+            switch (Config.RoundType)
+            {
+                case RoundType.ToDown:
+                    return -roundValue;
+                case RoundType.ToUp:
+                    return Config.RoundAmount.Value - roundValue;
+                case RoundType.Standard:
+                    if (roundValue * 2 > Config.RoundAmount.Value)
+                        return Config.RoundAmount.Value - roundValue;
+                    return -roundValue;
+            }
+            throw new NotImplementedException();
+        }
     }
 }

@@ -21,8 +21,10 @@ namespace Marketing.Web.OrderComponents
             await OnChange.InvokeAsync(order.Id);
         }
 
-        void OpenLevel1(MouseEventArgs e)
+        async Task OpenLevel1(MouseEventArgs e)
         {
+            using var service = Page.CreateScope().GetService<OrderService>();
+            orders = await service.GetAll().Where(t => t.SettleType == null).ToListAsync();
             statusLevel1 = WindowStatus.Open;
         }
 
@@ -33,12 +35,6 @@ namespace Marketing.Web.OrderComponents
             selectedOrderId = orderId;
         }
 
-        protected override async Task OnInitializedAsync()
-        {
-            using var service = Page.CreateScope().GetService<OrderService>();
-            orders = await service.GetAll().Where(t => t.SettleType == null).ToListAsync();
-            await base.OnInitializedAsync();
-        }
 
         [Parameter]
         public EventCallback<int> OnChange { get; set; }

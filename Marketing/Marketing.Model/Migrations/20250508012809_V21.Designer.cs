@@ -4,6 +4,7 @@ using Marketing.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketing.Model.Migrations
 {
     [DbContext(typeof(MarketingContext))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250508012809_V21")]
+    partial class V21
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,20 +192,8 @@ namespace Marketing.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("AccountingAmount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<int?>("AddressId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("CardAmount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal>("CashAmount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
@@ -213,9 +204,6 @@ namespace Marketing.Model.Migrations
 
                     b.Property<byte>("DiscountType")
                         .HasColumnType("tinyint");
-
-                    b.Property<bool>("IsSettled")
-                        .HasColumnType("bit");
 
                     b.Property<DateOnly>("OrderDate")
                         .HasColumnType("date");

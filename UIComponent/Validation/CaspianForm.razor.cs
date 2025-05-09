@@ -147,6 +147,7 @@ namespace Caspian.UI
             var cancel = false;
             if (OnSubmit.HasDelegate)
             {
+                
                 var cancelableEvent = new CancelableEvent<TEntity>(EditContext.Model as TEntity);
                 await OnSubmit.InvokeAsync(cancelableEvent);
                 cancel = cancelableEvent.Cancel;
@@ -180,6 +181,7 @@ namespace Caspian.UI
             EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
             var result = await (Task<ValidationResult>)asyncValidationTask;
             formSubmitted = true;
+            
             if (result.IsValid)
             {
                 if (OnValidSubmit.HasDelegate)

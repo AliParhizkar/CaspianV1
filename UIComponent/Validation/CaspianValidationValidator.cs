@@ -120,7 +120,7 @@ namespace Caspian.UI
                 asyncValidationTask = Validator.ValidateAsync(context);
             EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
             var result = await asyncValidationTask;
-            EditContext.Properties["ValidationType"] = "FormSubmited";
+            EditContext.Properties["ValidationType"] = "FormSubmitted";
             AddValidationResult(EditContext.Model, result);
         }
 

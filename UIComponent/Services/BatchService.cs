@@ -9,7 +9,6 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using System.Runtime.CompilerServices;
 
 namespace Caspian.UI
 {
@@ -125,20 +124,13 @@ namespace Caspian.UI
         public async Task ReloadForUpdate(int masterId)
         {
             MasterId = masterId;
-            await (this as IInternalUIService<TMaster>).FetchAsync();
+            ChangedEntities?.Clear();
             if (DetailDataView != null)
             {
-                bool dataIsLoaded = false;
-                DetailDataView?.EnableLoading();
-                DetailDataView.OnLoaded = () =>
-                {
-                    dataIsLoaded = true;
-                };
-                if (!dataIsLoaded)
-                    await Task.Delay(100);
+                DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail>).GetDetailsFilterExpression();
+                await DetailDataView.ReloadAsync();
             }
-            ChangedEntities?.Clear();
-            
+            await (this as IInternalUIService<TMaster>).FetchAsync();
         }
 
         protected IServiceScope CreateScope()
@@ -152,11 +144,6 @@ namespace Caspian.UI
         {
             EntityTabPanel = tabPanel;
         }
-
-        //public void ChildrenTabPanelItemInitialize(Type masterType)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
          Type IInternalUIService<TMaster>.DetailType { get; set; }
 
@@ -222,6 +209,7 @@ namespace Caspian.UI
             if (DetailForm != null)
             {
                 DetailForm.OnInternalReset = EventCallback.Factory.Create(this, TypeWindow.Close);
+                //DetailDataView.
                 DetailForm.OnInternalValidSubmit = EventCallback.Factory.Create<TDetail>(this, async detail => 
                 {
                     TypeWindow.Close();
@@ -243,7 +231,8 @@ namespace Caspian.UI
             if (MasterId > 0)
             {
                 using var service = CreateScope().GetService<IBaseService<TMaster>>();
-                UpsertData = await service.SingleAsync(MasterId);
+                var propertyName = typeof(TMaster).GetDetailsProperty(typeof(TDetail)).Name;
+                UpsertData = await service.GetAll().Include(propertyName).SingleAsync(MasterId);
                 Form?.SetModel(UpsertData);
             }
         }
@@ -274,30 +263,23 @@ namespace Caspian.UI
                 Console.ResetColor();
                 service.Context.Database.CurrentTransaction.Rollback();
             }
+            DetailDataView?.ClearSource();
+            UpsertData = Activator.CreateInstance<TMaster>();
+            Form.SetModel(UpsertData);
+            if (OnCreate != null)
+                OnCreate.Invoke(UpsertData);
+            if (DataView != null)
+            {
+                var newId = (int)typeof(TMaster).GetPrimaryKey().GetValue(result);
+                await DataView.SelectRowById(newId);
+            }
+            string message = null;
             if (id == 0)
-            {
-                DetailDataView?.ClearSource();
-                UpsertData = Activator.CreateInstance<TMaster>();
-                Form.SetModel(UpsertData);
-                if (OnCreate != null)
-                    OnCreate.Invoke(UpsertData);
-                if (DataView != null && DataView is DataGrid<TMaster>)
-                {
-                    var newId = (int)typeof(TMaster).GetPrimaryKey().GetValue(result);
-                    await (DataView as DataGrid<TMaster>).SelectRowById(newId);
-                }
-                var message = CaspianDataService.Language == Language.Fa ? "ثبت با موفقیت انجام شد." : "Registration was done successfully";
-                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
-            }
+                message = CaspianDataService.Language == Language.Fa ? "ثبت با موفقیت انجام شد." : "Registration was done successfully";
             else
-            {
-                if (DetailDataView != null)
-                    await DetailDataView.ReloadAsync();
-                if (DataView != null)
-                    await DataView.ReloadAsync();
-                var message = CaspianDataService.Language == Language.Fa ? "بروزرسانی با موفقیت انجام شد." : "Updating was done successfully";
-                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
-            }
+                message = CaspianDataService.Language == Language.Fa ? "بروزرسانی با موفقیت انجام شد." : "Updating was done successfully";
+            await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
+
             if (DetailDataView != null)
                 DetailDataView.CancelInternalUpdate();
             if ((this as IInternalUIService).Window != null)

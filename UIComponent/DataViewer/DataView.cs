@@ -152,11 +152,11 @@ namespace Caspian.UI
         /// Return entities in batch state
         /// </summary>
         /// <returns></returns>
-        public ReadOnlyCollection<TEntity> GetBatchEntities()
+        public ICollection<TEntity> GetBatchEntities()
         {
             if (source == null)
-                return new List<TEntity>().AsReadOnly();
-            return source.AsReadOnly();
+                return new List<TEntity>();
+            return source;
         }
 
         public abstract Task DataBind();
@@ -221,7 +221,7 @@ namespace Caspian.UI
         internal void InsertIconState(bool flag)
         {
             if (AutoHide || !Inline)
-                showInsertIcon = flag;UpdateEntityForForeignKey
+                showInsertIcon = flag;
         }
 
         protected override void OnParametersSet()
@@ -447,6 +447,8 @@ namespace Caspian.UI
                 }
                 index++;
             }
+            if (DetailsService != null)
+                (DetailsService as IInternalBatchService<TEntity>).SetDetails(source);
         }
 
         public async Task UpdateAsync(TEntity entity)
@@ -490,6 +492,8 @@ namespace Caspian.UI
                     break;
                 }
             }
+            if (DetailsService != null)
+                (DetailsService as IInternalBatchService<TEntity>).SetDetails(source);
         }
 
         async Task UpdateEntityForForeignKey(TEntity entity)
@@ -526,6 +530,18 @@ namespace Caspian.UI
         }
 
         protected IQueryable GetQueryForType(Type type, object value)
+        {
+            var serviceType = typeof(IBaseService<>).MakeGenericType(type);
+            var service = ServiceScopeFactory.CreateScope().ServiceProvider.GetService(serviceType) as IBaseService;
+            var query = service.GetAllRecords();
+            var param = Expression.Parameter(type, "t");
+            Expression expr = Expression.Property(param, type.GetPrimaryKey());
+            expr = Expression.Equal(expr, Expression.Constant(value));
+            var lambda = Expression.Lambda(expr, param);
+            return query.Where(lambda);
+        }
+
+        protected IQueryable GetQueryForType(Type type, object[] value)
         {
             var serviceType = typeof(IBaseService<>).MakeGenericType(type);
             var service = ServiceScopeFactory.CreateScope().ServiceProvider.GetService(serviceType) as IBaseService;
@@ -582,6 +598,8 @@ namespace Caspian.UI
                     DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
                     deletedEntities.Add(entity);
                 }
+                if (DetailsService != null)
+                    (DetailsService as IInternalBatchService<TEntity>).SetDetails(source);
             }
             else
                 await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", result.Errors.First().ErrorMessage);

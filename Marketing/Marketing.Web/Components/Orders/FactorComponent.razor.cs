@@ -16,10 +16,20 @@ namespace Marketing.Web.OrderComponents
         double left, top;
         OrderDetail selectedOrderDetail;
 
+        async Task ChangeDescription(WindowStatus status)
+        {
+            await OrderService.DetailDataView.UpdateAsync(selectedOrderDetail);
+            descriptStatus = status; 
+            selectedOrderDetail = null;
+        }
+
         async Task ToppingChanged(decimal sum)
         {
-            var old = OrderService.DetailDataView.GetBatchEntities().Single(t => t.Id == selectedDetailId.Value);
+            var toppings = OrderService.DetailDataView.GetBatchEntities();
+            var old = toppings.Single(t => t.Id == selectedDetailId.Value);
             old.ToppingAmount = sum;
+            /// Initialize Topping To Validate
+            old.OrderDetailToppings = toppingService.DetailDataView.GetBatchEntities().ToList();
             await OrderService.DetailDataView.UpdateAsync(old);
             var data = OrderService.DetailDataView.GetBatchEntities();
             await OnChange.InvokeAsync(data);
@@ -82,6 +92,11 @@ namespace Marketing.Web.OrderComponents
                 }
             }
             return list;
+        }
+
+        public IList<OrderDetailTopping> GetOrderDetailToppings(int detailId)
+        {
+            return null;
         }
 
         public IList<OrderDetailTopping> GetToppingsChange()

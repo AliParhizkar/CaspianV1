@@ -38,7 +38,7 @@
             {
                 @Content(EditContext.Model as TEntity)
             }
-            else
+            else if (ChildContent != null)
             {
                 @ChildContent(EditContext.Model as TEntity)
             }

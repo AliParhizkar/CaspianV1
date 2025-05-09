@@ -1,5 +1,5 @@
 ﻿@page "/Marketing/Order"
-@using Marketing.Web.OrderComponents;
+@using Marketing.Web.OrderComponents
 @inject IUIService<Customer> CustomerService
 @inject BatchService<Customer, CustomerAddress> CustomerAddressService
 @inject BatchService<Customer, CustomerGroupMembership> CustomerGroupService
@@ -10,28 +10,36 @@
     base.BuildRenderTree(__builder);
 }
 
-<ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" Customer="customer" Products="products"/>
-<div class="pe-2 row">
-    <div class="col-md-3">
-        @if (OrderService.DetailDataView != null)
-        {
-            <OtherCostComponent OrderService="OrderService" Products="products" />
-        }
-    </div>
-    <div class="col-md-4 row c-controls">
-        <SimpleCustomerComponent Page="this" CustomerId="OrderService.UpsertData.CustomerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
-                                 CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
-                                 CustomerAddressGroupsService="CustomerAddressGroupsService" />
-        <RadioList @bind-Value="OrderService.UpsertData.OrderType" ColSpan="9" TotalSpan="12" />
-    </div>
-    <div class="col-md-1">
-        <OrderComponent Page="this" OnChange="InitializeOrder" />
-    </div>
-</div>
+<ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" Customer="customer" Products="products" />
 
 
-<CaspianForm Service="OrderService">
-    <button>ثبت</button>
+<CaspianForm TEntity="Order" Service="OrderService">
+    <div class="pe-2 row">
+        <div class="col-md-4">
+            @if (OrderService.DetailDataView != null)
+            {
+                <OtherCostComponent OrderService="OrderService" Products="products" OnChange="() => { }" />
+            }
+        </div>
+        <div class="col-md-5 row c-controls">
+            <SimpleCustomerComponent Page="this" CustomerId="OrderService.UpsertData.CustomerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
+                                     CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
+                                     CustomerAddressGroupsService="CustomerAddressGroupsService" />
+            <RadioList @bind-Value="OrderService.UpsertData.OrderType" ColSpan="9" TotalSpan="12" />
+            <div class="col-md-2 text-center pt-3">
+                <OrderComponent Page="this" OnChange="InitializeOrder" />
+            </div>
+            <div class="col-md-4 text-center pt-3">
+                <button class="c-btn c-primary">ثبت   <span class="me-1 ms-1 fa fa-save"></span></button>
+            </div>
+            <div class="col-md-4 text-center pt-3">
+                <button class="c-btn c-primary">چاپ   <span class="me-1 ms-1 fa fa-print"></span></button>
+            </div>
+        </div>
+        <div class="col-md-3 row c-controls ps-3">
+            <PaymentComponent Customer="customer" Order="OrderService.UpsertData" />
+        </div>
+    </div>
 </CaspianForm>
 
 @code
@@ -51,7 +59,7 @@
             customer = null;
     }
 
-    void ChangeOnOrderDetails(IList<OrderDetail> orderDetails)
+    void ChangeOnOrderDetails(ICollection<OrderDetail> orderDetails)
     {
 
     }

@@ -32,6 +32,12 @@ namespace Marketing.Model
         [DisplayName("گروه")]
         public int? GroupId { get; set; }
 
+        [DisplayName("موجودی حساب")]
+        public int AccountBalance { get; set; }
+
+        [DisplayName("موجودی منفی")]
+        public bool NegativeBalance { get; set; }
+
         [ForeignKey(nameof(GroupId))]
         public CustomerGroup CustomerGroup { get; set; }
 
