@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Marketing.Service
 {
-    public class ProductService : MasterDetailsService<Product, ProductTopping>, IBaseService<Product>
+    public class ProductService : MasterDetailsService<Product, ProductTopping, ProductDescription>, IBaseService<Product>
     {
         public ProductService(IServiceProvider provider)
             : base(provider)
@@ -25,6 +25,7 @@ namespace Marketing.Service
                 return await provider.GetCaspianService<ProductCategoryService>().AnyAsync(u => u.CategoryId == t.CategoryId);
             }, "گروه محصول دارای زیرگروه می باشد و نمی تواند دارای محصول باشد.");
             RuleForEach(t => t.ProductToppings).SetValidator(new ProductToppingService(provider));
+            RuleForEach(t => t.ProductDescriptions).SetValidator(new ProductDescriptionService(provider));
         }
     }
 }

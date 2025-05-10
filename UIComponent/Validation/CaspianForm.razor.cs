@@ -138,6 +138,8 @@ namespace Caspian.UI
             await OnFormSubmitHandler(EditContext);
         }
 
+        internal Action OnBeforeValidate {  get; set; }
+
         async Task OnFormSubmitHandler(EditContext context)
         {
             addControls = true;
@@ -147,7 +149,6 @@ namespace Caspian.UI
             var cancel = false;
             if (OnSubmit.HasDelegate)
             {
-                
                 var cancelableEvent = new CancelableEvent<TEntity>(EditContext.Model as TEntity);
                 await OnSubmit.InvokeAsync(cancelableEvent);
                 cancel = cancelableEvent.Cancel;
@@ -160,8 +161,12 @@ namespace Caspian.UI
             FormAppState.ErrorMessage = null;
             ErrorMessage = null;
             if ((Service as IInternalUIService<TEntity>)?.DetailType != null)
+            {
                 EditContext.Properties["DetailType"] = (Service as IInternalUIService<TEntity>).DetailType;
+            }
             EditContext.Validate();
+            if (OnBeforeValidate != null)
+                OnBeforeValidate();
             if (ValidationValidator == null)
             {
                 var services = provider.GetServices<IBaseService<TEntity>>();

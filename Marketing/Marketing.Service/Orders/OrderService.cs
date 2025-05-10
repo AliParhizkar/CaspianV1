@@ -6,6 +6,7 @@ namespace Marketing.Service
 {
     public class OrderService : MasterDetailsService<Order, OrderDetail>, IBaseService<Order>
     {
+        
         public OrderService(IServiceProvider provider)
             :base(provider) 
         {
@@ -13,9 +14,7 @@ namespace Marketing.Service
             RuleFor(t => t.OrderDetails).Custom(t => t.OrderDetails == null || !t.OrderDetails.Any(), "سفارش باید حداقل یک محصول داشته باشد.");
             RuleFor(t => t.ProductAmount).Custom(t =>
             {
-                if (t.OrderDetails == null)
-                    return false;
-                return t.OrderDetails.Sum(u => u.Quantity * (u.Price - u.Discount + u.ToppingAmount)) != t.ProductAmount;
+                return Details.Sum(u => u.Quantity * (u.Price - u.Discount + u.ToppingAmount)) != t.ProductAmount;
             }, "جمع محصول درست محاسبه نشده است");
             RuleFor(t => t.DiscountAmount).Custom(t =>
             {

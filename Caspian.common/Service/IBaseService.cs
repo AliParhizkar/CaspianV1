@@ -6,11 +6,15 @@ namespace Caspian.Common.Service
     public interface IMasterDetailsService<TMaster, TDetails>: IBaseService<TMaster>
     {
         Task<TMaster> UpdateDatabaseAsync(TMaster entity, IList<ChangedEntity<TDetails>> changedEntities);
+
+        Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetails>> changedEntities);
     }
 
-    public interface IMasterDetailsService<TMaster, TDetails, TDetails1>: IMasterDetailsService<TMaster, TDetails>
+    public interface IMasterDetailsService<TMaster, TDetails, TDetails1>: IBaseService<TMaster>
     {
         Task<TMaster> UpdateDatabaseAsync(TMaster entity, IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1);
+
+        Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1);
     }
 
     public interface IBaseService<TEntity>: IEntity, IValidator<TEntity>, IDisposable

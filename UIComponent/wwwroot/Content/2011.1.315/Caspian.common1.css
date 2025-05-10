@@ -108,7 +108,7 @@ fieldset.c-container {
     flex-wrap: wrap;
     flex-direction: column;
     overflow: auto;
-
+    text-align:justify;
 }
 
     .c-filtering {
@@ -2533,7 +2533,6 @@ div.t-window {
     
 .c-tabstrip-items {
     position: relative;
-    width: fit-content;
 }
 .t-tabstrip {
     background-color: white;

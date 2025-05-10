@@ -184,6 +184,8 @@ namespace Caspian.UI
 
         protected Action<TEntity> OnAfterDelete { get; set; }
 
+        internal IBaseService<TEntity> BaseService { get; private set; }
+
         void IInternalUIService<TEntity>.FormInitialize(CaspianForm<TEntity> form)
         {
             Form = form;
@@ -204,6 +206,7 @@ namespace Caspian.UI
                     baseEntity.UpsertUserId = UserId;
                     baseEntity.UpsertDate = DateTime.Now;
                 }
+                BaseService = form?.ValidationValidator?.Validator;
                 OnFormSubmit?.Invoke(entity);
             });
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, async entity =>

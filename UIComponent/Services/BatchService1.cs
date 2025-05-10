@@ -5,6 +5,7 @@ using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
@@ -29,6 +30,7 @@ namespace Caspian.UI
             var masterId = Convert.ChangeType(MasterId, masterInfo.PropertyType);
             return Expression.Equal(expr, Expression.Constant(masterId));
         }
+
         void IInternalBatchService<TDetail1>.SetDetails(IList<TDetail1> details)
         {
             
@@ -45,21 +47,52 @@ namespace Caspian.UI
         void IInternalBatchService<TDetail1>.DetailFormInitialize(CaspianForm<TDetail1> caspianForm)
         {
             DetailForm = caspianForm;
+            if (DetailForm != null)
+            {
+                DetailForm.OnInternalReset = EventCallback.Factory.Create(this, TypeWindow.Close);
+                DetailForm.OnInternalValidSubmit = EventCallback.Factory.Create<TDetail1>(this, async detail1 =>
+                {
+                    TypeWindow.Close();
+                    var id = Convert.ToInt32(typeof(TDetail1).GetPrimaryKey().GetValue(detail1));
+                    if (id == 0)
+                        await DetailDataView.InsertAsync(detail1);
+                    else
+                        await DetailDataView.UpdateAsync(detail1);
+                    (this as IInternalUIService<TMaster>).StateHasChanged();
+                });
+            }
         }
 
         void IInternalBatchService<TDetail1>.DetailTypeWindowInitialize(TypeWindow<TDetail1> window)
         {
-            
+            TypeWindow = window;
+            DetailDataView.Batch = true;
+            DetailDataView.OnInternalUpsert = EventCallback.Factory.Create<TDetail1>(this, async detail1 =>
+            {
+                if (MasterId > 0)
+                {
+                    var info = typeof(TDetail1).GetForeignKey(typeof(TMaster));
+                    var value = Convert.ChangeType(MasterId, info.PropertyType.GetUnderlyingType());
+                    info.SetValue(detail1, value);
+                }
+                await TypeWindow.OpenAsync(detail1, DetailDataView.GetSource().ToList());
+                (this as IInternalUIService<TMaster>).StateHasChanged();
+                await Task.Delay(100);
+                if (DetailForm != null)
+                    await DetailForm.FocusAsync();
+            });
         }
 
         public IList<ChangedEntity<TDetail1>> ChangedEntities { get; set; }
 
         void IInternalBatchService<TDetail1>.DetailDataViewInitialize(DataView<TDetail1> dataView)
         {
+            DetailDataView = dataView;
             if (dataView != null)
             {
-                DetailDataView = dataView;
-                DetailDataView.Batch = true;
+                if (DetailDataView.Inline)
+                    DetailDataView.Batch = true;
+                DetailDataView.InsertIconState(true);
                 DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail1>).GetDetailsFilterExpression();
             }
         }

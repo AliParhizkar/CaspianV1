@@ -44,12 +44,11 @@ namespace Caspian.UI
         [Parameter]
         public bool OnlyValidateOnSubmit { get; set; } = true;
 
-        [CascadingParameter]
-        private Task<AuthenticationState> authenticationStateTask { get; set; }
-
         public string MasterIdName { get; set; }
 
-        IValidator<TModel> Validator;
+        internal IBaseService<TModel> Validator {  get; private set; }
+
+
         ValidationMessageStore ValidationMessageStore;
 
         public bool IsFirstInvalidControl { get; set; }
@@ -109,10 +108,11 @@ namespace Caspian.UI
                 dataService.UserId = CaspianDataService.UserId;
                 dataService.Language = CaspianDataService.Language;
             }
-            Validator = (IValidator<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
+            Validator = (IBaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             (Validator as ICaspianValidator).BatchServiceData = BatchServiceData;
             if (Source != null && Source.Count() > 0)
                 (Validator as IBaseService<TModel>).SetSource(Source.AsReadOnly());
+            
             Task<ValidationResult> asyncValidationTask;
             if (EditContext.Properties.TryGetValue("DetailType", out var objeDetail) && objeDetail != null)
                 asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objeDetail);
@@ -175,22 +175,6 @@ namespace Caspian.UI
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            ///For Master Details form this code is not working
-            ///We Use Caspian Form instate of this
-            //if (FormAppState.ValidationChecking)
-            //{
-            //    var control = CaspianForm?.GetFirstInvalidControl();
-            //    if (control != null)
-            //    {
-            //        FormAppState.ValidationChecking = false;
-            //        await control.FocusAsync();
-            //    }
-            //    else if (FormAppState.ErrorMessage !=  null)
-            //    {
-            //        await JSRuntime.InvokeVoidAsync("caspian.common.showMessage", FormAppState.ErrorMessage);
-            //        FormAppState.ErrorMessage = null;
-            //    }
-            //}
             if (CaspianForm == null && FormAppState.AllControlsIsValid)
             {
                 if (FormAppState.Control?.InputElement == null)

@@ -538,7 +538,12 @@ var caspian;
                     tabpanel.getElementsByClassName('c-selected-panel')[0].style.top = `${pos.top - basePos.top + 8}px`;
                 else {
                     let seledtedPanel = tabpanel.getElementsByClassName('c-selected-panel')[0];
-                    seledtedPanel.style.left = `${pos.left - basePos.left + 3}px`;
+                    if (common.RightToLeft()) {
+                        console.log(basePos.left);
+                        seledtedPanel.style.left = `${pos.left - basePos.left + 3}px`;
+                    }
+                    else
+                        seledtedPanel.style.left = `${pos.left - basePos.left + 3}px`;
                     seledtedPanel.style.width = `${pos.width - 8}px`;
                 }
             }

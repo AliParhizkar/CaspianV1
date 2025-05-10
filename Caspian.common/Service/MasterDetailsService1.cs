@@ -12,6 +12,11 @@ namespace Caspian.Common.Service
             BatchServiceData.DetailPropertiesInfo.Add(detailsProperty);
         }
 
+        public async Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1)
+        {
+
+        }
+
         public async Task<TMaster> UpdateDatabaseAsync(TMaster entity, IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1)
         {
             var masterId = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(entity));
@@ -58,5 +63,7 @@ namespace Caspian.Common.Service
                 return entity;
             return await base.UpdateDatabaseAsync(entity, changedEntities);
         }
+
+
     }
 }

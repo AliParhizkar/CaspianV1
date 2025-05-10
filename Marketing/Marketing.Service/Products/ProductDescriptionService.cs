@@ -9,7 +9,7 @@ namespace Marketing.Service
         public ProductDescriptionService(IServiceProvider provider)
             :base(provider) 
         {
-            RuleFor(t => t.Description).UniqueAsync(t => t.ProductId, "این عنوان برای محصول ثبت شده است");
+            RuleFor(t => t.Description).Required().UniqueAsync(t => t.ProductId, "این عنوان برای محصول ثبت شده است");
         }
     }
 }

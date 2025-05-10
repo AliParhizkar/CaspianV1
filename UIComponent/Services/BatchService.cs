@@ -308,7 +308,12 @@ namespace Caspian.UI
                     (this as IInternalUIService<TMaster>).StateHasChanged();
                 }
             });
-
+            form.OnBeforeValidate = async () =>
+            {
+                if (form?.ValidationValidator?.Validator != null)
+                    if (form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail> service)
+                        await service.SetChangedEntities(UpsertData, ChangedEntities);
+            };
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TMaster>(this, UpdateDatabaseAsync);
         }
 
@@ -316,7 +321,7 @@ namespace Caspian.UI
         {
             baseComponentService = serviceProvider.GetService<BaseComponentService>();
             if (baseComponentService.Target == null)
-                throw new CaspianException("You must inherits from BasePage or configure page manioaly");
+                throw new CaspianException("You must inherits from BasePage or configure page manualy");
             (baseComponentService.Target as BasePage).ChangeState();
         }
 
