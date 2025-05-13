@@ -5,9 +5,9 @@
 {
     @if (TotalSpan != ColSpan)
     {
-        <div class="col-md-@(TotalSpan - ColSpan)"></div>
+        <div class="col-md-@((TotalSpan - ColSpan).ToString()+ ' ' + Class)"></div>
     }
-    <div class="text-center col-md-@(ColSpan)">
+    <div class="text-center col-md-@(ColSpan.ToString() + ' ' + Class)">
         @RenderButtons()
     </div>
 }
@@ -26,7 +26,7 @@ else
         string resetButtonTitle = ResetButtonTitle ?? (service.Language == Language.Fa ? "بازنشانی" : "Reset");
         return __builder =>
         {
-            <div class="c-form-action">
+            <div class="c-form-action @(Class)">
                 <button class="c-btn c-primary" @attributes="Attributes" type="submit">@submitTitle</button>
                 @if (!HideResetButton)
                 {
@@ -53,4 +53,7 @@ else
 
     [Parameter]
     public int? TotalSpan { get; set; } = 12;
+
+    [Parameter]
+    public string Class { get; set; }
 }

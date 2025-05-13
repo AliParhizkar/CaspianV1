@@ -10,10 +10,10 @@
     base.BuildRenderTree(__builder);
 }
 
-<ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="ChangeOnOrderDetails" Customer="customer" Products="products" />
+<ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="() => { }" Customer="customer" Products="products" />
 
 
-<CaspianForm TEntity="Order" Service="OrderService">
+<CaspianForm TEntity="Order" Service="OrderService" OnSubmit="async order => await SetTopings(order)">
     <div class="pe-2 row">
         <div class="col-md-4">
             @if (OrderService.DetailDataView != null)
@@ -59,9 +59,17 @@
             customer = null;
     }
 
-    void ChangeOnOrderDetails(ICollection<OrderDetail> orderDetails)
+    async Task SetTopings(CancelableEvent<Order> e)
     {
-
+        var order = e.Entity;
+        if (order.Id > 0)
+        {
+            using var service = CreateScope().GetService<OrderDetailToppingService>();
+            var toppings = await service.GetAll().Where(t => t.OrderDetail.OrderId == order.Id).ToListAsync();
+            foreach (var detail in order.OrderDetails)
+                if (detail.OrderDetailToppings == null)
+                    detail.OrderDetailToppings = toppings.Where(t => t.OrderDetailId == detail.Id).ToList();
+        }
     }
 
     protected override void OnInitialized()
@@ -74,6 +82,7 @@
             order.RoundType = ConfigService.Config.RoundType;
             order.RoundAmount = ConfigService.Config.RoundAmount;
             order.OrderType = ConfigService.Config.DefaultOrderType;
+            productComponent.ClearToppingService();
         };
         OrderService.OnUpsert = async (provider, order) =>
         {
@@ -123,7 +132,6 @@
     async Task InitializeOrder(int orderId)
     {
         await OrderService.ReloadForUpdate(orderId);
-
     }
 
     protected override async Task OnInitializedAsync()

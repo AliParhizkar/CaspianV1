@@ -589,9 +589,8 @@ namespace Caspian.Common
                             var serviceData = context.RootContextData["__BatchServiceData"] as BatchServiceData;
                             if (serviceData.MasterId == 0)
                             {
-                                var qqqq = typeof(TModel);
-                                var MasterInfo = typeof(TModel).GetProperties().SingleOrDefault(t => t.PropertyType == serviceData.MasterType);
-                                if (MasterInfo != null && MasterInfo == info)
+                                var masterInfo = typeof(TModel).GetProperties().SingleOrDefault(t => t.PropertyType == serviceData.MasterType);
+                                if (masterInfo != null && masterInfo == info)
                                     flag = true;
                             }
                         }

@@ -4,6 +4,13 @@ using System.Linq.Expressions;
 
 namespace Caspian.UI
 {
+    internal interface ISimpleBatchService
+    {
+        Type MasterType { get; }
+
+        PropertyInfo ThirdLevelProperty { get; set; }
+    }
+
     public interface ISimpleBatchService<TDetail> 
     {
         int MasterId { get; }
@@ -11,7 +18,7 @@ namespace Caspian.UI
         IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
     }
 
-    internal interface IInternalBatchService<TDetail>: IBatchService<TDetail> where TDetail : class
+    internal interface IInternalBatchService<TDetail>: IBatchService<TDetail>, ISimpleBatchService where TDetail : class
     {
         void DetailDataViewInitialize(DataView<TDetail> dataView);
         void DetailTypeWindowInitialize(TypeWindow<TDetail> window);
@@ -21,8 +28,6 @@ namespace Caspian.UI
         void SetDetails(IList<TDetail> details);
 
         Expression GetDetailsFilterExpression();
-
-        PropertyInfo ThirdLevelProperty { get; set; }
     }
 
     public interface IBatchService<TDetail> : ISimpleBatchService<TDetail> where TDetail : class

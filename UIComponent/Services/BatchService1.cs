@@ -22,6 +22,8 @@ namespace Caspian.UI
             caspianDataService = provider.GetService<CaspianDataService>();
         }
 
+        Type ISimpleBatchService.MasterType => typeof(TMaster);
+
         Expression IInternalBatchService<TDetail1>.GetDetailsFilterExpression()
         {
             var param = Expression.Parameter(typeof(TDetail1), "t");
@@ -36,7 +38,7 @@ namespace Caspian.UI
             
         }
 
-        PropertyInfo IInternalBatchService<TDetail1>.ThirdLevelProperty { get; set; }
+        PropertyInfo ISimpleBatchService.ThirdLevelProperty { get; set; }
 
         public DataView<TDetail1> DetailDataView { get; private set; }
 

@@ -8,7 +8,6 @@ using System.Linq.Dynamic.Core;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Caspian.UI
 {
@@ -22,9 +21,6 @@ namespace Caspian.UI
 
         [Inject]
         public FormAppState FormAppState { get; set; }
-
-        [Inject]
-        public BatchServiceData BatchServiceData { get; set; }
 
         [Inject]
         public CaspianDataService CaspianDataService { get; set; }
@@ -52,6 +48,9 @@ namespace Caspian.UI
         ValidationMessageStore ValidationMessageStore;
 
         public bool IsFirstInvalidControl { get; set; }
+
+        [Parameter]
+        public IBatchService<TModel> DetailsService { get; set; }
 
         private void HookUpEditContextEvents()
         {
@@ -109,7 +108,16 @@ namespace Caspian.UI
                 dataService.Language = CaspianDataService.Language;
             }
             Validator = (IBaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
-            (Validator as ICaspianValidator).BatchServiceData = BatchServiceData;
+            if (CaspianForm == null)
+            {
+                (Validator as ICaspianValidator).BatchServiceData.MasterType = (DetailsService as ISimpleBatchService).MasterType;
+                (Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (DetailsService as ISimpleBatchService).ThirdLevelProperty;
+            }
+            else
+            {
+                (Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (CaspianForm.Service as ISimpleBatchService).ThirdLevelProperty;
+                (Validator as ICaspianValidator).BatchServiceData.MasterType = CaspianForm.Model.GetType();
+            }
             if (CaspianForm != null && CaspianForm.OnBeforeValidate.HasDelegate)
                 await CaspianForm.OnBeforeValidate.InvokeAsync();
             if (Source != null && Source.Count() > 0)

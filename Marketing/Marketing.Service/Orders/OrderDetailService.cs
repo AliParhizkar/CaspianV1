@@ -12,7 +12,7 @@ namespace Marketing.Service
             RuleFor(t => t.ProductId).UniqueAsync(t => t.OrderId, "این محصول در حال حاضر به سفارش اضافه شده است");
             RuleFor(t => t.ToppingAmount).Custom(t =>
             {
-                return Details.Sum(u => u.Quantity * u.Price) != t.ToppingAmount;
+                return (t.OrderDetailToppings ?? new List<OrderDetailTopping>()).Sum(u => u.Quantity * u.Price) != t.ToppingAmount;
             }, "جمع کل تاپینگ درست محاسبه نشده است");
         }
     }

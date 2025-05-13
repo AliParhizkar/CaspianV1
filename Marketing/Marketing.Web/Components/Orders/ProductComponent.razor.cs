@@ -61,6 +61,8 @@ namespace Marketing.Web.OrderComponents
 
         public IList<OrderDetailTopping> GetOrderDetailToppings(int orderDetailId) => factor.GetOrderDetailToppings(orderDetailId);
 
+        public void ClearToppingService() => factor?.ClearToppingService();
+
         public IList<OrderDetailTopping> DeletedToppings => factor.GetDeletedToppings();
 
         public IList<OrderDetailTopping> ChangedToppings => factor.GetToppingsChange();

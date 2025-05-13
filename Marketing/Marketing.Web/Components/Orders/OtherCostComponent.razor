@@ -56,10 +56,8 @@
             return order.DiscountAmount;
         if (order.PercentDiscount > 0)
         {
-            var topingsAmount = OrderService.DetailDataView.GetBatchEntities().Sum(t => t.ToppingAmount);
-            var sumProductsAmount = OrderService.DetailDataView.GetBatchEntities().Where(t => Products.Single(u => u.Id ==
-                t.ProductId).Discountable).Sum(t => (t.Price - t.Discount)* t.Quantity);
-            return order.PercentDiscount * (topingsAmount + sumProductsAmount) / 100;
+            var sumProductAmount = GetSumProductAmount();
+            return order.PercentDiscount * sumProductAmount / 100;
         }
         return 0;
     }

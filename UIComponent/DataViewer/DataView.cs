@@ -561,8 +561,6 @@ namespace Caspian.UI
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
             if (DetailsService != null && (DetailsService as IInternalBatchService<TEntity>).ThirdLevelProperty != null)
             {
-                if (service.BatchServiceData == null)
-                    service.BatchServiceData = new BatchServiceData();
                 if (service.BatchServiceData.DetailPropertiesInfo == null)
                     service.BatchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
                 service.BatchServiceData.DetailPropertiesInfo.Add((DetailsService as IInternalBatchService<TEntity>).ThirdLevelProperty);

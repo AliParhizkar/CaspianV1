@@ -25,7 +25,7 @@ namespace Marketing.Web.OrderComponents
         {
             using var service = Page.CreateScope().GetService<OrderService>();
             var date = DateTime.Now.ToDateOnly();
-            orders = await service.GetAll().Where(t => t.SettleType == null && t.OrderDate == date).ToListAsync();
+            orders = await service.GetAll().Where(t => !t.IsSettled && t.OrderDate == date).ToListAsync();
             statusLevel1 = WindowStatus.Open;
         }
 

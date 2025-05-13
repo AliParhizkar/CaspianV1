@@ -3,8 +3,8 @@ using System.Reflection;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common.Service
 {
@@ -13,9 +13,6 @@ namespace Caspian.Common.Service
         public MasterDetailsService(IServiceProvider provider)
             : base(provider)
         {
-            BatchServiceData = new BatchServiceData();
-            BatchServiceData.MasterType = typeof(TMaster);
-            BatchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
             var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
             BatchServiceData.DetailPropertiesInfo.Add(detailsProperty);
             Details = new List<TDetail>();
@@ -51,7 +48,10 @@ namespace Caspian.Common.Service
             expr = Expression.Equal(expr, constantExpr);
             expr = Expression.Lambda(expr, parameter);
             using var service = ServiceProvider.CreateScope().GetService<IBaseService<TDetail>>();
-            var result = await service.GetAll().Where(expr).ToListAsync();
+            var query = service.GetAll().Where(expr);
+            if (BatchServiceData.ThirdLevelProperty != null)
+                query = query.Include(BatchServiceData.ThirdLevelProperty.Name);
+            var result = await query.ToListAsync();
             var key = typeof(TDetail).GetPrimaryKey();
             ///Remove changed Entities (updated or deleted)
             foreach (var item in ChangedEntities.Where(t => t.ChangeStatus != ChangeStatus.Added))

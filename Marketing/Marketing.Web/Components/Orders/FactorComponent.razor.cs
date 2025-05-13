@@ -35,6 +35,11 @@ namespace Marketing.Web.OrderComponents
             await OnChange.InvokeAsync(data);
         }
 
+        public void ClearToppingService()
+        {
+            toppingServices.Clear();
+        }
+
         async Task UpdateQuantity(OrderDetail orderDetail, decimal value)
         {
             if (value >= 0)

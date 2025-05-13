@@ -94,7 +94,7 @@
                             </div>
                             <div class="col-md-4 pe-3 pb-2 text-center pt-1">
                                 <label class="d-membership">تاپینکهای محصول</label>
-                                <CheckedListbox TEntity="Topping" TDetails="ProductTopping" Service="Service" Style="height: calc(100% - 40px); flex-wrap: nowrap"
+                                <CheckedListbox TEntity="Topping" TDetails="ProductTopping" Service="Service" Style="height: 280px"
                                                 TextExpression="t => t.Name" />
                             </div>
                         </div>
@@ -110,9 +110,9 @@
                             </Columns>
                         </DataGrid>
                     </div>
-                    <TypeWindow TEntity="ProductDescription" Service="Service" Title="شرح پیش فرض" Style="width:500px;">
-                        <StringTextBox @bind-Value="context.Description" ColSpan="8" MultiLine Rows="2" />
-                        <FormCommandButton ColSpan="8" />
+                    <TypeWindow TEntity="ProductDescription" Service="Service" Title="شرح پیش فرض" Style="width:400px;">
+                        <StringTextBox @bind-Value="context.Description" ColSpan="9" MultiLine Rows="2" />
+                        <FormCommandButton ColSpan="9" Class="pt-2" />
                     </TypeWindow>
                 </TabPanelItem>
             </Tabs>

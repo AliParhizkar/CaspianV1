@@ -28,6 +28,8 @@ namespace Caspian.UI
             
         }
 
+        Type ISimpleBatchService.MasterType => typeof(TMaster);
+
         /// <summary>
         /// Open Window to validate and upsert the entity. In this case window has form that bind to entity
         /// </summary>
@@ -116,7 +118,6 @@ namespace Caspian.UI
             ChangedEntities = new List<ChangedEntity<TDetail>>();
             UpsertData = Activator.CreateInstance<TMaster>();
             batchServiceData = serviceProvider.GetService<BatchServiceData>();
-            batchServiceData.MasterType = typeof(TMaster);
             if (batchServiceData.DetailPropertiesInfo == null)
                 batchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
             var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
@@ -131,7 +132,7 @@ namespace Caspian.UI
             searchData = types;
         }
 
-        PropertyInfo IInternalBatchService<TDetail>.ThirdLevelProperty { get; set; }
+        PropertyInfo ISimpleBatchService.ThirdLevelProperty { get; set; }
 
         public void ThirdDataLevelToIgnoreOnRemove<TProperty>(Expression<Func<TDetail, ICollection<TProperty>>> expression)
         {
@@ -299,7 +300,6 @@ namespace Caspian.UI
         void IInternalUIService<TMaster>.FormInitialize(CaspianForm<TMaster> form)
         {
             Form = form;
-            batchServiceData.MasterType = typeof(TMaster);
             var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
             if (!batchServiceData.DetailPropertiesInfo.Contains(detailsProperty))
                 batchServiceData.DetailPropertiesInfo.Add(detailsProperty);

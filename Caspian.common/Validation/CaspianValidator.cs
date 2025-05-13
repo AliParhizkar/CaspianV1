@@ -5,17 +5,19 @@ using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using FluentValidation.Results;
 using FluentValidation.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common
 {
     public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator, IEntity where TModel : class
     {
-        public BatchServiceData BatchServiceData { get; set; }
-
+        public BatchServiceData BatchServiceData { get; private set; }
 
         public CaspianValidator(IServiceProvider provider)
         {
+            BatchServiceData = provider.GetService<BatchServiceData>();
+            
             ServiceProvider = provider;
             
             var contextType = new AssemblyInfo().GetDbContextType(typeof(TModel));

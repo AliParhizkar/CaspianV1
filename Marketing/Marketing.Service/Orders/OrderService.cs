@@ -1,13 +1,11 @@
 ﻿using Caspian.Common;
 using Marketing.Model;
 using Caspian.Common.Service;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Marketing.Service
 {
     public class OrderService : MasterDetailsService<Order, OrderDetail>, IBaseService<Order>
     {
-        
         public OrderService(IServiceProvider provider)
             :base(provider) 
         {
@@ -65,8 +63,9 @@ namespace Marketing.Service
             entity.OrderDate = DateTime.Now.GetDateOnly();
             entity.OrderTime = DateTime.Now.ToTimeOnly();
             var query = GetAll();
+
             if (DateTime.Now.TimeOfDay > ConfigService.Config.OpenTime.ToTimeSpan())
-                query = query.Where(t => t.OrderDate == entity.OrderDate && t.OrderTime > entity.OrderTime);
+                query = query.Where(t => t.OrderDate == entity.OrderDate && t.OrderTime > ConfigService.Config.OpenTime);
             else // from midnight to open time order number set for yesterday 
             {
                 var yesterday = entity.OrderDate.AddDays(-1);
