@@ -19,7 +19,11 @@ namespace Demo.Service
             :base(provider)
         {
             RuleFor(t => t.Date).CustomValue(t => t == default, "Please specify the order date");
-            RuleFor(t => t.OrderDetails).Custom(t => t.Id == 0 && (t.OrderDetails == null || t.OrderDetails.Count == 0), "The order must has at least products");
+            RuleFor(t => t.TotalAmount).Custom(t => Details.Sum(t => t.Quantity * t.Price) != t.TotalAmount, "Total amount is incorect");
+            RuleFor(t => t.OrderDetails).Custom(t => 
+            {
+                return Details.Count() == 0;
+            }, "The order must has at least products");
             RuleFor(t => t.OrderStatus).Custom(t => t.CourierId.HasValue && t.OrderStatus == OrderStatus.Canceled,
                 "The order has a courier and it is not possible to cancel it.");
             RuleFor(t => t.CustomerId).Required();

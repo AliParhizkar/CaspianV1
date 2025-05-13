@@ -36,7 +36,7 @@ namespace Caspian.UI
         private EditContext EditContext { get; set; }
 
         [CascadingParameter(Name = "ParentForm")]
-        private ICaspianForm<TModel> CaspianForm { get; set; }
+        private CaspianForm<TModel> CaspianForm { get; set; }
 
         [Parameter]
         public Type ValidatorType { get; set; }
@@ -110,12 +110,14 @@ namespace Caspian.UI
             }
             Validator = (IBaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             (Validator as ICaspianValidator).BatchServiceData = BatchServiceData;
+            if (CaspianForm != null && CaspianForm.OnBeforeValidate.HasDelegate)
+                await CaspianForm.OnBeforeValidate.InvokeAsync();
             if (Source != null && Source.Count() > 0)
-                (Validator as IBaseService<TModel>).SetSource(Source.AsReadOnly());
+                Validator.SetSource(Source.AsReadOnly());
             
             Task<ValidationResult> asyncValidationTask;
-            if (EditContext.Properties.TryGetValue("DetailType", out var objeDetail) && objeDetail != null)
-                asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objeDetail);
+            if (EditContext.Properties.TryGetValue("DetailType", out var objDetail) && objDetail != null)
+                asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objDetail);
             else
                 asyncValidationTask = Validator.ValidateAsync(context);
             EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
@@ -168,7 +170,7 @@ namespace Caspian.UI
             if (CaspianForm != null)
             {
                 CaspianForm.ValidationValidator = this;
-                MasterIdName = CaspianForm.MasterIdName;
+                MasterIdName = (CaspianForm as ICaspianForm).MasterIdName;
             }
             base.OnAfterRender(firstRender);
         }

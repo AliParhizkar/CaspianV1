@@ -68,10 +68,13 @@
                         <hr class="mt-2" />
                     </div>
                     <div class="col-md-8 row ps-3 ">
-                        <div class="col-md-12 text-center">
+                        <div class="col-md-11 text-center">
                             <span class="d-membership">Orderdetails</span>
-                            <hr class="mt-2" />
                         </div>
+                        <div class="col-md-1 text-end pe-1">
+                            <span @ref="btnOrders" @onclick="ShowOrders" class="fa fa-bars c-small-icon"></span>
+                        </div>
+                        <hr class="mt-2" />
                     </div>
                     <div class="col-md-4 row pe-3">
                         <CaspianForm Service="Service">
@@ -80,10 +83,9 @@
                                     <DatePicker @bind-Value="order.Date" ColSpan="8" />
                                     <DropdownList @bind-Value="order.OrderType" ColSpan="8" />
                                     <ComboBox TEntity="Customer" TValue="int?" @bind-Value="order.CustomerId" ColSpan="8"
-                                            TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
-                                    <div class="col-md-12">
-                                        <FormCommandButton />
-                                    </div>
+                                              TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
+                                    <NumericTextBox Value="order.TotalAmount" DigitGrouping readonly Title="Sum Total" ColSpan="8" />
+                                    <FormCommandButton />
                                 </div>
                             </Content>
                         </CaspianForm>
@@ -118,9 +120,9 @@
                                     <GridColumn Field="t => t.Quantity" Title="Quantity" style="width:140px;">
                                         <Template>
                                             <div class="d-icons">
-                                                <IconButton IconType="IconType.Plus" @onclick="async () => await IncQuantity(context.Data)" />
-                                                <NumericTextBox TValue="int" Value="@context.Data.Quantity" ValueChanged="value => UpdateGridAfterQuantityChanged(value, context.Data)" />
-                                                <IconButton IconType="IconType.Minus" @onclick="async () => await DecQuantity(context.Data)" />
+                                                <span class="fa fa-plus c-small-icon" @onclick="async () => await IncQuantity(context.Data)"></span>
+                                                <NumericTextBox Style="width:50px;" TValue="int" Value="@context.Data.Quantity" ValueChanged="async value => await UpdateGridAfterQuantityChanged(value, context.Data)" />
+                                                <span class="fa fa-minus c-small-icon" @onclick="async () => await DecQuantity(context.Data)"></span>
                                             </div>
                                         </Template>
                                     </GridColumn>
@@ -137,15 +139,49 @@
     </Tabs>
 </TabPanel>
 
+<PopupWindow @bind-Status="ordersStatus" TargetElement="btnOrders" TargetHorizontalAnchor="HorizontalAnchor.Left" OffsetLeft="-1"
+             TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right" VerticalAnchor="VerticalAnchor.Middle">
+    <div class="d-orders">
+        @foreach (var order in orders)
+        {
+            <div class="d-order-item">
+                <span>@order.OrderNo</span>
+                <span>@order.TotalAmount.DigitGrouping()</span>
+                <span @onclick="async () => await InitializeOrder(order.Id)" class="fa fa-pencil c-small-icon"></span>
+            </div>
+        }
+    </div>
+</PopupWindow>
+
+
 @code
 {
     IList<Product> products;
     IDictionary<string, object> btnAttr;
+    ElementReference? btnOrders;
+    IList<Order> orders;
+    double left;
+    WindowStatus ordersStatus;
 
     [Parameter]
     public int OrderId { get; set; }
 
-    async void UpdateGridAfterQuantityChanged(int newValue, OrderDetail orderDetail)
+    async Task ShowOrders(MouseEventArgs e)
+    {
+        using var service = CreateScope().GetService<OrderService>();
+        var todayDate = DateTime.Now.ToDateOnly();
+        orders = await service.GetAll().Where(t => t.Date == todayDate).ToListAsync();
+        left = e.ClientX - e.OffsetX - 200;
+        ordersStatus = WindowStatus.Open;
+    }
+
+    async Task InitializeOrder(int orderId)
+    {
+        await Service.ReloadForUpdate(orderId);
+        ordersStatus = WindowStatus.Close;
+    }
+
+    async Task UpdateGridAfterQuantityChanged(int newValue, OrderDetail orderDetail)
     {
         if (newValue < 0)
             ShowMessage("تعداد نمی تواند منفی باشد");
@@ -156,7 +192,7 @@
             orderDetail.Quantity = newValue;
             await Service.DetailDataView.UpdateAsync(orderDetail);
         }
-
+        CalculateOrderParameters();
     }
 
     protected override void OnInitialized()
@@ -176,6 +212,12 @@
         if (Service.MasterId == 0)
             btnAttr.Add("disabled", "disabled");
         await base.OnInitializedAsync();
+    }
+
+    void CalculateOrderParameters()
+    {
+        var order = Service.UpsertData;
+        order.TotalAmount = Service.DetailDataView.GetBatchEntities().Sum(t => t.Quantity * t.Price);
     }
 
     async Task UpdatedProducts()
@@ -245,12 +287,12 @@
         if (old == null)
         {
             await grid.InsertAsync(new OrderDetail()
-                {
-                    Quantity = 1,
-                    Price = product.Price,
-                    ProductId = product.Id,
-                    OrderId = OrderId
-                });
+            {
+                Quantity = 1,
+                Price = product.Price,
+                ProductId = product.Id,
+                OrderId = Service.MasterId
+            });
         }
         else
         {
@@ -258,12 +300,14 @@
             await grid.UpdateAsync(old);
         }
         await grid.ScrollIntoViewSelectedRow();
+        CalculateOrderParameters();
     }
 
     async Task IncQuantity(OrderDetail detail)
     {
         detail.Quantity++;
         await Service.DetailDataView.UpdateAsync(detail);
+        CalculateOrderParameters();
     }
 
     async Task DecQuantity(OrderDetail detail)
@@ -273,5 +317,6 @@
             await Service.DetailDataView.RemoveAsync(detail);
         else
             await Service.DetailDataView.UpdateAsync(detail);
+        CalculateOrderParameters();
     }
 }

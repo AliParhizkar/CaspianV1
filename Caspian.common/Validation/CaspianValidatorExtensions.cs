@@ -32,7 +32,18 @@ namespace Caspian.Common
         {
             return ruleBuilder.Custom((value, context) =>
             {
-                if (func.Invoke((TModel)context.InstanceToValidate))
+                if (func.Invoke(context.InstanceToValidate))
+                    context.AddFailure(message);
+            });
+        }
+
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> Custom<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+            Func<TModel, string> func)
+        {
+            return ruleBuilder.Custom((value, context) =>
+            {
+                var message = func.Invoke(context.InstanceToValidate);
+                if (message.HasValue())
                     context.AddFailure(message);
             });
         }
@@ -136,6 +147,17 @@ namespace Caspian.Common
             return ruleBuilder.CustomAsync(async (value, context, token) =>
             {
                 if (await func.Invoke((TModel)context.InstanceToValidate))
+                    context.AddFailure(message);
+            });
+        }
+
+        public static IRuleBuilderOptionsConditions<TModel, TProperty> CustomAsync<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder,
+            Func<TModel, Task<string>> func)
+        {
+            return ruleBuilder.CustomAsync(async (value, context, token) =>
+            {
+                var message = await func.Invoke(context.InstanceToValidate);
+                if (message.HasValue())
                     context.AddFailure(message);
             });
         }
@@ -379,29 +401,29 @@ namespace Caspian.Common
                     path = path.Substring(context.PropertyChain.ToString().Length + 1);
                 Expression expr = param.CreateMemberExpresion(path);
                 Expression left = await CreateExpression(param, model, expr, provider);
-                var tempexpr = await CreateExpression(param, model, expr1, provider);
-                if (tempexpr != null)
+                var tempExpr = await CreateExpression(param, model, expr1, provider);
+                if (tempExpr != null)
                 {
                     if (left == null)
-                        left = tempexpr;
+                        left = tempExpr;
                     else
-                        left = Expression.And(left, tempexpr);
+                        left = Expression.And(left, tempExpr);
                 }
-                tempexpr = await CreateExpression(param, model, expr2, provider);
-                if (tempexpr != null)
+                tempExpr = await CreateExpression(param, model, expr2, provider);
+                if (tempExpr != null)
                 {
                     if (left == null)
-                        left = tempexpr;
+                        left = tempExpr;
                     else
-                        left = Expression.And(left, tempexpr);
+                        left = Expression.And(left, tempExpr);
                 }
-                tempexpr = await CreateExpression(param, model, expr3, provider);
-                if (tempexpr != null)
+                tempExpr = await CreateExpression(param, model, expr3, provider);
+                if (tempExpr != null)
                 {
                     if (left == null)
-                        left = tempexpr;
+                        left = tempExpr;
                     else
-                        left = Expression.And(left, tempexpr);
+                        left = Expression.And(left, tempExpr);
                 }
                 var pKey = typeof(TModel).GetPrimaryKey();
                 if (!pKey.GetValue(model).Equals(0))
@@ -567,6 +589,7 @@ namespace Caspian.Common
                             var serviceData = context.RootContextData["__BatchServiceData"] as BatchServiceData;
                             if (serviceData.MasterId == 0)
                             {
+                                var qqqq = typeof(TModel);
                                 var MasterInfo = typeof(TModel).GetProperties().SingleOrDefault(t => t.PropertyType == serviceData.MasterType);
                                 if (MasterInfo != null && MasterInfo == info)
                                     flag = true;

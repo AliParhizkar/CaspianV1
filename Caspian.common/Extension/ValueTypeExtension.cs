@@ -190,6 +190,30 @@ namespace Caspian.Common
             return date.Value.ToPersianDate();
         }
 
+        public static TimeOnly ToTimeOnly(this TimeSpan time)
+        {
+            return new TimeOnly(time.Ticks);
+        }
+
+        public static TimeOnly? ToTimeOnly(this TimeSpan? time)
+        {
+            if (time == null)
+                return null;
+            return new TimeOnly(time.Value.Ticks);
+        }
+
+        public static TimeOnly ToTimeOnly(this DateTime date)
+        {
+            return new TimeOnly(date.TimeOfDay.Ticks);
+        }
+
+        public static TimeOnly? ToTimeOnly(this DateTime? date)
+        {
+            if (date == null)
+                return null;
+            return new TimeOnly(date.Value.TimeOfDay.Ticks);
+        }
+
         public static DateOnly GetDateOnly(this DateTime date)
         {
             return new DateOnly(date.Year, date.Month, date.Day);

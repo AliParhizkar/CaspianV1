@@ -138,7 +138,7 @@ namespace Caspian.UI
             await OnFormSubmitHandler(EditContext);
         }
 
-        internal Action OnBeforeValidate {  get; set; }
+        internal EventCallback OnBeforeValidate {  get; set; }
 
         async Task OnFormSubmitHandler(EditContext context)
         {
@@ -164,9 +164,10 @@ namespace Caspian.UI
             {
                 EditContext.Properties["DetailType"] = (Service as IInternalUIService<TEntity>).DetailType;
             }
+
             EditContext.Validate();
-            if (OnBeforeValidate != null)
-                OnBeforeValidate();
+            if (OnBeforeValidate.HasDelegate)
+                await OnBeforeValidate.InvokeAsync();
             if (ValidationValidator == null)
             {
                 var services = provider.GetServices<IBaseService<TEntity>>();
@@ -213,6 +214,8 @@ namespace Caspian.UI
             {
                 await control.ResetAsync();
             }
+            if (OnInternalReset.HasDelegate)
+                await OnInternalReset.InvokeAsync(Service?.UpsertData);
             if (OnReset.HasDelegate)
                 await OnReset.InvokeAsync();
         }

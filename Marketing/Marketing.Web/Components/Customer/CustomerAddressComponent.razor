@@ -19,7 +19,6 @@
     </DataGrid>
 }
 
-
 <Window Service="Service" Title="مشتری و آدرسهای مشتری" Style="width:750px" OnOpen="SetCustomerNumber">
     <CaspianForm Service="Service" TEntity="Customer" ColumnsCount="2">
         <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
@@ -34,6 +33,8 @@
                     <span class="c-small-icon fa fa-refresh" @onclick="SetCustomerNumber" title="برای دریافت شماره مشتری کلیک کنید"></span>
                 </div>
                 <CheckBox @bind-Value="context.IsSpecial" ColSpan="4" TotalSpan="6" />
+                <NumericTextBox Value="context.AccountBalance" DigitGrouping readonly ColSpan="4" Title="موجودی" />
+                <CheckBox @bind-Value="context.NegativeBalance" ColSpan="4" />
                 <FormCommandButton ColSpan="6" TotalSpan="6" />
             </div>
         </fieldset>

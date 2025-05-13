@@ -1061,6 +1061,9 @@ input[type=time]{
     visibility:hidden;
     color:transparent;
 }
+.t-grid-inline-insert.c-hidden{
+    display:none;
+}
 .c-grid-insert {
     background-color: #f1f5ff;
 }
@@ -1286,6 +1289,7 @@ body {
     font-size: 20px;
     color: #dc3545;
     cursor:pointer;
+    margin-left:12px;
 }
 
 
@@ -2040,7 +2044,7 @@ span, label, td, th {
     text-align: justify !important;
     background-color: white;
     color: #635145;
-    z-index: 99999999;
+    z-index: 9999999;
     border-radius: 8px;
     box-shadow: 3px 2px 5px 1px rgb(0 0 0 / 20%);
     position: absolute;

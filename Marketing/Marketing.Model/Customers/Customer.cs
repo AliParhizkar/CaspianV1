@@ -49,5 +49,8 @@ namespace Marketing.Model
 
         [CheckOnDelete("مشتری عضو گروه می باشد و امکان حذف وی وجود ندارد")]
         public ICollection<CustomerGroupMembership> CustomerGroups { get; set; }
+
+        [CheckOnDelete("مشتری دارای صورت حساب مالی است و امکان حذف وی وجود ندارد.")]
+        public ICollection<CustomerAccounting> CustomerAccountings { get; set; }
     }
 }

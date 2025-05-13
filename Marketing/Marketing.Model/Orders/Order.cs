@@ -14,6 +14,9 @@ namespace Marketing.Model
         [DisplayName("تاریخ شفارش")]
         public DateOnly OrderDate { get; set; }
 
+        [DisplayName("زمان سفارش")]
+        public TimeOnly OrderTime { get; set; }
+
         [DisplayName("مشتری")]
         public int? CustomerId { get; set; }
 

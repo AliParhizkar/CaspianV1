@@ -41,6 +41,20 @@ namespace Caspian.Common
                     var foreignKey = property.GetCustomAttribute<ForeignKeyAttribute>();
                     if (foreignKey != null)
                     {
+                        ///Check Relation That has Two node
+                        
+                        if (property.GetDetailsProperty(type) == null)
+                        {
+                            if (foreignKey.Name == pKeyName)
+                            {
+                                if (property.PropertyType.GetProperties().SingleOrDefault(t => t.PropertyType == type) == null)
+                                {
+                                    throw new CaspianException($"In type {property.PropertyType.Name} we should have a property of type {type.Name} please add it");
+                                }
+                            }
+                            else
+                                throw new CaspianException($"In type {property.PropertyType.Name} we should have a property of type ICollection<{type.Name}> please add it");
+                        }
                         if (foreignKey.Name == pKeyName)
                         {
                             var info = property.PropertyType.GetProperties().Single(t => t.PropertyType == type);
@@ -52,13 +66,13 @@ namespace Caspian.Common
                         }
                         else
                         {
-                            var mainyproperties = property.PropertyType.GetProperties().Where(t => t.PropertyType.IsCollectionType(type));
-                            var count = mainyproperties.Count();
+                            var mainProperties = property.PropertyType.GetProperties().Where(t => t.PropertyType.IsCollectionType(type));
+                            var count = mainProperties.Count();
                             var relationsCount = count;
                             if (count > 1)
                             {
-                                mainyproperties = mainyproperties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>()?.Property == property.Name);
-                                count = mainyproperties.Count();
+                                mainProperties = mainProperties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>()?.Property == property.Name);
+                                count = mainProperties.Count();
                             }
 
                             if (count != 1)
@@ -71,7 +85,7 @@ namespace Caspian.Common
 
                             modelBuilder.Entity(type)
                                 .HasOne(property.Name)
-                                .WithMany(mainyproperties.Single().Name)
+                                .WithMany(mainProperties.Single().Name)
                                 .OnDelete(DeleteBehavior.NoAction);
 
                         }

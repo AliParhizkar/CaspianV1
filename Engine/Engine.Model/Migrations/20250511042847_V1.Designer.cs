@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Engine.Model.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250203133959_Version2")]
-    partial class Version2
+    [Migration("20250511042847_V1")]
+    partial class V1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,7 +40,8 @@ namespace Engine.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte?>("EventTriggerType")
                         .HasColumnType("tinyint");
@@ -49,22 +50,27 @@ namespace Engine.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<double>("Left")
-                        .HasColumnType("float");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("float(10)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("SourceCodeFileName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte?>("TaskType")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<double>("Top")
-                        .HasColumnType("float");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("float(10)");
 
                     b.Property<int?>("WorkflowFormId")
                         .HasColumnType("int");
@@ -90,22 +96,26 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Caption")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ConditionExpression")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("ControlType")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("CustomeFieldName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("DataModelFieldId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte?>("Height")
                         .HasColumnType("tinyint");
@@ -117,13 +127,16 @@ namespace Engine.Model.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("OnChange")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PropertyName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TextExpression")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -143,13 +156,16 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("WorkflowGroupId")
                         .HasColumnType("int");
@@ -173,13 +189,15 @@ namespace Engine.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("EntityFullName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("EntityTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("FieldName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte?>("FieldType")
                         .HasColumnType("tinyint");
@@ -188,7 +206,8 @@ namespace Engine.Model.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -211,10 +230,12 @@ namespace Engine.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -231,14 +252,12 @@ namespace Engine.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("DynamicParameterId")
-                        .HasColumnType("int");
-
                     b.Property<byte>("ParameterType")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("PropertyName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("ResultParameterId")
                         .HasColumnType("int");
@@ -248,177 +267,9 @@ namespace Engine.Model.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DynamicParameterId");
-
-                    b.HasIndex("ResultParameterId");
-
                     b.HasIndex("RuleId");
 
                     b.ToTable("DataParameters", "cmn");
-                });
-
-            modelBuilder.Entity("Caspian.Engine.DataParameterValue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Parameter1Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Parameter2Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Parameter3Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Parameter4Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Parameter5Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Parameter6Id")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ResultValue")
-                        .HasColumnType("numeric(18, 3)")
-                        .HasColumnName("ResultValue");
-
-                    b.Property<int>("Value1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Value2")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Value3")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Value4")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Value5")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Value6")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Parameter1Id");
-
-                    b.HasIndex("Parameter2Id");
-
-                    b.HasIndex("Parameter3Id");
-
-                    b.HasIndex("Parameter4Id");
-
-                    b.HasIndex("Parameter5Id");
-
-                    b.HasIndex("Parameter6Id");
-
-                    b.ToTable("DataParameterValues", "cmn");
-                });
-
-            modelBuilder.Entity("Caspian.Engine.DynamicParameter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte>("CalculationType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("ControlType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("DecimalNumber")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("EnTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EntityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Priority")
-                        .HasColumnType("int");
-
-                    b.Property<byte?>("ResultType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte>("SubSystem")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DynamicParameters", "cmn");
-                });
-
-            modelBuilder.Entity("Caspian.Engine.DynamicParameterOption", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DynamicParameterId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EnTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FaTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Value")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DynamicParameterId");
-
-                    b.ToTable("DynamicParametersOptions", "cmn");
-                });
-
-            modelBuilder.Entity("Caspian.Engine.DynamicParameterValue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("DynamicParameterId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DynamicParameterOptionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RuleId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("Value")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DynamicParameterId");
-
-                    b.HasIndex("DynamicParameterOptionId");
-
-                    b.HasIndex("RuleId");
-
-                    b.ToTable("DynamicParametersValues", "cmn");
                 });
 
             modelBuilder.Entity("Caspian.Engine.EntityType", b =>
@@ -430,16 +281,19 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Namespace")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("SubSystem")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("ValidationType")
                         .HasColumnType("tinyint");
@@ -526,13 +380,16 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("EntityTypeName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LookupTypeName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -554,13 +411,15 @@ namespace Engine.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Allis")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("ParentParameterId")
                         .HasColumnType("int");
 
                     b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("ReportGroupId")
                         .HasColumnType("int");
@@ -574,6 +433,29 @@ namespace Engine.Model.Migrations
                     b.ToTable("AggregateReportGroupsParameter", "cmn");
                 });
 
+            modelBuilder.Entity("Caspian.Engine.Model.AggregateReportParameter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AggregateReportGroupParameterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AggregateReportGroupParameterId");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("AggregateReportsParameters", "cmn");
+                });
+
             modelBuilder.Entity("Caspian.Engine.Model.CaspianFont", b =>
                 {
                     b.Property<short>("Id")
@@ -583,7 +465,8 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -599,26 +482,30 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ErrorFileName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<short?>("LineNumber")
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("RegisterDate")
                         .ValueGeneratedOnAddOrUpdate()
+                        .HasPrecision(2)
                         .HasColumnType("datetime2");
 
                     b.Property<short>("RepetitionTimes")
                         .HasColumnType("smallint");
 
                     b.Property<string>("SourceCodeFileName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("SubSystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Version")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -638,6 +525,7 @@ namespace Engine.Model.Migrations
 
                     b.Property<DateTime>("RegisterDate")
                         .ValueGeneratedOnAddOrUpdate()
+                        .HasPrecision(2)
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
@@ -673,16 +561,19 @@ namespace Engine.Model.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Source")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte?>("SubSystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("URL")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -728,7 +619,8 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("IconFont")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Ordering")
                         .HasColumnType("int");
@@ -737,11 +629,38 @@ namespace Engine.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.ToTable("MenuCategories", "cmn");
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.PersianDateTable", b =>
+                {
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<byte>("Day")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("DayOfPersianWeek")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("Month")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("PersianDate")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<short>("Year")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Date");
+
+                    b.ToTable("PersianDatesTable", "cmn");
                 });
 
             modelBuilder.Entity("Caspian.Engine.Model.Report", b =>
@@ -753,13 +672,16 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Descript")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FilteringFileName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PrintFileName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("ReportGroupId")
                         .HasColumnType("int");
@@ -771,7 +693,8 @@ namespace Engine.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -789,10 +712,12 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("EnTitle")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FaTitle")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("Height")
                         .HasColumnType("int");
@@ -825,25 +750,30 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClassTitle")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Descript")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("Disable")
                         .HasColumnType("bit");
 
                     b.Property<string>("MethodName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NameSpace")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("SubSystem")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -859,16 +789,18 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Alias")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsKey")
                         .HasColumnType("bit");
 
+                    b.Property<string>("PropertyPath")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<int>("ReportGroupId")
                         .HasColumnType("int");
-
-                    b.Property<string>("TitleEn")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -891,12 +823,6 @@ namespace Engine.Model.Migrations
                     b.Property<byte>("DataLevel")
                         .HasColumnType("tinyint");
 
-                    b.Property<int?>("DynamicParameterId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Order_")
-                        .HasColumnType("int");
-
                     b.Property<int>("ReportGroupParameterId")
                         .HasColumnType("int");
 
@@ -906,12 +832,7 @@ namespace Engine.Model.Migrations
                     b.Property<int?>("RuleId")
                         .HasColumnType("int");
 
-                    b.Property<byte?>("SortType")
-                        .HasColumnType("tinyint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("DynamicParameterId");
 
                     b.HasIndex("ReportGroupParameterId");
 
@@ -931,13 +852,16 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -956,7 +880,8 @@ namespace Engine.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -977,19 +902,23 @@ namespace Engine.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("FName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -998,34 +927,42 @@ namespace Engine.Model.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("MobileNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -1041,27 +978,32 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("IPAddress")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("LoginDate")
+                        .HasPrecision(2)
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LoginProvider")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PageUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ProviderKey")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("UserAgent")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -1112,16 +1054,19 @@ namespace Engine.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FieldName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("PortType")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("ToActivityId")
                         .HasColumnType("int");
@@ -1151,10 +1096,12 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Descript")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("EnumTypeName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("FormRule")
                         .HasColumnType("bit");
@@ -1172,10 +1119,12 @@ namespace Engine.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -1225,12 +1174,9 @@ namespace Engine.Model.Migrations
                     b.Property<byte?>("ConstValueType")
                         .HasColumnType("tinyint");
 
-                    b.Property<int?>("DynamicParameterId")
-                        .HasColumnType("int");
-
                     b.Property<string>("EnTitle")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FaTitle")
                         .HasMaxLength(50)
@@ -1246,14 +1192,13 @@ namespace Engine.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("constValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte?>("parameterType")
                         .HasColumnType("tinyint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DynamicParameterId");
 
                     b.HasIndex("RuleId");
 
@@ -1274,11 +1219,13 @@ namespace Engine.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Descript")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("WorkflowGroupId")
                         .HasColumnType("int");
@@ -1307,13 +1254,16 @@ namespace Engine.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("SourceFileName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("WorkflowGroupId")
                         .HasColumnType("int");
@@ -1336,13 +1286,15 @@ namespace Engine.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("SubSystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -1426,106 +1378,10 @@ namespace Engine.Model.Migrations
 
             modelBuilder.Entity("Caspian.Engine.DataParameter", b =>
                 {
-                    b.HasOne("Caspian.Engine.DynamicParameter", "DynamicParameter")
-                        .WithMany("DataParameters")
-                        .HasForeignKey("DynamicParameterId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Caspian.Engine.DynamicParameter", "ResultParameter")
-                        .WithMany("ResultParameters")
-                        .HasForeignKey("ResultParameterId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("Caspian.Engine.Rule", "Rule")
                         .WithMany("DataParameters")
                         .HasForeignKey("RuleId")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("DynamicParameter");
-
-                    b.Navigation("ResultParameter");
-
-                    b.Navigation("Rule");
-                });
-
-            modelBuilder.Entity("Caspian.Engine.DataParameterValue", b =>
-                {
-                    b.HasOne("Caspian.Engine.DataParameter", "Parameter1")
-                        .WithMany("Values1")
-                        .HasForeignKey("Parameter1Id")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Caspian.Engine.DataParameter", "Parameter2")
-                        .WithMany("Values2")
-                        .HasForeignKey("Parameter2Id")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Caspian.Engine.DataParameter", "Parameter3")
-                        .WithMany("Values3")
-                        .HasForeignKey("Parameter3Id")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Caspian.Engine.DataParameter", "Parameter4")
-                        .WithMany("Values4")
-                        .HasForeignKey("Parameter4Id")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Caspian.Engine.DataParameter", "Parameter5")
-                        .WithMany("Values5")
-                        .HasForeignKey("Parameter5Id")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Caspian.Engine.DataParameter", "Parameter6")
-                        .WithMany("Values6")
-                        .HasForeignKey("Parameter6Id")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Parameter1");
-
-                    b.Navigation("Parameter2");
-
-                    b.Navigation("Parameter3");
-
-                    b.Navigation("Parameter4");
-
-                    b.Navigation("Parameter5");
-
-                    b.Navigation("Parameter6");
-                });
-
-            modelBuilder.Entity("Caspian.Engine.DynamicParameterOption", b =>
-                {
-                    b.HasOne("Caspian.Engine.DynamicParameter", "DynamicParameter")
-                        .WithMany("Options")
-                        .HasForeignKey("DynamicParameterId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("DynamicParameter");
-                });
-
-            modelBuilder.Entity("Caspian.Engine.DynamicParameterValue", b =>
-                {
-                    b.HasOne("Caspian.Engine.DynamicParameter", "DynamicParameter")
-                        .WithMany("Values")
-                        .HasForeignKey("DynamicParameterId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Caspian.Engine.DynamicParameterOption", "DynamicParameterOption")
-                        .WithMany("DataParameterValues")
-                        .HasForeignKey("DynamicParameterOptionId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Caspian.Engine.Rule", "Rule")
-                        .WithMany("DynamicParameterValues")
-                        .HasForeignKey("RuleId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("DynamicParameter");
-
-                    b.Navigation("DynamicParameterOption");
 
                     b.Navigation("Rule");
                 });
@@ -1594,6 +1450,25 @@ namespace Engine.Model.Migrations
                     b.Navigation("ReportGroup");
                 });
 
+            modelBuilder.Entity("Caspian.Engine.Model.AggregateReportParameter", b =>
+                {
+                    b.HasOne("Caspian.Engine.Model.AggregateReportGroupParameter", "AggregateReportGroupParameter")
+                        .WithMany("AggregateReportParameters")
+                        .HasForeignKey("AggregateReportGroupParameterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Caspian.Engine.Model.Report", "Report")
+                        .WithMany("AggregateReportParameters")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AggregateReportGroupParameter");
+
+                    b.Navigation("Report");
+                });
+
             modelBuilder.Entity("Caspian.Engine.Model.ExceptionDetail", b =>
                 {
                     b.HasOne("Caspian.Engine.Model.ExceptionData", "ExceptionData")
@@ -1605,7 +1480,7 @@ namespace Engine.Model.Migrations
                     b.HasOne("Caspian.Engine.Model.User", "User")
                         .WithMany("ExceptionDetails")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ExceptionData");
@@ -1638,8 +1513,7 @@ namespace Engine.Model.Migrations
 
                     b.HasOne("Caspian.Engine.Model.User", "User")
                         .WithMany("Accessibilities")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Menu");
 
@@ -1683,11 +1557,6 @@ namespace Engine.Model.Migrations
 
             modelBuilder.Entity("Caspian.Engine.Model.ReportParam", b =>
                 {
-                    b.HasOne("Caspian.Engine.DynamicParameter", "DynamicParameter")
-                        .WithMany("ReportParams")
-                        .HasForeignKey("DynamicParameterId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("Caspian.Engine.Model.ReportGroupParameter", "ReportGroupParameter")
                         .WithMany("ReportParams")
                         .HasForeignKey("ReportGroupParameterId")
@@ -1704,8 +1573,6 @@ namespace Engine.Model.Migrations
                         .WithMany("ReportParams")
                         .HasForeignKey("RuleId")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("DynamicParameter");
 
                     b.Navigation("Report");
 
@@ -1726,10 +1593,10 @@ namespace Engine.Model.Migrations
 
             modelBuilder.Entity("Caspian.Engine.Model.UserMembership", b =>
                 {
-                    b.HasOne("Caspian.Engine.Model.Role", null)
+                    b.HasOne("Caspian.Engine.Model.Role", "Role")
                         .WithMany("Memberships")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Caspian.Engine.Model.User", "User")
@@ -1737,6 +1604,8 @@ namespace Engine.Model.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
 
                     b.Navigation("User");
                 });
@@ -1781,11 +1650,6 @@ namespace Engine.Model.Migrations
 
             modelBuilder.Entity("Caspian.Engine.Token", b =>
                 {
-                    b.HasOne("Caspian.Engine.DynamicParameter", "DynamicParameter")
-                        .WithMany("Tokens")
-                        .HasForeignKey("DynamicParameterId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("Caspian.Engine.Rule", "Rule")
                         .WithMany("Tokens")
                         .HasForeignKey("RuleId")
@@ -1795,8 +1659,6 @@ namespace Engine.Model.Migrations
                         .WithMany("TokensValue")
                         .HasForeignKey("RuleIdValue")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("DynamicParameter");
 
                     b.Navigation("Rule");
 
@@ -1871,41 +1733,6 @@ namespace Engine.Model.Migrations
                     b.Navigation("DataModelOptions");
                 });
 
-            modelBuilder.Entity("Caspian.Engine.DataParameter", b =>
-                {
-                    b.Navigation("Values1");
-
-                    b.Navigation("Values2");
-
-                    b.Navigation("Values3");
-
-                    b.Navigation("Values4");
-
-                    b.Navigation("Values5");
-
-                    b.Navigation("Values6");
-                });
-
-            modelBuilder.Entity("Caspian.Engine.DynamicParameter", b =>
-                {
-                    b.Navigation("DataParameters");
-
-                    b.Navigation("Options");
-
-                    b.Navigation("ReportParams");
-
-                    b.Navigation("ResultParameters");
-
-                    b.Navigation("Tokens");
-
-                    b.Navigation("Values");
-                });
-
-            modelBuilder.Entity("Caspian.Engine.DynamicParameterOption", b =>
-                {
-                    b.Navigation("DataParameterValues");
-                });
-
             modelBuilder.Entity("Caspian.Engine.EntityType", b =>
                 {
                     b.Navigation("DataModelFields");
@@ -1933,6 +1760,8 @@ namespace Engine.Model.Migrations
 
             modelBuilder.Entity("Caspian.Engine.Model.AggregateReportGroupParameter", b =>
                 {
+                    b.Navigation("AggregateReportParameters");
+
                     b.Navigation("Parameters");
                 });
 
@@ -1953,6 +1782,8 @@ namespace Engine.Model.Migrations
 
             modelBuilder.Entity("Caspian.Engine.Model.Report", b =>
                 {
+                    b.Navigation("AggregateReportParameters");
+
                     b.Navigation("ReportParams");
 
                     b.Navigation("TabPanels");
@@ -2001,8 +1832,6 @@ namespace Engine.Model.Migrations
             modelBuilder.Entity("Caspian.Engine.Rule", b =>
                 {
                     b.Navigation("DataParameters");
-
-                    b.Navigation("DynamicParameterValues");
 
                     b.Navigation("ReportParams");
 

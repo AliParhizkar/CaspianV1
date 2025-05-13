@@ -76,9 +76,31 @@ namespace Caspian.Common.Extension
             return info.DeclaringType.GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == info.Name);
         }
 
-        public static PropertyInfo GetDetailsProperty(this Type type, Type detailType)
+        public static PropertyInfo GetDetailsProperty(this Type type, Type detailType, string InversePropertyName = null)
         {
-            return type.GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == detailType && t.PropertyType.IsCollectionType());
+            var properties = type.GetProperties().Where(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == detailType && t.PropertyType.IsCollectionType());
+            if (properties.Count() < 2)
+                return properties.SingleOrDefault();
+            if (InversePropertyName == null)
+                throw new CaspianException($"There are {properties.Count()} properties of type ICollection<{detailType.Name}> and InversePropertyName is null");
+            if (properties.Any(t => t.GetCustomAttribute<InversePropertyAttribute>() == null))
+                throw new CaspianException($"There are properties of type ICollection<{detailType.Name}> that haven't InversePropertyAttribute please add it");
+            return properties.Single(t => t.GetCustomAttribute<InversePropertyAttribute>().Property == InversePropertyName);
+        }
+
+        public static PropertyInfo GetDetailsProperty(this PropertyInfo detailInfo, Type type)
+        {
+            var properties = detailInfo.PropertyType.GetProperties().Where(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == type && t.PropertyType.IsCollectionType());
+            if (properties.Count() == 0)
+            {
+
+            }
+            if (properties.Count() < 2)
+                return properties.SingleOrDefault();
+            properties = properties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>().Property == detailInfo.Name);
+            if (properties.Count() != 1)
+                throw new CaspianException($"There is more than a properties of type {detailInfo.PropertyType.Name} in type {type.Name} ");
+            return properties.Single();
         }
 
         public static PropertyInfo GetForeignKey(this Type type, Type foreignKeyType, string inverseProperty = null)

@@ -72,7 +72,6 @@ namespace Main
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
             builder.Services.AddScoped<ReportParamService>();
             builder.Services.AddCaspianUIComponentsServices();
-            builder.Services.AddSyncfusionBlazor();
             builder.Services.AddSingleton<SingletonMenuService>(t =>
             {
                 using var context = new Caspian.Engine.Model.Context();

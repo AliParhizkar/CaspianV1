@@ -93,6 +93,8 @@
                 topT -= loc.height / 2 + data.offsetTop + offsetTop;
             else if (data.verticalAnchor == VerticalAnchor.Bottom)
                 topT -= loc.height + data.offsetTop + offsetTop - 1;
+            if (topT < 30)
+                topT = 30;
             element.style.left = `${leftT}px`;
             element.style.top = `${topT}px`;
         }

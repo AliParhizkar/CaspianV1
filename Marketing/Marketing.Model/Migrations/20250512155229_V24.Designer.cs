@@ -4,6 +4,7 @@ using Marketing.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketing.Model.Migrations
 {
     [DbContext(typeof(MarketingContext))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250512155229_V24")]
+    partial class V24
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,27 +117,6 @@ namespace Marketing.Model.Migrations
                     b.HasIndex("GroupId");
 
                     b.ToTable("Customer", "mrk");
-                });
-
-            modelBuilder.Entity("Marketing.Model.CustomerAccounting", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Payment")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("CustomersAccountings", "mrk");
                 });
 
             modelBuilder.Entity("Marketing.Model.CustomerAddress", b =>
@@ -243,9 +225,6 @@ namespace Marketing.Model.Migrations
 
                     b.Property<int>("OrderNumber")
                         .HasColumnType("int");
-
-                    b.Property<TimeOnly>("OrderTime")
-                        .HasColumnType("time");
 
                     b.Property<byte>("OrderType")
                         .HasColumnType("tinyint");
@@ -560,17 +539,6 @@ namespace Marketing.Model.Migrations
                     b.Navigation("CustomerGroup");
                 });
 
-            modelBuilder.Entity("Marketing.Model.CustomerAccounting", b =>
-                {
-                    b.HasOne("Marketing.Model.Customer", "Customer")
-                        .WithMany("CustomerAccountings")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
             modelBuilder.Entity("Marketing.Model.CustomerAddress", b =>
                 {
                     b.HasOne("Marketing.Model.Customer", "Customer")
@@ -729,8 +697,6 @@ namespace Marketing.Model.Migrations
             modelBuilder.Entity("Marketing.Model.Customer", b =>
                 {
                     b.Navigation("Addresses");
-
-                    b.Navigation("CustomerAccountings");
 
                     b.Navigation("CustomerGroups");
 

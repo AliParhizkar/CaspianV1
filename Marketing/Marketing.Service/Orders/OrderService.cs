@@ -1,6 +1,7 @@
 ﻿using Caspian.Common;
 using Marketing.Model;
 using Caspian.Common.Service;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Marketing.Service
 {
@@ -11,10 +12,11 @@ namespace Marketing.Service
             :base(provider) 
         {
             RuleForEach(t => t.OrderDetails).SetValidator(t => new OrderDetailService(provider));
-            RuleFor(t => t.OrderDetails).Custom(t => t.OrderDetails == null || !t.OrderDetails.Any(), "سفارش باید حداقل یک محصول داشته باشد.");
+            RuleFor(t => t.OrderDetails).Custom(t => !Details.Any(), "سفارش باید حداقل یک محصول داشته باشد.");
             RuleFor(t => t.ProductAmount).Custom(t =>
             {
-                return Details.Sum(u => u.Quantity * (u.Price - u.Discount + u.ToppingAmount)) != t.ProductAmount;
+                var sum = Details.Sum(u => u.Quantity * (u.Price - u.Discount + u.ToppingAmount));
+                return sum != t.ProductAmount;
             }, "جمع محصول درست محاسبه نشده است");
             RuleFor(t => t.DiscountAmount).Custom(t =>
             {
@@ -32,12 +34,24 @@ namespace Marketing.Service
             {
                 return t.PaymentAmount != t.ProductAmount - t.DiscountAmount + t.RoundAmount.GetValueOrDefault();
             }, "جمع کل پرداختی درست محاسبه نشده است");
-            RuleFor(t => t.PaymentAmount).Custom(t =>
+            RuleFor(t => t.IsSettled).Custom(t =>
             {
                 if (!t.IsSettled)
                     return false;
                 return t.PaymentAmount != t.CardAmount + t.CashAmount + t.AccountingAmount;
             }, "پرداخت بصورت کامل انجام نشده است");
+            RuleFor(t => t.AccountingAmount).CustomAsync(async t =>
+            {
+                if (t.AccountingAmount > 0)
+                {
+                    if (t.CustomerId == null)
+                        return "برای پرداخت از حساب، مشتری باید مشخص باشد.";
+                    var customer = await provider.GetCaspianService<CustomerService>().SingleAsync(t.Id);
+                    if (customer.AccountBalance < t.AccountingAmount && !customer.NegativeBalance)
+                        return "موجودی مشتری کافی نیست، و مشتری نمی تواند موجودی منفی داشته باشد";
+                }
+                return null;
+            });
         }
 
         public override Task<Order> UpdateDatabaseAsync(Order entity, IList<ChangedEntity<OrderDetail>> changedEntities)
@@ -48,12 +62,17 @@ namespace Marketing.Service
 
         public override Task<Order> AddAsync(Order entity)
         {
-            ///
             entity.OrderDate = DateTime.Now.GetDateOnly();
-            var date = DateTime.Now.TimeOfDay > ConfigService.Config.OpenTime.ToTimeSpan() ? entity.OrderDate :
-                entity.OrderDate.AddDays(-1);
-            var orderNumberId = GetAll().Where(t => t.OrderDate == date).Max(t => (int?)t.OrderNumber).GetValueOrDefault() + 1;
-            entity.OrderNumber = orderNumberId;
+            entity.OrderTime = DateTime.Now.ToTimeOnly();
+            var query = GetAll();
+            if (DateTime.Now.TimeOfDay > ConfigService.Config.OpenTime.ToTimeSpan())
+                query = query.Where(t => t.OrderDate == entity.OrderDate && t.OrderTime > entity.OrderTime);
+            else // from midnight to open time order number set for yesterday 
+            {
+                var yesterday = entity.OrderDate.AddDays(-1);
+                query = GetAll().Where(t => t.OrderDate >= yesterday);
+            }
+            entity.OrderNumber = query.Max(t => (int?)t.OrderNumber).GetValueOrDefault() + 1;
             return base.AddAsync(entity);
         }
 

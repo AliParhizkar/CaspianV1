@@ -60,5 +60,7 @@ namespace Caspian.Engine.Model
         public DbSet<AggregateReportGroupParameter> AggregateReportGroupParameters { get; set; }
 
         public DbSet<BlazorControl> BlazorControls { get; set; }
+
+        public DbSet<PersianDateTable> PersianDateTables { get; set; }
     }
 }

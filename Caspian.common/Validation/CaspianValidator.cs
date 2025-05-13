@@ -13,6 +13,7 @@ namespace Caspian.Common
     {
         public BatchServiceData BatchServiceData { get; set; }
 
+
         public CaspianValidator(IServiceProvider provider)
         {
             ServiceProvider = provider;

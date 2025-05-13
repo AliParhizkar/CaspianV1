@@ -28,6 +28,27 @@ namespace Caspian.UI
             
         }
 
+        /// <summary>
+        /// Open Window to validate and upsert the entity. In this case window has form that bind to entity
+        /// </summary>
+        /// <param name="id">key of entity</param>
+        /// <returns>Task</returns>
+        public async Task OpenWindow(int? id)
+        {
+            if (id == null)
+                UpsertData = Activator.CreateInstance<TMaster>();
+            else
+            {
+                using var service = CreateScope().GetService<IBaseService<TMaster>>();
+                UpsertData = await service.SingleAsync(id.Value);
+            }
+            await (this as IInternalUIService).Window.Open();
+            (this as IInternalUIService<TMaster>).StateHasChanged();
+            await Task.Delay(100);
+            if (Form != null)
+                await Form.FocusAsync();
+        }
+
         Expression IInternalBatchService<TDetail>.GetDetailsFilterExpression()
         {
             var param = Expression.Parameter(typeof(TDetail), "t");
@@ -155,28 +176,7 @@ namespace Caspian.UI
 
         public DataView<TMaster> DataView { get; private set; }
 
-        Window IInternalUIService.Window { get; set; }
-
-        /// <summary>
-        /// Open Window to validate and upsert the entity. In this case window has form that bind to entity
-        /// </summary>
-        /// <param name="id">key of entity</param>
-        /// <returns>Task</returns>
-        public async Task OpenWindow(int? id)
-        {
-            if (id == null)
-                UpsertData = Activator.CreateInstance<TMaster>();
-            else
-            {
-                using var service = CreateScope().GetService<IBaseService<TMaster>>();
-                UpsertData = await service.SingleAsync(id.Value);
-            }
-            await (this as IInternalUIService).Window.Open();
-            (this as IInternalUIService<TMaster>).StateHasChanged();
-            await Task.Delay(100);
-            if (Form != null)
-                await Form.FocusAsync();
-        }
+        public Window Window { get; private set; }
 
         public DataView<TDetail> DetailDataView { get; set; }
 
@@ -193,7 +193,7 @@ namespace Caspian.UI
             /// on another page created
 
             //MasterId = default;
-            (this as IInternalUIService).Window = default;
+            (this as IInternalUIService).WindowInitialize(null);
             EntityTabPanel = default;
             DataView = default;
             DetailDataView = default;
@@ -287,6 +287,15 @@ namespace Caspian.UI
             (this as IInternalUIService<TMaster>).StateHasChanged();
         }
 
+        protected virtual async Task SetChangedEntities()
+        {
+            if (Form?.ValidationValidator?.Validator != null)
+            {
+                if (Form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail> service)
+                    await service.SetChangedEntities(UpsertData, ChangedEntities);
+            }
+        }
+
         void IInternalUIService<TMaster>.FormInitialize(CaspianForm<TMaster> form)
         {
             Form = form;
@@ -308,12 +317,7 @@ namespace Caspian.UI
                     (this as IInternalUIService<TMaster>).StateHasChanged();
                 }
             });
-            form.OnBeforeValidate = async () =>
-            {
-                if (form?.ValidationValidator?.Validator != null)
-                    if (form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail> service)
-                        await service.SetChangedEntities(UpsertData, ChangedEntities);
-            };
+            form.OnBeforeValidate = EventCallback.Factory.Create(this,  SetChangedEntities);
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TMaster>(this, UpdateDatabaseAsync);
         }
 
@@ -429,13 +433,17 @@ namespace Caspian.UI
             }
         }
 
-        void IInternalUIService.WindowInitialize()
+        void IInternalUIService.WindowInitialize(Window window)
         {
-            (this as IInternalUIService).Window.OnInternalOpen = EventCallback.Factory.Create(this, () =>
+            Window = window;
+            if (window != null)
             {
-                MasterId = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(UpsertData));
-                batchServiceData.MasterId = MasterId;
-            });
+                (this as IInternalUIService).Window.OnInternalOpen = EventCallback.Factory.Create(this, () =>
+                {
+                    MasterId = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(UpsertData));
+                    batchServiceData.MasterId = MasterId;
+                });
+            }
         }
 
         async Task<bool> Confirm(string message)

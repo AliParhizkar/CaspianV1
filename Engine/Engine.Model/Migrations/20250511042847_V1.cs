@@ -6,35 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Engine.Model.Migrations
 {
     /// <inheritdoc />
-    public partial class Version2 : Migration
+    public partial class V1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "cmn");
-
-            migrationBuilder.CreateTable(
-                name: "DynamicParameters",
-                schema: "cmn",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SubSystem = table.Column<byte>(type: "tinyint", nullable: false),
-                    EntityName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Priority = table.Column<int>(type: "int", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EnTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CalculationType = table.Column<byte>(type: "tinyint", nullable: false),
-                    ControlType = table.Column<byte>(type: "tinyint", nullable: true),
-                    ResultType = table.Column<byte>(type: "tinyint", nullable: true),
-                    DecimalNumber = table.Column<byte>(type: "tinyint", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DynamicParameters", x => x.Id);
-                });
 
             migrationBuilder.CreateTable(
                 name: "EntityTypes",
@@ -44,10 +22,10 @@ namespace Engine.Model.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SubSystem = table.Column<byte>(type: "tinyint", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Namespace = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Namespace = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ValidationType = table.Column<byte>(type: "tinyint", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -62,12 +40,12 @@ namespace Engine.Model.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SubSystemKind = table.Column<byte>(type: "tinyint", nullable: false),
-                    SourceCodeFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SourceCodeFileName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     LineNumber = table.Column<short>(type: "smallint", nullable: true),
                     RepetitionTimes = table.Column<short>(type: "smallint", nullable: false),
-                    Version = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ErrorFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RegisterDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Version = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    ErrorFileName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    RegisterDate = table.Column<DateTime>(type: "datetime2(2)", precision: 2, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,7 +59,7 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -95,9 +73,9 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EntityTypeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LookupTypeName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    EntityTypeName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    LookupTypeName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -111,14 +89,31 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     SubSystemKind = table.Column<byte>(type: "tinyint", nullable: false),
-                    IconFont = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IconFont = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Ordering = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MenuCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PersianDatesTable",
+                schema: "cmn",
+                columns: table => new
+                {
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    PersianDate = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Year = table.Column<short>(type: "smallint", nullable: false),
+                    Month = table.Column<byte>(type: "tinyint", nullable: false),
+                    Day = table.Column<byte>(type: "tinyint", nullable: false),
+                    DayOfPersianWeek = table.Column<byte>(type: "tinyint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PersianDatesTable", x => x.Date);
                 });
 
             migrationBuilder.CreateTable(
@@ -128,13 +123,13 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     SubSystem = table.Column<byte>(type: "tinyint", nullable: false),
-                    NameSpace = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClassTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MethodName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NameSpace = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    ClassTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    MethodName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Disable = table.Column<bool>(type: "bit", nullable: false),
-                    Descript = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Descript = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -148,9 +143,9 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -164,14 +159,14 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Descript = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Descript = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     IsValid = table.Column<bool>(type: "bit", nullable: false),
                     FormRule = table.Column<bool>(type: "bit", nullable: false),
                     ResultType = table.Column<byte>(type: "tinyint", nullable: false),
-                    EnumTypeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EnumTypeName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     SystemKind = table.Column<byte>(type: "tinyint", nullable: false),
-                    TypeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TypeName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Priority = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -186,19 +181,19 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    FName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    LName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    MobileNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordHash = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -217,13 +212,13 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IPAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserAgent = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LoginDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LoginProvider = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IPAddress = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    UserAgent = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    LoginDate = table.Column<DateTime>(type: "datetime2(2)", precision: 2, nullable: false),
+                    PageUrl = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    LoginProvider = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    ProviderKey = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -238,36 +233,13 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     SubSystemKind = table.Column<byte>(type: "tinyint", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WorkflowGroups", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DynamicParametersOptions",
-                schema: "cmn",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DynamicParameterId = table.Column<int>(type: "int", nullable: false),
-                    FaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EnTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Value = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DynamicParametersOptions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DynamicParametersOptions_DynamicParameters_DynamicParameterId",
-                        column: x => x.DynamicParameterId,
-                        principalSchema: "cmn",
-                        principalTable: "DynamicParameters",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -277,9 +249,9 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Source = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    URL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Source = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    URL = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MenuCategoryId = table.Column<int>(type: "int", nullable: true),
                     SubSystemKind = table.Column<byte>(type: "tinyint", nullable: true),
                     Ordering = table.Column<int>(type: "int", nullable: false),
@@ -304,8 +276,8 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Path = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Allis = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Path = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Allis = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ParentParameterId = table.Column<int>(type: "int", nullable: true),
                     AggregateParameterType = table.Column<byte>(type: "tinyint", nullable: false),
                     AggregateFunctionType = table.Column<byte>(type: "tinyint", nullable: true),
@@ -336,8 +308,8 @@ namespace Engine.Model.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ReportGroupId = table.Column<int>(type: "int", nullable: false),
-                    TitleEn = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Alias = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PropertyPath = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Alias = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     IsKey = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -358,12 +330,12 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PrintFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FilteringFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    PrintFileName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    FilteringFileName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ReportType = table.Column<byte>(type: "tinyint", nullable: false),
                     SubReportLevel = table.Column<byte>(type: "tinyint", nullable: true),
-                    Descript = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Descript = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ReportGroupId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -386,25 +358,12 @@ namespace Engine.Model.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ResultParameterId = table.Column<int>(type: "int", nullable: false),
                     ParameterType = table.Column<byte>(type: "tinyint", nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DynamicParameterId = table.Column<int>(type: "int", nullable: true),
+                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     RuleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DataParameters", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DataParameters_DynamicParameters_DynamicParameterId",
-                        column: x => x.DynamicParameterId,
-                        principalSchema: "cmn",
-                        principalTable: "DynamicParameters",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DataParameters_DynamicParameters_ResultParameterId",
-                        column: x => x.ResultParameterId,
-                        principalSchema: "cmn",
-                        principalTable: "DynamicParameters",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_DataParameters_Rules_RuleId",
                         column: x => x.RuleId,
@@ -421,24 +380,17 @@ namespace Engine.Model.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TokenType = table.Column<byte>(type: "tinyint", nullable: false),
-                    EnTitle = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    EnTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     FaTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    constValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    constValue = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ConstValueType = table.Column<byte>(type: "tinyint", nullable: true),
                     RuleId = table.Column<int>(type: "int", nullable: true),
                     RuleIdValue = table.Column<int>(type: "int", nullable: true),
-                    parameterType = table.Column<byte>(type: "tinyint", nullable: true),
-                    DynamicParameterId = table.Column<int>(type: "int", nullable: true)
+                    parameterType = table.Column<byte>(type: "tinyint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tokens", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tokens_DynamicParameters_DynamicParameterId",
-                        column: x => x.DynamicParameterId,
-                        principalSchema: "cmn",
-                        principalTable: "DynamicParameters",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Tokens_Rules_RuleId",
                         column: x => x.RuleId,
@@ -462,7 +414,7 @@ namespace Engine.Model.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ExceptionDataId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    RegisterDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    RegisterDate = table.Column<DateTime>(type: "datetime2(2)", precision: 2, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -478,7 +430,8 @@ namespace Engine.Model.Migrations
                         column: x => x.UserId,
                         principalSchema: "cmn",
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -499,8 +452,7 @@ namespace Engine.Model.Migrations
                         column: x => x.RoleId,
                         principalSchema: "cmn",
                         principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UsersMembership_Users_UserId",
                         column: x => x.UserId,
@@ -517,10 +469,10 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     WorkflowGroupId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -530,41 +482,6 @@ namespace Engine.Model.Migrations
                         column: x => x.WorkflowGroupId,
                         principalSchema: "cmn",
                         principalTable: "WorkflowGroups",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DynamicParametersValues",
-                schema: "cmn",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DynamicParameterId = table.Column<int>(type: "int", nullable: true),
-                    DynamicParameterOptionId = table.Column<int>(type: "int", nullable: true),
-                    RuleId = table.Column<int>(type: "int", nullable: true),
-                    Value = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DynamicParametersValues", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DynamicParametersValues_DynamicParametersOptions_DynamicParameterOptionId",
-                        column: x => x.DynamicParameterOptionId,
-                        principalSchema: "cmn",
-                        principalTable: "DynamicParametersOptions",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DynamicParametersValues_DynamicParameters_DynamicParameterId",
-                        column: x => x.DynamicParameterId,
-                        principalSchema: "cmn",
-                        principalTable: "DynamicParameters",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DynamicParametersValues_Rules_RuleId",
-                        column: x => x.RuleId,
-                        principalSchema: "cmn",
-                        principalTable: "Rules",
                         principalColumn: "Id");
                 });
 
@@ -603,6 +520,33 @@ namespace Engine.Model.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AggregateReportsParameters",
+                schema: "cmn",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ReportId = table.Column<int>(type: "int", nullable: false),
+                    AggregateReportGroupParameterId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AggregateReportsParameters", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AggregateReportsParameters_AggregateReportGroupsParameter_AggregateReportGroupParameterId",
+                        column: x => x.AggregateReportGroupParameterId,
+                        principalSchema: "cmn",
+                        principalTable: "AggregateReportGroupsParameter",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AggregateReportsParameters_Reports_ReportId",
+                        column: x => x.ReportId,
+                        principalSchema: "cmn",
+                        principalTable: "Reports",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ReportParams",
                 schema: "cmn",
                 columns: table => new
@@ -610,23 +554,14 @@ namespace Engine.Model.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DataLevel = table.Column<byte>(type: "tinyint", nullable: false),
-                    Order_ = table.Column<int>(type: "int", nullable: true),
-                    SortType = table.Column<byte>(type: "tinyint", nullable: true),
                     CompositionMethodType = table.Column<byte>(type: "tinyint", nullable: true),
                     RuleId = table.Column<int>(type: "int", nullable: true),
                     ReportGroupParameterId = table.Column<int>(type: "int", nullable: false),
-                    DynamicParameterId = table.Column<int>(type: "int", nullable: true),
                     ReportId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ReportParams", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ReportParams_DynamicParameters_DynamicParameterId",
-                        column: x => x.DynamicParameterId,
-                        principalSchema: "cmn",
-                        principalTable: "DynamicParameters",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ReportParams_ReportGroupsParameters_ReportGroupParameterId",
                         column: x => x.ReportGroupParameterId,
@@ -654,7 +589,7 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ReportId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -669,68 +604,6 @@ namespace Engine.Model.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DataParameterValues",
-                schema: "cmn",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Parameter1Id = table.Column<int>(type: "int", nullable: false),
-                    Parameter2Id = table.Column<int>(type: "int", nullable: true),
-                    Parameter3Id = table.Column<int>(type: "int", nullable: true),
-                    Parameter4Id = table.Column<int>(type: "int", nullable: true),
-                    Parameter5Id = table.Column<int>(type: "int", nullable: true),
-                    Parameter6Id = table.Column<int>(type: "int", nullable: true),
-                    Value1 = table.Column<int>(type: "int", nullable: false),
-                    Value2 = table.Column<int>(type: "int", nullable: true),
-                    Value3 = table.Column<int>(type: "int", nullable: true),
-                    Value4 = table.Column<int>(type: "int", nullable: true),
-                    Value5 = table.Column<int>(type: "int", nullable: true),
-                    Value6 = table.Column<int>(type: "int", nullable: true),
-                    ResultValue = table.Column<decimal>(type: "numeric(18,3)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DataParameterValues", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DataParameterValues_DataParameters_Parameter1Id",
-                        column: x => x.Parameter1Id,
-                        principalSchema: "cmn",
-                        principalTable: "DataParameters",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DataParameterValues_DataParameters_Parameter2Id",
-                        column: x => x.Parameter2Id,
-                        principalSchema: "cmn",
-                        principalTable: "DataParameters",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DataParameterValues_DataParameters_Parameter3Id",
-                        column: x => x.Parameter3Id,
-                        principalSchema: "cmn",
-                        principalTable: "DataParameters",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DataParameterValues_DataParameters_Parameter4Id",
-                        column: x => x.Parameter4Id,
-                        principalSchema: "cmn",
-                        principalTable: "DataParameters",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DataParameterValues_DataParameters_Parameter5Id",
-                        column: x => x.Parameter5Id,
-                        principalSchema: "cmn",
-                        principalTable: "DataParameters",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DataParameterValues_DataParameters_Parameter6Id",
-                        column: x => x.Parameter6Id,
-                        principalSchema: "cmn",
-                        principalTable: "DataParameters",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DataModelFields",
                 schema: "cmn",
                 columns: table => new
@@ -738,10 +611,10 @@ namespace Engine.Model.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DataModelId = table.Column<int>(type: "int", nullable: true),
-                    EntityFullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EntityFullName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     FieldType = table.Column<byte>(type: "tinyint", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FieldName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    FieldName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     EntityTypeId = table.Column<int>(type: "int", nullable: true),
                     IsDetails = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -770,9 +643,9 @@ namespace Engine.Model.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     WorkflowGroupId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DataModelId = table.Column<int>(type: "int", nullable: false),
-                    Descript = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Descript = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -798,12 +671,12 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     WorkflowGroupId = table.Column<int>(type: "int", nullable: false),
                     DataModelId = table.Column<int>(type: "int", nullable: false),
                     ColumnCount = table.Column<byte>(type: "tinyint", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SourceFileName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    SourceFileName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -833,8 +706,8 @@ namespace Engine.Model.Migrations
                     Top = table.Column<int>(type: "int", nullable: true),
                     Width = table.Column<int>(type: "int", nullable: true),
                     Height = table.Column<int>(type: "int", nullable: true),
-                    FaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EnTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FaTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    EnTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     TabPanelId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -855,17 +728,17 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Caption = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CustomeFieldName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Caption = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    CustomeFieldName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ControlType = table.Column<byte>(type: "tinyint", nullable: false),
                     DataModelFieldId = table.Column<int>(type: "int", nullable: false),
-                    PropertyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TextExpression = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConditionExpression = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PropertyName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    TextExpression = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    ConditionExpression = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MultiLine = table.Column<bool>(type: "bit", nullable: false),
                     Height = table.Column<byte>(type: "tinyint", nullable: true),
-                    OnChange = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OnChange = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     LookupTypeId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -893,8 +766,8 @@ namespace Engine.Model.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FieldId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -914,15 +787,15 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ActivityType = table.Column<byte>(type: "tinyint", nullable: false),
                     TaskType = table.Column<byte>(type: "tinyint", nullable: true),
-                    SourceCodeFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SourceCodeFileName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     WorkflowFormId = table.Column<int>(type: "int", nullable: true),
-                    Left = table.Column<double>(type: "float", nullable: false),
-                    Top = table.Column<double>(type: "float", nullable: false),
+                    Left = table.Column<double>(type: "float(10)", precision: 10, scale: 2, nullable: false),
+                    Top = table.Column<double>(type: "float(10)", precision: 10, scale: 2, nullable: false),
                     GatewayType = table.Column<byte>(type: "tinyint", nullable: true),
                     EventTriggerType = table.Column<byte>(type: "tinyint", nullable: true),
                     ActorType = table.Column<byte>(type: "tinyint", nullable: true),
@@ -973,12 +846,12 @@ namespace Engine.Model.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     CheckValidation = table.Column<bool>(type: "bit", nullable: false),
                     ActivityId = table.Column<int>(type: "int", nullable: false),
                     PortType = table.Column<byte>(type: "tinyint", nullable: false),
-                    FieldName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FieldName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     CompareType = table.Column<byte>(type: "tinyint", nullable: true),
                     Value = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: true),
                     ToActivityId = table.Column<int>(type: "int", nullable: false),
@@ -1106,6 +979,18 @@ namespace Engine.Model.Migrations
                 column: "ReportGroupId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AggregateReportsParameters_AggregateReportGroupParameterId",
+                schema: "cmn",
+                table: "AggregateReportsParameters",
+                column: "AggregateReportGroupParameterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AggregateReportsParameters_ReportId",
+                schema: "cmn",
+                table: "AggregateReportsParameters",
+                column: "ReportId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BlazorControls_DataModelFieldId",
                 schema: "cmn",
                 table: "BlazorControls",
@@ -1154,81 +1039,9 @@ namespace Engine.Model.Migrations
                 column: "WorkflowGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DataParameters_DynamicParameterId",
-                schema: "cmn",
-                table: "DataParameters",
-                column: "DynamicParameterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataParameters_ResultParameterId",
-                schema: "cmn",
-                table: "DataParameters",
-                column: "ResultParameterId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DataParameters_RuleId",
                 schema: "cmn",
                 table: "DataParameters",
-                column: "RuleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataParameterValues_Parameter1Id",
-                schema: "cmn",
-                table: "DataParameterValues",
-                column: "Parameter1Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataParameterValues_Parameter2Id",
-                schema: "cmn",
-                table: "DataParameterValues",
-                column: "Parameter2Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataParameterValues_Parameter3Id",
-                schema: "cmn",
-                table: "DataParameterValues",
-                column: "Parameter3Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataParameterValues_Parameter4Id",
-                schema: "cmn",
-                table: "DataParameterValues",
-                column: "Parameter4Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataParameterValues_Parameter5Id",
-                schema: "cmn",
-                table: "DataParameterValues",
-                column: "Parameter5Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataParameterValues_Parameter6Id",
-                schema: "cmn",
-                table: "DataParameterValues",
-                column: "Parameter6Id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DynamicParametersOptions_DynamicParameterId",
-                schema: "cmn",
-                table: "DynamicParametersOptions",
-                column: "DynamicParameterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DynamicParametersValues_DynamicParameterId",
-                schema: "cmn",
-                table: "DynamicParametersValues",
-                column: "DynamicParameterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DynamicParametersValues_DynamicParameterOptionId",
-                schema: "cmn",
-                table: "DynamicParametersValues",
-                column: "DynamicParameterOptionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DynamicParametersValues_RuleId",
-                schema: "cmn",
-                table: "DynamicParametersValues",
                 column: "RuleId");
 
             migrationBuilder.CreateIndex(
@@ -1304,12 +1117,6 @@ namespace Engine.Model.Migrations
                 column: "ReportGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReportParams_DynamicParameterId",
-                schema: "cmn",
-                table: "ReportParams",
-                column: "DynamicParameterId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ReportParams_ReportGroupParameterId",
                 schema: "cmn",
                 table: "ReportParams",
@@ -1350,12 +1157,6 @@ namespace Engine.Model.Migrations
                 schema: "cmn",
                 table: "TaskOperations",
                 column: "ConnectorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tokens_DynamicParameterId",
-                schema: "cmn",
-                table: "Tokens",
-                column: "DynamicParameterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tokens_RuleId",
@@ -1449,7 +1250,7 @@ namespace Engine.Model.Migrations
                 table: "HtmlColumns");
 
             migrationBuilder.DropTable(
-                name: "AggregateReportGroupsParameter",
+                name: "AggregateReportsParameters",
                 schema: "cmn");
 
             migrationBuilder.DropTable(
@@ -1457,11 +1258,7 @@ namespace Engine.Model.Migrations
                 schema: "cmn");
 
             migrationBuilder.DropTable(
-                name: "DataParameterValues",
-                schema: "cmn");
-
-            migrationBuilder.DropTable(
-                name: "DynamicParametersValues",
+                name: "DataParameters",
                 schema: "cmn");
 
             migrationBuilder.DropTable(
@@ -1474,6 +1271,10 @@ namespace Engine.Model.Migrations
 
             migrationBuilder.DropTable(
                 name: "MenusAccessibility",
+                schema: "cmn");
+
+            migrationBuilder.DropTable(
+                name: "PersianDatesTable",
                 schema: "cmn");
 
             migrationBuilder.DropTable(
@@ -1501,11 +1302,7 @@ namespace Engine.Model.Migrations
                 schema: "cmn");
 
             migrationBuilder.DropTable(
-                name: "DataParameters",
-                schema: "cmn");
-
-            migrationBuilder.DropTable(
-                name: "DynamicParametersOptions",
+                name: "AggregateReportGroupsParameter",
                 schema: "cmn");
 
             migrationBuilder.DropTable(
@@ -1529,19 +1326,15 @@ namespace Engine.Model.Migrations
                 schema: "cmn");
 
             migrationBuilder.DropTable(
+                name: "Rules",
+                schema: "cmn");
+
+            migrationBuilder.DropTable(
                 name: "Roles",
                 schema: "cmn");
 
             migrationBuilder.DropTable(
                 name: "Users",
-                schema: "cmn");
-
-            migrationBuilder.DropTable(
-                name: "Rules",
-                schema: "cmn");
-
-            migrationBuilder.DropTable(
-                name: "DynamicParameters",
                 schema: "cmn");
 
             migrationBuilder.DropTable(

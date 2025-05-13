@@ -14,11 +14,11 @@ namespace Caspian.UI
 
     internal interface IInternalUIService: IUIService
     {
-        void WindowInitialize();
+        void WindowInitialize(Window window);
 
         void Dispose();
 
-        Window Window { get; set; }
+        Window Window { get; }
     }
 
     public interface IEnumSearch<TValue> where TValue : Enum

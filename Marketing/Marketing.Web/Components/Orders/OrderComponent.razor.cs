@@ -24,7 +24,8 @@ namespace Marketing.Web.OrderComponents
         async Task OpenLevel1(MouseEventArgs e)
         {
             using var service = Page.CreateScope().GetService<OrderService>();
-            orders = await service.GetAll().Where(t => t.SettleType == null).ToListAsync();
+            var date = DateTime.Now.ToDateOnly();
+            orders = await service.GetAll().Where(t => t.SettleType == null && t.OrderDate == date).ToListAsync();
             statusLevel1 = WindowStatus.Open;
         }
 

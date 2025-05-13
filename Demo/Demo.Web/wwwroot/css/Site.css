@@ -1,8 +1,32 @@
-﻿.d-menu .d-search {
-    padding: 8px 4px 3px 8px;
-    border-bottom: 1px solid gray;
-    height: 60px;
+﻿.d-icons input {
+    height: 30px !important;
+    border-radius: 15px!important;
+    text-align: center!important;
 }
+.d-orders {
+    padding: 5px 0;
+    width: 240px;
+}
+
+    .d-orders .d-order-item {
+        border-bottom: 1px solid #d7d7d7;
+        padding: 5px 8px;
+    }
+        .d-orders .d-order-item span:nth-child(2){
+            display:inline-block;
+            width:170px;
+            text-align:center;
+        }
+
+        .d-orders .d-order-item:hover {
+            background-color: #E5F3FF !important;
+        }
+
+        .d-menu .d-search {
+            padding: 8px 4px 3px 8px;
+            border-bottom: 1px solid gray;
+            height: 60px;
+        }
 
 .d-order {
     flex-wrap: wrap;
@@ -582,11 +606,4 @@ html {
     border-radius: 16px;
     border: 1px solid #423d96;
     margin: 0 10px;
-}
-.d-icons input {
-    background-color: transparent;
-    border: none !important;
-    text-align: center;
-    line-height: 30px;
-    color: #423d96;
 }

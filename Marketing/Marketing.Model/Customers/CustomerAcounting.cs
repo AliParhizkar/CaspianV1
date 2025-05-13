@@ -14,11 +14,6 @@ namespace Marketing.Model
         [ForeignKey(nameof(CustomerId))]
         public Customer Customer { get; set; }
 
-        public int? OrderId { get; set; }
-
-        [ForeignKey(nameof(OrderId))]
-        public Order Order { get; set; }
-
         public int Payment { get; set; }
     }
 }

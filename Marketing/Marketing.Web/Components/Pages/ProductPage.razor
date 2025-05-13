@@ -89,20 +89,20 @@
                                         <NumericTextBox @bind-Value="context.SpecialCustomerPrice" ColSpan="8" DigitGrouping />
                                         <NumericTextBox @bind-Value="context.Discount" ColSpan="8" DigitGrouping />
                                         <StringTextBox @bind-Value="context.Code" ColSpan="8" Style="direction:ltr" />
-                                        <FormCommandButton ColSpan="8" />
                                     </div>
                                 </fieldset>
                             </div>
                             <div class="col-md-4 pe-3 pb-2 text-center pt-1">
                                 <label class="d-membership">تاپینکهای محصول</label>
-                                <CheckedListbox TEntity="Topping" TDetails="ProductTopping" Service="Service" Style="height:326px;flex-wrap:nowrap"
+                                <CheckedListbox TEntity="Topping" TDetails="ProductTopping" Service="Service" Style="height: calc(100% - 40px); flex-wrap: nowrap"
                                                 TextExpression="t => t.Name" />
                             </div>
                         </div>
                     </CaspianForm>
                 </TabPanelItem>
                 <TabPanelItem Title="شرح های پیشفرض">
-                    <div class="p-3">
+                    <div class="p-3 text-center pt-0">
+                        <label class="d-membership">شرح های پیش فرض</label>
                         <DataGrid TEntity="ProductDescription" DetailsService="Service" ContentHeight="200">
                             <Columns>
                                 <GridColumn Field="t => t.Description" />
@@ -112,11 +112,18 @@
                     </div>
                     <TypeWindow TEntity="ProductDescription" Service="Service" Title="شرح پیش فرض" Style="width:500px;">
                         <StringTextBox @bind-Value="context.Description" ColSpan="8" MultiLine Rows="2" />
-                        <FormCommandButton ColSpan="8"  />
+                        <FormCommandButton ColSpan="8" />
                     </TypeWindow>
                 </TabPanelItem>
             </Tabs>
         </TabPanel>
+        <div class="p-2 pb-0 text-center c-form-action">
+            @if (Service.Form != null)
+            {
+                <button class="c-btn c-primary" @onclick="async () => await Service.Form.SubmitAsync()">ثبت</button>
+                <button class="c-btn c-danger" @onclick="async () => await Service.Form.ResetAsync()">بازنشانی</button>
+            }
+        </div>
     </Window>
 </div>
 

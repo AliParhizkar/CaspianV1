@@ -16,6 +16,9 @@ namespace Demo.Model
 
         public DateOnly Date { get; set; }
 
+        [DisplayName("Receipt No")]
+        public int ReceiptNo { get; set; }
+
         [DisplayName("Warehouse")]
         public int WarehouseId { get; set; }
 

@@ -1198,7 +1198,7 @@ var caspian;
                         let locHelpWindow = helpWindow.getBoundingClientRect();
                         let posTarget = target.getPosition();
                         if (locTarget.top >= locHelpWindow.height - 30)
-                            helpWindow.style.marginTop = `${-locHelpWindow.height - 35}px`;
+                            helpWindow.style.marginTop = `${-locHelpWindow.height - 40}px`;
                         if (caspian.common.RightToLeft()) {
                             let right = 0;
                             if (locHelpWindow.width + 8 > locTarget.right)
@@ -1237,7 +1237,7 @@ var caspian;
                 else
                     window.onclick = null;
             });
-            mutationObserver.observe(lookup, {
+            mutationObserver.observe(lookup.getElementsByClassName('c-content')[0], {
                 attributes: true,
                 childList: true,
                 subtree: false
@@ -1398,6 +1398,8 @@ var caspian;
                 topT -= loc.height / 2 + data.offsetTop + offsetTop;
             else if (data.verticalAnchor == VerticalAnchor.Bottom)
                 topT -= loc.height + data.offsetTop + offsetTop - 1;
+            if (topT < 30)
+                topT = 30;
             element.style.left = `${leftT}px`;
             element.style.top = `${topT}px`;
         }

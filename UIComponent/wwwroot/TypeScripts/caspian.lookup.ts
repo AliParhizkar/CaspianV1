@@ -29,7 +29,7 @@
                         let locHelpWindow = helpWindow.getBoundingClientRect();
                         let posTarget = target.getPosition();
                         if (locTarget.top >= locHelpWindow.height - 30)
-                            helpWindow.style.marginTop = `${-locHelpWindow.height - 35}px`;
+                            helpWindow.style.marginTop = `${-locHelpWindow.height - 40}px`;
                         if (caspian.common.RightToLeft()) {
                             let right = 0;
                             if (locHelpWindow.width + 8 > locTarget.right)
@@ -67,7 +67,7 @@
                     window.onclick = null;
 
             });
-            mutationObserver.observe(lookup, {
+            mutationObserver.observe(lookup.getElementsByClassName('c-content')[0], {
                 attributes: true,
                 childList: true,
                 subtree: false

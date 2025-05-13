@@ -97,9 +97,18 @@ namespace Caspian.UI
             }
         }
 
+        protected override async Task SetChangedEntities()
+        {
+            if (Form?.ValidationValidator?.Validator != null)
+            {
+                if (Form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail, TDetail1> service)
+                    await service.SetChangedEntities(UpsertData, base.ChangedEntities, ChangedEntities);
+            }
+
+        }
+
         protected override async Task UpdateDatabaseAsync(TMaster master)
         {
-            
             var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
             using var scope = CreateScope();
             if (OnUpsert != null)

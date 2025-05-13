@@ -33,7 +33,7 @@
                 <button class="c-btn c-primary">ثبت   <span class="me-1 ms-1 fa fa-save"></span></button>
             </div>
             <div class="col-md-4 text-center pt-3">
-                <button class="c-btn c-primary">چاپ   <span class="me-1 ms-1 fa fa-print"></span></button>
+                <button type="button" class="c-btn c-primary">چاپ   <span class="me-1 ms-1 fa fa-print"></span></button>
             </div>
         </div>
         <div class="col-md-3 row c-controls ps-3">
@@ -123,6 +123,7 @@
     async Task InitializeOrder(int orderId)
     {
         await OrderService.ReloadForUpdate(orderId);
+
     }
 
     protected override async Task OnInitializedAsync()

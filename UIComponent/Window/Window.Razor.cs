@@ -8,7 +8,7 @@ namespace Caspian.UI
     public partial class Window: ComponentBase
     {
         MessageBox messageBox;
-        bool isOpend;
+        bool isOpened;
         WindowStatus oldStatus;
         Dictionary<string, object> attrs = new Dictionary<string, object>();
 
@@ -67,11 +67,11 @@ namespace Caspian.UI
         public bool Draggable { get; set; }
 
         [Parameter]
-        public bool ParentChaild { get; set; }
+        public bool ParentChild { get; set; }
 
         public async Task Open()
         {
-            isOpend = true;
+            isOpened = true;
             Status = WindowStatus.Open;
             if (StatusChanged.HasDelegate)
                 await StatusChanged.InvokeAsync(WindowStatus.Open);
@@ -101,8 +101,7 @@ namespace Caspian.UI
             if (Service != null)
             {
                 var service = Service as IInternalUIService;
-                service.Window = this;
-                service.WindowInitialize();
+                service.WindowInitialize(this);
             }
             Modal = true;
             Draggable = true;
@@ -127,7 +126,7 @@ namespace Caspian.UI
         {
             if (Status == WindowStatus.Open && oldStatus != WindowStatus.Open)
             {
-                isOpend = true;
+                isOpened = true;
                 PageService.Push(this);
             }
             if (Status != WindowStatus.Open && oldStatus == WindowStatus.Open)
@@ -135,7 +134,6 @@ namespace Caspian.UI
                 PageService.Pop();
                 messageBox = null;
             }
-            var qqqq = Title;
             oldStatus = Status;
             await base.OnParametersSetAsync();
         }
@@ -147,9 +145,9 @@ namespace Caspian.UI
                 var dotnet = DotNetObjectReference.Create(this);
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindWindow", window, dotnet);
             }
-            if (isOpend && OnOpen.HasDelegate)
+            if (isOpened && OnOpen.HasDelegate)
             {
-                isOpend = false;
+                isOpened = false;
                 await OnOpen.InvokeAsync();
             }
             await base.OnAfterRenderAsync(firstRender);
@@ -157,8 +155,7 @@ namespace Caspian.UI
 
         public void Dispose()
         {
-            if (Service != null) 
-                (Service as IInternalUIService).Window = null;
+            (Service as IInternalUIService)?.WindowInitialize(null);
         }
     }
 }

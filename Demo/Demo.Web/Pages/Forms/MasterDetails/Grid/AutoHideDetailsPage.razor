@@ -73,9 +73,9 @@
                 </ul>
                 <div class="row">
                     <div class="col-md-3 row">
-                        <div class="col-md-2 text-start c-arrow-back">
+                        <div class="col-md-2 text-start">
                             <a href="/Demo/Batch/AutoHide/Master/@(receiptId)">
-                                <span class="fa fa-arrow-left"></span>
+                                <span class="fa fa-arrow-left c-small-icon"></span>
                             </a>
                         </div>
                         <div class="col-md-10 text-center">
@@ -83,9 +83,14 @@
                         </div>
                         <hr class="mt-2" />
                     </div>
-                    <div class="col-md-8 row ps-3 ">
-                        <div class="col-md-12 text-center">
-                            <span class="d-membership">Receipt details</span>
+                    <div class="col-md-9 ps-3 ">
+                        <div class="text-center row">
+                            <div class="col-md-11">
+                                <span class="d-membership">Receipt details</span>
+                            </div>
+                            <div class="col-md-1 text-left">
+                                <span @onclick="ShowRecipts" @ref="btnReceipts" class="fa fa-bars c-small-icon"></span>
+                            </div>
                             <hr class="mt-2" />
                         </div>
                     </div>
@@ -187,16 +192,45 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
         <StringTextBox @ref="txtDescription" @bind-Value="selectedReceiptDetail.Description" MultiLine Rows="3" />
     </div>
 </PopupWindow>
-
+<PopupWindow @bind-Status="reciptStatus" TargetElement="btnReceipts" TargetHorizontalAnchor="HorizontalAnchor.Left" OffsetLeft="-1"
+TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right"VerticalAnchor="VerticalAnchor.Middle">
+    <div class="d-orders">
+        @foreach(var recipt in receipts)
+        {
+            <div class="d-order-item">
+                <span>@recipt.ReceiptNo</span>
+                <span>@recipt.Warehouse.Title</span>
+                <span @onclick="async () => await InitializeReciept(recipt.Id)" class="fa fa-pencil c-small-icon"></span>
+            </div>
+        }
+    </div>
+</PopupWindow>
 @code
 {
-    WindowStatus status;
+    WindowStatus status, reciptStatus;
     NumericTextBox<int> txtMainUnit;
     NumericTextBox<int?> txtSubunit;
     ReceiptDetail selectedReceiptDetail;
     StringTextBox txtDescription;
-    ElementReference? targetElement, btnDescripOninsert, btnDescripOnEdit;
+    ElementReference? targetElement, btnDescripOninsert, btnDescripOnEdit, btnReceipts;
     int? receiptId;
+    double? left;
+    IList<WarehouseReceipt> receipts;
+
+    async Task InitializeReciept(int reciptId)
+    {
+        await Service.ReloadForUpdate(reciptId);
+        reciptStatus = WindowStatus.Close;
+    }
+
+    async Task ShowRecipts(MouseEventArgs e)
+    {
+        using var service = CreateScope().GetService<WareHouseReceiptService>();
+        var todayDate = DateTime.Now.ToDateOnly();
+        receipts = await service.GetAll().Where(t => t.Date == todayDate).Include(t => t.Warehouse).ToListAsync();
+        left = e.ClientX - e.OffsetX - 200;
+        reciptStatus = WindowStatus.Open;
+    }
 
     async Task ShowDesccription(ReceiptDetail detail, UpsertMode upsertMode)
     {
@@ -259,11 +293,6 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
             await txtMainUnit.FocusAsync();
 
         }
-    }
-
-    void Click(MouseEventArgs e)
-    {
-        
     }
 
     [Parameter]

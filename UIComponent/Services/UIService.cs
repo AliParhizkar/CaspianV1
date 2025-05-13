@@ -419,14 +419,18 @@ namespace Caspian.UI
             return await baseComponentService.MessageBox.Confirm(message);
         }
 
-        void IInternalUIService.WindowInitialize()
+        void IInternalUIService.WindowInitialize(Window window)
         {
-            Window.OnInternalClose = EventCallback.Factory.Create(this, StateHasChanged);
-            Window.OnInternalOpen = EventCallback.Factory.Create(this, async () => 
+            Window = window;
+            if (window != null)
             {
-                await Task.Delay(100);
-                await Form.FocusAsync();
-            });
+                Window.OnInternalClose = EventCallback.Factory.Create(this, StateHasChanged);
+                Window.OnInternalOpen = EventCallback.Factory.Create(this, async () =>
+                {
+                    await Task.Delay(100);
+                    await Form.FocusAsync();
+                });
+            }
         }
 
         void IInternalUIService<TEntity>.ClearForm()

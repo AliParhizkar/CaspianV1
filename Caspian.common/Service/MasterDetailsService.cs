@@ -13,24 +13,28 @@ namespace Caspian.Common.Service
         public MasterDetailsService(IServiceProvider provider)
             : base(provider)
         {
-            if (BatchServiceData == null)
-                BatchServiceData = new BatchServiceData();
+            BatchServiceData = new BatchServiceData();
             BatchServiceData.MasterType = typeof(TMaster);
-            if (BatchServiceData.DetailPropertiesInfo == null)
-                BatchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
+            BatchServiceData.DetailPropertiesInfo = new List<PropertyInfo>();
             var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
             BatchServiceData.DetailPropertiesInfo.Add(detailsProperty);
+            Details = new List<TDetail>();
         }
+
+        protected bool FillDetail { get; set; } = true;
 
         protected IList<ChangedEntity<TDetail>> ChangedEntities { get; private set; }
 
-        protected IList<TDetail> Details { get; private set; }
+        protected IEnumerable<TDetail> Details { get; private set; }
 
         public async Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetail>> changedEntities)
         {
             ChangedEntities = changedEntities;
-            Details = await GetDetailsAfterAddChangesAsync(master);
-            typeof(TMaster).GetDetailsProperty(typeof(TDetail)).SetValue(master, Details);
+            if (FillDetail)
+            {
+                Details = await GetDetailsAfterAddChangesAsync(master);
+                typeof(TMaster).GetDetailsProperty(typeof(TDetail)).SetValue(master, Details);
+            }
         }
 
         async Task<IList<TDetail>> GetDetailsAfterAddChangesAsync(TMaster master)
@@ -46,15 +50,17 @@ namespace Caspian.Common.Service
             var constantExpr = Expression.Constant(Convert.ChangeType(masterId, fKey.PropertyType.GetUnderlyingType()));
             expr = Expression.Equal(expr, constantExpr);
             expr = Expression.Lambda(expr, parameter);
-            var result = await ServiceProvider.GetService<IBaseService<TDetail>>().GetAll().Where(expr).ToListAsync();
+            using var service = ServiceProvider.CreateScope().GetService<IBaseService<TDetail>>();
+            var result = await service.GetAll().Where(expr).ToListAsync();
             var key = typeof(TDetail).GetPrimaryKey();
             ///Remove changed Entities (updated or deleted)
             foreach (var item in ChangedEntities.Where(t => t.ChangeStatus != ChangeStatus.Added))
             {
                 var value = key.GetValue(item.Entity);
-                foreach (var entity in result)
+                for (var index = 0;  index < result.Count; index++)
                 {
-                    if (key.GetValue(entity) == value)
+                    var entity = result[index];
+                    if (key.GetValue(entity).Equals(value))
                         result.Remove(entity);
                 }
             }
@@ -68,6 +74,7 @@ namespace Caspian.Common.Service
         {
             PropertyInfo detailsInfo = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
             var details = detailsInfo.GetValue(entity) as IEnumerable<TDetail>;
+            Details = details;
             if (details == null || details.Count() == 0)
                 return await base.AddAsync(entity);
             foreach (var info in typeof(TMaster).GetProperties())
@@ -162,8 +169,11 @@ namespace Caspian.Common.Service
             var deletedItems = changedList.Where(t => t.ChangeStatus == ChangeStatus.Deleted).Select(t => t.Entity);
             if (deletedItems.Any())
                 Context.Set<TDetail>().RemoveRange(deletedItems);
+            var detailsInfo = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            if (Details == null || !Details.Any())
+                Details = detailsInfo.GetValue(entity) as IEnumerable<TDetail>;
             await UpdateAsync(entity);
-            typeof(TMaster).GetDetailsProperty(typeof(TDetail)).SetValue(entity, insertedItems);
+            detailsInfo.SetValue(entity, insertedItems);
             return entity;
         }
 

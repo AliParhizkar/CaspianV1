@@ -13,27 +13,29 @@
     {
         <span class="fa fa-search" @onclick="() => OpenWindow(true)"></span>
     }
-    @if (status == WindowStatus.Open)
-    {
-        <div class="t-HelpWindow">
-            @if (!HideHeader)
-            {
-                <div class="t-header">
-                    <div class="t-window-title">@(Title)</div>
-                    <div class="t-window-action t-link" @onclick="() => CloseHelpForm()">
-                        <i class="fa fa-close"></i>
+    <div class="c-content">
+        @if (status == WindowStatus.Open)
+        {
+            <div class="t-HelpWindow">
+                @if (!HideHeader)
+                {
+                    <div class="t-header">
+                        <div class="t-window-title">@(Title)</div>
+                        <div class="t-window-action t-link" @onclick="() => CloseHelpForm()">
+                            <i class="fa fa-close"></i>
+                        </div>
                     </div>
-                </div>
-            }
-            <div class="t-content">
-                <CascadingValue Name="LookupStringSearchValue" Value="SearchStr" IsFixed>
-                    <CascadingValue Value=this>
-                        @ChildContent
+                }
+                <div class="t-content">
+                    <CascadingValue Name="LookupStringSearchValue" Value="SearchStr" IsFixed>
+                        <CascadingValue Value=this>
+                            @ChildContent
+                        </CascadingValue>
                     </CascadingValue>
-                </CascadingValue>
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 
 

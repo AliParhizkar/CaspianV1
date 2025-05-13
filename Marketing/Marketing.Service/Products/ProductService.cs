@@ -9,6 +9,7 @@ namespace Marketing.Service
         public ProductService(IServiceProvider provider)
             : base(provider)
         {
+            FillDetail = false;
             RuleFor(t => t.Title).Required().UniqueAsync("محصولی  با این عنوان در سیستم وجود دارد.");
             RuleFor(t => t.Code).UniqueAsync("محصولی با این کد در سیستم وجود دارد")
             .CustomValue(code =>

@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace Engine.Model.Migrations
+namespace Marketing.Model.Migrations
 {
     /// <inheritdoc />
-    public partial class Version3 : Migration
+    public partial class V24 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

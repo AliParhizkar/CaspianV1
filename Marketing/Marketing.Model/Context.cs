@@ -34,5 +34,7 @@ namespace Marketing.Model
         public DbSet<PrinterLocation> PrinterLocations { get; set; }
 
         public DbSet<PrinterProduct> PrinterProducts { get; set; }  
+
+        public DbSet<CustomerAccounting> CustomerAccountings { get; set; }
     }
 }
