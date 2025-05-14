@@ -42,5 +42,11 @@ namespace Marketing.Web.OrderComponents
 
         [Parameter]
         public BasePage Page { get; set; }
+
+        [Parameter]
+        public int? OrderId { get; set; }
+
+        [Parameter]
+        public EventCallback<int?> OrderIdChanged { get; set; }
     }
 }

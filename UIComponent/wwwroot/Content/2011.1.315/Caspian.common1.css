@@ -1398,14 +1398,16 @@ body {
         background-color: #c82333;
         border-color: #bd2130;
     }
+.t-numeric:read-only {
+    background-color: #f8faff;
+}
 
-    
 
 .c-multiselect-autocomplete {
     border: 1px solid rgba(0,0,0,0.25);
     border-radius: 8px;
     padding: 5px 0 10px 10px;
-    min-height:55px;
+    min-height: 55px;
 }
 .c-multiselect-autocomplete .c-content {
     min-height: 28px;
@@ -1537,6 +1539,7 @@ form > tr {
     position: absolute;
     margin-right: -26px;
     margin-top: 9px;
+    margin-left:-26px;
 }
 .c-page-size {
     width: 100px;

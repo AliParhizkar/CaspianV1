@@ -26,10 +26,10 @@ namespace Caspian.Common
             else
                 Language= Language.Fa;
             Context = provider.GetService(contextType) as CaspianContext;
-            var data = provider.GetService(typeof(CaspianDataService)) as CaspianDataService;
-            UserId = data.UserId;
-            if (!data.Language.HasValue)
-                data.Language = Language;
+            //var data = provider.GetService(typeof(CaspianDataService)) as CaspianDataService;
+            //UserId = data.UserId;
+            //if (!data.Language.HasValue)
+            //    data.Language = Language;
             foreach (var info in typeof(TModel).GetProperties())
             {
                 var type = info.PropertyType;

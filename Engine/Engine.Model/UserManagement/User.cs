@@ -41,7 +41,7 @@ namespace Caspian.Engine.Model
         [CheckOnDelete("Th user has access to menus and can not be removed")]
         public ICollection<MenuAccessibility> Accessibilities { get; set; }
 
-        [CheckOnDelete("The user has some errors and can not be remoed")]
+        [CheckOnDelete("The user has some errors and can not be removed")]
         public ICollection<ExceptionDetail> ExceptionDetails { get; set; }
     }
 }

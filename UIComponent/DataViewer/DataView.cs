@@ -184,6 +184,7 @@ namespace Caspian.UI
         {
             var type = typeof(IBaseService<TEntity>);
             using var scope = ServiceScopeFactory.CreateScope();
+            BatchServiceData.MasterType = (DetailsService as ISimpleBatchService)?.MasterType;
             scope.SetUserId(PageData);
             serviceType = scope.ServiceProvider.GetService(type)?.GetType();
             if (serviceType == null)
@@ -732,6 +733,7 @@ namespace Caspian.UI
                 insertedEntity = new RowData<TEntity>();
                 insertedEntity.UpsertMode = UpsertMode.Insert;
                 insertedEntity.Data = Activator.CreateInstance<TEntity>();
+                
                 if (BatchServiceData.MasterId > 0)
                     BatchServiceData.GetMasterInfo(typeof(TEntity)).SetValue(insertedEntity.Data, BatchServiceData.MasterId);
                 if (OnOpen.HasDelegate)

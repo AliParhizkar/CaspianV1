@@ -16,6 +16,7 @@ namespace Caspian.Common.Service
             var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
             BatchServiceData.DetailPropertiesInfo.Add(detailsProperty);
             Details = new List<TDetail>();
+            UserId = provider.GetService<CaspianDataService>().UserId;
         }
 
         protected bool FillDetail { get; set; } = true;

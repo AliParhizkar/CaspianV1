@@ -1,18 +1,18 @@
 ﻿@namespace Marketing.Web.OrderComponents
 <div class="row c-controls" >
-    <NumericTextBox Value="order.RoundAmount" ColSpan="7" TotalSpan="12" Title="مبلغ رند" DigitGrouping />
-    <RadioList @bind-Value="order.DiscountType" ColSpan="7" TotalSpan="12" />
+    <NumericTextBox Value="order.RoundAmount" ColSpan="9" TotalSpan="12" Title="مبلغ رند" DigitGrouping />
+    <RadioList @bind-Value="order.DiscountType" ColSpan="9" TotalSpan="12" />
     @if (order.DiscountType == DiscountType.Amount)
     {
-        <NumericTextBox @bind-Value="order.DiscountAmount" OnChange="OnChange" ColSpan="7" TotalSpan="12" DigitGrouping />
+        <NumericTextBox @bind-Value="order.DiscountAmount" OnChange="OnChange" ColSpan="9" TotalSpan="12" DigitGrouping />
     }
     else
     {
-        <NumericTextBox TValue="decimal" Value="order.PercentDiscount" ValueChanged="ChangePercentDiscount" BindingType="BindingType.OnInput" ColSpan="3" TotalSpan="8" Total="3" Title="درصد تخفیف" />
-        <NumericTextBox Value="order.DiscountAmount" ColSpan="4" TotalSpan="4" DigitGrouping readonly />
+        <NumericTextBox TValue="decimal" Value="order.PercentDiscount" ValueChanged="ChangePercentDiscount" BindingType="BindingType.OnInput" ColSpan="2" TotalSpan="5" Total="3" Title="درصد تخفیف" />
+        <NumericTextBox Value="order.DiscountAmount" ColSpan="4" Title="مبلغ تخفیف" TotalSpan="7" DigitGrouping readonly />
     }
-    <NumericTextBox Value="order.ProductAmount"  ColSpan="7" TotalSpan="12" Title="مبلغ غذا" readonly DigitGrouping  />
-    <NumericTextBox Value="order.PaymentAmount"  ColSpan="7" TotalSpan="12" Title="جمع کل" readonly DigitGrouping />
+    <NumericTextBox Value="order.ProductAmount"  ColSpan="9" TotalSpan="12" Title="مبلغ غذا" readonly DigitGrouping  />
+    <NumericTextBox Value="order.PaymentAmount"  ColSpan="9" TotalSpan="12" Title="جمع کل" readonly DigitGrouping />
 </div>
 
 

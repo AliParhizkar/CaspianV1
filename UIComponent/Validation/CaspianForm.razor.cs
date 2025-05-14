@@ -36,6 +36,9 @@ namespace Caspian.UI
         public IUIService<TEntity> Service { get; set; }
 
         [Parameter]
+        public IBatchService<TEntity> BatchService { get;set;}
+
+        [Parameter]
         public EventCallback<TEntity> OnInvalidSubmit { get; set; }
 
         [Parameter]

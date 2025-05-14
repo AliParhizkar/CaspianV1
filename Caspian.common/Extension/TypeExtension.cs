@@ -112,7 +112,7 @@ namespace Caspian.Common.Extension
             if (infos.Count()  > 1)
             {
                 if (inverseProperty == null)
-                    throw new CaspianException($"Type {type.Name} has {infos.Count()} foreign key of type {foreignKeyType.Name} and hasnt InversePropertyAttribute");
+                    throw new CaspianException($"Type {type.Name} has {infos.Count()} foreign key of type {foreignKeyType.Name} and hasn't InversePropertyAttribute");
                 info = infos.Single(t => t.Name == inverseProperty);
             }
             else

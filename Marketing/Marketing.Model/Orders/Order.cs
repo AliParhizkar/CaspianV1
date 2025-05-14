@@ -1,15 +1,13 @@
 ﻿using Caspian.Common;
+using Caspian.Engine.Model;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Marketing.Model
 {
     [Table("Orders", Schema = "mrk")]
-    public class Order
+    public class Order: BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
 
         [DisplayName("تاریخ شفارش")]
         public DateOnly OrderDate { get; set; }
@@ -22,6 +20,9 @@ namespace Marketing.Model
 
         [ForeignKey(nameof(CustomerId))]
         public Customer Customer { get; set; }
+
+        [DisplayName("مشتری خاص")]
+        public bool IsSpecialCustomer { get; set; }
 
         [DisplayName("نوع پرداخت")]
         public SettleType? SettleType { get; set; }
@@ -73,5 +74,11 @@ namespace Marketing.Model
 
         [CheckOnDelete("سفارش دارای اقلام سفارشی هست و امکان حذف آن وجود ندارد.")]
         public ICollection<OrderDetail> OrderDetails { get; set; }
+
+        [DisplayName("صندوقدار")]
+        public int? CashierId { get; set; }
+
+        [ForeignKey(nameof(CashierId))]
+        public Cashier Cashier { get; set; }
     }
 }

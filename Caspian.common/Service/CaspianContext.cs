@@ -62,7 +62,7 @@ namespace Caspian.Common
                                 .HasOne(info.Name)
                                 .WithOne(property.Name)
                                 .IsRequired(false)
-                                .OnDelete(DeleteBehavior.Cascade);
+                                .OnDelete(DeleteBehavior.NoAction);
                         }
                         else
                         {
@@ -78,7 +78,7 @@ namespace Caspian.Common
                             if (count != 1)
                             {
                                 if (relationsCount == 0)
-                                    throw new CaspianException($"On Type {property.PropertyType} we shoul have a property of type ICollection<{type.Name}>");
+                                    throw new CaspianException($"On Type {property.PropertyType} we should have a property of type ICollection<{type.Name}>");
                                 else
                                     throw new CaspianException($"On Type {property.PropertyType} we have many properties of type ICollection<{type.Name}> and we should use InverseProperty({property.Name}) Relation Coun:{relationsCount}");
                             }

@@ -1,17 +1,10 @@
 ﻿@page "/Marketing"
 @inherits BasePage
-<button @onclick="Test">Test</button>
 
+<div style="width:300px;margin-right:190px;padding-top:20px;">
+    <button onclick="test111111()"></button>
+</div>
 
 @code 
 {
-    async Task Test()
-    {
-        using var service = CreateScope().GetService<OrderDetailToppingService>();
-        var data = await service.GetAll().GroupBy(t => t.OrderDetailId).Select(t => new 
-        {
-            t.Key,
-            Sum = t.Sum(u => u.Quantity)
-        }).ToListAsync();
-    }
 }

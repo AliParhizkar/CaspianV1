@@ -115,7 +115,10 @@ namespace Caspian.UI
             }
             else
             {
-                (Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (CaspianForm.Service as ISimpleBatchService).ThirdLevelProperty;
+                if (CaspianForm.Service != null)
+                    (Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (CaspianForm.Service as ISimpleBatchService)?.ThirdLevelProperty;
+                else if (CaspianForm.BatchService !=  null)
+                    (Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (CaspianForm.BatchService as ISimpleBatchService).ThirdLevelProperty;
                 (Validator as ICaspianValidator).BatchServiceData.MasterType = CaspianForm.Model.GetType();
             }
             if (CaspianForm != null && CaspianForm.OnBeforeValidate.HasDelegate)

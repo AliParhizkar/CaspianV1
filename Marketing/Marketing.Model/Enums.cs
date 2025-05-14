@@ -86,4 +86,13 @@ namespace Marketing.Model
         [Display(Name = "اینترنتی")]
         Internet
     }
+
+    public enum Gender:byte
+    {
+        [Display(Name = "مرد")]
+        Male,
+
+        [Display(Name = "زن")]
+        Female 
+    }
 }

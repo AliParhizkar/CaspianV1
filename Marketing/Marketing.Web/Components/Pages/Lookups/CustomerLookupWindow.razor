@@ -1,7 +1,7 @@
 ﻿@namespace Marketing.Web
 @typeparam TValue
 @inherits LookupWindow<Customer, TValue>
-<div class="c-lookup-page" style="width:800px;">
+<div class="c-lookup-page" style="width:550px;">
     <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
         <StringTextBox @bind-Value="context.Name" ColSpan="4" />
         @if (ConfigService.Config.CustomerHasManyAddresses)
@@ -18,8 +18,8 @@
               ConditionExpr="t => address == null || t.Addresses.Any(u => u.Address.Contains(address))">
         <Columns Context="customer">
             <GridColumn Field='t => t.Name' Title="نام مشتری" />
-            <GridColumn Field="t => t.MobileNumber.CallFormat('-')" />
-            <GridColumn Field="t => t.CustomerNumber" />
+            <GridColumn Field="t => t.MobileNumber.CallFormat('-')" style="width:120px" />
+            <GridColumn Field="t => t.CustomerNumber" style="width:100px" />
         </Columns>
     </DataGrid>
 </div>

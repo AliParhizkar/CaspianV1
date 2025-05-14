@@ -8,17 +8,36 @@ using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Common.Service
 {
     public class BaseService<TEntity> : CaspianValidator<TEntity>, IBaseService, IDisposable, IBaseService<TEntity> where TEntity : class
     {
+        protected string GuId = Guid.NewGuid().ToString();
         public BaseService(IServiceProvider provider)
             :base(provider)
         {
             Source = new List<TEntity>();
             
         }
+
+        protected async Task<T> GetEntity<T>(Expression<Func<T, bool>> expression)
+        {
+            using var service = ServiceProvider.CreateScope().GetService<IBaseService<T>>();
+            return await service.GetAll().SingleOrDefaultAsync(expression);
+        }
+
+        protected async Task<T> GetEntity<T>(int id, T entity)
+        {
+            if (entity == null || Convert.ToInt32(typeof(T).GetPrimaryKey().GetValue(entity)) != id)
+            {
+                using var service = ServiceProvider.CreateScope().GetService<IBaseService<T>>();
+                entity = await service.SingleAsync(id);
+            }
+            return entity;
+        }
+
 
         internal protected IReadOnlyCollection<TEntity> Source { get; set; }
 

@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
+using System.Data;
 
 namespace Caspian.UI
 {
@@ -47,7 +48,7 @@ namespace Caspian.UI
             return enumValues;
         }
 
-        public DataView<TOther> DataView { get; }
+        public DataView<TOther> DataView { get; private set; }
 
         public TOther Search { get; set; }
 
@@ -58,6 +59,9 @@ namespace Caspian.UI
 
         void IInternalSearchService<TOther>.DataViewInitialize(DataView<TOther> dataView)
         {
+            DataView = dataView;
+            if (dataView == null)
+                return;
             DataView.Search = Search;
             DataView.ShowInsertIcon = false;
             DataView.InsertIconState(!onlyForSearch);

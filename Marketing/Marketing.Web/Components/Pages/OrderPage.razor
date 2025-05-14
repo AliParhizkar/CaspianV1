@@ -13,7 +13,7 @@
 <ProductComponent @ref="productComponent" Page="this" OrderService="OrderService" OnChange="() => { }" Customer="customer" Products="products" />
 
 
-<CaspianForm TEntity="Order" Service="OrderService" OnSubmit="async order => await SetTopings(order)">
+<CaspianForm TEntity="Order" Service="OrderService" OnSubmit="async order => await OnSubmit(order)">
     <div class="pe-2 row">
         <div class="col-md-4">
             @if (OrderService.DetailDataView != null)
@@ -57,11 +57,27 @@
             customer = await service.SingleAsync(customerId.Value);
         else
             customer = null;
+        OrderService.UpsertData.IsSpecialCustomer = customer?.IsSpecial == true;
     }
 
-    async Task SetTopings(CancelableEvent<Order> e)
+    async Task OnSubmit(CancelableEvent<Order> e)
     {
         var order = e.Entity;
+        if (order.Id == 0)
+        {
+            //if (order.CashAmount > 0)
+            //{
+            //    using var service = CreateScope().GetService<CashierService>();
+            //    var cashhier = await service.GetAll().SingleOrDefaultAsync(t => t.RelatedUserId == UserId);
+            //    if (cashhier == null || cashhier.ActiveType != ActiveType.Active)
+            //    {
+            //        e.Cancel = true;
+            //        ShowMessage("برای ثبت سفارش نقد، کاربر باید بعنوان صندوقدار فعال باشد.");
+            //    }
+            //    else
+            //        order.CashierId = cashhier.Id;
+            //}
+        }
         if (order.Id > 0)
         {
             using var service = CreateScope().GetService<OrderDetailToppingService>();

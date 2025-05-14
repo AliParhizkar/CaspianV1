@@ -1189,26 +1189,34 @@ var caspian;
         }
         bindObserver(lookup, dotnet) {
             const mutationObserver = new MutationObserver(list => {
+                let sidebarWidth = document.getElementsByClassName('sidebar')[0].getBoundingClientRect().width;
                 let target = list[0].target;
                 let helpWindow = target.getElementsByClassName('t-HelpWindow')[0];
                 if (helpWindow != null) {
                     helpWindow.classList.remove('c-advance-search');
-                    if (target.getAttribute('advanceSearch') == null) {
+                    if (target.closest('.c-lookup').getAttribute('advanceSearch') == null) {
                         let locTarget = target.getBoundingClientRect();
                         let locHelpWindow = helpWindow.getBoundingClientRect();
                         let posTarget = target.getPosition();
                         if (locTarget.top >= locHelpWindow.height - 30)
                             helpWindow.style.marginTop = `${-locHelpWindow.height - 40}px`;
                         if (caspian.common.RightToLeft()) {
-                            let right = 0;
-                            if (locHelpWindow.width + 8 > locTarget.right)
-                                right = locTarget.right - locHelpWindow.width - 4;
+                            let right = (locTarget.width - locHelpWindow.width) / 2;
+                            if (window.innerWidth - locTarget.right - sidebarWidth + right < 5)
+                                right = locTarget.right + sidebarWidth + 5 - window.innerWidth;
+                            if (locTarget.right - right - locHelpWindow.width < 5)
+                                right = locTarget.right - locHelpWindow.width - 5;
+                            //if (locHelpWindow.width + 12 > locTarget.right)
+                            //    right = locTarget.right - locHelpWindow.width - 10;
                             helpWindow.style.marginRight = `${right}px`;
                         }
                         else {
                             let left = (locHelpWindow.width - locTarget.width) / 2;
                             if (posTarget.left - left + locHelpWindow.width > window.innerWidth)
                                 left = locHelpWindow.width - (window.innerWidth - posTarget.left) + 26;
+                            if (posTarget.left - left < sidebarWidth + 5) {
+                                left = posTarget.left - sidebarWidth - 5;
+                            }
                             helpWindow.style.marginLeft = `${-left}px`;
                         }
                     }
