@@ -1,6 +1,6 @@
 ﻿@page "/Demo/Batch/Custom/Details"
 @page "/Demo/Batch/Custom/Details/{OrderId:int}"
-@inject BatchService<Order, OrderDetail> Service
+@inject UIService<Order, OrderDetail> Service
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);

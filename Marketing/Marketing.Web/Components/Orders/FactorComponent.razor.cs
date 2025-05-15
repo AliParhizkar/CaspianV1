@@ -9,8 +9,8 @@ namespace Marketing.Web.OrderComponents
 {
     public partial class FactorComponent
     {
-        IDictionary<int, BatchService<OrderDetail, OrderDetailTopping>> toppingServices;
-        BatchService<OrderDetail, OrderDetailTopping> toppingService;
+        IDictionary<int, UIService<OrderDetail, OrderDetailTopping>> toppingServices;
+        UIService<OrderDetail, OrderDetailTopping> toppingService;
         WindowStatus toppingStatus, descriptStatus;
         int? selectedDetailId, toppingProductId;
         double left, top;
@@ -81,7 +81,7 @@ namespace Marketing.Web.OrderComponents
 
         protected override void OnInitialized()
         {
-            toppingServices = new Dictionary<int, BatchService<OrderDetail, OrderDetailTopping>>();
+            toppingServices = new Dictionary<int, UIService<OrderDetail, OrderDetailTopping>>();
             base.OnInitialized();
         }
 
@@ -194,7 +194,7 @@ namespace Marketing.Web.OrderComponents
             toppingService = toppingServices.SingleOrDefault(t => t.Key == detail.Id).Value;
             if (toppingService == null)
             {
-                toppingService = new BatchService<OrderDetail, OrderDetailTopping>(OrderService.Provider);
+                toppingService = new UIService<OrderDetail, OrderDetailTopping>(OrderService.Provider);
                 toppingService.MasterId = detail.Id;
                 toppingServices.Add(detail.Id, toppingService);
             }
@@ -218,6 +218,6 @@ namespace Marketing.Web.OrderComponents
         public BasePage Page { get; set; }
 
         [Parameter]
-        public BatchService<Order, OrderDetail> OrderService { get; set; }
+        public UIService<Order, OrderDetail> OrderService { get; set; }
     }
 }

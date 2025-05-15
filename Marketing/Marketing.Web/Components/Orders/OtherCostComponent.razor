@@ -20,7 +20,7 @@
 {
     Order order;
     [Parameter]
-    public BatchService<Order, OrderDetail> OrderService { get; set; }
+    public UIService<Order, OrderDetail> OrderService { get; set; }
 
     async Task ChangePercentDiscount(decimal discount)
     {

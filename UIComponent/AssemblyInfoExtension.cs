@@ -25,7 +25,7 @@ namespace Caspian.UI.Service
                             {
                                 var interfaceType = typeof(IMasterDetailsService<,,>).MakeGenericType(type1, type2, type3);
                                 services.AddScoped(interfaceType, provider => Activator.CreateInstance(type, provider));
-                                var batchServiceType = typeof(BatchService<,,>).MakeGenericType(baseType.GenericTypeArguments);
+                                var batchServiceType = typeof(UIService<,,>).MakeGenericType(baseType.GenericTypeArguments);
                                 services.AddScoped(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
                                 var searchType = typeof(ISearchService<>).MakeGenericType(type1);
                                 services.AddScoped(searchType, provider => Activator.CreateInstance(batchServiceType, provider));
@@ -39,7 +39,7 @@ namespace Caspian.UI.Service
                                 var interfaceType = typeof(IMasterDetailsService<, >).MakeGenericType(type1, type2);
                                 services.AddScoped(interfaceType, provider => Activator.CreateInstance(type, provider));
                                 var searchType = typeof(ISearchService<>).MakeGenericType(type1);
-                                var batchServiceType = typeof(BatchService<,>).MakeGenericType(baseType.GenericTypeArguments);
+                                var batchServiceType = typeof(UIService<,>).MakeGenericType(baseType.GenericTypeArguments);
                                 services.AddScoped(batchServiceType, provider => Activator.CreateInstance(batchServiceType, provider));
                                 services.AddScoped(searchType, provider => Activator.CreateInstance(batchServiceType, provider));
                             }

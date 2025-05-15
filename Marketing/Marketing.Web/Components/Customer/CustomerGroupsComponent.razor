@@ -45,7 +45,7 @@
 {
     string customerNumber;
     [Parameter]
-    public BatchService<Customer, CustomerGroupMembership> Service { get; set; }
+    public UIService<Customer, CustomerGroupMembership> Service { get; set; }
 
     async Task SetCustomerNumber()
     {

@@ -10,7 +10,7 @@
 @using Stimulsoft.Report.Blazor
 @using Syncfusion.Blazor.DropDowns
 @inject ProtectedSessionStorage Storage
-@inject BatchService<Order, OrderDetail> Service
+@inject UIService<Order, OrderDetail> Service
 @{
     var className = "main t-rtl";
     if (colapsed)

@@ -38,4 +38,9 @@ namespace Caspian.UI
 
         CaspianForm<TDetail> DetailForm { get; }
     }
+
+    public interface IBatchService<TMaster, TDetail> where TMaster:class where TDetail: class
+    {
+
+    }
 }

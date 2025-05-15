@@ -14,7 +14,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
-    public class UIService<TEntity>: IInternalUIService, IInternalUIService<TEntity>, IInternalSearchService<TEntity> where TEntity : class
+    public class UIService<TEntity>: IInternalUIService<TEntity> where TEntity : class
     {
         protected IJSRuntime jSRuntime;
         BaseComponentService baseComponentService;

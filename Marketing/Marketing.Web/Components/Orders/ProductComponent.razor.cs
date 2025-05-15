@@ -69,7 +69,7 @@ namespace Marketing.Web.OrderComponents
 
 
         [Parameter]
-        public BatchService<Order, OrderDetail> OrderService { get; set; }
+        public UIService<Order, OrderDetail> OrderService { get; set; }
 
         [Parameter]
         public Customer Customer { get; set; }

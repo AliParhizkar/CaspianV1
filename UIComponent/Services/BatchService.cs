@@ -13,7 +13,7 @@ using Caspian.Engine.Model;
 
 namespace Caspian.UI
 {
-    public class BatchService<TMaster, TDetail>: IInternalUIService, IInternalUIService<TMaster>, IInternalSearchService<TMaster>, IInternalBatchService<TDetail> where TMaster : class where TDetail : class
+    public class UIService<TMaster, TDetail>: IInternalUIService, IInternalSearchService<TMaster>, IInternalUIService<TMaster>, IInternalBatchService<TDetail> where TMaster : class where TDetail : class
     {
         IServiceProvider serviceProvider;
         BaseComponentService baseComponentService;
@@ -112,7 +112,7 @@ namespace Caspian.UI
 
         public Func<IServiceProvider, TMaster, Task<bool>> OnUpsert { get; set; }
 
-        public BatchService(IServiceProvider serviceProvider)
+        public UIService(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
             jSRuntime = serviceProvider.GetService<IJSRuntime>();

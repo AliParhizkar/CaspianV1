@@ -1,10 +1,10 @@
 ﻿@page "/Marketing/Order"
 @using Marketing.Web.OrderComponents
 @inject IUIService<Customer> CustomerService
-@inject BatchService<Customer, CustomerAddress> CustomerAddressService
-@inject BatchService<Customer, CustomerGroupMembership> CustomerGroupService
-@inject BatchService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService
-@inject BatchService<Order, OrderDetail> OrderService
+@inject UIService<Customer, CustomerAddress> CustomerAddressService
+@inject UIService<Customer, CustomerGroupMembership> CustomerGroupService
+@inject UIService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService
+@inject UIService<Order, OrderDetail> OrderService
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);

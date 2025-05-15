@@ -8,7 +8,7 @@
 
 <div @attributes="GetMainAttribute()">
     <input @ref="InputElement" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => await OnKeyDownHandler(e))"
-           @attributes="inputAttrs" @onkeyup="@(async e => await OnKeyUp(e))"  />
+           @attributes="inputAttrs" @onkeyup="@(async e => await OnKeyUp(e))" @onsubmit:preventDefault />
     @if (!HideIcon)
     {
         <span class="fa fa-search" @onclick="() => OpenWindow(true)"></span>

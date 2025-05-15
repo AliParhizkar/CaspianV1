@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    public class BatchService<TMaster, TDetail, TDetail1> : BatchService<TMaster, TDetail>, IInternalBatchService<TDetail1>
+    public class UIService<TMaster, TDetail, TDetail1> : UIService<TMaster, TDetail>, IInternalBatchService<TDetail1>
         where TMaster : class where TDetail : class where TDetail1 : class
     {
         CaspianDataService caspianDataService;
-        public BatchService(IServiceProvider provider):
+        public UIService(IServiceProvider provider):
             base(provider)
         {
             var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail1));

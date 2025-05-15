@@ -95,13 +95,13 @@ else
     public IUIService<Customer> CustomerService { get; set; }
 
     [Parameter]
-    public BatchService<Customer, CustomerAddress> CustomerAddressService { get; set; }
+    public UIService<Customer, CustomerAddress> CustomerAddressService { get; set; }
 
     [Parameter]
-    public BatchService<Customer, CustomerGroupMembership> CustomerGroupService { get; set; }
+    public UIService<Customer, CustomerGroupMembership> CustomerGroupService { get; set; }
 
     [Parameter]
-    public BatchService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService { get; set; }
+    public UIService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService { get; set; }
 
     async Task OpenWindowAsync()
     {

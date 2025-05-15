@@ -57,7 +57,7 @@ namespace Caspian.Common
                 {
                     var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.GetPropertyPath());
                     var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
-                    var provider = context.RootContextData["__ServiceScope"] as IServiceProvider;
+                    var provider = context.RootContextData["__ServiceProvider"] as IServiceProvider;
                     var service = provider.GetService(serviceType) as IBaseService;
                     ///Create First Expression
                     var parameter = Expression.Parameter(info.PropertyType, "t");
@@ -83,7 +83,7 @@ namespace Caspian.Common
                 {
                     var info = typeof(TModel).GetProperties().Single(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == context.GetPropertyPath());
                     var serviceType = typeof(IBaseService<>).MakeGenericType(info.PropertyType);
-                    var provider = context.RootContextData["__ServiceScope"] as IServiceProvider;
+                    var provider = context.RootContextData["__ServiceProvider"] as IServiceProvider;
                     var service = provider.GetService(serviceType) as IBaseService;
                     ///Create First Expression
                     var parameter = Expression.Parameter(info.PropertyType, "t");

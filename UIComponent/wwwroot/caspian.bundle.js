@@ -1180,6 +1180,13 @@ var caspian;
                 if (code == 40 || code == 38)
                     e.preventDefault();
             };
+            input.onkeypress = e => {
+                if (e.keyCode == 13) {
+                    let helpWindow = e.target.closest('.c-lookup').getElementsByClassName('t-HelpWindow');
+                    if (helpWindow.length > 0)
+                        e.preventDefault();
+                }
+            };
             input.onblur = () => {
                 caspian.common.hideErrorMessage(lookup);
             };
