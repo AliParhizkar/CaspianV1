@@ -37,7 +37,7 @@ namespace Caspian.UI
                 className += " col-md-";
                 return className + (TotalSpan.Value - ColSpan);
             }
-            var container = CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer;
+            var container = EntitySearch as ICaspianContainer ?? CaspianForm as ICaspianContainer ?? CaspianContainer;
             return container.GetLabelContainerCSSClassName(ColSpan.Value);
         }
 

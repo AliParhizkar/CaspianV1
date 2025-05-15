@@ -341,7 +341,7 @@ namespace Caspian.UI
         {
             baseComponentService = serviceProvider.GetService<BaseComponentService>();
             if (baseComponentService.Target == null)
-                throw new CaspianException("You must inherits from BasePage or configure page manualy");
+                throw new CaspianException("You must inherits from BasePage or configure page manually");
             (baseComponentService.Target as BasePage).ChangeState();
         }
 

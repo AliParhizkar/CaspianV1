@@ -269,7 +269,6 @@ namespace Caspian.UI
                     {
                         var value = Convert.ChangeType(item.Value, type);
                         SelectedIds.Add(value);
-
                     }
                 }
                 await UpdateChangedEntities();

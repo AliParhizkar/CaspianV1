@@ -13,6 +13,7 @@ namespace Caspian.UI
         protected IDictionary<string, SearchType> searchData;
         protected IDictionary<string, ICollection> enumValues;
         bool onlyForSearch;
+
         public MembershipService(IServiceProvider provider)
             :base(provider)
         {
