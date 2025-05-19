@@ -198,8 +198,10 @@ namespace Caspian.Common
                     var path = context.PropertyPath;
                     if (context.IsChildContext)
                     {
-                        
-                        //var parentPropertyName = (context as dynamic).RawPropertyName;
+                        /// For 1 to 1 relationship we should remove master path from property path
+                        var parentPropertyName = context.PropertyChain.BuildPropertyPath("") + '.';
+                        if (path.StartsWith(parentPropertyName)) 
+                            path = path.Substring(parentPropertyName.Length);
                     }
                     var index = path.IndexOf(']');
                     if (index >= 0)

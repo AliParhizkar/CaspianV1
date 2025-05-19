@@ -1,10 +1,8 @@
 ﻿using FluentValidation;
-using System.Reflection;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common.Service
 {
@@ -21,7 +19,7 @@ namespace Caspian.Common.Service
 
         protected bool FillDetail { get; set; } = true;
 
-        protected IList<ChangedEntity<TDetail>> ChangedEntities { get; private set; }
+        internal protected IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
 
         protected IEnumerable<TDetail> Details { get; private set; }
 
@@ -71,53 +69,12 @@ namespace Caspian.Common.Service
             return result;
         }
 
-        public async override Task<TMaster> AddAsync(TMaster entity)
+        protected override void EntityInitialize(TMaster entity)
         {
-            PropertyInfo detailsInfo = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
-            var details = detailsInfo.GetValue(entity) as IEnumerable<TDetail>;
-            Details = details;
-            if (details == null || details.Count() == 0)
-                return await base.AddAsync(entity);
-            foreach (var info in typeof(TMaster).GetProperties())
-            {
-                var type = info.PropertyType;
-                if ( info.GetCustomAttribute<ForeignKeyAttribute>() != null)
-                    info.SetValue(entity, default);
-                else if (type.IsCollectionType())
-                {
-                    if (type != typeof(string))
-                    {
-                        if (info.PropertyType != detailsInfo)
-                            info.SetValue(entity, default);
-                    }
-                }
-            }
-            var context = new ValidationContext<TMaster>(entity);
-            var result = await ValidateAsync(context);
-            if (result.Errors.Count > 0)
-                throw new CaspianException(result.Errors[0].ErrorMessage);
-            var newEntity = entity.CreateNewSimpleEntity();
-            var detailsList = new List<TDetail>();
-            detailsInfo.SetValue(newEntity, detailsList);
-            var detailsPKey = typeof(TDetail).GetPrimaryKey();
-            foreach (var detail in details)
-            {
-                var item = Activator.CreateInstance<TDetail>();
-                foreach (var info in typeof(TDetail).GetProperties().Where(t => t.CanWrite))
-                {
-                    var type = info.PropertyType;
-                    if (type.IsValueType || type.IsNullableType() || type == typeof(string) || type == typeof(byte[]))
-                        info.SetValue(item, info.GetValue(detail));
-                }
-                var id = Convert.ToInt32(detailsPKey.GetValue(item));
-                if (id < 0)
-                    detailsPKey.SetValue(item, 0);
-                detailsList.Add(item);
-            }
-
-            var result1 = await Context.Set<TMaster>().AddAsync(newEntity);
-            return result1.Entity;
+            if ()
+            base.EntityInitialize(entity);
         }
+
 
         public virtual async Task<TMaster> UpdateDatabaseAsync(TMaster entity, IList<ChangedEntity<TDetail>> changedEntities)
         {
@@ -190,6 +147,12 @@ namespace Caspian.Common.Service
             var details = await service.GetAll().Where(lambda).ToListAsync();
             await service.RemoveRange(details);
             await base.RemoveAsync(master);
+        }
+
+        public override async Task RemoveAsync(int id)
+        {
+
+            await base.RemoveAsync(id);
         }
     }
 }

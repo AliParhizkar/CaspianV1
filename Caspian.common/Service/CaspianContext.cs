@@ -57,12 +57,13 @@ namespace Caspian.Common
                         }
                         if (foreignKey.Name == pKeyName)
                         {
+                            /// Delete all relation on 1 to 1 relationship
                             var info = property.PropertyType.GetProperties().Single(t => t.PropertyType == type);
                             modelBuilder.Entity(property.PropertyType)
                                 .HasOne(info.Name)
                                 .WithOne(property.Name)
                                 .IsRequired(false)
-                                .OnDelete(DeleteBehavior.NoAction);
+                                .OnDelete(DeleteBehavior.Cascade);
                         }
                         else
                         {

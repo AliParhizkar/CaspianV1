@@ -10,6 +10,7 @@ namespace Marketing.Service
             :base(provider) 
         {
             RuleFor(t => t.Description).Required().UniqueAsync(t => t.ProductId, "این عنوان برای محصول ثبت شده است");
+            //RuleForRemove().Custom(t => t.Id == 1059, "گیر الکی ");
         }
     }
 }

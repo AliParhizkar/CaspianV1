@@ -36,7 +36,8 @@ namespace Caspian.Common.Service
         void SetSource(IReadOnlyCollection<TEntity> source);
 
         Task<ValidationResult> ValidateRemoveAsync(TEntity entity);
-        Type DetailType { get; set; }
+
+        Type OtherTypeIn1To1Relationship { get; set; }
 
         
     }

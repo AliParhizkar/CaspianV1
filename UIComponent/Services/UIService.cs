@@ -3,7 +3,7 @@ using Caspian.Common;
 using System.Reflection;
 using System.Collections;
 using Microsoft.JSInterop;
-using Caspian.Engine.Model;
+//using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
@@ -201,11 +201,11 @@ namespace Caspian.UI
             });
             Form.OnInternalSubmit = EventCallback.Factory.Create<TEntity>(this, entity =>
             {
-                if (entity is BaseEntity baseEntity)
-                {
-                    baseEntity.UpsertUserId = UserId;
-                    baseEntity.UpsertDate = DateTime.Now;
-                }
+                //if (entity is BaseEntity baseEntity)
+                //{
+                //    baseEntity.UpsertUserId = UserId;
+                //    baseEntity.UpsertDate = DateTime.Now;
+                //}
                 BaseService = form?.ValidationValidator?.Validator;
                 OnFormSubmit?.Invoke(entity);
             });
@@ -221,7 +221,7 @@ namespace Caspian.UI
                 if (!result)
                     return;
 
-                service.DetailType = (this as IInternalUIService<TEntity>).DetailType;
+                service.OtherTypeIn1To1Relationship = (this as IInternalUIService<TEntity>).DetailType;
                 string message = null;
                 var isAdd = false;
                 IList<PropertyInfo> infos = null;
@@ -229,7 +229,7 @@ namespace Caspian.UI
                 if (Is1To1RelationshipService)
                 {
                     infos = typeof(TEntity).GetOneToOnePropertyInfos();
-                    service.DetailType = (this as IInternalUIService<TEntity>).DetailType != typeof(TEntity) ? (this as IInternalUIService<TEntity>).DetailType : null;
+                    service.OtherTypeIn1To1Relationship = (this as IInternalUIService<TEntity>).DetailType != typeof(TEntity) ? (this as IInternalUIService<TEntity>).DetailType : null;
                     tempEntity = Activator.CreateInstance<TEntity>();
                     foreach (var info in infos)
                     {

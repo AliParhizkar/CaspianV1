@@ -118,11 +118,8 @@
             </Tabs>
         </TabPanel>
         <div class="p-2 pb-0 text-center c-form-action">
-            @if (Service.Form != null)
-            {
-                <button class="c-btn c-primary" @onclick="async () => await Service.Form.SubmitAsync()">ثبت</button>
-                <button class="c-btn c-danger" @onclick="async () => await Service.Form.ResetAsync()">بازنشانی</button>
-            }
+            <button class="c-btn c-primary" @onclick="async () => await SubmitForm()">ثبت</button>
+            <button class="c-btn c-danger" @onclick="async () => await ResetForm()">بازنشانی</button>
         </div>
     </Window>
 </div>
@@ -132,6 +129,18 @@
     ProductCategory productCategory;
     ComboBox<ProductCategory, int> cmbCategory;
     int parentCategoryId, categoryId;
+
+    async Task SubmitForm()
+    {
+        if (Service.Form != null)
+            await Service.Form.SubmitAsync();
+    }
+
+    async Task ResetForm()
+    {
+        if (Service.Form != null)
+            await Service.Form.ResetAsync();
+    }
 
     void PriceChanged(Product product)
     {

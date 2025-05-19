@@ -34,7 +34,7 @@ namespace Caspian.Common
         {
             var contextType = GetModelTypes(subSystemKind).SingleOrDefault(t => t.BaseType == typeof(CaspianContext));
             if (contextType == null)
-                throw new CaspianException("خطا: Model must has DbContext that inhirite from MyContext");
+                throw new CaspianException("خطا: Model must has DbContext that inherited from MyContext");
             return contextType;
         }
 

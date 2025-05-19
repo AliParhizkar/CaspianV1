@@ -27,6 +27,7 @@ namespace Marketing.Service
             }, "گروه محصول دارای زیرگروه می باشد و نمی تواند دارای محصول باشد.");
             RuleForEach(t => t.ProductToppings).SetValidator(new ProductToppingService(provider));
             RuleForEach(t => t.ProductDescriptions).SetValidator(new ProductDescriptionService(provider));
+            RuleForRemove().Custom(t => t.ProductToppings.Any(), "لطفا ابتدا تاپینگ های سفارش را حذف کنید"); 
         }
     }
 }

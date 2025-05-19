@@ -9,7 +9,7 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using Caspian.Engine.Model;
+//using Caspian.Engine.Model;
 
 namespace Caspian.UI
 {
@@ -296,11 +296,11 @@ namespace Caspian.UI
 
         protected virtual async Task SetChangedEntities()
         {
-            if (UpsertData is BaseEntity entity)
-            {
-                entity.UpsertUserId = CaspianDataService.UserId;
-                entity.UpsertDate = DateTime.Now;
-            }
+            //if (UpsertData is BaseEntity entity)
+            //{
+            //    entity.UpsertUserId = CaspianDataService.UserId;
+            //    entity.UpsertDate = DateTime.Now;
+            //}
             if (Form?.ValidationValidator?.Validator != null)
             {
                 if (Form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail> service)
@@ -316,11 +316,11 @@ namespace Caspian.UI
                 batchServiceData.DetailPropertiesInfo.Add(detailsProperty);
             if (UpsertData == null)
                 UpsertData = Activator.CreateInstance<TMaster>();
-            if (UpsertData is BaseEntity baseEntity)
-            {
-                baseEntity.UpsertUserId = CaspianDataService.UserId;
-                baseEntity.UpsertDate = DateTime.Now;
-            }
+            //if (UpsertData is BaseEntity baseEntity)
+            //{
+            //    baseEntity.UpsertUserId = CaspianDataService.UserId;
+            //    baseEntity.UpsertDate = DateTime.Now;
+            //}
             if (OnCreate != null)
                 OnCreate.Invoke(UpsertData);   
             Form.SetModel(UpsertData);

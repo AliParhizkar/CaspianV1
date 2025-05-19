@@ -7,20 +7,22 @@ using System.Linq.Dynamic.Core;
 using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Common.Service
 {
     public class BaseService<TEntity> : CaspianValidator<TEntity>, IBaseService, IDisposable, IBaseService<TEntity> where TEntity : class
     {
         protected string GuId = Guid.NewGuid().ToString();
+        object otherEntityIn1To1Relationship;
         public BaseService(IServiceProvider provider)
             :base(provider)
         {
             Source = new List<TEntity>();
-            
         }
+
+        public bool CheckValidation { get; set; } = true;
 
         protected async Task<T> GetEntity<T>(Expression<Func<T, bool>> expression)
         {
@@ -38,7 +40,6 @@ namespace Caspian.Common.Service
             return entity;
         }
 
-
         internal protected IReadOnlyCollection<TEntity> Source { get; set; }
 
         public void SetSource(IReadOnlyCollection<TEntity> source)
@@ -46,7 +47,7 @@ namespace Caspian.Common.Service
             Source = source;
         }
 
-        public Type DetailType { get; set; }
+        public Type OtherTypeIn1To1Relationship { get; set; }
 
         public TService GetService<TService>() where TService : class 
         {
@@ -75,13 +76,13 @@ namespace Caspian.Common.Service
             return Context.Set<TEntity>();
         }
 
-        async public virtual Task UpdateAsync(TEntity entity)
+        public virtual async Task UpdateAsync(TEntity entity)
         {
             ValidationResult result = null;
-            if (DetailType == null || DetailType == typeof(TEntity))
+            if (OtherTypeIn1To1Relationship == null || OtherTypeIn1To1Relationship == typeof(TEntity))
                 result = await ValidateAsync(entity);
             else
-                result = await this.ValidateAsync(entity, DetailType);
+                result = await this.ValidateAsync(entity, OtherTypeIn1To1Relationship);
             if (result.Errors.Count > 0)
                 throw new CaspianException(result.Errors[0].ErrorMessage);
             if (Context.Entry(entity).State != EntityState.Modified)
@@ -89,9 +90,9 @@ namespace Caspian.Common.Service
                 var query = GetAll();
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
                 PropertyInfo info = null;
-                if (DetailType != null && DetailType != typeof(TEntity))
+                if (OtherTypeIn1To1Relationship != null && OtherTypeIn1To1Relationship != typeof(TEntity))
                 {
-                    info = typeof(TEntity).GetOneToOnePropertyInfo(DetailType);
+                    info = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship);
                     if (info != null)
                         query = query.Include(info.Name);
                 }
@@ -131,14 +132,32 @@ namespace Caspian.Common.Service
 
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
+            if (CheckValidation)
+            {
+                var result = await ValidateAsync(entity);
+                if (!result.IsValid)
+                    throw new CaspianException(result.Errors.First().ErrorMessage);
+            }
+            if (OtherTypeIn1To1Relationship != null)
+                otherEntityIn1To1Relationship = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship).GetValue(entity);
+            /// All properties that are entity should be null except One-To-One relationship properties
+            /// Note: Onet-To-One relationship properties hasven't any ForeignKeyAttribute
             foreach (var info in typeof(TEntity).GetProperties())
             {
                 var type = info.PropertyType;
-                if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || (type.IsCollectionType() && type != typeof(string) && type != typeof(byte[])))
+                if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]) )
                     info.SetValue(entity, default);
             }
+            EntityInitialize(entity);
             var result1 = await Context.Set<TEntity>().AddAsync(entity);
             return result1.Entity;
+        }
+
+        protected virtual void EntityInitialize(TEntity entity)
+        {
+            /// Initialize Onet-To-One relationship 
+            if (OtherTypeIn1To1Relationship != null)
+                typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship).SetValue(entity, otherEntityIn1To1Relationship);
         }
 
 
@@ -165,13 +184,12 @@ namespace Caspian.Common.Service
 
         public async virtual Task RemoveAsync(TEntity entity)
         {
-           
             Context.Set<TEntity>().Remove(entity);
         }
 
-        public async virtual Task Remove(int id)
+        public async virtual Task RemoveAsync(int id)
         {
-            var old = await SingleOrDefaultAsync(id);
+            var old = await GetAll().SingleOrDefaultAsync(id);
             if (old != null)
                 await RemoveAsync(old);
         }
