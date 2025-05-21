@@ -419,6 +419,7 @@ namespace Caspian.UI
             pKey.SetValue(entity, 0);
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
+            service.BatchServiceData.MasterType = (DetailsService as IInternalBatchService<TEntity>).MasterType;
             await service.AddAsync(entity);
             DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() 
             { 
@@ -655,7 +656,7 @@ namespace Caspian.UI
             source = new List<TEntity>();
             Total = 0;
             items = new List<TEntity>();
-            StateHasChanged();
+            //StateHasChanged();
         }
 
         public async Task ReloadAsync()

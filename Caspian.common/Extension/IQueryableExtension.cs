@@ -16,6 +16,17 @@ namespace Caspian.Common.Extension
             return source.Select(lambda);
         }
 
+        public static TEntity SingleById<TEntity>(this IEnumerable<TEntity> items, int id)
+        {
+            var pKey = typeof(TEntity).GetPrimaryKey();
+            foreach(var item in items)
+            {
+                if (Convert.ToInt32(pKey.GetValue(item)) == id)
+                    return item;
+            }
+            return default;
+        }
+
         public async static Task<TEntity> SingleAsync<TEntity>(this IQueryable<TEntity> query, int id) where TEntity : class
         {
             var entity = await query.SingleOrDefaultAsync(id);
@@ -31,6 +42,20 @@ namespace Caspian.Common.Extension
             expr = Expression.Equal(expr, Expression.Constant(id));
             var lambda = Expression.Lambda(expr, param);
             return await query.Where(lambda).OfType<TEntity>().SingleOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// This Method return all entities that primary-key(id) of them is in ids list
+        /// </summary>
+        public static async Task<IList<TEntity>> GetEntitiesByIds<TEntity>(this IQueryable<TEntity> query, IList ids)
+        {
+            var pKey = typeof(TEntity).GetPrimaryKey();
+            ParameterExpression parameter = Expression.Parameter(typeof(TEntity), "t");
+            var propertyExpr = Expression.Property(parameter, pKey);
+            var constantExpr = Expression.Constant(ids);
+            var method = typeof(Enumerable).GetMethods().First(t => t.Name == "Contains").MakeGenericMethod(propertyExpr.Type);
+            var callExpr = Expression.Call(null, method, constantExpr, propertyExpr);
+            return null;
         }
 
         public async static Task<IList<TEntity>> GetValuesAsync<TEntity>(this IQueryable<TEntity> source, params MemberExpression[] exprList)

@@ -101,7 +101,7 @@ else
         {
             if (await Confirm("آیا با حذف گروه محصول موافقید؟"))
             {
-                await service.RemoveAsync(category);
+                service.Remove(category);
                 await service.SaveChangesAsync();
                 tree.RemoveFromTree(category);
             }

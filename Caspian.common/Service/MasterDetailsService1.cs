@@ -13,13 +13,40 @@ namespace Caspian.Common.Service
         {
             var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail1));
             BatchServiceData.DetailPropertiesInfo.Add(detailsProperty);
+            ChangedEntities1 = new List<ChangedEntity<TDetail1>>();
         }
 
         protected bool FillDetail { get; set; } = true;
 
         protected IList<TDetail1> Details1 { get; private set; }
 
-        protected internal IList<ChangedEntity<TDetail1>> ChangedEntities1 { get; internal set; }
+        protected IList<ChangedEntity<TDetail1>> ChangedEntities1 { get; set; }
+
+        public void SetChangedEntities(IList<ChangedEntity<TDetail>> details, IList<ChangedEntity<TDetail1>> details1)
+        {
+            base.SetChangedEntities(details);
+            ChangedEntities1.Clear();
+            ChangedEntities1.AddRange(details1.ToArray());
+        }
+
+        protected override void EntityInitialize(TMaster entity)
+        {
+            /// Clear all entities
+            var details = ChangedEntities1.Select(t => t.Entity.ClearEntityProperties()).ToList();
+            var pKey = typeof(TDetail1).GetPrimaryKey();
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
+            detailsProperty.SetValue(entity, details);
+            base.EntityInitialize(entity);
+        }
+
+        public override void Remove(TMaster entity)
+        {
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
+            var details = detailsProperty.GetValue(entity) as IEnumerable<TDetail1>;
+            if (details != null)
+                Context.RemoveRange(details);
+            base.Remove(entity);
+        }
 
         async Task<IList<TDetail1>> GetDetailsAfterAddChangesAsync(TMaster master)
         {
@@ -56,13 +83,49 @@ namespace Caspian.Common.Service
         public async Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetail>> changedEntities, IList<ChangedEntity<TDetail1>> changedEntities1)
         {
             base.FillDetail = FillDetail;
-            await SetChangedEntities(master, changedEntities);
+            await SetChangedEntitiesAsync(master, changedEntities);
             ChangedEntities1 = changedEntities1;
             if (FillDetail)
             {
                 Details1 = await GetDetailsAfterAddChangesAsync(master);
                 typeof(TMaster).GetDetailsProperty(typeof(TDetail)).SetValue(master, Details);
             }
+        }
+
+        protected override IQueryable<TMaster> GetQueryForUpdate(TMaster entity)
+        {
+            var query = base.GetQueryForUpdate(entity);
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
+            return query.Include(detailsProperty.Name);
+        }
+
+        protected override void CopyEntityWithRelations(TMaster old, TMaster current)
+        {
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
+            var details = (detailsProperty.GetValue(old) as IEnumerable<TDetail1>).ToList();
+            foreach (var detail in ChangedEntities1)
+            {
+                var id = Convert.ToInt32(typeof(TDetail1).GetPrimaryKey().GetValue(detail.Entity));
+                var oldDetail = details.SingleById(id);
+                switch (detail.ChangeStatus)
+                {
+                    case ChangeStatus.Added:
+                        var newDetail = Activator.CreateInstance<TDetail1>();
+                        newDetail.CopySimpleProperty(detail.Entity);
+                        typeof(TDetail1).GetPrimaryKey().SetValue(newDetail, 0);
+                        details.Add(newDetail);
+                        break;
+                    case ChangeStatus.Updated:
+                        oldDetail.CopySimpleProperty(detail.Entity);
+                        Context.Entry(oldDetail).State = EntityState.Modified;
+                        break;
+                    case ChangeStatus.Deleted:
+                        Context.Entry(oldDetail).State = EntityState.Deleted;
+                        break;
+                }
+            }
+            detailsProperty.SetValue(old, details);
+            base.CopyEntityWithRelations(old, current);
         }
 
         public async Task<TMaster> UpdateDatabaseAsync(TMaster entity, IList<ChangedEntity<TDetail>> changedEntities, IList<ChangedEntity<TDetail1>> changedEntities1)

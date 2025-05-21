@@ -15,15 +15,16 @@ namespace Caspian.Common.Service
             BatchServiceData.DetailPropertiesInfo.Add(detailsProperty);
             Details = new List<TDetail>();
             UserId = provider.GetService<CaspianDataService>().UserId;
+            ChangedEntities = new List<ChangedEntity<TDetail>>();
         }
 
         protected bool FillDetail { get; set; } = true;
 
-        internal protected IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
+        protected IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
 
         protected IEnumerable<TDetail> Details { get; private set; }
 
-        public async Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetail>> changedEntities)
+        public async Task SetChangedEntitiesAsync(TMaster master, IList<ChangedEntity<TDetail>> changedEntities)
         {
             ChangedEntities = changedEntities;
             if (FillDetail)
@@ -31,6 +32,12 @@ namespace Caspian.Common.Service
                 Details = await GetDetailsAfterAddChangesAsync(master);
                 typeof(TMaster).GetDetailsProperty(typeof(TDetail)).SetValue(master, Details);
             }
+        }
+
+        public void SetChangedEntities(IList<ChangedEntity<TDetail>> details)
+        {
+            ChangedEntities.Clear();
+            ChangedEntities.AddRange(details.ToArray());
         }
 
         async Task<IList<TDetail>> GetDetailsAfterAddChangesAsync(TMaster master)
@@ -71,14 +78,66 @@ namespace Caspian.Common.Service
 
         protected override void EntityInitialize(TMaster entity)
         {
-            if ()
+            /// Clear all entities
+            var details = ChangedEntities.Select(t => t.Entity.ClearEntityProperties()).ToList();
+            var pKey = typeof(TDetail).GetPrimaryKey();
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            detailsProperty.SetValue(entity, details);
             base.EntityInitialize(entity);
         }
 
+        public override Task<TMaster> AddAsync(TMaster entity)
+        {
+            BatchServiceData.MasterType = typeof(TMaster);
+            return base.AddAsync(entity);
+        }
+
+        protected override IQueryable<TMaster> GetQueryForUpdate(TMaster entity)
+        {
+            var query = base.GetQueryForUpdate(entity);
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            return query.Include(detailsProperty.Name);
+        }
+
+        public override void Remove(TMaster entity)
+        {
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            var details = detailsProperty.GetValue(entity) as IEnumerable<TDetail>;
+            Context.RemoveRange(details);
+            base.Remove(entity);
+        }
+
+        protected override void CopyEntityWithRelations(TMaster old, TMaster current)
+        {
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            var details = (detailsProperty.GetValue(old) as IEnumerable<TDetail>).ToList();
+            foreach (var detail in ChangedEntities)
+            {
+                var id = Convert.ToInt32(typeof(TDetail).GetPrimaryKey().GetValue(detail.Entity));
+                var oldDetail = details.SingleById(id);
+                switch (detail.ChangeStatus)
+                {
+                    case ChangeStatus.Added:
+                        var newDetail = Activator.CreateInstance<TDetail>();
+                        newDetail.CopySimpleProperty(detail.Entity);
+                        typeof(TDetail).GetPrimaryKey().SetValue(newDetail, 0);
+                        details.Add(newDetail);
+                        break;
+                    case ChangeStatus.Updated:
+                        oldDetail.CopySimpleProperty(detail.Entity);
+                        Context.Entry(oldDetail).State = EntityState.Modified;
+                        break;
+                    case ChangeStatus.Deleted:
+                        Context.Entry(oldDetail).State = EntityState.Deleted;
+                        break;
+                }
+            }
+            detailsProperty.SetValue(old, details);
+            base.CopyEntityWithRelations(old, current);
+        }
 
         public virtual async Task<TMaster> UpdateDatabaseAsync(TMaster entity, IList<ChangedEntity<TDetail>> changedEntities)
         {
-            var masterId = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(entity));
             var changedList = new List<ChangedEntity<TDetail>>();
             foreach (var changedEntity in changedEntities)
             {
@@ -96,6 +155,7 @@ namespace Caspian.Common.Service
                 }
                 changedList.Add(changedDetail);
             }
+            var masterId = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(entity));
             if (masterId == 0)
             {
                 if (changedList.Any())
@@ -146,7 +206,7 @@ namespace Caspian.Common.Service
             var service = GetService<BaseService<TDetail>>();
             var details = await service.GetAll().Where(lambda).ToListAsync();
             await service.RemoveRange(details);
-            await base.RemoveAsync(master);
+            base.Remove(master);
         }
 
         public override async Task RemoveAsync(int id)

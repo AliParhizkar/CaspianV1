@@ -31,7 +31,7 @@ namespace Caspian.Engine.Service
             var item = await GetAll().Where(t => t.RuleId == ruleId).OrderByDescending(t => t.Id).FirstOrDefaultAsync();
             if (item != null)
             {
-                await base.RemoveAsync(item);
+                base.Remove(item);
                 await SaveChangesAsync();
             }
             return item;

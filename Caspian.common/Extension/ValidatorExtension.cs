@@ -14,7 +14,7 @@ namespace Caspian.Common.Extension
                 t.IncludeRuleSets("");
                 var list = new List<string>();
                 AddPropetiesToList(typeof(TModel), null, list);
-                if (detailType != typeof(TModel))
+                if (detailType != null && detailType != typeof(TModel))
                 {
                     var propertyName = typeof(TModel).GetProperties().Single(t => t.PropertyType == detailType).Name;
                     AddPropetiesToList(detailType, propertyName, list);

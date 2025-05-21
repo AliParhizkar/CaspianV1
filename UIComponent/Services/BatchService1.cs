@@ -119,7 +119,12 @@ namespace Caspian.UI
                     return;
             }
             var service = scope.GetService<IMasterDetailsService<TMaster, TDetail, TDetail1>>();
-            var result = await service.UpdateDatabaseAsync(UpsertData, base.ChangedEntities, ChangedEntities);
+            TMaster result = default;
+            service.SetChangedEntities(base.ChangedEntities, ChangedEntities);
+            if (id == 0)
+                result = await service.AddAsync(UpsertData);
+            else
+                await service.UpdateAsync(UpsertData);
             await service.SaveChangesAsync();
             ChangedEntities.Clear();
             base.ChangedEntities.Clear();

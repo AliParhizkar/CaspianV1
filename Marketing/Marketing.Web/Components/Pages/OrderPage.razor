@@ -108,7 +108,7 @@
             var service = provider.GetCaspianService<OrderDetailToppingService>();
             foreach (var topping in deletedToppings)
             {
-                await service.RemoveAsync(topping);
+                service.Remove(topping);
                 await service.SaveChangesAsync();
             }
             return true;

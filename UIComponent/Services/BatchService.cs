@@ -258,7 +258,15 @@ namespace Caspian.UI
                     return;
             }
             var service = scope.GetService<IMasterDetailsService<TMaster, TDetail>>();
-            var result = await service.UpdateDatabaseAsync(UpsertData, ChangedEntities);
+            service.SetChangedEntities(ChangedEntities);
+            TMaster result = default;
+            if (id == 0)
+                result = await service.AddAsync(UpsertData);
+            else
+            {
+                await service.UpdateAsync(UpsertData);
+                result = UpsertData;
+            }
             await service.SaveChangesAsync();
             if (OnAfterOpsertAsync != null)
                 await OnAfterOpsertAsync(scope.ServiceProvider, result);
@@ -304,7 +312,7 @@ namespace Caspian.UI
             if (Form?.ValidationValidator?.Validator != null)
             {
                 if (Form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail> service)
-                    await service.SetChangedEntities(UpsertData, ChangedEntities);
+                    await service.SetChangedEntitiesAsync(UpsertData, ChangedEntities);
             }
         }
 
@@ -403,7 +411,7 @@ namespace Caspian.UI
                     {
                         if (!DataView.DeleteMessage.HasValue() || await Confirm(DataView.DeleteMessage))
                         {
-                            await service.DeleteMasterAndDetails(old);
+                            service.Remove(old);
                             await service.SaveChangesAsync();
                             await DataView.ReloadAsync();
                             await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");

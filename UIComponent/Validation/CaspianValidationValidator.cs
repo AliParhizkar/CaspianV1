@@ -110,8 +110,11 @@ namespace Caspian.UI
             Validator = (IBaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             if (CaspianForm == null)
             {
-                (Validator as ICaspianValidator).BatchServiceData.MasterType = (DetailsService as ISimpleBatchService).MasterType;
-                (Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (DetailsService as ISimpleBatchService).ThirdLevelProperty;
+                if (DetailsService != null)
+                {
+                    (Validator as ICaspianValidator).BatchServiceData.MasterType = (DetailsService as ISimpleBatchService).MasterType;
+                    (Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (DetailsService as ISimpleBatchService).ThirdLevelProperty;
+                }
             }
             else
             {

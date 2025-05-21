@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
-using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +15,7 @@ namespace Caspian.Common.Service
     {
         protected string GuId = Guid.NewGuid().ToString();
         object otherEntityIn1To1Relationship;
+        Type otherTypeIn1To1Relationship;
         public BaseService(IServiceProvider provider)
             :base(provider)
         {
@@ -47,7 +47,17 @@ namespace Caspian.Common.Service
             Source = source;
         }
 
-        public Type OtherTypeIn1To1Relationship { get; set; }
+        public Type OtherTypeIn1To1Relationship
+        {
+            get { return otherTypeIn1To1Relationship; }
+            set
+            {
+                if (value == typeof(TEntity))
+                    otherTypeIn1To1Relationship = null;
+                else
+                    otherTypeIn1To1Relationship = value;
+            }
+        }
 
         public TService GetService<TService>() where TService : class 
         {
@@ -76,58 +86,51 @@ namespace Caspian.Common.Service
             return Context.Set<TEntity>();
         }
 
+        /// <summary>
+        /// This method create Query for Fetch data base on entities relationship(Master-Other or master-Details)
+        /// </summary>
+        protected virtual IQueryable<TEntity> GetQueryForUpdate(TEntity entity)
+        {
+            var query = GetAll();
+            if (OtherTypeIn1To1Relationship != null)
+            {
+                var otherProperty = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship);
+                if (otherProperty != null)
+                    query = query.Include(otherProperty.Name);
+            }
+            return query;
+        }
+
+        /// <summary>
+        /// This method Copy Current-Entity to Old-Entity base on entities relationship(Master-Other or master-Details)
+        /// </summary>
+        protected virtual void CopyEntityWithRelations(TEntity old, TEntity current)
+        {
+            old.CopySimpleProperty(current);
+            if (OtherTypeIn1To1Relationship != null)
+            {
+                var otherProperty = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship);
+                var detail = otherProperty.GetValue(current);
+                var oldDetail = otherProperty.GetValue(old);
+                if (oldDetail == null)
+                    otherProperty.SetValue(old, detail);
+                else
+                    oldDetail.CopyEntity(detail);
+            }
+        }
+
         public virtual async Task UpdateAsync(TEntity entity)
         {
-            ValidationResult result = null;
-            if (OtherTypeIn1To1Relationship == null || OtherTypeIn1To1Relationship == typeof(TEntity))
-                result = await ValidateAsync(entity);
-            else
-                result = await this.ValidateAsync(entity, OtherTypeIn1To1Relationship);
-            if (result.Errors.Count > 0)
-                throw new CaspianException(result.Errors[0].ErrorMessage);
-            if (Context.Entry(entity).State != EntityState.Modified)
+            if (CheckValidation)
             {
-                var query = GetAll();
-                var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-                PropertyInfo info = null;
-                if (OtherTypeIn1To1Relationship != null && OtherTypeIn1To1Relationship != typeof(TEntity))
-                {
-                    info = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship);
-                    if (info != null)
-                        query = query.Include(info.Name);
-                }
-
-                var old = await query.SingleAsync(id);
-                if (info != null)
-                {
-                    var oldOneToOne = info.GetValue(old);
-                    var oneToOne = info.GetValue(entity);
-                    if (oldOneToOne == null)
-                        info.SetValue(old, oneToOne);
-                    else
-                    {
-                        if (oneToOne == null)
-                            info.SetValue(old, null);
-                        else
-                        {
-                            foreach (var info1 in oneToOne.GetType().GetProperties())
-                            {
-                                var type = info1.PropertyType;
-                                if (info1.GetCustomAttribute<System.ComponentModel.DataAnnotations.KeyAttribute>() == null)
-                                {
-                                    if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
-                                    {
-                                        var value1 = info1.GetValue(oneToOne);
-                                        info1.SetValue(oldOneToOne, value1);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (old != null)
-                    old.CopySimpleProperty(entity);
+                var result = await this.ValidateAsync(entity, OtherTypeIn1To1Relationship);
+                if (result.Errors.Count > 0)
+                    throw new CaspianException(result.Errors[0].ErrorMessage);
             }
+            var query = GetQueryForUpdate(entity);
+            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+            var old = await query.SingleAsync(id);
+            CopyEntityWithRelations(old, entity);
         }
 
         public virtual async Task<TEntity> AddAsync(TEntity entity)
@@ -141,13 +144,8 @@ namespace Caspian.Common.Service
             if (OtherTypeIn1To1Relationship != null)
                 otherEntityIn1To1Relationship = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship).GetValue(entity);
             /// All properties that are entity should be null except One-To-One relationship properties
-            /// Note: Onet-To-One relationship properties hasven't any ForeignKeyAttribute
-            foreach (var info in typeof(TEntity).GetProperties())
-            {
-                var type = info.PropertyType;
-                if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]) )
-                    info.SetValue(entity, default);
-            }
+            /// Note: One-To-One relationship properties haven't any ForeignKeyAttribute
+            entity = entity.ClearEntityProperties();
             EntityInitialize(entity);
             var result1 = await Context.Set<TEntity>().AddAsync(entity);
             return result1.Entity;
@@ -155,7 +153,7 @@ namespace Caspian.Common.Service
 
         protected virtual void EntityInitialize(TEntity entity)
         {
-            /// Initialize Onet-To-One relationship 
+            /// Initialize One-To-One relationship 
             if (OtherTypeIn1To1Relationship != null)
                 typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship).SetValue(entity, otherEntityIn1To1Relationship);
         }
@@ -182,7 +180,7 @@ namespace Caspian.Common.Service
             await Context.Set<TEntity>().AddRangeAsync(entities);
         }
 
-        public async virtual Task RemoveAsync(TEntity entity)
+        public virtual void Remove(TEntity entity)
         {
             Context.Set<TEntity>().Remove(entity);
         }
@@ -191,7 +189,7 @@ namespace Caspian.Common.Service
         {
             var old = await GetAll().SingleOrDefaultAsync(id);
             if (old != null)
-                await RemoveAsync(old);
+                Remove(old);
         }
         
         async public Task<TEntity> SingleOrDefaultAsync(int id)

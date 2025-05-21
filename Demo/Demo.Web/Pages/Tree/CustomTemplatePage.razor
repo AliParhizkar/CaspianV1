@@ -228,7 +228,7 @@
         var result = await service.ValidateRemoveAsync(city);
         if (result.IsValid)
         {
-            await service.RemoveAsync(city);
+            service.Remove(city);
             await service.SaveChangesAsync();
             ///After removing the city, all the cities of the country (parent node) must be reloaded.
             node.Parent.Children = await service.GetAll()

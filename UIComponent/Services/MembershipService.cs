@@ -115,7 +115,7 @@ namespace Caspian.UI
                 var result = await service.ValidateRemoveAsync(old);
                 if (result.IsValid)
                 {
-                    await service.RemoveAsync(old);
+                    service.Remove(old);
                     await service.SaveChangesAsync();
                     await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
                     await base.DataView.ReloadAsync();

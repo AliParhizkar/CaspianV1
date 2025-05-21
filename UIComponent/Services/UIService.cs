@@ -397,7 +397,7 @@ namespace Caspian.UI
                 {
                     if (!DataView.DeleteMessage.HasValue() || await Confirm(DataView.DeleteMessage))
                     {
-                        await service.RemoveAsync(old);
+                        service.Remove(old);
                         await service.SaveChangesAsync();
                         await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
                         await DataView.ReloadAsync();

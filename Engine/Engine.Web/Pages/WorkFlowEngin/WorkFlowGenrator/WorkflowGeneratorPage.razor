@@ -70,7 +70,7 @@
         foreach(var id in oldIds)
         {
             var old = await service.SingleAsync(id);
-            await service.RemoveAsync(old);
+            service.Remove(old);
             await service.SaveChangesAsync();
         }
         var connectorService = scope.GetService<ConnectorService>();

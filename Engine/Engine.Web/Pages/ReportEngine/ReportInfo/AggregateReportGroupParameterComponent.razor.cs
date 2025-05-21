@@ -91,7 +91,7 @@ namespace Caspian.Engine.ReportGenerator
             foreach (var param in removedParameters.Where(t => t.AggregateParameterType == AggregateParameterType.Parent))
             {
                 var old = await service.SingleAsync(param.Id);
-                await service.RemoveAsync(old);
+                service.Remove(old);
                 await service.SaveChangesAsync();
             }
             ShowMessage("ثبت با موفقیت انجام شد.");

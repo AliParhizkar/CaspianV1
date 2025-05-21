@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Caspian.Common.Service;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("UIComponent")]
 namespace Caspian.Common.Extension
@@ -79,15 +80,35 @@ namespace Caspian.Common.Extension
         //    }
         //}
 
+        /// <summary>
+        /// This method clear all entity property(properties that are entity) and return the entity
+        /// </summary>
+        internal static TEntity ClearEntityProperties<TEntity>(this TEntity entity)
+        {
+            if (entity != null)
+            {
+                var pKey = entity.GetType().GetPrimaryKey();
+                if (Convert.ToInt32(pKey.GetValue(entity)) < 0)
+                    pKey.SetValue(entity, 0);
+                foreach (var info in entity.GetType().GetProperties().Where(t => t.CanWrite))
+                {
+                    var type = info.PropertyType;
+                    if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]))
+                        info.SetValue(entity, default);
+                }
+            }
+            return entity;
+        }
 
         public static void CopyEntity<TEntity>(this TEntity entity, TEntity newObject)
         {
-            var keyName = typeof(TEntity).GetPrimaryKey().Name;
-            foreach (var info in typeof(TEntity).GetProperties().Where(t => t.Name != keyName && t.CanWrite))
+            var entityType = entity.GetType();
+            var keyName = entityType.GetPrimaryKey().Name;
+            foreach (var info in entityType.GetProperties().Where(t => t.Name != keyName && t.CanWrite))
             {
                 var value = info.GetValue(newObject);
                 var type = info.PropertyType;
-                if (value != null && type.IsValueType || type == typeof(string) || type == typeof(byte[])) 
+                if (type.IsValueType || type == typeof(string) || type == typeof(byte[])) 
                     info.SetValue(entity, value);
             }
         }

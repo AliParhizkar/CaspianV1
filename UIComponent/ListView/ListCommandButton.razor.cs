@@ -45,7 +45,7 @@ namespace Caspian.UI
             {
                 if (await MessageBox.Confirm(DataView.DeleteMessage))
                 {
-                    await service.RemoveAsync(old);
+                    service.Remove(old);
                     try
                     {
                         await service.SaveChangesAsync();
