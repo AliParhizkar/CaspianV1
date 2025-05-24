@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Marketing.Service
 {
-    public class OrderToppingService: MasterDetailsService<OrderDetail, OrderDetailTopping>, IBaseService<OrderDetail>
+    public class OrderToppingService: MasterDetailsService<OrderDetail, OrderDetailTopping>
     {
         public OrderToppingService(IServiceProvider provider)
             : base(provider)

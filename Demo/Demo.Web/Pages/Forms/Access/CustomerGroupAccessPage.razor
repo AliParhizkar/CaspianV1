@@ -88,9 +88,17 @@
                         <CaspianForm Service="Service">
                             <div class="d-btn-container">
                                 <div>
+                                    <IconButton @onclick="AddCustomersToGroup" type="button" IconType="IconType.AngleDoubleRight" />
+                                </div>
+                                <div>
                                     <IconButton IconType="IconType.AngleRight" />
                                 </div>
-                                <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
+                                <div>
+                                    <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
+                                </div>
+                                <div>
+                                    <IconButton type="button" IconType="IconType.AngleDoubleLeft" />
+                                </div>
                             </div>
                         </CaspianForm>
                     </div>
@@ -135,6 +143,17 @@
         Service = new MembershipService<CustomerGroup, CustomerGroupMembership, Customer>(base.ServiceProvider);
         Service.MasterId = GroupId;/// Set Group Id for service
         base.OnInitialized();
+    }
+
+    async Task AddCustomersToGroup()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredOthers(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با افزودن {count} مشتری به گروه موافقید؟"))
+        {
+
+        }
     }
 
     [Parameter]

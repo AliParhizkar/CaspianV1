@@ -13,6 +13,11 @@ namespace Caspian.UI
 {
     public class CaspianValidationValidator<TModel>: ComponentBase, IDisposable, IControlFocuseValidation where TModel : class
     {
+        /// <summary>
+        /// It's fire after creating a instance of service. We can initialize service at this time
+        /// </summary>
+        internal EventCallback<IBaseService<TModel>> OnInternalValidate { get; set; }
+
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
 
@@ -58,6 +63,15 @@ namespace Caspian.UI
             EditContext.OnValidationRequested += ValidationRequested;
             EditContext.OnFieldChanged -= FieldChanged;
             EditContext.OnFieldChanged += FieldChanged;
+        }
+
+        protected override void OnInitialized()
+        {
+            if (DetailsService != null)
+                (DetailsService as IInternalBatchService<TModel>).DetailCaspianValidationValidatorInitialize(this);
+            else
+                CaspianForm.Service.CaspianValidationValidatorInitialize(this);
+            base.OnInitialized();
         }
 
         async void FieldChanged(object sender, FieldChangedEventArgs args)
@@ -108,12 +122,14 @@ namespace Caspian.UI
                 dataService.Language = CaspianDataService.Language;
             }
             Validator = (IBaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
+            if (OnInternalValidate.HasDelegate)
+                await OnInternalValidate.InvokeAsync(Validator);
             if (CaspianForm == null)
             {
                 if (DetailsService != null)
                 {
-                    (Validator as ICaspianValidator).BatchServiceData.MasterType = (DetailsService as ISimpleBatchService).MasterType;
-                    (Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (DetailsService as ISimpleBatchService).ThirdLevelProperty;
+                    //(Validator as ICaspianValidator).BatchServiceData.MasterType = (DetailsService as ISimpleBatchService).MasterType;
+                    //(Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (DetailsService as ISimpleBatchService).ThirdLevelProperty;
                 }
             }
             else

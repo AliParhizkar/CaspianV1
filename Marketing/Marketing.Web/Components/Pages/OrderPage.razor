@@ -113,7 +113,7 @@
             }
             return true;
         };
-        OrderService.OnAfterOpsertAsync = async (provider, order) =>
+        OrderService.OnAfterUpsertAsync = async (provider, order) =>
         {
             var service = provider.GetCaspianService<OrderDetailToppingService>();
             var toppingsChange = productComponent.ChangedToppings;

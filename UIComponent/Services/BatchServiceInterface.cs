@@ -1,6 +1,7 @@
 ﻿using Caspian.Common;
 using System.Reflection;
 using System.Linq.Expressions;
+using Caspian.Common.Service;
 
 namespace Caspian.UI
 {
@@ -20,13 +21,11 @@ namespace Caspian.UI
 
     internal interface IInternalBatchService<TDetail>: IBatchService<TDetail>, ISimpleBatchService where TDetail : class
     {
+        void DetailCaspianValidationValidatorInitialize(CaspianValidationValidator<TDetail> validator);
         void DetailDataViewInitialize(DataView<TDetail> dataView);
         void DetailTypeWindowInitialize(TypeWindow<TDetail> window);
-
-        void DetailFormInitialize(CaspianForm<TDetail> caspianForm);
-
+        void DetailFormInitialize(CaspianForm<TDetail> form);
         void SetDetails(IList<TDetail> details);
-
         Expression GetDetailsFilterExpression();
     }
 

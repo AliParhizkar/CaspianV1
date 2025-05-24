@@ -68,9 +68,9 @@ namespace Caspian.UI
         void StateHasChanged();
         
         /// <summary>
-        /// It's Used in 1 To 1 Relationship for example Entity Type (1) <--> Detail Type (1)
+        /// It's Used in One-To-One Relationship.For Example in Employee(Entity) and Address(Other Type) 
         /// </summary>
-        Type DetailType { get; set; }
+        Type OtherType { get; set; }
     }
 
     public interface IUIService<TEntity> : IUIService, ISearchService<TEntity> where TEntity : class
@@ -84,6 +84,8 @@ namespace Caspian.UI
         IEntityTabPanel EntityTabPanel { get; }
 
         Func<IServiceProvider, TEntity, Task<bool>> OnUpsert { get; set; }
+
+        void CaspianValidationValidatorInitialize(CaspianValidationValidator<TEntity> validator);
 
     }
 }

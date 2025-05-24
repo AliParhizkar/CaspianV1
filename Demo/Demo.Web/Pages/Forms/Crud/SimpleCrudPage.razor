@@ -117,8 +117,8 @@
                         <div class="col-md-7 row pb-3">
                             <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="context.ProductCategoryId" TextExpression="t => t.Title" ColSpan="8" />
                             <StringTextBox @bind-Value="context.Title" ColSpan="8" />
-                            <NumericTextBox @bind-Value="context.Price" OnChange="() => SetOuterPrice(context)" ColSpan="8" />
-                            <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="8" />
+                            <NumericTextBox @bind-Value="context.Price" OnChange="() => SetOuterPrice(context)" ColSpan="8" DigitGrouping />
+                            <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="8" DigitGrouping />
                             <NumericTextBox @bind-Value="context.Discount" ColSpan="8" />
                         </div>
                         <div class="col-md-5 row pb-3 justify-content-center">

@@ -194,7 +194,7 @@ namespace Marketing.Web.OrderComponents
             toppingService = toppingServices.SingleOrDefault(t => t.Key == detail.Id).Value;
             if (toppingService == null)
             {
-                toppingService = new UIService<OrderDetail, OrderDetailTopping>(OrderService.Provider);
+                toppingService = new UIService<OrderDetail, OrderDetailTopping>(OrderService.ServiceProvider);
                 toppingService.MasterId = detail.Id;
                 toppingServices.Add(detail.Id, toppingService);
             }

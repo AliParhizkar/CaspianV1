@@ -79,7 +79,7 @@ namespace Caspian.UI
                 }
             }
             /// Removed from list
-            var pkeyInfo = typeof(TDetails).GetPrimaryKey();
+            var pKeyInfo = typeof(TDetails).GetPrimaryKey();
             foreach (var detail in details)
             {
                 var otherId = otherInfo.GetValue(detail);
@@ -88,7 +88,7 @@ namespace Caspian.UI
                     var entity = Activator.CreateInstance<TDetails>();
                     otherInfo.SetValue(entity, otherId);
                     masterInfo.SetValue(entity, Convert.ChangeType(Service.MasterId, masterInfo.PropertyType));
-                    pkeyInfo.SetValue(entity, pkeyInfo.GetValue(detail));
+                    pKeyInfo.SetValue(entity, pKeyInfo.GetValue(detail));
                     list.Add(new ChangedEntity<TDetails>()
                     {
                         Entity = entity,

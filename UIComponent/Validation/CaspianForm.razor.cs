@@ -13,10 +13,11 @@ namespace Caspian.UI
         string ErrorMessage;
         IList<IControl> controls;
         bool addControls, formSubmitted;
-        string ICaspianForm.MasterIdName { get; set; }
-        bool ICaspianForm.IgnoreOnValidSubmit { get; set; }
         TEntity oldModel;
         IControl firstControl;
+
+        string ICaspianForm.MasterIdName { get; set; }
+        bool ICaspianForm.IgnoreOnValidSubmit { get; set; }
 
         [Parameter]
         public string Style { get; set; }
@@ -163,9 +164,9 @@ namespace Caspian.UI
             FormAppState.AllControlsIsValid = true;
             FormAppState.ErrorMessage = null;
             ErrorMessage = null;
-            if ((Service as IInternalUIService<TEntity>)?.DetailType != null)
+            if ((Service as IInternalUIService<TEntity>)?.OtherType != null)
             {
-                EditContext.Properties["DetailType"] = (Service as IInternalUIService<TEntity>).DetailType;
+                EditContext.Properties["DetailType"] = (Service as IInternalUIService<TEntity>).OtherType;
             }
 
             EditContext.Validate();
@@ -202,6 +203,7 @@ namespace Caspian.UI
             {
                 if (FormAppState.AllControlsIsValid)
                     ErrorMessage = EditContext.GetValidationMessages().First();
+
                 FormAppState.ValidationChecking = true;
                 if (OnInvalidSubmit.HasDelegate)
                     await OnInvalidSubmit.InvokeAsync(EditContext.Model as TEntity);
@@ -273,6 +275,5 @@ namespace Caspian.UI
         {
             (Service as IInternalUIService<TEntity>)?.ClearForm();
         }
-
     }
 }

@@ -11,6 +11,7 @@ namespace Demo.Service
             :base(provider)
         {
             RuleFor(t => t.CustomerId).UniqueAsync(t => t.CustomerGroupId, "مشتری در حال حاضر عضو این گروه می باشد.");
+            RuleFor(t => t.CustomerGroupId).Custom(t => t.CustomerGroupId == 8, "گیر الکی");
         }
     }
 }

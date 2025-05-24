@@ -30,7 +30,7 @@ namespace Demo.Service
                     {
                         if (old.SubunitId.HasValue)
                         {
-                            if (t.QuantitySub == null || t.QuantitySub > old.Subunit.Factor)
+                            if (t.QuantitySub == null || t.QuantitySub >= old.Subunit.Factor)
                                 return true;
                         }
                         if (old.SubunitId == null && t.QuantitySub.HasValue)

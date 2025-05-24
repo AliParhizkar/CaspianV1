@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -158,6 +159,8 @@ namespace Caspian.UI
                 return new List<TEntity>();
             return source;
         }
+
+        internal abstract IQueryable<TEntity> GetQuery(IServiceScope scope);
 
         public abstract Task DataBind();
 
@@ -414,12 +417,17 @@ namespace Caspian.UI
 
         public async Task InsertAsync(TEntity entity)
         {
-            var type = typeof(TEntity);
-            var pKey = type.GetPrimaryKey();
+            var pKey = typeof(TEntity).GetPrimaryKey();
             pKey.SetValue(entity, 0);
             using var scope = ServiceScopeFactory.CreateScope();
-            var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
-            service.BatchServiceData.MasterType = (DetailsService as IInternalBatchService<TEntity>).MasterType;
+            var services = scope.ServiceProvider.GetServices(typeof(IBaseService<TEntity>));
+            BaseService<TEntity> service = null;
+            if (services.Count() == 1)
+                service = services.Single() as BaseService<TEntity>;
+            else
+                service = services.Single(t => t.GetType().BaseType.GetGenericArguments().Count() == 1) as BaseService<TEntity>;
+            service.MasterType = (DetailsService as IInternalBatchService<TEntity>).MasterType;
+            service.MasterId = DetailsService.MasterId;
             await service.AddAsync(entity);
             DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() 
             { 

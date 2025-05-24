@@ -5,10 +5,12 @@ using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
+using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
-    public class MembershipService<TMaster, TAccess, TOther>:UIService<TAccess>, IInternalSearchService<TOther> where TAccess : class where TOther : class
+    public class MembershipService<TMaster, TAccess, TOther> :UIService<TAccess>, IInternalSearchService<TOther> where TAccess : class where TOther : class
     {
         protected IDictionary<string, SearchType> searchData;
         protected IDictionary<string, ICollection> enumValues;
@@ -58,6 +60,10 @@ namespace Caspian.UI
             onlyForSearch = true;
         }
 
+        public IQueryable<TOther> GetFilteredOthers(IServiceScope scope) => DataView.GetQuery(scope);
+
+        public IQueryable<TAccess> GetFilteredAccess(IServiceScope scope) => base.DataView.GetQuery(scope);
+
         void IInternalSearchService<TOther>.DataViewInitialize(DataView<TOther> dataView)
         {
             DataView = dataView;
@@ -73,35 +79,63 @@ namespace Caspian.UI
                 innerExpr = Expression.Property(innerExpr, "Value");
             innerExpr = Expression.Equal(innerExpr, Expression.Constant(Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType())));
             innerExpr = Expression.Lambda(innerExpr, u);
-            var accessListInf = typeof(TOther).GetProperties().Where(t => typeof(IEnumerable<TAccess>).IsAssignableFrom(t.PropertyType));
-            if (accessListInf.Count() != 1)
+            var accessListProperties = typeof(TOther).GetProperties().Where(t => typeof(IEnumerable<TAccess>).IsAssignableFrom(t.PropertyType));
+            if (accessListProperties.Count() != 1)
                 throw new CaspianException("Error: Type " + typeof(TOther).Name + " Must has a Property of Type IEnumerable<" + typeof(TAccess).Name + ">");
-            Expression expression = Expression.Property(Expression.Parameter(typeof(TOther), "t"), accessListInf.Single());
+            Expression expression = Expression.Property(Expression.Parameter(typeof(TOther), "t"), accessListProperties.Single());
             var method = typeof(Enumerable).GetMethods().Where(t => t.Name == "Any").LastOrDefault().MakeGenericMethod(typeof(TAccess));
             expression = Expression.Call(method, expression, innerExpr);
             expression = Expression.Not(expression);
             DataView.InternalConditionExpr = expression;
-            
-            OnFormSubmit = entity =>
+        }
+
+        #region Methods overrided from base class
+        /// <summary>
+        /// This method Execute before form submit to validate. It set MasterId and OtherId (For example GroupId and CustomerId in Customers-Groups Membership)
+        /// </summary>
+        //protected override async Task InitializeBeforeValidate(TAccess entity)
+        //{
+        //    await base.InitializeBeforeValidate(entity);
+        //    var other = DataView.GetSelectedData();
+        //    if (other != null)
+        //    {
+        //        var otherKey = typeof(TAccess).GetForeignKey(typeof(TOther));
+        //        var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
+        //        typeof(TAccess).GetPrimaryKey().SetValue(entity, 0);
+        //        var id = typeof(TOther).GetPrimaryKey().GetValue(other);
+        //        otherKey.SetValue(entity, id);
+        //        masterIdInfo.SetValue(entity, Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType()));
+        //    }
+        //}
+
+        protected override async Task InitializeAfterValidate(TAccess entity)
+        {
+            await base.InitializeAfterValidate(entity);
+            await DataView.ReloadAsync();
+        }
+
+        protected override async Task InitializeAfterRemove(TAccess entity)
+        {
+            await base.InitializeAfterRemove(entity);
+            var otherIdInfo = typeof(TAccess).GetForeignKey(typeof(TOther));
+            var otherKey = otherIdInfo.GetValue(entity);
+            await DataView.SelectRowById(Convert.ToInt32(otherKey));
+            StateHasChanged();
+        }
+
+        #endregion
+
+        public async Task AddAsync()
+        {
+            var item = DataView.GetSelectedData();
+            if (item != null)
             {
-                var other = DataView.GetSelectedData();
-                if (other != null)
-                {
-                    var otherKey = typeof(TAccess).GetForeignKey(typeof(TOther));
-                    typeof(TAccess).GetPrimaryKey().SetValue(entity, 0);
-                    var id = typeof(TOther).GetPrimaryKey().GetValue(other);
-                    otherKey.SetValue(entity, id);
-                    masterIdInfo.SetValue(entity, Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType()));
-                }
-            };
-            OnFormValidSubmit = async entity => { await DataView.ReloadAsync(); };
-            OnAfterDelete = async entity => 
-            {
-                var otherIdInfo = typeof(TAccess).GetForeignKey(typeof(TOther));
-                var otherKey = otherIdInfo.GetValue(entity);
-                await DataView.SelectRowById(Convert.ToInt32(otherKey));
-                StateHasChanged();
-            };
+                var id = Convert.ToInt32(typeof(TOther).GetPrimaryKey().GetValue(item));
+                using var service = CreateScope().GetService<IBaseService<TAccess>>();
+                
+            }
+            else
+                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "لطفا یک ردیف را انتخاب نمائید.");
         }
 
         public async Task RemoveAsync()

@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Marketing.Service
 {
-    public class OrderDetailService : MasterDetailsService<OrderDetail, OrderDetailTopping>, IBaseService<OrderDetail>
+    public class OrderDetailService : BaseService<OrderDetail>, IBaseService<OrderDetail>
     {
         public OrderDetailService(IServiceProvider provider)
             : base(provider)

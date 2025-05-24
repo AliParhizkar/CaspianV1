@@ -275,6 +275,7 @@ var caspian;
                 let ctr = t[0].target;
                 let group = ctr.getElementsByClassName('t-group')[0];
                 if (group) {
+                    this.bindObserverForSize(group.getElementsByClassName('t-reset')[0]);
                     if (pageable) {
                         group.onscrollend = () => __awaiter(this, void 0, void 0, function* () {
                             yield dotnet.invokeMethodAsync('IncPageNumberInvokable');
@@ -312,6 +313,20 @@ var caspian;
                 childList: true,
                 subtree: false
             });
+        }
+        bindObserverForSize(ul) {
+            const observer = new ResizeObserver(t => {
+                let height = t[0].target.getBoundingClientRect().height;
+                if (height > 250)
+                    height = 250;
+                if (height < 30)
+                    height = 30;
+                let animate = t[0].target.closest('.t-animation-container');
+                if (parseFloat(animate.style.marginTop.replace('px', '')) < -30)
+                    animate.style.marginTop = `${-height - 40}px`;
+                animate.style.height = `${height + 3}px`;
+            });
+            observer.observe(ul);
         }
     }
     caspian.ComboBox = ComboBox;

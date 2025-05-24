@@ -86,79 +86,6 @@ namespace Caspian.Common.Service
             return Context.Set<TEntity>();
         }
 
-        /// <summary>
-        /// This method create Query for Fetch data base on entities relationship(Master-Other or master-Details)
-        /// </summary>
-        protected virtual IQueryable<TEntity> GetQueryForUpdate(TEntity entity)
-        {
-            var query = GetAll();
-            if (OtherTypeIn1To1Relationship != null)
-            {
-                var otherProperty = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship);
-                if (otherProperty != null)
-                    query = query.Include(otherProperty.Name);
-            }
-            return query;
-        }
-
-        /// <summary>
-        /// This method Copy Current-Entity to Old-Entity base on entities relationship(Master-Other or master-Details)
-        /// </summary>
-        protected virtual void CopyEntityWithRelations(TEntity old, TEntity current)
-        {
-            old.CopySimpleProperty(current);
-            if (OtherTypeIn1To1Relationship != null)
-            {
-                var otherProperty = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship);
-                var detail = otherProperty.GetValue(current);
-                var oldDetail = otherProperty.GetValue(old);
-                if (oldDetail == null)
-                    otherProperty.SetValue(old, detail);
-                else
-                    oldDetail.CopyEntity(detail);
-            }
-        }
-
-        public virtual async Task UpdateAsync(TEntity entity)
-        {
-            if (CheckValidation)
-            {
-                var result = await this.ValidateAsync(entity, OtherTypeIn1To1Relationship);
-                if (result.Errors.Count > 0)
-                    throw new CaspianException(result.Errors[0].ErrorMessage);
-            }
-            var query = GetQueryForUpdate(entity);
-            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-            var old = await query.SingleAsync(id);
-            CopyEntityWithRelations(old, entity);
-        }
-
-        public virtual async Task<TEntity> AddAsync(TEntity entity)
-        {
-            if (CheckValidation)
-            {
-                var result = await ValidateAsync(entity);
-                if (!result.IsValid)
-                    throw new CaspianException(result.Errors.First().ErrorMessage);
-            }
-            if (OtherTypeIn1To1Relationship != null)
-                otherEntityIn1To1Relationship = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship).GetValue(entity);
-            /// All properties that are entity should be null except One-To-One relationship properties
-            /// Note: One-To-One relationship properties haven't any ForeignKeyAttribute
-            entity = entity.ClearEntityProperties();
-            EntityInitialize(entity);
-            var result1 = await Context.Set<TEntity>().AddAsync(entity);
-            return result1.Entity;
-        }
-
-        protected virtual void EntityInitialize(TEntity entity)
-        {
-            /// Initialize One-To-One relationship 
-            if (OtherTypeIn1To1Relationship != null)
-                typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship).SetValue(entity, otherEntityIn1To1Relationship);
-        }
-
-
         public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
         {
             if (entities == null || !entities.Any()) 
@@ -178,18 +105,6 @@ namespace Caspian.Common.Service
                 }
             }
             await Context.Set<TEntity>().AddRangeAsync(entities);
-        }
-
-        public virtual void Remove(TEntity entity)
-        {
-            Context.Set<TEntity>().Remove(entity);
-        }
-
-        public async virtual Task RemoveAsync(int id)
-        {
-            var old = await GetAll().SingleOrDefaultAsync(id);
-            if (old != null)
-                Remove(old);
         }
         
         async public Task<TEntity> SingleOrDefaultAsync(int id)
@@ -236,6 +151,109 @@ namespace Caspian.Common.Service
             return await GetAll().AnyAsync(expr);
         }
 
+        #region For CRUD Operation For Entity
+
+        #region For Add Entity 
+
+        public virtual async Task<TEntity> AddAsync(TEntity entity)
+        {
+            if (CheckValidation)
+            {
+                var result = await ValidateAsync(entity);
+                if (!result.IsValid)
+                    throw new CaspianException(result.Errors.First().ErrorMessage);
+            }
+            if (OtherTypeIn1To1Relationship != null)
+                otherEntityIn1To1Relationship = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship).GetValue(entity);
+            /// All properties that are entity should be null except One-To-One relationship properties
+            /// Note: One-To-One relationship properties haven't any ForeignKeyAttribute
+            entity = entity.ClearEntityProperties();
+            EntityInitialize(entity);
+            var result1 = await Context.Set<TEntity>().AddAsync(entity);
+            return result1.Entity;
+        }
+
+        /// <summary>
+        /// This Method Initialize all Entities that have relation with this entity
+        /// </summary>
+        protected virtual void EntityInitialize(TEntity entity)
+        {
+            /// Initialize One-To-One relationship 
+            if (OtherTypeIn1To1Relationship != null)
+                typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship).SetValue(entity, otherEntityIn1To1Relationship);
+        }
+
+        #endregion
+
+        #region For Update Entity
+        public virtual async Task UpdateAsync(TEntity entity)
+        {
+            if (CheckValidation)
+            {
+                var result = await this.ValidateAsync(entity, OtherTypeIn1To1Relationship);
+                if (result.Errors.Count > 0)
+                    throw new CaspianException(result.Errors[0].ErrorMessage);
+            }
+            var query = GetQueryForUpdate(entity);
+            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+            var old = await query.SingleAsync(id);
+            CopyEntityWithRelations(old, entity);
+        }
+
+        /// <summary>
+        /// This method create Query for Fetch data base on entities relationship(Master-Other or master-Details)
+        /// </summary>
+        protected virtual IQueryable<TEntity> GetQueryForUpdate(TEntity entity)
+        {
+            var query = GetAll();
+            if (OtherTypeIn1To1Relationship != null)
+            {
+                var otherProperty = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship);
+                if (otherProperty != null)
+                    query = query.Include(otherProperty.Name);
+            }
+            return query;
+        }
+
+        /// <summary>
+        /// This method Copy Current-Entity to Old-Entity base on entities relationship(Master-Other or master-Details)
+        /// </summary>
+        protected virtual void CopyEntityWithRelations(TEntity old, TEntity current)
+        {
+            old.CopySimpleProperty(current);
+            if (OtherTypeIn1To1Relationship != null)
+            {
+                var otherProperty = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship);
+                var detail = otherProperty.GetValue(current);
+                var oldDetail = otherProperty.GetValue(old);
+                if (oldDetail == null)
+                    otherProperty.SetValue(old, detail);
+                else
+                    oldDetail.CopyEntity(detail);
+            }
+        }
+
+        #endregion
+
+        #region
+
+
+        #endregion
+
+        public virtual void Remove(TEntity entity)
+        {
+            Context.Set<TEntity>().Remove(entity);
+        }
+
+        public async virtual Task RemoveAsync(int id)
+        {
+            var old = await GetAll().SingleOrDefaultAsync(id);
+            if (old != null)
+                Remove(old);
+        }
+
+
+        #endregion
         public async Task RemoveRange(IEnumerable<TEntity> entities)
         {
             if (entities == null || !entities.Any())

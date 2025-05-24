@@ -49,10 +49,9 @@
         bindObserver(input: HTMLElement, pageable: boolean, dotnet: dotnetInvoker) {
             const mutationObserver = new MutationObserver(t => {
                 let ctr = t[0].target as HTMLElement;
-                
-                
                 let group = ctr.getElementsByClassName('t-group')[0] as HTMLElement;
                 if (group) {
+                    this.bindObserverForSize(group.getElementsByClassName('t-reset')[0] as HTMLElement);
                     if (pageable) {
                         group.onscrollend = async () => {
                             await dotnet.invokeMethodAsync('IncPageNumberInvokable');
@@ -90,6 +89,21 @@
                 childList: true,
                 subtree: false
             });
+        }
+
+        bindObserverForSize(ul: HTMLElement) {
+            const observer = new ResizeObserver(t => {
+                let height = t[0].target.getBoundingClientRect().height;
+                if (height > 250)
+                    height = 250;
+                if (height < 30)
+                    height = 30;
+                let animate = (t[0].target.closest('.t-animation-container') as HTMLElement);
+                if (parseFloat(animate.style.marginTop.replace('px', '')) < -30) 
+                    animate.style.marginTop = `${-height - 40}px`
+                animate.style.height = `${height + 3}px`;
+            });
+            observer.observe(ul);
         }
     }
 }

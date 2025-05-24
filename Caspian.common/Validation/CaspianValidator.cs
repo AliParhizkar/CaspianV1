@@ -7,13 +7,12 @@ using FluentValidation.Results;
 using FluentValidation.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Caspian.Common
 {
     public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator, IEntity where TModel : class
     {
-        public BatchServiceData BatchServiceData { get; private set; }
-
         public CaspianValidator(IServiceProvider provider)
         {
             BatchServiceData = provider.GetService<BatchServiceData>();
@@ -97,6 +96,16 @@ namespace Caspian.Common
             });
         }
 
+        public BatchServiceData BatchServiceData { get; private set; }
+
+        internal Type MasterType { get; set; }
+
+        internal int? MasterId { get; set; }
+
+        public int UserId { get; internal set; }
+
+        internal PropertyInfo ThirdLevelProperty { get; set; }
+
         public async virtual Task<ValidationResult> ValidateRemoveAsync(TModel model)
         {
             
@@ -122,6 +131,16 @@ namespace Caspian.Common
             context.RootContextData["__ServiceProvider"] = ServiceProvider;
             if (BatchServiceData != null)
                 context.RootContextData["__BatchServiceData"] = BatchServiceData;
+            if (MasterType != null)
+            {
+                context.RootContextData["__MasterType"] = MasterType;
+                context.RootContextData["__MasterId"] = MasterId;
+            }
+            else
+            {
+                context.RootContextData.Remove("__MasterType");
+                context.RootContextData.Remove("__MasterId");
+            }
             return base.ValidateAsync(context, cancellation);
         }
 
@@ -141,8 +160,6 @@ namespace Caspian.Common
         }
 
         public Language Language { get; private set; }
-
-        public int UserId { get; set; }
 
         public IServiceProvider ServiceProvider { get; private set; }
 
