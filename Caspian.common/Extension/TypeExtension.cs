@@ -65,7 +65,7 @@ namespace Caspian.Common.Extension
         }
 
         public static Type GetUnderlyingType(this Type type)
-         {
+        {
             if (IsNullableType(type))
                 return Nullable.GetUnderlyingType(type);
             return type;

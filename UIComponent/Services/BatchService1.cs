@@ -1,26 +1,19 @@
 ﻿using Caspian.Common;
 using System.Reflection;
-using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components;
-using Caspian.Engine.Model;
 
 namespace Caspian.UI
 {
     public class UIService<TMaster, TDetail, TDetail1> : UIService<TMaster, TDetail>, IInternalBatchService<TDetail1>
         where TMaster : class where TDetail : class where TDetail1 : class
     {
-        CaspianDataService caspianDataService;
         public UIService(IServiceProvider provider):
             base(provider)
         {
-            var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail1));
-            //batchServiceData.DetailPropertiesInfo.Add(detailsProperty);
             ChangedEntities = new List<ChangedEntity<TDetail1>>();
-            caspianDataService = provider.GetService<CaspianDataService>();
         }
 
         Expression IInternalBatchService<TDetail1>.GetDetailsFilterExpression()
@@ -100,67 +93,11 @@ namespace Caspian.UI
                 if (Form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail, TDetail1> service)
                     await service.SetChangedEntities(UpsertData, base.ChangedEntities, ChangedEntities);
             }
-
         }
 
         void IInternalBatchService<TDetail1>.DetailCaspianValidationValidatorInitialize(CaspianValidationValidator<TDetail1> validator)
         {
             
         }
-
-        //protected override async Task UpdateDatabaseAsync(TMaster master)
-        //{
-        //    var id = Convert.ToInt32(typeof(TMaster).GetPrimaryKey().GetValue(master));
-        //    using var scope = CreateScope();
-        //    if (OnUpsert != null)
-        //    {
-        //        if (!await OnUpsert.Invoke(scope.ServiceProvider, master))
-        //            return;
-        //    }
-        //    var service = scope.GetService<IMasterDetailsService<TMaster, TDetail, TDetail1>>();
-        //    TMaster result = default;
-        //    service.SetChangedEntities(base.ChangedEntities, ChangedEntities);
-        //    if (id == 0)
-        //        result = await service.AddAsync(UpsertData);
-        //    else
-        //        await service.UpdateAsync(UpsertData);
-        //    await service.SaveChangesAsync();
-        //    ChangedEntities.Clear();
-        //    base.ChangedEntities.Clear();
-        //    if (id == 0)
-        //    {
-        //        DetailDataView?.ClearSource();
-        //        base.DetailDataView?.ClearSource();
-        //        UpsertData = Activator.CreateInstance<TMaster>();
-        //        if (UpsertData is BaseEntity baseEntity)
-        //            baseEntity.UpsertUserId = UserId;
-        //        Form.SetModel(UpsertData);
-        //        if (OnCreate != null)
-        //            OnCreate.Invoke(UpsertData);
-        //        if (DataView != null && DataView is DataGrid<TMaster>)
-        //        {
-        //            var newId = (int)typeof(TMaster).GetPrimaryKey().GetValue(result);
-        //            await (DataView as DataGrid<TMaster>).SelectRowById(newId);
-        //        }
-        //        var message = caspianDataService.Language == Language.Fa ? "ثبت با موفقیت انجام شد" : "Registration was done successfully";
-        //        await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
-        //    }
-        //    else
-        //    {
-        //        if (DetailDataView != null)
-        //            await DetailDataView.ReloadAsync();
-        //        if (base.DetailDataView != null)
-        //            await base.DetailDataView.ReloadAsync();
-        //        if (DataView != null)
-        //            await DataView.ReloadAsync();
-        //        var message = caspianDataService.Language == Language.Fa ? "بروزرسانی با موفقیت انجام شد" : "Updating was done successfully";
-        //        await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
-        //        DetailDataView?.CancelInternalUpdate();
-        //        base.DetailDataView?.CancelInternalUpdate();
-        //    }
-        //    if ((this as IInternalUIService).Window != null)
-        //        await (this as IInternalUIService).Window?.Close();
-        //    (this as IInternalUIService<TMaster>).StateHasChanged();
-        //}
     }
 }

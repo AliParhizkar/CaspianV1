@@ -67,10 +67,11 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (DetailsService != null)
-                (DetailsService as IInternalBatchService<TModel>).DetailCaspianValidationValidatorInitialize(this);
-            else
-                CaspianForm.Service.CaspianValidationValidatorInitialize(this);
+            if (DetailsService != null || CaspianForm.DetailsService != null)
+                ((DetailsService ?? CaspianForm.DetailsService) as IInternalBatchService<TModel>).DetailCaspianValidationValidatorInitialize(this);
+            else if (CaspianForm.Service != null)
+                CaspianForm.Service.CaspianValidationValidatorInitializer(this);
+                
             base.OnInitialized();
         }
 
@@ -124,30 +125,6 @@ namespace Caspian.UI
             Validator = (IBaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             if (OnInternalValidate.HasDelegate)
                 await OnInternalValidate.InvokeAsync(Validator);
-            if (CaspianForm == null)
-            {
-                if (DetailsService != null)
-                {
-                    //(Validator as ICaspianValidator).BatchServiceData.MasterType = (DetailsService as ISimpleBatchService).MasterType;
-                    //(Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (DetailsService as ISimpleBatchService).ThirdLevelProperty;
-                }
-            }
-            else
-            {
-                if (CaspianForm.Service != null)
-                {
-                    //(Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (CaspianForm.Service as ISimpleBatchService)?.ThirdLevelProperty;
-                    //(Validator as ICaspianValidator).BatchServiceData.MasterType = (CaspianForm.Service as ISimpleBatchService)?.MasterType;
-
-                }
-                else if (CaspianForm.BatchService !=  null)
-                {
-                    //(Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (CaspianForm.BatchService as ISimpleBatchService).ThirdLevelProperty;
-                    //(Validator as ICaspianValidator).BatchServiceData.MasterType = (CaspianForm.BatchService as ISimpleBatchService).MasterType;
-
-                }
-
-            }
             if (CaspianForm != null && CaspianForm.OnBeforeValidate.HasDelegate)
                 await CaspianForm.OnBeforeValidate.InvokeAsync();
             if (Source != null && Source.Count() > 0)

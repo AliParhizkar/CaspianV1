@@ -310,12 +310,12 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
     {
         if (detail.ProductId > 0)
         {
+            if (detail.Id == 0)
+                detail.Quantity = 1;
             using var service = CreateScope().GetService<ProductService>();
             var old = await service.SingleAsync(detail.ProductId);
             detail.Price = old.Price;
             detail.Product = old;
-            if (detail.Id == 0)
-                detail.Quantity = 1;
             await txtQuantity.FocusAsync();
         }
     }

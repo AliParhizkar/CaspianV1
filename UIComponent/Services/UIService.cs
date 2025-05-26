@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using Caspian.Common;
-using System.Reflection;
 using System.Collections;
 using Microsoft.JSInterop;
 using Caspian.Engine.Model;
@@ -154,17 +153,14 @@ namespace Caspian.UI
                 else
                     await DataView.ReloadAsync();
             }
-            UpsertData = Activator.CreateInstance<TEntity>();
-            Form.SetModel(UpsertData);
-            if (UpsertData is BaseEntity baseEntity)
-                baseEntity.UpsertUserId = UserId;
-           
-
-
             if (Is1To1RelationshipService)
                 EntityTabPanel.ChangeState();
             else
             {
+                UpsertData = Activator.CreateInstance<TEntity>();
+                Form.SetModel(UpsertData);
+                if (UpsertData is BaseEntity baseEntity)
+                    baseEntity.UpsertUserId = UserId;
                 if (Window == null)
                 {
                     if (OnCreate != null)
@@ -180,6 +176,16 @@ namespace Caspian.UI
             else
                 message = CaspianDataService.Language == Language.En ? "Updating was done successfully" : "بروزرسانی با موفقیت انجام شد";
             await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
+        }
+
+        /// <summary>
+        /// This Method Execute on form submit(form submitted and data is valid). 
+        /// We Use this method to Initialize entity before of validate 
+        /// Note: This method override in sub class **DON'T CLEAR IT**
+        /// </summary>
+        protected virtual void InitializeBeforeValidation(TEntity entity)
+        {
+
         }
 
         /// <summary>
@@ -233,13 +239,13 @@ namespace Caspian.UI
         #region Methods for Initialize Components. This Methods Call from components(DataView, Form, TypeWindow, ...) For intialize
         public void ChildTabPanelItemInitialize(Type detailType) => (this as IInternalUIService<TEntity>).OtherType = detailType;
         
-        void IInternalUIService<TEntity>.TabPanelInitialize(IEntityTabPanel tabPanel)
+        void IInternalUIService<TEntity>.TabPanelInitializer(IEntityTabPanel tabPanel)
         {
             EntityTabPanel = tabPanel;
             Is1To1RelationshipService = true;
         }
 
-        void IInternalUIService<TEntity>.FormInitialize(CaspianForm<TEntity> form)
+        void IInternalUIService<TEntity>.FormInitializer(CaspianForm<TEntity> form)
         {
             Form = form;
 
@@ -259,10 +265,11 @@ namespace Caspian.UI
                     await Window?.Close();
                 StateHasChanged();
             });
+            Form.OnInternalSubmit = EventCallback.Factory.Create<TEntity>(this, InitializeBeforeValidation);
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, UpsertAndInitializeAfterValidate);
         }
 
-        void IInternalSearchService<TEntity>.DataViewInitialize(DataView<TEntity> dataView)
+        void IInternalSearchService<TEntity>.DataViewInitializer(DataView<TEntity> dataView)
         {
             DataView = dataView;
             if (DataView == null)
@@ -339,7 +346,7 @@ namespace Caspian.UI
             });
         }
 
-        void IInternalUIService.WindowInitialize(Window window)
+        void IInternalUIService.WindowInitializer(Window window)
         {
             Window = window;
             if (window != null)
@@ -353,7 +360,7 @@ namespace Caspian.UI
             }
         }
 
-        void IUIService<TEntity>.CaspianValidationValidatorInitialize(CaspianValidationValidator<TEntity> validator)
+        void IUIService<TEntity>.CaspianValidationValidatorInitializer(CaspianValidationValidator<TEntity> validator)
         {
             validator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TEntity>>(this, InitializeValidatorService);
         }
@@ -482,13 +489,6 @@ namespace Caspian.UI
             if (window !=  null) 
                 return await window.GetMessageBox().Confirm(message);
             return await baseComponentService.MessageBox.Confirm(message);
-        }
-
-        void IInternalUIService<TEntity>.ClearForm()
-        {
-            Form = null;
-            if (!Is1To1RelationshipService)
-                UpsertData = null;
         }
 
         IDictionary<string, ICollection> IInternalSearchService<TEntity>.GetEnumFields() => enumValues;

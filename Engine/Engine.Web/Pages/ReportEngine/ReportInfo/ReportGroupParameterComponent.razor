@@ -70,7 +70,8 @@
             ChangeStatus = ChangeStatus.Deleted,
             Entity = t
         }));
-        await service.UpdateDatabaseAsync(group, list);
+        service.SetChangedEntities(list);
+        await service.UpdateAsync(group);
         await service.SaveChangesAsync();
         ShowMessage("Parameters updated successfully");
     }

@@ -194,7 +194,7 @@ namespace Caspian.UI
                 throw new CaspianException($"Service of type {type} not implemented");
 
             if (Service != null)
-                (Service as IInternalSearchService<TEntity>).DataViewInitialize(this);
+                (Service as IInternalSearchService<TEntity>).DataViewInitializer(this);
             if (DetailsService != null)
                 (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitialize(this);
             base.OnInitialized();
@@ -746,7 +746,7 @@ namespace Caspian.UI
         public void Dispose()
         {
             if (Service != null)
-                (Service as IInternalSearchService<TEntity>).DataViewInitialize(null); 
+                (Service as IInternalSearchService<TEntity>).DataViewInitializer(null); 
             if (DetailsService != null)
                 (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitialize(null);
         }

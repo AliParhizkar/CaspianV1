@@ -126,7 +126,8 @@ namespace Caspian.Engine.ReportGenerator
                 ChangeStatus = ChangeStatus.Deleted,
                 Entity = t
             }));
-            await service.UpdateDatabaseAsync(old, list);
+            service.SetChangedEntities(list);
+            await service.UpdateAsync(old);
             await service.SaveChangesAsync();
             await LoadData();
             ShowMessage("ثبت با موفقیت انجام شد.");

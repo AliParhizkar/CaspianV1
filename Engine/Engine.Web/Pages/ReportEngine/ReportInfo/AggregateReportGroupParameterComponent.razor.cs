@@ -84,7 +84,8 @@ namespace Caspian.Engine.ReportGenerator
                         ChangeStatus = ChangeStatus.Deleted,
                         Entity = t
                     }));
-                    await service.UpdateDatabaseAsync(param, list);
+                    service.SetChangedEntities(list);
+                    await service.UpdateAsync(param);
                 }
                 await service.SaveChangesAsync();
             }

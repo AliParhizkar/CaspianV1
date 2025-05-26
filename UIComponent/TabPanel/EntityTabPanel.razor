@@ -29,7 +29,7 @@
     protected override void OnInitialized()
     {
         childTypes = new List<Type>();
-        (Service as IInternalUIService<TEntity>).TabPanelInitialize(this);
+        (Service as IInternalUIService<TEntity>).TabPanelInitializer(this);
         base.OnInitialized();
     }
 

@@ -21,7 +21,7 @@ namespace Caspian.UI
 
     internal interface IInternalSearchService<TEntity>: ISearchService<TEntity> where TEntity : class
     {
-        void DataViewInitialize(DataView<TEntity> dataView);
+        void DataViewInitializer(DataView<TEntity> dataView);
         void SetSearchType(IDictionary<string, SearchType> types);
         void SetEnumFields(IDictionary<string, ICollection> enumFields);
         IDictionary<string, ICollection> GetEnumFields();
@@ -39,7 +39,7 @@ namespace Caspian.UI
 
     internal interface IInternalUIService : IUIService
     {
-        void WindowInitialize(Window window);
+        void WindowInitializer(Window window);
 
         void Dispose();
 
@@ -48,7 +48,7 @@ namespace Caspian.UI
 
     internal interface IInternalUIService<TEntity> : IInternalUIService, IInternalSearchService<TEntity>, IUIService<TEntity>  where TEntity : class
     {
-        void FormInitialize(CaspianForm<TEntity> form);
+        void FormInitializer(CaspianForm<TEntity> form);
 
         /// <summary>
         /// In 1 ti 1 relationship if is bigger tan 0 (MasterId > 0) itt fetch child from database
@@ -57,14 +57,13 @@ namespace Caspian.UI
         /// <returns></returns>
         Task UpdateChildOfModelAsync(Type detailType);
         
-        void TabPanelInitialize(IEntityTabPanel tabPanel);
+        void TabPanelInitializer(IEntityTabPanel tabPanel);
         
         /// <summary>
         /// Its fetch UpsertData from database by using MasterId as primary key
         /// </summary>
         /// <returns></returns>
         Task FetchAsync();
-        void ClearForm();
         void StateHasChanged();
         
         /// <summary>
@@ -85,7 +84,6 @@ namespace Caspian.UI
 
         Func<IServiceProvider, TEntity, Task<bool>> OnUpsert { get; set; }
 
-        void CaspianValidationValidatorInitialize(CaspianValidationValidator<TEntity> validator);
-
+        void CaspianValidationValidatorInitializer(CaspianValidationValidator<TEntity> validator);
     }
 }

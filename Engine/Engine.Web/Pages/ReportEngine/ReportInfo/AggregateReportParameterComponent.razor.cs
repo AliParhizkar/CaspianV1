@@ -5,7 +5,6 @@ using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
-using Castle.Components.DictionaryAdapter.Xml;
 
 namespace Caspian.Engine.ReportGenerator
 {
@@ -67,7 +66,8 @@ namespace Caspian.Engine.ReportGenerator
             }
             using var service = CreateScope().GetService<ReportService>();
             var old = await service.SingleAsync(ReportId);
-            await service.UpdateDatabaseAsync(old, null, changedEntities);
+            service.SetChangedEntities(null, changedEntities);
+            await service.UpdateAsync(old);
             await service.SaveChangesAsync();
         }
 

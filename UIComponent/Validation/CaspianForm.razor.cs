@@ -37,7 +37,7 @@ namespace Caspian.UI
         public IUIService<TEntity> Service { get; set; }
 
         [Parameter]
-        public IBatchService<TEntity> BatchService { get;set;}
+        public IBatchService<TEntity> DetailsService { get;set;}
 
         [Parameter]
         public EventCallback<TEntity> OnInvalidSubmit { get; set; }
@@ -56,6 +56,8 @@ namespace Caspian.UI
         internal EventCallback<TEntity> OnInternalValidSubmit { get; set; }
 
         public EventCallback<TEntity> OnInternalInvalidSubmit { get; set; }
+
+        public bool Disposed { get; private set; }
 
         internal EventCallback OnInternalReset { get; set; }
 
@@ -118,7 +120,7 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             if (Service != null)
-                (Service as IInternalUIService<TEntity>).FormInitialize(this);
+                (Service as IInternalUIService<TEntity>).FormInitializer(this);
             controls = new List<IControl>();
             if (FormAppState == null)
                 FormAppState = new FormAppState();
@@ -273,7 +275,7 @@ namespace Caspian.UI
 
         public void Dispose()
         {
-            (Service as IInternalUIService<TEntity>)?.ClearForm();
+            Disposed = true;
         }
     }
 }

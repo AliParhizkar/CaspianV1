@@ -101,7 +101,7 @@ namespace Caspian.UI
             if (Service != null)
             {
                 var service = Service as IInternalUIService;
-                service.WindowInitialize(this);
+                service.WindowInitializer(this);
             }
             Modal = true;
             Draggable = true;
@@ -155,7 +155,7 @@ namespace Caspian.UI
 
         public void Dispose()
         {
-            (Service as IInternalUIService)?.WindowInitialize(null);
+            (Service as IInternalUIService)?.WindowInitializer(null);
         }
     }
 }

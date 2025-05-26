@@ -6,7 +6,6 @@ using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -64,7 +63,7 @@ namespace Caspian.UI
 
         public IQueryable<TAccess> GetFilteredAccess(IServiceScope scope) => base.DataView.GetQuery(scope);
 
-        void IInternalSearchService<TOther>.DataViewInitialize(DataView<TOther> dataView)
+        void IInternalSearchService<TOther>.DataViewInitializer(DataView<TOther> dataView)
         {
             DataView = dataView;
             if (dataView == null)
@@ -107,6 +106,21 @@ namespace Caspian.UI
         //        masterIdInfo.SetValue(entity, Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType()));
         //    }
         //}
+
+        protected override void InitializeBeforeValidation(TAccess entity)
+        {
+            var other = DataView.GetSelectedData();
+            if (other != null)
+            {
+                var otherKey = typeof(TAccess).GetForeignKey(typeof(TOther));
+                typeof(TAccess).GetPrimaryKey().SetValue(entity, 0);
+                var id = typeof(TOther).GetPrimaryKey().GetValue(other);
+                otherKey.SetValue(entity, id);
+                var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
+                masterIdInfo.SetValue(entity, Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType()));
+            }
+            base.InitializeBeforeValidation(entity);
+        }
 
         protected override async Task UpsertAndInitializeAfterValidate(TAccess entity)
         {

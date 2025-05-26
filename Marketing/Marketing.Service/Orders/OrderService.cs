@@ -162,12 +162,6 @@ namespace Marketing.Service
             });
         }
 
-        public override Task<Order> UpdateDatabaseAsync(Order entity, IList<ChangedEntity<OrderDetail>> changedEntities)
-        {
-            return base.UpdateDatabaseAsync(entity, changedEntities);
-
-        }
-
         public override Task<Order> AddAsync(Order entity)
         {
             entity.OrderDate = DateTime.Now.GetDateOnly();
