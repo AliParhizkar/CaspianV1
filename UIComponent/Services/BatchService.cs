@@ -50,7 +50,7 @@ namespace Caspian.UI
             return base.InitializeBeforeUpsert(service);
         }
 
-        protected override async Task InitializeAfterUpsert(TMaster tempEntity)
+        protected override async Task InitializeAfterUpsert(TMaster tempEntity, UpsertMode upsertMode)
         {
             ChangedEntities.Clear();
             if (DetailDataView != null)
@@ -58,7 +58,7 @@ namespace Caspian.UI
                 DetailDataView.ClearSource();
                 DetailDataView.CancelInternalUpdate();
             }
-            await base.InitializeAfterUpsert(tempEntity);
+            await base.InitializeAfterUpsert(tempEntity, upsertMode);
 
         }
 

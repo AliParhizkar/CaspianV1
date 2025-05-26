@@ -123,7 +123,7 @@ namespace Caspian.Common.Extension
             return type.GetProperty(attr.Name);
         }
 
-        public static PropertyInfo GetOneToOnePropertyInfo(this Type type, Type detailType)
+        public static PropertyInfo GetOneToOneProperty(this Type type, Type detailType)
         {
             foreach(var info in type.GetProperties())
             {
@@ -136,7 +136,7 @@ namespace Caspian.Common.Extension
             throw new InvalidProgramException("");
         }
 
-        public static IList<PropertyInfo> GetOneToOnePropertyInfos(this Type entityType)
+        public static IList<PropertyInfo> GetOneToOneProperties(this Type entityType)
         {
             var list = new List<PropertyInfo>();
             foreach (var info in entityType.GetProperties())

@@ -8,7 +8,6 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Cryptography;
 
 namespace Caspian.Common.Service
 {
@@ -69,13 +68,6 @@ namespace Caspian.Common.Service
             return GetAll();
         }
 
-        public bool Any(Expression<Func<TEntity, bool>> expr = null)
-        {
-            if (expr == null)
-                return GetAll().Any();
-            return GetAll().Any(expr);
-        }
-
         public virtual IQueryable<TEntity> Search(TEntity entity, IDictionary<string, SearchType> searchData, IDictionary<string, ICollection> enumValues)
         {
             return GetAll().Search(entity, searchData, enumValues);
@@ -86,11 +78,12 @@ namespace Caspian.Common.Service
             return Context.Set<TEntity>();
         }
 
+        #region Range CRUD
         public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
         {
-            if (entities == null || !entities.Any()) 
+            if (entities == null || !entities.Any())
                 return;
-            foreach(var entity in entities)
+            foreach (var entity in entities)
             {
                 var result = await ValidateAsync(entity);
                 if (!result.IsValid)
@@ -100,13 +93,28 @@ namespace Caspian.Common.Service
             {
                 if (info.GetCustomAttribute<ForeignKeyAttribute>() != null || (info.PropertyType.IsCollectionType() && info.PropertyType != typeof(string)))
                 {
-                    foreach(var entity in entities)
+                    foreach (var entity in entities)
                         info.SetValue(entity, default);
                 }
             }
             await Context.Set<TEntity>().AddRangeAsync(entities);
         }
-        
+
+        public async Task RemoveRange(IEnumerable<TEntity> entities)
+        {
+            if (entities == null || !entities.Any())
+                return;
+            foreach (var entity in entities)
+            {
+                var result = await ValidateRemoveAsync(entity);
+                if (!result.IsValid)
+                    throw new CaspianException(result.Errors.First().ErrorMessage);
+            }
+            Context.RemoveRange(entities);
+        }
+        #endregion
+
+        #region LINQ Methods
         async public Task<TEntity> SingleOrDefaultAsync(int id)
         {
             var type = typeof(TEntity);
@@ -151,8 +159,24 @@ namespace Caspian.Common.Service
             return await GetAll().AnyAsync(expr);
         }
 
-        #region For CRUD Operation For Entity
+        public async Task<bool> AnyAsync(int id)
+        {
+            var param = Expression.Parameter(typeof(TEntity), "t");
+            var pKey = typeof(TEntity).GetPrimaryKey();
+            Expression expr = Expression.Property(param, pKey);
+            expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(id, pKey.PropertyType)));
+            return await GetAll().Where(Expression.Lambda(expr, param)).AnyAsync();
+        }
 
+        public bool Any(Expression<Func<TEntity, bool>> expr = null)
+        {
+            if (expr == null)
+                return GetAll().Any();
+            return GetAll().Any(expr);
+        }
+        #endregion
+
+        #region For CRUD Operation For Entity
         #region For Add Entity 
 
         public virtual async Task<TEntity> AddAsync(TEntity entity)
@@ -164,7 +188,7 @@ namespace Caspian.Common.Service
                     throw new CaspianException(result.Errors.First().ErrorMessage);
             }
             if (OtherTypeIn1To1Relationship != null)
-                otherEntityIn1To1Relationship = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship).GetValue(entity);
+                otherEntityIn1To1Relationship = typeof(TEntity).GetOneToOneProperty(OtherTypeIn1To1Relationship).GetValue(entity);
             /// All properties that are entity should be null except One-To-One relationship properties
             /// Note: One-To-One relationship properties haven't any ForeignKeyAttribute
             entity = entity.ClearEntityProperties();
@@ -180,7 +204,7 @@ namespace Caspian.Common.Service
         {
             /// Initialize One-To-One relationship 
             if (OtherTypeIn1To1Relationship != null)
-                typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship).SetValue(entity, otherEntityIn1To1Relationship);
+                typeof(TEntity).GetOneToOneProperty(OtherTypeIn1To1Relationship).SetValue(entity, otherEntityIn1To1Relationship);
         }
 
         #endregion
@@ -208,7 +232,7 @@ namespace Caspian.Common.Service
             var query = GetAll();
             if (OtherTypeIn1To1Relationship != null)
             {
-                var otherProperty = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship);
+                var otherProperty = typeof(TEntity).GetOneToOneProperty(OtherTypeIn1To1Relationship);
                 if (otherProperty != null)
                     query = query.Include(otherProperty.Name);
             }
@@ -223,7 +247,7 @@ namespace Caspian.Common.Service
             old.CopySimpleProperty(current);
             if (OtherTypeIn1To1Relationship != null)
             {
-                var otherProperty = typeof(TEntity).GetOneToOnePropertyInfo(OtherTypeIn1To1Relationship);
+                var otherProperty = typeof(TEntity).GetOneToOneProperty(OtherTypeIn1To1Relationship);
                 var detail = otherProperty.GetValue(current);
                 var oldDetail = otherProperty.GetValue(old);
                 if (oldDetail == null)
@@ -236,16 +260,33 @@ namespace Caspian.Common.Service
         #endregion
 
         #region Remove Entity
+
+        /// <summary>
+        /// This Method get query for delete. It's can be override in sub class and update query for sub class
+        /// </summary>
         protected virtual IQueryable<TEntity> GetQueryForRemove()
         {
-            return GetAll();
+            var query = GetAll();
+            ///For One-To-One relationship we should include all One-To-One relationship to cascade remove 
+            foreach (var property in typeof(TEntity).GetOneToOneProperties())
+                query = query.Include(property.Name);
+            return query;
+        }
+
+        /// <summary>
+        /// This method change entity-state to delete for Remove. It's can be override in sub class and change state of
+        /// related properties in Master-Details properties
+        /// </summary>
+        protected virtual void SetAsDeleted(TEntity entity)
+        {
+            Context.Entry(entity).State = EntityState.Deleted;
         }
 
         public async virtual Task RemoveAsync(int id)
         {
             var old = await GetQueryForRemove().SingleOrDefaultAsync(id);
             if (old != null)
-                Context.Remove(old);
+                SetAsDeleted(old);
         }
 
         public void Remove(TEntity entity)
@@ -254,19 +295,6 @@ namespace Caspian.Common.Service
         }
         #endregion
         #endregion
-        public async Task RemoveRange(IEnumerable<TEntity> entities)
-        {
-            if (entities == null || !entities.Any())
-                return;
-            foreach (var entity in entities)
-            {
-                var result = await ValidateRemoveAsync(entity);
-                if (!result.IsValid)
-                    throw new CaspianException(result.Errors.First().ErrorMessage);
-            }
-            Context.RemoveRange(entities);
-        }
-
 
         public int SaveChanges()
         {
@@ -276,16 +304,6 @@ namespace Caspian.Common.Service
         public async Task<int> SaveChangesAsync()
         {
             return await Context.SaveChangesAsync();
-        }
-
-        public async Task<bool> AnyAsync(int id)
-        {
-            var param = Expression.Parameter(typeof(TEntity), "t");
-            var pKey = typeof(TEntity).GetPrimaryKey();
-            Expression expr = Expression.Property(param, pKey);
-            expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(id, pKey.PropertyType)));
-            return await GetAll().Where(Expression.Lambda(expr, param)).AnyAsync();
-        }
-        
+        }        
     }
 }

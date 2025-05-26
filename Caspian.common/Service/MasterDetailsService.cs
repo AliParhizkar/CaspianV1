@@ -116,6 +116,18 @@ namespace Caspian.Common.Service
             return base.GetQueryForRemove().Include(detailsProperty.Name);
         }
 
+        protected override void SetAsDeleted(TMaster entity)
+        {
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            var details = detailsProperty.GetValue(entity) as IEnumerable<TDetail>;
+            if (details != null)
+            {
+                foreach(var detail in details)
+                    Context.Entry(detail).State = EntityState.Deleted;
+            }
+            base.SetAsDeleted(entity);
+        }
+
         protected override void CopyEntityWithRelations(TMaster old, TMaster current)
         {
             var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
@@ -202,26 +214,6 @@ namespace Caspian.Common.Service
             await UpdateAsync(entity);
             detailsInfo.SetValue(entity, insertedItems);
             return entity;
-        }
-
-        //public async Task DeleteMasterAndDetails(TMaster master)
-        //{
-        //    var info = typeof(TDetail).GetForeignKey(typeof(TMaster));
-        //    var parameter = Expression.Parameter(typeof(TDetail), "t");
-        //    Expression expr = Expression.Property(parameter, info);
-        //    var value = typeof(TMaster).GetPrimaryKey().GetValue(master);
-        //    expr = Expression.Equal(expr, Expression.Constant(value));
-        //    var lambda = Expression.Lambda(expr, parameter);
-        //    var service = GetService<BaseService<TDetail>>();
-        //    var details = await service.GetAll().Where(lambda).ToListAsync();
-        //    await service.RemoveRange(details);
-        //    await base.RemoveAsync();
-        //}
-
-        public override async Task RemoveAsync(int id)
-        {
-
-            await base.RemoveAsync(id);
         }
     }
 }

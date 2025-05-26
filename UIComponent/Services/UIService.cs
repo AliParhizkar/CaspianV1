@@ -10,7 +10,6 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
@@ -113,7 +112,7 @@ namespace Caspian.UI
             TEntity tempEntity = default;
             if (Is1To1RelationshipService)
             {
-                var properties = typeof(TEntity).GetOneToOnePropertyInfos();
+                var properties = typeof(TEntity).GetOneToOneProperties();
                 service.OtherTypeIn1To1Relationship = (this as IInternalUIService<TEntity>).OtherType != typeof(TEntity) ? (this as IInternalUIService<TEntity>).OtherType : null;
                 tempEntity = Activator.CreateInstance<TEntity>();
                 foreach (var property in properties)
@@ -127,11 +126,11 @@ namespace Caspian.UI
             return tempEntity;
         }
 
-        protected virtual async Task InitializeAfterUpsert(TEntity tempEntity)
+        protected virtual async Task InitializeAfterUpsert(TEntity tempEntity, UpsertMode upsertMode)
         {
             if (Is1To1RelationshipService)
             {
-                var properties = typeof(TEntity).GetOneToOnePropertyInfos();
+                var properties = typeof(TEntity).GetOneToOneProperties();
                 if (properties != null)
                 {
                     foreach (var info in properties)
@@ -141,16 +140,11 @@ namespace Caspian.UI
                     }
                 }
             }
-            UpsertData = Activator.CreateInstance<TEntity>();
-            Form.SetModel(UpsertData);
-            if (UpsertData is BaseEntity baseEntity)
-                baseEntity.UpsertUserId = UserId;
-            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
             if (DataView != null)
             {
-                if (id == 0)
+                if (upsertMode == UpsertMode.Insert)
                 {
-                    id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
+                    var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
                     await DataView.SelectRowById(id);
                     if (Window == null)
                         StateHasChanged();
@@ -160,6 +154,12 @@ namespace Caspian.UI
                 else
                     await DataView.ReloadAsync();
             }
+            UpsertData = Activator.CreateInstance<TEntity>();
+            Form.SetModel(UpsertData);
+            if (UpsertData is BaseEntity baseEntity)
+                baseEntity.UpsertUserId = UserId;
+           
+
 
             if (Is1To1RelationshipService)
                 EntityTabPanel.ChangeState();
@@ -175,7 +175,7 @@ namespace Caspian.UI
                     await Window.Close();
             }
             string message = null;
-            if (id == 0)
+            if (upsertMode == UpsertMode.Insert)
                 message = CaspianDataService.Language == Language.En ? "Registration was done successfully" : "ثبت با موفقیت انجام شد.";
             else
                 message = CaspianDataService.Language == Language.En ? "Updating was done successfully" : "بروزرسانی با موفقیت انجام شد";
@@ -213,12 +213,20 @@ namespace Caspian.UI
                 Console.ResetColor();
                 service.Context.Database.CurrentTransaction.Rollback();
             }
-            await InitializeAfterUpsert(tempEntity);
+            await InitializeAfterUpsert(tempEntity, id == 0 ? UpsertMode.Insert : UpsertMode.Edit);
         }
 
         protected virtual async Task InitializeAfterRemove(TEntity entity)
         {
             await DataView.ReloadAsync();
+        }
+
+        /// <summary>
+        /// This Method is used for Initialize Validator-Service. It can be override to initialize service in child class
+        /// </summary>
+        protected virtual async Task InitializeValidatorService(IBaseService<TEntity> service)
+        {
+            (service as BaseService<TEntity>).SetBatchServiceData(MasterId, typeof(TEntity));
         }
         #endregion
 
@@ -314,37 +322,13 @@ namespace Caspian.UI
                 scope.SetUserId(UserId);
                 var service = scope.GetService<IBaseService<TEntity>>();
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-                ///For 1to1 relationship we should include all 1to1 relationship to cascade remove 
-                var list = new List<string>();
-                /// find relationship and add them to list
-                foreach (var info in typeof(TEntity).GetProperties())
-                {
-                    var type = info.PropertyType.GetUnderlyingType();
-                    if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]) && info.GetCustomAttribute<ForeignKeyAttribute>() == null && !type.IsEnumerableType())
-                    {
-                        var pKeyName = type.GetPrimaryKey().Name;
-                        if (type.GetProperties().Single(t => t.PropertyType == typeof(TEntity) && t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == pKeyName) != null)
-                            list.Add(info.Name);
-                    }
-                }
-                TEntity old = null;
-                if (list.Count > 0)
-                {
-                    ///Include all relationship 
-                    var query = service.GetAll();
-                    foreach (var item in list)
-                        query = query.Include(item);
-                    old = await query.SingleAsync(id);
-                }
-                else
-                    old = await service.SingleAsync(id);
-
+                var old = await service.SingleAsync(id);
                 var result = await service.ValidateRemoveAsync(old);
                 if (result.IsValid)
                 {
                     if (!DataView.DeleteMessage.HasValue() || await Confirm(DataView.DeleteMessage))
                     {
-                        service.Remove(old);
+                        await service.RemoveAsync(id);
                         await service.SaveChangesAsync();
                         await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
                         await InitializeAfterRemove(old);
@@ -367,6 +351,11 @@ namespace Caspian.UI
                     await Form.FocusAsync();
                 });
             }
+        }
+
+        void IUIService<TEntity>.CaspianValidationValidatorInitialize(CaspianValidationValidator<TEntity> validator)
+        {
+            validator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TEntity>>(this, InitializeValidatorService);
         }
         #endregion
 
@@ -401,7 +390,7 @@ namespace Caspian.UI
         void IInternalSearchService<TEntity>.HideFooter() => hideFooter = true;
 
         /// <summary>
-        /// This Method Call form Lookup-window (In lookup-window we Hide 
+        /// This Method Call form Lookup-window (In lookup-window we Hide Insert-Icon)
         /// </summary>
         void IInternalSearchService<TEntity>.OnlyForSearch() => HideInsertIcon = true;
 
@@ -503,18 +492,5 @@ namespace Caspian.UI
         }
 
         IDictionary<string, ICollection> IInternalSearchService<TEntity>.GetEnumFields() => enumValues;
-
-        /// <summary>
-        /// This Method is used for Initialize Validator-Service. It can be override to initialize service in child class
-        /// </summary>
-        protected virtual async Task InitializeValidatorService(IBaseService<TEntity> service)
-        {
-            (service as BaseService<TEntity>).SetBatchServiceData(MasterId, typeof(TEntity));
-        }
-
-        void IUIService<TEntity>.CaspianValidationValidatorInitialize(CaspianValidationValidator<TEntity> validator)
-        {
-            validator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TEntity>>(this, InitializeValidatorService);
-        }
     }
 }
