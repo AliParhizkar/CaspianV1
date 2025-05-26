@@ -23,8 +23,6 @@ namespace Caspian.UI
             caspianDataService = provider.GetService<CaspianDataService>();
         }
 
-        Type ISimpleBatchService.MasterType => typeof(TMaster);
-
         Expression IInternalBatchService<TDetail1>.GetDetailsFilterExpression()
         {
             var param = Expression.Parameter(typeof(TDetail1), "t");
@@ -32,11 +30,6 @@ namespace Caspian.UI
             Expression expr = Expression.Property(param, masterInfo);
             var masterId = Convert.ChangeType(MasterId, masterInfo.PropertyType);
             return Expression.Equal(expr, Expression.Constant(masterId));
-        }
-
-        void IInternalBatchService<TDetail1>.SetDetails(IList<TDetail1> details)
-        {
-            
         }
 
         PropertyInfo ISimpleBatchService.ThirdLevelProperty { get; set; }

@@ -27,7 +27,7 @@ namespace Demo.Service
             RuleFor(t => t.OrderStatus).Custom(t => t.CourierId.HasValue && t.OrderStatus == OrderStatus.Canceled,
                 "The order has a courier and it is not possible to cancel it.");
             RuleFor(t => t.CustomerId).Required();
-            RuleForEach(t => t.OrderDetails).SetValidator(new OrderDetailService(provider));
+            RuleForEach(t => t.OrderDetails).SetValidator(new OrderDetailService(provider, Details.ToList()));
         }
 
         public override async Task<Order> UpdateDatabaseAsync(Order order, IList<ChangedEntity<OrderDetail>> changedEntities)

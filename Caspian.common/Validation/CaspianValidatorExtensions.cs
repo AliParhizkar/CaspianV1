@@ -586,14 +586,12 @@ namespace Caspian.Common
                     if (Convert.ToInt32(value) <= 0)
                     {
                         var flag = false;
-                        if (context.RootContextData.ContainsKey("__MasterType"))
+                        if (context.RootContextData.ContainsKey("__BatchServiceData"))
                         {
-                            var masterType = context.RootContextData["__MasterType"] as Type;
-                            var masterId = Convert.ToInt32(context.RootContextData["__MasterId"]);
-                           
-                            if (masterId == 0)
+                            var batchData = context.RootContextData["__BatchServiceData"] as BatchServiceData;
+                            if (batchData.MasterId == 0)
                             {
-                                var masterInfo = typeof(TModel).GetProperties().SingleOrDefault(t => t.PropertyType == masterType);
+                                var masterInfo = typeof(TModel).GetProperties().SingleOrDefault(t => t.PropertyType == batchData.MasterType);
                                 if (masterInfo != null && masterInfo == info)
                                     flag = true;
                             }

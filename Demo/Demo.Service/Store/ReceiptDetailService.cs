@@ -5,6 +5,7 @@ using Caspian.Common;
 using FluentValidation;
 using Caspian.Common.Service;
 using Caspian.Common.Extension;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Service
@@ -15,7 +16,7 @@ namespace Demo.Service
             : base(provider)
         {
             RuleFor(t => t.QuantityMain).Custom(t => t.QuantityMain == 0 && t.QuantitySub == null, "This parameter must be greater than zero.");
-            RuleFor(t => t.MaterialId).Custom(t=> 
+            RuleFor(t => t.MaterialId).Custom(t =>
             {
                 var result = Source.Any(u => t.MaterialId == u.MaterialId && u.Id != t.Id);
                 return result;
@@ -39,6 +40,7 @@ namespace Demo.Service
                 }
                 return false;
             }, "The value of sub-unit is invalid").Custom(t => t.QuantityMain == 0 && t.QuantitySub == 0, "This parameter must be greater than zero.");
+
         }
     }
 }

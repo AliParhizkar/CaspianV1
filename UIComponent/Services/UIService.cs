@@ -46,7 +46,7 @@ namespace Caspian.UI
 
         public int MasterId { get; set; }
 
-        internal Type MasterType { get; set; }
+        public Type MasterType { get; set; }
 
         public Window Window { get; private set; }
 
@@ -67,6 +67,11 @@ namespace Caspian.UI
         public Action<TEntity> OnCreate { get; set; }
 
         public Func<IServiceProvider, TEntity, Task<bool>> OnUpsert { get; set; }
+
+        /// <summary>
+        /// This event Fired After data saving 
+        /// </summary>
+        public Func<IServiceProvider, TEntity, Task> OnAfterUpsertAsync { get; set; }
 
         internal IBaseService<TEntity> BaseService { get; private set; }
 
@@ -89,68 +94,58 @@ namespace Caspian.UI
 
         #region Methods for override on subclass 
 
-
         /// <summary>
-        /// This Method Execute after form valid-submit(form submitted and data is valid). 
-        /// It call Insert-Update methods of Validator-Service(BaseService)) to upsert and then initialize Data & Components (UpsertData, Form, DataView, ...)
+        /// This Method create Validator & CRUD Service. it's can be override and create Master-Details service in sub class
         /// </summary>
-        protected virtual async Task InitializeAfterValidate(TEntity entity)
+        /// <returns>Service is Used for validation and CRUD</returns>
+        protected virtual IBaseService<TEntity> CreateService(IServiceScope scope)
         {
-            var result = true;
-            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-            using var scope = CreateScope();
-            scope.SetUserId(UserId);
-            if (OnUpsert != null)
-                result = await OnUpsert.Invoke(scope.ServiceProvider, UpsertData);
-            if (!result)
-                return;
-            var service = scope.GetService<IBaseService<TEntity>>();
+            return scope.GetService<IBaseService<TEntity>>();
+        }
+
+        protected virtual TEntity InitializeBeforeUpsert(IBaseService<TEntity> service)
+        {
+            ///Before Calling this method Validation is done. an we don't need to do it(validation) again 
             (service as BaseService<TEntity>).CheckValidation = false;
             service.OtherTypeIn1To1Relationship = (this as IInternalUIService<TEntity>).OtherType;
-            string message = null;
-            var isAdd = false;
-            IList<PropertyInfo> infos = null;
+            /// In One-To-One Relationship Before Upsert maybe we have many One-To-One Relationship data, But we save only one of them.
+            /// We clear other One-To-One relationship data and keep this data in tempEntity object to use it to reset data after Upsert
             TEntity tempEntity = default;
             if (Is1To1RelationshipService)
             {
-                infos = typeof(TEntity).GetOneToOnePropertyInfos();
+                var properties = typeof(TEntity).GetOneToOnePropertyInfos();
                 service.OtherTypeIn1To1Relationship = (this as IInternalUIService<TEntity>).OtherType != typeof(TEntity) ? (this as IInternalUIService<TEntity>).OtherType : null;
                 tempEntity = Activator.CreateInstance<TEntity>();
-                foreach (var info in infos)
+                foreach (var property in properties)
                 {
-                    var value = info.GetValue(entity);
-                    info.SetValue(tempEntity, value);
-                    if (info.PropertyType != (this as IInternalUIService<TEntity>).OtherType)
-                        info.SetValue(entity, null);
+                    var value = property.GetValue(UpsertData);
+                    property.SetValue(tempEntity, value);
+                    if (property.PropertyType != (this as IInternalUIService<TEntity>).OtherType)
+                        property.SetValue(UpsertData, null);
                 }
             }
-            if (id == 0 || isAdd)
-            {
-                await service.AddAsync(UpsertData);
-                if (CaspianDataService.Language == Language.En)
-                    message = "Registration was done successfully";
-                else
-                    message = "ثبت با موفقیت انجام شد.";
-            }
-            else
-            {
-                await service.UpdateAsync(UpsertData);
-                if (CaspianDataService.Language == Language.En)
-                    message = "Updating was done successfully";
-                else
-                    message = "بروزرسانی با موفقیت انجام شد";
-            }
-            await service.SaveChangesAsync();
-            UpsertData.ClearEntityProperties();
+            return tempEntity;
+        }
 
-            if (infos != null)
+        protected virtual async Task InitializeAfterUpsert(TEntity tempEntity)
+        {
+            if (Is1To1RelationshipService)
             {
-                foreach (var info in infos)
+                var properties = typeof(TEntity).GetOneToOnePropertyInfos();
+                if (properties != null)
                 {
-                    var value = info.GetValue(tempEntity);
-                    info.SetValue(entity, value);
+                    foreach (var info in properties)
+                    {
+                        var value = info.GetValue(tempEntity);
+                        info.SetValue(UpsertData, value);
+                    }
                 }
             }
+            UpsertData = Activator.CreateInstance<TEntity>();
+            Form.SetModel(UpsertData);
+            if (UpsertData is BaseEntity baseEntity)
+                baseEntity.UpsertUserId = UserId;
+            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
             if (DataView != null)
             {
                 if (id == 0)
@@ -165,7 +160,7 @@ namespace Caspian.UI
                 else
                     await DataView.ReloadAsync();
             }
-            await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
+
             if (Is1To1RelationshipService)
                 EntityTabPanel.ChangeState();
             else
@@ -179,6 +174,46 @@ namespace Caspian.UI
                 else
                     await Window.Close();
             }
+            string message = null;
+            if (id == 0)
+                message = CaspianDataService.Language == Language.En ? "Registration was done successfully" : "ثبت با موفقیت انجام شد.";
+            else
+                message = CaspianDataService.Language == Language.En ? "Updating was done successfully" : "بروزرسانی با موفقیت انجام شد";
+            await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
+        }
+
+        /// <summary>
+        /// This Method Execute after form valid-submit(form submitted and data is valid). 
+        /// It call Insert-Update methods of Validator-Service(BaseService)) to upsert and then initialize Data & Components (UpsertData, Form, DataView, ...)
+        /// </summary>
+        protected virtual async Task UpsertAndInitializeAfterValidate(TEntity entity)
+        {
+            var result = true;
+            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
+            using var scope = CreateScope();
+            scope.SetUserId(UserId);
+            if (OnUpsert != null)
+                result = await OnUpsert.Invoke(scope.ServiceProvider, UpsertData);
+            if (!result)
+                return;
+            var service = CreateService(scope);
+            var tempEntity = InitializeBeforeUpsert(service);
+           
+            if (id == 0)
+                await service.AddAsync(UpsertData);
+            else
+                await service.UpdateAsync(UpsertData);
+            await service.SaveChangesAsync();
+            if (OnAfterUpsertAsync != null)
+                await OnAfterUpsertAsync(scope.ServiceProvider, UpsertData);
+            if (service.Context?.Database?.CurrentTransaction != null)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Warning: Transaction Rollbacked by Caspian infrastructure");
+                Console.ResetColor();
+                service.Context.Database.CurrentTransaction.Rollback();
+            }
+            await InitializeAfterUpsert(tempEntity);
         }
 
         protected virtual async Task InitializeAfterRemove(TEntity entity)
@@ -216,11 +251,7 @@ namespace Caspian.UI
                     await Window?.Close();
                 StateHasChanged();
             });
-            Form.OnInternalSubmit = EventCallback.Factory.Create<TEntity>(this, async entity =>
-            {
-                //await InitializeBeforeValidate(entity);
-            });
-            Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, InitializeAfterValidate);
+            Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, UpsertAndInitializeAfterValidate);
         }
 
         void IInternalSearchService<TEntity>.DataViewInitialize(DataView<TEntity> dataView)
@@ -429,8 +460,12 @@ namespace Caspian.UI
             {
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
                 var old = await service.SingleOrDefaultAsync(MasterId);
+                var pKey = typeof(TEntity).GetPrimaryKey();
                 if (old != null)
+                {
                     UpsertData.CopyEntity(old);
+                    pKey.SetValue(UpsertData, MasterId);
+                }
             }
         }
 
@@ -474,9 +509,7 @@ namespace Caspian.UI
         /// </summary>
         protected virtual async Task InitializeValidatorService(IBaseService<TEntity> service)
         {
-            var service1 = service as BaseService<TEntity>;
-            service1.MasterId = MasterId;
-            service1.MasterType = typeof(TEntity);
+            (service as BaseService<TEntity>).SetBatchServiceData(MasterId, typeof(TEntity));
         }
 
         void IUIService<TEntity>.CaspianValidationValidatorInitialize(CaspianValidationValidator<TEntity> validator)

@@ -8,12 +8,12 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography;
 
 namespace Caspian.Common.Service
 {
     public class BaseService<TEntity> : CaspianValidator<TEntity>, IBaseService, IDisposable, IBaseService<TEntity> where TEntity : class
     {
-        protected string GuId = Guid.NewGuid().ToString();
         object otherEntityIn1To1Relationship;
         Type otherTypeIn1To1Relationship;
         public BaseService(IServiceProvider provider)
@@ -235,24 +235,24 @@ namespace Caspian.Common.Service
 
         #endregion
 
-        #region
-
-
-        #endregion
-
-        public virtual void Remove(TEntity entity)
+        #region Remove Entity
+        protected virtual IQueryable<TEntity> GetQueryForRemove()
         {
-            Context.Set<TEntity>().Remove(entity);
+            return GetAll();
         }
 
         public async virtual Task RemoveAsync(int id)
         {
-            var old = await GetAll().SingleOrDefaultAsync(id);
+            var old = await GetQueryForRemove().SingleOrDefaultAsync(id);
             if (old != null)
-                Remove(old);
+                Context.Remove(old);
         }
 
-
+        public void Remove(TEntity entity)
+        {
+            Context.Remove(entity);
+        }
+        #endregion
         #endregion
         public async Task RemoveRange(IEnumerable<TEntity> entities)
         {
@@ -266,6 +266,7 @@ namespace Caspian.Common.Service
             }
             Context.RemoveRange(entities);
         }
+
 
         public int SaveChanges()
         {
@@ -285,5 +286,6 @@ namespace Caspian.Common.Service
             expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(id, pKey.PropertyType)));
             return await GetAll().Where(Expression.Lambda(expr, param)).AnyAsync();
         }
+        
     }
 }

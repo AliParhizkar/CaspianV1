@@ -12,7 +12,6 @@ namespace Caspian.Common.Service
             base(provider)
         {
             var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail1));
-            BatchServiceData.DetailPropertiesInfo.Add(detailsProperty);
             ChangedEntities1 = new List<ChangedEntity<TDetail1>>();
         }
 
@@ -37,15 +36,6 @@ namespace Caspian.Common.Service
             var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
             detailsProperty.SetValue(entity, details);
             base.EntityInitialize(entity);
-        }
-
-        public override void Remove(TMaster entity)
-        {
-            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
-            var details = detailsProperty.GetValue(entity) as IEnumerable<TDetail1>;
-            if (details != null)
-                Context.RemoveRange(details);
-            base.Remove(entity);
         }
 
         async Task<IList<TDetail1>> GetDetailsAfterAddChangesAsync(TMaster master)
@@ -83,7 +73,7 @@ namespace Caspian.Common.Service
         public async Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetail>> changedEntities, IList<ChangedEntity<TDetail1>> changedEntities1)
         {
             base.FillDetail = FillDetail;
-            await SetChangedEntitiesAsync(master, changedEntities);
+            SetChangedEntitiesAsync(master, changedEntities);
             ChangedEntities1 = changedEntities1;
             if (FillDetail)
             {

@@ -138,7 +138,7 @@
         if (RuleId.HasValue)
         {
             using var scope = CreateScope();
-            await new TokenService(scope.ServiceProvider).RemoveAsync(RuleId.Value);
+            await new TokenService(scope.ServiceProvider).RemoveAsync1(RuleId.Value);
             Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId.Value).ToListAsync();
         }
         else

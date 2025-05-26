@@ -187,7 +187,7 @@ namespace Caspian.UI
         {
             var type = typeof(IBaseService<TEntity>);
             using var scope = ServiceScopeFactory.CreateScope();
-            BatchServiceData.MasterType = (DetailsService as ISimpleBatchService)?.MasterType;
+            //BatchServiceData.MasterType = (DetailsService as ISimpleBatchService)?.MasterType;
             scope.SetUserId(PageData);
             serviceType = scope.ServiceProvider.GetService(type)?.GetType();
             if (serviceType == null)
@@ -426,8 +426,7 @@ namespace Caspian.UI
                 service = services.Single() as BaseService<TEntity>;
             else
                 service = services.Single(t => t.GetType().BaseType.GetGenericArguments().Count() == 1) as BaseService<TEntity>;
-            service.MasterType = (DetailsService as IInternalBatchService<TEntity>).MasterType;
-            service.MasterId = DetailsService.MasterId;
+            service.SetBatchServiceData(DetailsService.MasterId, DetailsService.MasterType);
             await service.AddAsync(entity);
             DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() 
             { 
@@ -457,8 +456,6 @@ namespace Caspian.UI
                 }
                 index++;
             }
-            if (DetailsService != null)
-                (DetailsService as IInternalBatchService<TEntity>).SetDetails(source);
         }
 
         public async Task UpdateAsync(TEntity entity)
@@ -502,8 +499,6 @@ namespace Caspian.UI
                     break;
                 }
             }
-            if (DetailsService != null)
-                (DetailsService as IInternalBatchService<TEntity>).SetDetails(source);
         }
 
         async Task UpdateEntityForForeignKey(TEntity entity)
@@ -533,7 +528,6 @@ namespace Caspian.UI
                             }
                             info.SetValue(entity, foreignKeyValue);
                         }
-
                     }
                 }
             }
@@ -606,8 +600,6 @@ namespace Caspian.UI
                     DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
                     deletedEntities.Add(entity);
                 }
-                if (DetailsService != null)
-                    (DetailsService as IInternalBatchService<TEntity>).SetDetails(source);
             }
             else
                 await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", result.Errors.First().ErrorMessage);
@@ -661,10 +653,9 @@ namespace Caspian.UI
 
         internal void ClearSource()
         {
-            source = new List<TEntity>();
+            source .Clear();
             Total = 0;
-            items = new List<TEntity>();
-            //StateHasChanged();
+            items.Clear();
         }
 
         public async Task ReloadAsync()
@@ -742,9 +733,8 @@ namespace Caspian.UI
                 insertedEntity = new RowData<TEntity>();
                 insertedEntity.UpsertMode = UpsertMode.Insert;
                 insertedEntity.Data = Activator.CreateInstance<TEntity>();
-                
-                if (BatchServiceData.MasterId > 0)
-                    BatchServiceData.GetMasterInfo(typeof(TEntity)).SetValue(insertedEntity.Data, BatchServiceData.MasterId);
+                if (DetailsService.MasterId > 0)
+                    typeof(TEntity).GetForeignKey(DetailsService.MasterType).SetValue(insertedEntity.Data, DetailsService.MasterId);
                 if (OnOpen.HasDelegate)
                     await OnOpen.InvokeAsync(insertedEntity.Data);
                 InsertContext = new EditContext(insertedEntity.Data);

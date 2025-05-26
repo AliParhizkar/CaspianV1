@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
@@ -26,7 +26,7 @@ namespace Caspian.UI
 
         public CaspianValidationValidator<TDetail> DetailValidator { get; set; }
 
-        Type ISimpleBatchService.MasterType => typeof(TMaster);
+        public Type MasterType => typeof(TMaster);
 
         public IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
 
@@ -39,11 +39,27 @@ namespace Caspian.UI
             return Expression.Equal(expr, Expression.Constant(masterId));
         }
 
-
-        void IInternalBatchService<TDetail>.SetDetails(IList<TDetail> details)
+        protected override IBaseService<TMaster> CreateService(IServiceScope scope)
         {
-            //var detailInfo = batchServiceData.DetailPropertiesInfo.First(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
-            //detailInfo.SetValue(UpsertData, details);
+            return scope.GetService<IMasterDetailsService<TMaster, TDetail>>();
+        }
+
+        protected override TMaster InitializeBeforeUpsert(IBaseService<TMaster> service)
+        {
+            (service as MasterDetailsService<TMaster, TDetail>).SetChangedEntities(ChangedEntities);
+            return base.InitializeBeforeUpsert(service);
+        }
+
+        protected override async Task InitializeAfterUpsert(TMaster tempEntity)
+        {
+            ChangedEntities.Clear();
+            if (DetailDataView != null)
+            {
+                DetailDataView.ClearSource();
+                DetailDataView.CancelInternalUpdate();
+            }
+            await base.InitializeAfterUpsert(tempEntity);
+
         }
 
         public void ThirdDataLevelToIgnoreOnRemove<TProperty>(Expression<Func<TDetail, ICollection<TProperty>>> expression) => (this as IInternalBatchService<TDetail>).ThirdLevelProperty = (expression.Body as MemberExpression).Member as PropertyInfo;
@@ -102,18 +118,17 @@ namespace Caspian.UI
             {
                 ///Initialize Validator-Service Before validation 
                 var service = t as BaseService<TDetail>;
-                service.MasterId = MasterId;
-                service.MasterType = typeof(TMaster);
+                service.SetBatchServiceData(MasterId, typeof(TMaster));
                 if (t is MasterDetailsService<TMaster, TDetail> detailService)
                 {
-                    await detailService.SetChangedEntitiesAsync(UpsertData, ChangedEntities);
+                    detailService.SetChangedEntitiesAsync(UpsertData, ChangedEntities);
 
                 }
             });
         }
         protected override async Task InitializeValidatorService(IBaseService<TMaster> service)
         {
-            await (service as MasterDetailsService<TMaster, TDetail>).SetChangedEntitiesAsync(UpsertData, ChangedEntities);
+            (service as MasterDetailsService<TMaster, TDetail>).SetChangedEntitiesAsync(UpsertData, ChangedEntities);
             await base.InitializeValidatorService(service);
         }
 
@@ -129,7 +144,8 @@ namespace Caspian.UI
         //    }
         //}
 
-        public Func<IServiceProvider, TMaster, Task> OnAfterUpsertAsync { get; set; }
+
+
 
         //protected virtual async Task UpdateDatabaseAsync(TMaster master)
         //{
@@ -198,7 +214,7 @@ namespace Caspian.UI
             if (Form?.ValidationValidator?.Validator != null)
             {
                 if (Form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail> service)
-                    await service.SetChangedEntitiesAsync(UpsertData, ChangedEntities);
+                    service.SetChangedEntitiesAsync(UpsertData, ChangedEntities);
             }
         }
 

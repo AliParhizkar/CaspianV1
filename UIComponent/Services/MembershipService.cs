@@ -108,9 +108,9 @@ namespace Caspian.UI
         //    }
         //}
 
-        protected override async Task InitializeAfterValidate(TAccess entity)
+        protected override async Task UpsertAndInitializeAfterValidate(TAccess entity)
         {
-            await base.InitializeAfterValidate(entity);
+            await base.UpsertAndInitializeAfterValidate(entity);
             await DataView.ReloadAsync();
         }
 

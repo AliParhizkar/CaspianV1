@@ -7,14 +7,14 @@ namespace Caspian.UI
 {
     internal interface ISimpleBatchService
     {
-        Type MasterType { get; }
-
         PropertyInfo ThirdLevelProperty { get; set; }
     }
 
     public interface ISimpleBatchService<TDetail> 
     {
         int MasterId { get; }
+
+        Type MasterType { get; }
 
         IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
     }
@@ -25,7 +25,6 @@ namespace Caspian.UI
         void DetailDataViewInitialize(DataView<TDetail> dataView);
         void DetailTypeWindowInitialize(TypeWindow<TDetail> window);
         void DetailFormInitialize(CaspianForm<TDetail> form);
-        void SetDetails(IList<TDetail> details);
         Expression GetDetailsFilterExpression();
     }
 

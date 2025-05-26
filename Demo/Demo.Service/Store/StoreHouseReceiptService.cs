@@ -16,6 +16,7 @@ namespace Demo.Service
         {
             RuleFor(t => t.Date).CustomValue(t => t == default, "Please specify the warehouse receipt date.")
                 .CustomValue(t => t > DateTime.Now.ToDateOnly(), "The warehouse receipt date cannot be a future date.");
+            RuleFor(t => t.ReceiptDetails).Custom(t => Details.Count() == 0, "رسید باید حداقل یک آیتم داشته باشد");
             RuleForEach(t => t.ReceiptDetails).SetValidator(new ReceiptDetailService(provider));
         }
 

@@ -24,9 +24,9 @@ namespace Caspian.Engine.Service
             return await base.AddAsync(item);
         }
 
-        public async Task<Token> RemoveAsync(int ruleId)
+        public async Task<Token> RemoveAsync1(int ruleId)
         {
-            var rule = await new RuleService(ServiceProvider).SingleAsync(ruleId);
+            var rule = await ServiceProvider.GetService<RuleService>().SingleAsync(ruleId);
             rule.IsValid = false;
             var item = await GetAll().Where(t => t.RuleId == ruleId).OrderByDescending(t => t.Id).FirstOrDefaultAsync();
             if (item != null)

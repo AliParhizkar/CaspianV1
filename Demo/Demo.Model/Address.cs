@@ -22,10 +22,10 @@ namespace Demo.Model
         [ForeignKey(nameof(CustomerId))]
         public Customer Customer { get; set; }
 
-        [DisplayName("Address")]
+        [DisplayName("Address"), MaxLength(200)]
         public string Address {  get; set; }
 
-        [DisplayName("Zipcode")]
+        [DisplayName("Zipcode"), MaxLength(30)]
         public string ZipCode { get; set; }
 
         [DisplayName("Active")]

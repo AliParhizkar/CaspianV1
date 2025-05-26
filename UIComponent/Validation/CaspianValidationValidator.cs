@@ -136,14 +136,14 @@ namespace Caspian.UI
             {
                 if (CaspianForm.Service != null)
                 {
-                    (Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (CaspianForm.Service as ISimpleBatchService)?.ThirdLevelProperty;
-                    (Validator as ICaspianValidator).BatchServiceData.MasterType = (CaspianForm.Service as ISimpleBatchService)?.MasterType;
+                    //(Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (CaspianForm.Service as ISimpleBatchService)?.ThirdLevelProperty;
+                    //(Validator as ICaspianValidator).BatchServiceData.MasterType = (CaspianForm.Service as ISimpleBatchService)?.MasterType;
 
                 }
                 else if (CaspianForm.BatchService !=  null)
                 {
-                    (Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (CaspianForm.BatchService as ISimpleBatchService).ThirdLevelProperty;
-                    (Validator as ICaspianValidator).BatchServiceData.MasterType = (CaspianForm.BatchService as ISimpleBatchService).MasterType;
+                    //(Validator as ICaspianValidator).BatchServiceData.ThirdLevelProperty = (CaspianForm.BatchService as ISimpleBatchService).ThirdLevelProperty;
+                    //(Validator as ICaspianValidator).BatchServiceData.MasterType = (CaspianForm.BatchService as ISimpleBatchService).MasterType;
 
                 }
 
@@ -152,7 +152,7 @@ namespace Caspian.UI
                 await CaspianForm.OnBeforeValidate.InvokeAsync();
             if (Source != null && Source.Count() > 0)
                 Validator.SetSource(Source.AsReadOnly());
-            
+
             Task<ValidationResult> asyncValidationTask;
             if (EditContext.Properties.TryGetValue("DetailType", out var objDetail) && objDetail != null)
                 asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objDetail);

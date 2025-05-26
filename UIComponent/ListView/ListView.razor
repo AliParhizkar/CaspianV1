@@ -24,7 +24,7 @@
                         {
                             <CaspianContainer ColumnsCount="0" @ref="insertContainer">
                                 <CascadingValue Value="InsertContext">
-                                    <CaspianValidationValidator TModel="TEntity" ValidatorType="serviceType" Source="source" DetailsService="DetailsService" />
+                                    <CaspianValidationValidator TModel="TEntity" ValidatorType="serviceType" DetailsService="DetailsService" />
                                     <CascadingValue Value="insertedEntity" Name="RowData">
                                         @Fields(insertedEntity)
                                     </CascadingValue>

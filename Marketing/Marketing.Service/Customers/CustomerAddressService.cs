@@ -10,11 +10,11 @@ namespace Marketing.Service
             : base(provider)
         {
             RuleFor(t => t.Address).Required();
-            RuleFor(t => t.IsDefault).Custom(t => 
-            {
-                var result = t.IsDefault && Source.Any(u => u.IsDefault & t.Id != u.Id);
-                return result;
-            }, "فقط یک آدرس می تواند بعنوان آدرس پیش فرض باشد");
+            //RuleFor(t => t.IsDefault).Custom(t => 
+            //{
+            //    var result = t.IsDefault && Source.Any(u => u.IsDefault & t.Id != u.Id);
+            //    return result;
+            //}, "فقط یک آدرس می تواند بعنوان آدرس پیش فرض باشد");
         }
     }
 }

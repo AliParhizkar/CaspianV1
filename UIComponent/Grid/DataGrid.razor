@@ -95,7 +95,7 @@
                                     var rowData = new RowData<TEntity>()
                                     {
                                         Data = isUpdateing ? selectedEntity : item,
-                                        RowIndex = rowIndex,
+                                        RowIndex = rowIndex + 5,
                                         DynamicData = DynamicData == null ? null : DynamicData[rowIndex],
                                         UpsertMode = isUpdateing ? UpsertMode.Edit : null
                                     };
@@ -104,7 +104,7 @@
                                             @if (isUpdateing)
                                             {
                                                 <CascadingValue Value="EditContext">
-                                                    <CaspianValidationValidator TModel="TEntity" @ref="validator" Source="source" ValidatorType="serviceType" />
+                                                    <CaspianValidationValidator TModel="TEntity" @ref="validator" DetailsService="DetailsService" Source="source" ValidatorType="serviceType" />
                                                     <CaspianContainer ColumnsCount="0" @ref="updateContainer">
                                                         @Columns(rowData)
                                                     </CaspianContainer>

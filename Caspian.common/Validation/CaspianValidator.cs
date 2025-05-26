@@ -7,7 +7,6 @@ using FluentValidation.Results;
 using FluentValidation.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Caspian.Common
 {
@@ -98,9 +97,11 @@ namespace Caspian.Common
 
         public BatchServiceData BatchServiceData { get; private set; }
 
-        internal Type MasterType { get; set; }
-
-        internal int? MasterId { get; set; }
+        internal void SetBatchServiceData(int masterId, Type masterType)
+        {
+            BatchServiceData.MasterType = masterType;
+            BatchServiceData.MasterId = masterId;
+        }
 
         public int UserId { get; internal set; }
 
@@ -129,18 +130,7 @@ namespace Caspian.Common
         public override Task<ValidationResult> ValidateAsync(ValidationContext<TModel> context, CancellationToken cancellation = default)
         {
             context.RootContextData["__ServiceProvider"] = ServiceProvider;
-            if (BatchServiceData != null)
-                context.RootContextData["__BatchServiceData"] = BatchServiceData;
-            if (MasterType != null)
-            {
-                context.RootContextData["__MasterType"] = MasterType;
-                context.RootContextData["__MasterId"] = MasterId;
-            }
-            else
-            {
-                context.RootContextData.Remove("__MasterType");
-                context.RootContextData.Remove("__MasterId");
-            }
+            context.RootContextData["__BatchServiceData"] = BatchServiceData;
             return base.ValidateAsync(context, cancellation);
         }
 

@@ -146,8 +146,6 @@ namespace Caspian.UI
                     }
                     else
                         items = await query.Take(PageSize).GetValuesAsync<TEntity>(exprList);
-                    if (DetailsService != null)
-                        (DetailsService as IInternalBatchService<TEntity>).SetDetails(source);
                 }
 
                 if (OnLoaded != null)
@@ -581,7 +579,6 @@ namespace Caspian.UI
                     }
                 }
                 items = source.Take(PageSize).ToList();
-                (DetailsService as IInternalBatchService<TEntity>)?.SetDetails(source);
             }
             await base.OnParametersSetAsync();
         }
