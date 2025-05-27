@@ -196,7 +196,7 @@ namespace Caspian.UI
             if (Service != null)
                 (Service as IInternalSearchService<TEntity>).DataViewInitializer(this);
             if (DetailsService != null)
-                (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitialize(this);
+                (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitializer(this);
             base.OnInitialized();
         }
 
@@ -373,8 +373,8 @@ namespace Caspian.UI
                         insertedEntity.UpsertMode = UpsertMode.Insert;
                     }
                     insertedEntity.Data = Activator.CreateInstance<TEntity>();
-                    if (BatchServiceData.MasterId > 0)
-                        BatchServiceData.GetMasterInfo(typeof(TEntity)).SetValue(insertedEntity.Data, BatchServiceData.MasterId);
+                    if (DetailsService.MasterId > 0)
+                        typeof(TEntity).GetForeignKey(DetailsService.MasterType).SetValue(insertedEntity.Data, DetailsService.MasterId);
                     InsertContext = new EditContext(insertedEntity.Data);
                 }
             }
@@ -748,7 +748,7 @@ namespace Caspian.UI
             if (Service != null)
                 (Service as IInternalSearchService<TEntity>).DataViewInitializer(null); 
             if (DetailsService != null)
-                (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitialize(null);
+                (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitializer(null);
         }
     }
 }

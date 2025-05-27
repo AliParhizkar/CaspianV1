@@ -1,17 +1,24 @@
 ﻿@inherits BasePage
+@using Caspian.Common.Extension 
+@inject ISearchService<Customer> Service
+@page "/counter"
 @using Demo.Model
 @using Demo.Service
 @using Microsoft.EntityFrameworkCore
-@page "/counter"
-<button>Test</button>
+<div style="width:800px;margin:5px auto">
+    <EntitySearch TEntity="Customer" Service="Service">
+        <StringTextBox @bind-Value="context.MobileNumber" SearchType="SearchType.StartWith" />
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="Customer">
+        <Columns>
+            <GridColumn Field="t => t.CustomerType" />
+            <GridColumn Field="t => t.LName" />
+            <GridColumn Field="t => t.CompanyName" />
+            <GridColumn Field="t => t.MobileNumber" />
+        </Columns>
+    </DataGrid>
+</div>
+
 @code
-{
-    protected override async Task OnInitializedAsync()
-    {
-        using var scope = CreateScope();
-        var service = scope.GetService<WareHouseReceiptService>();
-        var recipt = new WarehouseReceipt() {Id = 13171 };
-        var data = service.GetDetailsAfterAddChangesAsync(recipt);
-        await base.OnInitializedAsync();
-    }
-}
+{       
+}

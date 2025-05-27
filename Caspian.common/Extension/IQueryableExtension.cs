@@ -4,6 +4,8 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Caspian.Common.Service;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Caspian.Common.Extension
 {
@@ -82,20 +84,6 @@ namespace Caspian.Common.Extension
             return source.Provider.CreateQuery(
                 Expression.Call(typeof(Queryable), "GroupBy", new Type[] { source.ElementType, lambda.Body.Type },
                     source.Expression, Expression.Quote(lambda)));
-        }
-
-        public static IQueryable ThenBy(this IQueryable source, LambdaExpression lambda)
-        {
-            return source.Provider.CreateQuery(
-                Expression.Call(typeof(Queryable), "ThenBy", new Type[] { source.ElementType, lambda.Body.Type },
-                source.Expression, Expression.Quote(lambda)));
-        }
-
-        public static IQueryable ThenByDescending(this IQueryable source, LambdaExpression lambda)
-        {
-            return source.Provider.CreateQuery(
-                Expression.Call(typeof(Queryable), "ThenByDescending", new Type[] { source.ElementType, lambda.Body.Type },
-                source.Expression, Expression.Quote(lambda)));
         }
 
         static Type CreateType(Type type)
@@ -240,25 +228,33 @@ namespace Caspian.Common.Extension
                 source.Expression, Expression.Quote(lambda)));
         }
 
-        public static IQueryable OrderBy(this IQueryable source, LambdaExpression lambda)
+        public static IQueryable<TEntity> OrderBy<TEntity>(this IQueryable<TEntity> source, LambdaExpression lambda)
         {
-            return source.Provider.CreateQuery(
+            return source.Provider.CreateQuery<TEntity>(
                 Expression.Call(typeof(Queryable), "OrderBy", new Type[] { source.ElementType, lambda.Body.Type },
                 source.Expression, Expression.Quote(lambda)));
         }
 
-        public static IQueryable OrderByDescending(this IQueryable source, LambdaExpression lambda)
+        public static IQueryable<TEntity> OrderByDescending<TEntity>(this IQueryable<TEntity> source, LambdaExpression lambda)
         {
-            return source.Provider.CreateQuery(
+            return source.Provider.CreateQuery<TEntity>(
                 Expression.Call(typeof(Queryable), "OrderByDescending", new Type[] { source.ElementType, lambda.Body.Type },
                 source.Expression, Expression.Quote(lambda)));
         }
 
-        //public static IQueryable<T> Where<T>(this IQueryable source, Expression lambda)
-        //{
-        //    return source.Provider.CreateQuery<T>(Expression.Call(typeof(Queryable), "Where",
-        //        new Type[] { source.ElementType }, source.Expression, Expression.Quote(lambda)));
-        //}
+        public static IQueryable<TEntity> ThenBy<TEntity>(this IQueryable<TEntity> source, LambdaExpression lambda)
+        {
+            return source.Provider.CreateQuery<TEntity>(
+                Expression.Call(typeof(Queryable), "ThenBy", new Type[] { source.ElementType, lambda.Body.Type },
+                source.Expression, Expression.Quote(lambda)));
+        }
+
+        public static IQueryable<TEntity> ThenByDescending<TEntity>(this IQueryable<TEntity> source, LambdaExpression lambda)
+        {
+            return source.Provider.CreateQuery<TEntity>(
+                Expression.Call(typeof(Queryable), "ThenByDescending", new Type[] { source.ElementType, lambda.Body.Type },
+                source.Expression, Expression.Quote(lambda)));
+        }
 
         public static IList ToIList(this IQueryable source)
         {

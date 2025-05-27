@@ -41,7 +41,7 @@ namespace Marketing.Model
         [ForeignKey(nameof(GroupId))]
         public CustomerGroup CustomerGroup { get; set; }
 
-        [CheckOnDelete("مشتری دارای آدرس می باشد و امکان حذف وی وجود ندارد")]
+        [CheckOnDelete("مشتری دارای آدرس می باشد و kjk;lj kj kj حذف وی وجود ندارد")]
         public ICollection<CustomerAddress> Addresses{ get; set; }
 
         [CheckOnDelete("مشتری دارای سفارش می باشد و امکان حذف وی وجود ندارد")]

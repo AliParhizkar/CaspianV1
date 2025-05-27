@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Caspian.Common.Extension;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -36,6 +37,30 @@ namespace Caspian.Common.Service
             var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
             detailsProperty.SetValue(entity, details);
             base.EntityInitialize(entity);
+        }
+
+        protected override IQueryable<TMaster> GetQueryForRemove()
+        {
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
+            return base.GetQueryForRemove().Include(detailsProperty.Name);
+        }
+
+        protected override void SetAsDeleted(TMaster entity)
+        {
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
+            var details = detailsProperty.GetValue(entity) as IEnumerable<TDetail1>;
+            if (details != null)
+            {
+                foreach (var detail in details)
+                    Context.Entry(detail).State = EntityState.Deleted;
+            }
+            base.SetAsDeleted(entity);
+        }
+
+        public override Task<ValidationResult> ValidateRemoveAsync(TMaster model)
+        {
+            BatchServiceData.DetailPropertiesInfo.Add(typeof(TMaster).GetDetailsProperty(typeof(TDetail1)));
+            return base.ValidateRemoveAsync(model);
         }
 
         async Task<IList<TDetail1>> GetDetailsAfterAddChangesAsync(TMaster master)

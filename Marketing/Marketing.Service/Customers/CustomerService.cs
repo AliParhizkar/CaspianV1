@@ -17,11 +17,11 @@ namespace Marketing.Service
                 .CustomValue(t => t <= 0, "شماره مشتری باید بزرگتر از صفر باشد");
             RuleFor(t => t.Address1).Required(t => !ConfigService.Config.CustomerHasManyAddresses);
             RuleForEach(t => t.Addresses).SetValidator(new CustomerAddressService(provider));
-            RuleForRemove().CustomAsync(async t =>
-            {
-                var result = await provider.GetCaspianService<CustomerAddressService>().GetAll().Where(u => u.CustomerId == t.Id).AnyAsync();
-                return result;
-            }, "مشتری دارای آدرس است و امکان حذف وی وجود ندارد");
+            //RuleForRemove().CustomAsync(async t =>
+            //{
+            //    var result = await provider.GetCaspianService<CustomerAddressService>().GetAll().Where(u => u.CustomerId == t.Id).AnyAsync();
+            //    return result;
+            //}, "مشتری دارای آدرس است و امکان حذف وی وجود ندارد");
         }
     }
 }

@@ -2,7 +2,7 @@
 @typeparam TValue
 @inherits LookupWindow<Customer, TValue>
 <div class="c-lookup-page" style="width:580px;">
-    <DataGrid Service="Service" TEntity="Customer" ContentHeight="200">
+    <DataGrid Service="Service" TEntity="Customer" ContentHeight="250">
         <Columns Context="customer">
             <GridColumn Field="t => t.CustomerType" Title="Customer type" />
             <GridColumn Field='t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Customer Name" />

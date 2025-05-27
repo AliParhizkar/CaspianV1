@@ -42,7 +42,8 @@
     bottom:0;
     margin:auto;
     border:1px solid red;
-    background-color:aliceblue
+    background-color:aliceblue;
+    position:fixed!important;
 }
 .c-window-action button {
     min-width: 60px;

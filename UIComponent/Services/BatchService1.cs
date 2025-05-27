@@ -4,6 +4,7 @@ using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
@@ -29,13 +30,64 @@ namespace Caspian.UI
 
         public DataView<TDetail1> DetailDataView { get; private set; }
 
+        public CaspianValidationValidator<TDetail1> DetailValidator { get; private set; }
+
         public TypeWindow<TDetail1> TypeWindow { get; private set; }
 
         public CaspianForm<TDetail1> DetailForm { get; private set; }
 
-        void IInternalBatchService<TDetail1>.DetailFormInitialize(CaspianForm<TDetail1> caspianForm)
+        public IList<ChangedEntity<TDetail1>> ChangedEntities { get; set; }
+
+
+        protected override async Task SetChangedEntities()
         {
-            DetailForm = caspianForm;
+            if (Form?.ValidationValidator?.Validator != null)
+            {
+                if (Form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail, TDetail1> service)
+                    await service.SetChangedEntities(UpsertData, base.ChangedEntities, ChangedEntities);
+            }
+        }
+
+        protected override IBaseService<TMaster> CreateService(IServiceScope scope)
+        {
+            return scope.GetService<IMasterDetailsService<TMaster, TDetail, TDetail1>>();
+        }
+
+        #region
+        void IInternalBatchService<TDetail1>.DetailDataViewInitializer(DataView<TDetail1> dataView)
+        {
+            DetailDataView = dataView;
+            if (dataView != null)
+            {
+                if (DetailDataView.Inline)
+                    DetailDataView.Batch = true;
+                DetailDataView.InsertIconState(true);
+                DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail1>).GetDetailsFilterExpression();
+            }
+        }
+
+        protected override TMaster InitializeBeforeUpsert(IBaseService<TMaster> service)
+        {
+            (service as IMasterDetailsService<TMaster, TDetail, TDetail1>).SetChangedEntities(base.ChangedEntities, ChangedEntities);
+            return base.InitializeBeforeUpsert(service);
+        }
+
+        void IInternalBatchService<TDetail1>.DetailCaspianValidationValidatorInitializer(CaspianValidationValidator<TDetail1> validator)
+        {
+            DetailValidator = validator;
+            DetailValidator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TDetail1>>(this, t =>
+            {
+                ///Initialize Validator-Service(BaseService<TDetail1>) Before validation 
+                var service = t as BaseService<TDetail1>;
+                service.SetBatchServiceData(MasterId, typeof(TMaster));
+                if (t is IMasterDetailsService<TMaster, TDetail1> detailService)
+                    detailService.SetChangedEntitiesAsync(UpsertData, ChangedEntities);
+            }); 
+        }
+
+        void IInternalBatchService<TDetail1>.DetailFormInitializer(CaspianForm<TDetail1> form)
+        {
+            DetailForm = form;
             if (DetailForm != null)
             {
                 DetailForm.OnInternalReset = EventCallback.Factory.Create(this, TypeWindow.Close);
@@ -71,33 +123,6 @@ namespace Caspian.UI
                     await DetailForm.FocusAsync();
             });
         }
-
-        public IList<ChangedEntity<TDetail1>> ChangedEntities { get; set; }
-
-        void IInternalBatchService<TDetail1>.DetailDataViewInitialize(DataView<TDetail1> dataView)
-        {
-            DetailDataView = dataView;
-            if (dataView != null)
-            {
-                if (DetailDataView.Inline)
-                    DetailDataView.Batch = true;
-                DetailDataView.InsertIconState(true);
-                DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail1>).GetDetailsFilterExpression();
-            }
-        }
-
-        protected override async Task SetChangedEntities()
-        {
-            if (Form?.ValidationValidator?.Validator != null)
-            {
-                if (Form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail, TDetail1> service)
-                    await service.SetChangedEntities(UpsertData, base.ChangedEntities, ChangedEntities);
-            }
-        }
-
-        void IInternalBatchService<TDetail1>.DetailCaspianValidationValidatorInitialize(CaspianValidationValidator<TDetail1> validator)
-        {
-            
-        }
+        #endregion
     }
 }

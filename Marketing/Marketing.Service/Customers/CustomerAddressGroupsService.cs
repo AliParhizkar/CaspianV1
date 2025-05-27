@@ -1,6 +1,5 @@
 ﻿using Caspian.Common;
 using Marketing.Model;
-using FluentValidation;
 using Caspian.Common.Service;
 
 namespace Marketing.Service

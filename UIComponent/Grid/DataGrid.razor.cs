@@ -283,7 +283,7 @@ namespace Caspian.UI
 
         IQueryable<TEntity> GetOrderByQuery(IQueryable<TEntity> query)
         {
-            var index = 0;
+            bool isThenBy = false;
             foreach (var col in columnsData)
             {
                 if (col.SortType != null && col.Sortable)
@@ -316,12 +316,22 @@ namespace Caspian.UI
                     }
 
                     var lambdaExpression = Expression.Lambda(orderbyExpr, param);
-                    if (col.SortType == SortType.Asc)
-                        query = query.OrderBy(lambdaExpression).OfType<TEntity>();
-                    else if (col.SortType == SortType.Decs)
-                        query = query.OrderByDescending(lambdaExpression).OfType<TEntity>();
+                    if (isThenBy)
+                    {
+                        if (col.SortType == SortType.Asc)
+                            query = query.ThenBy(lambdaExpression);
+                        else if (col.SortType == SortType.Decs)
+                            query = query.ThenByDescending(lambdaExpression);
+                    }
+                    else
+                    {
+                        isThenBy = true;
+                        if (col.SortType == SortType.Asc)
+                            query = query.OrderBy(lambdaExpression);
+                        else if (col.SortType == SortType.Decs)
+                            query = query.OrderByDescending(lambdaExpression);
+                    }
                 }
-                index++;
             }
             return query;
         }

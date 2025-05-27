@@ -26,10 +26,15 @@ namespace Caspian.UI
 
         public CaspianValidationValidator<TDetail> DetailValidator { get; set; }
 
-        public Type MasterType => typeof(TMaster);
+        public new Type MasterType => typeof(TMaster);
 
         public IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
 
+        /// <summary>
+        /// In Master-Details page we should filter the detail data-view (grid or list view) by MasterId. 
+        /// This method create the expression for filter
+        /// </summary>
+        /// <returns></returns>
         Expression IInternalBatchService<TDetail>.GetDetailsFilterExpression()
         {
             var param = Expression.Parameter(typeof(TDetail), "t");
@@ -46,7 +51,7 @@ namespace Caspian.UI
 
         protected override TMaster InitializeBeforeUpsert(IBaseService<TMaster> service)
         {
-            (service as MasterDetailsService<TMaster, TDetail>).SetChangedEntities(ChangedEntities);
+            (service as IMasterDetailsService<TMaster, TDetail>).SetChangedEntities(ChangedEntities);
             return base.InitializeBeforeUpsert(service);
         }
 
@@ -59,7 +64,6 @@ namespace Caspian.UI
                 DetailDataView.CancelInternalUpdate();
             }
             await base.InitializeAfterUpsert(tempEntity, upsertMode);
-
         }
 
         public void ThirdDataLevelToIgnoreOnRemove<TProperty>(Expression<Func<TDetail, ICollection<TProperty>>> expression) => (this as IInternalBatchService<TDetail>).ThirdLevelProperty = (expression.Body as MemberExpression).Member as PropertyInfo;
@@ -80,37 +84,15 @@ namespace Caspian.UI
             await (this as IInternalUIService<TMaster>).FetchAsync();
         }
 
-        void IInternalBatchService<TDetail>.DetailFormInitialize(CaspianForm<TDetail> caspianForm)
+        protected virtual Task SetChangedEntities()
         {
-            DetailForm = caspianForm;
-            if (DetailForm != null)
+            if (Form?.ValidationValidator?.Validator != null)
             {
-                DetailForm.OnInternalReset = EventCallback.Factory.Create(this, TypeWindow.Close);
-                //DetailDataView.
-                DetailForm.OnInternalValidSubmit = EventCallback.Factory.Create<TDetail>(this, async detail => 
-                {
-                    TypeWindow.Close();
-                    var id = Convert.ToInt32(typeof(TDetail).GetPrimaryKey().GetValue(detail));
-                    if (id == 0)
-                        await DetailDataView.InsertAsync(detail);   
-                    else
-                        await DetailDataView.UpdateAsync(detail);
-                    (this as IInternalUIService<TMaster>).StateHasChanged();
-                });
+                if (Form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail> service)
+                    service.SetChangedEntitiesAsync(UpsertData, ChangedEntities);
             }
-;        }
 
-        void IInternalBatchService<TDetail>.DetailCaspianValidationValidatorInitialize(CaspianValidationValidator<TDetail> validator)
-        {
-            DetailValidator = validator;
-            DetailValidator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TDetail>>(this, async t => 
-            {
-                ///Initialize Validator-Service Before validation 
-                var service = t as BaseService<TDetail>;
-                service.SetBatchServiceData(MasterId, typeof(TMaster));
-                if (t is MasterDetailsService<TMaster, TDetail> detailService)
-                    detailService.SetChangedEntitiesAsync(UpsertData, ChangedEntities);
-            });
+            return Task.CompletedTask;
         }
 
         protected override async Task InitializeValidatorService(IBaseService<TMaster> service)
@@ -119,12 +101,16 @@ namespace Caspian.UI
             await base.InitializeValidatorService(service);
         }
 
-        protected virtual async Task SetChangedEntities()
+        #region Methods for Initialize Components. This Methods Call from components(DataView, Form, TypeWindow, ...) For intialize
+        void IInternalBatchService<TDetail>.DetailDataViewInitializer(DataView<TDetail> dataView)
         {
-            if (Form?.ValidationValidator?.Validator != null)
+            DetailDataView = dataView;
+            if (dataView != null)
             {
-                if (Form.ValidationValidator.Validator is IMasterDetailsService<TMaster, TDetail> service)
-                    service.SetChangedEntitiesAsync(UpsertData, ChangedEntities);
+                if (DetailDataView.Inline)
+                    DetailDataView.Batch = true;
+                DetailDataView.InsertIconState(true);
+                DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail>).GetDetailsFilterExpression();
             }
         }
 
@@ -132,7 +118,7 @@ namespace Caspian.UI
         {
             TypeWindow = window;
             DetailDataView.Batch = true;
-            DetailDataView.OnInternalUpsert = EventCallback.Factory.Create<TDetail>(this, async detail => 
+            DetailDataView.OnInternalUpsert = EventCallback.Factory.Create<TDetail>(this, async detail =>
             {
                 if (MasterId > 0)
                 {
@@ -148,16 +134,40 @@ namespace Caspian.UI
             });
         }
 
-        void IInternalBatchService<TDetail>.DetailDataViewInitialize(DataView<TDetail> dataView)
+
+        void IInternalBatchService<TDetail>.DetailFormInitializer(CaspianForm<TDetail> form)
         {
-            DetailDataView = dataView;
-            if (dataView != null)
+            DetailForm = form;
+            if (DetailForm != null)
             {
-                if (DetailDataView.Inline)
-                    DetailDataView.Batch = true;
-                DetailDataView.InsertIconState(true);
-                DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail>).GetDetailsFilterExpression();
+                DetailForm.OnInternalReset = EventCallback.Factory.Create(this, TypeWindow.Close);
+                //DetailDataView.
+                DetailForm.OnInternalValidSubmit = EventCallback.Factory.Create<TDetail>(this, async detail =>
+                {
+                    TypeWindow.Close();
+                    var id = Convert.ToInt32(typeof(TDetail).GetPrimaryKey().GetValue(detail));
+                    if (id == 0)
+                        await DetailDataView.InsertAsync(detail);
+                    else
+                        await DetailDataView.UpdateAsync(detail);
+                    (this as IInternalUIService<TMaster>).StateHasChanged();
+                });
             }
+;
         }
+
+        void IInternalBatchService<TDetail>.DetailCaspianValidationValidatorInitializer(CaspianValidationValidator<TDetail> validator)
+        {
+            DetailValidator = validator;
+            DetailValidator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TDetail>>(this, t =>
+            {
+                ///Initialize Validator-Service(BaseService<TDetail>) Before validation 
+                var service = t as BaseService<TDetail>;
+                service.SetBatchServiceData(MasterId, typeof(TMaster));
+                if (t is IMasterDetailsService<TMaster, TDetail> detailService)
+                    detailService.SetChangedEntitiesAsync(UpsertData, ChangedEntities);
+            });
+        }
+        #endregion
     }
 }

@@ -50,7 +50,7 @@ namespace Caspian.UI
         public void Close()
         {
             status = WindowStatus.Close;
-            (Service as IInternalBatchService<TEntity>).DetailFormInitialize(null);
+            (Service as IInternalBatchService<TEntity>).DetailFormInitializer(null);
         }
 
         protected override void OnParametersSet()
@@ -73,7 +73,7 @@ namespace Caspian.UI
         protected override void OnAfterRender(bool firstRender)
         {
             if (form != Service.DetailForm)
-                (Service as IInternalBatchService<TEntity>).DetailFormInitialize(form);
+                (Service as IInternalBatchService<TEntity>).DetailFormInitializer(form);
             base.OnAfterRender(firstRender);
         }
     }

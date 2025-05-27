@@ -38,8 +38,14 @@
         {
             var ordering = data.SortType;
             if (clearAllOrdering)
+            {
                 foreach (var col in ColumnsData)
                     col.SortType = null;
+            }
+            else
+            {
+                
+            }
             switch (ordering)
             {
                 case SortType.Asc:

@@ -68,13 +68,6 @@ namespace Caspian.UI
             return scope;
         }
 
-
-
-        //public void ShowMessage(string msg)
-        //{
-        //    message = msg;
-        //}
-
         public async void ShowMessage(string message)
         {
             await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
@@ -173,7 +166,7 @@ namespace Caspian.UI
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             foreach (var info in this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic))
             {

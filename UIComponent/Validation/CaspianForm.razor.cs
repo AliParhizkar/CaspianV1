@@ -12,7 +12,7 @@ namespace Caspian.UI
     {
         string ErrorMessage;
         IList<IControl> controls;
-        bool addControls, formSubmitted;
+        bool addControls, formSubmitted, submitting;
         TEntity oldModel;
         IControl firstControl;
 
@@ -148,6 +148,9 @@ namespace Caspian.UI
 
         async Task OnFormSubmitHandler(EditContext context)
         {
+            if (submitting)
+                return;
+            submitting = true;
             addControls = true;
             controls.Clear();
             await Task.Delay(10);
@@ -212,6 +215,7 @@ namespace Caspian.UI
                 if (OnInternalInvalidSubmit.HasDelegate)
                     await OnInternalInvalidSubmit.InvokeAsync(EditContext.Model as TEntity);
             }
+            submitting = false;
         }
 
         async Task ResetFormAsync()

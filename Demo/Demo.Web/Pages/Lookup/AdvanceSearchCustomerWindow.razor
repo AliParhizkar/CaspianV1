@@ -14,7 +14,7 @@
             <StringTextBox @bind-Value="context.LName" ColSpan="4" />
         }
     </EntitySearch>
-    <DataGrid Service="Service" TEntity="Customer" ContentHeight="150">
+    <DataGrid Service="Service" TEntity="Customer" ContentHeight="230">
         <Columns Context="customer">
             <GridColumn Field="t => t.CustomerType" Title="Customer type" />
             <GridColumn Field='t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Customer Name" />

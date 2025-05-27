@@ -78,7 +78,6 @@ namespace Caspian.UI
             return searchData; 
         }
 
-
         public async Task CloseWindow()
         {
             if (Window != null) 
@@ -327,7 +326,7 @@ namespace Caspian.UI
             {
                 using var scope = CreateScope();
                 scope.SetUserId(UserId);
-                var service = scope.GetService<IBaseService<TEntity>>();
+                var service = CreateService(scope);
                 var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
                 var old = await service.SingleAsync(id);
                 var result = await service.ValidateRemoveAsync(old);

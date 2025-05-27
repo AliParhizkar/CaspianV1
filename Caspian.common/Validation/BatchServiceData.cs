@@ -16,11 +16,6 @@ namespace Caspian.Common
 
         public int MasterId { get; set; }
 
-        public PropertyInfo GetMasterInfo(Type type)
-        {
-            return type.GetForeignKey(MasterType);
-        }
-
         public IList<PropertyInfo> DetailPropertiesInfo { get; set; }
     }
 }

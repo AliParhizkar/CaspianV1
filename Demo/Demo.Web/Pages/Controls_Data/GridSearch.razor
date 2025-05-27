@@ -69,22 +69,22 @@
                             </div>
                         </div>
 
-                        <EntitySearch Service="enumSearchService">
-                            <DropdownList TValue="CustomerType" @bind-Value="context.CustomerType" ColSpan="8" OnSearch="SearchOnCustomerType" />
-                            @if (showGender || genderSelectionType == 1)
-                            {
-                                <DropdownList @bind-Value="context.Gender" ColSpan="8" />
-                            }
-                        </EntitySearch>
-                        <div class="pt-3">
-                            <DataGrid TEntity="Customer" Service="enumSearchService" ShowInsertIcon="false">
-                                <Columns>
-                                    <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
-                                    <GridColumn Field="t => t.CustomerType.EnumText()" />
-                                    <GridColumn Field="t => t.Gender.EnumText()" />
-                                </Columns>
-                            </DataGrid>
-                        </div>
+                            <EntitySearch Service="enumSearchService">
+                                <DropdownList TValue="CustomerType" @bind-Value="context.CustomerType" ColSpan="8" OnSearch="SearchOnCustomerType" />
+                                @if (showGender || genderSelectionType == 1)
+                                {
+                                    <DropdownList @bind-Value="context.Gender" ColSpan="8" />
+                                }
+                            </EntitySearch>
+                            <div class="pt-3">
+                                <DataGrid TEntity="Customer" Service="enumSearchService" ShowInsertIcon="false">
+                                    <Columns>
+                                        <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+                                        <GridColumn Field="t => t.CustomerType.EnumText()" />
+                                        <GridColumn Field="t => t.Gender.EnumText()" />
+                                    </Columns>
+                                </DataGrid>
+                            </div>
                     </div>
                     <div class="col-md-6">
                         <hr />
@@ -245,11 +245,18 @@
     //
     bool? isOutOfStock;
     DataGrid<Product> gridProduct;
+    IServiceScope scope;
 
     protected override void OnInitialized()
     {
-        enumSearchService = ServiceProvider.GetService<ISearchService<Customer>>();
+        scope = ServiceScopeFactory.CreateScope();
+        enumSearchService = scope.ServiceProvider.GetService<ISearchService<Customer>>();
         base.OnInitialized();
+    }
+
+    public override void Dispose()
+    {
+        scope.Dispose();
     }
 
     void SearchOnCustomerType(IEnumerable<CustomerType> customerTypes)
@@ -261,7 +268,5 @@
             if (!customerTypes.Contains(CustomerType.Real))
                 (Service ).GetEnumField(t => t.Gender.Value).SetValues();
         }
-        
-         
     }
 }

@@ -219,7 +219,7 @@
                                 <label>Customer</label>
                             </div>
                             <div class="col-md-8 pe-5">
-                                <Lookup TValue="int?" TEntity="Customer"
+                                <Lookup TValue="int?" TEntity="Customer" HideHeader
                                         TextExpression="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName">
                                     <AdvanceSearchCustomerWindow  />
                                 </Lookup>

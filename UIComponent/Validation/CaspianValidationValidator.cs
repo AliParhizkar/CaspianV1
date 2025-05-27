@@ -68,7 +68,7 @@ namespace Caspian.UI
         protected override void OnInitialized()
         {
             if (DetailsService != null || CaspianForm.DetailsService != null)
-                ((DetailsService ?? CaspianForm.DetailsService) as IInternalBatchService<TModel>).DetailCaspianValidationValidatorInitialize(this);
+                ((DetailsService ?? CaspianForm.DetailsService) as IInternalBatchService<TModel>).DetailCaspianValidationValidatorInitializer(this);
             else if (CaspianForm.Service != null)
                 CaspianForm.Service.CaspianValidationValidatorInitializer(this);
                 
