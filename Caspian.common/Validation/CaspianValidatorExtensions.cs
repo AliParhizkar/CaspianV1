@@ -466,7 +466,7 @@ namespace Caspian.Common
                             throw new CaspianException("خطا: On type " + info.DeclaringType.Name + " property " + info.Name + " must has CheckOnDelete Attribute", 5);
                         if (!attr.Check)
                             continue;
-                        if (batchService != null && batchService.DetailPropertiesInfo.Contains(info))
+                        if (batchService?.DetailPropertiesInfo.Contains(info) == true)
                             continue;
                         var type = info.PropertyType.GetGenericArguments()[0];
                         var key = type.GetPrimaryKey();
@@ -589,7 +589,7 @@ namespace Caspian.Common
                         if (context.RootContextData.ContainsKey("__BatchServiceData"))
                         {
                             var batchData = context.RootContextData["__BatchServiceData"] as BatchServiceData;
-                            if (batchData.MasterId == 0)
+                            if (batchData.MasterId <= 0)
                             {
                                 var masterInfo = typeof(TModel).GetProperties().SingleOrDefault(t => t.PropertyType == batchData.MasterType);
                                 if (masterInfo != null && masterInfo == info)

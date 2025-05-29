@@ -85,7 +85,9 @@
     void SetAddressAsDefault(CustomerAddress address)
     {
         if (address.Id == 0)
+        {
             address.IsDefault = !Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault);
+        }
     }
 
     async Task<bool> OnAddressInserted(CustomerAddress address)
@@ -99,6 +101,7 @@
             case DefaultAddressManagement.System:
                 var defaultAddress = Service.DetailDataView.GetBatchEntities().Single(t => t.IsDefault);
                 defaultAddress.IsDefault = false;
+                await Service.DetailDataView.UpdateAsync(defaultAddress);
                 Page.ShowMessage("آدرس جاری بعنوان آدرس پیشفرض انتخاب شد.");
                 return true;
             case DefaultAddressManagement.Confirm:
@@ -106,6 +109,7 @@
                 {
                     defaultAddress = Service.DetailDataView.GetBatchEntities().Single(t => t.IsDefault);
                     defaultAddress.IsDefault = false;
+                    await Service.DetailDataView.UpdateAsync(defaultAddress);
                     return true;
                 }
                 break;

@@ -1,45 +1,17 @@
-﻿@{
-    var counter = 125;
-}
-<button @onclick="() => counter++">Add</button>
-<span>@counter</span>
+﻿@namespace Main.Test
+<button @onclick="() => Counter++">Add</button>
+<span>@Counter</span>
 @code 
 {
-    int counter;
+    async Task Changed()
+    {
+        if (CounterChanged.HasDelegate)
+            await CounterChanged.InvokeAsync(Counter + 1);
+    }
 
     [Parameter]
-    public int StartNumber { get; set; }
+    public int Counter { get; set; }
 
-    protected override void OnInitialized()
-    {
-        counter = StartNumber;
-        base.OnInitialized();
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await Task.Delay(1_000);
-        await base.OnInitializedAsync();
-    }
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await Task.Delay(1_000);
-        await base.OnParametersSetAsync();
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        base.OnAfterRender(firstRender);
-    }
-
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        return base.OnAfterRenderAsync(firstRender);
-    }
+    [Parameter]
+    public EventCallback<int> CounterChanged { get; set; }
 }

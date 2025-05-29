@@ -25,7 +25,7 @@
         </GridColumn>
         <GridColumn Field="t => t.ToppingAmount" Title="تاپینگ">
             <Template>
-                @{var className = context.Data?.Id == selectedDetailId ? "c-btn c-secondary" : "c-btn c-primary"; }
+                @{var className = context.Data?.Id == selectedDetailId ? "c-btn c-secondary" : "c-btn c-success"; }
                 <button @onEclick="e => OpenTopping(e, context.Data)" class="@className">@(context.Data.ToppingAmount.DigitGrouping())</button>
             </Template>
         </GridColumn>

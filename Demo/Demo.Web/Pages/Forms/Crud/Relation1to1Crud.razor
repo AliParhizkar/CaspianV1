@@ -4,14 +4,12 @@
     base.BuildRenderTree(__builder);
 }
 @inject IUIService<Employee> Service
-
 <p>
     In this example, CRUD has multiple <b>one-to-one</b> relationships. We use the <b>EntityTabPanel</b> component for this purpose
 </p>
-
 <TabPanel>
     <Tabs>
-        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+        <TabPanelItem  Title="<i class='fa fa-bar-chart'></i>Demo">
             <div style="width:450px;" class="ps-4 pt-3 align-center row c-controls">
                 <div class="col-md-5">
                     <label>Tab Panel display type</label>
@@ -64,7 +62,7 @@
 {
     <Window Service="Service" Title="Employee" Style="width:900px">
         <div class="p-2">
-            <Relation1to1Component />
+            <Relation1to1Component Page="this" />
         </div>
     </Window>
 }
@@ -72,6 +70,7 @@
 
 @code 
 {
+    string str;
     int? formType = 1;
 
     void OpenNewPage(Employee employee)

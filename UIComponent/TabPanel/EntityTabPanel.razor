@@ -2,7 +2,7 @@
 @typeparam TEntity where TEntity : class
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 @implements IEntityTabPanel
-<TabPanel @ref="tabPanel" TabIndexChanged="UpdateService" Vertical="Vertical">
+<TabPanel @ref="tabPanel" TabIndex="TabIndex" TabIndexChanged="UpdateService" Vertical="Vertical" >
     <Tabs>
         <CascadingValue Value="this">
             @if (Content != null)
@@ -15,15 +15,31 @@
 
 @code
 {
-    int tabIndex;
     TabPanel tabPanel;
     IList<Type> childTypes;
 
     async Task UpdateService(int tabIndex)
     {
-        var type = childTypes[tabIndex - 1];
-        if (type != null)
-            await (Service as IInternalUIService<TEntity>).UpdateChildOfModelAsync(type);
+        if (TabIndexChanged.HasDelegate)
+            await TabIndexChanged.InvokeAsync(tabIndex);
+        else
+        {
+            TabIndex = tabIndex;
+            var type = childTypes[TabIndex - 1];
+            if (type != null)
+                await (Service as IInternalUIService<TEntity>).UpdateChildOfModelAsync(type);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (TabIndexChanged.HasDelegate && childTypes.Count >= TabIndex)
+        {
+            var type = childTypes[TabIndex - 1];
+            if (type != null)
+                await (Service as IInternalUIService<TEntity>).UpdateChildOfModelAsync(type);
+        }
+        await base.OnParametersSetAsync();
     }
 
     protected override void OnInitialized()
@@ -33,11 +49,9 @@
         base.OnInitialized();
     }
 
-    internal int GetTabIndex(Type childType)
+    internal void GetTabIndex(Type childType)
     {
         childTypes.Add(childType);
-        tabIndex++;
-        return tabIndex;
     }
 
     [Parameter]
@@ -48,6 +62,12 @@
 
     [Parameter]
     public bool Vertical { get; set; }
+
+    [Parameter]
+    public int TabIndex { get; set; } = 1;
+
+    [Parameter]
+    public EventCallback<int> TabIndexChanged { get; set; }
 
     public void ChangeState()
     {

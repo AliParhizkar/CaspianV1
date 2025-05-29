@@ -3,46 +3,6 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <style type="text/css">
-        .active {
-            border: 1px solid red;
-            border-bottom: 0;
-            width: 154px;
-            height: 35px;
-            margin: 4px 52px 17px;
-            position: relative;
-            border-radius: 10px 10px 0 0;
-            background-color:white;
-        }
-
-            .active:after,
-            .active:before {
-                content: '';
-                width: 20px;
-                height: 20px;
-                border: 1px solid red;
-                position: absolute;
-                bottom: -12px;
-                border-top: 0;
-                background-color: white;
-            }
-
-            .active:after {
-                border-left: 0;
-                -moz-border-radius: 0 0 15px 0;
-                -webkit-border-radius: 0 0 15px 0;
-                border-radius: 0 0 15px 0;
-                left: -21px;
-            }
-
-            .active:before {
-                border-right: 0;
-                -moz-border-radius: 0 0 0 15px;
-                -webkit-border-radius: 0 0 0 15px;
-                border-radius: 0 0 0 15px;
-                right: -21px;
-            }
-    </style>
     <script type="text/javascript">
         var oldStart, oldEnd
         function onKeyDown(e) {
@@ -87,12 +47,27 @@
             }
             return str;
         }
+        function formSubmitted(e) {
+            e.preventDefault();
+            alert(document.activeElement.textContent)
+            alert(document.activeElement.closest('form').name);
+        }
     </script>
     <link href="" rel="stylesheet" />
 </head>
 <body style="">
-    <div style="background-color: #dae2f9;height:55px;padding-top:3px;">
-        <div class="active">hi</div>
-    </div>
+
+    <form name="form1" onsubmit="formSubmitted(event)">
+        <fieldset>
+            <div>
+                <button>Test1</button>
+            </div>
+        </fieldset>
+        <div>
+            <form name="form2" onsubmit="formSubmitted(event)">
+                <button>Test2</button>
+            </form>
+        </div>
+    </form>
 </body>
 </html>

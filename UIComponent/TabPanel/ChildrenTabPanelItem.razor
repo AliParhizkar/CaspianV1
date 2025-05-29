@@ -14,11 +14,10 @@
 {
     string title;
     bool disabled;
-    int tabIndex;
 
     protected override void OnInitialized()
     {
-        tabIndex = TabPanel.GetTabIndex(null);
+        TabPanel.GetTabIndex(null);
         if (Children.Body.NodeType == ExpressionType.MemberAccess)
         {
             var info = (Children.Body as MemberExpression).Member as PropertyInfo;
@@ -51,5 +50,5 @@
     }
 
     [CascadingParameter]
-    public EntityTabPanel<TEntity> TabPanel { get; set; }
+    internal EntityTabPanel<TEntity> TabPanel { get; set; }
 }

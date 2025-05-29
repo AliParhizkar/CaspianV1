@@ -68,7 +68,7 @@
                         animate.classList.add('c-animate-up');
                         setTimeout(() => group.style.bottom = '0', 10);
                         let dif = animate.getBoundingClientRect().top - loc.top;
-                        animate.style.marginTop = `${-height - dif - 10}px`;
+                        animate.style.marginTop = `${-height - dif - 5}px`;
                     }
                     else {
                         animate.classList.add('c-animate-down');
@@ -99,9 +99,9 @@
                 if (height < 30)
                     height = 30;
                 let animate = (t[0].target.closest('.t-animation-container') as HTMLElement);
-                if (parseFloat(animate.style.marginTop.replace('px', '')) < -30) 
-                    animate.style.marginTop = `${-height - 40}px`
                 animate.style.height = `${height + 3}px`;
+                if (animate.classList.contains('c-animate-up'))
+                    animate.style.marginTop = `${-height - 40}px`;
             });
             observer.observe(ul);
         }

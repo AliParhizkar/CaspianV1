@@ -9,7 +9,6 @@ namespace Caspian.UI
     {
         string title;
         bool disabled;
-        int tabIndex;
 
         bool CheckDetailIsNotEmpty()
         {
@@ -25,7 +24,7 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            tabIndex = TabPanel.GetTabIndex(typeof(TDetail));
+            TabPanel.GetTabIndex(typeof(TDetail));
             if (typeof(TEntity) != typeof(TDetail))
             {
                 var info = (Child.Body as MemberExpression).Member as PropertyInfo;

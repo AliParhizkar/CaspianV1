@@ -1,5 +1,5 @@
-﻿.c-container-2 .c-controls >:nth-child(4n+2){
-    padding-right:12px;
+﻿.c-container-2 .c-controls > :nth-child(4n+2) {
+    padding-right: 12px;
 }
 .c-container-2 .c-controls > :nth-child(4n+3) {
     padding-left: 12px;
@@ -2854,6 +2854,7 @@ div.t-window {
         border-collapse: collapse;
         empty-cells: show;
         border: 0;
+        table-layout:fixed;
     }
 
 .t-grid-header .t-header {
@@ -2962,11 +2963,6 @@ div.t-grid-footer {
     }
     .t-grid-content .c-grid-items tr:not(.t-state-selected):hover {
         background-color: #E5F3FF !important;
-    }
-    .t-grid-header table,
-    .t-grid-content table,
-    .t-grid-footer table {
-        table-layout: fixed;
     }
 
     * html .t-grid-content table {

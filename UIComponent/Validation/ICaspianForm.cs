@@ -2,7 +2,7 @@
 
 namespace Caspian.UI
 {
-    internal interface ICaspianForm
+    public interface ICaspianForm
     {
         void AddControl(IControl control);
 

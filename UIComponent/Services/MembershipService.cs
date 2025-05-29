@@ -30,6 +30,14 @@ namespace Caspian.UI
             base.HideInsertIcon = true;
         }
 
+        /// <summary>
+        /// In Membership-Service We don't want the Upsert-Message to be displayed.
+        /// </summary>
+        protected override string GetUpsertMessage(UpsertMode upsertMode)
+        {
+            return null;
+        }
+
         public IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TOther, TValue>> expression) where TValue : Enum
         {
             return new EnumSearch<TValue>(expression.Body, enumValues);
@@ -68,6 +76,8 @@ namespace Caspian.UI
             DataView = dataView;
             if (dataView == null)
                 return;
+            ///We don't want the Deletion-Message to be displayed.
+            dataView.DeleteMessage = "";
             DataView.Search = Search;
             DataView.ShowInsertIcon = false;
             DataView.InsertIconState(!onlyForSearch);

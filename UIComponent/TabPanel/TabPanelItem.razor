@@ -1,48 +1,18 @@
 ﻿@namespace Caspian.UI
-@implements IDisposable
-@{
-    var className = "t-item ";
-    if (Disable)
-        className += "t-state-disabled";
-    else
-    {
-        if (this == ParentTabPanel.CurentTabpanel)
-            className += "t-state-active";
-        else
-            className += "t-state-default";
-    }
-}
 
-<li class="@className">
-    @if (this == ParentTabPanel.CurentTabpanel)
-    {
-        <span class="t-link">@((MarkupString)Title)</span>
-    }
-    else
-    {
-        <span class="t-link" @onclick="SelectTabPanel">@((MarkupString)Title)</span>
-    }
-</li>
 
 @code
 {
-    async Task SelectTabPanel()
+    protected override void OnInitialized()
     {
-        if (!Disable)
-            await ParentTabPanel.SelectTabPanel(this, TabIndex);
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        TabIndex = ParentTabPanel.GetTabIndex();
-        if (TabIndex == ParentTabPanel.TabIndex)
-            await ParentTabPanel.SelectTabPanel(this, TabIndex);
-        await base.OnInitializedAsync();
+        if (ParentTabPanel == null)
+            throw new CaspianException("TabPanelItem should be child of TabPanel");
+        base.OnInitialized();
     }
 
     protected override void OnParametersSet()
     {
-        ParentTabPanel.SetLastTabPanel(this);
+        ParentTabPanel.AddTabpanelItem(this);
         base.OnParametersSet();
     }
 
@@ -62,13 +32,4 @@
 
     [Parameter]
     public bool Closeable { get; set; } = true;
-
-    public void Dispose()
-    {
-        if (ParentTabPanel.LastTabpanel != null)
-        {
-            // if (ParentTabPanel.CurentTabpanel.TabIndex == this.TabIndex)
-            //     ParentTabPanel.SelectTabPanel(ParentTabPanel.LastTabpanel, ParentTabPanel.LastTabpanel.TabIndex).Wait();
-        }
-    }
 }

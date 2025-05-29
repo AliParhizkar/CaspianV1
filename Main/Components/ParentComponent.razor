@@ -1,10 +1,22 @@
-﻿@typeparam TValue
-@inherits LookupWindow<Product, TValue>
-@namespace Demo.Web.Pages
+﻿@namespace Demo.Web.Pages
 @using Caspian.UI;
 @using Demo.Model;
+<button @onclick="async () => await Changed()">Add</button>
+<span>@Counter</span>
 
 @code
 {
+    async Task Changed()
+    {
+        if (CounterChanged.HasDelegate)
+            await CounterChanged.InvokeAsync(Counter + 1);
+        else
+            Counter++;
+    }
 
+    [Parameter]
+    public int Counter { get; set; }
+
+    [Parameter]
+    public EventCallback<int> CounterChanged { get; set; }
 }

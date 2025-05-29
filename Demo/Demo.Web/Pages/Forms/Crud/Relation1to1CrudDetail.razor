@@ -1,4 +1,5 @@
 ﻿@page "/Demo/Relation1to1to1Crud/{EmployeeId:int}"
+@inherits BasePage
 @inject IUIService<Employee> Service
 <p>
     In this example, We use the <b>EntityTabPanel</b> component used in new page
@@ -7,7 +8,7 @@
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div style="width:850px;margin: 20px auto">
-                <Relation1to1Component />
+                <Relation1to1Component Page="this" />
             </div>
         </TabPanelItem>
     </Tabs>

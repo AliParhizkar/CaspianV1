@@ -4,16 +4,16 @@
 <div class="col-md-9">
     <div class="row">
         <div class="col-md-3">
-            <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => { UpateList(t, 1, "Identity"); })" Title="Identity" />
+            <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => UpateList(t, 1, "Identity"))" Title="Identity" />
         </div>
         <div class="col-md-3">
-            <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => { UpateList(t, 2, "Job specification"); })" Title="Job" />
+            <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => UpateList(t, 2, "Job specification"))" Title="Job" />
         </div>
         <div class="col-md-3">
-            <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => { UpateList(t, 3, "Wife's profile"); })" Title="Wife" />
+            <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => UpateList(t, 3, "Wife's profile"))" Title="Wife" />
         </div>
         <div class="col-md-3">
-            <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => { UpateList(t, 4, "Home Address"); })" Title="Home" />
+            <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => UpateList(t, 4, "Home Address"))" Title="Home" />
         </div>
     </div>
 </div>
@@ -25,7 +25,7 @@
         <label>Selected tab index</label>
     </div>
     <div class="col-md-8">
-        <RadioList TValue="int" DefaultLayout="DefaultLayout.SpaceAround" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => { tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1; }">
+        <RadioList TValue="int" DefaultLayout="DefaultLayout.SpaceAround" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1">
             @foreach (var item in dic)
             {
                 <RadioItem Value="item.Key" Title="@(item.Value)" />
@@ -34,7 +34,7 @@
 
     </div>
     <div class="col-md-12 pt-4">
-        <TabPanel @ref="dynamicPanel" @bind-TabIndex="tabIndex">
+        <TabPanel @ref="dynamicPanel" TabIndex="tabIndex" TabIndexChanged="Changed">
             <Tabs>
                 @foreach (var item in dic)
                 {
@@ -62,6 +62,12 @@ else
     int selectedId = 1, tabIndex = 1;
     IDictionary<int, string> dic = new Dictionary<int, string>();
 
+    void Changed(int inde)
+    {
+        if (inde != 3)
+            tabIndex = inde;
+    }
+
     protected override void OnInitialized()
     {
         dic.Add(1, "Identity");
@@ -73,6 +79,7 @@ else
 
     void UpateList(bool flag, int value, string title)
     {
+        dynamicPanel.Clear();
         if (flag)
             dic.Add(value, title);
         else

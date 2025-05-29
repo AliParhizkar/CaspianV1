@@ -76,16 +76,13 @@
                 let grv = this.grid;
                 for (let entry of entries) {
                     if (entry.contentBoxSize && entry.contentBoxSize[0]) {
-                        let contentHeight = grv.getElementsByClassName('t-grid-content')[0].getBoundingClientRect().height;
-                        let table = grv.getElementsByClassName('t-grid-content')[0].getElementsByTagName('table')[0];
-                        if (table) {
-                            let tableHeight = table.getBoundingClientRect().height;
-                            let header = grv.getElementsByClassName('t-grid-header')[0] as HTMLElement;
-                            if (contentHeight < tableHeight) 
-                                header.style.overflowY = 'scroll';
-                            else 
-                                header.style.overflowY = 'hidden';
-                        }
+                        let container = grv.getElementsByClassName('t-grid-content')[0] as HTMLElement;
+                        let header = grv.getElementsByClassName('t-grid-header')[0] as HTMLElement;
+
+                        if (container.scrollHeight > container.clientHeight)
+                            header.style.overflowY = 'scroll';
+                        else
+                            header.style.overflowY = '';
                     }
                 }
             });
@@ -95,8 +92,14 @@
         bindObserverForInsertTable() {
             const mutationObserver = new MutationObserver(list => {
                 list.every(t => {
-                    let insertTable = (t.target as HTMLElement).getElementsByClassName('c-grid-insert')[0];
-                    let contentTable = (t.target as HTMLElement).getElementsByClassName('c-grid-items')[0];
+                    let container = (t.target as HTMLElement);
+                    let header = container.closest('.t-widget').getElementsByClassName('t-grid-header')[0] as HTMLElement;
+                    if (container.scrollHeight > container.clientHeight)
+                        header.style.overflowY = "scroll";
+                    else 
+                        header.style.overflowY = '';
+                    let insertTable = container.getElementsByClassName('c-grid-insert')[0];
+                    let contentTable = container.getElementsByClassName('c-grid-items')[0];
                     if (contentTable && !contentTable.attributes['isbinded']) {
                         contentTable.attributes['isbinded'] = true;
                         this.bindObserverForContentTable(contentTable as HTMLElement);

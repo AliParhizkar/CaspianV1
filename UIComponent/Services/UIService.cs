@@ -124,6 +124,14 @@ namespace Caspian.UI
             return tempEntity;
         }
 
+        protected virtual string GetUpsertMessage(UpsertMode upsertMode)
+        {
+            if (upsertMode == UpsertMode.Insert)
+                return CaspianDataService.Language == Language.En ? "Registration was done successfully" : "ثبت با موفقیت انجام شد.";
+            return CaspianDataService.Language == Language.En ? "Updating was done successfully" : "بروزرسانی با موفقیت انجام شد";
+
+        }
+
         protected virtual async Task InitializeAfterUpsert(TEntity tempEntity, UpsertMode upsertMode)
         {
             if (Is1To1RelationshipService)
@@ -169,12 +177,9 @@ namespace Caspian.UI
                 else
                     await Window.Close();
             }
-            string message = null;
-            if (upsertMode == UpsertMode.Insert)
-                message = CaspianDataService.Language == Language.En ? "Registration was done successfully" : "ثبت با موفقیت انجام شد.";
-            else
-                message = CaspianDataService.Language == Language.En ? "Updating was done successfully" : "بروزرسانی با موفقیت انجام شد";
-            await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
+            var message = GetUpsertMessage(upsertMode);
+            if (message != null)
+                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
         }
 
         /// <summary>
@@ -229,9 +234,10 @@ namespace Caspian.UI
         /// <summary>
         /// This Method is used for Initialize Validator-Service. It can be override to initialize service in child class
         /// </summary>
-        protected virtual async Task InitializeValidatorService(IBaseService<TEntity> service)
+        protected virtual Task InitializeValidatorService(IBaseService<TEntity> service)
         {
             (service as BaseService<TEntity>).SetBatchServiceData(MasterId, typeof(TEntity));
+            return Task.CompletedTask;
         }
         #endregion
 

@@ -292,7 +292,7 @@ var caspian;
                         animate.classList.add('c-animate-up');
                         setTimeout(() => group.style.bottom = '0', 10);
                         let dif = animate.getBoundingClientRect().top - loc.top;
-                        animate.style.marginTop = `${-height - dif - 10}px`;
+                        animate.style.marginTop = `${-height - dif - 5}px`;
                     }
                     else {
                         animate.classList.add('c-animate-down');
@@ -322,9 +322,9 @@ var caspian;
                 if (height < 30)
                     height = 30;
                 let animate = t[0].target.closest('.t-animation-container');
-                if (parseFloat(animate.style.marginTop.replace('px', '')) < -30)
-                    animate.style.marginTop = `${-height - 40}px`;
                 animate.style.height = `${height + 3}px`;
+                if (animate.classList.contains('c-animate-up'))
+                    animate.style.marginTop = `${-height - 40}px`;
             });
             observer.observe(ul);
         }
@@ -816,16 +816,12 @@ var caspian;
                 let grv = this.grid;
                 for (let entry of entries) {
                     if (entry.contentBoxSize && entry.contentBoxSize[0]) {
-                        let contentHeight = grv.getElementsByClassName('t-grid-content')[0].getBoundingClientRect().height;
-                        let table = grv.getElementsByClassName('t-grid-content')[0].getElementsByTagName('table')[0];
-                        if (table) {
-                            let tableHeight = table.getBoundingClientRect().height;
-                            let header = grv.getElementsByClassName('t-grid-header')[0];
-                            if (contentHeight < tableHeight)
-                                header.style.overflowY = 'scroll';
-                            else
-                                header.style.overflowY = 'hidden';
-                        }
+                        let container = grv.getElementsByClassName('t-grid-content')[0];
+                        let header = grv.getElementsByClassName('t-grid-header')[0];
+                        if (container.scrollHeight > container.clientHeight)
+                            header.style.overflowY = 'scroll';
+                        else
+                            header.style.overflowY = '';
                     }
                 }
             });
@@ -834,8 +830,14 @@ var caspian;
         bindObserverForInsertTable() {
             const mutationObserver = new MutationObserver(list => {
                 list.every(t => {
-                    let insertTable = t.target.getElementsByClassName('c-grid-insert')[0];
-                    let contentTable = t.target.getElementsByClassName('c-grid-items')[0];
+                    let container = t.target;
+                    let header = container.closest('.t-widget').getElementsByClassName('t-grid-header')[0];
+                    if (container.scrollHeight > container.clientHeight)
+                        header.style.overflowY = "scroll";
+                    else
+                        header.style.overflowY = '';
+                    let insertTable = container.getElementsByClassName('c-grid-insert')[0];
+                    let contentTable = container.getElementsByClassName('c-grid-items')[0];
                     if (contentTable && !contentTable.attributes['isbinded']) {
                         contentTable.attributes['isbinded'] = true;
                         this.bindObserverForContentTable(contentTable);

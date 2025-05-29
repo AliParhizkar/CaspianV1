@@ -22,9 +22,25 @@
             }
         </div>
         <div class="col-md-5 row c-controls">
-            <SimpleCustomerComponent Page="this" CustomerId="OrderService.UpsertData.CustomerId" CustomerIdChanged="ChangeCustomer" CustomerService="CustomerService"
-                                     CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
-                                     CustomerAddressGroupsService="CustomerAddressGroupsService" />
+            <div class="col-md-3">
+                <label>مشتری</label>
+            </div>
+            <div class="col-md-8">
+                <Lookup TValue="int?" TEntity="Customer" Value="OrderService.UpsertData.CustomerId" HideHeader OpenOnFocus
+                        ValueChanged="ChangeCustomer" TextExpression="t => t.Name" PlaceHolder="جستجو با شماره همراه/شماره مشتری">
+                    <CustomerLookupWindow />
+                </Lookup>
+            </div>
+            <div class="col-md-1">
+                @if (OrderService.UpsertData.CustomerId == null)
+                {
+                    <span @onclick="async () => await customerComponent.OpenWindowAsync()" class="me-2 fa fa-plus c-small-icon"></span>
+                }
+                else
+                {
+                    <span @onclick="async () => await customerComponent.OpenWindowAsync()" class="me-2 fa fa-pencil c-small-icon"></span>
+                }
+            </div>
             <RadioList @bind-Value="OrderService.UpsertData.OrderType" ColSpan="9" TotalSpan="12" />
             <div class="col-md-2 text-center pt-3">
                 <OrderComponent Page="this" OnChange="InitializeOrder" />
@@ -41,13 +57,16 @@
         </div>
     </div>
 </CaspianForm>
-
+<SimpleCustomerComponent @ref="customerComponent" Page="this" CustomerId="OrderService.UpsertData.CustomerId" CustomerService="CustomerService"
+                         CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
+                         CustomerAddressGroupsService="CustomerAddressGroupsService" />
 @code
 {
     WindowStatus status;
     Customer customer;
     IList<Product> products;
     ProductComponent productComponent;
+    SimpleCustomerComponent customerComponent;
 
     async Task ChangeCustomer(int? customerId)
     {
@@ -82,9 +101,12 @@
         {
             using var service = CreateScope().GetService<OrderDetailToppingService>();
             var toppings = await service.GetAll().Where(t => t.OrderDetail.OrderId == order.Id).ToListAsync();
-            foreach (var detail in order.OrderDetails)
-                if (detail.OrderDetailToppings == null)
-                    detail.OrderDetailToppings = toppings.Where(t => t.OrderDetailId == detail.Id).ToList();
+            if (order.OrderDetails != null)
+            {
+                foreach (var detail in order.OrderDetails)
+                    if (detail.OrderDetailToppings == null)
+                        detail.OrderDetailToppings = toppings.Where(t => t.OrderDetailId == detail.Id).ToList();
+            }
         }
     }
 

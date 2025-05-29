@@ -119,6 +119,8 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
+            if (NestedForm != null)
+                throw new CaspianException("Nested form is disallowed. You can have multiple forms in the page, but nested form is disallowed");
             if (Service != null)
                 (Service as IInternalUIService<TEntity>).FormInitializer(this);
             controls = new List<IControl>();
@@ -139,17 +141,28 @@ namespace Caspian.UI
             await base.OnInitializedAsync();
         }
 
-        public async Task SubmitAsync()
+        public async Task<bool?> SubmitAsync()
         {
-            await OnFormSubmitHandler(EditContext);
+            return await OnFormSubmitHandler(EditContext);
         }
+
+        [CascadingParameter(Name = "ParentForm")]
+        internal ICaspianForm NestedForm { get; set; }
 
         internal EventCallback OnBeforeValidate {  get; set; }
 
-        async Task OnFormSubmitHandler(EditContext context)
+        public async Task<ValidationResult> ValidateAsync()
+        {
+            EditContext.Validate();
+            EditContext.Properties.TryGetValue("AsyncValidationTask", out var asyncValidationTask);
+            var result = await (Task<ValidationResult>)asyncValidationTask;
+            return result;
+        }
+
+        async Task<bool?> OnFormSubmitHandler(EditContext context)
         {
             if (submitting)
-                return;
+                return null;
             submitting = true;
             addControls = true;
             controls.Clear();
@@ -163,7 +176,7 @@ namespace Caspian.UI
                 cancel = cancelableEvent.Cancel;
             }
             if (cancel)
-                return;
+                return null;
             if (OnInternalSubmit.HasDelegate)
                 await OnInternalSubmit.InvokeAsync(EditContext.Model as TEntity);
             FormAppState.AllControlsIsValid = true;
@@ -216,6 +229,7 @@ namespace Caspian.UI
                     await OnInternalInvalidSubmit.InvokeAsync(EditContext.Model as TEntity);
             }
             submitting = false;
+            return result.IsValid;
         }
 
         async Task ResetFormAsync()

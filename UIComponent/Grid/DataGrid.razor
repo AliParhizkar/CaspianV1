@@ -39,106 +39,108 @@
                                                 {
                                                     await ChangePageNumber(pageNumber);
                                                 }" />
-
             <div class="@className" style="@(style)">
-                @if (Inline && !AutoHide)
-                {
-                    CreateInsertSection(__builder2);
-                }
-                @if (items != null)
-                {
-                    <table @attributes="tableAttrs" class="c-grid-items">
-                        <tbody>
-                            @{
-                                int index = 0;
-                                var pKey = typeof(TEntity).GetPrimaryKey();
-                                object selectId = selectedEntity != null ? pKey.GetValue(selectedEntity) : null;
-                                foreach (var item in items)
-                                {
-                                    var id = Convert.ToInt32(pKey.GetValue(item));
-                                    var attrs = new Dictionary<string, object>();
-                                    var rowIndex = index;
-                                    var className = "";
-                                    if (SelectType == SelectType.Single)
-                                    {
-                                        if (rowIndex == SelectedRowIndex)
-                                            className = "t-state-selected";
-                                    }
-                                    if (SelectType == SelectType.Multi && selectedIds.Contains(id))
-                                        className = "t-state-selected";
-                                    if (item == selectedEntity)
-                                        className += " t-upsert-inline";
-                                    if (className.HasValue())
-                                        attrs.Add("class", className);
-                                    if (SelectType != SelectType.None)
-                                    {
-                                        attrs.Add("onmousedown", EventCallback.Factory.Create<MouseEventArgs>(this, async (e) =>
-                                        {
-                                            SelectRow(rowIndex);
-                                            if (SelectType == SelectType.Multi)
-                                            {
-                                                if (selectedIds.Contains(id))
-                                                    selectedIds.Remove(id);
-                                                else
-                                                    selectedIds.Add(id);
-                                            }
-                                            if (OnRowSelect.HasDelegate)
-                                                await OnRowSelect.InvokeAsync(item);
-                                            if (OnInternalRowSelect.HasDelegate)
-                                                await OnInternalRowSelect.InvokeAsync(id);
-                                            await SetStateGridData();
-
-                                        }));
-                                    }
-                                    index++;
-                                    var isUpdateing = selectId != null && selectId.Equals(id);
-                                    var rowData = new RowData<TEntity>()
-                                    {
-                                        Data = isUpdateing ? selectedEntity : item,
-                                        RowIndex = rowIndex + 5,
-                                        DynamicData = DynamicData == null ? null : DynamicData[rowIndex],
-                                        UpsertMode = isUpdateing ? UpsertMode.Edit : null
-                                    };
-                                    <tr @attributes="attrs">
-                                        <CascadingValue Name="RowData" Value="rowData">
-                                            @if (isUpdateing)
-                                            {
-                                                <CascadingValue Value="EditContext">
-                                                    <CaspianValidationValidator TModel="TEntity" @ref="validator" DetailsService="DetailsService" Source="source" ValidatorType="serviceType" />
-                                                    <CaspianContainer ColumnsCount="0" @ref="updateContainer">
-                                                        @Columns(rowData)
-                                                    </CaspianContainer>
-                                                </CascadingValue>
-                                            }
-                                            else
-                                            {
-                                                @Columns(rowData)
-                                            }
-                                        </CascadingValue>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
-                    if (Inline && AutoHide)
+                <div class="t-grid-content-wrap">
+                    @if (Inline && !AutoHide)
                     {
-                        var buttonClassName = "t-grid-inline-insert";
-                        if (insertedEntity?.UpsertMode != null)
-                        {
-                            CreateInsertSection(__builder2);
-                            buttonClassName += " c-hidden";
-                        }
-                        <button disabled="@disableInsertIcon" @ref="inertButton" type="button" class="@buttonClassName" @onclick="CreateInsert">
-                            <span class="fa fa-plus"></span>
-                        </button>
+                        CreateInsertSection(__builder2);
+                    }
+                    @if (items != null)
+                    {
+                        <table @attributes="tableAttrs" class="c-grid-items">
+                            <tbody>
+                                @{
+                                    int index = 0;
+                                    var pKey = typeof(TEntity).GetPrimaryKey();
+                                    object selectId = selectedEntity != null ? pKey.GetValue(selectedEntity) : null;
+                                    foreach (var item in items)
+                                    {
+                                        var id = Convert.ToInt32(pKey.GetValue(item));
+                                        var attrs = new Dictionary<string, object>();
+                                        var rowIndex = index;
+                                        var className = "";
+                                        if (SelectType == SelectType.Single)
+                                        {
+                                            if (rowIndex == SelectedRowIndex)
+                                                className = "t-state-selected";
+                                        }
+                                        if (SelectType == SelectType.Multi && selectedIds.Contains(id))
+                                            className = "t-state-selected";
+                                        if (item == selectedEntity)
+                                            className += " t-upsert-inline";
+                                        if (className.HasValue())
+                                            attrs.Add("class", className);
+                                        if (SelectType != SelectType.None)
+                                        {
+                                            attrs.Add("onmousedown", EventCallback.Factory.Create<MouseEventArgs>(this, async (e) =>
+                                            {
+                                                SelectRow(rowIndex);
+                                                if (SelectType == SelectType.Multi)
+                                                {
+                                                    if (selectedIds.Contains(id))
+                                                        selectedIds.Remove(id);
+                                                    else
+                                                        selectedIds.Add(id);
+                                                }
+                                                if (OnRowSelect.HasDelegate)
+                                                    await OnRowSelect.InvokeAsync(item);
+                                                if (OnInternalRowSelect.HasDelegate)
+                                                    await OnInternalRowSelect.InvokeAsync(id);
+                                                await SetStateGridData();
 
-                }
-            }
-            else
-            {
-                <span class="t-loading"></span>
-            }
-        </div>
+                                            }));
+                                        }
+                                        index++;
+                                        var isUpdateing = selectId != null && selectId.Equals(id);
+                                        var rowData = new RowData<TEntity>()
+                                        {
+                                            Data = isUpdateing ? selectedEntity : item,
+                                            RowIndex = rowIndex + 5,
+                                            DynamicData = DynamicData == null ? null : DynamicData[rowIndex],
+                                            UpsertMode = isUpdateing ? UpsertMode.Edit : null
+                                        };
+                                        <tr @attributes="attrs">
+                                            <CascadingValue Name="RowData" Value="rowData">
+                                                @if (isUpdateing)
+                                                {
+                                                    <CascadingValue Value="EditContext">
+                                                        <CaspianValidationValidator TModel="TEntity" @ref="validator" DetailsService="DetailsService" Source="source" ValidatorType="serviceType" />
+                                                        <CaspianContainer ColumnsCount="0" @ref="updateContainer">
+                                                            @Columns(rowData)
+                                                        </CaspianContainer>
+                                                    </CascadingValue>
+                                                }
+                                                else
+                                                {
+                                                    @Columns(rowData)
+                                                }
+                                            </CascadingValue>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        if (Inline && AutoHide)
+                        {
+                            var buttonClassName = "t-grid-inline-insert";
+                            if (insertedEntity?.UpsertMode != null)
+                            {
+                                CreateInsertSection(__builder2);
+                                buttonClassName += " c-hidden";
+                            }
+                            <div>
+                                <button disabled="@disableInsertIcon" @ref="inertButton" type="button" class="@buttonClassName" @onclick="CreateInsert">
+                                    <span class="fa fa-plus"></span>
+                                </button>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <span class="t-loading"></span>
+                    }
+                </div>
+            </div>
         @if (HideFooter != true)
         {
             <DataPager HidePageSize="HidePageSize" PageSize="PageSize" PageNumber="pageNumber" TotalRecord="Total" PageSizeChanged="ChangePageSize"

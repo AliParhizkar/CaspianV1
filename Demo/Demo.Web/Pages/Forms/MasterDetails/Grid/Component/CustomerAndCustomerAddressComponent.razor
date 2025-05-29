@@ -4,19 +4,19 @@
     <Tabs>
         <TabPanelItem Title="Customer">
             <div class="pt-3">
-                <CaspianForm Service="Service">
+                <CaspianForm Service="Service" ColumnsCount="2">
                     @{
                         var customerType = context.CustomerType;
                     }
                     <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerAndAddressService)" />
-                    <DropdownList @bind-Value="context.CustomerType" ColSpan="8" />
-                    <StringTextBox @bind-Value="context.FName" Disabled="customerType == CustomerType.Legal" ColSpan="8" />
-                    <StringTextBox @bind-Value="context.LName" Disabled="customerType == CustomerType.Legal" ColSpan="8" />
-                    <DropdownList @bind-Value="context.Gender" Disabled="customerType == CustomerType.Legal" ColSpan="8" />
-                    <StringTextBox @bind-Value="context.CompanyName" Disabled="customerType == CustomerType.Real" ColSpan="8" />
-                    <StringTextBox @bind-Value="context.MobileNumber" MaxLength="11" ColSpan="8" />
-                    <StringTextBox @bind-Value="context.Tel" MaxLength="11" ColSpan="8" />
-                    <FormCommandButton ColSpan="8" />
+                    <DropdownList @bind-Value="context.CustomerType" ColSpan="4" />
+                    <StringTextBox @bind-Value="context.FName" Disabled="customerType == CustomerType.Legal" ColSpan="4" />
+                    <StringTextBox @bind-Value="context.LName" Disabled="customerType == CustomerType.Legal" ColSpan="4" />
+                    <DropdownList @bind-Value="context.Gender" Disabled="customerType == CustomerType.Legal" ColSpan="4" />
+                    <StringTextBox @bind-Value="context.CompanyName" Disabled="customerType == CustomerType.Real" ColSpan="4" />
+                    <StringTextBox @bind-Value="context.MobileNumber" MaxLength="11" ColSpan="4" />
+                    <StringTextBox @bind-Value="context.Tel" MaxLength="11" ColSpan="4" />
+                    <FormCommandButton ColSpan="6" TotalSpan="6" />
                 </CaspianForm>
             </div>
         </TabPanelItem>
