@@ -1,10 +1,9 @@
 ﻿using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class HtmlRowService : BaseService<HtmlRow>, IBaseService<HtmlRow>
+    public class HtmlRowService : BaseService<HtmlRow>
     {
         public HtmlRowService(IServiceProvider provider)
             :base(provider)

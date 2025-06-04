@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Service
 {
-    public class WorkflowFormService : BaseService<Engine.WorkflowForm>, IBaseService<Engine.WorkflowForm>
+    public class WorkflowFormService : BaseService<Engine.WorkflowForm>
     {
         public WorkflowFormService(IServiceProvider provider)
             :base(provider)

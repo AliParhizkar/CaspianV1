@@ -5,7 +5,7 @@ using Caspian.Common.Service;
 
 namespace Demo.Service
 {
-    public class AddressTypeService : BaseService<AddressType>, IBaseService<AddressType>
+    public class AddressTypeService : BaseService<AddressType>
     {
         public AddressTypeService(IServiceProvider provider)
             : base(provider)

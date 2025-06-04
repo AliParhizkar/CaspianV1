@@ -186,7 +186,7 @@ namespace Marketing.Web.OrderComponents
 
         void OpenTopping(EMouseEventArgs e, OrderDetail detail)
         {
-            left = e.ClientX - e.OffsetX + e.Width + 5;
+            left = e.ClientX - e.OffsetX + e.Width + 15;
             top = e.ClientY - e.OffsetY - 100;
             if (top < 10)
                 top = 10;

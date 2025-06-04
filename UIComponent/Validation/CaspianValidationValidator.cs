@@ -67,8 +67,9 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (DetailsService != null || CaspianForm.DetailsService != null)
-                ((DetailsService ?? CaspianForm.DetailsService) as IInternalBatchService<TModel>).DetailCaspianValidationValidatorInitializer(this);
+            var detailService = (DetailsService ?? CaspianForm?.DetailsService) as IInternalBatchService<TModel>;
+            if (detailService != null)
+                detailService.DetailCaspianValidationValidatorInitializer(this);
             else if (CaspianForm.Service != null)
                 CaspianForm.Service.CaspianValidationValidatorInitializer(this);
                 
@@ -129,7 +130,6 @@ namespace Caspian.UI
                 await CaspianForm.OnBeforeValidate.InvokeAsync();
             if (Source != null && Source.Count() > 0)
                 Validator.SetSource(Source.AsReadOnly());
-
             Task<ValidationResult> asyncValidationTask;
             if (EditContext.Properties.TryGetValue("DetailType", out var objDetail) && objDetail != null)
                 asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objDetail);

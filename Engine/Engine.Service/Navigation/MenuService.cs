@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Engine.Service
 {
-    public class MenuService : BaseService<Menu>, IBaseService<Menu>
+    public class MenuService : BaseService<Menu>
     {
         public MenuService(IServiceProvider provider)
             :base(provider)

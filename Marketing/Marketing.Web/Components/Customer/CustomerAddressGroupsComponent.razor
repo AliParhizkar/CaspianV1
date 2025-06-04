@@ -26,13 +26,15 @@
             <legend>مشخصات مشتری</legend>
             <div class="row">
                 <StringTextBox @bind-Value="context.Name" ColSpan="4" TotalSpan="6" />
-                <StringTextBox @bind-Value="context.MobileNumber" ColSpan="2" TotalSpan="3" MaxLength="11" Style="direction:ltr" />
-                <FormCommandButton TotalSpan="3" ColSpan="3" />
+                <StringTextBox @bind-Value="context.MobileNumber" ColSpan="4" TotalSpan="6" MaxLength="11" Style="direction:ltr" />
                 <NumericTextBox @bind-Value="context.CustomerNumber" Disabled DigitGrouping ColSpan="3" TotalSpan="5" />
                 <div class="col-md-1 text-center">
                     <span class="c-small-icon fa fa-refresh" @onclick="SetCustomerNumber" title="برای دریافت شماره مشتری کلیک کنید"></span>
                 </div>
-                <CheckBox @bind-Value="context.IsSpecial" ColSpan="2" TotalSpan="4" />
+                <NumericTextBox Value="context.AccountBalance" ColSpan="4" TotalSpan="6" Title="موجودی" />
+                <CheckBox @bind-Value="context.IsSpecial" ColSpan="4" TotalSpan="6" />
+                <CheckBox @bind-Value="context.NegativeBalance" ColSpan="1" TotalSpan="3" />
+                <FormCommandButton TotalSpan="3" ColSpan="3" />
             </div>
         </fieldset>
     </CaspianForm>

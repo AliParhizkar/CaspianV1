@@ -5,7 +5,7 @@ using Caspian.Common.Service;
 
 namespace Demo.Service
 {
-    public class DeliveryService : BaseService<Courier>, IBaseService<Courier>
+    public class DeliveryService : BaseService<Courier>
     {
         public DeliveryService(IServiceProvider provider)
             : base(provider)

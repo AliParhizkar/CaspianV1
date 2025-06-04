@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Service
 {
-    public class ProductCategoryService : BaseService<ProductCategory>, IBaseService<ProductCategory>
+    public class ProductCategoryService : BaseService<ProductCategory>
     {
         public ProductCategoryService(IServiceProvider provider)
             : base(provider)

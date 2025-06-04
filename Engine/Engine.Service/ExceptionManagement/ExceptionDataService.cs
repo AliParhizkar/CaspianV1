@@ -3,7 +3,7 @@ using Caspian.Common.Service;
 
 namespace Caspian.Engine.Service
 {
-    public class ExceptionDataService : BaseService<ExceptionData>, IBaseService<ExceptionData>
+    public class ExceptionDataService : BaseService<ExceptionData>
     {
         public ExceptionDataService(IServiceProvider provider)
             :base(provider)

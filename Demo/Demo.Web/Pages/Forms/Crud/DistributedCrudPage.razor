@@ -23,8 +23,8 @@
                 <div class="col-md-8">
                     <div class="c-controls c-header row align-items-center">
                         <CaspianContainer>
-                            <ComboBox TEntity="ProductCategory" TValue="int?" @bind-Value="categoryId" TextExpression="t => t.Title"
-                            ColSpan="8" OnChange="() => Service.DataView?.EnableLoading()" />
+                            <ComboBox TEntity="ProductCategory" TValue="int?" Value="categoryId" TextExpression="t => t.Title"
+                            ColSpan="8" ValueChanged="CategoryChanged" Title="گروه محصول" />
                         </CaspianContainer>
                     </div>
                     <div class="c-body ps-3 pe-3">
@@ -70,4 +70,10 @@
 @code
 {
     int? categoryId;
+    void CategoryChanged(int? categoryId)
+    {
+        this.categoryId = categoryId;
+        if (categoryId.HasValue)
+            Service.DataView?.EnableLoading();
+    }
 }

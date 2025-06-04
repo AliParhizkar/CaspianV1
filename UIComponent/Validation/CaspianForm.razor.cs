@@ -187,7 +187,7 @@ namespace Caspian.UI
                 EditContext.Properties["DetailType"] = (Service as IInternalUIService<TEntity>).OtherType;
             }
 
-            EditContext.Validate();
+            var qqq = EditContext.Validate();
             if (OnBeforeValidate.HasDelegate)
                 await OnBeforeValidate.InvokeAsync();
             if (ValidationValidator == null)

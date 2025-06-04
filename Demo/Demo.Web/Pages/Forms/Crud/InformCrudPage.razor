@@ -17,7 +17,7 @@
                     <div class="row pt-3">
                         <div class="row col-md-9 c-controls align-content-start">
                             <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="context.ProductCategoryId" TextExpression="t => t.Title"
-                            OrderByExpression="t => t.Title" ColSpan="4" />
+                                      OrderByExpression="t => t.Title" ColSpan="4" />
                             <StringTextBox @bind-Value="context.Title" ColSpan="4" />
                             <NumericTextBox @bind-Value="context.Price" ColSpan="4" />
                             <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="4" />
@@ -52,6 +52,9 @@
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Service">
             <Document FolderName="Service/Services" FileName="ProductService" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Model">
+            <Document FolderName="Models" FileName="Product" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

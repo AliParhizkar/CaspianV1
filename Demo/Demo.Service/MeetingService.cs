@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Service
 {
-    public class MeetingService : BaseService<Meeting>, IBaseService<Meeting>
+    public class MeetingService : BaseService<Meeting>
     {
         public MeetingService(IServiceProvider provider)
             : base(provider)

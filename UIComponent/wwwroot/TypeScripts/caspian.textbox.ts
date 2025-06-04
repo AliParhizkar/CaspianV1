@@ -4,6 +4,7 @@
         total: number;
         numberDigit: number;
         digitGrouping: boolean;
+        search: boolean;
         constructor(input: HTMLInputElement, type: string) {
             caspian.common.bindErrorMessage(input.parentElement, input);
             this.input = input;
@@ -33,6 +34,16 @@
             }
             this.readAttributes();
             this.bindAttributes();
+            if (this.search) {
+                input.oninput = e => {
+                    if (caspian.common.infoTimer != null)
+                        clearTimeout(caspian.common.infoTimer);
+                    caspian.common.infoTimer = caspian.common.infoTimer = setTimeout(() => {
+                        let event = new Event('change');
+                        e.target.dispatchEvent(event);
+                    }, 300);
+                };
+            }
             if (type != 'string') {
                 input.onkeypress = e => this.bindKeypress(e);
                 if (this.digitGrouping) 
@@ -116,6 +127,8 @@
                 this.total = attrs['total'].value;
             if (attrs['number-digit'] != null)
                 this.numberDigit = attrs['number-digit'].value;
+            if (attrs['search'] != null)
+                this.search = true;
             this.digitGrouping = attrs['digit-grouping'] != null;
         }
     }

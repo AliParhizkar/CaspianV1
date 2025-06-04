@@ -7,7 +7,6 @@ using FluentValidation;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
 using Caspian.Common.Extension;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Service

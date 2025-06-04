@@ -1,12 +1,11 @@
-﻿using Caspian.Engine.Model;
+﻿using Caspian.Common;
+using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Caspian.Common;
 
 namespace Caspian.Engine.Service
 {
-    public class MenuCategoryService : BaseService<MenuCategory>, IBaseService<MenuCategory>
+    public class MenuCategoryService : BaseService<MenuCategory>
     {
         public MenuCategoryService(IServiceProvider provider)
             :base(provider)

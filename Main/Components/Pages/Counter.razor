@@ -1,18 +1,11 @@
 ﻿@inherits BasePage
+@page "/counter"
 @namespace Main.Test
 @using Caspian.Common.Extension
 
-@page "/counter"
 
-<Demo.Web.Pages.ParentComponent Counter="counter" />
 
 @code
 {
-    int counter;
-
-    void ConterChag(int value)
-    {
-        if (value < 10)
-            counter = value;
-    }
+    ForTest orderType;
 }

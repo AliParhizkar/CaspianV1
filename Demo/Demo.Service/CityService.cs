@@ -5,7 +5,7 @@ using Caspian.Common.Service;
 
 namespace Demo.Service
 {
-    public class CityService : BaseService<City>, IBaseService<City>
+    public class CityService : BaseService<City>
     {
         public CityService(IServiceProvider provider)
             : base(provider)

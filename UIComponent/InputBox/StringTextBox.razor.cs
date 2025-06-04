@@ -27,6 +27,8 @@ namespace Caspian.UI
             else if (ErrorMessage.HasValue())
                 className += " t-state-error";
             attributes["class"] = className;
+            if (search)
+                attributes["search"] = true;
             if (MaskedText.HasValue())
                 attributes["masked-text"] = MaskedText;
             return attributes;
@@ -66,7 +68,8 @@ namespace Caspian.UI
             var readOnly = false;
             if (InputAttributes.ContainsKey("readonly"))
                 readOnly = Convert.ToBoolean(InputAttributes["readonly"]);
-            await base.SetValue(arg.Value);
+            if (!readOnly)
+                await base.SetValue(arg.Value);
         }
 
         protected override void OnInitialized()
@@ -76,7 +79,6 @@ namespace Caspian.UI
             if (EntitySearch != null)
             {
                 search = true;
-                BindingType = BindingType.OnInput;
                 if (ValueExpression != null)
                 {
                     var expr = ValueExpression.Body;

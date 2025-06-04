@@ -1,4 +1,6 @@
-﻿namespace Caspian.Common
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Caspian.Common
 {
     public class CaspianDataService
     {

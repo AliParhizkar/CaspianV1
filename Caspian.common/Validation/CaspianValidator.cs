@@ -13,9 +13,9 @@ namespace Caspian.Common
     public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator, IEntity where TModel : class
     {
         public CaspianValidator(IServiceProvider provider)
-        {
+        {;
             BatchServiceData = provider.GetService<BatchServiceData>();
-            
+            RuleLevelCascadeMode = CascadeMode.Stop;
             ServiceProvider = provider;
             
             var contextType = new AssemblyInfo().GetDbContextType(typeof(TModel));
@@ -106,6 +106,8 @@ namespace Caspian.Common
         public int UserId { get; internal set; }
 
         internal PropertyInfo ThirdLevelProperty { get; set; }
+
+        
 
         public async virtual Task<ValidationResult> ValidateRemoveAsync(TModel model)
         {

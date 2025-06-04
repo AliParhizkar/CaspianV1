@@ -3,6 +3,7 @@
     height: 100%;
     width:800px;
     margin:0 auto;
+    flex-wrap:wrap;
 }
 .nodes-container{
     padding-right:15px;
@@ -28,6 +29,7 @@
     padding: 4px 10px;
     background-color: #f4f7ff;
     align-items: center;
+    width:100%;
 }
     .e-head label {
         font-weight: bold;

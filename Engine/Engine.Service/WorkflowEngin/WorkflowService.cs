@@ -1,10 +1,9 @@
 ﻿using Caspian.Common;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class WorkflowService : BaseService<Workflow>, IBaseService<Workflow>
+    public class WorkflowService : BaseService<Workflow>
     {
         public WorkflowService(IServiceProvider provider)
             :base(provider)

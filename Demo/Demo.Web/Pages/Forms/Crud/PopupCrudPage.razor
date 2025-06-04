@@ -1,6 +1,7 @@
 ﻿@page "/Demo/PopupCrud"
 @inherits BasePage
 @inject IUIService<ProductCategory> Service
+@inject IUIService<Product> ProductService
 @{
     base.BuildRenderTree(__builder);
 }
@@ -22,7 +23,7 @@
                             <GridColumn Field="t => t.ActiveType.EnumText()" />
                             <GridColumn Title="Popup" style="width:50px">
                                 <Template>
-                                    <IconButton IconType="IconType.ExternalLink" @onclick="() => { OpenPopupForm(context.Data.Id); }" />
+                                    <IconButton IconType="IconType.ExternalLink" @onclick="() => OpenPopupForm(context.Data.Id)" />
                                 </Template>
                             </GridColumn>
                         </Columns>
@@ -37,7 +38,7 @@
 </TabPanel>
 <Window @bind-Status="status" Title="Product" Style="width:850px">
     <Content>
-        <PopupProductPage CategoryId="popupCategoryId.Value" />
+        <PopupProductPage CategoryId="popupCategoryId.Value" Service="ProductService"  />
     </Content>
 </Window>
 @code

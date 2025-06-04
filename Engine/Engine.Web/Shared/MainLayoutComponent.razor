@@ -1,4 +1,5 @@
 ﻿@namespace Caspian.Engine.Shared
+@implements IDisposable
 @using Caspian.Engine.Web
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 @inject IServiceScopeFactory ServiceScopeFactory
@@ -139,8 +140,6 @@
         await storage.SetAsync("menu-status", hideMenu);
     }
 
-
-
     protected override void OnInitialized()
     {
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
@@ -159,11 +158,11 @@
                 var service = scope.GetService<UserLoginService>();
                 service.CheckValidation = false;
                 await service.AddAsync(new UserLogin()
-                    {
-                        LoginDate = DateTime.Now,
-                        UserId = userId.Value,
-                        PageUrl = currentUrl
-                    });
+                {
+                    LoginDate = DateTime.Now,
+                    UserId = userId.Value,
+                    PageUrl = currentUrl
+                });
 
                 await service.SaveChangesAsync();
             }

@@ -41,13 +41,13 @@ namespace Marketing.Model
 
     public enum CategoryType: byte
     {
-        [Display(Name = "تکی")]
+        [Display(Name = "یک سطحی")]
         Single = 1,
 
-        [Display(Name = "دو تایی")]
+        [Display(Name = "دو سطحی")]
         Couple,
 
-        [Display(Name = "چند تایی")]
+        [Display(Name = "چند سطحی")]
         Multiple
     }
 

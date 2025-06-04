@@ -97,10 +97,12 @@ namespace Caspian.Common.Extension
         public async static Task<Tuple<IList<TEntity>, IList<object>>> AggregateValuesAsync<TEntity>(this IQueryable<TEntity> query, 
             IList<Expression> aggregateExpressions, int pageNumber, int pageSize)
         {
+            var aggregateQuery = query.CreateAggregateQuery(aggregateExpressions);
             if (pageNumber > 1)
-                query = query.Skip((pageNumber - 1) * pageSize);
-            query = query.Take(pageSize);
-            var values = await query.CreateAggregateQuery(aggregateExpressions).OfType<object>().ToListAsync();
+                aggregateQuery = aggregateQuery.Skip((pageNumber - 1) * pageSize);
+            aggregateQuery = aggregateQuery.Take(pageSize);
+
+            var values = await aggregateQuery.OfType<object>().ToListAsync();
             var entities = new List<TEntity>();
             var list = new List<object>();
             if (values.Count > 0)

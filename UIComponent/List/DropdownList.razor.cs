@@ -45,7 +45,7 @@ namespace Caspian.UI
             return temp1.Equals(Convert.ToInt32(temp2));
         }
 
-        async Task OnkeyUp(KeyboardEventArgs args)
+        async Task OnKeyUp(KeyboardEventArgs args)
         {
             if (!disabled)
             {
@@ -141,8 +141,7 @@ namespace Caspian.UI
         {
             if (Source == null)
             {
-                //string str = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
-                string str = "Please Select ...";
+                string str = PageData?.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
                 items = new ();
                 if (typeof(TValue).IsNullableType())
                     items.Add(new SelectListItem(null, str));
@@ -178,9 +177,8 @@ namespace Caspian.UI
                     }
                 }
             }
-            //text = service.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
-            text = "Please Select ...";
-            if (Value != null && !Value.Equals(default(TValue)))
+            text = PageData?.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
+            if (Value != null)
             {
                 if (Source == null)
                 {

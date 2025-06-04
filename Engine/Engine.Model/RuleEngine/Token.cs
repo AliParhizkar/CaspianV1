@@ -119,7 +119,7 @@ namespace Caspian.Engine
         public int IfCount { get; set; }
 
         [NotMapped]
-        public bool IsSpecalToken
+        public bool IsSpecialToken
         {
             get
             {

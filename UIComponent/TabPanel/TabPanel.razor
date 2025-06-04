@@ -111,7 +111,7 @@
                 await TabIndexChanged.InvokeAsync(index + 1);
             else
             {
-                TabIndex = index;
+                TabIndex = index + 1;
                 StateHasChanged();
             }
         }

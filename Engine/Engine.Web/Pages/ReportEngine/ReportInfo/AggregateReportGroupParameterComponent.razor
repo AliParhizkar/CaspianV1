@@ -4,21 +4,26 @@
     base.BuildRenderTree(__builder);
 }
 <div class="main">
+    <div class="e-head">
+        <div class="col-md-1">
+            <a href="/@(reportGroup?.SubSystem)/SystemManagement/ReportGroupManagement">
+                <span class="fa fa-arrow-left c-small-icon"></span>
+            </a>
+        </div>
+        <div class="col-md-2">
+            <label>Report Group Title</label>
+        </div>
+        <div class="col-md-7">
+            <span class="group-title">@(reportGroup?.Title)</span>
+        </div>
+        <div class="col-md-2 text-center">
+            <button class="c-btn c-primary" @onclick="UpsertAll">Save</button>
+        </div>
+    </div>
     <div class="nodes-container">
         <TreeView style="height:100%" TEntity="NodeView" Source="nodes" OnChange="UpdateNodesData" />
     </div>
     <div class="parameter-container">
-        <div class="e-head">
-            <div class="col-md-4">
-                <label>Report Group Title</label>
-            </div>
-            <div class="col-md-6">
-                <span class="group-title">@(reportGroup?.Title)</span>
-            </div>
-            <div class="col-md-2 text-center">
-                <button class="c-btn c-primary" @onclick="UpsertAll">Save</button>
-            </div>
-        </div>
         <TreeView style="height:calc(100% - 47px)" TEntity="NodeView" Source="source">
             <BeforeNodeTemplate Context="node">
                 @if (IsIdentityNode(node))

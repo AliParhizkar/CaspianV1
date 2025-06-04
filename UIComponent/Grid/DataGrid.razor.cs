@@ -62,7 +62,8 @@ namespace Caspian.UI
                 if (columnsData.Any(t => t.AggregateExpression != null))
                 {
                     var aggregateExprList = columnsData.Where(t => t.AggregateExpression != null).Select(t => t.AggregateExpression).ToList();
-                    Total = await query.CreateAggregateQuery(aggregateExprList).OfType<object>().CountAsync();
+                    var aggregateQuery = query.CreateAggregateQuery(aggregateExprList);
+                    Total = await aggregateQuery.OfType<object>().CountAsync();
                     var tuple = await query.AggregateValuesAsync(aggregateExprList, pageNumber, PageSize);
                     items = tuple.Item1;
                     DynamicData = tuple.Item2;

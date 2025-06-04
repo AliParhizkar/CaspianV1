@@ -1,12 +1,11 @@
-﻿using Demo.Model;
+﻿using System;
+using Demo.Model;
 using Caspian.Common;
 using Caspian.Common.Service;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Demo.Service
 {
-    public class FinancialProductCategoryService : BaseService<FinancialProductCategory>, IBaseService<FinancialProductCategory>
+    public class FinancialProductCategoryService : BaseService<FinancialProductCategory>
     {
         public FinancialProductCategoryService(IServiceProvider provider)
             : base(provider)

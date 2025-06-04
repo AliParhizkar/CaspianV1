@@ -6,9 +6,11 @@ using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Caspian.UI
 {
@@ -20,7 +22,8 @@ namespace Caspian.UI
         protected CaspianDataService CaspianDataService;
         IDictionary<string, SearchType> searchData;
         IDictionary<string, ICollection> enumValues;
-        protected bool hideFooter;
+        protected bool hideFooter, isDevelopment;
+        protected ILogger logger;
 
         public UIService(IServiceProvider serviceProvider)
         {
@@ -32,6 +35,7 @@ namespace Caspian.UI
             Search = Activator.CreateInstance<TEntity>();
             UpsertData = Activator.CreateInstance<TEntity>();
             UserId = ServiceProvider.GetService<CaspianDataService>().UserId;
+            logger = serviceProvider.GetService<ILogger>();
             if (UpsertData is BaseEntity baseEntity)
                 baseEntity.UpsertUserId = UserId;
         }
@@ -189,7 +193,7 @@ namespace Caspian.UI
         /// </summary>
         protected virtual void InitializeBeforeValidation(TEntity entity)
         {
-
+            
         }
 
         /// <summary>
@@ -475,6 +479,9 @@ namespace Caspian.UI
             var page = baseComponentService.Target as BasePage;
             if (page == null)
                 throw new CaspianException("You must inherits from BasePage and add this code to page: base.BuildRenderTree(__builder);");
+            string guid = page.GuId;
+            //if (page.GetType() != this.GetType().DeclaringType)
+            //    logger.LogInformation("You Inject Service in the component(in this case we can't call StateHasChanged method of page). so maybe all of page not changed");
             page.ChangeState();
         }
 

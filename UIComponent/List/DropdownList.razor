@@ -31,7 +31,7 @@ else
             else
                 className += " t-state-error";
             var index = 1;
-            <div @ref="InputElement" @onkeyup="OnkeyUp" @attributes="attrs" class="t-widget t-dropdown" error-message="@ErrorMessage">
+            <div @ref="InputElement" @onkeyup="OnKeyUp" @attributes="attrs" class="t-widget t-dropdown" error-message="@ErrorMessage">
                 <div class="@className" @onmousedown="OpenWindow">
                     <span class="t-input">@(text)</span>
                     <span class="t-select">

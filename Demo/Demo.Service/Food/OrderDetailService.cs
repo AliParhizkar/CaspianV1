@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace Demo.Service
 {
     [ReportClass]
-    public class OrderDetailService : BaseService<OrderDetail>, IBaseService<OrderDetail>
+    public class OrderDetailService : BaseService<OrderDetail>
     {
         public OrderDetailService(IServiceProvider provider)
             : base(provider)

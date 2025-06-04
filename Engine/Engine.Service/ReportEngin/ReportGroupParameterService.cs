@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Caspian.Engine.Service
 {
-    public class ReportGroupParameterService: BaseService<ReportGroupParameter>, IBaseService<ReportGroupParameter>
+    public class ReportGroupParameterService: BaseService<ReportGroupParameter>
     {
         public ReportGroupParameterService(IServiceProvider provider)
             : base(provider) 

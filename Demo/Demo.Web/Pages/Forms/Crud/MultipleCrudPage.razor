@@ -79,7 +79,7 @@
                         <CaspianForm TEntity="Product" Service="ProductService" OnSubmit="t => SetCategory(t.Entity)">
                             <Content Context="product">
                                 <div class="row pt-1">
-                                    <div class="col-md-7 row c-controls ">
+                                    <div class="col-md-8 row c-controls pe-2">
                                         <StringTextBox @bind-Value="product.Title" ColSpan="8" />
                                         <NumericTextBox @bind-Value="product.Price" ColSpan="8" />
                                         <NumericTextBox @bind-Value="product.TakeoutPrice" ColSpan="8" />
@@ -88,7 +88,7 @@
                                         <DropdownList @bind-Value="product.ActiveType" ColSpan="8" />
                                         <CheckBox @bind-Value="product.Discountable" ColSpan="8" />
                                     </div>
-                                    <div class="col-md-5 ps-4 pt-4">
+                                    <div class="col-md-4 ps-2 pt-4">
                                         <div class="col-md-12 justify-content-center d-flex">
                                             <Fileupload OnChange="e => SetImage(e, product)">
                                                 <PictureBox Data="product.Image" style="width:200px;height:200px" />

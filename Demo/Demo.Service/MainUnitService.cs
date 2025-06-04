@@ -5,12 +5,12 @@ using Caspian.Common.Service;
 
 namespace Demo.Service
 {
-    public class MainUnitService : BaseService<MainUnit>, IBaseService<MainUnit>
+    public class MainUnitService : BaseService<MainUnit>
     {
         public MainUnitService(IServiceProvider provider)
             : base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqueAsync("Mainunit title should uniq");
+            RuleFor(t => t.Title).Required().UniqueAsync("Main unit title should Unique");
         }
     }
 }

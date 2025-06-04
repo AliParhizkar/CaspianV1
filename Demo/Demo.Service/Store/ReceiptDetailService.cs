@@ -5,12 +5,11 @@ using Caspian.Common;
 using FluentValidation;
 using Caspian.Common.Service;
 using Caspian.Common.Extension;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Service
 {
-    public class ReceiptDetailService : BaseService<ReceiptDetail>, IBaseService<ReceiptDetail>
+    public class ReceiptDetailService : BaseService<ReceiptDetail>
     {
         public ReceiptDetailService(IServiceProvider provider)
             : base(provider)

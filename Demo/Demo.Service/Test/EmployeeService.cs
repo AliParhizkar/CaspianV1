@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Service
 {
-    public class EmployeeService: BaseService<Employee>, IBaseService<Employee>
+    public class EmployeeService: BaseService<Employee>
     {
         public EmployeeService(IServiceProvider provider):
             base(provider) 
@@ -67,7 +67,7 @@ namespace Demo.Service
         }
     }
 
-    public class SubReligionService : BaseService<SubReligion>, IBaseService<SubReligion>
+    public class SubReligionService : BaseService<SubReligion>
     {
         public SubReligionService(IServiceProvider provider) :
             base(provider)

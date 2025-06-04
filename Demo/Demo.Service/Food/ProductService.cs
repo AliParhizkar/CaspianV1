@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Demo.Service
 {
     [ReportClass]
-    public class ProductService : BaseService<Product>, IBaseService<Product>
+    public class ProductService : BaseService<Product>
     {
         public ProductService(IServiceProvider provider)
             : base(provider)

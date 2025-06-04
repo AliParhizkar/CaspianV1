@@ -6,7 +6,7 @@ using FluentValidation;
 
 namespace Demo.Service
 {
-    public class CustomerGroupService : BaseService<CustomerGroup>, IBaseService<CustomerGroup>
+    public class CustomerGroupService : BaseService<CustomerGroup>
     {
         public CustomerGroupService(IServiceProvider provider)
             :base(provider)

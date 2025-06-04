@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Demo.Service
 {
-    public class CustomerAddressService : BaseService<CustomerAddress>, IBaseService<CustomerAddress>
+    public class CustomerAddressService : BaseService<CustomerAddress>
     {
         public CustomerAddressService(IServiceProvider provider)
             : base(provider)

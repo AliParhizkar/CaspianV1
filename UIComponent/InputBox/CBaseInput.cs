@@ -91,7 +91,6 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
-
         [CascadingParameter]
         internal PageData PageData { get; set; }
 
@@ -173,7 +172,8 @@ namespace Caspian.UI
                     }
                 }
                 reseting = false;
-                await ValueChanged.InvokeAsync(Value);
+                if (ValueChanged.HasDelegate)
+                    await ValueChanged.InvokeAsync(Value);
                 if (OnChange.HasDelegate)
                     await OnChange.InvokeAsync();
                 EntitySearch?.EnableLoadData();
@@ -190,14 +190,18 @@ namespace Caspian.UI
         {
             if (Title != null)
                 title = Title;
+
             CaspianContainer?.SetControl(this);
             if (CaspianContainer == null)
                 disabled = Disabled;
             else
                 disabled = CaspianContainer?.Disabled == true;
             CaspianForm?.AddControl(this);
+
             if (InputAttributes == null)
                 InputAttributes = new Dictionary<string, object>();
+            if (!ValueChanged.HasDelegate)
+                InputAttributes["readonly"] = true;
             if (TabIndex.HasValue)
                 InputAttributes["tabindex"] = TabIndex;
             if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)

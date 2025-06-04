@@ -1,19 +1,19 @@
 ﻿@namespace Marketing.Web.OrderComponents
 <CheckBox @bind-Value="Order.IsSettled" ColSpan="8" TotalSpan="12"  />
-<NumericTextBox @bind-Value="Order.CardAmount" ColSpan="7" TotalSpan="11" DigitGrouping Title="کارت" BindingType="BindingType.OnInput" />
-<div class="col-md-1">
+<NumericTextBox @bind-Value="Order.CardAmount" ColSpan="7" TotalSpan="10" DigitGrouping Title="کارت" BindingType="BindingType.OnInput" />
+<div class="col-md-2">
     <span @onclick="() => Order.CardAmount = GetRemain()" class="fa fa-check c-small-icon"></span>
 </div>
-<NumericTextBox @bind-Value="Order.CashAmount" ColSpan="7" TotalSpan="11" DigitGrouping Title="نقدی" BindingType="BindingType.OnInput" />
-<div class="col-md-1">
+<NumericTextBox @bind-Value="Order.CashAmount" ColSpan="7" TotalSpan="10" DigitGrouping Title="نقدی" BindingType="BindingType.OnInput" />
+<div class="col-md-2">
     <span @onclick="() => Order.CashAmount = GetRemain()" class="fa fa-check c-small-icon"></span>
 </div>
-<NumericTextBox @bind-Value="Order.AccountingAmount" Disabled="Customer == null" ColSpan="7" TotalSpan="11" DigitGrouping Title="حساب" BindingType="BindingType.OnInput" />
-<div class="col-md-1">
+<NumericTextBox @bind-Value="Order.AccountingAmount" Disabled="Customer == null" ColSpan="7" TotalSpan="10" DigitGrouping Title="حساب" BindingType="BindingType.OnInput" />
+<div class="col-md-2">
     <span @onclick="() => Order.AccountingAmount = GetRemain()" class="fa fa-check c-small-icon"></span>
 </div>
-<NumericTextBox Value="Customer?.AccountBalance" ColSpan="7" Disabled="Customer == null" TotalSpan="11" DigitGrouping Title="موجودی" readonly />
-<div class="col-md-1">
+<NumericTextBox Value="Customer?.AccountBalance" ColSpan="7" Disabled="Customer == null" TotalSpan="10" DigitGrouping Title="موجودی" readonly />
+<div class="col-md-2">
     <span @onclick="() => Order.AccountingAmount = Customer.AccountBalance" class="fa fa-check c-small-icon"></span>
 </div>
 

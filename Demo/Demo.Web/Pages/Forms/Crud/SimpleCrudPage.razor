@@ -1,11 +1,10 @@
 ﻿@page "/Demo/SimpleCrud"
 @namespace Demo.Web
-@inherits BasePage
 @inject IUIService<Country> CountryService
 @inject IUIService<Product> ProductService
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
-
 }
 <h2>Simple crud</h2>
 <p>
@@ -43,8 +42,8 @@
                     </span>
                 </div>
                 <div class="col-md-7">
-                    <EntitySearch Service="CountryService">
-                        <StringTextBox @bind-Value="context.Title" ColSpan="8"  />
+                    <EntitySearch TEntity="Country" Service="CountryService">
+                        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
                     </EntitySearch>
                     <DataGrid TEntity="Country" Service="CountryService">
                         <Columns>
@@ -55,7 +54,7 @@
                         </Columns>
                     </DataGrid>
                     <Window Service="CountryService" Title="Country" Style="width:450px;">
-                        <CaspianForm Service="CountryService">
+                        <CaspianForm TEntity="Country" Service="CountryService">
                             <StringTextBox @bind-Value="context.Title" ColSpan="8" />
                             <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
                             <WindowCommandButtons ColSpan="8" />
@@ -69,6 +68,9 @@
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Service">
             <Document FolderName="Service/Services" FileName="CountryService" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Model">
+            <Document FolderName="Models" FileName="Country" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -91,8 +93,9 @@
                     </li>
                 </ul>
                 <div class="d-content pt-1 pb-3">
-                    <span class="fa fa-info">  Note:</span> 
-                    <span class="c-demo-description">In this example we use the <b>OnUpsert</b> parameter, 
+                    <span class="fa fa-info">  Note:</span>
+                    <span class="c-demo-description">
+                        In this example we use the <b>OnUpsert</b> parameter,
                         this is an <b>EventCallback</b>, we can use it's input parameter to <b>cancel the upsert</b>.
                     </span>
                 </div>
@@ -127,8 +130,8 @@
                             </Fileupload>
                         </div>
                         <MultiSelectBox @bind-Value="context.Meal" ColSpan="10" />
-                        <DropdownList @bind-Value="context.ActiveType" ColSpan="4" />
-                        <CheckBox @bind-Value="context.Discountable" ColSpan="4" />
+                        <DropdownList @bind-Value="context.ActiveType" ColSpan="5" TotalSpan="7" />
+                        <CheckBox @bind-Value="context.Discountable" ColSpan="3" TotalSpan="5" />
                         <WindowCommandButtons ColSpan="8" />
                     </CaspianForm>
                 </Window>
@@ -139,6 +142,9 @@
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Service">
             <Document FolderName="Service/Services" FileName="ProductService" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Model">
+            <Document FolderName="Models" FileName="Product" />
         </TabPanelItem>
     </Tabs>
 </TabPanel> 
@@ -152,7 +158,6 @@
     {
         ProductService.OnUpsert = async (p, t) => (t.Price > 0 && t.TakeoutPrice > 0) || t.Id > 0 || await base.Confirm("آیا با ثبت محصول با قیمت صفر موافقید؟");
         base.OnInitialized();
-        
     }
 
     async Task SetImage(InputFileChangeEventArgs e, Product product)
