@@ -41,14 +41,13 @@ namespace Caspian.UI
         protected object childValue;
         protected ICascadeService GrandChildService;
 
-
         public void Initialize(IComboBox<TChild> cmbChild)
         {
             this.cmbChild = cmbChild;
             SetInternalExpression(parentValue);
             base.ChildService = this;
-            ///When the Child Combobox is created, the GrandChild Combobox has not yet been created
-            ///So we set "childValue" to be used for the filter when creating the GrandChild Combobox
+            ///When the Child ComboBox is created, the GrandChild ComboBox has not yet been created
+            ///So we set "childValue" to be used for the filter when creating the GrandChild ComboBox
             cmbChild.OnInternalValueChanged = EventCallback.Factory.Create<object>(this, value => 
             {
                 if (!(value ?? 0).Equals(childValue ?? 0))

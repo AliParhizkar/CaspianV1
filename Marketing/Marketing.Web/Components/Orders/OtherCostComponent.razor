@@ -4,7 +4,8 @@
     <RadioList @bind-Value="order.DiscountType" ColSpan="9" TotalSpan="12" />
     @if (order.DiscountType == DiscountType.Amount)
     {
-        <NumericTextBox @bind-Value="order.DiscountAmount" OnChange="OnChange" ColSpan="9" TotalSpan="12" DigitGrouping />
+        <NumericTextBox @bind-Value="order.DiscountAmount" OnChange="OnChange" ColSpan="9" TotalSpan="12" DigitGrouping 
+                        BindingType="BindingType.OnInput" />
     }
     else
     {

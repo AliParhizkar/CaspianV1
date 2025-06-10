@@ -3,7 +3,6 @@ using System.Reflection;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 
 namespace Caspian.UI
 {
@@ -198,8 +197,12 @@ namespace Caspian.UI
             //scope.Dispose();
             foreach (var info in this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic))
             {
-                if (info.PropertyType.GetInterfaces().Contains(typeof(IInternalUIService)))
-                    (info.GetValue(this) as IInternalUIService).Dispose();
+                if (info.GetCustomAttribute<InjectAttribute>() != null)
+                {
+                    var interfaces = info.PropertyType.GetInterfaces();
+                    if (info.PropertyType.GetInterfaces().Contains(typeof(IUIService)))
+                        (info.GetValue(this) as IInternalUIService).Dispose();
+                }
             }
         }
     }

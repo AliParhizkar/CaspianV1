@@ -66,6 +66,17 @@ namespace Caspian.UI
             await base.InitializeAfterUpsert(tempEntity, upsertMode);
         }
 
+        protected override void DisposeResource()
+        {
+            DetailDataView = null;
+            DetailForm = null;
+            DetailValidator = null;
+            ChangedEntities = new List<ChangedEntity<TDetail>>();
+            TypeWindow = null;
+
+            base.DisposeResource();
+        }
+
         public void ThirdDataLevelToIgnoreOnRemove<TProperty>(Expression<Func<TDetail, ICollection<TProperty>>> expression) => (this as IInternalBatchService<TDetail>).ThirdLevelProperty = (expression.Body as MemberExpression).Member as PropertyInfo;
 
         /// <summary>

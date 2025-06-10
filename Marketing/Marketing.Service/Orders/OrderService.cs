@@ -42,7 +42,7 @@ namespace Marketing.Service
                 {
                     if (t.OrderType == OrderType.Salon)
                     {
-                        if (Details.Any(t => products.Single(u => u.Id == t.ProductId).Price != t.Price))
+                        if (Details.Any(t => products.Single(u => u.Id == t.ProductId).Price - products.Single(u => u.Id == t.ProductId).Discount != t.Price))
                             return "قیمت غذاهای سالن درست انتخاب نشده است";
                     }
                     else

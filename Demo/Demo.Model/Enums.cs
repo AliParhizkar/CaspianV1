@@ -4,15 +4,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Demo.Model
 {
-    public enum ForTest: byte
-    {
-        [Display(Name = "Real person")]
-        Real,
-
-        [Display(Name = "Legal person")]
-        Legal
-    }
-
     public enum CustomerType: byte
     {
         [Display(Name = "Real person")]

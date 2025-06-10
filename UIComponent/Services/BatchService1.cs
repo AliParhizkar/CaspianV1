@@ -38,6 +38,16 @@ namespace Caspian.UI
 
         public IList<ChangedEntity<TDetail1>> ChangedEntities { get; set; }
 
+        protected override void DisposeResource()
+        {
+            ChangedEntities.Clear();
+            (this as ISimpleBatchService).ThirdLevelProperty = null;
+            DetailDataView = null;
+            DetailValidator = null;
+            TypeWindow = null;
+            DetailForm = null;
+            base.DisposeResource();
+        }
 
         protected override async Task SetChangedEntities()
         {

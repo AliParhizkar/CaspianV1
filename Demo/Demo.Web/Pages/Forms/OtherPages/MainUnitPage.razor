@@ -6,7 +6,7 @@
 }
 <div style="background-color:white" class="row ps-5 pe-5 pt-4 pb-4 ms-4 me-4">
     <EntitySearch Service="Service">
-        <StringTextBox @bind-Value="context.Title" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
     </EntitySearch>
     <DataGrid TEntity="MainUnit" Service="Service" ContentHeight="300">
         <Columns>
@@ -16,11 +16,9 @@
     </DataGrid>
     <Window Service="Service" Title="MainUnit" Style="width:450px">
         <CaspianForm Service="Service">
-            <StringTextBox @bind-Value="context.Title" />
-            <DropdownList @bind-Value="context.ActiveType" />
-            <div class="col-md-9 text-center">
-                <WindowCommandButtons />
-            </div>
+            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+            <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
+            <FormCommandButton ColSpan="8" />
         </CaspianForm>
     </Window>
  </div>

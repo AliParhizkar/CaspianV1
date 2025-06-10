@@ -91,13 +91,18 @@ namespace Caspian.UI
                 firstControl = control;
         }
 
+        public void ClearFirstControl()
+        {
+            firstControl = null;
+        }
+
         [Parameter]
         public int ColumnsCount { get; set; } = 1;
 
         public async Task FocusAsync()
         {
-            if (firstControl != null) 
-                await firstControl?.FocusAsync();
+            if (firstControl?.InputElement != null) 
+                await firstControl.FocusAsync();
         }
 
         public void AddControl(IControl control)

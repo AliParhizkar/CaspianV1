@@ -88,9 +88,13 @@
         <WindowCommandButtons ColSpan="9" />
     </CaspianForm>
 </Window>
-<ContextMenu @bind-Status="contextMenuStatus" Left="left" Top="top" >
+<ContextMenu @bind-Status="contextMenuStatus" Left="left" Top="top">
     <ContextMenuItem Title="ایجاد شاخه" />
     <ContextMenuItem Title="ایجاد زیر شاخه" />
+    <ContextMenuItem Separator />
+    <ContextMenuItem Title="ویرایش شاخه" />
+    <ContextMenuItem Separator />
+    <ContextMenuItem Title="حذف شاخه" />
 </ContextMenu>
 
 @code

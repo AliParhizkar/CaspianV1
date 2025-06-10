@@ -118,7 +118,7 @@
 </TabPanel>
 <Window @bind-Status="status" Title="شرح های پیش فرض" Style="width:550px">
     <CaspianForm TEntity="ProductDescription" Service="DescriptionService" OnSubmit="t => t.Entity.ProductId = productId">
-        <StringTextBox @bind-Value="context.Description" MultiLine Rows="2" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Description" ColSpan="8" />
         <FormCommandButton ColSpan="9" />
     </CaspianForm>
     <DataGrid TEntity="ProductDescription" Service="DescriptionService" ConditionExpr="t => t.ProductId == productId" ContentHeight="200">

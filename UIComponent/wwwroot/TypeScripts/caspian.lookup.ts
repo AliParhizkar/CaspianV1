@@ -28,17 +28,18 @@
         bindObserver(lookup: HTMLElement, dotnet: dotnetInvoker) {
             const mutationObserver = new MutationObserver(list => {
                 let sidebarWidth = document.getElementsByClassName('sidebar')[0].getBoundingClientRect().width;
-                let target = (list[0].target as HTMLElement);
+                let target = (list[0].target as HTMLElement).closest('.c-lookup') as HTMLElement;
                 let helpWindow = target.getElementsByClassName('t-HelpWindow')[0] as HTMLElement;
                 if (helpWindow != null) {
                     helpWindow.classList.remove('c-advance-search');
                     if (target.closest('.c-lookup').getAttribute('advanceSearch') == null) {
+                        console.log(target)
                         let locTarget = target.getBoundingClientRect();
                         let locHelpWindow = helpWindow.getBoundingClientRect();
-
                         let posTarget = target.getPosition();
+                        let scrollTop = helpWindow.getBoundingClientRect().top - locTarget.top + 3;
                         if (locTarget.top >= locHelpWindow.height - 30)
-                            helpWindow.style.marginTop = `${-locHelpWindow.height - 40}px`;
+                            helpWindow.style.marginTop = `${-locHelpWindow.height - scrollTop}px`;
                         if (caspian.common.RightToLeft()) {
                             let right = (locTarget.width - locHelpWindow.width) / 2;
                             if (window.innerWidth - locTarget.right - sidebarWidth + right < 5)

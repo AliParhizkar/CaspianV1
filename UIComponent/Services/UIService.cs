@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Caspian.UI
 {
@@ -243,6 +242,23 @@ namespace Caspian.UI
             (service as BaseService<TEntity>).SetBatchServiceData(MasterId, typeof(TEntity));
             return Task.CompletedTask;
         }
+
+        protected virtual void DisposeResource()
+        {
+            (this as IInternalUIService<TEntity>).OtherType = default;
+            Is1To1RelationshipService = default;
+            MasterId = default;
+            Window = default;
+            EntityTabPanel = default;
+            DataView = default;
+            Form = default;
+            Search = Activator.CreateInstance<TEntity>();
+            UpsertData = Activator.CreateInstance<TEntity>();
+            if (UpsertData is BaseEntity baseEntity)
+                baseEntity.UpsertUserId = UserId;
+            OnUpsert = default;
+        }
+
         #endregion
 
         #region Methods for Initialize Components. This Methods Call from components(DataView, Form, TypeWindow, ...) For intialize
@@ -410,22 +426,6 @@ namespace Caspian.UI
         /// </summary>
         void IInternalSearchService<TEntity>.OnlyForSearch() => HideInsertIcon = true;
 
-        void IInternalUIService.Dispose()
-        {
-            (this as IInternalUIService<TEntity>).OtherType = default;
-            Is1To1RelationshipService = default;
-            MasterId = default;
-            Window = default;
-            EntityTabPanel = default;
-            DataView = default;
-            Form = default;
-            Search = Activator.CreateInstance<TEntity>();
-            UpsertData = Activator.CreateInstance<TEntity>();
-            if (UpsertData is BaseEntity baseEntity)
-                baseEntity.UpsertUserId = UserId;
-            OnUpsert = default;
-        }
-
         void IInternalSearchService<TEntity>.SetSearchType(IDictionary<string, SearchType> types) => searchData = types;
 
         /// <summary>
@@ -500,9 +500,15 @@ namespace Caspian.UI
             var window = basePageService.Peek();
             if (window !=  null) 
                 return await window.GetMessageBox().Confirm(message);
+            
             return await baseComponentService.MessageBox.Confirm(message);
         }
 
         IDictionary<string, ICollection> IInternalSearchService<TEntity>.GetEnumFields() => enumValues;
+
+        void IInternalUIService.Dispose()
+        {
+            DisposeResource();
+        }
     }
 }

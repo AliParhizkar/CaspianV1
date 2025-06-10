@@ -172,39 +172,6 @@ namespace Main
                 });
                 
             });
-
         }
-    }
-
-    public static class TestExtenssion
-    {
-        //public static IQueryable<TResult> Join123<TKey, TResult>(this IQueryable<Order> outer, IEnumerable<PersianDateConvertor> inner, Expression<Func<Order, TKey>> outerKeySelector, Expression<Func<PersianDateConvertor, TKey>> innerKeySelector, Expression<Func<Order, PersianDateConvertor, TResult>> resultSelector)
-        //{
-        //    var q = resultSelector;
-        //    var q11 = resultSelector.Body as NewExpression;
-        //    var type = CreateTypeeee();
-
-        //    var info0 = type.GetProperty("Entity");
-        //    var info1 = type.GetProperty("PDate");
-        //    var param0 = Expression.Parameter(typeof(Order), "entity");
-        //    var param1 = Expression.Parameter(typeof(PersianDateTable), "pdate");
-        //    var q0 = Expression.Bind(info0, param0);
-        //    var q1 = Expression.Bind(info1, param1);
-        //    var body = Expression.MemberInit(Expression.New(type), new MemberBinding[]{ q0, q1});
-        //    Expression<Func<Order, PersianDateTable, TResult>> lambda = Expression.Lambda(Expression.New(q11.Constructor, q11.Arguments, q11.Members), q.Parameters) as Expression<Func<Order, PersianDateConvertor, TResult>>;
-            
-        //    return outer.Join(inner, outerKeySelector, innerKeySelector, lambda);
-        //}
-
-        //public static Type CreateTypeeee()
-        //{
-        //    var list = new List<DynamicProperty>()
-        //    {
-        //        new DynamicProperty("Entity", typeof(Order)),
-        //        new DynamicProperty("PDate", typeof(PersianDateTable))
-        //    };
-        //    return DynamicClassFactory.CreateType(list);
-        //}
-    }
-    
+    }    
 }
