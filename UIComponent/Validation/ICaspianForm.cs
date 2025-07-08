@@ -8,6 +8,8 @@ namespace Caspian.UI
 
         void SetFirstControl(IControl control);
 
+        void ClearFirstControl(IControl control);
+
         EditContext EditContext { get; }
 
         IControl GetFirstInvalidControl();

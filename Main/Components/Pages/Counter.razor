@@ -1,14 +1,22 @@
 ﻿@inherits BasePage
 @page "/counter"
 @namespace Main.Test
-@using Caspian.Common.Extension
-<div class="row c-controls" style="width:600px;margin:0 auto">
-    <ComboBox TEntity="Country" TValue="int" CascadeService="ProvinceService" TextExpression="t => t.Title" ColSpan="8" Title="کشور" TotalSpan="12" />
-    <ComboBox TEntity="Province" TValue="int" CascadeService="ProvinceService" TextExpression="t => t.Title" ColSpan="8" Title="استان" TotalSpan="12" />
+
+<div style="width:400px;margin:5px auto">
+    <Lookup TValue="int?" TEntity="AccountCoding" TextExpression="t => t.Title" CloseFunc="CloseFunc">
+        <Main.Components.Pages.CodingLookup />
+    </Lookup>
 </div>
+
 
 
 @code
 {
-    CascadeService<Country, Province> ProvinceService = new ();
+    string code;
+
+    bool CloseFunc(AccountCoding coding)
+    {
+        code = coding.Code;
+        return coding.Level == 3;
+    }
 }

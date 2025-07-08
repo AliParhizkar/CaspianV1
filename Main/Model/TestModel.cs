@@ -6,5 +6,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Main.Model
 {
-    
+    public class Test
+    {
+        public string Date { get; set; }
+
+        public string Time { get; set; }
+
+        public string Code { get; set; }
+
+        public string Number { get; set; }
+    }
 }

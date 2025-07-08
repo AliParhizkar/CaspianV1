@@ -243,10 +243,7 @@
     bool filtering = true;
     bool itemDisable = true;
     ControlSize controlSize = ControlSize.Auto;
-
     
-
-    DropdownList<OrderType?> dropdownList;
     WindowStatus status;
 
     string GetStyle()
@@ -269,10 +266,5 @@
     {
         otherTypeItems = SelectListItem.CreateList("One", "Two", "Three", "Four", "Five", "Six", "seven");
         base.OnInitialized();
-    }
-
-    async Task DropdownFocus()
-    {
-        await dropdownList.FocusAsync();
     }
 }

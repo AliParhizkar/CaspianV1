@@ -87,13 +87,14 @@ namespace Caspian.UI
 
         public void SetFirstControl(IControl control)
         {
-            if (firstControl == null || firstControl.InputElement == null) 
+            if (control?.InputElement != null && firstControl?.InputElement == null)
                 firstControl = control;
         }
 
-        public void ClearFirstControl()
+        public void ClearFirstControl(IControl control)
         {
-            firstControl = null;
+            if (control == firstControl)
+                firstControl = null;
         }
 
         [Parameter]

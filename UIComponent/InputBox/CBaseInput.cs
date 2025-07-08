@@ -344,13 +344,7 @@ namespace Caspian.UI
                 CurrentEditContext.OnValidationStateChanged -= CurrentEditContext_OnValidationStateChanged;
             if (OnDispose.HasDelegate)
                 await OnDispose.InvokeAsync(this);
-        }
-
-        protected override void OnAfterRender(bool firstRender)
-        {
-            if (firstRender)
-                CaspianForm?.SetFirstControl(this);
-            base.OnAfterRender(firstRender);
+            CaspianForm?.ClearFirstControl(this);
         }
 
         private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
@@ -430,6 +424,13 @@ namespace Caspian.UI
                 FormAppState.AllControlsIsValid = false;
                 FormAppState.Control = this;
             }
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+                CaspianForm?.SetFirstControl(this);
+            base.OnAfterRender(firstRender);
         }
 
         [CascadingParameter]

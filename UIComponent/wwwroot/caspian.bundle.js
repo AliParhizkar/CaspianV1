@@ -1213,7 +1213,8 @@ var caspian;
         }
         bindObserver(lookup, dotnet) {
             const mutationObserver = new MutationObserver(list => {
-                let sidebarWidth = document.getElementsByClassName('sidebar')[0].getBoundingClientRect().width;
+                let sidebar = document.getElementsByClassName('sidebar')[0];
+                let sidebarWidth = sidebar == null ? 0 : sidebar.getBoundingClientRect().width;
                 let target = list[0].target.closest('.c-lookup');
                 let helpWindow = target.getElementsByClassName('t-HelpWindow')[0];
                 if (helpWindow != null) {

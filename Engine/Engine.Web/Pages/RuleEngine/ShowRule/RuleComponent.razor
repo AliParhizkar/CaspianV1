@@ -86,9 +86,6 @@
     public bool StackIsEmpty { get; set; }
 
     [Parameter]
-    public IList<DataParameterValue> DataParameterValues { get; set; }
-
-    [Parameter]
     public IDictionary<int, object> UserParametersValue { get; set; }
 
     [Parameter]
@@ -119,7 +116,7 @@
 
     protected override void OnParametersSet()
     {
-        ruleEngine = new RuleEngine(FormParameters, DataParameterValues, Model, UserParametersValue);
+        ruleEngine = new RuleEngine(FormParameters, Model, UserParametersValue);
         ruleEngine.Rulesvalue = RulesValue;
         ruleEngine.UpdateTokens(Rule.Tokens);
         var value = RulesValue[Rule.Id];

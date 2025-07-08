@@ -51,14 +51,16 @@ namespace Main
                 CS.Con = builder.Configuration.GetConnectionString("ServerDb");
                 domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             }
-            
             if (builder.Environment.IsStaging())
-            builder.Services.ConfigureApplicationCookie(options =>
             {
-                options.Cookie.Name = ".AspNet.SharedCookie";
-                options.Cookie.Domain = domain;
-                options.Cookie.Path = "/";
-            });
+                builder.Services.ConfigureApplicationCookie(options =>
+                {
+                    options.Cookie.Name = ".AspNet.SharedCookie";
+                    options.Cookie.Domain = domain;
+                    options.Cookie.Path = "/";
+                });
+            }
+
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddAuthentication(options =>
             {
@@ -72,16 +74,16 @@ namespace Main
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
             builder.Services.AddScoped<ReportParamService>();
             builder.Services.AddCaspianUIComponentsServices();
-            builder.Services.AddSingleton<SingletonMenuService>(t =>
+            builder.Services.AddSingleton(t =>
             {
                 using var context = new Caspian.Engine.Model.Context();
+
                 return new SingletonMenuService()
                 {
-                    Categories = context.MenuCategories.ToList(),
-                    Menus = context.Menus.ToList()
+                    Categories = context.Set<MenuCategory>().ToList(),
+                    Menus = context.Set<Menu>().ToList()
                 };
             });
-
             builder.Services.AddScoped<CaspianDataService>();
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ReportParamService).Assembly.InjectServices(builder.Services);
@@ -135,7 +137,6 @@ namespace Main
             }
             app.Run();
         }
-
 
         static void ConfigureCulture()
         {

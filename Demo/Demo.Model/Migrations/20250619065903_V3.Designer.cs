@@ -4,6 +4,7 @@ using Demo.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo.Model.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250619065903_V3")]
+    partial class V3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -364,35 +367,6 @@ namespace Demo.Model.Migrations
                         {
                             t.ExcludeFromMigrations();
                         });
-                });
-
-            modelBuilder.Entity("Demo.Model.AccountCoding", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ParentCodeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentCodeId");
-
-                    b.ToTable("AccountCoding", "Demo");
                 });
 
             modelBuilder.Entity("Demo.Model.Address", b =>
@@ -1467,16 +1441,6 @@ namespace Demo.Model.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Demo.Model.AccountCoding", b =>
-                {
-                    b.HasOne("Demo.Model.AccountCoding", "ParentCode")
-                        .WithMany("ChildrenCodes")
-                        .HasForeignKey("ParentCodeId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("ParentCode");
-                });
-
             modelBuilder.Entity("Demo.Model.Address", b =>
                 {
                     b.HasOne("Demo.Model.Employee", "Employee")
@@ -1904,11 +1868,6 @@ namespace Demo.Model.Migrations
                     b.Navigation("ExceptionDetails");
 
                     b.Navigation("Memberships");
-                });
-
-            modelBuilder.Entity("Demo.Model.AccountCoding", b =>
-                {
-                    b.Navigation("ChildrenCodes");
                 });
 
             modelBuilder.Entity("Demo.Model.AddressType", b =>

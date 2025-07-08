@@ -14,7 +14,7 @@ namespace Caspian.UI
 
         int? SelectedRowId { get; }
 
-        EventCallback<int> OnInternalRowSelect { get; set; }
+        //EventCallback<int> OnInternalRowSelect { get; set; }
 
         Task ResetGrid();
     }

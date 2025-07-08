@@ -19,7 +19,7 @@ namespace Caspian.Engine.Service
 
         public IDictionary<int, object> Rulesvalue { get; set; }
 
-        public RuleEngine(IList<DataParameter> formParameters, IList<DataParameterValue> parameterValues, object model, IDictionary<int, object> userParametersValue)
+        public RuleEngine(IList<DataParameter> formParameters, object model, IDictionary<int, object> userParametersValue)
         {
             this.model = model;
             this.userParametersValue = userParametersValue;

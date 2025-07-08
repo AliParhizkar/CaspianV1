@@ -54,7 +54,7 @@ namespace ReportUiModels
                 switch(parameterType)
                 {
                     case DynamicParameterType.Rule:
-                        var result = await context.Rules.Where(t => t.TypeName == type.Name).Select(t => new
+                        var result = await context.Set<Rule>().Where(t => t.TypeName == type.Name).Select(t => new
                         {
                             t.Id,
                             t.Title

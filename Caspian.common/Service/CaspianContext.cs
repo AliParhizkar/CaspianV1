@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Caspian.Common
 {
@@ -16,19 +17,28 @@ namespace Caspian.Common
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //string projectPath = AppDomain.CurrentDomain.BaseDirectory.Split(new String[] { @"bin\" }, StringSplitOptions.None)[0];
+            var schema = GetType().Namespace.Split('.')[0].ToLower();
+            if (schema == "caspian")
+                schema = "cmn";
             optionsBuilder.UseSqlServer(CS.Con, t =>
             {
                 t.AddRowNumberSupport();
+                t.MigrationsHistoryTable("__EFMigrationsHistory", schema);
             }).ReplaceService<IMigrationsSqlGenerator, CaspianMigrationsSqlGenerator>()
                 .EnableSensitiveDataLogging();
             optionsBuilder.UseLazyLoadingProxies(false);
+
             base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var assembly = this.GetType().Assembly;
+            var allTypes = assembly.GetTypes().Where(t => t.GetCustomAttribute<TableAttribute>() != null);
+            foreach (var type in allTypes)
+                modelBuilder.Entity(type);
             var types = modelBuilder.Model.GetEntityTypes().Select(t => t.ClrType);
-            var assemblyName = this.GetType().Assembly.GetName().Name;
+            var assemblyName = assembly.GetName().Name;
             foreach (var type in types)
             {
                 var pKeyName = type.GetPrimaryKey(true)?.Name;
@@ -38,57 +48,72 @@ namespace Caspian.Common
                     {
                         continue;
                     }
+                    var type1 = property.PropertyType;
                     var foreignKey = property.GetCustomAttribute<ForeignKeyAttribute>();
-                    if (foreignKey != null)
+                    if (type1.IsValueType || type1 == typeof(string) || type1 == typeof(byte[]))
                     {
-                        ///Check Relation That has Two node
-                        
-                        if (property.GetDetailsProperty(type) == null)
+                        if (foreignKey != null)
+                            throw new CaspianException($"Only properties of type entity can have ForeignKeyAttribute: In type {type.Name} property {property.Name} have ForeignKeyAttribute");
+                    }
+                    else 
+                    {
+                        ///Check relations between this entity and others entities 
+                        if (type1.IsEnumerableType())
                         {
-                            if (foreignKey.Name == pKeyName)
-                            {
-                                if (property.PropertyType.GetProperties().SingleOrDefault(t => t.PropertyType == type) == null)
-                                {
-                                    throw new CaspianException($"In type {property.PropertyType.Name} we should have a property of type {type.Name} please add it");
-                                }
-                            }
-                            else
-                                throw new CaspianException($"In type {property.PropertyType.Name} we should have a property of type ICollection<{type.Name}> please add it");
+                            ///1-n relationship. check "Details" property is exist
+                            var detailsType = type1.GenericTypeArguments[0];
+                            detailsType.GetForeignKey(type, property.GetCustomAttribute<InversePropertyAttribute>()?.Property);
                         }
-                        if (foreignKey.Name == pKeyName)
+                        else if (foreignKey == null)
                         {
-                            /// Delete all relation on 1 to 1 relationship
-                            var info = property.PropertyType.GetProperties().Single(t => t.PropertyType == type);
-                            modelBuilder.Entity(property.PropertyType)
-                                .HasOne(info.Name)
-                                .WithOne(property.Name)
-                                .IsRequired(false)
-                                .OnDelete(DeleteBehavior.Cascade);
+                            /// 1-1 relation check "Master" property is exist
+                            var relationProperty = type1.GetProperties().SingleOrDefault(t => t.PropertyType == type);
+                            if (relationProperty == null)
+                                throw new CaspianException($"For a 1-1 relation, In type {type1.Name} we should have a property of type {type.Name}");
+                            var relationAttr = relationProperty.GetCustomAttribute<ForeignKeyAttribute>();
+                            if (relationAttr == null || relationAttr.Name != type1.GetPrimaryKey(true).Name)
+                                throw new CaspianException($"For a 1-1 relation, Property {relationProperty.Name} in type {type1.Name} should has a ForeignKeyAttribute: ForeignKey(nameof({type1.GetPrimaryKey(true).Name}))");
                         }
                         else
                         {
-                            var mainProperties = property.PropertyType.GetProperties().Where(t => t.PropertyType.IsCollectionType(type));
-                            var count = mainProperties.Count();
-                            var relationsCount = count;
-                            if (count > 1)
+                            if (foreignKey.Name == pKeyName)
                             {
-                                mainProperties = mainProperties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>()?.Property == property.Name);
-                                count = mainProperties.Count();
+                                ///1-1 relation check "Detail" property is exist
+                                if (property.PropertyType.GetProperties().SingleOrDefault(t => t.PropertyType == type) == null)
+                                    throw new CaspianException($"For a 1-n relation, In type {property.PropertyType.Name} we should have a property of type {type.Name} please add it");
                             }
-
-                            if (count != 1)
+                            if (foreignKey.Name == pKeyName)
                             {
-                                if (relationsCount == 0)
-                                    throw new CaspianException($"On Type {property.PropertyType} we should have a property of type ICollection<{type.Name}>");
-                                else
-                                    throw new CaspianException($"On Type {property.PropertyType} we have many properties of type ICollection<{type.Name}> and we should use InverseProperty({property.Name}) Relation Coun:{relationsCount}");
+                                /// Delete all relation on 1 to 1 relationship
+                                var info = property.PropertyType.GetProperties().Single(t => t.PropertyType == type);
+                                modelBuilder.Entity(property.PropertyType)
+                                    .HasOne(info.Name)
+                                    .WithOne(property.Name)
+                                    .IsRequired(false)
+                                    .OnDelete(DeleteBehavior.Cascade);
                             }
-
-                            modelBuilder.Entity(type)
-                                .HasOne(property.Name)
-                                .WithMany(mainProperties.Single().Name)
-                                .OnDelete(DeleteBehavior.NoAction);
-
+                            else
+                            {
+                                var mainProperties = property.PropertyType.GetProperties().Where(t => t.PropertyType.IsCollectionType(type));
+                                var count = mainProperties.Count();
+                                var relationsCount = count;
+                                if (count > 1)
+                                {
+                                    mainProperties = mainProperties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>()?.Property == property.Name);
+                                    count = mainProperties.Count();
+                                }
+                                if (count != 1)
+                                {
+                                    if (relationsCount == 0)
+                                        throw new CaspianException($"On Type {property.PropertyType} we should have a property of type ICollection<{type.Name}>");
+                                    else
+                                        throw new CaspianException($"On Type {property.PropertyType} we have many properties of type ICollection<{type.Name}> and we should use InverseProperty({property.Name}) Relation Coun:{relationsCount}");
+                                }
+                                modelBuilder.Entity(type)
+                                    .HasOne(property.Name)
+                                    .WithMany(mainProperties.Single().Name)
+                                    .OnDelete(DeleteBehavior.NoAction);
+                            }
                         }
                     }
                 }
@@ -153,6 +178,7 @@ namespace Caspian.Common
 
             modelBuilder.HasDbFunction(typeof(JsonExtensions).GetMethod(nameof(JsonExtensions.JsonValue)))
                .HasTranslation(e => new SqlFunctionExpression("JSON_VALUE", e, true, new[] { true, false }, typeof(String), null));
+            
             base.OnModelCreating(modelBuilder);
         }
 

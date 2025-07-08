@@ -337,18 +337,18 @@ namespace Caspian.UI
             return query;
         }
 
-        IList<Expression> ConvertExpressionForGroupBy(IList<Expression> list, ParameterExpression parameter)
-        {
-            var exprList = new List<Expression>();
-            foreach(var item in list)
-            {
-                var path = item.ToString();
-                var index = path.IndexOf('.');
-                path = "Key." + path.Substring(index + 1);
-                exprList.Add(parameter.CreateMemberExpresion(path));
-            }
-            return exprList;
-        }
+        //IList<Expression> ConvertExpressionForGroupBy(IList<Expression> list, ParameterExpression parameter)
+        //{
+        //    var exprList = new List<Expression>();
+        //    foreach(var item in list)
+        //    {
+        //        var path = item.ToString();
+        //        var index = path.IndexOf('.');
+        //        path = "Key." + path.Substring(index + 1);
+        //        exprList.Add(parameter.CreateMemberExpresion(path));
+        //    }
+        //    return exprList;
+        //}
 
         internal void SetDeleteMessage(string message)
         {
@@ -380,7 +380,7 @@ namespace Caspian.UI
         [Parameter]
         public EventCallback<TEntity> OnRowSelect { get; set; }
 
-        public EventCallback<int> OnInternalRowSelect { get; set; }
+        public EventCallback<TEntity> OnInternalRowSelect { get; set; }
 
         [Parameter]
         public RenderFragment<RowData<TEntity>> Columns { get; set; }

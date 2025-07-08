@@ -70,7 +70,7 @@ namespace Marketing.Web.OrderComponents
                 }
                 else
                 {
-                    old.Quantity = (decimal)value;
+                    old.Quantity = value;
                     await grid.UpdateAsync(old);
                 }
                 await OnChange.InvokeAsync();

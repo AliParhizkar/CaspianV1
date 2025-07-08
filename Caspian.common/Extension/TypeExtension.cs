@@ -85,16 +85,12 @@ namespace Caspian.Common.Extension
                 throw new CaspianException($"There are {properties.Count()} properties of type ICollection<{detailType.Name}> and InversePropertyName is null");
             if (properties.Any(t => t.GetCustomAttribute<InversePropertyAttribute>() == null))
                 throw new CaspianException($"There are properties of type ICollection<{detailType.Name}> that haven't InversePropertyAttribute please add it");
-            return properties.Single(t => t.GetCustomAttribute<InversePropertyAttribute>().Property == InversePropertyName);
+            return properties.SingleOrDefault(t => t.GetCustomAttribute<InversePropertyAttribute>().Property == InversePropertyName);
         }
 
         public static PropertyInfo GetDetailsProperty(this PropertyInfo detailInfo, Type type)
         {
             var properties = detailInfo.PropertyType.GetProperties().Where(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == type && t.PropertyType.IsCollectionType());
-            if (properties.Count() == 0)
-            {
-
-            }
             if (properties.Count() < 2)
                 return properties.SingleOrDefault();
             properties = properties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>().Property == detailInfo.Name);
@@ -107,7 +103,7 @@ namespace Caspian.Common.Extension
         {
             var infos = type.GetProperties().Where(t => t.PropertyType == foreignKeyType);
             if (infos.Count() == 0)
-                throw new CaspianException($"Type {type.Name} must a foreign key of type {foreignKeyType.Name}");
+                throw new CaspianException($"Type {type.Name} must have a foreign key of type {foreignKeyType.Name}");
             PropertyInfo info = null;
             if (infos.Count()  > 1)
             {

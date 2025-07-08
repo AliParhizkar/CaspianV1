@@ -25,7 +25,6 @@ namespace Demo.Service
             }, "The order must has at least products");
             RuleFor(t => t.OrderStatus).Custom(t => t.CourierId.HasValue && t.OrderStatus == OrderStatus.Canceled,
                 "The order has a courier and it is not possible to cancel it.");
-            RuleFor(t => t.CustomerId).Required();
             RuleForEach(t => t.OrderDetails).SetValidator(new OrderDetailService(provider, Details.ToList()));
         }
 

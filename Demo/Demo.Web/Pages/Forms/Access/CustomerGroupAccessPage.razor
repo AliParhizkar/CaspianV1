@@ -88,7 +88,7 @@
                         <CaspianForm Service="Service">
                             <div class="d-btn-container">
                                 <div>
-                                    <IconButton @onclick="AddCustomersToGroup" type="button" IconType="IconType.AngleDoubleRight" />
+                                    <IconButton @onclick="AddSelectedCustomersToGroup" type="button" IconType="IconType.AngleDoubleRight" />
                                 </div>
                                 <div>
                                     <IconButton IconType="IconType.AngleRight" />
@@ -97,7 +97,7 @@
                                     <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
                                 </div>
                                 <div>
-                                    <IconButton type="button" IconType="IconType.AngleDoubleLeft" />
+                                    <IconButton type="button" @onclick="DeleteSelectedCustomersFromGroup" IconType="IconType.AngleDoubleLeft" />
                                 </div>
                             </div>
                         </CaspianForm>
@@ -145,14 +145,32 @@
         base.OnInitialized();
     }
 
-    async Task AddCustomersToGroup()
+    async Task AddSelectedCustomersToGroup()
     {
         using var scope = CreateScope();
         var query = Service.GetFilteredOthers(scope);
         var count = await query.CountAsync();
         if (await Confirm($"آیا با افزودن {count} مشتری به گروه موافقید؟"))
         {
+            var service = scope.GetService<CustomerGroupMembershipService>();
+            service.GetAll().Intersect(query.Select(t => new CustomerGroupMembership()
+            {
+                CustomerGroupId = (short)GroupId,
+                CustomerId = t.Id
+            }));
+            await service.SaveChangesAsync();
+        }
+    }
 
+    async Task DeleteSelectedCustomersFromGroup()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredAccess(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با حذف {count} مشتری از گروه مشتریان موافقید؟"))
+        {
+            query.ExecuteDelete();
+            await Service.DataView.ReloadAsync();
         }
     }
 

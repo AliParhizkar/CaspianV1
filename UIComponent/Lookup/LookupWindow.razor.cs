@@ -55,7 +55,7 @@ namespace Caspian.UI
 
         void BindGrid()
         {
-            grid.InternalConditionExpr = SearchExpression.Body;
+            grid.InternalConditionExpr = SearchExpression?.Body;
             Lookup.SetAndInitializeGrid(grid);
         }
 

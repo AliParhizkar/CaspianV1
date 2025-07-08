@@ -23,7 +23,7 @@ namespace Marketing.Service
                 if (merchantConfig == null)
                 {
                     using var context = new MarketingContext();
-                    merchantConfig = context.MerchantConfigs.AsNoTracking().SingleOrDefault();
+                    merchantConfig = context.Set<Config>().AsNoTracking().SingleOrDefault();
                 }
                 return merchantConfig;
             }

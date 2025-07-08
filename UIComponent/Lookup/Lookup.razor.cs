@@ -300,17 +300,30 @@ namespace Caspian.UI
             return false;
         }
 
-        public void CloseHelpForm(bool shouldRender = false)
+        [Parameter]
+        public Func<TEntity, bool> CloseFunc { get; set; }
+
+        public bool CloseHelpForm(TEntity selectedEntity, bool shouldRender = false)
         {
-            status = WindowStatus.Close;
-            if (shouldRender)
-                StateHasChanged();
+            if (selectedEntity == null || CloseFunc == null || CloseFunc(selectedEntity))
+            {
+                status = WindowStatus.Close;
+                if (CloseFunc != null)
+                {
+                    shouldRender = true;
+                    grid.EnableLoading();
+                }
+                if (shouldRender)
+                    StateHasChanged();
+                return true;
+            }
+            return false;
         }
 
         [JSInvokable]
         public void Close()
         {
-            CloseHelpForm(true);
+            CloseHelpForm(null, true);
         }
 
         async Task OnKeyUp(KeyboardEventArgs e)
@@ -352,13 +365,16 @@ namespace Caspian.UI
                 case "NumpadEnter":
                     if (grid?.SelectedRowId != null)
                     {
-                        var value = grid.SelectedRowId.Value;
-                        CloseHelpForm();
-                        await SetValue(value, false);
-                        valueUpdated = true;
-                        oldValue = Value;
-                        Text = await GetText(value);
-                        oldText = Text;
+                        var result = CloseHelpForm(grid.GetSelectedData());
+                        if (result)
+                        {
+                            var value = grid.SelectedRowId.Value;
+                            await SetValue(value, false);
+                            valueUpdated = true;
+                            oldValue = Value;
+                            Text = await GetText(value);
+                            oldText = Text;
+                        }
                     }
                     break;
                 case "Escape":
@@ -394,10 +410,13 @@ namespace Caspian.UI
         {
             this.grid = grid;
             grid.SelectFirstRow();
-            grid.OnInternalRowSelect = EventCallback.Factory.Create<int>(this, async id =>
+            grid.OnInternalRowSelect = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
-                Close();
-                await SetValue(id);
+                if(CloseHelpForm(entity))
+                {
+                    var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+                    await SetValue(id);
+                }
             });
         }
 

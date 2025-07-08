@@ -1,0 +1,49 @@
+﻿@typeparam TValue
+@namespace Demo.Web.Pages
+@inherits LookupWindow<AccountCoding, TValue>
+<div class="c-lookup-page" style="width:700px;">
+    <EntitySearch TEntity="AccountCoding" Service="Service">
+        <StringTextBox @bind-Value="searchCode" Title="کد" ColSpan="2" TotalSpan="4" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="6" TotalSpan="8" />
+    </EntitySearch>
+    <div class="p-2">
+        <DataGrid Service="Service" TEntity="AccountCoding" ContentHeight="200" OnRowSelect="OnRowSelect"
+                  ConditionExpr="t => t.Level == level && ((code + searchCode)== null || t.Code.StartsWith(code + searchCode))">
+            <Columns>
+                <GridColumn Field="t => t.Code" Title="کد حساب">
+                    <Template>
+                        <span>@context.Data.Code.Substring(lenth)</span>
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="t => t.Title" />
+                <GridColumn DataField Field="t => t.Level" />
+            </Columns>
+        </DataGrid>
+    </div>
+
+    <div class="a-titles ps-3">
+        @for (var i = 1; i < level; i++)
+        {
+            <span>@(titles[i - 1])</span>
+            if (i < level - 1)
+            {
+                <span class="fa fa-angle-double-right"></span>
+            }
+        }
+    </div>
+</div>
+
+@code
+{
+    string code, searchCode;
+    int level = 1, lenth;
+    string[] titles = new string[5];
+    async Task OnRowSelect(AccountCoding coding)
+    {
+        code = coding.Code;
+        lenth = code.Length;
+        titles[level - 1] = coding.Title;
+        level = coding.Level + 1;
+        await Service.DataView.ReloadAsync();
+    }
+}

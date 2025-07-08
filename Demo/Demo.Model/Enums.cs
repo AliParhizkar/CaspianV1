@@ -25,7 +25,7 @@ namespace Demo.Model
     public enum ActiveType: byte
     {
         [Display(Name = "Enable")]
-        Enable = 1,
+        Enable,
 
         [Display(Name = "Disable")]
         Disable

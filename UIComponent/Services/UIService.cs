@@ -176,6 +176,7 @@ namespace Caspian.UI
                     if (OnCreate != null)
                         OnCreate(UpsertData);
                     StateHasChanged();
+                    await Form.FocusAsync();
                 }
                 else
                     await Window.Close();
@@ -469,7 +470,10 @@ namespace Caspian.UI
                 if (old != null)
                 {
                     UpsertData.CopyEntity(old);
-                    pKey.SetValue(UpsertData, MasterId);
+                    if (pKey.PropertyType == typeof(int))
+                        pKey.SetValue(UpsertData, MasterId);
+                    else
+                        pKey.SetValue(UpsertData, Convert.ChangeType(MasterId, pKey.PropertyType));
                 }
             }
         }

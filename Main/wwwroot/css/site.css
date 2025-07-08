@@ -624,3 +624,13 @@ html, body {
     margin-top:33px;
     margin-left:-1px;
 }
+
+.a-titles {
+    height: 30px;
+    padding: 5px ;
+}
+
+.a-titles .fa{
+    padding:0 5px;
+    color:blueviolet
+}

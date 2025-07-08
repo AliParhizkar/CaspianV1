@@ -44,12 +44,9 @@
     [Parameter]
     public IDictionary<int, object> RulesValue { get; set; }
 
-    [Parameter]
-    public IList<DataParameterValue> DataParameterValues { get; set; }
-
     protected override void OnInitialized()
     {
-        ruleEngine = new RuleEngine(FormParameters, DataParameterValues, Model, UserParametersValue);
+        ruleEngine = new RuleEngine(FormParameters, Model, UserParametersValue);
         ruleEngine.Rulesvalue = RulesValue;
         base.OnInitialized();
     }

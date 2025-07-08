@@ -70,9 +70,8 @@ namespace Caspian.UI
             var detailService = (DetailsService ?? CaspianForm?.DetailsService) as IInternalBatchService<TModel>;
             if (detailService != null)
                 detailService.DetailCaspianValidationValidatorInitializer(this);
-            else if (CaspianForm.Service != null)
+            else if (CaspianForm?.Service != null)
                 CaspianForm.Service.CaspianValidationValidatorInitializer(this);
-                
             base.OnInitialized();
         }
 

@@ -57,7 +57,7 @@ namespace Demo.Model
         public string EmploymentNo { get; set; }
 
         [DisplayName("مشخصات شناسنامه ای")]
-        public IdentificationDetail IdentificationDetail { get; set; } //Children
+        public IdentificationDetail IdentificationDetail { get; set; } 
 
         [DisplayName("سوابق تحصیلی"), CheckOnDelete("کارمند دارای سابقه ی تحصیلی می باشد و امکان حذف وی وجود ندارد.")]
         public IList<CourseStudy> CourseStudies { get; set; }

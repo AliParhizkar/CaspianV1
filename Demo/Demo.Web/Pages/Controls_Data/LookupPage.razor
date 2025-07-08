@@ -253,6 +253,23 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <h4>Hirarkey Search</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row c-controls">
+                            <div class="ps-5 col-md-4">
+                                <label>Account Coding</label>
+                            </div>
+                            <div class="col-md-8 pe-5">
+                                <Lookup TValue="int?" TEntity="AccountCoding" TextExpression="t => t.Title" CloseFunc="CloseFunc">
+                                    <CodingLookup />
+                                </Lookup>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </TabPanelItem>
@@ -274,7 +291,7 @@
 @code
 {
     ControlSize controlSize = ControlSize.Auto;
-        Caspian.UI.Lookup<Customer, int?> acCsutomer;
+    Caspian.UI.Lookup<Customer, int?> acCsutomer;
     int? id1;
     bool disabled;
     bool autoHide;
@@ -287,6 +304,7 @@
     CustomerType? customerType;
     CustomerType? customerKind = CustomerType.Real;
     Gender? gender;
+    string code;
 
     string GetStyle()
     {
@@ -302,5 +320,11 @@
                 return "";
         }
         throw new NotImplementedException();
+    }
+
+    bool CloseFunc(AccountCoding coding)
+    {
+        code = coding.Code;
+        return coding.Level == 3;
     }
 }

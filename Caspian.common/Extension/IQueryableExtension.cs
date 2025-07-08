@@ -40,8 +40,12 @@ namespace Caspian.Common.Extension
         public async static Task<TEntity> SingleOrDefaultAsync<TEntity>(this IQueryable<TEntity> query, int id) where TEntity : class
         {
             var param = Expression.Parameter(typeof(TEntity), "t");
-            Expression expr = Expression.Property(param, typeof(TEntity).GetPrimaryKey());
-            expr = Expression.Equal(expr, Expression.Constant(id));
+            var pKey = typeof(TEntity).GetPrimaryKey();
+            Expression expr = Expression.Property(param, pKey);
+            if (pKey.PropertyType == typeof(int))
+                expr = Expression.Equal(expr, Expression.Constant(id));
+            else
+                expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(id, pKey.PropertyType)));
             var lambda = Expression.Lambda(expr, param);
             return await query.Where(lambda).OfType<TEntity>().SingleOrDefaultAsync();
         }

@@ -115,6 +115,7 @@ namespace Caspian.UI
         public void Dispose()
         {
             InputElement = null;
+            CaspianForm?.ClearFirstControl(this);
         }
 
         string GetLabelCSSClassName()
@@ -157,7 +158,6 @@ namespace Caspian.UI
         }
 
         public EventCallback<object> OnInternalValueChanged { get; set; }
-
 
         public bool HasError()
         {
@@ -283,6 +283,7 @@ namespace Caspian.UI
         {
             if (Title != null)
                 title = Title;
+            CaspianForm?.SetFirstControl(this);
             CaspianForm?.AddControl(this);
             CaspianContainer?.SetControl(this);
             disabled = CaspianContainer?.Disabled == true ? true : Disabled;
@@ -437,8 +438,7 @@ namespace Caspian.UI
 
         protected override void OnAfterRender(bool firstRender)
         {
-            if (firstRender)
-                CaspianForm?.SetFirstControl(this);
+            CaspianForm?.SetFirstControl(this);
             base.OnAfterRender(firstRender);
         }
 

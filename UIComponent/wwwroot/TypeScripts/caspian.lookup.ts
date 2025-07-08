@@ -27,7 +27,8 @@
 
         bindObserver(lookup: HTMLElement, dotnet: dotnetInvoker) {
             const mutationObserver = new MutationObserver(list => {
-                let sidebarWidth = document.getElementsByClassName('sidebar')[0].getBoundingClientRect().width;
+                let sidebar = document.getElementsByClassName('sidebar')[0];
+                let sidebarWidth = sidebar == null ?0 : sidebar.getBoundingClientRect().width;
                 let target = (list[0].target as HTMLElement).closest('.c-lookup') as HTMLElement;
                 let helpWindow = target.getElementsByClassName('t-HelpWindow')[0] as HTMLElement;
                 if (helpWindow != null) {
