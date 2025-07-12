@@ -29,7 +29,7 @@
                     </li>
                 </ul>
                 <div class="c-controls row ps-2 pe-2">
-                    <EntitySearch Service="Service"ColumnsCount="2" >
+                    <EntitySearch Service="Service" ColumnsCount="2">
                         <StringTextBox @bind-Value="context.LName" ColSpan="4" />
                         <StringTextBox @bind-Value="context.MobileNumber" ColSpan="4" />
                     </EntitySearch>
@@ -51,7 +51,7 @@
                         </RadioList>
                     </div>
                     <div>
-                        @switch(groupsDisplaing)
+                        @switch (groupsDisplaing)
                         {
                             case 1:
                                 <FirstImplementationComponent />
@@ -69,6 +69,15 @@
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
             <Document FolderName="Batch" FileName="Customer&Groups" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Tab Panel">
+            <Document FolderName="Batch" FileName="Customer&Groups-First" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Check list box">
+            <Document FolderName="Batch" FileName="Customer&Groups-Second" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Dropdown list box">
+            <Document FolderName="Batch" FileName="Customer&Groups-Third" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

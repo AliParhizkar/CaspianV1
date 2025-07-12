@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
+using Demo.Model;
 
 namespace Main
 {
@@ -127,12 +128,12 @@ namespace Main
             app.MapCaspianProjectWhen<Engine.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Egnine") ||
                 httpContext.Request.Path.StartsWithSegments("/Account"));
-
             app.MapAdditionalIdentityEndpoints();
             app.MapControllers();
-            if (builder.Environment.IsStaging())
+            if (!builder.Environment.IsDevelopment())
             {
-                app.Urls.Add("https://localhost:443");
+                if (Directory.EnumerateFiles(builder.Environment.ContentRootPath + "/PersistKey").Any())
+                    app.Urls.Add("https://localhost:443");
                 app.Urls.Add("http://localhost:80");
             }
             app.Run();

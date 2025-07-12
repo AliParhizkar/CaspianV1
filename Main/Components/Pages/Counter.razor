@@ -1,17 +1,24 @@
 ﻿@inherits BasePage
+@using Microsoft.EntityFrameworkCore 
 @page "/counter"
 @namespace Main.Test
 
-<div style="width:400px;margin:5px auto">
-    <Lookup TValue="int?" TEntity="AccountCoding" TextExpression="t => t.Title" CloseFunc="CloseFunc">
-        <Main.Components.Pages.CodingLookup />
-    </Lookup>
-</div>
+<button @onclick="UpdateDataBase">Update DataBase</button>
 
 
 
 @code
 {
+    void UpdateDataBase()
+    {
+        using var eContext = new Caspian.Engine.Model.Context();
+        eContext.Database.Migrate();
+        using var dContext = new Demo.Model.Context();
+        dContext.Database.Migrate();
+        using var mContext = new Marketing.Model.MarketingContext();
+        mContext.Database.Migrate();
+    }
+
     string code;
 
     bool CloseFunc(AccountCoding coding)

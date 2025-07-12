@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
-
+//185.18.213.248\SQLEXPRESS
 namespace Marketing.Model.Migrations
 {
     /// <inheritdoc />

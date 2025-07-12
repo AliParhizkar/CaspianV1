@@ -78,16 +78,12 @@
                     </div>
                     <div class="col-md-4 row pe-3">
                         <CaspianForm Service="Service">
-                            <Content Context="order">
-                                <div class="row c-controls ps-3 pe-3">
-                                    <DatePicker @bind-Value="order.Date" ColSpan="8" />
-                                    <DropdownList @bind-Value="order.OrderType" ColSpan="8" />
-                                    <ComboBox TEntity="Customer" TValue="int?" @bind-Value="order.CustomerId" ColSpan="8"
-                                              TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
-                                    <NumericTextBox Value="order.TotalAmount" DigitGrouping readonly Title="Sum Total" ColSpan="8" />
-                                    <FormCommandButton />
-                                </div>
-                            </Content>
+                            <DatePicker @bind-Value="context.Date" ColSpan="8" />
+                            <DropdownList @bind-Value="context.OrderType" ColSpan="8" />
+                            <ComboBox TEntity="Customer" TValue="int?" @bind-Value="context.CustomerId" ColSpan="8"
+                                      TextExpression="@(t => t.CustomerType == CustomerType.Real ? (t.FName + " " + t.LName) : t.CompanyName)" />
+                            <NumericTextBox Value="context.TotalAmount" DigitGrouping readonly Title="Sum Total" ColSpan="8" />
+                            <FormCommandButton />
                         </CaspianForm>
                         <div class="pt-3 text-center pe-3">
                             <div class="pt-3">

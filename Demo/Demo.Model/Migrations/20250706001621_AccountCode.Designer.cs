@@ -314,8 +314,8 @@ namespace Demo.Model.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PasswordHash")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(50)
