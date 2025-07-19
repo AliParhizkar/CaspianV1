@@ -130,12 +130,12 @@ namespace Main
                 httpContext.Request.Path.StartsWithSegments("/Account"));
             app.MapAdditionalIdentityEndpoints();
             app.MapControllers();
-            if (!builder.Environment.IsDevelopment())
-            {
-                if (Directory.EnumerateFiles(builder.Environment.ContentRootPath + "/PersistKey").Any())
-                    app.Urls.Add("https://localhost:443");
-                app.Urls.Add("http://localhost:80");
-            }
+            ////if (!builder.Environment.IsDevelopment())
+            ////{
+            ////    if (Directory.EnumerateFiles(builder.Environment.ContentRootPath + "/PersistKey").Any())
+            ////        app.Urls.Add("https://localhost:443");
+            ////    app.Urls.Add("http://localhost:80");
+            ////}
             app.Run();
         }
 

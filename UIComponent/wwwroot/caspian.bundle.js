@@ -398,7 +398,7 @@ var caspian;
         }
         static setSelection(input, start, end) {
             input.focus();
-            setTimeout(() => input.setSelectionRange(start, end || start), 40);
+            input.setSelectionRange(start, end || start);
         }
         static bindCheckbox(element) {
             element.onfocus = e => {
@@ -1472,7 +1472,8 @@ var caspian;
                 list.add('t-state-default');
             };
             input.onfocus = () => {
-                input.select();
+                if (input.getAttribute('disableautoselect') == null)
+                    input.select();
                 let list = input.parentElement.classList;
                 list.add('t-state-focused');
                 list.remove('t-state-default');

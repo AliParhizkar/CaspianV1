@@ -45,5 +45,8 @@ namespace Marketing.Model
 
         [DisplayName("نوع سفارش پیشفرض")]
         public OrderType DefaultOrderType { get; set; }
+
+        [DisplayName("تاخیر زمانی")]
+        public int DelayMilliSecond { get; set; }
     }
 }

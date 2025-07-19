@@ -117,8 +117,12 @@ namespace Caspian.Common
                         }
                     }
                 }
-
-                
+                var baseType = type;
+                //while(type.BaseType != typeof(object))
+                //{
+                //    if (type == typeof())
+                //    baseType = baseType.BaseType;
+                //}
                 if (!assemblyName.Equals("Engine.Model", StringComparison.OrdinalIgnoreCase))
                 {
                     TableAttribute tableAttribute = type.GetCustomAttribute<TableAttribute>();
@@ -127,6 +131,10 @@ namespace Caspian.Common
                         modelBuilder.Entity(type).ToTable(tableAttribute.Name, tableAttribute.Schema, t =>
                         {
                             t.ExcludeFromMigrations();
+                            t.IsTemporal(b =>
+                            {
+                                
+                            });
                         });
                     }
                 }

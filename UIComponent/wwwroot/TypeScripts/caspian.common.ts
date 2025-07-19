@@ -72,7 +72,7 @@
 
         public static setSelection(input: HTMLInputElement, start: number, end: number) {
             input.focus();
-            setTimeout(() => input.setSelectionRange(start, end || start), 40);
+            input.setSelectionRange(start, end || start);
         }
 
         public static bindCheckbox(element: HTMLElement) {

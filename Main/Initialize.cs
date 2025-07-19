@@ -88,6 +88,7 @@ namespace Main
                     var path = $"{builder.Environment.ContentRootPath}\\Errors\\{Path.GetRandomFileName()}.xml";
                     var doc = new XElement("Errors");
                     var error = new XElement("Error");
+                    doc.AddElement(error);
                     if (exception == null)
                         error.AddContent(message);
                     else
@@ -96,7 +97,6 @@ namespace Main
                         while(ex != null)
                         {
                             error.AddElement("Message", message).AddElement("StackTrace", exception.StackTrace);
-                            doc.AddElement(error);
                             ex = ex.InnerException;
                             error = new XElement("Error");
                         }

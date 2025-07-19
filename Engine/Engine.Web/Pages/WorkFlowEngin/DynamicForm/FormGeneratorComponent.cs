@@ -26,7 +26,6 @@ namespace Caspian.Engine.WorkflowEngine
         BlazorControl selectedControl;
         PropertyWindow propertyWindow;
         string formTitle;
-        int dataModelId;
         // ------ Property Window
         string Id;
         string formName;
@@ -77,7 +76,6 @@ namespace Caspian.Engine.WorkflowEngine
             subSystemKind = form.WorkflowGroup.SubSystemKind;
             formName = form.Name;
             formTitle = form.Title;
-            dataModelId = form.DataModelId;
             rows = await scope.GetService<HtmlRowService>().GetRows(WorkflowFormId);
             selectedColsIndex = new List<int>();
             await base.OnInitializedAsync();
@@ -159,8 +157,8 @@ namespace Caspian.Engine.WorkflowEngine
             var deleteColumns = await colService.GetAll().Where(t => (t.Row.WorkflowFormId == WorkflowFormId 
                 || t.InnerRow.HtmlColumn.Row.WorkflowFormId == WorkflowFormId) && !columnsId.Contains(t.Id))
                 .Include(t => t.Component).Include(t => t.InnerRow).ToListAsync();
-            colService.RemoveRange(deleteColumns);
-            innerRowService.RemoveRange(deleteColumns.Where(t => t.InnerRow != null).Select(t => t.InnerRow));
+            await colService.RemoveRange(deleteColumns);
+            await innerRowService.RemoveRange(deleteColumns.Where(t => t.InnerRow != null).Select(t => t.InnerRow));
             await colService.SaveChangesAsync();
             await transaction.CommitAsync();
         }

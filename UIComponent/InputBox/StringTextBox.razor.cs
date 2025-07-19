@@ -60,8 +60,13 @@ namespace Caspian.UI
                 InputAttributes["id"] = id;
                 InputAttributes["name"] = id;
             }
+            if (DisableAutoSelect)
+                InputAttributes["disableAutoSelect"] = true;
             return InputAttributes;
         }
+
+        [Parameter]
+        public bool DisableAutoSelect { get; set; }
 
         async Task ChangeValue(ChangeEventArgs arg)
         {

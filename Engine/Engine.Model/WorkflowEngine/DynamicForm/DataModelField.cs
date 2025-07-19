@@ -7,7 +7,7 @@ namespace Caspian.Engine
 {
     /// <summary>
     /// for each entity type can declare a field of that type
-    /// if IsCollection is true must declare a colection of entity
+    /// if IsCollection is true must declare a collection of entity
     /// </summary>
     [Table("DataModelFields", Schema = "cmn")]
     public class DataModelField
@@ -21,7 +21,7 @@ namespace Caspian.Engine
         public DataModel DataModel { get; set; }
 
         /// <summary>
-        /// Entity type fulle name that bind in forms control 
+        /// Entity type full name that bind in forms control 
         /// </summary>
         [DisplayName("Entity name")]
         public string EntityFullName { get; set; }

@@ -9,7 +9,7 @@
     }
 </div>
 <div class="p-1">
-    <StringTextBox @ref="txtDescript" BindingType="BindingType.OnInput" @onEkeyup="SearchDescription" @bind-Value="OrderDetail.Description" MultiLine Rows="4" />
+    <StringTextBox @ref="txtDescript" BindingType="BindingType.OnInput" @onEkeyup="SearchDescription" @bind-Value="OrderDetail.Description" MultiLine Rows="4" DisableAutoSelect />
 </div>
 
 @code
@@ -27,6 +27,11 @@
         var index = str.LastIndexOf(' ') + 1;
         str = str.Substring(0, index) + text + OrderDetail.Description.Substring(selectionStart);
         OrderDetail.Description = str;
+        if (ConfigService.Config.DelayMilliSecond > 0)
+        {
+            StateHasChanged();
+            await Task.Delay(ConfigService.Config.DelayMilliSecond);
+        }
         await txtDescript.SetSelection(selectionStart + text.Length);
         descriptionSearch = "";
     }
