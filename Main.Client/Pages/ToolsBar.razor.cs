@@ -1,6 +1,7 @@
 ﻿using Caspian.Client.Data;
 using Caspian.Client.Extension;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace Caspian.Client
 {
@@ -58,11 +59,12 @@ namespace Caspian.Client
 
         async Task OpenSettingWindow()
         {
-            Page.WindowIsOpened = true;
-            isSettingWindow = true;
-            //status = Caspian.UI.WindowStatus.Open;
-            title = "Page Setting";
-            await Page.OnReportSetting.InvokeAsync(null);
+            //Page.WindowIsOpened = true;
+            //isSettingWindow = true;
+            ////status = Caspian.UI.WindowStatus.Open;
+            //title = "Page Setting";
+            //await Page.OnReportSetting.InvokeAsync(null);
+            await JSRuntime.InvokeVoidAsync("caspian.report.openSettingWindow", null);
         }
 
         void OpenFormatingWindow()

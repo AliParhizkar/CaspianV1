@@ -25,12 +25,6 @@ HTMLElement.prototype.getPosition = function () {
     }
     return new DOMRect(left, top, rect.width, rect.height);
 };
-Array.prototype.sum = function () {
-    let sumArray = 0;
-    for (var index = 0; index < this.length; index++)
-        sumArray += this[index];
-    return sumArray;
-};
 var caspian;
 (function (caspian) {
     class ColorPicker {

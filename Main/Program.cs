@@ -32,7 +32,7 @@ namespace Main
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
-            //builder.Services.AddControllers();
+            builder.Services.AddControllers();
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Logging.AddCaspianConsoleLogger(builder);
@@ -116,7 +116,7 @@ namespace Main
             app.UseAuthorization();
             app.UseRouting();
             app.UseAntiforgery();
-
+            app.MapControllers();
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()
