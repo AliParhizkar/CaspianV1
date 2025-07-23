@@ -1,0 +1,79 @@
+﻿@page "/ReportPage"
+@using Caspian.Client
+@using Caspian.Client.Data
+<MessageBox @ref="messageBox" />
+@if (pageData != null)
+{
+    <Caspian.Client.Page Data="pageData" FontsName="FontsName" OnReportSetting="OpenWindow"
+                         OnControlSetting="OpenControlWindow" />
+}
+@{
+    var style = $"width:{windowWidth}px";
+}
+
+<Window Status="status" StatusChanged="CloseWindow" Style="@style" Title="@windowTitle">
+    @*<Caspian.Report.SettingWindowComponent Page="page" StatusChanged="CloseWindow"  />*@
+    <Caspian.Report.TextBoxWindow StatusChanged="CloseWindow" Page="page" />
+</Window>
+
+@code
+{
+    Page page;
+    WindowStatus status;
+    string windowTitle;
+    int windowWidth;
+    ReportPageData pageData;
+    string[] FontsName = new string[] { "B Nazanin" };
+
+
+    void CloseWindow(WindowStatus status)
+    {
+        this.status = WindowStatus.Close;
+        page.CloseWindow();
+    }
+
+    public void OpenControlWindow()
+    {
+        windowTitle = "Report Setting";
+        status = WindowStatus.Open;
+        windowWidth = 500;
+    }
+
+    public void OpenWindow(ReportSetting setting)
+    {
+        windowTitle = "Report Setting";
+        status = WindowStatus.Open;
+        windowWidth = 500;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        pageData = new ReportPageData()
+        {
+            Setting = new ReportSetting()
+            {
+                PageType = ReportPageType.A4,
+                PageWidth = 21,
+                PageHeight = 29.7
+            },
+            Bound = new BoundData()
+            {
+                DataLevel = 1,
+                Items = new List<BoundItemData>()
+            },
+            ReportId = 0
+        };
+        for (var level = 1; level <= 1; level++)
+        {
+            pageData.Bound.Items.Add(new BoundItemData()
+            {
+                BondType = (BondType)(level + 2),
+                Height = 30
+            });
+        }
+        await base.OnInitializedAsync();
+    }
+
+    MessageBox messageBox;
+    public ReportPageData Data { get; set; }
+}

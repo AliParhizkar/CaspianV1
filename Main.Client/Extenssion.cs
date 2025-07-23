@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 
-namespace Caspian.Client
+namespace Caspian.Client.Extension
 {
     public static class Extension
     {

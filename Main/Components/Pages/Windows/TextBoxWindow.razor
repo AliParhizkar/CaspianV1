@@ -1,0 +1,154 @@
+﻿@namespace Caspian.Report
+@using Caspian.Client
+@using Caspian.Client.Data
+<div class="row c-controls p-2">
+    <div class="col-md-4">
+        <label>Textbox text</label>
+    </div>
+    <div class="col-md-8">
+        <StringTextBox @bind-Value="@(text)" Disabled="fieldData.TotalFuncType.HasValue || fieldData.SystemFiledType.HasValue || fieldData.Path.HasValue() || fieldData.SystemVariable.HasValue" />
+    </div>
+    @if (bondType == BondType.DataFooter)
+    {
+        <div class="col-md-4">
+            <label>Method name</label>
+        </div>
+        <div class="col-md-8">
+
+        </div>
+        @*@if (Params != null)
+            {
+                <div class="col-md-4">
+                    <label>Data field</label>
+                </div>
+                <div class="col-md-8">
+
+                </div>
+            }*@
+    }
+    @*else if (Params != null)
+        {
+            <div class="col-md-4">
+                <label>Data field</label>
+            </div>
+            <div class="col-md-8">
+                <ComboBox TValue="string" Source="Params" Value="fieldData.Path" ValueChanged="ParamChanged"
+                          Disabled="text.HasValue() && fieldData.Path == null || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue" />
+            </div>
+        }*@
+    @if (bondType == BondType.ReportTitle)
+    {
+        <div class="col-md-4">
+            <label>System variable</label>
+        </div>
+        <div class="col-md-8">
+            <DropdownList TValue="SystemVariable?" Value="fieldData.SystemVariable" Disabled="text.HasValue() && fieldData.SystemVariable == null || fieldData.Path.HasValue() || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue"
+                          ValueChanged="SystemVariableChange" />
+        </div>
+    }
+    else if (bondType != BondType.DataHeader)
+    {
+        <div class="col-md-4">
+            <label>System filed</label>
+        </div>
+        <div class="col-md-8">
+            <DropdownList TValue="SystemFiledType?" Value="fieldData.SystemFiledType" ValueChanged="SystemFiledTypeChanged"
+                          Disabled="text.HasValue() && fieldData.SystemFiledType == null || fieldData.TotalFuncType.HasValue" />
+        </div>
+    }
+    <div class="col-md-4"></div>
+    <div class="col-md-8 justify-content-center d-flex pt-3 pb-2">
+        <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
+        <button style="width:70px;" @onclick="UpdateData" class="c-btn c-primary">Save</button>
+    </div>
+</div>
+@code
+{
+    string text;
+
+    //IEnumerable<ParamtereData> Params;
+    TextFieldData fieldData;
+    BondType bondType;
+    protected override void OnInitialized()
+    {
+        fieldData = new TextFieldData();
+        if (Page.SelectedControl != null)
+        {
+            text = Page.SelectedControl.Data.Text;
+            bondType = Page.SelectedControl.BoundItem.Data.BondType;
+            //fieldData.CopySimpleProperty(Page.SelectedControl.Data.FieldData);
+        }
+        else
+        {
+            text = Page.SelectedTable.Text;
+            bondType = Page.SelectedTable.BoundItem.Data.BondType;
+            //fieldData.CopySimpleProperty(Page.SelectedTable.FieldData);
+        }
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var dataLevel = Page.SelectedTable?.BoundItem.DataLevel ?? Page.SelectedControl?.BoundItem.DataLevel;
+        if (dataLevel.HasValue)
+        {
+            var level = Page.Bound.MaxDataLevel - dataLevel.Value + 1;
+            var url = $"/ReportGenerator/GetReportParameters?reportId={Page.ReportId}&dataLevel={level}";
+            //Params = await Host.GetFromJsonAsync<IEnumerable<ParamtereData>>(url);
+
+            await base.OnInitializedAsync();
+        }
+    }
+
+    async Task UpdateData()
+    {
+        Page.PushControl();
+        if (Page.SelectedControl != null)
+        {
+            Page.SelectedControl.Data.Text = text;
+            //Page.SelectedControl.Data.FieldData.CopySimpleProperty(fieldData);
+        }
+        else
+        {
+            Page.SelectedTable.Text = text;
+            Page.SelectedTable.FieldData = fieldData;
+        }
+        await StatusChanged.InvokeAsync(WindowStatus.Close);
+    }
+
+    [Parameter]
+    public Page Page { get; set; }
+
+    void ParamChanged(string path)
+    {
+        //fieldData.Path = path;
+        //if (path.HasValue())
+        //    text = '{' + Params.Single(t => t.Value == path).Text + '}';
+        //else
+        //    text = null;
+    }
+
+    void TotalFuncTypeChanged(TotalFuncType? funcType)
+    {
+        // param.TotalFuncType = funcType;
+        // param.Path = '{' + param.TotalFuncType.EnumText() + '}';
+    }
+
+    void SystemFiledTypeChanged(SystemFiledType? filedType)
+    {
+        fieldData.SystemFiledType = filedType;
+        if (filedType.HasValue)
+            text = '{' + filedType.EnumText() + '}';
+        else
+            text = null;
+    }
+
+    void SystemVariableChange(SystemVariable? variable)
+    {
+        fieldData.SystemVariable = variable;
+        text = fieldData.SystemVariable.HasValue ? ('{' + fieldData.SystemVariable.EnumText() + '}') : null;
+    }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+}

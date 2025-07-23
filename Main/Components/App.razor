@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
     <link href="/_content/Demo.Web/css/site.css" rel="stylesheet" />
+    <link href="/app.css" rel="stylesheet" />
+    <link href="/Report.css" rel="stylesheet" />
     <link href="/_content/UIComponent/Content/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/site.css" rel="stylesheet" />
     <link href="/_content/UIComponent/Content/2011.1.315/Caspian.common1.css" rel="stylesheet" type="text/css" />
@@ -18,6 +20,16 @@
     <script src="/_content/UIComponent/caspian.bundle.js"></script>
     <link href="Main.styles.css" rel="stylesheet" />
     <HeadOutlet @rendermode="@RenderModeForPage" />
+    <script type="text/javascript">
+        function getPixelsPerCentimetre() {
+            let div = document.createElement("div");
+            div.style.width = "1cm";
+            document.body.appendChild(div);
+            let result = div.getBoundingClientRect().width;
+            document.body.removeChild(div);
+            return result;
+        }
+    </script>
 </head>
 <body class="t-ltr">
     <Routes @rendermode="@RenderModeForPage" />
@@ -35,7 +47,7 @@
         get
         {
             var path = HttpContext.Request.Path;
-            if (path.StartsWithSegments("/Account") || path.StartsWithSegments("/counter"))
+            if (path.StartsWithSegments("/Account") || path.StartsWithSegments("/ReportPage"))
                 return null;
             return InteractiveServer;
         }

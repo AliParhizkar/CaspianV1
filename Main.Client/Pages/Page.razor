@@ -3,21 +3,25 @@
 @inject IJSRuntime JSRuntime
 <div tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
      @onclick="MouseClick">
+    <ToolsBar @ref="ToolsBar" Page="this" OnChange="() => {}" FontsName="FontsName" />
     <div class="report-content">
+        <ToolsBox @ref="toolsBox" Page="this" />
         <div class="report-panel">
             <div id="bindConfig">
                 <span>Bounds Config</span>
             </div>
             <div id="ruler">
             </div>
+            <Bound @ref=Bound Page="this" Data="Data.Bound" />
         </div>
     </div>
-
     @if (controlAdding)
     {
+        <ReportControl @ref="creatingControl" Data="controlData" Page="this" />
     }
     @if (tableAdding)
     {
+        <Table @ref="creatingTable" Data="tableData" Bound="Bound" />
     }
 </div>
 
