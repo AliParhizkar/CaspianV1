@@ -3,27 +3,12 @@
 @page "/counter"
 @namespace Main.Test
 
-<button @onclick="UpdateDataBase">Update DataBase</button>
+<Main.Client.Pages.Counter />
 
 
 
 @code
 {
-    void UpdateDataBase()
-    {
-        using var eContext = new Caspian.Engine.Model.Context();
-        eContext.Database.Migrate();
-        using var dContext = new Demo.Model.Context();
-        dContext.Database.Migrate();
-        using var mContext = new Marketing.Model.MarketingContext();
-        mContext.Database.Migrate();
-    }
 
-    string code;
 
-    bool CloseFunc(AccountCoding coding)
-    {
-        code = coding.Code;
-        return coding.Level == 3;
-    }
 }

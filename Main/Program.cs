@@ -31,8 +31,8 @@ namespace Main
             ConfigureCulture();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
-                .AddCircuitOptions(options => { options.DetailedErrors = true; });
-            builder.Services.AddControllers();
+                .AddInteractiveWebAssemblyComponents();
+            //builder.Services.AddControllers();
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Logging.AddCaspianConsoleLogger(builder);
@@ -89,7 +89,7 @@ namespace Main
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ReportParamService).Assembly.InjectServices(builder.Services);
             typeof(Marketing.Service.ProductCategoryService).Assembly.InjectServices(builder.Services);
-            builder.Services.AddControllers();
+            //builder.Services.AddControllers();
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Marketing.Model.MarketingContext>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
@@ -118,7 +118,9 @@ namespace Main
             app.UseAntiforgery();
 
             app.MapRazorComponents<App>()
-                .AddInteractiveServerRenderMode();
+                .AddInteractiveServerRenderMode()
+                .AddInteractiveWebAssemblyRenderMode()
+                .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
 
             app.MapCaspianProjectWhen<Demo.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Demo"));
@@ -129,7 +131,7 @@ namespace Main
                 httpContext.Request.Path.StartsWithSegments("/Egnine") ||
                 httpContext.Request.Path.StartsWithSegments("/Account"));
             app.MapAdditionalIdentityEndpoints();
-            app.MapControllers();
+            //app.MapControllers();
             ////if (!builder.Environment.IsDevelopment())
             ////{
             ////    if (Directory.EnumerateFiles(builder.Environment.ContentRootPath + "/PersistKey").Any())
