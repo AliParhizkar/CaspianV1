@@ -1,0 +1,37 @@
+﻿@rendermode InteractiveWebAssembly
+@namespace Caspian.Client
+
+@inject IJSRuntime JSRuntime
+<div class="bound-content">
+    <table cellpadding="0" cellspacing="0" id="bond">
+        @foreach (var boundData in Data.Items)
+        {
+            <BoundItem @ref="BoundItem" Bound="this" Data="boundData" />
+        }
+    </table>
+</div>
+@if (verticalRulerLeft.HasValue)
+{
+    var style = $"left:{verticalRulerLeft}px";
+    <div style="@style" class="r-v-ruler"></div>
+}
+@if (verticalRulerRight.HasValue)
+{
+    var style = $"left:{verticalRulerRight}px";
+    <div style="@style" class="r-v-ruler"></div>
+}
+@if (horizontalRulerTop.HasValue)
+{
+    var style = $"top:{horizontalRulerTop}px";
+    <div style="@style" class="r-h-ruler"></div>
+}
+@if (horizontalRulerBottom.HasValue)
+{
+    var style = $"top:{horizontalRulerBottom}px";
+    <div style="@style" class="r-h-ruler"></div>
+}
+
+@code
+{
+
+}

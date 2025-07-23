@@ -1,0 +1,100 @@
+﻿@rendermode InteractiveWebAssembly
+@namespace Caspian.Client
+@{
+    int yPosition, xPosition = BorderStyle ? -658 : -620;
+    if (Enabled)
+    {
+        yPosition = -27;
+        if (mouseEnter)
+            yPosition = -54;
+        if (buttonClicked)
+            yPosition = -108;
+    }
+    else
+    {
+        yPosition = 0;
+    }
+}
+<span class="toolsbar r-dropdown-icon" style="width:38px;background-position:@(xPosition)px @(yPosition)px"
+      @onmouseenter="() => mouseEnter = true" @onmouseout="() => mouseEnter = false"
+      @onmousedown="() => buttonClicked= true" @onmouseup="OpenItem">
+    @if (BorderStyle && showItem)
+    {
+        string solid = Value == 1 ? "r-selected" : "", dashed = Value == 2 ? "r-selected" : "",
+        dotted = Value == 3 ? "r-selected" : "", doublee = Value == 4 ? "r-selected" : "";
+        <span class="r-dropdown-icon-container">
+            <span style="top:@(top)" @onmousedown:stopPropagation @onmousemove:stopPropagation class="r-border-kind">
+                <span class="r-solid @(solid)" @onclick="async () => await SelectItem(1)"></span>
+                <span class="r-dashed @(dashed)" @onclick="async () => await SelectItem(2)"></span>
+                <span class="r-dotted @(dotted)" @onclick="async () => await SelectItem(3)"></span>
+                <span class="r-double @(doublee)" @onclick="async () => await SelectItem(4)"></span>
+            </span>
+        </span>
+    }
+    @if (!BorderStyle && showItem)
+    {
+        string first = Value == 1 ? "r-selected" : "", second = Value == 2 ? "r-selected" : "",
+        third = Value == 3 ? "r-selected" : "", forth = Value == 4 ? "r-selected" : "",
+        fifth = Value == 5 ? "r-selected" : "";
+        <span class="r-dropdown-icon-container">
+            <span style="top:@(top)" @onmousedown:stopPropagation @onmousemove:stopPropagation class="r-border-width">
+                <span class="r-first @(first)" @onclick="async () => await SelectItem(1)"></span>
+                <span class="r-second @(second)" @onclick="async () => await SelectItem(2)"></span>
+                <span class="r-third @(third)" @onclick="async () => await SelectItem(3)"></span>
+                <span class="r-fourth @(forth)" @onclick="async () => await SelectItem(4)"></span>
+                <span class="r-fifth @(fifth)" @onclick="async () => await SelectItem(5)"></span>
+            </span>
+        </span>
+    }
+</span>
+
+@code
+{
+    string top = "-100%";
+    bool showItem;
+    bool mouseEnter, buttonClicked;
+
+    async Task OpenItem()
+    {
+        if (!showItem)
+        {
+            showItem = true;
+            buttonClicked = false;
+            await Task.Delay(1);
+            top = "8px";
+        }
+
+    }
+
+    public void Close()
+    {
+        if (showItem)
+        {
+            top = "-100%";
+            showItem = false;
+            buttonClicked = false;
+            mouseEnter = false;
+            StateHasChanged();
+        }
+    }
+
+    [Parameter]
+    public int? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnChange { get; set; }
+
+    async Task SelectItem(int value)
+    {
+        top = "-100%";
+        if (OnChange.HasDelegate)
+            await OnChange.InvokeAsync(value); await Task.Delay(250);
+        showItem = false;
+    }
+
+    [Parameter]
+    public bool BorderStyle { get; set; }
+
+    [Parameter]
+    public bool Enabled { get; set; } = true;
+}

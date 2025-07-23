@@ -1,0 +1,29 @@
+﻿@rendermode InteractiveWebAssembly
+@namespace Caspian.Client
+@inject IJSRuntime JSRuntime
+<div tabindex="1" @onkeydown="OnKeyDown" @ref="element" style="cursor:@(cursor)" class="r-page" @onmousemove="MouseMove" @onmousedown="MouseDown" @onmouseup="MouseUp"
+     @onclick="MouseClick">
+    <div class="report-content">
+        <div class="report-panel">
+            <div id="bindConfig">
+                <span>Bounds Config</span>
+            </div>
+            <div id="ruler">
+            </div>
+        </div>
+    </div>
+
+    @if (controlAdding)
+    {
+    }
+    @if (tableAdding)
+    {
+    }
+</div>
+
+@code
+{
+
+
+
+}
