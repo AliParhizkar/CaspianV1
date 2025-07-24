@@ -1,0 +1,95 @@
+﻿@namespace Caspian.Report
+@using Caspian.Common.Client
+@using Caspian.UI.Client
+@inject IJSRuntime jsRundTime
+<div class="row p-2 c-controls">
+    <div class="col-md-5">
+        <label>Columns count</label>
+    </div>
+    <div class="col-md-7">
+        <Caspian.UI.Client.NumericTextBox @bind-Value="ColumnsCount" />
+    </div>
+    <div class="col-md-5">
+        <label>Columns gap</label>
+    </div>
+    <div class="col-md-7">
+        <Caspian.UI.Client.NumericTextBox @bind-Value="columnsGap" />
+    </div>
+    <div class="col-md-7 justify-content-center d-flex pt-3 pb-2">
+        <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(Caspian.UI.Client.WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
+        <button style="width:70px;" @onclick="async () => await UpdateData()" class="c-btn c-primary">Save</button>
+    </div>
+</div>
+
+@code 
+{
+    byte ColumnsCount, columnsGap;
+    string errorMessage;
+
+    async Task UpdateData()
+    {
+        var bound = BoundItem.Bound;
+        var flag = bound.BoundItems.Any(t => t.DataLevel > BoundItem.DataLevel && t.Data.ColumnsCount < ColumnsCount);
+        if (flag)
+            errorMessage = $"تعداد ستونهای باندهای پایینی کمتر از {ColumnsCount} می باشد";
+        flag = bound.BoundItems.Any(t => t.DataLevel < BoundItem.DataLevel && t.Data.ColumnsCount > ColumnsCount);
+        if (flag)
+            errorMessage = $"تعداد ستونهای باندهای بالایی بیشتر از {ColumnsCount} می باشد";
+        var data = BoundItem.Data;
+        if (ColumnsCount > 1)
+        {
+            if (data.Table != null)
+                errorMessage = "باند دارای جدول نمی تواند چند ستونی باشد";
+            if (bound.MaxDataLevel == BoundItem.DataLevel)
+            {
+                if (bound.Data.Items.Any(t => t.Table != null && (t.BondType == BondType.DataHeader || t.BondType == BondType.DataFooter)))
+                    errorMessage = "باند سرداده یا باند جمع بندی داده نمی توانند دارای جدول باشند";
+            }
+        }
+        if (errorMessage == null)
+        {
+            
+            data.ColumnsCount = ColumnsCount;
+            data.GapBetweenColumns = columnsGap;
+
+            if (BoundItem.Bound.MaxDataLevel == BoundItem.DataLevel)
+            {
+                foreach (var itemData in BoundItem.Bound.Data.Items)
+                {
+                    if (itemData.BondType == BondType.DataHeader || itemData.BondType == BondType.DataFooter)
+                    {
+                        itemData.ColumnsCount = ColumnsCount;
+                        itemData.GapBetweenColumns = columnsGap;
+                    }
+                }
+            }
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        ColumnsCount = BoundItem.Data.ColumnsCount;
+        columnsGap = BoundItem.Data.GapBetweenColumns;
+        base.OnInitialized();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (errorMessage.HasValue())
+        {
+            await jsRundTime.InvokeVoidAsync("caspian.common.showMessage", errorMessage);
+            errorMessage = null;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public BoundItem BoundItem { get; set; }
+}

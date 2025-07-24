@@ -1,0 +1,74 @@
+﻿@namespace Caspian.Report
+@using Caspian.Common
+@inject IJSRuntime JSRuntime
+@using Caspian.UI
+@{
+    var style = $"left:{Data.Left}px;top:{Data.Top}px;";
+}
+<table style="@style" class="reportcontrol tablecontrol" cellpadding="0" cellspacing="0">
+    <thead @ondblclick:stopPropagation @onclick:stopPropagation>
+        <tr>
+            <th style="width:15px;"></th>
+            @{
+                var index = 1;
+            }
+            @foreach (var cell in Data.HeaderCells)
+            {
+                var tempIndex = index;
+                <th style="width:@(cell.Width)px;"></th>
+                index++;
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var rowIndex = 1;
+        }
+        @foreach (var row in Data.Rows)
+        {
+            var tempRowIndex = rowIndex;
+            <tr>
+                @{
+                    var colIndex = 1;
+                }
+                <td @onclick:stopPropagation @ondblclick:stopPropagation class="rowHeader">
+                    <div style="height:@(row.Height)px">
+
+                    </div>
+                </td>
+                @foreach(var cell in row.Cells)
+                {
+                    style = $"{cell.Alignment.Style}{cell.Font.Style}";
+                    var tempColIndex = colIndex;
+                    var className = "r-cell ";
+                    if (BoundItem?.Bound.Page.SelectedTable == this)
+                    {
+                        if (selectedCells.Any(t => t.Row.RowIndex == tempRowIndex && t.ColIndex == tempColIndex))
+                            className = "cellselected";
+                    }
+
+                    if (cell.Hidden)
+                        className += " hidden-cell";
+                    <td style="@(cell.Border.Style + "background-color:" + cell.BackgroundColor.ColorString)" @oncontextmenu="ShowContextMenu" @oncontextmenu:preventDefault colspan="@(cell.ColSpan)" rowspan="@(cell.RowSpan)" class="@(className)" @ondblclick="() => Bound.Page.OpenTextWindow()" @onmousedown="e => SelectTableCell(e, cell)">
+                        <div style="@style" class="r-table-content">
+                            @(cell.Text)
+                        </div>
+
+                    </td>
+                    colIndex++;
+                }
+            </tr>
+            rowIndex++;
+        }
+    </tbody>
+</table>
+
+<ContextMenu @bind-Status="contextMenuStatus" Left="left" Top="top">
+    <ContextMenuItem Title="Add Row on Above" OnClick="() => InsertRow(true)" />
+    <ContextMenuItem Title="Add Row on Below" OnClick="() => InsertRow(false)" />
+    <ContextMenuItem Title="Remove Row" OnClick="RemoveRow" />
+    <ContextMenuItem Separator />
+    <ContextMenuItem Title="Add Column on Left" OnClick="() => InsertColumn(true)" />
+     <ContextMenuItem Title="Add Column on Right" OnClick="() => InsertColumn(false)" />
+     <ContextMenuItem Title="Remove Column" OnClick="RemoveColumn" />
+</ContextMenu>

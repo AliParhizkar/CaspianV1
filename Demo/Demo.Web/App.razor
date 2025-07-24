@@ -57,16 +57,12 @@
 
 </html>
 
-@code {
+@code 
+{
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } 
 
     private IComponentRenderMode RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account")
         ? null
         : new InteractiveServerRenderMode(prerender: false);
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
 }

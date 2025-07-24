@@ -1,0 +1,64 @@
+﻿@namespace Caspian.Report
+<div class="r-toolsbox">
+    <span @onmousedown="AddTextbox" class="tools textbox" title="Textbox"></span>
+    <span @onmousedown="AddPicturebox" class="tools picture" title="Picturebox"></span>
+    <span @onmousedown="AddTable" class="tools table" title="Table"></span>
+    <span class="tools checkbox" title="Check box"></span>
+    <span class="tools chart" title="Chart"></span>
+    <span class="tools subreport" title="گزارش فرعی"></span>
+</div>
+
+@code 
+{
+    async Task AddTextbox(MouseEventArgs e)
+    {
+        var control = new ControlData(e.ClientX, e.ClientY, ControlType.TextBox);
+        control.Width = 180;
+        control.Height = 32;
+        await Page.AddControl(control);
+    }
+
+    async Task AddPicturebox(MouseEventArgs e)
+    {
+        var control = new ControlData(e.ClientX, e.ClientY, ControlType.PictureBox);
+        control.Width = 90;
+        control.Height = 90;
+        await Page.AddControl(control);
+    }
+
+    async Task AddTable(MouseEventArgs e)
+    {
+        var bondType = (BondType)(Page.Bound.MaxDataLevel + 2);
+        var table = GetTableData();
+        await Page.AddTable(table);
+    }
+
+    TableData GetTableData()
+    {
+        var table = new TableData();
+        table.HeaderCells = new List<HeaderCellData>()
+            {
+                new HeaderCellData(){Width = 100},
+                new HeaderCellData(){Width = 150},
+            };
+        table.HeaderCells.Add(new HeaderCellData() { Width = 200 });
+        table.HeaderCells.Add(new HeaderCellData() { Width = 200 });
+        table.Rows = new List<TableRowData>();
+        var row = new TableRowData();
+        row.RowIndex = 1;
+        for (var colIndex = 1; colIndex <= table.HeaderCells.Count; colIndex++)
+        {
+            row.Cells.Add(new TableCellData(row)
+                {
+                    ColIndex = colIndex,
+                    Font = new Font("12", Page.ToolsBar.GetDefaultFont())
+                });
+        }
+        row.Cells[0].Border.BorderKind = BorderKind.Bottom | BorderKind.Right | BorderKind.Left;
+        table.Rows.Add(row);
+        return table;
+    }
+
+    [Parameter]
+    public Page Page { get; set; }
+}

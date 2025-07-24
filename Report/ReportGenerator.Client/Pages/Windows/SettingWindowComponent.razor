@@ -1,0 +1,170 @@
+﻿@using Caspian.UI.Client
+@using Caspian.Report.Data
+@using Caspian.Common.Client
+
+@namespace Caspian.Report
+@inject IJSRuntime jSRuntime
+
+<div class="p-2 row c-controls">
+    <div class="col-md-4">
+        <label>Page size</label>
+    </div>
+    <div class="col-md-8">
+        <Caspian.UI.Client.DropdownList @bind-Value="Setting.PageType" OnChange="SetPageSize" />
+    </div>
+    <div class="col-md-4">
+        <label>Page width</label>
+    </div>
+    <div class="col-md-8">
+        <Caspian.UI.Client.NumericTextBox @bind-Value="Setting.PageWidth" Disabled="Setting.PageType != ReportPageType.Custome" />
+    </div>
+    <div class="col-md-4">
+        <label>Page height</label>
+    </div>
+    <div class="col-md-8">
+        <Caspian.UI.Client.NumericTextBox @bind-Value="Setting.PageHeight" Disabled="Setting.PageType != ReportPageType.Custome" />
+    </div>
+    <div class="col-md-4">
+        <label>Report title</label>
+    </div>
+    <div class="col-md-8">
+        <Caspian.UI.Client.CheckBox @bind-Value="Setting.ReportTitle" />
+    </div> 
+    <div class="col-md-4">
+        <label>Page header</label>
+    </div>
+    <div class="col-md-8">
+        <Caspian.UI.Client.CheckBox @bind-Value="Setting.PageHeader" />
+    </div>
+    <div class="col-md-5 ps-5">
+        <label>Print type</label>
+    </div>
+    <div class="col-md-7">
+        <Caspian.UI.Client.DropdownList Disabled="!Setting.PageHeader" @bind-Value="Setting.PrintOn" />
+    </div>
+    <div class="col-md-4">
+        <label>Data header</label>
+    </div>
+    <div class="col-md-8">
+        <Caspian.UI.Client.CheckBox @bind-Value="Setting.DataHeader" />
+    </div>
+    <div class="col-md-4">
+        <label>Data footer</label>
+    </div>
+    <div class="col-md-8">
+        <Caspian.UI.Client.CheckBox @bind-Value="Setting.DataFooter" />
+    </div>
+    <div class="col-md-4">
+        <label>Page footer</label>
+    </div>
+    <div class="col-md-8">
+        <Caspian.UI.Client.CheckBox @bind-Value="Setting.PageFooter" />
+    </div>
+    <div class="col-md-4"></div>
+    <div class="col-md-8 justify-content-center d-flex pt-3 pb-2">
+        <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
+        <button style="width:70px;" @onclick="SetPageSetting" class="c-btn c-primary">Save</button>
+    </div>
+</div>
+
+@code
+{
+    string message;
+    ReportSetting Setting;
+    protected override void OnInitialized()
+    {
+        Setting = Page.Data.Setting;
+        base.OnInitialized();
+    }
+
+    bool AddedToPage(BondType bondType)
+    {
+        return  Page.Bound.Data.Items.SingleOrDefault(t => t.BondType == bondType) != null;
+    }
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    async Task SetPageSetting()
+    {
+        if (Setting.PageType.GetValueOrDefault() == 0 || Setting.PageType.Value == ReportPageType.Custome && (Setting.PageWidth <= 0 || Setting.PageHeight <= 0))
+            message = "لطفا اندازه صفحه را مشخص نمایید";
+        else
+        {
+
+            /// Bounds need to added to page
+            var list = new List<BoundItemData>();
+            AddBoundToList(Setting.ReportTitle, BondType.ReportTitle, 60, list);
+            AddBoundToList(Setting.PageHeader, BondType.PageHeader, 40, list);
+            AddBoundToList(Setting.DataHeader, BondType.DataHeader, 40, list);
+            AddBoundToList(Setting.DataFooter, BondType.DataFooter, 50, list);
+            AddBoundToList(Setting.PageFooter, BondType.PageFooter, 40, list);
+            /// Bounds need to removed from page
+            var deletedBounds = new List<BondType>();
+            AddBoundToList(Setting.ReportTitle, BondType.ReportTitle, deletedBounds);
+            AddBoundToList(Setting.PageHeader, BondType.PageHeader, deletedBounds);
+            AddBoundToList(Setting.DataHeader, BondType.DataHeader, deletedBounds);
+            AddBoundToList(Setting.DataFooter, BondType.DataFooter, deletedBounds);
+            AddBoundToList(Setting.PageFooter, BondType.PageFooter, deletedBounds);
+            /// Befor bound changing we need to set Top start for Controls and Table
+            foreach (var bound in Page.Bound.BoundItems)
+                bound.SetTopStart();
+            ///Adding to 
+            Page.Data.Bound.Items.AddRange(list.ToArray());
+            ///Removing from;
+            Page.Bound.Data.Items = Page.Bound.Data.Items.Where(t => !deletedBounds.Any(u => u == t.BondType))
+                .OrderBy(t => t.BondType).ToList();
+            Page.Data.Width = Convert.ToInt32(Page.Data.PixelsPerCentimetre * Setting.PageWidth);
+            /// After bound chaiging we need to arrange and update Top of Controls and Table
+            Page.Bound.ArrangeBoundItems();
+            foreach (var bound in Page.Bound.BoundItems)
+                bound.UpdateControlsTop();
+            Page.StateChanged();
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+        }
+    }
+
+    void AddBoundToList(bool isChecked, BondType bondType, IList<BondType> bonds)
+    {
+        string message = $"After bound removing it's controls is removed do you wont remove {bondType.EnumText()} bound";
+        if (!isChecked && AddedToPage(bondType))
+            bonds.Add(bondType);
+
+    }
+
+    void AddBoundToList(bool isChecked, BondType bondType, int height, IList<BoundItemData> list)
+    {
+        if (isChecked && !AddedToPage(bondType))
+        {
+            var data = Page.Bound.LastBoundItem.Data;
+            list.Add(new BoundItemData() { BondType = bondType, Height = height, ColumnsCount = data.ColumnsCount, GapBetweenColumns = data.GapBetweenColumns});
+        }
+    }
+
+    void SetPageSize()
+    {
+        if (Setting.PageType.HasValue)
+        {
+            var size = Setting.PageSetting(Setting.PageType.Value);
+            Setting.PageWidth = size.PageWidth;
+            Setting.PageHeight = size.PageHeight;
+        }
+    }
+
+    [Parameter]
+    public Page Page { get; set; }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message != null)
+        {
+            await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", message);
+            message = null;
+        }
+        await base.OnInitializedAsync();
+    }
+
+}

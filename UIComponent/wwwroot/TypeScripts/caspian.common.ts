@@ -34,6 +34,15 @@
             }, 11);
         }
 
+        public static getPixelsPerCentimetre() {
+            let div = document.createElement("div");
+            div.style.width = "1cm";
+            document.body.appendChild(div);
+            let result = div.getBoundingClientRect().width;
+            document.body.removeChild(div);
+            return result;
+        }
+
         public static hideMessage() {
             if (this.infoTimer)
                 clearTimeout(this.infoTimer);

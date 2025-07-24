@@ -367,6 +367,14 @@ var caspian;
                 value -= 0.5;
             }, 11);
         }
+        static getPixelsPerCentimetre() {
+            let div = document.createElement("div");
+            div.style.width = "1cm";
+            document.body.appendChild(div);
+            let result = div.getBoundingClientRect().width;
+            document.body.removeChild(div);
+            return result;
+        }
         static hideMessage() {
             if (this.infoTimer)
                 clearTimeout(this.infoTimer);

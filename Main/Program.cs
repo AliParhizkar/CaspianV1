@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
 using Demo.Model;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Main
 {
@@ -31,8 +32,8 @@ namespace Main
             ConfigureCulture();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
-                .AddCircuitOptions(options => { options.DetailedErrors = true; });
-            builder.Services.AddControllers();
+                .AddInteractiveWebAssemblyComponents();
+            //builder.Services.AddControllers();
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Logging.AddCaspianConsoleLogger(builder);
@@ -69,6 +70,9 @@ namespace Main
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             }).AddIdentityCookies();
             Stimulsoft.Base.StiLicense.Key = builder.Configuration.GetSection("StiLicenseKey").Value;
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<Caspian.Common.Client.CaspianDataService>();
+            builder.Services.AddScoped<Caspian.UI.Client.BasePageService>();
 
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
@@ -118,7 +122,9 @@ namespace Main
             app.UseAntiforgery();
 
             app.MapRazorComponents<App>()
-                .AddInteractiveServerRenderMode();
+                .AddInteractiveServerRenderMode()
+                .AddInteractiveWebAssemblyRenderMode()
+                .AddAdditionalAssemblies(typeof(ReportGenerator.Client._Imports).Assembly);
 
             app.MapCaspianProjectWhen<Demo.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Demo"));

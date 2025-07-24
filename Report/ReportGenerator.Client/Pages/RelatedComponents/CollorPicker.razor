@@ -1,0 +1,104 @@
+﻿@namespace ReportGenerator
+@using Caspian.Common.Client
+@{
+
+    if (Enabled)
+    {
+        yPositionFirst = yPositionSecond = -27;
+        if (mouseEnterFirst || mouseEnterSecond)
+            yPositionFirst = -54;
+        if (mouseEnterSecond)
+            yPositionSecond = -54;
+        if (firstButtonClicked)
+            yPositionFirst = -108;
+        if (secondButtonClicked)
+            yPositionSecond = -108;
+    }
+    else
+    {
+        yPositionFirst = 0;
+        yPositionSecond = 0;
+    }
+}
+<span class="r-color-picker" >
+    <span class="toolsbar" style="width: 25px; background-position: @(-XPosition)px @(yPositionFirst)px;"
+          @onmousedown="() => firstButtonClicked = true" @onclick="ChangeControlColor"
+          @onmouseenter="() => mouseEnterFirst = true" @onmouseout="() => mouseEnterFirst = false">
+        @if (Enabled)
+        {
+            <span style="background-color:@(color)" class="r-color-display"></span>
+        }
+    </span>
+    <span class="toolsbar" style="width: 13px; background-position: -569px @(yPositionSecond)px;"
+          @onmousedown="OpenColorPicker" @onclick="() => secondButtonClicked = false"
+          @onmouseenter="() => mouseEnterSecond = true" @onmouseout="() => mouseEnterSecond = false">
+        
+    </span>
+</span>
+@if (colorPickerOpen)
+{
+
+    var style = $"left:{colorPickerLeft - 70}px";
+    <div style="@style" class="r-colorpicker-container" @onmousedown:stopPropagation @onmouseenter:stopPropagation @onmousemove:stopPropagation @onmouseup:stopPropagation @onclick:stopPropagation>
+        <Caspian.UI.ColorPicker Top="top" Color="@color" ColorChanged="ChangeColor" />
+    </div>
+    <div @onclick="() => colorPickerOpen = false" @onmousemove:stopPropagation class="r-behind">
+    </div>
+}
+
+
+@code 
+{
+    int yPositionFirst, yPositionSecond;
+    bool mouseEnterFirst, mouseEnterSecond, firstButtonClicked, secondButtonClicked;
+    bool colorPickerOpen;
+    int colorPickerLeft;
+    string color;
+    int top = -250;
+
+    protected override void OnInitialized()
+    {
+        color = DefaultColor;
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public bool Enabled { get; set; }
+
+    [Parameter]
+    public string DefaultColor { get; set; }
+
+    public void ChangeColorByControlSelecting(string color)
+    {
+        this.color = color;
+    }
+
+    async void OpenColorPicker()
+    {
+        colorPickerOpen = true;
+        colorPickerLeft = XPosition;
+        top = -250;
+        await Task.Delay(10);
+        top = 0;
+        StateHasChanged();
+    }
+
+    async Task ChangeColor(string color)
+    {
+        colorPickerOpen = false;
+        this.color = color;
+        await ColorChanged.InvokeAsync(color);
+    }
+
+    async Task ChangeControlColor()
+    {
+        firstButtonClicked = false;
+        await ChangeColor(color ?? DefaultColor);
+    }
+
+    [Parameter]
+    public int XPosition { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ColorChanged { get; set; }
+}

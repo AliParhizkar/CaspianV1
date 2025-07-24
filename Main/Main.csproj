@@ -1,7 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-	
-
-	
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>disable</Nullable>
@@ -12,6 +9,7 @@
 		<PackageReference Include="Stimulsoft.Reports.Blazor" Version="2023.4.4" />
 		<PackageReference Include="Stimulsoft.Reports.Engine.Blazor" Version="2023.4.4" />
 		<PackageReference Include="Syncfusion.Blazor.Diagram" Version="21.1.35" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.14" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="wwwroot\open-iconic\FONT-LICENSE" />
@@ -44,6 +42,7 @@
 		<ProjectReference Include="..\Marketing\Marketing.Model\Marketing.Model.csproj" />
 		<ProjectReference Include="..\Marketing\Marketing.Service\Marketing.Service.csproj" />
 		<ProjectReference Include="..\Marketing\Marketing.Web\Marketing.Web.csproj" />
+		<ProjectReference Include="..\Report\ReportGenerator.Client\ReportGenerator.Client.csproj" />
 		<ProjectReference Include="..\UIComponent\UIComponent.csproj" />
 	</ItemGroup>
 	<ItemGroup>

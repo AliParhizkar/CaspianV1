@@ -1,0 +1,98 @@
+﻿@namespace Caspian.UI.Client
+@typeparam TValue
+@inherits CBaseInput<TValue>
+
+<span class="t-checkbox" @attributes="attrs">
+    <span class="t-icon" @onclick="ChangeValue">
+        <i @attributes="@iconAtttrs" aria-hidden="true"></i>
+    </span>
+    @if (Title.HasValue())
+    {
+        <span class="t-title" @onclick="ChangeValue">@Title</span>
+    }
+</span>
+@code
+{
+    ElementReference checkBox;
+    TValue oldValue;
+    IDictionary<string, object> iconAtttrs = new Dictionary<string, object>();
+    Dictionary<string, object> attrs;
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public bool TwoState{ get; set; }
+
+    protected override void OnParametersSet()
+    {
+        attrs = new Dictionary<string, object>();
+        if (Id.HasValue())
+        {
+            attrs.Add("id", Id.Replace('.', '_'));
+            attrs.Add("name", Id.Replace('.', '_'));
+        }
+        var className = "t-widget t-checkbox";
+        if (disabled)
+            className += " t-disabled";
+        if (Value == null)
+        {
+            className += " t-bufferd";
+            iconAtttrs["class"] = "fa fa-square";
+        }
+        else
+        {
+            if (typeof(TValue) == typeof(bool) || typeof(TValue) == typeof(bool?))
+            {
+                var value = Convert.ToBoolean(Value);
+                if (value)
+                {
+                    iconAtttrs["class"] = "fa fa-check";
+                    className += " t-selected";
+                }
+                else
+                {
+                    iconAtttrs.Remove("class");
+                    className += " t-unselected";
+                }
+            }
+        }
+        attrs.Add("class", className);
+        base.OnParametersSet();
+    }
+
+    async void  ChangeValue()
+    {
+        if (disabled)
+            return;
+        bool? tempValue = true;
+        var type = typeof(TValue);
+        if (type == typeof(bool) || type == typeof(bool?))
+        {
+            if (Value == null)
+                tempValue = true;
+            else
+            {
+                if (Convert.ToBoolean(Value))
+                    tempValue = false;
+                else
+                {
+                    if (type == typeof(bool) || TwoState)
+                        tempValue = true;
+                    else
+                        tempValue = null;
+                }
+            }
+            if (type.IsNullableType())
+                type = type.GetUnderlyingType();
+            if (tempValue == null)
+                Value = default(TValue);
+            else
+                Value = (TValue)Convert.ChangeType(tempValue, type);
+            if (ValueChanged.HasDelegate)
+                await ValueChanged.InvokeAsync(Value);
+            if (OnChange.HasDelegate)
+                await OnChange.InvokeAsync(Value);
+        }
+    }
+}

@@ -1,0 +1,25 @@
+﻿@namespace Caspian.UI.Client
+@using System.Threading
+@typeparam TValue
+@inherits CBaseInput<TValue>
+@{
+    if (disabled)
+        InputAttributes["disabled"] = "disabled";
+    else
+        InputAttributes.Remove("disabled");
+}
+<div  @attributes="GetAttributes()">
+    @{
+        var text = Convert.ToString(Value);
+        var decimalDigits = Convert.ToChar(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+        text = text.Replace(decimalDigits, '.');
+    }
+    @if (BindingType == BindingType.OnChange)
+    {
+        <input @ref="InputElement" @attributes="InputAttributes" value="@text" @onchange="onChangeValue" class="t-input" />
+    }
+    else
+    {
+        <input @ref="InputElement" value="@text" @attributes="InputAttributes" @oninput="onChangeValue" class="t-input" />
+    }
+</div>

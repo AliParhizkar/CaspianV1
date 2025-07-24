@@ -9,15 +9,15 @@ namespace Main
     {
         public static void CreateFileAndFolder(this WebApplication app)
         {
-
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
-                var path = $"{app.Environment.ContentRootPath}\\Errors";
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-                path = $"{app.Environment.ContentRootPath}\\Data";
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
+                var foldersName = new string[] { "Errors", "Data", "Report", "Report\\Images", "Report\\Print", "Report\\View" };
+                foreach(var folderName in foldersName)
+                {
+                    var path = $"{app.Environment.ContentRootPath}\\{folderName}";
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+                }
             }
         }
 

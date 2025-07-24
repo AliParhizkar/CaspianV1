@@ -1,0 +1,18 @@
+﻿@namespace Caspian.UI.Client
+@inject BasePageService Service
+@inject BaseComponentService BaseService
+
+<MessageBox Service="BaseService" @ref="MessageBox" />
+
+@code 
+{
+    MessageBox MessageBox;
+    
+    public async Task<bool> Confirm(string message)
+    {
+        var window = Service.Peek();
+        if (window != null)
+            return await window.GetMessageBox().Confirm(message);
+        return await MessageBox.Confirm(message);
+    }
+}

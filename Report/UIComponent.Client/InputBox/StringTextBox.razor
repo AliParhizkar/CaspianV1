@@ -1,0 +1,27 @@
+﻿@namespace Caspian.UI.Client
+@using System.Diagnostics
+@inherits CBaseInput<string>
+<div @attributes="GetAttributes()">
+    @if (MultiLine)
+    {
+        @if (base.BindingType == BindingType.OnChange)
+        {
+            <textarea @ref="InputElement" @attributes="GetInputAttributes()" @onchange="ChangeValue">@Value</textarea>
+        }
+        else
+        {
+            <textarea @ref="InputElement" @attributes="GetInputAttributes()" @oninput="ChangeValue">@Value</textarea>
+        }
+    }
+    else
+    {
+        @if (base.BindingType == BindingType.OnChange)
+        {
+            <input  value="@Value" @onchange="ChangeValue" @ref="InputElement" @attributes="GetInputAttributes()" />
+        }
+        else
+        {
+            <input value="@Value" @oninput="ChangeValue" @ref="InputElement" @attributes="GetInputAttributes()" />
+        }
+    }
+</div>
