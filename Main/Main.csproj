@@ -43,6 +43,7 @@
 		<ProjectReference Include="..\Marketing\Marketing.Service\Marketing.Service.csproj" />
 		<ProjectReference Include="..\Marketing\Marketing.Web\Marketing.Web.csproj" />
 		<ProjectReference Include="..\Report\ReportGenerator.Client\ReportGenerator.Client.csproj" />
+		<ProjectReference Include="..\Report\UIComponent.Client\UIComponent.Client.csproj" />
 		<ProjectReference Include="..\UIComponent\UIComponent.csproj" />
 	</ItemGroup>
 	<ItemGroup>

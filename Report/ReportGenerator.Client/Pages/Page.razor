@@ -1,10 +1,10 @@
-﻿@page "/ReportPage"
-@inject NavigationManager Navigator
+﻿@page "/ReportPage/{ReportId:int}"
 @using Caspian.UI.Client
 @using Caspian.Report.Data
 @rendermode InteractiveWebAssembly
 @namespace Caspian.Report
 
+@inject NavigationManager Navigator
 @inject IJSRuntime JSRuntime
 @inject HttpClient Host
 

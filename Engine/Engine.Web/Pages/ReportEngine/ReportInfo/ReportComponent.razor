@@ -5,7 +5,6 @@
 @inject IHostEnvironment Host
 @{
     base.BuildRenderTree(__builder);
-    string reportUrl = Host.IsProduction() ? "https://report.caspiansoftco.com/" : "https://localhost:7284/";
 }
 <div style="background-color:white" class="p-4 pt-2">
     <EntitySearch Service="Service" ColumnsCount="2">
@@ -25,7 +24,7 @@
             </GridColumn>
             <GridColumn Title="Report" style="width:80px">
                 <Template>
-                    <a target="_blank" href="@(reportUrl + context.Data.Id)">...</a>
+                    <a target="_blank" href="ReportPage/@(context.Data.Id)">...</a>
                 </Template>
             </GridColumn>
             <GridCommandColumns />

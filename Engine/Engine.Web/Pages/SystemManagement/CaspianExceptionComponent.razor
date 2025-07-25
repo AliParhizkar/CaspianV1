@@ -5,13 +5,13 @@
 @inject IServiceScopeFactory factory 
 @inherits ErrorBoundary
 @inject IHostEnvironment host
-
 @{
     base.BuildRenderTree(__builder);
 }
 @if (CurrentException != null)
 {
-    if (isDevelopment || showDetail)
+    Console.WriteLine(isDevelopment || showDetail || IsWebAssembly);
+    if (isDevelopment || showDetail || IsWebAssembly)
     {
         <div class="c-error-develop">
             <div class="c-message">
@@ -109,7 +109,6 @@
             exception = exception.InnerException;
         try
         {
-
             errorMessage = exception.Message;
             stackTraceMessage = exception.StackTrace;
             if (isDevelopment)
@@ -143,8 +142,13 @@
     [CascadingParameter]
     public PageData PageData { get; set; }
 
+    [Parameter]
+    public bool IsWebAssembly { get; set; }
+
     async Task SaveError(Exception exception)
     {
+        if (IsWebAssembly)
+            return;
         var ex = exception;
         while (ex.InnerException != null)
             ex = ex.InnerException;
@@ -159,7 +163,7 @@
         {
             fileName = Path.GetFileName(frame.GetFileName());
             fileLineNumber = (short)frame.GetFileLineNumber();
-            old = await service.GetAll().SingleOrDefaultAsync(t => t.SourceCodeFileName == fileName && 
+            old = await service.GetAll().SingleOrDefaultAsync(t => t.SourceCodeFileName == fileName &&
                 t.LineNumber == fileLineNumber);
         }
         if (old == null)
@@ -179,10 +183,10 @@
             if (UserId.HasValue)
             {
                 var detail = new ExceptionDetail()
-                    {
-                        ExceptionDataId = old.Id,
-                        UserId = UserId.Value
-                    };
+                {
+                    ExceptionDataId = old.Id,
+                    UserId = UserId.Value
+                };
                 await detailService.AddAsync(detail);
                 await service.SaveChangesAsync();
             }
@@ -194,10 +198,10 @@
             if (UserId.HasValue)
             {
                 var detail = new ExceptionDetail()
-                    {
-                        ExceptionDataId = old.Id,
-                        UserId = UserId.Value
-                    };
+                {
+                    ExceptionDataId = old.Id,
+                    UserId = UserId.Value
+                };
                 await detailService.AddAsync(detail);
             }
             await service.SaveChangesAsync();

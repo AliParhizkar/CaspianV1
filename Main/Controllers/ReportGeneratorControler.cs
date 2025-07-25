@@ -5,11 +5,9 @@ using System.Text.Json;
 using Stimulsoft.Report;
 using Caspian.Report.Data;
 using Caspian.Engine.Service;
+using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using Caspian.Common.Extension;
-using Caspian.Engine;
 
 namespace ReportGenerator.Controllers
 {
@@ -29,54 +27,39 @@ namespace ReportGenerator.Controllers
         [HttpGet]
         public async Task<ReportPageData> GetReportData(int reportId)
         {
-            try
+            var report = await GetService<ReportService>().SingleAsync(reportId);
+            if (report.PrintFileName.HasValue())
             {
-                var report = await GetService<ReportService>().SingleAsync(reportId);
-                if (report.PrintFileName.HasValue())
-                {
-                    var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
-                    var content = System.IO.File.ReadAllText(path);
-                    try
-                    {
-                        return JsonSerializer.Deserialize<ReportPageData>(content);
-
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
-                var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId).ToListAsync();
-                var maxDataLevel = parameters.Max(t => t.DataLevel);
-                var page = new ReportPageData()
-                {
-                    Setting = new ReportSetting()
-                    {
-                        PageType = Caspian.Report.ReportPageType.A4,
-                        PageWidth = 21,
-                        PageHeight = 29.7
-                    },
-                    Bound = new BoundData()
-                    {
-                        DataLevel = maxDataLevel,
-                        Items = new List<BoundItemData>()
-                    },
-                    ReportId = reportId
-                };
-                for (var level = 1; level <= maxDataLevel; level++)
-                {
-                    page.Bound.Items.Add(new BoundItemData()
-                    {
-                        BondType = (BondType)(level + 2),
-                        Height = 30
-                    });
-                }
-                return page;
+                var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
+                var content = System.IO.File.ReadAllText(path);
+                return JsonSerializer.Deserialize<ReportPageData>(content);
             }
-            catch(Exception ex) 
+            var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId).ToListAsync();
+            var maxDataLevel = parameters.Max(t => t.DataLevel);
+            var page = new ReportPageData()
             {
-                throw;
+                Setting = new ReportSetting()
+                {
+                    PageType = Caspian.Report.ReportPageType.A4,
+                    PageWidth = 21,
+                    PageHeight = 29.7
+                },
+                Bound = new BoundData()
+                {
+                    DataLevel = maxDataLevel,
+                    Items = new List<BoundItemData>()
+                },
+                ReportId = reportId
+            };
+            for (var level = 1; level <= maxDataLevel; level++)
+            {
+                page.Bound.Items.Add(new BoundItemData()
+                {
+                    BondType = (BondType)(level + 2),
+                    Height = 30
+                });
             }
+            return page;
         }
 
         TService GetService<TService>() where TService: class

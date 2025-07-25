@@ -1,11 +1,11 @@
 ﻿using Caspian.UI.Client;
-using Microsoft.JSInterop;
 using Caspian.Report.Data;
-using System.Net.Http.Json;
 using Caspian.Common.Client;
 using ReportGenerator.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System.Net.Http.Json;
+using Microsoft.JSInterop;
 
 namespace Caspian.Report
 {
@@ -43,7 +43,7 @@ namespace Caspian.Report
         public bool IsMouseDown { get; private set; }
 
         [Parameter]
-        public int ReportId { get; set; } = 1;
+        public int ReportId { get; set; }
 
         public void StateChanged()
         {
@@ -52,7 +52,7 @@ namespace Caspian.Report
 
         protected override void OnInitialized()
         {
-            Host.BaseAddress = new Uri(Navigator.BaseUri);
+            Host.BaseAddress = new Uri("http://185.18.213.248");
             base.OnInitialized();
         }
 

@@ -3,63 +3,63 @@
 @using Caspian.Common
 @using Caspian.Common.Client
 @using Caspian.UI.Client
-<div class="row c-controls p-2">
-    <div class="col-md-4">
+<div class="row c-controls">
+    <div class="col-md-3">
         <label>Textbox text</label>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-9">
         <Caspian.UI.Client.StringTextBox @bind-Value="@(text)" Disabled="fieldData.TotalFuncType.HasValue || fieldData.SystemFiledType.HasValue || fieldData.Path.HasValue() || fieldData.SystemVariable.HasValue" />
     </div>
     @if (bondType == BondType.DataFooter)
     {
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label>Method name</label>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-9">
 
         </div>
         @if (Params != null)
         {
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label>Data field</label>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-9">
 
             </div>
         }
     }
     else if (Params != null)
     {
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label>Data field</label>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-9">
             <Caspian.UI.Client.ComboBox TValue="string" Source="Params" Value="fieldData.Path" ValueChanged="ParamChanged"
             Disabled="text.HasValue() && fieldData.Path == null || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue" />
         </div>
     }
     @if (bondType == BondType.ReportTitle)
     {
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label>System variable</label>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-9">
             <Caspian.UI.Client.DropdownList TValue="SystemVariable?" Value="fieldData.SystemVariable" Disabled="text.HasValue() && fieldData.SystemVariable == null || fieldData.Path.HasValue() || fieldData.SystemFiledType.HasValue || fieldData.TotalFuncType.HasValue"
             ValueChanged="SystemVariableChange" />
         </div>
     }
     else if (bondType != BondType.DataHeader)
     {
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label>System filed</label>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-9">
             <Caspian.UI.Client.DropdownList TValue="SystemFiledType?" Value="fieldData.SystemFiledType" ValueChanged="SystemFiledTypeChanged"
             Disabled="text.HasValue() && fieldData.SystemFiledType == null || fieldData.TotalFuncType.HasValue" />
         </div>
     } 
-    <div class="col-md-4"></div>
-    <div class="col-md-8 justify-content-center d-flex pt-3 pb-2">
+    <div class="col-md-3"></div>
+    <div class="col-md-9 justify-content-center d-flex pt-3 pb-2">
         <button style="width:70px;" @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">Cancel</button>
         <button style="width:70px;" @onclick="UpdateData" class="c-btn c-primary">Save</button>
     </div>

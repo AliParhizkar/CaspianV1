@@ -114,7 +114,8 @@ namespace Main
                 app.UseHsts();
             }
             app.CreateFileAndFolder();
-            app.UseHttpsRedirection();
+            
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();

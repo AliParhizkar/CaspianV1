@@ -3,20 +3,20 @@
 @implements IDisposable
 @inject NavigationManager NavigationManager
 
-<div class="main">
-    <div class="content">
-        @if (HttpContext.Request.Path.StartsWithSegments("/Account/Login"))
-        {
-            @Body
-        }
-        else 
-        {
-            <CaspianExceptionComponent SystemKind="SubSystemKind.Engine" UserId="userId">
+    <div class="main">
+        <div class="content">
+            @if (HttpContext.Request.Path.StartsWithSegments("/Account/Login"))
+            {
                 @Body
-            </CaspianExceptionComponent>
-        }
+            }
+            else 
+            {
+                <CaspianExceptionComponent SystemKind="SubSystemKind.Engine" UserId="userId">
+                    @Body
+                </CaspianExceptionComponent>
+            }
+        </div>
     </div>
-</div>
 
 
 @code

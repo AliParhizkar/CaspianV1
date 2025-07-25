@@ -25,7 +25,7 @@ namespace Caspian.Report
         protected override async Task OnInitializedAsync()
         {
             if (Host.BaseAddress == null)
-                Host.BaseAddress = new Uri(Navigator.Uri);
+                Host.BaseAddress = new Uri("http://185.18.213.248");
             fontsName = await Host.GetFromJsonAsync<string[]>("/ReportGenerator/GetFonts");
             fontsSize = new string[] { "8", "9", "10", "11", "12", "13", "14", "16", "18", "20", "22", "24", "26", "28", "36", "48", "72"};
             await base.OnInitializedAsync();
