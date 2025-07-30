@@ -114,9 +114,9 @@ namespace Caspian.Report
         public void Move(int x, int y)
         {
             double left = Data.Left + x, top = Data.Top + y, right = left + Data.Width, bottom = top + Data.Height;
-            if (left >= Bound.Left && right <= BoundItem.Bound.Right)
+            if (left >= 0 && right <= BoundItem.ColumnWidth)
                 Data.Left += x;
-            if (top >= Bound.Top && bottom <= BoundItem.Bottom)
+            if (top >= 0 && bottom <= BoundItem.Bottom)
                 Data.Top += y;
         }
 

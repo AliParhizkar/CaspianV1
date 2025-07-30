@@ -14,7 +14,7 @@ namespace Caspian.Engine.ReportGenerator
         Report report;
         IList<NodeView> source;
         TreeView<NodeView> tree;
-        IList<AggregateReportGroupParameter> reportGroupparameters;
+        IList<AggregateReportGroupParameter> reportGroupParameters;
         IList<AggregateReportParameter> reportParameters;
 
         async Task SaveParameters()
@@ -25,10 +25,10 @@ namespace Caspian.Engine.ReportGenerator
             {
                 int parameterId = 0;
                 if (item.Parent == null)
-                    parameterId = reportGroupparameters.Single(t => t.Path == item.Value).Id;
+                    parameterId = reportGroupParameters.Single(t => t.Path == item.Value).Id;
                 else
                 {
-                    var parent = reportGroupparameters.Single(t => t.Path == item.Parent.Value);
+                    var parent = reportGroupParameters.Single(t => t.Path == item.Parent.Value);
                     int aggregateFunctionType = 0;
                     if (int.TryParse(item.Value, out aggregateFunctionType))
                         parameterId = parent.Parameters.Single(t => t.AggregateFunctionType.ConvertToInt() == aggregateFunctionType).Id;
@@ -102,9 +102,9 @@ namespace Caspian.Engine.ReportGenerator
         bool IsIdentityNode(NodeView node)
         {
             var parent = node.Parent;
-            if (parent == null || reportGroupparameters == null || int.TryParse(node.Value, out _))
+            if (parent == null || reportGroupParameters == null || int.TryParse(node.Value, out _))
                 return false;
-            var child = reportGroupparameters.Single(t => t.Path == parent.Value).Parameters.Single(t => t.Path == node.Value);
+            var child = reportGroupParameters.Single(t => t.Path == parent.Value).Parameters.Single(t => t.Path == node.Value);
             return child?.AggregateParameterType == AggregateParameterType.Identity;
         }
 
@@ -112,9 +112,9 @@ namespace Caspian.Engine.ReportGenerator
         {
             using var scope = CreateScope();
             report = await scope.GetService<ReportService>().GetAll().Include(t => t.ReportGroup).SingleAsync(ReportId);
-            reportGroupparameters = await scope.GetService<AggregateReportGroupParameterService>().GetAll().Where(t => t.ReportGroupId == report.ReportGroupId).ToListAsync();
+            reportGroupParameters = await scope.GetService<AggregateReportGroupParameterService>().GetAll().Where(t => t.ReportGroupId == report.ReportGroupId).ToListAsync();
             reportParameters = await scope.GetService<AggregateReportParameterService>().GetAll().Where(t => t.ReportId == ReportId).ToListAsync();
-            source = reportGroupparameters.Where(t => t.ParentParameterId == null).Select(t => new NodeView()
+            source = reportGroupParameters.Where(t => t.ParentParameterId == null).Select(t => new NodeView()
             {
                 Value = t.Path,
                 Text = t.Allis,

@@ -24,7 +24,8 @@ namespace Caspian.Common.Service
 
         public void SetChangedEntities(IList<ChangedEntity<TDetail>> details, IList<ChangedEntity<TDetail1>> details1)
         {
-            base.SetChangedEntities(details);
+            if (details != null)
+                base.SetChangedEntities(details);
             ChangedEntities1.Clear();
             ChangedEntities1.AddRange(details1.ToArray());
         }

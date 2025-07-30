@@ -40,7 +40,8 @@
 
 </html>
 
-@code {
+@code 
+{
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
@@ -49,7 +50,7 @@
         get
         {
             var path = HttpContext.Request.Path;
-            if (path.StartsWithSegments("/Account") || path.StartsWithSegments("/ReportPage"))
+            if (path.StartsWithSegments("/Account") || path.StartsWithSegments("/ReportPage") || path.StartsWithSegments("/Counter11"))
                 return null;
             return InteractiveServer;
         }

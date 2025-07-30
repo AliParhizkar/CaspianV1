@@ -37,10 +37,10 @@
 </span>
 @if (colorPickerOpen)
 {
-
+    
     var style = $"left:{colorPickerLeft - 70}px";
     <div style="@style" class="r-colorpicker-container" @onmousedown:stopPropagation @onmouseenter:stopPropagation @onmousemove:stopPropagation @onmouseup:stopPropagation @onclick:stopPropagation>
-        <Caspian.UI.ColorPicker Top="top" Color="@color" ColorChanged="ChangeColor" />
+        <Caspian.UI.Client.ColorPicker Top="top" Color="@color" ColorChanged="ChangeColor" />
     </div>
     <div @onclick="() => colorPickerOpen = false" @onmousemove:stopPropagation class="r-behind">
     </div>

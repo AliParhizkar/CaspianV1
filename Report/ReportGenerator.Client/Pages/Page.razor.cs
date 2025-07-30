@@ -52,7 +52,7 @@ namespace Caspian.Report
 
         protected override void OnInitialized()
         {
-            Host.BaseAddress = new Uri("http://185.18.213.248");
+            Host.BaseAddress = new Uri(Navigator.Uri);
             base.OnInitialized();
         }
 
@@ -225,7 +225,8 @@ namespace Caspian.Report
         public async Task AddControl(ControlData control)
         {
             ResetAll();
-            control.Font = new Font("12", control.Font.Family = ToolsBar.GetDefaultFont());
+            if (control.ControlType == ControlType.TextBox)
+                control.Font = new Font("12", control.Font.Family = ToolsBar.GetDefaultFont());
             controlData = control;
             controlAdding = true;
             await Task.Delay(100);

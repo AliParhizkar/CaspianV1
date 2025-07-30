@@ -8,6 +8,14 @@ using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ReportGenerator.Services;
+using Stimulsoft.Report.Dictionary;
+using Stimulsoft.Base;
+using System.Drawing;
+using Caspian.Engine.Model;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace ReportGenerator.Controllers
 {
@@ -34,9 +42,13 @@ namespace ReportGenerator.Controllers
                 var content = System.IO.File.ReadAllText(path);
                 return JsonSerializer.Deserialize<ReportPageData>(content);
             }
-            var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId).ToListAsync();
-            var maxDataLevel = parameters.Max(t => t.DataLevel);
-            var page = new ReportPageData()
+            byte maxDataLevel = 1;
+            if (report.ReportType != Caspian.Engine.ReportType.Aggregate)
+            {
+                var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId).ToListAsync();
+                maxDataLevel = parameters.Max(t => t.DataLevel);
+            }
+            ReportPageData pageData = new ReportPageData()
             {
                 Setting = new ReportSetting()
                 {
@@ -53,13 +65,13 @@ namespace ReportGenerator.Controllers
             };
             for (var level = 1; level <= maxDataLevel; level++)
             {
-                page.Bound.Items.Add(new BoundItemData()
+                pageData.Bound.Items.Add(new BoundItemData()
                 {
                     BondType = (BondType)(level + 2),
                     Height = 30
                 });
             }
-            return page;
+            return pageData;
         }
 
         TService GetService<TService>() where TService: class
@@ -74,17 +86,61 @@ namespace ReportGenerator.Controllers
         }
 
         [HttpGet]
-        public async Task<IList<ParamtereData>> GetReportParameters(int reportId, int dataLevel)
+        public async Task<IList<ParameterData>> GetReportParameters(int reportId, int dataLevel)
         {
+            var report = await GetService<ReportService>().GetAll().Include(t => t.ReportGroup).SingleAsync(reportId);
+            var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
+            if (report.ReportType == Caspian.Engine.ReportType.Aggregate)
+            {
+                var groupParameters = await GetService<AggregateReportGroupParameterService>().GetAll()
+                    .Where(t => t.ReportGroupId == report.ReportGroupId).ToListAsync();
+                var parameters = await GetService<AggregateReportParameterService>().GetAll().Where(t => t.ReportId == reportId)
+                    .ToListAsync();
+                var list = new List<ParameterData>();
+                foreach(var parameter in parameters.Select(t => t.AggregateReportGroupParameter))
+                {
+                    var path = parameter.Path;
+                    string allis = parameter.Allis;
+                    switch (parameter.AggregateParameterType)
+                    {
+                        case AggregateParameterType.Grouping:
+                        case AggregateParameterType.Selecting:
+                            if (parameter.ParentParameter != null)
+                            {
+                                var parentPath = parameter.ParentParameter.Path;
+                                var property = mainType.GetMyProperty(parentPath);
+                                var type = property.PropertyType.GetUnderlyingType();
+                                if (type == typeof(DateOnly))
+                                {
+                                    var index = parentPath.LastIndexOf('.') + 1;
+                                    parentPath = parentPath.Substring(0, index);
+                                    var persianDateInfo =  property.DeclaringType.GetProperties().Single(t => t.PropertyType == typeof(PersianDateTable) &&
+                                        t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == property.Name);
+                                    parentPath += persianDateInfo.Name;
+                                    path = parentPath + path;
+                                    allis = $"{parameter.ParentParameter.Allis}({allis})";
+                                }
+                            }
+                            list.Add(new ParameterData(path.Replace(".", ""), allis));
+                            break;
+                        case AggregateParameterType.AggregateFunction:
+                            var functionType = parameter.AggregateFunctionType.Value;
+                            var path1 = parameter.ParentParameter.Path.Replace(".", "") + functionType.ToString();
+                            allis = $"{functionType.GetAggregateFunctionName()}({parameter.ParentParameter.Allis})"; 
+                            list.Add(new ParameterData(path1, allis));
+                            break;
+                    }
+                }
+                return list;
+            }
             var result = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId && (t.DataLevel == dataLevel))
                 .Select(t => new SelectListItem
                 {
-                    Text = t.ReportGroupParameter.Alias ?? t.ReportGroupParameter.Alias,
+                    Text = t.ReportGroupParameter.Alias,
                     Value = t.ReportGroupParameter.PropertyPath
                 }).ToListAsync();
-            var report = await GetService<ReportService>().GetAll().Include(t => t.ReportGroup).SingleAsync(reportId);
-            var mainType = new AssemblyInfo().GetReturnType(report.ReportGroup);
-            return result.Select(t => new ParamtereData 
+            
+            return result.Select(t => new ParameterData
             { 
                 Value = t.Value,
                 Text = t.Text,
@@ -111,27 +167,27 @@ namespace ReportGenerator.Controllers
 
         public async Task SaveReport(ReportPageData page)
         {
+            var service = GetService<ReportService>();
+            var report = await service.SingleAsync(page.ReportId);
+            if (report.PrintFileName == null)
+            {
+                report.PrintFileName = Path.GetRandomFileName();
+                await service.SaveChangesAsync();
+            }
+            ReportComponentExtension.PPC = page.PixelsPerCentimetre;
+
+            var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
+            var json = JsonSerializer.Serialize(page);
+            System.IO.File.WriteAllText(path, json);
+               
+            ///mrt file
             try
             {
-                var service = GetService<ReportService>();
-                var report = await service.SingleAsync(page.ReportId);
-                if (report.PrintFileName == null)
-                {
-                    report.PrintFileName = Path.GetRandomFileName();
-                    await service.SaveChangesAsync();
-                }
-                //ReportComponentExtension.PPC = page.PixelsPerCentimetre;
-
-                var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
-                var json = JsonSerializer.Serialize(page);
-                System.IO.File.WriteAllText(path, json);
-               
-                ///mrt file
-                //var doc = await page.GetXMLDocument(provider);
+                var doc = await page.GetXMLDocument(provider);
                 path = $"{environment.ContentRootPath}/Report/Print/{report.PrintFileName}.mrt";
-                //doc.Save(path);
+                doc.Save(path);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
 
             }
@@ -140,33 +196,18 @@ namespace ReportGenerator.Controllers
         [HttpGet]
         public async Task<FileContentResult> GetReport(int reportId)
         {
+            var query = GetService<OrderDetailService>().GetAll().Where(t => t.Order.CustomerId != null);
+            var list = await new ReportEngine(provider.CreateScope()).GetData(reportId, query);
+            var report = await GetService<ReportService>().SingleAsync(reportId);
+            var path = $"{environment.ContentRootPath}/Report/Print/{report.PrintFileName}.mrt";
+            var stiReport = new StiReport();
+            stiReport.RegBusinessObject("list", list);
+            stiReport.Load(path);
+            stiReport.Render(false);
 
-            try
-            {
-                var report = await GetService<ReportService>().SingleAsync(reportId);
-                //report.PrintFileName = "report";
-                var path = $"{environment.ContentRootPath}/Report/Print/{report.PrintFileName}.mrt";
-                var stiReport = new StiReport();
-                stiReport["@ReportDate"] = DateTime.Now;
-                stiReport["@FirstName"] = "Ali";
-                stiReport["FirstName"] = "Ali";
-                stiReport["@LastName"] = "Parhizkar";
-                stiReport["FullName"] = "Ali Parhizkar";
-                stiReport["@PersonalCode"] = "123456";
-                stiReport.Variables["FullName"] = "Ali Parhizkar";
-                var query = provider.GetService<OrderDetailService>().GetAll().Where(t => t.Order.CustomerId != null);
-                var list = await new ReportEngine(provider.CreateScope()).GetData(reportId, query);
-                stiReport.RegBusinessObject("list", list);
-                stiReport.Load(path);
-                stiReport.Render(false);
-                var stream = new MemoryStream();
-                stiReport.ExportDocument(StiExportFormat.Pdf, stream);
-                return File(stream.ToArray(), "application/pdf");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var stream = new MemoryStream();
+            stiReport.ExportDocument(StiExportFormat.Pdf, stream);
+            return File(stream.ToArray(), "application/pdf");
             //return File(stream.ToArray(), "HTML");
         }
     }

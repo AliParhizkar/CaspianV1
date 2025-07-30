@@ -7,6 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+//interface Array<T extends number> {
+//    sum(): number;
+//}
 // Implement the Extension
 HTMLCollection.prototype.indexOf = function (element) {
     let items = this;
@@ -24,12 +27,6 @@ HTMLElement.prototype.getPosition = function () {
         parent = parent.offsetParent;
     }
     return new DOMRect(left, top, rect.width, rect.height);
-};
-Array.prototype.sum = function () {
-    let sumArray = 0;
-    for (var index = 0; index < this.length; index++)
-        sumArray += this[index];
-    return sumArray;
 };
 var caspian;
 (function (caspian) {

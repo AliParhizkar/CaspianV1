@@ -1,0 +1,15 @@
+﻿@using Caspian.Engine.Shared
+@inherits LayoutComponentBase
+@inject NavigationManager Navigator
+@{
+    var isWebAssmbly = Navigator.Uri.Substring(Navigator.BaseUri.Length).StartsWith("ReportPage");
+}
+
+@Body
+
+
+
+@code
+{
+
+}

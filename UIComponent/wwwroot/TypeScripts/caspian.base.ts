@@ -6,9 +6,9 @@ interface HTMLElement {
     getPosition(): DOMRect;
 }
 
-interface Array<T extends number> {
-    sum(): number;
-}
+//interface Array<T extends number> {
+//    sum(): number;
+//}
 
 
 // Implement the Extension
@@ -31,12 +31,12 @@ HTMLElement.prototype.getPosition = function () {
     return new DOMRect(left, top, rect.width, rect.height);
 }
 
-Array.prototype.sum = function (): number {
-    let sumArray = 0;
-    for (var index = 0; index < (this as Array<number>).length; index++)
-        sumArray += this[index];
-    return sumArray;
-}
+//Array.prototype.sum = function (): number {
+//    let sumArray = 0;
+//    for (var index = 0; index < (this as Array<number>).length; index++)
+//        sumArray += this[index];
+//    return sumArray;
+//}
 
 interface dotnetInvoker {
     invokeMethodAsync(str: string): Promise<void>;

@@ -13,8 +13,19 @@ namespace Caspian.Report.Data
         public double Height { get; set; }
     }
 
-    public class ParamtereData: SelectListItem
+    public class ParameterData: SelectListItem
     {
+        public ParameterData()
+        {
+
+        }
+
+        public ParameterData(string value, string text):
+            base(value, text)
+        {
+
+        }
+
         public ParameterFormatType? ParameterFormatType { get; set; }
     }
 

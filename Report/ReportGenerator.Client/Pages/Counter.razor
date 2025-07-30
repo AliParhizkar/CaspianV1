@@ -1,0 +1,12 @@
+﻿@page "/Counter11"
+@rendermode InteractiveWebAssembly
+<button @onclick="OnClick">Test</button>
+<span>@counter</span>
+@code 
+{
+    int counter = 50;
+    void OnClick()
+    {
+        counter++;
+    }
+}

@@ -23,10 +23,6 @@ namespace Main
     {
         static void Main(string[] args)
         {
-            //var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
-            //{
-            //    EnvironmentName = Environments.Staging,
-            //});
             var builder = WebApplication.CreateBuilder();
 
             ConfigureCulture();
@@ -69,7 +65,7 @@ namespace Main
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             }).AddIdentityCookies();
-            Stimulsoft.Base.StiLicense.Key = builder.Configuration.GetSection("StiLicenseKey").Value;
+            //Stimulsoft.Base.StiLicense.Key = builder.Configuration.GetSection("StiLicenseKey").Value;
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<Caspian.Common.Client.CaspianDataService>();
             builder.Services.AddScoped<Caspian.UI.Client.BasePageService>();
@@ -100,22 +96,24 @@ namespace Main
             builder.Services.AddScoped<BaseComponentService>();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
             builder.Services.AddAuthenticationCore();
-            
+
             builder.Services.AddIdentityCore<User>(options => options.Password.RequireNonAlphanumeric = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
             var app = builder.Build();
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
+                app.UseWebAssemblyDebugging();
+            else 
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.CreateFileAndFolder();
-            
-            //app.UseHttpsRedirection();
+
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();

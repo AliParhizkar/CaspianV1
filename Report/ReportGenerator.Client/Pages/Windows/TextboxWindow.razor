@@ -68,7 +68,7 @@
 {
     string text;
 
-    IEnumerable<ParamtereData> Params;
+    IEnumerable<ParameterData> Params;
     TextFieldData fieldData;
     BondType bondType;
     protected override void OnInitialized()
@@ -97,7 +97,7 @@
         {
             var level = Page.Bound.MaxDataLevel - dataLevel.Value + 1;
             var url = $"/ReportGenerator/GetReportParameters?reportId={Page.ReportId}&dataLevel={level}";
-            Params = await Host.GetFromJsonAsync<IEnumerable<ParamtereData>>(url);
+            Params = await Host.GetFromJsonAsync<IEnumerable<ParameterData>>(url);
 
             await base.OnInitializedAsync();
         }

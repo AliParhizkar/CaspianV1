@@ -54,5 +54,26 @@ namespace Caspian.Engine.Service
         {
             return property.DeclaringType.GetProperties().Any(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == property.Name);
         }
+
+        public static string GetAggregateFunctionName(this AggregateFunctionType functionType)
+        {
+            switch(functionType)
+            {
+                case AggregateFunctionType.Average:
+                    return "میانگین";
+                case AggregateFunctionType.First:
+                    return "اولین";
+                case AggregateFunctionType.Last:
+                    return "آخرین";
+                case AggregateFunctionType.Maximum:
+                    return "بیشترین";
+                case AggregateFunctionType.Minimum:
+                    return "کمترین";
+                case AggregateFunctionType.Sum:
+                    return "مجموع";
+                default:
+                    throw new NotImplementedException("خطای عدم پیاده سازی");
+            }
+        }
     }
 }
