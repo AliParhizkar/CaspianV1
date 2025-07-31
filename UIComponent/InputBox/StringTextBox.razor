@@ -43,7 +43,14 @@ else
                     }
                     else
                     {
-                        <input value="@Value" @oninput="async e => await ChangeValue(e)" @ref="InputElement" @attributes="GetInputAttributes()" />
+                        if (search)
+                        {
+                            <input @oninput="async e => await ChangeValue(e)" @ref="InputElement" @attributes="GetInputAttributes()" />
+                        }
+                        else
+                        {
+                            <input value="@Value" @oninput="async e => await ChangeValue(e)" @ref="InputElement" @attributes="GetInputAttributes()" />
+                        }
                     }
                 }
             </div>

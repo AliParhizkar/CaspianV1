@@ -11,13 +11,18 @@
 
 	<ItemGroup>
 		<Compile Remove="Help\**" />
+		<Compile Remove="Pages\GridListView\**" />
 		<Compile Remove="wwwroot\Pdf\**" />
 		<Content Remove="Help\**" />
+		<Content Remove="Pages\GridListView\**" />
 		<Content Remove="wwwroot\Pdf\**" />
 		<EmbeddedResource Remove="Help\**" />
+		<EmbeddedResource Remove="Pages\GridListView\**" />
 		<EmbeddedResource Remove="wwwroot\Pdf\**" />
 		<None Remove="Help\**" />
+		<None Remove="Pages\GridListView\**" />
 		<None Remove="wwwroot\Pdf\**" />
+		<TypeScriptCompile Remove="Pages\GridListView\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -46,7 +51,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Pages\GridListView\" />
 	  <Folder Include="Properties\" />
 	</ItemGroup>
 	<Target Name="CreateDataFolder" AfterTargets="AfterPublish">

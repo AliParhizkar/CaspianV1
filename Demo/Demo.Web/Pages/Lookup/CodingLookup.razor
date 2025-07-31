@@ -45,5 +45,6 @@
         titles[level - 1] = coding.Title;
         level = coding.Level + 1;
         await Service.DataView.ReloadAsync();
+        Service.Search.Code = Service.Search.Title = null;
     }
 }

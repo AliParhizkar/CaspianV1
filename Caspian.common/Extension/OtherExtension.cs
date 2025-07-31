@@ -90,7 +90,7 @@ namespace Caspian.Common.Extension
                 var pKey = entity.GetType().GetPrimaryKey();
                 if (Convert.ToInt32(pKey.GetValue(entity)) < 0)
                     pKey.SetValue(entity, 0);
-                foreach (var info in entity.GetType().GetProperties().Where(t => t.CanWrite))
+                foreach (var info in typeof(TEntity).GetProperties().Where(t => t.CanWrite))
                 {
                     var type = info.PropertyType;
                     if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]))

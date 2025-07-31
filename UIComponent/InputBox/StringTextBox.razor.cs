@@ -108,6 +108,13 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
+        protected override void OnParametersSet()
+        {
+            if (search)
+                BindingType = BindingType.OnInput;
+            base.OnParametersSet();
+        }
+
         public async Task<Selection> GetSelectionAsync()
         {
             return await jsRuntime.InvokeAsync<Selection>("caspian.common.getSelection", InputElement);
