@@ -10,7 +10,9 @@
 	  <PackageReference Include="Stimulsoft.Reports.Engine.Blazor" Version="2025.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.14" />
   </ItemGroup>
-
+	<ItemGroup>
+		<Content Include="Help\**" CopyToPublishDirectory="PreserveNewest" />
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
     <ProjectReference Include="..\Demo\Demo.Model\Demo.Model.csproj" />
@@ -27,5 +29,10 @@
     <ProjectReference Include="..\Report\UIComponent.Client\UIComponent.Client.csproj" />
     <ProjectReference Include="..\UIComponent\UIComponent.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<_CustomFiles Include="$(MSBuildProjectDirectory)/../Demo/Demo.web/Help/**" />
+		<DotNetPublishFiles Include="@(_CustomFiles)">
+			<DestinationRelativePath>Help/%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
+		</DotNetPublishFiles>
+	</ItemGroup>
 </Project>

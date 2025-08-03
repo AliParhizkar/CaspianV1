@@ -3,11 +3,11 @@
 @inherits LookupWindow<AccountCoding, TValue>
 <div class="c-lookup-page" style="width:700px;">
     <EntitySearch TEntity="AccountCoding" Service="Service">
-        <StringTextBox @bind-Value="searchCode" Title="کد" ColSpan="2" TotalSpan="4" />
-        <StringTextBox @bind-Value="context.Title" ColSpan="6" TotalSpan="8" />
+        <StringTextBox @ref="txtCode" @bind-Value="searchCode" Title="کد" ColSpan="2" TotalSpan="4" />
+        <StringTextBox @ref="txtTitle" @bind-Value="context.Title" ColSpan="6" TotalSpan="8" />
     </EntitySearch>
     <div class="p-2">
-        <DataGrid Service="Service" TEntity="AccountCoding" ContentHeight="200" OnRowSelect="OnRowSelect"
+        <DataGrid Service="Service" TEntity="AccountCoding" ContentHeight="200" 
                   ConditionExpr="t => t.Level == level && ((code + searchCode)== null || t.Code.StartsWith(code + searchCode))">
             <Columns>
                 <GridColumn Field="t => t.Code" Title="کد حساب">
@@ -35,16 +35,29 @@
 
 @code
 {
+    StringTextBox txtTitle, txtCode;
     string code, searchCode;
     int level = 1, lenth;
     string[] titles = new string[5];
-    async Task OnRowSelect(AccountCoding coding)
+
+    protected override void OnInitialized()
     {
-        code = coding.Code;
-        lenth = code.Length;
-        titles[level - 1] = coding.Title;
-        level = coding.Level + 1;
-        await Service.DataView.ReloadAsync();
-        Service.Search.Code = Service.Search.Title = null;
+        OnSelect = async t =>
+        {
+            var grid = Service.DataView as DataGrid<AccountCoding>;
+            var coding = grid.GetSelectedData();
+            code = coding.Code;
+            lenth = code.Length;
+            titles[level - 1] = coding.Title;
+            level = coding.Level + 1;
+            await grid.ReloadAsync();
+            grid.SelectFirstRow();
+            if (Service.Search.Code.HasValue())
+                await txtCode.SetValueOnClientAsync("");
+            if (Service.Search.Title.HasValue())
+                await txtTitle.SetValueOnClientAsync("");
+
+        };
+        base.OnInitialized();
     }
 }

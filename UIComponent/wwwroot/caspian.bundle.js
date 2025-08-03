@@ -379,6 +379,9 @@ var caspian;
                 document.getElementById('outMessage').remove();
             }, 300);
         }
+        static setValueOnClient(input, value) {
+            input.value = value;
+        }
         static RightToLeft() {
             return document.body.classList.contains('t-rtl');
         }

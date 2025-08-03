@@ -3,6 +3,7 @@ using System.Reflection;
 using Microsoft.JSInterop;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Caspian.UI
 {
@@ -62,11 +63,39 @@ namespace Caspian.UI
             }
             if (DisableAutoSelect)
                 InputAttributes["disableAutoSelect"] = true;
+            if (EntitySearch?.IsLookup == true)
+            {
+                InputAttributes["onkeydown"] = new Action<KeyboardEventArgs>(async e =>
+                {
+                    switch (e.Code)
+                    {
+                        case "ArrowUp":
+                            await EntitySearch.SelectPreRow();
+                            break;
+                        case "ArrowDown":
+                            await EntitySearch.SelectNextRow();
+                            break;
+                        case "Enter":
+                        case "NumpadEnter":
+                            await EntitySearch.SelectRow();
+                            break;
+                    }
+                });
+            }
             return InputAttributes;
         }
 
         [Parameter]
         public bool DisableAutoSelect { get; set; }
+
+        public async Task SetValueOnClientAsync(string value)
+        {
+            Value = value;
+            if (ValueChanged.HasDelegate)
+                await ValueChanged.InvokeAsync(value);
+            if (InputElement != null)
+                await jsRuntime.InvokeVoidAsync("caspian.common.setValueOnClient", InputElement, value);
+        }
 
         async Task ChangeValue(ChangeEventArgs arg)
         {

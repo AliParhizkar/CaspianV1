@@ -19,10 +19,17 @@ namespace Caspian.UI
         {
             SearchData = Activator.CreateInstance<TEntity>();
             var service = Service as IInternalSearchService<TEntity>;
-            service?.OnlyForSearch();
-            service?.HideFooter();
+            if (service != null)
+            {
+                service.HideFooter();
+                service.OnlyForSearch();
+                service.LookupInitializer(Lookup);
+                (Lookup as Lookup<TEntity, TValue>).OnSelect = OnSelect;
+            }
             base.OnInitialized();
         }
+
+        protected Action<TEntity> OnSelect { get; set; }
 
         [CascadingParameter(Name = "LookupStringSearchValue")]
         public string LookupStringSearchValue { get; set; }

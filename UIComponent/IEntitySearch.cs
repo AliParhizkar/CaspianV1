@@ -1,5 +1,4 @@
-﻿
-using Caspian.Common;
+﻿using Caspian.Common;
 using System.Collections;
 
 namespace Caspian.UI
@@ -15,6 +14,14 @@ namespace Caspian.UI
         bool ChangEnumValues(string path, ICollection values);
 
         Task SearchAsync();
+
+        bool IsLookup { get; }
+
+        Task SelectNextRow();
+
+        Task SelectPreRow();
+
+        Task SelectRow();
 
         ICollection GetFieldValues(string propertyPath);
     }

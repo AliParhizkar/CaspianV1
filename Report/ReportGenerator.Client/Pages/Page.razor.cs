@@ -58,7 +58,14 @@ namespace Caspian.Report
 
         async Task FetchData()
         {
-            Data = await Host.GetFromJsonAsync<ReportPageData>($"/ReportGenerator/GetReportData?reportId={ReportId}");
+            try
+            {
+                var rqqq = await Host.GetAsync($"/ReportGenerator/GetReportData?reportId={ReportId}");
+            }
+            catch(Exception ex)
+            {
+
+            }
             /// Set table row for each table cells
             var tables = Data.Bound.Items.Where(t => t.Table != null).Select(t => t.Table).ToList();
             foreach (var table in tables)

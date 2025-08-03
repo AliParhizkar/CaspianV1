@@ -28,6 +28,11 @@ namespace Caspian.UI
         IDictionary<string, SearchType> GetSearchData();
         void OnlyForSearch();
         void HideFooter();
+        void LookupInitializer(ILookup<TEntity> lookup);
+
+        bool IsLookup();
+
+        Task SelectItemOnLookup();
     }
 
     public interface IUIService

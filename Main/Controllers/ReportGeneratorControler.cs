@@ -16,12 +16,13 @@ using Caspian.Engine.Model;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReportGenerator.Controllers
 {
     [ApiController]
     [Route("ReportGenerator/[action]")]
-    //[Authorize]
+    [Authorize]
     public class ReportGeneratorController : ControllerBase
     {
         IServiceProvider provider;

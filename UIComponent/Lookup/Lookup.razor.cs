@@ -282,6 +282,8 @@ namespace Caspian.UI
             }
         }
 
+        internal Action<TEntity> OnSelect { get; set; }
+
         public bool Validate()
         {
             if (Required && (Value == null || Value.ToString() == ""))
@@ -351,6 +353,26 @@ namespace Caspian.UI
             return result;
         }
 
+        async Task ILookup<TEntity>.SelectOnLookup(bool changeState)
+        {
+            if (grid?.SelectedRowId != null)
+            {
+                OnSelect(grid.GetSelectedData());
+                var result = CloseHelpForm(grid.GetSelectedData());
+                if (result)
+                {
+                    var value = grid.SelectedRowId.Value;
+                    await SetValue(value, false);
+                    valueUpdated = true;
+                    oldValue = Value;
+                    Text = await GetText(value);
+                    oldText = Text;
+                    if (changeState)
+                        StateHasChanged();
+                }
+            }
+        }
+
         async Task OnKeyDownHandler(KeyboardEventArgs e)
         {
             switch (e.Code)
@@ -363,19 +385,7 @@ namespace Caspian.UI
                     break;
                 case "Enter":
                 case "NumpadEnter":
-                    if (grid?.SelectedRowId != null)
-                    {
-                        var result = CloseHelpForm(grid.GetSelectedData());
-                        if (result)
-                        {
-                            var value = grid.SelectedRowId.Value;
-                            await SetValue(value, false);
-                            valueUpdated = true;
-                            oldValue = Value;
-                            Text = await GetText(value);
-                            oldText = Text;
-                        }
-                    }
+                    await (this as ILookup<TEntity>).SelectOnLookup(false);
                     break;
                 case "Escape":
                     status = WindowStatus.Close;
@@ -404,6 +414,7 @@ namespace Caspian.UI
         {
             ErrorMessage = null;
             await SetValue(0);
+            
         }
 
         void ILookup<TEntity>.SetAndInitializeGrid(DataGrid<TEntity> grid)
@@ -412,15 +423,15 @@ namespace Caspian.UI
             grid.SelectFirstRow();
             grid.OnInternalRowSelect = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
+                OnSelect(entity);
                 if(CloseHelpForm(entity))
                 {
                     var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
                     await SetValue(id);
                 }
             });
+            
         }
-
-        
 
         bool ILookup<TEntity>.AdvanceSearch{get{ return advanceSearch; }}
 
@@ -561,6 +572,8 @@ namespace Caspian.UI
     internal interface ILookup<TEntity> where TEntity : class
     {
         void SetAndInitializeGrid(DataGrid<TEntity> grid);
+
+        Task SelectOnLookup(bool changeState);
 
         bool AdvanceSearch { get; }
     }

@@ -23,6 +23,7 @@ namespace Caspian.UI
         IDictionary<string, ICollection> enumValues;
         protected bool hideFooter, isDevelopment;
         protected ILogger logger;
+        ILookup<TEntity> lookup;
 
         public UIService(IServiceProvider serviceProvider)
         {
@@ -78,7 +79,12 @@ namespace Caspian.UI
 
         IDictionary<string, SearchType> IInternalSearchService<TEntity>.GetSearchData()
         {
-            return searchData; 
+            return searchData;
+        }
+
+        async Task IInternalSearchService<TEntity>.SelectItemOnLookup()
+        {
+            await lookup.SelectOnLookup(true);
         }
 
         public async Task CloseWindow()
@@ -421,6 +427,16 @@ namespace Caspian.UI
         /// This Method Call form Lookup-window (In lookup-window we hide footer of Data-View)
         /// </summary>
         void IInternalSearchService<TEntity>.HideFooter() => hideFooter = true;
+        void IInternalSearchService<TEntity>.LookupInitializer(ILookup<TEntity> lookup)
+        {
+            this.lookup = lookup;
+        }
+
+        bool IInternalSearchService<TEntity>.IsLookup()
+        {
+            return lookup != null;
+        }
+
 
         /// <summary>
         /// This Method Call form Lookup-window (In lookup-window we Hide Insert-Icon)

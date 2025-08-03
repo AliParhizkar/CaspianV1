@@ -13,7 +13,7 @@ namespace Caspian.UI
     {
         protected IDictionary<string, SearchType> searchData;
         protected IDictionary<string, ICollection> enumValues;
-        bool onlyForSearch;
+        bool onlyForSearch, isLookup;
 
         public MembershipService(IServiceProvider provider)
             :base(provider)
@@ -46,6 +46,21 @@ namespace Caspian.UI
         void IInternalSearchService<TOther>.HideFooter() 
         {
             hideFooter = true;
+        }
+
+        void IInternalSearchService<TOther>.LookupInitializer(ILookup<TOther> lookup)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IInternalSearchService<TOther>.IsLookup()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task IInternalSearchService<TOther>.SelectItemOnLookup()
+        {
+            throw new NotImplementedException();
         }
 
         void IInternalSearchService<TOther>.SetEnumFields(IDictionary<string, ICollection> enumFields)

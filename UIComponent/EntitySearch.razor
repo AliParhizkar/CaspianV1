@@ -82,6 +82,26 @@
         await Service.DataView.ReloadAsync();
     }
 
+    async Task IEntitySearch.SelectNextRow()
+    {
+        var grid = Service.DataView as DataGrid<TEntity>;
+        await grid.SelectNextRow();
+        grid.ChangeState();
+    }
+
+    async Task IEntitySearch.SelectPreRow()
+    {
+        var grid = Service.DataView as DataGrid<TEntity>;
+        await grid.SelectPrevRow();
+        grid.ChangeState();
+    }
+
+    async Task IEntitySearch.SelectRow()
+    {
+        await (Service as IInternalSearchService<TEntity>).SelectItemOnLookup();
+    }
+
+
     [CascadingParameter]
     internal PageData PageData { get; set; }
 
@@ -114,6 +134,8 @@
 
     [Parameter]
     public int ColumnsCount { get; set; } = 1;
+
+    bool IEntitySearch.IsLookup { get { return (Service as IInternalSearchService<TEntity>).IsLookup() != null; } }
 
     [Parameter]
     public ISearchService<TEntity> Service { get; set; }

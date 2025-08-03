@@ -51,6 +51,10 @@
             }, 300);
         }
 
+        public static setValueOnClient(input: HTMLInputElement, value: string) {
+            input.value = value;
+        }
+
         static RightToLeft(): boolean {
             return document.body.classList.contains('t-rtl');
         }

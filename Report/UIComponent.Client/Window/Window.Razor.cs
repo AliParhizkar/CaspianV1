@@ -29,9 +29,6 @@ namespace Caspian.UI.Client
         [Parameter]
         public RenderFragment Content { get; set; }
 
-        //[Parameter]
-        //public ISimpleService Service { get; set; }
-
         [Parameter]
         public RenderFragment HeaderTemplate { get; set; }
 
