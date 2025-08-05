@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="Stimulsoft.Reports.Engine.Blazor" Version="2025.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.14" />
   </ItemGroup>
@@ -34,5 +38,8 @@
 		<DotNetPublishFiles Include="@(_CustomFiles)">
 			<DestinationRelativePath>Help/%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
 		</DotNetPublishFiles>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="NewFolder\" />
 	</ItemGroup>
 </Project>

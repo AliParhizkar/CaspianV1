@@ -10,10 +10,24 @@
 <div class="t-grid-pager t-grid-bottom">
     <div class="t-pager t-reset">
         <span @onclick="GoToFirstPage" tabindex="-1" class="t-icon @(PageNumber == 1 ? "t-state-disabled" : "")">
-            <i class="fa fa-step-backward"></i>
+            @if (PageData?.RightToLeft == true)
+            {
+                <i class="fa fa-step-forward"></i>
+            }
+            else
+            {
+                <i class="fa fa-step-backward"></i>
+            }
         </span>
         <span @onclick="GoToPrePage" tabindex="-1" class="t-icon  @(PageNumber == 1 ? "t-state-disabled" : "")">
-            <i class="fa fa-caret-left"></i>
+            @if (PageData?.RightToLeft == true)
+            {
+                <i class="fa fa-caret-right"></i>
+            }
+            else
+            {
+                <i class="fa fa-caret-left"></i>
+            }
         </span>
         <div class="t-numeric">
             @if (startPageNumber > 1)
@@ -49,10 +63,24 @@
             }
         </div>
         <span @onclick="GoToNextPage" tabindex="-1" class="t-icon @(PageNumber == PageCount ? "t-state-disabled" : "")">
-            <i class="fa fa-caret-right"></i>
+            @if (PageData?.RightToLeft == true)
+            {
+                <i class="fa fa-caret-left"></i>
+            }
+            else
+            {
+                <i class="fa fa-caret-right"></i>
+            }
         </span>
         <span @onclick="GoToLastPage" tabindex="-1" class="t-icon @(PageNumber == PageCount ? "t-state-disabled" : "")">
-            <i class="fa fa-step-forward"></i>
+            @if (PageData?.RightToLeft == true)
+            {
+                <i class="fa fa-step-backward"></i>
+            }
+            else
+            {
+                <i class="fa fa-step-forward"></i>
+            }
         </span>
     </div>
     <div class="t-status-text">
@@ -95,6 +123,9 @@
         if (PageSizeChanged.HasDelegate)
             await PageSizeChanged.InvokeAsync(size);
     }
+
+    [CascadingParameter]
+    internal PageData PageData { get; set; }
 
     [Parameter]
     public int TotalRecord { get; set; }

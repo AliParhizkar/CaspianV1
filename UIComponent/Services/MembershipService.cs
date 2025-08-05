@@ -55,7 +55,7 @@ namespace Caspian.UI
 
         bool IInternalSearchService<TOther>.IsLookup()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         Task IInternalSearchService<TOther>.SelectItemOnLookup()

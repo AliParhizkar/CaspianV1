@@ -357,7 +357,8 @@ namespace Caspian.UI
         {
             if (grid?.SelectedRowId != null)
             {
-                OnSelect(grid.GetSelectedData());
+                if (OnSelect != null)
+                    OnSelect(grid.GetSelectedData());
                 var result = CloseHelpForm(grid.GetSelectedData());
                 if (result)
                 {
@@ -423,7 +424,8 @@ namespace Caspian.UI
             grid.SelectFirstRow();
             grid.OnInternalRowSelect = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
-                OnSelect(entity);
+                if (OnSelect != null)
+                    OnSelect(entity);
                 if(CloseHelpForm(entity))
                 {
                     var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));

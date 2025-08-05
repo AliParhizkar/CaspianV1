@@ -294,7 +294,7 @@
 
 .t-rtl .t-grid .t-pager
 {
-    float: right;
+    direction:rtl;
 }
 
 .t-rtl .t-grid .t-status

@@ -28,6 +28,9 @@ namespace Demo.Model
         [DisplayName("Price")]
         public int Price { get; set; }
 
+        [Display()]
+        public int Discount { get; set; }
+
         [DisplayName("Quantity")]
         public int Quantity { get; set; }
 

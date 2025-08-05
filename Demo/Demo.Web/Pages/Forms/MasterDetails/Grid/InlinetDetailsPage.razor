@@ -125,11 +125,11 @@
                                         </Lookup>
                                     </EditTemplate>
                                 </GridColumn>
-                                <GridColumn Field="t => t.Price.DigitGrouping()" style="width:100px" >
+                                <GridColumn Field="t => t.Price + t.Discount"  style="width:100px" >
                                     <Template>
-                                        @if (con.Data.Product?.Discount > 0)
+                                        @if (con.Data.Discount > 0)
                                         {
-                                            <div class="d-price d-discount">@(con.Data.Product.Discount + con.Data.Price)$</div>
+                                            <div class="d-price d-discount">@(con.Data.Discount + con.Data.Price)$</div>
                                         }
                                         <div class="d-price">@(con.Data.Price.DigitGrouping())$</div>
                                     </Template>
@@ -315,6 +315,7 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
             using var service = CreateScope().GetService<ProductService>();
             var old = await service.SingleAsync(detail.ProductId);
             detail.Price = old.Price;
+            detail.Discount = old.Discount.GetValueOrDefault();
             detail.Product = old;
             await txtQuantity.FocusAsync();
         }

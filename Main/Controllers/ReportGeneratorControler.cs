@@ -14,15 +14,14 @@ using Stimulsoft.Base;
 using System.Drawing;
 using Caspian.Engine.Model;
 using System.Reflection;
+using Main;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ReportGenerator.Controllers
 {
     [ApiController]
     [Route("ReportGenerator/[action]")]
-    [Authorize]
+    //[Authorize]
     public class ReportGeneratorController : ControllerBase
     {
         IServiceProvider provider;
@@ -39,7 +38,7 @@ namespace ReportGenerator.Controllers
             var report = await GetService<ReportService>().SingleAsync(reportId);
             if (report.PrintFileName.HasValue())
             {
-                var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
+                var path = $"{environment.ContentRootPath}/ReportFiles/View/{report.PrintFileName}.json";
                 var content = System.IO.File.ReadAllText(path);
                 return JsonSerializer.Deserialize<ReportPageData>(content);
             }
@@ -177,7 +176,7 @@ namespace ReportGenerator.Controllers
             }
             ReportComponentExtension.PPC = page.PixelsPerCentimetre;
 
-            var path = $"{environment.ContentRootPath}/Report/View/{report.PrintFileName}.json";
+            var path = $"{environment.ContentRootPath}/ReportFiles/View/{report.PrintFileName}.json";
             var json = JsonSerializer.Serialize(page);
             System.IO.File.WriteAllText(path, json);
                
@@ -185,7 +184,7 @@ namespace ReportGenerator.Controllers
             try
             {
                 var doc = await page.GetXMLDocument(provider);
-                path = $"{environment.ContentRootPath}/Report/Print/{report.PrintFileName}.mrt";
+                path = $"{environment.ContentRootPath}/ReportFiles/Print/{report.PrintFileName}.mrt";
                 doc.Save(path);
             }
             catch(Exception ex)
@@ -200,7 +199,7 @@ namespace ReportGenerator.Controllers
             var query = GetService<OrderDetailService>().GetAll().Where(t => t.Order.CustomerId != null);
             var list = await new ReportEngine(provider.CreateScope()).GetData(reportId, query);
             var report = await GetService<ReportService>().SingleAsync(reportId);
-            var path = $"{environment.ContentRootPath}/Report/Print/{report.PrintFileName}.mrt";
+            var path = $"{environment.ContentRootPath}/ReportFiles/Print/{report.PrintFileName}.mrt";
             var stiReport = new StiReport();
             stiReport.RegBusinessObject("list", list);
             stiReport.Load(path);
