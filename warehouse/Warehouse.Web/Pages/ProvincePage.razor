@@ -1,0 +1,35 @@
+﻿@page "/Warehouse/Province"
+@inherits BasePage
+@inject IUIService<Province> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" >
+        <StringTextBox @bind-Value="context.Title" ColSpan="8"  />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="Province" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn style="width:50px" Title="شهرها">
+                <Template>
+                    <IconButton Href='@($"/Warehouse/City/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                </Template>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="Province" Style="width:450px">
+    <CaspianForm TEntity="Province" Service="Service">
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+    
+}

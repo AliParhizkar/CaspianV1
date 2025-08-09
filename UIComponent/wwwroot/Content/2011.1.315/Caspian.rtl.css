@@ -1,3 +1,11 @@
+.t-rtl .c-multi-select-drowp, .t-rtl .t-checkbox .t-title {
+    padding-right: 5px;
+}
+
+.t-ltr .c-multi-select-drowp, .t-ltr .t-checkbox .t-title {
+    padding-left: 5px;
+}
+
 .t-rtl .c-controls label {
     background-image: linear-gradient(-90deg, #00000010, #dcdcdc20);
     padding-left:0;

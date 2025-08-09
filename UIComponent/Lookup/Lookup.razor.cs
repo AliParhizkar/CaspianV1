@@ -10,12 +10,13 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
 
 namespace Caspian.UI
 {
     public partial class Lookup<TEntity, TValue> : ComponentBase, IControl, ILookup<TEntity> where TEntity: class
     {
-        string Text;
+        string Text, title;
         string oldText;
         TValue oldValue;
         bool mustClear;
@@ -76,13 +77,50 @@ namespace Caspian.UI
         public bool HideHeader { get; set; }
 
         [Parameter]
+        public int? ColSpan { get; set; }
+
+        [Parameter]
+        public int? TotalSpan { get; set; }
+
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
+
+        [CascadingParameter(Name = "ParentForm")]
+        internal ICaspianForm CaspianForm { get; set; }
+
+        [CascadingParameter]
+        internal CaspianContainer CaspianContainer { get; set; }
+
+        protected string GetLabelCSSClassName()
+        {
+            if (TotalSpan.HasValue)
+            {
+                var className = PageData?.RightToLeft == true ? "pe-2" : "ps-2";
+                className += " col-md-";
+                return className + (TotalSpan.Value - ColSpan);
+            }
+            var container = EntitySearch as ICaspianContainer ?? CaspianForm as ICaspianContainer ?? CaspianContainer;
+            return container.GetLabelContainerCSSClassName(ColSpan.Value);
+        }
+
+        protected string GetControlCSSClassName()
+        {
+            var str = $"col-md-{ColSpan} ";
+            return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
+        }
+
+        [Parameter]
         public string Style { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public string Title { get; set; } = "حستجو ...";
+        public string WindowTitle { get; set; } = "حستجو ...";
+
+
+        [Parameter]
+        public string Title { get; set; }
 
         [Parameter]
         public bool HideIcon { get; set; }
@@ -153,6 +191,11 @@ namespace Caspian.UI
         {
             shouldRender = true;
             status = WindowStatus.Close;
+            if (ValueExpression != null)
+            {
+                var member = (ValueExpression.Body as MemberExpression).Member;
+                title = member.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? member.Name;
+            }
             base.OnInitialized();
         }
 

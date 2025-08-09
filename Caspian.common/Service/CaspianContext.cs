@@ -44,10 +44,9 @@ namespace Caspian.Common
                 var pKeyName = type.GetPrimaryKey(true)?.Name;
                 foreach (var property in type.GetProperties())
                 {
-                    if (property.PropertyType.FullName == "Caspian.Engine.Model.User" || property.PropertyType.Name == "PersianDateTable")
-                    {
+                    var names = new string[] { "Caspian.Engine.Model.User", "Caspian.Engine.Model.PersianDateTable"};
+                    if (names.Contains(property.PropertyType.FullName))
                         continue;
-                    }
                     var type1 = property.PropertyType;
                     var foreignKey = property.GetCustomAttribute<ForeignKeyAttribute>();
                     if (type1.IsValueType || type1 == typeof(string) || type1 == typeof(byte[]))
@@ -131,10 +130,6 @@ namespace Caspian.Common
                         modelBuilder.Entity(type).ToTable(tableAttribute.Name, tableAttribute.Schema, t =>
                         {
                             t.ExcludeFromMigrations();
-                            t.IsTemporal(b =>
-                            {
-                                
-                            });
                         });
                     }
                 }
@@ -188,22 +183,6 @@ namespace Caspian.Common
                .HasTranslation(e => new SqlFunctionExpression("JSON_VALUE", e, true, new[] { true, false }, typeof(String), null));
             
             base.OnModelCreating(modelBuilder);
-        }
-
-        public override void Dispose()
-        {
-            try
-            {
-                if (Database?.CurrentTransaction != null)
-                {
-                    Database.CurrentTransaction.Rollback();
-                }
-            }
-            catch (ObjectDisposedException ex)
-            {
-
-            }
-            base.Dispose();
         }
     }
 }

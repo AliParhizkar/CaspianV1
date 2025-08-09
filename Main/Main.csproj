@@ -32,6 +32,9 @@
     <ProjectReference Include="..\Report\ReportGenerator.Client\ReportGenerator.Client.csproj" />
     <ProjectReference Include="..\Report\UIComponent.Client\UIComponent.Client.csproj" />
     <ProjectReference Include="..\UIComponent\UIComponent.csproj" />
+    <ProjectReference Include="..\warehouse\Warehouse.Model\Warehouse.Model.csproj" />
+    <ProjectReference Include="..\warehouse\Warehouse.Service\Warehouse.Service.csproj" />
+    <ProjectReference Include="..\warehouse\Warehouse.Web\Warehouse.Web.csproj" />
   </ItemGroup>
 	<ItemGroup>
 		<_CustomFiles Include="$(MSBuildProjectDirectory)/../Demo/Demo.web/Help/**" />

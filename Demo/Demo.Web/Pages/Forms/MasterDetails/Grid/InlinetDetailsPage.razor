@@ -113,31 +113,49 @@
                             <FormCommandButton ColSpan="8" />
                         </CaspianForm>
                     </div>
-                    <div class="col-md-8 ps-3">
+
+                    <div class="col-md-8 ps-2">
+                        <div class="pb-3">
+                            <CheckBox @bind-Value="editablePrice" Title="Editable Price" />
+                        </div>
                         <DataGrid DetailsService="Service" TEntity="OrderDetail" ContentHeight="250" Inline OnSave="CalCulateOrderParameters">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Product.Discount" DataField />
                                 <GridColumn Field="t => t.Product.Title" Title="Product">
                                     <EditTemplate>
                                         <Lookup TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId" HideIcon OpenOnFocus
-                                        HideHeader AutoHide TextExpression="t => t.Title" OnChange="async () => await SetPrice(con.Data)">
+                                                HideHeader AutoHide TextExpression="t => t.Title" OnChange="async () => await SetPrice(con.Data)">
                                             <ProductLookupWindow />
                                         </Lookup>
                                     </EditTemplate>
                                 </GridColumn>
-                                <GridColumn Field="t => t.Price + t.Discount"  style="width:100px" >
+                                <GridColumn Field="t => t.Price + t.Discount" style="width:100px" Title="Price">
                                     <Template>
-                                        @if (con.Data.Discount > 0)
+                                        @if (editablePrice)
                                         {
-                                            <div class="d-price d-discount">@(con.Data.Discount + con.Data.Price)$</div>
+                                            if (con.UpsertMode == null)
+                                            {
+                                                <div class="d-price">@(con.Data.Price.DigitGrouping())$</div>
+                                            }
+                                            else
+                                            {
+                                                <NumericTextBox @bind-Value="con.Data.Price" />
+                                            }
                                         }
-                                        <div class="d-price">@(con.Data.Price.DigitGrouping())$</div>
+                                        else
+                                        {
+                                            if (con.Data.Discount > 0)
+                                            {
+                                                <div class="d-price d-discount">@(con.Data.Discount + con.Data.Price)$</div>
+                                            }
+                                            <div class="d-price">@(con.Data.Price.DigitGrouping())$</div>
+                                        }
                                     </Template>
                                 </GridColumn>
                                 <GridColumn Field="t => t.Quantity" style="width:100px">
                                     <EditTemplate>
                                         <NumericTextBox @ref="txtQuantity" @bind-Value="con.Data.Quantity"
-                                        @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
+                                                        @onkeyup="@(async e => await UpsertOnEnter(e, con.UpsertMode.Value))" />
                                     </EditTemplate>
                                 </GridColumn>
                                 <GridColumn Field="t => t.Descript" Title="Comment" style="width:60px">
@@ -150,7 +168,7 @@
                                         {
                                             if (con.UpsertMode == UpsertMode.Insert)
                                             {
-                                                <button @ref="btnDescripOninsert" @onclick="async () => await ShowDesccription(con.Data, UpsertMode.Insert)" class="c-btn c-primary" >...</button>
+                                                <button @ref="btnDescripOninsert" @onclick="async () => await ShowDesccription(con.Data, UpsertMode.Insert)" class="c-btn c-primary">...</button>
                                             }
                                             else
                                             {
@@ -223,6 +241,7 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
     int selectionStart;
     double left;
     WindowStatus ordersStatus;
+    bool editablePrice;
 
     async Task ShowOrders(MouseEventArgs e)
     {

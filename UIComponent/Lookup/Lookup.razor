@@ -5,37 +5,59 @@
 @inject IJSRuntime jsRuntime
 @inject IServiceScopeFactory ServiceScopeFactory
 
+@if (ColSpan.HasValue)
+{
+    <div class="@(GetLabelCSSClassName())">
+        <label>@(Title ?? title)</label>
+    </div>
+    <div class="@(GetControlCSSClassName())">
+        @RenderLookup()
+    </div>
+}
+else
+{
+    @RenderLookup()
+}
 
-<div @attributes="GetMainAttribute()">
-    <input @ref="InputElement" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => await OnKeyDownHandler(e))"
-           @attributes="inputAttrs" @onkeyup="@(async e => await OnKeyUp(e))" @onsubmit:preventDefault />
-    @if (!HideIcon)
+
+@code
+{
+    RenderFragment RenderLookup()
     {
-        <span class="fa fa-search" @onclick="() => OpenWindow(true)"></span>
-    }
-    <div class="c-content">
-        @if (status == WindowStatus.Open)
+        return __builder =>
         {
-            <div class="t-HelpWindow">
-                @if (!HideHeader)
+            <div @attributes="GetMainAttribute()">
+                <input @ref="InputElement" value="@Text" @oninput="SetSearchValue" @onkeydown="@(async e => await OnKeyDownHandler(e))"
+                       @attributes="inputAttrs" @onkeyup="@(async e => await OnKeyUp(e))" @onsubmit:preventDefault />
+                @if (!HideIcon)
                 {
-                    <div class="t-header">
-                        <div class="t-window-title">@(Title)</div>
-                        <div class="t-window-action t-link" @onclick="() => CloseHelpForm(null)">
-                            <i class="fa fa-close"></i>
-                        </div>
-                    </div>
+                    <span class="fa fa-search" @onclick="() => OpenWindow(true)"></span>
                 }
-                <div class="t-content">
-                    <CascadingValue Name="LookupStringSearchValue" Value="SearchStr" IsFixed>
-                        <CascadingValue Value=this>
-                            @ChildContent
-                        </CascadingValue>
-                    </CascadingValue>
+                <div class="c-content">
+                    @if (status == WindowStatus.Open)
+                    {
+                        <div class="t-HelpWindow">
+                            @if (!HideHeader)
+                            {
+                                <div class="t-header">
+                                    <div class="t-window-title">@(WindowTitle)</div>
+                                    <div class="t-window-action t-link" @onclick="() => CloseHelpForm(null)">
+                                        <i class="fa fa-close"></i>
+                                    </div>
+                                </div>
+                            }
+                            <div class="t-content">
+                                <CascadingValue Name="LookupStringSearchValue" Value="SearchStr" IsFixed>
+                                    <CascadingValue Value=this>
+                                        @ChildContent
+                                    </CascadingValue>
+                                </CascadingValue>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
-        }
-    </div>
-</div>
-
+        };
+    }
+}
 

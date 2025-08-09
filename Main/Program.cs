@@ -3,7 +3,6 @@ using UIComponent;
 using Engine.Model;
 using Caspian.Common;
 using Main.Components;
-using Syncfusion.Blazor;
 using Caspian.UI.Service;
 using System.Globalization;
 using Caspian.Engine.Model;
@@ -14,8 +13,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
-using Demo.Model;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Main
 {
@@ -89,9 +86,11 @@ namespace Main
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ReportParamService).Assembly.InjectServices(builder.Services);
             typeof(Marketing.Service.ProductCategoryService).Assembly.InjectServices(builder.Services);
+            typeof(Warehouse.Service.SimpleDataService).Assembly.InjectServices(builder.Services);
             builder.Services.AddControllers();
             builder.Services.AddScoped<Demo.Model.Context>();
             builder.Services.AddScoped<Marketing.Model.MarketingContext>();
+            builder.Services.AddScoped<Warehouse.Model.Context>();
             builder.Services.AddScoped<Caspian.Engine.Model.Context>();
             builder.Services.AddScoped<BaseComponentService>();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
@@ -127,6 +126,8 @@ namespace Main
 
             app.MapCaspianProjectWhen<Demo.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Demo"));
+            app.MapCaspianProjectWhen<Warehouse.Web.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/Warehouse"));
             app.MapCaspianProjectWhen<Marketing.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Marketing"));
 

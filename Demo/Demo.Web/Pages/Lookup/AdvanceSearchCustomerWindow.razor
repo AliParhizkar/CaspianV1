@@ -4,15 +4,17 @@
 
 <div class="c-lookup-page" style="width:750px;">
     <EntitySearch Service="Service" ColumnsCount="2">
-        <DropdownList @bind-Value="context.CustomerType" ColSpan="4" />
-        @if (context.CustomerType == CustomerType.Legal)
-        {
-            <StringTextBox @bind-Value="context.CompanyName" ColSpan="4" />
-        }
-        else
-        {
-            <StringTextBox @bind-Value="context.LName" ColSpan="4" />
-        }
+        <div class="row mb-2 p-1" style="border: 1px solid #d2d2d2; border-radius: 8px;">
+            <DropdownList @bind-Value="context.CustomerType" ColSpan="4" />
+            @if (context.CustomerType == CustomerType.Legal)
+            {
+                <StringTextBox @bind-Value="context.CompanyName" ColSpan="4" />
+            }
+            else
+            {
+                <StringTextBox @bind-Value="context.LName" ColSpan="4" />
+            }
+        </div>
     </EntitySearch>
     <DataGrid Service="Service" TEntity="Customer" ContentHeight="230">
         <Columns Context="customer">

@@ -49,7 +49,7 @@
                     <div class="row c-controls ps-3 pe-3">
                         <div class="col-md-12">
                             <LookupTree @bind-Value="values">
-                                <TreeView TEntity="OrganUnit" TextFunc="t => t.Title" SelectableFund="ForTest"
+                                <TreeView TEntity="OrganUnit" TextFunc="t => t.Title" SelectableFund="IsLeef"
                                 ParentNodeFilterFunc="t => t.ParentOrganId == null" 
                                 FilterFunc="t => (!context.HasValue() || t.Title.StartsWith(context))" />
                             </LookupTree>
@@ -77,7 +77,7 @@
     int[] values;
     string OrganTitle;
 
-    bool ForTest(OrganUnit organUnit)
+    bool IsLeef(OrganUnit organUnit)
     {
         if (organUnit.SuborganUnits == null || organUnit.SuborganUnits.Count() == 0)
             return true;

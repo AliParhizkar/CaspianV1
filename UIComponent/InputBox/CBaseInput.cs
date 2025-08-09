@@ -94,6 +94,12 @@ namespace Caspian.UI
         [CascadingParameter]
         internal PageData PageData { get; set; }
 
+        protected string GetControlCSSClassName()
+        {
+            var str = $"col-md-{ColSpan} ";
+            return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
+        }
+
         protected string GetLabelCSSClassName()
         {
             if (TotalSpan.HasValue)
@@ -104,12 +110,6 @@ namespace Caspian.UI
             }
             var container = EntitySearch as ICaspianContainer ?? CaspianForm as ICaspianContainer ?? CaspianContainer;
             return container.GetLabelContainerCSSClassName(ColSpan.Value);
-        }
-
-        protected string GetControlCSSClassName()
-        {
-            var str = $"col-md-{ColSpan} ";
-            return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
         }
 
         public bool Validate()

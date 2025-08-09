@@ -1,6 +1,42 @@
-﻿.t-ltr .t-textbox{
+﻿.c-header {
+    border: 1px solid #bdbdbd;
+    margin: 5px;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.c-body {
+    border: 1px solid #bdbdbd;
+    height: calc(100vh - 127px);
+    border-radius: 8px;
+    overflow: auto;
+}
+.t-ltr .t-textbox{
     text-align:left;
 }
+.d-tree-icon {
+    width: 28px;
+    height: 28px;
+    text-align: center;
+    border: 1px solid transparent;
+    font-size: 18px !important;
+    margin:auto;
+}
+    .d-tree-icon:hover {
+        border: 1px solid rgba(0, 0, 0, .24);
+        background-color: aliceblue;
+        border-radius:50%;
+    }
+.d-tree-icon .fa-plus {
+    color: #0dcaf0 !important;
+    vertical-align: middle;
+}
+.c-treeview .fa-pencil, .c-treeview .fa-trash {
+    color: #423d96;
+}
+
+
+
 input, div, textarea {
     outline: none;
 }
@@ -214,6 +250,6 @@ input {
     border-radius: 8px 8px 0 0;
 }
 
-.t-reset .t-item:not(.t-state-selected):nth-child(2n+1) {
+.t-reset .t-item:not(.t-state-selected):nth-child(2n+1), .t-reset .c-multi-select-drowp:not(.t-state-selected):nth-child(2n+1) {
     background-color: #f0f1f5;
 }

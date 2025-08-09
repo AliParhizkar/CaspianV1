@@ -1,0 +1,123 @@
+﻿@page "/Warehouse/MaterialAddress"
+@page "/Warehouse/MaterialAddress/{StockroomId:int}"
+@inherits BasePage
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div style="width:600px;margin:10px auto">
+    @if (StockroomId == null)
+    {
+        <div class="c-controls c-header row ">
+            <ComboBox TValue="int?" TEntity="StockRoom" @bind-Value="stockroomId" TextExpression="t => t.Title" ColSpan="9" TotalSpan="12" Title="انبار" />
+        </div>
+    }
+
+    <div class="c-body">
+        @if (stockroomId.HasValue)
+        {
+            <div class="row p-1">
+                <div class="col-md-1 text-center">
+                    <div class="d-tree-icon ">
+                        <span @onclick="async () => await ShowEditForm(null, false)" class="fa fa-plus"></span>
+                    </div>
+                </div>
+                <div class="col-md-11">
+                    <StringTextBox @bind-Value="@addressSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو ..." />
+                </div>
+            </div>
+            <div class="p-1">
+                <TreeView @ref="tree" TEntity="MaterialAddress" style="height:400px" ConditionExpression="t => t.StockroomId == stockroomId"
+                          TextFunc="t => t.Title" FilterFunc="t => !addressSearch.HasValue() || t.Title.StartsWith(addressSearch)">
+                    <AfterNodeTemplate>
+                        <span class="d-tree-icon">
+                            <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
+                        </span>
+                        <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
+                            <span class="fa fa-pencil"></span>
+                        </span>
+                        <span class="d-tree-icon" @onclick="async () => await DeleteAddress(context)">
+                            <span class="fa fa-trash"></span>
+                        </span>
+                    </AfterNodeTemplate>
+                </TreeView>
+            </div>
+        }
+    </div>
+</div>
+
+<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="آدرس کالا">
+    <CaspianForm Model="materialAddress" TEntity="MaterialAddress" OnValidSubmit="UpsertAddress">
+        <StringTextBox @ref="firstControl" @bind-Value="context.Title" ColSpan="9" />
+        <WindowCommandButtons ColSpan="9" />
+    </CaspianForm>
+</Window>
+@code
+{
+    int? stockroomId;
+    string addressSearch;
+    WindowStatus status;
+    MaterialAddress materialAddress;
+    TreeView<MaterialAddress> tree;
+    IControl firstControl;
+
+    async Task ShowEditForm(NodeView nodeView, bool isUpdate)
+    {
+        if (isUpdate)
+        {
+            ///Edit mode
+            var addressId = Convert.ToInt32(nodeView.Value);
+            using var service = CreateScope().GetService<MaterialAddressService>();
+            materialAddress = await service.SingleAsync(addressId);
+        }
+        else
+        {
+            ///Insert mode
+            materialAddress = new MaterialAddress();
+            materialAddress.ParentAddressId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+        }
+        materialAddress.StockroomId = stockroomId.Value;
+        status = WindowStatus.Open;
+    }
+
+    async Task DeleteAddress(NodeView node)
+    {
+        var addressId = Convert.ToInt32(node.Value);
+        using var service = CreateScope().GetService<MaterialAddressService>();
+        var address = await service.SingleAsync(addressId);
+        var result = await service.ValidateRemoveAsync(address);
+        if (result.IsValid)
+        {
+            service.Remove(address);
+            await service.SaveChangesAsync();
+            tree.RemoveFromTree(address);
+        }
+        else
+            ShowMessage(result.Errors.First().ErrorMessage);
+    }
+
+    async Task<bool> UpsertAddress()
+    {
+        using var service = CreateScope().GetService<MaterialAddressService>();
+        if (materialAddress.Id == 0)
+            await service.AddAsync(materialAddress);
+        else
+            await service.UpdateAsync(materialAddress);
+        await service.SaveChangesAsync();
+        tree.UpsertInTree(materialAddress);
+        status = WindowStatus.Close;
+        StateHasChanged();
+        return true;
+    }
+
+    protected override void OnInitialized()
+    {
+        if (StockroomId.HasValue)
+            stockroomId = StockroomId;
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public int? StockroomId { get; set; }
+}

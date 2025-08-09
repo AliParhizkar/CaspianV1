@@ -122,7 +122,7 @@ namespace Caspian.UI
         {
             if (TotalSpan.HasValue)
             {
-                var className = PageData?.RightToLeft == true ? "ps-2" : "pe-2";
+                var className = PageData?.RightToLeft == true ? "pe-2" : "ps-2";
                 className += " col-md-";
                 return className + (TotalSpan.Value - ColSpan);
             }

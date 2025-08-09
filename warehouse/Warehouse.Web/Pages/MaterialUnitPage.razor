@@ -1,0 +1,32 @@
+﻿@page "/Warehouse/MaterialUnit"
+@inherits BasePage
+@inject IUIService<MaterialUnit> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service">
+        <StringTextBox @bind-Value="context.Title" ColSpan="9" TotalSpan="12" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="MaterialUnit" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.MeasureType.EnumText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="واحد سنجش" Style="width:450px">
+    <CaspianForm TEntity="MaterialUnit" Service="Service">
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <DropdownList @bind-Value="context.MeasureType" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+
+}

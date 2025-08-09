@@ -1,0 +1,54 @@
+﻿@page "/Warehouse/City"
+@page "/Warehouse/City/{ProvinceId:int}"
+@inherits BasePage
+@inject IUIService<City> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service">
+        @if (ProvinceId == null)
+        {
+            <ComboBox TValue="int" TEntity="Province" @bind-Value="context.ProvinceId" TextExpression="t => t.Title" ColSpan="4" TotalSpan="6" />
+            <StringTextBox @bind-Value="context.Title" ColSpan="4" TotalSpan="6" />
+        }
+        else
+        {
+            <StringTextBox @bind-Value="context.Title" ColSpan="9" TotalSpan="12" />
+        }
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="City" Service="Service" ConditionExpr="t => ProvinceId == null || t.ProvinceId == ProvinceId" ContentHeight="350">
+        <Columns>
+            @if (ProvinceId == null)
+            {
+                <GridColumn Field="t => t.Province.Title" Title="استان" />
+            }
+            <GridColumn Field="t => t.Title" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="City" Style="width:450px">
+    <CaspianForm TEntity="City" Service="Service" OnSubmit="SetCountryId">
+        @if (ProvinceId == null)
+        {
+            <ComboBox TValue="int" TEntity="Province" @bind-Value="context.ProvinceId" TextExpression="t => t.Title" ColSpan="8" />
+        }
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+    void SetCountryId(CancelableEvent<City> e)
+    {
+        if (ProvinceId.HasValue)
+            e.Entity.ProvinceId = ProvinceId.Value;
+    }
+
+    [Parameter]
+    public int? ProvinceId { get; set; }
+}

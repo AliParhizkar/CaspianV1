@@ -32,10 +32,7 @@
     flex-wrap: wrap;
     width: 100%;
 }
-.c-treeview .fa-pencil, .c-treeview .fa-trash {
-    color: #423d96;
-    font-size: 14px;
-}
+
 .d-details-title {
     font-weight: bold;
     color: #a18636;
@@ -427,19 +424,6 @@ html {
 .c-categories .c-selected {
     background-color: #5e8f8f50 !important;
 }
-
-.c-header {
-    border: 1px solid #bdbdbd;
-    margin: 5px;
-    border-radius: 8px;
-    padding: 10px 15px;
-}
-.c-body {
-    border: 1px solid #bdbdbd;
-    height: calc(100vh - 127px);
-    border-radius: 8px;
-    overflow: auto;
-}
 .c-arrow-back .fa-arrow-left {
     color: #974898 !important;
     font-size: 32px !important;
@@ -497,13 +481,7 @@ html {
     color: #6c757d;
 }
 
-.t-rtl .d-tree-icon {
-    padding-right: 8px;
-}
 
-.t-ltr .d-tree-icon {
-    padding-left: 8px;
-}
 
 .d-tree-icon {
     vertical-align: middle;

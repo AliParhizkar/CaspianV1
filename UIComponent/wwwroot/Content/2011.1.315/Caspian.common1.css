@@ -1604,9 +1604,7 @@ form > tr {
 .c-multi-select-drowp:last-child{
     padding-bottom:4px;
 }
-.t-ltr .c-multi-select-drowp {
-    padding-left: 5px;
-}
+
 .t-checkbox {
     white-space: nowrap;
     line-height: 28px;
@@ -1632,7 +1630,6 @@ span, label, td, th {
 
 .t-checkbox .t-title {
     font-size: 14px;
-    padding-left: 5px;
     color: #5d5f60;
 }
 .t-checkbox.t-disabled .t-title {

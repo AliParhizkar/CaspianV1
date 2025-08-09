@@ -5,9 +5,9 @@
 {
     @if (TotalSpan != ColSpan)
     {
-        <div class="col-md-@((TotalSpan - ColSpan).ToString()+ ' ' + Class)"></div>
+        <div class="pt-2 pb-1 col-md-@((TotalSpan - ColSpan).ToString()+ ' ' + Class)"></div>
     }
-    <div class="text-center col-md-@(ColSpan.ToString() + ' ' + Class)">
+    <div class="pt-2 pb-1 text-center col-md-@(ColSpan.ToString() + ' ' + Class)">
         @RenderButtons()
     </div>
 }

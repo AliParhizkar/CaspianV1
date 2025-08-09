@@ -17,19 +17,19 @@ namespace Demo.Model
         [DisplayName("نوع")]
         public SimpleDataType DataType { get; set; }
 
-        [InverseProperty("Scope")]
+        [InverseProperty(nameof(Employee.Scope))]
         [CheckOnDelete("حوزه دارای استخدام می باشد و امکان حذف آن وجود ندارد.")]
         public ICollection<Employee> EmployeesScope { get; set; }
 
-        [InverseProperty("CostCenter")]
+        [InverseProperty(nameof(Employee.CostCenter))]
         [CheckOnDelete("مرکز هزینه دارای استخدام می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<Employee> EmployeesCostCenter { get; set; }
 
-        [InverseProperty("EmployeeType")]
+        [InverseProperty(nameof(Employee.EmployeeType))]
         [CheckOnDelete("نوع کارمند دارای استخدام می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<Employee> EmployeesEmployeeType { get; set; }
 
-        [InverseProperty("EmploymentType")]
+        [InverseProperty(nameof(Employee.EmploymentType))]
         [CheckOnDelete("نوع استخدام دارای استخدام می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<Employee> EmployeesEmploymentType { get; set; }
 
@@ -40,6 +40,6 @@ namespace Demo.Model
         public ICollection<ReligionAndSubReligion> ReligionAndSubReligions { get; set; }
 
         [CheckOnDelete("دین دارای مذهب می باشد و امکان حذف آن وجود ندارد")]
-        public ICollection<SubReligion> SubReligions { get; set; } 
+        public ICollection<SubReligion> SubReligions { get; set; }
     }
 }

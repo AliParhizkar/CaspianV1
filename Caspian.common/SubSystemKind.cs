@@ -8,7 +8,7 @@ namespace Caspian.Common
         /// <summary>
         /// بخش اصلی
         /// </summary>
-        [Display(Name = "Engin")]
+        [Display(Name = "Engine")]
         Engine = 1,
 
         /// <summary>
@@ -19,6 +19,9 @@ namespace Caspian.Common
 
         [Display(Name = "فروش")]
         Marketing,
+
+        [Display(Name = "انبار")]
+        Warehouse
     }
 
     public static class SubSystemExt
