@@ -2071,7 +2071,7 @@ span, label, td, th {
 }
 .c-node-template {
     height:27px;
-    display:flex;
+    display:inline-flex;
 }
 ul {
     padding: 0;

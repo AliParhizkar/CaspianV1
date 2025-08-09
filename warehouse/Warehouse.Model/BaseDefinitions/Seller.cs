@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Caspian.Common;
 
 namespace Warehouse.Model
 {
@@ -54,5 +55,14 @@ namespace Warehouse.Model
 
         [DisplayName("تلفن 2")]
         public string Tel2 { get; set; }
+
+        [DisplayName("دورنگار")]
+        public string Fax { get; set; }
+
+        [DisplayName("پست الکترونیک")]
+        public string Email { get; set; }
+
+        [CheckOnDelete("فروشگاه دارای گروهبندی می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<SellerCategoryMembership> SellerCategoryMemberships { get; set; }
     }
 }

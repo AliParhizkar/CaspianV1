@@ -1,0 +1,42 @@
+﻿@typeparam TValue
+@namespace Demo.Web.Pages
+@inherits LookupWindow<ProductCategory, TValue>
+<div class="c-lookup-page" style="width:700px;">
+    <EntitySearch TEntity="ProductCategory" Service="Service">
+        <StringTextBox @ref="txtCode" @bind-Value="searchCode" Title="کد" ColSpan="2" TotalSpan="4" />
+        <StringTextBox @ref="txtTitle" @bind-Value="context.Title" ColSpan="6" TotalSpan="8" />
+    </EntitySearch>
+    <div class="p-2">
+        <DataGrid Service="Service" TEntity="ProductCategory" ContentHeight="200" 
+                  ConditionExpr="t =>(code + searchCode) == null || t.Code.StartsWith(code + searchCode)">
+            <Columns>
+                <GridColumn Field="t => t.Code" />
+                <GridColumn Field="t => t.Title" />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+@code
+{
+    StringTextBox txtTitle, txtCode;
+    string code, searchCode;
+
+    protected override void OnInitialized()
+    {
+        OnSelect = async t =>
+        {
+            var grid = Service.DataView as DataGrid<ProductCategory>;
+            var coding = grid.GetSelectedData();
+            code = coding.Code;
+            await grid.ReloadAsync();
+            grid.SelectFirstRow();
+            if (Service.Search.Code.HasValue())
+                await txtCode.SetValueOnClientAsync("");
+            if (Service.Search.Title.HasValue())
+                await txtTitle.SetValueOnClientAsync("");
+
+        };
+        base.OnInitialized();
+    }
+}

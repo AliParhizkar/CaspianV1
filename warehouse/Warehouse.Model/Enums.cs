@@ -79,4 +79,28 @@ namespace Warehouse.Model
         [Display(Name = "خارجی")]
         Foreigner
     }
+
+    public enum ProductType: byte
+    {
+        [Display(Name = "مصرفی")]
+        Consumable,
+
+        [Display(Name = "اموالی")]
+        State,
+
+        [Display(Name = "خدماتی")]
+        Service
+    }
+
+    public enum DescriptionType: byte
+    {
+        [Display(Name = "حرفی")]
+        String,
+
+        [Display(Name = "عددی")]
+        Numerical,
+
+        [Display(Name = "تاریخ")]
+        Date
+    }
 }

@@ -1,0 +1,51 @@
+﻿@page "/Warehouse/Seller"
+@inherits BasePage
+@inject IUIService<Seller> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4"  />
+        <StringTextBox @bind-Value="context.Tel1" ColSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="Seller" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.SellerType.EnumText()" />
+            <GridColumn Field="t => t.EconomicCode" />
+            <GridColumn Field="t => t.RegistrationNo" />
+            <GridColumn Field="t => t.IdCard" />
+            <GridColumn Field="t => t.Tel1" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="فروشنده" Style="width:800px">
+    <CaspianForm TEntity="Seller" Service="Service" ColumnsCount="2">
+        <RadioList @bind-Value="context.SellerType" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.EconomicCode" Style="direction:ltr" ColSpan="4" />
+        <StringTextBox @bind-Value="context.RegistrationNo" Style="direction:ltr" ColSpan="4" />
+        <RadioList @bind-Value="context.Citizenship" ColSpan="4" />
+        <StringTextBox @bind-Value="context.IdCard" Style="direction:ltr" ColSpan="4" />
+        <ComboBox TEntity="Province" TValue="int?" @bind-Value="context.ProvinceId" ColSpan="4" TextExpression="t => t.Title"
+                  CascadeService="CascadeService" />
+        <ComboBox TEntity="City" TValue="int?" @bind-Value="context.CityId" ColSpan="4" TextExpression="t => t.Title"
+                  CascadeService="CascadeService" />
+        <StringTextBox @bind-Value="context.Address" ColSpan="10" />
+        <StringTextBox @bind-Value="context.Zipcode" Style="direction:ltr" ColSpan="4" />
+        <StringTextBox @bind-Value="context.PreCode" Style="direction:ltr" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Tel1" Style="direction:ltr" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Tel2" Style="direction:ltr" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Address" ColSpan="10" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+    CascadeService<Province, City> CascadeService = new CascadeService<Province, City>();
+}

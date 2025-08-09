@@ -1,10 +1,7 @@
 ﻿using Caspian.Common;
-using Caspian.Engine.Model;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Warehouse.Model
 {

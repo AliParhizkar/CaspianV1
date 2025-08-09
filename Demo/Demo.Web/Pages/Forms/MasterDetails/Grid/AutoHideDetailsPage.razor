@@ -99,7 +99,7 @@
                             <Content Context="receipt">
                                 <DatePicker @bind-Value="receipt.Date" ColSpan="8" />
                                 <ComboBox TEntity="Warehouse" TValue="int" @bind-Value="receipt.WarehouseId" TextExpression="t => t.Title" ColSpan="8" />
-                                <StringTextBox @bind-Value="receipt.Comment" MultiLine Rows="3" ColSpan="8" />
+                                <StringTextBox @bind-Value="receipt.Comment"  MultiLine Rows="3" ColSpan="8" />
                                 <div class="col-md-12">
                                     <FormCommandButton ColSpan="12" TotalSpan="8" />
                                 </div>
@@ -189,7 +189,7 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
         <div class="col-md-3">@selectedReceiptDetail.Material?.Subunit?.Title</div>
     </div>
     <div style="width:450px;" class="row p-3">
-        <StringTextBox @ref="txtDescription" @bind-Value="selectedReceiptDetail.Description" MultiLine Rows="3" />
+        <StringTextBox @ref="txtDescription" @bind-Value="selectedReceiptDetail.Description" BindingType="BindingType.OnInput" MultiLine Rows="3" />
     </div>
 </PopupWindow>
 <PopupWindow @bind-Status="reciptStatus" TargetElement="btnReceipts" TargetHorizontalAnchor="HorizontalAnchor.Left" OffsetLeft="-1"
@@ -220,7 +220,7 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
     async Task InitializeReciept(int reciptId)
     {
         await Service.ReloadForUpdate(reciptId);
-        reciptStatus = WindowStatus.Close;
+        reciptStatus = WindowStatus.Close; 
     }
 
     async Task ShowRecipts(MouseEventArgs e)
