@@ -34,13 +34,13 @@
                 if (helpWindow != null) {
                     helpWindow.classList.remove('c-advance-search');
                     if (target.closest('.c-lookup').getAttribute('advanceSearch') == null) {
-                        console.log(target)
                         let locTarget = target.getBoundingClientRect();
                         let locHelpWindow = helpWindow.getBoundingClientRect();
                         let posTarget = target.getPosition();
-                        let scrollTop = helpWindow.getBoundingClientRect().top - locTarget.top + 3;
-                        if (locTarget.top >= locHelpWindow.height - 30)
-                            helpWindow.style.marginTop = `${-locHelpWindow.height - scrollTop}px`;
+                        let scrollTop = helpWindow.getBoundingClientRect().top - locTarget.top - 38;
+                        debugger;
+                        if (locTarget.top - 40 >= locHelpWindow.height)
+                            helpWindow.style.marginTop = `${-locHelpWindow.height - scrollTop - 40}px`;
                         if (caspian.common.RightToLeft()) {
                             let right = (locTarget.width - locHelpWindow.width) / 2;
                             if (window.innerWidth - locTarget.right - sidebarWidth + right < 5)

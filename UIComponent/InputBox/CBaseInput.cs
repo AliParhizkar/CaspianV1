@@ -204,6 +204,10 @@ namespace Caspian.UI
                 InputAttributes["readonly"] = true;
             if (TabIndex.HasValue)
                 InputAttributes["tabindex"] = TabIndex;
+            if (Id == "Ali12345")
+            {
+
+            }
             if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
             {
                 var expr = ValueExpression.Body;
@@ -212,7 +216,11 @@ namespace Caspian.UI
                 {
                     var memberExpr = expr as MemberExpression;
                     if (memberExpr.Member.DeclaringType.GetCustomAttribute<TableAttribute>() == null)
+                    {
+                        if (str.Length == 0)
+                            str = memberExpr.Member.Name;
                         break;
+                    }
                     else
                     {
                         if (str.Length > 0)

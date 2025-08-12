@@ -1,8 +1,10 @@
 ﻿@page "/Test"
 @using System.Linq.Expressions
 @inherits BasePage
-
-
+@inject ISearchService<Product> Service
+<EntitySearch Service="Service">
+    <ValueSearchComponent @bind-Value="context.Price" />
+</EntitySearch>
 @code
 {
 

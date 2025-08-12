@@ -68,7 +68,7 @@ namespace Caspian.Common.Service
             return GetAll();
         }
 
-        public virtual IQueryable<TEntity> Search(TEntity entity, IDictionary<string, SearchType> searchData, IDictionary<string, ICollection> enumValues)
+        internal virtual IQueryable<TEntity> Search(TEntity entity, IDictionary<string, SearchType> searchData, IDictionary<string, ICollection> enumValues, IList<ValueTypeContainer> valueTypes)
         {
             return GetAll().Search(entity, searchData, enumValues);
         }

@@ -1,0 +1,25 @@
+﻿@page "/Warehouse/Receipt"
+@inject UIService<Receipt, ReceiptDetails> Service
+@inject NavigationManager NavigationManager
+<div class="p-3">
+    <DataGrid TEntity="Receipt" ContentHeight="300" ShowInsertIcon="true" OnOpen="UpsertReceipt">
+        <Columns>
+            <GridColumn Field="t => t.ReceiptDate" />
+            <GridColumn Field="t => t.ReceiptType.EnumText()" />
+            <GridColumn Field="t => t.No" />
+            <GridColumn Field="t => t.Supplier.RelatedUser.FName + ' ' + t.Supplier.RelatedUser.LName" Title="کارپرداز" />
+            <GridColumn Field="t => t.Seller.Name" Title="فروشنده" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+@code
+{
+    void UpsertReceipt(Receipt receipt)
+    {
+        var url = $"Warehouse/ReceiptDetails";
+        if (receipt.Id > 0)
+            url += $"/{receipt.Id}";
+        NavigationManager.NavigateTo(url);
+    }
+}

@@ -10,7 +10,8 @@
     @if (StockroomId == null)
     {
         <div class="c-controls c-header row ">
-            <ComboBox TValue="int?" TEntity="StockRoom" @bind-Value="stockroomId" TextExpression="t => t.Title" ColSpan="9" TotalSpan="12" Title="انبار" />
+            <ComboBox TValue="int?" TEntity="StockRoom" @bind-Value="stockroomId" TextExpression="t => t.Title" ColSpan="9" TotalSpan="12" 
+                      Title="انبار" OnChange="ReloadData" />
         </div>
     }
 
@@ -61,6 +62,12 @@
     MaterialAddress materialAddress;
     TreeView<MaterialAddress> tree;
     IControl firstControl;
+
+    async Task ReloadData()
+    {
+        if (tree != null)
+            await tree.ReloadAsync();
+    }
 
     async Task ShowEditForm(NodeView nodeView, bool isUpdate)
     {

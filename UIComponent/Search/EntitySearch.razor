@@ -1,0 +1,21 @@
+﻿@namespace Caspian.UI
+@using System.Collections
+@typeparam TEntity where TEntity : class
+@implements IEntitySearch
+@implements ICaspianContainer
+@if (Lookup?.AdvanceSearch != false)
+{
+    <CascadingValue Value="this">
+        <div class="row c-controls">
+            @if (ChildContent != null)
+            {
+                @ChildContent(Service.Search)
+            }
+        </div>
+    </CascadingValue>
+}
+
+@code
+{
+
+}

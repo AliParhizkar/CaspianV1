@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Warehouse.Model;
 
@@ -11,9 +12,11 @@ using Warehouse.Model;
 namespace Warehouse.Model.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250809112302_V6")]
+    partial class V6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -542,79 +545,6 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("Provinces", "wh");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.Receipt", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("No")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateOnly?>("ReceiptDate")
-                        .HasColumnType("date");
-
-                    b.Property<int?>("ReceiptType")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SellerId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SupplierId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SellerId");
-
-                    b.ToTable("Receipt", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.ReceiptDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateOnly>("ExpireDate")
-                        .HasColumnType("date");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Quantity")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("ReceiptId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ReceiptId");
-
-                    b.ToTable("ReceiptDetails", "wh");
-                });
-
             modelBuilder.Entity("Warehouse.Model.Scope", b =>
                 {
                     b.Property<int>("Id")
@@ -1005,42 +935,6 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.Receipt", b =>
-                {
-                    b.HasOne("Warehouse.Model.Seller", "Seller")
-                        .WithMany("Receipts")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Warehouse.Model.Supplier", "Supplier")
-                        .WithMany("Receipts")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Seller");
-
-                    b.Navigation("Supplier");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.ReceiptDetails", b =>
-                {
-                    b.HasOne("Warehouse.Model.Product", "Product")
-                        .WithMany("ReceiptDetails")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Warehouse.Model.Receipt", "Receipt")
-                        .WithMany("ReceiptDetails")
-                        .HasForeignKey("ReceiptId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Receipt");
-                });
-
             modelBuilder.Entity("Warehouse.Model.Scope", b =>
                 {
                     b.HasOne("Warehouse.Model.Scope", "Parent")
@@ -1187,8 +1081,6 @@ namespace Warehouse.Model.Migrations
             modelBuilder.Entity("Warehouse.Model.Product", b =>
                 {
                     b.Navigation("ProductDescriptions");
-
-                    b.Navigation("ReceiptDetails");
                 });
 
             modelBuilder.Entity("Warehouse.Model.ProductCategory", b =>
@@ -1205,11 +1097,6 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Sellers");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.Receipt", b =>
-                {
-                    b.Navigation("ReceiptDetails");
-                });
-
             modelBuilder.Entity("Warehouse.Model.Scope", b =>
                 {
                     b.Navigation("Scopes");
@@ -1219,8 +1106,6 @@ namespace Warehouse.Model.Migrations
 
             modelBuilder.Entity("Warehouse.Model.Seller", b =>
                 {
-                    b.Navigation("Receipts");
-
                     b.Navigation("SellerCategoryMemberships");
                 });
 
@@ -1241,11 +1126,6 @@ namespace Warehouse.Model.Migrations
             modelBuilder.Entity("Warehouse.Model.StockRoom", b =>
                 {
                     b.Navigation("MaterialAddresses");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Supplier", b =>
-                {
-                    b.Navigation("Receipts");
                 });
 #pragma warning restore 612, 618
         }

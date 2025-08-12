@@ -41,7 +41,8 @@ namespace Caspian.UI
 
         internal override IQueryable<TEntity> GetQuery(IServiceScope scope)
         {
-            var query = scope.GetService<BaseService<TEntity>>().Search(Search, (Service as IInternalSearchService<TEntity>)?.GetSearchData(), (Service as IInternalSearchService<TEntity>)?.GetEnumFields());
+            var service = Service as IInternalSearchService<TEntity>;
+            var query = scope.GetService<BaseService<TEntity>>().Search(Search, service?.SearchData, service?.EnumFields, service?.ValueTypes);
             var param = Expression.Parameter(typeof(TEntity), "t");
             Expression condExr = null;
             if (ConditionExpr != null)

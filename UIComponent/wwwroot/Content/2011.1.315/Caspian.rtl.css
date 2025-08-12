@@ -271,10 +271,9 @@
     direction: rtl;
 }
 
-.t-rtl .t-grid table
-{
+.t-rtl .t-grid table:not(.t-calendar table) {
     border-collapse: separate;
-    table-layout:fixed;
+    table-layout: fixed;
 }
 
 .t-rtl .t-grid div.t-grid-header

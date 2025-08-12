@@ -20,6 +20,27 @@ namespace Warehouse.Model
         Product
     }
 
+    public enum ReceiptType
+    {
+        [Display(Name = "رسید خرید")]
+        PurchaseReceipt,
+
+        [Display(Name = "رسید تولید")]
+        production,
+
+        [Display(Name = "رسید اجناس برگشتی")]
+        ReturnedGoods,
+
+        [Display(Name = "رسید مغایرت انبار")]
+        WarehouseDiscrepancy,
+
+        [Display(Name = "رسید عمومی")]
+        Public,
+
+        [Display(Name = "رسید تعدیل")]
+        Adjustment
+    }
+
     public enum SimpleDataType:byte
     {
         [Display(Name = "واحد مالی")]

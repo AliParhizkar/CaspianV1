@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,11 +16,14 @@ namespace Warehouse.Model
         [ForeignKey(nameof(CategoryId))]
         public ProductCategory ProductCategory { get; set; }
 
-        [DisplayName("کد استاندارد")]
-        public string StandardCode { get; set; }
+        [DisplayName("کد کالا")]
+        public string Code { get; set; }
 
         [DisplayName("نام")]
         public string Name { get; set; }
+
+        [DisplayName("کد استاندارد")]
+        public string StandardCode { get; set; }
 
         [DisplayName("واحد کالا")]
         public int MaterialUnitId { get; set; }
@@ -44,5 +48,11 @@ namespace Warehouse.Model
 
         [DisplayName("قیمت استاندارد")]
         public int? StandardPrice { get; set; }
+
+        [CheckOnDelete("کالا دارای ویژگی می باشد و امکان حذف آن وجود ندارد.")]
+        public ICollection<ProductDescription> ProductDescriptions { get; set; }
+
+        [CheckOnDelete("کالا دارای رسید می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<ReceiptDetails> ReceiptDetails { get; set; }
     }
 }

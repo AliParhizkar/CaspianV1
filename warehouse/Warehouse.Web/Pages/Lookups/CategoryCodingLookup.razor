@@ -1,5 +1,5 @@
 ﻿@typeparam TValue
-@namespace Demo.Web.Pages
+@namespace Warehouse.Web.Lookup
 @inherits LookupWindow<ProductCategory, TValue>
 <div class="c-lookup-page" style="width:700px;">
     <EntitySearch TEntity="ProductCategory" Service="Service">
@@ -8,7 +8,7 @@
     </EntitySearch>
     <div class="p-2">
         <DataGrid Service="Service" TEntity="ProductCategory" ContentHeight="200" 
-                  ConditionExpr="t =>(code + searchCode) == null || t.Code.StartsWith(code + searchCode)">
+                  ConditionExpr="t =>(code + searchCode) == null || (t.Code != code &&  t.Code.StartsWith(code + searchCode))">
             <Columns>
                 <GridColumn Field="t => t.Code" />
                 <GridColumn Field="t => t.Title" />

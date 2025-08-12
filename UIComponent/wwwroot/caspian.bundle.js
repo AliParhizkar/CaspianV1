@@ -962,8 +962,8 @@ var caspian;
 (function (caspian) {
     class DatePicker {
         constructor(element, dotnet) {
-            element.focus;
             let input = element.getElementsByTagName('input')[0];
+            caspian.common.bindMask(input, '____/__/__');
             element.onmouseenter = e => {
                 let elem = e.target.getElementsByClassName('t-inputbox-wrap')[0];
                 if (!elem.classList.contains('t-state-selected') || !elem.classList.contains('t-state-disabled'))
@@ -1228,13 +1228,13 @@ var caspian;
                 if (helpWindow != null) {
                     helpWindow.classList.remove('c-advance-search');
                     if (target.closest('.c-lookup').getAttribute('advanceSearch') == null) {
-                        console.log(target);
                         let locTarget = target.getBoundingClientRect();
                         let locHelpWindow = helpWindow.getBoundingClientRect();
                         let posTarget = target.getPosition();
-                        let scrollTop = helpWindow.getBoundingClientRect().top - locTarget.top + 3;
-                        if (locTarget.top >= locHelpWindow.height - 30)
-                            helpWindow.style.marginTop = `${-locHelpWindow.height - scrollTop}px`;
+                        let scrollTop = helpWindow.getBoundingClientRect().top - locTarget.top - 38;
+                        debugger;
+                        if (locTarget.top - 40 >= locHelpWindow.height)
+                            helpWindow.style.marginTop = `${-locHelpWindow.height - scrollTop - 40}px`;
                         if (caspian.common.RightToLeft()) {
                             let right = (locTarget.width - locHelpWindow.width) / 2;
                             if (window.innerWidth - locTarget.right - sidebarWidth + right < 5)

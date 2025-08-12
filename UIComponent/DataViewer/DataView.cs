@@ -343,6 +343,11 @@ namespace Caspian.UI
                     if (OnSave.HasDelegate)
                         await OnSave.InvokeAsync();
                 }
+                else
+                {
+                    if (FormAppState.AllControlsIsValid)
+                        FormAppState.ErrorMessage = result.Errors.First().ErrorMessage;
+                }
             }
             StateHasChanged();
             await FocusInsertButtonAsync();

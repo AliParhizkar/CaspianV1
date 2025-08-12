@@ -18,5 +18,8 @@ namespace Warehouse.Model
 
         [MaxLength(200),DisplayName("شرح")]
         public string Description { get; set; }
+
+        [DisplayName("کالایی با این مقیاس تعریف شده است و امکان حذف آن وجود ندارد")]
+        public ICollection<Product> Products { get; set; }
     }
 }

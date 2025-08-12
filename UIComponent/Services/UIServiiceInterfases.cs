@@ -22,10 +22,12 @@ namespace Caspian.UI
     internal interface IInternalSearchService<TEntity>: ISearchService<TEntity> where TEntity : class
     {
         void DataViewInitializer(DataView<TEntity> dataView);
-        void SetSearchType(IDictionary<string, SearchType> types);
-        void SetEnumFields(IDictionary<string, ICollection> enumFields);
-        IDictionary<string, ICollection> GetEnumFields();
-        IDictionary<string, SearchType> GetSearchData();
+        IDictionary<string, ICollection> EnumFields { get; set; }
+
+        IDictionary<string, SearchType> SearchData { get; set; }
+
+        IList<ValueTypeContainer> ValueTypes { get; set; }
+
         void OnlyForSearch();
         void HideFooter();
         void LookupInitializer(ILookup<TEntity> lookup);

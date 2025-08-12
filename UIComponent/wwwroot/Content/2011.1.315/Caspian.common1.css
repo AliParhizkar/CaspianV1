@@ -2859,13 +2859,13 @@ div.t-window {
 }
 
 /* Grid */
-    .t-grid table {
-        width: 100%;
-        border-collapse: collapse;
-        empty-cells: show;
-        border: 0;
-        table-layout:fixed;
-    }
+.t-grid table:not(.t-calendar table) {
+    width: 100%;
+    border-collapse: collapse;
+    empty-cells: show;
+    border: 0;
+    table-layout: fixed;
+}
 
 .t-grid-header .t-header {
     text-align: center;
@@ -2909,7 +2909,7 @@ textarea[class="t-input"] {
     overflow:visible;
 }
 
-.t-grid td {
+.t-grid td:not(.t-calendar td) {
     padding: 0 3px;
     border: 0;
     vertical-align: middle;
@@ -2962,16 +2962,16 @@ div.t-grid-footer {
     background-color: white;
     scroll-behavior: smooth;
 }
-.t-grid-content td, .c-grid-inline td {
-    border-width: 0 1px 1px 0;
-    border-style: solid;
-    border-color: rgba(0,0,0,0.08);
-    color: #656565;
-}
+    .t-grid-content td:not(.t-calendar td), .c-grid-inline td:not(.t-calendar td) {
+        border-width: 0 1px 1px 0;
+        border-style: solid;
+        border-color: rgba(0,0,0,0.08);
+        color: #656565;
+    }
     .t-grid-content td:last-child, .t-grid-header th:last-child{
         border-left-width: 0;
     }
-    .t-grid-content .c-grid-items tr:not(.t-state-selected):hover {
+    .t-grid-content .c-grid-items >tr:not(.t-state-selected):hover {
         background-color: #E5F3FF !important;
     }
 
@@ -3682,8 +3682,6 @@ html body .t-grid tbody .t-button-icon {
         }
         /* Calendar */
         .t-calendar {
-            display: inline-block;
-            zoom: 1;
             position: absolute;
             overflow: hidden;
             height:235px;
@@ -3704,7 +3702,7 @@ html body .t-grid tbody .t-button-icon {
                 background-color: chocolate;
                 font-size: 15px;
                 font-weight: bold;
-                padding: 6px 8px;
+                height:35px;
             }
 
     .t-calendar .t-nav-prev,
@@ -5813,7 +5811,7 @@ fieldset.t-widget {
     border: 1px solid rgba(0, 0, 0, .2);
     border-radius: 4px;
 }
-.t-grid-content tr:nth-child(2n) {
+.t-grid-content tr:not(.t-datepicker tr):nth-child(2n) {
     background-color: #f9fafe;
 }
 .t-combobox .t-state-disabled span {

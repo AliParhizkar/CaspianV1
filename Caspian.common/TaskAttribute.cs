@@ -12,4 +12,13 @@ namespace Caspian.Common
             Title = title; 
         }
     }
+
+    internal class ValueTypeContainer
+    {
+        public string propertyPath { get; set; }
+
+        public object From { get; set; }
+
+        public object To { get; set; }
+    }
 }

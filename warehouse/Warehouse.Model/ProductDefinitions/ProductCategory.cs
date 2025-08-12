@@ -27,5 +27,8 @@ namespace Warehouse.Model
 
         [CheckOnDelete("گروه دارای زیرگروه می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<ProductCategory> Categories { get; set; }
+
+        [CheckOnDelete("گروه کالا دارای کالا می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<Product> Products { get; set; }
     }
 }

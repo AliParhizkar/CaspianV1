@@ -19,8 +19,6 @@ namespace Caspian.UI
         protected BaseComponentService baseComponentService;
         protected BasePageService basePageService;
         protected CaspianDataService CaspianDataService;
-        IDictionary<string, SearchType> searchData;
-        IDictionary<string, ICollection> enumValues;
         protected bool hideFooter, isDevelopment;
         protected ILogger logger;
         ILookup<TEntity> lookup;
@@ -40,7 +38,15 @@ namespace Caspian.UI
                 baseEntity.UpsertUserId = UserId;
         }
 
+        public IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TEntity, TValue>> lambda) where TValue : Enum
+        {
+            return new EnumSearch<TValue>(lambda.Body, (this as IInternalSearchService<TEntity>).EnumFields);
+        }
+
         Type IInternalUIService<TEntity>.OtherType { get; set; }
+
+        IList<ValueTypeContainer> IInternalSearchService<TEntity>.ValueTypes { get; set; }
+
 
         internal int UserId { get; private set; }
 
@@ -77,10 +83,7 @@ namespace Caspian.UI
 
         internal IBaseService<TEntity> BaseService { get; private set; }
 
-        IDictionary<string, SearchType> IInternalSearchService<TEntity>.GetSearchData()
-        {
-            return searchData;
-        }
+        IDictionary<string, SearchType> IInternalSearchService<TEntity>.SearchData { get; set; }
 
         async Task IInternalSearchService<TEntity>.SelectItemOnLookup()
         {
@@ -91,11 +94,6 @@ namespace Caspian.UI
         {
             if (Window != null) 
                 await Window.Close();
-        }
-
-        public IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TEntity, TValue>> lambda) where TValue : Enum
-        {
-            return new EnumSearch<TValue>(lambda.Body, enumValues);
         }
 
         #region Methods for override on subclass 
@@ -443,8 +441,6 @@ namespace Caspian.UI
         /// </summary>
         void IInternalSearchService<TEntity>.OnlyForSearch() => HideInsertIcon = true;
 
-        void IInternalSearchService<TEntity>.SetSearchType(IDictionary<string, SearchType> types) => searchData = types;
-
         /// <summary>
         /// This Method is used In One-To-One relationship to Fetch Other-Entity. 
         /// For Example fetch Address in Employee-Address relationship
@@ -470,11 +466,6 @@ namespace Caspian.UI
                 info.SetValue(UpsertData, detail);
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        void IInternalSearchService<TEntity>.SetEnumFields(IDictionary<string, ICollection> enumFields) => enumValues = enumFields;
 
         async Task IInternalUIService<TEntity>.FetchAsync()
         {
@@ -524,7 +515,7 @@ namespace Caspian.UI
             return await baseComponentService.MessageBox.Confirm(message);
         }
 
-        IDictionary<string, ICollection> IInternalSearchService<TEntity>.GetEnumFields() => enumValues;
+        IDictionary<string, ICollection> IInternalSearchService<TEntity>.EnumFields { get; set; }
 
         void IInternalUIService.Dispose()
         {

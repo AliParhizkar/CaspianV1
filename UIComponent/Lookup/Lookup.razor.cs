@@ -391,7 +391,9 @@ namespace Caspian.UI
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
             var t = Expression.Parameter(typeof(TEntity), "t");
             Expression expr = Expression.Property(t, typeof(TEntity).GetPrimaryKey());
-            expr = Expression.Equal(expr, Expression.Constant(value)); 
+            expr = Expression.Equal(expr, Expression.Constant(value));
+            if (TextExpression == null)
+                throw new CaspianException("خطا: Please specify TextExpression parameter in lookup component");
             var result = await service.GetAll().Where(Expression.Lambda(expr, t)).Select(TextExpression).FirstAsync();
             return result;
         }
@@ -495,7 +497,11 @@ namespace Caspian.UI
                 {
                     var memberExpr = expr as MemberExpression;
                     if (memberExpr.Member.DeclaringType.GetCustomAttribute<TableAttribute>() == null)
+                    {
+                        if (str.Length == 0)
+                            str = memberExpr.Member.Name;
                         break;
+                    }
                     else
                     {
                         if (str.Length > 0)
@@ -512,6 +518,7 @@ namespace Caspian.UI
                 CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
                 oldContext = CurrentEditContext;
             }
+            CaspianForm?.AddControl(this);
             inputAttrs = new Dictionary<string, object>();
             inputAttrs["class"] = AutoHide ? "t-input auto-hide" : "t-input";
             if (PlaceHolder.HasValue())
@@ -560,6 +567,7 @@ namespace Caspian.UI
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);
+                CaspianForm?.SetFirstControl(this);
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindLookup", InputElement, dotnet);
             }
             await base.OnAfterRenderAsync(firstRender);

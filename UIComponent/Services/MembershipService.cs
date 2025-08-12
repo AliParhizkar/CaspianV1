@@ -11,8 +11,8 @@ namespace Caspian.UI
 {
     public class MembershipService<TMaster, TAccess, TOther> :UIService<TAccess>, IInternalSearchService<TOther> where TAccess : class where TOther : class
     {
-        protected IDictionary<string, SearchType> searchData;
-        protected IDictionary<string, ICollection> enumValues;
+        //protected IDictionary<string, SearchType> searchData;
+        //protected IDictionary<string, ICollection> enumValues;
         bool onlyForSearch, isLookup;
 
         public MembershipService(IServiceProvider provider)
@@ -38,10 +38,12 @@ namespace Caspian.UI
             return null;
         }
 
-        public IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TOther, TValue>> expression) where TValue : Enum
+        public IEnumSearch<TValue> GetEnumField<TValue>(Expression<Func<TOther, TValue>> lambda) where TValue : Enum
         {
-            return new EnumSearch<TValue>(expression.Body, enumValues);
+            return new EnumSearch<TValue>(lambda.Body, (this as IInternalSearchService<TOther>).EnumFields);
         }
+
+        IDictionary<string, ICollection> IInternalSearchService<TOther>.EnumFields { get; set; }
 
         void IInternalSearchService<TOther>.HideFooter() 
         {
@@ -58,19 +60,11 @@ namespace Caspian.UI
             return false;
         }
 
+        IList<ValueTypeContainer> IInternalSearchService<TOther>.ValueTypes { get; set; }
+
         Task IInternalSearchService<TOther>.SelectItemOnLookup()
         {
             throw new NotImplementedException();
-        }
-
-        void IInternalSearchService<TOther>.SetEnumFields(IDictionary<string, ICollection> enumFields)
-        {
-            this.enumValues = enumFields;
-        }
-
-        IDictionary<string, ICollection> IInternalSearchService<TOther>.GetEnumFields()
-        {
-            return enumValues;
         }
 
         public DataView<TOther> DataView { get; private set; }
@@ -202,14 +196,6 @@ namespace Caspian.UI
                 await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "لطفا یک ردیف را انتخاب نمائید.");
         }
 
-        void IInternalSearchService<TOther>.SetSearchType(IDictionary<string, SearchType> types)
-        {
-            searchData = new Dictionary<string, SearchType>();
-        }
-
-        IDictionary<string, SearchType> IInternalSearchService<TOther>.GetSearchData()
-        {
-            return searchData;
-        }
+        IDictionary<string, SearchType> IInternalSearchService<TOther>.SearchData { get; set; }
     }
 }

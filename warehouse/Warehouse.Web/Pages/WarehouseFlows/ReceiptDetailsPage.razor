@@ -1,0 +1,55 @@
+﻿@page "/Warehouse/ReceiptDetails"
+@page "/Warehouse/ReceiptDetails/{ParameterId:int}"
+@inject UIService<Receipt, ReceiptDetails> Service
+<div class="p-3">
+    <CaspianForm Service="Service" ColumnsCount="2">
+        <DatePicker @bind-Value="context.ReceiptDate" ColSpan="4" />
+        <StringTextBox @bind-Value="context.No" ColSpan="4" />
+        <ComboBox TEntity="Seller" TValue="int?" @bind-Value="context.SellerId" TextExpression="t => t.Name" ColSpan="4" />
+        <ComboBox TEntity="Supplier" TValue="int?" @bind-Value="context.SupplierId" TextExpression="t => t.RelatedUser.FName + ' ' + t.RelatedUser.LName" ColSpan="4" />
+        <div class="col-md-6 row pb-2">
+            <StringTextBox @bind-Value="context.Description" MultiLine Rows="3" ColSpan="8" TotalSpan="12" />
+        </div>
+        <div class="col-md-6 row pb-2">
+            <DropdownList @bind-Value="context.ReceiptType" ColSpan="8" TotalSpan="12" />
+            <FormCommandButton ColSpan="12" TotalSpan="12" />
+        </div>
+    </CaspianForm>
+
+    <DataGrid DetailsService="Service" TEntity="ReceiptDetails" ContentHeight="250" Inline>
+        <Columns Context="con">
+            <GridColumn Field="t => t.Product.Name" Title="کالا">
+                <EditTemplate>
+                    <Lookup TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId" HideIcon OpenOnFocus
+                            HideHeader AutoHide TextExpression="t => t.Name">
+                        <ProductLookupWindow />
+                    </Lookup>
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.Quantity">
+                <EditTemplate>
+                    <NumericTextBox @bind-Value="con.Data.Quantity" />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.Price">
+                <EditTemplate>
+                    <NumericTextBox @bind-Value="con.Data.Price" DigitGrouping />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.ExpireDate">
+                <EditTemplate>
+                    <DatePicker @bind-Value="con.Data.ExpireDate" />
+                </EditTemplate>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+
+
+@code
+{
+    [Parameter]
+    public int ParameterId { get; set; }
+}

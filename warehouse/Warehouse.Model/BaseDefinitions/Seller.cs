@@ -64,5 +64,8 @@ namespace Warehouse.Model
 
         [CheckOnDelete("فروشگاه دارای گروهبندی می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<SellerCategoryMembership> SellerCategoryMemberships { get; set; }
+
+        [CheckOnDelete("فروشنده دارای رسید می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<Receipt> Receipts { get; set; }
     }
 }

@@ -1,0 +1,17 @@
+﻿@typeparam TValue
+@namespace Warehouse.Web.Lookup
+@inherits LookupWindow<Product, TValue>
+<div class="c-lookup-page" style="width:700px;">
+    <DataGrid Service="Service" TEntity="Product" ContentHeight="200">
+        <Columns>
+            <GridColumn Field="t => t.ProductCategory.Title" />
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.Name" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+
+}

@@ -1,7 +1,9 @@
-﻿using Caspian.Engine.Model;
+﻿using Caspian.Common;
+using Caspian.Engine.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Dynamic.Core.CustomTypeProviders;
 
 namespace Warehouse.Model
 {
@@ -21,5 +23,8 @@ namespace Warehouse.Model
 
         [DisplayName("نام پدر")]
         public string ParentName { get; set; }
+
+        [CheckOnDelete("کارپرداز دارای رسید می باشد و امکان حذف وی وجود ندارد")]
+        public ICollection<Receipt> Receipts { get; set; }
     }
 }
