@@ -143,6 +143,8 @@ namespace Caspian.UI
         {
             if (Is1To1RelationshipService)
             {
+                var value1 = typeof(TEntity).GetPrimaryKey().GetValue(UpsertData);
+                MasterId = Convert.ToInt32(value1);
                 var properties = typeof(TEntity).GetOneToOneProperties();
                 if (properties != null)
                 {
@@ -168,7 +170,7 @@ namespace Caspian.UI
                     await DataView.ReloadAsync();
             }
             if (Is1To1RelationshipService)
-                EntityTabPanel.ChangeState();
+               EntityTabPanel.ChangeState();
             else
             {
                 UpsertData = Activator.CreateInstance<TEntity>();

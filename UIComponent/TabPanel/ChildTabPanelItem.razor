@@ -2,8 +2,9 @@
 @typeparam TEntity where TEntity : class
 @typeparam TDetail where TDetail : class
 @inject IServiceScopeFactory Factory
+@implements IEntityTabPanelItem 
 
-<TabPanelItem Title="@title" Disable="disabled">
+<TabPanelItem Title="@title">
     <CaspianForm Service="TabPanel.Service" Model="TabPanel.Service.UpsertData" ColumnsCount="ColumnsCount">
         @if (ChildContent != null && CheckDetailIsNotEmpty())
         {

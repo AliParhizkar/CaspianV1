@@ -3,21 +3,22 @@
 @inject IServiceProvider ServiceProvider
 @typeparam TEntity where TEntity : class
 @typeparam TDetail where TDetail : class
-<Caspian.UI.TabPanelItem Title="@title" Disable="disabled">
+@implements IEntityTabPanelItem
+
+<TabPanelItem Title="@title" Disable="Service.MasterId == 0">
     @if (ChildContent != null)
     {
         @ChildContent
     }
-</Caspian.UI.TabPanelItem>
+</TabPanelItem>
 
 @code
 {
     string title;
-    bool disabled;
 
     protected override void OnInitialized()
     {
-        TabPanel.GetTabIndex(null);
+        TabPanel.AddTabpanelItem(this);
         if (Children.Body.NodeType == ExpressionType.MemberAccess)
         {
             var info = (Children.Body as MemberExpression).Member as PropertyInfo;
@@ -27,6 +28,11 @@
         (Service as UIService<TDetail>).MasterType = typeof(TEntity);
         base.OnInitialized();
     }
+
+    Type IEntityTabPanelItem.GetEntityType() => ((Children.Body as MemberExpression).Member as PropertyInfo).PropertyType;
+
+    bool IEntityTabPanelItem.IsChildrenTabPanelItem() => true;
+
 
     [Parameter]
     public Expression<Func<TEntity, IEnumerable<TDetail>>> Children { get; set; }
@@ -44,8 +50,6 @@
         var value = typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData);
         var masterId = Convert.ToInt32(value);
         Service.MasterId = masterId;
-        disabled = masterId == 0;
-
         base.OnParametersSet();
     }
 

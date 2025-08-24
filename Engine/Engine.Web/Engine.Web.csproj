@@ -45,6 +45,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Pages\NewFolder\" />
 	  <Folder Include="wwwroot\css\" />
 	  <Folder Include="wwwroot\Js\ReportPrint\" />
 	</ItemGroup>

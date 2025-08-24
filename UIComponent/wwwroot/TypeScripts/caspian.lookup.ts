@@ -9,9 +9,7 @@
                 let code = e.keyCode;
                 if (code == 40 || code == 38)
                     e.preventDefault();
-            }
-            input.onkeypress = e => {
-                if (e.keyCode == 13) {
+                if (code == 13) {
                     let helpWindow = ((e.target as HTMLElement).closest('.c-lookup') as HTMLElement).getElementsByClassName('t-HelpWindow');
                     if (helpWindow.length > 0)
                         e.preventDefault();
@@ -32,13 +30,17 @@
                 let target = (list[0].target as HTMLElement).closest('.c-lookup') as HTMLElement;
                 let helpWindow = target.getElementsByClassName('t-HelpWindow')[0] as HTMLElement;
                 if (helpWindow != null) {
+                    window.onkeydown = e => {
+                        if (e.keyCode == 13) {
+                            e.preventDefault();
+                        }
+                    }
                     helpWindow.classList.remove('c-advance-search');
                     if (target.closest('.c-lookup').getAttribute('advanceSearch') == null) {
                         let locTarget = target.getBoundingClientRect();
                         let locHelpWindow = helpWindow.getBoundingClientRect();
                         let posTarget = target.getPosition();
                         let scrollTop = helpWindow.getBoundingClientRect().top - locTarget.top - 38;
-                        debugger;
                         if (locTarget.top - 40 >= locHelpWindow.height)
                             helpWindow.style.marginTop = `${-locHelpWindow.height - scrollTop - 40}px`;
                         if (caspian.common.RightToLeft()) {
@@ -81,8 +83,10 @@
                         };
                     }
                 }
-                else
+                else {
                     window.onclick = null;
+                    window.onkeydown = null;
+                }
 
             });
             mutationObserver.observe(lookup.getElementsByClassName('c-content')[0], {

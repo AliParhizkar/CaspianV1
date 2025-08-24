@@ -76,6 +76,7 @@ namespace Caspian.UI
     }
 
 
+
     public enum VerticalAlign
     {
         Top = 1,
@@ -109,5 +110,13 @@ namespace Caspian.UI
         Inline,
         Popup,
         InlinPopup
+    }
+
+    public enum ValueTypeControl
+    {
+        Numeric,
+        Date,
+        Time,
+        Boolean
     }
 }

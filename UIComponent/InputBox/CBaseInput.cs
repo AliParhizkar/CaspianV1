@@ -19,6 +19,7 @@ namespace Caspian.UI
         EditContext oldContext;
         protected bool disabled, focused, search;
         protected string title;
+        protected string id;
 
         public ElementReference? InputElement { get; protected set; }
 
@@ -87,6 +88,7 @@ namespace Caspian.UI
             {
                 var member = (ValueExpression.Body as MemberExpression).Member;
                 title = member.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? member.Name;
+
             }
             base.OnInitialized();
         }
@@ -204,11 +206,7 @@ namespace Caspian.UI
                 InputAttributes["readonly"] = true;
             if (TabIndex.HasValue)
                 InputAttributes["tabindex"] = TabIndex;
-            if (Id == "Ali12345")
-            {
-
-            }
-            if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
+            if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null && EntitySearch == null)
             {
                 var expr = ValueExpression.Body;
                 string str = "";
@@ -252,7 +250,7 @@ namespace Caspian.UI
 
         private void CurrentEditContext_OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
         {
-            if (_FieldName != null)
+            if (_FieldName != null && EntitySearch != null)
             {
                 if (CurrentEditContext.Properties["ValidationType"].ToString() == "FieldChanged")
                 {

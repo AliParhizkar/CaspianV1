@@ -22,7 +22,6 @@ namespace Caspian.UI
         IList<int> selectedIds;
         IList<object> DynamicData;
         IList<ColumnData> columnsData;
-        IList<ColumnData> RangeFilterColumnsData;
         IDictionary<string, object> tableAttrs;
 
         [Parameter]
@@ -38,15 +37,11 @@ namespace Caspian.UI
                 columnData.Width = column.Width;
                 columnData.Title = column.Title;
                 columnData.AggregateExpression = column.AggregateField?.Body;
-                columnData.FromExpression = column.FromExpression;
-                columnData.ToExpression = column.ToExpression;
                 columnData.Sortable = column.Field?.Body as BinaryExpression == null;
                 columnData.SortType = column.SortType;
                 columnData.Resizeable = column.Template == null && !column.IsCheckBox;
             }
             columnsData.Add(columnData);
-            if (column.FromExpression != null || column.ToExpression != null)
-                RangeFilterColumnsData.Add(columnData);
             StateHasChanged();
         }
 
@@ -216,41 +211,6 @@ namespace Caspian.UI
             Expression expr = null;
             var parameter = Expression.Parameter(typeof(TEntity), "t");
             Expression expression = null;
-            foreach (var col in columnsData.Where(t => t.FromExpression != null || t.ToExpression != null))
-            {
-                var colExpr = col.Expression;
-                if (colExpr.NodeType == ExpressionType.Call) 
-                    colExpr = (colExpr as MethodCallExpression).Arguments[0];
-                Expression memberExpr = parameter.ReplaceParameter(colExpr);
-                if (memberExpr.Type.IsNullableType())
-                    memberExpr = Expression.Property(memberExpr, "Value");
-                if (col.FromExpression != null)
-                {
-                    var fromValue = GetFromToValue(col.FromExpression);
-                    if (fromValue != null)
-                    {
-                        var convertedValue = Convert.ChangeType(fromValue, memberExpr.Type.GetUnderlyingType());
-                        var compareExpr = Expression.GreaterThanOrEqual(memberExpr, Expression.Constant(convertedValue));
-                        if (expression == null)
-                            expression = compareExpr;
-                        else
-                            expression = Expression.And(expression, compareExpr);
-                    }
-                }
-                if (col.ToExpression != null)
-                {
-                    var toValue = GetFromToValue(col.ToExpression);
-                    if (toValue != null)
-                    {
-                        var convertedValue = Convert.ChangeType(toValue, memberExpr.Type.GetUnderlyingType());
-                        var compareExpr = Expression.LessThanOrEqual(memberExpr, Expression.Constant(convertedValue));
-                        if (expression == null)
-                            expression = compareExpr;
-                        else
-                            expression = Expression.And(expression, compareExpr);
-                    }
-                }
-            }
             if (expression != null)
             {
                 if (expr == null)
@@ -484,24 +444,7 @@ namespace Caspian.UI
                 selectedIds = new List<int>();
             tableAttrs = new Dictionary<string, object>();
             commandColumnAdded = false;
-            RangeFilterColumnsData = new List<ColumnData>();
             base.OnInitialized();
-        }
-
-        private object GetFromToValue(LambdaExpression lambda)
-        {
-            var expr = (lambda.Body as MemberExpression);
-            var member = expr.Member;
-            var value = (expr.Expression as ConstantExpression).Value;
-            switch (member.MemberType)
-            {
-                case MemberTypes.Field:
-                    return (member as FieldInfo).GetValue(value);
-                case MemberTypes.Property:
-                    return (member as PropertyInfo).GetValue(value);
-                default:
-                    throw new NotImplementedException("");
-            };
         }
 
         protected override void OnParametersSet()
@@ -515,27 +458,6 @@ namespace Caspian.UI
                 tableAttrs.Remove("class");
             if (TableWidth.HasValue)
                 tableAttrs["style"] = "width:" + TableWidth + "px";
-            foreach(var col in RangeFilterColumnsData)
-            {
-                if (col.FromExpression != null)
-                {
-                    var fromValue = GetFromToValue(col.FromExpression);
-                    if (fromValue == null && col.FromValue != null || fromValue != null && !fromValue.Equals(col.FromValue))
-                    {
-                        EnableLoading();
-                        col.FromValue = fromValue;
-                    }
-                }
-                if (col.ToExpression != null)
-                {
-                    var toValue = GetFromToValue(col.ToExpression);
-                    if (toValue == null && col.ToValue != null || toValue != null && !toValue.Equals(col.ToValue))
-                    {
-                        EnableLoading();
-                        col.ToValue = toValue;
-                    }
-                }
-            }
             base.OnParametersSet();
         }
 

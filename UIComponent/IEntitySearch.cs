@@ -13,9 +13,17 @@ namespace Caspian.UI
 
         bool ChangEnumValues(string path, ICollection values);
 
+        void SetFromValue(string propertyPath, object fromValue);
+
+        void SetToValue(string propertyPath, object toValue);
+
+        void SetValue(string propertyPath, bool? value);
+
         Task SearchAsync();
 
         bool IsLookup { get; }
+
+        //string GetId(string memberName);
 
         Task SelectNextRow();
 

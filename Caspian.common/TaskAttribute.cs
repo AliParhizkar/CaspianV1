@@ -15,10 +15,17 @@ namespace Caspian.Common
 
     internal class ValueTypeContainer
     {
-        public string propertyPath { get; set; }
+        public ValueTypeContainer(string path)
+        {
+            PropertyPath = path;
+        }
+
+        public string PropertyPath { get; set; }
 
         public object From { get; set; }
 
         public object To { get; set; }
+
+        public bool? Value { get; set; }
     }
 }

@@ -5,4 +5,11 @@ namespace Caspian.UI
     {
         void ChangeState();
     }
+
+    internal interface IEntityTabPanelItem
+    {
+        Type GetEntityType();
+
+        bool IsChildrenTabPanelItem();
+    }
 }

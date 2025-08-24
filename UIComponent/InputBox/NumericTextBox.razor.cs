@@ -16,6 +16,9 @@ namespace Caspian.UI
         [Parameter]
         public bool DigitGrouping { get; set; }
 
+        [CascadingParameter(Name = "ParentControlIsValueSearch")]
+        public bool ParentControlIsValueSearch { get; set; }
+
         string GetDigitGrouping(string digit)
         {
             if (!digit.HasValue())
@@ -69,12 +72,6 @@ namespace Caspian.UI
                 await OnChange.InvokeAsync(Value);
         }
 
-        protected override void OnInitialized()
-        {
-            InputAttributes = new Dictionary<string, object>();
-            base.OnInitialized();
-        }
-
         protected override void OnParametersSet()
         {
             if (Id.HasValue())
@@ -87,7 +84,7 @@ namespace Caspian.UI
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
+            if (firstRender && (EntitySearch == null || ParentControlIsValueSearch))
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindTextBox", InputElement);
             await base.OnAfterRenderAsync(firstRender);
         }

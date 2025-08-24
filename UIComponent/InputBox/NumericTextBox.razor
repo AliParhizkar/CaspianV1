@@ -2,22 +2,30 @@
 @using System.Threading
 @typeparam TValue
 @inherits CBaseInput<TValue>
-@if (ColSpan.HasValue)
+@if (EntitySearch != null && !ParentControlIsValueSearch)
 {
-    if (TotalSpan == null || TotalSpan.Value > ColSpan.Value)
-    {
-        <div class="@(base.GetLabelCSSClassName())">
-            <label>@title</label>
-        </div>
-    }
-    <div class="@(base.GetControlCSSClassName())">
-        @RenderNumericTextBox()
-    </div>
+    <ValueSearch ValueExpression="ValueExpression.Body" ColSpan="ColSpan" TotalSpan="TotalSpan" />
 }
 else
 {
-    @RenderNumericTextBox()
+    @if (ColSpan.HasValue)
+    {
+        if (TotalSpan == null || TotalSpan.Value > ColSpan.Value)
+        {
+            <div class="@(base.GetLabelCSSClassName())">
+                <label>@title</label>
+            </div>
+        }
+        <div class="@(base.GetControlCSSClassName())">
+            @RenderNumericTextBox()
+        </div>
+    }
+    else
+    {
+        @RenderNumericTextBox()
+    }
 }
+
 
 
 @code

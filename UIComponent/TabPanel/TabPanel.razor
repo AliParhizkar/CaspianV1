@@ -60,11 +60,6 @@
     ElementReference element;
     IList<TabPanelItem> tabPanels;
 
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-    }
-
     internal void AddTabpanelItem(TabPanelItem tabPanelItem)
     {
         if (tabPanels == null)
@@ -74,6 +69,11 @@
             tabPanels.Add(tabPanelItem);
             StateHasChanged();
         }
+    }
+
+    internal void DisableItem(int index, bool status)
+    {
+        tabPanels[index - 1].DisableItem(status);
     }
 
     public void Clear()

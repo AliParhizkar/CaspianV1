@@ -8,7 +8,6 @@ namespace Caspian.UI
     public partial class ChildTabPanelItem<TEntity, TDetail> : ComponentBase where TEntity : class where TDetail : class
     {
         string title;
-        bool disabled;
 
         bool CheckDetailIsNotEmpty()
         {
@@ -19,12 +18,16 @@ namespace Caspian.UI
             return detailInfo.GetValue(entity)  != null;
         }
 
+        Type IEntityTabPanelItem.GetEntityType() => typeof(TDetail);
+
+        bool IEntityTabPanelItem.IsChildrenTabPanelItem() => false;
+
         [Parameter]
         public int ColumnsCount { get; set; } = 1;
 
         protected override void OnInitialized()
         {
-            TabPanel.GetTabIndex(typeof(TDetail));
+            TabPanel.AddTabpanelItem(this);
             if (typeof(TEntity) != typeof(TDetail))
             {
                 var info = (Child.Body as MemberExpression).Member as PropertyInfo;

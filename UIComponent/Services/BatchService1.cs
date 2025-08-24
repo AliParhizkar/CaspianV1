@@ -60,6 +60,7 @@ namespace Caspian.UI
 
         protected override IBaseService<TMaster> CreateService(IServiceScope scope)
         {
+            
             return scope.GetService<IMasterDetailsService<TMaster, TDetail, TDetail1>>();
         }
 

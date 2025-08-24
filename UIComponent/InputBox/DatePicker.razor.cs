@@ -1,7 +1,7 @@
 ﻿using Caspian.Common;
 using Microsoft.JSInterop;
-using Microsoft.AspNetCore.Components;
 using Caspian.Common.Extension;
+using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
@@ -60,6 +60,9 @@ namespace Caspian.UI
                 await ValueChanged.InvokeAsync(Value);
             }
         }
+
+        [CascadingParameter(Name = "ParentControlIsValueSearch")]
+        public bool ParentControlIsValueSearch { get; set; }
 
         [Parameter]
         public bool PersianCalendar { get; set; }
@@ -122,7 +125,7 @@ namespace Caspian.UI
 
         async protected override Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
+            if (firstRender && (EntitySearch == null || ParentControlIsValueSearch))
             {
                 var dotnet = DotNetObjectReference.Create(this);
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindDatePicker", element, dotnet);

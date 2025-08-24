@@ -54,6 +54,7 @@ namespace Caspian.UI
                 InputAttributes["disabled"] = "disabled";
             else
                 InputAttributes.Remove("disabled");
+            
             InputAttributes["class"] = "t-input";
             if (Id.HasValue())
             {

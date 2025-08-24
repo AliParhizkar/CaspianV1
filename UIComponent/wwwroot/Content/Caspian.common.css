@@ -4,6 +4,15 @@
     border-radius: 8px;
     padding: 5px;
 }
+.t-ltr .c-value-search.d-flex .c-from{
+    padding-right:3px
+}
+
+.t-ltr .c-value-search.d-flex .c-to {
+    padding-left: 3px
+}
+
+
 
 .c-body {
     border: 1px solid #bdbdbd;

@@ -508,7 +508,7 @@ namespace Caspian.UI
                     }
                     if (!primaryKeyAdded)
                         list.Add(primaryKeyExpr);
-                    var lambda = parameter.CreateLambdaExpresion(list, false);
+                    var lambda = parameter.CreateLambdaExtension(list, false);
                     if (cascadeExpression != null)
                         query = query.Where(cascadeExpression).OfType<TEntity>();
                     shouldRender = false;

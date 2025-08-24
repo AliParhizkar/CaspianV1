@@ -6,9 +6,9 @@
     <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" ColSpan="4"
               TextExpression="t => t.Title" ConditionExpression="t => t.SubSystemKind == Subsystem" OrderByExpression="t => t.Ordering" />
     <StringTextBox @bind-Value="context.Title" ColSpan="4" />
-    <CheckBox @bind-Value="onlyUntitledMenus" ColSpan="2" TotalSpan="4" />
-    <CheckBox @bind-Value="isDropped" ColSpan="2" TotalSpan="4" />
-    <CheckBox @bind-Value="showInMenu" ColSpan="2" TotalSpan="4" />
+    <CheckBox CustomeSearch @bind-Value="onlyUntitledMenus" ColSpan="2" TotalSpan="4" />
+    <CheckBox CustomeSearch @bind-Value="isDropped" ColSpan="2" TotalSpan="4" />
+    <CheckBox CustomeSearch @bind-Value="showInMenu" ColSpan="2" TotalSpan="4" />
     <StringTextBox Id="Test1" @bind-Value="context.Source" ColSpan="4" />
     <div class="col-md-3 text-center">
         <IconButton @onclick="async () => await UpdateMenus()" IconType="IconType.Refresh" title="Update menus" />

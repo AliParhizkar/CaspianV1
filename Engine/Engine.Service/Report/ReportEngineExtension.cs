@@ -19,7 +19,7 @@ namespace Caspian.Engine
                 MemberExpression memberExpression = paramExpr.CreateMemberExpresion(param.PropertyPath);
                 list.Add(memberExpression);
             }
-            var lambda = paramExpr.CreateLambdaExpresion(list, true);
+            var lambda = paramExpr.CreateLambdaExtension(list, true);
             return query.Select(lambda);
         }
 
@@ -41,7 +41,7 @@ namespace Caspian.Engine
                 else if (parameter.AggregateParameterType != AggregateParameterType.AggregateFunction)
                     list.Add(paramExpr.CreateMemberExpresion(parameter.Path));
             }
-            var lambda = paramExpr.CreateLambdaExpresion(list, true);
+            var lambda = paramExpr.CreateLambdaExtension(list, true);
             return query.GroupBy(lambda).CreateSelectForGroupBy(parameters, paramExpr.Type);
         }
 

@@ -1,0 +1,63 @@
+﻿@namespace Caspian.UI
+<CascadingValue Value="true" Name="ParentControlIsValueSearch">
+    @if (ColSpan.HasValue)
+    {
+        <div class="@(GetLabelCSSClassName())">
+            <label>@title</label>
+        </div>
+        <div class="@(GetControlCSSClassName())">
+            @Render()
+        </div>
+    }
+    else
+    {
+        @Render()
+    }
+</CascadingValue>
+
+@code
+{
+    
+    RenderFragment Render()
+    {
+        var className = "c-value-search";
+        if (!Wrap)
+            className += " d-flex";
+        return __builder =>
+        {
+            <div class="@className">
+                <div class="c-from">
+                    @switch (valueTypeControl)
+                    {
+                        case ValueTypeControl.Numeric:
+                            <NumericTextBox TValue="object" ValueChanged="SearchByFromValue" placeholder="از" />
+                            break;
+                        case ValueTypeControl.Date:
+                            <DatePicker TValue="DateOnly?" ValueChanged="SearchByFromValue" placeholder="از" />
+                            break;
+                        case ValueTypeControl.Time:
+                            <Timepicker TValue="object" ValueChanged="SearchByFromValue" placeholder="از" />
+                            break;
+                        case ValueTypeControl.Boolean:
+                            <CheckBox TValue="bool?" ValueChanged="SearchByValue" />
+                            break;
+                    }
+                </div>
+                <div class="c-to">
+                    @switch (valueTypeControl)
+                    {
+                        case ValueTypeControl.Numeric:
+                            <NumericTextBox TValue="object" ValueChanged="SearchByToValue" placeholder="تا" />
+                            break;
+                                case ValueTypeControl.Date:
+                            <DatePicker TValue="DateOnly?" ValueChanged="SearchByToValue" placeholder="تا" />
+                            break;
+                                case ValueTypeControl.Time:
+                            <Timepicker TValue="object" ValueChanged="SearchByToValue" placeholder="تا" />
+                            break;
+                    }
+                </div>
+            </div>
+        };
+    }
+}

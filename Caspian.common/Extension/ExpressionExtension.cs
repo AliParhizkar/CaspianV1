@@ -8,14 +8,26 @@ namespace Caspian.Common.Extension
     {
         public const char SpilitChar = '_';
 
-        public static LambdaExpression CreateLambdaExpresion(this ParameterExpression param, bool isReport, params MemberExpression[] array)
+        public static LambdaExpression CreateLambdaExtension(this ParameterExpression param, bool isReport, params MemberExpression[] array)
         {
-            return CreateLambdaExpresion(param, array.ToList(), isReport);
+            return CreateLambdaExtension(param, array.ToList(), isReport);
         }
 
+        public static string GetPropertyPath(this MemberExpression expression)
+        {
+            var str = "";
+            var expr = expression;
+            while (expr.Expression.NodeType == ExpressionType.MemberAccess)
+            {
+                if (str.HasValue())
+                    str = $".{str}";
+                str = expr.Member.Name + str;
+                expr = expr.Expression as MemberExpression;
+            }
+            return str;
+        }
 
-
-        public static LambdaExpression CreateLambdaExpresion(this ParameterExpression param, IList<MemberExpression> list, bool isReport)
+        public static LambdaExpression CreateLambdaExtension(this ParameterExpression param, IList<MemberExpression> list, bool isReport)
         {
             var type = param.Type.CreateDynamicType(list, isReport);
             var memberExprList = new List<MemberAssignment>();

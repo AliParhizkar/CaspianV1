@@ -16,7 +16,7 @@
 @code
 {
     TabPanel tabPanel;
-    IList<Type> childTypes;
+    IList<IEntityTabPanelItem> tabpanelItems;
 
     async Task UpdateService(int tabIndex)
     {
@@ -25,7 +25,7 @@
         else
         {
             TabIndex = tabIndex;
-            var type = childTypes[TabIndex - 1];
+            var type = tabpanelItems[TabIndex - 1].GetEntityType();
             if (type != null)
                 await (Service as IInternalUIService<TEntity>).UpdateChildOfModelAsync(type);
         }
@@ -33,9 +33,9 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (TabIndexChanged.HasDelegate && childTypes.Count >= TabIndex)
+        if (TabIndexChanged.HasDelegate && tabpanelItems.Count >= TabIndex)
         {
-            var type = childTypes[TabIndex - 1];
+            var type = tabpanelItems[TabIndex - 1].GetEntityType();
             if (type != null)
                 await (Service as IInternalUIService<TEntity>).UpdateChildOfModelAsync(type);
         }
@@ -44,14 +44,8 @@
 
     protected override void OnInitialized()
     {
-        childTypes = new List<Type>();
         (Service as IInternalUIService<TEntity>).TabPanelInitializer(this);
         base.OnInitialized();
-    }
-
-    internal void GetTabIndex(Type childType)
-    {
-        childTypes.Add(childType);
     }
 
     [Parameter]
@@ -69,8 +63,27 @@
     [Parameter]
     public EventCallback<int> TabIndexChanged { get; set; }
 
+    internal void AddTabpanelItem(IEntityTabPanelItem panelItem)
+    {
+        tabpanelItems = tabpanelItems ?? new List<IEntityTabPanelItem>();
+        tabpanelItems.Add(panelItem);
+    }
+
     public void ChangeState()
     {
+        var index = 1;
+        foreach(var item in tabpanelItems)
+        {
+            if (item.IsChildrenTabPanelItem())
+            {
+                var type = item.GetEntityType().GetGenericArguments()[0];
+                type = typeof(IUIService<>).MakeGenericType(type);
+                var service = (Service as UIService<TEntity>).ServiceProvider.GetService(type) as IUIService;
+                service.MasterId = Service.MasterId;
+                tabPanel.DisableItem(index, Service.MasterId == 0);
+            }
+            index++;
+        }
         StateHasChanged();
     }
 }

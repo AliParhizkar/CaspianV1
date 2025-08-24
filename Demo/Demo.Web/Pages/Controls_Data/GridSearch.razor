@@ -3,6 +3,7 @@
 <h2>Grid-Searching</h2>
 @inherits BasePage
 @inject ISearchService<Customer> Service
+@inject ISearchService<Product> ProductService
 @inject ISearchService<City> CityService
 @inject ISearchService<OrderDetail> OrderDetailService
 
@@ -131,25 +132,14 @@
                         <span class="c-demo-description">In this example, we define a variable of <b>Customer type</b> and <b>bind first name, last name and company name</b> for search. </span>
                     </div>
                     <div class="col-md-6">
-                        <div class="row pb-3 c-controls ps-3 pe-3">
-                            <div class="col-md-4">
-                                <label>From price</label>
-                            </div>
-                            <div class="col-md-8">
-                                <NumericTextBox @bind-Value="fromPrice" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>To price</label>
-                            </div>
-                            <div class="col-md-8">
-                                <NumericTextBox @bind-Value="toPrice" />
-                            </div>
-                        </div>
-                        <DataGrid TEntity="Product" >
+                        <EntitySearch TEntity="Product" Service="ProductService">
+                            <NumericTextBox @bind-Value="context.Price" ColSpan="9" />
+                        </EntitySearch>
+                        <DataGrid TEntity="Product" Service="ProductService" ShowInsertIcon="false">
                             <Columns>
                                 <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                                 <GridColumn Field="t => t.Title" />
-                                <GridColumn Field="t => t.Price.DigitGrouping()" @bind-From="fromPrice" @bind-To="toPrice" />
+                                <GridColumn Field="t => t.Price.DigitGrouping()" />
                             </Columns>
                         </DataGrid>
                     </div>
@@ -161,24 +151,32 @@
                     <div class="col-md-6">
                         <hr />
                         <EntitySearch Service="OrderDetailService">
-                            <div class="col-md-4">
-                                <label>From date</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DatePicker @bind-Value="fromDate" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>To date</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DatePicker @bind-Value="toDate" />
-                            </div>
+                            @{ context.Order = context.Order ?? new();}
+                            <DatePicker @bind-Value="context.Order.Date" ColSpan="9" />
                         </EntitySearch>
-                        <DataGrid TEntity="OrderDetail">
+                        <DataGrid TEntity="OrderDetail" Service="OrderDetailService" ShowInsertIcon="false">
                             <Columns>
-                                <GridColumn Field="t => t.Order.Date" Title="Order date" @bind-From="fromDate" @bind-To="toDate" />
+                                <GridColumn Field="t => t.Order.Date" Title="Order date" />
                                 <GridColumn Field="t => t.Product.Title" />
                                 <GridColumn Field="t => t.Quantity" />
+                            </Columns>
+                        </DataGrid>
+                    </div>
+                    <div class="col-md-6 pe-4">
+                        <hr />
+                        <h4>Search on Boolean</h4>
+                        <span class="c-demo-description">In this example,  </span>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <EntitySearch TEntity="Product" Service="ProductSearchService">
+                            <CheckBox @bind-Value="context.OutofStock" ColSpan="9" TotalSpan="12" />
+                        </EntitySearch>
+                        <DataGrid TEntity="Product" Service="ProductSearchService" ShowInsertIcon="false">
+                            <Columns>
+                                <GridColumn Field="t => t.Title" />
+                                <GridColumn Field="t => t.Price.DigitGrouping()" />
+                                <GridColumn Field="t => t.OutofStock" />
                             </Columns>
                         </DataGrid>
                     </div>
@@ -202,23 +200,18 @@
                     <div class="col-md-6 pe-4">
                         <h4>Custom search:</h4>
                         <span class="c-demo-description">
-                            In this example, the <b>isOutOfStock</b> variable is <b>nullable boolean</b>, if isOutOfStock <b>is null</b>, we have <b>no filter</b>, otherwise we filter based on the isOutOfStock variable.
+                            In this example, 
                         </span>
                     </div>
                     <div class="col-md-6">
-                        <div class="row pb-3 c-controls ps-3 pe-3">
-                            <div class="col-md-6">
-                                <label>Out of stock</label>
-                            </div>
-                            <div class="col-md-6">
-                                <CheckBox @bind-Value="isOutOfStock" OnChange="() => gridProduct.EnableLoading()" />
-                            </div>
-                        </div>
-                        <DataGrid @ref="gridProduct" TEntity="Product" ConditionExpr="t => isOutOfStock == null || t.OutofStock == isOutOfStock">
+                        <EntitySearch TEntity="Customer" Service="customSearchService">
+                            <StringTextBox @bind-Value="name" ColSpan="9" TotalSpan="12" placeholder="Name | Mobile Number" />
+                        </EntitySearch>
+                        <DataGrid  TEntity="Customer" Service="customSearchService" ShowInsertIcon="false" ConditionExpr="t => name == null || t.FName.Contains(name) || t.LName.Contains(name) || t.CompanyName.Contains(name) || t.MobileNumber.StartsWith(name)">
                             <Columns>
-                                <GridColumn Field="t => t.Title" />
-                                <GridColumn Field="t => t.Price.DigitGrouping()" />
-                                <GridColumn Field="t => t.OutofStock" />
+                                <GridColumn Field="t => t.CustomerType" />
+                                <GridColumn Field="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName" />
+                                <GridColumn Field="t => t.MobileNumber" />
                             </Columns>
                         </DataGrid>
                     </div>
@@ -229,28 +222,26 @@
             <Document FolderName="Grid-Search" FileName="Search-Custom" />
         </TabPanelItem>
     </Tabs>
-</TabPanel>
+</TabPanel> 
 @code 
 {
     //Default search
     bool showGender;
     int genderSelectionType;
+    string name;
     City citySearch = new City();
-    Customer customerStringSearch = new ();
     ISearchService<Customer> enumSearchService;
-    object fromPrice;
-    object toPrice;
-    object fromDate;
-    object toDate;
+    ISearchService<Customer> customSearchService;
+    ISearchService<Product> ProductSearchService;
     //
-    bool? isOutOfStock;
-    DataGrid<Product> gridProduct;
     IServiceScope scope;
 
     protected override void OnInitialized()
     {
         scope = ServiceScopeFactory.CreateScope();
-        enumSearchService = scope.ServiceProvider.GetService<ISearchService<Customer>>();
+        enumSearchService = scope.GetService<ISearchService<Customer>>();
+        ProductSearchService = scope.GetService<ISearchService<Product>>();
+        customSearchService = scope.GetService<ISearchService<Customer>>();
         base.OnInitialized();
     }
 

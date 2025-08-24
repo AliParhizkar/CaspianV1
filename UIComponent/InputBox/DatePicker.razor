@@ -1,28 +1,33 @@
 ﻿@namespace Caspian.UI
 @using System.Globalization;
 @using System.Threading;
-@typeparam TValue 
+@typeparam TValue
 @inherits CBaseInput<TValue>
-
-@if (ColSpan.HasValue)
+@if (EntitySearch != null && !ParentControlIsValueSearch)
 {
-    var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer);
-    string labelContainerCSSClassName = base.GetLabelCSSClassName();
-    string controlContainerCSSClassName = base.GetControlCSSClassName();
-    <div class="@(labelContainerCSSClassName)">
-        <label>@title</label>
-    </div>
-    <div class="@(controlContainerCSSClassName)">
-        @RenderDatePicker()
-    </div>
+    <ValueSearch ValueExpression="ValueExpression.Body" ColSpan="ColSpan" TotalSpan="TotalSpan" />
 }
 else
 {
-    @RenderDatePicker()
+    @if (ColSpan.HasValue)
+    {
+        var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer ?? EntitySearch as ICaspianContainer);
+        string labelContainerCSSClassName = base.GetLabelCSSClassName();
+        string controlContainerCSSClassName = base.GetControlCSSClassName();
+        <div class="@(labelContainerCSSClassName)">
+            <label>@title</label>
+        </div>
+        <div class="@(controlContainerCSSClassName)">
+            @RenderDatePicker()
+        </div>
+    }
+    else
+    {
+        @RenderDatePicker()
+    }
 }
 
-
-@code 
+@code
 {
     RenderFragment RenderDatePicker()
     {

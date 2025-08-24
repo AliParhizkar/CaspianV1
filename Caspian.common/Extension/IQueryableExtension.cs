@@ -14,7 +14,7 @@ namespace Caspian.Common.Extension
         public static IQueryable Select(this IQueryable source, IList<MemberExpression> exprList)
         {
             var parameter = Expression.Parameter(source.ElementType, "x");
-            var lambda = parameter.CreateLambdaExpresion(exprList, false);
+            var lambda = parameter.CreateLambdaExtension(exprList, false);
             return source.Select(lambda);
         }
 
@@ -39,6 +39,7 @@ namespace Caspian.Common.Extension
 
         public async static Task<TEntity> SingleOrDefaultAsync<TEntity>(this IQueryable<TEntity> query, int id) where TEntity : class
         {
+            
             var param = Expression.Parameter(typeof(TEntity), "t");
             var pKey = typeof(TEntity).GetPrimaryKey();
             Expression expr = Expression.Property(param, pKey);
@@ -174,7 +175,7 @@ namespace Caspian.Common.Extension
                 properties.Add(new DynamicProperty(path, type));
                 list.Add(param.CreateMemberExpresion(path));
             }
-            var lambda = param.CreateLambdaExpresion(list, false);
+            var lambda = param.CreateLambdaExtension(list, false);
             var groupByQuery = query.GroupBy(lambda);
             /// Select Expresion
             var memberExprList = new List<MemberAssignment>();
@@ -272,16 +273,60 @@ namespace Caspian.Common.Extension
             return list;
         }
 
-        internal static IQueryable<TEntity> Search<TEntity>(this IQueryable<TEntity> source, TEntity search, IDictionary<string, SearchType> searches, IDictionary<string, ICollection> enumValues) where TEntity : class
+        internal static IQueryable<TEntity> Search<TEntity>(this IQueryable<TEntity> source, TEntity search, IDictionary<string, SearchType> searches, 
+            IDictionary<string, ICollection> enumValues, ICollection<ValueTypeContainer> valueTypes) where TEntity : class
         {
             if (search == null)
                 return source;
             var list = new List<string>();
             GetSearchFieldsName(list, search, null);
-            if (list.Count == 0 && (enumValues == null || enumValues.Count == 0))
+            if (list.Count == 0 && (enumValues == null || enumValues.Count == 0) && (valueTypes == null || valueTypes.Count == 0))
                 return source;
             ParameterExpression parameter = Expression.Parameter(typeof(TEntity), "t");
             Expression left = null;
+            if (valueTypes != null && valueTypes.Count > 0)
+            {
+                foreach(var item in valueTypes.Where(t => t.From != null || t.To != null || t.Value != null))
+                {
+                    var propertyExpr = parameter.CreateMemberExpresion(item.PropertyPath);
+                    var propertyType = (propertyExpr.Member as PropertyInfo).PropertyType;
+                    if (propertyType.IsNullableType())
+                    {
+                        propertyExpr = Expression.Property(propertyExpr, "Value");
+                        propertyType = propertyType.GetUnderlyingType();
+                    }
+                    if (item.Value != null)
+                    {
+                        var value = Convert.ChangeType(item.Value, typeof(bool));
+                        var expr = Expression.Equal(propertyExpr, Expression.Constant(value));
+                        if (left == null)
+                            left = expr;
+                        else
+                            left = Expression.AndAlso(left, expr);
+                    }
+                    else
+                    {
+                        if (item.From != null)
+                        {
+                            var value = Convert.ChangeType(item.From, propertyType);
+                            var expr = Expression.GreaterThanOrEqual(propertyExpr, Expression.Constant(value));
+                            if (left == null)
+                                left = expr;
+                            else
+                                left = Expression.AndAlso(left, expr);
+                        }
+                        if (item.To != null)
+                        {
+                            var value = Convert.ChangeType(item.To, propertyType);
+                            var expr = Expression.LessThanOrEqual(propertyExpr, Expression.Constant(value));
+                            if (left == null)
+                                left = expr;
+                            else
+                                left = Expression.AndAlso(left, expr);
+                        }
+                    }
+                }
+            }
             if (enumValues != null && enumValues.Count > 0)
             {
                 foreach (var enumValue in enumValues)

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq.Dynamic.Core;
 using Microsoft.AspNetCore.Components;
+using System.IO;
 
 namespace Caspian.UI
 {
@@ -28,6 +29,54 @@ namespace Caspian.UI
         void IEntitySearch.EnableLoadData()
         {
             Service.DataView.EnableLoading();
+        }
+
+        void IEntitySearch.SetFromValue(string path, object fromValue)
+        {
+            var old = valueTypeValues.SingleOrDefault(t => t.PropertyPath == path);
+            if (old == null)
+                valueTypeValues.Add(new ValueTypeContainer(path) {From = fromValue });
+            else
+            {
+                if (fromValue == null)
+                    valueTypeValues.Remove(old);
+                else
+                    old.From = fromValue;
+            }
+            (Service as IInternalSearchService<TEntity>).ValueTypes = valueTypeValues;
+        }
+
+        void IEntitySearch.SetToValue(string path, object toValue)
+        {
+            var old = valueTypeValues.SingleOrDefault(t => t.PropertyPath == path);
+            if (old == null)
+                valueTypeValues.Add(new ValueTypeContainer(path) { To = toValue});
+            else
+            {
+                if (toValue == null)
+                    valueTypeValues.Remove(old);
+                else
+                    old.To = toValue;
+            }
+            (Service as IInternalSearchService<TEntity>).ValueTypes = valueTypeValues;
+        }
+
+        void IEntitySearch.SetValue(string path, bool? value)
+        {
+            var old = valueTypeValues.SingleOrDefault(t => t.PropertyPath == path);
+            if (old == null)
+            {
+                if (value.HasValue)
+                    valueTypeValues.Add(new ValueTypeContainer(path) { Value = value });
+            }
+            else
+            {
+                if (value == null)
+                    valueTypeValues.Remove(old);
+                else
+                    old.Value = value.Value;
+            }
+            (Service as IInternalSearchService<TEntity>).ValueTypes = valueTypeValues;
         }
 
         ICollection IEntitySearch.GetFieldValues(string path)
@@ -92,7 +141,6 @@ namespace Caspian.UI
         {
             await (Service as IInternalSearchService<TEntity>).SelectItemOnLookup();
         }
-
 
         [CascadingParameter]
         internal PageData PageData { get; set; }

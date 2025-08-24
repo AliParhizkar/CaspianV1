@@ -2333,6 +2333,7 @@ html body .t-button-bare {
     }
     .t-header .t-window-action .fa{
         color:inherit;
+        padding-top:3px;
     }
     .t-animation-container .t-popup {
         border-radius: 8px;

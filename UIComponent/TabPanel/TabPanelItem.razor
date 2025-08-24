@@ -27,6 +27,11 @@
     [Parameter]
     public bool Disable { get; set; }
 
+    internal void DisableItem(bool status)
+    {
+        Disable = status;
+    }
+
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 

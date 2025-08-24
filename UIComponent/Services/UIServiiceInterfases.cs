@@ -42,6 +42,8 @@ namespace Caspian.UI
         Task OpenWindow(int? id);
 
         Task CloseWindow();
+
+        int MasterId { get; set; }
     }
 
     internal interface IInternalUIService : IUIService
@@ -58,7 +60,7 @@ namespace Caspian.UI
         void FormInitializer(CaspianForm<TEntity> form);
 
         /// <summary>
-        /// In 1 ti 1 relationship if is bigger tan 0 (MasterId > 0) itt fetch child from database
+        /// In 1 ti 1 relationship if is bigger than 0 (MasterId > 0) it fetch child from database
         /// </summary>
         /// <param name="detailType">Type of detail in 1 to 1 relationship</param>
         /// <returns></returns>

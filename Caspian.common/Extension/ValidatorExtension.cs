@@ -13,17 +13,17 @@ namespace Caspian.Common.Extension
             {
                 t.IncludeRuleSets("");
                 var list = new List<string>();
-                AddPropetiesToList(typeof(TModel), null, list);
+                AddPropertiesToList(typeof(TModel), null, list);
                 if (detailType != null && detailType != typeof(TModel))
                 {
                     var propertyName = typeof(TModel).GetProperties().Single(t => t.PropertyType == detailType).Name;
-                    AddPropetiesToList(detailType, propertyName, list);
+                    AddPropertiesToList(detailType, propertyName, list);
                 }
                 t.IncludeProperties(list.ToArray());
             });
         }
 
-        static void AddPropetiesToList(Type type, string propertyName, IList<string> list)
+        static void AddPropertiesToList(Type type, string propertyName, IList<string> list)
         {
             var pKey = type.GetPrimaryKey();
             foreach (var info in (type as Type).GetProperties().Where(t => t != pKey))

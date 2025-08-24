@@ -70,7 +70,7 @@ namespace Caspian.Common.Service
 
         internal virtual IQueryable<TEntity> Search(TEntity entity, IDictionary<string, SearchType> searchData, IDictionary<string, ICollection> enumValues, IList<ValueTypeContainer> valueTypes)
         {
-            return GetAll().Search(entity, searchData, enumValues);
+            return GetAll().Search(entity, searchData, enumValues, valueTypes);
         }
 
         public virtual IQueryable<TEntity> GetAll()

@@ -14,6 +14,8 @@ namespace Caspian.Common
         public static TService GetCaspianService<TService>(this IServiceProvider serviceProvider) where TService : class
         {
             var type = typeof(TService);
+            if (type.IsInterface)
+                return serviceProvider.GetService(type) as TService;
             while(type != typeof(object))
             {
                 if (type.IsGenericType)

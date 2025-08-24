@@ -47,24 +47,6 @@ namespace Caspian.UI
         public string Title { get; set; }
 
         [Parameter]
-        public object From { get; set; }
-
-        [Parameter]
-        public EventCallback<object> FromChanged { get; set; }
-
-        [Parameter]
-        public Expression<Func<object>> FromExpression { get; set; }
-
-        [Parameter]
-        public object To { get; set; }
-
-        [Parameter]
-        public EventCallback<object> ToChanged { get; set; }
-
-        [Parameter]
-        public Expression<Func<object>> ToExpression { get; set; }
-
-        [Parameter]
         public SortType? SortType { get; set; }
 
         [Parameter]
