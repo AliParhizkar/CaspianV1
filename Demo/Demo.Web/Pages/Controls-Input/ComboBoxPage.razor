@@ -1,6 +1,7 @@
 ﻿@page "/Demo/ComboBox"
 @namespace Demo.Web.Pages
 @using Caspian.Engine.Model
+@attribute [Page(8, "Combo Box")]
 @inherits BasePage
 <h2>Combobox</h2>
 <p>
@@ -55,7 +56,7 @@
 <h3 class="pt-3">Data Binding & Search</h3>
 <p>
     We can easily bind the control to the entity, we know that the combo box is a Key-Value control, the <b>key of the entity is Key</b>, and the programmer can easily <b>determine the Value as Expression</b>.
-    <br/>Because we are <b>searching on the database</b>, we have <b>no limit on the number of records</b> in the table.
+    <br />Because we are <b>searching on the database</b>, we have <b>no limit on the number of records</b> in the table.
 
 </p>
 <TabPanel>
@@ -81,7 +82,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <hr/>
+                        <hr />
                         <h4>Property expression</h4>
                         <span class="c-demo-description">
                             In this example, we set the TEntity to City and set TextExpression parameter with the Country title concat the City title.
@@ -99,10 +100,10 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <hr/>
+                        <hr />
                         <h4>Complex expression</h4>
                         <span class="c-demo-description">
-                            In this example, we set the TEntity to Customer and set TextExpression parameter 
+                            In this example, we set the TEntity to Customer and set TextExpression parameter
                         </span>
                     </div>
                     <div class="col-md-6">
@@ -120,7 +121,7 @@
                         <hr />
                         <h4>Custom Templat</h4>
                         <span class="c-demo-description">
-                            In this example, we use custom template 
+                            In this example, we use custom template
                         </span>
                     </div>
                     <div class="col-md-6">

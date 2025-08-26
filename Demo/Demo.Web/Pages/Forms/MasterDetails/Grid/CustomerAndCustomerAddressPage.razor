@@ -1,5 +1,6 @@
 ﻿@page "/Demo/CustomerAndCustomerAddress"
 @namespace Demo.Web.Pages
+@attribute [Page(53, "Customer & CustomerAddress")]
 @inject UIService<Customer, CustomerAddress> Service
 @inherits BasePage
 @{
@@ -27,8 +28,8 @@
                         <b>Delete customer :</b> To delete a customer, we must first removes customer groups.
                     </li>
                 </ul>
-                <DataGrid TEntity="Customer" Service="Service" ContentHeight="400" 
-                        DeleteMessage="با حذف مشتری آدرسهای وی نیز حذف می شود آیا با حذف موافقید؟">
+                <DataGrid TEntity="Customer" Service="Service" ContentHeight="400"
+                          DeleteMessage="با حذف مشتری آدرسهای وی نیز حذف می شود آیا با حذف موافقید؟">
                     <Columns>
                         <GridColumn Field="t => t.CustomerType" />
                         <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
@@ -37,7 +38,7 @@
                     </Columns>
                 </DataGrid>
                 <Window Service="Service" Title="Customer & Addresses" Style="width:750px;">
-                    <CustomerAndCustomerAddressComponent  />
+                    <CustomerAndCustomerAddressComponent />
                 </Window>
             </div>
         </TabPanelItem>
@@ -47,7 +48,7 @@
     </Tabs>
 </TabPanel>
 
-@code 
+@code
 {
 
 }

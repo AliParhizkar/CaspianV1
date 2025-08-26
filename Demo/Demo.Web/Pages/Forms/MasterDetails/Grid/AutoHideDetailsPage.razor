@@ -1,10 +1,10 @@
 ﻿@page "/Demo/Batch/AutoHide/Grid/Details"
 @page "/Demo/Batch/AutoHide/Grid/Details/{ReceiptId:int}"
+@attribute [Page(50, "Batch Auto-Hide")]
 <style type="text/css">
-    .c-content-main{
-    padding-left: .5rem!important;
-    padding-right: .5rem !important;
-
+    .c-content-main {
+        padding-left: .5rem !important;
+        padding-right: .5rem !important;
     }
 </style>
 @using Caspian.Common.Extension
@@ -36,18 +36,20 @@
 </ul>
 <h3>MasterDetailPage&lt;TMaster, TDetail&gt;</h3>
 <p>
-    We can create warehouse receipt form <b>without any coding</b>, of course we can <b>modify</b> it by coding. 
+    We can create warehouse receipt form <b>without any coding</b>, of course we can <b>modify</b> it by coding.
 </p>
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="ps-2 pe-2">
                 <h4>Warehouse receipt-Receipt details</h4>
-                <span class="c-demo-description">In this example we can inser or update <b>warehouse receipt</b>, 
+                <span class="c-demo-description">
+                    In this example we can inser or update <b>warehouse receipt</b>,
                     also insert update or delete receiptdetail(s).
                 </span>
                 <div class="pt-3">
-                    <span class="fa fa-info"> Note: </span><span class="c-demo-description">We use WareHouseReceiptService
+                    <span class="fa fa-info"> Note: </span><span class="c-demo-description">
+                        We use WareHouseReceiptService
                         for validate both Warehouse receip and Receipt details.
                     </span>
                 </div>
@@ -99,7 +101,7 @@
                             <Content Context="receipt">
                                 <DatePicker @bind-Value="receipt.Date" ColSpan="8" />
                                 <ComboBox TEntity="Warehouse" TValue="int" @bind-Value="receipt.WarehouseId" TextExpression="t => t.Title" ColSpan="8" />
-                                <StringTextBox @bind-Value="receipt.Comment"  MultiLine Rows="3" ColSpan="8" />
+                                <StringTextBox @bind-Value="receipt.Comment" MultiLine Rows="3" ColSpan="8" />
                                 <div class="col-md-12">
                                     <FormCommandButton ColSpan="12" TotalSpan="8" />
                                 </div>
@@ -111,9 +113,9 @@
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material" style="min-width:180px">
                                     <EditTemplate>
-                                        <Lookup TEntity="Material" TValue="int" @bind-Value="con.Data.MaterialId" 
-                                        HideHeader AutoHide Title="Material" TextExpression="t => t.Title" HideIcon OpenOnFocus
-                                        OnChange="async () => await UpdateMaterialReceipt(con.Data.MaterialId, con.Data)">
+                                        <Lookup TEntity="Material" TValue="int" @bind-Value="con.Data.MaterialId"
+                                                HideHeader AutoHide Title="Material" TextExpression="t => t.Title" HideIcon OpenOnFocus
+                                                OnChange="async () => await UpdateMaterialReceipt(con.Data.MaterialId, con.Data)">
                                             <MaterialLookupWindow />
                                         </Lookup>
                                     </EditTemplate>
@@ -180,7 +182,7 @@
 </TabPanel>
 
 <PopupWindow @bind-Status="status" TargetElement="targetElement" TargetHorizontalAnchor="HorizontalAnchor.Left" OffsetLeft="-1"
-TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right"VerticalAnchor="VerticalAnchor.Middle">
+             TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right" VerticalAnchor="VerticalAnchor.Middle">
     <div style="width:450px;" class="row p-3 text-center">
         <div class="col-md-4">@selectedReceiptDetail.Material?.Title</div>
         <div class="col-md-1">@selectedReceiptDetail.QuantityMain.DigitGrouping()</div>
@@ -193,9 +195,9 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
     </div>
 </PopupWindow>
 <PopupWindow @bind-Status="reciptStatus" TargetElement="btnReceipts" TargetHorizontalAnchor="HorizontalAnchor.Left" OffsetLeft="-1"
-TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right"VerticalAnchor="VerticalAnchor.Middle">
+             TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right" VerticalAnchor="VerticalAnchor.Middle">
     <div class="d-orders">
-        @foreach(var recipt in receipts)
+        @foreach (var recipt in receipts)
         {
             <div class="d-order-item">
                 <span>@recipt.ReceiptNo</span>
@@ -220,7 +222,7 @@ TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.
     async Task InitializeReciept(int reciptId)
     {
         await Service.ReloadForUpdate(reciptId);
-        reciptStatus = WindowStatus.Close; 
+        reciptStatus = WindowStatus.Close;
     }
 
     async Task ShowRecipts(MouseEventArgs e)

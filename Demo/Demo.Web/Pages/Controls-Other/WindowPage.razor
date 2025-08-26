@@ -1,5 +1,6 @@
 ﻿@page "/Demo/Window"
 @namespace Demo.Web.Pages
+@attribute [Page(24, "Window")]
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -30,7 +31,7 @@
                                 <label>Control size</label>
                             </div>
                             <div class="col-md-8">
-                                <DropdownList @bind-Value="controlSize" FilterFunc="t => t != ControlSize.Auto"/>
+                                <DropdownList @bind-Value="controlSize" FilterFunc="t => t != ControlSize.Auto" />
                             </div>
                             <div class="col-md-4">
                                 <label>Window</label>
@@ -52,7 +53,7 @@
                                 <label>Modal</label>
                             </div>
                             <div class="col-md-8">
-                                <CheckBox @bind-Value="modal"  />
+                                <CheckBox @bind-Value="modal" />
                             </div>
                             <div class="col-md-4">
                                 <label>Draggable</label>
@@ -175,7 +176,7 @@
     </Content>
 </Window>
 
-<Window @bind-Status="status1"  Title="Window 1" Style="width:700px;height:500px">
+<Window @bind-Status="status1" Title="Window 1" Style="width:700px;height:500px">
     <div class="row d-cascade">
         <div class="col-md-12">
             <h3>Cascade Window</h3>

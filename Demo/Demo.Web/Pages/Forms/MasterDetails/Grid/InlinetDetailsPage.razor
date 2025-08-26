@@ -1,5 +1,6 @@
-﻿@page "/Demo/Batch/Inline/Details" 
+﻿@page "/Demo/Batch/Inline/Details"
 @page "/Demo/Batch/Inline/Details/{OrderId:int}"
+@attribute [Page(56, "Batch Inline Details")]
 @namespace Demo.Web.Pages
 @inherits BasePage
 @inject UIService<Order, OrderDetail> Service
@@ -17,7 +18,7 @@
         </ul>
     </li>
     <li>
-        <b>Order update:</b> It includes the following operations, only one or more of these operations may be performed. 
+        <b>Order update:</b> It includes the following operations, only one or more of these operations may be performed.
         these operations are performed together and transactionally:
         <ul class="d-demo-inner-list">
             <li><b>Update order:</b> There may be no update to receipt.</li>
@@ -29,7 +30,7 @@
 </ul>
 <h3>MasterDetailPage&lt;TMaster, TDetail&gt;</h3>
 <p>
-    We can create order form <b>without any coding</b>, of course we can <b>modify</b> it by coding. 
+    We can create order form <b>without any coding</b>, of course we can <b>modify</b> it by coding.
     To create it, we need to use the <b>MasterDetailPage</b> class, this class is a <b>generic class</b> with two parameters: <b>TMaster(Order)</b> and <b>TDetail(OrderDeatil)</b>.
     To use this class, we need to set its properties, we describe these properties.
 </p>
@@ -109,7 +110,7 @@
                                       TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
                             <ComboBox TEntity="Courier" TValue="int?" @bind-Value="context.CourierId" TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" ColSpan="8" />
                             <StringTextBox @bind-Value="context.Description" MultiLine Rows="3" ColSpan="8" />
-                            <NumericTextBox Value="context.TotalAmount" ColSpan="8" Title="Total Amount" readonly /> 
+                            <NumericTextBox Value="context.TotalAmount" ColSpan="8" Title="Total Amount" readonly />
                             <FormCommandButton ColSpan="8" />
                         </CaspianForm>
                     </div>
@@ -199,9 +200,9 @@
 
 </div>
 <PopupWindow @bind-Status="status" TargetElement="targetElement" TargetHorizontalAnchor="HorizontalAnchor.Left" OffsetLeft="-1"
-TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right" VerticalAnchor="VerticalAnchor.Middle">
+             TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right" VerticalAnchor="VerticalAnchor.Middle">
     <div class="d-description">
-        @if(descriptions != null)
+        @if (descriptions != null)
         {
             foreach (var description in descriptions.Where(t => !descriptionSearch.HasValue() || t.Contains(descriptionSearch)))
             {

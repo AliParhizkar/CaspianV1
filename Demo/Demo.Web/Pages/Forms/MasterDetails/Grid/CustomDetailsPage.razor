@@ -1,5 +1,6 @@
 ﻿@page "/Demo/Batch/Custom/Details"
 @page "/Demo/Batch/Custom/Details/{OrderId:int}"
+@attribute [Page(52, "Batch Custom Details")]
 @inject UIService<Order, OrderDetail> Service
 @inherits BasePage
 @{
@@ -7,7 +8,7 @@
 }
 <h3>Batch-Custom</h3>
 <p>
-    In this example, we have <b>a few products</b> to choose, with the <b>first click</b> on the product, 
+    In this example, we have <b>a few products</b> to choose, with the <b>first click</b> on the product,
     it will be <b>added</b> to the grid, and with <b>subsequent clicks</b>, its <b>quantity</b> will increase.
 </p>
 <p>
@@ -21,15 +22,17 @@
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content">
                 <h4>Inline grid methods:</h4>
-                <span class="c-demo-description">We use inline grid methods for orderdetail operations (insert, update and remove)
-                    in this example. Here we describe these methods:</span>
+                <span class="c-demo-description">
+                    We use inline grid methods for orderdetail operations (insert, update and remove)
+                    in this example. Here we describe these methods:
+                </span>
                 <ul class="d-demo-inner-list">
                     <li>
-                        <b>InsertAsync: </b>We use this method to <b>validation & insert</b> the order details, 
+                        <b>InsertAsync: </b>We use this method to <b>validation & insert</b> the order details,
                         this method <b>retrieves the necessary data</b> from the <b>database</b> based on the <b>grid expressions</b>.
                     </li>
                     <li>
-                        <b>UpdateAsync: </b>We use this method to <b>validation & update</b> the order details, 
+                        <b>UpdateAsync: </b>We use this method to <b>validation & update</b> the order details,
                         this method <b>retrieves the necessary data</b> from the <b>database</b> based on the <b>grid expressions</b>.
                     </li>
                     <li>

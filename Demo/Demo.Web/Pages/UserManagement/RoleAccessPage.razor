@@ -1,7 +1,5 @@
 ﻿@page "/Demo/UserManagement/RoleAccess/{RoleId:int}"
-<p>
-
-</p>
+@attribute [Page(78, "Tree Role Access")]
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
@@ -16,7 +14,7 @@
 </TabPanel>
 
 
-@code 
+@code
 {
     [Parameter]
     public int RoleId { get; set; }

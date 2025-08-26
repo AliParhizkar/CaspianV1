@@ -1,5 +1,6 @@
-﻿@page "/Demo/Batch/Inline/Listview/Details" 
+﻿@page "/Demo/Batch/Inline/Listview/Details"
 @page "/Demo/Batch/Inline/Listview/Details/{OrderId:int}"
+@attribute [Page(58, "Inline Listview Details")]
 @namespace Demo.Web.Pages
 @inherits BasePage
 @inject UIService<Order, OrderDetail> Service
@@ -62,8 +63,8 @@
                                         <TextField Field="t => t.Product.Title">
                                             <EditTemplate>
                                                 <Lookup TEntity="Product" TValue="int" @bind-Value="detail.Data.ProductId"
-                                                              HideHeader AutoHide TextExpression="t => t.Title"
-                                                              OnChange="async () => await SetPrice(detail.Data)">
+                                                        HideHeader AutoHide TextExpression="t => t.Title"
+                                                        OnChange="async () => await SetPrice(detail.Data)">
                                                     <ProductLookupWindow />
                                                 </Lookup>
                                             </EditTemplate>

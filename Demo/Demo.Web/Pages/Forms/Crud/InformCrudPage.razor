@@ -1,5 +1,6 @@
 ﻿@page "/Demo/InformCrud"
 @namespace Demo.Web
+@attribute [Page(39, "Inform Crud")]
 @inherits BasePage
 @inject IUIService<Product> Service
 @{
@@ -7,7 +8,7 @@
 }
 <h2>Inform CRUD</h2>
 <p>
-    In this example, instead of a <b>pop-up window</b>, we place the form on the page. 
+    In this example, instead of a <b>pop-up window</b>, we place the form on the page.
 </p>
 <TabPanel>
     <Tabs>
@@ -59,7 +60,7 @@
     </Tabs>
 </TabPanel>
 @code
-{ 
+{
     protected override void OnInitialized()
     {
         Service.OnUpsert = async (IServiceProvider provider, Product product) => product.Id == 0 && (product.Price == 0 || product.TakeoutPrice == 0) && await Confirm("آیا با ثبت محصول با مبلغ صفر مواققید؟");

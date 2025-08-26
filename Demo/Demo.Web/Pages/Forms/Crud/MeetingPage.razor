@@ -1,6 +1,7 @@
 ﻿@page "/Demo/Meeting"
 @namespace Demo.Web.Pages
 @inherits BasePage
+@attribute [Page(40, "Meeting")]
 @inject IUIService<Meeting> Service
 
 @{
@@ -71,7 +72,7 @@
     </Fields>
 </ListView>
 <Window Service="Service" Style="width:600px">
-    <CaspianForm TEntity="Meeting" Service="Service" OnSubmit= "t => t.Entity.UserId = base.UserId">
+    <CaspianForm TEntity="Meeting" Service="Service" OnSubmit="t => t.Entity.UserId = base.UserId">
         <Content Context="meeting">
             <div class="row c-controls ps-2 pe-2">
                 <StringTextBox MultiLine Rows="3" @bind-Value="meeting.Name" ColSpan="9" />
@@ -89,7 +90,7 @@
 </Window>
 
 
-@code 
+@code
 {
     IList<int> meetingsId;
 

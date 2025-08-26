@@ -1,5 +1,6 @@
 ﻿@namespace Demo.Web
 @page "/Demo/Grid-DataBinding"
+@attribute [Page(3, "Grid-Data binding")]
 <h2>Grid-Databinding</h2>
 <p>
     After <b>grid data binding</b>, we have <b>paging</b>, <b>default search</b> and <b>sorting (increasing and decreasing) without any coding</b>.
@@ -38,7 +39,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <DataGrid TEntity="City" >
+                        <DataGrid TEntity="City">
                             <Columns>
                                 <GridColumn Field="t => t.Country.Title" Title="Country" />
                                 <GridColumn Field="t => t.Title" />

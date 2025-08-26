@@ -1,4 +1,5 @@
 ﻿@page "/Demo/UserManagement/UserMembership/{RoleId:int}"
+@attribute [Page(88, "User Membership")]
 <p>
 </p>
 <TabPanel>
@@ -14,7 +15,7 @@
     </Tabs>
 </TabPanel>
 
-@code 
+@code
 {
     [Parameter]
     public int RoleId { get; set; }

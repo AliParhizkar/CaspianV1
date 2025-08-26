@@ -1,5 +1,6 @@
 ﻿@namespace Demo.Web
 @page "/Demo/Grid-Search"
+@attribute [Page(4, "Grid Search")]
 <h2>Grid-Searching</h2>
 @inherits BasePage
 @inject ISearchService<Customer> Service
@@ -70,22 +71,22 @@
                             </div>
                         </div>
 
-                            <EntitySearch Service="enumSearchService">
-                                <DropdownList TValue="CustomerType" @bind-Value="context.CustomerType" ColSpan="8" OnSearch="SearchOnCustomerType" />
-                                @if (showGender || genderSelectionType == 1)
-                                {
-                                    <DropdownList @bind-Value="context.Gender" ColSpan="8" />
-                                }
-                            </EntitySearch>
-                            <div class="pt-3">
-                                <DataGrid TEntity="Customer" Service="enumSearchService" ShowInsertIcon="false">
-                                    <Columns>
-                                        <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
-                                        <GridColumn Field="t => t.CustomerType.EnumText()" />
-                                        <GridColumn Field="t => t.Gender.EnumText()" />
-                                    </Columns>
-                                </DataGrid>
-                            </div>
+                        <EntitySearch Service="enumSearchService">
+                            <DropdownList TValue="CustomerType" @bind-Value="context.CustomerType" ColSpan="8" OnSearch="SearchOnCustomerType" />
+                            @if (showGender || genderSelectionType == 1)
+                            {
+                                <DropdownList @bind-Value="context.Gender" ColSpan="8" />
+                            }
+                        </EntitySearch>
+                        <div class="pt-3">
+                            <DataGrid TEntity="Customer" Service="enumSearchService" ShowInsertIcon="false">
+                                <Columns>
+                                    <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+                                    <GridColumn Field="t => t.CustomerType.EnumText()" />
+                                    <GridColumn Field="t => t.Gender.EnumText()" />
+                                </Columns>
+                            </DataGrid>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <hr />
@@ -200,14 +201,14 @@
                     <div class="col-md-6 pe-4">
                         <h4>Custom search:</h4>
                         <span class="c-demo-description">
-                            In this example, 
+                            In this example,
                         </span>
                     </div>
                     <div class="col-md-6">
                         <EntitySearch TEntity="Customer" Service="customSearchService">
                             <StringTextBox @bind-Value="name" ColSpan="9" TotalSpan="12" placeholder="Name | Mobile Number" />
                         </EntitySearch>
-                        <DataGrid  TEntity="Customer" Service="customSearchService" ShowInsertIcon="false" ConditionExpr="t => name == null || t.FName.Contains(name) || t.LName.Contains(name) || t.CompanyName.Contains(name) || t.MobileNumber.StartsWith(name)">
+                        <DataGrid TEntity="Customer" Service="customSearchService" ShowInsertIcon="false" ConditionExpr="t => name == null || t.FName.Contains(name) || t.LName.Contains(name) || t.CompanyName.Contains(name) || t.MobileNumber.StartsWith(name)">
                             <Columns>
                                 <GridColumn Field="t => t.CustomerType" />
                                 <GridColumn Field="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName" />
@@ -222,8 +223,8 @@
             <Document FolderName="Grid-Search" FileName="Search-Custom" />
         </TabPanelItem>
     </Tabs>
-</TabPanel> 
-@code 
+</TabPanel>
+@code
 {
     //Default search
     bool showGender;

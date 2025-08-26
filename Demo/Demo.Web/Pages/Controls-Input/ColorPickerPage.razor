@@ -1,12 +1,14 @@
 ﻿@page "/Demo/ColorPicker"
 @namespace Demo.Web.Pages
+@attribute [Page(7, "Color Picker")]
+
 <h2>Color Picker</h2>
 <p>
     this control is userd for
 </p>
 <h3>Binding</h3>
 <p>
-    we can bind this control 
+    we can bind this control
 </p>
 <TabPanel>
     <Tabs>
@@ -129,7 +131,7 @@
 <div style="height:350px">
 
 </div>
-@code 
+@code
 {
     bool autoClose;
     string colorPickerColor = "#00FFFF";

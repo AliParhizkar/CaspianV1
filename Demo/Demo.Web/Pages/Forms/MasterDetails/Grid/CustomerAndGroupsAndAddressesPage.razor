@@ -1,5 +1,6 @@
 ﻿@page "/Demo/CustomerAndGroupsAndAddresses"
 @inject UIService<Customer, CustomerGroupMembership, CustomerAddress> Service
+@attribute [Page(55, "Customer & Groups & Addresses")]
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -24,7 +25,7 @@
                         <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerGroupAddressService)" />
                         <DropdownList @bind-Value="context.CustomerType" ColSpan="4" />
                         <StringTextBox @bind-Value="context.FName" Disabled="customerType == CustomerType.Legal" ColSpan="4" />
-                        <StringTextBox @bind-Value="context.LName" Disabled="customerType == CustomerType.Legal" ColSpan="4"/>
+                        <StringTextBox @bind-Value="context.LName" Disabled="customerType == CustomerType.Legal" ColSpan="4" />
                         <DropdownList @bind-Value="context.Gender" Disabled="customerType == CustomerType.Legal" ColSpan="4" />
                         <StringTextBox @bind-Value="context.CompanyName" Disabled="customerType == CustomerType.Real" ColSpan="4" />
                         <StringTextBox @bind-Value="context.MobileNumber" MaxLength="11" ColSpan="4" />
@@ -79,7 +80,7 @@
     </Tabs>
 </TabPanel>
 
-@code 
+@code
 {
 
 }

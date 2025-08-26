@@ -1,8 +1,9 @@
 ﻿@page "/Demo/TreeNodeManagement"
+@attribute [Page(76, "TreeNode Management")]
 @inherits BasePage
 <h2>Node management</h2>
 <p>
-    In some case we can manage 
+    In some case we can manage
 </p>
 <TabPanel>
     <Tabs>
@@ -11,7 +12,7 @@
                 <div class="col-md-6">
                     <h4>Single select</h4>
                     <span class="c-demo-description pe-5">
-                        In this example 
+                        In this example
                     </span>
                 </div>
                 <div class="col-md-6">
@@ -37,7 +38,7 @@
     </Tabs>
 </TabPanel>
 
-@code 
+@code
 {
     IList<NodeView> source;
 
@@ -72,19 +73,19 @@
     {
         using var service = CreateScope().GetService<CountryService>();
         source = await service.GetAll().Select(t => new NodeView()
+        {
+            Value = t.Id.ToString(),
+            Text = t.Title,
+            Expanded = true,
+            Selectable = false,
+            Children = t.Cities.Select(u => new NodeView()
             {
-                Value = t.Id.ToString(),
-                Text = t.Title,
-                Expanded = true,
-                Selectable = false,
-                Children = t.Cities.Select(u => new NodeView()
-                {
-                    Value = u.Id.ToString(),
-                    Text = u.Title,
-                    Collabsable = false,
-                    Selectable = true,
-                }).ToList()
-            }).ToListAsync();
+                Value = u.Id.ToString(),
+                Text = u.Title,
+                Collabsable = false,
+                Selectable = true,
+            }).ToList()
+        }).ToListAsync();
         foreach (var item in source)
             item.Collabsable = item.Children.Any();
         await base.OnInitializedAsync();

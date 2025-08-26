@@ -1,9 +1,9 @@
 ﻿@page "/Demo/ContextMenu"
 @namespace Demo.Web.Pages
-
+@attribute [Page(17, "Context Menu")]
 <h2>Context menu & Tooltip</h2>
 <p>
-    Context menu use for 
+    Context menu use for
 </p>
 
 <TabPanel>
@@ -88,7 +88,7 @@
                                 <RadioList @bind-Value="tooltipPosition" OnChange="SetTooltipText" />
                             </div>
                             <div>
-                                <Tooltip >
+                                <Tooltip>
 
                                 </Tooltip>
                             </div>
@@ -106,7 +106,7 @@
 
 <ContextMenu @bind-Status="leftStatus" Left="left" Top="top">
     <ContextMenuItem Title="item1" />
-    <ContextMenuItem Title="item2" >
+    <ContextMenuItem Title="item2">
         <ContextMenuItem Title="item2_1" />
         <ContextMenuItem Title="item2_2" />
         <ContextMenuItem Title="item2_3" />
@@ -154,9 +154,9 @@
 </ContextMenu>
 
 <ContextMenu @bind-Status="rightClickStatus" Left="left" Top="top">
-    <ContextMenuItem Title="item 1"/>
-    <ContextMenuItem Title="item 2"/>
-    <ContextMenuItem Title="item 3"/>
+    <ContextMenuItem Title="item 1" />
+    <ContextMenuItem Title="item 2" />
+    <ContextMenuItem Title="item 3" />
 </ContextMenu>
 
 @code {

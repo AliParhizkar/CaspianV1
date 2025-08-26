@@ -11,11 +11,15 @@ namespace Caspian.Engine.Model
         [Key]
         public int Id { get; set; }
 
+        public SubSystemKind SubSystemKind { get; set; }
+
         [DisplayName("Title")]
         public string Title { get; set; }
 
         [DisplayName("Source")]
         public string Source { get; set; }
+
+        public int SourceId { get; set; }
 
         [DisplayName("URL")]
         public string URL { get; set; }
@@ -25,8 +29,6 @@ namespace Caspian.Engine.Model
 
         [ForeignKey(nameof(MenuCategoryId))]
         public  MenuCategory MenuCategory { get; set; }
-
-        public SubSystemKind? SubSystemKind { get; set; }
 
         public int Ordering { get; set; }
 

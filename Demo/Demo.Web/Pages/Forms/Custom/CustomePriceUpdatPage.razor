@@ -1,5 +1,6 @@
 ﻿@page "/Demo/CustomePriceUpdat"
 @namespace Demo.Web.Pages
+@attribute [Page(47, "Custome Price Updat")]
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -10,7 +11,7 @@
 </p>
 <p>
     After changing the <b>price</b> by pressing the <b>enter key</b>, the changes are <b>saved</b> in the database and the <b>focus</b> is given to the control of the next column.
-    <br/>
+    <br />
     After changing the <b>take out price</b> by pressing the <b>enter key</b>, the changes are <b>saved</b> in the database and the <b>next row</b> is selected for change.
 </p>
 <TabPanel>
@@ -18,7 +19,7 @@
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="p-4 row ">
                 <span class="c-demo-description">
-                    In this example, the most important issue is <b>giving focus</b> to the controls. 
+                    In this example, the most important issue is <b>giving focus</b> to the controls.
                     We use <b>selectedId</b> and <b>colNumber</b> variables for this.
                 </span>
             </div>
@@ -55,7 +56,7 @@
                             <GridColumn Field="t => t.Price.ToString()" style="width:150px;">
                                 <Template>
                                     <NumericTextBox @ref="PriceControl" OnDispose="ctr => priceControls.Remove(ctr)" TValue="int" Value="context.Data.Price" ValueChanged="value => context.Data.Price = value"
-                                            @onkeyup="async e => await UpdatePrice(e, context.Data.Id, context.Data.Price)" />
+                                                    @onkeyup="async e => await UpdatePrice(e, context.Data.Id, context.Data.Price)" />
                                 </Template>
                             </GridColumn>
                             <GridColumn Field="t => t.TakeoutPrice.ToString()" style="width:150px;">
@@ -87,7 +88,7 @@
 
     NumericTextBox<int> PriceControl
     {
-        get{ return null; }
+        get { return null; }
         set
         {
             priceControls.Add(value);

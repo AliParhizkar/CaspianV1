@@ -1,6 +1,7 @@
 ﻿@page "/Demo/ParameterCrud"
 @namespace Demo.Web.Pages
 @inherits BasePage
+@attribute [Page(42, "Parameter Crud")]
 @inject IUIService<Country> Service
 @{
     base.BuildRenderTree(__builder);
@@ -66,5 +67,5 @@
 </TabPanel>
 @code
 {
-    
+
 }

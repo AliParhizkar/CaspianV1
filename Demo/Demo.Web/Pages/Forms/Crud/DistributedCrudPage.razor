@@ -1,5 +1,6 @@
 ﻿@page "/Demo/DistributedCrud"
 @namespace Demo.Web.Pages
+@attribute [Page(38, "Distributed Crud")]
 @inherits BasePage
 @inject IUIService<ProductCategory> CategoryService
 @inject IUIService<Product> Service
@@ -24,14 +25,14 @@
                     <div class="c-controls c-header row align-items-center">
                         <CaspianContainer>
                             <ComboBox TEntity="ProductCategory" TValue="int?" Value="categoryId" TextExpression="t => t.Title"
-                            ColSpan="8" ValueChanged="CategoryChanged" Title="گروه محصول" />
+                                      ColSpan="8" ValueChanged="CategoryChanged" Title="گروه محصول" />
                         </CaspianContainer>
                     </div>
                     <div class="c-body ps-3 pe-3">
                         @if (categoryId.HasValue)
                         {
                             <DataGrid TEntity="Product" Service="Service" ContentHeight="350"
-                            ConditionExpr="@(t => t.ProductCategoryId == categoryId)">
+                                      ConditionExpr="@(t => t.ProductCategoryId == categoryId)">
                                 <Columns>
                                     <GridColumn Field="t => t.Title" />
                                     <GridColumn Field="t => t.ActiveType.EnumText()" style="width:80px;" />

@@ -1,11 +1,12 @@
-﻿@page "/Demo/DropdownList" 
+﻿@page "/Demo/DropdownList"
 @namespace Demo.Web.Pages
 @inherits BasePage
+@attribute [Page(10, "Dropdown List")]
 <h2>Dropdown list</h2>
 <h3>Binding</h3>
 <p>
-    this component usually bind to <b>Enum</b> or <b>Nullable Enum</b>, of course this component can bind to <b>any type of data</b>, 
-    if you bind this control to <b>Enum</b> this control automatically <b>fill from Enum Fields</b>. 
+    this component usually bind to <b>Enum</b> or <b>Nullable Enum</b>, of course this component can bind to <b>any type of data</b>,
+    if you bind this control to <b>Enum</b> this control automatically <b>fill from Enum Fields</b>.
     This control is a <b>key-value</b> control where the <b>Enum Fields</b> specifies the <b>key</b> and the <b>Display Attribute of Fields</b> specifies the value.
     And also by <b>binding</b> this control to <b>Nullable Enum</b>, an item is <b>added to the beginning of the list</b> whose <b>key is null</b> and <b>value is whatever you want</b>, for example please select...
 </p>
@@ -122,7 +123,7 @@
     We can specify <b>general properties</b> such as <b>width</b> and <b>disable</b>. if we do not specify the width of the control, its width will be 100% and fit to parent. And also this component automatically drop down, or up based on its position.
 </p>
 
-<TabPanel >
+<TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content">
@@ -195,7 +196,7 @@
                             </div>
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
-                                    <DropdownList @bind-Value="orderType" FilterFunc="t => !filtering || t.ConvertToInt() <= 2"  />
+                                    <DropdownList @bind-Value="orderType" FilterFunc="t => !filtering || t.ConvertToInt() <= 2" />
                                 </div>
                             </div>
                         </div>
@@ -229,26 +230,26 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-@code 
+@code
 {
     OrderType orderType = OrderType.Salon;
 
-    OrderType? nullableOrderType; 
-    
+    OrderType? nullableOrderType;
+
     bool disable;
-    
+
     IList<SelectListItem> otherTypeItems;
     int? otherType;
 
     bool filtering = true;
     bool itemDisable = true;
     ControlSize controlSize = ControlSize.Auto;
-    
+
     WindowStatus status;
 
     string GetStyle()
     {
-        switch(controlSize)
+        switch (controlSize)
         {
             case ControlSize.Large:
                 return "width:300px";

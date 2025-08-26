@@ -1,4 +1,5 @@
 ﻿@page "/Demo/Service"
+@attribute [Page(67, "Service")]
 @using FluentValidation.Results;
 @inject IServiceScopeFactory ServiceScopeFactory
 @inherits BasePage
@@ -267,7 +268,7 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-@code 
+@code
 {
     int? upsertCountryId;
     int? deleteCountryId;
@@ -304,11 +305,11 @@
     {
         using var service = CreateScope().GetService<CityService>();
         var city = new City()
-            {
-                CountryId = upsertCountryId ?? 0,
-                ActiveType = ActiveType.Enable,
-                Title = "For Test"
-            };
+        {
+            CountryId = upsertCountryId ?? 0,
+            ActiveType = ActiveType.Enable,
+            Title = "For Test"
+        };
         upsertResult = await service.ValidateAsync(city);
     }
 

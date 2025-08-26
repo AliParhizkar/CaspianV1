@@ -1,4 +1,5 @@
 ﻿@page "/Demo/TreeSearch"
+@attribute [Page(77, "Tree Search")]
 @inherits BasePage
 <h2>Tree Search & Selection</h2>
 <p>
@@ -10,14 +11,15 @@
             <div class="row d-content">
                 <div class="col-md-6">
                     <h4>Search on city</h4>
-                    <span class="c-demo-description pe-5">In this example, we will <b>filter</b> on the <b>city title</b>, and if there is a city in 
+                    <span class="c-demo-description pe-5">
+                        In this example, we will <b>filter</b> on the <b>city title</b>, and if there is a city in
                         the filtering, we will also display its <b>country</b> in the tree to <b>maintain</b> the tree structure.
                     </span>
                 </div>
                 <div class="col-md-6">
                     <div>
-                        <StringTextBox placeholder="City search" BindingType="BindingType.OnInput" @bind-Value="@strSearch" 
-                            OnChange="SearchOnTree" />
+                        <StringTextBox placeholder="City search" BindingType="BindingType.OnInput" @bind-Value="@strSearch"
+                                       OnChange="SearchOnTree" />
                     </div>
                     <div>
                         <TreeView TEntity="NodeView" style="height:500px;" Source="searchSource" />
@@ -65,7 +67,7 @@
             Text = t.Title,
             Expanded = true,
             Selectable = true,
-                Children = t.Cities.Select(u => new NodeView()
+            Children = t.Cities.Select(u => new NodeView()
             {
                 Value = u.Id.ToString(),
                 Text = u.Title,
@@ -90,18 +92,18 @@
         if (strSearch.HasValue())
             query = query.Where(t => t.Cities.Any(u => u.Title.Contains(strSearch)));
         searchSource = await query.Select(t => new NodeView()
+        {
+            Collabsable = true,
+            Expanded = true,
+            Text = t.Title,
+            Value = t.Id.ToString(),
+            Children = t.Cities.Where(t => strSearch == null || t.Title.Contains(strSearch)).Select(u => new NodeView()
             {
-                Collabsable = true,
-                Expanded = true,
-                Text = t.Title,
-                Value = t.Id.ToString(),
-                Children = t.Cities.Where(t => strSearch == null || t.Title.Contains(strSearch)).Select(u => new NodeView()
-                {
-                    Collabsable = false,
-                    Text = u.Title,
-                    Value = u.Id.ToString()
-                }).ToList()
-            }).ToListAsync();
+                Collabsable = false,
+                Text = u.Title,
+                Value = u.Id.ToString()
+            }).ToList()
+        }).ToListAsync();
         await base.OnInitializedAsync();
     }
 }

@@ -1,4 +1,5 @@
 ﻿@page "/Demo/SimpleData"
+@attribute [Page(63, "Simple Data")]
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -47,7 +48,7 @@
     </CaspianForm>
 </Window>
 
-@code 
+@code
 {
     SimpleDataType selectedDataType = SimpleDataType.Scope;
     IDictionary<SimpleDataType, string> dictionary;

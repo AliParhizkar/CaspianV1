@@ -1,5 +1,7 @@
 ﻿@page "/Demo/Lookup"
 @namespace Demo.Web.Pages
+@attribute [Page(6, "Lookup")]
+
 @{
     if (hideHeader)
         autoHide = true;
@@ -86,7 +88,7 @@
                             </div>
                             <div class="col-md-8 pe-5">
                                 <DropdownList @bind-Value="controlSize" />
-                            </div>                            
+                            </div>
                             <div class="ps-5 col-md-4">
                                 <label>Hide icon</label>
                             </div>
@@ -175,7 +177,7 @@
 </TabPanel>
 <h3 class="pt-3">Lookup window</h3>
 <p>
-    To create the Lookup window, we inherit from the <b>LookupWindow&lt;TEntity, TValue&gt;</b> Generic class, 
+    To create the Lookup window, we inherit from the <b>LookupWindow&lt;TEntity, TValue&gt;</b> Generic class,
     then specify <b>Grid</b> and <b>Search Expressions.</b>
 </p>
 <ul class="d-demo-list">
@@ -221,7 +223,7 @@
                             <div class="col-md-8 pe-5">
                                 <Lookup TValue="int?" TEntity="Customer" HideHeader
                                         TextExpression="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName">
-                                    <AdvanceSearchCustomerWindow  />
+                                    <AdvanceSearchCustomerWindow />
                                 </Lookup>
                             </div>
                         </div>
@@ -229,9 +231,11 @@
                     <div class="col-md-6">
                         <hr />
                         <h4>Parameter search</h4>
-                        <span class="c-demo-description">In some cases we want to <b>pass the parameter</b> 
-                        to the lookup window and <b>filter the data</b>. In this example, if the <b>customer type has a value</b>, 
-                        we <b>filter the data</b></span>
+                        <span class="c-demo-description">
+                            In some cases we want to <b>pass the parameter</b>
+                            to the lookup window and <b>filter the data</b>. In this example, if the <b>customer type has a value</b>,
+                            we <b>filter the data</b>
+                        </span>
                     </div>
                     <div class="col-md-6">
                         <hr />
@@ -246,7 +250,7 @@
                                 <label>Customer</label>
                             </div>
                             <div class="col-md-8 pe-5">
-                                <Lookup TValue="int?" TEntity="Customer" 
+                                <Lookup TValue="int?" TEntity="Customer"
                                         TextExpression="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName">
                                     <ParametricCustomerSearchWindow CustomerType="customerKind" />
                                 </Lookup>

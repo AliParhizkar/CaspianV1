@@ -1,5 +1,6 @@
 ﻿@page "/Demo/Scope"
 @namespace Demo.Web.Pages
+@attribute [Page(59, "Scope")]
 @using System.Globalization
 @inject UIService<Scope, Evaluation> Service
 @inherits BasePage
@@ -70,7 +71,7 @@
     </TypeWindow>
 </Window>
 
-@code 
+@code
 {
     void InitializeOnEvaluationCreate(Evaluation evaluation)
     {

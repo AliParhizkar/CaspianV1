@@ -1,6 +1,7 @@
 ﻿@page "/Demo/Batch/Inline/Master"
 @using Caspian.Common.Extension
 @inject NavigationManager navigationManager
+@attribute [Page(84, "Batch Inline")]
 @inherits BasePage
 @namespace Demo.Web.Pages
 <h2>Batch operation</h2>
@@ -36,7 +37,7 @@
                         </RadioList>
                     </div>
                     <DataGrid @ref="Grid" TEntity="Order" OnOpen="t => UpsertOrder(t)" ContentHeight="300" ShowInsertIcon="true"
-                            ConditionExpr="t => !onlyThisDay || t.Date == date">
+                              ConditionExpr="t => !onlyThisDay || t.Date == date">
                         <Columns>
                             <GridColumn Field="t => t.Date.ToShortDateString()" Title="Order date" />
                             <GridColumn Field="t => t.OrderType.EnumText()" />

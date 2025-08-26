@@ -1,4 +1,5 @@
 ﻿@page "/Demo/SimpleTree"
+@attribute [Page(75, "Simple Tree")]
 @inherits BasePage
 @using Caspian.Engine.Model
 @using Caspian.Engine.Service
@@ -57,7 +58,7 @@
     </Tabs>
 </TabPanel>
 
-@code 
+@code
 {
     bool expanded = true;
     IList<NodeView> loadOnFirstSource;
@@ -93,10 +94,10 @@
         using var service = CreateScope().GetService<MenuService>();
         var categoryId = Convert.ToInt32(node.Value);
         node.Children = await service.GetAll().Where(t => t.MenuCategoryId == categoryId).Select(t => new NodeView()
-                { 
-                    Text = t.Title,
-                    Collabsable = false
-                }).ToListAsync();
+        {
+            Text = t.Title,
+            Collabsable = false
+        }).ToListAsync();
     }
 
     void ExpandedChanged()

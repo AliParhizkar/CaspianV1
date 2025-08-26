@@ -1,8 +1,9 @@
 ﻿@page "/Demo/Batch/Autohide/Listview/Details"
 @page "/Demo/Batch/AutoHide/Listview/Details/{ReceiptId:int}"
+@attribute [Page(57, "Autohide Listview Details")]
 @using Caspian.Common.Extension
 @namespace Demo.Web.Pages
-@inherits BasePage 
+@inherits BasePage
 @inject UIService<WarehouseReceipt, ReceiptDetail> Service
 
 <div style="margin:0 -20px" class="d-content p-2">
@@ -75,7 +76,7 @@
                             <TextField Field="t => t.Material.Title">
                                 <EditTemplate>
                                     <Lookup TEntity="Material" TValue="int" @bind-Value="detail.Data.MaterialId"
-                                                  HideHeader AutoHide TextExpression="t => t.Title" OnChange="async () => await UpdateMaterialReceipt(detail.Data)">
+                                            HideHeader AutoHide TextExpression="t => t.Title" OnChange="async () => await UpdateMaterialReceipt(detail.Data)">
                                         <MaterialLookupWindow />
                                     </Lookup>
                                 </EditTemplate>

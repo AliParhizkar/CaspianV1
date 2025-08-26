@@ -1,4 +1,5 @@
 ﻿@page "/Demo/NodeTemplate"
+@attribute [Page(72, "Node Template")]
 @using System.Drawing
 @inject IHostEnvironment Host
 @inherits BasePage
@@ -49,8 +50,8 @@
                 </div>
                 <div class="col-md-7">
                     <hr />
-                    <TreeView TEntity="NodeView" style="height:500px" Source="source" >
-                        <AfterNodeTemplate >
+                    <TreeView TEntity="NodeView" style="height:500px" Source="source">
+                        <AfterNodeTemplate>
                             @if (context.Depth == 1)
                             {
                                 <span class=" d-tree-icon d-tree-add">
@@ -139,10 +140,10 @@
                 filesIcon.Add(fileExtension, stream.ToArray());
             }
             list.Add(new NodeView()
-                {
-                    Collabsable = false,
-                    Text = name
-                });
+            {
+                Collabsable = false,
+                Text = name
+            });
         }
         return list;
     }
@@ -153,17 +154,17 @@
         foldersAndFiles = FilesAndFolders(Host.ContentRootPath);
         using var service = CreateScope().GetService<CountryService>();
         source = await service.GetAll().Select(t => new NodeView()
+        {
+            Collabsable = true,
+            Text = t.Title,
+            Value = t.Id.ToString(),
+            Children = t.Cities.Select(u => new NodeView()
             {
-                Collabsable = true,
-                Text = t.Title,
-                Value = t.Id.ToString(),
-                Children = t.Cities.Select(u => new NodeView()
-                {
-                    Collabsable = false,
-                    Text = u.Title,
-                    Value = u.Id.ToString(),
-                }).ToList()
-            }).ToListAsync();
+                Collabsable = false,
+                Text = u.Title,
+                Value = u.Id.ToString(),
+            }).ToList()
+        }).ToListAsync();
     }
 
     async Task UpsertCity()
@@ -180,19 +181,19 @@
         else
         {
             await service.UpdateAsync(city);
-            /// selected node is city and must reload cities of country (parent node) after upsert. 
+            /// selected node is city and must reload cities of country (parent node) after upsert.
             tempNode = selectedNode.Parent;
         }
         await service.SaveChangesAsync();
         status = WindowStatus.Close;
         tempNode.Children = await service.GetAll().Where(t => t.CountryId == city.CountryId)
             .Select(t => new NodeView()
-                {
-                    Collabsable = false,
-                    Expanded = false,
-                    Text = t.Title,
-                    Value = t.Id.ToString()
-                }).ToListAsync();
+            {
+                Collabsable = false,
+                Expanded = false,
+                Text = t.Title,
+                Value = t.Id.ToString()
+            }).ToListAsync();
     }
 
     async Task ShowUpsertForm(NodeView nodeView, bool isUpdate)
@@ -233,12 +234,12 @@
             ///After removing the city, all the cities of the country (parent node) must be reloaded.
             node.Parent.Children = await service.GetAll()
             .Where(t => t.CountryId == city.CountryId).Select(t => new NodeView()
-                {
-                    Collabsable = false,
-                    Expanded = false,
-                    Text = t.Title,
-                    Value = t.Id.ToString(),
-                }).ToListAsync();
+            {
+                Collabsable = false,
+                Expanded = false,
+                Text = t.Title,
+                Value = t.Id.ToString(),
+            }).ToListAsync();
         }
         else
             ShowMessage(result.Errors.First().ErrorMessage);

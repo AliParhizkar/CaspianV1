@@ -1,8 +1,9 @@
 ﻿@page "/Demo/HierarchyTree"
+@attribute [Page(73, "Hierarchy Tree")]
 @inherits BasePage
 <h2>Hierarchy Tree</h2>
 <p>
-    Hierarchical entities have a <b>relationship with themselves</b>. 
+    Hierarchical entities have a <b>relationship with themselves</b>.
     Because of the <b>tree structure</b> of these entities, they are generally displayed with a tree.
 </p>
 <TabPanel>
@@ -25,7 +26,7 @@
                             <b>FilterFunc </b>This method takes entity as input and returns true or false.
                         </li>
                     </ul>
-                    <span class="fa fa-info"> Note: </span> 
+                    <span class="fa fa-info"> Note: </span>
                     <span class="c-demo-description">
                         In the tree, we have used <b>IEnumerable</b> instead of <b>IQueryable</b>, so we use <b>Func</b> instead of <b>Expression</b>.
                     </span>
@@ -33,7 +34,7 @@
                 <div class="col-md-6">
                     <StringTextBox @bind-Value="@organSearch" OnChange="async () => await databindingTree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />
                     <TreeView @ref="databindingTree" TEntity="OrganUnit" style="height:500px" TextFunc="t => t.Title"
-                    FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == ActiveType.Enable" />
+                              FilterFunc="t => (!organSearch.HasValue() || t.Title.StartsWith(organSearch)) && t.ActiveType == ActiveType.Enable" />
                 </div>
                 <div class="col-md-6">
                     <hr />
@@ -57,7 +58,7 @@
                         </div>
                         <div>
                             <TreeView @ref="customTemplateTree" TEntity="OrganUnit" style="height:500px" OnRightClick="ShowContextMenu"
-                            TextFunc="t => t.Title" FilterFunc="t => !organSearchCustomTemplate.HasValue() || t.Title.StartsWith(organSearchCustomTemplate)">
+                                      TextFunc="t => t.Title" FilterFunc="t => !organSearchCustomTemplate.HasValue() || t.Title.StartsWith(organSearchCustomTemplate)">
                                 <AfterNodeTemplate>
                                     <span class="d-tree-icon">
                                         <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>

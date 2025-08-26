@@ -1,5 +1,6 @@
 ﻿@namespace Demo.Web.Page
 @page "/Demo/ListView"
+@attribute [Page(5, "List View")]
 <h2>List view</h2>
 <p>
     We use this control to <b>display a list</b> with a <b>custom Template</b>, unlike the Grid, which has a specific structure, the ListView does not have a specific structure.
@@ -96,10 +97,10 @@
                                                 <label>Category</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <TextField Field="t => t.ProductCategory.Title" >
+                                                <TextField Field="t => t.ProductCategory.Title">
                                                     <EditTemplate>
                                                         <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="context.Data.ProductCategoryId"
-                                                                   TextExpression="t => t.Title" />
+                                                                  TextExpression="t => t.Title" />
                                                     </EditTemplate>
                                                 </TextField>
                                             </div>
@@ -215,7 +216,7 @@
     </Tabs>
 </TabPanel>
 
-@code 
+@code
 {
     IList<int> expandedOrdersId = new List<int>();
 

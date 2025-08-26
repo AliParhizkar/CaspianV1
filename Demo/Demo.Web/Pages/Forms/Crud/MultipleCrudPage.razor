@@ -1,5 +1,6 @@
 ﻿@page "/Demo/MultipleCrud"
 @namespace Demo.Web
+@attribute [Page(41, "Multiple Crud")]
 @inherits BasePage
 @inject IUIService<ProductCategory> CategoryService
 @inject IUIService<Product> ProductService
@@ -17,7 +18,7 @@
             <div class="p-3">
                 <div class="d-content">
                     <span class="c-demo-description">
-                        When selecting a row of product category grid, the CRUD of the product is displayed. 
+                        When selecting a row of product category grid, the CRUD of the product is displayed.
                         We use the ShowProductGrid method for this, it sets the productcategoryId field to filter the product grid and reloads the product grid.
                     </span>
                 </div>
@@ -27,7 +28,7 @@
                 <DataGrid TEntity="ProductCategory" Service="CategoryService" ContentHeight="208" OnRowSelect="ShowProductGrid">
                     <Columns>
                         <GridColumn Field="t => t.Title" />
-                        <GridColumn Field="t => t.Code"  />
+                        <GridColumn Field="t => t.Code" />
                         <GridColumn Field="t => t.ActiveType.EnumText()" />
                         <GridCommandColumns />
                     </Columns>
@@ -128,7 +129,7 @@
         </Columns>
     </DataGrid>
 </Window>
-@code 
+@code
 {
     WindowStatus status;
     string productTitle;

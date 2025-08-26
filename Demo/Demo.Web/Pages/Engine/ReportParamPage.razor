@@ -1,9 +1,10 @@
 ﻿@page "/Demo/ReportEngine/ReportParam/{ReportId:int}"
+@attribute [Page(30, "Report Params")]
 <div style="background-color:white;width:850px;margin:10px auto;height:550px" class="p-3">
     <ReportParamComponent ReportId="ReportId" />
 </div>
 
-@code 
+@code
 {
     [Parameter]
     public int ReportId { get; set; }

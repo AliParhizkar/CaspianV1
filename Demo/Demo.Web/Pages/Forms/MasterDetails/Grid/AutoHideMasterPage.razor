@@ -1,5 +1,6 @@
 ﻿@page "/Demo/Batch/AutoHide/Master"
 @page "/Demo/Batch/AutoHide/Master/{ReciptId:int}"
+@attribute [Page(51, "Batch Auto-Hide")]
 @using Caspian.Common.Extension
 @inject UIService<WarehouseReceipt, ReceiptDetail> Service
 @inject NavigationManager navigationManager
@@ -11,7 +12,7 @@
 <h2>Batch operation</h2>
 <h3>Batch-Autohide</h3>
 <p>
-    Here is another example of <b>Master-Details</b>, as before <b>Master upsert</b> and <b>Details upsert and remove</b> are done <b>together</b>. 
+    Here is another example of <b>Master-Details</b>, as before <b>Master upsert</b> and <b>Details upsert and remove</b> are done <b>together</b>.
     also we can <b>upsert</b> and <b>remove</b> multiple <b>details</b>.
 </p>
 <TabPanel>
@@ -35,7 +36,7 @@
                         </RadioList>
                     </div>
                     <DataGrid Service="Service" DeleteMessage="Do you want delete recipet and details" TEntity="WarehouseReceipt" OnOpen="t => UpsertOrder(t)" ContentHeight="300" ShowInsertIcon="true"
-                            ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
+                              ConditionExpr="t => !onlyThisDay || t.Date == date" OnDataBinding="t => t.OrderByDescending(u => u.Id)">
                         <Columns>
                             <GridColumn Field="t => t.Date.ToPersianDateString()" Title="Order date" />
                             <GridColumn Field="t => t.Warehouse.Title" Title="Warehouse" />
@@ -62,7 +63,7 @@
         if (receipt.Id > 0)
             url += $"/{receipt.Id}";
         navigationManager.NavigateTo(url);
-        
+
 
     }
 

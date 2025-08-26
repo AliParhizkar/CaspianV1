@@ -1,5 +1,6 @@
 ﻿@page "/Demo/Relation1to1to1Crud/{EmployeeId:int}"
 @inherits BasePage
+@attribute [Page(45, "Relation1to1to1 Crud")]
 @inject IUIService<Employee> Service
 <p>
     In this example, We use the <b>EntityTabPanel</b> component used in new page
@@ -15,7 +16,7 @@
 </TabPanel>
 
 
-@code 
+@code
 {
     protected override void OnInitialized()
     {

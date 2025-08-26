@@ -1,5 +1,6 @@
 ﻿@page "/Demo/BasePageFeatures"
 @namespace Demo.Web.Pages
+@attribute [Page(16, "Base Page Features")]
 @inherits BasePage
 @inject IHostEnvironment host
 @{
@@ -18,7 +19,7 @@
                     <div class="col-md-6">
                         <h4>Simple message</h4>
                         <span class="c-demo-description">In this example we use the <b>ShowMessage method</b> to <b>display a message</b>, this method get a <b>string as the message</b> and <b>displays it.</b></span>
-                   </div>
+                    </div>
                     <div class="col-md-6">
                         <div class="row c-controls">
                             <div class="ps-5 col-md-6">
@@ -31,7 +32,7 @@
                                 <label>Action</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
-                                <button class="c-btn c-outline-primary"  @onclick="SimpleMessage">Simple message</button>
+                                <button class="c-btn c-outline-primary" @onclick="SimpleMessage">Simple message</button>
                             </div>
                         </div>
                     </div>
@@ -132,7 +133,7 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-<Window @bind-Status="status1"  Title="Window 1" Style="width:700px;height:500px">
+<Window @bind-Status="status1" Title="Window 1" Style="width:700px;height:500px">
     <Content>
         <h3>Window 1</h3>
         <hr />
@@ -162,7 +163,7 @@
                         <button class="c-btn c-success" @onclick='async () => await Confirm("Confirm on window2")'>Confirm</button>
                     </div>
                 </div>
-                
+
                 <Window @bind-Status="status3" Title="Window 3" Style="width:500px;height:300px">
                     <Content>
                         <h4>Window 3</h4>
@@ -183,7 +184,7 @@
 </Window>
 
 
-@code 
+@code
 {
     WindowStatus status1;
     WindowStatus status2;

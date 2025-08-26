@@ -1,5 +1,6 @@
 ﻿@page "/Demo/RadioList"
 @namespace Demo.Web.Pages
+@attribute [Page(13, "Radio List")]
 <h2>Radiobutton list</h2>
 <h3>Binding</h3>
 <p>
@@ -23,8 +24,8 @@
                                     <RadioList @bind-Value="orderType" />
                                 </div>
                             </div>
-                           <div class="ps-5 col-md-6">
-                               <label>Selected Value</label>
+                            <div class="ps-5 col-md-6">
+                                <label>Selected Value</label>
                             </div>
                             <div class="pe-5 col-md-6 text-center">
                                 <label style="color:red;">@(orderType.ConvertToInt())</label>
@@ -121,7 +122,7 @@
     We can <b>arrange radio items</b> as we want, for this purpose we can <b>use HTML elements</b> .
 </p>
 <TabPanel>
-   <Tabs>
+    <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content">
                 <div class="row">
@@ -163,7 +164,7 @@
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
             <Document FolderName="RadioList" FileName="CustomArrange" />
         </TabPanelItem>
-   </Tabs>
+    </Tabs>
 </TabPanel>
 <h3 class="pt-3">Disable control and items</h3>
 <p>
@@ -203,7 +204,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <hr/>
+                        <hr />
                         <h4>Disable radio list</h4>
                         <span class="c-demo-description">By setting the <b>Disabled</b> parameter, we can easily <b>enable & disable</b> the control. This parameter is a <b>boolean</b> parameter.</span>
                     </div>

@@ -1,9 +1,10 @@
 ﻿@page "/Demo/WorkflowEngine/WorkflowForm/{GroupId:int}"
+@attribute [Page(32, "Workflow form")]
 <div style="background-color:white">
     <Caspian.Engine.WorkFlow.WorkflowFormComponent GroupId="GroupId" />
 </div>
 
-@code 
+@code
 {
     [Parameter]
     public int GroupId { get; set; }

@@ -1,5 +1,6 @@
 ﻿@page "/Demo/ProductUpdate"
 @namespace Demo.Web.Pages
+@attribute [Page(48, "Product Update")]
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -12,7 +13,8 @@
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="p-4 row">
-                <span class="c-demo-description">In this example, we update the <b>database</b> and then update the grid 
+                <span class="c-demo-description">
+                    In this example, we update the <b>database</b> and then update the grid
                     by calling the <b>ReloadAsync</b> method.
                 </span>
             </div>
@@ -41,7 +43,7 @@
     </Tabs>
 </TabPanel>
 
-@code 
+@code
 {
     DataGrid<Product> grid;
     async Task ToggleOutofStock(int productId)

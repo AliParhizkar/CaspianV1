@@ -1,4 +1,5 @@
 ﻿@page "/Demo/Relation1to1to1Crud"
+@attribute [Page(44, "Relationship 1To1")]
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -9,7 +10,7 @@
 </p>
 <TabPanel>
     <Tabs>
-        <TabPanelItem  Title="<i class='fa fa-bar-chart'></i>Demo">
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div style="width:450px;" class="ps-4 pt-3 align-center row c-controls">
                 <div class="col-md-5">
                     <label>Tab Panel display type</label>
@@ -68,7 +69,7 @@
 }
 
 
-@code 
+@code
 {
     string str;
     int? formType = 1;
