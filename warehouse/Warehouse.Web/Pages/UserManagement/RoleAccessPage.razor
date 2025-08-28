@@ -1,0 +1,12 @@
+﻿333333333333333@page "/Warehouse/UserManagement/RoleAccess/{RoleId:int}"
+@attribute [Source(5, "دستیابی نقش به منوها")]
+<div class="p-3">
+    <RoleAccessComponent RoldId="RoleId" SubSystem="SubSystemKind.Warehouse" />
+</div>
+
+
+@code
+{
+    [Parameter]
+    public int RoleId { get; set; }
+}

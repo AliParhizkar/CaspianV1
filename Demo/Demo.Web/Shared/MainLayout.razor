@@ -1,16 +1,16 @@
 ﻿@namespace Demo.Web
+@using System.Reflection
 @inherits LayoutComponentBase
 @using Caspian.Engine.Shared
-<MainLayoutComponent PageTypeName="@pageTypeName">
+<MainLayoutComponent PageId="pageId">
     @Body
 </MainLayoutComponent>
 @code 
 {
-    string pageTypeName;
+    int? pageId;
     protected override void OnParametersSet()
     {
-        pageTypeName = (Body.Target as RouteView)?.RouteData.PageType.FullName;
-        
+        pageId = (Body.Target as RouteView)?.RouteData.PageType.GetCustomAttribute<SourceAttribute>().Id;
         base.OnParametersSet();
     }
 }

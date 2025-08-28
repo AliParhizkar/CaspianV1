@@ -1,5 +1,6 @@
 ﻿@page "/Warehouse/SimpleData"
 @inherits BasePage
+@attribute [Source(22, "اطلاعات پایه")]
 @{
     base.BuildRenderTree(__builder);
 }
@@ -47,7 +48,7 @@
     </CaspianForm>
 </Window>
 
-@code 
+@code
 {
     SimpleDataType selectedDataType = SimpleDataType.FinancialUnit;
     IDictionary<SimpleDataType, string> dictionary;

@@ -1,0 +1,11 @@
+﻿@page "/Warehouse/UserManagement/UserAccess/{UserId:int}"
+@attribute [Source(8, "دستیابی کاربران به منوها")]
+<div class="p-3">
+    <UserAccessComponent SelectedUserId="UserId" SubSystem="SubSystemKind.Warehouse" />
+</div>
+
+@code
+{
+    [Parameter]
+    public int UserId { get; set; }
+}

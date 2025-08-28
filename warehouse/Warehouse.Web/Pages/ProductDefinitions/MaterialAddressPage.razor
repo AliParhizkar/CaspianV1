@@ -1,6 +1,7 @@
 ﻿@page "/Warehouse/MaterialAddress"
 @page "/Warehouse/MaterialAddress/{StockroomId:int}"
 @inherits BasePage
+@attribute [Source(2, "آدرس کالا در انبار")]
 
 @{
     base.BuildRenderTree(__builder);
@@ -10,7 +11,7 @@
     @if (StockroomId == null)
     {
         <div class="c-controls c-header row ">
-            <ComboBox TValue="int?" TEntity="StockRoom" @bind-Value="stockroomId" TextExpression="t => t.Title" ColSpan="9" TotalSpan="12" 
+            <ComboBox TValue="int?" TEntity="StockRoom" @bind-Value="stockroomId" TextExpression="t => t.Title" ColSpan="9" TotalSpan="12"
                       Title="انبار" OnChange="ReloadData" />
         </div>
     }

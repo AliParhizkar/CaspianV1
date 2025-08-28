@@ -1,8 +1,8 @@
 ﻿namespace Caspian.UI
 {
-    public class PageAttribute : Attribute
+    public class SourceAttribute : Attribute
     {
-        public PageAttribute(int id, string title = null)
+        public SourceAttribute(int id, string title = null)
         {
             Id = id;
             Title = title;

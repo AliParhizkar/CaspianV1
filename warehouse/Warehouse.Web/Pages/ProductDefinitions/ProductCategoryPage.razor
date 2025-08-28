@@ -1,6 +1,6 @@
 ﻿@page "/Warehouse/ProductCategory"
+@attribute [Source(14, "گروه محصول")]
 @inherits BasePage
-
 @{
     base.BuildRenderTree(__builder);
 }
@@ -32,7 +32,7 @@
     <CaspianForm Model="category" TEntity="ProductCategory" OnValidSubmit="UpsertAddress">
         <StringTextBox @ref="firstControl" @bind-Value="context.Title" ColSpan="9" />
         <StringTextBox @bind-Value="context.Code" ColSpan="9" Style="direction:ltr" />
-        <StringTextBox @bind-Value="context.Description" MultiLine Rows="3" />
+        <StringTextBox @bind-Value="context.Description" MultiLine Rows="3" ColSpan="9" />
         <WindowCommandButtons ColSpan="9" />
     </CaspianForm>
 </Window>

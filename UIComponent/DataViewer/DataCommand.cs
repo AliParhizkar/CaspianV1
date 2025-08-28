@@ -7,15 +7,13 @@ namespace Caspian.UI
     {
         protected string editButtonClassName;
         protected string deleteButtonClassName;
-        protected bool disabledDelete;
-        protected bool disabledEdit;
         protected Dictionary<string, object> attrs;
 
         [Parameter]
-        public Func<TEntity, bool> DisableEditFunc { get; set; }
+        public bool DisableEditButton { get; set; }
 
         [Parameter]
-        public Func<TEntity, bool> DisableDeleteFunc { get; set; }
+        public bool DisableDeleteButton { get; set; }
 
         [CascadingParameter(Name = "RowData")]
         public RowData<TEntity> RowData { get; set; }
@@ -51,11 +49,9 @@ namespace Caspian.UI
             deleteButtonClassName = "t-grid-delete";
             if (RowData != null)
             {
-                disabledEdit = DisableEditFunc?.Invoke(RowData.Data) == true;
-                if (disabledEdit)
+                if (DisableEditButton)
                     editButtonClassName += " t-state-disabled";
-                disabledDelete = DisableDeleteFunc?.Invoke(RowData.Data) == true;
-                if (disabledDelete)
+                if (DisableDeleteButton)
                     deleteButtonClassName += " t-state-disabled";
             }
             base.OnParametersSet();
@@ -63,7 +59,7 @@ namespace Caspian.UI
 
         protected virtual async Task OpenForm()
         {
-            if (!disabledEdit)
+            if (!DisableEditButton)
             {
                 if (DataView.OnInternalUpsert.HasDelegate)
                     await DataView.OnInternalUpsert.InvokeAsync(RowData.Data);
@@ -76,7 +72,7 @@ namespace Caspian.UI
 
         protected async Task DeleteAsync()
         {
-            if (!disabledDelete)
+            if (!DisableDeleteButton)
             {
                 var shouldDeleted = true;
                 if (DataView.OnDelete != null)

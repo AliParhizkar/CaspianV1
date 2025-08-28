@@ -1,5 +1,6 @@
 ﻿@page "/Warehouse/ReceiptDetails"
 @page "/Warehouse/ReceiptDetails/{ParameterId:int}"
+@attribute [Source(4, "چزئیات حواله")]
 @inject UIService<Receipt, ReceiptDetails> Service
 <div class="p-3">
     <CaspianForm Service="Service" ColumnsCount="2">

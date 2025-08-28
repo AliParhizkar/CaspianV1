@@ -1,12 +1,13 @@
 ﻿@page "/Warehouse/Province"
 @inherits BasePage
 @inject IUIService<Province> Service
+@attribute [Source(3, "استان")]
 @{
     base.BuildRenderTree(__builder);
 }
 <div class="p-4 pb-0">
-    <EntitySearch Service="Service" >
-        <StringTextBox @bind-Value="context.Title" ColSpan="8"  />
+    <EntitySearch Service="Service">
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
     </EntitySearch>
 </div>
 <div class="p-4 pt-1">
@@ -31,5 +32,5 @@
 
 @code
 {
-    
+
 }

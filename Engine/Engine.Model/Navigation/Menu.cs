@@ -16,9 +16,6 @@ namespace Caspian.Engine.Model
         [DisplayName("Title")]
         public string Title { get; set; }
 
-        [DisplayName("Source")]
-        public string Source { get; set; }
-
         public int SourceId { get; set; }
 
         [DisplayName("URL")]

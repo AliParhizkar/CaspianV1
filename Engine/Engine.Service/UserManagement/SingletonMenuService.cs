@@ -1,4 +1,5 @@
 ﻿
+using Caspian.Common;
 using Caspian.Engine.Model;
 using Elfie.Serialization;
 
@@ -13,9 +14,14 @@ namespace Caspian.Engine.Service
 
         public IList<Menu> Menus { get; set; }
 
-        public Menu GetMenu(string source)
+        public Menu GetMenu(int sourceId, SubSystemKind systemKind)
         {
-            return Menus.SingleOrDefault(t => t.Source == source);
+            return Menus.SingleOrDefault(t => t.SourceId == sourceId && t.SubSystemKind == systemKind);
+        }
+
+        public Menu GetMenu(string url)
+        {
+            return Menus.SingleOrDefault(t => t.URL == url);
         }
     }
 }

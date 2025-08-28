@@ -1,0 +1,11 @@
+﻿@page "/Warehouse/UserManagement/UserAccessTree/{UserId:int}"
+@attribute [Source(9, "دستیابی کاربران به منوها/درخت")]
+<div class="p-3">
+    <UserAccessTreeComponent AccessUserId="UserId" SubSystem="SubSystemKind.Warehouse" />
+</div>
+
+@code
+{
+    [Parameter]
+    public int UserId { get; set; }
+}

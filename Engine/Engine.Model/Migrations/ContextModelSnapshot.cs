@@ -557,10 +557,6 @@ namespace Engine.Model.Migrations
                     b.Property<bool>("ShowonMenu")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Source")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int>("SourceId")
                         .HasColumnType("int");
 

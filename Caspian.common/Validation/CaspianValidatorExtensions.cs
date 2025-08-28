@@ -558,7 +558,7 @@ namespace Caspian.Common
                                 if (language == Language.En)
                                     message = attr == null ? $"Please specify the value of the field{name}" : $"Please specify {name}";
                                 else
-                                    message = attr == null ? "" : $"لطفا {name} را مشخص نمایید.";
+                                    message = attr == null ? $"لطفا مقدار فیلد {name} را مشخص نمائید" : $"لطفا {name} را مشخص نمایید.";
                             }
                         }
                         else

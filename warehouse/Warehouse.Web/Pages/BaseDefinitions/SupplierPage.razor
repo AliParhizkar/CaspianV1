@@ -1,12 +1,13 @@
 ﻿@page "/Warehouse/Supplier"
 @inherits BasePage
+@attribute [Source(21, "کارپرداز")]
 @inject IUIService<Supplier> Service
 @{
     base.BuildRenderTree(__builder);
 }
 <div class="p-4 pb-0">
     <EntitySearch Service="Service" ColumnsCount="2">
-        @{ 
+        @{
             context.RelatedUser = context.RelatedUser ?? new();
         }
 
