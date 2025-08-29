@@ -15,6 +15,7 @@
     <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
     <ProjectReference Include="..\..\Engine\Engine.Service\Engine.Service.csproj" />
     <ProjectReference Include="..\..\Engine\Engine.Web\Engine.Web.csproj" />
+    <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
     <ProjectReference Include="..\Marketing.Model\Marketing.Model.csproj" />
     <ProjectReference Include="..\Marketing.Service\Marketing.Service.csproj" />
   </ItemGroup>

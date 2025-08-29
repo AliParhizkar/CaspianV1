@@ -157,7 +157,7 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="ps-5 pe-5">
-                            <NumericTextBox TValue="long" Total="12" DigitGrouping />
+                            <NumericTextBox @bind-Value="digitGroupingValue" Total="12" DigitGrouping />
                         </div>
                     </div>
                 </div>
@@ -179,6 +179,7 @@
     decimal decimalValue;
     BindingType bindingType = BindingType.OnChange;
     ControlSize controlSize = ControlSize.Auto;
+    long digitGroupingValue;
 
     string GetStyle()
     {

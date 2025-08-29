@@ -12,21 +12,9 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div class="row c-controls">
-    <div class="col-md-2">
-        <label>Last name</label>
-    </div>
-    <div class="col-md-4 pe-3">
-    </div>
-    <div class="col-md-2 ps-3">
-        <label>Username</label>
-    </div>
-    <div class="col-md-4">
-    </div>
-</div>
-<EntitySearch Service="Service">
-    <StringTextBox @bind-Value="context.LName" ColSpan="9" />
-    <StringTextBox @bind-Value="context.UserName" ColSpan="9" />
+<EntitySearch Service="Service" ColumnsCount="2">
+    <StringTextBox @bind-Value="context.LName" ColSpan="4" />
+    <StringTextBox @bind-Value="context.UserName" ColSpan="4" />
 </EntitySearch>
 
 <DataGrid Service="Service" TEntity="User" ContentHeight="400">

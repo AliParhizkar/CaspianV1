@@ -26,14 +26,18 @@
 </div>
 <Window Service="Service" Title="فروشنده" Style="width:800px">
     <CaspianForm TEntity="Seller" Service="Service" ColumnsCount="2">
+        @{ 
+            var isReal = context.SellerType == SellerType.Real;
+        }
+
         <RadioList @bind-Value="context.SellerType" ColSpan="4" />
-        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
-        <StringTextBox @bind-Value="context.EconomicCode" Style="direction:ltr" ColSpan="4" />
-        <StringTextBox @bind-Value="context.RegistrationNo" Style="direction:ltr" ColSpan="4" />
-        <RadioList @bind-Value="context.Citizenship" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" Disabled="isReal" />
+        <StringTextBox @bind-Value="context.EconomicCode" Style="direction:ltr" ColSpan="4" Disabled="isReal" />
+        <StringTextBox @bind-Value="context.RegistrationNo" Style="direction:ltr" ColSpan="4" Disabled="isReal" />
+        <RadioList @bind-Value="context.Citizenship" ColSpan="4"Disabled="!isReal" />
         <StringTextBox @bind-Value="context.IdCard" Style="direction:ltr" ColSpan="4" />
-        <ComboBox TEntity="Province" TValue="int?" @bind-Value="context.ProvinceId" ColSpan="4" TextExpression="t => t.Title"
-                  CascadeService="CascadeService" />
+        <ComboBox TEntity="Province" TValue="int?" @bind-Value="context.ProvinceId"  ColSpan="4" TextExpression="t => t.Title"
+                  CascadeService="CascadeService"  />
         <ComboBox TEntity="City" TValue="int?" @bind-Value="context.CityId" ColSpan="4" TextExpression="t => t.Title"
                   CascadeService="CascadeService" />
         <StringTextBox @bind-Value="context.Address" ColSpan="10" />

@@ -3,18 +3,14 @@ using Caspian.Report;
 using Caspian.Common;
 using System.Text.Json;
 using Stimulsoft.Report;
+using System.Reflection;
 using Caspian.Report.Data;
+using Caspian.Engine.Model;
 using Caspian.Engine.Service;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ReportGenerator.Services;
-using Stimulsoft.Report.Dictionary;
-using Stimulsoft.Base;
-using System.Drawing;
-using Caspian.Engine.Model;
-using System.Reflection;
-using Main;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReportGenerator.Controllers

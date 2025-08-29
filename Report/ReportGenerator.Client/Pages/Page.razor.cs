@@ -60,7 +60,7 @@ namespace Caspian.Report
         {
             try
             {
-                var rqqq = await Host.GetAsync($"/ReportGenerator/GetReportData?reportId={ReportId}");
+                Data = await Host.GetFromJsonAsync<ReportPageData>($"/ReportGenerator/GetReportData?reportId={ReportId}");
             }
             catch(Exception ex)
             {
