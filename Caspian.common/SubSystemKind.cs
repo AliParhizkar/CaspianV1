@@ -21,7 +21,10 @@ namespace Caspian.Common
         Marketing,
 
         [Display(Name = "انبار")]
-        Warehouse
+        Warehouse,
+
+        [Display(Name = "حسابداری")]
+        Accounting
     }
 
     public static class SubSystemExt

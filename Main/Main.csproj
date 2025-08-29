@@ -18,6 +18,9 @@
 		<Content Include="Help\**" CopyToPublishDirectory="PreserveNewest" />
 	</ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Accounting\Accounting.Model\Accounting.Model.csproj" />
+    <ProjectReference Include="..\Accounting\Accounting.Service\Accounting.Service.csproj" />
+    <ProjectReference Include="..\Accounting\Accounting.Web\Accounting.Web.csproj" />
     <ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
     <ProjectReference Include="..\Demo\Demo.Model\Demo.Model.csproj" />
     <ProjectReference Include="..\Demo\Demo.Service\Demo.Service.csproj" />
