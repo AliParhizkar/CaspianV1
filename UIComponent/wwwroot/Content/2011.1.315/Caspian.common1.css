@@ -1,11 +1,15 @@
-﻿.c-packages {
+﻿.c-supervisor{
+    color:red!important;
+    background-color:yellowgreen!important;
+}
+.c-packages {
     display: flex;
     border: 1px solid red;
     position: absolute;
     left: 162px;
     top: 0px;
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-    display:none;
+    display: none;
 }
 .c-pakage{
     width:250px;

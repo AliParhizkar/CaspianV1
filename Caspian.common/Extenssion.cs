@@ -1,6 +1,6 @@
 ﻿namespace Caspian.Common
 {
-    public static class PublicExtenssion
+    public static class PublicExtension
     {
         public static void AddRange<TEntity>(this ICollection<TEntity> entities, params TEntity[] items)
         {

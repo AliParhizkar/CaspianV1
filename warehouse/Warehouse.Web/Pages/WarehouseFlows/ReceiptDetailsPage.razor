@@ -21,7 +21,7 @@
         <Columns Context="con">
             <GridColumn Field="t => t.Product.Name" Title="کالا">
                 <EditTemplate>
-                    <Lookup TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId" HideIcon OpenOnFocus
+                    <Lookup TEntity="Product" TValue="int" @bind-Value="con.Data.ProductId" 
                             HideHeader AutoHide TextExpression="t => t.Name">
                         <ProductLookupWindow />
                     </Lookup>

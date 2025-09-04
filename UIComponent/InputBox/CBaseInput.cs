@@ -18,8 +18,60 @@ namespace Caspian.UI
         bool valueIsChanged, reseting;
         EditContext oldContext;
         protected bool disabled, focused, search;
-        protected string title;
         protected string id;
+
+        string GetId()
+        {
+            var id = Id;
+            if (!Id.HasValue() && ValueExpression != null)
+            {
+                id = (ValueExpression.Body as MemberExpression).Member.Name;
+                if (EntitySearch != null)
+                    id = $"Search.{id}";
+                if (CaspianForm != null)
+                    id = $"Form.{id}";
+            }
+            return id;
+        }
+
+        protected string GetTitle()
+        {
+            if (Title != null)
+            {
+                return Title;
+            }
+            if (ValueExpression != null)
+            {
+                var member = (ValueExpression.Body as MemberExpression).Member;
+                return member.DeclaringType.GetTitle(member.Name) ?? member.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? 
+                    member.Name;
+            }
+            throw new NotImplementedException();
+        }
+
+        protected IDictionary<string, object> LabelAttributes
+        {
+            get
+            {
+                if (PageData?.OnClick != null && Title.HasValue())
+                {
+                    var attrs = new Dictionary<string, object>();
+                    attrs["onclick"] = new Action(() =>
+                    {
+                        PageData.OnClick(id, Title);
+                    });
+                    attrs["class"] = "c-supervisor";
+                    return attrs;
+                }
+                return null;
+            }
+        }
+
+        protected override void OnInitialized()
+        {
+            id = GetId();
+            base.OnInitialized();
+        }
 
         public ElementReference? InputElement { get; protected set; }
 
@@ -81,17 +133,6 @@ namespace Caspian.UI
 
         [Parameter]
         public EventCallback<CBaseInput<TValue>> OnDispose { get; set; }
-
-        protected override void OnInitialized()
-        {
-            if (ValueExpression != null)
-            {
-                var member = (ValueExpression.Body as MemberExpression).Member;
-                title = member.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? member.Name;
-
-            }
-            base.OnInitialized();
-        }
 
         [CascadingParameter]
         internal PageData PageData { get; set; }
@@ -190,9 +231,6 @@ namespace Caspian.UI
 
         protected override void OnParametersSet()
         {
-            if (Title != null)
-                title = Title;
-
             CaspianContainer?.SetControl(this);
             if (CaspianContainer == null)
                 disabled = Disabled;

@@ -9,7 +9,7 @@
     @if(ColSpan.HasValue)
     {
         <div class="@(base.GetLabelCSSClassName())">
-            <label>@title</label>
+            <label>@GetTitle()</label>
         </div>
         <div class="@(base.GetControlCSSClassName())">
             @RenderRadioList()

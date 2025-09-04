@@ -14,7 +14,6 @@
     <link href="/_content/UIComponent/Content/2011.1.315/Caspian.rtl.css" rel="stylesheet" type="text/css" />
     <link href="/_content/UIComponent/Content/css/font-awesome.min.css" rel="stylesheet" />
     <link href="/_content/UIComponent/Content/2011.1.315/jquery.ui.accordion.min.css" rel="stylesheet" />
-    <link href="/_content/Accounting.Web/app.css" rel="stylesheet" />
     <link href="/Main.styles.css" rel="stylesheet">
     <script src="/_content/UIComponent/caspian.bundle.js"></script>
     <HeadOutlet @rendermode="@RenderModeForPage" />
@@ -27,12 +26,18 @@
 
 </html>
 
-@code {
+@code 
+{
     [CascadingParameter]
     private HttpContext HttpContext { get; set; }
 
-    private IComponentRenderMode RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account") &&
-        !HttpContext.Request.Path.StartsWithSegments("/Accounting")
-        ? null
-        : new InteractiveServerRenderMode(prerender: false);
+    IComponentRenderMode RenderModeForPage
+    {
+        get
+        {
+            if (HttpContext.Request.Path.StartsWithSegments("/Account/"))
+                return null;
+            return new InteractiveServerRenderMode(prerender: false);
+        }
+    }
 }

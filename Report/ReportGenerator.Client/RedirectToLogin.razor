@@ -6,6 +6,6 @@
     protected override void OnInitialized()
     {
         var loginPath = Configuration.GetSection("Authentication:LoginPath").Value;
-        NavigationManager.NavigateTo($"Account/Login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", forceLoad: true);
+        NavigationManager.NavigateTo($"Account/Login5?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", forceLoad: true);
     }
 }

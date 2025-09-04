@@ -102,7 +102,7 @@
         </div>
     </Authorized>
     <NotAuthorized>
-        <Caspian.Engine.Shared.LoginComponent />
+
     </NotAuthorized>
 </AuthorizeView>
 <div class="c-packages">
@@ -113,7 +113,29 @@
         <div class="c-sub-system">Demo</div>
     </div>
 </div>
+@if (MultiLanguage.CanDefineLanguage)
+{
+    <Window @bind-Status="status" Style="width:400px" Title="عنوان">
+        <div class="row c-controls">
+            @if (ctrId.HasValue())
+            {
+                <StringTextBox Value="@ctrId" ColSpan="9" TotalSpan="12" Title="Control id" />
+                <StringTextBox @ref="txtCtrTitle" @bind-Value="ctrTitle" ColSpan="9" TotalSpan="12" Title="Control title" />
+            }
+            else
+            {
+                <div>
+                    <h3 style="color:palevioletred">Control has not "Id" </h3>
+                </div>
+                <div>
+                    <h5 style="color:aqua">Please add id to control or bind it</h5>
+                </div>
+            }
+        </div>
+        <WindowCommandButtons />
+    </Window>
+}
+
 @code
 {
-
 }

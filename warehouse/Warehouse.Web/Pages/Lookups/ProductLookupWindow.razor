@@ -1,10 +1,18 @@
 ﻿@typeparam TValue
 @namespace Warehouse.Web.Lookup
 @inherits LookupWindow<Product, TValue>
-<div class="c-lookup-page" style="width:700px;">
-    <DataGrid Service="Service" TEntity="Product" ContentHeight="200">
+<div class="c-lookup-page" style="width:800px;">
+    <EntitySearch TEntity="Product" Service="Service">
+        <Lookup TValue="int" TEntity="ProductCategory" @bind-Value="context.CategoryId" TextExpression='t => t.Code + " : " + t.Title'
+                CloseFunc="t => t.Code.Length == 8" ColSpan="10" TotalSpan="12" HideHeader>
+            <CategoryCodingLookup TValue="int" />
+        </Lookup>
+        <StringTextBox @bind-Value="context.Name" ColSpan="6" TotalSpan="8" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="2" TotalSpan="4" />
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="Product" ContentHeight="300">
         <Columns>
-            <GridColumn Field="t => t.ProductCategory.Title" />
+            <GridColumn Field="t => t.ProductCategory.Title" Title="گروه کالا" />
             <GridColumn Field="t => t.Code" />
             <GridColumn Field="t => t.Name" />
         </Columns>

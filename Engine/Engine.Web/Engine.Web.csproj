@@ -45,7 +45,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Pages\MultiLanguage\" />
 	  <Folder Include="wwwroot\css\" />
 	  <Folder Include="wwwroot\Js\ReportPrint\" />
 	</ItemGroup>

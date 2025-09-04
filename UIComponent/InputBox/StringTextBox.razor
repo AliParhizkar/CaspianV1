@@ -4,8 +4,8 @@
 
 @if (ColSpan.HasValue)
 {
-    <div class="@(base.GetLabelCSSClassName())">
-        <label>@title</label>
+    <div class="@(base.GetLabelCSSClassName())" >
+        <label @attributes="LabelAttributes">@GetTitle()</label>
     </div>
     <div class="@(base.GetControlCSSClassName())">
         @RenderStringTextBox()

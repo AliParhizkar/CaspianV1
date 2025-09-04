@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Engine.Service.CodeTokenizer
 {
-    public static class Extenssion
+    public static class Extension
     {
         public static bool IsKindOf(this SyntaxNode syntaxNode, params SyntaxKind[] syntaxKinds)
         {

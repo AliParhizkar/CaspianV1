@@ -1,6 +1,6 @@
 ﻿@page "/Marketing/ProductCategory"
 @inherits BasePage
-
+@attribute [Source(2, "گروه محصول")]
 @inject IUIService<ProductCategory> Service
 @inject IUIService<Product> Service1
 
@@ -19,8 +19,8 @@
         <div class="col-md-11 pb-1">
             <StringTextBox @bind-Value="@categorySearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو گروه محصول" />
         </div>
-        <TreeView @ref="tree" TEntity="ProductCategory" style="height:500px" TextFunc="t => t.Name" 
-        FilterFunc="t => (!categorySearch.HasValue() || t.Name.StartsWith(categorySearch)) && t.ActiveType == ActiveType.Active">
+        <TreeView @ref="tree" TEntity="ProductCategory" style="height:500px" TextFunc="t => t.Name"
+                  FilterFunc="t => (!categorySearch.HasValue() || t.Name.StartsWith(categorySearch)) && t.ActiveType == ActiveType.Active">
             <AfterNodeTemplate>
                 <span class="d-tree-icon">
                     <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
@@ -45,7 +45,7 @@
 
     <Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="گروه محصول">
         <CaspianForm Model="category" TEntity="ProductCategory" OnValidSubmit="UpsertCategory">
-            @if(title.HasValue())
+            @if (title.HasValue())
             {
                 <StringTextBox @bind-Value="title" ColSpan="9" Title="گروه اصلی" Disabled />
             }
@@ -62,7 +62,7 @@ else
     </div>
 }
 
-@code 
+@code
 {
     string title;
     string categorySearch;

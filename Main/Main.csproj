@@ -46,6 +46,6 @@
 		</DotNetPublishFiles>
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="NewFolder\" />
+	  <Folder Include="Languages\" />
 	</ItemGroup>
 </Project>

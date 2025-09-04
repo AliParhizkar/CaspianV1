@@ -21,7 +21,7 @@ namespace Main
         static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder();
-
+            
             ConfigureCulture();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
@@ -46,6 +46,7 @@ namespace Main
                 CS.Con = builder.Configuration.GetConnectionString("ServerDb");
                 domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             }
+            MultiLanguage.CanDefineLanguage = Convert.ToBoolean(builder.Configuration.GetSection("ChangePage").Value);
             if (builder.Environment.IsStaging())
             {
                 builder.Services.ConfigureApplicationCookie(options =>
@@ -75,7 +76,6 @@ namespace Main
             builder.Services.AddSingleton(t =>
             {
                 using var context = new Caspian.Engine.Model.Context();
-
                 return new SingletonMenuService()
                 {
                     Categories = context.Set<MenuCategory>().ToList(),
@@ -134,7 +134,7 @@ namespace Main
                 httpContext.Request.Path.StartsWithSegments("/Accounting"));
 
             app.MapCaspianProjectWhen<Engine.Web.App>(httpContext =>
-                httpContext.Request.Path.StartsWithSegments("/Egnine") ||
+                httpContext.Request.Path.StartsWithSegments("/Engine") ||
                 httpContext.Request.Path.StartsWithSegments("/Account"));
             app.MapAdditionalIdentityEndpoints();
             app.MapControllers();

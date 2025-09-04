@@ -1,4 +1,10 @@
-﻿@code 
-{
+﻿@page "/Test"
+@inject IUIService<Customer> Service
+<EntitySearch TEntity="Customer" Service="Service">
+    <StringTextBox @bind-Value="context.CompanyName" ColSpan="8" TotalSpan="12" />
+</EntitySearch>
 
+@code 
+{
+   
 }

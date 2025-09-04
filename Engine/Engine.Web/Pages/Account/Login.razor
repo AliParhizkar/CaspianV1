@@ -152,7 +152,6 @@
             await service.SaveChangesAsync();
             if (!ReturnUrl.HasValue() || ReturnUrl.Contains("pitch", StringComparison.InvariantCultureIgnoreCase))
                 ReturnUrl = "/Demo";
-            Logger.LogInformation(ReturnUrl);
             RedirectManager.RedirectTo(ReturnUrl);
         }
         else if (result.RequiresTwoFactor)

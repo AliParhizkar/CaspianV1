@@ -1,0 +1,128 @@
+﻿@page "/Engine/EntityLanguage"
+@inject IHostEnvironment Host
+@inherits BasePage
+@using System.Text.Json
+@using System.Globalization
+<div class="row">
+    <div class="col-md-4">
+        <div class="row ps-3">
+            @if (entities != null)
+            {
+                var data = GetEntityLangDatas();
+                foreach (var item in entities)
+                {
+                    var className = data.Any(t => t.TypeName == item.Value) ? "fa fa-check" : "fa fa-close";
+                    <div class="col-md-9">@item.Text</div>
+                    <div class="col-md-3 text-center">
+                        <span class="@className"></span>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+    <div class="col-md-6 row c-controls">
+        <DropdownList @bind-Value="systemKind" OnChange="FillEntities" ColSpan="8" Title="Subsystem name" TotalSpan="12" />
+        <ComboBox Disabled="systemKind == null" @bind-Value="entityName" TValue="string" Source="entities" TEntity="SelectListItem" TextExpression="t => t.Text"
+                  OnChange="FillLangData" ColSpan="8" TotalSpan="12" Title="Entity name" />
+        <div class="a-head row p-3 pb-1 text-center">
+            <div class="col-md-4">Property name</div>
+            <div class="col-md-4">Display name</div>
+            <div class="col-md-4">Title</div>
+        </div>
+        <div class="a-body row p-3">
+            @if (entityLangDatas != null)
+            {
+                foreach (var item in entityLangDatas)
+                {
+                    var displayName = entityType.GetProperty(item.MemberName).GetCustomAttribute<DisplayNameAttribute>().DisplayName;
+                    <div class="col-md-4">@item.MemberName</div>
+                    <div class="col-md-4">@displayName</div>
+                    <div class="col-md-4">
+                        <StringTextBox @bind-Value="item.Title" />
+                    </div>
+                }
+            }
+        </div>
+        <button @onclick="SaveData" class="c-btn c-primary">Save</button>
+    </div>
+</div>
+
+@code
+{
+    SubSystemKind? systemKind;
+    string entityName, filePath;
+    Type entityType;
+    IList<SelectListItem> entities;
+    IList<EntityLangData> entityLangDatas;
+
+    IList<EntityLangData> GetEntityLangDatas()
+    {
+        var jsonText = File.ReadAllText(filePath);
+        return JsonSerializer.Deserialize<EntityLangData[]>(jsonText).Where(t => t.SubSystemKind == systemKind).ToList();
+    }
+
+    void SaveData()
+    {
+        bool titleIsEmpty = false;
+        foreach(var item in entityLangDatas)
+            if (!item.Title.HasValue())
+                titleIsEmpty = true;
+        if (!titleIsEmpty)
+        {
+            var jsonText = File.ReadAllText(filePath);
+            var others = JsonSerializer.Deserialize<EntityLangData[]>(jsonText).Where(t => t.SubSystemKind != systemKind || t.TypeName != entityName).ToList();
+            others.AddRange(entityLangDatas);
+            jsonText = JsonSerializer.Serialize(others);
+            File.WriteAllText(filePath, jsonText);
+            ShowMessage("ثبت با موفقیت انجام شد");
+        }
+        else
+            ShowMessage("Please spisify all properties title");
+    }
+
+    protected override void OnInitialized()
+    {
+        filePath = $"{Host.ContentRootPath}/Languages/{CultureInfo.CurrentCulture.Name}.json";
+        if (!File.Exists(filePath))
+            File.WriteAllText(filePath, "[]");
+        base.OnInitialized();
+    }
+
+    void FillEntities()
+    {
+        if (systemKind.HasValue)
+        {
+            entities = systemKind.Value.GetEntityAssembly().GetTypes().Where(t => t.GetCustomAttribute<TableAttribute>() != null).Select(t => new SelectListItem()
+            {
+                Value = t.Name,
+                Text = t.GetCustomAttribute<ForeignKeyAttribute>()?.Name ?? t.Name
+            }).ToList();
+        }
+    }
+
+    void FillLangData()
+    {
+        var jsonText = File.ReadAllText(filePath);
+        entityType = systemKind.Value.GetEntityAssembly().GetTypes().Single(t => t.Name == entityName);
+        entityLangDatas = JsonSerializer.Deserialize<EntityLangData[]>(jsonText).Where(t => t.SubSystemKind == systemKind && t.TypeName == entityName).ToList();
+        foreach (var info in entityType.GetProperties())
+        {
+            var attr = info.GetCustomAttribute<DisplayNameAttribute>();
+            if (attr != null)
+            {
+                var old = entityLangDatas.SingleOrDefault(t => t.MemberName == info.Name);
+                if (old == null)
+                {
+                    old = new EntityLangData()
+                    {
+                        SubSystemKind = systemKind.Value,
+                        TypeName = entityName,
+                        MemberName = info.Name
+                    };
+                    entityLangDatas.Add(old);
+                }
+            }
+        }
+    }
+}

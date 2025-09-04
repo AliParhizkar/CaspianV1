@@ -1,11 +1,12 @@
 ﻿@page "/Marketing/ProductPrinter/{PrinterLocationId:int}"
-@inherits BasePage 
+@attribute [Source(2, "تخصیص چاپگر")]
+@inherits BasePage
 <StringTextBox @bind-Value="search" placeholder="جستجو" BindingType="BindingType.OnInput" />
-<TreeView @ref="tree" TEntity="NodeView" Source="source" AutoSelectable FilterFunc="t => search == null || t.Text.Contains(search)"  />
+<TreeView @ref="tree" TEntity="NodeView" Source="source" AutoSelectable FilterFunc="t => search == null || t.Text.Contains(search)" />
 <button @onclick="SaveData">ثبت</button>
 
-@code 
-{ 
+@code
+{
     IList<NodeView> source;
     IList<Product> products;
     TreeView<NodeView> tree;

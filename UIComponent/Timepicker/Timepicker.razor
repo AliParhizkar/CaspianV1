@@ -10,7 +10,7 @@
     string labelContainerCSSClassName = base.GetLabelCSSClassName();
     string controlContainerCSSClassName = base.GetControlCSSClassName();
     <div class="@(labelContainerCSSClassName)">
-        <label>@title</label>
+        <label>@GetTitle()</label>
     </div>
     <div class="@(controlContainerCSSClassName)">
         @RenderTimePicker()

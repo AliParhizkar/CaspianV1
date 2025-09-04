@@ -23,7 +23,7 @@ else
                 string labelContainerCSSClassName = GetLabelCSSClassName();
                 string controlContainerCSSClassName = GetControlCSSClassName();
                 <div class="@(labelContainerCSSClassName)">
-                    <label>@title</label>
+                    <label>@GetTitle()</label>
                 </div>
                 <div class="@(controlContainerCSSClassName)">
                     @RenderCheckBox()

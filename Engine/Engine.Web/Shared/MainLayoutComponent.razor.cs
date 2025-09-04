@@ -1,9 +1,10 @@
-﻿using Caspian.Common;
+﻿using Caspian.UI;
+using Caspian.Common;
 using Caspian.Engine.Model;
 using Caspian.Engine.Service;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Caspian.Engine.Shared
 {
@@ -11,18 +12,18 @@ namespace Caspian.Engine.Shared
     {
         CaspianExceptionComponent exceptionComponent;
         bool hideMenu;
-        string date;
+        string date, time, title;
         string userName;
         IList<int> menusId;
         int? userId;
-        string time;
-        string title;
         int menuId;
-        bool userHasAccess;
         bool userIsAuthenticated;
         SubSystemKind systemKind;
         string currentUrl;
         PageData pageData;
+        WindowStatus status;
+        StringTextBox txtCtrTitle;
+        string ctrId, ctrTitle;
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -65,7 +66,6 @@ namespace Caspian.Engine.Shared
                         UserId = userId.Value,
                         PageUrl = currentUrl
                     });
-
                     await service.SaveChangesAsync();
                 }
             });
@@ -78,7 +78,6 @@ namespace Caspian.Engine.Shared
             time = DateTime.Now.TimeOfDay.ShortString();
             pageData.RightToLeft = RightToLeft;
             pageData.Language = RightToLeft ? Language.Fa : Language.En;
-
             var uri = new Uri(navigationManager.Uri);
             var url = uri.AbsolutePath;
             if (url.StartsWith("/"))
@@ -97,6 +96,7 @@ namespace Caspian.Engine.Shared
                     title = menu.Title;
                 }
             }
+            pageData.PageId = PageId;
             exceptionComponent?.Recover();
             base.OnParametersSet();
         }
@@ -123,6 +123,21 @@ namespace Caspian.Engine.Shared
                             userName = user.FName + " " + user.LName;
                             menusId = await scope.GetService<MenuAccessibilityService>().GetUserMenus(userId.Value);
                         }
+                    }
+                    if (MultiLanguage.CanDefineLanguage && userId == 1 && pageData.OnClick == null)
+                    {
+                        pageData.OnClick = new Action<string, string>(async (id, title) =>
+                        {
+                            status = WindowStatus.Open;
+                            ctrId = id;
+                            ctrTitle = title;
+                            StateHasChanged();
+                            if (ctrId.HasValue())
+                            {
+                                await Task.Delay(100);
+                                await txtCtrTitle.FocusAsync();
+                            }
+                        });
                     }
                 }
             }

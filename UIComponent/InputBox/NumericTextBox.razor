@@ -13,7 +13,7 @@ else
         if (TotalSpan == null || TotalSpan.Value > ColSpan.Value)
         {
             <div class="@(base.GetLabelCSSClassName())">
-                <label>@title</label>
+                <label>@GetTitle()</label>
             </div>
         }
         <div class="@(base.GetControlCSSClassName())">
