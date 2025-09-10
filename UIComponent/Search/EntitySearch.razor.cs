@@ -28,7 +28,7 @@ namespace Caspian.UI
 
         void IEntitySearch.EnableLoadData()
         {
-            Service.DataView.EnableLoading();
+            Service.DataView?.EnableLoading();
         }
 
         void IEntitySearch.SetFromValue(string path, object fromValue)

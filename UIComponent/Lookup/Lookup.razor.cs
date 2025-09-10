@@ -353,7 +353,7 @@ namespace Caspian.UI
             if (selectedEntity == null || CloseFunc == null || CloseFunc(selectedEntity))
             {
                 status = WindowStatus.Close;
-                if (CloseFunc != null)
+                if (CloseFunc != null && grid != null)
                 {
                     shouldRender = true;
                     grid.EnableLoading();
@@ -606,6 +606,7 @@ namespace Caspian.UI
                     if (OnChange.HasDelegate)
                         await OnChange.InvokeAsync();
                 }
+
                 EntitySearch?.EnableLoadData();
             }
         }

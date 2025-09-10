@@ -5,13 +5,14 @@ using Caspian.Engine.Service;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 
 namespace Caspian.Engine.Shared
 {
     public partial class MainLayoutComponent
     {
         CaspianExceptionComponent exceptionComponent;
-        bool hideMenu;
+        bool hideMenu, subsystemsStatus;
         string date, time, title;
         string userName;
         IList<int> menusId;
@@ -24,6 +25,7 @@ namespace Caspian.Engine.Shared
         WindowStatus status;
         StringTextBox txtCtrTitle;
         string ctrId, ctrTitle;
+        ElementReference subsystemsMenu;
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -43,6 +45,19 @@ namespace Caspian.Engine.Shared
             await storage.SetAsync("menu-status", hideMenu);
         }
 
+        [JSInvokable]
+        public void CloseSubsystem()
+        {
+            subsystemsStatus = false;
+            StateHasChanged();
+        }
+
+        async Task OpenStatus()
+        {
+            subsystemsStatus = true;
+            await jsRuntime.InvokeVoidAsync("caspian.common.BindWindowClickForMainLayout", DotNetObjectReference.Create(this));
+        }
+
         protected override void OnInitialized()
         {
             currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
@@ -50,7 +65,7 @@ namespace Caspian.Engine.Shared
             pageData = new PageData();
         }
 
-        private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+        void OnLocationChanged(object sender, LocationChangedEventArgs e)
         {
             currentUrl = navigationManager.ToBaseRelativePath(e.Location);
             base.InvokeAsync(async () =>
@@ -154,11 +169,6 @@ namespace Caspian.Engine.Shared
                 StateHasChanged();
             }
             await base.OnAfterRenderAsync(firstRender);
-        }
-
-        void MainMenu()
-        {
-
         }
 
         [Parameter]

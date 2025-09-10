@@ -379,6 +379,23 @@ var caspian;
                 document.getElementById('outMessage').remove();
             }, 300);
         }
+        static BindWindowClickForMainLayout(dotnet) {
+            let container = document.getElementsByClassName('c-packages-container')[0];
+            container.style.display = '';
+            setTimeout(() => {
+                let menu = container.getElementsByClassName('c-packages')[0];
+                var rect = menu.getBoundingClientRect();
+                container.style.width = `${rect.width}px`;
+                container.style.height = `${rect.height}px`;
+            }, 25);
+            let main = document.getElementsByClassName('page')[0];
+            main.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
+                yield dotnet.invokeMethodAsync('CloseSubsystem');
+                container.style.display = 'none';
+                container.style.width = container.style.height = '0';
+                main.onmousedown = null;
+            });
+        }
         static setValueOnClient(input, value) {
             input.value = value;
         }
@@ -1197,6 +1214,7 @@ var caspian;
     class Lookup {
         constructor(input, dotnet) {
             let lookup = input.closest('.c-lookup');
+            this.lookupWindow = lookup;
             input.onfocus = () => {
                 caspian.common.showErrorMessage(lookup);
             };
@@ -1213,17 +1231,19 @@ var caspian;
             input.onblur = () => {
                 caspian.common.hideErrorMessage(lookup);
             };
-            //if (lookup.attributes['closeonblur'].value != undefined)
-            //    lookup.attributes['tabindex'].value = '0';
-            this.bindObserver(lookup, dotnet);
+            Lookup.lookups || (Lookup.lookups = []);
+            this.dotnetInvoker = dotnet;
+            this.bindObserver(lookup);
         }
-        bindObserver(lookup, dotnet) {
+        bindObserver(lookup) {
+            let lookupComponenet = this;
             const mutationObserver = new MutationObserver(list => {
                 let sidebar = document.getElementsByClassName('sidebar')[0];
                 let sidebarWidth = sidebar == null ? 0 : sidebar.getBoundingClientRect().width;
                 let target = list[0].target.closest('.c-lookup');
                 let helpWindow = target.getElementsByClassName('t-HelpWindow')[0];
                 if (helpWindow != null) {
+                    lookupComponenet.lookupWindow = helpWindow;
                     window.onkeydown = e => {
                         if (e.keyCode == 13) {
                             e.preventDefault();
@@ -1269,19 +1289,25 @@ var caspian;
                     setTimeout(() => {
                         helpWindow.style.transition = '0.2s transform ease';
                         helpWindow.style.transform = 'scale(100%)';
+                        Lookup.lookups.push(this);
                     }, 25);
                     if (lookup.attributes['autoHide']) {
                         window.onclick = function (e) {
                             return __awaiter(this, void 0, void 0, function* () {
-                                if (e.target.closest('.c-lookup') == null)
-                                    yield dotnet.invokeMethodAsync('Close');
+                                let lookup = Lookup.lookups[Lookup.lookups.length - 1];
+                                let target = e.target.closest('.t-HelpWindow');
+                                if (target == null || target != lookup.lookupWindow)
+                                    yield lookup.dotnetInvoker.invokeMethodAsync('Close');
                             });
                         };
                     }
                 }
                 else {
-                    window.onclick = null;
-                    window.onkeydown = null;
+                    Lookup.lookups.pop();
+                    if (Lookup.lookups.length == 0) {
+                        window.onclick = null;
+                        window.onkeydown = null;
+                    }
                 }
             });
             mutationObserver.observe(lookup.getElementsByClassName('c-content')[0], {

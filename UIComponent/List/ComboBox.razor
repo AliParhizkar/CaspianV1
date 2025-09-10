@@ -10,7 +10,7 @@
 @if (ColSpan.HasValue)
 {
     <div class="@(GetLabelCSSClassName())">
-        <label>@title</label>
+        <label @attributes="LabelAttributes">@GetTitle()</label>
     </div>
     <div class="@(GetControlCSSClassName())">
         @RenderComboBox()

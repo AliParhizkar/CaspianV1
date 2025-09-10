@@ -71,7 +71,7 @@
                             </div>
                         </div>
 
-                        <EntitySearch Service="enumSearchService">
+                        <EntitySearch TEntity="Customer" Service="enumSearchService">
                             <DropdownList TValue="CustomerType" @bind-Value="context.CustomerType" ColSpan="8" OnSearch="SearchOnCustomerType" />
                             @if (showGender || genderSelectionType == 1)
                             {
@@ -235,20 +235,22 @@
     ISearchService<Customer> customSearchService;
     ISearchService<Product> ProductSearchService;
     //
-    IServiceScope scope;
+    IServiceScope scope, scope1;
 
     protected override void OnInitialized()
     {
         scope = ServiceScopeFactory.CreateScope();
         enumSearchService = scope.GetService<ISearchService<Customer>>();
         ProductSearchService = scope.GetService<ISearchService<Product>>();
-        customSearchService = scope.GetService<ISearchService<Customer>>();
+        scope1 = ServiceScopeFactory.CreateAsyncScope();
+        customSearchService = scope1.GetService<ISearchService<Customer>>();
         base.OnInitialized();
     }
 
     public override void Dispose()
     {
         scope.Dispose();
+        scope1.Dispose();
     }
 
     void SearchOnCustomerType(IEnumerable<CustomerType> customerTypes)

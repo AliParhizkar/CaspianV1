@@ -9,6 +9,7 @@
 @inject ProtectedSessionStorage storage
 @inject CaspianDataService dataService
 @inject IHostEnvironment host
+@inject IJSRuntime jsRuntime
 @{
     var className = "page";
     if (hideMenu)
@@ -42,7 +43,7 @@
                         </div>
                         <div>
                             <span class="c-container">
-                                <i @onclick="MainMenu" class="fa fa-th" />
+                                <i @onclick="OpenStatus" class="fa fa-th" />
                             </span>
                         </div>
                     </div>
@@ -105,14 +106,54 @@
 
     </NotAuthorized>
 </AuthorizeView>
-<div class="c-packages">
-    <div class="c-pakage">
-        <div class="c-pakage-head">
-
+<div @ref="subsystemsMenu" class="c-packages-container">
+    @if (subsystemsStatus)
+    {
+        <div class="c-packages">
+            <div class="c-pakage">
+                <div class="c-pakage-head">System Management</div>
+                <div class="c-subsystems">
+                    <a href="/Demo">
+                        <div class="c-subsystem">
+                            <span class="fa fa-code"></span>
+                            <span>Demo</span>
+                        </div>
+                    </a>
+                    <a href="/Engine/EntityLanguage" target="_blank">
+                        <div class="c-subsystem">
+                            <span class="fa fa-code"></span>
+                            <span>Language(Entity)</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="c-pakage">
+                <div class="c-pakage-head">Finantial </div>
+                <div class="c-subsystems">
+                    <a href="/Accounting">
+                        <div class="c-subsystem">
+                            <span class="fa fa-code"></span>
+                            <span>Accounting</span>
+                        </div>
+                    </a>
+                    <a href="/Marketing">
+                        <div class="c-subsystem">
+                            <span class="fa fa-code"></span>
+                            <span>Marketing</span>
+                        </div>
+                    </a>
+                    <a href="/Warehouse">
+                        <div class="c-subsystem">
+                            <span class="fa fa-code"></span>
+                            <span>Warehouse</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="c-sub-system">Demo</div>
-    </div>
+    }
 </div>
+
 @if (MultiLanguage.CanDefineLanguage)
 {
     <Window @bind-Status="status" Style="width:400px" Title="عنوان">

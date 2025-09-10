@@ -44,7 +44,7 @@
                 }
             }
         </div>
-        <button @onclick="SaveData" class="c-btn c-primary">Save</button>
+        <button disabled="@(entityLangDatas == null)" @onclick="SaveData" class="c-btn c-primary">Save</button>
     </div>
 </div>
 

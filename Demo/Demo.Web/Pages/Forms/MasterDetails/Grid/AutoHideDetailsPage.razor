@@ -262,10 +262,13 @@
         base.OnInitialized();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
+        if (ReceiptId > 0)
+            await Service.ReloadForUpdate(ReceiptId);
+        await base.OnParametersSetAsync();
     }
+
 
     async Task MainUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {

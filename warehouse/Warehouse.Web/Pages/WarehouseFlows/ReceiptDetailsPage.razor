@@ -1,5 +1,7 @@
 ﻿@page "/Warehouse/ReceiptDetails"
-@page "/Warehouse/ReceiptDetails/{ParameterId:int}"
+@page "/Warehouse/ReceiptDetails/{ReceiptId:int}"
+@inherits BasePage
+
 @attribute [Source(4, "چزئیات حواله")]
 @inject UIService<Receipt, ReceiptDetails> Service
 <div class="p-3">
@@ -13,7 +15,17 @@
         </div>
         <div class="col-md-6 row pb-2">
             <DropdownList @bind-Value="context.ReceiptType" ColSpan="8" TotalSpan="12" />
-            <FormCommandButton ColSpan="12" TotalSpan="12" />
+            <div class="row">
+                <div class="col-md-2 text-center pt-1">
+                    <span class="fa fa-chevron-right c-small-icon" @onclick="SelectNextReceipt"></span>
+                </div>
+                <div class="col-md-8">
+                    <FormCommandButton ColSpan="12" TotalSpan="12" />
+                </div>
+                <div class="col-md-2 text-center ">
+                    <span class="fa fa-chevron-left c-small-icon" @onclick="SelectPreReceipt"></span>
+                </div>
+            </div>
         </div>
     </CaspianForm>
 
@@ -47,10 +59,49 @@
     </DataGrid>
 </div>
 
-
-
 @code
 {
+    int curentReceiptId;
+
+    async Task SelectNextReceipt()
+    {
+        using var service = CreateScope().GetService<ReceiptService>();
+        var query = service.GetAll();
+        if (curentReceiptId > 0)
+        {
+            query = query.Where(t => t.Id < curentReceiptId);
+            var maxId = await query.MaxAsync(t => (int?)t.Id);
+            if (maxId.HasValue)
+            {
+                curentReceiptId = maxId.Value;
+                await Service.ReloadForUpdate(curentReceiptId);
+            }
+        }
+    }
+
+    async Task SelectPreReceipt()
+    {
+        using var service = CreateScope().GetService<ReceiptService>();
+        var query = service.GetAll();
+        if (curentReceiptId > 0)
+            query = query.Where(t => t.Id > curentReceiptId);
+        var minId = await query.MinAsync(t => (int?)t.Id);
+        if (minId.HasValue)
+        {
+            curentReceiptId = minId.Value;
+            await Service.ReloadForUpdate(curentReceiptId);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ReceiptId > 0)
+            await Service.ReloadForUpdate(ReceiptId);
+        curentReceiptId = ReceiptId;
+        await base.OnParametersSetAsync();
+    }
+
     [Parameter]
-    public int ParameterId { get; set; }
+    public int ReceiptId { get; set; }
+
 }

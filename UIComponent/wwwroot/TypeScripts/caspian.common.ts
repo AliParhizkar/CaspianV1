@@ -51,6 +51,25 @@
             }, 300);
         }
 
+        public static BindWindowClickForMainLayout(dotnet) {
+            let container = document.getElementsByClassName('c-packages-container')[0] as HTMLElement;
+            container.style.display = '';
+            setTimeout(() => {
+                let menu = container.getElementsByClassName('c-packages')[0] as HTMLElement;
+                var rect = menu.getBoundingClientRect();
+                container.style.width = `${rect.width}px`;
+                container.style.height = `${rect.height}px`;
+            }, 25);
+            let main = document.getElementsByClassName('page')[0] as HTMLElement;
+            main.onmousedown = async e => {
+                await dotnet.invokeMethodAsync('CloseSubsystem');
+                container.style.display = 'none';
+                container.style.width = container.style.height = '0';
+
+                main.onmousedown = null;
+            };
+        }
+
         public static setValueOnClient(input: HTMLInputElement, value: string) {
             input.value = value;
         }

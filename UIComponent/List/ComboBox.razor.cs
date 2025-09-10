@@ -118,6 +118,39 @@ namespace Caspian.UI
             CaspianForm?.ClearFirstControl(this);
         }
 
+        protected IDictionary<string, object> LabelAttributes
+        {
+            get
+            {
+                if (PageData?.OnClick != null && Title.HasValue())
+                {
+                    var attrs = new Dictionary<string, object>();
+                    attrs["onclick"] = new Action(() =>
+                    {
+                        PageData.OnClick(id, Title);
+                    });
+                    attrs["class"] = "c-supervisor";
+                    return attrs;
+                }
+                return null;
+            }
+        }
+
+        protected string GetTitle()
+        {
+            if (Title != null)
+            {
+                return Title;
+            }
+            if (ValueExpression != null)
+            {
+                var member = (ValueExpression.Body as MemberExpression).Member;
+                return member.DeclaringType.GetTitle(member.Name) ?? member.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ??
+                    member.Name;
+            }
+            throw new NotImplementedException();
+        }
+
         string GetLabelCSSClassName()
         {
             if (TotalSpan.HasValue)

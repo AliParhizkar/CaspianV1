@@ -539,12 +539,22 @@ var caspian;
                     yield dotnet.invokeMethodAsync('CloseWindow');
             }));
         }
+        static BindWindowClickForMainLayout(dotnet) {
+            let main = document.getElementsByClassName('c-content-main')[0];
+            main.onmousedown = async e => __awaiter(this, void 0, void 0, function* () {
+                if (e.target.closest('.auto-hide') == null) {
+                    await dotnet.invokeMethodAsync('WindowClick');
+                    main.onmousedown = null;
+                }
+            });
+        }
+
         static bindWindowClick(dotnet) {
             let main = document.getElementsByClassName('c-content-main')[0];
             main = main || document.body;
-            main.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
+            main.onmousedown = async e => __awaiter(this, void 0, void 0, function* () {
                 if (e.target.closest('.auto-hide') == null)
-                    yield dotnet.invokeMethodAsync('WindowClick');
+                    await dotnet.invokeMethodAsync('WindowClick');
             });
             window.addEventListener("locationchange", this.onMousedownHandler);
         }

@@ -49,29 +49,6 @@ namespace Caspian.UI
             }
         }
 
-        //Type GetServiceType(Type type)
-        //{
-        //    switch (type.GenericTypeArguments.Length)
-        //    {
-        //        case 1:
-        //            var types = new Type[] { typeof(IUIService<>), typeof(UIService<>), typeof(ISearchService<>)};
-        //            if (types.Any(t => t.MakeGenericType(type.GenericTypeArguments) == type))
-        //                return typeof(IUIService<>).MakeGenericType(type.GenericTypeArguments);
-        //            break;
-        //        case 2:
-        //            var serviceType = typeof(UIService<,>).MakeGenericType(type.GenericTypeArguments);
-        //            if (type == serviceType)
-        //                return serviceType;
-        //            break;
-        //        case 3:
-        //            var serviceType3 = typeof(UIService<,,>).MakeGenericType(type.GenericTypeArguments);
-        //            if (type == serviceType3)
-        //                return serviceType3;
-        //            break;
-        //    }
-        //    return null;
-        //}
-
         protected override void OnInitialized()
         {
             var type = this.GetType();
@@ -158,7 +135,6 @@ namespace Caspian.UI
             ComponentService.Target = this;
             base.OnParametersSet();
         }
-
 
         [JSInvokable]
         public void WindowClick()

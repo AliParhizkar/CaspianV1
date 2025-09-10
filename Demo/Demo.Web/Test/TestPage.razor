@@ -1,15 +1,25 @@
 ﻿@page "/Demo/Test"
 @attribute [Source(81, "Test")]
 @inherits BasePage
+@inject ISearchService<Customer> Service
 @namespace Demo.Web.Pages
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:300px;margin-left:105px;">
-    <Lookup TValue="int?" TEntity="Customer" OpenOnFocus TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName'>
-        <CustomerLookupWindow />
-    </Lookup>
+<div style="width:80%;margin:5px auto">
+    <EntitySearch TEntity="Customer" Service="Service">
+        <DropdownList @bind-Value="context.CustomerType" ColSpan="9" />
+        <DropdownList @bind-Value="context.Gender" ColSpan="9" />
+    </EntitySearch>
+    <DataGrid TEntity="Customer" Service="Service">
+        <Columns>
+            <GridColumn Field='t => t.CustomerType == CustomerType.Real ?  t.FName + " " + t.LName : t.CompanyName' Title="Name " />
+            <GridColumn Field="t => t.CustomerType.EnumText()" />
+            <GridColumn Field="t => t.Gender.EnumText()" />
+        </Columns>
+    </DataGrid>
 </div>
+
 
 @code
 {

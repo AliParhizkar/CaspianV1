@@ -16,6 +16,7 @@ namespace Warehouse.Model
         [DisplayName("کاربری مرتبط")]
         public int RelatedUserId { get; set; }
 
+        [ForeignKey(nameof(RelatedUserId))]
         public User RelatedUser { get; set; }
 
         [DisplayName("کد ملی")]

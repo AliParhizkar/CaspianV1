@@ -1,7 +1,9 @@
 ﻿namespace caspian {
     export class Lookup {
+        public static lookups: Lookup[];
         constructor(input: HTMLElement, dotnet: dotnetInvoker) {
             let lookup = input.closest('.c-lookup') as HTMLElement;
+            this.lookupWindow = lookup;
             input.onfocus = () => {
                 caspian.common.showErrorMessage(lookup);
             }
@@ -18,18 +20,23 @@
             input.onblur = () => {
                 caspian.common.hideErrorMessage(lookup);
             }
-            //if (lookup.attributes['closeonblur'].value != undefined)
-            //    lookup.attributes['tabindex'].value = '0';
-            this.bindObserver(lookup, dotnet);
+            Lookup.lookups ||= [];
+            this.dotnetInvoker = dotnet;
+            this.bindObserver(lookup);
         }
 
-        bindObserver(lookup: HTMLElement, dotnet: dotnetInvoker) {
+        public dotnetInvoker: dotnetInvoker;
+        public lookupWindow: HTMLElement;
+
+        bindObserver(lookup: HTMLElement) {
+            let lookupComponenet = this;
             const mutationObserver = new MutationObserver(list => {
                 let sidebar = document.getElementsByClassName('sidebar')[0];
                 let sidebarWidth = sidebar == null ?0 : sidebar.getBoundingClientRect().width;
                 let target = (list[0].target as HTMLElement).closest('.c-lookup') as HTMLElement;
                 let helpWindow = target.getElementsByClassName('t-HelpWindow')[0] as HTMLElement;
                 if (helpWindow != null) {
+                    lookupComponenet.lookupWindow = helpWindow;
                     window.onkeydown = e => {
                         if (e.keyCode == 13) {
                             e.preventDefault();
@@ -75,17 +82,24 @@
                     setTimeout(() => {
                         helpWindow.style.transition = '0.2s transform ease';
                         helpWindow.style.transform = 'scale(100%)';
+                        Lookup.lookups.push(this);
                     }, 25);
+                    
                     if (lookup.attributes['autoHide']) {
                         window.onclick = async function (e: MouseEvent) {
-                            if ((e.target as HTMLElement).closest('.c-lookup') == null)
-                                await dotnet.invokeMethodAsync('Close');
+                            let lookup = Lookup.lookups[Lookup.lookups.length - 1];
+                            let target = (e.target as HTMLElement).closest('.t-HelpWindow');
+                            if (target == null || target != lookup.lookupWindow)
+                                await lookup.dotnetInvoker.invokeMethodAsync('Close');
                         };
                     }
                 }
                 else {
-                    window.onclick = null;
-                    window.onkeydown = null;
+                    Lookup.lookups.pop();
+                    if (Lookup.lookups.length == 0) {
+                        window.onclick = null;
+                        window.onkeydown = null;
+                    }
                 }
 
             });

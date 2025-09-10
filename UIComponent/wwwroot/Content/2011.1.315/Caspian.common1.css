@@ -2,18 +2,42 @@
     color:red!important;
     background-color:yellowgreen!important;
 }
+.c-packages-container {
+    position: absolute;
+    top: 5px;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    transition: width .4s ease, height .4s ease;
+}
 .c-packages {
     display: flex;
-    border: 1px solid red;
-    position: absolute;
-    left: 162px;
-    top: 0px;
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-    display: none;
+    width:fit-content;
 }
-.c-pakage{
-    width:250px;
-    height:100px;
+.c-pakage {
+    padding-bottom: 3px;
+}
+.c-subsystems .fa {
+    font-size: 18px;
+}
+.c-subsystem{
+    padding:5px 8px;
+}
+.c-subsystems span {
+    color: white;
+    font-weight: bold;
+}
+.c-pakage-head {
+    border-bottom: 1px solid white;
+    height: 2.5rem;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: white;
+    padding: 3px 10px;
+}
+.c-pakage {
+    border: 1px solid white;
+    width: 250px;
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
 }
 .c-container-2 .c-controls > :nth-child(4n+2) {
     padding-right: 12px;

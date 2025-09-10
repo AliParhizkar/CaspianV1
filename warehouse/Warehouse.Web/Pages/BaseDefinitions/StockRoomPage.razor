@@ -29,14 +29,14 @@
 </div>
 <Window Service="Service" Title="انبار" Style="width:800px">
     <CaspianForm TEntity="StockRoom" Service="Service" ColumnsCount="2">
-        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
-        <StringTextBox @bind-Value="context.Code" ColSpan="4" />
-        <DropdownList @bind-Value="context.StockRoomType" ColSpan="4" />
-        <DropdownList @bind-Value="context.PricingMethodType" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" Title="عنوان"  />
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" Title="کد" />
+        <DropdownList @bind-Value="context.StockRoomType" ColSpan="4" Title="نوع انبار" />
+        <DropdownList @bind-Value="context.PricingMethodType" ColSpan="4" Title="روش قیمت گذاری" />
         <ComboBox TValue="int?" TEntity="SimpleData" @bind-Value="context.FinancialUnitId" TextExpression="t => t.Title"
-                  ConditionExpression="t => t.DataType == SimpleDataType.FinancialUnit" ColSpan="4" />
+                  ConditionExpression="t => t.DataType == SimpleDataType.FinancialUnit" ColSpan="4" Title="واحد مالی" />
         <ComboBox TValue="int?" TEntity="SimpleData" @bind-Value="context.BudgetUnitId" TextExpression="t => t.Title"
-                  ConditionExpression="t => t.DataType == SimpleDataType.BudgetUnit" ColSpan="4" />
+                  ConditionExpression="t => t.DataType == SimpleDataType.BudgetUnit" ColSpan="4" Title="واحد بودجه" />
         <Lookup TValue="int?" TEntity="User" @bind-Value="context.ManagerId" TextExpression='t => t.FName + " " + t.LName' ColSpan="4">
             <UserLookupWindow TValue="int?" />
         </Lookup>

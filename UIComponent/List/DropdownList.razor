@@ -6,7 +6,7 @@
 @if (ColSpan.HasValue)
 {
     <div class="@(base.GetLabelCSSClassName())">
-        <label>@GetTitle()</label>
+        <label @attributes="LabelAttributes">@GetTitle()</label>
     </div>
     <div class="@(base.GetControlCSSClassName())">
         @RenderDropdownList()
@@ -57,8 +57,7 @@ else
                                     else if (item.Value != null)
                                     {
                                         <li class="c-multi-select-drowp">
-
-                                            <CheckBox Title="@(item.Text)" Value="values.Contains(item.Value)" ValueChanged="e => UpdateValues(e, item.Value)" TValue="bool"  />
+                                            <CheckBox CustomeSearch Title="@(item.Text)" Value="values.Contains(item.Value)" ValueChanged="e => UpdateValues(e, item.Value)" TValue="bool"  />
                                         </li>
                                     }
                                     index++;

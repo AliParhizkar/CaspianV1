@@ -1,6 +1,6 @@
 ﻿namespace Accounting.Model
 {
-    public class Class1
+    public enum SimpleDataType: byte
     {
 
     }
